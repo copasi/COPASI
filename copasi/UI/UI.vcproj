@@ -1043,6 +1043,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQIcons.h"
+				>
+			</File>
+			<File
 				RelativePath="CQLyapResultWidget.h"
 				>
 			</File>

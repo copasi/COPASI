@@ -1,219 +1,198 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>CQProgressDialog</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>CQProgressDialog</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>363</width>
-            <height>57</height>
-        </rect>
-    </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>5</hsizetype>
-            <vsizetype>7</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.ui,v $ </comment>
+<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: aekamal $ </comment>
+<comment>   $Date: 2009/08/31 14:33:33 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQProgressDialog</class>
+ <widget class="QDialog" name="CQProgressDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>382</width>
+    <height>203</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>300</width>
+    <height>57</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>COPASI Progress Dialog</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QPushButton" name="mpBtnPause">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
         </sizepolicy>
-    </property>
-    <property name="minimumSize">
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpBtnContinue">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpBtnStop">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="mpBtnSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
         <size>
-            <width>300</width>
-            <height>57</height>
+         <width>40</width>
+         <height>20</height>
         </size>
-    </property>
-    <property name="caption">
-        <string>COPASI Progress Dialog</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <property name="spacing">
-            <number>3</number>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>mpBtnLayout</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtnPause</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image0</pixmap>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtnContinue</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image1</pixmap>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtnStop</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image2</pixmap>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>mpBtnSpacer</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>40</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-            </hbox>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>mpLine</cstring>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>200</width>
-                    <height>0</height>
-                </size>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>mpSpacer</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>40</height>
-                </size>
-            </property>
-        </spacer>
-    </vbox>
-</widget>
-<images>
-    <image name="image0">
-        <data format="PNG" length="106">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000003149444154789c63fcffff3f0325808922dd83c20016740146464678a0fcffff9f119718d55c306ac060308071342f300000a15e0e1bc0833eb50000000049454e44ae426082</data>
-    </image>
-    <image name="image1">
-        <data format="PNG" length="122">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000004149444154789c636018ace03fb10a992835049f01441942c80082861063005e43883500a721a41840b10b18293100ab66620dc0a9991803f06ac607884eca030f0087d3071218c5b3e80000000049454e44ae426082</data>
-    </image>
-    <image name="image2">
-        <data format="PNG" length="104">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000002f49444154789c63fcffff3f0325808922dd83c200167401464646bc81f2ffff7f46aaba60d480c16000e3685e600000f2ba0a1b437ae1230000000049454e44ae426082</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>mpBtnStop</sender>
-        <signal>clicked()</signal>
-        <receiver>CQProgressDialog</receiver>
-        <slot>btnStopPressed()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnPause</sender>
-        <signal>clicked()</signal>
-        <receiver>CQProgressDialog</receiver>
-        <slot>btnPausePressed()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnContinue</sender>
-        <signal>clicked()</signal>
-        <receiver>CQProgressDialog</receiver>
-        <slot>btnContinuePressed()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>mpBtnStop</tabstop>
-    <tabstop>mpBtnPause</tabstop>
-    <tabstop>mpBtnContinue</tabstop>
-</tabstops>
-<includes>
-    <include location="local" impldecl="in declaration">CQProgressItem.h</include>
-</includes>
-<variables>
-    <variable access="private">unsigned C_INT32 mItemCount;</variable>
-    <variable>bool mProceed;</variable>
-    <variable>bool mPause;</variable>
-    <variable>QTimer *mpTimer;</variable>
-</variables>
-<slots>
-    <slot access="protected" specifier="non virtual">btnStopPressed()</slot>
-    <slot access="protected" specifier="non virtual">btnPausePressed()</slot>
-    <slot access="protected" specifier="non virtual">btnContinuePressed()</slot>
-    <slot access="protected" specifier="non virtual">timerShow()</slot>
-</slots>
-<functions>
-    <function specifier="non virtual" returnType="bool">insertProgressItem(CQProgressItem * pItem)</function>
-    <function access="private" specifier="non virtual">init()</function>
-    <function specifier="non virtual" returnType="bool">removeProgressItem(CQProgressItem * pItem)</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="mpLine">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="mpSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>mpBtnStop</tabstop>
+  <tabstop>mpBtnPause</tabstop>
+  <tabstop>mpBtnContinue</tabstop>
+ </tabstops>
+ <includes>
+  <include location="local">CQProgressItem.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpBtnStop</sender>
+   <signal>clicked()</signal>
+   <receiver>CQProgressDialog</receiver>
+   <slot>btnStopPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnPause</sender>
+   <signal>clicked()</signal>
+   <receiver>CQProgressDialog</receiver>
+   <slot>btnPausePressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnContinue</sender>
+   <signal>clicked()</signal>
+   <receiver>CQProgressDialog</receiver>
+   <slot>btnContinuePressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

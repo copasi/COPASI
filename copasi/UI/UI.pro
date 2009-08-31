@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.211 $
+#   $Revision: 1.212 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/08/14 13:41:37 $
+#   $Author: aekamal $
+#   $Date: 2009/08/31 14:33:33 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.211 $ $Author: shoops $ $Date: 2009/08/14 13:41:37 $
+# $Revision: 1.212 $ $Author: aekamal $ $Date: 2009/08/31 14:33:33 $
 ######################################################################
 
 LIB = UI
@@ -64,6 +64,7 @@ HEADERS	+= \
 	CQFunctionsWidget.h \
 	CQGlobalQuantityDM.h \
 	CQGlobalQuantitiesWidget.h \
+	CQIcons.h \
     CQLayoutsWidget.h \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
@@ -214,6 +215,7 @@ FORMS += CQLyapWidget.ui
 FORMS += CQMCAWidget.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQPlotsWidget.ui
+FORMS += CQProgressDialog.ui
 FORMS += CQReactionsWidget.ui
 FORMS += CQReportDefinition.ui
 FORMS += CQReportsWidget.ui
@@ -244,7 +246,6 @@ FORMS3 += CQEFMWidget.ui
 # FORMS3 += CQMoietiesTaskWidget.ui
 FORMS3 += CQOptimizationResult.ui
 # FORMS3 += CQPreferenceDialog.ui
-# FORMS3 += CQProgressDialog.ui
 # FORMS3 += CQProgressItem.ui
 # FORMS3 += CQProgressItemBar.ui
 # FORMS3 += CQProgressItemText.ui
@@ -296,7 +297,6 @@ HEADERS += \
            CQPreferenceDialog.h \
            CQPreferenceDialog.ui.h \
            CQProgressDialog.h \
-           CQProgressDialog.ui.h \
            CQProgressItem.h \
            CQProgressItem.ui.h \
            CQProgressItemBar.h \
