@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 12:28:24 $
+//   $Author: aekamal $
+//   $Date: 2009/08/31 14:34:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,20 +14,22 @@
 #include "StateSubwidget.h"
 
 #include <qvariant.h>
-#include "CQArrayAnnotationsWidget.h"
 
 #include <qfileinfo.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <qpainter.h>
 #include <q3picture.h>
+#include <qmessagebox>
 
 #include <sstream>
 
 #include "copasi.h"
+#include "CQArrayAnnotationsWidget.h"
 
 #include "UI/qtUtilities.h"
 #include "UI/listviews.h"
+#include "UI/CopasiFileDialog.h"
 
 #include "model/CChemEqInterface.h"
 #include "model/CModel.h"
@@ -490,4 +492,34 @@ bool StateSubwidget::update(ListViews::ObjectType objectType,
     }
 
   return true;
+}
+
+void StateSubwidget::slotSave(void)
+{
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
+
+      if (fileName.isEmpty()) return;
+
+      // Checks whether the file exists
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+
+  if (file.fail())
+    return;
+
+  if (mpTask != NULL)
+    file << *mpTask;
+
+  return;
 }
