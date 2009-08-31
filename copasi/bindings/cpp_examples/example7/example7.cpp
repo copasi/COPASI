@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example7/example7.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/08/31 18:36:12 $
+//   $Date: 2009/08/31 19:34:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,9 +96,9 @@ int main()
   // reaction converts S to P
   // we can set these on the chemical equation of the reaction
   CChemEq* pChemEq = &pReaction->getChemEq();
-  // glucose is a substrate with stoichiometry 1
+  // S is a substrate with stoichiometry 1
   pChemEq->addMetabolite(pS->getKey(), 1.0, CChemEq::SUBSTRATE);
-  // glucose-6-phosphate is a product with stoichiometry 1
+  // P is a product with stoichiometry 1
   pChemEq->addMetabolite(pP->getKey(), 1.0, CChemEq::PRODUCT);
   assert(pChemEq->getSubstrates().size() == 1);
   assert(pChemEq->getProducts().size() == 1);
@@ -109,12 +109,9 @@ int main()
   CModelValue* pMV = pModel->createModelValue("K", 42.0);
   // set the status to FIXED
   pMV->setStatus(CModelValue::FIXED);
-
   assert(pMV != NULL);
-
   pObject = pMV->getObject(CCopasiObjectName("Reference=InitialValue"));
   assert(pObject != NULL);
-
   changedObjects.insert(pObject);
   assert(pModel->getModelValues().size() == 1);
 
@@ -154,7 +151,7 @@ int main()
   pParam->setUsage(CFunctionParameter::SUBSTRATE);
 
   // set the rate law for the reaction
-  pReaction->setFunction(pRateLaw);
+  pReaction->setFunction(pFunction);
   assert(pReaction->getFunction() != NULL);
 
   // COPASI also needs to know what object it has to assocuiate with the individual function parameters
