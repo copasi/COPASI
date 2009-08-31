@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/08/17 15:43:34 $
+//   $Date: 2009/08/31 14:30:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -334,7 +334,7 @@ void SliderSettingsDialog::init()
   mScaling = CSlider::linear;
   mpExtendedOptionsButton->setText("Advanced >>");
   hideOptionsControls();
-  this->resize(minimumSizeHint());
+  this->setFixedSize(minimumSizeHint());
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpOriginalValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
@@ -472,11 +472,15 @@ void SliderSettingsDialog::extendedOptionsClicked()
     {
       mpExtendedOptionsButton->setText("Advanced <<");
       showOptionsControls();
+      this->setFixedSize(minimumSizeHint());
     }
   else
     {
       mpExtendedOptionsButton->setText("Advanced >>");
       hideOptionsControls();
+      int heightChange = mpOptionsGridLayout->geometry().height();
+      QSize size = this->size() - QSize(0, heightChange);
+      this->setFixedSize(size);
     }
 }
 
@@ -632,9 +636,4 @@ void SliderSettingsDialog::hideOptionsControls()
   mpObjectValueEdit->hide();
 
   mpVerticalLayout->removeItem(mpOptionsGridLayout);
-
-  this->updateGeometry();
-  int heightChange = mpOptionsGridLayout->geometry().height();
-  QSize size = this->size() - QSize(0, heightChange);
-  this->resize(size);
 }
