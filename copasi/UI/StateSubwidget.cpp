@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/31 14:34:39 $
+//   $Author: gauges $
+//   $Date: 2009/08/31 18:32:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 #include <qcheckbox.h>
 #include <qpainter.h>
 #include <q3picture.h>
-#include <qmessagebox>
+#include <QMessageBox>
 
 #include <sstream>
 

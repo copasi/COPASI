@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/31 14:33:33 $
+//   $Author: gauges $
+//   $Date: 2009/08/31 18:29:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #ifndef CQPROGRESSDIALOG_H
 #define CQPROGRESSDIALOG_H
 
-#include <qdialog>
+#include <QDialog>
 
 #include "ui_CQProgressDialog.h"
 #include "CQIcons.h"
