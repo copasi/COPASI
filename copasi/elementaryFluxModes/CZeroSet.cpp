@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/19 01:44:12 $
+//   $Author: gauges $
+//   $Date: 2009/08/31 18:19:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 #include "copasi.h"
 
 #include "CZeroSet.h"
+#include "limits.h"
 
 CZeroSet::CIndex::CIndex():
     mIndex(0),
