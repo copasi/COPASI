@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.28 $ 
+#   $Revision: 1.29 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/04/21 15:45:05 $ 
+#   $Author: gauges $ 
+#   $Date: 2009/09/01 14:08:16 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ contains(BUILD_OS,Linux){
 }
 
 contains(BUILD_OS, Darwin) {
-    LIBS += `python-config --libs` 
+    LIBS += -framework Python
     LIBS += -framework QuickTime
     LIBS += -framework Carbon
     LIBS += -framework Accelerate
@@ -79,8 +79,9 @@ contains(BUILD_OS, Darwin) {
 
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH/python2.5
   }
-  QMAKE_CXXFLAGS += `python-config --includes` 
+  #QMAKE_CXXFLAGS += `python-config --includes` 
 
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
 }
@@ -127,6 +128,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
 		     ../swig/messages.i \
                      ../swig/CCopasiMethod.i \
                      ../swig/CCopasiObject.i \
+                     ../swig/CCopasiObjectReference.i \
                      ../swig/CCopasiObjectName.i \
                      ../swig/CCopasiParameter.i \
                      ../swig/CCopasiParameterGroup.i \

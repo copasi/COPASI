@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.15 $ 
+//   $Revision: 1.16 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/09/01 14:08:16 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,6 +28,8 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::forceCompile(CProcessReport* pProcessReport);
 %ignore _cpp_min;
 %ignore CModel::VolumeUnitNames;
+%ignore CModel::AreaUnitNames;
+%ignore CModel::LengthUnitNames;
 %ignore CModel::TimeUnitNames;
 %ignore CModel::QuantityUnitOldXMLNames;
 %ignore CModel::QuantityUnitNames;

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.25 $ 
+//   $Revision: 1.26 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/04/21 15:45:05 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/09/01 14:08:16 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -206,14 +206,6 @@ CCopasiMessage.checkForMessage=_COPASI.CCopasiMessage_checkForMessage
 CCopasiMessage.size=_COPASI.CCopasiMessage_size
 
 %}
-
-%extend CKeyFactory
-{
-    static CKeyFactory* getGlobalKeys()
-    {
-        return &GlobalKeys;
-    }
-}
 
 %extend CCopasiParameter
 {
