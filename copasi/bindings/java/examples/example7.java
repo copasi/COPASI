@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example7.java,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/08/31 19:35:07 $ 
+//   $Date: 2009/09/01 11:33:57 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -56,14 +56,14 @@ public class example7
      // fixed
      CMetab S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CMetab.FIXED);
      object = S.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
-     assert(object != NULL);
+     assert(object != null);
      changedObjects.add(object);
-     assert(compartment != NULL);
+     assert(compartment != null);
      assert S != null;
      assert model.getMetabolites().size() == 1;
      // create a second metabolite called P with an initial
      // concentration of 0. This metabolite is to be changed by reactions
-     CMetab* P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
+     CMetab P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
      assert P != null;
      object = P.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
      assert object != null;
@@ -101,10 +101,10 @@ public class example7
      CFunctionDB funDB = CCopasiRootContainer.getFunctionList();
      assert funDB != null;
 
-     CKinFunction function = new CKinFunction("My Rate Law");
+     CFunction function = new CFunction("My Rate Law");
 
      funDB.add(function, true);
-     CFunction rateLaw = (CFunction*)(funDB.findFunction("My Rate Law"));
+     CFunction rateLaw = (CFunction)funDB.findFunction("My Rate Law");
 
      assert rateLaw != null;
 
@@ -120,15 +120,13 @@ public class example7
      CFunctionParameters variables = function.getVariables();
      // per default the usage of those parameters will be set to VARIABLE
      long index = function.getVariableIndex("temp");
-     assert index != C_INVALID_INDEX;
-     CFunctionParameter param = variables.get(index);
+     CFunctionParameter param = variables.getParameter(index);
      assert param.getUsage() == CFunctionParameter.VARIABLE;
      // This is correct for temp, but substrate should get the usage SUBSTRATE in order
      // for us to use the function with the reaction created above
      // So we need to set the usage for "substrate" manually
      index = function.getVariableIndex("substrate");
-     assert index != C_INVALID_INDEX;
-     param = variables.get(index);
+     param = variables.getParameter(index);
      param.setUsage(CFunctionParameter.SUBSTRATE);
 
      // set the rate law for the reaction
