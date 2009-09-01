@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example6.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/04/21 15:45:05 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/09/01 13:51:30 $ 
 // End CVS Header 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -26,11 +26,15 @@ public class example6
 
     public static void main(String[] args)
     {
+        assert CCopasiRootContainer.getRoot() != null;
+        // create a new datamodel
+        CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
+        assert CCopasiRootContainer.getDatamodelList().size() == 1;
         // first we load a simple model
           try
           {
               // load the model 
-              CCopasiDataModel.getGlobal().importSBMLFromString(MODEL_STRING);
+              dataModel.importSBMLFromString(MODEL_STRING);
           }
           catch (java.lang.Exception ex)
           {
@@ -42,7 +46,7 @@ public class example6
         // against
 
         // get the trajectory task object
-        CTrajectoryTask trajectoryTask = (CTrajectoryTask)CCopasiDataModel.getGlobal().getTask("Time-Course");
+        CTrajectoryTask trajectoryTask = (CTrajectoryTask)dataModel.getTask("Time-Course");
         assert trajectoryTask != null;
         // if there isn't one
         if (trajectoryTask == null)
@@ -53,14 +57,14 @@ public class example6
             // add the new time course task to the task list
             // this method makes sure that the object is now owned 
             // by the list and that it does not get deleted by SWIG
-            CCopasiDataModel.getGlobal().getTaskList().addAndOwn(trajectoryTask);
+            dataModel.getTaskList().addAndOwn(trajectoryTask);
         }
 
         // run a deterministic time course
         trajectoryTask.setMethodType(CCopasiMethod.deterministic);
 
         // pass a pointer of the model to the problem
-        trajectoryTask.getProblem().setModel(CCopasiDataModel.getGlobal().getModel());
+        trajectoryTask.getProblem().setModel(dataModel.getModel());
 
         // activate the task so that it will be run when the model is saved
         // and passed to CopasiSE
@@ -72,7 +76,7 @@ public class example6
         // simulate 4000 steps
         problem.setStepNumber(4000);
         // start at time 0
-        CCopasiDataModel.getGlobal().getModel().setInitialTime(0.0);
+        dataModel.getModel().setInitialTime(0.0);
         // simulate a duration of 400 time units
         problem.setDuration(400);
         // tell the problem to actually generate time series data
@@ -136,7 +140,7 @@ public class example6
         {
           java.io.FileWriter os=new java.io.FileWriter("fakedata_example6.txt");
           os.write("# time ");
-          CKeyFactory keyFactory=COPASI.getGlobalKeys();
+          CKeyFactory keyFactory=CCopasiRootContainer.getKeyFactory();
           assert keyFactory != null;
           for(i=1;i<iMax;++i)
           {
@@ -147,7 +151,7 @@ public class example6
             if(object.getClass()==org.COPASI.CMetab.class)
             {
               os.write(", ");
-              os.write(timeSeries.getSBMLId(i));
+              os.write(timeSeries.getSBMLId(i,dataModel));
               CMetab m=(CMetab)object;
               indexSet.add(new Integer(i));
               metabVector.add(m);
@@ -193,7 +197,7 @@ public class example6
         // now we change the parameter values to see if the parameter fitting
         // can really find the original values
         random=Math.random()*10;
-        CReaction reaction=CCopasiDataModel.getGlobal().getModel().getReaction(0);
+        CReaction reaction=dataModel.getModel().getReaction(0);
         // we know that it is an irreversible mass action, so there is one
         // parameter
         assert reaction.getParameters().size() == 1;
@@ -201,14 +205,14 @@ public class example6
         // the parameter of a irreversible mass action is called k1
         reaction.setParameterValue("k1",random);
         
-        reaction=CCopasiDataModel.getGlobal().getModel().getReaction(1);
+        reaction=dataModel.getModel().getReaction(1);
         // we know that it is an irreversible mass action, so there is one
         // parameter
         assert reaction.getParameters().size() == 1;
         assert reaction.isLocalParameter(0);
         reaction.setParameterValue("k1",random);
 
-        CFitTask fitTask=(CFitTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.parameterFitting);
+        CFitTask fitTask=(CFitTask)dataModel.addTask(CCopasiTask.parameterFitting);
         assert fitTask != null;
         // the method in a fit task is an instance of COptMethod or a subclass of
         // it.
@@ -223,7 +227,7 @@ public class example6
         assert experimentSet != null;
         
         // first experiment (we only have one here)
-        CExperiment experiment=new CExperiment();
+        CExperiment experiment=new CExperiment(dataModel);
         assert experiment != null;
         // tell COPASI where to find the data
         // reading data from string is not possible with the current C++ API
@@ -250,7 +254,7 @@ public class example6
         assert result == true;
         assert objectMap.getRole(0) == CExperiment.time;
 
-        CModel model=CCopasiDataModel.getGlobal().getModel();
+        CModel model=dataModel.getModel();
         assert model!=null;
         CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
         assert timeReference != null;
@@ -297,7 +301,7 @@ public class example6
         // define a CFitItem
         CCopasiObject parameterReference=parameter.getObject(new CCopasiObjectName("Reference=Value"));
         assert parameterReference != null;
-        CFitItem fitItem1=new CFitItem();
+        CFitItem fitItem1=new CFitItem(dataModel);
         assert fitItem1 !=null;
         fitItem1.setObjectCN(parameterReference.getCN());
         fitItem1.setStartValue(4.0);
@@ -317,7 +321,7 @@ public class example6
         // define a CFitItem
         parameterReference=parameter.getObject(new CCopasiObjectName("Reference=Value"));
         assert parameterReference != null;
-        CFitItem fitItem2=new CFitItem();
+        CFitItem fitItem2=new CFitItem(dataModel);
         assert fitItem2 !=null;
         fitItem2.setObjectCN(parameterReference.getCN());
         fitItem2.setStartValue(4.0);

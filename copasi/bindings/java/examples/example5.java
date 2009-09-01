@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example5.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/04/21 15:45:05 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/09/01 13:51:30 $ 
 // End CVS Header 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -23,16 +23,12 @@ public class example5
 
    public static void main(String[] args) 
    {
-     try
-     {
-       CCopasiDataModel.getGlobal().newModel();
-     }
-     catch(Exception e)
-     {
-        System.err.println("Error. Could not create model.");
-        System.exit(1);
-     }
-     CModel model=CCopasiDataModel.getGlobal().getModel();
+     assert CCopasiRootContainer.getRoot() != null;
+     // create a new datamodel
+     CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
+     assert CCopasiRootContainer.getDatamodelList().size() == 1;
+     // get the model from the datamodel
+     CModel model = dataModel.getModel();
      assert model != null;
      model.setVolumeUnit(CModel.fl);
      model.setTimeUnit(CModel.s);
@@ -61,7 +57,7 @@ public class example5
 
      // we want to do an optimization for the time course
      // so we have to set up the time course task first
-     CTrajectoryTask timeCourseTask = (CTrajectoryTask)CCopasiDataModel.getGlobal().getTask("Time-Course");
+     CTrajectoryTask timeCourseTask = (CTrajectoryTask)dataModel.getTask("Time-Course");
      assert timeCourseTask != null;
      // since for this example it really doesn't matter how long we run the time course 
      // we run for 1 second and calculate 10 steps
@@ -69,7 +65,7 @@ public class example5
      timeCourseTask.setMethodType(CCopasiMethod.deterministic);
 
      // pass a pointer of the model to the problem
-     timeCourseTask.getProblem().setModel(CCopasiDataModel.getGlobal().getModel());
+     timeCourseTask.getProblem().setModel(dataModel.getModel());
 
      // get the problem for the task to set some parameters
      CTrajectoryProblem problem = (CTrajectoryProblem)timeCourseTask.getProblem();
@@ -78,14 +74,14 @@ public class example5
      // simulate 10 steps
      problem.setStepNumber(10);
      // start at time 0
-     CCopasiDataModel.getGlobal().getModel().setInitialTime(0.0);
+     dataModel.getModel().setInitialTime(0.0);
      // simulate a duration of 1 time units
      problem.setDuration(1);
      // tell the problem to actually generate time series data
      problem.setTimeSeriesRequested(true);
     
      // get the optimization task
-     COptTask optTask=(COptTask)CCopasiDataModel.getGlobal().getTask("Optimization");
+     COptTask optTask=(COptTask)dataModel.getTask("Optimization");
      assert optTask != null;
      // we want to use Levenberg-Marquardt as the optimization method
      optTask.setMethodType(CCopasiMethod.LevenbergMarquardt);
@@ -133,7 +129,7 @@ public class example5
 
      // create a report with the correct filename and all the species against
      // time.
-     CReportDefinitionVector reports = CCopasiDataModel.getGlobal().getReportDefinitionList();
+     CReportDefinitionVector reports = dataModel.getReportDefinitionList();
      // create a new report definition object
      CReportDefinition report = reports.createReportDefinition("Report", "Output for optimization");
      // set the task type for the report definition to timecourse
