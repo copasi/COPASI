@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEFMWidget.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/14 13:40:02 $
+//   $Date: 2009/09/01 15:57:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,6 +160,8 @@ bool CQEFMWidget::saveTask()
   if (!pTask) return false;
 
   saveCommon();
+  saveMethod();
+
   return true;
 }
 
@@ -171,6 +173,7 @@ bool CQEFMWidget::loadTask()
   if (!pTask) return false;
 
   loadCommon();
+  loadMethod();
 
   return true;
 }
