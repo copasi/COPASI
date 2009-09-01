@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.7 $ -->
+<!--   $Revision: 1.8 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2009/09/01 11:41:53 $ -->
+<!--   $Date: 2009/09/01 17:53:01 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -1348,7 +1348,7 @@ CFunctionDB funDB=CCopasiRootContainer.getFunctionList();
 CFunctionDB* funDB=CCopasiRootContainer::getFunctionList();
 </programlisting>
 <programlisting condition="PYTHON">
-funDB=CCopasiRootContainer.getFunctionList();
+funDB=CCopasiRootContainer.getFunctionList()
 </programlisting>
 </para>
 
