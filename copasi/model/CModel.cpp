@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.380 $
+//   $Revision: 1.381 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/03 17:43:27 $
+//   $Date: 2009/09/01 15:52:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@
 
 #include "copasi.h"
 
-// #define DEBUG_MATRIX
+#define DEBUG_MATRIX
 
 #include "CCompartment.h"
 #include "CMetab.h"
@@ -3292,25 +3292,25 @@ void CModel::buildLinkZero()
 
   mRedStoi = mStoi;
 
-  C_INT M = mRedStoi.numCols();
-  C_INT N = mRedStoi.numRows();
-  C_INT LDA = std::max<C_INT>(1, M);
+  C_INT NumReactions = mRedStoi.numCols();
+  C_INT NumSpecies = mRedStoi.numRows();
+  C_INT LDA = std::max<C_INT>(1, NumReactions);
 
-  CVector< C_INT > JPVT(N);
+  CVector< C_INT > JPVT(NumSpecies);
   JPVT = 0;
 
-  C_INT32 Dim = std::min(M, N);
+  C_INT32 Dim = std::min(NumReactions, NumSpecies);
 
   if (Dim == 0)
     {
       C_INT32 i;
-      mRowLU.resize(N);
+      mRowLU.resize(NumSpecies);
 
-      for (i = 0; i < N; i++)
+      for (i = 0; i < NumSpecies; i++)
         mRowLU[i] = i;
 
       mNumMetabolitesReactionIndependent = 0;
-      mL.resize(N - 0, 0);
+      mL.resize(NumSpecies - 0, 0);
 
       return;
     }
@@ -3406,7 +3406,7 @@ void CModel::buildLinkZero()
   DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
 #endif
 
-  dgeqp3_(&M, &N, mRedStoi.array(), &LDA,
+  dgeqp3_(&NumReactions, &NumSpecies, mRedStoi.array(), &LDA,
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
   if (INFO < 0) fatalError();
@@ -3414,15 +3414,15 @@ void CModel::buildLinkZero()
   LWORK = (C_INT) WORK[0];
   WORK.resize(LWORK);
 
-  dgeqp3_(&M, &N, mRedStoi.array(), &LDA,
+  dgeqp3_(&NumReactions, &NumSpecies, mRedStoi.array(), &LDA,
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
   if (INFO < 0) fatalError();
 
   C_INT32 i;
-  mRowLU.resize(N);
+  mRowLU.resize(NumSpecies);
 
-  for (i = 0; i < N; i++)
+  for (i = 0; i < NumSpecies; i++)
     mRowLU[i] = JPVT[i] - 1;
 
 #ifdef DEBUG_MATRIX
@@ -3438,14 +3438,14 @@ void CModel::buildLinkZero()
 
   // Resize mL
   mNumMetabolitesReactionIndependent = independent;
-  mL.resize(N - independent, independent);
+  mL.resize(NumSpecies - independent, independent);
 
-  if (N == independent || independent == 0) return;
+  if (NumSpecies == independent || independent == 0) return;
 
   /* to take care of differences between fortran's and c's memory  access,
      we need to take the transpose, i.e.,the upper triangular */
   char cL = 'U';
-  char cU = 'N'; /* 1 in the diagonal of R */
+  char cU = 'N'; /* values in the diagonal of R */
 
   // Calculate Row Echelon form of R.
   // First invert R_1,1
@@ -3521,7 +3521,7 @@ void CModel::buildLinkZero()
   C_FLOAT64 * pTmp2;
   C_FLOAT64 * pTmp3;
 
-  for (j = 0; j < N - independent; j++)
+  for (j = 0; j < NumSpecies - independent; j++)
     for (i = 0; i < independent; i++, pTmp1++)
       {
         pTmp2 = &mRedStoi(j + independent, i);
@@ -3530,7 +3530,7 @@ void CModel::buildLinkZero()
         // assert(&mL(j, i) == pTmp3);
         *pTmp1 = 0.0;
 
-        for (k = i; k < independent; k++, pTmp2++, pTmp3 += M)
+        for (k = i; k < independent; k++, pTmp2++, pTmp3 += NumReactions)
           {
             // assert(&mRedStoi(j + independent, k) == pTmp2);
             // assert(&mRedStoi(k, i) == pTmp3);
