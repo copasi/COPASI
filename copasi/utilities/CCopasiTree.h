@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Date: 2009/09/01 15:55:20 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  * CCopasiTree class.
  * The template class CCopasiTree describes a tree of Nodes.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  */
 
 #ifndef COPASI_CCopasiTree
@@ -34,7 +39,7 @@ std::ostream & operator<< (std::ostream & os, const CCopasiTree< _Node > & A);
  * a tree with four simple methods. It assures that each node in the
  * tree is unique.
  *
- * In addition it provides a forward iterator usefull to traverse the
+ * In addition it provides a forward iterator useful to traverse the
  * tree.
  *
  * Note: The tree takes ownership of all nodes. Therefore, you must not use
@@ -43,339 +48,342 @@ std::ostream & operator<< (std::ostream & os, const CCopasiTree< _Node > & A);
  *       the tree.
  */
 template < class _Node > class CCopasiTree
+{
+public:
+  typedef _Node Node;
+
+  // Attributes
+private:
+  /**
+   * The root of the tree
+   */
+  _Node * mpRoot;
+
+  /**
+   * The list of all nodes. This is used to keep the tree consistent
+   * by avoiding multiple inserts of the same node.
+   */
+  std::set<_Node *> mList;
+
+public:
+  /**
+   * A forward iterator used to traverse the tree.
+   */
+#if (defined __GNUC__ && __GNUC__ < 3)
+  class iterator: public std::forward_iterator< _Node, ptrdiff_t >
+#else
+  class iterator:
+      public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
+#endif
+
+  {
+  private:
+    /**
+     * A pointer to the current node.
+     */
+    _Node * mCurrent;
+
+  public:
+    /**
+     * Default constructor.
+     * Note: When no argument is given the iterator points to the end of
+     *       the tree.
+     * @param Node * begin (default NULL)
+     */
+    iterator(_Node * begin = NULL):
+        mCurrent(begin)
+    {}
+
+    /**
+     * Copy constructor
+     * @param const iterator & src
+     */
+    iterator(const iterator & src):
+        mCurrent(src.mCurrent)
+    {}
+
+    /**
+     * Destructor
+     */
+    ~iterator() {}
+
+    /**
+     * Dereference operator * returns the node the iterator points to.
+     * @return Node &
+     */
+    _Node & operator*() const {return * mCurrent;}
+
+    /**
+     * Dereference operator * returns the node the iterator points to.
+     * @return Node &
+     */
+    _Node * operator->() const {return mCurrent;}
+
+    /**
+     * Comparison operator !=
+     * @param const iterator &rhs
+     * @return bool not-equal
+     */
+    bool operator!=(const iterator &rhs)
+    {return (mCurrent != rhs.mCurrent);}
+
+    /**
+     * Assignment operator from a node to an iterator
+     * @param Node * pNode
+     * @return iterator &
+     */
+    iterator & operator=(_Node * pNode)
     {
-    public:
-      typedef _Node Node;
+      mCurrent = pNode;
+      return *this;
+    }
 
-      // Attributes
-    private:
-      /**
-       * The root of the tree
-       */
-      _Node * mpRoot;
+  public:
+    /**
+     * Prefix increment operator ++
+     * @return iterator &
+     */
+    iterator & operator++()
+    {
+      mCurrent = (_Node *) mCurrent->getNext();
 
-      /**
-       * The list of all nodes. This is used to keep the tree consistent
-       * by avoiding multiple inserts of the same node.
-       */
-      std::set<_Node *> mList;
+      return *this;
+    }
+  };
 
-    public:
-      /**
-       * A forward iterator used to traverse the tree.
-       */
+  /**
+   * A const forward iterator used to traverse the tree.
+   */
 #if (defined __GNUC__ && __GNUC__ < 3)
-    class iterator: public std::forward_iterator< _Node, ptrdiff_t >
+  class const_iterator: public std::forward_iterator< _Node, ptrdiff_t >
 #else
-    class iterator:
-            public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
+  class const_iterator:
+      public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
 #endif
 
-        {
-        private:
-          /**
-           * A pointer to the current node.
-           */
-          _Node * mCurrent;
+  {
+  private:
+    /**
+     * A pointer to the current node.
+     */
+    const _Node * mCurrent;
 
-        public:
-          /**
-           * Default constructor.
-           * Note: When no argument is given the iterator points to the end of
-           *       the tree.
-           * @param Node * begin (default NULL)
-           */
-          iterator(_Node * begin = NULL):
-              mCurrent(begin)
-          {}
+  public:
+    /**
+     * Default constructor.
+     * Note: When no argument is given the iterator points to the end of
+     *       the tree.
+     * @param Node * begin (default NULL)
+     */
+    const_iterator(const _Node * begin = NULL):
+        mCurrent(begin)
+    {}
 
-          /**
-           * Copy constructor
-           * @param const iterator & src
-           */
-          iterator(const iterator & src):
-              mCurrent(src.mCurrent)
-          {}
+    /**
+     * Copy constructor
+     * @param const iterator & src
+     */
+    const_iterator(const const_iterator & src):
+        mCurrent(src.mCurrent)
+    {}
 
-          /**
-           * Destructor
-           */
-          ~iterator() {}
+    /**
+     * Destructor
+     */
+    ~const_iterator() {}
 
-          /**
-           * Dereference operator * returns the node the iterator points to.
-           * @return Node &
-           */
-          _Node & operator*() const {return * mCurrent;}
+    /**
+     * Dereference operator * returns the node the iterator points to.
+     * @return Node &
+     */
+    const _Node & operator*() const {return * mCurrent;}
 
-          /**
-           * Dereference operator * returns the node the iterator points to.
-           * @return Node &
-           */
-          _Node * operator->() const {return mCurrent;}
+    /**
+     * Dereference operator * returns the node the iterator points to.
+     * @return Node &
+     */
+    const _Node * operator->() const {return mCurrent;}
 
-          /**
-           * Comparison operator !=
-           * @param const iterator &rhs
-           * @return bool not-equal
-           */
-          bool operator!=(const iterator &rhs)
-          {return (mCurrent != rhs.mCurrent);}
+    /**
+     * Comparison operator !=
+     * @param const iterator &rhs
+     * @return bool not-equal
+     */
+    bool operator!=(const const_iterator &rhs)
+    {return (mCurrent != rhs.mCurrent);}
 
-          /**
-           * Assignement operator from a node to an iterator
-           * @param Node * pNode
-           * @return iterator &
-           */
-          iterator & operator=(_Node * pNode)
-          {
-            mCurrent = pNode;
-            return *this;
-          }
+    /**
+     * Assignment operator from a node to an iterator
+     * @param Node * pNode
+     * @return iterator &
+     */
+    const_iterator & operator=(const _Node * pNode)
+    {
+      mCurrent = pNode;
+      return *this;
+    }
 
-        public:
-          /**
-           * Prefix increment operator ++
-           * @return iterator &
-           */
-          iterator & operator++()
-          {
-            mCurrent = (_Node *) mCurrent->getNext();
+  public:
+    /**
+     * Prefix increment operator ++
+     * @return iterator &
+     */
+    const_iterator & operator++()
+    {
+      mCurrent = (_Node *) mCurrent->getNext();
 
-            return *this;
-          }
-        };
+      return *this;
+    }
+  };
 
-      /**
-       * A const forward iterator used to traverse the tree.
-       */
-#if (defined __GNUC__ && __GNUC__ < 3)
-    class const_iterator: public std::forward_iterator< _Node, ptrdiff_t >
-#else
-    class const_iterator:
-            public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
-#endif
+  // Operations
+public:
+  /**
+   * Default constructor
+   */
+  CCopasiTree():
+      mpRoot(new _Node),
+      mList()
+  {mList.insert(mpRoot);}
 
-        {
-        private:
-          /**
-           * A pointer to the current node.
-           */
-          const _Node * mCurrent;
+  /**
+   * Destructor
+   */
+  ~CCopasiTree() {pdelete(mpRoot);}
 
-        public:
-          /**
-           * Default constructor.
-           * Note: When no argument is given the iterator points to the end of
-           *       the tree.
-           * @param Node * begin (default NULL)
-           */
-          const_iterator(const _Node * begin = NULL):
-              mCurrent(begin)
-          {}
+  /**
+   * Retrieve an iterator pointing to the beginning of the tree
+   * @return iterator begin
+   */
+  iterator begin() const {return iterator(mpRoot);}
 
-          /**
-           * Copy constructor
-           * @param const iterator & src
-           */
-          const_iterator(const const_iterator & src):
-              mCurrent(src.mCurrent)
-          {}
+  /**
+   * Retrieve an iterator pointing beyond the end of the tree
+   * @return iterator end
+   */
+  iterator end() const {return iterator(NULL);}
 
-          /**
-           * Destructor
-           */
-          ~const_iterator() {}
+  /**
+   * Retrieve the root node of the tree
+   * @return Node * root
+   */
+  _Node * getRoot() {return mpRoot;}
 
-          /**
-           * Dereference operator * returns the node the iterator points to.
-           * @return Node &
-           */
-          const _Node & operator*() const {return * mCurrent;}
+  /**
+   * Retrieve the data of the Tree.
+   * @return Data data
+   */
+  typename _Node::Data getData() const {return mpRoot->getData();}
 
-          /**
-           * Dereference operator * returns the node the iterator points to.
-           * @return Node &
-           */
-          const _Node * operator->() const {return mCurrent;}
+  /**
+   * Attach a Node to the tree
+   * Note: If pAfterChild == pParent then the child will be inserted as
+   *       the first child
+   * @param Node * pNode
+   * @param Node * pParent (default: NULL equivalent to the root of the tree)
+   * @param Node * pAfterChild (default: NULL at the end of the children)
+   * @return bool Success
+   */
+  bool attachNode(_Node * pNode,
+                  _Node * pParent = NULL,
+                  _Node * pAfterChild = NULL)
+  {
+    bool Success = true;
 
-          /**
-           * Comparison operator !=
-           * @param const iterator &rhs
-           * @return bool not-equal
-           */
-          bool operator!=(const const_iterator &rhs)
-          {return (mCurrent != rhs.mCurrent);}
+    if (mList.count(pNode))
+      return false;                     // Node already in tree.
 
-          /**
-           * Assignement operator from a node to an iterator
-           * @param Node * pNode
-           * @return iterator &
-           */
-          const_iterator & operator=(const _Node * pNode)
-          {
-            mCurrent = pNode;
-            return *this;
-          }
+    if (pAfterChild && !mList.count(pAfterChild))
+      return false;                     // Invalid insertion point.
 
-        public:
-          /**
-           * Prefix increment operator ++
-           * @return iterator &
-           */
-          const_iterator & operator++()
-          {
-            mCurrent = (_Node *) mCurrent->getNext();
-
-            return *this;
-          }
-        };
-
-      // Operations
-    public:
-      /**
-       * Default constructor
-       */
-      CCopasiTree():
-          mpRoot(new _Node),
-          mList()
-      {mList.insert(mpRoot);}
-
-      /**
-       * Destructor
-       */
-      ~CCopasiTree() {pdelete(mpRoot);}
-
-      /**
-       * Retreive an iterator pointing to the beginning of the tree
-       * @return iterator begin
-       */
-      iterator begin() const {return iterator(mpRoot);}
-
-      /**
-       * Retreive an iterator pointing beyond the end of the tree
-       * @return iterator end
-       */
-      iterator end() const {return iterator(NULL);}
-
-      /**
-       * Retreive the root node of the tree
-       * @return Node * root
-       */
-      _Node * getRoot() {return mpRoot;}
-
-      /**
-       * Retreive the data of the Tree.
-       * @return Data data
-       */
-      typename _Node::Data getData() const {return mpRoot->getData();}
-
-      /**
-       * Attach a Node to the tree
-       * Note: If pAfterChild == pParent then the child will be inserted as
-       *       the first child
-       * @param Node * pNode
-       * @param Node * pParent (default: NULL euivalent to the root of the tree)
-       * @param Node * pAfterChild (default: NULL at the end of the children)
-       * @return bool Success
-       */
-      bool attachNode(_Node * pNode,
-                      _Node * pParent = NULL,
-                      _Node * pAfterChild = NULL)
+    if (pParent)
       {
-        bool Success = true;
-
-        if (mList.count(pNode))
-          return false;                     // Node already in tree.
-        if (pAfterChild && !mList.count(pAfterChild))
-          return false;                     // Invalid insertion point.
-
-        if (pParent)
-          {
-            if (mList.count(pParent))
-              Success = pParent->addChild(pNode, pAfterChild);
-            else
-              Success = false;                 // Invalid parent.
-          }
+        if (mList.count(pParent))
+          Success = pParent->addChild(pNode, pAfterChild);
         else
-          Success = mpRoot->addChild(pNode, pAfterChild);
-
-        if (Success)
-          {
-            iterator it = pNode;
-            iterator end = (_Node *) it->getNextNonChild();
-
-            for (; it != end; ++it)
-              mList.insert(&*it);
-          }
-
-        return Success;
+          Success = false;                 // Invalid parent.
       }
+    else
+      Success = mpRoot->addChild(pNode, pAfterChild);
 
-      /**
-       * Remove the given node of the tree
-       * @param Node * pNode
-       * @return bool Success
-       */
-      bool removeNode(_Node * pNode)
+    if (Success)
       {
-        if (!pNode) return false;          // Nothing to remove.
-        if (pNode == mpRoot) return false; // Root must not be removed.
-
         iterator it = pNode;
         iterator end = (_Node *) it->getNextNonChild();
 
         for (; it != end; ++it)
-          mList.erase(&*it);
-
-        delete pNode;
-
-        return true;
+          mList.insert(&*it);
       }
 
-      /**
-       * Move a given node from its current place in the tree to the
-       * one specified by pParent and pAfterChild. The insertion
-       * behaviour is similar to addChild().
-       * @param Node * pNode
-       * @param Node * pParent (default: NULL euivalent to the root of the tree)
-       * @param Node * pAfterChild (default: NULL at the end of the children)
-       * @return bool Success
-       */
-      bool moveNode(_Node * pNode, _Node * pParent = NULL, _Node * pAfterChild = NULL)
-      {
-        detachNode(pNode);
-        return attachNode(pNode, pParent, pAfterChild);
-      }
+    return Success;
+  }
 
-      /**
-       * Detach node.
-       * Node: After detachment of a node the tree no longer has the ownership.
-       * @param Node * pNode
-       * @return bool Success
-       */
-      bool detachNode(_Node * pNode)
-      {
-        if (!pNode) return false;          // Nothing to do.
-        if (pNode == mpRoot) return false; // Root must not be detached
+  /**
+   * Remove the given node of the tree
+   * @param Node * pNode
+   * @return bool Success
+   */
+  bool removeNode(_Node * pNode)
+  {
+    if (!pNode) return false;          // Nothing to remove.
 
-        iterator it = pNode;
-        iterator end = (_Node *) it->getNextNonChild();
+    if (pNode == mpRoot) return false; // Root must not be removed.
 
-        for (; it != end; ++it)
-          mList.erase(&*it);
+    iterator it = pNode;
+    iterator end = (_Node *) it->getNextNonChild();
 
-        return pNode->getParent()->removeChild(pNode);
-      }
+    for (; it != end; ++it)
+      mList.erase(&*it);
+
+    delete pNode;
+
+    return true;
+  }
+
+  /**
+   * Move a given node from its current place in the tree to the
+   * one specified by pParent and pAfterChild. The insertion
+   * behavior is similar to addChild().
+   * @param Node * pNode
+   * @param Node * pParent (default: NULL equivalent to the root of the tree)
+   * @param Node * pAfterChild (default: NULL at the end of the children)
+   * @return bool Success
+   */
+  bool moveNode(_Node * pNode, _Node * pParent = NULL, _Node * pAfterChild = NULL)
+  {
+    detachNode(pNode);
+    return attachNode(pNode, pParent, pAfterChild);
+  }
+
+  /**
+   * Detach node.
+   * Node: After detachment of a node the tree no longer has the ownership.
+   * @param Node * pNode
+   * @return bool Success
+   */
+  bool detachNode(_Node * pNode)
+  {
+    if (!pNode) return false;          // Nothing to do.
+
+    if (pNode == mpRoot) return false; // Root must not be detached
+
+    iterator it = pNode;
+    iterator end = (_Node *) it->getNextNonChild();
+
+    for (; it != end; ++it)
+      mList.erase(&*it);
+
+    return pNode->getParent()->removeChild(pNode);
+  }
 
 #ifdef WIN32
-      friend std::ostream & operator << (std::ostream & os,
-                                         const CCopasiTree< _Node > & A);
+  friend std::ostream & operator << (std::ostream & os,
+                                     const CCopasiTree< _Node > & A);
 #else
-      friend std::ostream & operator << <>(std::ostream & os,
-                                           const CCopasiTree< _Node > & A);
+  friend std::ostream & operator << <>(std::ostream & os,
+                                       const CCopasiTree< _Node > & A);
 #endif // WIN32
-    };
+};
 
 template <class _Node>
 std::ostream & operator<< (std::ostream & os,
