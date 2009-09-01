@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.6 $ -->
+<!--   $Revision: 1.7 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2009/04/21 16:22:02 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2009/09/01 11:41:53 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -30,33 +30,85 @@ Initialization should be done as follows:
 </para>
 <para>
 <programlisting>
-// initialize some system variables
+// initializes the root container
 // argc and argv are the parameters that the main rountine gets
 // alternatively, 0 and NULL may be passed as argc and argv.
-COptions::init(argc, argv);
-// Create the root container.
-CCopasiContainer::init();
-// Create the global data model.
-CCopasiDataModel::Global = new CCopasiDataModel;
+CCopasiRootContainer::init(argc, argv);
 </programlisting>
 </para>
 <para>
 It is best to do the initialization in a try...catch block.
 </para>
 <para>
-Once the backend is no longer needed, it can be deinitialized by deleting the global datamodel and the root container.
+In order to destroy the root container, e.g. at the end of the program, there is the static method CCopasiRootContainer::destroy.
 </para>
 <para>
-<programlisting>
-delete CCopasiDataModel::Global;
-delete CCopasiContainer::Root;
-</programlisting>
+Normally, init should only be called once at the beginning of a program and destroy at the end of the program. If needed, the current root container can also be deleted in the middle of a running program and you first have to delete the old root container if you want to initialize a new one with init. 
 </para>
 <para>
 In order to be more portable, the C++ backend of COPASI makes extensive use of typedefs for several datatypes. All those typedefs can be found in the copasi.h header file which has to be included by all programs that want to use the COPASI backend library in a C++ program.
 </para>
 <para>
 And last, but not least, the statement "#define COPASI_MAIN" should occur at the very beginning (before copasi.h is included) of your source file that contains the main routine, otherwise, you will not be able to link against the COPASI library.
+</para>
+</sect1>
+
+<sect1 id="CCopasiRootContainer" xreflabel="CCopasiRootContainer">
+<title>CCopasiRootContainer</title>
+
+<para>
+In the COPASI backend, currently everything is located in an instance of CCopasiRootContainer. There is only one root container.
+</para>
+
+<para>
+The CCopasiRootContainer class has a number of other useful methods that allow the user to aquire handles to the function database or
+the list of datamodels.
+</para>
+
+<para>
+The COPASI backend only contains a single function database which contains all predefined and user defined function definitions. This function database is shared by all datamodels.
+In order to get a pointer to this function database, you can use the static method getFunctionList in CCopasiContainer. The method takes no arguments and returns a pointer to the function database which is an instance of the class CFunctionDB.
+</para>
+
+<para>
+The other important data structure that is located in the root container is the list of datamodels. Earlier versions of the COPASI backend could only handle on datamodel at a time, but newer versions now allow the user to work with several datamodels at the same time.
+</para>
+
+<para>
+After the root container has been initialized by calling init, it does not contain any datamodel yet. In order to create a new datamodel and add it to the root container, you have to call the static method addDatamodel in CCopasiRootContainer. The method takes no arguments and returns a pointer to the newly created instance of CCopasiDataModel. Since the datamodel is owned by the root container, it will be deleted when the root container is deleted.
+</para>
+
+<para>
+In order to get the list of all datamodels, there is a static method in CCopasiContainer called getDatamodelList.
+</para>
+</sect1>
+
+<sect1 id="CCopasiDataModel" xreflabel="CCopasiDataModel">
+<title>CCopasiDataModel</title>
+
+<para>
+CCopasiDataModel is the class the contains the actual model, all tasks and all output definitions (report and plots).
+</para>
+
+<para>
+In order to create a new model, you can call the static method addDatamodel in CCopasiRootContainer which will return the newly created datamodel. Or if the datamodel already has been created, you can get it via its index in the list of datamodels which you can get from the root container by calling getDatamodelList.
+</para>
+
+<para>
+getDataModelList returns a list of the datamodels that have been created. This list has a method size to query the number of datamodels it contains.
+</para>
+
+<para>
+If you want to delete a datamodel before the end of your program, CCopasiVector has a method remove which you can call with an index. This call will remove the object at the given index from the vector and free the memory that was allocated for it.  
+</para>
+
+<para>
+<caution>Currently, it is not a good idea to change the name of a datamodel instance (e.g. by calling setObjectName). The backend relies on the datamodel to have a certain name and if that name changes, the backend will stop working for that datamodel. We hope to fix this problem in upcoming releases of COPASI.</caution>
+</para>
+
+<para>
+<emphasis>CCopasiDataModel</emphasis> contains the actual model which can be obtained with the method <emphasis>getModel()</emphasis>, the defined tasks which can be obtained with the method <emphasis>getTaskList()</emphasis>, the reports which are obtained via the method <emphasis>getReportDefinitionList()</emphasis> and the function database which can be obtained with the <emphasis>getFunctionList()</emphasis>.
+In addition to these methods <emphasis>CCopasiDataModel</emphasis> provides some methods for loading COPASI files or importing SBML files, for saving COPASI files or exporting SBML files, for creating new models and for adding tasks to the task list.
 </para>
 </sect1>
 
@@ -67,29 +119,10 @@ And last, but not least, the statement "#define COPASI_MAIN" should occur at the
 <title>COPASIs Model Concept</title>
 
 <para>
-In COPASI, the top level class in the backend is <emphasis>CCopasiDataModel</emphasis>. This class contains the actual model as well as the tasks, the function database and all the output definitions (plots and reports). Right now, this class defines one global static instance of itself and many methods in COPASIs backend rely on and work with this instance. Creating a second instance  of <emphasis>CCopasiDataModel</emphasis> therefore does not make much sense and will most likely lead to crashes sooner or later. If you work with the COPASI bindings, you are restricted to this one global instance which means that working with more than one model at any given time on one machine is not possible right now.
+The CCopasiDataModel class contains the actual model as well as the tasks and all the output definitions (plots and reports). Newer versions of COPASI allow the user to work with several instances of the CCopasiDataModel class at the same time. 
 </para>
-<para condition="JAVA">
-<emphasis>CCopasiDataModel</emphasis> provides the static method <emphasis>getGlobal()</emphasis> to get the global static instance of <emphasis>CCopasiDataModel</emphasis>.
-</para>
-<para condition="CPP">
-<emphasis>CCopasiDataModel::Global</emphasis> is the pointer to get the global static instance of <emphasis>CCopasiDataModel</emphasis>.
-</para>
-<para condition="PYTHON">
-<!-- TODO -->
-</para>
-
-
 <para>
-<programlisting condition="JAVA">
-CCopasiDataModel globalModel=CCopasiDataModel.getGlobal();
-</programlisting>
-<programlisting condition="CPP">
-CCopasiDataModel* pGlobalModel=CCopasiDataModel::GLOBAL;
-</programlisting>
-<programlisting condition="PYTHON">
-<!-- TODO -->
-</programlisting>
+New instances can be create by the static method addDatamodel in CCopasiRootContainer and a list of the already created datamodels can be acquired with the static method getDatamodelList also from CCopasiRootContainer.
 </para>
 
 <para>
@@ -102,7 +135,7 @@ In addition to these methods <emphasis>CCopasiDataModel</emphasis> provides some
 <title>Model Elements</title>
 
 <para>
-The class in COPASI that contains the actual model data is <emphasis>CModel</emphasis>. The current model can be obtained from the global static instance of <emphasis>CCopasiDataModel</emphasis> via the <emphasis>getModel()</emphasis> method. To create a new empty model, <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>newModel()</emphasis>. There is also the method <emphasis condition="JAVA">loadModel(String filename)</emphasis><emphasis condition="CPP">loadModel(std::string filename)</emphasis><emphasis condition="PYTHON">loadModel(FILENAME_STRING)</emphasis> which loads a COPASI model from the given filename, the method <emphasis condition="JAVA">importSBML(String filename)</emphasis><emphasis condition="CPP">importSBML(std::string filename)</emphasis><emphasis condition="PYTHON">importSBML(FILENAME_STRING)</emphasis> which imports an SBML model from the file with the given name and last but not least the method <emphasis condition="JAVA">importSBMLFromString(String sbmlModelText)</emphasis><emphasis condition="CPP">importSBMLFromString(std::string sbmlModelText)</emphasis><emphasis condition="PYTHON">importSBMLFromString(SBML_CONTENT_STRING)</emphasis> which imports an SBML model from the given string. The string must be a valid SBML model string. All three methods return a boolean value which is <emphasis condition="CPP">true</emphasis><emphasis condition="JAVA">true</emphasis><emphasis condition="PYTHON">True</emphasis> if the method succeeded and <emphasis condition="CPP">false</emphasis><emphasis condition="JAVA">false</emphasis><emphasis condition="PYTHON">False</emphasis> otherwise.
+The class in COPASI that contains the actual model data is <emphasis>CModel</emphasis>. The model can be obtained from the instance of <emphasis>CCopasiDataModel</emphasis> via the <emphasis>getModel()</emphasis> method. To create a new empty model, <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>newModel()</emphasis>. There is also the method <emphasis condition="JAVA">loadModel(String filename)</emphasis><emphasis condition="CPP">loadModel(std::string filename)</emphasis><emphasis condition="PYTHON">loadModel(FILENAME_STRING)</emphasis> which loads a COPASI model from the given filename, the method <emphasis condition="JAVA">importSBML(String filename)</emphasis><emphasis condition="CPP">importSBML(std::string filename)</emphasis><emphasis condition="PYTHON">importSBML(FILENAME_STRING)</emphasis> which imports an SBML model from the file with the given name and last but not least the method <emphasis condition="JAVA">importSBMLFromString(String sbmlModelText)</emphasis><emphasis condition="CPP">importSBMLFromString(std::string sbmlModelText)</emphasis><emphasis condition="PYTHON">importSBMLFromString(SBML_CONTENT_STRING)</emphasis> which imports an SBML model from the given string. The string must be a valid SBML model string. All three methods return a boolean value which is <emphasis condition="CPP">true</emphasis><emphasis condition="JAVA">true</emphasis><emphasis condition="PYTHON">True</emphasis> if the method succeeded and <emphasis condition="CPP">false</emphasis><emphasis condition="JAVA">false</emphasis><emphasis condition="PYTHON">False</emphasis> otherwise. 
 </para>
 
 <para>
@@ -395,19 +428,19 @@ For example, to delete the third metabolite in the model you could write the fol
 
 <para>
 <programlisting condition="JAVA">
-CModel model=globalDataModel.getModel();
+CModel model=datamodel.getModel();
 CMetab metab=model.getMetabolite(3);
 String key=metab.getKey();
 model.removeMetabolite(key);
 </programlisting>
 <programlisting condition="CPP">
-CModel* pModel=pGlobalDataModel->getModel();
+CModel* pModel=pDatamodel->getModel();
 CMetab* pMetab=pModel->getMetabolite(3);
 std::string key=pMetab->getKey();
 pModel->removeMetabolite(key);
 </programlisting>
 <programlisting condition="PYTHON">
-model=globalDataModel.getModel()
+model=datamodel.getModel()
 metab=model.getMetabolite(3)
 key=metab.getKey()
 model.removeMetabolite(key)
@@ -1304,18 +1337,18 @@ The function database is the place where COPASI stores all function definitions,
 </para>
 
 <para>
-The function database object is an instance of the class <emphasis>CFunctionDB</emphasis> and the global function database can be acquire from the global instance of <emphasis>CCopasiDataModel</emphasis>:
+The function database object is an instance of the class <emphasis>CFunctionDB</emphasis> and the global function database can be acquire from the root container:
 </para>
 
 <para>
 <programlisting condition="JAVA">
-CFunctionDB funDB=CCopasiDataModel.getGlobal().getFunctionList();
+CFunctionDB funDB=CCopasiRootContainer.getFunctionList();
 </programlisting>
 <programlisting condition="CPP">
-CFunctionDB* funDB=CCopasiDataModel::Global->getFunctionList();
+CFunctionDB* funDB=CCopasiRootContainer::getFunctionList();
 </programlisting>
 <programlisting condition="PYTHON">
-funDB=CCopasiDataModel.getGlobal().getFunctionList()
+funDB=CCopasiRootContainer.getFunctionList();
 </programlisting>
 </para>
 
@@ -1655,7 +1688,7 @@ Lets make this a little more clear by looking at the task class for running time
 </para>
 
 <para>
-All tasks are stored in <emphasis>CCopasiDataModel</emphasis>. <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>getTaskList()</emphasis> to get the list of tasks. The returned object is of the type <emphasis>TaskVectorN</emphasis> and provides a method called <emphasis>size()</emphasis> to find out how many tasks it contains and a method <emphasis CONDITION="JAVA">get(long index)</emphasis><emphasis CONDITION="CPP">get(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">get(INDEX)</emphasis> to retrieve the task with the given index. The object that is returned is of type <emphasis>CCopasiObject</emphasis>. Alternatively, <emphasis>CCopasiDataModel</emphasis> has a method called <emphasis CONDITION="JAVA">getTask(long index)</emphasis><emphasis CONDITION="CPP">getTask(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">getTask(INDEX)</emphasis> which returns the <emphasis>CCopasiTask</emphasis> object with the given index.
+All tasks are stored in <emphasis>CCopasiDataModel</emphasis>. <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>getTaskList()</emphasis> to get the list of tasks. The returned object is of the type <emphasis>TaskVectorN</emphasis> and provides a method called <emphasis>size()</emphasis> to find out how many tasks it contains and a method <emphasis CONDITION="JAVA">get(long index)</emphasis><emphasis CONDITION="CPP">get(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">get(INDEX)</emphasis> to retrieve the task with the given index. The object that is returned is of type <emphasis>CCopasiObject</emphasis>. Alternatively, <emphasis>CCopasiDataModel</emphasis> has a method called <emphasis CONDITION="JAVA">getTask(long index)</emphasis><emphasis CONDITION="CPP">getTask(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">getTask(INDEX)</emphasis> which returns the <emphasis>CCopasiTask</emphasis> object with the given index. 
 </para>
 
 <para>
@@ -1689,52 +1722,52 @@ So to find the time course simulation task we could use the following code:
 <programlisting condition="JAVA">
 <![CDATA[
 long i=0;
-long iMax=globalDataModel.getTaskList().size();
+long iMax=datamodel.getTaskList().size();
 CTrajectoryTask task=null;
 for(i=0;i<iMax;i++)
 {
-   if(globalDataModel.getTask(i).getType()==CCopasiTask.timeCourse)
+   if(datamodel.getTask(i).getType()==CCopasiTask.timeCourse)
    {
-       task=globalDataModel.getTask(i);
+       task=datamodel.getTask(i);
        break;
    }
 }
 if(task==null)
 {
    // create the task
-   task=globalDataModel.addTask(CCopasiTask.timeCourse);
+   task=datamodel.addTask(CCopasiTask.timeCourse);
 }]]>
 </programlisting>
 <programlisting condition="CPP">
 <![CDATA[
 long i=0;
-long iMax=pGlobalDataModel->getTaskList()->size();
+long iMax=pDataModel->getTaskList()->size();
 CTrajectoryTask* pTask=NULL;
 for(i=0;i<iMax;i++)
 {
-   if((*pGlobalDataModel->getTaskList())[i]->getType()==CCopasiTask::timeCourse)
+   if((*pDataModel->getTaskList())[i]->getType()==CCopasiTask::timeCourse)
    {
-       pTask=(*pGlobalDataModel->getTaskList())[i];
+       pTask=(*pDataModel->getTaskList())[i];
        break;
    }
 }
 if(pTask==NULL)
 {
    // create the task
-   pTask=pGlobalDataModel->addTask(CCopasiTask::timeCourse);
+   pTask=pDataModel->addTask(CCopasiTask::timeCourse);
 }]]>
 </programlisting>
 <programlisting condition="PYTHON">
 <![CDATA[
-iMax=globalDataModel.getTaskList().size()
+iMax=datamodel.getTaskList().size()
 task=None
 for i in range(0,iMax):
-   if globalDataModel.getTask(i).getType()==CCopasiTask.timeCourse:
-       task=globalDataModel.getTask(i)
+   if datamodel.getTask(i).getType()==CCopasiTask.timeCourse:
+       task=datamodel.getTask(i)
        break
 if task==None:
    # create the task
-   task=globalDataModel.addTask(CCopasiTask.timeCourse)
+   task=datamodel.addTask(CCopasiTask.timeCourse)
 ]]>
 </programlisting>
 </para>
@@ -1979,20 +2012,20 @@ Here a complete example on how it could be done:
 <programlisting condition="JAVA">
 <![CDATA[
 long i=0;
-long iMax=globalDataModel.getTaskList().size();
+long iMax=datamodel.getTaskList().size();
 CTrajectoryTask task=null;
 for(i=0;i<iMax;i++)
 {
-   if(globalDataModel.getTask(i).getType()==CCopasiTask.timeCourse)
+   if(datamodel.getTask(i).getType()==CCopasiTask.timeCourse)
    {
-       task=globalDataModel.getTask(i);
+       task=datamodel.getTask(i);
        break;
    }
 }
 if(task==null)
 {
    // create the task
-   task=globalDataModel.addTask(CCopasiTask.timeCourse);
+   task=datamodel.addTask(CCopasiTask.timeCourse);
 }
 if(task!=null)
 {
@@ -2016,20 +2049,20 @@ if(task!=null)
 <programlisting condition="CPP">
 <![CDATA[
 long i=0;
-long iMax=pGlobalDataModel->getTaskList()->size();
+long iMax=pDataModel->getTaskList()->size();
 CTrajectoryTask* pTask=NULL;
 for(i=0;i<iMax;i++)
 {
-   if((*pGlobalDataModel->getTasks())[i].getType()==CCopasiTask::timeCourse)
+   if((*pDataModel->getTasks())[i].getType()==CCopasiTask::timeCourse)
    {
-       pTask=(*pGlobalDataModel->getTasks())[i];
+       pTask=(*pDataModel->getTasks())[i];
        break;
    }
 }
 if(pTask==NULL)
 {
    // create the task
-   pTask=pGlobalDataModel->addTask(CCopasiTask::timeCourse);
+   pTask=pDataModel->addTask(CCopasiTask::timeCourse);
 }
 if(pTask!=NULL)
 {
@@ -2042,7 +2075,7 @@ if(pTask!=NULL)
   if(pTask->setMethodType(CCopasiMethod::LSODAR))
   {
     // maybe change some method parameters
-    pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pGlobalDataModel, NULL);
+    pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
     pTask->process(true);
     pTask->restore();
 
@@ -2054,15 +2087,15 @@ if(pTask!=NULL)
 }]]></programlisting>
 <programlisting condition="PYTHON">
 <![CDATA[
-iMax=globalDataModel.getTaskList().size()
+iMax=datamodel.getTaskList().size()
 task=None
 for i in range(0,iMax):
-   if globalDataModel.getTask(i).getType()==CCopasiTask.timeCourse:
-       task=globalDataModel.getTask(i)
+   if datamodel.getTask(i).getType()==CCopasiTask.timeCourse:
+       task=datamodel.getTask(i)
        break
 if task==None:
    # create the task
-   task=globalDataModel.addTask(CCopasiTask.timeCourse)
+   task=datamodel.addTask(CCopasiTask.timeCourse)
 if task!=None:
   problem=task.getProblem()
   parameter=problem.getParameter("Duration")
@@ -2422,7 +2455,6 @@ const CArrayAnnotation* getJacobianAnnotated() const;
  * as its two arguments.
  * Indices are specified as long values, the return values
  * are of type double.
- */
  */
  const CMatrix&lt;C_FLOAT64&gt;&amp; getJacobianReduced() const;
 
@@ -3138,7 +3170,7 @@ The following example codes shows how to run a simple parameter scan. It sets up
 <para>
 <programlisting condition="JAVA">
 CScanTask scanTask=
-      (CScanTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.scan);
+      (CScanTask)datamodel.addTask(CCopasiTask.scan);
 CScanProblem scanProblem=(CScanProblem)scanTask.getProblem();
 // set the desired subtask
 scanProblem.setSubtask(CCopasiTask.timeCourse);
@@ -3170,7 +3202,7 @@ catch(Exception e)
 }
 </programlisting>
 <programlisting condition="CPP">
-CScanTask* pScanTask=(CScanTask*)CCopasiDataModel::Global->addTask(CCopasiTask::scan);
+CScanTask* pScanTask=(CScanTask*)pDataModel->addTask(CCopasiTask::scan);
 CScanProblem pScanProblem=(CScanProblem*)pScanTask->getProblem();
 // set the desired subtask
 pScanProblem->setSubtask(CCopasiTask::timeCourse);
@@ -3203,7 +3235,7 @@ catch(...)
     std::cerr &lt;&lt; "ERROR: " &lt;&lt; Scan failed. &lt;&lt; std::endl;;
 }</programlisting>
 <programlisting condition="PYTHON">
-scanTask= CCopasiDataModel.GLOBAL.addTask(CCopasiTask.scan)
+scanTask= datamodel.addTask(CCopasiTask.scan)
 scanProblem=scanTask.getProblem()
 # set the desired subtask
 scanProblem.setSubtask(CCopasiTask.timeCourse)
@@ -3263,7 +3295,7 @@ Here a small example that runs a simple optimization task:
 <![CDATA[
 // create the optimization task
 COptTask optTask=
-  (COptTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.optimization);
+  (COptTask)datamodel.addTask(CCopasiTask.optimization);
 if(optTask==null) return null;
 
 // use the Levenberg-Marquardt method for the optimization
@@ -3295,9 +3327,9 @@ ref=new CCopasiObjectName("Reference=InitialValue");
 object=SomeFixedModelValue.getObject(ref);
 CCopasiObjectName optObjectName=object.getCN();
 COptItem optItem2=optProblem.addOptItem(optObjectName);
-optItem2.setStartValue(1.0);
-optItem2.setLowerBound(0.0);
-optItem2.setUpperBound(2.0);
+optItem2.setStartValue(1.0,datamodel);
+optItem2.setLowerBound(0.0,datamodel);
+optItem2.setUpperBound(2.0,datamodel);
 
 // change some of the parameters of the method
 COptMethod optMethod=optTask.getMethod();
@@ -3319,7 +3351,7 @@ catch(Exception e)
 <programlisting condition="CPP">
 <![CDATA[
 // create the optimization task
-COptTask* pOptTask=(COptTask*)CCopasiDataModel::Global->addTask(CCopasiTask::optimization);
+COptTask* pOptTask=(COptTask*)pDataModel->addTask(CCopasiTask::optimization);
 if(pOptTask==NULL) return NULL;
 
 // use the Levenberg-Marquardt method for the optimization
@@ -3351,9 +3383,9 @@ ref=CCopasiObjectName("Reference=InitialValue");
 pObject=pSomeFixedModelValue->getObject(ref);
 CCopasiObjectName optObjectName=pObject->getCN();
 COptItem* pOptItem2=pOptProblem->addOptItem(optObjectName);
-pOptItem2->setStartValue(1.0);
-pOptItem2->setLowerBound(0.0);
-pOptItem2->setUpperBound(2.0);
+pOptItem2->setStartValue(1.0,datamodel);
+pOptItem2->setLowerBound(0.0,datamodel);
+pOptItem2->setUpperBound(2.0,datamodel);
 
 // change some of the parameters of the method
 COptMethod* pOptMethod=(COptMethod*)pOptTask->getMethod();
@@ -3376,7 +3408,7 @@ catch(...)
 <programlisting condition="PYTHON">
 <![CDATA[
 # create the optimization task
-COptTask optTask=globalDataModel.addTask(CCopasiTask.optimization)
+COptTask optTask=datamodel.addTask(CCopasiTask.optimization)
 if optTask==None:
    return None
 
@@ -3410,9 +3442,9 @@ ref=CCopasiObjectName("Reference=InitialValue")
 object=SomeFixedModelValue.getObject(ref)
 optObjectName=object.getCN()
 optItem2=optProblem.addOptItem(optObjectName)
-optItem2.setStartValue(1.0)
-optItem2.setLowerBound(0.0)
-optItem2.setUpperBound(2.0)
+optItem2.setStartValue(1.0,datamodel)
+optItem2.setLowerBound(0.0,datamodel)
+optItem2.setUpperBound(2.0,datamodel)
 
 # change some of the parameters of the method
 optMethod=optTask.getMethod()
@@ -3497,7 +3529,7 @@ A fit problem can actually contain many experiments and many fit items, but the 
 <para>
 <programlisting condition="JAVA">
 CFitTask fitTask=
-  (CFitTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.parameterFitting);
+  (CFitTask)datamodel.addTask(CCopasiTask.parameterFitting);
 // the method in a fit task is an instance of COptMethod or a subclass of
 // it.
 COptMethod fitMethod=(COptMethod)fitTask.getMethod();
@@ -3516,7 +3548,7 @@ experiment.setNumColumns(3);
 CExperimentObjectMap objectMap=experiment.getObjectMap();
 boolean result=objectMap.setNumCols(3);
 result=objectMap.setRole(0,CExperiment.time);
-CModel model=CCopasiDataModel.getGlobal().getModel();
+CModel model=datamodel.getModel();
 // create the common name for time (column 0)
 CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
 objectMap.setObjectCN(0,timeReference.getCN().getString());
@@ -3558,8 +3590,8 @@ CCopasiObject parameterReference=
 CFitItem fitItem=new CFitItem();
 fitItem.setObjectCN(parameterReference.getCN());
 fitItem.setStartValue(4.0);
-fitItem.setLowerBound(new CCopasiObjectName("0.0001"));
-fitItem.setUpperBound(new CCopasiObjectName("10"));
+fitItem.setLowerBound(new CCopasiObjectName("0.0001"),datamodel);
+fitItem.setUpperBound(new CCopasiObjectName("10"),datamodel);
 // add the experiment to the fit item
 //fitItem.addExperiment(experiment.getKey())
 // add the fit item to the correct parameter group
@@ -3581,7 +3613,7 @@ catch(Exception e)
 double fittedK=fitItem.getLocalValue();
 </programlisting>
 <programlisting condition="CPP">
-CFitTask* pFitTask= (CFitTask*)CCopasiDataModel::Global->addTask(CCopasiTask::parameterFitting);
+CFitTask* pFitTask= (CFitTask*)pDataModel->addTask(CCopasiTask::parameterFitting);
 // the method in a fit task is an instance of COptMethod or a subclass of
 // it.
 COptMethod pFitMethod=(COptMethod*)pFitTask->getMethod();
@@ -3600,7 +3632,7 @@ pExperiment->setNumColumns(3);
 CExperimentObjectMap* pObjectMap=&amp;pExperiment->getObjectMap();
 bool result=pObjectMap->setNumCols(3);
 result=pObjectMap->setRole(0,CExperiment::time);
-CModel* pModel=CCopasiDataModel::Global->getModel();
+CModel* pModel=pDataModel->getModel();
 // create the common name for time (column 0)
 CCopasiObject* pTimeReference=pModel->getObject(CCopasiObjectName("Reference=Time"));
 pObjectMap->setObjectCN(0,pTimeReference->getCN());
@@ -3641,8 +3673,8 @@ CCopasiObject* pParameterReference=pParameter->getObject(CCopasiObjectName("Refe
 CFitItem* pFitItem=new CFitItem();
 pFitItem->setObjectCN(pParameterReference->getCN());
 pFitItem->setStartValue(4.0);
-pFitItem->setLowerBound(CCopasiObjectName("0.0001"));
-pFitItem->setUpperBound(CCopasiObjectName("10"));
+pFitItem->setLowerBound(CCopasiObjectName("0.0001"),datamodel);
+pFitItem->setUpperBound(CCopasiObjectName("10"),datamodel);
 // add the fit item to the correct parameter group
 CCopasiParameterGroup* pOptimizationItemGroup=(CCopasiParameterGroup*)pFitProblem->getParameter("OptimizationItemList");
 pOptimizationItemGroup->addParameter(pFitItem);
@@ -3664,7 +3696,7 @@ catch(...)
 double fittedK=pFitItem->getLocalValue();
 </programlisting>
 <programlisting condition="PYTHON">
-fitTask=CCopasiDataModel.GLOBAL.addTask(CCopasiTask.parameterFitting)
+fitTask=datamodel.addTask(CCopasiTask.parameterFitting)
 # the method in a fit task is an instance of COptMethod or a subclass of
 # it.
 fitMethod=fitTask.getMethod()
@@ -3683,7 +3715,7 @@ experiment.setNumColumns(3)
 objectMap=experiment.getObjectMap()
 result=objectMap.setNumCols(3)
 result=objectMap.setRole(0,CExperiment.time)
-model=CCopasiDataModel.GLOBAL.getModel()
+model=datamodel.getModel()
 # create the common name for time (column 0)
 timeReference=model.getObject(CCopasiObjectName("Reference=Time"))
 objectMap.setObjectCN(0,timeReference.getCN().getString())
@@ -3719,8 +3751,8 @@ parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"))
 fitItem=CFitItem()
 fitItem.setObjectCN(parameterReference.getCN())
 fitItem.setStartValue(4.0)
-fitItem.setLowerBound(new CCopasiObjectName("0.0001"))
-fitItem.setUpperBound(new CCopasiObjectName("10"))
+fitItem.setLowerBound(new CCopasiObjectName("0.0001"),datamodel)
+fitItem.setUpperBound(new CCopasiObjectName("10"),datamodel)
 # add the experiment to the fit item
 # fitItem.addExperiment(experiment.getKey())
 # add the fit item to the correct parameter group
@@ -3762,18 +3794,18 @@ If the registered object name should represent a model entity, the string has to
 </para>
 
 <para>
-In COPASI the reports definitions are stored in the global instance of <emphasis>CCopasiDataModel</emphasis>. To get this list use the method <emphasis>getReportDefinitionList</emphasis> on the global instance of <emphasis>CCopasiDataModel</emphasis>.
+In COPASI the reports definitions are stored in the instances of <emphasis>CCopasiDataModel</emphasis>. To get this list use the method <emphasis>getReportDefinitionList</emphasis> on the instance of <emphasis>CCopasiDataModel</emphasis>.
 </para>
 
 <para>
 <programlisting condition="JAVA">
-CCopasiDataModel.getGlobal().getReportDefinitionList();
+datamodel.getReportDefinitionList();
 </programlisting>
 <programlisting condition="CPP">
-CCopasiDataModel::Global->getReportDefinitionList();
+pDataModel->getReportDefinitionList();
 </programlisting>
 <programlisting condition="PYTHON">
-CCopasiDataModel.GLOBAL.getReportDefinitionList()
+datamodel.getReportDefinitionList()
 </programlisting>
 </para>
 
@@ -3789,8 +3821,7 @@ The following example shows how to create a report for a time course simulation 
 <programlisting condition="JAVA">
 <![CDATA[
 ...
-CCopasiDataModel global=CCopasiDataModel.getGlobal();
-CReportDefinitionVector reportDefs=global.getReportDefinitionList();
+CReportDefinitionVector reportDefs=datamodel.getReportDefinitionList();
 CReportDefinition repDef=reportDefs.createReportDefinition("htmlConc",
                                         "value table in HTML format");
 repDef.setIsTable(false);
@@ -3807,7 +3838,7 @@ header.add(new CRegisteredObjectName(htmlHeader.getCN().getString()));
 ReportItemVector footer=repDef.getFooterAddr(); 
 footer.add(new CRegisteredObjectName(htmlFooter.getCN().getString()));
 ReportItemVector body=repDef.getBodyAddr(); 
-CModel model=CCopasiDataModel.getGlobal().getModel();
+CModel model=datamodel.getModel();
 CCopasiObjectName name=new CCopasiObjectName("Reference=Time");
 CCopasiObject timeObject=model.getObject(name);
 CCopasiStaticString s=new CCopasiStaticString("<tr>\n<td>");
@@ -3839,8 +3870,7 @@ report.setTarget("table.xhtml");
 <programlisting condition="CPP">
 <![CDATA[
 ...
-CCopasiDataModel* pGlobalDataModel=CCopasiDataModel::Global;
-CReportDefinitionVector* pReportDefs=pGlobalDataModel->getReportDefinitionList();
+CReportDefinitionVector* pReportDefs=pDataModel->getReportDefinitionList();
 CReportDefinition* pRepDef=pReportDefs->createReportDefinition("htmlConc",
                                         "value table in HTML format");
 pRepDef->setIsTable(false);
@@ -3857,7 +3887,7 @@ pHeader->add(CRegisteredObjectName(htmlHeader.getCN()));
 std::vector<CRegisteredObjectName>* pFooter=pRepDef->getFooterAddr(); 
 pFooter->add(new CRegisteredObjectName(htmlFooter.getCN()));
 std::vector<CRegisteredObjectName>* pBody=pRepDef->getBodyAddr(); 
-CModel* pModel=pGlobalDataModel->getModel();
+CModel* pModel=pDataModel->getModel();
 CCopasiObjectName name=CCopasiObjectName("Reference=Time");
 CCopasiObject* pTimeObject=pModel->getObject(name);
 CCopasiStaticString s=CCopasiStaticString("<tr>\n<td>");
@@ -3889,7 +3919,7 @@ pReport->setTarget("table.xhtml");
 <programlisting condition="PYTHON">
 <![CDATA[
 ...
-reportDefs=CCopasiDataModel.GLOBAL.getReportDefinitionList()
+reportDefs=datamodel.getReportDefinitionList()
 repDef=reportDefs.createReportDefinition("htmlConc",
                                         "value table in HTML format")
 repDef.setIsTable(False)
@@ -3905,7 +3935,7 @@ header.push_back(CRegisteredObjectName(htmlHeader.getCN().getString()))
 footer=repDef.getFooterAddr()
 footer.push_back(CRegisteredObjectName(htmlFooter.getCN().getString()))
 body=repDef.getBodyAddr()
-model=CCopasiDataModel.GLOBAL.getModel()
+model=datamodel.getModel()
 name=CCopasiObjectName("Reference=Time")
 timeObject=model.getObject(name)
 s=CCopasiStaticString("<tr>\n<td>")
@@ -4206,12 +4236,7 @@ NUMBER=getNumber()
 </sect1>
  <sect1 id="programmingExamples" xreflabel="programmingExamples">
 <title>Programming Examples</title>
-<para>
 This section contains some programming examples that might be helpful. We hope that eventually these examples will cover most of the backend.
-</para>
-<para>
-Since we also use these programs to "test" the bindings, they contain many assert statements, which might not be necessary if you write a program using the same functionality.
-</para>
 <sect2 id="modelCreation" xreflabel="modelCreation">
 <title>Creating and saving a model</title>
 <para>
@@ -4339,9 +4364,9 @@ The example also shows how a report can be defined from the backend in order to 
 </sect2>
 
 <sect2 id="optimization" xreflabel="optimization">
-<title>Running an optimization on a timecourse simulation of two global parameters.</title>
+<title>Running an optimization task</title>
 <para>
-This example demonstrates how to run an optimization using a time course simulation and how to generate a report for it.
+This example shows how to run an optimization task and how to get the results of the optimization after running it.
 </para>
 <para>
 <programlisting condition="CPP">
@@ -4368,13 +4393,10 @@ This example demonstrates how to run an optimization using a time course simulat
 </para>
 </sect2>
 
-<sect2 id="parameterEstimation" xreflabel="parameterEstimation">
-<title>Running a parameter estimation on a simple model.</title>
+<sect2 id="fitting" xreflabel="fitting">
+<title>Doing a parameter fit</title>
 <para>
-This example demonstrates how to setup and run a parameter estimation with the COPASI API.
-</para>
-<para>
-The example reads in a simple SBML model and creates some fake time course data with noise to use as the data for the parameter fitting.
+This example shows how to fit parameters using the COPASI API.
 </para>
 <para>
 <programlisting condition="CPP">
@@ -4400,6 +4422,37 @@ The example reads in a simple SBML model and creates some fake time course data 
 </programlisting>
 </para>
 </sect2>
+
+<sect2 id="userdefined_functions" xreflabel="userdefined_functions">
+<title>Creating and using function definitions</title>
+<para>
+This example shows how to create a function definition with the COPASI API and how to use it as a kinetic law in a reaction.
+</para>
+<para>
+<programlisting condition="CPP">
+<xi:include  href="../../copasi/bindings/cpp_examples/example7/example7.cpp" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="JAVA">
+<xi:include  href="../../copasi/bindings/java/examples/example7.java" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="PYTHON">
+<xi:include  href="../../copasi/bindings/python/examples/example7.py" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+</para>
+</sect2>
+
 
 </sect1>
 
