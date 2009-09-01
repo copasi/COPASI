@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/06/04 17:14:55 $
+   $Date: 2009/09/01 13:47:08 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 /**
  * Class CCopasiObjectReference
  *
- * This class is the is used to make an existing object gobally accesible.
+ * This class is the is used to make an existing object globally accessible.
  *
  * Copyright Stefan Hoops 2002
  */
@@ -31,6 +31,7 @@
 
 template <class CType> class CCopasiObjectReference: public CCopasiObject
 {
+public:
   typedef CType referenceType;
 
   //Attributes
@@ -76,7 +77,7 @@ public:
 
   virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const
   {
-    //supress "Value"
+    //Suppress "Value"
     if (getObjectParent() && getObjectName() == "Value")
       return getObjectParent()->getObjectDisplayName(regular, richtext);
 
@@ -162,6 +163,7 @@ CCopasiObjectReference<bool>::CCopasiObjectReference(const std::string & name,
 
 template <class CType> class CCopasiVectorReference: public CCopasiObject
 {
+public:
   typedef CType referenceType;
 
   //Attributes
@@ -214,7 +216,7 @@ public:
   /**
    * This is the output method for any object. The default implementation
    * provided with CCopasiObject uses the ostream operator<< of the object
-   * to print the object.To overide this default behaviour one needs to
+   * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
@@ -224,6 +226,7 @@ public:
 
 template <class CType> class CCopasiMatrixReference: public CCopasiObject
 {
+public:
   typedef CType referenceType;
 
   //Attributes
