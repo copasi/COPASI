@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/elementaryFluxModes.pro,v $
-#   $Revision: 1.12 $
+#   $Revision: 1.13 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/08/19 01:44:12 $
+#   $Date: 2009/09/01 15:58:41 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,15 @@ include(../lib.pri)
 include(../common.pri)
 
 # Input
+HEADERS += CBitPatternTreeMethod.h
+SOURCES += CBitPatternTreeMethod.cpp
+
+HEADERS += CBitPatternTree.h
+SOURCES += CBitPatternTree.cpp
+
+HEADERS += CBitPatternTreeNode.h
+SOURCES += CBitPatternTreeNode.cpp
+
 HEADERS += CEFMAlgorithm.h
 SOURCES += CEFMAlgorithm.cpp
 
@@ -43,6 +52,12 @@ contains(DEFINES, COPASI_SSA) {
    HEADERS += CSSAMethod.h
    SOURCES += CSSAMethod.cpp
 }
+
+HEADERS += CStepMatrix.h
+SOURCES += CStepMatrix.cpp
+
+HEADERS += CStepMatrixColumn.h
+SOURCES += CStepMatrixColumn.cpp
 
 HEADERS += CTableauLine.h
 SOURCES += CTableauLine.cpp
