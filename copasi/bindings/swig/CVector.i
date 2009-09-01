@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CVector.i,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.6 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/04/21 15:45:04 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/09/01 13:39:35 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -38,12 +38,17 @@
 
 %include "utilities/CVector.h"
 
-%extend CVector<C_FLOAT64>
-{
-    C_FLOAT64 get(unsigned int index)
-    {
-        return (*self)[index];
-    }
-};
+typedef CVectorCore<C_FLOAT64> FloatVectorCore;
+typedef CVector<C_FLOAT64> FloatVector;
 
+%template(FloatVectorCore) CVectorCore<C_FLOAT64>;
+%template(FloatVector) CVector<C_FLOAT64>;
+
+%extend CVectorCore<C_FLOAT64>
+{
+  virtual C_FLOAT64 get(unsigned C_INT32 index)
+  {
+      return (*self)[index];
+  }
+}
 
