@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example5.py,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/04/21 15:45:05 $ 
+#   $Author: gauges $ 
+#   $Date: 2009/09/01 13:34:10 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -20,12 +20,12 @@ from COPASI import *
 import sys
 
 def main():
-   try:
-     CCopasiDataModel.GLOBAL.newModel()
-   except:
-      print >> sys.stderr, "Error. Could not create model."
-      return 1
-   model=CCopasiDataModel.GLOBAL.getModel()
+   assert CCopasiRootContainer.getRoot() != None
+   # create a new datamodel
+   dataModel = CCopasiRootContainer.addDatamodel()
+   assert CCopasiRootContainer.getDatamodelList().size() == 1
+   # get the model from the datamodel
+   model = dataModel.getModel()
    assert model != None
    model.setVolumeUnit(CModel.fl)
    model.setTimeUnit(CModel.s)
@@ -54,7 +54,7 @@ def main():
 
    # we want to do an optimization for the time course
    # so we have to set up the time course task first
-   timeCourseTask = CCopasiDataModel.GLOBAL.getTask("Time-Course")
+   timeCourseTask = dataModel.getTask("Time-Course")
    assert timeCourseTask != None
    # since for this example it really doesn't matter how long we run the time course 
    # we run for 1 second and calculate 10 steps
@@ -62,7 +62,7 @@ def main():
    timeCourseTask.setMethodType(CCopasiMethod.deterministic)
 
    # pass a pointer of the model to the problem
-   timeCourseTask.getProblem().setModel(CCopasiDataModel.GLOBAL.getModel())
+   timeCourseTask.getProblem().setModel(dataModel.getModel())
 
    # get the problem for the task to set some parameters
    problem = timeCourseTask.getProblem()
@@ -71,14 +71,14 @@ def main():
    # simulate 10 steps
    problem.setStepNumber(10)
    # start at time 0
-   CCopasiDataModel.GLOBAL.getModel().setInitialTime(0.0)
+   dataModel.getModel().setInitialTime(0.0)
    # simulate a duration of 1 time units
    problem.setDuration(1)
    # tell the problem to actually generate time series data
    problem.setTimeSeriesRequested(True)
   
    # get the optimization task
-   optTask=CCopasiDataModel.GLOBAL.getTask("Optimization")
+   optTask=dataModel.getTask("Optimization")
    assert optTask != None
    # we want to use Levenberg-Marquardt as the optimization method
    optTask.setMethodType(CCopasiMethod.LevenbergMarquardt)
@@ -126,7 +126,7 @@ def main():
 
    # create a report with the correct filename and all the species against
    # time.
-   reports = CCopasiDataModel.GLOBAL.getReportDefinitionList()
+   reports = dataModel.getReportDefinitionList()
    # create a report definition object
    report = reports.createReportDefinition("Report", "Output for optimization")
    # set the task type for the report definition to timecourse

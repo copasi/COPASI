@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example7.py,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/09/01 11:33:16 $ 
+#   $Date: 2009/09/01 13:34:10 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,8 +20,12 @@ import sys
 
 
 def main():
+     assert CCopasiRootContainer.getRoot() != None
+     # create a new datamodel
+     dataModel = CCopasiRootContainer.addDatamodel()
+     assert CCopasiRootContainer.getDatamodelList().size() == 1
      # get the model from the datamodel
-     model = CCopasiDataModel.GLOBAL.getModel()
+     model = dataModel.getModel()
      assert model != None
      # set the units for the model
      # we want seconds as the time unit
@@ -93,7 +97,7 @@ def main():
 
      # now we ned to set a kinetic law on the reaction
      # for this we create a user defined function
-     funDB = CCopasiDataModel.GLOBAL.getFunctionList()
+     funDB = CCopasiRootContainer.getFunctionList()
      assert funDB != None
 
      function = CFunction("My Rate Law")
@@ -148,13 +152,13 @@ def main():
      # and we want to overwrite any existing file with the same name
      # Default tasks are automatically generated and will always appear in cps
      # file unless they are explicitley deleted before saving.
-     CCopasiDataModel.GLOBAL.saveModel("example7.cps", True)
+     dataModel.saveModel("example7.cps", True)
 
      # export the model to an SBML file
      # we save to a file named example1.xml, we want to overwrite any
      # existing file with the same name and we want SBML L2V3
      try:
-       CCopasiDataModel.GLOBAL.exportSBML("example7.xml", True, 2, 3)
+       dataModel.exportSBML("example7.xml", True, 2, 3)
      except:
         print >> sys.stderr, "Error. Exporting the model to SBML failed."
 

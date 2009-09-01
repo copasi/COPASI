@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example6.py,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/04/21 15:45:05 $ 
+#   $Author: gauges $ 
+#   $Date: 2009/09/01 13:34:10 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -95,10 +95,14 @@ MODEL_STRING="""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 </sbml>"""
 
 def main():
+   assert CCopasiRootContainer.getRoot() != None
+   # create a datamodel
+   dataModel = CCopasiRootContainer.addDatamodel()
+   assert CCopasiRootContainer.getDatamodelList().size() == 1
    # first we load a simple model
    try:
      # load the model 
-     CCopasiDataModel.GLOBAL.importSBMLFromString(MODEL_STRING)
+     dataModel.importSBMLFromString(MODEL_STRING)
    except:
      print >> sys.stderr,  "Error while importing the model."
      return 1
@@ -107,7 +111,7 @@ def main():
    # against
 
    # get the trajectory task object
-   trajectoryTask = CCopasiDataModel.GLOBAL.getTask("Time-Course")
+   trajectoryTask = dataModel.getTask("Time-Course")
    assert trajectoryTask != None
    # if there isn't one
    if trajectoryTask == None:
@@ -117,13 +121,13 @@ def main():
        # add the time course task to the task list
        # this method makes sure that the object is now owned 
        # by the list and that it does not get deleted by SWIG
-       CCopasiDataModel.GLOBAL.getTaskList().addAndOwn(trajectoryTask)
+       dataModel.getTaskList().addAndOwn(trajectoryTask)
 
    # run a deterministic time course
    trajectoryTask.setMethodType(CCopasiMethod.deterministic)
 
    # pass a pointer of the model to the problem
-   trajectoryTask.getProblem().setModel(CCopasiDataModel.GLOBAL.getModel())
+   trajectoryTask.getProblem().setModel(dataModel.getModel())
 
    # activate the task so that it will be run when the model is saved
    # and passed to CopasiSE
@@ -135,7 +139,7 @@ def main():
    # simulate 4000 steps
    problem.setStepNumber(4000)
    # start at time 0
-   CCopasiDataModel.GLOBAL.getModel().setInitialTime(0.0)
+   dataModel.getModel().setInitialTime(0.0)
    # simulate a duration of 400 time units
    problem.setDuration(400)
    # tell the problem to actually generate time series data
@@ -186,7 +190,7 @@ def main():
    rand=0.0
    os=open("fakedata_example6.txt","w")
    os.write("# time ")
-   keyFactory=GlobalKeys
+   keyFactory=CCopasiRootContainer.getKeyFactory()
    assert keyFactory != None
    for i in range(1,iMax):
      key=timeSeries.getKey(i)
@@ -195,7 +199,7 @@ def main():
      # only write header data or metabolites
      if object.__class__==CMetab:
        os.write(", ")
-       os.write(timeSeries.getSBMLId(i))
+       os.write(timeSeries.getSBMLId(i,dataModel))
        indexSet.append(i)
        metabVector.append(object)
    os.write("\n")
@@ -222,7 +226,7 @@ def main():
    # now we change the parameter values to see if the parameter fitting
    # can really find the original values
    rand=random()*10
-   reaction=CCopasiDataModel.GLOBAL.getModel().getReaction(0)
+   reaction=dataModel.getModel().getReaction(0)
    # we know that it is an irreversible mass action, so there is one
    # parameter
    assert reaction.getParameters().size() == 1
@@ -230,14 +234,14 @@ def main():
    # the parameter of a irreversible mass action is called k1
    reaction.setParameterValue("k1",rand)
    
-   reaction=CCopasiDataModel.GLOBAL.getModel().getReaction(1)
+   reaction=dataModel.getModel().getReaction(1)
    # we know that it is an irreversible mass action, so there is one
    # parameter
    assert reaction.getParameters().size() == 1
    assert reaction.isLocalParameter(0)
    reaction.setParameterValue("k1",rand)
 
-   fitTask=CCopasiDataModel.GLOBAL.addTask(CCopasiTask.parameterFitting)
+   fitTask=dataModel.addTask(CCopasiTask.parameterFitting)
    assert fitTask != None
    # the method in a fit task is an instance of COptMethod or a subclass of
    # it.
@@ -252,7 +256,7 @@ def main():
    assert experimentSet != None
    
    # first experiment (we only have one here)
-   experiment=CExperiment()
+   experiment=CExperiment(dataModel)
    assert experiment != None
    # tell COPASI where to find the data
    # reading data from string is not possible with the current C++ API
@@ -279,7 +283,7 @@ def main():
    assert result == True
    assert objectMap.getRole(0) == CExperiment.time
 
-   model=CCopasiDataModel.GLOBAL.getModel()
+   model=dataModel.getModel()
    assert model!=None
    timeReference=model.getObject(CCopasiObjectName("Reference=Time"))
    assert timeReference != None
@@ -326,7 +330,7 @@ def main():
    # define a CFitItem
    parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"))
    assert parameterReference != None
-   fitItem1=CFitItem()
+   fitItem1=CFitItem(dataModel)
    assert fitItem1 !=None
    fitItem1.setObjectCN(parameterReference.getCN())
    fitItem1.setStartValue(4.0)
@@ -346,7 +350,7 @@ def main():
    # define a CFitItem
    parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"))
    assert parameterReference != None
-   fitItem2=CFitItem()
+   fitItem2=CFitItem(dataModel)
    assert fitItem2 !=None
    fitItem2.setObjectCN(parameterReference.getCN())
    fitItem2.setStartValue(4.0)
