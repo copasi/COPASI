@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Author: gauges $
+//   $Date: 2009/09/01 18:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 // All rights reserved.
 
 #include <math.h>
+#include <limits>
 
 #include "copasi.h"
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Author: gauges $
+//   $Date: 2009/09/01 18:20:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,8 @@
 
 #ifndef COPASI_CZeroSet
 #define COPASI_CZeroSet
+
+#include "limits.h" // needed for CHAR_BIT
 
 #include "copasi/utilities/CVector.h"
 
