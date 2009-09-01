@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 16:26:54 $
+//   $Date: 2009/09/01 15:55:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,7 @@ const std::string CCopasiMethod::SubTypeName[] =
   "Stoichiometric Stability Analysis",
 #endif // COPASI_SSA
   "EFM Algorithm",
+  "Bit Pattern Tree Algorithm",
   "Householder Reduction",
   ""
 };
@@ -114,6 +115,7 @@ const char* CCopasiMethod::XMLSubType[] =
   "StoichiometricStabilityAnalysis",
 #endif // COPASI_SSA
   "EFMAlgorithm",
+  "EFMBitPatternTreeMethod",
   "Householder",
   NULL
 };
