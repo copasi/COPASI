@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Date: 2009/09/02 19:21:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,6 +215,14 @@ void CStepMatrix::removeInvalidColumns(const std::vector< CStepMatrixColumn * > 
     }
 }
 
+void CStepMatrix::getSetBitIndexes(const CStepMatrixColumn * pColumn,
+                                   CVector< size_t > & indexes) const
+{
+  pColumn->getZeroSet().getSetBitIndexes(indexes);
+
+  // TODO CRITICAL Apply pivot.
+}
+
 void CStepMatrix::convertRow(const size_t & index,
                              CMatrix< C_FLOAT64 > & nullspaceMatrix)
 {
@@ -259,6 +267,8 @@ void CStepMatrix::convertRow(const size_t & index,
 
 std::ostream & operator << (std::ostream & os, const CStepMatrix & m)
 {
+  os << m.mPivot << std::endl;
+
   size_t i;
   CZeroSet::CIndex Bit;
 

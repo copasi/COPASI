@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Date: 2009/09/02 19:21:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "copasi/elementaryFluxModes/CEFMMethod.h"
+#include "copasi/utilities/CMatrix.h"
 
 class CStepMatrix;
 class CStepMatrixColumn;
@@ -24,7 +25,6 @@ class CReaction;
 class CBitPatternTree;
 class CBitPatternTreeNode;
 class CZeroSet;
-template <class CType> class CMatrix;
 
 class CBitPatternTreeMethod: public CEFMMethod
 {
@@ -79,10 +79,10 @@ private:
   void initObjects();
 
   /**
-   * Construct the null space matrix
-   * @param CMatrix< C_FLOAT64> & matrix
+   * Construct the kernel matrix
+   * @param CMatrix< C_FLOAT64> & kernel
    */
-  void buildNullspaceMatrix(CMatrix< C_FLOAT64> & matrix);
+  void buildKernelMatrix(CMatrix< C_FLOAT64> & kernel);
 
   /**
    * Create all possible linear combinations of the bit pattern nodes pPositive
@@ -98,6 +98,11 @@ private:
    * @param const std::list< CStepMatrixColumn * > & nullColumns
    */
   void removeInvalidColumns(const std::list< CStepMatrixColumn * > & nullColumns);
+
+  /**
+   * Postprocess the step matrix to construct the flux modes.
+   */
+  void buildFluxModes();
 
   // Attributes
 protected:
@@ -129,7 +134,7 @@ protected:
   /**
    * A vector to record the row (species) rearrangements for the QR factorization.
    */
-  std::vector< size_t > mSpeciesPivot;
+  CMatrix< C_FLOAT64 > mExpandedStoiTranspose;
 
   /**
    * A pointer to the step matrix for creating the flux modes

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Date: 2009/09/02 19:21:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,16 +94,16 @@ bool CBitPatternTreeMethod::initialize()
 
   if (mpModel == NULL) return false;
 
-  // We first build the nullspace matrix
-  CMatrix< C_FLOAT64 > NullspaceMatrix;
-  buildNullspaceMatrix(NullspaceMatrix);
+  // We first build the kernel matrix
+  CMatrix< C_FLOAT64 > KernelMatrix;
+  buildKernelMatrix(KernelMatrix);
 
-  mMinimumSetSize = NullspaceMatrix.numRows() - NullspaceMatrix.numCols() - 2;
+  mMinimumSetSize = KernelMatrix.numRows() - KernelMatrix.numCols() - 2;
 
-  std::cout << NullspaceMatrix << std::endl;
+  std::cout << KernelMatrix << std::endl;
 
   // Now we create the initial step matrix
-  mpStepMatrix = new CStepMatrix(NullspaceMatrix);
+  mpStepMatrix = new CStepMatrix(KernelMatrix);
 
   mProgressCounter = 0;
   mProgressCounterMax = mpStepMatrix->getNumUnconvertedRows();
@@ -253,7 +253,7 @@ void CBitPatternTreeMethod::removeInvalidColumns(const std::list< CStepMatrixCol
   mNewColumns.clear();
 }
 
-void CBitPatternTreeMethod::buildNullspaceMatrix(CMatrix< C_FLOAT64 > & nullspaceMatrix)
+void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 {
   mReactionPivot.clear();
 
@@ -280,13 +280,13 @@ void CBitPatternTreeMethod::buildNullspaceMatrix(CMatrix< C_FLOAT64 > & nullspac
 
   const CMatrix< C_FLOAT64 > & Stoi = mpModel->getRedStoi();
 
-  size_t NumReactionsStoi = Stoi.numCols();
+  size_t NumReactions = Stoi.numCols();
 
-  C_INT NumReactions = ReactionPivot.size();
+  C_INT NumExpandedReactions = ReactionPivot.size();
 
   C_INT NumSpecies = Stoi.numRows();
 
-  C_INT32 Dim = std::min(NumReactions, NumSpecies);
+  C_INT32 Dim = std::min(NumExpandedReactions, NumSpecies);
 
   if (Dim == 0)
     {
@@ -294,20 +294,20 @@ void CBitPatternTreeMethod::buildNullspaceMatrix(CMatrix< C_FLOAT64 > & nullspac
       return;
     }
 
-  CMatrix< C_FLOAT64 > ExpandedStoiTranspose(NumReactions, NumSpecies);
+  mExpandedStoiTranspose.resize(NumExpandedReactions, NumSpecies);
 
   const C_FLOAT64 *pStoi = Stoi.array();
   const C_FLOAT64 *pStoiEnd = pStoi + Stoi.size();
   const C_FLOAT64 *pStoiRowEnd;
 
   C_FLOAT64 *pExpandedStoiTranspose;
-  C_FLOAT64 *pExpandedStoiTransposeColumn = ExpandedStoiTranspose.array();
+  C_FLOAT64 *pExpandedStoiTransposeColumn = mExpandedStoiTranspose.array();
 
   std::vector< std::pair < const CReaction *, bool > >::const_iterator itReactionPivot;
 
   for (; pStoi != pStoiEnd; ++pExpandedStoiTransposeColumn)
     {
-      pStoiRowEnd = pStoi + NumReactionsStoi;
+      pStoiRowEnd = pStoi + NumReactions;
       pExpandedStoiTranspose = pExpandedStoiTransposeColumn;
       itReactionPivot = ReactionPivot.begin();
 
@@ -325,12 +325,12 @@ void CBitPatternTreeMethod::buildNullspaceMatrix(CMatrix< C_FLOAT64 > & nullspac
     }
 
 #ifdef DEBUG_MATRIX
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(ExpandedStoiTranspose) << std::endl;
+  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(mExpandedStoiTranspose) << std::endl;
 #endif
 
   C_INT LDA = std::max<C_INT>(1, NumSpecies);
 
-  CVector< C_INT > JPVT(NumReactions);
+  CVector< C_INT > JPVT(NumExpandedReactions);
   JPVT = 0;
 
   CVector< C_FLOAT64 > TAU(Dim);
@@ -420,7 +420,7 @@ void CBitPatternTreeMethod::buildNullspaceMatrix(CMatrix< C_FLOAT64 > & nullspac
    *
    */
 
-  dgeqp3_(&NumSpecies, &NumReactions, ExpandedStoiTranspose.array(), &LDA,
+  dgeqp3_(&NumSpecies, &NumExpandedReactions, mExpandedStoiTranspose.array(), &LDA,
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
   if (INFO < 0) fatalError();
@@ -428,12 +428,12 @@ void CBitPatternTreeMethod::buildNullspaceMatrix(CMatrix< C_FLOAT64 > & nullspac
   LWORK = (C_INT) WORK[0];
   WORK.resize(LWORK);
 
-  dgeqp3_(&NumSpecies, &NumReactions, ExpandedStoiTranspose.array(), &LDA,
+  dgeqp3_(&NumSpecies, &NumExpandedReactions, mExpandedStoiTranspose.array(), &LDA,
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
   if (INFO < 0) fatalError();
 
-  C_INT32 i;
+  C_INT i;
   mReactionPivot.resize(NumSpecies);
 
   for (i = 0; i < NumSpecies; i++)
@@ -442,7 +442,7 @@ void CBitPatternTreeMethod::buildNullspaceMatrix(CMatrix< C_FLOAT64 > & nullspac
 #ifdef DEBUG_MATRIX
   std::cout << "QR Factorization:" << std::endl;
   std::cout << "Column (Reaction) Permutation:\t" << JPVT << std::endl;
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(ExpandedStoiTranspose) << std::endl;
+  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(mExpandedStoiTranspose) << std::endl;
 #endif
 
   /* to take care of differences between fortran's and c's memory  access,
@@ -507,84 +507,67 @@ void CBitPatternTreeMethod::buildNullspaceMatrix(CMatrix< C_FLOAT64 > & nullspac
    *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
    *               matrix is singular and its inverse can not be computed.
    */
-  dtrtri_(&cL, &cU, &NumSpecies, ExpandedStoiTranspose.array(), &LDA, &INFO);
+  dtrtri_(&cL, &cU, &NumSpecies, mExpandedStoiTranspose.array(), &LDA, &INFO);
 
   if (INFO < 0) fatalError();
 
 #ifdef DEBUG_MATRIX
   std::cout << "Invert R_1,1:" << std::endl;
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(ExpandedStoiTranspose) << std::endl;
+  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(mExpandedStoiTranspose) << std::endl;
 #endif
 
-  /*
-  CMatrix< C_FLOAT64 > Rtilde(NumSpecies, NumReactions - NumSpecies);
-
-  C_INT32 j, k;
-
-  // Compute Link_0 = inverse(R_1,1) * R_1,2
-  // :TODO: Use dgemm
-  C_FLOAT64 * pTmp1 = Rtilde.array();
-  C_FLOAT64 * pTmp2;
-  C_FLOAT64 * pTmp3;
-
-  for (i = 0; i < NumSpecies; i++)
-    for (j = NumSpecies; j < NumReactions; i++, pTmp1++)
-      {
-        pTmp2 = &ExpandedStoiTranspose(i, i);
-        pTmp3 = &ExpandedStoiTranspose(i, j);
-
-        for (k = i; k < NumSpecies; k++, pTmp2++, pTmp3 += NumReactions)
-          {
-            *pTmp1 += *pTmp3 * *pTmp2;
-          }
-
-        if (fabs(*pTmp1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-          {
-            *pTmp1 = 0.0;
-          }
-      }
-
-#ifdef DEBUG_MATRIX
-  std::cout << "Rtilde matrix:" << std::endl;
-  std::cout << Rtilde << std::endl;
-#endif // DEBUG_MATRIX
-  */
-
-  size_t NumModes = NumReactions - NumSpecies;
-  nullspaceMatrix.resize(NumReactions, NumModes);
-  nullspaceMatrix = 0;
+  kernel.resize(NumExpandedReactions, NumExpandedReactions - NumSpecies);
+  kernel = 0;
 
   // Null space matrix identity part
-  for (i = 0; i < NumModes; i++)
+  for (i = 0; i < NumExpandedReactions - NumSpecies; i++)
     {
-      nullspaceMatrix(NumSpecies + i, i) = 1.0;
+      kernel(NumSpecies + i, i) = 1.0;
     }
 
-  size_t j, k;
-  C_FLOAT64 * pTmp1 = &nullspaceMatrix(0, 0);
-  C_FLOAT64 * pTmp2;
-  C_FLOAT64 * pTmp3;
+  C_INT j, k;
+  C_FLOAT64 * pKernel = &kernel(0, 0);
+  C_FLOAT64 * pDiagonal = mExpandedStoiTranspose.array();
+  C_FLOAT64 * pInverse;
+  C_FLOAT64 * pR12;
 
-  for (i = 0; i < NumSpecies; ++i)
+  for (i = 0; i < NumSpecies; ++i, pDiagonal += NumSpecies + 1)
     {
-      for (j = NumSpecies; j < NumReactions; ++j, ++pTmp1)
+      for (j = NumSpecies; j < NumExpandedReactions; ++j, ++pKernel)
         {
-          for (k = i; k < NumSpecies; ++k)
+          pInverse = pDiagonal;
+          pR12 = & mExpandedStoiTranspose(j, i);
+
+          for (k = i; k < NumSpecies; ++k, pR12++, pInverse += NumSpecies)
             {
-              *pTmp1 -= ExpandedStoiTranspose(k, i) * ExpandedStoiTranspose(j, k);
+              // *pKernel -= ExpandedStoiTranspose(k, i) * ExpandedStoiTranspose(j, k);
+              *pKernel -= *pInverse * *pR12;
             }
 
-          if (fabs(*pTmp1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+          if (fabs(*pKernel) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
             {
-              *pTmp1 = 0.0;
+              *pKernel = 0.0;
             }
         }
     }
 
 #ifdef DEBUG_MATRIX
-  std::cout << "Nullspace matrix:" << std::endl;
-  std::cout << nullspaceMatrix << std::endl;
+  std::cout << "Kernel matrix:" << std::endl;
+  std::cout << kernel << std::endl;
 #endif // DEBUG_MATRIX
 
   return;
+}
+
+void CBitPatternTreeMethod::buildFluxModes()
+{
+  CStepMatrix::const_iterator it = mpStepMatrix->begin();
+  CStepMatrix::const_iterator end = mpStepMatrix->end();
+
+  CVector< size_t > Indexes;
+
+  for (; it != end; ++it)
+    {
+      mpStepMatrix->getSetBitIndexes(*it, Indexes);
+    }
 }

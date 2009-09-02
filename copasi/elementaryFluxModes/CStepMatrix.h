@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Date: 2009/09/02 19:21:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,9 @@ public:
                     std::list< CStepMatrixColumn * > & NullColumns);
 
   void removeInvalidColumns(const std::vector< CStepMatrixColumn * > & invalidColumns);
+
+  void getSetBitIndexes(const CStepMatrixColumn * pColumn,
+                        CVector< size_t > & indexes) const;
 
 private:
   void convertRow(const size_t & index,

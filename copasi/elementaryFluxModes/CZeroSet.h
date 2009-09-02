@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/09/01 18:20:03 $
+//   $Author: shoops $
+//   $Date: 2009/09/02 19:21:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #ifndef COPASI_CZeroSet
 #define COPASI_CZeroSet
 
-#include "limits.h" // needed for CHAR_BIT
+#include <limits> // needed for CHAR_BIT
 
 #include "copasi/utilities/CVector.h"
 
@@ -78,6 +78,8 @@ public:
     return mNumberSetBits;
   }
 
+  void getSetBitIndexes(CVector< size_t > & indexes) const;
+
   inline CZeroSet & operator |= (const CZeroSet & rhs)
   {
     unsigned C_INT32 * pIt = mBitSet.array();
@@ -121,6 +123,7 @@ public:
     return Intersection &= set2;
   }
 
+  // Superset
   inline bool operator >= (const CZeroSet & rhs) const
   {
     // std::cout << *this << rhs << std::endl;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/09/01 18:20:02 $
+//   $Author: shoops $
+//   $Date: 2009/09/02 19:21:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,16 +38,12 @@ CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
 
   for (; it != end; ++it, ++itNeg)
     {
-      // std::cout << *it << " - " << Multiplier << " * " << *itNeg << " = ";
-
       *it -= Multiplier * *itNeg;
 
       if (fabs(*it) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         {
           *it = 0.0;
         }
-
-      // std::cout << *it << std::endl;
     }
 }
 
