@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/08/14 13:41:37 $
+   $Date: 2009/09/02 19:20:32 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,17 +76,3 @@ unsigned C_INT32 CFluxMode::size() const
 {
   return mReactions.size();
 }
-
-/*
-const CReaction * CFluxMode::getReaction(unsigned C_INT32 index, const CModel * model) const
-  {return model->getReactions()[mReactions[index].first];}
-
-std::string CFluxMode::getReactionName(unsigned C_INT32 index, const CModel * model) const
-  {return getReaction(index, model)->getObjectName();}
-
-std::string CFluxMode::getReactionEquation(unsigned C_INT32 index, const CModel * model) const
-  {
-    std::cout << "CFluxMode:" << index << " " <<    mReactions[index].first << std::endl;
-    return CChemEqInterface::getChemEqString(model, *getReaction(index, model), false);
-  }
- */
