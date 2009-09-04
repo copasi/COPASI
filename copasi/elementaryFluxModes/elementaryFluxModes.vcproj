@@ -70,6 +70,14 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\CBitPatternTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CBitPatternTreeMethod.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CBitPatternTreeNode.cpp"
 				>
 			</File>
@@ -106,6 +114,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CSSAMethod.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CStepMatrix.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CStepMatrixColumn.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CTableauLine.cpp"
 				>
 			</File>
@@ -122,6 +142,14 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\CBitPatternTree.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CBitPatternTreeMethod.h"
+				>
+			</File>
 			<File
 				RelativePath=".\CBitPatternTreeNode.h"
 				>
@@ -156,6 +184,18 @@
 			</File>
 			<File
 				RelativePath="CFluxScore.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CSSAMethod.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CStepMatrix.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CStepMatrixColumn.h"
 				>
 			</File>
 			<File
