@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/02 19:21:19 $
+//   $Date: 2009/09/04 14:00:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 #include "blaswrap.h"
 #include "clapackwrap.h"
 
-#define DEBUG_MATRIX
+// #define DEBUG_MATRIX
 
 CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent):
     CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternTreeAlgorithm, pParent),

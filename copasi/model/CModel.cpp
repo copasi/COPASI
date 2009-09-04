@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.381 $
+//   $Revision: 1.382 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:52:18 $
+//   $Date: 2009/09/04 14:00:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@
 
 #include "copasi.h"
 
-#define DEBUG_MATRIX
+// #define DEBUG_MATRIX
 
 #include "CCompartment.h"
 #include "CMetab.h"
