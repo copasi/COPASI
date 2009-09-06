@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.182 $
+//   $Revision: 1.183 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/27 16:15:37 $
+//   $Author: gauges $
+//   $Date: 2009/09/06 13:55:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1132,13 +1132,13 @@ public:
    * @return std::string volumeUnits
    */
 
-  std::string getAreaUnitsDisplayString() const;
+  //std::string getAreaUnitsDisplayString() const;
 
   /**
    * Retrieve the volume units
    * @return std::string volumeUnits
    */
-  std::string getLengthUnitsDisplayString() const;
+  //std::string getLengthUnitsDisplayString() const;
 
   /**
    * Retrieve the volume rate units
