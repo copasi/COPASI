@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/20 11:50:04 $
+//   $Author: aekamal $
+//   $Date: 2009/09/07 15:02:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,12 +78,6 @@ protected:
   // flag to store if we are running a GUI or not
   bool mWithGUI;
 
-  /**
-   * Pointer to a function created for supporting the load SBML models
-   * using the delay symbol
-   */
-  CFunction * mpUnsupportedDelay;
-
   CFunction * mpUndefined;
 
 public:
@@ -122,13 +116,6 @@ public:
    * The new instance is returned by the method.
    */
   static CCopasiDataModel * addDatamodel();
-
-  /**
-   * Retrieve the pointer for the function used for importing the
-   * unsupported SBML symbol delay
-   * @return CFunction * pUnsupportedDelay
-   */
-  static CFunction * getUnsupportedDelay();
 
   /**
    * Retrieve the pointer for the function used for importing

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/01 00:30:25 $
+//   $Author: aekamal $
+//   $Date: 2009/09/07 15:02:28 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -36,7 +36,6 @@ CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
     mpConfiguration(NULL),
     mpDataModelList(NULL),
     mWithGUI(withGUI),
-    mpUnsupportedDelay(NULL),
     mpUndefined(NULL)
 {}
 
@@ -57,9 +56,6 @@ CCopasiRootContainer::~CCopasiRootContainer()
   pdelete(mpDataModelList);
   // delete the undefined and the unsupported delay function
   pdelete(mpUndefined);
-  // unsupported delay is owned by the function database
-  // and will be destroyed by it
-  //pdelete(this->mpUnsupportedDelay);
 }
 
 /**
@@ -105,22 +101,12 @@ void CCopasiRootContainer::initializeChildren()
   mKeyFactory.remove(mpUndefined->getKey());
   mKeyFactory.addFix("UndefinedFunction_0", mpUndefined);
 
-  mpUnsupportedDelay = new CFunction("delay");
-  mpUnsupportedDelay->addVariable("variable");
-  mpUnsupportedDelay->addVariable("timeDelay");
-
   CEvaluationNodeOperator* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
   pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "variable"));
   pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "timeDelay"));
   CEvaluationNodeOperator* pRoot = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
   pRoot->addChild(pTmpNode);
   pRoot->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN"));
-
-  mpUnsupportedDelay->setRoot(pRoot);
-  mpUnsupportedDelay->compile();
-
-  if (mpFunctionList != NULL)
-    mpFunctionList->addAndAdaptName(mpUnsupportedDelay);
 }
 
 // static
@@ -153,12 +139,6 @@ CCopasiDataModel * CCopasiRootContainer::addDatamodel()
   CCopasiDataModel* pDataModel = new CCopasiDataModel(pRootContainer->mWithGUI);
   assert(pRootContainer->mpDataModelList->add(pDataModel, true));
   return pDataModel;
-}
-
-// static
-CFunction * CCopasiRootContainer::getUnsupportedDelay()
-{
-  return pRootContainer->mpUnsupportedDelay;
 }
 
 // static

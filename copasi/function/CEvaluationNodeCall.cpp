@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Author: aekamal $
+//   $Date: 2009/09/07 15:02:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,19 +121,20 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
         mpCallParameters = buildParameters(mCallNodes);
         break;
 
-      case DELAY:
-        mpFunction = CCopasiRootContainer::getUnsupportedDelay();
+        /*case DELAY:
+          mpFunction = CCopasiRootContainer::getUnsupportedDelay();
 
-        if (!mpFunction) return false;
+          if (!mpFunction) return false;
 
-        // Since it is not guaranteed that the function name is "delay",
-        // we need to update the data.
-        mData = mpFunction->getObjectName();
+          // Since it is not guaranteed that the function name is "delay",
+          // we need to update the data.
+          mData = mpFunction->getObjectName();
 
-        if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return false;
+          if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return false;
 
-        mpCallParameters = buildParameters(mCallNodes);
-        break;
+          mpCallParameters = buildParameters(mCallNodes);
+          break;
+        */
 
       case EXPRESSION:
         mpExpression =
@@ -431,8 +432,8 @@ const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
       case EXPRESSION:
         return CCopasiRootContainer::getFunctionList()->findFunction(mData);
 
-      case DELAY:
-        return CCopasiRootContainer::getUnsupportedDelay();
+        //case DELAY:
+        //return CCopasiRootContainer::getUnsupportedDelay();
 
       default:
         return NULL;
