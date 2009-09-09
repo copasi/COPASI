@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/02 19:21:19 $
+//   $Date: 2009/09/09 13:50:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,27 +87,6 @@ CZeroSet::CZeroSet(const CZeroSet & src):
 
 CZeroSet::~CZeroSet()
 {}
-
-void CZeroSet::getSetBitIndexes(CVector< size_t > & indexes) const
-{
-  indexes.resize(mNumberSetBits);
-  size_t * pIndex = indexes.array();
-  size_t * pIndexEnd = pIndex + indexes.size();
-
-  CIndex Bit = 0;
-  size_t Index = 0;
-
-  for (; pIndex != pIndexEnd; ++Bit, ++Index)
-    {
-      if (isSet(Bit))
-        {
-          *pIndex = Index;
-          pIndex++;
-        }
-    }
-
-  return;
-}
 
 std::ostream & operator << (std::ostream & os, const CZeroSet & set)
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/04 14:00:48 $
+//   $Date: 2009/09/09 13:50:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -569,5 +569,11 @@ void CBitPatternTreeMethod::buildFluxModes()
   for (; it != end; ++it)
     {
       mpStepMatrix->getSetBitIndexes(*it, Indexes);
+
+      if (Indexes.size() == 2 &&
+          mReactionPivot[Indexes[0]].first == mReactionPivot[Indexes[1]].first)
+        {
+          continue;
+        }
     }
 }

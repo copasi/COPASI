@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/02 19:21:19 $
+//   $Date: 2009/09/09 13:50:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,8 +77,6 @@ public:
   {
     return mNumberSetBits;
   }
-
-  void getSetBitIndexes(CVector< size_t > & indexes) const;
 
   inline CZeroSet & operator |= (const CZeroSet & rhs)
   {
