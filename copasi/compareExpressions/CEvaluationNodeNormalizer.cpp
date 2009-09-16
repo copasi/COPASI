@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/08 09:37:15 $
+//   $Date: 2009/09/16 11:59:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -624,7 +624,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePowerNode(const CEvaluation
                 }
               else
                 {
-                  pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "");
+                  pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
                   pResult->addChild(pChild1);
                   pResult->addChild(pChild2);
                 }
@@ -755,7 +755,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePlusNode(const CEvaluationN
                     }
                 }
 
-              if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
+              if (pChild2 != NULL && CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
                   if (fabs(pChild2->value()) < ZERO)
                     {
