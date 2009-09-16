@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/09 13:50:08 $
+//   $Date: 2009/09/16 16:15:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 #include "blaswrap.h"
 #include "clapackwrap.h"
 
-// #define DEBUG_MATRIX
+#define DEBUG_MATRIX
 
 CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent):
     CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternTreeAlgorithm, pParent),
@@ -178,6 +178,8 @@ bool CBitPatternTreeMethod::calculate()
 
   std::cout << *mpStepMatrix << std::endl;
 
+  buildFluxModes();
+
   if (mpCallBack)
     Continue &= mpCallBack->finish(mhProgressCounter);
 
@@ -255,7 +257,7 @@ void CBitPatternTreeMethod::removeInvalidColumns(const std::list< CStepMatrixCol
 
 void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 {
-  mReactionPivot.clear();
+  mReactionExpansion.clear();
 
   // Calculate the kernel matrix
   // We apply the results of:
@@ -266,23 +268,23 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
   CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
-  std::vector< std::pair < const CReaction *, bool > > ReactionPivot;
-
   for (; itReaction != endReaction; ++itReaction)
     {
       if ((*itReaction)->isReversible())
         {
-          ReactionPivot.push_back(std::make_pair(*itReaction, false));
+          mReorderedReactions.push_back(*itReaction);
+          mReactionExpansion.push_back(false);
         }
 
-      ReactionPivot.push_back(std::make_pair(*itReaction, true));
+      mReorderedReactions.push_back(*itReaction);
+      mReactionExpansion.push_back(true);
     }
 
   const CMatrix< C_FLOAT64 > & Stoi = mpModel->getRedStoi();
 
   size_t NumReactions = Stoi.numCols();
 
-  C_INT NumExpandedReactions = ReactionPivot.size();
+  C_INT NumExpandedReactions = mReorderedReactions.size();
 
   C_INT NumSpecies = Stoi.numRows();
 
@@ -290,7 +292,6 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 
   if (Dim == 0)
     {
-      ReactionPivot.clear();
       return;
     }
 
@@ -303,17 +304,19 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
   C_FLOAT64 *pExpandedStoiTranspose;
   C_FLOAT64 *pExpandedStoiTransposeColumn = mExpandedStoiTranspose.array();
 
-  std::vector< std::pair < const CReaction *, bool > >::const_iterator itReactionPivot;
+  std::vector< const CReaction * >::const_iterator itReactionPivot;
+  std::vector< bool >::const_iterator itReactionExpansion;
 
   for (; pStoi != pStoiEnd; ++pExpandedStoiTransposeColumn)
     {
       pStoiRowEnd = pStoi + NumReactions;
       pExpandedStoiTranspose = pExpandedStoiTransposeColumn;
-      itReactionPivot = ReactionPivot.begin();
+      itReactionPivot = mReorderedReactions.begin();
+      itReactionExpansion = mReactionExpansion.begin();
 
-      for (; pStoi < pStoiRowEnd; ++pStoi, pExpandedStoiTranspose += NumSpecies, ++itReactionPivot)
+      for (; pStoi < pStoiRowEnd; ++pStoi, pExpandedStoiTranspose += NumSpecies, ++itReactionPivot, ++itReactionExpansion)
         {
-          if ((itReactionPivot)->second == false)
+          if (*itReactionExpansion == false)
             {
               *pExpandedStoiTranspose = - *pStoi;
               ++itReactionPivot;
@@ -327,6 +330,8 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 #ifdef DEBUG_MATRIX
   std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(mExpandedStoiTranspose) << std::endl;
 #endif
+
+  CMatrix< C_FLOAT64 > ExpandedStoiTranspose = mExpandedStoiTranspose;
 
   C_INT LDA = std::max<C_INT>(1, NumSpecies);
 
@@ -420,7 +425,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
    *
    */
 
-  dgeqp3_(&NumSpecies, &NumExpandedReactions, mExpandedStoiTranspose.array(), &LDA,
+  dgeqp3_(&NumSpecies, &NumExpandedReactions, ExpandedStoiTranspose.array(), &LDA,
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
   if (INFO < 0) fatalError();
@@ -428,21 +433,24 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
   LWORK = (C_INT) WORK[0];
   WORK.resize(LWORK);
 
-  dgeqp3_(&NumSpecies, &NumExpandedReactions, mExpandedStoiTranspose.array(), &LDA,
+  dgeqp3_(&NumSpecies, &NumExpandedReactions, ExpandedStoiTranspose.array(), &LDA,
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
   if (INFO < 0) fatalError();
 
   C_INT i;
-  mReactionPivot.resize(NumSpecies);
+  mQRPivot.resize(NumSpecies);
+  CVector< C_FLOAT64 > Tmp(NumSpecies);
 
   for (i = 0; i < NumSpecies; i++)
-    mReactionPivot[i] = ReactionPivot[JPVT[i] - 1];
+    {
+      mQRPivot[i] = JPVT[i] - 1;
+    }
 
 #ifdef DEBUG_MATRIX
   std::cout << "QR Factorization:" << std::endl;
   std::cout << "Column (Reaction) Permutation:\t" << JPVT << std::endl;
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(mExpandedStoiTranspose) << std::endl;
+  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(ExpandedStoiTranspose) << std::endl;
 #endif
 
   /* to take care of differences between fortran's and c's memory  access,
@@ -507,13 +515,13 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
    *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
    *               matrix is singular and its inverse can not be computed.
    */
-  dtrtri_(&cL, &cU, &NumSpecies, mExpandedStoiTranspose.array(), &LDA, &INFO);
+  dtrtri_(&cL, &cU, &NumSpecies, ExpandedStoiTranspose.array(), &LDA, &INFO);
 
   if (INFO < 0) fatalError();
 
 #ifdef DEBUG_MATRIX
   std::cout << "Invert R_1,1:" << std::endl;
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(mExpandedStoiTranspose) << std::endl;
+  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(ExpandedStoiTranspose) << std::endl;
 #endif
 
   kernel.resize(NumExpandedReactions, NumExpandedReactions - NumSpecies);
@@ -527,7 +535,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 
   C_INT j, k;
   C_FLOAT64 * pKernel = &kernel(0, 0);
-  C_FLOAT64 * pDiagonal = mExpandedStoiTranspose.array();
+  C_FLOAT64 * pDiagonal = ExpandedStoiTranspose.array();
   C_FLOAT64 * pInverse;
   C_FLOAT64 * pR12;
 
@@ -536,7 +544,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
       for (j = NumSpecies; j < NumExpandedReactions; ++j, ++pKernel)
         {
           pInverse = pDiagonal;
-          pR12 = & mExpandedStoiTranspose(j, i);
+          pR12 = & ExpandedStoiTranspose(j, i);
 
           for (k = i; k < NumSpecies; ++k, pR12++, pInverse += NumSpecies)
             {
@@ -565,15 +573,158 @@ void CBitPatternTreeMethod::buildFluxModes()
   CStepMatrix::const_iterator end = mpStepMatrix->end();
 
   CVector< size_t > Indexes;
+  C_INT NumSpecies = mExpandedStoiTranspose.numCols();
 
   for (; it != end; ++it)
     {
-      mpStepMatrix->getSetBitIndexes(*it, Indexes);
+      getUnsetBitIndexes(*it, Indexes);
 
-      if (Indexes.size() == 2 &&
-          mReactionPivot[Indexes[0]].first == mReactionPivot[Indexes[1]].first)
+      C_INT NumReactions = Indexes.size();
+
+      // Remove trivial modes, i.e., reversible reactions
+      if (NumReactions == 2 &&
+          mReorderedReactions[Indexes[0]] == mReorderedReactions[Indexes[1]])
         {
           continue;
         }
+
+      // TODO CRITICAL Implement the calculation
+      // Build the stoichiometry matrix reduced to the reactions participating in the current mode.
+      CMatrix< C_FLOAT64 > A(NumReactions, NumSpecies);
+      CVector< C_FLOAT64 > B(NumSpecies);
+
+      size_t * pReaction = Indexes.array();
+      size_t * pReactionEnd = pReaction + NumReactions;
+      C_FLOAT64 * pARow = A.array();
+
+      for (; pReaction != pReactionEnd; ++pReaction, pARow += NumSpecies)
+        {
+          // TODO CRITICAL This is missing a pivot !!!
+          memcpy(pARow, &mExpandedStoiTranspose(*pReaction, 0), NumSpecies * sizeof(C_FLOAT64));
+        }
+
+#ifdef DEBUG_MATRIX
+      std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(A) << std::endl;
+#endif
+
+      C_INT LDA = std::max<C_INT>(1, NumSpecies);
+
+      CVector< C_INT > JPVT(NumReactions);
+      JPVT = 0;
+
+      C_INT32 Dim = std::min(NumReactions, NumSpecies);
+
+      CVector< C_FLOAT64 > TAU(Dim);
+
+      CVector< C_FLOAT64 > WORK(1);
+      C_INT LWORK = -1;
+      C_INT INFO;
+
+      // QR factorization of the stoichiometry matrix
+      /*
+       *  -- LAPACK routine (version 3.0) --
+       *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+       *     Courant Institute, Argonne National Lab, and Rice University
+       *     June 30, 1999
+       *
+       *  Purpose
+       *  =======
+       *
+       *  DGEQP3 computes a QR factorization with column pivoting of a
+       *  matrix A:  A*P = Q*R  using Level 3 BLAS.
+       *
+       *  Arguments
+       *  =========
+       *
+       *  M       (input) INTEGER
+       *          The number of rows of the matrix A. M >= 0.
+       *
+       *  N       (input) INTEGER
+       *          The number of columns of the matrix A.  N >= 0.
+       *
+       *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+       *          On entry, the M-by-N matrix A.
+       *          On exit, the upper triangle of the array contains the
+       *          min(M,N)-by-N upper trapezoidal matrix R; the elements below
+       *          the diagonal, together with the array TAU, represent the
+       *          orthogonal matrix Q as a product of min(M,N) elementary
+       *          reflectors.
+       *
+       *  LDA     (input) INTEGER
+       *          The leading dimension of the array A. LDA >= max(1,M).
+       *
+       *  JPVT    (input/output) INTEGER array, dimension (N)
+       *          On entry, if JPVT(J).ne.0, the J-th column of A is permuted
+       *          to the front of A*P (a leading column); if JPVT(J)=0,
+       *          the J-th column of A is a free column.
+       *          On exit, if JPVT(J)=K, then the J-th column of A*P was the
+       *          the K-th column of A.
+       *
+       *  TAU     (output) DOUBLE PRECISION array, dimension (min(M,N))
+       *          The scalar factors of the elementary reflectors.
+       *
+       *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+       *          On exit, if INFO=0, WORK(1) returns the optimal LWORK.
+       *
+       *  LWORK   (input) INTEGER
+       *          The dimension of the array WORK. LWORK >= 3*N+1.
+       *          For optimal performance LWORK >= 2*N+(N+1)*NB, where NB
+       *          is the optimal blocksize.
+       *
+       *          If LWORK = -1, then a workspace query is assumed; the routine
+       *          only calculates the optimal size of the WORK array, returns
+       *          this value as the first entry of the WORK array, and no error
+       *          message related to LWORK is issued by XERBLA.
+       *
+       *  INFO    (output) INTEGER
+       *          = 0: successful exit.
+       *          < 0: if INFO = -i, the i-th argument had an illegal value.
+       *
+       *  Further Details
+       *  ===============
+       *
+       *  The matrix Q is represented as a product of elementary reflectors
+       *
+       *     Q = H(1) H(2) . . . H(k), where k = min(m,n).
+       *
+       *  Each H(i) has the form
+       *
+       *     H(i) = I - tau * v * v'
+       *
+       *  where tau is a real/complex scalar, and v is a real/complex vector
+       *  with v(1:i-1) = 0 and v(i) = 1; v(i+1:m) is stored on exit in
+       *  A(i+1:m,i), and tau in TAU(i).
+       *
+       *  Based on contributions by
+       *    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
+       *    X. Sun, Computer Science Dept., Duke University, USA
+       *
+       */
+
+      dgeqp3_(&NumSpecies, &NumReactions, A.array(), &LDA,
+              JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
+
+      if (INFO < 0) fatalError();
+
+      LWORK = (C_INT) WORK[0];
+      WORK.resize(LWORK);
+
+      dgeqp3_(&NumSpecies, &NumReactions, A.array(), &LDA,
+              JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
+
+      if (INFO < 0) fatalError();
+
+#ifdef DEBUG_MATRIX
+      std::cout << "QR Factorization:" << std::endl;
+      std::cout << "Column (Reaction) Permutation:\t" << JPVT << std::endl;
+      std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(A) << std::endl;
+#endif
     }
+}
+
+void CBitPatternTreeMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
+    CVector< size_t > & indexes) const
+{
+  // TODO CRITICAL Apply the QR pivot
+  mpStepMatrix->getUnsetBitIndexes(pColumn, indexes);
 }

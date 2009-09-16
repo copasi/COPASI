@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/08/14 13:41:37 $
+   $Date: 2009/09/16 16:15:35 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ public:
    * Return the pivot the reactions in the flux mode to the
    * reactions in the model.
    */
-  const CVector< const CReaction * > & getReorderedReactions() const;
+  const std::vector< const CReaction * > & getReorderedReactions() const;
 
   // Attributes
 protected:
@@ -105,7 +105,7 @@ protected:
    * Vector to keep track of the rearrangements necessary to put the
    * reversible reactions to the top of stoichiometry matrix
    */
-  CVector< const CReaction * > mReorderedReactions;
+  std::vector< const CReaction * > mReorderedReactions;
 };
 
 #endif  // COPASI_CEFMMethod

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/09/16 11:58:25 $
+//   $Author: shoops $
+//   $Date: 2009/09/16 16:15:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,11 @@ public:
   inline const size_t & getNumberOfSetBits() const
   {
     return mNumberSetBits;
+  }
+
+  inline size_t getNumberOfUnsetBits() const
+  {
+    return mBitSet.size() * CHAR_BIT * sizeof(unsigned C_INT32) - mIgnoredBits - mNumberSetBits;
   }
 
   inline CZeroSet & operator |= (const CZeroSet & rhs)

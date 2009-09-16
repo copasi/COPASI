@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/09 13:50:08 $
+//   $Date: 2009/09/16 16:15:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,12 +215,12 @@ void CStepMatrix::removeInvalidColumns(const std::vector< CStepMatrixColumn * > 
     }
 }
 
-void CStepMatrix::getSetBitIndexes(const CStepMatrixColumn * pColumn,
-                                   CVector< size_t > & indexes) const
+void CStepMatrix::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
+                                     CVector< size_t > & indexes) const
 {
   const CZeroSet & ZeroSet = pColumn->getZeroSet();
 
-  indexes.resize(ZeroSet.getNumberOfSetBits());
+  indexes.resize(ZeroSet.getNumberOfUnsetBits());
   size_t * pIndex = indexes.array();
   size_t * pIndexEnd = pIndex + indexes.size();
 
@@ -229,16 +229,17 @@ void CStepMatrix::getSetBitIndexes(const CStepMatrixColumn * pColumn,
 
   for (; pIndex != pIndexEnd; ++Bit, ++Index)
     {
-      if (ZeroSet.isSet(Bit))
+      if (!ZeroSet.isSet(Bit))
         {
+          // Apply pivot.
           *pIndex = mPivot[Index];
           pIndex++;
         }
     }
 
+  std::cout << mPivot << std::endl;
+  std::cout << indexes << std::endl;
   return;
-
-  // TODO CRITICAL Apply pivot.
 }
 
 void CStepMatrix::convertRow(const size_t & index,

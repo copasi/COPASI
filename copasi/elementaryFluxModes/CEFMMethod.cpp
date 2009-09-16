@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-  $Revision: 1.7 $
+  $Revision: 1.8 $
   $Name:  $
   $Author: shoops $
-  $Date: 2009/09/01 15:58:41 $
+  $Date: 2009/09/16 16:15:35 $
   End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,5 +106,5 @@ bool CEFMMethod::isValidProblem(const CCopasiProblem * pProblem)
 const std::vector< CFluxMode > & CEFMMethod::getFluxModes() const
 {return mFluxModes;}
 
-const CVector< const CReaction * > & CEFMMethod::getReorderedReactions() const
+const std::vector< const CReaction * > & CEFMMethod::getReorderedReactions() const
 {return mReorderedReactions;}
