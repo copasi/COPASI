@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.244 $
+//   $Revision: 1.245 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/03 17:43:27 $
+//   $Author: gauges $
+//   $Date: 2009/09/16 12:35:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3483,8 +3483,11 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
   if (chemicalEquation.getReversibility())
     {
+#ifdef COPASI_DEBUG
       CEvaluationNode* pTmpNode = CEvaluationNodeNormalizer::normalize(pRootNode);
-      //CEvaluationNode* pTmpNode=pRootNode->copyBranch();
+#else
+      CEvaluationNode* pTmpNode = pRootNode->copyBranch();
+#endif /* COPASI_DEBUG */
       assert(pTmpNode != NULL);
       // the root node must be a minus operator
       // the two children must be irreversible mass action terms
