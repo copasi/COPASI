@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/27 09:53:31 $
+//   $Date: 2009/09/16 13:55:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,8 @@
 #include "sbml/math/ASTNode.h"
 #include "sbml/annotation/ModelHistory.h"
 #include "sbml/annotation/CVTerm.h"
+#include "sbml/SBMLErrorLog.h"
+#include "sbml/SBMLError.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "SBMLIncompatibility.h"
 #include "model/CCompartment.h"
@@ -65,6 +67,7 @@
 #include "layout/CListOfLayouts.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "utilities/CVersion.h"
+#include "sbmlunit/CUnitInterfaceSBML.h"
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false)
 {}
@@ -2272,6 +2275,54 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
     dataModel.getListOfLayouts()->exportToSBML(this->mpSBMLDocument->getModel()->getListOfLayouts(),
         dataModel.getCopasi2SBMLMap(), mIdMap);
 
+#ifdef COPASI_DEBUG
+
+  if (this->mpSBMLDocument != NULL)
+    {
+      CUnitInterfaceSBML uif(this->mpSBMLDocument->getModel(), true);
+      uif.determineUnits();
+
+      // check if there were conflicts
+      if (uif.getStatistics().all[5] == 0)
+        {
+          // check if there are unresolved parameter units left
+          if ((uif.getStatistics().local[0] != 0 || uif.getStatistics().global[0] != 0) && uif.getStatistics().numbers[0] != 0)
+            {
+              // try with heuristics
+              CUnitInterfaceSBML uif2(this->mpSBMLDocument->getModel(), true);
+              uif2.setAssumeDimensionlessOne(true);
+              uif2.determineUnits();
+
+              // check again if there have been conflicts
+              if (uif2.getStatistics().all[5] == 0)
+                {
+                  // done use result from uif2
+                  // there were no conflicts, so we write the units that could be determined
+                  uif2.writeBackToModel();
+                  std::cerr << "undetermined: " << uif2.getStatistics().global[0] +  uif2.getStatistics().local[0] << std::endl;
+                }
+              else
+                {
+                  // TODO create appropriate warning
+                  std::cerr << "Warning. " << uif2.getStatistics().all[5] << " conflicts found." << std::endl;
+                }
+            }
+          else
+            {
+              // no conflicts, so we can write the parameters that could be determined to the model
+              uif.writeBackToModel();
+              std::cerr << "undetermined: " << uif.getStatistics().global[0] +  uif.getStatistics().local[0] << std::endl;
+            }
+        }
+      else
+        {
+          // TODO create a warning
+          std::cerr << "Warning. " << uif.getStatistics().all[5] << " conflicts found." << std::endl;
+        }
+    }
+
+#endif /* COPASI_DEBUG */
+
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();
 
@@ -2416,6 +2467,21 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     }
 
   this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
+
+  if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
+    {
+      unsigned int i, iMax = this->mpSBMLDocument->getNumErrors();
+      std::string message("libSBML could not convert the model to the requested level and/or version. The reason(s) given were:");
+
+      for (i = 0; i < iMax ; ++i)
+        {
+          const XMLError* pSBMLError = this->mpSBMLDocument->getError(i);
+          message += "\n";
+          message += pSBMLError->getMessage();
+        }
+
+      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+    }
 
   // remove mpAvogadro from the model again
   if (this->mAvogadroCreated == true)
