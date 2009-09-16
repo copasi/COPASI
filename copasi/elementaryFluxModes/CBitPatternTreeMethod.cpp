@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/16 16:15:35 $
+//   $Date: 2009/09/16 16:52:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -319,7 +319,10 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
           if (*itReactionExpansion == false)
             {
               *pExpandedStoiTranspose = - *pStoi;
+
+              // Advance the iterators
               ++itReactionPivot;
+              ++itReactionExpansion;
               pExpandedStoiTranspose += NumSpecies;
             }
 
@@ -439,17 +442,16 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
   if (INFO < 0) fatalError();
 
   C_INT i;
-  mQRPivot.resize(NumSpecies);
-  CVector< C_FLOAT64 > Tmp(NumSpecies);
+  mQRPivot.resize(NumExpandedReactions);
 
-  for (i = 0; i < NumSpecies; i++)
+  for (i = 0; i < NumExpandedReactions; i++)
     {
       mQRPivot[i] = JPVT[i] - 1;
     }
 
 #ifdef DEBUG_MATRIX
   std::cout << "QR Factorization:" << std::endl;
-  std::cout << "Column (Reaction) Permutation:\t" << JPVT << std::endl;
+  std::cout << "Column (Reaction) Permutation:\t" << mQRPivot << std::endl;
   std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(ExpandedStoiTranspose) << std::endl;
 #endif
 
@@ -725,6 +727,16 @@ void CBitPatternTreeMethod::buildFluxModes()
 void CBitPatternTreeMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
     CVector< size_t > & indexes) const
 {
-  // TODO CRITICAL Apply the QR pivot
   mpStepMatrix->getUnsetBitIndexes(pColumn, indexes);
+
+  // Apply the QR pivot
+  size_t * pIndex = indexes.array();
+  size_t * pIndexEnd = pIndex + indexes.size();
+
+  for (; pIndex != pIndexEnd; ++pIndex)
+    {
+      *pIndex = mQRPivot[*pIndex];
+    }
+
+  std::cout << indexes << std::endl;
 }
