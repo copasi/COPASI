@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/30 13:41:34 $
+//   $Author: aekamal $
+//   $Date: 2009/09/18 18:01:08 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -99,7 +99,7 @@ QVariant CQFunctionDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          const CFunction *pFunc = dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()]);
+          const CEvaluationTree *pFunc = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
 
           if (pFunc == NULL)
             return QVariant();
@@ -170,7 +170,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CFunction *pFunc = dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()]);
+      CEvaluationTree *pFunc = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
 
       if (pFunc == NULL)
         return false;
