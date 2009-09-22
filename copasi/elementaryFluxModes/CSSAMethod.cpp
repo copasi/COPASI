@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/17 19:56:49 $
+//   $Date: 2009/09/22 14:58:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,22 +133,6 @@ bool CSSAMethod::initialize()
         }
     }
 
-#ifdef COPASI_DEBUG
-  std::cout << "mStoi:\n";
-
-  for (int i = 0; i < numRows; ++i)
-    {
-      for (int j = 0; j < numCols; ++j)
-        {
-          std::cout << mStoi[i][j];
-          std::cout << " ";
-        }
-
-      std::cout << std::endl;
-    }
-
-#endif
-
   mStep = 0;
   mMaxStep = numCols;
 
@@ -255,7 +239,6 @@ CSSAMethod::testForMixingStability()
               //  this method is not valid and we can say nothing definite
               //  about the stability of this EC.
               std::string type = mReorderedReactions[j]->getFunction()->getObjectName();
-              // std::cout << "Reaction type: " << type << std::endl;
 
               if (type.find("Mass action") == std::string::npos &&
                   type.find("Constant flux") == std::string::npos)
@@ -303,46 +286,8 @@ CSSAMethod::testForMixingStability()
             }
         }
 
-#ifdef COPASI_DEBUG
-      std::cout << std::endl << std::endl;
-      std::cout << "EC" << std::endl << "  (";
-
-      for (int j = 0; j < mExtremeCurrents[0].size(); ++j)
-        std::cout << mExtremeCurrents[ecIndex][j] << " ";
-
-      std::cout << ")" << std::endl << std::endl;
-
-      std::cout << "sub-jacobian #" << ecIndex + 1 << ":\n" << mTransformedSubJacobians[ecIndex] << "\n";
-
-      std::cout << "\nEigenval\tEigenvector\tParticipating" << std::endl;
-
-      for (int i = 0; i < ijmax; ++i)
-        {
-          std::cout << eigenvalues[i] << std::endl;
-
-          for (int j = 0; j < ijmax; ++j)
-            std::cout << "  \t\t\t" << outarray[i*ijmax + j] << "\t\t" << partMetabs[j] << std::endl;
-
-          std::cout << std::endl;
-        }
-
-      if (state == TriUnspecified)
-        std::cout << "unknown";
-      else if (state == TriFalse)
-        std::cout << "not mixing stable";
-      else
-        std::cout << "mixing stable";
-
-      std::cout << std::endl << std::endl;
-#endif // COPASI_DEBUG
       mIsMixingStable.push_back(state);
     }
-
-#ifdef COPASI_DEBUG
-  std::cout << std::endl;
-  std::cout << "There is/are " << mIsMixingStable.size()
-            << " extreme current(s) not mixing stable!" << std::endl;
-#endif //COPASI_DEBUG
 
   return true;
 }
@@ -410,10 +355,6 @@ CSSAMethod::buildStoichiometry()
     for (int j = 0; j < numCols; ++j)
       mStoichiometry(i, j) = mStoi[j][i];
 
-#ifdef COPASI_DEBUG
-  std::cout << std::endl << std::endl << "new stoichiometry:" << std::endl << mStoichiometry << std::endl;
-#endif
-
   return true;
 }
 
@@ -453,12 +394,6 @@ CSSAMethod::buildKineticMatrix()
         }
     }
 
-#ifdef COPASI_DEBUG
-  std::cout << "transposed kinetic matrix: " << std::endl
-            << mTransposedKineticMatrix << std::endl
-            << std::endl;
-#endif // COPASI_DEBUG
-
   return true;
 }
 
@@ -485,12 +420,6 @@ CSSAMethod::buildExtremeCurrents()
         {
           extremecurrent[iter->getReactionIndex(i)] = iter->getMultiplier(i);
         }
-
-#ifdef COPASI_DEBUG
-      std::cout << "extreme current #" << distance(fluxmodes.begin(), iter) << std::endl
-                << "  " << extremecurrent << std::endl << std::endl;
-      mExtremeCurrents.push_back(extremecurrent);
-#endif
     }
 
   return true;
