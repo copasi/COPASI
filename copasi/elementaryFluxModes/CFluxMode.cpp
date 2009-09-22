@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/02 19:20:32 $
+   $Date: 2009/09/22 14:57:10 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,12 @@ CFluxMode::CFluxMode() {CONSTRUCTOR_TRACE;}
 CFluxMode::CFluxMode(const CFluxMode & src) :
     mReactions(src.mReactions),
     mReversible(src.mReversible)
+{}
+
+CFluxMode::CFluxMode(const std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > & reactions,
+                     const bool & reversible) :
+    mReactions(reactions),
+    mReversible(reversible)
 {}
 
 CFluxMode::CFluxMode(const CTableauLine * line)

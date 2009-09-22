@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/16 16:15:35 $
+//   $Date: 2009/09/22 14:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,8 +237,6 @@ void CStepMatrix::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
         }
     }
 
-  std::cout << mPivot << std::endl;
-  std::cout << indexes << std::endl;
   return;
 }
 

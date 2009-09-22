@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/16 16:15:35 $
+//   $Date: 2009/09/22 14:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,11 @@ private:
   void buildFluxModes();
 
   /**
+   * Multiply v with a number so that v contains only integer coefficients.
+   */
+  void convertToIntegers(CVector< C_FLOAT64 > & v);
+
+  /**
    * Get the index of the unset bits of the flux mode.
    */
   void getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
@@ -135,7 +140,7 @@ protected:
   /**
    * A vector to recording the expansion of the stoichiometry matrix.
    */
-  std::vector< bool > mReactionExpansion;
+  std::vector< bool > mReactionForward;
 
   /**
    * A vector recording the pivots for the QR factorization

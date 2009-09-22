@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/16 16:52:41 $
+//   $Date: 2009/09/22 14:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,9 @@ void CBitPatternTreeMethod::initObjects()
 bool CBitPatternTreeMethod::initialize()
 {
   pdelete(mpStepMatrix);
+  mReactionForward.clear();
+  mReorderedReactions.clear();
+  mFluxModes.clear();
 
   CEFMTask * pTask = dynamic_cast< CEFMTask *>(getObjectParent());
 
@@ -99,8 +102,6 @@ bool CBitPatternTreeMethod::initialize()
   buildKernelMatrix(KernelMatrix);
 
   mMinimumSetSize = KernelMatrix.numRows() - KernelMatrix.numCols() - 2;
-
-  std::cout << KernelMatrix << std::endl;
 
   // Now we create the initial step matrix
   mpStepMatrix = new CStepMatrix(KernelMatrix);
@@ -127,8 +128,6 @@ bool CBitPatternTreeMethod::calculate()
   while (mpStepMatrix->getNumUnconvertedRows() > 0 &&
          Continue)
     {
-      std::cout << *mpStepMatrix << std::endl;
-
       mStep = mpStepMatrix->getFirstUnconvertedRow();
 
       std::list< CStepMatrixColumn * > PositiveColumns;
@@ -175,8 +174,6 @@ bool CBitPatternTreeMethod::calculate()
       if (mpCallBack)
         Continue &= mpCallBack->progress(mhProgressCounter);
     }
-
-  std::cout << *mpStepMatrix << std::endl;
 
   buildFluxModes();
 
@@ -257,8 +254,6 @@ void CBitPatternTreeMethod::removeInvalidColumns(const std::list< CStepMatrixCol
 
 void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 {
-  mReactionExpansion.clear();
-
   // Calculate the kernel matrix
   // We apply the results of:
   //   Conservation analysis of large biochemical networks (Vallabhajosyula 2005)
@@ -273,11 +268,11 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
       if ((*itReaction)->isReversible())
         {
           mReorderedReactions.push_back(*itReaction);
-          mReactionExpansion.push_back(false);
+          mReactionForward.push_back(false);
         }
 
       mReorderedReactions.push_back(*itReaction);
-      mReactionExpansion.push_back(true);
+      mReactionForward.push_back(true);
     }
 
   const CMatrix< C_FLOAT64 > & Stoi = mpModel->getRedStoi();
@@ -312,7 +307,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
       pStoiRowEnd = pStoi + NumReactions;
       pExpandedStoiTranspose = pExpandedStoiTransposeColumn;
       itReactionPivot = mReorderedReactions.begin();
-      itReactionExpansion = mReactionExpansion.begin();
+      itReactionExpansion = mReactionForward.begin();
 
       for (; pStoi < pStoiRowEnd; ++pStoi, pExpandedStoiTranspose += NumSpecies, ++itReactionPivot, ++itReactionExpansion)
         {
@@ -329,10 +324,6 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
           *pExpandedStoiTranspose = *pStoi;
         }
     }
-
-#ifdef DEBUG_MATRIX
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(mExpandedStoiTranspose) << std::endl;
-#endif
 
   CMatrix< C_FLOAT64 > ExpandedStoiTranspose = mExpandedStoiTranspose;
 
@@ -449,12 +440,6 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
       mQRPivot[i] = JPVT[i] - 1;
     }
 
-#ifdef DEBUG_MATRIX
-  std::cout << "QR Factorization:" << std::endl;
-  std::cout << "Column (Reaction) Permutation:\t" << mQRPivot << std::endl;
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(ExpandedStoiTranspose) << std::endl;
-#endif
-
   /* to take care of differences between fortran's and c's memory  access,
      we need to take the transpose, i.e.,the upper triangular */
   char cL = 'U';
@@ -521,11 +506,6 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 
   if (INFO < 0) fatalError();
 
-#ifdef DEBUG_MATRIX
-  std::cout << "Invert R_1,1:" << std::endl;
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(ExpandedStoiTranspose) << std::endl;
-#endif
-
   kernel.resize(NumExpandedReactions, NumExpandedReactions - NumSpecies);
   kernel = 0;
 
@@ -560,11 +540,6 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
             }
         }
     }
-
-#ifdef DEBUG_MATRIX
-  std::cout << "Kernel matrix:" << std::endl;
-  std::cout << kernel << std::endl;
-#endif // DEBUG_MATRIX
 
   return;
 }
@@ -605,10 +580,6 @@ void CBitPatternTreeMethod::buildFluxModes()
           memcpy(pARow, &mExpandedStoiTranspose(*pReaction, 0), NumSpecies * sizeof(C_FLOAT64));
         }
 
-#ifdef DEBUG_MATRIX
-      std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(A) << std::endl;
-#endif
-
       C_INT LDA = std::max<C_INT>(1, NumSpecies);
 
       CVector< C_INT > JPVT(NumReactions);
@@ -621,87 +592,6 @@ void CBitPatternTreeMethod::buildFluxModes()
       CVector< C_FLOAT64 > WORK(1);
       C_INT LWORK = -1;
       C_INT INFO;
-
-      // QR factorization of the stoichiometry matrix
-      /*
-       *  -- LAPACK routine (version 3.0) --
-       *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-       *     Courant Institute, Argonne National Lab, and Rice University
-       *     June 30, 1999
-       *
-       *  Purpose
-       *  =======
-       *
-       *  DGEQP3 computes a QR factorization with column pivoting of a
-       *  matrix A:  A*P = Q*R  using Level 3 BLAS.
-       *
-       *  Arguments
-       *  =========
-       *
-       *  M       (input) INTEGER
-       *          The number of rows of the matrix A. M >= 0.
-       *
-       *  N       (input) INTEGER
-       *          The number of columns of the matrix A.  N >= 0.
-       *
-       *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-       *          On entry, the M-by-N matrix A.
-       *          On exit, the upper triangle of the array contains the
-       *          min(M,N)-by-N upper trapezoidal matrix R; the elements below
-       *          the diagonal, together with the array TAU, represent the
-       *          orthogonal matrix Q as a product of min(M,N) elementary
-       *          reflectors.
-       *
-       *  LDA     (input) INTEGER
-       *          The leading dimension of the array A. LDA >= max(1,M).
-       *
-       *  JPVT    (input/output) INTEGER array, dimension (N)
-       *          On entry, if JPVT(J).ne.0, the J-th column of A is permuted
-       *          to the front of A*P (a leading column); if JPVT(J)=0,
-       *          the J-th column of A is a free column.
-       *          On exit, if JPVT(J)=K, then the J-th column of A*P was the
-       *          the K-th column of A.
-       *
-       *  TAU     (output) DOUBLE PRECISION array, dimension (min(M,N))
-       *          The scalar factors of the elementary reflectors.
-       *
-       *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
-       *          On exit, if INFO=0, WORK(1) returns the optimal LWORK.
-       *
-       *  LWORK   (input) INTEGER
-       *          The dimension of the array WORK. LWORK >= 3*N+1.
-       *          For optimal performance LWORK >= 2*N+(N+1)*NB, where NB
-       *          is the optimal blocksize.
-       *
-       *          If LWORK = -1, then a workspace query is assumed; the routine
-       *          only calculates the optimal size of the WORK array, returns
-       *          this value as the first entry of the WORK array, and no error
-       *          message related to LWORK is issued by XERBLA.
-       *
-       *  INFO    (output) INTEGER
-       *          = 0: successful exit.
-       *          < 0: if INFO = -i, the i-th argument had an illegal value.
-       *
-       *  Further Details
-       *  ===============
-       *
-       *  The matrix Q is represented as a product of elementary reflectors
-       *
-       *     Q = H(1) H(2) . . . H(k), where k = min(m,n).
-       *
-       *  Each H(i) has the form
-       *
-       *     H(i) = I - tau * v * v'
-       *
-       *  where tau is a real/complex scalar, and v is a real/complex vector
-       *  with v(1:i-1) = 0 and v(i) = 1; v(i+1:m) is stored on exit in
-       *  A(i+1:m,i), and tau in TAU(i).
-       *
-       *  Based on contributions by
-       *    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
-       *    X. Sun, Computer Science Dept., Duke University, USA
-       *
-       */
 
       dgeqp3_(&NumSpecies, &NumReactions, A.array(), &LDA,
               JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
@@ -716,11 +606,185 @@ void CBitPatternTreeMethod::buildFluxModes()
 
       if (INFO < 0) fatalError();
 
-#ifdef DEBUG_MATRIX
-      std::cout << "QR Factorization:" << std::endl;
-      std::cout << "Column (Reaction) Permutation:\t" << JPVT << std::endl;
-      std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(A) << std::endl;
-#endif
+      /* to take care of differences between fortran's and c's memory  access,
+         we need to take the transpose, i.e.,the upper triangular */
+      char cL = 'U';
+      char cU = 'N'; /* values in the diagonal of R */
+
+      C_INT DimInverse = std::min(NumSpecies, NumReactions - 1);
+
+      dtrtri_(&cL, &cU, &DimInverse, A.array(), &LDA, &INFO);
+
+      if (INFO < 0) fatalError();
+
+      assert(NumReactions - DimInverse == 1);
+
+      CVector< C_FLOAT64 > FluxMultiplierQR(DimInverse + 1);
+      FluxMultiplierQR = 0;
+
+      C_INT i, j, k;
+      C_FLOAT64 * pFluxMultiplier = FluxMultiplierQR.array();
+      C_FLOAT64 * pDiagonal = A.array();
+      C_FLOAT64 * pInverse;
+      C_FLOAT64 * pR12;
+
+      for (i = 0; i < DimInverse; ++i, pDiagonal += NumSpecies + 1)
+        {
+          for (j = DimInverse; j < NumReactions; ++j, ++pFluxMultiplier)
+            {
+              pInverse = pDiagonal;
+              pR12 = & A(j, i);
+
+              for (k = i; k < DimInverse; ++k, pR12++, pInverse += NumSpecies)
+                {
+                  // *pCore -= A(k, i) * A(j, k);
+                  *pFluxMultiplier -= *pInverse * *pR12;
+                }
+
+              if (fabs(*pFluxMultiplier) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  *pFluxMultiplier = 0.0;
+                }
+            }
+        }
+
+      *pFluxMultiplier = 1.0;
+
+      convertToIntegers(FluxMultiplierQR);
+
+      // We need to apply the pivot of the QR factorization to the multipliers
+      CVector< C_FLOAT64 > FluxMultiplier(DimInverse + 1);
+
+      for (i = 0; i < DimInverse + 1; i++)
+        {
+          FluxMultiplier[JPVT[i] - 1] = FluxMultiplierQR[i];
+        }
+
+      // Now we create the flux mode as we have the multiplier and reaction indexes.
+      // We need to invert the sign of the multiplier for reactions which are not forward.
+      // A flux mode is reversible if all reactions are reversible;
+
+      std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > Reactions;
+      bool Reversible = true;
+
+      pReaction = Indexes.array();
+      pFluxMultiplier = FluxMultiplier.array();
+
+      for (; pReaction != pReactionEnd; ++pReaction, ++pFluxMultiplier)
+        {
+          if (mReactionForward[*pReaction] == true)
+            {
+              Reactions.push_back(std::make_pair(*pReaction, *pFluxMultiplier));
+            }
+          else
+            {
+              Reactions.push_back(std::make_pair(*pReaction, -*pFluxMultiplier));
+            }
+
+          if (!mReorderedReactions[*pReaction]->isReversible())
+            {
+              Reversible = false;
+            }
+        }
+
+      mFluxModes.push_back(CFluxMode(Reactions, Reversible));
+    }
+}
+
+void CBitPatternTreeMethod::convertToIntegers(CVector< C_FLOAT64 > & values)
+{
+  size_t Size = values.size();
+
+  C_INT32 m00, m01, m10, m11;
+  C_INT32 maxden = 10000000;
+
+  C_FLOAT64 * pValue = values.array();
+  C_FLOAT64 * pValueEnd = pValue + Size;
+
+  C_INT32 Multiplier = 1;
+  C_INT32 GCD1, GCD2, ai;
+
+  C_FLOAT64 x;
+
+  for (; pValue != pValueEnd; ++pValue)
+    {
+      /*
+       * Find rational approximation to given real number
+       * David Eppstein / UC Irvine / 8 Aug 1993
+       *
+       * With corrections from:
+       *   Arno Formella, May 2008
+       *   Stefan Hoops, Sept 2009
+       *
+       * Based on the theory of continued fractions
+       * if x = a1 + 1/(a2 + 1/(a3 + 1/(a4 + ...)))
+       * then best approximation is found by truncating this series
+       * (with some adjustments in the last term).
+       *
+       * Note the fraction can be recovered as the first column of the matrix
+       *  (a1 1 ) (a2 1 ) (a3 1 ) ...
+       *  (1  0 ) (1  0 ) (1  0)
+       * Instead of keeping the sequence of continued fraction terms,
+       * we just keep the last partial product of these matrices.
+       */
+
+      /* initialize matrix */
+      m00 = m11 = 1;
+      m01 = m10 = 0;
+
+      x = *pValue;
+
+      /* loop finding terms until denom gets too big */
+      while (m10 *(ai = (C_INT32) x) + m11 <= maxden)
+        {
+          C_INT32 t;
+          t = m00 * ai + m01;
+          m01 = m00;
+          m00 = t;
+
+          t = m10 * ai + m11;
+          m11 = m10;
+          m10 = t;
+
+          if (fabs(1.0 - (C_FLOAT64) ai / x) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            break;     // SH: We reached the numerical precision of the machine;
+
+          x = 1 / (x - (C_FLOAT64) ai);
+        }
+
+      if (fabs(*pValue - ((C_FLOAT64) m00 / (C_FLOAT64) m10)) > 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+        {
+          ai = (maxden - m11) / m10;
+          m00 = m00 * ai + m01;
+          m10 = m10 * ai + m11;
+        }
+
+      // Find the greatest common divisor (GCD) of the multiplier and the current denominator.
+      // Euclidean algorithm
+      GCD1 = m10;
+      GCD2 = Multiplier;
+
+      while (GCD1 != GCD2)
+        {
+          if (GCD1 > GCD2)
+            {
+              GCD1 -= GCD2;
+            }
+          else
+            {
+              GCD2 -= GCD1;
+            }
+        }
+
+      // Calculate the least common multiplier: LCM = v1 * v2 / GCD(v1, v2)
+      Multiplier *= m10 / GCD1;
+    }
+
+  pValue = values.array();
+
+  for (; pValue != pValueEnd; ++pValue)
+    {
+      *pValue *= Multiplier;
     }
 }
 
@@ -737,6 +801,4 @@ void CBitPatternTreeMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn
     {
       *pIndex = mQRPivot[*pIndex];
     }
-
-  std::cout << indexes << std::endl;
 }

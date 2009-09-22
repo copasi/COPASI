@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeNode.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Date: 2009/09/22 14:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,6 @@ CBitPatternTreeNode::CBitPatternTreeNode(const size_t & index,
       case 1:
         mpZeroSet = new CZeroSet((*patterns.begin())->getZeroSet());
         mpStepMatrixColumn = *patterns.begin();
-        // std::cout << mIndex << ": " << *mpZeroSet;
         break;
 
       default:
@@ -57,7 +56,6 @@ CBitPatternTreeNode::CBitPatternTreeNode(const size_t & index,
             *mpZeroSet |= (*it)->getZeroSet();
           }
 
-        // std::cout << mIndex << ": " << *mpZeroSet;
         splitPatterns(patterns);
       }
       break;

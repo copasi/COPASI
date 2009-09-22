@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/16 16:15:35 $
+//   $Date: 2009/09/22 14:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,8 +129,6 @@ public:
   // Superset
   inline bool operator >= (const CZeroSet & rhs) const
   {
-    // std::cout << *this << rhs << std::endl;
-
     const unsigned C_INT32 * pIt = mBitSet.array();
     const unsigned C_INT32 * pEnd = pIt + mBitSet.size();
     const unsigned C_INT32 * pRhs = rhs.mBitSet.array();
