@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/30 13:22:00 $
+//   $Author: pwilly $
+//   $Date: 2009/09/23 12:22:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,10 @@
 
 #include <qvariant.h>
 
-#include <Qt3Support/Q3WidgetStack>
+#include "ui_CQExpressionMmlWidget.h"
+
+#include <QStackedWidget>
+//#include <Qt3Support/Q3WidgetStack>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
@@ -28,155 +31,42 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
-#include <Qt3Support/Q3WidgetStack>
+//#include <Qt3Support/Q3WidgetStack>
+
 #include "CQExpressionWidget.h"
 #include "CQMmlScrollView.h"
 
-QT_BEGIN_NAMESPACE
-
-class Ui_CQExpressionMmlWidget
+class CQExpressionMmlWidget : public QWidget, public Ui::CQExpressionMmlWidget
 {
+  Q_OBJECT
+
 public:
-  QGridLayout *gridLayout;
-  Q3WidgetStack *mpWidgetStackExpressionMml;
-  QWidget *mpExpressionPage;
-  QGridLayout *gridLayout1;
-  CQExpressionWidget *mpExpressionWidget;
-  QVBoxLayout *vboxLayout;
-  QToolButton *mpBtnExpressionObject;
-  QToolButton *mpBtnViewExpression;
-  QSpacerItem *mpSpacerExpressionObject;
-  QWidget *mpMmlPage;
-  QHBoxLayout *hboxLayout;
-  CQMmlScrollView *mpMmlScrollView;
-  QVBoxLayout *vboxLayout1;
-  QToolButton *mpBtnEditExpression;
-  QToolButton *mpBtnSaveExpression;
-  QSpacerItem *mpSpacerMmlObject;
+  CQExpressionMmlWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  ~CQExpressionMmlWidget();
 
-  void setupUi(QWidget *CQExpressionMmlWidget)
-  {
-    if (CQExpressionMmlWidget->objectName().isEmpty())
-      CQExpressionMmlWidget->setObjectName(QString::fromUtf8("CQExpressionMmlWidget"));
+public slots:
+  void updateWidget();
 
-    CQExpressionMmlWidget->resize(290, 125);
-    gridLayout = new QGridLayout(CQExpressionMmlWidget);
-    gridLayout->setSpacing(6);
-    gridLayout->setMargin(0);
-    gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-    mpWidgetStackExpressionMml = new Q3WidgetStack(CQExpressionMmlWidget);
-    mpWidgetStackExpressionMml->setObjectName(QString::fromUtf8("mpWidgetStackExpressionMml"));
-    mpWidgetStackExpressionMml->setMinimumSize(QSize(0, 0));
-    mpExpressionPage = new QWidget(mpWidgetStackExpressionMml);
-    mpExpressionPage->setObjectName(QString::fromUtf8("mpExpressionPage"));
-    gridLayout1 = new QGridLayout(mpExpressionPage);
-    gridLayout1->setSpacing(6);
-    gridLayout1->setMargin(0);
-    gridLayout1->setObjectName(QString::fromUtf8("gridLayout1"));
-    gridLayout1->setContentsMargins(0, 0, 0, 0);
-    mpExpressionWidget = new CQExpressionWidget(mpExpressionPage);
-    mpExpressionWidget->setObjectName(QString::fromUtf8("mpExpressionWidget"));
+signals:
+  void signalCheckValidity(bool);
 
-    gridLayout1->addWidget(mpExpressionWidget, 0, 0, 1, 1);
+protected:
+  void init();
 
-    vboxLayout = new QVBoxLayout();
-    vboxLayout->setSpacing(6);
-    vboxLayout->setObjectName(QString::fromUtf8("vboxLayout"));
-    mpBtnExpressionObject = new QToolButton(mpExpressionPage);
-    mpBtnExpressionObject->setObjectName(QString::fromUtf8("mpBtnExpressionObject"));
-    mpBtnExpressionObject->setMaximumSize(QSize(20, 20));
-    const QIcon icon = qt_get_icon(image0_ID);
-    mpBtnExpressionObject->setIcon(icon);
+protected slots:
+  virtual void languageChange();
 
-    vboxLayout->addWidget(mpBtnExpressionObject);
+  void slotGoExpressionWidget();
+  void slotGoMmlWidget();
 
-    mpBtnViewExpression = new QToolButton(mpExpressionPage);
-    mpBtnViewExpression->setObjectName(QString::fromUtf8("mpBtnViewExpression"));
-    mpBtnViewExpression->setMaximumSize(QSize(20, 20));
-    const QIcon icon1 = qt_get_icon(image1_ID);
-    mpBtnViewExpression->setIcon(icon1);
+private:
+  QString MMLStr;
 
-    vboxLayout->addWidget(mpBtnViewExpression);
+  void saveTeX(const QString filename);
+  void saveMML(const QString filename);
 
-    mpSpacerExpressionObject = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    vboxLayout->addItem(mpSpacerExpressionObject);
-
-    gridLayout1->addLayout(vboxLayout, 0, 1, 1, 1);
-
-    mpWidgetStackExpressionMml->addWidget(mpExpressionPage, 0);
-    mpMmlPage = new QWidget(mpWidgetStackExpressionMml);
-    mpMmlPage->setObjectName(QString::fromUtf8("mpMmlPage"));
-    hboxLayout = new QHBoxLayout(mpMmlPage);
-    hboxLayout->setSpacing(6);
-    hboxLayout->setMargin(0);
-    hboxLayout->setObjectName(QString::fromUtf8("hboxLayout"));
-    hboxLayout->setContentsMargins(0, 0, 0, 0);
-    mpMmlScrollView = new CQMmlScrollView(mpMmlPage);
-    mpMmlScrollView->setObjectName(QString::fromUtf8("mpMmlScrollView"));
-
-    hboxLayout->addWidget(mpMmlScrollView);
-
-    vboxLayout1 = new QVBoxLayout();
-    vboxLayout1->setSpacing(6);
-    vboxLayout1->setObjectName(QString::fromUtf8("vboxLayout1"));
-    mpBtnEditExpression = new QToolButton(mpMmlPage);
-    mpBtnEditExpression->setObjectName(QString::fromUtf8("mpBtnEditExpression"));
-    mpBtnEditExpression->setMaximumSize(QSize(20, 20));
-    const QIcon icon2 = qt_get_icon(image2_ID);
-    mpBtnEditExpression->setIcon(icon2);
-
-    vboxLayout1->addWidget(mpBtnEditExpression);
-
-    mpBtnSaveExpression = new QToolButton(mpMmlPage);
-    mpBtnSaveExpression->setObjectName(QString::fromUtf8("mpBtnSaveExpression"));
-    mpBtnSaveExpression->setMaximumSize(QSize(20, 20));
-    const QIcon icon3 = qt_get_icon(image3_ID);
-    mpBtnSaveExpression->setIcon(icon3);
-
-    vboxLayout1->addWidget(mpBtnSaveExpression);
-
-    mpSpacerMmlObject = new QSpacerItem(20, 50, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    vboxLayout1->addItem(mpSpacerMmlObject);
-
-    hboxLayout->addLayout(vboxLayout1);
-
-    mpWidgetStackExpressionMml->addWidget(mpMmlPage, 1);
-
-    gridLayout->addWidget(mpWidgetStackExpressionMml, 0, 0, 1, 1);
-
-    retranslateUi(CQExpressionMmlWidget);
-    QObject::connect(mpBtnEditExpression, SIGNAL(clicked()), CQExpressionMmlWidget, SLOT(slotGoExpressionWidget()));
-    QObject::connect(mpBtnExpressionObject, SIGNAL(clicked()), mpExpressionWidget, SLOT(slotSelectObject()));
-    QObject::connect(mpBtnViewExpression, SIGNAL(clicked()), CQExpressionMmlWidget, SLOT(updateWidget()));
-    QObject::connect(mpExpressionWidget, SIGNAL(valid(bool)), mpBtnViewExpression, SLOT(setEnabled(bool)));
-    QObject::connect(mpBtnSaveExpression, SIGNAL(clicked()), CQExpressionMmlWidget, SLOT(slotSaveExpression()));
-
-    QMetaObject::connectSlotsByName(CQExpressionMmlWidget);
-  } // setupUi
-
-  void retranslateUi(QWidget *CQExpressionMmlWidget)
-  {
-    CQExpressionMmlWidget->setWindowTitle(QApplication::translate("CQExpressionMmlWidget", "Expression-Mml Widget", 0, QApplication::UnicodeUTF8));
-    mpBtnExpressionObject->setText(QString());
-#ifndef QT_NO_TOOLTIP
-    mpBtnExpressionObject->setProperty("toolTip", QVariant(QApplication::translate("CQExpressionMmlWidget", "select object", 0, QApplication::UnicodeUTF8)));
-#endif // QT_NO_TOOLTIP
-    mpBtnViewExpression->setText(QString());
-#ifndef QT_NO_TOOLTIP
-    mpBtnViewExpression->setProperty("toolTip", QVariant(QApplication::translate("CQExpressionMmlWidget", "view expression", 0, QApplication::UnicodeUTF8)));
-#endif // QT_NO_TOOLTIP
-    mpBtnEditExpression->setText(QString());
-#ifndef QT_NO_TOOLTIP
-    mpBtnEditExpression->setProperty("toolTip", QVariant(QApplication::translate("CQExpressionMmlWidget", "edit expression", 0, QApplication::UnicodeUTF8)));
-#endif // QT_NO_TOOLTIP
-    mpBtnSaveExpression->setText(QString());
-#ifndef QT_NO_TOOLTIP
-    mpBtnSaveExpression->setProperty("toolTip", QVariant(QApplication::translate("CQExpressionMmlWidget", "save expression", 0, QApplication::UnicodeUTF8)));
-#endif // QT_NO_TOOLTIP
-    Q_UNUSED(CQExpressionMmlWidget);
-  } // retranslateUi
+private slots:
+  void slotSaveExpression();
 
 protected:
   enum IconID
@@ -556,46 +446,6 @@ protected:
         default: return QPixmap();
       } // switch
   } // icon
-};
-
-namespace Ui
-{
-class CQExpressionMmlWidget: public Ui_CQExpressionMmlWidget {};
-} // namespace Ui
-
-QT_END_NAMESPACE
-
-class CQExpressionMmlWidget : public QWidget, public Ui::CQExpressionMmlWidget
-{
-  Q_OBJECT
-
-public:
-  CQExpressionMmlWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
-  ~CQExpressionMmlWidget();
-
-public slots:
-  void updateWidget();
-
-signals:
-  void signalCheckValidity(bool);
-
-protected:
-  void init();
-
-protected slots:
-  virtual void languageChange();
-
-  void slotGoExpressionWidget();
-  void slotGoMmlWidget();
-
-private:
-  QString MMLStr;
-
-  void saveTeX(const QString filename);
-  void saveMML(const QString filename);
-
-private slots:
-  void slotSaveExpression();
 };
 
 #endif // CQEXPRESSIONMMLWIDGET_H
