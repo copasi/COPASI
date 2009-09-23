@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2009/07/23 18:17:12 $
+   $Author: pwilly $
+   $Date: 2009/09/23 13:39:59 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,8 @@
 #include <qcolor.h>
 #include <qlineedit.h>
 
+#include <QtDebug>
+
 #include "copasi.h"
 
 template <typename Type> class CQValidator : public QValidator
@@ -35,7 +37,10 @@ public:
   {
     int h, s, v;
 
-    mSavedColor = mpLineEdit->paletteBackgroundColor();
+    QPalette palette = mpLineEdit->palette();
+    QBrush brush = palette.brush(QPalette::Active, QPalette::Base);
+    mSavedColor = brush.color();
+//    mSavedColor = mpLineEdit->paletteBackgroundColor();
     mSavedColor.getHsv(&h, &s, &v);
 
     if (s < 20) s = 20;
@@ -47,10 +52,23 @@ public:
   virtual State validate(QString & input, int & /* pos */) const
   {
     if (input == mLastAccepted)
-      mpLineEdit->setPaletteBackgroundColor(mSavedColor);
+      {
+        QPalette palette;
+        QBrush brush;
+        brush.setStyle(Qt::SolidPattern);
+        brush.setColor(mSavedColor);
+        palette.setBrush(QPalette::Active, QPalette::Base, brush);
+        mpLineEdit->setPalette(palette);
+      }
     else
       setColor(Acceptable);
 
+    /*
+        if (input == mLastAccepted)
+          mpLineEdit->setPaletteBackgroundColor(mSavedColor);
+        else
+          setColor(Acceptable);
+    */
     return Acceptable;
   }
 
@@ -77,10 +95,37 @@ public:
 protected:
   State setColor(const State & state) const
   {
+#ifdef DEBUG_UI
+    int h, s, v;
+#endif
+
+    QPalette palette;
+    QBrush brush;
+    brush.setStyle(Qt::SolidPattern);
+
     if (state == Invalid)
-      mpLineEdit->setPaletteBackgroundColor(mErrorColor);
+      {
+//      mpLineEdit->setPaletteBackgroundColor(mErrorColor);
+        brush.setColor(mErrorColor);
+
+#ifdef DEBUG_UI
+        mErrorColor.getHsv(&h, &s, &v);
+        qDebug() << "h = " << h << " - s = " << s << " - v = " << v;
+#endif
+      }
     else
-      mpLineEdit->setPaletteBackgroundColor(mAcceptableColor);
+      {
+//      mpLineEdit->setPaletteBackgroundColor(mAcceptableColor);
+        brush.setColor(mAcceptableColor);
+
+#ifdef DEBUG_UI
+        mAcceptableColor.getHsv(&h, &s, &v);
+        qDebug() << "h = " << h << " - s = " << s << " - v = " << v;
+#endif
+      }
+
+    palette.setBrush(QPalette::Active, QPalette::Base, brush);
+    mpLineEdit->setPalette(palette);
 
     return state;
   }
