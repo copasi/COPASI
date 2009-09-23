@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.212 $
+#   $Revision: 1.213 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2009/08/31 14:33:33 $
+#   $Author: pwilly $
+#   $Date: 2009/09/23 11:43:25 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.212 $ $Author: aekamal $ $Date: 2009/08/31 14:33:33 $
+# $Revision: 1.213 $ $Author: pwilly $ $Date: 2009/09/23 11:43:25 $
 ######################################################################
 
 LIB = UI
@@ -112,7 +112,7 @@ HEADERS	+= \
 	TimeSeriesWidget.h \
 	Tree.h \
 	TSSWidget.h \
-    CQExpressionMmlWidgetStack.h \
+#        CQExpressionMmlWidgetStack.h \
 	CQMmlScrollView.h
 
 SOURCES	+= \
@@ -193,7 +193,7 @@ SOURCES	+= \
 	TimeSeriesWidget.cpp \
 	Tree.cpp \
 	TSSWidget.cpp \
-  CQExpressionMmlWidgetStack.cpp \
+#        CQExpressionMmlWidgetStack.cpp \
 	CQMmlScrollView.cpp
 
 !contains(DEFINES, COPASI_TSS) {
@@ -231,6 +231,16 @@ FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
+
+FORMS += CQSpeciesWidget.ui
+FORMS += CQTrajectoryWidget.ui
+FORMS += CQLyapWidget.ui
+FORMS += CQMCAWidget.ui
+
+FORMS += CQDifferentialEquations.ui
+FORMS += SliderSettingsDialog.ui
+FORMS += CQExpressionMmlWidget.ui
+FORMS += CQExpressionMmlStackedWidget.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
 # FORMS3 += CQDifferentialEquations.ui
@@ -274,8 +284,9 @@ HEADERS += \
            CQExperimentData.ui.h \
            CQExperimentSelection.h \
            CQExperimentSelection.ui.h \
-           CQExpressionMmlWidget.ui.h \
+#           CQExpressionMmlWidget.ui.h \
            CQExpressionMmlWidget.h \
+           CQExpressionMmlStackedWidget.h \
            CQFileDialogBtnGrp.h \
            CQFittingItemWidget.h \
            CQFittingResult.h \
@@ -342,6 +353,7 @@ SOURCES += \
            CQExperimentData.cpp \
            CQExperimentSelection.cpp \
            CQExpressionMmlWidget.cpp \
+           CQExpressionMmlStackedWidget.cpp \
            CQFileDialogBtnGrp.cpp \
            CQFittingItemWidget.cpp \
            CQFittingResult.cpp \
