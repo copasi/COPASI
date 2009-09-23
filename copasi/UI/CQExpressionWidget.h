@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/30 00:51:58 $
+//   $Author: pwilly $
+//   $Date: 2009/09/23 12:45:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,10 +18,14 @@
 #ifndef CQEXPRESSION
 #define CQEXPRESSION
 
-#include <q3textedit.h>
-#include <q3syntaxhighlighter.h>
+//#include <q3textedit.h>
+#include <QTextEdit>
+//#include <q3syntaxhighlighter>
+#include <QSyntaxHighlighter.h>
 //Added by qt3to4:
 #include <QKeyEvent>
+
+#include <QKeySequence>
 
 #include <vector>
 
@@ -36,22 +40,33 @@ class CCopasiObject;
 /*!
     \brief The class for highlighting the expression syntax
  */
-class CQExpressionHighlighter: public Q3SyntaxHighlighter
+//class CQExpressionHighlighter: public Q3SyntaxHighlighter
+class CQExpressionHighlighter: public QSyntaxHighlighter
 {
 public:
   CQExpressionHighlighter(CQExpressionWidget* ew);
   ~CQExpressionHighlighter();
 
   virtual int highlightParagraph(const QString & text, int endStateOfLastPara);
+
+// new since 14.09.09
+protected:
+  void highlightBlock(const QString &text);
+
+public:
+  QTextCharFormat COPASIObjectFormat;
+  QRegExp COPASIObjectPattern;
 };
 
 /*!
     \brief The class for checking the validity of a given mathematical expression
  */
-class CQValidatorExpression: public CQValidator< Q3TextEdit >
+//class CQValidatorExpression: public CQValidator< Q3TextEdit >
+class CQValidatorExpression: public CQValidator< QTextEdit >
 {
 public:
-  CQValidatorExpression(Q3TextEdit * parent, const char * name = 0, bool isBoolean = false);
+//  CQValidatorExpression(Q3TextEdit * parent, const char * name = 0, bool isBoolean = false);
+  CQValidatorExpression(QTextEdit * parent, const char * name = 0, bool isBoolean = false);
 
   /**
    * Function to validate a string input
@@ -72,7 +87,8 @@ protected:
 /*!
     \brief The class for writing/editing a mathematical expression
  */
-class CQExpressionWidget: public Q3TextEdit
+//class CQExpressionWidget: public Q3TextEdit
+class CQExpressionWidget: public QTextEdit
 {
   Q_OBJECT
 public:
@@ -104,16 +120,33 @@ protected:
   QColor mChangedColor;
 
   virtual void keyPressEvent(QKeyEvent * e);
+  virtual void mousePressEvent(QMouseEvent * e);
 
   bool isInObject();
   bool isInObject(int par, int pos);
+
+  /**
+   * Function to check whether the current cursor position is in object
+   */
+  bool isInObject(int pos);
 
   /**
    * returns true if (par/pos) is right of (parold/posold)
    */
   bool compareCursorPositions(int parold, int posold, int par, int pos);
 
+  /**
+   * return anchor position -> new 16.09.09
+   */
+  int mAnchorPos;
+
 public:
+  /**
+   * Enumeration of movement type
+   */
+  enum MoveType {None, Left, Right, Mouse, Unknown };
+  enum ActionType {NoAction, /*Undo*/ };
+
   enum ExpressionType
   {
     InitialExpression = CCopasiSimpleSelectionTree::InitialTime |
@@ -133,6 +166,7 @@ public:
     CCopasiSimpleSelectionTree::ObservedValues |
     CCopasiSimpleSelectionTree::Results
   };
+
   /**
    * Set the expression for the widget
    * @param const std::string & expression
@@ -156,7 +190,16 @@ public:
   bool isValid();
 
 protected slots:
-  void slotCursorPositionChanged(int para, int pos);
+//  void slotCursorPositionChanged(int para, int pos);
+
+  /**
+   * Slot for being activated whenever the cursor is moved
+   */
+  void slotCursorPositionChanged();
+
+  /**
+   * Slot for being activated
+   */
   void slotSelectionChanged();
 
   /**
@@ -165,11 +208,21 @@ protected slots:
   void slotTextChanged();
 
 public slots:
-  void doKeyboardAction(Q3TextEdit::KeyboardAction action);
+//  void doKeyboardAction(Q3TextEdit::KeyboardAction action);
+  void doKeyboardAction(QTextEdit::KeyboardAction action);
   void slotSelectObject();
+
+  void slotCharFormatChanged(const QTextCharFormat & f);
 
 signals:
   void valid(bool valid);
+
+private:
+  CQExpressionHighlighter *expressionHighlighter;
+  MoveType eMove;
+  ActionType eAction;
+  bool goFurther;
+  QTextCursor mCursor;
 };
 
 #endif
