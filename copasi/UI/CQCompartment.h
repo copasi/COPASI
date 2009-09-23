@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/07 14:12:33 $
+//   $Author: pwilly $
+//   $Date: 2009/09/23 11:45:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,7 @@ private slots:
   void slotNameLostFocus();
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
-  void slotSwitchToSpecies(int row, int column);
+  void slotMetaboliteTableCurrentChanged(Q3ListViewItem * pItem);
 };
 
 #endif // CQCOMPARTMENT_H

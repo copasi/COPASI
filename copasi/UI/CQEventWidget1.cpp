@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: pwilly $
+//   $Date: 2009/09/23 11:45:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 #include "CQEventWidget1.h"
 
 #include <utility>
+#include <vector>
+#include <string.h>
 
 #include "UI/qtUtilities.h"
 
@@ -141,6 +143,7 @@ void CQEventWidget1::init()
   connect(mpCheckDelay, SIGNAL(toggled(bool)), this, SLOT(slotApplyDelay(bool)));
   connect(mpLBTarget, SIGNAL(currentRowChanged(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
 
+//  mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
   mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
   mExpressionDelayValid = true;
   mpExpressionDelay->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
