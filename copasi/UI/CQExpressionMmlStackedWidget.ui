@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
+<comment>   $Revision: 1.11 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2009/07/14 11:09:51 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQExpressionMmlStackedWidget</class>
+ <widget class="QStackedWidget" name="CQExpressionMmlStackedWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Expression-Mml Widget</string>
+  </property>
+  <property name="currentIndex">
+   <number>0</number>
+  </property>
+  <widget class="QWidget" name="mpExpressionPage">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="CQExpressionWidget" name="mpExpressionWidget"/>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_ExpPage">
+      <item>
+       <widget class="QToolButton" name="mpBtnExpressionObject">
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>select object</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mpBtnViewExpression">
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>view expression</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="mpMmlPage">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="CQMmlScrollView" name="mpMmlScrollView">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_MmlPage">
+      <item>
+       <widget class="QToolButton" name="mpBtnEditExpression">
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>edit expression</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mpBtnSaveExpression">
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>save expression</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="mpSpacerMmlObject">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CQExpressionWidget</class>
+   <extends>QTextEdit</extends>
+   <header>CQExpressionWidget.h</header>
+   <slots>
+    <signal>valid(bool)</signal>
+    <slot>slotSelectObject()</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>CQMmlScrollView</class>
+   <extends>QFrame</extends>
+   <header>CQMmlScrollView.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpBtnEditExpression</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExpressionMmlStackedWidget</receiver>
+   <slot>slotGoExpressionWidget()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>375</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>397</x>
+     <y>29</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnSaveExpression</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExpressionMmlStackedWidget</receiver>
+   <slot>slotSaveExpression()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>375</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>397</x>
+     <y>63</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnExpressionObject</sender>
+   <signal>clicked()</signal>
+   <receiver>mpExpressionWidget</receiver>
+   <slot>slotSelectObject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>379</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>32</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnViewExpression</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExpressionMmlStackedWidget</receiver>
+   <slot>updateWidget()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>380</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>56</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpExpressionWidget</sender>
+   <signal>valid(bool)</signal>
+   <receiver>mpBtnViewExpression</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>183</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>376</x>
+     <y>50</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotGoExpressionWidget()</slot>
+  <slot>slotSaveExpression()</slot>
+  <slot>updateWidget()</slot>
+ </slots>
+</ui>
