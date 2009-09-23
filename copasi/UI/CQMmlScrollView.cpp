@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMmlScrollView.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/30 13:15:11 $
+//   $Author: pwilly $
+//   $Date: 2009/09/23 11:51:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,8 @@
 
 ///  Constructor
 CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* name, Qt::WFlags fl)
-    : Q3ScrollView(parent, name, fl)
+//    : Q3ScrollView(parent, name, fl)
+    : QScrollArea(parent)
 {
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
@@ -33,10 +34,11 @@ CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* name, Qt::WFlags f
   mpMmlWidget->setMinimumSize(QSize(0, 0));
   mpMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
   mpMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
-  addChild(mpMmlWidget);
+  setWidget(mpMmlWidget);
 #endif // HAVE_MML
 
-  setResizePolicy(Q3ScrollView::AutoOneFit);
+//  setResizePolicy(Q3ScrollView::AutoOneFit);
+  setWidgetResizable(true);
 }
 
 /// Destructor
@@ -49,9 +51,11 @@ CQMmlScrollView::~CQMmlScrollView()
 void CQMmlScrollView::updateWidget(std::ostringstream &mml)
 {
 #ifdef HAVE_MML
+  qDebug() << "mml.str() = " << FROM_UTF8(mml.str());
   mpMmlWidget->setContent(FROM_UTF8(mml.str()));
 
-  resizeContents(mpMmlWidget->sizeHint().width(), mpMmlWidget->sizeHint().height());
+//  resizeContents(mpMmlWidget->sizeHint().width(), mpMmlWidget->sizeHint().height());
+  mpMmlWidget->resize(mpMmlWidget->sizeHint().width(), mpMmlWidget->sizeHint().height());
   setMinimumHeight(mpMmlWidget->sizeHint().height() + 30);
 #endif // HAVE_MML
 }
