@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/01 00:31:18 $
+//   $Date: 2009/09/24 18:12:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -524,7 +524,7 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
     {
       Store = *pX;
 
-      if (fabs(*pRate) < 1e4 * DBL_EPSILON * fabs(Store))
+      if (fabs(*pRate) < 1e4 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(Store))
         {
           if (fabs(Store) < 100 * DBL_MIN)
             {

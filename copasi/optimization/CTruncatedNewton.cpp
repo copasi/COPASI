@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Date: 2009/09/24 18:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,7 @@ CTruncatedNewton::~CTruncatedNewton()
   /* Format strings */
   /* static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
    static char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
-;
+  ;
    static char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
                            "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
    static char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
@@ -197,14 +197,17 @@ CTruncatedNewton::~CTruncatedNewton()
 
   /* Function Body */
   maxit = *n / 2;
+
   if (maxit > 50)
     {
       maxit = 50;
     }
+
   if (maxit <= 0)
     {
       maxit = 1;
     }
+
   msglvl = 0;
   maxfun = *n * 150;
   eta = .25;
@@ -253,7 +256,7 @@ CTruncatedNewton::~CTruncatedNewton()
   /* Format strings */
   /*  char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
     char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
-;
+  ;
     char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
                            "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
     char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
@@ -359,14 +362,17 @@ CTruncatedNewton::~CTruncatedNewton()
 
   /* Function Body */
   maxit = *n / 2;
+
   if (maxit > 50)
     {
       maxit = 50;
     }
+
   if (maxit <= 0)
     {
       maxit = 1;
     }
+
   msglvl = 0;
   maxfun = *n * 150;
   eta = .25;
@@ -388,6 +394,7 @@ CTruncatedNewton::~CTruncatedNewton()
       //  do_fio(&c__1, (char *)&(*ierror), (ftnlen)sizeof(C_INT));
       // e_wsfe();
     }
+
   //    s_wsfe(&io___22);
   //    do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(C_FLOAT64));
   //   e_wsfe();
@@ -395,20 +402,25 @@ CTruncatedNewton::~CTruncatedNewton()
     {
       return 0;
     }
+
   //   s_wsfe(&io___23);
   //    e_wsfe();
   nmax = 10;
+
   if (*n < nmax)
     {
       nmax = *n;
     }
+
   //   s_wsfe(&io___25);
   i__1 = nmax;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       // do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(C_INT));
       // do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(C_FLOAT64));
     }
+
   //   e_wsfe();
   return 0;
 }  /* tnbc_ */
@@ -514,13 +526,16 @@ CTruncatedNewton::~CTruncatedNewton()
   chkucp_(&subscr_1.lwtest, maxfun, &nwhy, n, &alpha, &epsmch, eta, &peps, &
           rteps, &rtol, &rtolsq, stepmx, &ftest, xtol, &xnorm, &x[1], lw, &
           small, &tiny, accrcy);
+
   if (nwhy < 0)
     {
       goto L120;
     }
+
   CTruncatedNewton::setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
                             sfun, &g[1], &x[1]);
   fold = fnew;
+
   if (*msglvl >= 1)
     {
       /*  s_wsfe(&io___56);
@@ -535,6 +550,7 @@ CTruncatedNewton::~CTruncatedNewton()
   /* CHECK FOR SMALL GRADIENT AT THE STARTING POINT. */
 
   ftest = one + fabs(fnew);
+
   if (gtg < epsmch * 1e-4 * ftest * ftest)
     {
       goto L90;
@@ -554,6 +570,7 @@ CTruncatedNewton::~CTruncatedNewton()
 
   idiagb = subscr_1.ldiagb;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       w[idiagb] = one;
@@ -606,6 +623,7 @@ L20:
   ++niter;
   nftotl += numf;
   gtg = ddot_(n, &g[1], &c__1, &g[1], &c__1);
+
   if (*msglvl >= 1)
     {
       //remove the printing
@@ -618,10 +636,12 @@ L20:
          do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(C_FLOAT64));
          e_wsfe();*/
     }
+
   if (nwhy < 0)
     {
       goto L120;
     }
+
   if (nwhy == 0 || nwhy == 2)
     {
       goto L30;
@@ -632,10 +652,12 @@ L20:
   nwhy = 3;
   goto L100;
 L30:
+
   if (nwhy <= 1)
     {
       goto L40;
     }
+
   (*sfun)(n, &x[1], &fnew, &g[1]);
   ++nftotl;
 
@@ -643,10 +665,12 @@ L30:
 
 L40:
   nwhy = 2;
+
   if (nftotl > *maxfun)
     {
       goto L110;
     }
+
   nwhy = 0;
 
   /* SET UP PARAMETERS USED IN CONVERGENCE AND RESETTING TESTS */
@@ -661,14 +685,17 @@ L40:
     {
       goto L50;
     }
+
   if (difnew > difold * 2.)
     {
       epsred += epsred;
     }
+
   if (difnew < difold * .5)
     {
       epsred *= .5;
     }
+
 L50:
   gnorm = sqrt(gtg);
   ftest = one + fabs(fnew);
@@ -676,7 +703,7 @@ L50:
 
   /* TEST FOR CONVERGENCE */
 
-  if (alpha * pnorm < toleps * (one + xnorm) && fabs(difnew) < rtleps *
+  if (alpha * pnorm < toleps *(one + xnorm) && fabs(difnew) < rtleps *
       ftest && gtg < peps * ftest * ftest || gtg < *accrcy * 1e-4 *
       ftest * ftest)
     {
@@ -691,6 +718,7 @@ L50:
   iyk = subscr_1.lyk;
   ioldg = subscr_1.loldg;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       w[iyk] = g[i__] - w[ioldg];
@@ -706,19 +734,24 @@ L50:
 
   yksk = ddot_(n, &w[subscr_1.lyk], &c__1, &w[subscr_1.lsk], &c__1);
   lreset = FALSE_;
-  if (icycle == nm1 || difnew < epsred * (fkeep - fnew))
+
+  if (icycle == nm1 || difnew < epsred *(fkeep - fnew))
     {
       lreset = TRUE_;
     }
+
   if (lreset)
     {
       goto L70;
     }
+
   yrsr = ddot_(n, &w[subscr_1.lyr], &c__1, &w[subscr_1.lsr], &c__1);
+
   if (yrsr <= zero)
     {
       lreset = TRUE_;
     }
+
 L70:
   upd1 = FALSE_;
 
@@ -730,6 +763,7 @@ L70:
                               1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
                             nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
                             c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm);
+
   if (lreset)
     {
       goto L80;
@@ -911,10 +945,12 @@ L120:
   chkucp_(&subscr_1.lwtest, maxfun, &nwhy, n, &alpha, &epsmch, eta, &peps, &
           rteps, &rtol, &rtolsq, stepmx, &ftest, xtol, &xnorm, &x[1], lw, &
           small, &tiny, accrcy);
+
   if (nwhy < 0)
     {
       goto L160;
     }
+
   CTruncatedNewton::setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
                             sfun, &g[1], &x[1]);
   fold = fnew;
@@ -926,22 +962,27 @@ L120:
   /* LAGRANGE MULTIPLIERS.  AFTERWORDS, THE PROJECTED GRADIENT IS FORMED. */
 
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (ipivot[i__] == 2)
         {
           goto L10;
         }
+
       if (-ipivot[i__] * g[i__] >= 0.)
         {
           goto L10;
         }
+
       ipivot[i__] = 0;
 L10:
-;
+      ;
     }
+
   ztime_(n, &g[1], &ipivot[1]);
   gtg = ddot_(n, &g[1], &c__1, &g[1], &c__1);
+
   if (*msglvl >= 1)
     {
       monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &
@@ -951,6 +992,7 @@ L10:
   /* CHECK IF THE INITIAL POINT IS A LOCAL MINIMUM. */
 
   ftest = one + fabs(fnew);
+
   if (gtg < epsmch * 1e-4 * ftest * ftest)
     {
       goto L130;
@@ -970,6 +1012,7 @@ L10:
 
   idiagb = subscr_1.ldiagb;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       w[idiagb] = one;
@@ -1023,10 +1066,12 @@ L20:
                             zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
                             , &numf, &nwhy, &w[1], lw);
   newcon = FALSE_;
+
   if ((d__1 = alpha - spe, fabs(d__1)) > epsmch * 10.)
     {
       goto L30;
     }
+
   newcon = TRUE_;
   nwhy = 0;
   modz_(n, &x[1], &w[subscr_1.lpk], &ipivot[1], &epsmch, &low[1], &up[1], &
@@ -1034,6 +1079,7 @@ L20:
   flast = fnew;
 
 L30:
+
   if (*msglvl >= 3)
     {
       /*  s_wsfe(&io___144);
@@ -1041,21 +1087,25 @@ L30:
         do_fio(&c__1, (char *)&pnorm, (ftnlen)sizeof(C_FLOAT64));
         e_wsfe();*/
     }
+
   fold = fnew;
   ++niter;
   nftotl += numf;
 
   /* IF REQUIRED, PRINT THE DETAILS OF THIS ITERATION */
+
   /* ############################ */
   if (*msglvl >= 1)
     {
       monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &
              ipivot[1]);
     }
+
   if (nwhy < 0)
     {
       goto L160;
     }
+
   if (nwhy == 0 || nwhy == 2)
     {
       goto L40;
@@ -1066,10 +1116,12 @@ L30:
   nwhy = 3;
   goto L140;
 L40:
+
   if (nwhy <= 1)
     {
       goto L50;
     }
+
   (*sfun)(n, &x[1], &fnew, &g[1]);
   ++nftotl;
 
@@ -1077,10 +1129,12 @@ L40:
 
 L50:
   nwhy = 2;
+
   if (nftotl > *maxfun)
     {
       goto L150;
     }
+
   nwhy = 0;
 
   /* SET UP PARAMETERS USED IN CONVERGENCE AND RESETTING TESTS */
@@ -1095,14 +1149,17 @@ L50:
     {
       goto L60;
     }
+
   if (difnew > difold * 2.)
     {
       epsred += epsred;
     }
+
   if (difnew < difold * .5)
     {
       epsred *= .5;
     }
+
 L60:
   dcopy_(n, &g[1], &c__1, &w[subscr_1.lgv], &c__1);
   ztime_(n, &w[subscr_1.lgv], &ipivot[1]);
@@ -1116,10 +1173,12 @@ L60:
   cnvtst_(&conv, &alpha, &pnorm, &toleps, &xnorm, &difnew, &rtleps, &ftest,
           &gtg, &peps, &epsmch, &gtpnew, &fnew, &flast, &g[1], &ipivot[1],
           n, accrcy);
+
   if (conv)
     {
       goto L130;
     }
+
   ztime_(n, &g[1], &ipivot[1]);
 
   /* COMPUTE THE CHANGE IN THE ITERATES AND THE CORRESPONDING CHANGE */
@@ -1129,11 +1188,13 @@ L60:
     {
       goto L90;
     }
+
   isk = subscr_1.lsk;
   ipk = subscr_1.lpk;
   iyk = subscr_1.lyk;
   ioldg = subscr_1.loldg;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       w[iyk] = g[i__] - w[ioldg];
@@ -1149,47 +1210,57 @@ L60:
 
   yksk = ddot_(n, &w[subscr_1.lyk], &c__1, &w[subscr_1.lsk], &c__1);
   lreset = FALSE_;
-  if (icycle == nm1 || difnew < epsred * (fkeep - fnew))
+
+  if (icycle == nm1 || difnew < epsred *(fkeep - fnew))
     {
       lreset = TRUE_;
     }
+
   if (lreset)
     {
       goto L80;
     }
+
   yrsr = ddot_(n, &w[subscr_1.lyr], &c__1, &w[subscr_1.lsr], &c__1);
+
   if (yrsr <= zero)
     {
       lreset = TRUE_;
     }
+
 L80:
   upd1 = FALSE_;
 
   /*      COMPUTE THE NEW SEARCH DIRECTION */
 
 L90:
+
   if (upd1 && *msglvl >= 3)
     {
       /*
       s_wsfe(&io___150);
       e_wsfe();*/
     }
+
   if (newcon && *msglvl >= 3)
     {
       /*
          s_wsfe(&io___151);
          e_wsfe();*/
     }
+
   modet = *msglvl - 3;
   CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
                               subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
                               1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
                             nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
                             c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
+
   if (newcon)
     {
       goto L20;
     }
+
   if (lreset)
     {
       goto L110;
@@ -1229,11 +1300,13 @@ L140:
 
 L150:
   *f = oldf;
+
   if (*msglvl >= 1)
     {
       monit_(n, &x[1], f, &g[1], &niter, &nftotl, &nfeval, &ireset, &ipivot[
                1]);
     }
+
   /* SET IFAIL */
 
 L160:
@@ -1268,16 +1341,19 @@ L160:
   /* Function Body */
   gtg = 0.;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (ipivot[i__] != 0)
         {
           goto L10;
         }
+
       gtg += g[i__] * g[i__];
 L10:
-;
+      ;
     }
+
   //remove the printing
   /* s_wsfe(&io___154);
    do_fio(&c__1, (char *)&(*niter), (ftnlen)sizeof(C_INT));
@@ -1305,14 +1381,17 @@ L10:
 
   /* Function Body */
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (ipivot[i__] != 0)
         {
           x[i__] = 0.;
         }
+
       /* L10: */
     }
+
   return 0;
 } /* ztime_ */
 
@@ -1335,19 +1414,28 @@ L10:
   *spe = *stepmx / *pe;
   /* SPE IS THE STANDARD (UNCONSTRAINED) MAX STEP */
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (ipivot[i__] != 0) goto L10;
+
       if (p[i__] == 0.) goto L10;
+
       if (p[i__] > 0.) goto L5;
+
       t = low[i__] - x[i__];
+
       if (t > *spe * p[i__]) *spe = t / p[i__];
+
       goto L10;
 L5:
       t = up[i__] - x[i__];
+
       if (t < *spe * p[i__]) *spe = t / p[i__];
+
 L10:;
     }
+
   return 0;
 } /* stpmax_ */
 
@@ -1374,41 +1462,50 @@ L10:;
 
   /* Function Body */
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (ipivot[i__] != 0)
         {
           goto L10;
         }
+
       if (p[i__] == 0.)
         {
           goto L10;
         }
+
       if (p[i__] > 0.)
         {
           goto L5;
         }
+
       tol = *epsmch * 10. * ((d__1 = low[i__], fabs(d__1)) + 1.);
+
       if (x[i__] - low[i__] > tol)
         {
           goto L10;
         }
+
       *flast = *fnew;
       ipivot[i__] = -1;
       x[i__] = low[i__];
       goto L10;
 L5:
       tol = *epsmch * 10. * ((d__1 = up[i__], fabs(d__1)) + 1.);
+
       if (up[i__] - x[i__] > tol)
         {
           goto L10;
         }
+
       *flast = *fnew;
       ipivot[i__] = 1;
       x[i__] = up[i__];
 L10:
-;
+      ;
     }
+
   return 0;
 } /* modz_ */
 
@@ -1440,47 +1537,58 @@ L10:
   cmax = 0.;
   ltest = *flast - *fnew <= *gtpnew * -.5;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (ipivot[i__] == 0 || ipivot[i__] == 2)
         {
           goto L10;
         }
+
       t = -ipivot[i__] * g[i__];
+
       if (t >= 0.)
         {
           goto L10;
         }
+
       *conv = FALSE_;
+
       if (ltest)
         {
           goto L10;
         }
+
       if (cmax <= t)
         {
           goto L10;
         }
+
       cmax = t;
       imax = i__;
 L10:
-;
+      ;
     }
+
   if (imax == 0)
     {
       goto L15;
     }
+
   ipivot[imax] = 0;
   *flast = *fnew;
   return 0;
 L15:
   *conv = FALSE_;
   one = 1.;
-  if ((*alpha * *pnorm >= *toleps * (one + *xnorm) || fabs(*difnew) >= *
+
+  if ((*alpha * *pnorm >= *toleps *(one + *xnorm) || fabs(*difnew) >= *
        rtleps * *ftest || *gtg >= *peps * *ftest * *ftest) && *gtg >= *
       accrcy * 1e-4 * *ftest * *ftest)
     {
       return 0;
     }
+
   *conv = TRUE_;
 
   /* FOR DETAILS, SEE GILL, MURRAY, AND WRIGHT (1981, P. 308) AND */
@@ -1513,35 +1621,44 @@ L15:
   /* Function Body */
   *ier = 0;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (x[i__] < low[i__])
         {
           x[i__] = low[i__];
         }
+
       if (x[i__] > up[i__])
         {
           x[i__] = up[i__];
         }
+
       ipivot[i__] = 0;
+
       if (x[i__] == low[i__])
         {
           ipivot[i__] = -1;
         }
+
       if (x[i__] == up[i__])
         {
           ipivot[i__] = 1;
         }
+
       if (up[i__] == low[i__])
         {
           ipivot[i__] = 2;
         }
+
       if (low[i__] > up[i__])
         {
           *ier = -i__;
         }
+
       /* L30: */
     }
+
   return 0;
 } /* crash_ */
 
@@ -1633,10 +1750,12 @@ L15:
          s_wsfe(&io___167);
          e_wsfe();*/
     }
+
   if (*maxit == 0)
     {
       return 0;
     }
+
   first = TRUE_;
   rhsnrm = *gnorm;
   tol = 1e-12;
@@ -1647,6 +1766,7 @@ L15:
   CTruncatedNewton::initpc_(&diagb[1], &emat[1], n, &w[1], lw, modet, upd1, yksk, gsk, yrsr,
                             lreset);
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       r__[i__] = -g[i__];
@@ -1660,9 +1780,11 @@ L15:
   /* ************************************************************ */
 
   i__1 = *maxit;
+
   for (k = 1; k <= i__1; ++k)
     {
       ++(*nlincg);
+
       if (*modet > 1)
         {
           /*
@@ -1677,52 +1799,67 @@ L15:
         {
           ztime_(n, &r__[1], &ipivot[1]);
         }
+
       CTruncatedNewton::msolve_(&r__[1], &zk[1], n, &w[1], lw, upd1, yksk, gsk, yrsr, lreset,
                                 &first);
+
       if (*bounds)
         {
           ztime_(n, &zk[1], &ipivot[1]);
         }
+
       rz = ddot_(n, &r__[1], &c__1, &zk[1], &c__1);
+
       if (rz / rhsnrm < tol)
         {
           goto L80;
         }
+
       if (k == 1)
         {
           beta = 0.;
         }
+
       if (k > 1)
         {
           beta = rz / rzold;
         }
+
       i__2 = *n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           v[i__] = zk[i__] + beta * v[i__];
           /* L20: */
         }
+
       if (*bounds)
         {
           ztime_(n, &v[1], &ipivot[1]);
         }
+
       CTruncatedNewton::gtims_(&v[1], &gv[1], n, &x[1], &g[1], &w[1], lw, sfun, &first,
                                &delta, accrcy, xnorm);
+
       if (*bounds)
         {
           ztime_(n, &gv[1], &ipivot[1]);
         }
+
       ++(*nfeval);
       vgv = ddot_(n, &v[1], &c__1, &gv[1], &c__1);
+
       if (vgv / rhsnrm < tol)
         {
           goto L50;
         }
+
       ndia3_(n, &emat[1], &v[1], &gv[1], &r__[1], &vgv, modet);
 
       /* COMPUTE LINEAR STEP LENGTH */
 
       alpha = rz / vgv;
+
       if (*modet >= 1)
         {
           /*
@@ -1743,11 +1880,14 @@ L15:
       pr = ddot_(n, &r__[1], &c__1, &zsol[1], &c__1);
       qnew = (*gtp + pr) * .5;
       qtest = k * (1. - qold / qnew);
+
       if (qtest < 0.)
         {
           goto L70;
         }
+
       qold = qnew;
+
       if (qtest <= .5)
         {
           goto L70;
@@ -1759,6 +1899,7 @@ L15:
         {
           goto L40;
         }
+
       rzold = rz;
       /* L30: */
     }
@@ -1771,6 +1912,7 @@ L15:
   /* TRUNCATE ALGORITHM IN CASE OF AN EMERGENCY */
 
 L40:
+
   if (*modet >= -1)
     {
       /*
@@ -1778,31 +1920,38 @@ L40:
          do_fio(&c__1, (char *)&k, (ftnlen)sizeof(C_INT));
          e_wsfe();*/
     }
+
   d__1 = -alpha;
   daxpy_(n, &d__1, &v[1], &c__1, &zsol[1], &c__1);
   *gtp = ddot_(n, &zsol[1], &c__1, &g[1], &c__1);
   goto L90;
 L50:
+
   if (*modet > -2)
     {
       /*
          s_wsfe(&io___186);
          e_wsfe();*/
     }
+
   /* L60: */
   if (k > 1)
     {
       goto L70;
     }
+
   CTruncatedNewton::msolve_(&g[1], &zsol[1], n, &w[1], lw, upd1, yksk, gsk, yrsr, lreset, &
                             first);
   negvec_(n, &zsol[1]);
+
   if (*bounds)
     {
       ztime_(n, &zsol[1], &ipivot[1]);
     }
+
   *gtp = ddot_(n, &zsol[1], &c__1, &g[1], &c__1);
 L70:
+
   if (*modet >= -1)
     {
       /*
@@ -1811,24 +1960,30 @@ L70:
          do_fio(&c__1, (char *)&rnorm, (ftnlen)sizeof(C_FLOAT64));
          e_wsfe();*/
     }
+
   goto L90;
 L80:
+
   if (*modet >= -1)
     {
       /*
          s_wsfe(&io___189);
          e_wsfe();*/
     }
+
   if (k > 1)
     {
       goto L70;
     }
+
   dcopy_(n, &g[1], &c__1, &zsol[1], &c__1);
   negvec_(n, &zsol[1]);
+
   if (*bounds)
     {
       ztime_(n, &zsol[1], &ipivot[1]);
     }
+
   *gtp = ddot_(n, &zsol[1], &c__1, &g[1], &c__1);
   goto L70;
 
@@ -1870,13 +2025,16 @@ L90:
   /* Function Body */
   vr = ddot_(n, &v[1], &c__1, &r__[1], &c__1);
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       e[i__] = e[i__] - r__[i__] * r__[i__] / vr + gv[i__] * gv[i__] / *vgv;
+
       if (e[i__] > 1e-6)
         {
           goto L10;
         }
+
       if (*modet > -2)
         {
           /*
@@ -1884,10 +2042,12 @@ L90:
              do_fio(&c__1, (char *)&e[i__], (ftnlen)sizeof(C_FLOAT64));
              e_wsfe();*/
         }
+
       e[i__] = 1.;
 L10:
-;
+      ;
     }
+
   return 0;
 } /* ndia3_ */
 
@@ -1908,11 +2068,13 @@ L10:
 
   /* Function Body */
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       v[i__] = -v[i__];
       /* L10: */
     }
+
   return 0;
 } /* negvec_ */
 
@@ -1998,14 +2160,17 @@ C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
   epsmch = mchpr1_();
   d__ = (d__1 = *fnew - *fm, fabs(d__1));
   alpha = 1.;
+
   if (d__ * 2. <= -(*gtp) && d__ >= epsmch)
     {
       alpha = d__ * -2. / *gtp;
     }
+
   if (alpha >= *smax)
     {
       alpha = *smax;
     }
+
   ret_val = alpha;
   return ret_val;
 } /* step1_ */
@@ -2020,7 +2185,7 @@ C_FLOAT64 mchpr1_(void)
 
   /* FOR IEEE */
 
-  ret_val = DBL_EPSILON;
+  ret_val = std::numeric_limits< C_FLOAT64 >::epsilon();
 
   return ret_val;
 } /* mchpr1_ */
@@ -2046,6 +2211,7 @@ C_FLOAT64 mchpr1_(void)
   *nwhy = -1;
   *rteps = sqrt(*epsmch);
   *rtol = *xtol;
+
   if (fabs(*rtol) < *accrcy)
     {
       *rtol = *rteps * 10.;
@@ -2058,6 +2224,7 @@ C_FLOAT64 mchpr1_(void)
     {
       return 0;
     }
+
   *nwhy = 0;
 
   /* SET CONSTANTS FOR LATER */
@@ -2121,29 +2288,34 @@ C_FLOAT64 mchpr1_(void)
   --w;
 
   /* Function Body */
-  if (! (*first))
+  if (!(*first))
     {
       goto L20;
     }
+
   *delta = sqrt(*accrcy) * (*xnorm + 1.);
   *first = FALSE_;
 L20:
   dinv = 1. / *delta;
   ihg = subscr_2.lhg;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       w[ihg] = x[i__] + *delta * v[i__];
       ++ihg;
       /* L30: */
     }
+
   (*sfun)(n, &w[subscr_2.lhg], &f, &gv[1]);
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       gv[i__] = (gv[i__] - g[i__]) * dinv;
       /* L40: */
     }
+
   return 0;
 } /* gtims_ */
 
@@ -2204,8 +2376,10 @@ L20:
     {
       goto L100;
     }
+
   one = 1.;
   *gsk = ddot_(n, &g[1], &c__1, &sk[1], &c__1);
+
   if (*lreset)
     {
       goto L60;
@@ -2214,41 +2388,52 @@ L20:
   /* COMPUTE HG AND HY WHERE H IS THE INVERSE OF THE DIAGONALS */
 
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       rdiagb = 1. / diagb[i__];
       hg[i__] = g[i__] * rdiagb;
+
       if (*first)
         {
           hyk[i__] = yk[i__] * rdiagb;
         }
+
       if (*first)
         {
           hyr[i__] = yr[i__] * rdiagb;
         }
+
       /* L57: */
     }
+
   if (*first)
     {
       yksr = ddot_(n, &yk[1], &c__1, &sr[1], &c__1);
     }
+
   if (*first)
     {
       ykhyr = ddot_(n, &yk[1], &c__1, &hyr[1], &c__1);
     }
+
   gsr = ddot_(n, &g[1], &c__1, &sr[1], &c__1);
   ghyr = ddot_(n, &g[1], &c__1, &hyr[1], &c__1);
+
   if (*first)
     {
       yrhyr = ddot_(n, &yr[1], &c__1, &hyr[1], &c__1);
     }
+
   ssbfgs_(n, &one, &sr[1], &yr[1], &hg[1], &hyr[1], yrsr, &yrhyr, &gsr, &
           ghyr, &hg[1]);
+
   if (*first)
     {
       ssbfgs_(n, &one, &sr[1], &yr[1], &hyk[1], &hyr[1], yrsr, &yrhyr, &
               yksr, &ykhyr, &hyk[1]);
     }
+
   ykhyk = ddot_(n, &hyk[1], &c__1, &yk[1], &c__1);
   ghyk = ddot_(n, &hyk[1], &c__1, &g[1], &c__1);
   ssbfgs_(n, &one, &sk[1], &yk[1], &hg[1], &hyk[1], yksk, &ykhyk, gsk, &
@@ -2259,31 +2444,38 @@ L60:
   /* COMPUTE GH AND HY WHERE H IS THE INVERSE OF THE DIAGONALS */
 
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       rdiagb = 1. / diagb[i__];
       hg[i__] = g[i__] * rdiagb;
+
       if (*first)
         {
           hyk[i__] = yk[i__] * rdiagb;
         }
+
       /* L65: */
     }
+
   if (*first)
     {
       ykhyk = ddot_(n, &yk[1], &c__1, &hyk[1], &c__1);
     }
+
   ghyk = ddot_(n, &g[1], &c__1, &hyk[1], &c__1);
   ssbfgs_(n, &one, &sk[1], &yk[1], &hg[1], &hyk[1], yksk, &ykhyk, gsk, &
           ghyk, &y[1]);
   return 0;
 L100:
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L110: */
       y[i__] = g[i__] / diagb[i__];
     }
+
   return 0;
 } /* mslv_ */
 
@@ -2314,11 +2506,13 @@ L100:
           yjsj;
   beta = -(*gamma) * *vsj / *yjsj;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       hjp1v[i__] = *gamma * hjv[i__] + delta * sj[i__] + beta * hjyj[i__];
       /* L10: */
     }
+
   return 0;
 } /* ssbfgs_ */
 
@@ -2378,20 +2572,25 @@ L100:
     {
       goto L90;
     }
+
   if (*lreset)
     {
       goto L60;
     }
+
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       bsk[i__] = diagb[i__] * sr[i__];
       /* L10: */
     }
+
   sds = ddot_(n, &sr[1], &c__1, &bsk[1], &c__1);
   srds = ddot_(n, &sk[1], &c__1, &bsk[1], &c__1);
   yrsk = ddot_(n, &yr[1], &c__1, &sk[1], &c__1);
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       td = diagb[i__];
@@ -2401,24 +2600,30 @@ L100:
                   / *yrsr;
       /* L20: */
     }
+
   sds = ddot_(n, &sk[1], &c__1, &bsk[1], &c__1);
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       emat[i__] = emat[i__] - bsk[i__] * bsk[i__] / sds + yk[i__] * yk[i__]
                   / *yksk;
       /* L30: */
     }
+
   goto L110;
 L60:
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       bsk[i__] = diagb[i__] * sk[i__];
       /* L70: */
     }
+
   sds = ddot_(n, &sk[1], &c__1, &bsk[1], &c__1);
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       td = diagb[i__];
@@ -2426,29 +2631,36 @@ L60:
                   / *yksk;
       /* L80: */
     }
+
   goto L110;
 L90:
   dcopy_(n, &diagb[1], &c__1, &emat[1], &c__1);
 L110:
+
   if (*modet < 1)
     {
       return 0;
     }
+
   d1 = emat[1];
   dn = emat[1];
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (emat[i__] < d1)
         {
           d1 = emat[i__];
         }
+
       if (emat[i__] > dn)
         {
           dn = emat[i__];
         }
+
       /* L120: */
     }
+
   cond = dn / d1;
   /*s_wsfe(&io___235);
   do_fio(&c__1, (char *)&d1, (ftnlen)sizeof(C_FLOAT64));
@@ -2469,6 +2681,7 @@ L110:
       subscr_3.lsub[i__ - 1] = (i__ - 1) * *n + 1;
       /* L10: */
     }
+
   subscr_3.lwtest = subscr_3.lsub[13] + *n - 1;
   return 0;
 } /* setpar_ */
@@ -2545,15 +2758,18 @@ L10:
 
   ++itcnt;
   *iflag = 1;
+
   if (itcnt > 20)
     {
       goto L50;
     }
+
   *iflag = 0;
   CTruncatedNewton::getptc_(&big, small, &rtsmll, reltol, fabstol, tnytol, &fpresn, eta, &rmu,
                             xbnd, &u, &fu, &gu, &xmin, &fmin, &gmin, &xw, &fw, &gw, &a, &b, &
                             oldf, &b1, &scxbnd, &e, &step, &factor, &braktd, &gtest1, &gtest2,
                             &tol, &ientry, &itest);
+
   /* LSOUT */
   if (lsprnt >= nprnt)
     {
@@ -2568,15 +2784,18 @@ L10:
     {
       goto L30;
     }
+
   ualpha = xmin + u;
   l = lx;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       w[l] = x[i__] + ualpha * p[i__];
       ++l;
       /* L20: */
     }
+
   (*sfun)(n, &w[lx], &fu, &w[lg]);
   ++numf;
   gu = ddot_(n, &w[lg], &c__1, &p[1], &c__1);
@@ -2589,6 +2808,7 @@ L10:
     {
       dcopy_(n, &w[lg], &c__1, &g[1], &c__1);
     }
+
   goto L10;
 
   /*      IF ITEST=2 OR 3 A LOWER POINT COULD NOT BE FOUND */
@@ -2596,6 +2816,7 @@ L10:
 L30:
   *nftotl = numf;
   *iflag = 1;
+
   if (itest != 0)
     {
       goto L50;
@@ -2607,11 +2828,13 @@ L30:
   *f = fmin;
   *alpha = xmin;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       x[i__] += *alpha * p[i__];
       /* L40: */
     }
+
 L50:
   return 0;
 } /* linder_ */
@@ -2664,8 +2887,8 @@ int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64
 
   switch (*ientry)
     {
-    case 1: goto L10;
-    case 2: goto L20;
+      case 1: goto L10;
+      case 2: goto L20;
     }
 
   /*      IENTRY=1 */
@@ -2673,15 +2896,19 @@ int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64
 
 L10:
   *itest = 2;
+
   if (*u <= zero || *xbnd <= *tnytol || *gu > zero)
     {
       return 0;
     }
+
   *itest = 1;
+
   if (*xbnd < *fabstol)
     {
       *fabstol = *xbnd;
     }
+
   *tol = *fabstol;
   twotol = *tol + *tol;
 
@@ -2731,6 +2958,7 @@ L10:
   /* UPDATE A,B,XW, AND XMIN */
 
 L20:
+
   if (*fu > *fmin)
     {
       goto L60;
@@ -2740,6 +2968,7 @@ L20:
   /* ORIGIN AND OTHER POINTS ARE SCALED ACCORDINGLY. */
 
   chordu = *oldf - (*xmin + *u) * *gtest1;
+
   if (*fu <= chordu)
     {
       goto L30;
@@ -2754,25 +2983,33 @@ L20:
   chordm = *oldf - *xmin * *gtest1;
   *gu = -(*gmin);
   denom = chordm - *fmin;
+
   if (fabs(denom) >= 1e-15)
     {
       goto L25;
     }
+
   denom = 1e-15;
+
   if (chordm - *fmin < 0.)
     {
       denom = -denom;
     }
+
 L25:
+
   if (*xmin != zero)
     {
       *gu = *gmin * (chordu - *fu) / denom;
     }
+
   *fu = half * *u * (*gmin + *gu) + *fmin;
+
   if (*fu < *fmin)
     {
       *fu = *fmin;
     }
+
   goto L60;
 L30:
   *fw = *fmin;
@@ -2784,10 +3021,12 @@ L30:
   *b -= *u;
   *xw = -(*u);
   *scxbnd -= *u;
+
   if (*gu <= zero)
     {
       goto L40;
     }
+
   *b = zero;
   *braktd = TRUE_;
   goto L50;
@@ -2801,10 +3040,12 @@ L50:
   /* BUT NEW POINT MAY NOW QUALIFY AS W. */
 
 L60:
+
   if (*u < zero)
     {
       goto L70;
     }
+
   *b = *u;
   *braktd = TRUE_;
   goto L80;
@@ -2822,12 +3063,15 @@ L90:
 
   convrg = fabs(xmidpt) <= twotol - half * (*b - *a) || fabs(*gmin) <= *
            gtest2 && *fmin < *oldf && ((d__1 = *xmin - *xbnd, fabs(d__1)) > *
-                                       tol || ! (*braktd));
+                                       tol || !(*braktd));
+
   if (! convrg)
     {
       goto L100;
     }
+
   *itest = 0;
+
   if (*xmin != zero)
     {
       return 0;
@@ -2839,15 +3083,19 @@ L90:
   /* EXPECTED, REDUCE THE VALUE OF TOL. */
 
   *itest = 3;
+
   if ((d__1 = *oldf - *fw, fabs(d__1)) <= *fpresn * (one + fabs(*oldf)))
     {
       return 0;
     }
+
   *tol = point1 * *tol;
+
   if (*tol < *tnytol)
     {
       return 0;
     }
+
   *reltol = point1 * *reltol;
   *fabstol = point1 * *fabstol;
   twotol = point1 * twotol;
@@ -2858,6 +3106,7 @@ L100:
   r__ = zero;
   q = zero;
   s = zero;
+
   if (fabs(*e) <= *tol)
     {
       goto L150;
@@ -2868,6 +3117,7 @@ L100:
   r__ = three * (*fmin - *fw) / *xw + *gmin + *gw;
   fabsr = fabs(r__);
   q = fabsr;
+
   if (*gw == zero || *gmin == zero)
     {
       goto L140;
@@ -2879,6 +3129,7 @@ L100:
   abgw = fabs(*gw);
   abgmin = fabs(*gmin);
   s = sqrt(abgmin) * sqrt(abgw);
+
   if (*gw / abgw * *gmin > zero)
     {
       goto L130;
@@ -2888,6 +3139,7 @@ L100:
 
   sumsq = one;
   p = zero;
+
   if (fabsr >= s)
     {
       goto L110;
@@ -2899,46 +3151,55 @@ L100:
     {
       p = s * *rtsmll;
     }
+
   if (fabsr >= p)
     {
       /* Computing 2nd power */
       d__1 = fabsr / s;
       sumsq = one + d__1 * d__1;
     }
+
   scale = s;
   goto L120;
 
   /* THERE IS A POSSIBILITY OF UNDERFLOW. */
 
 L110:
+
   if (fabsr > *rtsmll)
     {
       p = fabsr * *rtsmll;
     }
+
   if (s >= p)
     {
       /* Computing 2nd power */
       d__1 = s / fabsr;
       sumsq = one + d__1 * d__1;
     }
+
   scale = fabsr;
 L120:
   sumsq = sqrt(sumsq);
   q = *big;
+
   if (scale < *big / sumsq)
     {
       q = scale * sumsq;
     }
+
   goto L140;
 
   /* COMPUTE THE SQUARE ROOT OF R*R - S*S */
 
 L130:
   q = sqrt((d__1 = r__ + s, fabs(d__1))) * sqrt((d__2 = r__ - s, fabs(d__2)));
+
   if (r__ >= s || r__ <= -s)
     {
       goto L140;
     }
+
   r__ = zero;
   q = zero;
   goto L150;
@@ -2946,21 +3207,27 @@ L130:
   /* COMPUTE THE MINIMUM OF FITTED CUBIC */
 
 L140:
+
   if (*xw < zero)
     {
       q = -q;
     }
+
   s = *xw * (*gmin - r__ - q);
   q = *gw - *gmin + q + q;
+
   if (q > zero)
     {
       s = -s;
     }
+
   if (q <= zero)
     {
       q = -q;
     }
+
   r__ = *e;
+
   if (*b1 != *step || *braktd)
     {
       *e = *step;
@@ -2972,25 +3239,31 @@ L150:
   a1 = *a;
   *b1 = *b;
   *step = xmidpt;
+
   if (*braktd)
     {
       goto L160;
     }
+
   *step = -(*factor) * *xw;
+
   if (*step > *scxbnd)
     {
       *step = *scxbnd;
     }
+
   if (*step != *scxbnd)
     {
       *factor = five * *factor;
     }
+
   goto L170;
 
   /* IF THE MINIMUM IS BRACKETED BY 0 AND XW THE STEP MUST LIE */
   /* WITHIN (A,B). */
 
 L160:
+
   if ((*a != zero || *xw >= zero) && (*b != zero || *xw <= zero))
     {
       goto L180;
@@ -3001,23 +3274,29 @@ L160:
 
   d1 = *xw;
   d2 = *a;
+
   if (*a == zero)
     {
       d2 = *b;
     }
+
   /* THIS LINE MIGHT BE */
   /*     IF (A .EQ. ZERO) D2 = E */
   *u = -d1 / d2;
   *step = five * d2 * (point1 + one / *u) / eleven;
+
   if (*u < one)
     {
       *step = half * d2 * sqrt(*u);
     }
+
 L170:
+
   if (*step <= zero)
     {
       a1 = *step;
     }
+
   if (*step > zero)
     {
       *b1 = *step;
@@ -3028,6 +3307,7 @@ L170:
   /* DURING THE LAST-BUT-ONE ITERATION. */
 
 L180:
+
   if (fabs(s) <= (d__1 = half * q * r__, fabs(d__1)) || s <= q * a1 || s >= q
       * *b1)
     {
@@ -3044,10 +3324,12 @@ L180:
     {
       goto L210;
     }
+
   if (xmidpt > zero)
     {
       goto L190;
     }
+
   *step = -(*tol);
   goto L210;
 L190:
@@ -3060,10 +3342,12 @@ L200:
   /* COMPUTE THE NEW POINT ON THE BOUNDARY). */
 
 L210:
+
   if (*step < *scxbnd)
     {
       goto L220;
     }
+
   *step = *scxbnd;
 
   /* MOVE SXBD TO THE LEFT SO THAT SBND + TOL(XBND) = XBND. */
@@ -3071,14 +3355,17 @@ L210:
   *scxbnd -= (*reltol * fabs(*xbnd) + *fabstol) / (one + *reltol);
 L220:
   *u = *step;
+
   if (fabs(*step) < *tol && *step < zero)
     {
       *u = -(*tol);
     }
+
   if (fabs(*step) < *tol && *step >= zero)
     {
       *u = *tol;
     }
+
   *itest = 1;
   return 0;
 } /* getptc_ */
@@ -3115,6 +3402,7 @@ L220:
     {
       return 0;
     }
+
   if (*incx == 1 && *incy == 1)
     {
       goto L20;
@@ -3125,15 +3413,19 @@ L220:
 
   ix = 1;
   iy = 1;
+
   if (*incx < 0)
     {
       ix = (-(*n) + 1) * *incx + 1;
     }
+
   if (*incy < 0)
     {
       iy = (-(*n) + 1) * *incy + 1;
     }
+
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       dy[iy] += dx[ix];
@@ -3141,6 +3433,7 @@ L220:
       iy += *incy;
       /* L10: */
     }
+
   return 0;
 
   /*        CODE FOR BOTH INCREMENTS EQUAL TO 1 */
@@ -3149,23 +3442,29 @@ L220:
 
 L20:
   m = *n % 4;
+
   if (m == 0)
     {
       goto L40;
     }
+
   i__1 = m;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       dy[i__] += dx[i__];
       /* L30: */
     }
+
   if (*n < 4)
     {
       return 0;
     }
+
 L40:
   mp1 = m + 1;
   i__1 = *n;
+
   for (i__ = mp1; i__ <= i__1; i__ += 4)
     {
       dy[i__] += dx[i__];
@@ -3174,6 +3473,7 @@ L40:
       dy[i__ + 3] += dx[i__ + 3];
       /* L50: */
     }
+
   return 0;
 } /* dxpy_ */
 

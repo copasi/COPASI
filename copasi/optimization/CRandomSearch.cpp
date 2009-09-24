@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/09/24 18:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,7 +159,7 @@ bool CRandomSearch::optimise()
                     if (mut == 0.0)
                       mut = DBL_MIN;
                     else
-                      mut += mut * DBL_EPSILON;
+                      mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
 
                 break;
@@ -172,7 +172,7 @@ bool CRandomSearch::optimise()
                     if (mut == 0.0)
                       mut = - DBL_MIN;
                     else
-                      mut -= mut * DBL_EPSILON;
+                      mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
 
                 break;

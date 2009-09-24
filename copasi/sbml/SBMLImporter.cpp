@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.245 $
+//   $Revision: 1.246 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/09/16 12:35:05 $
+//   $Author: shoops $
+//   $Date: 2009/09/24 18:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3484,7 +3484,8 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
   if (chemicalEquation.getReversibility())
     {
 #ifdef COPASI_DEBUG
-      CEvaluationNode* pTmpNode = CEvaluationNodeNormalizer::normalize(pRootNode);
+      CEvaluationNode* pTmpNode = pRootNode->copyBranch();
+//      CEvaluationNode* pTmpNode = CEvaluationNodeNormalizer::normalize(pRootNode);
 #else
       CEvaluationNode* pTmpNode = pRootNode->copyBranch();
 #endif /* COPASI_DEBUG */

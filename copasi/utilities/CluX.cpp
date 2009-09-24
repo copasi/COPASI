@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2009/09/24 18:12:31 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,7 +40,9 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
   unsigned C_INT32 Dim = std::min(Rows, Cols);
 
   if (row.size() != Rows) row.resize(Rows);
+
   if (col.size() != Cols) col.resize(Cols);
+
   unsigned C_INT32 i = 0, j = 0, k = 0;
   unsigned C_INT32 rowP = 0, colP = Cols - 1;
 
@@ -49,6 +56,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
   C_FLOAT64 Completion = 0;
 
   unsigned C_INT32 hProcess;
+
   if (cb)
     hProcess = cb->addItem("LU decomposition...",
                            CCopasiParameter::DOUBLE,
@@ -82,7 +90,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
           // rowP now has the index of maximum element
           // of column j, below the diagonal
 
-          if (tmp < DBL_EPSILON) // now we have to swap colums to find a pivot
+          if (tmp < std::numeric_limits< C_FLOAT64 >::epsilon()) // now we have to swap colums to find a pivot
             {
               // Instead of blindly swapping with the last available
               // column we first check whether it is suitable. If not
@@ -99,7 +107,8 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
                         tmp = fabs(*pTmp1); // fabs(A(j, colP));
                       }
 
-                  if (tmp >= DBL_EPSILON) break; // Found a suitable column
+                  if (tmp >= std::numeric_limits< C_FLOAT64 >::epsilon()) break; // Found a suitable column
+
                   // and row
 
                   colP--; // proceed with previous column
@@ -108,6 +117,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
               if (i >= colP)
                 {
                   if (cb) cb->finish(hProcess);
+
                   return true;
                 }
 
@@ -172,7 +182,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
               for (jj = i + 1; jj < Cols; jj++, pTmp2++, pTmp3++)
                 {
                   *pTmp3 -= *pTmp1 * *pTmp2;
-                  //                  if (fabs(*pTmp3) < DBL_EPSILON) *pTmp3 = 0.0;
+                  //                  if (fabs(*pTmp3) < std::numeric_limits< C_FLOAT64 >::epsilon()) *pTmp3 = 0.0;
                 }
             }
         }
@@ -202,8 +212,11 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
   C_INT Cols = A.numCols();
 
   if (row.size() != Rows) row.resize(Rows);
+
   if (col.size() != Cols) col.resize(Cols);
+
   if (lRow.size() != Rows) lRow.resize(Rows);
+
   if (lCol.size() != Rows) lCol.resize(Cols);
 
   unsigned C_INT32 i = 0, j = 0, k = 0;
@@ -228,7 +241,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
 
   for (i = 0; i < Cols; i++)
     for (j = 0; j < Rows; j++)
-      T(i, j) = A (j, i);
+      T(i, j) = A(j, i);
 
   C_INT imax = std::min(Rows, Cols);
   CVector<C_INT> RowPivot(imax);
@@ -301,6 +314,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
        *
        */
       dgetrf_(&subRows, &subCols, &T(lCol[iTop], iTop), &Rows, RowPivot.array(), &Info);
+
       if (Info < 0) return false;
 
 #ifdef DEBUG_MATRIX

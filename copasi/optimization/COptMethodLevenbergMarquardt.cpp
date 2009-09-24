@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/09/24 18:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -184,11 +184,11 @@ bool COptMethodLevenbergMarquardt::optimise()
           switch (OptItem.checkConstraint(mCurrent[i]))
             {
               case - 1:
-                mCurrent[i] = *OptItem.getLowerBoundValue() + DBL_EPSILON;
+                mCurrent[i] = *OptItem.getLowerBoundValue() + std::numeric_limits< C_FLOAT64 >::epsilon();
                 break;
 
               case 1:
-                mCurrent[i] = *OptItem.getUpperBoundValue() - DBL_EPSILON;
+                mCurrent[i] = *OptItem.getUpperBoundValue() - std::numeric_limits< C_FLOAT64 >::epsilon();
                 break;
 
               case 0:

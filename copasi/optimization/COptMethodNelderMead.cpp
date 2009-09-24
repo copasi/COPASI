@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/09/24 18:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -580,7 +580,7 @@ First:
   /* ---- Reduce the size of the simplex and restart the procedure. ---- */
 
   found = 0;   /* -- we did not find a 1 minimum -- */
-  del = std::max(del * factor, 100.0 * DBL_EPSILON);
+  del = std::max(del * factor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 
   goto First;
 

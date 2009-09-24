@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/13 20:20:33 $
+//   $Date: 2009/09/24 18:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -210,12 +210,12 @@ bool CTSSAProblem::sync()
       StepSize = Tmp / (C_FLOAT64) * mpStepNumber;
 
       /* Assure that the step size is not to small for machine accuracy */
-      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(*mpDuration))
+      if (fabs(StepSize) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(*mpDuration))
         {
           CCopasiMessage(CCopasiMessage::WARNING,
                          MCTSSAProblem + 3, StepSize);
 
-          StepSize = 100 * DBL_EPSILON * fabs(*mpDuration);
+          StepSize = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(*mpDuration);
           /* Assure that the step size has the appropriate sign. */
           StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);
           StepNumber = fabs(ceil(Tmp / StepSize));
@@ -223,12 +223,12 @@ bool CTSSAProblem::sync()
     }
   else
     {
-      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(*mpDuration))
+      if (fabs(StepSize) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(*mpDuration))
         {
           CCopasiMessage(CCopasiMessage::WARNING,
                          MCTSSAProblem + 3, StepSize);
 
-          StepSize = 100 * DBL_EPSILON * fabs(*mpDuration);
+          StepSize = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(*mpDuration);
 
           /* Assure that the step size has the appropriate sign. */
           StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);

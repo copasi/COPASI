@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/09/24 18:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -248,7 +248,7 @@ bool COptMethodEP::creation()
                 if (mut == 0.0)
                   mut = DBL_MIN;
                 else
-                  mut += mut * DBL_EPSILON;
+                  mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
               }
 
             break;
@@ -261,7 +261,7 @@ bool COptMethodEP::creation()
                 if (mut == 0.0)
                   mut = - DBL_MIN;
                 else
-                  mut -= mut * DBL_EPSILON;
+                  mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
               }
 
             break;
@@ -360,7 +360,7 @@ bool COptMethodEP::creation()
                     if (mut == 0.0)
                       mut = DBL_MIN;
                     else
-                      mut += mut * DBL_EPSILON;
+                      mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
 
                 break;
@@ -373,7 +373,7 @@ bool COptMethodEP::creation()
                     if (mut == 0.0)
                       mut = - DBL_MIN;
                     else
-                      mut -= mut * DBL_EPSILON;
+                      mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
 
                 break;

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/02/12 20:56:08 $
+//   $Author: shoops $
+//   $Date: 2009/09/24 18:12:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,7 +22,7 @@
 #include "copasi.h"
 #include "FminBrent.h"
 
-#define SQRT_EPSILON sqrt(DBL_EPSILON)
+#define SQRT_EPSILON sqrt(std::numeric_limits< C_FLOAT64 >::epsilon())
 int FminBrent(double a,                 /* Left border      */
               double b,                 /* Right border      */
               FDescent * pF,            /* Functor for function under investigation  */
@@ -34,6 +39,7 @@ int FminBrent(double a,                 /* Left border      */
   int iter;                           /* Iteration counter    */
 
   if (tol <= 0) return 1;            /* check input values    */
+
   if (b <= a) return 2;
 
   v = a + r * (b - a); fv = (*pF)(v);     /* First step - always gold section*/
@@ -53,10 +59,12 @@ int FminBrent(double a,                 /* Left border      */
           *min = x; *fmin = fx;       /* Store the solution    */
           return 0;                   /* Acceptable approx. is found  */
         }
+
       /* Obtain the gold section step  */
       new_step = r * (x < middle_range ? b - x : a - x);
 
       /* Decide if the interpolation  */
+
       /* can be tried      */
       if (fabs(x - w) >= tol_act)     /* If x and w are distinct          */
         {/* interpolatiom may be tried  */
@@ -78,6 +86,7 @@ int FminBrent(double a,                 /* Left border      */
               p > q*(a - x + 2*tol_act) &&         /* not too close to a and   */
               p < q*(b - x - 2*tol_act))      /* b, and isn't too large   */
             new_step = p / q;                 /* it is accepted     */
+
           /* If p/q is too large then the  */
           /* gold section procedure can  */
           /* reduce [a,b] range to more  */
@@ -89,10 +98,12 @@ int FminBrent(double a,                 /* Left border      */
           new_step = tol_act;
         else
           new_step = -tol_act;
+
       /* Obtain the next approximation to */
       {/* min & reduce the enveloping range*/
         double t = x + new_step;  /* Tentative point for the min  */
         double ft = (*pF)(t);
+
         if (ft <= fx)
           {/* t is a better approximation  */
             if (t < x)                /* Reduce the range so that   */
@@ -115,12 +126,11 @@ int FminBrent(double a,                 /* Left border      */
                 v = w; w = t;
                 fv = fw; fw = ft;
               }
-            else
-              if (ft <= fv || v == x || v == w)
-                {
-                  v = t;
-                  fv = ft;
-                }
+            else if (ft <= fv || v == x || v == w)
+              {
+                v = t;
+                fv = ft;
+              }
           }
       }                                /* ----- end-of-block -----   */
     }                                  /* ===== End of loop =====   */

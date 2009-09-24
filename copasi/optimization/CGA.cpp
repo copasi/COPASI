@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 14:06:35 $
+//   $Date: 2009/09/24 18:12:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -146,7 +151,7 @@ CGA::CGA(const CGA& source) : COptAlgorithm(source)
 }
 
 // Object assignment overloading
-CGA& CGA::operator=(const CGA& source)
+CGA& CGA::operator=(const CGA & source)
 {
   cleanup();
 
@@ -194,7 +199,7 @@ void CGA::setRealProblem(CRealProblem & aProb)
 }
 
 //set parameter
-void CGA::setParamNum (int num)
+void CGA::setParamNum(int num)
 {
   mParamNum = num;
 }
@@ -532,48 +537,48 @@ void CGA::select(int method)
 
   switch (method)
     {
-    case 1:         // parent-offspring competition
+      case 1:         // parent-offspring competition
 
-      for (i = mPopSize; i < 2*mPopSize; i++)
-        {
-          // if offspring is fitter keep it
+        for (i = mPopSize; i < 2*mPopSize; i++)
+          {
+            // if offspring is fitter keep it
 
-          if (mCandX[i] < mCandX[i - mPopSize])
-            copy(i, i - mPopSize);
-        }
+            if (mCandX[i] < mCandX[i - mPopSize])
+              copy(i, i - mPopSize);
+          }
 
-      break;
+        break;
 
-    case 2:         // tournament competition
-      // compete with 20% of the population
-      nopp = mPopSize / 5;
-      // but at least one
+      case 2:         // tournament competition
+        // compete with 20% of the population
+        nopp = mPopSize / 5;
+        // but at least one
 
-      if (nopp < 1)
-        nopp = 1;
+        if (nopp < 1)
+          nopp = 1;
 
-      // parents and offspring are all in competition
-      for (i = 0; i < 2*mPopSize; i++)
-        {
-          mWins[i] = 0;
+        // parents and offspring are all in competition
+        for (i = 0; i < 2*mPopSize; i++)
+          {
+            mWins[i] = 0;
 
-          for (j = 0; j < nopp; j++)
-            {
-              // get random opponent
-              opp = r250n(mPopSize * 2);
+            for (j = 0; j < nopp; j++)
+              {
+                // get random opponent
+                opp = r250n(mPopSize * 2);
 
-              if (mCandX[i] <= mCandX[opp])
-                mWins[i]++;
-            }
-        }
+                if (mCandX[i] <= mCandX[opp])
+                  mWins[i]++;
+              }
+          }
 
-      // selection of top mPopSize winners
-      for (i = 0; i < mPopSize; i++)
-        for (j = i + 1; j < 2*mPopSize; j++)
-          if (mWins[i] < mWins[j])
-            swap(i, j);
+        // selection of top mPopSize winners
+        for (i = 0; i < mPopSize; i++)
+          for (j = i + 1; j < 2*mPopSize; j++)
+            if (mWins[i] < mWins[j])
+              swap(i, j);
 
-      break;
+        break;
     }
 }
 
@@ -618,7 +623,7 @@ void CGA::creation(unsigned int l, unsigned int u)
               la = 1.0;
 
               if (mMin == 0.0)
-                mMin = DBL_EPSILON;
+                mMin = std::numeric_limits< C_FLOAT64 >::epsilon();
 
               if ((mMax <= 0.0) || (mMin <= 0.0))
                 linear = TRUE;

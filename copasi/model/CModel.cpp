@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.382 $
+//   $Revision: 1.383 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/04 14:00:48 $
+//   $Date: 2009/09/24 18:12:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -814,7 +814,7 @@ void CModel::buildMoieties()
       pMoiety->add(1.0, *it);
 
       for (j = 0; j < mNumMetabolitesReactionIndependent; j++, pFactor++)
-        if (fabs(*pFactor) > DBL_EPSILON)
+        if (fabs(*pFactor) > std::numeric_limits< C_FLOAT64 >::epsilon())
           pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
 
       mMoieties.add(pMoiety, true);
@@ -3434,7 +3434,7 @@ void CModel::buildLinkZero()
   C_INT independent = 0;
 
   while (independent < Dim &&
-         fabs(mRedStoi(independent, independent)) > 100 * DBL_EPSILON) independent++;
+         fabs(mRedStoi(independent, independent)) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) independent++;
 
   // Resize mL
   mNumMetabolitesReactionIndependent = independent;
@@ -3538,7 +3538,7 @@ void CModel::buildLinkZero()
             *pTmp1 += *pTmp3 * *pTmp2;
           }
 
-        if (fabs(*pTmp1) < 100 * DBL_EPSILON) *pTmp1 = 0.0;
+        if (fabs(*pTmp1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) *pTmp1 = 0.0;
       }
 
 #ifdef DEBUG_MATRIX

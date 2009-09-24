@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/09/24 18:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -478,7 +478,7 @@ void CHybridMethodLSODA::integrateDeterministicPart(C_FLOAT64 deltaT)
   d__1 = fabs(mTime), d__2 = fabs(EndTime);
   w0 = std::max(d__1, d__2);
 
-  if (tdist < DBL_EPSILON * 2. * w0) //just do nothing
+  if (tdist < std::numeric_limits< C_FLOAT64 >::epsilon() * 2. * w0) //just do nothing
     {
       //mTime = mTime + deltaT;
       //mpState->setTime(mTime);

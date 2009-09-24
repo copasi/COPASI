@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:30:25 $
+//   $Date: 2009/09/24 18:12:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,8 +149,8 @@ std::string CMoiety::getDescription(const CModel * model) const
             Description += " + ";
         }
 
-      if (fabs(it->first) > 1.0 + 100 * DBL_EPSILON ||
-          fabs(it->first) < 1.0 - 100 * DBL_EPSILON)
+      if (fabs(it->first) > 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() ||
+          fabs(it->first) < 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         Description += StringPrint("%g * ", fabs(it->first));
 
       Description += CMetabNameInterface::getDisplayName(model, *it->second);
@@ -211,8 +211,8 @@ std::string CMoiety::getExpression() const
             Infix += "+";
         }
 
-      if (fabs(it->first) > 1.0 + 100 * DBL_EPSILON ||
-          fabs(it->first) < 1.0 - 100 * DBL_EPSILON)
+      if (fabs(it->first) > 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() ||
+          fabs(it->first) < 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         Infix += StringPrint("%g*", fabs(it->first));
 
       Infix += "<" + it->second->getInitialValueReference()->getCN() + ">";

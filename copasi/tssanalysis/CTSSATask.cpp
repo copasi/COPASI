@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Date: 2009/09/24 18:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,7 +294,7 @@ void CTSSATask::processStart(const bool & useInitialValues)
 
 bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
 {
-  C_FLOAT64 CompareTime = nextTime - 100 * fabs(nextTime) * DBL_EPSILON;
+  C_FLOAT64 CompareTime = nextTime - 100.0 * fabs(nextTime) * std::numeric_limits< C_FLOAT64 >::epsilon();
 
   if (*mpCurrentTime <= CompareTime)
     {
@@ -317,7 +317,7 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
       return true;
     }
 
-  CompareTime = nextTime + 100 * fabs(nextTime) * DBL_EPSILON;
+  CompareTime = nextTime + 100.0 * fabs(nextTime) * std::numeric_limits< C_FLOAT64 >::epsilon();
 
   if (*mpCurrentTime >= CompareTime)
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:16 $
+//   $Date: 2009/09/24 18:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,7 @@ bool CTrajectoryProblem::elevateChildren()
   // If we have an old COPASI file "Duration" is not set
   // but we can fix that.
   if (*mpDuration == 1.0) // the default
-    setDuration(*mpStepSize * (C_FLOAT64) *mpStepNumber);
+    setDuration(*mpStepSize *(C_FLOAT64) *mpStepNumber);
 
   return true;
 }
@@ -134,7 +134,7 @@ void CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
  * @return "const unsigned C_INT32 &" stepNumber
  */
 const unsigned C_INT32 & CTrajectoryProblem::getStepNumber() const
-  {return *mpStepNumber;}
+{return *mpStepNumber;}
 
 /**
  * Set the size a integration step the trajectory method should do.
@@ -154,7 +154,7 @@ void CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
  * @return "const C_FLOAT64 &" stepSize
  */
 const C_FLOAT64 & CTrajectoryProblem::getStepSize() const
-  {return *mpStepSize;}
+{return *mpStepSize;}
 
 /**
  * Set the end time.
@@ -174,7 +174,7 @@ void CTrajectoryProblem::setDuration(const C_FLOAT64 & duration)
  * @return "const C_FLOAT64 &" duration
  */
 const C_FLOAT64 & CTrajectoryProblem::getDuration() const
-  {return *mpDuration;}
+{return *mpDuration;}
 
 void CTrajectoryProblem::setOutputStartTime(const C_FLOAT64 & startTime)
 {
@@ -182,7 +182,7 @@ void CTrajectoryProblem::setOutputStartTime(const C_FLOAT64 & startTime)
 }
 
 const C_FLOAT64 & CTrajectoryProblem::getOutputStartTime() const
-  {return *mpOutputStartTime;}
+{return *mpOutputStartTime;}
 
 void CTrajectoryProblem::setTimeSeriesRequested(bool flag)
 {
@@ -190,7 +190,7 @@ void CTrajectoryProblem::setTimeSeriesRequested(bool flag)
 }
 
 bool CTrajectoryProblem::timeSeriesRequested() const
-  {return *mpTimeSeriesRequested;}
+{return *mpTimeSeriesRequested;}
 
 /**
  * Load a trajectory problem
@@ -234,12 +234,12 @@ bool CTrajectoryProblem::sync()
       StepSize = Tmp / (C_FLOAT64) * mpStepNumber;
 
       /* Assure that the step size is not to small for machine accuracy */
-      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(*mpDuration))
+      if (fabs(StepSize) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(*mpDuration))
         {
           CCopasiMessage(CCopasiMessage::WARNING,
                          MCTrajectoryProblem + 3, StepSize);
 
-          StepSize = 100 * DBL_EPSILON * fabs(*mpDuration);
+          StepSize = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(*mpDuration);
           /* Assure that the step size has the appropriate sign. */
           StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);
           StepNumber = fabs(ceil(Tmp / StepSize));
@@ -247,12 +247,12 @@ bool CTrajectoryProblem::sync()
     }
   else
     {
-      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(*mpDuration))
+      if (fabs(StepSize) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(*mpDuration))
         {
           CCopasiMessage(CCopasiMessage::WARNING,
                          MCTrajectoryProblem + 3, StepSize);
 
-          StepSize = 100 * DBL_EPSILON * fabs(*mpDuration);
+          StepSize = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(*mpDuration);
 
           /* Assure that the step size has the appropriate sign. */
           StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);

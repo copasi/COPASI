@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHGASA.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 14:06:35 $
+//   $Date: 2009/09/24 18:12:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -73,7 +78,7 @@ C_INT32 COptMethodHGASA::optimise()
 
   /* Create a random number generator */
   CRandom::Type Type;
-  Type = (CRandom::Type) (C_INT32) getValue("HybridGASA.RandomGenerator.Type");
+  Type = (CRandom::Type)(C_INT32) getValue("HybridGASA.RandomGenerator.Type");
   C_INT32 Seed;
   Seed = (C_INT32) getValue("HybridGASA.RandomGenerator.Seed");
   CRandom * pRand = CRandom::createGenerator(Type, Seed);
@@ -96,6 +101,7 @@ C_INT32 COptMethodHGASA::optimise()
 
   for (int dd = 0; dd < 2*PopulationSize; dd++)
     Parameter[dd] = mParameters->array();
+
 #endif // XXXX
 
   double current_best_value, la;
@@ -113,6 +119,7 @@ C_INT32 COptMethodHGASA::optimise()
 
   // create the population array
   individual = new double * [2 * PopulationSize];
+
   // create the individuals
   for (i = 0; i < 2*PopulationSize; i++)
     {
@@ -129,12 +136,15 @@ C_INT32 COptMethodHGASA::optimise()
             {
               // determine if linear or log scale
               linear = FALSE; la = 1.0;
+
               if ((*Maximum[j] <= 0.0) || (*Minimum[j] < 0.0)) linear = TRUE;
               else
                 {
-                  la = log10(*Maximum[j]) - log10(std::min(*Minimum[j], DBL_EPSILON));
+                  la = log10(*Maximum[j]) - log10(std::min(*Minimum[j], std::numeric_limits< C_FLOAT64 >::epsilon()));
+
                   if (la < 1.8) linear = TRUE;
                 }
+
               // set it to a random value within the interval
               if (linear)
                 individual[i][j] = *Minimum[j] + pRand->getRandomCC() * (*Maximum[j] - *Minimum[j]);
@@ -146,10 +156,12 @@ C_INT32 COptMethodHGASA::optimise()
               individual[i][j] = (*Maximum[j] - *Minimum[j]) * 0.5 + *Minimum[j];
             }
         }
+
       try
         {
           // calculate its fitness value
           for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[i][kk];}
+
           CandidateValue[i] = mOptProblem->calculate();
         }
       catch (int)
@@ -169,11 +181,13 @@ C_INT32 COptMethodHGASA::optimise()
   current_best_value = Get_BestFoundSoFar_candidate();
 
   std::ofstream finalout("debugopt.dat");
+
   if (!finalout)
     {
       std::cout << "debugopt.dat cannot be opened!" << std::endl;
       exit(1);
     }
+
   finalout << "----------------------------- the best result at each generation---------------------" << std::endl;
   finalout << "Generation\t" << "Best candidate value for object function\t" << "Display " << NumParameter << " parameters" << std::endl;
   finalout << std::endl;
@@ -285,30 +299,35 @@ C_INT32 COptMethodHGASA::optimise()
                                 }
                             }
                         }
+
                       // mut = individual[nn][j] * (1 + floor(1000000*rand()/RAND_MAX)/1000000);
                       //mut = individual[nn][j] * (1 + pRand->getRandomCC());
                     }
+
                   // check boundary and force it to be within the bounds
-                  if (mut <= *Minimum[j]) mut = *Minimum[j] + DBL_EPSILON;
+                  if (mut <= *Minimum[j]) mut = *Minimum[j] + std::numeric_limits< C_FLOAT64 >::epsilon();
                   else
                     {
                       if (mut < *Minimum[j]) mut = *Minimum[j];
                     }
 
-                  if (mut >= *Maximum[j]) mut = *Maximum[j] - DBL_EPSILON;
+                  if (mut >= *Maximum[j]) mut = *Maximum[j] - std::numeric_limits< C_FLOAT64 >::epsilon();
                   else
                     {
                       if (mut > *Maximum[j]) mut = *Maximum[j];
                     }
+
                   // store it
                   individual[nn][j] = mut;
                 }
             }
+
           // evaluate the fitness
           for (int kk = 0; kk < NumParameter; kk++)
             {
               Parameter[kk] = individual[nn][kk];
             }
+
           CandidateValue[nn] = mOptProblem->calculate();
         }
 
@@ -317,6 +336,7 @@ C_INT32 COptMethodHGASA::optimise()
       //select(2);
       if ((i % 2) == 0) select(2);
       else select(3);
+
       // if((i%2)==0) select(3);
       //  else select(4);
 
@@ -332,6 +352,7 @@ C_INT32 COptMethodHGASA::optimise()
 
       // get the index of the fittest
       BestFoundSoFar = fittest();
+
       if (Get_BestFoundSoFar_candidate() != current_best_value)
         {
           last_update = i;
@@ -339,7 +360,9 @@ C_INT32 COptMethodHGASA::optimise()
         }
 
       if (u10) u10--;
+
       if (u30) u30--;
+
       if (u50) u50--;
 
       if ((u50 == 0) && (i - last_update > 50))
@@ -353,12 +376,15 @@ C_INT32 COptMethodHGASA::optimise()
                     {
                       // determine if linear or log scale
                       linear = FALSE; la = 1.0;
+
                       if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                       else
                         {
-                          la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
+                          la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], std::numeric_limits< C_FLOAT64 >::epsilon()));
+
                           if (la < 1.8) linear = TRUE;
                         }
+
                       // set it to a random value within the interval
                       if (linear)
                         individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
@@ -370,10 +396,12 @@ C_INT32 COptMethodHGASA::optimise()
                       individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                     }
                 }
+
               try
                 {
                   // calculate its fitness
                   for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
+
                   CandidateValue[mm] = mOptProblem->calculate();
                 }
               catch (int)
@@ -381,6 +409,7 @@ C_INT32 COptMethodHGASA::optimise()
                   CandidateValue[mm] = DBL_MAX;
                 }
             }
+
           //end external for loop
           BestFoundSoFar = fittest();
           u50 = 50; u30 = 30; u10 = 10;
@@ -399,12 +428,15 @@ C_INT32 COptMethodHGASA::optimise()
                         {
                           // determine if linear or log scale
                           linear = FALSE; la = 1.0;
+
                           if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                           else
                             {
-                              la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
+                              la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], std::numeric_limits< C_FLOAT64 >::epsilon()));
+
                               if (la < 1.8) linear = TRUE;
                             }
+
                           // set it to a random value within the interval
                           if (linear)
                             individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
@@ -416,10 +448,12 @@ C_INT32 COptMethodHGASA::optimise()
                           individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                         }
                     }
+
                   try
                     {
                       // calculate its fitness
                       for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
+
                       CandidateValue[mm] = mOptProblem->calculate();
                     }
                   catch (int)
@@ -427,6 +461,7 @@ C_INT32 COptMethodHGASA::optimise()
                       CandidateValue[mm] = DBL_MAX;
                     }
                 }
+
               //end external for loop
               BestFoundSoFar = fittest();
               u30 = 30; u10 = 10;
@@ -445,12 +480,15 @@ C_INT32 COptMethodHGASA::optimise()
                             {
                               // determine if linear or log scale
                               linear = FALSE; la = 1.0;
+
                               if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                               else
                                 {
-                                  la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
+                                  la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], std::numeric_limits< C_FLOAT64 >::epsilon()));
+
                                   if (la < 1.8) linear = TRUE;
                                 }
+
                               // set it to a random value within the interval
                               if (linear)
                                 individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
@@ -462,10 +500,12 @@ C_INT32 COptMethodHGASA::optimise()
                               individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                             }
                         }
+
                       try
                         {
                           // calculate its fitness
                           for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
+
                           CandidateValue[mm] = mOptProblem->calculate();
                         }
                       catch (int)
@@ -473,6 +513,7 @@ C_INT32 COptMethodHGASA::optimise()
                           CandidateValue[mm] = DBL_MAX;
                         }
                     }
+
                   //end external for loop
                   BestFoundSoFar = fittest();
                   u10 = 10;
@@ -604,6 +645,7 @@ void COptMethodHGASA::crossover(int p1, int p2, int c1, int c2)
           // NumCrossPoint = (int)floor((NumParameter/2)*pRand->getRandomCC());
         }
       else NumCrossPoint = 0;
+
       // if less than 0 just copy parent to child
       if (NumCrossPoint == 0)
         {
@@ -612,10 +654,13 @@ void COptMethodHGASA::crossover(int p1, int p2, int c1, int c2)
               individual[c1][j] = individual[p1][j];
               individual[c2][j] = individual[p2][j];
             }
+
           return;
         }
+
       // chose first point
       CrossPoint[0] = 1 + (int)fabs(floor((NumParameter - NumCrossPoint) * rand() / RAND_MAX));
+
       //CrossPoint[0] = 1 + (int)floor((NumParameter-NumCrossPoint)*pRand->getRandomCC());
       // chose the others
       for (i = 1; i < NumCrossPoint; i++)
@@ -624,8 +669,10 @@ void COptMethodHGASA::crossover(int p1, int p2, int c1, int c2)
           CrossPoint[i] = 1 + CrossPoint[i - 1] + (l == 0 ? 0 : (int)fabs(floor(l * rand() / RAND_MAX)));
           //CrossPoint[i] = 1 + CrossPoint[i-1] + (l==0 ? 0 : (int)floor(l*pRand->getRandomCC()));
         }
+
       // copy segments
       pp1 = p2; pp2 = p1;
+
       for (i = 0; i <= NumCrossPoint; i++)
         {
           // swap the indexes
@@ -634,6 +681,7 @@ void COptMethodHGASA::crossover(int p1, int p2, int c1, int c2)
           pp2 = tmp;
           if (i == 0) s = 0; else s = CrossPoint[i - 1];
           if (i == NumCrossPoint) e = NumParameter; else e = CrossPoint[i];
+
           for (j = s; j < e; j++)
             {
               individual[c1][j] = individual[pp1][j];
@@ -656,6 +704,7 @@ void COptMethodHGASA::replicate(void)
       parent2 = (int)fabs(floor(PopulationSize * rand() / RAND_MAX));
       crossover(parent1, parent2, PopulationSize + i*2, PopulationSize + i*2 + 1);
     }
+
   // check if there is one left over and just copy it
   if (PopulationSize % 2 > 0) copy(PopulationSize - 1, 2*PopulationSize - 1);
 }
@@ -669,60 +718,70 @@ void COptMethodHGASA::select(int SelectionStrategy)
 
   switch (SelectionStrategy)
     {
-    case 1:       // parent-offspring competition
-      for (i = PopulationSize; i < 2*PopulationSize; i++)
-        {
-          // if offspring is fitter keep it
-          for (j = 0; j < PopulationSize; j++)
-            {
-              if (CandidateValue[i] < CandidateValue[j]) exchange(i, j);
-            }
-        }
-      break;
-    case 2:       // tournament competition
-      // compete with 20% of the population
-      TournamentSize = PopulationSize / 5;
-      // but at least one
-      if (TournamentSize < 1) TournamentSize = 1;
-      // parents and offspring are all in competition
-      for (i = 0; i < 2*PopulationSize; i++)
-        {
-          WinScore[i] = 0;
-          for (j = 0; j < TournamentSize; j++)
-            {
-              // get random rival
-              RandomRival = (int)fabs(floor((PopulationSize * 2 - 1) * rand() / RAND_MAX));
-              if (CandidateValue[i] <= CandidateValue[RandomRival]) WinScore[i]++;
-            }
-        }
-      // selection of top PopulationSize winners
-      for (i = 0; i < PopulationSize; i++)
-        {
-          for (j = i + 1; j < 2*PopulationSize; j++)
-          {if (WinScore[i] < WinScore[j]) swap(i, j);}
-        }
-      break;
+      case 1:       // parent-offspring competition
 
-      // ranking strategy without proportionate-fitness
-    case 3:
-      for (i = 0; i < PopulationSize; i++)
-        {
-          for (j = i + 1; j < 2*PopulationSize; j++)
-            {
-              if (CandidateValue[i] > CandidateValue[j]) exchange(i, j);
-            }
-        }
+        for (i = PopulationSize; i < 2*PopulationSize; i++)
+          {
+            // if offspring is fitter keep it
+            for (j = 0; j < PopulationSize; j++)
+              {
+                if (CandidateValue[i] < CandidateValue[j]) exchange(i, j);
+              }
+          }
 
-      break;
-      // Randomly select P individuals from population of 2P
-    case 4:
-      for (i = 0; i < PopulationSize; i++)
-        {
-          RandomIndividual = (int)fabs(floor((PopulationSize * 2 - 1) * rand() / RAND_MAX));
-          exchange(i, RandomIndividual);
-        }
+        break;
+      case 2:       // tournament competition
+        // compete with 20% of the population
+        TournamentSize = PopulationSize / 5;
 
-      break;
+        // but at least one
+        if (TournamentSize < 1) TournamentSize = 1;
+
+        // parents and offspring are all in competition
+        for (i = 0; i < 2*PopulationSize; i++)
+          {
+            WinScore[i] = 0;
+
+            for (j = 0; j < TournamentSize; j++)
+              {
+                // get random rival
+                RandomRival = (int)fabs(floor((PopulationSize * 2 - 1) * rand() / RAND_MAX));
+
+                if (CandidateValue[i] <= CandidateValue[RandomRival]) WinScore[i]++;
+              }
+          }
+
+        // selection of top PopulationSize winners
+        for (i = 0; i < PopulationSize; i++)
+          {
+            for (j = i + 1; j < 2*PopulationSize; j++)
+              {if (WinScore[i] < WinScore[j]) swap(i, j);}
+          }
+
+        break;
+
+        // ranking strategy without proportionate-fitness
+      case 3:
+
+        for (i = 0; i < PopulationSize; i++)
+          {
+            for (j = i + 1; j < 2*PopulationSize; j++)
+              {
+                if (CandidateValue[i] > CandidateValue[j]) exchange(i, j);
+              }
+          }
+
+        break;
+        // Randomly select P individuals from population of 2P
+      case 4:
+
+        for (i = 0; i < PopulationSize; i++)
+          {
+            RandomIndividual = (int)fabs(floor((PopulationSize * 2 - 1) * rand() / RAND_MAX));
+            exchange(i, RandomIndividual);
+          }
+
+        break;
     }
 }
 
@@ -733,6 +792,7 @@ int COptMethodHGASA::fittest(void)
   double f;
   f = CandidateValue[0];
   b = 0;
+
   for (i = 1; i < PopulationSize; i++)
     {
       if (CandidateValue[i] < f)
@@ -741,6 +801,7 @@ int COptMethodHGASA::fittest(void)
           f = CandidateValue[i];
         }
     }
+
   return b;
 }
 
@@ -753,6 +814,7 @@ void COptMethodHGASA::TrackDataFile(int i)
       std::cout << "debugopt.dat cannot be opened!" << std::endl;
       exit(1);
     }
+
   finalout << "#" << i << "\t" << std::setprecision(8) << CandidateValue[BestFoundSoFar] << std::endl;
 
   for (int j = 0; j < NumParameter; j++)
@@ -801,7 +863,7 @@ C_INT32 COptMethodHGASA::optimise(int index)
 
   /* Create a random number generator */
   CRandom::Type Type;
-  Type = (CRandom::Type) (C_INT32) getValue("HybridGASA.RandomGenerator.Type");
+  Type = (CRandom::Type)(C_INT32) getValue("HybridGASA.RandomGenerator.Type");
   unsigned C_INT32 Seed;
   Seed = (unsigned C_INT32) getValue("HybridGASA.RandomGenerator.Seed");
   CRandom * pRandSA = CRandom::createGenerator(Type, Seed);
@@ -830,7 +892,7 @@ C_INT32 COptMethodHGASA::optimise(int index)
       linear = false;
       la = 1.0;
 
-      if (*Minimum[j] == 0.0) *Minimum[j] = DBL_EPSILON;
+      if (*Minimum[j] == 0.0) *Minimum[j] = std::numeric_limits< C_FLOAT64 >::epsilon();
 
       if ((*Maximum[j] <= 0.0) || (*Minimum[j] <= 0.0)) linear = true;
 
@@ -891,7 +953,9 @@ C_INT32 COptMethodHGASA::optimise(int index)
                   newparameter[hh] = thisparameter[hh] + step[hh] * ChangeValue;
 
                   if (newparameter[hh] < *Minimum[hh]) newparameter[hh] = *Minimum[hh] + pRandSA->getRandomCC() * (*Maximum[hh] - *Minimum[hh]);
+
                   if (newparameter[hh] > *Maximum[hh]) newparameter[hh] = *Minimum[hh] + pRandSA->getRandomCC() * (*Maximum[hh] - *Minimum[hh]);
+
                   for (int exchange = 0; exchange < NumParameter; exchange++)
                     {
                       SAParameter[exchange] = newparameter[exchange];
@@ -911,6 +975,7 @@ C_INT32 COptMethodHGASA::optimise(int index)
                         {
                           thisparameter[exchange] = newparameter[exchange];
                         }
+
                       thisFuncValue = newFuncValue;
 
                       NumSignificantPoint++; // a new point counted
@@ -920,6 +985,7 @@ C_INT32 COptMethodHGASA::optimise(int index)
                         {
                           for (int aa = 0; aa < NumParameter; aa++)
                             individual[index][aa] = SAParameter[aa] = candparameter[aa] = thisparameter[aa];
+
                           CandidateValue[index] = candFuncValue = thisFuncValue;
 
                           if (!mOptProblem->checkFunctionalConstraints())
@@ -943,6 +1009,7 @@ C_INT32 COptMethodHGASA::optimise(int index)
                     {
                       //keep newparameter with probability, if newFuncValue is increased
                       double Probability = exp(-(newFuncValue - thisFuncValue) / (BoltzmannConstant * t));
+
                       if (Probability > pRandSA->getRandomCC())
                         {
                           //Keep the new point
@@ -950,6 +1017,7 @@ C_INT32 COptMethodHGASA::optimise(int index)
                             {
                               thisparameter[exchange] = newparameter[exchange];
                             }
+
                           thisFuncValue = newFuncValue;
                           NumSignificantPoint++; // a new point counted
                           NumStepAccep[hh]++; //a new point in this coordinate counted
@@ -962,8 +1030,11 @@ C_INT32 COptMethodHGASA::optimise(int index)
           for (int nn = 0; nn < NumParameter; nn++)
             {
               double StepAdjustment = (double) NumStepAccep[nn] / (double)NumDirection;
+
               if (StepAdjustment > 0.6) step[nn] *= 1 + 5 * (StepAdjustment - 0.6);
+
               if (StepAdjustment < 0.4) step[nn] /= 1 + 5 * (0.4 - StepAdjustment);
+
               NumStepAccep[nn] = 0;
             }
         }
@@ -977,6 +1048,7 @@ C_INT32 COptMethodHGASA::optimise(int index)
       else
         {
           ready = TRUE;
+
           //check if there is not much change for termination criterion since last BESTFOUNDSOFAR times
           for (int ii = 0; ii < BESTFOUNDSOFAR; ii++)
             if (fabs(fk[ii] - thisFuncValue) > ConvgCriterion)
@@ -984,13 +1056,16 @@ C_INT32 COptMethodHGASA::optimise(int index)
                 ready = FALSE;
                 break;
               }
+
           if (!ready)
             {
               for (int aa = 0; aa < BESTFOUNDSOFAR - 1; aa++)
                 fk[aa] = fk[aa + 1];
+
               fk[BESTFOUNDSOFAR - 1] = thisFuncValue;
             }
           else
+
             //check the termination criterion of not much larger than last optimal
             if (fabs(thisFuncValue - candFuncValue) > ConvgCriterion)ready = FALSE;
         }
@@ -998,8 +1073,10 @@ C_INT32 COptMethodHGASA::optimise(int index)
       if (!ready)
         {
           NumSignificantPoint++;
+
           for (int kk = 0; kk < NumParameter; kk++)
             thisparameter[kk] = candparameter[kk];
+
           thisFuncValue = candFuncValue;
         }
     }

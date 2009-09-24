@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/20 17:34:29 $
+//   $Date: 2009/09/24 18:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -359,7 +359,7 @@ bool CLyapWolfMethod::calculate()
   C_FLOAT64 handlerFactor = 100.0 / (endTime - startTime);
 
   //** do the transient **
-  C_FLOAT64 CompareTime = transientTime - 100 * fabs(transientTime) * DBL_EPSILON;
+  C_FLOAT64 CompareTime = transientTime - 100.0 * fabs(transientTime) * std::numeric_limits< C_FLOAT64 >::epsilon();
 
   if (mTime < CompareTime)
     {
