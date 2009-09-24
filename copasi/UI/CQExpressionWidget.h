@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/24 07:57:17 $
+//   $Author: nsimus $
+//   $Date: 2009/09/24 11:12:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,8 +20,8 @@
 
 //#include <q3textedit.h>
 #include <QTextEdit>
-//#include <q3syntaxhighlighter>
-#include <QSyntaxHighlighter.h>
+//#include <q3syntaxhighlighter.h>
+#include <QSyntaxHighlighter>
 //Added by qt3to4:
 #include <QKeyEvent>
 
