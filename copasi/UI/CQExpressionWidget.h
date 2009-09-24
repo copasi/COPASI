@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/23 12:45:03 $
+//   $Date: 2009/09/24 07:57:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,9 +47,6 @@ public:
   CQExpressionHighlighter(CQExpressionWidget* ew);
   ~CQExpressionHighlighter();
 
-  virtual int highlightParagraph(const QString & text, int endStateOfLastPara);
-
-// new since 14.09.09
 protected:
   void highlightBlock(const QString &text);
 
@@ -78,6 +75,9 @@ public:
    */
   virtual CExpression *getExpression();
 
+  /**
+   * Function to set whether boolean is required
+   */
   void setBooleanRequired(bool booleanRequired) {mExpression.setBooleanRequired(booleanRequired);};
 
 protected:
@@ -119,21 +119,20 @@ protected:
   QColor mSavedColor;
   QColor mChangedColor;
 
+  /**
+   * Function to control key press event
+   */
   virtual void keyPressEvent(QKeyEvent * e);
+
+  /**
+   * Function to control mouse press event
+   */
   virtual void mousePressEvent(QMouseEvent * e);
 
-  bool isInObject();
-  bool isInObject(int par, int pos);
-
   /**
-   * Function to check whether the current cursor position is in object
+   * Function to check whether the given cursor position is in object
    */
   bool isInObject(int pos);
-
-  /**
-   * returns true if (par/pos) is right of (parold/posold)
-   */
-  bool compareCursorPositions(int parold, int posold, int par, int pos);
 
   /**
    * return anchor position -> new 16.09.09
@@ -145,8 +144,15 @@ public:
    * Enumeration of movement type
    */
   enum MoveType {None, Left, Right, Mouse, Unknown };
-  enum ActionType {NoAction, /*Undo*/ };
 
+  /**
+   * Enumeration of action type
+   */
+  enum ActionType {NoAction, SelectToLeft, SelectToRight, Undo };
+
+  /**
+   * Enumeration of expression type
+   */
   enum ExpressionType
   {
     InitialExpression = CCopasiSimpleSelectionTree::InitialTime |
@@ -185,20 +191,26 @@ public:
    */
   void setExpressionType(const ExpressionType & expressionType);
 
+  /**
+   * Set the boolean
+   * @param bool isBoolean
+   */
   void setBoolean(bool isBoolean);
 
+  /**
+   * Check validity of expression
+   * @return bool expression
+   */
   bool isValid();
 
 protected slots:
-//  void slotCursorPositionChanged(int para, int pos);
-
   /**
    * Slot for being activated whenever the cursor is moved
    */
   void slotCursorPositionChanged();
 
   /**
-   * Slot for being activated
+   * Slot for being activated whenever the selection is changed
    */
   void slotSelectionChanged();
 
@@ -208,20 +220,19 @@ protected slots:
   void slotTextChanged();
 
 public slots:
-//  void doKeyboardAction(Q3TextEdit::KeyboardAction action);
-  void doKeyboardAction(QTextEdit::KeyboardAction action);
+
   void slotSelectObject();
 
-  void slotCharFormatChanged(const QTextCharFormat & f);
-
 signals:
+  /**
+   * Signal for being sent whenever the expression is valid
+   */
   void valid(bool valid);
 
 private:
   CQExpressionHighlighter *expressionHighlighter;
   MoveType eMove;
   ActionType eAction;
-  bool goFurther;
   QTextCursor mCursor;
 };
 
