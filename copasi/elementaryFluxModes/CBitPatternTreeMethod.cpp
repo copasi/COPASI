@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/22 14:57:10 $
+//   $Date: 2009/09/24 18:13:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,7 +98,7 @@ bool CBitPatternTreeMethod::initialize()
   if (mpModel == NULL) return false;
 
   // We first build the kernel matrix
-  CMatrix< C_FLOAT64 > KernelMatrix;
+  CMatrix< C_INT32 > KernelMatrix;
   buildKernelMatrix(KernelMatrix);
 
   mMinimumSetSize = KernelMatrix.numRows() - KernelMatrix.numCols() - 2;
@@ -252,7 +252,7 @@ void CBitPatternTreeMethod::removeInvalidColumns(const std::list< CStepMatrixCol
   mNewColumns.clear();
 }
 
-void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
+void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT32 > & kernelInt)
 {
   // Calculate the kernel matrix
   // We apply the results of:
@@ -263,23 +263,25 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
   CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
-  for (; itReaction != endReaction; ++itReaction)
+  size_t ReactionCounter = 0;
+
+  for (; itReaction != endReaction; ++itReaction, ++ReactionCounter)
     {
       if ((*itReaction)->isReversible())
         {
-          mReorderedReactions.push_back(*itReaction);
-          mReactionForward.push_back(false);
+          // mReorderedReactions.push_back(*itReaction);
+          mReactionForward.push_back(std::make_pair(ReactionCounter, false));
         }
 
       mReorderedReactions.push_back(*itReaction);
-      mReactionForward.push_back(true);
+      mReactionForward.push_back(std::make_pair(ReactionCounter, true));
     }
 
   const CMatrix< C_FLOAT64 > & Stoi = mpModel->getRedStoi();
 
   size_t NumReactions = Stoi.numCols();
 
-  C_INT NumExpandedReactions = mReorderedReactions.size();
+  C_INT NumExpandedReactions = mReactionForward.size();
 
   C_INT NumSpecies = Stoi.numRows();
 
@@ -300,7 +302,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
   C_FLOAT64 *pExpandedStoiTransposeColumn = mExpandedStoiTranspose.array();
 
   std::vector< const CReaction * >::const_iterator itReactionPivot;
-  std::vector< bool >::const_iterator itReactionExpansion;
+  std::vector< std::pair< size_t, bool > >::const_iterator itReactionExpansion;
 
   for (; pStoi != pStoiEnd; ++pExpandedStoiTransposeColumn)
     {
@@ -311,7 +313,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 
       for (; pStoi < pStoiRowEnd; ++pStoi, pExpandedStoiTranspose += NumSpecies, ++itReactionPivot, ++itReactionExpansion)
         {
-          if (*itReactionExpansion == false)
+          if (itReactionExpansion->second == false)
             {
               *pExpandedStoiTranspose = - *pStoi;
 
@@ -506,24 +508,26 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
 
   if (INFO < 0) fatalError();
 
-  kernel.resize(NumExpandedReactions, NumExpandedReactions - NumSpecies);
-  kernel = 0;
+  kernelInt.resize(NumExpandedReactions, NumExpandedReactions - NumSpecies);
+
+  CMatrix< C_FLOAT64 > KernelDbl(NumExpandedReactions, NumExpandedReactions - NumSpecies);
+  KernelDbl = 0;
 
   // Null space matrix identity part
   for (i = 0; i < NumExpandedReactions - NumSpecies; i++)
     {
-      kernel(NumSpecies + i, i) = 1.0;
+      KernelDbl(NumSpecies + i, i) = 1.0;
     }
 
   C_INT j, k;
-  C_FLOAT64 * pKernel = &kernel(0, 0);
+  C_FLOAT64 * pKernelDbl = KernelDbl.array();
   C_FLOAT64 * pDiagonal = ExpandedStoiTranspose.array();
   C_FLOAT64 * pInverse;
   C_FLOAT64 * pR12;
 
   for (i = 0; i < NumSpecies; ++i, pDiagonal += NumSpecies + 1)
     {
-      for (j = NumSpecies; j < NumExpandedReactions; ++j, ++pKernel)
+      for (j = NumSpecies; j < NumExpandedReactions; ++j, ++pKernelDbl)
         {
           pInverse = pDiagonal;
           pR12 = & ExpandedStoiTranspose(j, i);
@@ -531,14 +535,27 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_FLOAT64 > & kernel)
           for (k = i; k < NumSpecies; ++k, pR12++, pInverse += NumSpecies)
             {
               // *pKernel -= ExpandedStoiTranspose(k, i) * ExpandedStoiTranspose(j, k);
-              *pKernel -= *pInverse * *pR12;
+              *pKernelDbl -= *pInverse * *pR12;
             }
 
-          if (fabs(*pKernel) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+          if (fabs(*pKernelDbl) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
             {
-              *pKernel = 0.0;
+              *pKernelDbl = 0.0;
             }
         }
+    }
+
+  CVectorCore<C_FLOAT64> KernelValues(KernelDbl.size(), KernelDbl.array());
+  convertToIntegers(KernelValues);
+
+  pKernelDbl = KernelDbl.array();
+  C_FLOAT64 * pKernelDblEnd = pKernelDbl + KernelDbl.size();
+
+  C_INT32 * pKernelInt = kernelInt.array();
+
+  for (; pKernelDbl != pKernelDblEnd; ++pKernelDbl, ++pKernelInt)
+    {
+      *pKernelInt = (C_INT32) floor(*pKernelDbl + .05);
     }
 
   return;
@@ -560,24 +577,23 @@ void CBitPatternTreeMethod::buildFluxModes()
 
       // Remove trivial modes, i.e., reversible reactions
       if (NumReactions == 2 &&
-          mReorderedReactions[Indexes[0]] == mReorderedReactions[Indexes[1]])
+          mReorderedReactions[mReactionForward[Indexes[0]].first] == mReorderedReactions[mReactionForward[Indexes[1]].first])
         {
           continue;
         }
 
-      // TODO CRITICAL Implement the calculation
       // Build the stoichiometry matrix reduced to the reactions participating in the current mode.
       CMatrix< C_FLOAT64 > A(NumReactions, NumSpecies);
       CVector< C_FLOAT64 > B(NumSpecies);
 
-      size_t * pReaction = Indexes.array();
-      size_t * pReactionEnd = pReaction + NumReactions;
+      size_t * pIndex = Indexes.array();
+      size_t * pIndexEnd = pIndex + NumReactions;
       C_FLOAT64 * pARow = A.array();
 
-      for (; pReaction != pReactionEnd; ++pReaction, pARow += NumSpecies)
+      for (; pIndex != pIndexEnd; ++pIndex, pARow += NumSpecies)
         {
           // TODO CRITICAL This is missing a pivot !!!
-          memcpy(pARow, &mExpandedStoiTranspose(*pReaction, 0), NumSpecies * sizeof(C_FLOAT64));
+          memcpy(pARow, &mExpandedStoiTranspose(*pIndex, 0), NumSpecies * sizeof(C_FLOAT64));
         }
 
       C_INT LDA = std::max<C_INT>(1, NumSpecies);
@@ -664,50 +680,53 @@ void CBitPatternTreeMethod::buildFluxModes()
       // We need to invert the sign of the multiplier for reactions which are not forward.
       // A flux mode is reversible if all reactions are reversible;
 
-      std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > Reactions;
+      std::map< size_t, C_FLOAT64 > Reactions;
+
       bool Reversible = true;
 
-      pReaction = Indexes.array();
+      pIndex = Indexes.array();
       pFluxMultiplier = FluxMultiplier.array();
 
-      for (; pReaction != pReactionEnd; ++pReaction, ++pFluxMultiplier)
+      for (; pIndex != pIndexEnd; ++pIndex, ++pFluxMultiplier)
         {
-          if (mReactionForward[*pReaction] == true)
-            {
-              Reactions.push_back(std::make_pair(*pReaction, *pFluxMultiplier));
-            }
-          else
-            {
-              Reactions.push_back(std::make_pair(*pReaction, -*pFluxMultiplier));
-            }
+          std::pair< size_t, bool > & ReactionForward = mReactionForward[*pIndex];
 
-          if (!mReorderedReactions[*pReaction]->isReversible())
+          Reactions[ReactionForward.first] =
+            (ReactionForward.second == true) ? *pFluxMultiplier : -*pFluxMultiplier;
+
+          if (!mReorderedReactions[ReactionForward.first]->isReversible())
             {
               Reversible = false;
             }
         }
 
-      mFluxModes.push_back(CFluxMode(Reactions, Reversible));
+      addMode(CFluxMode(Reactions, Reversible));
     }
 }
 
-void CBitPatternTreeMethod::convertToIntegers(CVector< C_FLOAT64 > & values)
+void CBitPatternTreeMethod::convertToIntegers(CVectorCore< C_FLOAT64 > & values)
 {
   size_t Size = values.size();
 
-  C_INT32 m00, m01, m10, m11;
-  C_INT32 maxden = 10000000;
+  unsigned C_INT32 m00, m01, m10, m11;
+  unsigned C_INT32 maxden = 10000000;
+  unsigned C_INT32 Multiplier = 1;
+  unsigned C_INT32 GCD1, GCD2;
+  unsigned C_INT32 ai;
 
   C_FLOAT64 * pValue = values.array();
   C_FLOAT64 * pValueEnd = pValue + Size;
-
-  C_INT32 Multiplier = 1;
-  C_INT32 GCD1, GCD2, ai;
-
   C_FLOAT64 x;
 
   for (; pValue != pValueEnd; ++pValue)
     {
+      x = fabs(*pValue);
+
+      if (x < 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+        {
+          continue;
+        }
+
       /*
        * Find rational approximation to given real number
        * David Eppstein / UC Irvine / 8 Aug 1993
@@ -732,10 +751,8 @@ void CBitPatternTreeMethod::convertToIntegers(CVector< C_FLOAT64 > & values)
       m00 = m11 = 1;
       m01 = m10 = 0;
 
-      x = *pValue;
-
       /* loop finding terms until denom gets too big */
-      while (m10 *(ai = (C_INT32) x) + m11 <= maxden)
+      while (m10 *(ai = (unsigned C_INT32) x) + m11 <= maxden)
         {
           C_INT32 t;
           t = m00 * ai + m01;
@@ -746,13 +763,13 @@ void CBitPatternTreeMethod::convertToIntegers(CVector< C_FLOAT64 > & values)
           m11 = m10;
           m10 = t;
 
-          if (fabs(1.0 - (C_FLOAT64) ai / x) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+          if (fabs(x - (C_FLOAT64) ai) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
             break;     // SH: We reached the numerical precision of the machine;
 
           x = 1 / (x - (C_FLOAT64) ai);
         }
 
-      if (fabs(*pValue - ((C_FLOAT64) m00 / (C_FLOAT64) m10)) > 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+      if (fabs(fabs(*pValue) - ((C_FLOAT64) m00) / ((C_FLOAT64) m10)) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         {
           ai = (maxden - m11) / m10;
           m00 = m00 * ai + m01;
@@ -801,4 +818,22 @@ void CBitPatternTreeMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn
     {
       *pIndex = mQRPivot[*pIndex];
     }
+}
+
+// private
+void CBitPatternTreeMethod::addMode(const CFluxMode & mode)
+{
+  std::vector< CFluxMode >::iterator itMode = mFluxModes.begin();
+  std::vector< CFluxMode >::iterator endMode = mFluxModes.end();
+
+  for (; itMode != endMode; ++itMode)
+    {
+      if (itMode->isReversed(mode))
+        {
+          return;
+        }
+    }
+
+  mFluxModes.push_back(mode);
+  return;
 }

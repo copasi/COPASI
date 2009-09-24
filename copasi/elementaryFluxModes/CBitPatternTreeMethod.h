@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/22 14:57:10 $
+//   $Date: 2009/09/24 18:13:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,7 +82,7 @@ private:
    * Construct the kernel matrix
    * @param CMatrix< C_FLOAT64> & kernel
    */
-  void buildKernelMatrix(CMatrix< C_FLOAT64> & kernel);
+  void buildKernelMatrix(CMatrix< C_INT32 > & kernel);
 
   /**
    * Create all possible linear combinations of the bit pattern nodes pPositive
@@ -105,9 +105,15 @@ private:
   void buildFluxModes();
 
   /**
-   * Multiply v with a number so that v contains only integer coefficients.
+   * Add the flux mode to the list only if the reversed does not exist
+   * @param const CFluxMode & mode
    */
-  void convertToIntegers(CVector< C_FLOAT64 > & v);
+  void addMode(const CFluxMode & mode);
+
+  /**
+   * Multiply values so that values contains only integers.
+   */
+  void convertToIntegers(CVectorCore< C_FLOAT64 > & values);
 
   /**
    * Get the index of the unset bits of the flux mode.
@@ -140,7 +146,7 @@ protected:
   /**
    * A vector to recording the expansion of the stoichiometry matrix.
    */
-  std::vector< bool > mReactionForward;
+  std::vector< std::pair< size_t, bool > > mReactionForward;
 
   /**
    * A vector recording the pivots for the QR factorization

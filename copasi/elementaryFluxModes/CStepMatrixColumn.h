@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Date: 2009/09/24 18:13:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,14 +39,14 @@ public:
     mZeroSet.unsetBit(index);
   }
 
-  inline const C_FLOAT64 & getMultiplier() const
+  inline const C_INT32 & getMultiplier() const
   {
     return mReaction.back();
   }
 
-  std::vector< C_FLOAT64 > & getReaction();
+  std::vector< C_INT32 > & getReaction();
 
-  void push_front(const C_FLOAT64 & value);
+  void push_front(const C_INT32 & value);
 
   void truncate();
 
@@ -54,7 +54,7 @@ public:
 private:
   CZeroSet mZeroSet;
 
-  std::vector< C_FLOAT64 > mReaction;
+  std::vector< C_INT32 > mReaction;
 };
 
 #endif // COPASI_CStepMatrixColumn

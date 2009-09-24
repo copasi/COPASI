@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/22 14:57:10 $
+//   $Date: 2009/09/24 18:13:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@ CStepMatrix::CStepMatrix():
     mFirstUnconvertedRow(0)
 {}
 
-CStepMatrix::CStepMatrix(CMatrix< C_FLOAT64 > & nullspaceMatrix):
+CStepMatrix::CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix):
     std::list< CStepMatrixColumn * >(),
     mRows(nullspaceMatrix.numRows()),
     mPivot(nullspaceMatrix.numRows()),
@@ -45,7 +45,7 @@ CStepMatrix::CStepMatrix(CMatrix< C_FLOAT64 > & nullspaceMatrix):
 
   size_t i;
   size_t j;
-  const C_FLOAT64 * pValue = nullspaceMatrix.array();
+  const C_INT32 * pValue = nullspaceMatrix.array();
   size_t * pPivot = mPivot.array();
 
   std::vector< size_t > NegativeRows;
@@ -114,7 +114,7 @@ void CStepMatrix::convertRow()
 
   for (; it != itEnd; ++it)
     {
-      if ((*it)->getMultiplier() != 0.0)
+      if ((*it)->getMultiplier() != 0)
         {
           (*it)->unsetBit(Index);
         }
@@ -241,21 +241,21 @@ void CStepMatrix::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
 }
 
 void CStepMatrix::convertRow(const size_t & index,
-                             CMatrix< C_FLOAT64 > & nullspaceMatrix)
+                             CMatrix< C_INT32 > & nullspaceMatrix)
 {
   CZeroSet::CIndex Index(mFirstUnconvertedRow);
 
   iterator it = begin();
   const_iterator itEnd = end();
-  C_FLOAT64 * pValue = & nullspaceMatrix(index, 0);
+  C_INT32 * pValue = & nullspaceMatrix(index, 0);
 
   if (mFirstUnconvertedRow != index)
     {
-      C_FLOAT64 * pFirstUnconvertedValue = & nullspaceMatrix(mFirstUnconvertedRow, 0);
+      C_INT32 * pFirstUnconvertedValue = & nullspaceMatrix(mFirstUnconvertedRow, 0);
 
       for (; it != itEnd; ++it, ++pValue, ++pFirstUnconvertedValue)
         {
-          if (*pValue != 0.0)
+          if (*pValue != 0)
             {
               (*it)->unsetBit(Index);
             }
@@ -272,7 +272,7 @@ void CStepMatrix::convertRow(const size_t & index,
     {
       for (; it != itEnd; ++it, ++pValue)
         {
-          if (*pValue != 0.0)
+          if (*pValue != 0)
             {
               (*it)->unsetBit(Index);
             }

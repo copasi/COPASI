@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/02 19:21:19 $
+//   $Date: 2009/09/24 18:13:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,22 +27,56 @@ CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
                                      CStepMatrixColumn const * pPositive,
                                      CStepMatrixColumn const * pNegative):
     mZeroSet(set),
-    mReaction(pPositive->mReaction)
+    mReaction()
 {
-  C_FLOAT64 Multiplier = pPositive->getMultiplier() / pNegative->getMultiplier();
+  C_INT32 GCD1 = -1;
+  C_INT32 GCD2;
 
-  std::vector< C_FLOAT64 >::const_iterator itNeg = pNegative->mReaction.begin();
+  C_INT32 PosMult = -pNegative->getMultiplier();
+  C_INT32 NegMult = pPositive->getMultiplier();
 
-  std::vector< C_FLOAT64 >::iterator it = mReaction.begin();
-  std::vector< C_FLOAT64 >::iterator end = mReaction.end();
+  mReaction.resize(pPositive->mReaction.size());
+  std::vector< C_INT32 >::iterator it = mReaction.begin();
+  std::vector< C_INT32 >::iterator end = mReaction.end();
 
-  for (; it != end; ++it, ++itNeg)
+  std::vector< C_INT32 >::const_iterator itPos = pPositive->mReaction.begin();
+  std::vector< C_INT32 >::const_iterator itNeg = pNegative->mReaction.begin();
+
+  for (; it != end; ++it, ++itPos, ++itNeg)
     {
-      *it -= Multiplier * *itNeg;
+      *it = PosMult * *itPos + NegMult * *itNeg;
 
-      if (fabs(*it) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+      if (*it == 0 || GCD1 == 1)
         {
-          *it = 0.0;
+          continue;
+        }
+
+      if (GCD1 == -1)
+        {
+          GCD1 = abs(*it);
+          continue;
+        }
+
+      GCD2 = abs(*it);
+
+      while (GCD1 != GCD2)
+        {
+          if (GCD1 > GCD2)
+            {
+              GCD1 -= GCD2;
+            }
+          else
+            {
+              GCD2 -= GCD1;
+            }
+        }
+    }
+
+  if (abs(GCD1) > 1)
+    {
+      for (it = mReaction.begin(); it != end; ++it)
+        {
+          *it /= GCD1;
         }
     }
 }
@@ -55,12 +89,12 @@ const CZeroSet & CStepMatrixColumn::getZeroSet() const
   return mZeroSet;
 }
 
-std::vector< C_FLOAT64 > & CStepMatrixColumn::getReaction()
+std::vector< C_INT32 > & CStepMatrixColumn::getReaction()
 {
   return mReaction;
 }
 
-void CStepMatrixColumn::push_front(const C_FLOAT64 & value)
+void CStepMatrixColumn::push_front(const C_INT32 & value)
 {
   mReaction.insert(mReaction.begin(), value);
 }

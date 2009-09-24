@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/16 16:15:35 $
+//   $Date: 2009/09/24 18:13:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,7 @@ private:
   CStepMatrix();
 
 public:
-  CStepMatrix(CMatrix< C_FLOAT64 > & nullspaceMatrix);
+  CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix);
 
   ~CStepMatrix();
 
@@ -84,7 +84,7 @@ public:
 
 private:
   void convertRow(const size_t & index,
-                  CMatrix< C_FLOAT64 > & nullspaceMatrix);
+                  CMatrix< C_INT32 > & nullspaceMatrix);
 
   // Attributes
 private:

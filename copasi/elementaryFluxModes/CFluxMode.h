@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/22 14:57:10 $
+   $Date: 2009/09/24 18:13:13 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 #ifndef COPASI_CFluxMode
 #define COPASI_CFluxMode
 
-#include <vector>
+#include <map>
 
 class CReaction;
 class CModel;
@@ -41,7 +41,7 @@ private:
    *  Vector containing an index to a reaction and the multiplier
    *  for that reaction.
    */
-  std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > mReactions;
+  std::map< size_t, C_FLOAT64 > mReactions;
 
   /**
    *  Reversibility of the mode.
@@ -64,10 +64,10 @@ public:
 
   /**
    * Specific constructor
-   * @param const std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > & reactions
+   * @param const std::map< size_t, C_FLOAT64 > & reactions
    * @param const bool & reversible
    */
-  CFluxMode(const std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > & reactions,
+  CFluxMode(const std::map< size_t, C_FLOAT64 > & reactions,
             const bool & reversible);
 
   /**
@@ -83,10 +83,10 @@ public:
 
   /**
    *  Retrieve the index of the reaction
-   *  @param "unsigned C_INT32 " index
-   *  @return "unsigned C_INT32 " index
+   *  @param const size_t & index
+   *  @return size_t reactionIndex
    */
-  unsigned C_INT32 getReactionIndex(unsigned C_INT32 index) const;
+  size_t getReactionIndex(const size_t & index) const;
 
   //const CReaction * getReaction(unsigned C_INT32 index, const CModel * model) const;
   //std::string getReactionName(unsigned C_INT32 index, const CModel * model) const;
@@ -94,10 +94,10 @@ public:
 
   /**
    *  Retrieves the multiplier for the reaction
-   *  @param "unsigned C_INT32 " index
+   *  @param const size_t & index
    *  @return "unsigned C_FLOAT64 " index
    */
-  const C_FLOAT64 & getMultiplier(unsigned C_INT32 index) const;
+  C_FLOAT64 getMultiplier(const size_t & index) const;
 
   /**
    *  Check whether the mode is reversible
@@ -110,6 +110,13 @@ public:
    *  @return "unsigned C_INT32" size
    */
   unsigned C_INT32 size() const;
+
+  /**
+   * Determine whether the current mode is the reversed mode
+   * @param const CFluxMode &mode
+   * @return bool isReversed
+   */
+  bool isReversed(const CFluxMode &mode);
 };
 
 #endif // COPASI_CFluxMode
