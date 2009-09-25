@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMmlScrollView.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/23 11:51:40 $
+//   $Author: shoops $
+//   $Date: 2009/09/25 18:43:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,10 @@
 # include "mml/qtmmlwidget.h"
 #endif // HAVE_MML
 
+#include "qtUtilities.h"
+
 ///  Constructor
-CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* name, Qt::WFlags fl)
+CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WFlags /* fl */)
 //    : Q3ScrollView(parent, name, fl)
     : QScrollArea(parent)
 {

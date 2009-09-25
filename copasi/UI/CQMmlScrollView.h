@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMmlScrollView.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/23 11:51:40 $
+//   $Author: shoops $
+//   $Date: 2009/09/25 18:43:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,15 +16,13 @@
  \brief Header file of class CQMmlScrollView
  */
 
-#ifndef MMLSCROLLVIEW_H
-#define MMLSCROLLVIEW_H
+#ifndef CQMMLSCROLLVIEW_H
+#define CQMMLSCROLLVIEW_H
 
 #include <sstream>   // for ostringstream
 
 //#include <q3scrollview.h>
 #include <QScrollArea>
-#include "qtUtilities.h" // for FROM_UTF8
-#include <QtDesigner/QDesignerExportWidget>
 
 class QtMmlWidget;
 
@@ -33,8 +31,7 @@ class QtMmlWidget;
 
    This class inherits QScrollView to nicely display an object of class QtMmlWidget.
  */
-//class CQMmlScrollView : public Q3ScrollView
-class QDESIGNER_WIDGET_EXPORT CQMmlScrollView : public QScrollArea
+class CQMmlScrollView : public QScrollArea
 {
   Q_OBJECT
 
@@ -49,4 +46,4 @@ public:
 #endif // HAVE_MML
 };
 
-#endif // MMLSCROLLVIEW_H
+#endif // CQSMMLSCROLLVIEW_H

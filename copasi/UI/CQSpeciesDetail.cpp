@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/07 14:12:33 $
+//   $Date: 2009/09/25 18:43:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,7 @@
 
 #include "CQSpeciesDetail.h"
 #include "CQMessageBox.h"
+#include "qtUtilities.h"
 
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
