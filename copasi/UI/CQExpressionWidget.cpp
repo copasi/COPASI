@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/24 07:57:17 $
+//   $Date: 2009/09/25 09:30:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,16 +169,17 @@ void CQExpressionWidget::mousePressEvent(QMouseEvent * e)
 {
 #ifdef DEBUG_UI
   qDebug() << "- CQExpressionWidget::mousePressEvent - ";
-#endif
-  eMove = CQExpressionWidget::Mouse;
 
   QTextCursor tc = cursorForPosition(e->pos());
 
   mCursor.setPosition(tc.position());
-#ifdef DEBUG_UI
+
   qDebug() << "Cursor position on mousePressEvent of mCursor = " << mCursor.position();
   qDebug() << "Cursor position on mousePressEvent of tc = " << tc.position();
 #endif
+
+  eMove = CQExpressionWidget::Mouse;
+
   QTextEdit::mousePressEvent(e);
 
   mCursor.setPosition(cursorForPosition(e->pos()).position());
@@ -413,15 +414,10 @@ void CQExpressionWidget::slotSelectionChanged()
 {
 #ifdef DEBUG_UI
   qDebug() << "L" << __LINE__ << " on CQEW text() = " << text();
-#endif
-
-#ifdef DEBUG_UI
   qDebug() << "- on CQExpressionWidget::slotSelectionChanged - ";
-#endif
 
   QTextCursor tc = textCursor();
   int currentCursorPosition = tc.position();
-#ifdef DEBUG_UI
   qDebug() << "Cursor position = " << currentCursorPosition;
 #endif
 
@@ -546,9 +542,7 @@ void CQExpressionWidget::slotCursorPositionChanged()
   qDebug() << "- Need implementaion on CQExpressionWidget::slotCursorPositionChanged - ";
 
   qDebug() << "selectedText = " << mCursor.selectedText();
-#endif
 
-#ifdef DEBUG_UI
   qDebug() << "----------------------------------";
 #endif
 
@@ -614,8 +608,8 @@ void CQExpressionWidget::slotCursorPositionChanged()
         eMove = CQExpressionWidget::None;
         setTextCursor(mCursor);
         break;
-      case CQExpressionWidget::Mouse:
 #ifdef DEBUG_UI
+      case CQExpressionWidget::Mouse:
         qDebug() << "MOUSE";
 #endif
 
