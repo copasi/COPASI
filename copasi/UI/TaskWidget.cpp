@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/09/25 21:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,27 +15,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qcheckbox.h>
-#include <q3frame.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <q3table.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-#include <qvalidator.h>
-#include <q3hbox.h>
-#include <qapplication.h>
-#include <qcombobox.h>
-//Added by qt3to4:
-/*
-#include <Q3GridLayout>
-#include <Q3VBoxLayout>
- */
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QHeaderView>
+#include <QComboBox>
 
 #include "TaskWidget.h"
 #include "qtUtilities.h"
@@ -99,7 +82,8 @@ void TaskWidget::addHeaderToGrid(unsigned int row)
 {
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new QGridLayout(0, 2, 2, 0, 6, "mpMethodLayout");
+      mpMethodLayout = new QGridLayout();
+      mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
 
@@ -116,66 +100,42 @@ bool TaskWidget::addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned in
   return true;
 }
 
-void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned int row)
+void TaskWidget::addMethodParameterTable(unsigned int row)
 {
   if (mpTblParameter) return;
 
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new QGridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
+      mpMethodLayout = new QGridLayout();
+      mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
-      //Row = 0;
     }
 
-//  QWidget* pParent = mpMethodLayout->mainWidget();
-
-//  mpLblParameter = new QLabel(pParent, "mpLblParameter");
   mpLblParameter = new QLabel(0, "mpLblParameter");
   mpLblParameter->setText(tr("Method Parameter"));
   mpLblParameter->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
-//  mpTblParameter = new QTableWidget(pParent);
   mpTblParameter = new QTableWidget();
-  /*
-    mpTblParameter->setFocusPolicy(Qt::WheelFocus);
-    mpTblParameter->setFocusStyle(Q3Table::SpreadSheet);
-  */
   mpTblParameter->setSelectionMode(QAbstractItemView::SingleSelection);
 
   // initial number of rows as well as columns
-  mpTblParameter->setRowCount(std::max<unsigned C_INT32>(0, rows));
+  mpTblParameter->setRowCount(1);
   mpTblParameter->setColumnCount(1);
 
   mpTblParameter->setHorizontalHeaderItem(0, new QTableWidgetItem());
   mpTblParameter->horizontalHeaderItem(0)->setText("Value");
-  /*
-    if (rows)
-      {
-        mpTblParameter->setFixedHeight(mpTblParameter->sizeHint().height() + 2);
-        mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
-  //      mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
-      }
-    else
-      mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
-  //    mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
-  */
-//  mpTblParameter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  mpTblParameter->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  mpTblParameter->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 
-//  mpSpacer1 = new QSpacerItem(0, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpTblParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpTblParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpTblParameter->horizontalHeader()->hide();
+
   mpSpacer1 = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
-//  mpSpacer1 = new QSpacerItem(0, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
   QSpacerItem *mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-  /*
-    mpMethodLayout->addWidget(mpLblParameter, 0, 0);
-    mpMethodLayout->addWidget(mpTblParameter, 0, 1);
-    mpMethodLayout->addItem(mpSpacer1, 0, 2);
-    mpMethodLayout->addItem(mpSpacer2, 1, 1);
-  */
   mpMethodLayout->addWidget(mpLblParameter, row, 0);
-  mpMethodLayout->addWidget(mpTblParameter, row, 1);
-  mpMethodLayout->addItem(mpSpacer1, row, 2);
+  mpMethodLayout->addWidget(mpTblParameter, row, 1, row, 2);
+  mpMethodLayout->addItem(mpSpacer1, row, 3);
   mpMethodLayout->addItem(mpSpacer2, row + 1, 1);
 
   return;
@@ -185,7 +145,8 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
 {
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new QGridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
+      mpMethodLayout = new QGridLayout();
+      mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
 
@@ -332,22 +293,6 @@ bool TaskWidget::loadMethod()
     {
       QString value;
       QString strname;
-      /*
-            mpTblParameter->setNumRows(mpMethod->size());
-            Q3Header *rowHeader = mpTblParameter->verticalHeader();
-
-            unsigned C_INT32 i;
-            CCopasiParameter::Type Type;
-            for (i = 0; i < mpMethod->size(); i++)
-              {
-                strname = FROM_UTF8(mpMethod->getName(i));
-                rowHeader->setLabel(i, strname);
-
-                value = getParameterValue(mpMethod, i, &Type);
-                mpTblParameter->setText(i, 0, value);
-              }
-            mpTblParameter->setFixedWidth(mpTblParameter->sizeHint().width() + 20);
-      */
 
       mpTblParameter->setRowCount(mpMethod->size());
 
@@ -384,7 +329,8 @@ bool TaskWidget::loadMethod()
 
           value = getParameterValue(mpMethod, i, &Type);
 
-          QTableWidgetItem *itemValue = new QTableWidgetItem(value);
+          QTableWidgetItem *itemValue = new QTableWidgetItem();
+          itemValue->setData(Qt::EditRole, QVariant(value));
           itemValue->setTextAlignment(Qt::AlignRight);
           mpTblParameter->setItem(i, 0, itemValue);
 
@@ -471,8 +417,8 @@ bool TaskWidget::loadMethod()
         mpTblParameter->setFixedHeight(242);
         mpTblParameter->setFixedWidth(319);
       */
-      mpTblParameter->setFixedHeight(h);
-      mpTblParameter->setFixedWidth(w);
+      // mpTblParameter->setMinimumHeight(h);
+      mpTblParameter->setMinimumWidth(w);
     }
 
   return true;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 18:56:20 $
+//   $Date: 2009/09/25 21:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,8 +90,8 @@ void CQTSSAWidget::init()
   vboxLayout->insertSpacing(1, 14);       // space between header and body
   vboxLayout->addWidget(mpBtnWidget);     // 'footer'
 
-  addMethodSelectionBox(CTSSATask::ValidMethods);
-  addMethodParameterTable(0);
+  addMethodSelectionBox(CTSSATask::ValidMethods, 0);
+  addMethodParameterTable(1);
 
   mpValidatorDuration = new CQValidatorDouble(mpEditDuration);
   mpEditDuration->setValidator(mpValidatorDuration);

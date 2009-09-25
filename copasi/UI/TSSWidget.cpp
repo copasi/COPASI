@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-$Revision: 1.16 $
+$Revision: 1.17 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/07/16 15:47:26 $
+$Date: 2009/09/25 21:02:46 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,22 +61,13 @@ TSSWidget::TSSWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 
   setCaption(trUtf8("TSSWidget"));
 
-  //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
-  mpMethodLayout = new Q3GridLayout(this, 1, 1, 11, 6, "mpMethodLayout");
-
   //TSSWidgetLayout->insertWidget(0, mpHeaderWidget);
 
   mpHeaderWidget->setTaskName("Time Scale Separation");
   addHeaderToGrid();
-  addHLineToGrid(mpMethodLayout, 1, 2);
 
   addMethodSelectionBox(CTSSTask::ValidMethods);
   addMethodParameterTable();
-
-  //QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  //mpMethodLayout->addMultiCell(spacer, 10, 10, 0, 1);
-
-  mpMethodLayout->addMultiCellWidget(mpBtnWidget, 11, 11, 0, 2);
 }
 
 /*

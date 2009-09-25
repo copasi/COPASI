@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 19:55:15 $
+//   $Author: shoops $
+//   $Date: 2009/09/25 21:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,8 +70,8 @@ void CQTrajectoryWidget::init()
   vboxLayout->insertSpacing(1, 14);       // space between header and body
   vboxLayout->addWidget(mpBtnWidget);     // 'footer'
 
-  addMethodSelectionBox(CTrajectoryTask::ValidMethods);
-  addMethodParameterTable(0);
+  addMethodSelectionBox(CTrajectoryTask::ValidMethods, 0);
+  addMethodParameterTable(1);
 
   slotOutputDelay(false);
 

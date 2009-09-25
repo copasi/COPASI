@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/09/25 21:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,8 +164,7 @@ void CQLyapWidget::init()
   vboxLayout->insertSpacing(1, 14);       // space between header and body
   vboxLayout->addWidget(mpBtnWidget);     // 'footer'
 
-  //  addMethodSelectionBox(CLyapTask::ValidMethods);
-  addMethodParameterTable(0, 2);
+  addMethodParameterTable(0);
 }
 
 void CQLyapWidget::slotDelayChecked()

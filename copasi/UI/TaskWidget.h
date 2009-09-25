@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.16 $
+ $Revision: 1.17 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/07/16 15:47:26 $
+ $Date: 2009/09/25 21:02:46 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,11 +103,11 @@ protected:
 
   //these methods should be called by the constructor, loadTask(), or saveTask() methods
   //of the derived classes. They handle the method parameters table
-  void addMethodSelectionBox(const unsigned C_INT32 * validMethods, unsigned int row = 2);
-  void addMethodParameterTable(const unsigned C_INT32 & rows = 4, unsigned int row = 3);
+  void addMethodSelectionBox(const unsigned C_INT32 * validMethods, unsigned int row);
+  void addMethodParameterTable(unsigned int row);
 
   //convenience functions
-  void addHeaderToGrid(unsigned int row = 0);
+  void addHeaderToGrid(unsigned int row);
 //    bool addHLineToGrid(Q3GridLayout* grid, unsigned int row, unsigned int maxcol);
   bool addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol);
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 17:28:22 $
+//   $Date: 2009/09/25 21:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -315,8 +315,8 @@ void CQFittingWidget::init()
   vboxLayout->insertWidget(0, mpHeaderWidget);
   vboxLayout->addWidget(mpBtnWidget);
 
-  addMethodSelectionBox(CFitTask::ValidMethods);
-  addMethodParameterTable();
+  addMethodSelectionBox(CFitTask::ValidMethods, 0);
+  addMethodParameterTable(1);
 
 //  mpParameterPageLayout = new Q3HBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage);
