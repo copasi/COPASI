@@ -1,4 +1,4 @@
-New Model[Time]	A[Concentration]	B[Concentration]	Event Time 1[Value]	Event Counter1[Value]	Event Time 2[Value]	Event Counter 2[Value]
+New Model[Time]	A[Concentration]	B[Concentration]	Event Time 1[Value]	Event Counter 1[Value]	Event Time 2[Value]	Event Counter 2[Value]
 0	1	0	0	0	0	0
 1	0.904837	0.0951626	0	0	0	0
 2	0.818731	0.181269	0	0	0	0
