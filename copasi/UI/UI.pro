@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.213 $
+#   $Revision: 1.214 $
 #   $Name:  $
 #   $Author: pwilly $
-#   $Date: 2009/09/23 11:43:25 $
+#   $Date: 2009/09/25 08:34:21 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.213 $ $Author: pwilly $ $Date: 2009/09/23 11:43:25 $
+# $Revision: 1.214 $ $Author: pwilly $ $Date: 2009/09/25 08:34:21 $
 ######################################################################
 
 LIB = UI
@@ -241,6 +241,7 @@ FORMS += CQDifferentialEquations.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += CQExpressionMmlWidget.ui
 FORMS += CQExpressionMmlStackedWidget.ui
+FORMS += CQModelValue.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
 # FORMS3 += CQDifferentialEquations.ui
@@ -297,7 +298,7 @@ HEADERS += \
            CQLyapWidget.h \
            CQMCAWidget.h \
            CQModelValue.h \
-           CQModelValue.ui.h \
+#           CQModelValue.ui.h \
            CQMoietiesTaskResult.h \
            CQMoietiesTaskResult.ui.h \
            CQMoietiesTaskWidget.h \
