@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.149 $
+//   $Revision: 1.150 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/03 17:43:27 $
+//   $Date: 2009/09/25 15:15:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,13 +38,13 @@
 C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration,
                                   const CCompartment & compartment,
                                   const CModel & model)
-{return concentration * compartment.getValue() * model.getQuantity2NumberFactor();}
+{return concentration * compartment.getInitialValue() * model.getQuantity2NumberFactor();}
 
 //static
 C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
     const CCompartment & compartment,
     const CModel & model)
-{return number / compartment.getValue() * model.getNumber2QuantityFactor();}
+{return number / compartment.getInitialValue() * model.getNumber2QuantityFactor();}
 
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
