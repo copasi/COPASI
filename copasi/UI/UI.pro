@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.214 $
+#   $Revision: 1.215 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2009/09/25 08:34:21 $
+#   $Author: shoops $
+#   $Date: 2009/09/25 17:11:52 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.214 $ $Author: pwilly $ $Date: 2009/09/25 08:34:21 $
+# $Revision: 1.215 $ $Author: shoops $ $Date: 2009/09/25 17:11:52 $
 ######################################################################
 
 LIB = UI
@@ -207,12 +207,15 @@ FORMS += CQDifferentialEquations.ui
 FORMS += CQEFMResultWidget.ui
 FORMS += CQEventsWidget.ui
 FORMS += CQEventWidget1.ui
+FORMS += CQExpressionMmlStackedWidget.ui
+FORMS += CQExpressionMmlWidget.ui
 FORMS += CQFittingItemWidget.ui
 FORMS += CQFittingWidget.ui
 FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
 FORMS += CQLyapWidget.ui
 FORMS += CQMCAWidget.ui
+FORMS += CQModelValue.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQPlotsWidget.ui
 FORMS += CQProgressDialog.ui
@@ -231,17 +234,6 @@ FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
-
-FORMS += CQSpeciesWidget.ui
-FORMS += CQTrajectoryWidget.ui
-FORMS += CQLyapWidget.ui
-FORMS += CQMCAWidget.ui
-
-FORMS += CQDifferentialEquations.ui
-FORMS += SliderSettingsDialog.ui
-FORMS += CQExpressionMmlWidget.ui
-FORMS += CQExpressionMmlStackedWidget.ui
-FORMS += CQModelValue.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
 # FORMS3 += CQDifferentialEquations.ui
