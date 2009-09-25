@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:13:13 $
+//   $Date: 2009/09/25 14:45:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -592,7 +592,6 @@ void CBitPatternTreeMethod::buildFluxModes()
 
       for (; pIndex != pIndexEnd; ++pIndex, pARow += NumSpecies)
         {
-          // TODO CRITICAL This is missing a pivot !!!
           memcpy(pARow, &mExpandedStoiTranspose(*pIndex, 0), NumSpecies * sizeof(C_FLOAT64));
         }
 
