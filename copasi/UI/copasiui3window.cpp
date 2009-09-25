@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.266 $
+//   $Revision: 1.267 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/08/17 20:22:52 $
+//   $Author: shoops $
+//   $Date: 2009/09/25 16:22:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -950,6 +950,13 @@ bool CopasiUI3Window::slotFileSave()
 
 void CopasiUI3Window::slotQuit()
 {
+  if (!qApp->mainWidget()->isEnabled())
+    {
+      CQMessageBox::information(this, "COPASI", "COPASI is currently executing tasks.\n"
+                                "Please stop them first before closing COPASI.");
+      return;
+    }
+
   bool success = true;
 
   ListViews::commit();
@@ -988,6 +995,14 @@ void CopasiUI3Window::slotQuit()
 
 void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 {
+  if (!qApp->mainWidget()->isEnabled())
+    {
+      CQMessageBox::information(this, "COPASI", "COPASI is currently executing tasks.\n"
+                                "Please stop them first before closing COPASI.");
+      ce->ignore();
+      return;
+    }
+
   bool success = true;
 
   ListViews::commit();
@@ -1024,6 +1039,8 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
     }
   else
     ce->ignore();
+
+  return;
 }
 
 // Cleanup all the temp .cps files created at runtime.
