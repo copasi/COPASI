@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMProblem.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/30 17:12:41 $
+   $Date: 2009/09/25 14:46:21 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,6 +19,7 @@
 
 #include "CEFMProblem.h"
 #include "CEFMTask.h"
+#include "CFluxMode.h"
 
 //  Default constructor
 CEFMProblem::CEFMProblem(const CCopasiContainer * pParent):
@@ -58,39 +64,46 @@ bool CEFMProblem::initialize()
 }
 
 void CEFMProblem::printResult(std::ostream * ostream) const
-  {
-    CEFMTask * pTask = dynamic_cast< CEFMTask * >(getObjectParent());
+{
+  CEFMTask * pTask = dynamic_cast< CEFMTask * >(getObjectParent());
 
-    if (pTask)
-      {
-        unsigned C_INT32 const noOfModesRows = pTask->getFluxModeSize();
-        *ostream << "\tNumber of Modes:\t" << noOfModesRows << std::endl;
+  if (pTask)
+    {
+      const std::vector< CFluxMode > & FluxModes = pTask->getFluxModes();
 
-        unsigned C_INT32 j;
-        for (j = 0; j < noOfModesRows; j++)
-          {
-            *ostream << j + 1;
-            if (pTask->isFluxModeReversible(j) == true)
-              *ostream << "\tReversible";
-            else
-              *ostream << "\tIrreversible";
+      *ostream << "\tNumber of Modes:\t" << FluxModes.size() << std::endl;
 
-            std::string Description = pTask->getFluxModeDescription(j);
-            unsigned int x, xmax = pTask->getFluxModeSize(j);
-            std::string::size_type start = 0;
-            std::string::size_type end = 0;
+      std::vector< CFluxMode >::const_iterator itMode = FluxModes.begin();
+      std::vector< CFluxMode >::const_iterator endMode = FluxModes.end();
 
-            //const CFluxMode & mode = pTask->getFluxMode(j);
-            for (x = 0; x < xmax; x++)
-              {
-                if (x)
-                  *ostream << "\t";
+      unsigned C_INT32 j;
 
-                end = Description.find("\n", start);
-                *ostream << "\t" << Description.substr(start, end - start);
-                start = end + 1;
-                *ostream << "\t" << pTask->getReactionEquation(j, x) << std::endl;
-              }
-          }
-      }
-  }
+      for (j = 0; itMode != endMode; ++itMode, j++)
+        {
+          *ostream << j + 1;
+
+          if (itMode->isReversible() == true)
+            *ostream << "\tReversible";
+          else
+            *ostream << "\tIrreversible";
+
+          std::string Description = pTask->getFluxModeDescription(*itMode);
+          CFluxMode::const_iterator itReaction = itMode->begin();
+          CFluxMode::const_iterator endReaction = itMode->end();
+
+          std::string::size_type start = 0;
+          std::string::size_type end = 0;
+
+          for (; itReaction != endReaction; ++itReaction)
+            {
+              if (itReaction != itMode->begin())
+                *ostream << "\t";
+
+              end = Description.find("\n", start);
+              *ostream << "\t" << Description.substr(start, end - start);
+              start = end + 1;
+              *ostream << "\t" << pTask->getReactionEquation(itReaction) << std::endl;
+            }
+        }
+    }
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEFMWidget.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:13:13 $
+//   $Date: 2009/09/25 14:46:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,8 +62,9 @@ void CQEFMWidget::loadFluxModes()
 
   if (pTask)
     {
-      unsigned C_INT32 const noOfModesRows = pTask->getFluxModeSize();
-      mpEditFluxModes->setText(QString::number(noOfModesRows));
+      const std::vector< CFluxMode > & FluxModes = pTask->getFluxModes();
+
+      mpEditFluxModes->setText(QString::number(FluxModes.size()));
 
       Ui::CQEFMWidget::mpListView->setColumnText(0, "Reversibility");
 #ifdef COPASI_SSA
@@ -73,9 +74,12 @@ void CQEFMWidget::loadFluxModes()
         Ui::CQEFMWidget::mpListView->setColumnText(0, "Stability");
 
 #endif
+
+      std::vector< CFluxMode >::const_iterator itMode = FluxModes.begin();
+      std::vector< CFluxMode >::const_iterator endMode = FluxModes.end();
       unsigned C_INT32 j;
 
-      for (j = 0; j < noOfModesRows; j++)
+      for (j = 0; itMode != endMode; ++itMode, j++)
         {
 #ifdef COPASI_SSA
 
@@ -103,7 +107,7 @@ void CQEFMWidget::loadFluxModes()
             {
 #endif // COPASI_SSA
 
-              if (pTask->isFluxModeReversible(j) == true)
+              if (itMode->isReversible() == true)
                 {
                   item = new Q3ListViewItem(Ui::CQEFMWidget::mpListView, "Reversible");
                 }
@@ -118,14 +122,15 @@ void CQEFMWidget::loadFluxModes()
 #endif // COPASI_SSA
           item->setMultiLinesEnabled(true);
 
-          item->setText(1, FROM_UTF8(pTask->getFluxModeDescription(j)));
+          item->setText(1, FROM_UTF8(pTask->getFluxModeDescription(*itMode)));
           std::string reactionEq = "";
-          unsigned int x, xmax = pTask->getFluxModeSize(j);
 
-          //const CFluxMode & mode = pTask->getFluxMode(j);
-          for (x = 0; x < xmax; x++)
+          CFluxMode::const_iterator itReaction = itMode->begin();
+          CFluxMode::const_iterator endReaction = itMode->end();
+
+          for (; itReaction != endReaction; ++itReaction)
             {
-              reactionEq += pTask->getReactionEquation(j, x);
+              reactionEq += pTask->getReactionEquation(itReaction);
               reactionEq += "\n";
             }
 

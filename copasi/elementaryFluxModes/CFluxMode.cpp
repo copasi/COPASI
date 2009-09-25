@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/24 18:13:13 $
+   $Date: 2009/09/25 14:46:21 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,32 +61,14 @@ CFluxMode::CFluxMode(const CTableauLine * line)
 CFluxMode::~CFluxMode()
 {}
 
-// TODO CRITICAL Remove/replace this method with an iterator approach
-size_t CFluxMode::getReactionIndex(const size_t & index) const
+CFluxMode::const_iterator CFluxMode::begin() const
 {
-  if (index >= mReactions.size())
-    return C_INVALID_INDEX;
-
-  std::map< size_t, C_FLOAT64 >::const_iterator it = mReactions.begin();
-
-  for (size_t i = 0; i < index; ++i)
-    ++it;
-
-  return it->first;
+  return mReactions.begin();
 }
 
-// TODO CRITICAL Remove/replace this method with an iterator approach
-C_FLOAT64 CFluxMode::getMultiplier(const size_t & index) const
+CFluxMode::const_iterator CFluxMode::end() const
 {
-  if (index >= mReactions.size())
-    return 0.0;
-
-  std::map< size_t, C_FLOAT64 >::const_iterator it = mReactions.begin();
-
-  for (size_t i = 0; i < index; ++i)
-    ++it;
-
-  return it->second;
+  return mReactions.end();
 }
 
 bool CFluxMode::isReversible() const

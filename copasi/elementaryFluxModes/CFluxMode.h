@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/24 18:13:13 $
+   $Date: 2009/09/25 14:46:21 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,10 @@ class CTableauLine;
 
 class CFluxMode
 {
-  // Attributes
+public:
+  typedef std::map< size_t, C_FLOAT64 >::const_iterator const_iterator;
 
+  // Attributes
 private:
   /**
    *  Vector containing an index to a reaction and the multiplier
@@ -82,22 +84,16 @@ public:
   ~CFluxMode();
 
   /**
-   *  Retrieve the index of the reaction
-   *  @param const size_t & index
-   *  @return size_t reactionIndex
+   * Retrieve the iterator to the first element of the flux mode
+   * @return CFluxMode::const_iterator begin;
    */
-  size_t getReactionIndex(const size_t & index) const;
-
-  //const CReaction * getReaction(unsigned C_INT32 index, const CModel * model) const;
-  //std::string getReactionName(unsigned C_INT32 index, const CModel * model) const;
-  //std::string getReactionEquation(unsigned C_INT32 index, const CModel * model) const;
+  const_iterator begin() const;
 
   /**
-   *  Retrieves the multiplier for the reaction
-   *  @param const size_t & index
-   *  @return "unsigned C_FLOAT64 " index
+   * Retrieve the iterator pointing beyond the last element of the flux mode
+   * @return CFluxMode::const_iterator end;
    */
-  C_FLOAT64 getMultiplier(const size_t & index) const;
+  const_iterator end() const;
 
   /**
    *  Check whether the mode is reversible

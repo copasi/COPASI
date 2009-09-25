@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/16 16:15:35 $
+//   $Date: 2009/09/25 14:46:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include "CEFMTask.h"
 #include "CEFMMethod.h"
 #include "CEFMProblem.h"
+#include "CFluxMode.h"
 
 #ifdef COPASI_SSA
 #include "CSSAMethod.h"
@@ -109,25 +110,18 @@ bool CEFMTask::setMethodType(const int & type)
   return true;
 }
 
-bool CEFMTask::isFluxModeReversible(unsigned C_INT32 index) const
-{return static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index].isReversible();}
-
-//const CFluxMode & CElementaryFluxModes::getFluxMode(unsigned C_INT32 index) const
-//  {return static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index];}
-
-std::string
-CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
+std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
 {
   std::stringstream tmp;
   tmp.flags(std::ios::fixed);
   tmp.precision(0);
 
-  const std::vector< CFluxMode > & FluxModes =
-    static_cast<CEFMMethod *>(mpMethod)->getFluxModes();
   const std::vector< const CReaction * > & ReorderedReactions =
     static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions();
 
-  unsigned C_INT32 j, jmax = FluxModes[index].size();
+  unsigned C_INT32 j;
+  CFluxMode::const_iterator itMode = fluxMode.begin();
+  CFluxMode::const_iterator endMode = fluxMode.end();
 
 #ifdef COPASI_SSA
 
@@ -156,29 +150,28 @@ CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
     }
   else
 #endif
-    for (j = 0; j < jmax; j++)
+    for (j = 0; itMode != endMode; ++itMode, j++)
       {
         if (j) tmp << "\n";
 
-        tmp << FluxModes[index].getMultiplier(j) << " * "
-        << ReorderedReactions[FluxModes[index].getReactionIndex(j)]->getObjectName();
+        tmp << itMode->second << " * "
+        << ReorderedReactions[itMode->first]->getObjectName();
       }
 
   return tmp.str();
 }
 
-unsigned C_INT32 CEFMTask::getFluxModeSize() const
-{return static_cast<CEFMMethod *>(mpMethod)->getFluxModes().size();}
+const std::vector< CFluxMode > & CEFMTask::getFluxModes() const
+{
+  return static_cast<const CEFMMethod *>(mpMethod)->getFluxModes();
+}
 
-unsigned C_INT32 CEFMTask::getFluxModeSize(unsigned C_INT32 index) const
-{return static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index].size();}
-
-std::string CEFMTask::getReactionEquation(unsigned C_INT32 index1, unsigned C_INT32 index2) const
+std::string CEFMTask::getReactionEquation(const std::map< size_t, C_FLOAT64 >::const_iterator & itReaction) const
 {
   CEFMMethod * pMethod = static_cast<CEFMMethod *>(mpMethod);
 
   const CReaction * pReaction =
-    pMethod->getReorderedReactions()[pMethod->getFluxModes()[index1].getReactionIndex(index2)];
+    pMethod->getReorderedReactions()[itReaction->first];
 
 #ifdef COPASI_SSA
 
