@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/05/18 09:48:32 $
+//   $Date: 2009/09/28 18:13:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,29 +23,6 @@ class CQFittingItemWidget;
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-
-/*
-#include <Q3HBoxLayout>
-#include <Qt3Support/Q3ButtonGroup>
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QComboBox>
-#include <QtGui/QGridLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QRadioButton>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QTabWidget>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
-#include <map>
-#include <string>
-#include "TaskWidget.h"
- */
-
-#include "copasi/UI/CQExpressionMmlWidget.h"
 
 class CQOptimizationWidget : public TaskWidget, public Ui::CQOptimizationWidget
 {
@@ -70,8 +47,6 @@ protected:
   QColor mChangedColor;
   QColor mSavedColor;
   bool mTypeChanged;
-//    Q3HBoxLayout * mpConstraintPageLayout;
-//    Q3HBoxLayout * mpParameterPageLayout;
   QHBoxLayout * mpConstraintPageLayout;
   QHBoxLayout * mpParameterPageLayout;
 

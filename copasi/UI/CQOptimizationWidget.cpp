@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/25 21:02:46 $
+//   $Author: pwilly $
+//   $Date: 2009/09/28 18:13:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,18 +14,7 @@
 #include "CQOptimizationWidget.h"
 
 #include <qvariant.h>
-//#include "TaskWidget.h"
-#include "copasi/UI/CQExpressionMmlWidget.h"
-//#include "CQOptimizationWidget.ui.h"
 
-/*
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qtoolbutton.h>
-#include <qlayout.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
- */
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
 #include "UI/CQFittingItemWidget.h"
@@ -88,10 +77,8 @@ bool CQOptimizationWidget::saveTask()
   if (!pProblem) return false;
 
   // expression
-  //  if (pProblem->getObjectiveFunction() != ((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression())
   if (pProblem->getObjectiveFunction() != mpExpressionEMW->mpExpressionWidget->getExpression())
     {
-      //      if (!pProblem->setObjectiveFunction(((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression()))
       if (!pProblem->setObjectiveFunction(mpExpressionEMW->mpExpressionWidget->getExpression()))
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
@@ -232,22 +219,18 @@ void CQOptimizationWidget::init()
   mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::sens]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::sens]] = CCopasiTask::sens;
 
-//  mpParameterPageLayout = new Q3HBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage);
 
   mpParameters = new CQFittingItemWidget(mpParametersPage);
-  //  mpParameters->setName(FROM_UTF8(taskName));
 
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);
   mpParameterPageLayout->addWidget(mpParameters);
 
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
 
-//  mpConstraintPageLayout = new Q3HBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
   mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage);
 
   mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
-  //  mpConstraints->setName(FROM_UTF8(taskName));
 
   mpConstraints->setItemType(CQFittingItemWidget::OPT_CONSTRAINT);
   mpConstraintPageLayout->addWidget(mpConstraints);

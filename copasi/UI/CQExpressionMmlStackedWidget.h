@@ -1,11 +1,10 @@
 // Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/CQExpressionMmlWidget.h,v $
-//   $Revision: 1.7 $
+//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/30 13:22:00 $
+//   $Author: shoops $
+//   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
-
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -19,7 +18,7 @@
 #include "ui_CQExpressionMmlStackedWidget.h"
 
 #include <QStackedWidget>
-//#include <Qt3Support/Q3WidgetStack>
+
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
@@ -31,7 +30,6 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
-//#include <Qt3Support/Q3WidgetStack>
 
 #include "CQExpressionWidget.h"
 #include "CQMmlScrollView.h"
@@ -41,7 +39,6 @@ class CQExpressionMmlStackedWidget : public QStackedWidget, public Ui::CQExpress
   Q_OBJECT
 
 public:
-//  CQExpressionMmlStackedWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   CQExpressionMmlStackedWidget(QWidget* parent = 0);
   ~CQExpressionMmlStackedWidget();
 

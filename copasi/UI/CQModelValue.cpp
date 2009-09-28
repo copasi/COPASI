@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/25 08:31:47 $
+//   $Date: 2009/09/28 18:11:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,10 +13,7 @@
 
 #include "CQModelValue.h"
 
-//#include <qvariant.h>
 #include "CQExpressionWidget.h"
-//#include "CQExpressionMmlWidget.h"
-//#include "CQModelValue.ui.h"
 
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"

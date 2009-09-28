@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/25 08:31:47 $
+//   $Date: 2009/09/28 18:11:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,42 +14,14 @@
 #ifndef CQMODELVALUE_H
 #define CQMODELVALUE_H
 
-/*
-#include <qvariant.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
-#include <Q3Frame>
-#include <QPixmap>
-#include <QLabel>
- */
-
 class CQExpressionWidget;
 class CModelValue;
 class CExpression;
-
-/*
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <QtGui/QCheckBox>
-#include <QtGui/QComboBox>
-#include <Qt3Support/Q3Frame>
-#include <Qt3Support/Q3GridLayout>
-#include <Qt3Support/Q3HBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
- */
 
 #include "ui_CQModelValue.h"
 
 #include <string>
 
-#include "CQExpressionMmlWidget.h"
-//#include "CQExpressionMmlStackedWidget.h"
 #include "copasiWidget.h"
 
 class CQModelValue : public CopasiWidget, public Ui::CQModelValue

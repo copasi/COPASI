@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/23 11:45:51 $
+//   $Date: 2009/09/28 18:16:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,6 @@
 // All rights reserved.
 
 #include "CQExpressionWidget.h"
-#include "CQExpressionMmlWidget.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
@@ -331,7 +330,6 @@ void CQCompartment::load()
   if (mpCompartment == NULL) return;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  //CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
 
   const CModel * pModel = NULL;
 
@@ -395,12 +393,10 @@ void CQCompartment::load()
       mpCompartment->getInitialExpression() == "")
     {
       mpBoxUseInitialExpression->setChecked(false);
-      // slotInitialTypeChanged(false);
     }
   else
     {
       mpBoxUseInitialExpression->setChecked(true);
-      // slotInitialTypeChanged(true);
     }
 
   loadMetaboliteTable();

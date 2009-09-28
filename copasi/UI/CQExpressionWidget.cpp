@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/25 09:30:59 $
+//   $Date: 2009/09/28 18:04:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,6 @@
 #include <QtDebug>
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
-//    : Q3SyntaxHighlighter(ew)
     : QSyntaxHighlighter(ew)
 {
   // COPASI object format
@@ -66,9 +65,7 @@ void CQExpressionHighlighter::highlightBlock(const QString &text)
 
 //***********************************************************************
 
-//CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * name, bool isBoolean):
 CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name, bool isBoolean):
-//    CQValidator< Q3TextEdit >(parent, name),
     CQValidator< QTextEdit >(parent, name),
     mExpression()
 {
@@ -97,7 +94,6 @@ QValidator::State CQValidatorExpression::validate(QString & input, int & pos) co
           const_cast< CExpression * >(&mExpression)->compile())
         {
           QString Input = mpLineEdit->text();
-//          return CQValidator< Q3TextEdit >::validate(input, pos);
           return CQValidator< QTextEdit >::validate(input, pos);
         }
     }
@@ -111,14 +107,12 @@ QValidator::State CQValidatorExpression::validate(QString & input, int & pos) co
   */
 CExpression *CQValidatorExpression::getExpression()
 {
-  //  return const_cast< CExpression * >(&mExpression);
   return &mExpression;
 }
 
 //***********************************************************************
 
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool isBoolean)
-//    : Q3TextEdit(parent, name),
     : QTextEdit(parent, name),
     mpValidator(NULL),
     mOldPar(0),
@@ -133,12 +127,10 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
   setTextFormat(Qt::PlainText);
   setTabChangesFocus(true);
 
-//  new CQExpressionHighlighter(this);
   expressionHighlighter = new CQExpressionHighlighter(this);
 
   int h, s, v;
 
-// TODO:
   mSavedColor = paletteBackgroundColor();
   mSavedColor.getHsv(&h, &s, &v);
 
@@ -304,7 +296,6 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
       QTextCursor tc = textCursor();
       qDebug() << "Cursor position = " << tc.position();
 
-      //    mCursor.setPosition(textCursor().position());
       qDebug() << "Updated Cursor position = " << mCursor.position();
 
       qDebug() << "selection start = " << mCursor.selectionStart();
@@ -314,7 +305,6 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 
       qDebug() << "-x-x-x-x-x-";
 #endif
-      //  return;
     }
 
   else if (e == QKeySequence::SelectPreviousChar)
@@ -324,14 +314,6 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 #endif
       eAction = CQExpressionWidget::SelectToLeft;
     }
-
-  /*
-    if (e == QKeySequence::Undo)
-    {
-    qDebug() << "U N D O is just pressed";
-      eAction = CQExpressionWidget::Undo;
-    }
-  */
 
   else if (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right)
     {
@@ -365,7 +347,6 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
     }
   else
     {
-//      if (e->text().isEmpty()) return;  // no character is typed
       if (!e->text().isEmpty())
         {
           // in case of typing a character
@@ -392,22 +373,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 #endif
 
   // This will lead to emitting signal cursorPositionChanged()
-//  Q3TextEdit::keyPressEvent(e);
   QTextEdit::keyPressEvent(e);
-
-  if (e == QKeySequence::Undo)
-    {
-#ifdef DEBUG_UI
-      qDebug() << "U N D O is just pressed";
-#endif
-//    eAction = CQExpressionWidget::Undo;
-
-      // update cursor position, especially useful for undo/redo action
-      mCursor.setPosition(textCursor().position());
-#ifdef DEBUG_UI
-      qDebug() << "Updated Cursor position = " << mCursor.position();
-#endif
-    }
 }
 
 void CQExpressionWidget::slotSelectionChanged()
@@ -822,12 +788,6 @@ std::string CQExpressionWidget::getExpression() const
 
   return InfixCN;
 }
-/*
-CExpression *CQExpressionWidget::getExpression()
-{
-//  return const_cast< CExpression * >(&mExpression);
-  return &(mpValidator->mExpression);
-}*/
 
 void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionType & expressionType)
 {
@@ -882,7 +842,6 @@ void CQExpressionWidget::slotSelectObject()
 #endif
 
       setCurrentCharFormat(f);
-//      insert(FROM_UTF8("<" + Insert + ">")); -> Q3TextEdit
       insertPlainText(FROM_UTF8("<" + Insert + ">"));
       setCurrentCharFormat(f1);
     }

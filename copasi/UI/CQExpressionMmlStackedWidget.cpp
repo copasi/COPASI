@@ -1,11 +1,10 @@
 // Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/CQExpressionMmlWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/30 13:22:00 $
+//   $Author: shoops $
+//   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
-
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -13,11 +12,7 @@
 
 #include "CQExpressionMmlStackedWidget.h"
 
-//#include <qvariant.h>
-//#include "CQExpressionWidget.h"
 #include "utilities/CCopasiException.h"
-//#include "CQMmlScrollView.h"
-//#include "CQExpressionMmlWidget.ui.h"
 
 #include "CQMessageBox.h"
 #include "qtUtilities.h" // for UTF8
@@ -30,8 +25,6 @@
  *  Constructs a CQExpressionMmlWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-//CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
-//   : QStackedWidget(parent, name, fl)
 CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
     : QStackedWidget(parent)
 {
@@ -71,109 +64,84 @@ void CQExpressionMmlStackedWidget::languageChange()
 
 void CQExpressionMmlStackedWidget::slotGoExpressionWidget()
 {
-  qDebug() << "- here on CQExpressionMmlWidget::slotGoExpressionWidget() -";
-  // std::cout << "CQEMW::slotGoExpressionWidget(): mpExpressionWidget->text() = " << UTF8_TO_CHAR(mpExpressionWidget->text()) << std::endl;
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-//  mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
-//  mpWidgetStackExpressionMml->raiseWidget(0);
-//  mpWidgetStackExpressionMml->setCurrentIndex(0);
+#ifdef DEBUG_UI
+  qDebug() << "- here on CQExpressionMmlStackedWidget::slotGoExpressionWidget() -";
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+#endif
 
-//  mpWidgetStackExpressionMml->setCurrentWidget(mpExpressionPage);
   setCurrentWidget(mpExpressionPage);
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
 
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << mpWidgetStackExpressionMml->currentIndex();
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << currentIndex();
+#ifdef DEBUG_UI
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
+#endif
 }
 
 void CQExpressionMmlStackedWidget::slotGoMmlWidget()
 {
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-//  mpWidgetStackExpressionMml->raiseWidget(mpMmlPage);
-//  mpWidgetStackExpressionMml->raiseWidget(1);
-//  mpWidgetStackExpressionMml->setCurrentIndex(0);
+#ifdef DEBUG_UI
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+#endif
 
-//  mpWidgetStackExpressionMml->setCurrentWidget(mpMmlPage);
   setCurrentWidget(mpMmlPage);
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
 
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << mpWidgetStackExpressionMml->currentIndex();
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << currentIndex();
+#ifdef DEBUG_UI
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
+#endif
 }
 
 void CQExpressionMmlStackedWidget::updateWidget()
 {
-  qDebug() << "- here on CQExpressionMmlWidget::updateWidget() -";
+#ifdef DEBUG_UI
+  qDebug() << "- here on CQExpressionMmlStackedWidget::updateWidget() -";
+#endif
 
 #ifdef HAVE_MML
 
   std::ostringstream mml;
   std::vector<std::vector<std::string> > params;
 
-//  if (!mpExpressionWidget->text().isEmpty())
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << mpWidgetStackExpressionMml->currentIndex();
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << currentIndex();
+#ifdef DEBUG_UI
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
+#endif
 
   if (mpExpressionWidget->text().isEmpty() ||
       !mpExpressionWidget->isValid())
-//    mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
-//    mpWidgetStackExpressionMml->setCurrentIndex(0);
-
-//    mpWidgetStackExpressionMml->setCurrentWidget(mpExpressionPage);
     setCurrentWidget(mpExpressionPage);
   else
     {
       mpExpressionWidget->mpValidator->getExpression()->writeMathML(mml, false, 0);
-//      mpWidgetStackExpressionMml->raiseWidget(mpMmlPage);
-//      mpWidgetStackExpressionMml->setCurrentIndex(1);
 
+#ifdef DEBUG_UI
       qDebug() << "mml.str() = " << FROM_UTF8(mml.str());
+#endif
 
-//      mpWidgetStackExpressionMml->setCurrentWidget(mpMmlPage);
       setCurrentWidget(mpMmlPage);
       mpMmlScrollView->updateWidget(mml);
       MMLStr = FROM_UTF8(mml.str());
     }
 
-  /*
-    mpMmlScrollView->mpMmlWidget->setContent(FROM_UTF8(mml.str()));
-    mpMmlScrollView->resizeContents(mpMmlScrollView->mpMmlWidget->sizeHint().width(), mpMmlScrollView->mpMmlWidget->sizeHint().height());
-    mpMmlScrollView->setMinimumHeight(mpMmlScrollView->mpMmlWidget->sizeHint().height() + 30);
-  */
-//  mpMmlScrollView->updateWidget(mml);
-
-//  MMLStr = FROM_UTF8(mml.str());
-
 #endif /* HAVE_MML */
 
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->currentIndex();
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << currentIndex();
+#ifdef DEBUG_UI
+  qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget = " << currentIndex();
+#endif
 }
 
 void CQExpressionMmlStackedWidget::init()
 {
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
+#ifdef DEBUG_UI
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget = " << currentIndex();
+#endif
 
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->currentIndex();
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << currentIndex();
-
-  //  mpBtnViewExpression->setEnabled(FALSE);
 #ifndef HAVE_MML
   mpBtnViewExpression->hide();
 #endif // not HAVE_MML
 }
 
-// add 22.07.08
 void CQExpressionMmlStackedWidget::slotSaveExpression()
 {
   QString filter;
@@ -214,7 +182,6 @@ void CQExpressionMmlStackedWidget::saveMML(const QString outfilename)
   ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
   ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
 
-  //  ofile << mml.str();
   mpExpressionWidget->mpValidator->getExpression()->writeMathML(ofile, false, 0);
 
   ofile << "</math>" << std::endl;

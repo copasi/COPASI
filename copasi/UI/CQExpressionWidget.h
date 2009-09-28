@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/09/24 11:12:13 $
+//   $Author: pwilly $
+//   $Date: 2009/09/28 18:04:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,11 +18,8 @@
 #ifndef CQEXPRESSION
 #define CQEXPRESSION
 
-//#include <q3textedit.h>
 #include <QTextEdit>
-//#include <q3syntaxhighlighter.h>
 #include <QSyntaxHighlighter>
-//Added by qt3to4:
 #include <QKeyEvent>
 
 #include <QKeySequence>
@@ -40,7 +37,6 @@ class CCopasiObject;
 /*!
     \brief The class for highlighting the expression syntax
  */
-//class CQExpressionHighlighter: public Q3SyntaxHighlighter
 class CQExpressionHighlighter: public QSyntaxHighlighter
 {
 public:
@@ -58,11 +54,9 @@ public:
 /*!
     \brief The class for checking the validity of a given mathematical expression
  */
-//class CQValidatorExpression: public CQValidator< Q3TextEdit >
 class CQValidatorExpression: public CQValidator< QTextEdit >
 {
 public:
-//  CQValidatorExpression(Q3TextEdit * parent, const char * name = 0, bool isBoolean = false);
   CQValidatorExpression(QTextEdit * parent, const char * name = 0, bool isBoolean = false);
 
   /**
@@ -87,7 +81,6 @@ protected:
 /*!
     \brief The class for writing/editing a mathematical expression
  */
-//class CQExpressionWidget: public Q3TextEdit
 class CQExpressionWidget: public QTextEdit
 {
   Q_OBJECT
