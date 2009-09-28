@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 21:02:46 $
+//   $Date: 2009/09/28 17:06:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,8 @@ void TaskWidget::addHeaderToGrid(unsigned int row)
 {
   if (!mpMethodLayout)
     {
+      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
+
       mpMethodLayout = new QGridLayout();
       mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
@@ -106,37 +108,40 @@ void TaskWidget::addMethodParameterTable(unsigned int row)
 
   if (!mpMethodLayout)
     {
+      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
+
       mpMethodLayout = new QGridLayout();
       mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
+      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->setStretchFactor(mpMethodLayout, 10);
     }
 
   mpLblParameter = new QLabel(0, "mpLblParameter");
-  mpLblParameter->setText(tr("Method Parameter"));
+  mpLblParameter->setText(tr("Parameter"));
   mpLblParameter->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
   mpTblParameter = new QTableWidget();
   mpTblParameter->setSelectionMode(QAbstractItemView::SingleSelection);
+  mpTblParameter->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-  // initial number of rows as well as columns
-  mpTblParameter->setRowCount(1);
   mpTblParameter->setColumnCount(1);
 
   mpTblParameter->setHorizontalHeaderItem(0, new QTableWidgetItem());
   mpTblParameter->horizontalHeaderItem(0)->setText("Value");
-  mpTblParameter->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+  mpTblParameter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
 
   mpTblParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblParameter->horizontalHeader()->hide();
 
-  mpSpacer1 = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  QSpacerItem *mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
   mpMethodLayout->addWidget(mpLblParameter, row, 0);
   mpMethodLayout->addWidget(mpTblParameter, row, 1, row, 2);
-  mpMethodLayout->addItem(mpSpacer1, row, 3);
-  mpMethodLayout->addItem(mpSpacer2, row + 1, 1);
+
+  if (row == 0)
+    {
+      mpSpacer1 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+      mpMethodLayout->addItem(mpSpacer1, row + 1, 2);
+    }
 
   return;
 }
@@ -145,6 +150,8 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
 {
   if (!mpMethodLayout)
     {
+      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
+
       mpMethodLayout = new QGridLayout();
       mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
@@ -165,7 +172,7 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
     mpBoxMethod->insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[validMethods[i]]));
 
-  mpSpacer2 = new QSpacerItem(0, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+  mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
   mpMethodLayout->addWidget(mpLblMethod, row, 0);
   mpMethodLayout->addWidget(mpBoxMethod, row, 1);
@@ -292,40 +299,17 @@ bool TaskWidget::loadMethod()
   if (mpTblParameter)
     {
       QString value;
-      QString strname;
 
       mpTblParameter->setRowCount(mpMethod->size());
-
-      QAbstractItemModel* m = mpTblParameter->model();
-
-      QHeaderView* vHeader = mpTblParameter->verticalHeader();
-      QHeaderView* hHeader = mpTblParameter->horizontalHeader();
-
-      std::cout << hHeader->length() << " A1 " << vHeader->width() << std::endl;
-      std::cout << vHeader->length() << " B1 " << hHeader->height() << std::endl;
-
-      std::cout << "hHeader->sizeHint().height() = " << hHeader->sizeHint().height() << std::endl;
-      std::cout << "hHeader->sizeHint().width() = " << hHeader->sizeHint().width() << std::endl;
-      std::cout << "hHeader->count() = " << hHeader->count() << std::endl;
-      std::cout << "vHeader->sizeHint().height() = " << vHeader->sizeHint().height() << std::endl;
-      std::cout << "vHeader->sizeHint().width() = " << vHeader->sizeHint().width() << std::endl;
-      std::cout << "vHeader->count() = " << vHeader->count() << std::endl;
 
       unsigned C_INT32 i;
       CCopasiParameter::Type Type;
 
       for (i = 0; i < mpMethod->size(); i++)
         {
-          strname = FROM_UTF8(mpMethod->getName(i));
-
           // create item of the current row and give it a name
           mpTblParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
-          mpTblParameter->verticalHeaderItem(i)->setText(strname);
-
-          std::cout << "mpTblParameter->verticalHeaderItem(i)->sizeHint().height() = " << mpTblParameter->verticalHeaderItem(i)->sizeHint().height()
-                    << "mpTblParameter->verticalHeaderItem(i)->sizeHint().width() = " << mpTblParameter->verticalHeaderItem(i)->sizeHint().width() << std::endl;
-
-          std::cout << "rowCount at iteration " << i << " = " << mpTblParameter->rowCount() << std::endl;
+          mpTblParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpMethod->getName(i)));
 
           value = getParameterValue(mpMethod, i, &Type);
 
@@ -333,92 +317,25 @@ bool TaskWidget::loadMethod()
           itemValue->setData(Qt::EditRole, QVariant(value));
           itemValue->setTextAlignment(Qt::AlignRight);
           mpTblParameter->setItem(i, 0, itemValue);
-
-          std::cout << "rowHeight(" << i << ") = " << mpTblParameter->rowHeight(i) << std::endl;
         }
 
       mpTblParameter->resizeColumnsToContents();
       mpTblParameter->resizeRowsToContents();
 
-      std::cout << "columnWidth(0) = " << mpTblParameter->columnWidth(0) << "columnWidth(1) = " << mpTblParameter->columnWidth(1) << std::endl;
+      mpTblParameter->horizontalHeaderItem(0)->setSizeHint(QSize(mpTblParameter->columnWidth(0), 22));
 
-      unsigned C_INT32 singleFrame = mpTblParameter->frameWidth();
-//  int doubleFrame = 2 * mpTblParameter->frameWidth();
-      unsigned C_INT32 doubleFrame = 2 * singleFrame;
-      std::cout << "doubleFrame = " << doubleFrame << std::endl;
+      QHeaderView* vHeader = mpTblParameter->verticalHeader();
 
-      /*
-        int doubleFrame = 2 * mpTblParameter->frameWidth();
-        std::cout << "doubleFrame = " << doubleFrame << std::endl;
-
-        int w = hHeader->length() + vHeader->width() + doubleFrame;
-        int h = vHeader->length() + hHeader->height() + doubleFrame;
-      */
-      std::cout << hHeader->length() << " A2 " << vHeader->width() << std::endl;
-      std::cout << vHeader->length() << " B2 " << hHeader->height() << std::endl;
-
-      std::cout << "hHeader->sizeHint().height() = " << hHeader->sizeHint().height() << std::endl;
-      std::cout << "hHeader->sizeHint().width() = " << hHeader->sizeHint().width() << std::endl;
-      std::cout << "hHeader->count() = " << hHeader->count() << std::endl;
-      std::cout << "vHeader->sizeHint().height() = " << vHeader->sizeHint().height() << std::endl;
-      std::cout << "vHeader->sizeHint().width() = " << vHeader->sizeHint().width() << std::endl;
-      std::cout << "vHeader->count() = " << vHeader->count() << std::endl;
-
-      unsigned C_INT32 index;
-
-      unsigned C_INT32 colCount = m->columnCount();
-      unsigned C_INT32 w = 0;
-
-      for (index = 0; index < colCount; index++)
+      if (mpTblParameter->sizePolicy().verticalPolicy() == QSizePolicy::Maximum)
         {
-          w += mpTblParameter->columnWidth(index) + doubleFrame;
-          std::cout << "i=" << index << ": w = " << w << std::endl;
-//    std::cout << "sizeHintForColumn = " << mpTblParameter->sizeHintForColumn(i) << std::endl;
+          mpTblParameter->setMaximumHeight(vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5);
+        }
+      else
+        {
+          mpTblParameter->setMinimumHeight(vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5);
         }
 
-      unsigned C_INT32 rowCount = m->rowCount();
-      unsigned C_INT32 h = 0;
-
-      for (index = 0; index < rowCount; index++)
-        {
-          h += mpTblParameter->rowHeight(index) + singleFrame;
-          std::cout << "i=" << index << ": h = " << h << std::endl;
-//    std::cout << "sizeHintForRow = " << mpTblParameter->sizeHintForRow(i) << std::endl;
-        }
-
-      /*
-        w += mpTblParameter->verticalHeader()->width() + doubleFrame;
-        h += mpTblParameter->horizontalHeader()->height() + doubleFrame;
-      */
-
-//  w += vHeader->sizeHint().width() + vHeader->width();
-//  h += hHeader->sizeHint().height() + hHeader->height();
-      w += vHeader->sizeHint().width();
-      h += hHeader->sizeHint().height();
-
-      std::cout << "colCount = " << colCount << " - rowCount = " << rowCount << std::endl;
-      std::cout << "w = " << w << " - h = " << h << std::endl;
-
-      /*
-        std::cout << "mpTblParameter->sizeHint().height() = " << mpTblParameter->sizeHint().height() << std::endl;
-        std::cout << "mpTblParameter->sizeHint().width() = " << mpTblParameter->sizeHint().width() << std::endl;
-      */
-      std::cout << "mpTblParameter->sizeHint().height() = " << mpTblParameter->sizeHint().height() << std::endl;
-      std::cout << "mpTblParameter->sizeHint().width() = " << mpTblParameter->sizeHint().width() << std::endl;
-
-      /*
-        mpTblParameter->setFixedHeight(hHeader->length());
-        mpTblParameter->setFixedWidth(vHeader->length());
-      */
-      /*
-        mpTblParameter->setFixedHeight(230 );
-        mpTblParameter->setFixedWidth(320);
-
-        mpTblParameter->setFixedHeight(242);
-        mpTblParameter->setFixedWidth(319);
-      */
-      // mpTblParameter->setMinimumHeight(h);
-      mpTblParameter->setMinimumWidth(w);
+      mpTblParameter->setMinimumWidth(mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 22);
     }
 
   return true;
@@ -453,7 +370,6 @@ bool TaskWidget::saveMethod()
         continue;
 
       value = mpTblParameter->item(i, 0)->text();
-      std::cout << "value = " << value.toFloat() << std::endl;
 
       if (value != getParameterValue(mpMethod, i, &Type))
         {

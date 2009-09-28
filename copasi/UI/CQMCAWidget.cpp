@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 21:02:46 $
+//   $Date: 2009/09/28 17:06:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,12 +159,11 @@ void CQMCAWidget::init()
   vboxLayout->addWidget(mpBtnWidget);     // 'footer'
 
   addMethodParameterTable(0);
+  mpTblParameter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 }
 
 bool CQMCAWidget::loadParameterTable()
 {
-// temporary because of migrating from Q3Table to QTableWidget - 26.03.09
-//  bool init = (mpTblParameter->numRows() == 0);
   bool init = (mpTblParameter->rowCount() == 0);
 
   unsigned C_INT32 NumRows = mpMethod->size();
@@ -180,11 +179,6 @@ bool CQMCAWidget::loadParameterTable()
       NumRows += pSteadyStateTask->getMethod()->size();
     }
 
-  /*
-    mpTblParameter->setNumRows(NumRows);
-    Q3Header *rowHeader = mpTblParameter->verticalHeader();
-  */
-
   mpTblParameter->setRowCount(NumRows);
   QHeaderView *rowHeader = mpTblParameter->verticalHeader();
   QHeaderView *colHeader = mpTblParameter->horizontalHeader();
@@ -195,13 +189,10 @@ bool CQMCAWidget::loadParameterTable()
 
   for (i = 0; i < mpMethod->size() && init; i++)
     {
-//      rowHeader->setLabel(i, FROM_UTF8(mpMethod->getName(i)));
-      // create item of the current row and give it a name
       mpTblParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
       mpTblParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpMethod->getName(i)));
 
       value = getParameterValue(mpMethod, i, &Type);
-//      mpTblParameter->setText(i, 0, value);
       QTableWidgetItem *itemValue = new QTableWidgetItem(value);
       itemValue->setTextAlignment(Qt::AlignRight);
       mpTblParameter->setItem(i, 0, itemValue);
@@ -218,81 +209,39 @@ bool CQMCAWidget::loadParameterTable()
 
       for (i = mpMethod->size(), k = 0; k < pMethod->size(); k++, i++)
         {
-//          rowHeader->setLabel(i, FROM_UTF8(pMethod->getName(k)));
           // create item of the current row and give it a name
           mpTblParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
           mpTblParameter->verticalHeaderItem(i)->setText(FROM_UTF8(pMethod->getName(k)));
 
           value = getParameterValue(pMethod, k, &Type);
-//          mpTblParameter->setText(i, 0, value);
           QTableWidgetItem *itemValue = new QTableWidgetItem(value);
           itemValue->setTextAlignment(Qt::AlignRight);
           mpTblParameter->setItem(i, 0, itemValue);
         }
     }
 
-  // appearance purpose
   mpTblParameter->resizeColumnsToContents();
   mpTblParameter->resizeRowsToContents();
 
-  QAbstractItemModel* m = mpTblParameter->model();
+  mpTblParameter->horizontalHeaderItem(0)->setSizeHint(QSize(mpTblParameter->columnWidth(0), 22));
 
-  unsigned C_INT32 singleFrame = mpTblParameter->frameWidth();
-  unsigned C_INT32 doubleFrame = 2 * singleFrame;
-  std::cout << "doubleFrame = " << doubleFrame << std::endl;
+  QHeaderView* vHeader = mpTblParameter->verticalHeader();
 
-  unsigned C_INT32 index;
-
-  unsigned C_INT32 colCount = m->columnCount();
-  unsigned C_INT32 w = 0;
-
-  for (index = 0; index < colCount; index++)
-    {
-      w += mpTblParameter->columnWidth(index) + doubleFrame;
-      std::cout << "i=" << index << ": w = " << w << std::endl;
-//    std::cout << "sizeHintForColumn = " << mpTblParameter->sizeHintForColumn(i) << std::endl;
-    }
-
-  unsigned C_INT32 rowCount = m->rowCount();
-  unsigned C_INT32 h = 0;
-
-  for (index = 0; index < rowCount; index++)
-    {
-      h += mpTblParameter->rowHeight(index) + singleFrame;
-      std::cout << "i=" << index << ": h = " << h << std::endl;
-//    std::cout << "sizeHintForRow = " << mpTblParameter->sizeHintForRow(i) << std::endl;
-    }
-
-  std::cout << "w = " << w << " - h = " << h << std::endl;
-
-  w += rowHeader->sizeHint().width();
-  h += colHeader->sizeHint().height();
-
-  std::cout << "colCount = " << colCount << " - rowCount = " << rowCount << std::endl;
-
-  std::cout << "rowHeader->sizeHint().width() = " << rowHeader->sizeHint().width() << std::endl;
-  std::cout << "colHeader->sizeHint().height() = " << colHeader->sizeHint().height() << std::endl;
-
-  std::cout << "w = " << w << " - h = " << h << std::endl;
-
-  // mpTblParameter->setFixedHeight(h);
-  mpTblParameter->setFixedWidth(w);
+  mpTblParameter->setMinimumHeight(vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5);
+  mpTblParameter->setMinimumWidth(mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 22);
 
   return true;
 }
 
 bool CQMCAWidget::saveParameterTable()
 {
-// temporary because of migrating from Q3Table to QTableWidget - 26.03.09
   unsigned C_INT32 i, k;
   QString value;
   CCopasiParameter::Type Type;
 
   for (i = 0; i < mpMethod->size(); i++)
     {
-//      value = mpTblParameter->text(i, 0);
       value = mpTblParameter->item(i, 0)->text();
-      std::cout << "value = " << value.toFloat() << std::endl;
 
       if (value != getParameterValue(mpMethod, i, &Type))
         {
@@ -313,7 +262,6 @@ bool CQMCAWidget::saveParameterTable()
 
       for (i = mpMethod->size(), k = 0; k < pMethod->size(); i++, k++)
         {
-//          value = mpTblParameter->text(i, 0);
           value = mpTblParameter->item(i, 0)->text();
 
           if (value != getParameterValue(pMethod, k, &Type))

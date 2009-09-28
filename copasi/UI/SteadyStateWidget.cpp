@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.121 $
+//   $Revision: 1.122 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 21:02:46 $
+//   $Date: 2009/09/28 17:06:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,7 @@ void SteadyStateWidget::init()
   SteadyStateWidgetLayout->addWidget(mpBtnWidget);      // 'footer'
 
   addMethodParameterTable(0);
+  mpTblParameter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 }
 
 CCopasiMethod * SteadyStateWidget::createMethod(const CCopasiMethod::SubType & /*type*/)
