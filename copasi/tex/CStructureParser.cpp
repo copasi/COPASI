@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/28 13:29:40 $
+//   $Date: 2009/09/28 17:11:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,12 +22,10 @@
 
 #include <qstring.h>
 #include <qregexp.h>
-//Added by qt3to4:
 #include <Q3ValueList>
 
 #include <iostream>
 #include "UI/qtUtilities.h"
-//#include <qvaluelist.h>
 
 CStructureParser::CStructureParser(int n)
 {
