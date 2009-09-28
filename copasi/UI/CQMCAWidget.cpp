@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/28 17:06:25 $
+//   $Date: 2009/09/28 18:15:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,8 +180,6 @@ bool CQMCAWidget::loadParameterTable()
     }
 
   mpTblParameter->setRowCount(NumRows);
-  QHeaderView *rowHeader = mpTblParameter->verticalHeader();
-  QHeaderView *colHeader = mpTblParameter->horizontalHeader();
 
   unsigned C_INT32 i, k;
   CCopasiParameter::Type Type;
