@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 09:41:23 $
+//   $Author: aekamal $
+//   $Date: 2009/09/28 14:51:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,32 +74,65 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
     const QString & caption,
     QString * pSelectedFilter)
 {
-  QString usersFilter, correctExt;
+  QString newFile, newFilter = filter;
+  bool fileValid;
 
-  QString newFile = QFileDialog::getSaveFileName(parent,
-                    caption,
-                    startWith.isNull() ? LastDir.path() : startWith,
-                    filter,
-                    pSelectedFilter, QFileDialog::DontConfirmOverwrite);
+  if (!pSelectedFilter)
+    pSelectedFilter = new QString("");
 
-  if (newFile != "")
-    LastDir = FROM_UTF8(CDirEntry::dirName(TO_UTF8(newFile)));
-  else
-    return QString::null;
+  if (filter.indexOf("(*)") < 0)
+    newFilter += ";;Any File (*)";
 
-  // newFile must end with correct extension
-  newFile = newFile.remove(QRegExp("\\.$"));
+  do
+    {
+      fileValid = true;
+      newFile = QFileDialog::getSaveFileName(parent,
+                                             caption,
+                                             startWith.isNull() ? LastDir.path() : startWith,
+                                             newFilter, pSelectedFilter,
+                                             QFileDialog::DontConfirmOverwrite);
 
-  if (pSelectedFilter == NULL)  // it just happens if only one filter is available
-    usersFilter = filter;
-  else
-    usersFilter = *pSelectedFilter;
+      if (newFile != "")
+        LastDir = FROM_UTF8(CDirEntry::dirName(TO_UTF8(newFile)));
+      else
+        return QString::null;
 
-  correctExt = usersFilter.section("*.", 1);
-  correctExt = correctExt.remove(")");
-  correctExt.prepend(".");
+      if (pSelectedFilter->indexOf("(*)") >= 0)
+        {
+          QString fileName = FROM_UTF8(CDirEntry::fileName(TO_UTF8(newFile)));
+          QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(newFile)));
 
-  if (!newFile.endsWith(correctExt)) newFile += correctExt;
+          if (!suffix.length())
+            {
+              fileValid = true;
+            }
+          else
+            {
+              QRegExp rx("\\.\\S{1,4}$");
+
+              if (rx.indexIn(fileName) < 0)
+                {
+                  CQMessageBox::information(NULL, "Save File Error",
+                                            "Filename can have an extension 1 to 4 characters long.",
+                                            QMessageBox::Ok, QMessageBox::Ok);
+                  fileValid = false;
+                  continue;
+                }
+
+              QRegExp rxDigits("\\.\\d{1,4}$");
+
+              if (rxDigits.indexIn(fileName) > 0)
+                {
+                  CQMessageBox::information(NULL, "Save File Error",
+                                            "All characters in the file extension cannot be digits.",
+                                            QMessageBox::Ok, QMessageBox::Ok);
+                  fileValid = false;
+                  continue;
+                }
+            }
+        }
+    }
+  while (fileValid == false);
 
 #ifdef DEBUG_UI
   qDebug() << "user selected Filter = " << usersFilter;
