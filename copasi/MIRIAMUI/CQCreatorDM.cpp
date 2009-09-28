@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/09/28 14:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,6 +128,7 @@ bool CQCreatorDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       emit dataChanged(index, index);
+      emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, "");
       return true;
     }
 
@@ -144,6 +145,8 @@ bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex&)
     }
 
   endInsertRows();
+
+  emit notifyGUI(ListViews::MIRIAM, ListViews::ADD, "");
   return true;
 }
 
@@ -160,6 +163,8 @@ bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex&)
     }
 
   endRemoveRows();
+
+  emit notifyGUI(ListViews::MIRIAM, ListViews::DELETE, "");
   return true;
 }
 

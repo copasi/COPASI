@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQBiologicalDescriptionDM.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/04 16:09:41 $
+//   $Date: 2009/09/28 14:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,6 +123,7 @@ bool CQBiologicalDescriptionDM::setData(const QModelIndex &index, const QVariant
         }
 
       emit dataChanged(index, index);
+      emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, "");
       return true;
     }
 
@@ -139,6 +140,7 @@ bool CQBiologicalDescriptionDM::insertRows(int position, int rows, const QModelI
     }
 
   endInsertRows();
+  emit notifyGUI(ListViews::MIRIAM, ListViews::ADD, "");
   return true;
 }
 
@@ -155,6 +157,8 @@ bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelI
     }
 
   endRemoveRows();
+
+  emit notifyGUI(ListViews::MIRIAM, ListViews::DELETE, "");
   return true;
 }
 

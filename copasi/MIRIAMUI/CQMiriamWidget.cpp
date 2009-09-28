@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:46:13 $
+//   $Author: aekamal $
+//   $Date: 2009/09/28 14:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,6 +91,8 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
       (*it)->verticalHeader()->hide();
       (*it)->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
+      connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
+              this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
               this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
     }
@@ -334,7 +336,6 @@ bool CQMiriamWidget::enterProtected()
 bool CQMiriamWidget::leave()
 {
   mpMIRIAMInfo->save();
-  protectedNotify(ListViews::MIRIAM, ListViews::CHANGE, mpMIRIAMInfo->getKey());
   return true;
 }
 
