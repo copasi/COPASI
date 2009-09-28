@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/19 10:16:04 $
+//   $Date: 2009/09/28 13:29:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,11 @@
 // All rights reserved.
 
 // Written by pwilly on 09.07.08
+
+/**
+ * NOTE: We use index 1 and 2 to refer to the first and to the second part, resp.,
+ * of some elements. These elements are mfrac, msub, and msup.
+ */
 
 #include "CStructureParser.h"
 
@@ -49,6 +54,19 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
                                     const QXmlAttributes& attr)
 {
   tagName = qName;
+
+  Q3ValueList<QString>::iterator itL;
+
+#ifdef DEBUG_UI
+  std::cout << std::endl << "on Start Element of " << TO_UTF8(qName) << std::endl;
+
+  std::cout << "BEFORE: List of Uncompleted Tags: " << std::endl;
+
+  for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
+    std::cout << TO_UTF8(*itL) << std::endl;
+
+  std::cout << std::endl;
+#endif
 
   if (qName == "mtable")
     texHead = "\\begin{array}";
@@ -88,8 +106,29 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
         }
     }
 
-  if (qName == "mfrac")
+  if (qName == "mfrac") // find a mfrac element
     {
+      // increment index, if any
+      if (!mListOfUncompletedTags.isEmpty())
+        {
+          QString &last = mListOfUncompletedTags.last();  // must be not empty
+
+          // <mfrac> direct after <mfrac>
+          if (last.contains("mfrac"))
+            {
+              QStringList strList = QStringList::split("_", last);
+              QString &lastUncompletedTags = strList.first();
+              QString &idxStr = strList.last();
+              int idx = idxStr.toInt();
+              idx++;
+
+              // update with incrementally index
+              last = lastUncompletedTags + "_" + QString::number(idx);
+
+              tex += "{";
+            }
+        }
+
       mListOfUncompletedTags.push_back("mfrac_0");
       tex += "\\frac";
     }
@@ -224,6 +263,16 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
     }
 
   indent += "    ";
+
+#ifdef DEBUG_UI
+  std::cout << "AFTER: List of Uncompleted Tags: " << std::endl;
+
+  for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
+    std::cout << TO_UTF8(*itL) << std::endl;
+
+  std::cout << std::endl;
+#endif
+
   return TRUE;
 }
 
@@ -324,6 +373,17 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
 
+#endif
+
+      if (!mListOfUncompletedTags.isEmpty())
+        {
+          // </mfrac> direct after </mfrac>
+          if (mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
+            tex += " }";
+        }
+
+#ifdef DEBUG_UI
+      std::cout << "---> on endElement of mfrac, tex = " << TO_UTF8(tex) << std::endl;
 #endif
     }
 
