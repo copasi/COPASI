@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:39 $
+//   $Date: 2009/09/28 18:15:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,12 +37,13 @@
 //#include "copasi/mathematics.h"
 
 CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, Qt::WFlags fl,
-    bool barChart, bool slider)
+    bool /* barChart */ , bool slider)
     : Q3VBox(parent, name, fl),
     mpPlot3d(NULL),
     mpColorScale(NULL)
 {
-  mWithBarChart = barChart;
+  // The bar charts are temporary disabled
+  mWithBarChart = false;
   mUseSliders = slider;
   mBarChartFilled = false;
 
@@ -61,9 +62,14 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpSelectionTable->setRowMovingEnabled(false);
   mpSelectionTable->verticalHeader()->setResizeEnabled(false);
 
-  mpButton = new QPushButton(mpHBoxSelection);
-  mpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  mpButton->setText("Bars");
+  if (mWithBarChart)
+    {
+      mpButton = new QPushButton(mpHBoxSelection);
+      mpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+      mpButton->setText("Bars");
+
+      connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
+    }
 
   mpHBoxSelection->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
   mpHBoxContents = new Q3HBox(this);
@@ -78,24 +84,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpContentTable->horizontalHeader()->setTracking(true);
   mpContentTable->verticalHeader()->setResizeEnabled(false);
 
-  //   if (showBarChart)
-  //     {
-  //       mpPlot3d = new CQBarChart(mpStack);
-  //       mpPlot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  //       if (slider) mpPlot3d->activateSlider();
-  //       mpStack->addWidget(mpPlot3d, 1);
-  //       if (barChartFirst)
-  //         {
-  //           setFocusOnBars();
-  //           mpStack->raiseWidget(1);
-  //           mpButton->setText("table");
-  //}
-  //       else
-  //         mpButton->setText("bars");
-  //}
-
   connect(mpContentTable, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(tableDoubleClicked()));
-  connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
   connect(mpSelectionTable, SIGNAL(valueChanged(int, int)),
           this, SLOT(selectionTableChanged(int, int)));
   connect(mpContentTable->horizontalHeader(), SIGNAL(sizeChange(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
@@ -114,9 +103,12 @@ void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
       cs = NULL; //don´t accept a scaler that is already used
       // std::cout << "tried to use a color scale several times!" << std::endl;
     }
+
   if (mpColorScale)
     delete mpColorScale;
+
   mpColorScale = cs;
+
   if (cs) cs->setIsUsed(true);
 }
 
@@ -215,9 +207,11 @@ void CQArrayAnnotationsWidget::storeCurrentCombos()
 {
   C_INT32 i, imax = mpArray->dimensionality();
   combos.resize(imax);
+
   for (i = 0; i < imax; ++i)
     {
       C_INT32 tmp = currentItem(i);
+
       if (tmp >= 2)
         combos[i] = 2;
       else
@@ -236,6 +230,7 @@ void CQArrayAnnotationsWidget::clearWidget()
     {
       if (mpPlot3d)
         mpPlot3d->emptyPlot();
+
       mBarChartFilled = false;
     }
 }
@@ -289,6 +284,7 @@ void CQArrayAnnotationsWidget::selectionTableChanged(int row, int col)
     {
       //find out which line was "row" before
       C_INT32 i, imax = mpArray->dimensionality();
+
       for (i = 0; i < imax; ++i)
         if (combos[i] == 0)
           setCurrentItem(i, combos[row]);
@@ -298,6 +294,7 @@ void CQArrayAnnotationsWidget::selectionTableChanged(int row, int col)
     {
       //find out which line was "col" before
       C_INT32 i, imax = mpArray->dimensionality();
+
       for (i = 0; i < imax; ++i)
         if (combos[i] == 1)
           setCurrentItem(i, combos[row]);
@@ -307,6 +304,7 @@ void CQArrayAnnotationsWidget::selectionTableChanged(int row, int col)
     {
       //find a line which was neither "col" nor "row"  before
       C_INT32 i, imax = mpArray->dimensionality();
+
       for (i = 0; i < imax; ++i)
         if (combos[i] >= 2)
           {
@@ -321,6 +319,7 @@ finish:
     CCopasiAbstractArray::index_type index; index.resize(mpArray->dimensionality());
     C_INT32 rowindex = 0, colindex = 0;
     C_INT32 i, imax = mpArray->dimensionality();
+
     for (i = 0; i < imax; ++i)
       {
         C_INT32 tmp = currentItem(i);
@@ -350,6 +349,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
     CCopasiAbstractArray::index_type & index)
 {
   if (!mpArray) return;
+
   assert(rowIndex < index.size());
   assert(colIndex < index.size());
 
@@ -415,6 +415,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
   mIndex = index;
 
   mOneDimensional = false;
+
   if (mpStack->id(mpStack->visibleWidget()) == 1)
     fillBarChart();
 }
@@ -423,6 +424,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
     CCopasiAbstractArray::index_type & index)
 {
   if (!mpArray) return;
+
   assert(rowIndex < index.size());
 
   mpContentTable->setNumCols(1);
@@ -448,10 +450,12 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
 
   //table contents and annotations
   const std::vector<std::string> & rowdescr = mpArray->getAnnotationsString(rowIndex);
+
   for (i = 0; i < imax; ++i)
     {
       index[rowIndex] = i;
       mpContentTable->verticalHeader()->setLabel(i, FROM_UTF8(rowdescr[i]));
+
       if (!mpColorScale)
         {
           mpContentTable->setText(i, 0, QString::number((*mpArray->array())[index]));
@@ -513,6 +517,7 @@ void CQArrayAnnotationsWidget:: enableBarChart(bool enable)
         {
           if (mpStack->id(mpStack->visibleWidget()) == 1)
             switchToTable();
+
           //mpStack->raiseWidget(0);
           mpButton->setEnabled(false);
         }
@@ -522,6 +527,7 @@ void CQArrayAnnotationsWidget:: enableBarChart(bool enable)
 void CQArrayAnnotationsWidget::switchToTable()
 {
   mpStack->raiseWidget(0);
+
   if (mWithBarChart)
     {
       mpButton->setText("Bars");
@@ -573,12 +579,13 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
       int row = mpPlot3d->mpPlot->mpSliderRow->value();
 
       mpContentTable->clearSelection(true);
+
       if (col < mpContentTable->numCols())
         {
           if (row < mpContentTable->numRows())
             {
               mpContentTable->setCurrentCell(row, col);
-              mpContentTable->ensureCellVisible (mpContentTable->currentRow(), mpContentTable->currentColumn());
+              mpContentTable->ensureCellVisible(mpContentTable->currentRow(), mpContentTable->currentColumn());
               mpContentTable->setFocus();
             }
           else
@@ -609,33 +616,32 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
       int col = mpContentTable->currentColumn();
       int row = mpContentTable->currentRow();
 
-      if (mpContentTable->isRowSelected (row, true))
+      if (mpContentTable->isRowSelected(row, true))
         {
           mpPlot3d->mpPlot->sliderMoved(-1, row);
           mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
           mpPlot3d->mpPlot->mpSliderRow->setValue(row);
         }
+      else if (mpContentTable->isColumnSelected(col, true))
+        {
+          mpPlot3d->mpPlot->sliderMoved(col, -1);
+          mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
+          mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
+        }
       else
-        if (mpContentTable->isColumnSelected (col, true))
-          {
-            mpPlot3d->mpPlot->sliderMoved(col, -1);
-            mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
-            mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
-          }
-        else
-          {
-            if (mpContentTable->currentRow() == -1 && mpContentTable->currentColumn() == -1)
-              {
-                mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
-                mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
-              }
-            else
-              {
-                mpPlot3d->mpPlot->sliderMoved(col, row);
-                mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
-                mpPlot3d->mpPlot->mpSliderRow->setValue(row);
-              }
-          }
+        {
+          if (mpContentTable->currentRow() == -1 && mpContentTable->currentColumn() == -1)
+            {
+              mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
+              mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
+            }
+          else
+            {
+              mpPlot3d->mpPlot->sliderMoved(col, row);
+              mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
+              mpPlot3d->mpPlot->mpSliderRow->setValue(row);
+            }
+        }
     }
 }
 
@@ -649,10 +655,12 @@ void CQArrayAnnotationsWidget::setColumnSize(int col, int /*size0*/, int /*size*
 {
   C_INT32 i;
   C_FLOAT64 sum = 0;
+
   for (i = 0; i <= col; ++i)
     sum += mpContentTable->horizontalHeader()->sectionSize(i);
 
   C_FLOAT64 newSize = sum / (col + 1);
+
   if (newSize < 5) newSize = 5;
 
   for (i = 0; i < mpContentTable->numCols(); i++)
@@ -676,10 +684,12 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mpArray) return;
 
   assert(mRowIndex < mIndex.size());
+
   if (!mOneDimensional)
     assert(mColIndex < mIndex.size());
 
   mpContentTable->setNumRows(mpArray->size()[mRowIndex]);
+
   if (mOneDimensional)
     mpContentTable->setNumCols(1);
   else
@@ -688,11 +698,13 @@ void CQArrayAnnotationsWidget::fillBarChart()
   mpContentTable->horizontalHeader()->setLabel(0, "");
 
   std::vector<std::string> rowdescr = mpArray->getAnnotationsString(mRowIndex);
+
   if (!mOneDimensional)
     std::vector<std::string> coldescr = mpArray->getAnnotationsString(mColIndex);
 
   unsigned C_INT32 i, imax = mpArray->size()[mRowIndex];
   unsigned C_INT32 j, jmax;
+
   if (mOneDimensional)
     jmax = 1;
   else
@@ -704,13 +716,16 @@ void CQArrayAnnotationsWidget::fillBarChart()
       unsigned C_INT32 columns = jmax;
       unsigned C_INT32 rows = imax;
       data = new double * [columns];
+
       for (i = 0; i < columns; ++i)
         data[i] = new double[rows];
 
       //minValue and maxValue help to figure out the min and max value
       mIndex[mRowIndex] = 0;
+
       if (!mOneDimensional)
         mIndex[mColIndex] = 0;
+
       double maxValue = (double)(*mpArray->array())[mIndex];
       double minValue = (double)(*mpArray->array())[mIndex];
 
@@ -719,20 +734,26 @@ void CQArrayAnnotationsWidget::fillBarChart()
         for (j = 0; j < jmax; ++j)
           {
             mIndex[mRowIndex] = i;
+
             if (!mOneDimensional)
               mIndex[mColIndex] = j;
+
             if (isnan((double)(*mpArray->array())[mIndex]) ||
                 !finite((double)(*mpArray->array())[mIndex]))
               {
                 data[j][i] = 0;
+
                 if (0 > maxValue) maxValue = 0;
+
                 if (0 < minValue) minValue = 0;
               }
             else
               {
                 data[j][i] = (double)(*mpArray->array())[mIndex];
+
                 if ((double)(*mpArray->array())[mIndex] > maxValue)
                   maxValue = (double)(*mpArray->array())[mIndex];
+
                 if ((double)(*mpArray->array())[mIndex] < minValue)
                   minValue = (double)(*mpArray->array())[mIndex];
               }
@@ -740,6 +761,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
 
       //figure out the min/max print section
       double minZ, maxZ;
+
       if ((minValue < 0) && (maxValue < 0))
         {//(all values < 0)
           minZ = minValue;
@@ -762,6 +784,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
       //fill vector mColor with 100 colors, evenly distributed over relevant print section
       double holeSection = maxZ - minZ;
       double step = holeSection / 99;
+
       for (i = 0; i < 100; i++)
         {
           mColors.push_back(i);
@@ -796,7 +819,9 @@ void CQArrayAnnotationsWidget::createBarChart()
 {
   mpPlot3d = new CQBarChart(mpStack);
   mpPlot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
   if (mUseSliders) mpPlot3d->activateSlider();
+
   mpStack->addWidget(mpPlot3d, 1);
   mpButton->setText("Bars");
   mBarChartFilled = false;
