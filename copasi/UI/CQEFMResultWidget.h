@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/14 13:41:37 $
+//   $Date: 2009/09/29 16:35:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,9 +18,11 @@
 
 #include "copasi/UI/ui_CQEFMResultWidget.h"
 #include "copasi/UI/copasiWidget.h"
+#include "copasi/UI/CQSortFilterProxyModel.h"
+#include "copasi/UI/CQFluxModeDM.h"
 
-class CMetab;
-class CCompartment;
+class CCopasiTask;
+class CEFMTask;
 
 class CQEFMResultWidget : public CopasiWidget, public Ui::CQEFMResultWidget
 {
@@ -33,6 +35,8 @@ public:
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
+  virtual bool loadResult(const CCopasiTask * pTask);
+
 protected:
   virtual bool enterProtected();
 
@@ -41,6 +45,9 @@ protected slots:
 
 private slots:
   void slotSave();
+
+private:
+  const CEFMTask * mpTask;
 };
 
 #endif // CQEFMResultWidget_h

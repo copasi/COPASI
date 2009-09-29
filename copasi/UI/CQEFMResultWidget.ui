@@ -1,17 +1,16 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/08/14 13:41:37 $ </comment>
+<comment>   $Date: 2009/09/29 16:35:36 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
 <comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
+ <comment> All rights reserved. </comment>
  <class>CQEFMResultWidget</class>
  <widget class="QWidget" name="CQEFMResultWidget" >
   <property name="geometry" >
@@ -53,19 +52,19 @@
    <item row="1" column="0" colspan="4" >
     <widget class="QTabWidget" name="mpTabWidget" >
      <property name="currentIndex" >
-      <number>1</number>
+      <number>0</number>
      </property>
-     <widget class="QTableView" name="mpEFMTable" >
+     <widget class="CQEFMListWidget" name="mpEFMListWidget" >
       <attribute name="title" >
        <string>EFM List</string>
       </attribute>
      </widget>
-     <widget class="CQArrayAnnotationsWidget" name="mpReactionMatix" >
+     <widget class="QTableView" name="mpReactionMatix" >
       <attribute name="title" >
        <string>EFM vs Reactions</string>
       </attribute>
      </widget>
-     <widget class="CQArrayAnnotationsWidget" name="mpSpeciesMatrix" >
+     <widget class="QTableView" name="mpSpeciesMatrix" >
       <attribute name="title" >
        <string>EFM vs Species</string>
       </attribute>
@@ -89,9 +88,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CQArrayAnnotationsWidget</class>
+   <class>CQEFMListWidget</class>
    <extends>QWidget</extends>
-   <header>CQArrayAnnotationsWidget.h</header>
+   <header>CQEFMListWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.215 $
+#   $Revision: 1.216 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/09/25 17:11:52 $
+#   $Date: 2009/09/29 16:35:36 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.215 $ $Author: shoops $ $Date: 2009/09/25 17:11:52 $
+# $Revision: 1.216 $ $Author: shoops $ $Date: 2009/09/29 16:35:36 $
 ######################################################################
 
 LIB = UI
@@ -56,10 +56,13 @@ HEADERS	+= \
 	CQCompartmentsWidget.h \		
 	CQDateTimeEditDelegate.h \
 	CQDateTimeEditTableItem.h \
+	CQEFMListWidget.h \
 	CQEFMResultWidget.h \
+    CQEFMWidget.h \
 	CQEventsWidget.h \
 	CQEventDM.h \
 	CQExpressionWidget.h \
+	CQFluxModeDM.h \
 	CQFunctionDM.h \
 	CQFunctionsWidget.h \
 	CQGlobalQuantityDM.h \
@@ -139,10 +142,13 @@ SOURCES	+= \
 	CQCompartmentsWidget.cpp \			
 	CQDateTimeEditDelegate.cpp \
 	CQDateTimeEditTableItem.cpp \
+	CQEFMListWidget.cpp \
 	CQEFMResultWidget.cpp \
+    CQEFMWidget.cpp \
 	CQEventsWidget.cpp \
 	CQEventDM.cpp \
 	CQExpressionWidget.cpp \
+	CQFluxModeDM.cpp \
 	CQFunctionDM.cpp \
 	CQFunctionsWidget.cpp \
 	CQGlobalQuantityDM.cpp \
@@ -204,7 +210,9 @@ SOURCES	+= \
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQDifferentialEquations.ui
+FORMS += CQEFMListWidget.ui
 FORMS += CQEFMResultWidget.ui
+FORMS += CQEFMWidget.ui
 FORMS += CQEventsWidget.ui
 FORMS += CQEventWidget1.ui
 FORMS += CQExpressionMmlStackedWidget.ui
@@ -237,7 +245,6 @@ FORMS += SteadyStateWidget.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
 # FORMS3 += CQDifferentialEquations.ui
-FORMS3 += CQEFMWidget.ui
 # FORMS3 += CQExperimentData.ui
 # FORMS3 += CQExperimentSelection.ui
 # FORMS3 += CQExpressionMmlWidget.ui
