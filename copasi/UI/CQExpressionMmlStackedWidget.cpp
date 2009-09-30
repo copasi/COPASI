@@ -1,10 +1,11 @@
 // Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/14 11:09:51 $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/CQExpressionMmlStackedWidget.cpp,v $
+//   $Revision: 1.2 $
+//   $Name: HEAD $
+//   $Author: pwilly $
+//   $Date: 2009/10/01 12:58:00 $
 // End CVS Header
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -144,7 +145,7 @@ void CQExpressionMmlStackedWidget::init()
 
 void CQExpressionMmlStackedWidget::slotSaveExpression()
 {
-  QString filter;
+  QString *filter = new QString;
   QString outfilename;
 
   C_INT32 Answer = QMessageBox::No;
@@ -156,7 +157,8 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
                                           "Save File Dialog",
                                           "untitled.mml",
                                           "MathML (*.mml);;TeX (*.tex)",
-                                          "Save Expression to Disk", new QString);
+//                                          "Save Expression to Disk", new QString);
+                                          "Save Expression to Disk", filter);
 
       if (outfilename.isEmpty()) return;
 
@@ -167,7 +169,15 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
         return;
     }
 
-  if (filter.contains("tex"))
+  QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(outfilename)));
+
+#ifdef DEBUG_UI
+  qDebug() << "\non CQEMSW::slotSaveExpression -> outfilename = " << outfilename;
+  qDebug() << "\non CQEMSW::slotSaveExpression -> suffix = " << suffix;
+  qDebug() << "\non CQEMSW::slotSaveExpression -> filter = " << *filter << "\n";
+#endif
+
+  if (filter->contains("tex"))
     saveTeX(outfilename);
   else
     saveMML(outfilename);
