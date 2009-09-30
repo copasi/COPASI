@@ -169,11 +169,7 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
         return;
     }
 
-  QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(outfilename)));
-
 #ifdef DEBUG_UI
-  qDebug() << "\non CQEMSW::slotSaveExpression -> outfilename = " << outfilename;
-  qDebug() << "\non CQEMSW::slotSaveExpression -> suffix = " << suffix;
   qDebug() << "\non CQEMSW::slotSaveExpression -> filter = " << *filter << "\n";
 #endif
 
