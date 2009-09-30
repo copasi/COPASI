@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/28 18:04:43 $
+//   $Date: 2009/09/30 21:20:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,7 +124,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
 #ifdef DEBUG_UI
   qDebug() << "in constructor CQEW";
 #endif
-  setTextFormat(Qt::PlainText);
+
   setTabChangesFocus(true);
 
   expressionHighlighter = new CQExpressionHighlighter(this);
@@ -374,6 +374,19 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 
   // This will lead to emitting signal cursorPositionChanged()
   QTextEdit::keyPressEvent(e);
+
+  if (e == QKeySequence::Undo)
+    {
+#ifdef DEBUG_UI
+      qDebug() << "U N D O is just pressed";
+#endif
+
+      // update cursor position, especially useful for undo/redo action
+      mCursor.setPosition(textCursor().position());
+#ifdef DEBUG_UI
+      qDebug() << "Updated Cursor position = " << mCursor.position();
+#endif
+    }
 }
 
 void CQExpressionWidget::slotSelectionChanged()
@@ -670,10 +683,19 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   // Reset the parse list.
   mParseList.clear();
 
+  // clear the text edit
+  clear();
+
   std::string Expression = expression;
   std::string out_str = "";
 
   unsigned C_INT32 i = 0;
+
+  QTextCharFormat f1;
+  f1.setForeground(QColor(0, 0, 0));
+
+  QTextCharFormat f = expressionHighlighter->COPASIObjectFormat;
+  QColor color2 = f.foreground().color();
 
   while (i < Expression.length())
     {
@@ -716,7 +738,8 @@ void CQExpressionWidget::setExpression(const std::string & expression)
                   pos = DisplayName.find_first_of("\\>", pos);
                 }
 
-              out_str += "<" + DisplayName + ">";
+              setCurrentCharFormat(f);
+              insertPlainText(FROM_UTF8("<" + DisplayName + ">"));
             }
 
           continue;
@@ -729,13 +752,15 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
       else
         {
-          out_str += Expression[i];
+          out_str = Expression[i];
+          setCurrentCharFormat(f1);
+          insertPlainText(FROM_UTF8(out_str));
         }
 
       i++;
     }
 
-  setText(FROM_UTF8(out_str));
+  setCurrentCharFormat(f);
 
   mpValidator->saved();
 
