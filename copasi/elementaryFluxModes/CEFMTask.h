@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 14:46:21 $
+//   $Date: 2009/10/01 19:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "utilities/CCopasiTask.h"
 
 class CFluxMode;
+class CMetab;
 
 class CEFMTask : public CCopasiTask
 {
@@ -121,6 +122,37 @@ public:
    * @return std::string reactionEquation
    */
   std::string getReactionEquation(const std::map< size_t, C_FLOAT64 >::const_iterator & itReaction) const;
+
+  /**
+   * Retrieve the species changes for the given flux mode and species
+   * @param const CFluxMode & fluxMode
+   * @param const CMetab & pMetab
+   * @return std::pair< C_FLOAT64, C_FLOAT64 > changes
+   */
+  std::pair< C_FLOAT64, C_FLOAT64 > getSpeciesChanges(const CFluxMode & fluxMode,
+      const CMetab & metab) const;
+
+  /**
+   * Retrieve the net reaction for the given flux mode.
+   * @param const CFluxMode & fluxMode
+   * @return std::string netReaction
+   */
+  std::string getNetReaction(const CFluxMode & fluxMode) const;
+
+  /**
+   * Retrieve the internal species for the given flux mode.
+   * @param const CFluxMode & fluxMode
+   * @return std::string species
+   */
+  std::string getInternalSpecies(const CFluxMode & fluxMode) const;
+
+private:
+  /**
+   * Retrieve the net reaction data for the given flux mode.
+   * @param const CFluxMode & fluxMode
+   * @return std::map< const CMetab *, C_FLOAT64 >g netReactionData
+   */
+  std::map< const CMetab *, C_FLOAT64 > getNetReactionData(const CFluxMode & fluxMode) const;
 
 #ifdef COPASI_SSA
   std::string getReactionEquationForward(unsigned C_INT32 index1,

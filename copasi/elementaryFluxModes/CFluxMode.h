@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/25 14:46:21 $
+   $Date: 2009/10/01 19:58:29 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,6 +113,13 @@ public:
    * @return bool isReversed
    */
   bool isReversed(const CFluxMode &mode);
+
+  /**
+   * Retrieve the multiplier for the indexed reaction
+   * @param const size_t & index
+   * @return C_FLOAT64 multiplier
+   */
+  C_FLOAT64 getMultiplier(const size_t & index) const;
 };
 
 #endif // COPASI_CFluxMode

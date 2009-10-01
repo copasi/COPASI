@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 14:46:21 $
+//   $Date: 2009/10/01 19:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,8 @@
 #endif
 
 #include "model/CModel.h"
+#include "model/CMetab.h"
+#include "model/CMetabNameInterface.h"
 #include "model/CChemEqInterface.h"
 #include "utilities/CCopasiProblem.h"
 
@@ -192,6 +194,203 @@ std::string CEFMTask::getReactionEquation(const std::map< size_t, C_FLOAT64 >::c
   else
 #endif //COPASI_SSA
     return CChemEqInterface::getChemEqString(mpProblem->getModel(), *pReaction, false);
+}
+
+std::pair< C_FLOAT64, C_FLOAT64 > CEFMTask::getSpeciesChanges(const CFluxMode & fluxMode,
+    const CMetab & metab) const
+{
+  C_FLOAT64 In = 0.0;
+  C_FLOAT64 Out = 0.0;
+  C_FLOAT64 *pIn, *pOut;
+
+  CFluxMode::const_iterator itReaction = fluxMode.begin();
+  CFluxMode::const_iterator endReaction = fluxMode.end();
+
+  std::string Key = metab.getKey();
+
+  const std::vector< const CReaction * > & ReorderedReactions =
+    static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions();
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      const CReaction * pReaction = ReorderedReactions[itReaction->first];
+
+      if (itReaction->second < 0.0)
+        {
+          pIn = &Out;
+          pOut = &In;
+        }
+      else
+        {
+          pIn = &In;
+          pOut = &Out;
+        }
+
+      CCopasiVector < CChemEqElement >::const_iterator it = pReaction->getChemEq().getSubstrates().begin();
+      CCopasiVector < CChemEqElement >::const_iterator end = pReaction->getChemEq().getSubstrates().end();
+
+      for (; it != end; ++it)
+        {
+          if ((*it)->getMetaboliteKey() == Key)
+            {
+              *pIn += fabs(itReaction->second) * (*it)->getMultiplicity();
+              break;
+            }
+        }
+
+      it = pReaction->getChemEq().getProducts().begin();
+      end = pReaction->getChemEq().getProducts().end();
+
+      for (; it != end; ++it)
+        {
+          if ((*it)->getMetaboliteKey() == Key)
+            {
+              *pOut += fabs(itReaction->second) * (*it)->getMultiplicity();
+              break;
+            }
+        }
+    }
+
+  return std::make_pair(In, Out);
+}
+
+std::string CEFMTask::getNetReaction(const CFluxMode & fluxMode) const
+{
+  const CModel* pModel = getProblem()->getModel();
+
+  if (pModel == NULL)
+    return "";
+
+  std::map< const CMetab *, C_FLOAT64 > Data = getNetReactionData(fluxMode);
+
+  std::stringstream Substrates;
+  Substrates.flags(std::ios::fixed);
+  Substrates.precision(0);
+  std::string SubstratesSeparator = "";
+
+  std::stringstream Products;
+  Products.flags(std::ios::fixed);
+  Products.precision(0);
+  std::string ProductsSeparator = "";
+
+  std::map< const CMetab *, C_FLOAT64 >::const_iterator it = Data.begin();
+  std::map< const CMetab *, C_FLOAT64 >::const_iterator end = Data.end();
+
+  for (; it != end; ++it)
+    {
+      if (it->second > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+        {
+          Products << ProductsSeparator;
+
+          if (it->second > 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              Products << it->second << " * ";
+            }
+
+          Products << CMetabNameInterface::getDisplayName(pModel, *it->first);
+          ProductsSeparator = " + ";
+        }
+      else if (it->second < -100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+        {
+          Substrates << SubstratesSeparator;
+
+          if (it->second < -1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              Substrates << -it->second << " * ";
+            }
+
+          Substrates << CMetabNameInterface::getDisplayName(pModel, *it->first);
+          SubstratesSeparator = " + ";
+        }
+    }
+
+  if (fluxMode.isReversible())
+    {
+      return Substrates.str() + " = " + Products.str();
+    }
+  else
+    {
+      return Substrates.str() + " -> " + Products.str();
+    }
+}
+
+std::string CEFMTask::getInternalSpecies(const CFluxMode & fluxMode) const
+{
+  const CModel* pModel = getProblem()->getModel();
+
+  if (pModel == NULL)
+    return "";
+
+  std::map< const CMetab *, C_FLOAT64 > Data = getNetReactionData(fluxMode);
+
+  std::stringstream Modifiers;
+  Modifiers.flags(std::ios::fixed);
+  Modifiers.precision(0);
+  std::string ModifiersSeparator = "";
+
+  std::map< const CMetab *, C_FLOAT64 >::const_iterator it = Data.begin();
+  std::map< const CMetab *, C_FLOAT64 >::const_iterator end = Data.end();
+
+  for (; it != end; ++it)
+    {
+      if (fabs(it->second) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+        {
+          Modifiers << ModifiersSeparator;
+          Modifiers << CMetabNameInterface::getDisplayName(pModel, *it->first);
+          ModifiersSeparator = ", ";
+        }
+    }
+
+  return Modifiers.str();
+}
+
+std::map< const CMetab *, C_FLOAT64 > CEFMTask::getNetReactionData(const CFluxMode & fluxMode) const
+{
+  std::map< const CMetab *, C_FLOAT64 > NetReaction;
+  std::pair< C_FLOAT64, C_FLOAT64 > Changes;
+
+  CFluxMode::const_iterator itReaction = fluxMode.begin();
+  CFluxMode::const_iterator endReaction = fluxMode.end();
+
+  const std::vector< const CReaction * > & ReorderedReactions =
+    static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions();
+
+  const CMetab * pSpecies;
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      const CReaction * pReaction = ReorderedReactions[itReaction->first];
+
+      CCopasiVector < CChemEqElement >::const_iterator it = pReaction->getChemEq().getSubstrates().begin();
+      CCopasiVector < CChemEqElement >::const_iterator end = pReaction->getChemEq().getSubstrates().end();
+
+      for (; it != end; ++it)
+        {
+          pSpecies = (*it)->getMetabolite();
+
+          if (NetReaction.count(pSpecies) == 0)
+            {
+              Changes = getSpeciesChanges(fluxMode, *pSpecies);
+              NetReaction[pSpecies] = Changes.second - Changes.first;
+            }
+        }
+
+      it = pReaction->getChemEq().getProducts().begin();
+      end = pReaction->getChemEq().getProducts().end();
+
+      for (; it != end; ++it)
+        {
+          pSpecies = (*it)->getMetabolite();
+
+          if (NetReaction.count(pSpecies) == 0)
+            {
+              Changes = getSpeciesChanges(fluxMode, *pSpecies);
+              NetReaction[pSpecies] = Changes.second - Changes.first;
+            }
+        }
+    }
+
+  return NetReaction;
 }
 
 #ifdef COPASI_SSA

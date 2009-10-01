@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/25 14:46:21 $
+   $Date: 2009/10/01 19:58:29 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,11 +88,9 @@ bool CFluxMode::isReversed(const CFluxMode &mode)
       return false;
     }
 
-  // This assumes that the order of reactions is the same in both
-  // This assumption is NOT true for the Bit Pattern Tree method
-  std::map< size_t, C_FLOAT64 >::const_iterator itThis = mReactions.begin();
-  std::map< size_t, C_FLOAT64 >::const_iterator endThis = mReactions.end();
-  std::map< size_t, C_FLOAT64 >::const_iterator itMode = mode.mReactions.begin();
+  const_iterator itThis = mReactions.begin();
+  const_iterator endThis = mReactions.end();
+  const_iterator itMode = mode.mReactions.begin();
 
   for (; itThis != endThis; ++itThis, ++itMode)
     {
@@ -103,4 +101,14 @@ bool CFluxMode::isReversed(const CFluxMode &mode)
     }
 
   return true;
+}
+
+C_FLOAT64 CFluxMode::getMultiplier(const size_t & index) const
+{
+  const_iterator it = mReactions.find(index);
+
+  if (it != mReactions.end())
+    return it->second;
+
+  return 0.0;
 }
