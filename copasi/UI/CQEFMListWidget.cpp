@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMListWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/29 16:35:36 $
+//   $Date: 2009/10/01 19:59:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setDynamicSortFilter(true);
-  mpProxyModel->setFilterKeyColumn(COL_REACTION_NAME);
+  mpProxyModel->setFilterKeyColumn(COL_REACTION_EQUATION);
 
   mpProxyModel->setSourceModel(mpFluxModeDM);
 

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.216 $
+#   $Revision: 1.217 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/09/29 16:35:36 $
+#   $Date: 2009/10/01 19:59:21 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.216 $ $Author: shoops $ $Date: 2009/09/29 16:35:36 $
+# $Revision: 1.217 $ $Author: shoops $ $Date: 2009/10/01 19:59:21 $
 ######################################################################
 
 LIB = UI
@@ -57,7 +57,10 @@ HEADERS	+= \
 	CQDateTimeEditDelegate.h \
 	CQDateTimeEditTableItem.h \
 	CQEFMListWidget.h \
+	CQEFMNetReactionDM.h  \
+	CQEFMReactionDM.h \
 	CQEFMResultWidget.h \
+	CQEFMSpeciesDM.h  \
     CQEFMWidget.h \
 	CQEventsWidget.h \
 	CQEventDM.h \
@@ -143,7 +146,10 @@ SOURCES	+= \
 	CQDateTimeEditDelegate.cpp \
 	CQDateTimeEditTableItem.cpp \
 	CQEFMListWidget.cpp \
+	CQEFMNetReactionDM.cpp  \
+	CQEFMReactionDM.cpp  \
 	CQEFMResultWidget.cpp \
+	CQEFMSpeciesDM.cpp  \
     CQEFMWidget.cpp \
 	CQEventsWidget.cpp \
 	CQEventDM.cpp \

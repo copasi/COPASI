@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFluxModeDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/29 16:36:23 $
+//   $Date: 2009/10/01 19:59:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,7 @@ int CQFluxModeDM::rowCount(const QModelIndex & C_UNUSED(parent)) const
 
 int CQFluxModeDM::columnCount(const QModelIndex & C_UNUSED(parent)) const
 {
-  return TOTAL_COLUMS;
+  return FluxModeDM_COLUMNS;
 }
 
 Qt::ItemFlags CQFluxModeDM::flags(const QModelIndex &index) const
@@ -176,7 +176,7 @@ bool CQFluxModeDM::removeRows(int /* position */, int /* rows */, const QModelIn
 }
 
 // virtual
-bool CQFluxModeDM::isDefaultRow(const QModelIndex& i) const
+bool CQFluxModeDM::isDefaultRow(const QModelIndex& /* i */) const
 {
   return false;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/29 16:35:36 $
+//   $Date: 2009/10/01 19:59:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,9 @@
 
 class CCopasiTask;
 class CEFMTask;
+class CQEFMReactionDM;
+class CQEFMSpeciesDM;
+class CQEFMNetReactionDM;
 
 class CQEFMResultWidget : public CopasiWidget, public Ui::CQEFMResultWidget
 {
@@ -48,6 +51,15 @@ private slots:
 
 private:
   const CEFMTask * mpTask;
+
+  CQSortFilterProxyModel *mpProxyModelReactions;
+  CQEFMReactionDM * mpReactionDM;
+
+  CQSortFilterProxyModel *mpProxyModelSpecies;
+  CQEFMSpeciesDM * mpSpeciesDM;
+
+  CQSortFilterProxyModel *mpProxyModelNetReactions;
+  CQEFMNetReactionDM * mpNetReactionDM;
 };
 
 #endif // CQEFMResultWidget_h
