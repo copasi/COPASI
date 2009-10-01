@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CMathMLToTeX.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Author: pwilly $
+//   $Date: 2009/10/01 00:04:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,13 +15,10 @@
 
 #include <iostream>
 
-//#include <qstring.h>
 #include <qstringlist.h>
 #include <qregexp.h>
 
-//#include <qxml.h>
 #include "CStructureParser.h"
-//#include <qdom.h>
 
 #include "CMathMLToTeX.h"
 
@@ -41,13 +38,7 @@ void CMathMLToTeX::replaceLogicOperators(QString &text)
   text.replace("&NotEqual;", "\\ne");
   text.replace("and", "\\wedge");
 
-  text.replace("xor", "xee");
-  text.replace("floor", "flee");
-
-  text.replace("or", "\\vee");
-
-  text.replace("xee", "xor");
-  text.replace("flee", "floor");
+  text.replace(" or ", "\\vee");
 }
 
 /// replace mathematical operators (eg. inf, log)
