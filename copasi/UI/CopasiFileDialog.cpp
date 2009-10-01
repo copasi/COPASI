@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/09/28 14:51:54 $
+//   $Author: pwilly $
+//   $Date: 2009/10/01 00:12:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,10 +135,10 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
   while (fileValid == false);
 
 #ifdef DEBUG_UI
-  qDebug() << "user selected Filter = " << usersFilter;
-//  qDebug() << "user's Filter = " << *pSelectedFilter;
-  qDebug() << "correct extension = " << correctExt;
-  qDebug() << "filename = " << newFile;
+//  qDebug() << "user selected Filter = " << usersFilter;
+  qDebug() << "user's Filter = " << *pSelectedFilter;
+//  qDebug() << "correct extension = " << correctExt;
+//  qDebug() << "filename = " << newFile;
 #endif
 
   return newFile;
