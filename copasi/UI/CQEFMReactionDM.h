@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMReactionDM.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/01 19:59:21 $
+//   $Author: ssahle $
+//   $Date: 2009/10/01 22:21:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ public:
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
 
-  virtual bool CQEFMReactionDM::isDefaultRow(const QModelIndex& i) const;
+  virtual bool isDefaultRow(const QModelIndex& i) const;
 
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
