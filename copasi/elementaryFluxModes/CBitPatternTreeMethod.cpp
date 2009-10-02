@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 14:45:26 $
+//   $Date: 2009/10/02 13:05:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -302,23 +302,22 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT32 > & kernelInt)
   C_FLOAT64 *pExpandedStoiTransposeColumn = mExpandedStoiTranspose.array();
 
   std::vector< const CReaction * >::const_iterator itReactionPivot;
+  std::vector< const CReaction * >::const_iterator endReactionPivot;
   std::vector< std::pair< size_t, bool > >::const_iterator itReactionExpansion;
 
   for (; pStoi != pStoiEnd; ++pExpandedStoiTransposeColumn)
     {
       pStoiRowEnd = pStoi + NumReactions;
       pExpandedStoiTranspose = pExpandedStoiTransposeColumn;
-      itReactionPivot = mReorderedReactions.begin();
       itReactionExpansion = mReactionForward.begin();
 
-      for (; pStoi < pStoiRowEnd; ++pStoi, pExpandedStoiTranspose += NumSpecies, ++itReactionPivot, ++itReactionExpansion)
+      for (; pStoi < pStoiRowEnd; ++pStoi, pExpandedStoiTranspose += NumSpecies, ++itReactionExpansion)
         {
           if (itReactionExpansion->second == false)
             {
               *pExpandedStoiTranspose = - *pStoi;
 
               // Advance the iterators
-              ++itReactionPivot;
               ++itReactionExpansion;
               pExpandedStoiTranspose += NumSpecies;
             }
