@@ -154,10 +154,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQBarChart.h"
-				>
-			</File>
-			<File
 				RelativePath=".\CQBaseDataModel.cpp"
 				>
 			</File>
@@ -947,6 +943,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQBarChart.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CQBaseDataModel.h"
 				>
 			</File>
@@ -1421,6 +1421,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\CQEFMListWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQEFMResultWidget.ui"
+			>
+		</File>
+		<File
 			RelativePath="CQEFMWidget.ui"
 			>
 		</File>
@@ -1438,6 +1446,10 @@
 		</File>
 		<File
 			RelativePath="CQExperimentSelection.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQExpressionMmlStackedWidget.ui"
 			>
 		</File>
 		<File
@@ -1558,6 +1570,10 @@
 		</File>
 		<File
 			RelativePath=".\CQReportsWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQSpeciesDetail.ui"
 			>
 		</File>
 		<File
