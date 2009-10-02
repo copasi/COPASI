@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMProblem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/25 14:46:21 $
+   $Date: 2009/10/02 16:25:42 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,11 @@
 #include "CEFMProblem.h"
 #include "CEFMTask.h"
 #include "CFluxMode.h"
+#include "CEFMMethod.h"
+
+#include "model/CReaction.h"
+#include "model/CModel.h"
+#include "model/CMetabNameInterface.h"
 
 //  Default constructor
 CEFMProblem::CEFMProblem(const CCopasiContainer * pParent):
@@ -71,7 +76,11 @@ void CEFMProblem::printResult(std::ostream * ostream) const
     {
       const std::vector< CFluxMode > & FluxModes = pTask->getFluxModes();
 
+      // List
       *ostream << "\tNumber of Modes:\t" << FluxModes.size() << std::endl;
+
+      // Column header
+      *ostream << "#\t\tReactions\tEquations" << std::endl;
 
       std::vector< CFluxMode >::const_iterator itMode = FluxModes.begin();
       std::vector< CFluxMode >::const_iterator endMode = FluxModes.end();
@@ -105,5 +114,101 @@ void CEFMProblem::printResult(std::ostream * ostream) const
               *ostream << "\t" << pTask->getReactionEquation(itReaction) << std::endl;
             }
         }
+
+      *ostream << std::endl;
+
+      // Net Reactions
+      // Column header
+      *ostream << "#\tNet Reaction\tInternal Species" << std::endl;
+
+      itMode = FluxModes.begin();
+
+      for (j = 0; itMode != endMode; ++itMode, j++)
+        {
+          *ostream << j + 1;
+          *ostream << "\t" << pTask->getNetReaction(*itMode);
+          *ostream << "\t" << pTask->getInternalSpecies(*itMode) << std::endl;
+        }
+
+      *ostream << std::endl;
+
+      // EFM vs Reaction
+      std::vector< const CReaction * >::const_iterator itReaction =
+        static_cast< const CEFMMethod * >(pTask->getMethod())->getReorderedReactions().begin();
+
+      std::vector< const CReaction * >::const_iterator endReaction =
+        static_cast< const CEFMMethod * >(pTask->getMethod())->getReorderedReactions().end();
+
+      // Column header
+      *ostream << "#";
+
+      for (; itReaction != endReaction; ++itReaction)
+        {
+          *ostream << "\t" << (*itReaction)->getObjectName();
+        }
+
+      *ostream << std::endl;
+
+      itMode = FluxModes.begin();
+      size_t k;
+
+      for (j = 0; itMode != endMode; ++itMode, j++)
+        {
+          itReaction =
+            static_cast< const CEFMMethod * >(pTask->getMethod())->getReorderedReactions().begin();
+
+          *ostream << j + 1;
+
+          for (k = 0; itReaction != endReaction; ++itReaction, k++)
+            {
+              *ostream << "\t" << itMode->getMultiplier(k);
+            }
+
+          *ostream << std::endl;
+        }
+
+      *ostream << std::endl;
+
+      if (mpModel == NULL) return;
+
+      // EFM vs Species
+      std::vector< CMetab * >::const_iterator itSpecies = mpModel->getMetabolites().begin();
+      std::vector< CMetab * >::const_iterator endSpecies = mpModel->getMetabolites().end();
+      // Column header
+      *ostream << "#";
+
+      for (; itSpecies != endSpecies; ++itSpecies)
+        {
+          *ostream << "\t" << CMetabNameInterface::getDisplayName(mpModel, **itSpecies);
+        }
+
+      *ostream << std::endl;
+
+      itMode = FluxModes.begin();
+
+      for (j = 0; itMode != endMode; ++itMode, j++)
+        {
+          itSpecies = mpModel->getMetabolites().begin();
+
+          *ostream << j + 1;
+
+          for (; itSpecies != endSpecies; ++itSpecies)
+            {
+              std::pair< C_FLOAT64, C_FLOAT64 > Changes =
+                pTask->getSpeciesChanges(*itMode, **itSpecies);
+
+              *ostream << "\t";
+
+              if (Changes.first > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() ||
+                  Changes.second > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  *ostream << "-" << Changes.first << " | +" << Changes.second;
+                }
+            }
+
+          *ostream << std::endl;
+        }
+
+      *ostream << std::endl;
     }
 }

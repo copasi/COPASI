@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/29 16:35:36 $
+//   $Date: 2009/10/02 16:25:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,9 +34,6 @@ public:
 
 protected slots:
   virtual void languageChange();
-
-private slots:
-  void slotSave();
 };
 
 #endif // CQEFMWIDGET_H

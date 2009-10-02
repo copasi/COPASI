@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/29 16:35:36 $
+//   $Date: 2009/10/02 16:25:42 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,7 +16,6 @@
 #include "CQTaskHeaderWidget.h"
 #include "CProgressBar.h"
 #include "qtUtilities.h"
-#include "CopasiFileDialog.h"
 #include "CQMessageBox.h"
 #include "CQEFMResultWidget.h"
 
@@ -24,7 +23,6 @@
 
 #include "elementaryFluxModes/CEFMMethod.h"
 #include "elementaryFluxModes/CEFMTask.h"
-#include "utilities/utility.h"
 
 /*
  *  Constructs a CQEFMWidget which is a child of 'parent', with the
@@ -119,34 +117,4 @@ CCopasiMethod * CQEFMWidget::createMethod(const CCopasiMethod::SubType & type)
 {
   mpTask->setMethodType(type);
   return mpTask->getMethod();
-}
-
-void CQEFMWidget::slotSave()
-{
-  C_INT32 Answer = QMessageBox::No;
-  QString fileName;
-
-  while (Answer == QMessageBox::No)
-    {
-      fileName =
-        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
-
-      if (fileName.isEmpty()) return;
-
-      // Checks whether the file exists
-      Answer = checkSelection(fileName);
-
-      if (Answer == QMessageBox::Cancel) return;
-    }
-
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
-
-  if (file.fail())
-    return;
-
-  if (mpTask != NULL)
-    file << mpTask->getResult();
-
-  return;
 }

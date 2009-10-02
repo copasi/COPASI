@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMSpeciesDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/01 19:59:21 $
+//   $Date: 2009/10/02 16:25:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include "elementaryFluxModes/CEFMMethod.h"
 #include "elementaryFluxModes/CFluxMode.h"
 #include "model/CModel.h"
+#include "model/CMetabNameInterface.h"
 #include "utilities/CCopasiProblem.h"
 
 CQEFMSpeciesDM::CQEFMSpeciesDM(QObject *parent):
@@ -25,6 +26,7 @@ CQEFMSpeciesDM::CQEFMSpeciesDM(QObject *parent):
     mpTask(NULL),
     mBeginModes(),
     mModesSize(0),
+    mpModel(NULL),
     mBeginSpecies(),
     mSpeciesSize(0)
 {}
@@ -108,7 +110,7 @@ QVariant CQEFMSpeciesDM::headerData(int section, Qt::Orientation orientation,
             break;
 
           default:
-            return QVariant(QString(FROM_UTF8((*(mBeginSpecies + section - 1))->getObjectName())));
+            return QVariant(QString(FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **(mBeginSpecies + section - 1)))));
             break;
         }
     }
@@ -125,12 +127,22 @@ void CQEFMSpeciesDM::setTask(const CEFMTask * pTask)
       mBeginModes = mpTask->getFluxModes().begin();
       mModesSize = mpTask->getFluxModes().size();
 
-      mBeginSpecies = mpTask->getProblem()->getModel()->getMetabolites().begin();
-      mSpeciesSize = mpTask->getProblem()->getModel()->getMetabolites().size();
+      mpModel = mpTask->getProblem()->getModel();
+
+      if (mpModel != NULL)
+        {
+          mBeginSpecies = mpModel->getMetabolites().begin();
+          mSpeciesSize = mpModel->getMetabolites().size();
+        }
+      else
+        {
+          mSpeciesSize = 0;
+        }
     }
   else
     {
       mModesSize = 0;
+      mpModel = NULL;
       mSpeciesSize = 0;
     }
 }
