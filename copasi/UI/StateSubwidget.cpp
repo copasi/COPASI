@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/08/31 18:32:30 $
+//   $Author: pwilly $
+//   $Date: 2009/10/05 11:16:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,11 +85,11 @@ void StateSubwidget::displayOptimizationTab(bool displayOptTab)
 {
   if (displayOptTab)
     {
-      mpTabWidget->insertTab(mpOptimizationPage, "OptimizationResults", 0);
-      mpTabWidget->setCurrentPage(0);
+      mpTabWidget->insertTab(0, mpOptimizationPage, "OptimizationResults");
+      mpTabWidget->setCurrentIndex(0);
     }
   else
-    mpTabWidget->removePage(mpOptimizationPage);
+    mpTabWidget->removeTab(mpTabWidget->indexOf(mpOptimizationPage));
 }
 
 void StateSubwidget::loadMetabolites()
@@ -391,27 +391,30 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
 
   int Last = mpTabWidget->count() - 1;
 
+  // enable/disable tab widgets
+
   // jacobian and stability
   if (pProblem->isJacobianRequested() ||
       pProblem->isStabilityAnalysisRequested())
     {
-      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 3), true);
-      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 2), true);
-      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 1), true);
+      mpTabWidget->setTabEnabled(Last - 3, true);
+      mpTabWidget->setTabEnabled(Last - 2, true);
+      mpTabWidget->setTabEnabled(Last - 1, true);
+
       loadJacobian();
     }
 
   else
     {
-      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 3), false);
-      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 2), false);
-      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 1), false);
+      mpTabWidget->setTabEnabled(Last - 3, false);
+      mpTabWidget->setTabEnabled(Last - 2, false);
+      mpTabWidget->setTabEnabled(Last - 1, false);
     }
 
   // protocol
   if (true)
     {
-      mpTabWidget->setTabEnabled(mpTabWidget->page(Last), true);
+      mpTabWidget->setTabEnabled(Last, true);
 
       const CSteadyStateMethod * pMethod =
         dynamic_cast<const CSteadyStateMethod *>(mpTask->getMethod());
@@ -420,7 +423,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
     }
   else
     {
-      mpTabWidget->setTabEnabled(mpTabWidget->page(Last), false);
+      mpTabWidget->setTabEnabled(Last, false);
     }
 
   return true;
