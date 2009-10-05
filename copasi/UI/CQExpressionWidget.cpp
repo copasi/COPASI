@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/10/05 07:30:17 $
+//   $Date: 2009/10/05 08:57:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,12 +159,12 @@ CQExpressionWidget::~CQExpressionWidget()
 
 void CQExpressionWidget::mousePressEvent(QMouseEvent * e)
 {
-#ifdef DEBUG_UI
-  qDebug() << "- CQExpressionWidget::mousePressEvent - ";
-
   QTextCursor tc = cursorForPosition(e->pos());
 
   mCursor.setPosition(tc.position());
+
+#ifdef DEBUG_UI
+  qDebug() << "- CQExpressionWidget::mousePressEvent - ";
 
   qDebug() << "Cursor position on mousePressEvent of mCursor = " << mCursor.position();
   qDebug() << "Cursor position on mousePressEvent of tc = " << tc.position();
@@ -587,8 +587,8 @@ void CQExpressionWidget::slotCursorPositionChanged()
         eMove = CQExpressionWidget::None;
         setTextCursor(mCursor);
         break;
-#ifdef DEBUG_UI
       case CQExpressionWidget::Mouse:
+#ifdef DEBUG_UI
         qDebug() << "MOUSE";
 #endif
 
