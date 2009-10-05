@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/09/30 21:20:10 $
+//   $Date: 2009/10/05 07:30:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -545,7 +545,7 @@ void CQExpressionWidget::slotCursorPositionChanged()
       qDebug() << "------> cursor.position of '<' = " << cursor1.position();
       qDebug() << "selectedText = " << cursor1.selectedText();
 #endif
-      cursor2 = doc->find(">", mCursor.position());
+      cursor2 = doc->find(">", mCursor.position() - 1);
 #ifdef DEBUG_UI
       qDebug() << "cursor position = " << mCursor.position();
       qDebug() << "------> cursor.position of '>' = " << cursor2.position();
