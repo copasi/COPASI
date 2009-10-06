@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.217 $
+#   $Revision: 1.218 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/10/01 19:59:21 $
+#   $Author: ssahle $
+#   $Date: 2009/10/06 12:34:46 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.217 $ $Author: shoops $ $Date: 2009/10/01 19:59:21 $
+# $Revision: 1.218 $ $Author: ssahle $ $Date: 2009/10/06 12:34:46 $
 ######################################################################
 
 LIB = UI
@@ -284,7 +284,6 @@ HEADERS += \
            CQCompartment.h \
            CQDifferentialEquations.h \
 #           CQDifferentialEquations.ui.h \
-           CQEFMWidget.ui.h \
            CQEventWidget1.h \
            CQExperimentData.h \
            CQExperimentData.ui.h \
