@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
-<comment>   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
-<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/objectdebug.ui,v $ </comment>
+<comment>   $Revision: 1.6 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2007/05/31 18:21:38 $ </comment>
+<comment>   $Author: ssahle $ </comment>
+<comment>   $Date: 2007/08/12 18:11:37 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -129,7 +129,7 @@
     <slot>checkModel()</slot>
 </slots>
 <functions>
-    <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, void * ptr )</function>
+    <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, const void * ptr )</function>
     <function access="private" specifier="non virtual">init()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
