@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 13:41:34 $
+//   $Date: 2009/10/07 22:04:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "CModel.h"
 #include "CEvent.h"
+
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"
@@ -29,6 +30,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
 #include "function/CExpression.h"
+#include "MIRIAM/CRDFUtilities.h"
 
 // The default constructor is intentionally not implemented.
 // CEventAssignment::CEventAssignment() {}
@@ -213,7 +215,8 @@ CEvent::CEvent(const std::string & name,
     mAssignments("ListOfAssignments", this),
     mDelayAssignment(true),
     mpTriggerExpression(NULL),
-    mpDelayExpression(NULL)
+    mpDelayExpression(NULL),
+    mMiriamAnnotation("")
 {
   initObjects();
 }
@@ -227,9 +230,12 @@ CEvent::CEvent(const CEvent & src,
     mAssignments(src.mAssignments, this),
     mDelayAssignment(src.mDelayAssignment),
     mpTriggerExpression(src.mpTriggerExpression == NULL ? NULL : new CExpression(*src.mpTriggerExpression)),
-    mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression))
+    mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression)),
+    mMiriamAnnotation("")
 {
   initObjects();
+
+  setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
 }
 
 CEvent::~CEvent()
@@ -508,3 +514,13 @@ void CEvent::deleteAssignment(const std::string & key)
       mAssignments.CCopasiVector< CEventAssignment >::remove(pAssignment);
     }
 }
+
+void CEvent::setMiriamAnnotation(const std::string & miriamAnnotation,
+                                 const std::string & oldId)
+{
+  mMiriamAnnotation = miriamAnnotation;
+  CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, mKey, oldId);
+}
+
+const std::string & CEvent::getMiriamAnnotation() const
+{return mMiriamAnnotation;}
