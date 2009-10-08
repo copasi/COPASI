@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/28 18:15:31 $
+//   $Author: pwilly $
+//   $Date: 2009/10/08 14:07:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,16 +36,26 @@
 #include "copasi/UI/CQBarChart.h"
 //#include "copasi/mathematics.h"
 
+#ifdef DEBUG_UI
+#include <QtDebug>
+#endif
+
 CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, Qt::WFlags fl,
     bool /* barChart */ , bool slider)
     : Q3VBox(parent, name, fl),
     mpPlot3d(NULL),
     mpColorScale(NULL)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in constructor -- \n";
+#endif
+
   // The bar charts are temporary disabled
-  mWithBarChart = false;
+//  mWithBarChart = false;
+  mWithBarChart = true;
   mUseSliders = slider;
   mBarChartFilled = false;
+//  mBarChartFilled = true;
 
   mpHBoxSelection = new Q3HBox(this);
   mpHBoxSelection->setSpacing(4);
@@ -62,6 +72,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpSelectionTable->setRowMovingEnabled(false);
   mpSelectionTable->verticalHeader()->setResizeEnabled(false);
 
+  // if the 3D bar chart is activated, it needs a button to switch between table and bar chart
   if (mWithBarChart)
     {
       mpButton = new QPushButton(mpHBoxSelection);
@@ -73,11 +84,15 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
 
   mpHBoxSelection->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
   mpHBoxContents = new Q3HBox(this);
-  mpStack = new Q3WidgetStack(mpHBoxContents);
+
+//  mpStack = new Q3WidgetStack(mpHBoxContents);
+  mpStack = new QStackedWidget(mpHBoxContents);
   mpContentTable = new Q3Table(mpStack);
   mpContentTable->setReadOnly(true);
   mpContentTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  mpStack->addWidget(mpContentTable, 0);
+
+//  mpStack->addWidget(mpContentTable, 0);
+  mpStack->addWidget(mpContentTable);
 
   mpContentTable->setColumnMovingEnabled(false);
   mpContentTable->setRowMovingEnabled(false);
@@ -92,12 +107,20 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
 
 CQArrayAnnotationsWidget::~CQArrayAnnotationsWidget()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in destructor -- \n";
+#endif
+
   if (mpColorScale)
     delete mpColorScale;
 }
 
 void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in setColorCoding -- \n";
+#endif
+
   if (cs && cs->isUsed())
     {
       cs = NULL; //don´t accept a scaler that is already used
@@ -114,6 +137,10 @@ void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
 
 void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArray)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in setArrayAnnotation -- \n";
+#endif
+
   mpArray = pArray;
 
   if (!mpArray)
@@ -167,6 +194,10 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
 
 void CQArrayAnnotationsWidget::initSelectionTable()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in initSelectionTable -- \n";
+#endif
+
   mpSelectionTable->setReadOnly(false);
   mpSelectionTable->setColumnReadOnly(0, true);
   mpSelectionTable->setColumnReadOnly(1, false);
@@ -205,6 +236,10 @@ void CQArrayAnnotationsWidget::initSelectionTable()
 
 void CQArrayAnnotationsWidget::storeCurrentCombos()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in storeCurrentCombos -- \n";
+#endif
+
   C_INT32 i, imax = mpArray->dimensionality();
   combos.resize(imax);
 
@@ -221,6 +256,10 @@ void CQArrayAnnotationsWidget::storeCurrentCombos()
 
 void CQArrayAnnotationsWidget::clearWidget()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in clearWidget -- \n";
+#endif
+
   //mpSelectionTable->setNumCols(2);
   mpSelectionTable->setNumRows(0);
   mpContentTable->setNumCols(0);
@@ -237,6 +276,10 @@ void CQArrayAnnotationsWidget::clearWidget()
 
 void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in setLegendEnabled -- \n";
+#endif
+
   if (b)
     mpSelectionTable->show();
   else
@@ -245,6 +288,10 @@ void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
 
 C_INT32 CQArrayAnnotationsWidget::currentItem(C_INT32 row)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in currentItem -- \n";
+#endif
+
   Q3ComboTableItem * item = dynamic_cast<Q3ComboTableItem*>
                             (mpSelectionTable->item(row, 1));
 
@@ -255,6 +302,10 @@ C_INT32 CQArrayAnnotationsWidget::currentItem(C_INT32 row)
 
 void CQArrayAnnotationsWidget::setCurrentItem(C_INT32 row, C_INT32 index)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in setCurrentItem -- \n";
+#endif
+
   storeCurrentCombos();
   Q3ComboTableItem * item = dynamic_cast<Q3ComboTableItem*>
                             (mpSelectionTable->item(row, 1));
@@ -267,6 +318,10 @@ void CQArrayAnnotationsWidget::setCurrentItem(C_INT32 row, C_INT32 index)
 //slot
 void CQArrayAnnotationsWidget::selectionTableChanged(int row, int col)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in selectionTableChanged -- \n";
+#endif
+
   if (col != 1) return;
 
   C_INT32 newValue = currentItem(row);
@@ -348,6 +403,10 @@ finish:
 void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_INT32 colIndex,
     CCopasiAbstractArray::index_type & index)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in fillTable A -- \n";
+#endif
+
   if (!mpArray) return;
 
   assert(rowIndex < index.size());
@@ -372,6 +431,9 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
     {
       // :TODO: This is a hack we need a smarter way possibly using getObjctDisplayName.
       mpContentTable->horizontalHeader()->setLabel(j, FROM_UTF8(coldescr[j]).replace("; {", "\n{"));
+#ifdef DEBUG_UI
+      qDebug() << "text on col " << j << " = " << FROM_UTF8(coldescr[j]).replace("; {", "\n{");
+#endif
     }
 
   //automatic color scaling
@@ -416,13 +478,18 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
 
   mOneDimensional = false;
 
-  if (mpStack->id(mpStack->visibleWidget()) == 1)
+//  if (mpStack->id(mpStack->visibleWidget()) == 1)
+  if (mpStack->currentIndex() == 1)
     fillBarChart();
 }
 
 void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
     CCopasiAbstractArray::index_type & index)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in fillTable B -- \n";
+#endif
+
   if (!mpArray) return;
 
   assert(rowIndex < index.size());
@@ -475,12 +542,17 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
 
   mOneDimensional = true;
 
-  if (mpStack->id(mpStack->visibleWidget()) == 1)
+//  if (mpStack->id(mpStack->visibleWidget()) == 1)
+  if (mpStack->currentIndex() == 1)
     fillBarChart();
 }
 
 void CQArrayAnnotationsWidget::fillTable()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in fillTable C -- \n";
+#endif
+
   if (!mpArray) return;
 
   mpContentTable->setNumCols(0);
@@ -498,15 +570,23 @@ void CQArrayAnnotationsWidget::fillTable()
 
 void CQArrayAnnotationsWidget::changeContents()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in changeContents -- \n";
+#endif
 
-  if (mpStack->id(mpStack->visibleWidget()) == 0)
+//  if (mpStack->id(mpStack->visibleWidget()) == 0)
+  if (mpStack->currentIndex() == 0)
     switchToBarChart();
   else
     switchToTable();
 }
 
-void CQArrayAnnotationsWidget:: enableBarChart(bool enable)
+void CQArrayAnnotationsWidget::enableBarChart(bool enable)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in enableBarChart -- \n";
+#endif
+
   if (mWithBarChart)
     {
       if (enable)
@@ -515,7 +595,8 @@ void CQArrayAnnotationsWidget:: enableBarChart(bool enable)
         }
       else
         {
-          if (mpStack->id(mpStack->visibleWidget()) == 1)
+//          if (mpStack->id(mpStack->visibleWidget()) == 1)
+          if (mpStack->currentIndex() == 1)
             switchToTable();
 
           //mpStack->raiseWidget(0);
@@ -524,9 +605,23 @@ void CQArrayAnnotationsWidget:: enableBarChart(bool enable)
     }
 }
 
+/*!
+    Function to switch the appearance to table
+ */
 void CQArrayAnnotationsWidget::switchToTable()
 {
-  mpStack->raiseWidget(0);
+#ifdef DEBUG_UI
+  qDebug() << "-- in switchToTable -- \n";
+
+  qDebug() << "A mpStack->currentIndex() = " << mpStack->currentIndex();
+#endif
+
+//  mpStack->raiseWidget(0);
+  mpStack->setCurrentIndex(0);
+
+#ifdef DEBUG_UI
+  qDebug() << "B mpStack->currentIndex() = " << mpStack->currentIndex();
+#endif
 
   if (mWithBarChart)
     {
@@ -535,32 +630,50 @@ void CQArrayAnnotationsWidget::switchToTable()
     }
 }
 
+/*!
+    Function to switch the appearance to bar chart
+ */
 void CQArrayAnnotationsWidget::switchToBarChart()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in switchToBarChart -- \n";
+#endif
 
   if (mWithBarChart)
     {
       if (!mpPlot3d)
         createBarChart();
 
-      setFocusOnBars();
+//      setFocusOnBars();
 
       if (!mBarChartFilled)
         fillBarChart();
 
-      mpStack->raiseWidget(1);
+//      setFocusOnBars();
+      setFocusOnBars();
+
+//      mpStack->raiseWidget(1);
+      mpStack->setCurrentIndex(1);
       mpButton->setText("Table");
     }
 }
 
 void CQArrayAnnotationsWidget::disableBarChart()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in disableBarChart -- \n";
+#endif
+
   switchToTable();
   mpButton->hide();
 }
 
 void CQArrayAnnotationsWidget::disableSlider()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in disableSlider -- \n";
+#endif
+
   if (mpPlot3d && mpPlot3d->sliderActive())
     {
       mpPlot3d->mpPlot->mpSliderColumn->hide();
@@ -571,12 +684,28 @@ void CQArrayAnnotationsWidget::disableSlider()
     }
 }
 
+/*!
+    Function to set the appearance focus on table
+ */
 void CQArrayAnnotationsWidget::setFocusOnTable()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in setFocusOnTable -- \n";
+
+  qDebug() << "boolean mWithBarChart = " << mWithBarChart;
+  qDebug() << "boolean mpPlot3d = " << mpPlot3d;
+  qDebug() << "boolean mpPlot3d->sliderActive() = " << mpPlot3d->sliderActive();
+#endif
+
   if (mWithBarChart && mpPlot3d && mpPlot3d->sliderActive())
     {
       int col = mpPlot3d->mpPlot->mpSliderColumn->value();
       int row = mpPlot3d->mpPlot->mpSliderRow->value();
+
+#ifdef DEBUG_UI
+      qDebug() << "col = " << col << " - row = " << row;
+      qDebug() << "mpContentTable->numCols() = " << mpContentTable->numCols() << " - mpContentTable->numRows() = " << mpContentTable->numRows();
+#endif
 
       mpContentTable->clearSelection(true);
 
@@ -606,40 +735,116 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
               mpContentTable->setCurrentCell(-1, -1);
             }
         }
+
+#ifdef DEBUG_UI
+      qDebug() << "label at col = " << mpContentTable->horizontalHeader()->label(col);
+#endif
+      /*
+          if (mpContentTable->horizontalHeader()->label(col).isEmpty())
+            mpContentTable->horizontalHeader()->setLabel(col, FROM_UTF8((mpArray->getAnnotationsString(1))[col]).replace("; {", "\n{"));
+      */
     }
+
+//  mpContentTable->horizontalHeader()->repaint();
+//  mpContentTable->update();
+#ifdef DEBUG_UI
+  qDebug() << "at the end of setFocusOnTable";
+#endif
 }
 
+/*!
+    Function to set the appearance focus on bars
+ */
 void CQArrayAnnotationsWidget::setFocusOnBars()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in setFocusOnBars -- \n";
+
+  qDebug() << "boolean mWithBarChart = " << mWithBarChart;
+  qDebug() << "boolean mpPlot3d = " << mpPlot3d;
+  qDebug() << "boolean mpPlot3d->sliderActive() = " << mpPlot3d->sliderActive();
+#endif
+
   if (mWithBarChart && mpPlot3d && mpPlot3d->sliderActive())
     {
       int col = mpContentTable->currentColumn();
       int row = mpContentTable->currentRow();
 
+#ifdef DEBUG_UI
+      qDebug() << "col = " << col << " - row = " << row;
+      qDebug() << "mpContentTable->numCols() = " << mpContentTable->numCols() << " - mpContentTable->numRows() = " << mpContentTable->numRows();
+#endif
+
       if (mpContentTable->isRowSelected(row, true))
         {
+#ifdef DEBUG_UI
+          qDebug() << "AAA";
+#endif
+
           mpPlot3d->mpPlot->sliderMoved(-1, row);
           mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
           mpPlot3d->mpPlot->mpSliderRow->setValue(row);
         }
       else if (mpContentTable->isColumnSelected(col, true))
         {
+#ifdef DEBUG_UI
+          qDebug() << "BBB";
+#endif
           mpPlot3d->mpPlot->sliderMoved(col, -1);
           mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
           mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
         }
       else
         {
+#ifdef DEBUG_UI
+          qDebug() << "CCC";
+
+          qDebug() << "col = " << col << " - row = " << row;
+          qDebug() << "mpContentTable->currentColumn() = " << mpContentTable->currentColumn() << " - mpContentTable->currentRow() = " << mpContentTable->currentRow();
+#endif
+
           if (mpContentTable->currentRow() == -1 && mpContentTable->currentColumn() == -1)
             {
+#ifdef DEBUG_UI
+              qDebug() << "CCC 1";
+#endif
               mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
               mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
             }
           else
             {
-              mpPlot3d->mpPlot->sliderMoved(col, row);
+#ifdef DEBUG_UI
+              qDebug() << "CCC 2";
+
+              qDebug() << "A col = " << col << " - row = " << row;
+              qDebug() << "A currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
+#endif
               mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
               mpPlot3d->mpPlot->mpSliderRow->setValue(row);
+
+//              mpPlot3d->mpPlot->sliderMoved(col, row);
+
+#ifdef DEBUG_UI
+              qDebug() << "AB col = " << col << " - row = " << row;
+              qDebug() << "AB currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
+#endif
+
+              mpPlot3d->mpPlot->sliderMoved(col, row);
+
+              /*
+                            mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
+                            mpPlot3d->mpPlot->mpSliderRow->setValue(row);
+              */
+
+#ifdef DEBUG_UI
+              qDebug() << "B col = " << col << " - row = " << row;
+//          qDebug() << "B currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
+              qDebug() << "B1 currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
+              qDebug() << "B2 currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->sliderPosition() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->sliderPosition();
+
+              qDebug() << "B2 minColumn = " << mpPlot3d->mpPlot->mpSliderColumn->minimum() << "minRow() = " << mpPlot3d->mpPlot->mpSliderRow->minimum();
+              qDebug() << "B2 maxColumn = " << mpPlot3d->mpPlot->mpSliderColumn->maximum() << "maxRow() = " << mpPlot3d->mpPlot->mpSliderRow->maximum();
+#endif
             }
         }
     }
@@ -647,12 +852,20 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
 void CQArrayAnnotationsWidget::tableDoubleClicked()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in tableDoubleClicked -- \n";
+#endif
+
   if (mpPlot3d && mpPlot3d->sliderActive())
     switchToBarChart();
 }
 
 void CQArrayAnnotationsWidget::setColumnSize(int col, int /*size0*/, int /*size*/)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in setColumnSize -- \n";
+#endif
+
   C_INT32 i;
   C_FLOAT64 sum = 0;
 
@@ -673,6 +886,10 @@ void CQArrayAnnotationsWidget::setColumnSize(int col, int /*size0*/, int /*size*
 
 void CQArrayAnnotationsWidget::fillBarChart()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in fillBarChart -- \n";
+#endif
+
   if (!mWithBarChart)
     return;
 
@@ -695,7 +912,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
   else
     mpContentTable->setNumCols(mpArray->size()[mColIndex]);
 
-  mpContentTable->horizontalHeader()->setLabel(0, "");
+//  mpContentTable->horizontalHeader()->setLabel(0, "");  --> ???
 
   std::vector<std::string> rowdescr = mpArray->getAnnotationsString(mRowIndex);
 
@@ -799,6 +1016,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
         }
       else
         {
+
           mpPlot3d->setPlotTitle(QString(""));
           mpPlot3d->setColors(mColors, minZ, maxZ);
           mColors.erase(mColors.begin(), mColors.end());
@@ -815,14 +1033,22 @@ void CQArrayAnnotationsWidget::fillBarChart()
     }
 }
 
+/*!
+    Function to create the 3D bar chart
+ */
 void CQArrayAnnotationsWidget::createBarChart()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in createBarChart -- \n";
+#endif
+
   mpPlot3d = new CQBarChart(mpStack);
   mpPlot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
   if (mUseSliders) mpPlot3d->activateSlider();
 
-  mpStack->addWidget(mpPlot3d, 1);
+//  mpStack->addWidget(mpPlot3d, 1);
+  mpStack->addWidget(mpPlot3d);
   mpButton->setText("Bars");
   mBarChartFilled = false;
 }
