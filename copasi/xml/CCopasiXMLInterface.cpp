@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.51 $
+ $Revision: 1.52 $
  $Name:  $
- $Author: gauges $
- $Date: 2009/07/08 07:28:29 $
+ $Author: shoops $
+ $Date: 2009/10/08 13:16:13 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -458,6 +458,16 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
         Attributes.add("value", * parameter.getValue().pCN);
 
         if (!saveElement("Parameter", Attributes)) success = false;
+
+        break;
+
+      case CCopasiParameter::EXPRESSION:
+
+        if (!startSaveElement("Parameter", Attributes)) success = false;
+
+        if (!saveData(*parameter.getValue().pEXPRESSION)) success = false;
+
+        if (!endSaveElement("Parameter")) success = false;
 
         break;
 

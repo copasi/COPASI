@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/08 07:28:29 $
+//   $Author: shoops $
+//   $Date: 2009/10/08 13:16:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,9 +18,9 @@
 /**
  * CCopasiXMLInterface class.
  * The class CCopasiXMLInterface is the interface to various XML document
- * containing Copasi relevant informtion.
+ * containing COPASI relevant information.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  */
 
 #ifndef COPASI_CCopasiXMLInterface
@@ -46,7 +46,7 @@ class CCopasiParameter;
  * @see bool load(std::istream & is)
  * @see bool save(std::ostream & os)
  *
- * Note: the responsibilty to free allocated memory during load is handed to the
+ * Note: the responsibility to free allocated memory during load is handed to the
  *       user.
  */
 class SCopasiXMLGUI: public CCopasiContainer
@@ -89,7 +89,7 @@ class CCopasiXMLInterface
 {
 public:
   /**
-   * Enumeration of encoding tyoe.
+   * Enumeration of encoding type.
    */
   enum EncodingType
   {
@@ -286,7 +286,7 @@ private:
   std::vector< std::string > mAttributeList;
 
   /**
-   * The list wheter an attribute is to be saved.
+   * The list whether an attribute is to be saved.
    */
   std::vector< bool > mSaveList;
 
@@ -368,7 +368,7 @@ public:
   }
 
   /**
-   * Retreive the size of the list.
+   * Retrieve the size of the list.
    * @return unsigned C_INT32 size
    */
   unsigned C_INT32 size();
@@ -383,7 +383,7 @@ public:
                const std::string & name);
 
   /**
-   * Retreive the name of the indexed attribute.
+   * Retrieve the name of the indexed attribute.
    * @param const unsigned C_INT32 & index
    * @return const std::string & name
    */
@@ -481,7 +481,7 @@ public:
   }
 
   /**
-   * Retreive the value of the indexed attribute.
+   * Retrieve the value of the indexed attribute.
    * @param const unsigned C_INT32 & index
    * @return const std::string & value
    */
@@ -490,12 +490,12 @@ public:
   /**
    * Set whether the indexed attribute shall be skipped during save.
    * @param const unsigned C_INT32 & index
-   * @return bool sucess
+   * @return bool success
    */
   bool skip(const unsigned C_INT32 & index);
 
   /**
-   * Retreive the indexed attribute (' name="value"' or '' if skipped).
+   * Retrieve the indexed attribute (' name="value"' or '' if skipped).
    * @param const unsigned C_INT32 & index
    * @return std::string attribute
    */

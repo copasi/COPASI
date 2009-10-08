@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.121 $
+//   $Revision: 1.122 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/08 07:28:29 $
+//   $Author: shoops $
+//   $Date: 2009/10/08 13:16:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,13 +99,19 @@ bool CCopasiXML::save(std::ostream & os,
   << " UTC -->"
   << std::endl;
 
+  *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << std::endl;
+
   CXMLAttributeList Attributes;
-  Attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-  Attributes.add("xsi:noNamespaceSchemaLocation",
-                 "http://www.copasi.org/static/schema.xsd");
+  Attributes.add("xmlns", "http://www.copasi.org/static/schema");
   Attributes.add("versionMajor", mVersion.getVersionMajor());
   Attributes.add("versionMinor", mVersion.getVersionMinor());
   Attributes.add("versionDevel", mVersion.getVersionDevel());
+
+  /*
+  Attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+  Attributes.add("xsi:noNamespaceSchemaLocation",
+                 "http://www.copasi.org/static/schema/CopasiML.rng");
+  */
 
   startSaveElement("COPASI", Attributes);
 
@@ -366,6 +372,7 @@ bool CCopasiXML::saveModel()
   CXMLAttributeList Attributes;
   Attributes.add("key", mpModel->getKey());
   Attributes.add("name", mpModel->getObjectName());
+  Attributes.add("simulationType", CModelEntity::XMLStatus[mpModel->getStatus()]);
   Attributes.add("timeUnit", mpModel->getTimeUnitName());
   Attributes.add("volumeUnit", mpModel->getVolumeUnitName());
   Attributes.add("areaUnit", mpModel->getAreaUnitName());
@@ -577,7 +584,6 @@ bool CCopasiXML::saveModel()
       Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
-      Attributes.add("compartment", ""); //TODO necessary?
       Attributes.add("reversible", "");
 
       for (i = 0; i < imax; i++)
@@ -586,11 +592,7 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pReaction->getKey());
           Attributes.setValue(1, pReaction->getObjectName());
-          //if (pReaction->getCompartment())
-          //  Attributes.setValue(2, pReaction->getCompartment()->getKey());
-          //else
-          Attributes.skip(2);
-          Attributes.setValue(3, pReaction->isReversible() ? "true" : "false");
+          Attributes.setValue(2, pReaction->isReversible() ? "true" : "false");
 
           if (pReaction->getSBMLId() != "")
             mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();
@@ -750,18 +752,24 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(0, pEvent->getKey());
           Attributes.setValue(1, pEvent->getObjectName());
           Attributes.setValue(2, pEvent->getOrder());
-          Attributes.setValue(3, pEvent->getDelayAssignment() ? "true" : "false");
+
+          if (pEvent->getDelayExpression() != "")
+            {
+              Attributes.setValue(3, pEvent->getDelayAssignment() ? "true" : "false");
+            }
+          else
+            {
+              Attributes.skip(3);
+            }
 
           startSaveElement("Event", Attributes);
 
-          /*
           if (pEvent->getMiriamAnnotation() != "")
             {
               startSaveElement("MiriamAnnotation");
               *mpOstream << pEvent->getMiriamAnnotation() << std::endl;
               endSaveElement("MiriamAnnotation");
             }
-          */
 
           if (pEvent->getTriggerExpression() != "")
             {
@@ -928,8 +936,6 @@ bool CCopasiXML::saveFunctionList()
           Attributes.add("name", "");
           Attributes.add("order", "");
           Attributes.add("role", "");
-          Attributes.add("minOccurs", "");
-          Attributes.add("maxOccurs", "");
 
           for (j = 0; j < jmax; j++)
             {
@@ -938,24 +944,6 @@ bool CCopasiXML::saveFunctionList()
               Attributes.setValue(1, pParameter->getObjectName());
               Attributes.setValue(2, j);
               Attributes.setValue(3, CFunctionParameter::RoleNameXML[pParameter->getUsage()]);
-
-              if (true /*pParameter->getType() < CFunctionParameter::VINT32*/)
-                {
-                  Attributes.skip(4);
-                  Attributes.skip(5);
-                }
-              else
-                {
-                  /*
-                  CUsageRange * pUsageRange =
-                    pFunction->getVariables().getUsageRanges()[pParameter->getUsage()];
-                  Attributes.setValue(4, pUsageRange->getLow());
-                  if (pUsageRange->getHigh() == (unsigned C_INT32) CRange::Infinity)
-                    Attributes.setValue(5, "unbounded");
-                  else
-                    Attributes.setValue(5, pUsageRange->getHigh());
-                  */
-                }
 
               saveElement("ParameterDescription", Attributes);
             }

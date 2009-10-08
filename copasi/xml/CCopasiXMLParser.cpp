@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.204 $
+//   $Revision: 1.205 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/13 20:20:33 $
+//   $Date: 2009/10/08 13:16:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -516,6 +516,9 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
           else
             (*it)->setValue(std::string(""));
         }
+
+      // We need to remove the no longer needed expression "Objective Function" from the function list.
+      mCommon.pFunctionList->remove("Objective Function");
     }
   else if (!strcmp(pszName, "GUI") && mCommon.pGUI == NULL)
     CCopasiMessage::getLastMessage();
@@ -2802,6 +2805,13 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
         mCommon.pModel->getEvents().add(mCommon. pEvent, true);
         return;
 
+      case MiriamAnnotation:
+
+        if (!strcmp(pszName, "MiriamAnnotation"))
+          mpCurrentHandler = &mParser.mMiriamAnnotationElement;
+
+        break;
+
       case TriggerExpression:
 
         if (!strcmp(pszName, "TriggerExpression"))
@@ -2861,6 +2871,16 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
+        break;
+
+      case MiriamAnnotation:
+
+        if (strcmp(pszName, "MiriamAnnotation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
+
+        mCommon.pEvent->setMiriamAnnotation(mCommon.CharacterData, mKey);
+        mCommon.CharacterData = "";
         break;
 
       case TriggerExpression:
@@ -5407,6 +5427,10 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                       p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
                       break;
 
+                    case CCopasiParameter::EXPRESSION:
+                      p->setValue(* mCommon.pCurrentParameter->getValue().pEXPRESSION);
+                      break;
+
                     case CCopasiParameter::GROUP:
                     case CCopasiParameter::INVALID:
                       break;
@@ -5637,6 +5661,10 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
                       p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
                       break;
 
+                    case CCopasiParameter::EXPRESSION:
+                      p->setValue(* mCommon.pCurrentParameter->getValue().pEXPRESSION);
+                      break;
+
                     case CCopasiParameter::GROUP:
                     case CCopasiParameter::INVALID:
                       break;
@@ -5683,6 +5711,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
                     case CCopasiParameter::CN:
                     case CCopasiParameter::KEY:
                     case CCopasiParameter::FILE:
+                    case CCopasiParameter::EXPRESSION:
                     case CCopasiParameter::INVALID:
                       break;
 
@@ -8323,6 +8352,10 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
                   p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
                   break;
 
+                case CCopasiParameter::EXPRESSION:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pEXPRESSION);
+                  break;
+
                 case CCopasiParameter::GROUP:
                 case CCopasiParameter::INVALID:
                   break;
@@ -8334,6 +8367,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
           }
         else
           {
+            // TODO CRITICAL Key parameters are not re-mapped.
             mCommon.pCurrentTask->getProblem()->addParameter(*mCommon.pCurrentParameter);
           }
 
@@ -8369,6 +8403,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
                 case CCopasiParameter::CN:
                 case CCopasiParameter::KEY:
                 case CCopasiParameter::FILE:
+                case CCopasiParameter::EXPRESSION:
                 case CCopasiParameter::INVALID:
                   break;
 
@@ -8632,34 +8667,38 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
         // Parameter has attributes name, type and value
         name = mParser.getAttributeValue("name", papszAttrs);
         sType = mParser.getAttributeValue("type", papszAttrs);
-        sValue = mParser.getAttributeValue("value", papszAttrs);
 
         if (sType == "float")
           {
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::DOUBLE;
             d = CCopasiXMLInterface::DBL(sValue.c_str());
             pValue = &d;
           }
         else if (sType == "unsignedFloat")
           {
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::UDOUBLE;
             d = CCopasiXMLInterface::DBL(sValue.c_str());
             pValue = &d;
           }
         else if (sType == "integer")
           {
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::INT;
             i = atoi(sValue.c_str());
             pValue = &i;
           }
         else if (sType == "unsignedInteger")
           {
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::UINT;
             ui = atoi(sValue.c_str());
             pValue = &ui;
           }
         else if (sType == "bool")
           {
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::BOOL;
 
             if (sValue == "0" || sValue == "false")
@@ -8675,23 +8714,34 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
           }
         else if (sType == "string")
           {
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::STRING;
             pValue = &sValue;
           }
         else if (sType == "key")
           {
+            // This is the old key the mapping is done when the parameter is added to a group.
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::KEY;
             pValue = &sValue;
           }
         else if (sType == "file")
           {
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::FILE;
             pValue = &sValue;
           }
         else if (sType == "cn")
           {
+            sValue = mParser.getAttributeValue("value", papszAttrs);
             type = CCopasiParameter::CN;
             pValue = &sValue;
+          }
+        else if (sType == "expression")
+          {
+            type = CCopasiParameter::EXPRESSION;
+            mParser.pushElementHandler(&mParser.mCharacterDataElement);
+            mParser.onStartElement(pszName, papszAttrs);
           }
         else
           {
@@ -8721,6 +8771,11 @@ void CCopasiXMLParser::ParameterElement::end(const XML_Char *pszName)
         if (strcmp(pszName, "Parameter"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Parameter", mParser.getCurrentLineNumber());
+
+        if (mCommon.pCurrentParameter->getType() == CCopasiParameter::EXPRESSION)
+          {
+            mCommon.pCurrentParameter->setValue(mCommon.CharacterData);
+          }
 
         mCurrentElement = START_ELEMENT;
         mParser.popElementHandler();
@@ -8915,6 +8970,10 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
                   p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
                   break;
 
+                case CCopasiParameter::EXPRESSION:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pEXPRESSION);
+                  break;
+
                 case CCopasiParameter::GROUP:
                 case CCopasiParameter::INVALID:
                   break;
@@ -8960,6 +9019,7 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
                 case CCopasiParameter::STRING:
                 case CCopasiParameter::KEY:
                 case CCopasiParameter::FILE:
+                case CCopasiParameter::EXPRESSION:
                 case CCopasiParameter::CN:
                 case CCopasiParameter::INVALID:
                   break;

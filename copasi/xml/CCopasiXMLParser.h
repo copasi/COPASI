@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:00 $
+//   $Date: 2009/10/08 13:16:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1477,6 +1477,7 @@ private:
     enum Element
     {
       Event = 0,
+      MiriamAnnotation,
       TriggerExpression,
       DelayExpression,
       ListOfAssignments
