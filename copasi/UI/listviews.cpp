@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.275 $
+//   $Revision: 1.276 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/14 13:41:37 $
+//   $Author: pwilly $
+//   $Date: 2009/10/08 14:10:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1289,14 +1289,22 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
                                    Action action,
                                    const std::string & key)
 {
-  QList <QWidget *> widgets = findChildren<QWidget *>("CopasiWidget");
-  QListIterator<QWidget *> it(widgets); // iterate over the CopasiWidgets
+//  QList <QWidget *> widgets = findChildren<QWidget *>("CopasiWidget");
+  QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
+//  QListIterator<QWidget *> it(widgets); // iterate over the CopasiWidgets
+  QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets
   CopasiWidget * pCopasiWidget;
 
-  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.next())) != NULL)
+  /*  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.next())) != NULL)
+      {
+        //std::cout << pCopasiWidget->name() << std::endl;
+        pCopasiWidget->update(objectType, action, key);
+      }
+  */
+  while (it.hasNext())
     {
-      //std::cout << pCopasiWidget->name() << std::endl;
-      pCopasiWidget->update(objectType, action, key);
+      if ((pCopasiWidget = it.next()) != NULL)
+        pCopasiWidget->update(objectType, action, key);
     }
 }
 
