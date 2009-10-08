@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:48:53 $
+//   $Author: shoops $
+//   $Date: 2009/10/08 13:17:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -320,10 +320,6 @@ private:
 
   void initObjects();
 
-  virtual bool createObjectiveFunction();
-
-  //    bool buildOptItemListFromParameterGroup();
-
   //data member
 protected:
   /**
@@ -339,7 +335,13 @@ protected:
   /**
    * A pointer to the value of the CCopasiParameter holding the ObjectiveFunctionKey
    */
-  std::string * mpParmObjectiveFunctionKey;
+  // std::string * mpParmObjectiveFunctionKey;
+
+  /**
+   * A pointer to the value of the CCopasiParameter holding the infix expression
+   * of the objective function
+   */
+  std::string * mpParmObjectiveExpression;
 
   /**
    * A pointer to the value of the CCopasiParameter holding Maximize
@@ -374,7 +376,7 @@ protected:
   /**
    * The objective function which should be minimized or maximized.
    */
-  CExpression * mpFunction;
+  CExpression * mpObjectiveExpression;
 
   /**
    * A vector of update method to the values of the optimization items.

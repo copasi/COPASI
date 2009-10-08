@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/10/08 13:17:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,14 +56,14 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     CCopasiProblem(type, pParent),
     mInfinity(0.0),
     mpParmSubtaskCN(NULL),
-    mpParmObjectiveFunctionKey(NULL),
+    mpParmObjectiveExpression(NULL),
     mpParmMaximize(NULL),
     mpGrpItems(NULL),
     mpGrpConstraints(NULL),
     mpOptItems(NULL),
     mpConstraintItems(NULL),
     mpSubtask(NULL),
-    mpFunction(NULL),
+    mpObjectiveExpression(NULL),
     mUpdateMethods(),
     mInitialRefreshMethods(),
     mRefreshMethods(),
@@ -93,14 +93,14 @@ COptProblem::COptProblem(const COptProblem& src,
     CCopasiProblem(src, pParent),
     mInfinity(src.mInfinity),
     mpParmSubtaskCN(NULL),
-    mpParmObjectiveFunctionKey(NULL),
+    mpParmObjectiveExpression(NULL),
     mpParmMaximize(NULL),
     mpGrpItems(NULL),
     mpGrpConstraints(NULL),
     mpOptItems(NULL),
     mpConstraintItems(NULL),
     mpSubtask(NULL),
-    mpFunction(NULL),
+    mpObjectiveExpression(NULL),
     mUpdateMethods(),
     mInitialRefreshMethods(),
     mRefreshMethods(),
@@ -122,32 +122,18 @@ COptProblem::COptProblem(const COptProblem& src,
 {
   initializeParameter();
   initObjects();
-
-  if (src.mpFunction)
-    {
-      createObjectiveFunction();
-      mpFunction->setInfix(src.mpFunction->getInfix());
-      setValue("ObjectiveFunction", mpFunction->getKey());
-    }
 }
 
 // Destructor
 COptProblem::~COptProblem()
-{
-  if (mpFunction &&
-      CCopasiRootContainer::getFunctionList() &&
-      CCopasiRootContainer::getFunctionList()->loadedFunctions()[mpFunction->getObjectName()] == mpFunction)
-    CCopasiRootContainer::getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
-
-  pdelete(mpFunction);
-}
+{}
 
 void COptProblem::initializeParameter()
 {
   mpParmSubtaskCN =
     assertParameter("Subtask", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
-  mpParmObjectiveFunctionKey =
-    assertParameter("ObjectiveFunction", CCopasiParameter::KEY, std::string(""))->getValue().pKEY;
+  mpParmObjectiveExpression =
+    assertParameter("ObjectiveExpression", CCopasiParameter::EXPRESSION, std::string(""))->getValue().pEXPRESSION;
   mpParmMaximize =
     assertParameter("Maximize", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
 
@@ -187,6 +173,34 @@ bool COptProblem::elevateChildren()
       // If no subtask is defined we default to steady-state
       if (*mpParmSubtaskCN == "")
         setSubtaskType(CCopasiTask::steadyState);
+    }
+
+  // Handle old file format in which the objective expression was stored in the function DB
+  if (mpParmObjectiveExpression != NULL)
+    {
+      CCopasiParameter * pParameter = getParameter("ObjectiveFunction");
+      CExpression * pObjectiveFunction = NULL;
+
+      // We do not use the key to find the objective function because keys are not re-mapped
+      // for unknown parameters, instead we rely on the uniqueness of the name and the fact that
+      // this is the only expression in the list.
+      size_t Index = CCopasiRootContainer::getFunctionList()->loadedFunctions().getIndex("Objective Function");
+
+      if (Index != C_INVALID_INDEX)
+        {
+          pObjectiveFunction =
+            dynamic_cast<CExpression *>(CCopasiRootContainer::getFunctionList()->loadedFunctions()[Index]);
+        }
+
+      if (pObjectiveFunction != NULL &&
+          pParameter != NULL)
+        {
+          *mpParmObjectiveExpression = pObjectiveFunction->getInfix();
+
+          removeParameter("ObjectiveFunction");
+        }
+
+      setObjectiveFunction(*mpParmObjectiveExpression);
     }
 
   mpGrpItems =
@@ -369,20 +383,18 @@ bool COptProblem::initialize()
 
   mRefreshConstraints = CCopasiObject::buildUpdateSequence(Objects, mpModel->getUptoDateObjects());
 
-  createObjectiveFunction();
-
   mCPUTime.start();
 
-  if (!mpFunction ||
-      mpFunction->getInfix() == "" ||
-      !mpFunction->compile(ContainerList))
+  if (mpObjectiveExpression == NULL ||
+      mpObjectiveExpression->getInfix() == "" ||
+      !mpObjectiveExpression->compile(ContainerList))
     {
       mRefreshMethods.clear();
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
       return false;
     }
 
-  mRefreshMethods = CCopasiObject::buildUpdateSequence(mpFunction->getDirectDependencies(), mpModel->getUptoDateObjects());
+  mRefreshMethods = CCopasiObject::buildUpdateSequence(mpObjectiveExpression->getDirectDependencies(), mpModel->getUptoDateObjects());
 
   return success;
 }
@@ -503,7 +515,7 @@ bool COptProblem::calculate()
       for (; it != end; ++it)
         (**it)();
 
-      mCalculateValue = *mpParmMaximize ? -mpFunction->calcValue() : mpFunction->calcValue();
+      mCalculateValue = *mpParmMaximize ? -mpObjectiveExpression->calcValue() : mpObjectiveExpression->calcValue();
     }
 
   catch (CCopasiException)
@@ -655,58 +667,17 @@ const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMet
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
-  if (!mpFunction) createObjectiveFunction();
+  *mpParmObjectiveExpression = infix;
 
-  return mpFunction->setInfix(infix);
+  if (mpObjectiveExpression == NULL)
+    mpObjectiveExpression = new CExpression("Expression", this);
+
+  return mpObjectiveExpression->setInfix(infix);
 }
 
 const std::string COptProblem::getObjectiveFunction()
 {
-  if (!mpFunction) createObjectiveFunction();
-
-  return mpFunction->getInfix();
-}
-
-bool COptProblem::createObjectiveFunction()
-{
-  CCopasiParameter * pParm = getParameter("ObjectiveFunction");
-
-  if (!pParm) return false;
-
-  mpFunction =
-    dynamic_cast<CExpression *>(CCopasiRootContainer::getKeyFactory()->get(* pParm->getValue().pKEY));
-
-  CCopasiVectorN<CEvaluationTree> & FunctionList =
-    CCopasiRootContainer::getFunctionList()->loadedFunctions();
-
-  if (!mpFunction)
-    {
-      std::ostringstream Name;
-      Name << "Objective Function";
-
-      int i = 0;
-
-      while (FunctionList.getIndex(Name.str()) != C_INVALID_INDEX)
-        {
-          i++;
-          Name.str("");
-          Name << "Objective Function " << i;
-        }
-
-      mpFunction = new CExpression(Name.str(), this);
-      FunctionList.add(mpFunction, false);
-
-      setValue("ObjectiveFunction", mpFunction->getKey());
-    }
-  else
-    {
-      mpFunction->setObjectParent(this);
-
-      if (FunctionList.getIndex(mpFunction->getObjectName()) == C_INVALID_INDEX)
-        FunctionList.add(mpFunction, false);
-    }
-
-  return true;
+  return *mpParmObjectiveExpression;
 }
 
 bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
@@ -813,10 +784,10 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
 
   os << std::endl;
 
-  if (o.mpFunction)
+  if (o.mpObjectiveExpression)
     {
       os << "Objective Function:" << std::endl;
-      os << "    " << o.mpFunction->getDisplayString() << std::endl;
+      os << "    " << o.mpObjectiveExpression->getDisplayString() << std::endl;
       os << std:: endl;
     }
 

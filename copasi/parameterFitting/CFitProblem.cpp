@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:17 $
+//   $Date: 2009/10/08 13:17:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,7 +156,8 @@ void CFitProblem::initializeParameter()
 {
   removeParameter("Subtask");
   mpParmSubtaskCN = NULL;
-  removeParameter("ObjectiveFunction");
+  removeParameter("ObjectiveExpression");
+  mpParmObjectiveExpression = NULL;
   *mpParmMaximize = false;
 
   mpParmSteadyStateCN =
@@ -180,8 +181,10 @@ bool CFitProblem::elevateChildren()
 
   CCopasiVectorN< CCopasiTask > * pTasks = NULL;
   CCopasiDataModel* pDataModel = getObjectDataModel();
+
   if (pDataModel)
     pTasks = pDataModel->getTaskList();
+
   if (pTasks == NULL)
     pTasks = dynamic_cast<CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
@@ -224,10 +227,12 @@ bool CFitProblem::elevateChildren()
 
   mpExperimentSet =
     elevate<CExperimentSet, CCopasiParameterGroup>(getGroup("Experiment Set"));
+
   if (!mpExperimentSet) return false;
 
   std::map<std::string, std::string>::iterator itMap;
   std::map<std::string, std::string>::iterator endMap;
+
   for (itMap = ExperimentMap.begin(), endMap = ExperimentMap.end(); itMap != endMap; ++itMap)
     {
       pExperiment = mpExperimentSet->getExperiment(itMap->second);
@@ -260,6 +265,7 @@ bool CFitProblem::elevateChildren()
       itMap->second = pExperiment->CCopasiParameter::getKey();
       pExperiment->setValue("Key", itMap->second);
     }
+
 #endif // COPASI_CROSSVALIDATION
 
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
@@ -282,8 +288,8 @@ bool CFitProblem::elevateChildren()
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
         (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
-#endif // COPASI_CROSSVALIDATION
 
+#endif // COPASI_CROSSVALIDATION
     }
 
   it = mpConstraintItems->begin();
@@ -306,8 +312,8 @@ bool CFitProblem::elevateChildren()
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
         (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
-#endif // COPASI_CROSSVALIDATION
 
+#endif // COPASI_CROSSVALIDATION
     }
 
   return true;
@@ -340,6 +346,7 @@ bool CFitProblem::initialize()
   assert(pDataModel != NULL);
   mpSteadyState =
     dynamic_cast< CSteadyStateTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmSteadyStateCN));
+
   if (mpSteadyState == NULL)
     mpSteadyState =
       static_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
@@ -348,9 +355,11 @@ bool CFitProblem::initialize()
 
   mpTrajectory =
     dynamic_cast< CTrajectoryTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmTimeCourseCN));
+
   if (mpTrajectory == NULL)
     mpTrajectory =
       static_cast<CTrajectoryTask *>((*pDataModel->getTaskList())["Time-Course"]);
+
   mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
   ContainerList.clear();
@@ -358,6 +367,7 @@ bool CFitProblem::initialize()
   ContainerList.push_back(mpModel);
 
   CFitTask * pTask = dynamic_cast<CFitTask *>(getObjectParent());
+
   if (pTask)
     {
       ContainerList.push_back(pTask);
@@ -401,6 +411,7 @@ bool CFitProblem::initialize()
       std::string Annotation = pItem->getObjectDisplayName();
 
       imax = pItem->getExperimentCount();
+
       if (imax == 0)
         {
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
@@ -417,6 +428,7 @@ bool CFitProblem::initialize()
             {
               if ((Index = mpExperimentSet->keyToIndex(pItem->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
+
               mExperimentUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
               ObjectSet[Index].insert(pItem->getObject());
             };
@@ -452,6 +464,7 @@ bool CFitProblem::initialize()
       itDepend = pConstraint->getDirectDependencies().begin();
       endDepend = pConstraint->getDirectDependencies().end();
       imax = pConstraint->getExperimentCount();
+
       if (imax == 0)
         {
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
@@ -466,6 +479,7 @@ bool CFitProblem::initialize()
             {
               if ((Index = mpExperimentSet->keyToIndex(pConstraint->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
+
               mExperimentConstraints(Index, j) = pConstraint;
               ObjectSet[Index].insert(itDepend, endDepend);
             };
@@ -478,6 +492,7 @@ bool CFitProblem::initialize()
   mExperimentDependentValues.resize(mpExperimentSet->getDataPointCount());
 
 #ifdef COPASI_CROSSVALIDATION
+
   if (!mpCrossValidationSet->compile(ContainerList)) return false;
 
   // Build a matrix of cross validation experiments  and local items.
@@ -498,6 +513,7 @@ bool CFitProblem::initialize()
       pItem->updateBounds(mpOptItems->begin());
 
       imax = pItem->getCrossValidationCount();
+
       if (imax == 0)
         {
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
@@ -512,6 +528,7 @@ bool CFitProblem::initialize()
             {
               if ((Index = mpCrossValidationSet->keyToIndex(pItem->getCrossValidation(i))) == C_INVALID_INDEX)
                 return false;
+
               mCrossValidationUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
               ObjectSet[Index].insert(pItem->getObject());
             };
@@ -537,6 +554,7 @@ bool CFitProblem::initialize()
       pConstraint = static_cast<CFitConstraint *>(*it);
 
       imax = pConstraint->getCrossValidationCount();
+
       if (imax == 0)
         {
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
@@ -551,6 +569,7 @@ bool CFitProblem::initialize()
             {
               if ((Index = mpCrossValidationSet->keyToIndex(pConstraint->getCrossValidation(i))) == C_INVALID_INDEX)
                 return false;
+
               mCrossValidationConstraints(Index, j) = pConstraint;
               ObjectSet[Index].insert(pConstraint->getObject());
             };
@@ -619,6 +638,7 @@ bool CFitProblem::checkFunctionalConstraints()
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
   mConstraintCounter++;
+
   for (; it != end; ++it)
     if (static_cast<CFitConstraint *>(*it)->getConstraintViolation() > 0.0)
       {
@@ -676,6 +696,7 @@ bool CFitProblem::calculate()
           // Update initial values which changed due to the fit item values.
           itRefresh = mExperimentInitialRefreshes[i].begin();
           endRefresh = mExperimentInitialRefreshes[i].end();
+
           while (itRefresh != endRefresh)
             (**itRefresh++)();
 
@@ -683,79 +704,87 @@ bool CFitProblem::calculate()
 
           switch (pExp->getExperimentType())
             {
-            case CCopasiTask::steadyState:
-              // set independent data
-              for (j = 0; j < kmax && Continue; j++) // For each data row;
-                {
-                  pExp->updateModelWithIndependentData(j);
-                  Continue = mpSteadyState->process(true);
+              case CCopasiTask::steadyState:
 
-                  if (!Continue)
-                    {
-                      mFailedCounter++;
-                      mCalculateValue = mInfinity;
-                      break;
-                    }
+                // set independent data
+                for (j = 0; j < kmax && Continue; j++) // For each data row;
+                  {
+                    pExp->updateModelWithIndependentData(j);
+                    Continue = mpSteadyState->process(true);
 
-                  // We check after each simulation whether the constraints are violated.
-                  // Make sure the constraint values are up to date.
-                  itRefresh = mExperimentConstraintRefreshes[i].begin();
-                  endRefresh = mExperimentConstraintRefreshes[i].end();
-                  for (; itRefresh != endRefresh; ++itRefresh)
-                    (**itRefresh)();
+                    if (!Continue)
+                      {
+                        mFailedCounter++;
+                        mCalculateValue = mInfinity;
+                        break;
+                      }
 
-                  ppConstraint = mExperimentConstraints[i];
-                  ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
-                  for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                    if (*ppConstraint) (*ppConstraint)->calculateConstraintViolation();
+                    // We check after each simulation whether the constraints are violated.
+                    // Make sure the constraint values are up to date.
+                    itRefresh = mExperimentConstraintRefreshes[i].begin();
+                    endRefresh = mExperimentConstraintRefreshes[i].end();
 
-                  if (mStoreResults)
-                    mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
-                  else
-                    mCalculateValue += pExp->sumOfSquares(j, Residuals);
-                }
-              break;
+                    for (; itRefresh != endRefresh; ++itRefresh)
+                      (**itRefresh)();
 
-            case CCopasiTask::timeCourse:
-              for (j = 0; j < kmax && Continue; j++) // For each data row;
-                {
-                  if (j)
-                    {
-                      mpTrajectory->processStep(pExp->getTimeData()[j]);
-                    }
-                  else
-                    {
-                      // set independent data
-                      pExp->updateModelWithIndependentData(j);
-                      mpTrajectory->processStart(true);
+                    ppConstraint = mExperimentConstraints[i];
+                    ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
 
-                      if (pExp->getTimeData()[0] != mpModel->getInitialTime())
-                        {
-                          mpTrajectory->processStep(pExp->getTimeData()[0]);
-                        }
-                    }
+                    for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                      if (*ppConstraint)(*ppConstraint)->calculateConstraintViolation();
 
-                  // We check after each simulation step whether the constraints are violated.
-                  // Make sure the constraint values are up to date.
-                  itRefresh = mExperimentConstraintRefreshes[i].begin();
-                  endRefresh = mExperimentConstraintRefreshes[i].end();
-                  for (; itRefresh != endRefresh; ++itRefresh)
-                    (**itRefresh)();
+                    if (mStoreResults)
+                      mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
+                    else
+                      mCalculateValue += pExp->sumOfSquares(j, Residuals);
+                  }
 
-                  ppConstraint = mExperimentConstraints[i];
-                  ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
-                  for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                    if (*ppConstraint) (*ppConstraint)->calculateConstraintViolation();
+                break;
 
-                  if (mStoreResults)
-                    mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
-                  else
-                    mCalculateValue += pExp->sumOfSquares(j, Residuals);
-                }
-              break;
+              case CCopasiTask::timeCourse:
 
-            default:
-              break;
+                for (j = 0; j < kmax && Continue; j++) // For each data row;
+                  {
+                    if (j)
+                      {
+                        mpTrajectory->processStep(pExp->getTimeData()[j]);
+                      }
+                    else
+                      {
+                        // set independent data
+                        pExp->updateModelWithIndependentData(j);
+                        mpTrajectory->processStart(true);
+
+                        if (pExp->getTimeData()[0] != mpModel->getInitialTime())
+                          {
+                            mpTrajectory->processStep(pExp->getTimeData()[0]);
+                          }
+                      }
+
+                    // We check after each simulation step whether the constraints are violated.
+                    // Make sure the constraint values are up to date.
+                    itRefresh = mExperimentConstraintRefreshes[i].begin();
+                    endRefresh = mExperimentConstraintRefreshes[i].end();
+
+                    for (; itRefresh != endRefresh; ++itRefresh)
+                      (**itRefresh)();
+
+                    ppConstraint = mExperimentConstraints[i];
+                    ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
+
+                    for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                      if (*ppConstraint)(*ppConstraint)->calculateConstraintViolation();
+
+                    if (mStoreResults)
+                      mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
+                    else
+                      mCalculateValue += pExp->sumOfSquares(j, Residuals);
+                  }
+
+                break;
+
+              default:
+                break;
             }
 
           // restore independent data
@@ -770,6 +799,7 @@ bool CFitProblem::calculate()
 
       mFailedCounter++;
       mCalculateValue = mInfinity;
+
       if (pExp) pExp->restoreModelIndependentData();
     }
 
@@ -777,6 +807,7 @@ bool CFitProblem::calculate()
     {
       mFailedCounter++;
       mCalculateValue = mInfinity;
+
       if (pExp) pExp->restoreModelIndependentData();
     }
 
@@ -796,93 +827,96 @@ bool CFitProblem::restore(const bool & updateModel)
 }
 
 void CFitProblem::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 void CFitProblem::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
+{
+  std::ostream & os = *ostream;
 
-    if (mSolutionVariables.size() == 0)
-      {
-        return;
-      }
+  if (mSolutionVariables.size() == 0)
+    {
+      return;
+    }
 
-    os << "Objective Function Value:\t" << mSolutionValue << std::endl;
-    os << "Standard Deviation:\t" << mSD << std::endl;
+  os << "Objective Function Value:\t" << mSolutionValue << std::endl;
+  os << "Standard Deviation:\t" << mSD << std::endl;
 
-    CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
+  CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
 
-    os << "Function Evaluations:\t" << mCounter << std::endl;
-    os << "CPU Time [s]:\t"
-    << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
-    << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
-    os << "Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64) (CPUTime.getMilliSeconds() / 1e3) << std::endl;
-    os << std::endl;
+  os << "Function Evaluations:\t" << mCounter << std::endl;
+  os << "CPU Time [s]:\t"
+  << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+  << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+  os << "Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
+  os << std::endl;
 
-    std::vector< COptItem * >::const_iterator itItem =
-      mpOptItems->begin();
-    std::vector< COptItem * >::const_iterator endItem =
-      mpOptItems->end();
+  std::vector< COptItem * >::const_iterator itItem =
+    mpOptItems->begin();
+  std::vector< COptItem * >::const_iterator endItem =
+    mpOptItems->end();
 
-    CFitItem * pFitItem;
-    CExperiment * pExperiment;
+  CFitItem * pFitItem;
+  CExperiment * pExperiment;
 
-    unsigned C_INT32 i, j;
+  unsigned C_INT32 i, j;
 
-    os << "\tParameter\tValue\tGradient\tStandard Deviation" << std::endl;
-    for (i = 0; itItem != endItem; ++itItem, i++)
-      {
-        os << "\t" << (*itItem)->getObjectDisplayName();
-        pFitItem = static_cast<CFitItem *>(*itItem);
+  os << "\tParameter\tValue\tGradient\tStandard Deviation" << std::endl;
 
-        if (pFitItem->getExperimentCount() != 0)
-          {
-            os << " (";
+  for (i = 0; itItem != endItem; ++itItem, i++)
+    {
+      os << "\t" << (*itItem)->getObjectDisplayName();
+      pFitItem = static_cast<CFitItem *>(*itItem);
 
-            for (j = 0; j < pFitItem->getExperimentCount(); j++)
-              {
-                if (j) os << ", ";
+      if (pFitItem->getExperimentCount() != 0)
+        {
+          os << " (";
 
-                pExperiment =
-                  dynamic_cast< CExperiment * >(CCopasiRootContainer::getKeyFactory()->get(pFitItem->getExperiment(j)));
+          for (j = 0; j < pFitItem->getExperimentCount(); j++)
+            {
+              if (j) os << ", ";
 
-                if (pExperiment)
-                  os << pExperiment->getObjectName();
-              }
+              pExperiment =
+                dynamic_cast< CExperiment * >(CCopasiRootContainer::getKeyFactory()->get(pFitItem->getExperiment(j)));
 
-            os << ")";
-          }
+              if (pExperiment)
+                os << pExperiment->getObjectName();
+            }
 
-        if (mHaveStatistics)
-          {
-            os << ":\t" << mSolutionVariables[i];
-            os << "\t" << mGradient[i];
-            os << "\t" << mParameterSD[i];
-          }
-        else
-          {
-            os << ":\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
-            os << "\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
-            os << "\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          }
-        os << std::endl;
-      }
+          os << ")";
+        }
 
-    os << std::endl;
-    if (mHaveStatistics)
-      {
-        os << "Parameter Interdependence:" << std::endl;
-        os << "  " << mFisher << std::endl;
+      if (mHaveStatistics)
+        {
+          os << ":\t" << mSolutionVariables[i];
+          os << "\t" << mGradient[i];
+          os << "\t" << mParameterSD[i];
+        }
+      else
+        {
+          os << ":\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          os << "\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          os << "\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        }
 
-        unsigned C_INT32 k, kmax = mpExperimentSet->getExperimentCount();
+      os << std::endl;
+    }
 
-        for (k = 0; k < kmax; k++)
-          {
-            mpExperimentSet->getExperiment(k)->printResult(ostream);
-            os << std::endl;
-          }
-      }
-  }
+  os << std::endl;
+
+  if (mHaveStatistics)
+    {
+      os << "Parameter Interdependence:" << std::endl;
+      os << "  " << mFisher << std::endl;
+
+      unsigned C_INT32 k, kmax = mpExperimentSet->getExperimentCount();
+
+      for (k = 0; k < kmax; k++)
+        {
+          mpExperimentSet->getExperiment(k)->printResult(ostream);
+          os << std::endl;
+        }
+    }
+}
 
 std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 {
@@ -993,12 +1027,14 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   if (lmax > imax)
     mCrossValidationSD = sqrt(mCrossValidationSolutionValue / (lmax - imax));
+
 #endif // COPASI_CROSSVALIDATION
 
   mHaveStatistics = true;
 
   CMatrix< C_FLOAT64 > dyp;
   bool CalculateFIM = true;
+
   try
     {
       dyp.resize(imax, jmax);
@@ -1019,7 +1055,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       if (fabs(Current) > resolution)
         {
-          (*mUpdateMethods[i])(Current * (1.0 + factor));
+          (*mUpdateMethods[i])(Current *(1.0 + factor));
           Delta = 1.0 / (Current * factor);
         }
       else
@@ -1129,6 +1165,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   CVector< C_INT > ipiv(imax);
 
   dgetrf_(&N, &N, mCorrelation.array(), &N, ipiv.array(), &info);
+
   if (info)
     {
       mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1196,6 +1233,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   work.resize(1);
 
   dgetri_(&N, mCorrelation.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+
   if (info)
     {
       mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1210,6 +1248,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   work.resize(lwork);
 
   dgetri_(&N, mCorrelation.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+
   if (info)
     {
       mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1280,6 +1319,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   C_INT N = imax;
 
   dpotrf_(&U, &N, mCorrelation.array(), &N, &info);
+
   if (info)
     {
       mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1330,6 +1370,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
    */
 
   dpotri_(&U, &N, mCorrelation.array(), &N, &info);
+
   if (info)
     {
       mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1339,6 +1380,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       return false;
     }
+
   // Assure that the inverse is completed.
 
   for (i = 0; i < imax; i++)
@@ -1524,6 +1566,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // more singular values are zero.
 
   mCorrelation = 0.0;
+
   for (i = 0; i < imax; i++)
     if (S[i] == 0.0)
       mCorrelation(i, i) = 0.0;
@@ -1556,7 +1599,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         }
       else if (mCorrelation(i, i) < 0.0)
         {
-          tmp = 1.0 / sqrt( - mCorrelation(i, i));
+          tmp = 1.0 / sqrt(- mCorrelation(i, i));
           mParameterSD[i] = mSD / tmp;
         }
       else
@@ -1581,23 +1624,23 @@ const C_FLOAT64 & CFitProblem::getRMS() const
 {return mRMS;}
 
 const C_FLOAT64 & CFitProblem::getStdDeviation() const
-  {return mSD;}
+{return mSD;}
 
 const CVector< C_FLOAT64 > & CFitProblem::getVariableStdDeviations() const
-  {return mParameterSD;}
+{return mParameterSD;}
 
 CArrayAnnotation & CFitProblem::getFisherInformation() const
-  {return *mpFisherMatrix;}
+{return *mpFisherMatrix;}
 
 CArrayAnnotation & CFitProblem::getCorrelations() const
-  {return *mpCorrelationMatrix;}
+{return *mpCorrelationMatrix;}
 
 const CExperimentSet & CFitProblem::getExperiementSet() const
-  {return *mpExperimentSet;}
+{return *mpExperimentSet;}
 
 #ifdef COPASI_CROSSVALIDATION
 const CCrossValidationSet & CFitProblem::getCrossValidationSet() const
-  {return *mpCrossValidationSet;}
+{return *mpCrossValidationSet;}
 
 bool CFitProblem::setSolution(const C_FLOAT64 & value,
                               const CVector< C_FLOAT64 > & variables)
@@ -1614,10 +1657,10 @@ const C_FLOAT64 & CFitProblem::getCrossValidationSolutionValue() const
 {return mCrossValidationSolutionValue;}
 
 const C_FLOAT64 & CFitProblem::getCrossValidationRMS() const
-  {return mCrossValidationRMS;}
+{return mCrossValidationRMS;}
 
 const C_FLOAT64 & CFitProblem::getCrossValidationSD() const
-  {return mCrossValidationSD;}
+{return mCrossValidationSD;}
 
 bool CFitProblem::calculateCrossValidation()
 {
@@ -1668,6 +1711,7 @@ bool CFitProblem::calculateCrossValidation()
           // Update the initial values
           itRefresh = mCrossValidationInitialRefreshes[i].begin();
           endRefresh = mCrossValidationInitialRefreshes[i].end();
+
           for (; itRefresh != endRefresh; ++itRefresh)
             (**itRefresh)();
 
@@ -1675,77 +1719,85 @@ bool CFitProblem::calculateCrossValidation()
 
           switch (pExp->getExperimentType())
             {
-            case CCopasiTask::steadyState:
-              // set independent data
-              for (j = 0; j < kmax && Continue; j++) // For each data row;
-                {
-                  pExp->updateModelWithIndependentData(j);
-                  Continue &= mpSteadyState->process(true);
+              case CCopasiTask::steadyState:
 
-                  if (!Continue)
-                    {
-                      CalculateValue = mInfinity;
-                      break;
-                    }
+                // set independent data
+                for (j = 0; j < kmax && Continue; j++) // For each data row;
+                  {
+                    pExp->updateModelWithIndependentData(j);
+                    Continue &= mpSteadyState->process(true);
 
-                  // We check after each simulation whether the constraints are violated.
-                  // Make sure the constraint values are up to date.
-                  itRefresh = mCrossValidationConstraintRefreshes[i].begin();
-                  endRefresh = mCrossValidationConstraintRefreshes[i].end();
-                  for (; itRefresh != endRefresh; ++itRefresh)
-                    (**itRefresh)();
+                    if (!Continue)
+                      {
+                        CalculateValue = mInfinity;
+                        break;
+                      }
 
-                  ppConstraint = mCrossValidationConstraints[i];
-                  ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
-                  for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                    if (*ppConstraint) (*ppConstraint)->checkConstraint();
+                    // We check after each simulation whether the constraints are violated.
+                    // Make sure the constraint values are up to date.
+                    itRefresh = mCrossValidationConstraintRefreshes[i].begin();
+                    endRefresh = mCrossValidationConstraintRefreshes[i].end();
 
-                  if (mStoreResults)
-                    CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
-                  else
-                    CalculateValue += pExp->sumOfSquares(j, Residuals);
-                }
-              break;
+                    for (; itRefresh != endRefresh; ++itRefresh)
+                      (**itRefresh)();
 
-            case CCopasiTask::timeCourse:
-              for (j = 0; j < kmax && Continue; j++) // For each data row;
-                {
-                  if (j)
-                    {
-                      mpTrajectory->processStep(pExp->getTimeData()[j]);
-                    }
-                  else
-                    {
-                      // set independent data
-                      pExp->updateModelWithIndependentData(j);
-                      mpTrajectory->processStart(true);
+                    ppConstraint = mCrossValidationConstraints[i];
+                    ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
 
-                      if (pExp->getTimeData()[0] != mpModel->getInitialTime())
-                        {
-                          mpTrajectory->processStep(pExp->getTimeData()[0]);
-                        }
-                    }
+                    for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                      if (*ppConstraint)(*ppConstraint)->checkConstraint();
 
-                  if (mStoreResults)
-                    CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
-                  else
-                    CalculateValue += pExp->sumOfSquares(j, Residuals);
-                }
+                    if (mStoreResults)
+                      CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
+                    else
+                      CalculateValue += pExp->sumOfSquares(j, Residuals);
+                  }
 
-              // We check after each simulation whether the constraints are violated.
-              // Make sure the constraint values are up to date.
-              itRefresh = mCrossValidationConstraintRefreshes[i].begin();
-              endRefresh = mCrossValidationConstraintRefreshes[i].end();
-              for (; itRefresh != endRefresh; ++itRefresh)
-                (**itRefresh)();
+                break;
 
-              ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
-              for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                if (*ppConstraint) (*ppConstraint)->checkConstraint();
-              break;
+              case CCopasiTask::timeCourse:
 
-            default:
-              break;
+                for (j = 0; j < kmax && Continue; j++) // For each data row;
+                  {
+                    if (j)
+                      {
+                        mpTrajectory->processStep(pExp->getTimeData()[j]);
+                      }
+                    else
+                      {
+                        // set independent data
+                        pExp->updateModelWithIndependentData(j);
+                        mpTrajectory->processStart(true);
+
+                        if (pExp->getTimeData()[0] != mpModel->getInitialTime())
+                          {
+                            mpTrajectory->processStep(pExp->getTimeData()[0]);
+                          }
+                      }
+
+                    if (mStoreResults)
+                      CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
+                    else
+                      CalculateValue += pExp->sumOfSquares(j, Residuals);
+                  }
+
+                // We check after each simulation whether the constraints are violated.
+                // Make sure the constraint values are up to date.
+                itRefresh = mCrossValidationConstraintRefreshes[i].begin();
+                endRefresh = mCrossValidationConstraintRefreshes[i].end();
+
+                for (; itRefresh != endRefresh; ++itRefresh)
+                  (**itRefresh)();
+
+                ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
+
+                for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                  if (*ppConstraint)(*ppConstraint)->checkConstraint();
+
+                break;
+
+              default:
+                break;
             }
 
           // restore independent data
@@ -1760,6 +1812,7 @@ bool CFitProblem::calculateCrossValidation()
 
       mFailedCounter++;
       CalculateValue = mInfinity;
+
       if (pExp) pExp->restoreModelIndependentData();
     }
 
@@ -1767,6 +1820,7 @@ bool CFitProblem::calculateCrossValidation()
     {
       mFailedCounter++;
       CalculateValue = mInfinity;
+
       if (pExp) pExp->restoreModelIndependentData();
     }
 
