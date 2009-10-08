@@ -1,0 +1,1006 @@
+<?xml version="1.0"?>
+<grammar ns="http://www.copasi.org/static/schema" xmlns="http://relaxng.org/ns/structure/1.0"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="COPASI">
+      <attribute name="versionDevel">
+        <data type="integer"/>
+      </attribute>
+      <attribute name="versionMinor">
+        <data type="integer"/>
+      </attribute>
+      <attribute name="versionMajor">
+        <data type="integer"/>
+      </attribute>
+      <zeroOrMore>
+        <attribute>
+          <anyName>
+            <except>
+              <nsName ns=""/>
+              <nsName ns="http://www.copasi.org/static/schema"/>
+            </except>
+          </anyName>
+          <text/>
+        </attribute>
+      </zeroOrMore>
+      <optional>
+        <element name="ListOfFunctions">
+          <ref name="listOfFunctions.datatype"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="Model">
+          <ref name="model.datatype"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="ListOfTasks">
+          <ref name="listOfTasks.datatype"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="ListOfReports">
+          <ref name="listOfReportSpecifications.datatype"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="ListOfPlots">
+          <ref name="listOfPlotSpecifications.datatype"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="GUI">
+          <ref name="gui.datatype"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="SBMLReference">
+          <attribute name="file">
+            <data type="string"/>
+          </attribute>
+          <oneOrMore>
+            <element name="SBMLMap">
+              <attribute name="COPASIkey">
+                <data type="IDREF">
+                  <param name="pattern">[_a-zA-Z]+_\d+</param>
+                </data>
+              </attribute>
+              <attribute name="SBMLid">
+                <data type="string">
+                  <param name="pattern">[_a-zA-Z][_a-zA-Z0-9]*</param>
+                </data>
+              </attribute>
+            </element>
+          </oneOrMore>
+        </element>
+      </optional>
+    </element>
+  </start>
+
+  <define name="reactionParticipant.datatype">
+    <attribute name="stoichiometry">
+      <data type="double"/>
+    </attribute>
+    <attribute name="metabolite">
+      <data type="IDREF">
+        <param name="pattern">Metabolite_\d+</param>
+      </data>
+    </attribute>
+  </define>
+
+  <define name="miriamAnnotation.element">
+    <element name="MiriamAnnotation">
+      <ref name="rdf.datatype"/>
+    </element>
+  </define>
+
+  <define name="parameter.datatype">
+    <ref name="name.attribute"/>
+    <choice>
+      <group>
+        <attribute name="type">
+          <choice>
+            <value type="string">float</value>
+            <value type="string">unsignedFloat</value>
+            <value type="string">integer</value>
+            <value type="string">unsignedInteger</value>
+            <value type="string">bool</value>
+            <value type="string">string</value>
+            <value type="string">cn</value>
+            <value type="string">key</value>
+            <value type="string">file</value>
+          </choice>
+        </attribute>
+        <attribute name="value">
+          <data type="string"/>
+        </attribute>
+      </group>
+      <group>
+        <attribute name="type">
+          <choice>
+            <value type="string">expression</value>
+          </choice>
+        </attribute>
+        <ref name="expression.simpletype"/>
+      </group>
+    </choice>
+  </define>
+
+  <define name="parameterList.datatype">
+    <zeroOrMore>
+      <choice>
+        <element name="ParameterGroup">
+          <ref name="parameterList.datatype"/>
+          <ref name="name.attribute"/>
+        </element>
+        <element name="Parameter">
+          <ref name="parameter.datatype"/>
+        </element>
+      </choice>
+    </zeroOrMore>
+  </define>
+
+  <define name="comment.element">
+    <element name="Comment">
+      <ref name="xhtml.datatype"/>
+    </element>
+  </define>
+
+  <define name="name.attribute">
+    <attribute name="name">
+      <data type="string">
+        <param name="pattern">[\S ]+</param>
+      </data>
+    </attribute>
+  </define>
+
+  <define name="expression.simpletype">
+    <data type="string"/>
+  </define>
+
+  <define name="xhtml.datatype">
+    <mixed>
+      <zeroOrMore>
+        <element>
+          <nsName ns="http://www.w3.org/1999/xhtml"/>
+          <zeroOrMore>
+            <attribute>
+              <anyName/>
+              <text/>
+            </attribute>
+          </zeroOrMore>
+          <ref name="xhtml.datatype"/>
+        </element>
+      </zeroOrMore>
+    </mixed>
+  </define>
+
+  <define name="rdf.datatype">
+    <grammar>
+      <include href="rdfxml.rng" ns="http://relaxng.org/ns/structure/1.0"/>
+    </grammar>
+  </define>
+
+<!--
+  <define name="rdf.datatype">
+    <element>
+      <nsName ns="http://relaxng.org/ns/structure/1.0"/>
+      <zeroOrMore>
+        <attribute>
+          <anyName/>
+          <text/>
+        </attribute>
+      </zeroOrMore>
+      <ref name="rdf.datatype"/>
+    </element>
+  </define>
+-->
+  
+  <define name="reportSection.datatype">
+    <oneOrMore>
+      <choice>
+        <element name="Object">
+          <attribute name="cn">
+            <data type="string"/>
+          </attribute>
+        </element>
+        <element name="html">
+          <ref name="xhtml.datatype"/>
+        </element>
+        <element name="Report">
+          <attribute name="reference">
+            <data type="IDREF">
+              <param name="pattern">Report_\d+</param>
+            </data>
+          </attribute>
+        </element>
+      </choice>
+    </oneOrMore>
+    <empty/>
+  </define>
+
+  <define name="listOfFunctions.datatype">
+    <oneOrMore>
+      <ref name="function.datatype"/>
+    </oneOrMore>
+  </define>
+
+  <define name="function.datatype">
+    <element name="Function">
+      <ref name="name.attribute"/>
+      <attribute name="key">
+        <data type="ID">
+          <param name="pattern">Function_\d+</param>
+        </data>
+      </attribute>
+      <attribute name="type">
+        <choice>
+          <value type="string">MassAction</value>
+          <value type="string">PreDefined</value>
+          <value type="string">UserDefined</value>
+          <value type="string">Function</value>
+          <value type="string">Expression</value>
+        </choice>
+      </attribute>
+      <attribute name="reversible">
+        <choice>
+          <value type="string">unspecified</value>
+          <value type="string">true</value>
+          <value type="string">false</value>
+        </choice>
+      </attribute>
+      <optional>
+        <ref name="miriamAnnotation.element"/>
+      </optional>
+      <element name="Expression">
+        <ref name="expression.simpletype"/>
+      </element>
+      <optional>
+        <element name="ListOfParameterDescriptions">
+          <ref name="listOfParameterDescriptions.datatype"/>
+        </element>
+      </optional>
+    </element>
+  </define>
+
+  <define name="listOfParameterDescriptions.datatype">
+    <oneOrMore>
+      <element name="ParameterDescription">
+        <ref name="parameterDescription.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="parameterDescription.datatype">
+    <ref name="name.attribute"/>
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">FunctionParameter_\d+</param>
+      </data>
+    </attribute>
+    <attribute name="order">
+      <data type="nonNegativeInteger"/>
+    </attribute>
+    <attribute name="role">
+      <choice>
+        <value type="string">product</value>
+        <value type="string">volume</value>
+        <value type="string">time</value>
+        <value type="string">modifier</value>
+        <value type="string">variable</value>
+        <value type="string">substrate</value>
+        <value type="string">constant</value>
+      </choice>
+    </attribute>
+  </define>
+
+  <define name="model.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Model_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="simulationType">
+      <value type="string">time</value>
+    </attribute>
+    <attribute name="timeUnit">
+      <choice>
+        <value type="string">d</value>
+        <value type="string">ps</value>
+        <value type="string">ms</value>
+        <value type="string">fs</value>
+        <value type="string">&#xb5;s</value>
+        <value type="string">min</value>
+        <value type="string">h</value>
+        <value type="string">ns</value>
+        <value type="string">s</value>
+      </choice>
+    </attribute>
+    <attribute name="volumeUnit">
+      <choice>
+        <value type="string">pl</value>
+        <value type="string">m&#xb3;</value>
+        <value type="string">nl</value>
+        <value type="string">&#xb5;l</value>
+        <value type="string">l</value>
+        <value type="string">fl</value>
+        <value type="string">ml</value>
+      </choice>
+    </attribute>
+    <attribute name="areaUnit">
+      <choice>
+        <value type="string">&#xb5;m&#xb2;</value>
+        <value type="string">mm&#xb2;</value>
+        <value type="string">pm&#xb2;</value>
+        <value type="string">nm&#xb2;</value>
+        <value type="string">m&#xb2;</value>
+        <value type="string">cm&#xb2;</value>
+        <value type="string">fm&#xb2;</value>
+        <value type="string">dm&#xb2;</value>
+      </choice>
+    </attribute>
+    <attribute name="lengthUnit">
+      <choice>
+        <value type="string">m</value>
+        <value type="string">fm</value>
+        <value type="string">mm</value>
+        <value type="string">dm</value>
+        <value type="string">cm</value>
+        <value type="string">pm</value>
+        <value type="string">nm</value>
+        <value type="string">&#xb5;m</value>
+      </choice>
+    </attribute>
+    <attribute name="quantityUnit">
+      <choice>
+        <value type="string">mmol</value>
+        <value type="string">&#xb5;mol</value>
+        <value type="string">fmol</value>
+        <value type="string">mol</value>
+        <value type="string">pmol</value>
+        <value type="string">#</value>
+        <value type="string">nmol</value>
+      </choice>
+    </attribute>
+    <attribute name="type">
+      <choice>
+        <value type="string">stochastic</value>
+        <value type="string">deterministic</value>
+      </choice>
+    </attribute>
+    <optional>
+      <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <ref name="comment.element"/>
+    </optional>
+    <optional>
+      <element name="InitialExpression">
+        <ref name="expression.simpletype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfCompartments">
+        <ref name="listOfCompartments.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfMetabolites">
+        <ref name="listOfMetabolites.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfModelValues">
+        <ref name="listOfModelValues.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfReactions">
+        <ref name="listOfReactions.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfEvents">
+        <ref name="listOfEvents.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="StateTemplate">
+        <zeroOrMore>
+          <element name="StateTemplateVariable">
+            <attribute name="objectReference">
+              <data type="IDREF">
+                <param name="pattern">(Model|Metabolite|Compartment|ModelValue)_\d+</param>
+              </data>
+            </attribute>
+          </element>
+        </zeroOrMore>
+      </element>
+    </optional>
+    <optional>
+      <element name="InitialState">
+        <attribute name="type">
+          <data type="string"/>
+        </attribute>
+        <list>
+          <zeroOrMore>
+            <data type="double"/>
+          </zeroOrMore>
+        </list>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfCompartments.datatype">
+    <oneOrMore>
+      <element name="Compartment">
+        <ref name="compartment.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="compartment.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Compartment_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="simulationType">
+      <choice>
+        <value type="string">ode</value>
+        <value type="string">assignment</value>
+        <value type="string">fixed</value>
+      </choice>
+    </attribute>
+    <attribute name="dimensionality">
+      <data type="int">
+        <param name="minInclusive">0</param>
+        <param name="maxInclusive">3</param>
+      </data>
+    </attribute>
+    <optional>
+      <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <element name="Expression">
+        <ref name="expression.simpletype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="InitialExpression">
+        <ref name="expression.simpletype"/>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfMetabolites.datatype">
+    <oneOrMore>
+      <element name="Metabolite">
+        <ref name="metabolite.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="metabolite.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Metabolite_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="compartment">
+      <data type="IDREF">
+        <param name="pattern">Compartment_\d+</param>
+      </data>
+    </attribute>
+    <attribute name="simulationType">
+      <choice>
+        <value type="string">ode</value>
+        <value type="string">assignment</value>
+        <value type="string">reactions</value>
+        <value type="string">fixed</value>
+      </choice>
+    </attribute>
+    <optional>
+      <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <element name="Expression">
+        <ref name="expression.simpletype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="InitialExpression">
+        <ref name="expression.simpletype"/>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfModelValues.datatype">
+    <oneOrMore>
+      <element name="ModelValue">
+        <ref name="modelValue.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="modelValue.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">ModelValue_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="simulationType">
+      <choice>
+        <value type="string">ode</value>
+        <value type="string">assignment</value>
+        <value type="string">fixed</value>
+      </choice>
+    </attribute>
+    <optional>
+      <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <element name="Expression">
+        <ref name="expression.simpletype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="InitialExpression">
+        <ref name="expression.simpletype"/>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfReactions.datatype">
+    <oneOrMore>
+      <element name="Reaction">
+        <ref name="reaction.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="reaction.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Reaction_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="reversible">
+      <data type="boolean"/>
+    </attribute>
+    <optional>
+      <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <element name="ListOfSubstrates">
+        <oneOrMore>
+          <element name="Substrate">
+            <ref name="reactionParticipant.datatype"/>
+          </element>
+        </oneOrMore>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfProducts">
+        <oneOrMore>
+          <element name="Product">
+            <ref name="reactionParticipant.datatype"/>
+          </element>
+        </oneOrMore>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfModifiers">
+        <oneOrMore>
+          <element name="Modifier">
+            <ref name="reactionParticipant.datatype"/>
+          </element>
+        </oneOrMore>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfConstants">
+        <ref name="listOfConstants.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="KineticLaw">
+        <ref name="kineticLaw.datatype"/>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfConstants.datatype">
+    <oneOrMore>
+      <element name="Constant">
+        <ref name="constant.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="constant.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Parameter_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="value">
+      <data type="double"/>
+    </attribute>
+  </define>
+
+  <define name="kineticLaw.datatype">
+    <attribute name="function">
+      <data type="IDREF">
+        <param name="pattern">Function_\d+</param>
+      </data>
+    </attribute>
+    <optional>
+      <element name="ListOfCallParameters">
+        <ref name="listOfCallParameters.datatype"/>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfCallParameters.datatype">
+    <oneOrMore>
+      <element name="CallParameter">
+        <ref name="callParameter.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="callParameter.datatype">
+    <attribute name="functionParameter">
+      <data type="IDREF">
+        <param name="pattern">FunctionParameter_\d+</param>
+      </data>
+    </attribute>
+    <oneOrMore>
+      <element name="SourceParameter">
+        <attribute name="reference">
+          <data type="IDREF">
+            <param name="pattern">[_a-zA-Z]+_\d+</param>
+          </data>
+        </attribute>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="listOfEvents.datatype">
+    <oneOrMore>
+      <element name="Event">
+        <ref name="event.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="event.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Event_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="delayAssignment">
+      <data type="boolean"/>
+    </attribute>
+    <optional>
+      <ref name="miriamAnnotation.element"/>
+    </optional>
+    <element name="TriggerExpression">
+      <ref name="expression.simpletype"/>
+    </element>
+    <optional>
+      <group>
+        <attribute name="order">
+          <data type="nonNegativeInteger"/>
+        </attribute>
+        <element name="DelayExpression">
+          <ref name="expression.simpletype"/>
+        </element>
+      </group>
+    </optional>
+    <optional>
+      <element name="ListOfAssignments">
+        <ref name="listOfEventAssignments.datatype"/>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfEventAssignments.datatype">
+    <oneOrMore>
+      <element name="Assignment">
+        <attribute name="targetKey">
+          <data type="IDREF">
+            <param name="pattern">(Metabolite|Compartment|ModelValue)_\d+</param>
+          </data>
+        </attribute>
+        <element name="Expression">
+          <ref name="expression.simpletype"/>
+        </element>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="listOfTasks.datatype">
+    <oneOrMore>
+      <element name="Task">
+        <ref name="task.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="task.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Task_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="updateModel">
+      <data type="boolean"/>
+    </attribute>
+    <attribute name="scheduled">
+      <data type="boolean"/>
+    </attribute>
+    <attribute name="type">
+      <choice>
+        <value type="string">lyapunovExponents</value>
+        <value type="string">parameterFitting</value>
+        <value type="string">timeCourse</value>
+        <value type="string">moieties</value>
+        <value type="string">sensitivities</value>
+        <value type="string">optimization</value>
+        <value type="string">metabolicControlAnalysis</value>
+        <value type="string">timeScaleSeparationAnalysis</value>
+        <value type="string">scan</value>
+        <value type="string">steadyState</value>
+        <value type="string">fluxMode</value>
+        <value type="string">timeScaleSeparation</value>
+      </choice>
+    </attribute>
+    <optional>
+      <element name="Report">
+        <ref name="report.datatype"/>
+      </element>
+    </optional>
+    <element name="Problem">
+      <ref name="parameterList.datatype"/>
+    </element>
+    <element name="Method">
+      <ref name="name.attribute"/>
+      <attribute name="type">
+        <data type="string"/>
+      </attribute>
+      <ref name="parameterList.datatype"/>
+    </element>
+  </define>
+
+  <define name="report.datatype">
+    <attribute name="reference">
+      <data type="IDREF">
+        <param name="pattern">Report_\d+</param>
+      </data>
+    </attribute>
+    <attribute name="target">
+      <data type="anyURI"/>
+    </attribute>
+    <attribute name="append">
+      <data type="boolean"/>
+    </attribute>
+  </define>
+
+  <define name="listOfReportSpecifications.datatype">
+    <oneOrMore>
+      <element name="Report">
+        <ref name="reportSpecification.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="reportSpecification.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Report_\d+</param>
+      </data>
+    </attribute>
+    <ref name="name.attribute"/>
+    <attribute name="taskType">
+      <choice>
+        <value type="string">lyapunovExponents</value>
+        <value type="string">parameterFitting</value>
+        <value type="string">timeCourse</value>
+        <value type="string">moieties</value>
+        <value type="string">sensitivities</value>
+        <value type="string">optimization</value>
+        <value type="string">metabolicControlAnalysis</value>
+        <value type="string">timeScaleSeparationAnalysis</value>
+        <value type="string">scan</value>
+        <value type="string">steadyState</value>
+        <value type="string">fluxMode</value>
+        <value type="string">timeScaleSeparation</value>
+      </choice>
+    </attribute>
+    <attribute name="precision">
+      <data type="unsignedInt"/>
+    </attribute>
+    <attribute name="separator">
+      <data type="string"/>
+    </attribute>
+    <optional>
+      <ref name="comment.element"/>
+    </optional>
+    <choice>
+      <element name="Table">
+        <attribute name="printTitle">
+          <data type="boolean"/>
+        </attribute>
+        <zeroOrMore>
+          <element name="Object">
+            <attribute name="cn">
+              <data type="string"/>
+            </attribute>
+          </element>
+        </zeroOrMore>
+      </element>
+      <group>
+        <optional>
+          <element name="Header">
+            <ref name="reportSection.datatype"/>
+          </element>
+        </optional>
+        <optional>
+          <element name="Body">
+            <ref name="reportSection.datatype"/>
+          </element>
+        </optional>
+        <optional>
+          <element name="Footer">
+            <ref name="reportSection.datatype"/>
+          </element>
+        </optional>
+      </group>
+    </choice>
+  </define>
+
+  <define name="listOfPlotSpecifications.datatype">
+    <oneOrMore>
+      <element name="PlotSpecification">
+        <ref name="plotSpecification.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="plotSpecification.datatype">
+    <ref name="name.attribute"/>
+    <attribute name="type">
+      <choice>
+        <value type="string">Plot2D</value>
+        <value type="string">SimWiz</value>
+      </choice>
+    </attribute>
+    <attribute name="active">
+      <data type="boolean"/>
+    </attribute>
+    <ref name="parameterList.datatype"/>
+    <element name="ListOfPlotItems">
+      <ref name="listOfPlotItems.datatype"/>
+    </element>
+  </define>
+
+  <define name="listOfPlotItems.datatype">
+    <oneOrMore>
+      <element name="PlotItem">
+        <ref name="plotItem.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="plotItem.datatype">
+    <ref name="name.attribute"/>
+    <attribute name="type">
+      <choice>
+        <value type="string">Unset</value>
+        <value type="string">Histogram1DItem</value>
+        <value type="string">Curve2D</value>
+      </choice>
+    </attribute>
+    <ref name="parameterList.datatype"/>
+    <element name="ListOfChannels">
+      <ref name="listOfChannels.datatype"/>
+    </element>
+  </define>
+
+  <define name="listOfChannels.datatype">
+    <oneOrMore>
+      <element name="ChannelSpec">
+        <ref name="channelSpec.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="channelSpec.datatype">
+    <attribute name="cn">
+      <data type="string"/>
+    </attribute>
+    <optional>
+      <attribute name="min">
+        <data type="double"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="max">
+        <data type="double"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="gui.datatype">
+    <optional>
+      <element name="ListOfSliders">
+        <ref name="listOfSliders.datatype"/>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfSliders.datatype">
+    <oneOrMore>
+      <element name="Slider">
+        <ref name="slider.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="slider.datatype">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Slider_\d+</param>
+      </data>
+    </attribute>
+    <attribute name="associatedEntityKey">
+      <data type="IDREF">
+        <param name="pattern">[_a-zA-Z]+_\d+</param>
+      </data>
+    </attribute>
+    <attribute name="objectCN">
+      <data type="string"/>
+    </attribute>
+    <attribute name="objectType">
+      <choice>
+        <value type="string">unsignedInteger</value>
+        <value type="string">unsignedFloat</value>
+        <value type="string">integer</value>
+        <value type="string">float</value>
+      </choice>
+    </attribute>
+    <attribute name="objectValue">
+      <data type="double"/>
+    </attribute>
+    <attribute name="maxValue">
+      <data type="double"/>
+    </attribute>
+    <attribute name="minValue">
+      <data type="double"/>
+    </attribute>
+    <attribute name="tickFactor">
+      <data type="positiveInteger"/>
+    </attribute>
+    <attribute name="tickNumber">
+      <data type="positiveInteger"/>
+    </attribute>
+    <attribute name="scaling">
+      <choice>
+        <value type="string">logarithmic</value>
+        <value type="string">linear</value>
+      </choice>
+    </attribute>
+  </define>
+
+</grammar>
