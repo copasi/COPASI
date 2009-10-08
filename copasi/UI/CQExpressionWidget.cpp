@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/05 08:57:41 $
+//   $Author: shoops $
+//   $Date: 2009/10/08 13:00:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -320,7 +320,6 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 #ifdef DEBUG_UI
       qDebug() << "M O V I N G";
 #endif
-      int currentCursorPosition = mCursor.position();
 #ifdef DEBUG_UI
       qDebug() << "Cursor position = " << currentCursorPosition;
 #endif

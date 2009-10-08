@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/01 00:12:03 $
+//   $Author: shoops $
+//   $Date: 2009/10/08 13:00:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ QString CopasiFileDialog::getOpenFileName(QWidget * parent,
 
 // static
 QString CopasiFileDialog::getSaveFileName(QWidget * parent,
-    const char * name,
+    const char * /* name */,
     const QString & startWith,
     const QString & filter,
     const QString & caption,
