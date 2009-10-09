@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.219 $
+#   $Revision: 1.220 $
 #   $Name:  $
-#   $Author: ssahle $
-#   $Date: 2009/10/06 15:38:11 $
+#   $Author: shoops $
+#   $Date: 2009/10/09 21:33:50 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.219 $ $Author: ssahle $ $Date: 2009/10/06 15:38:11 $
+# $Revision: 1.220 $ $Author: shoops $ $Date: 2009/10/09 21:33:50 $
 ######################################################################
 
 LIB = UI
@@ -266,6 +266,34 @@ SOURCES	+= \
   SOURCES -= TSSWidget.cpp
 }
 
+### uic3 forms
+FORMS3 += CMCAResultSubwidget.ui
+FORMS3 += CQExperimentSelection.ui
+#FORMS3 += CQFileDialogBtnGrp.ui
+FORMS3 += CQFittingResult.ui
+FORMS3 += CQFittingResultTab1.ui
+FORMS3 += CQMatrixDialog.ui
+FORMS3 += CQMoietiesTaskResult.ui
+FORMS3 += CQMoietiesTaskWidget.ui
+FORMS3 += CQOptimizationResult.ui
+FORMS3 += CQPreferenceDialog.ui
+FORMS3 += CQProgressItem.ui
+FORMS3 += CQSplashWidget.ui
+FORMS3 += CQStartValueReset.ui
+FORMS3 += CQTSSAResultSubWidget.ui
+FORMS3 += CQTaskBtnWidget.ui
+FORMS3 += CQTaskHeaderWidget.ui
+#FORMS3 += CQTextDialog.ui
+FORMS3 += CUpDownSubwidget.ui
+FORMS3 += DefaultplotDialog.ui
+FORMS3 += TimeSeriesSubwidget.ui
+FORMS3 += objectdebug.ui
+
+### uic3 forms that do not work at the moment
+#FORMS3 += CQExperimentData.ui
+#FORMS3 += CQProgressItemBar.ui
+#FORMS3 += CQProgressItemText.ui
+
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQDifferentialEquations.ui
@@ -301,34 +329,6 @@ FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
-
-### uic3 forms
-FORMS3 += CMCAResultSubwidget.ui
-FORMS3 += CQExperimentSelection.ui
-#FORMS3 += CQFileDialogBtnGrp.ui
-FORMS3 += CQFittingResult.ui
-FORMS3 += CQFittingResultTab1.ui
-FORMS3 += CQMatrixDialog.ui
-FORMS3 += CQMoietiesTaskResult.ui
-FORMS3 += CQMoietiesTaskWidget.ui
-FORMS3 += CQOptimizationResult.ui
-FORMS3 += CQPreferenceDialog.ui
-FORMS3 += CQProgressItem.ui
-FORMS3 += CQSplashWidget.ui
-FORMS3 += CQStartValueReset.ui
-FORMS3 += CQTSSAResultSubWidget.ui
-FORMS3 += CQTaskBtnWidget.ui
-FORMS3 += CQTaskHeaderWidget.ui
-#FORMS3 += CQTextDialog.ui
-FORMS3 += CUpDownSubwidget.ui
-FORMS3 += DefaultplotDialog.ui
-FORMS3 += TimeSeriesSubwidget.ui
-FORMS3 += objectdebug.ui
-
-### uic3 forms that do not work at the moment
-#FORMS3 += CQExperimentData.ui
-#FORMS3 += CQProgressItemBar.ui
-#FORMS3 += CQProgressItemText.ui
 
 # headers generated from .ui files
 HEADERS += \
