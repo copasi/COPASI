@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.18 $
+ $Revision: 1.19 $
  $Name:  $
  $Author: pwilly $
- $Date: 2009/10/12 11:47:49 $
+ $Date: 2009/10/12 14:15:50 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,9 +86,6 @@ protected slots:
 
   void changeMethod(int);
 
-  void updateTable(QTableWidgetItem *);
-  void updateTable2(int, int);
-
 protected:
   virtual bool enterProtected();
   CProgressBar * mProgressBar;
@@ -134,10 +131,9 @@ protected:
 //    Q3Table * mpTblParameter;
   QTableWidget * mpTblParameter;
   QSpacerItem * mpSpacer1;
-  QSpacerItem * mpSpacer2;
   QLabel * mpLblMethod;
   QComboBox * mpBoxMethod;
-  QSpacerItem * mpSpacer3;
+  QSpacerItem * mpSpacer2;
 
   CCopasiTask * mpTask;
   CCopasiMethod * mpMethod;
