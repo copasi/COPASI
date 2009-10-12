@@ -1,50 +1,49 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>CQProgressItem</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>CQProgressItem</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>404</width>
-            <height>44</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Form1</string>
-    </property>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>mLabel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>330</width>
-                <height>22</height>
-            </rect>
-        </property>
-        <hbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-        </hbox>
-    </widget>
-</widget>
-<includes>
-    <include location="local" impldecl="in declaration">utilities/CVector.h</include>
-    <include location="local" impldecl="in declaration">utilities/CProcessReport.h</include>
-</includes>
-<variables>
-    <variable>CProcessReportItem * mpItem;</variable>
-</variables>
-<functions>
-    <function returnType="bool">initFromProcessReportItem( CProcessReportItem * pItem)</function>
-    <function returnType="bool">process()</function>
-    <function returnType="bool">reset()</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItem.ui,v $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2009/10/12 14:55:44 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQProgressItem</class>
+ <widget class="QWidget" name="CQProgressItem">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>404</width>
+    <height>44</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form1</string>
+  </property>
+  <widget class="QWidget" name="mLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>330</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout"/>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <includes>
+  <include location="local">utilities/CVector.h</include>
+  <include location="local">utilities/CProcessReport.h</include>
+ </includes>
+ <resources/>
+ <connections/>
+</ui>
