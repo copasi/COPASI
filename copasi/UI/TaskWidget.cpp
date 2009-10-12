@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/28 17:06:25 $
+//   $Author: pwilly $
+//   $Date: 2009/10/12 11:47:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,10 @@
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
 
+#ifdef DEBUG_UI
+#include <QtDebug>
+#endif
+
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -60,9 +64,10 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   mpLblParameter = NULL;
   mpTblParameter = NULL;
   mpSpacer1 = NULL;
+  mpSpacer2 = NULL;
   mpLblMethod = NULL;
   mpBoxMethod = NULL;
-  mpSpacer2 = NULL;
+  mpSpacer3 = NULL;
 
   mpTask = NULL;
   mpMethod = NULL;;
@@ -75,6 +80,36 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 
 TaskWidget::~TaskWidget()
 {}
+
+void TaskWidget::updateTable(QTableWidgetItem *current)
+{
+  qDebug() << "--> updateTable";
+
+  if (!current->text().isEmpty())
+    qDebug() << "current: " << current->text();
+
+  QHeaderView* vHeader = mpTblParameter->verticalHeader();
+  /*
+    mpTblParameter->setMinimumWidth(mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 5);
+#ifdef DEBUG_UI
+    qDebug() << "C: setminimum width = " << mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 5;
+#endif
+  */
+//  mpTblParameter->setMinimumWidth(mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 5);
+  mpTblParameter->setMinimumWidth(vHeader->sizeHint().width() + 5);
+#ifdef DEBUG_UI
+  qDebug() << "C: setminimum width = " << mpTblParameter->columnWidth(0) << "+" << vHeader->sizeHint().width();
+#endif
+
+  mpTblParameter->resizeColumnsToContents();
+}
+
+void TaskWidget::updateTable2(int r, int c)
+{
+  qDebug() << "--> updateTable2";
+  qDebug() << "row: " << r;
+  qDebug() << "col: " << c;
+}
 
 //************************************************************
 
@@ -124,11 +159,24 @@ void TaskWidget::addMethodParameterTable(unsigned int row)
   mpTblParameter->setSelectionMode(QAbstractItemView::SingleSelection);
   mpTblParameter->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+  connect(mpTblParameter, SIGNAL(itemChanged(QTableWidgetItem *)),
+          this, SLOT(updateTable(QTableWidgetItem *)));
+
+  connect(mpTblParameter, SIGNAL(cellChanged(int, int)),
+          this, SLOT(updateTable2(int, int)));
+
+  /*
+    connect(mpTblParameter, SIGNAL(currentItemChanged (QTableWidgetItem *, QTableWidgetItem *)),
+            this, SLOT(updateTable(QTableWidgetItem *)));
+  */
+
   mpTblParameter->setColumnCount(1);
 
   mpTblParameter->setHorizontalHeaderItem(0, new QTableWidgetItem());
   mpTblParameter->horizontalHeaderItem(0)->setText("Value");
-  mpTblParameter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
+//  mpTblParameter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
+//  mpTblParameter->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
+  mpTblParameter->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
   mpTblParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -139,8 +187,14 @@ void TaskWidget::addMethodParameterTable(unsigned int row)
 
   if (row == 0)
     {
-      mpSpacer1 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+//      mpSpacer1 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+      mpSpacer1 = new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Minimum);
       mpMethodLayout->addItem(mpSpacer1, row + 1, 2);
+
+      /*
+            mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+            mpMethodLayout->addItem(mpSpacer2, row + 1, 2);
+      */
     }
 
   return;
@@ -172,11 +226,11 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
     mpBoxMethod->insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[validMethods[i]]));
 
-  mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+  mpSpacer3 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
   mpMethodLayout->addWidget(mpLblMethod, row, 0);
   mpMethodLayout->addWidget(mpBoxMethod, row, 1);
-  mpMethodLayout->addItem(mpSpacer2, row, 2);
+  mpMethodLayout->addItem(mpSpacer3, row, 2);
 
   connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(changeMethod(int)));
 
@@ -289,15 +343,31 @@ bool TaskWidget::saveCommon()
 
 bool TaskWidget::loadMethod()
 {
+#ifdef DEBUG_UI
+  qDebug() << "loadMethod A";
+#endif
+
   if (!mpTask) return false;
 
+#ifdef DEBUG_UI
+  qDebug() << "loadMethod B";
+#endif
+
   if (!mpMethod) return false;
+
+#ifdef DEBUG_UI
+  qDebug() << "loadMethod C";
+#endif
 
   if (mpBoxMethod)
     mpBoxMethod->setCurrentText(FROM_UTF8(CCopasiMethod::SubTypeName[mpMethod->getSubType()]));
 
   if (mpTblParameter)
     {
+#ifdef DEBUG_UI
+      qDebug() << "loadMethod D";
+#endif
+
       QString value;
 
       mpTblParameter->setRowCount(mpMethod->size());
@@ -319,23 +389,44 @@ bool TaskWidget::loadMethod()
           mpTblParameter->setItem(i, 0, itemValue);
         }
 
-      mpTblParameter->resizeColumnsToContents();
+//      mpTblParameter->resizeColumnsToContents();
       mpTblParameter->resizeRowsToContents();
-
-      mpTblParameter->horizontalHeaderItem(0)->setSizeHint(QSize(mpTblParameter->columnWidth(0), 22));
 
       QHeaderView* vHeader = mpTblParameter->verticalHeader();
 
+#ifdef DEBUG_UI
+      qDebug() << "A sizeHint of width = " << vHeader->sizeHint().width();
+#endif
+
+      mpTblParameter->horizontalHeaderItem(0)->setSizeHint(QSize(mpTblParameter->columnWidth(0), 22));
+
+#ifdef DEBUG_UI
+      qDebug() << "B sizeHint of width = " << vHeader->sizeHint().width();
+#endif
+
+//      QHeaderView* vHeader = mpTblParameter->verticalHeader();
+
       if (mpTblParameter->sizePolicy().verticalPolicy() == QSizePolicy::Maximum)
         {
+#ifdef DEBUG_UI
+          qDebug() << "A: setmaximum height = " << vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5;
+#endif
           mpTblParameter->setMaximumHeight(vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5);
         }
       else
         {
+#ifdef DEBUG_UI
+          qDebug() << "B: setminimum height = " << vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5;
+#endif
           mpTblParameter->setMinimumHeight(vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5);
         }
 
-      mpTblParameter->setMinimumWidth(mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 22);
+      mpTblParameter->setMinimumWidth(mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 5);
+#ifdef DEBUG_UI
+      qDebug() << "C: setminimum width = " << mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 5;
+#endif
+
+      mpTblParameter->resizeColumnsToContents();
     }
 
   return true;

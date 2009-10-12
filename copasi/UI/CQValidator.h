@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: pwilly $
-   $Date: 2009/09/23 13:39:59 $
+   $Date: 2009/10/12 11:47:49 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,6 +103,11 @@ protected:
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
 
+#ifdef DEBUG_UI
+    qDebug() << "---------------------";
+    qDebug() << "-- on CQValidator --";
+#endif
+
     if (state == Invalid)
       {
 //      mpLineEdit->setPaletteBackgroundColor(mErrorColor);
@@ -110,7 +115,8 @@ protected:
 
 #ifdef DEBUG_UI
         mErrorColor.getHsv(&h, &s, &v);
-        qDebug() << "h = " << h << " - s = " << s << " - v = " << v;
+        qDebug() << "mErrorColor : h = " << h << " - s = " << s << " - v = " << v;
+        qDebug() << "---------------------";
 #endif
       }
     else
@@ -120,7 +126,8 @@ protected:
 
 #ifdef DEBUG_UI
         mAcceptableColor.getHsv(&h, &s, &v);
-        qDebug() << "h = " << h << " - s = " << s << " - v = " << v;
+        qDebug() << "mAcceptableColor : h = " << h << " - s = " << s << " - v = " << v;
+        qDebug() << "---------------------";
 #endif
       }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.276 $
+//   $Revision: 1.277 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/10/08 14:10:26 $
+//   $Date: 2009/10/12 11:47:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1304,7 +1304,10 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
   while (it.hasNext())
     {
       if ((pCopasiWidget = it.next()) != NULL)
-        pCopasiWidget->update(objectType, action, key);
+        {
+          qDebug() << "name = " << pCopasiWidget->name();
+          pCopasiWidget->update(objectType, action, key);
+        }
     }
 }
 

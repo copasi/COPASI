@@ -1,10 +1,11 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskResult.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.6 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/07/16 15:47:26 $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2009/10/12 11:47:49 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,136 +13,129 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>CQMoietiesTaskResult</class>
-<comment> All rights reserved. </comment>
-<widget class="CopasiWidget">
-    <property name="name">
-        <cstring>CQMoietiesTaskResult</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>337</width>
-            <height>237</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Moieties Result</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QTabWidget" row="1" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mpTabWidget</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>2</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>210</width>
-                    <height>180</height>
-                </size>
-            </property>
-            <widget class="QTable">
-                <property name="name">
-                    <cstring>mpMoieties</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Moieties</string>
-                </attribute>
-            </widget>
-            <widget class="CQArrayAnnotationsWidget">
-                <property name="name">
-                    <cstring>mpStoichiometry</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Stoichiometry</string>
-                </attribute>
-            </widget>
-            <widget class="CQArrayAnnotationsWidget">
-                <property name="name">
-                    <cstring>mpLinkMatrix</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Link Matrix</string>
-                </attribute>
-            </widget>
-            <widget class="CQArrayAnnotationsWidget">
-                <property name="name">
-                    <cstring>mpReducedStoichiometry</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Reduced Stoichiometry</string>
-                </attribute>
-            </widget>
-        </widget>
-        <widget class="QLabel" row="0" column="0">
-            <property name="name">
-                <cstring>mpLblResult</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>&lt;h2&gt;Moieties Result&lt;/h2&gt;</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="0" column="1">
-            <property name="name">
-                <cstring>mpBtnSave</cstring>
-            </property>
-            <property name="text">
-                <string>save data</string>
-            </property>
-        </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>mpBtnSave</sender>
-        <signal>clicked()</signal>
-        <receiver>CQMoietiesTaskResult</receiver>
-        <slot>slotSave()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in declaration">copasiWidget.h</include>
-    <include location="local" impldecl="in declaration">CQArrayAnnotationsWidget.h</include>
-    <include location="local" impldecl="in implementation">CQMoietiesTaskResult.ui.h</include>
-</includes>
-<forwards>
-  <forward>class QSignalMapper</forward>
-  <forward>class CMoietiesTask</forward>
-</forwards>
-<variables>
-    <variable>QPixmap mToolBtn;</variable>
-    <variable>QSignalMapper * mpToolBtnMap;</variable>
-    <variable>CMoietiesTask * mpMoietiesTask;</variable>
-</variables>
-<slots>
-    <slot access="private" specifier="non virtual">slotSave( void )</slot>
-    <slot access="private" specifier="non virtual">slotCreateGlobalQuantity( int row )</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function returnType="bool">leave()</function>
-    <function access="protected" returnType="bool">enterProtected()</function>
-    <function specifier="non virtual">load()</function>
-    <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+ <comment> All rights reserved. </comment>
+ <class>CQMoietiesTaskResult</class>
+ <widget class="CopasiWidget" name="CQMoietiesTaskResult">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>337</width>
+    <height>237</height>
+   </rect>
+  </property>
+  <property name="caption" stdset="0">
+   <string>Moieties Result</string>
+  </property>
+  <layout class="QGridLayout">
+   <item row="1" column="0" colspan="2">
+    <widget class="QTabWidget" name="mpTabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>210</width>
+       <height>180</height>
+      </size>
+     </property>
+     <widget class="Q3Table" name="mpMoieties">
+      <attribute name="title">
+       <string>Moieties</string>
+      </attribute>
+     </widget>
+     <widget class="CQArrayAnnotationsWidget" name="mpStoichiometry">
+      <attribute name="title">
+       <string>Stoichiometry</string>
+      </attribute>
+     </widget>
+     <widget class="CQArrayAnnotationsWidget" name="mpLinkMatrix">
+      <attribute name="title">
+       <string>Link Matrix</string>
+      </attribute>
+     </widget>
+     <widget class="CQArrayAnnotationsWidget" name="mpReducedStoichiometry">
+      <attribute name="title">
+       <string>Reduced Stoichiometry</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mpLblResult">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>&lt;h2&gt;Moieties Result&lt;/h2&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="mpBtnSave">
+     <property name="text">
+      <string>save data</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3Table</class>
+   <extends>Q3Frame</extends>
+   <header>q3table.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CopasiWidget</class>
+   <extends>QWidget</extends>
+   <header>copasiWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CQArrayAnnotationsWidget</class>
+   <extends>QWidget</extends>
+   <header>CQArrayAnnotationsWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="local">copasiWidget.h</include>
+  <include location="local">CQArrayAnnotationsWidget.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpBtnSave</sender>
+   <signal>clicked()</signal>
+   <receiver>CQMoietiesTaskResult</receiver>
+   <slot>slotSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
