@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.105 $ 
+#   $Revision: 1.106 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/07/30 16:26:54 $ 
+#   $Date: 2009/10/12 20:14:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.105 $ $Author: shoops $ $Date: 2009/07/30 16:26:54 $  
+# $Revision: 1.106 $ $Author: shoops $ $Date: 2009/10/12 20:14:39 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -26,7 +26,7 @@ isEmpty(BUILD_OS) {
 
     MY_QT4DIR = $$system(echo %QT4DIR%)
     contains(MY_QT4DIR, %QT4DIR%) {
-      MY_QTDIR = $$system(echo %QTDIR%)
+      My_QTDIR = $$system(echo %QTDIR%)
       contains(MY_QTDIR, %QTDIR%) {
         QMAKE_QMAKE = qmake.exe
         !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=???.")
@@ -116,6 +116,13 @@ contains(BUILD_OS, Darwin) {
   release {
     contains(TEMPLATE, app) {
       QMAKE_POST_LINK = strip $(TARGET)
+    }
+
+    MY_UNIVERSAL = $$system(echo $UNIVERSAL)
+    contains(MY_UNIVERSAL, yes) {
+       message("Creating unversal binaries.")
+       CONFIG += x86 ppc
+       QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
     }
   }
  
