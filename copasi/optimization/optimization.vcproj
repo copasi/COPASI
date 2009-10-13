@@ -89,6 +89,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\COptMethodEP2.cpp"
+				>
+			</File>
+			<File
 				RelativePath="COptMethodGA.cpp"
 				>
 			</File>
@@ -129,6 +133,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\COptMethodStatistics.cpp"
+				>
+			</File>
+			<File
 				RelativePath="COptMethodSteepestDescent.cpp"
 				>
 			</File>
@@ -161,6 +169,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CTruncatedNewton.cpp"
+				>
+			</File>
+			<File
 				RelativePath="FminBrent.cpp"
 				>
 			</File>
@@ -187,6 +199,10 @@
 			</File>
 			<File
 				RelativePath="COptMethodEP.h"
+				>
+			</File>
+			<File
+				RelativePath=".\COptMethodEP2.h"
 				>
 			</File>
 			<File
@@ -230,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\COptMethodStatistics.h"
+				>
+			</File>
+			<File
 				RelativePath="COptMethodSteepestDescent.h"
 				>
 			</File>
@@ -259,6 +279,10 @@
 			</File>
 			<File
 				RelativePath="CRealProblem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CTruncatedNewton.h"
 				>
 			</File>
 			<File
