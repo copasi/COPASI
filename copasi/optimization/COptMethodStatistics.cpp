@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodStatistics.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:18:08 $
+//   $Date: 2009/10/13 17:39:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ bool COptMethodStatistics::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mBestValue = 2.0 * DBL_MAX;
+  mBestValue = std::numeric_limits< C_FLOAT64 >::infinity();
 
   mVariableSize = mpOptItem->size();
   mIndividual.resize(mVariableSize);
