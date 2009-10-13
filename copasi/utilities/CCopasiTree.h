@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/01 15:55:20 $
+   $Date: 2009/10/13 17:30:39 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -376,7 +376,7 @@ public:
     return pNode->getParent()->removeChild(pNode);
   }
 
-#ifdef WIN32
+#if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
   friend std::ostream & operator << (std::ostream & os,
                                      const CCopasiTree< _Node > & A);
 #else
