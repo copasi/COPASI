@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.106 $ 
+#   $Revision: 1.107 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/10/12 20:14:39 $ 
+#   $Date: 2009/10/13 20:17:17 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.106 $ $Author: shoops $ $Date: 2009/10/12 20:14:39 $  
+# $Revision: 1.107 $ $Author: shoops $ $Date: 2009/10/13 20:17:17 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -180,6 +180,11 @@ contains(BUILD_OS, Darwin) {
 }
 
 contains(BUILD_OS, WIN32) {
+  win32-icc: {
+     !build_pass: message("Using Intel Compiler.")
+     DEFINES += COPASI_ICC
+  }
+  
   QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
@@ -249,8 +254,9 @@ contains(BUILD_OS, WIN32) {
     DEFINES += USE_MKL
     QMAKE_CXXFLAGS += -I\"$${MKL_PATH}\include\"
     QMAKE_LFLAGS += /LIBPATH:\"$${MKL_PATH}\ia32\lib\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${MKL_PATH}\..\Compiler\C++\9.0\IA32\Lib\"
-    LIBS += mkl_c.lib
+    QMAKE_LFLAGS += /LIBPATH:\"$${MKL_PATH}\..\lib\ia32\"
+    LIBS += mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib
+    LIBS += libiomp5mt.lib
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
