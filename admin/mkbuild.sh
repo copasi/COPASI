@@ -63,12 +63,12 @@ if [ x"$#" = x1 ]; then
     cp ../COPASI_License_${license}.txt copasi/LICENSE.txt
     chmod 644 copasi/LICENSE.txt
 
-    cp ../copasi/CopasiUI/CopasiUI.exe*  copasi/bin
-    # "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
-    #   -manifest copasi\\bin\\CopasiUI.exe.manifest \
-    #   -outputresource:copasi\\bin\\CopasiUI.exe\;1
+    cp ../copasi/CopasiUI/release/CopasiUI.exe*  copasi/bin
+    "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
+      -manifest copasi\\bin\\CopasiUI.exe.manifest \
+      -outputresource:copasi\\bin\\CopasiUI.exe\;1
 
-    cp ../copasi/CopasiSE/CopasiSE.exe*  copasi/bin
+    cp ../copasi/CopasiSE/release/CopasiSE.exe  copasi/bin
     # "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
     #   -manifest copasi\\bin\\CopasiSE.exe.manifest \
     #   -outputresource:copasi\\bin\\CopasiSE.exe\;1

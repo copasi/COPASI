@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.107 $ 
+#   $Revision: 1.108 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/10/13 20:17:17 $ 
+#   $Date: 2009/10/14 17:37:21 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.107 $ $Author: shoops $ $Date: 2009/10/13 20:17:17 $  
+# $Revision: 1.108 $ $Author: shoops $ $Date: 2009/10/14 17:37:21 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -204,15 +204,15 @@ contains(BUILD_OS, WIN32) {
   contains(RUNTIME, MT) {
     debug: RUNTIME = MTd
     
-	QMAKE_CFLAGS_MT -= -MD
-	QMAKE_CFLAGS_MT *= -MT
-	QMAKE_CFLAGS_MT_DBG -= -MDd
-	QMAKE_CFLAGS_MT_DBG *= -MTd
+    QMAKE_CFLAGS_RELEASE -= -MD
+    QMAKE_CFLAGS_RELEASE *= -MT
+    QMAKE_CFLAGS_DEBUG -= -MDd
+    QMAKE_CFLAGS_DEBUG *= -MTd
 	
-	QMAKE_CXXFLAGS_MT -= -MD
-	QMAKE_CXXFLAGS_MT *= -MT
-	QMAKE_CXXFLAGS_MT_DBG -= -MDd
-	QMAKE_CXXFLAGS_MT_DBG *= -MTd
+    QMAKE_CXXFLAGS_RELEASE -= -MD
+    QMAKE_CXXFLAGS_RELEASE *= -MT
+    QMAKE_CXXFLAGS_DEBUG -= -MDd
+    QMAKE_CXXFLAGS_DEBUG *= -MTd
 	
     QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrt.lib"
     QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrtd.lib"
@@ -226,15 +226,15 @@ contains(BUILD_OS, WIN32) {
     release: RUNTIME = MD
     debug: RUNTIME = MDd
     
-	QMAKE_CFLAGS_MT -= -MT
-	QMAKE_CFLAGS_MT *= -MD
-	QMAKE_CFLAGS_MT_DBG -= -MTd
-	QMAKE_CFLAGS_MT_DBG *= -MDd
-	
-	QMAKE_CXXFLAGS_MT -= -MT
-	QMAKE_CXXFLAGS_MT *= -MD
-	QMAKE_CXXFLAGS_MT_DBG -= -MTd
-	QMAKE_CXXFLAGS_MT_DBG *= -MDd
+    QMAKE_CFLAGS_RELEASE: -= -MT
+    QMAKE_CFLAGS_RELEASE *= -MD
+    QMAKE_CFLAGS_DEBUG -= -MTd
+    QMAKE_CFLAGS_DEBUG *= -MDd
+       
+    QMAKE_CXXFLAGS_RELEASE -= -MT
+    QMAKE_CXXFLAGS_RELEASE *= -MD
+    QMAKE_CXXFLAGS_DEBUG -= -MTd
+    QMAKE_CXXFLAGS_DEBUG *= -MDd
 	
     QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmt.lib"
     QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmtd.lib"
