@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:52:46 $
+//   $Author: pwilly $
+//   $Date: 2009/10/16 09:14:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,10 @@
 #include <Q3GridLayout>
 #include <Q3HBoxLayout>
 #include <iostream>
+
+#ifdef DEBUG_UI
+#include <QtDebug>
+#endif
 
 /*
  *  Constructs a BaseWidget as a child of 'parent', with the
@@ -66,6 +70,8 @@ BaseWidget::BaseWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 
   mpVBoxBig->addLayout(mpHBoxSmall, 0);
   mpBaseWidgetLayout->addLayout(mpVBoxBig, 0, 0);
+
+  mScaleFactor = 1000;
 }
 
 /*
@@ -81,18 +87,22 @@ void BaseWidget::activateSlider()
   mpLabelRow->setText("Row");
   mpVBoxSmall->addWidget(mpLabelRow, 0, 0);
   mpSliderRow = new QSlider(this, "SliderRow");
-  mpSliderRow->setMinValue(0);
-  mpSliderRow->setMaxValue(0);
+
+  mpSliderRow->setMinimum(0);
+  mpSliderRow->setMaximum(0);
+
   mpSliderRow->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
   mpSliderRow->setOrientation(Qt::Vertical);
   mpVBoxSmall->addWidget(mpSliderRow, 0, 0);
 
   mpLabelColumn = new QLabel(this, "LabelColumn");
-  mpLabelColumn->setText("Column");
+  mpLabelColumn->setText("Column ");
   mpHBoxSmall->addWidget(mpLabelColumn, 0, 0);
   mpSliderColumn = new QSlider(this, "SliderColumn");
-  mpSliderColumn->setMinValue(0);
-  mpSliderColumn->setMaxValue(0);
+
+  mpSliderColumn->setMinimum(0);
+  mpSliderColumn->setMaximum(0);
+
   mpSliderColumn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
   mpSliderColumn->setOrientation(Qt::Horizontal);
   mpHBoxSmall->addWidget(mpSliderColumn, 0, 0);
@@ -108,7 +118,31 @@ void BaseWidget::activateSlider()
 void BaseWidget::setSlider()
 {
   if (!mpSlider) return;
-  sliderMoved(mpSliderColumn->value() / 1000, mpSliderRow->value() / 1000);
+
+  int col = mpSliderColumn->value();
+  int row = mpSliderRow->value();
+
+#ifdef DEBUG_UI
+  qDebug() << "A BaseWidget::setSlider -> col = " << col << " - row = " << row;
+#endif
+
+  sliderMoved(mpSliderColumn->value() / mScaleFactor, mpSliderRow->value() / mScaleFactor);
+
+#ifdef DEBUG_UI
+  qDebug() << "B BaseWidget::setSlider -> col = " << col << " - row = " << row;
+#endif
+
+  mpSliderColumn->setValue(col);
+  mpSliderRow->setValue(row);
+
+#ifdef DEBUG_UI
+  qDebug() << "C BaseWidget::setSlider -> col = " << mpSliderColumn->value() << " - row = " << mpSliderRow->value();
+#endif
+}
+
+int BaseWidget::scaleFactor()
+{
+  return mScaleFactor;
 }
 
 void BaseWidget::languageChange()
