@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/07/03 10:39:07 $
+//   $Date: 2009/10/16 09:20:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,6 @@
 Plot3d::Plot3d(QWidget* parent, const char* name)
     : BaseWidget(parent, name)
 {
-
   mpGrid = new Q3GridLayout(mpFrame, 0, 0);
   mpPlot = new Qwt3D::SurfacePlot(mpFrame);
   mpGrid->addWidget(mpPlot, 0, 0);
@@ -55,6 +54,9 @@ Plot3d::~Plot3d()
 
 void Plot3d::setZoom()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::setZoom --";
+#endif
   double zoom;
 
   if (mData.maxItems < 7)
@@ -67,6 +69,9 @@ void Plot3d::setZoom()
 
 void Plot3d::plotData()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::plotData --";
+#endif
 
   resizeCoordSys();
 
@@ -85,6 +90,10 @@ void Plot3d::plotData()
 
 void Plot3d::setAxes()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::setAxes --";
+#endif
+
   double majorTicLength, minorTicLength;
 
   if (mData.maxItems <= 2)
@@ -228,6 +237,10 @@ void Plot3d::setAxes()
 
 void Plot3d::setLegend()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::setLegend --";
+#endif
+
   mpPlot->legend()->setLimits(mpPlot->hull().minVertex.z, mpPlot->hull().maxVertex.z);
 
   if ((mpPlot->hull().minVertex.z < 0) && (mpPlot->hull().maxVertex.z < 0))
@@ -244,6 +257,10 @@ void Plot3d::setLegend()
 
 void Plot3d::setPlotTitle()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::setPlotTitle --";
+#endif
+
   mpPlot->setTitlePosition(0.97, 0.5, Qwt3D::TopCenter); //!< Set caption position
   mpPlot->setTitleFont("Courier", 8); //!< Set caption font
   mpPlot->setTitleColor(Qwt3D::RGBA(0, 0, 0)); //!< Set caption color
@@ -252,12 +269,18 @@ void Plot3d::setPlotTitle()
 
 void Plot3d::setScale(const std::vector<std::string> *columnsDescript, const std::vector<std::string> *rowsDescript)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::setPlotTitle --";
+#endif
   mpColumnScale = columnsDescript;
   mpRowScale = rowsDescript;
 }
 
 void Plot3d::setColors(std::vector<QColor> mColors, double min, double max)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::setColors --";
+#endif
   unsigned int i;
   mData.maxValue = max;
   mData.minValue = min;
@@ -281,6 +304,9 @@ void Plot3d::setColors(std::vector<QColor> mColors, double min, double max)
 
 void Plot3d::setData(double** data, int columns, int rows, double valueZone)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::setData --";
+#endif
   int j;
   mData.valueZone = valueZone;
   mData.columns = columns;
@@ -322,29 +348,36 @@ void Plot3d::setData(double** data, int columns, int rows, double valueZone)
 
 void Plot3d::setSlider()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::setSlider --";
+#endif
+
   if (mpSlider)
     if (mData.valueZone != 0)
       {
-        mpSliderColumn->setMinValue(0);
+        mpSliderColumn->setMinimum(0);
 
         if (mData.columns == 1)
-          mpSliderColumn->setMaxValue((mData.columns - 1) * 1000);
+          mpSliderColumn->setMaximum((mData.columns - 1) * mScaleFactor);
         else
-          mpSliderColumn->setMaxValue(mData.columns * 1000);
+          mpSliderColumn->setMaximum(mData.columns * mScaleFactor);
 
-        mpSliderRow->setMinValue(0);
+        mpSliderRow->setMinimum(0);
 
         if (mData.rows == 1)
-          mpSliderRow->setMaxValue((mData.rows - 1) * 1000);
+          mpSliderRow->setMaxValue((mData.rows - 1) * mScaleFactor);
         else
-          mpSliderRow->setMaxValue(mData.rows * 1000);
+          mpSliderRow->setMaximum(mData.rows * mScaleFactor);
 
-        sliderMoved(mpSliderColumn->value() / 1000, mpSliderRow->value() / 1000);
+        sliderMoved(mpSliderColumn->value() / mScaleFactor, mpSliderRow->value() / mScaleFactor);
       }
 }
 
 void Plot3d::resizeCoordSys()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::resizeCoordSys --";
+#endif
   double minZ = mpPlot->hull().minVertex.z;
   double maxZ = mpPlot->hull().maxVertex.z;
 
@@ -381,6 +414,10 @@ void Plot3d::resizeCoordSys()
 
 int Plot3d::getColSliderPos()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::getColSliderPos --";
+#endif
+
   if (!mpSlider) return - 1;
 
   if (mpSliderColumn->value() > mData.columns)
@@ -391,6 +428,10 @@ int Plot3d::getColSliderPos()
 
 int Plot3d::getRowSliderPos()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::getRowSliderPos --";
+#endif
+
   if (!mpSlider) return - 1;
 
   if (mpSliderRow->value() > mData.rows)
@@ -403,6 +444,10 @@ void Plot3d::sliderMoved(int column, int row)
 {
   if (!mpSlider) return;
 
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::sliderMoved --";
+  qDebug() << "Plot3d::sliderMoved -> col = " << column << " - row = " << row;
+#endif
   int showColumn;
   int showRow;
 
@@ -431,11 +476,14 @@ void Plot3d::sliderMoved(int column, int row)
   mpPlot->updateData();
   mpPlot->updateGL();
 
-  //  sliderPosition(column, row);
+  // sliderPosition(column, row);
 }
 
 void Plot3d::emptyPlot()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::emptyPlot --";
+#endif
 
   data = new double * [1];
   data[0] = new double[1];
@@ -450,6 +498,9 @@ void Plot3d::emptyPlot()
 
 void Plot3d::contextMenuEvent(QContextMenuEvent *)
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::contextMenuEvent --";
+#endif
   Q3PopupMenu* mpContextMenu = new Q3PopupMenu(this);
   Q_CHECK_PTR(mpContextMenu);
   mpContextMenu->insertItem("handling information", this, SLOT(hotKeysMessage()));
@@ -471,6 +522,9 @@ void Plot3d::contextMenuEvent(QContextMenuEvent *)
 
 void Plot3d::saveDataToFile()
 {
+#ifdef DEBUG_UI
+  qDebug() << "-- in qwt3dPlot.cpp Plot3d::saveDataToFile --";
+#endif
   C_INT32 Answer = QMessageBox::No;
   QString fileName, filetype_; //, newFilter;
 
@@ -520,7 +574,6 @@ void Plot3d::saveDataToFile()
 
 void Plot3d::showLegend()
 {
-
   if (mColorLegend)
     {
       mColorLegend = false;
@@ -535,7 +588,6 @@ void Plot3d::showLegend()
 
 void Plot3d::hotKeysMessage()
 {
-
   CQMessageBox::information(this, "Mouse and Keyboard Handling",
                             "You can perform shifts, turns, scales and zooms. \n \n"
                             "Try Ctrl, Shift, Alt in combination with your wheel and left mouse \n"
