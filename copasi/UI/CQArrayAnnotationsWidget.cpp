@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/10/08 14:07:46 $
+//   $Date: 2009/10/16 09:02:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -699,12 +699,11 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
 
   if (mWithBarChart && mpPlot3d && mpPlot3d->sliderActive())
     {
-      int col = mpPlot3d->mpPlot->mpSliderColumn->value();
-      int row = mpPlot3d->mpPlot->mpSliderRow->value();
+      int col = mpPlot3d->mpPlot->mpSliderColumn->value() / mpPlot3d->mpPlot->scaleFactor();
+      int row = mpPlot3d->mpPlot->mpSliderRow->value() / mpPlot3d->mpPlot->scaleFactor();
 
 #ifdef DEBUG_UI
       qDebug() << "col = " << col << " - row = " << row;
-      qDebug() << "mpContentTable->numCols() = " << mpContentTable->numCols() << " - mpContentTable->numRows() = " << mpContentTable->numRows();
 #endif
 
       mpContentTable->clearSelection(true);
@@ -767,29 +766,21 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
   if (mWithBarChart && mpPlot3d && mpPlot3d->sliderActive())
     {
-      int col = mpContentTable->currentColumn();
-      int row = mpContentTable->currentRow();
+      int col = mpContentTable->currentColumn() * mpPlot3d->mpPlot->scaleFactor();
+      int row = mpContentTable->currentRow() * mpPlot3d->mpPlot->scaleFactor();
 
 #ifdef DEBUG_UI
       qDebug() << "col = " << col << " - row = " << row;
-      qDebug() << "mpContentTable->numCols() = " << mpContentTable->numCols() << " - mpContentTable->numRows() = " << mpContentTable->numRows();
 #endif
 
       if (mpContentTable->isRowSelected(row, true))
         {
-#ifdef DEBUG_UI
-          qDebug() << "AAA";
-#endif
-
           mpPlot3d->mpPlot->sliderMoved(-1, row);
           mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
           mpPlot3d->mpPlot->mpSliderRow->setValue(row);
         }
       else if (mpContentTable->isColumnSelected(col, true))
         {
-#ifdef DEBUG_UI
-          qDebug() << "BBB";
-#endif
           mpPlot3d->mpPlot->sliderMoved(col, -1);
           mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
           mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
@@ -797,54 +788,30 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
       else
         {
 #ifdef DEBUG_UI
-          qDebug() << "CCC";
-
-          qDebug() << "col = " << col << " - row = " << row;
           qDebug() << "mpContentTable->currentColumn() = " << mpContentTable->currentColumn() << " - mpContentTable->currentRow() = " << mpContentTable->currentRow();
 #endif
 
           if (mpContentTable->currentRow() == -1 && mpContentTable->currentColumn() == -1)
             {
-#ifdef DEBUG_UI
-              qDebug() << "CCC 1";
-#endif
               mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
               mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
             }
           else
             {
 #ifdef DEBUG_UI
-              qDebug() << "CCC 2";
-
-              qDebug() << "A col = " << col << " - row = " << row;
-              qDebug() << "A currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
+              qDebug() << "AA currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
 #endif
               mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
               mpPlot3d->mpPlot->mpSliderRow->setValue(row);
 
-//              mpPlot3d->mpPlot->sliderMoved(col, row);
-
 #ifdef DEBUG_UI
-              qDebug() << "AB col = " << col << " - row = " << row;
               qDebug() << "AB currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
 #endif
 
               mpPlot3d->mpPlot->sliderMoved(col, row);
 
-              /*
-                            mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
-                            mpPlot3d->mpPlot->mpSliderRow->setValue(row);
-              */
-
-#ifdef DEBUG_UI
-              qDebug() << "B col = " << col << " - row = " << row;
-//          qDebug() << "B currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
-              qDebug() << "B1 currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->value() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->value();
-              qDebug() << "B2 currentColumn = " << mpPlot3d->mpPlot->mpSliderColumn->sliderPosition() << "currentRow() = " << mpPlot3d->mpPlot->mpSliderRow->sliderPosition();
-
-              qDebug() << "B2 minColumn = " << mpPlot3d->mpPlot->mpSliderColumn->minimum() << "minRow() = " << mpPlot3d->mpPlot->mpSliderRow->minimum();
-              qDebug() << "B2 maxColumn = " << mpPlot3d->mpPlot->mpSliderColumn->maximum() << "maxRow() = " << mpPlot3d->mpPlot->mpSliderRow->maximum();
-#endif
+              // update the plot
+              mpPlot3d->mpPlot->setSlider();
             }
         }
     }
