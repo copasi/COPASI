@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:52:46 $
+//   $Author: pwilly $
+//   $Date: 2009/10/16 09:03:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,35 +34,42 @@ class QSlider;
 class Q3Frame;
 
 class BaseWidget : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    BaseWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~BaseWidget();
+public:
+  BaseWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~BaseWidget();
 
-    bool mpSlider;
+  bool mpSlider;
 
-    QLabel* mpLabelColumn;
-    QLabel* mpLabelRow;
-    QSlider* mpSliderColumn;
-    QSlider* mpSliderRow;
-    Q3Frame* mpFrame;
+  QLabel* mpLabelColumn;
+  QLabel* mpLabelRow;
+  QSlider* mpSliderColumn;
+  QSlider* mpSliderRow;
+  Q3Frame* mpFrame;
 
-    Q3HBoxLayout* mpHBoxBig;
-    Q3VBoxLayout* mpVBoxBig;
-    Q3VBoxLayout* mpVBoxSmall;
-    Q3HBoxLayout* mpHBoxSmall;
+  Q3HBoxLayout* mpHBoxBig;
+  Q3VBoxLayout* mpVBoxBig;
+  Q3VBoxLayout* mpVBoxSmall;
+  Q3HBoxLayout* mpHBoxSmall;
 
-    void activateSlider();
-    virtual void sliderMoved(int column, int row) = 0;
+  void activateSlider();
+  virtual void sliderMoved(int column, int row) = 0;
 
-  protected:
-    Q3GridLayout* mpBaseWidgetLayout;
+  int scaleFactor();
 
-  protected slots:
-    virtual void languageChange();
-    void setSlider();
-  };
+protected:
+  Q3GridLayout* mpBaseWidgetLayout;
+
+  /*!
+    Scale factor for scalarizing QSlider and Qwt3D
+  */
+  int mScaleFactor;
+
+protected slots:
+  virtual void languageChange();
+  void setSlider();
+};
 
 #endif // BASE_WIDGET_H
