@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Author: aekamal $
+//   $Date: 2009/10/19 15:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,13 @@ bool COptMethodHookeJeeves::optimise()
 {
   mContinue = true;
 
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhIteration);
+
+      return false;
+    }
 
   C_FLOAT64 newf, steplength, tmp;
   bool Keep;
@@ -102,6 +108,9 @@ bool COptMethodHookeJeeves::optimise()
 
   if (!mContinue)
     {
+      if (mpCallBack)
+        mpCallBack->finish(mhIteration);
+
       cleanup();
       return false;
     }
@@ -205,6 +214,9 @@ bool COptMethodHookeJeeves::optimise()
             mDelta[i] *= mRho;
         }
     }
+
+  if (mpCallBack)
+    mpCallBack->finish(mhIteration);
 
   cleanup();
   return true;

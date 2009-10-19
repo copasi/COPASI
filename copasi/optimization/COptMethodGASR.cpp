@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:25:56 $
+//   $Author: aekamal $
+//   $Date: 2009/10/19 15:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,7 +175,9 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
     }
 
   const CVector< C_FLOAT64 > * pParent1 = & parent1;
+
   const CVector< C_FLOAT64 > * pParent2 = & parent2;
+
   const CVector< C_FLOAT64 > * pTmp;
 
   for (i = 0; i < mVariableSize; i++)
@@ -307,15 +309,15 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
     {
       switch ((*it)->checkConstraint())
         {
-        case - 1:
-          phiCalc = *(*it)->getLowerBoundValue() - *pValue;
-          phiVal += phiCalc * phiCalc;
-          break;
+          case - 1:
+            phiCalc = *(*it)->getLowerBoundValue() - *pValue;
+            phiVal += phiCalc * phiCalc;
+            break;
 
-        case 1:
-          phiCalc = *pValue - *(*it)->getUpperBoundValue();
-          phiVal += phiCalc * phiCalc;
-          break;
+          case 1:
+            phiCalc = *pValue - *(*it)->getUpperBoundValue();
+            phiVal += phiCalc * phiCalc;
+            break;
         }
     }
 
@@ -325,6 +327,7 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
   for (; it != end; ++it)
     {
       phiCalc = (*it)->getConstraintViolation();
+
       if (phiCalc > 0.0)
         phiVal += phiCalc * phiCalc;
     }
@@ -433,15 +436,18 @@ bool COptMethodGASR::initialize()
                           CCopasiParameter::UINT,
                           & mGeneration,
                           & mGenerations);
+
   mGeneration++;
 
   mPopulationSize = * getValue("Population Size").pUINT;
   mPf = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
+
   if (mPf < 0.0 || 1.0 < mPf)
     {
       mPf = 0.475;
       setValue("Pf", mPf);
     }
+
   mpRandom =
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
                              * getValue("Seed").pUINT);
@@ -450,6 +456,7 @@ bool COptMethodGASR::initialize()
 
   mIndividual.resize(2*mPopulationSize);
   mPhi.resize(2*mPopulationSize);
+
   for (i = 0; i < 2*mPopulationSize; i++)
     mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
@@ -460,6 +467,7 @@ bool COptMethodGASR::initialize()
   mValue.resize(2*mPopulationSize);
 
   mShuffle.resize(mPopulationSize);
+
   for (i = 0; i < mPopulationSize; i++)
     mShuffle[i] = i;
 
@@ -476,6 +484,7 @@ bool COptMethodGASR::cleanup()
   unsigned C_INT32 i;
 
   pdelete(mpRandom);
+
   for (i = 0; i < mIndividual.size(); i++)
     pdelete(mIndividual[i]);
 
@@ -486,7 +495,13 @@ bool COptMethodGASR::optimise()
 {
   bool Continue = true;
 
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
+      return false;
+    }
 
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
@@ -532,6 +547,9 @@ bool COptMethodGASR::optimise()
 
   if (!Continue)
     {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
       cleanup();
       return false;
     }
@@ -544,19 +562,19 @@ bool COptMethodGASR::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.5),
+          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.5),
                               mPopulationSize);
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.7),
+          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.7),
                               mPopulationSize);
           Stalled10 = Stalled30 = 0;
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.9),
+          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.9),
                               mPopulationSize);
           Stalled10 = 0;
         }
@@ -585,6 +603,9 @@ bool COptMethodGASR::optimise()
       if (mpCallBack)
         Continue = mpCallBack->progress(mhGenerations);
     }
+
+  if (mpCallBack)
+    mpCallBack->finish(mhGenerations);
 
   cleanup();
 

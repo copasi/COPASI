@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/15 04:30:56 $
+//   $Author: aekamal $
+//   $Date: 2009/10/19 15:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -505,7 +505,13 @@ bool COptMethodPS::optimise()
 {
   unsigned C_INT32 i;
 
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhIteration);
+
+      return false;
+    }
 
   C_FLOAT64 * pIndividual = mIndividuals[0].array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
@@ -577,6 +583,9 @@ bool COptMethodPS::optimise()
       if (mpCallBack)
         mContinue &= mpCallBack->progress(mhIteration);
     }
+
+  if (mpCallBack)
+    mpCallBack->finish(mhIteration);
 
   cleanup();
 

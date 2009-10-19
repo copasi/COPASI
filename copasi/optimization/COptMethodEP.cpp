@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/24 18:12:31 $
+//   $Author: aekamal $
+//   $Date: 2009/10/19 15:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,13 @@ COptMethodEP::~COptMethodEP()
 
 bool COptMethodEP::optimise()
 {
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
+      return false;
+    }
 
   bool Continue = true;
 
@@ -94,6 +100,9 @@ bool COptMethodEP::optimise()
 
   if (!Continue)
     {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
       cleanup();
       return false;
     }
@@ -125,6 +134,9 @@ bool COptMethodEP::optimise()
       if (mpCallBack)
         Continue = mpCallBack->progress(mhGenerations);
     }
+
+  if (mpCallBack)
+    mpCallBack->finish(mhGenerations);
 
   cleanup();
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/24 18:12:31 $
+//   $Author: aekamal $
+//   $Date: 2009/10/19 15:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -648,7 +648,13 @@ bool COptMethodSRES::optimise()
   Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
 #endif // RANDOMIZE
 
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
+      return false;
+    }
 
   // initialise the population
   Continue = creation(0);
@@ -668,6 +674,9 @@ bool COptMethodSRES::optimise()
 
   if (!Continue)
     {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
       cleanup();
       return false;
     }
@@ -733,6 +742,9 @@ bool COptMethodSRES::optimise()
       if (mpCallBack)
         Continue = mpCallBack->progress(mhGenerations);
     }
+
+  if (mpCallBack)
+    mpCallBack->finish(mhGenerations);
 
   return 0;
 }

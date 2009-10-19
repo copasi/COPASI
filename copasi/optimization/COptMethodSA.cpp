@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Author: aekamal $
+//   $Date: 2009/10/19 15:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,13 @@ void COptMethodSA::initObjects()
 
 bool COptMethodSA::optimise()
 {
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhTemperature);
+
+      return false;
+    }
 
   unsigned C_INT32 i, j, k, m;
 
@@ -260,6 +266,9 @@ bool COptMethodSA::optimise()
         mContinue &= mpCallBack->progress(mhTemperature);
     }
   while (!ready && mContinue);
+
+  if (mpCallBack)
+    mpCallBack->finish(mhTemperature);
 
   return true;
 }

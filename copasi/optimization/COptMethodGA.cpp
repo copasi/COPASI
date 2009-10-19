@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Author: aekamal $
+//   $Date: 2009/10/19 15:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -393,7 +393,13 @@ bool COptMethodGA::initialize()
 
   unsigned C_INT32 i;
 
-  if (!COptMethod::initialize()) return false;
+  if (!COptMethod::initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
+      return false;
+    }
 
   mGenerations = * getValue("Number of Generations").pUINT;
   mGeneration = 0;
@@ -436,6 +442,9 @@ bool COptMethodGA::initialize()
 
   // Initialize the variance for mutations
   mMutationVarians = 0.1;
+
+  if (mpCallBack)
+    mpCallBack->finish(mhGenerations);
 
   return true;
 }
