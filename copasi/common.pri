@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.108 $ 
+#   $Revision: 1.109 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/10/14 17:37:21 $ 
+#   $Date: 2009/10/22 20:01:25 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.108 $ $Author: shoops $ $Date: 2009/10/14 17:37:21 $  
+# $Revision: 1.109 $ $Author: shoops $ $Date: 2009/10/22 20:01:25 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -80,12 +80,14 @@ isEmpty(COPASI_SRC_PACKAGE) {
   DEFINES += HAVE_MML
 }
 
+win32: STATIC_LINKAGE = yes
+
 contains(STATIC_LINKAGE, yes) {
-  DEFINES+=XML_STATIC
-  DEFINES+=LIBSBML_STATIC
-  DEFINES+=LIBLAX_STATIC
-  DEFINES+=RAPTOR_STATIC
-  DEFINES+=SBW_STATIC
+  DEFINES += XML_STATIC
+  DEFINES += LIBSBML_STATIC
+  DEFINES += LIBLAX_STATIC
+  DEFINES += RAPTOR_STATIC
+  DEFINES += SBW_STATIC
 }
 
 !contains(BUILD_OS, WIN32) {
@@ -120,7 +122,7 @@ contains(BUILD_OS, Darwin) {
 
     MY_UNIVERSAL = $$system(echo $UNIVERSAL)
     contains(MY_UNIVERSAL, yes) {
-       message("Creating unversal binaries.")
+       message("Creating universal 32 bit binaries.")
        CONFIG += x86 ppc
        QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
     }
@@ -183,6 +185,7 @@ contains(BUILD_OS, WIN32) {
   win32-icc: {
      !build_pass: message("Using Intel Compiler.")
      DEFINES += COPASI_ICC
+     DEFINES += _CRT_SECURE_NO_WARNINGS
   }
   
   QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
@@ -196,10 +199,6 @@ contains(BUILD_OS, WIN32) {
 
   QMAKE_CXXFLAGS_RELEASE -= -O1
   QMAKE_CXXFLAGS_RELEASE *= -O2
-  
-  !contains(STATIC_LINKAGE, yes) {
-    RUNTIME = 
-  }
   
   contains(RUNTIME, MT) {
     debug: RUNTIME = MTd
@@ -268,67 +267,51 @@ contains(BUILD_OS, WIN32) {
     }
   }
 
+
+#expat library
+  contains(RUNTIME, MT) | contains (RUNTIME, MTd) {
+    LIBS += libexpatMT.lib
+  } else {
+    DEFINES -= XML_STATIC
+    LIBS += libexpat.lib
+  }
+
   !isEmpty(EXPAT_PATH) {
-    QMAKE_CXXFLAGS   += -I\"$${EXPAT_PATH}\Source\lib\"
-    QMAKE_CXXFLAGS   += -I\"$${EXPAT_PATH}\include\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${EXPAT_PATH}\StaticLibs\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${EXPAT_PATH}\bin\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${EXPAT_PATH}\lib\"
-    contains(STATIC_LINKAGE, yes) {
-      LIBS += libexpatMT.lib
-    } else {
-      LIBS += libexpat.lib
-    }
+    QMAKE_CXXFLAGS += -I\"$${EXPAT_PATH}\Source\lib\"
+    QMAKE_CXXFLAGS += -I\"$${EXPAT_PATH}\include\"
+    QMAKE_LFLAGS   += /LIBPATH:\"$${EXPAT_PATH}\StaticLibs\"
+    QMAKE_LFLAGS   += /LIBPATH:\"$${EXPAT_PATH}\bin\"
+    QMAKE_LFLAGS   += /LIBPATH:\"$${EXPAT_PATH}\lib\"
   } else {
     error( "EXPAT_PATH must be specified" )
   }
 
-  win32-msvc2005 {
-    contains(STATIC_LINKAGE, yes) {
-      LIBS += libsbml$${RUNTIME}.lib
-    } else {
-      release: LIBS += libsbml.lib
-      debug:   LIBS += libsbmlD.lib
-    }
-  } else {
-    LIBS += libsbml.lib
-  }
+  LIBS += libsbml$${RUNTIME}.lib
   
   !isEmpty(SBML_PATH) {
-    QMAKE_CXXFLAGS   += -I\"$${SBML_PATH}\include\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${SBML_PATH}\lib\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${SBML_PATH}\bin\"
+    QMAKE_CXXFLAGS += -I\"$${SBML_PATH}\include\"
+    QMAKE_LFLAGS   += /LIBPATH:\"$${SBML_PATH}\lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\"$${SBML_PATH}\bin\"
   } else {
     error( "SBML_PATH must be specified" )
   }
 
 # The raptor library
-  contains(STATIC_LINKAGE, yes) {
-    LIBS += raptor$${RUNTIME}.lib
-  } else {
-    release: LIBS += raptor.lib
-    debug:   LIBS += raptorD.lib
-  }
+  LIBS += raptor$${RUNTIME}.lib
     
   !isEmpty(RAPTOR_PATH) {
-    QMAKE_CXXFLAGS   += -I\"$${RAPTOR_PATH}\include\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${RAPTOR_PATH}\lib\"
+    QMAKE_CXXFLAGS += -I\"$${RAPTOR_PATH}\include\"
+    QMAKE_LFLAGS   += /LIBPATH:\"$${RAPTOR_PATH}\lib\"
   } else {
     error( "RAPTOR_PATH must be specified" )
   }
   
   contains(CONFIG, qt) {
-    contains(STATIC_LINKAGE, yes) {
-      DEFINES += SBW_STATIC
-      LIBS += SBW$${RUNTIME}.lib ws2_32.lib
-    } else {
-      release: LIBS += SBW.lib
-      debug:   LIBS += SBWD.lib
-    }
+    LIBS    += SBW$${RUNTIME}.lib ws2_32.lib
 
     !isEmpty(SBW_PATH){
-      QMAKE_CXXFLAGS   += -I"$${SBW_PATH}\include"
-      QMAKE_LFLAGS += /LIBPATH:"$${SBW_PATH}\lib"
+      QMAKE_CXXFLAGS += -I"$${SBW_PATH}\include"
+      QMAKE_LFLAGS   += /LIBPATH:"$${SBW_PATH}\lib"
       
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES *= WIN32
@@ -344,6 +327,9 @@ contains(BUILD_OS, WIN32) {
       LIBS += -L$${QWT3D_PATH}/lib/
       INCLUDEPATH += $${QWT3D_PATH}/include
     } 
+
+#    DEFINES        += QWT3D_NODLL
+
     release: LIBS += -lqwtplot3d
     debug: LIBS += -lqwtplot3dD
   }
