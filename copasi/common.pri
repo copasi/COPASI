@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.109 $ 
+#   $Revision: 1.110 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/10/22 20:01:25 $ 
+#   $Date: 2009/10/26 19:00:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.109 $ $Author: shoops $ $Date: 2009/10/22 20:01:25 $  
+# $Revision: 1.110 $ $Author: shoops $ $Date: 2009/10/26 19:00:39 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -182,6 +182,8 @@ contains(BUILD_OS, Darwin) {
 }
 
 contains(BUILD_OS, WIN32) {
+  CONFIG += debug_and_release
+
   win32-icc: {
      !build_pass: message("Using Intel Compiler.")
      DEFINES += COPASI_ICC
@@ -194,24 +196,25 @@ contains(BUILD_OS, WIN32) {
   DEFINES -= UNICODE
    
   #Release code optimization
-  QMAKE_CFLAGS_RELEASE -= -O1
-  QMAKE_CFLAGS_RELEASE *= -O2
+  QMAKE_CFLAGS_RELEASE   -= -O1
+  QMAKE_CFLAGS_RELEASE   *= -O2
 
   QMAKE_CXXFLAGS_RELEASE -= -O1
   QMAKE_CXXFLAGS_RELEASE *= -O2
   
   contains(RUNTIME, MT) {
-    debug: RUNTIME = MTd
+    release: RUNTIME = MT
+    debug:   RUNTIME = MTd
     
-    QMAKE_CFLAGS_RELEASE -= -MD
-    QMAKE_CFLAGS_RELEASE *= -MT
-    QMAKE_CFLAGS_DEBUG -= -MDd
-    QMAKE_CFLAGS_DEBUG *= -MTd
+    QMAKE_CFLAGS_RELEASE   -= -MD
+    QMAKE_CFLAGS_RELEASE   *= -MT
+    QMAKE_CFLAGS_DEBUG     -= -MDd
+    QMAKE_CFLAGS_DEBUG     *= -MTd
 	
     QMAKE_CXXFLAGS_RELEASE -= -MD
     QMAKE_CXXFLAGS_RELEASE *= -MT
-    QMAKE_CXXFLAGS_DEBUG -= -MDd
-    QMAKE_CXXFLAGS_DEBUG *= -MTd
+    QMAKE_CXXFLAGS_DEBUG   -= -MDd
+    QMAKE_CXXFLAGS_DEBUG   *= -MTd
 	
     QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrt.lib"
     QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrtd.lib"
@@ -223,17 +226,17 @@ contains(BUILD_OS, WIN32) {
     debug: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmt.lib"
   } else {
     release: RUNTIME = MD
-    debug: RUNTIME = MDd
+    debug:   RUNTIME = MDd
     
-    QMAKE_CFLAGS_RELEASE: -= -MT
-    QMAKE_CFLAGS_RELEASE *= -MD
-    QMAKE_CFLAGS_DEBUG -= -MTd
-    QMAKE_CFLAGS_DEBUG *= -MDd
+    QMAKE_CFLAGS_RELEASE   -= -MT
+    QMAKE_CFLAGS_RELEASE   *= -MD
+    QMAKE_CFLAGS_DEBUG     -= -MTd
+    QMAKE_CFLAGS_DEBUG     *= -MDd
        
     QMAKE_CXXFLAGS_RELEASE -= -MT
     QMAKE_CXXFLAGS_RELEASE *= -MD
-    QMAKE_CXXFLAGS_DEBUG -= -MTd
-    QMAKE_CXXFLAGS_DEBUG *= -MDd
+    QMAKE_CXXFLAGS_DEBUG   -= -MTd
+    QMAKE_CXXFLAGS_DEBUG   *= -MDd
 	
     QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmt.lib"
     QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmtd.lib"
