@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:24 $
+//   $Author: shoops $
+//   $Date: 2009/10/26 22:08:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -393,14 +393,6 @@ std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions(const CModel* pMo
 
   for (; it != end; ++it)
     {
-      // :TODO: Bug 719
-      // This will have to be modified as soon as the optimization problem stores its on expression
-      if ((*it)->getType() == CEvaluationTree::Expression)
-        {
-          UsedFunctions.push_back(*it);
-          continue;
-        }
-
       std::set< const CCopasiObject * > Function;
       Function.insert(*it);
 
