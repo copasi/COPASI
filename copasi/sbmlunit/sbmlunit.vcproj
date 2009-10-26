@@ -45,7 +45,7 @@
 				Name="VCNMakeTool"
 				BuildCommandLine="nmake /f Makefile release-all"
 				ReBuildCommandLine="nmake /f Makefile release-clean release-all"
-				CleanCommandLine="nmake /f Makefile release-clea"
+				CleanCommandLine="nmake /f Makefile release-clean"
 				Output="../tmp/$(ConfigurationName)/sbmlunit.lib"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				IncludeSearchPath=""
