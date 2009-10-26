@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.205 $
+//   $Revision: 1.206 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 13:16:13 $
+//   $Date: 2009/10/26 22:25:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -518,7 +518,10 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
         }
 
       // We need to remove the no longer needed expression "Objective Function" from the function list.
-      mCommon.pFunctionList->remove("Objective Function");
+      if (mCommon.pFunctionList->getIndex("Objective Function") != C_INVALID_INDEX)
+        {
+          mCommon.pFunctionList->remove("Objective Function");
+        }
     }
   else if (!strcmp(pszName, "GUI") && mCommon.pGUI == NULL)
     CCopasiMessage::getLastMessage();
