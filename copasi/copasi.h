@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:12:03 $
+//   $Date: 2009/10/26 21:29:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,13 @@
 # pragma warning (disable: 4243)
 // warning C4355: 'this' : used in base member initializer list
 # pragma warning (disable: 4355)
+# if  _MSC_VER >= 1400
+#  define _CRT_SECURE_NO_DEPRECATE
+
+// avoid the following warning:
+// The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strdup. See online help for details.
+#  pragma warning(disable : 4996)
+# endif
 #endif  // WIN32
 
 #include <assert.h>
@@ -129,9 +136,9 @@ enum TriLogic
 };
 
 /* This is necessary to link with Intel MKL 721 under Visual C++ 8 */
-#if defined COPASI_MAIN && defined USE_MKL && defined _MSC_VER && _MSC_VER > 1200 && defined _DLL
-extern "C" {FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};}
-#endif
+// #if defined COPASI_MAIN && defined USE_MKL && defined _MSC_VER && _MSC_VER > 1200 && defined _DLL
+// extern "C" {FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};}
+// #endif
 
 #ifdef COPASI_MAIN
 class CCopasiRootContainer;
