@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/23 12:22:23 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 14:04:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,86 +69,37 @@ void CQExpressionMmlWidget::languageChange()
 
 void CQExpressionMmlWidget::slotGoExpressionWidget()
 {
-  qDebug() << "- here on CQExpressionMmlWidget::slotGoExpressionWidget() -";
-  // std::cout << "CQEMW::slotGoExpressionWidget(): mpExpressionWidget->text() = " << UTF8_TO_CHAR(mpExpressionWidget->text()) << std::endl;
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-//  mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
-//  mpWidgetStackExpressionMml->raiseWidget(0);
-//  mpWidgetStackExpressionMml->setCurrentIndex(0);
   mpWidgetStackExpressionMml->setCurrentWidget(mpExpressionPage);
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << mpWidgetStackExpressionMml->currentIndex();
 }
 
 void CQExpressionMmlWidget::slotGoMmlWidget()
 {
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-//  mpWidgetStackExpressionMml->raiseWidget(mpMmlPage);
-//  mpWidgetStackExpressionMml->raiseWidget(1);
-//  mpWidgetStackExpressionMml->setCurrentIndex(0);
   mpWidgetStackExpressionMml->setCurrentWidget(mpMmlPage);
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << mpWidgetStackExpressionMml->currentIndex();
 }
 
 void CQExpressionMmlWidget::updateWidget()
 {
-  qDebug() << "- here on CQExpressionMmlWidget::updateWidget() -";
-
 #ifdef HAVE_MML
-
   std::ostringstream mml;
   std::vector<std::vector<std::string> > params;
 
-//  if (!mpExpressionWidget->text().isEmpty())
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget NEW = " << mpWidgetStackExpressionMml->currentIndex();
-
   if (mpExpressionWidget->text().isEmpty() ||
       !mpExpressionWidget->isValid())
-//    mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
-//    mpWidgetStackExpressionMml->setCurrentIndex(0);
     mpWidgetStackExpressionMml->setCurrentWidget(mpExpressionPage);
   else
     {
       mpExpressionWidget->mpValidator->getExpression()->writeMathML(mml, false, 0);
-//      mpWidgetStackExpressionMml->raiseWidget(mpMmlPage);
-//      mpWidgetStackExpressionMml->setCurrentIndex(1);
-
-      qDebug() << "mml.str() = " << FROM_UTF8(mml.str());
 
       mpWidgetStackExpressionMml->setCurrentWidget(mpMmlPage);
       mpMmlScrollView->updateWidget(mml);
       MMLStr = FROM_UTF8(mml.str());
     }
 
-  /*
-    mpMmlScrollView->mpMmlWidget->setContent(FROM_UTF8(mml.str()));
-    mpMmlScrollView->resizeContents(mpMmlScrollView->mpMmlWidget->sizeHint().width(), mpMmlScrollView->mpMmlWidget->sizeHint().height());
-    mpMmlScrollView->setMinimumHeight(mpMmlScrollView->mpMmlWidget->sizeHint().height() + 30);
-  */
-//  mpMmlScrollView->updateWidget(mml);
-
-//  MMLStr = FROM_UTF8(mml.str());
-
 #endif /* HAVE_MML */
-
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->currentIndex();
 }
 
 void CQExpressionMmlWidget::init()
 {
-  qDebug() << "L" << __LINE__ << " on CQMEW mpExpressionWidget->text() = " << mpExpressionWidget->text();
-//  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->id(mpWidgetStackExpressionMml->visibleWidget());
-  qDebug() << "L" << __LINE__ << " on CQMEW: activeWidget = " << mpWidgetStackExpressionMml->currentIndex();
-
-  //  mpBtnViewExpression->setEnabled(FALSE);
 #ifndef HAVE_MML
   mpBtnViewExpression->hide();
 #endif // not HAVE_MML

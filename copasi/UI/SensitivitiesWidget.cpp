@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/11 15:49:24 $
+//   $Date: 2009/10/27 14:04:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -411,7 +411,6 @@ SensitivitiesWidget::initCombos()
 
   while (CSensProblem::SubTaskName[i].length() > 0)
     {
-      std::cout << i << ": SubTaskName = " << CSensProblem::SubTaskName[i] << std::endl;
       StringList.append(FROM_UTF8(CSensProblem::SubTaskName[i]));
       ++i;
     }

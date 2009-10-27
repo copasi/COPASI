@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/10/27 14:04:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,9 +32,7 @@
 CScanWidgetRandom::CScanWidgetRandom(QWidget* parent, const char* name, Qt::WindowFlags fl)
     : QWidget(parent, name, fl)
 {
-  std::cout << "Constructor: A" << std::endl;
   setupUi(this);
-  std::cout << "Constructor: B" << std::endl;
 
   lineEditMax->resize(112, 22);
   lineEditMin->resize(111, 22);
@@ -60,7 +58,6 @@ CScanWidgetRandom::CScanWidgetRandom(QWidget* parent, const char* name, Qt::Wind
 
   init();
   retranslateUi(this);
-  std::cout << "Constructor: C" << std::endl;
 }
 
 /*

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/28 15:13:56 $
+//   $Date: 2009/10/27 14:04:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,38 +57,40 @@ void CScanWidgetTask::init()
 #include "report/CCopasiObjectName.h"
 bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model)
 {
-  std::cout << "CScanWidgetTask::initFromScanProblem" << std::endl;
   if (!model) return false;
+
   mpModel = model;
 
   CCopasiTask::Type type = pg->getSubtask();
   int n;
+
   switch (type)
     {
-    case CCopasiTask::steadyState:
-      n = 0;
-      break;
-    case CCopasiTask::timeCourse:
-      n = 1;
-      break;
-    case CCopasiTask::mca:
-      n = 2;
-      break;
-    case CCopasiTask::lyap:
-      n = 3;
-      break;
-    case CCopasiTask::optimization:
-      n = 4;
-      break;
-    case CCopasiTask::parameterFitting:
-      n = 5;
-      break;
-    case CCopasiTask::sens:
-      n = 6;
-      break;
-    default :
-      n = 0;
+      case CCopasiTask::steadyState:
+        n = 0;
+        break;
+      case CCopasiTask::timeCourse:
+        n = 1;
+        break;
+      case CCopasiTask::mca:
+        n = 2;
+        break;
+      case CCopasiTask::lyap:
+        n = 3;
+        break;
+      case CCopasiTask::optimization:
+        n = 4;
+        break;
+      case CCopasiTask::parameterFitting:
+        n = 5;
+        break;
+      case CCopasiTask::sens:
+        n = 6;
+        break;
+      default :
+        n = 0;
     }
+
   ui.comboType->setCurrentItem(n);
 
   ui.checkInitialConditions->setChecked(!(pg->getAdjustInitialConditions()));
@@ -99,11 +101,11 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
 }
 
 bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
-  {
-    std::cout << "CScanWidgetTask::saveToScanProblem" << std::endl;
-    int type = ui.comboType->currentItem();
-    switch (type)
-      {
+{
+  int type = ui.comboType->currentItem();
+
+  switch (type)
+    {
       case 0:
         pg->setSubtask(CCopasiTask::steadyState);
         break;
@@ -127,26 +129,25 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
         break;
       default :
         pg->setSubtask(CCopasiTask::steadyState);
-      }
+    }
 
-    pg->setAdjustInitialConditions(!(ui.checkInitialConditions->isChecked()));
+  pg->setAdjustInitialConditions(!(ui.checkInitialConditions->isChecked()));
 
-    pg->setOutputInSubtask(ui.checkOutput->isChecked());
+  pg->setOutputInSubtask(ui.checkOutput->isChecked());
 
-    return true;
-  }
+  return true;
+}
 
 void CScanWidgetTask::typeChanged(int n)
 {
-  std::cout << "Type: " << n << std::endl;
   switch (n)
     {
-    case 1:
-      ui.checkOutput->setChecked(true);
-      break;
+      case 1:
+        ui.checkOutput->setChecked(true);
+        break;
 
-    default:
-      ui.checkOutput->setChecked(false);
-      break;
+      default:
+        ui.checkOutput->setChecked(false);
+        break;
     }
 }
