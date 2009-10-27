@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/25 12:11:21 $
+//   $Date: 2009/10/27 16:52:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -217,24 +217,7 @@ int main(int argc, char *argv[])
 
       pCPU->refresh();
       pWall->refresh();
-
-      std::cout << "CPU time:  ";
-      pCPU->print(&std::cout);
-      std::cout << std::endl;
-
-      std::cout << "Wall time: ";
-      pWall->print(&std::cout);
-      std::cout << std::endl;
 #endif // XXXX
-
-#ifdef XXXX
-      CEvaluationTree Expression;
-      Expression.setInfix("5**-sin(x)");
-      Expression.setInfix("a*5.0/-b");
-      Expression.setInfix("EXPONENTIALE+b*c");
-      Expression.setInfix("4.0*\"PI+b");
-      Expression.setInfix("2*(3+b)");
-#endif
 
       // Check whether we just have to validate
       bool Validate = false;
@@ -538,7 +521,6 @@ int main(int argc, char *argv[])
 finish:
   CCopasiRootContainer::destroy();
 
-  //std::cout << "Leaving main program." << std::endl;
   return retcode;
 }
 
@@ -563,7 +545,7 @@ int validate()
 {
   int retcode = 0;
 
-  // We are allready sure that the COPASI model compiled. That means
+  // We are already sure that the COPASI model compiled. That means
   // we only need to test the active tasks
   assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];

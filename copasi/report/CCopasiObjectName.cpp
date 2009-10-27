@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-  $Revision: 1.12 $
+  $Revision: 1.13 $
   $Name:  $
-  $Author: pwilly $
-  $Date: 2008/06/17 09:54:25 $
+  $Author: shoops $
+  $Date: 2009/10/27 16:52:48 $
   End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,94 +34,89 @@ using std::string;
 
 CCopasiObjectName::CCopasiObjectName():
     string()
-{
-  //std::cout << "CCopasiObjectName::CCopasiObjectName()" << std::endl;
-}
+{}
 
 CCopasiObjectName::CCopasiObjectName(const std::string & name):
     string(name)
-{
-  //std::cout << "CCopasiObjectName::CCopasiObjectName(): " << name << std::endl;
-}
+{}
 
 CCopasiObjectName::CCopasiObjectName(const CCopasiObjectName & src):
     string(src)
-{
-  //std::cout << "CCopasiObjectName::CCopasiObjectName(src): " << src << std::endl;
-}
+{}
 
 CCopasiObjectName::~CCopasiObjectName()
-{
-  //std::cout << "CCopasiObjectName::Destructor "  << std::endl;
-}
+{}
 
 CCopasiObjectName CCopasiObjectName::getPrimary() const
-  {return substr(0, findEx(","));}
+{return substr(0, findEx(","));}
 
 CCopasiObjectName CCopasiObjectName::getRemainder() const
-  {
-    std::string::size_type pos = findEx(",");
+{
+  std::string::size_type pos = findEx(",");
 
-    if (pos == std::string::npos) return CCopasiObjectName();
+  if (pos == std::string::npos) return CCopasiObjectName();
 
-    return substr(pos + 1);
-  }
+  return substr(pos + 1);
+}
 
 std::string CCopasiObjectName::getObjectType() const
-  {
-    CCopasiObjectName Primary(getPrimary());
+{
+  CCopasiObjectName Primary(getPrimary());
 
-    return CCopasiObjectName::unescape(Primary.substr(0, Primary.findEx("=")));
-  }
+  return CCopasiObjectName::unescape(Primary.substr(0, Primary.findEx("=")));
+}
 
 std::string CCopasiObjectName::getObjectName() const
-  {
-    CCopasiObjectName Primary = getPrimary();
-    std::string::size_type pos = Primary.findEx("=");
+{
+  CCopasiObjectName Primary = getPrimary();
+  std::string::size_type pos = Primary.findEx("=");
 
-    if (pos == std::string::npos) return "";
+  if (pos == std::string::npos) return "";
 
-    CCopasiObjectName tmp = Primary.substr(pos + 1);
-    return CCopasiObjectName::unescape(tmp.substr(0, tmp.findEx("[")));
-  }
+  CCopasiObjectName tmp = Primary.substr(pos + 1);
+  return CCopasiObjectName::unescape(tmp.substr(0, tmp.findEx("[")));
+}
 
 unsigned C_INT32
 CCopasiObjectName::getElementIndex(const unsigned C_INT32 & pos) const
-  {
-    std::string Index = getElementName(pos);
-    std::stringstream tmp(Index);
+{
+  std::string Index = getElementName(pos);
+  std::stringstream tmp(Index);
 
-    unsigned C_INT32 index = C_INVALID_INDEX;
+  unsigned C_INT32 index = C_INVALID_INDEX;
 
-    tmp >> index;
-    if (tmp.fail()) return C_INVALID_INDEX;
+  tmp >> index;
 
-    tmp << index;
-    if (Index != tmp.str()) return C_INVALID_INDEX;
+  if (tmp.fail()) return C_INVALID_INDEX;
 
-    return index;
-  }
+  tmp << index;
+
+  if (Index != tmp.str()) return C_INVALID_INDEX;
+
+  return index;
+}
 
 std::string CCopasiObjectName::getElementName(const unsigned C_INT32 & pos,
     const bool & unescape) const
-  {
-    CCopasiObjectName Primary = getPrimary();
+{
+  CCopasiObjectName Primary = getPrimary();
 
-    std::string::size_type open = findEx("[");
-    unsigned C_INT32 i;
-    for (i = 0; i < pos && open != std::string::npos; i++)
-      open = findEx("[", open + 1);
+  std::string::size_type open = findEx("[");
+  unsigned C_INT32 i;
 
-    std::string::size_type close = findEx("]", open + 1);
+  for (i = 0; i < pos && open != std::string::npos; i++)
+    open = findEx("[", open + 1);
 
-    if (open == std::string::npos || close == std::string::npos) return "";
+  std::string::size_type close = findEx("]", open + 1);
 
-    if (unescape)
-      return CCopasiObjectName::unescape(Primary.substr(open + 1,
-                                         close - open - 1));
+  if (open == std::string::npos || close == std::string::npos) return "";
 
-    return Primary.substr(open + 1, close - open - 1);
-  }
+  if (unescape)
+    return CCopasiObjectName::unescape(Primary.substr(open + 1,
+                                       close - open - 1));
+
+  return Primary.substr(open + 1, close - open - 1);
+}
 
 std::string CCopasiObjectName::escape(const std::string & name)
 {
@@ -158,22 +153,23 @@ std::string CCopasiObjectName::unescape(const std::string & name)
 std::string::size_type
 CCopasiObjectName::findEx(const std::string & toFind,
                           const std::string::size_type & pos) const
-  {
-    std::string::size_type where = find_first_of(toFind, pos);
+{
+  std::string::size_type where = find_first_of(toFind, pos);
 
-    std::string::size_type tmp;
+  std::string::size_type tmp;
 
-    while (where && where != std::string::npos)
-      {
-        tmp = find_last_not_of("\\", where - 1);
-        if ((where - tmp) % 2)
-          return where;
+  while (where && where != std::string::npos)
+    {
+      tmp = find_last_not_of("\\", where - 1);
 
-        where = find_first_of(toFind, where + 1);
-      }
+      if ((where - tmp) % 2)
+        return where;
 
-    return where;
-  }
+      where = find_first_of(toFind, where + 1);
+    }
+
+  return where;
+}
 
 //********** CRegisteredObjectName ***************
 
@@ -183,29 +179,21 @@ CRegisteredObjectName::CRegisteredObjectName():
     CCopasiObjectName()
 {
   mSet.insert(this);
-  //std::cout << "CRegisteredObjectName::CRegisteredObjectName()" << std::endl;
-  //std::cout << " ***** " << mSet.size() << std::endl;
 }
 
 CRegisteredObjectName::CRegisteredObjectName(const std::string & name):
     CCopasiObjectName(name)
 {
   mSet.insert(this);
-  //std::cout << "CRegisteredObjectName::CRegisteredObjectName(): " << name << std::endl;
-  //std::cout << " ***** " << mSet.size() << std::endl;
 }
 
 CRegisteredObjectName::CRegisteredObjectName(const CRegisteredObjectName & src):
     CCopasiObjectName(src)
 {
   mSet.insert(this);
-  //std::cout << "CRegisteredObjectName::CRegisteredObjectName(src): " << src << std::endl;
-  //std::cout << " ***** " << mSet.size() << std::endl;
 }
 
 CRegisteredObjectName::~CRegisteredObjectName()
 {
   mSet.erase(this);
-  //std::cout << "CRegisteredObjectName::Destructor " << std::endl;
-  //std::cout << " ***** " << mSet.size() << std::endl;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-$Revision: 1.9 $
+$Revision: 1.10 $
 $Name:  $
-$Author: pwilly $
-$Date: 2009/03/18 12:36:19 $
+$Author: shoops $
+$Date: 2009/10/27 16:56:43 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,6 +254,4 @@ void CScanContainerWidget::resizeEvent(QResizeEvent *e)
 
   adjustColumn(0);
   setColumnStretchable(1, true);
-
-//  std::cout << numRows() << ": " << e->size().width() << " - " << e->size().height() << std::endl;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/06 14:59:33 $
+//   $Date: 2009/10/27 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -512,7 +512,7 @@ bool CCopasiObject::isRoot() const
 const std::string & CCopasiObject::getKey() const
 {
   static std::string DefaultKey("");
-  //std::cout << "*********** CCopasiObject::getKey() should never be called! *********" << std::endl;
+
   return DefaultKey;
 }
 

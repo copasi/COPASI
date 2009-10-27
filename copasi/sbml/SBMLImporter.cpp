@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.246 $
+//   $Revision: 1.247 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:32 $
+//   $Date: 2009/10/27 16:53:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4441,7 +4441,6 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
           if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
             {
               this->mUsedFunctions.erase(pTree->getObjectName());
-              //std::cout << "removing " << pTree->getObjectName() << std::endl;
               pFunctionDB->removeFunction(pTree->getKey());
               // delete the entry from the copasi2sbmlmap.
               std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:28:13 $
+//   $Date: 2009/10/27 16:53:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,7 +114,6 @@ CTauLeapMethod::CTauLeapMethod(const CTauLeapMethod & src,
  */
 CTauLeapMethod::~CTauLeapMethod()
 {
-  //std::cout << "~CTauLeapMethod() " << CCopasiParameter::getObjectName() << std::endl;
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -258,12 +257,9 @@ void CTauLeapMethod::initMethod()
 
   /* get configuration data */
   mTau = * getValue("Tau").pDOUBLE;
-  //std::cout << "TAULEAP.Tau: " << mTau << std::endl;
   mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
-  //std::cout << "TAULEAP.UseRandomSeed: " << mUseRandomSeed << std::endl;
   mRandomSeed = * getValue("Random Seed").pUINT;
 
-  //std::cout << "TAULEAP.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
 
   /* set up internal data structures */
@@ -407,16 +403,13 @@ void CTauLeapMethod::updatePropensities()
 {
   //mA0Old = mA0;
   mA0 = 0;
-  //std::cout << "        updatePropensities: ";
 
   for (unsigned C_INT32 i = 0; i < mNumReactions; i++)
     {
       calculateAmu(i);
-      //std::cout << mAmu[i] << " ";
       mA0 += mAmu[i];
     }
 
-  //std::cout << std::endl;
   return;
 }
 
@@ -450,17 +443,13 @@ C_INT32 CTauLeapMethod::calculateAmu(C_INT32 index)
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = substrates[i].mMultiplicity;
-      //std::cout << "Num ident = " << num_ident << std::endl;
-      //total_substrates += num_ident;
 
       if (num_ident > 1)
         {
           flag = 1;
           number = mNumbers[substrates[i].mIndex];
           lower_bound = number - num_ident;
-          //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
           substrate_factor = substrate_factor * pow((double) number, (int)(num_ident - 1));  //optimization
-          //std::cout << "Substrate factor = " << substrate_factor << std::endl;
 
           number--; //optimization
 
@@ -509,7 +498,6 @@ C_INT32 CTauLeapMethod::calculateAmu(C_INT32 index)
       mAmu[index] = rate_factor;
     }
 
-  //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;
 
   // a more efficient way to calculate mass action kinetics could be included

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/11 15:14:18 $
+//   $Date: 2009/10/27 16:53:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,17 +129,13 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
   result.resize(resultindex);
 
   //copy result
-  //std::cout.precision(20);
   for (i = 0; i < imax; ++i)
     {
       if (imax > 1)
         resultindex[0] = i;
 
       result[resultindex] = *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer();
-      //std::cout << *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer() << "  ";
     }
-
-  //std::cout << std::endl;
 
   //progress bar
   ++mProgress;
@@ -147,8 +143,6 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
   if (mpProgressBar)
     {
       bool tmp = mpProgressBar->progress(mProgressHandler);
-      //if (!tmp)
-      //  std::cout << "STOP!" << std::endl;
       return tmp;
     }
 
@@ -166,21 +160,6 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
 
   setValue(variable, delta + value);
 
-  //   variable->setObjectValue(delta + value);
-  //
-  //   if (variable->getObjectName() == "Concentration")
-  //     {
-  //       std::cout << "Concentration" << std::endl;
-  //       CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
-  //       if (pMetab)
-  //         pMetab->setConcentration(delta + value);
-  //}
-
-  //debug
-  //std::cout << variable->getObjectDisplayName() << "  " << value << " -> ";
-  //value = *(C_FLOAT64*)variable->getValuePointer();
-  //std::cout << value << std::endl;
-
   return delta;
 }
 
@@ -190,7 +169,6 @@ void CSensMethod::setValue(CCopasiObject* variable, C_FLOAT64 value)
 
   if (variable->getObjectName() == "Concentration")
     {
-      //std::cout << "Concentration" << std::endl;
       CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
 
       if (pMetab)

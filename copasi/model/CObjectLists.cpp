@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/03 19:09:00 $
+//   $Date: 2009/10/27 16:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -492,14 +492,6 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       default:
         break;
     }
-
-  //debug output
-
-#ifdef COPASI_DEBUG
-  /*  std::vector<const CCopasiObject*>::const_iterator it, itEnd = ret.end();
-    for (it = ret.begin(); it != itEnd; ++it)
-      std::cout << (*it)->getObjectDisplayName() << std::endl;*/
-#endif // COPASI_DEBUG
 
   return ret;
 }

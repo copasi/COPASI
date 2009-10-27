@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CDataEntity.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/04/24 12:22:30 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:52:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,6 @@ void CDataEntity::putValueForSpecies(std::string nodeKey, C_FLOAT64 value)
   mSpeciesValueMap.erase(nodeKey); // delete old value
   mSpeciesValueMap.insert(std::pair<std::string, C_FLOAT64>
                           (nodeKey, value));
-  //std::cout << "put: " << nodeKey << "  : " << value << "  into map" << std::endl;
 }
 
 void CDataEntity::putOrigValueForSpecies(std::string nodeKey, C_FLOAT64 value)
@@ -54,11 +53,10 @@ void CDataEntity::putOrigValueForSpecies(std::string nodeKey, C_FLOAT64 value)
 // return concentration value for a certain reactant, specified by a key, returns -MAX C_FLOAT64, if key is not present in map
 C_FLOAT64 CDataEntity::getValueForSpecies(std::string nodeKey)
 {
-  //std::cout << "look for key: " << nodeKey << std::endl;
   std::map<std::string, C_FLOAT64>::iterator it;
-  //it = mSpeciesValueMap.begin();
-  //std::cout << "first element: " << (*it).first << "  " << (*it).second << std::endl;
+
   it = mSpeciesValueMap.find(nodeKey);
+
   if (it != mSpeciesValueMap.end())
     return (*it).second;
   else
@@ -69,6 +67,7 @@ C_FLOAT64 CDataEntity::getOrigValueForSpecies(std::string nodeKey)
 {
   std::map<std::string, C_FLOAT64>::iterator it;
   it = mOrigValueMap.find(nodeKey);
+
   if (it != mOrigValueMap.end())
     return (*it).second;
   else
@@ -80,14 +79,17 @@ std::ostream & operator<<(std::ostream &os, const CDataEntity & de)
   os << "time: " << de.mTime << "  size: " << std::endl;
   std::map<std::string, C_FLOAT64>::const_iterator it1;
   std::map<std::string, C_FLOAT64>::const_iterator it2;
+
   for (it1 = de.mSpeciesValueMap.begin() ; it1 != de.mSpeciesValueMap.end() ; it1++)
     {
       it2 = de.mOrigValueMap.find((*it1).first);
+
       if (it2 != de.mOrigValueMap.end())
         os << (*it1).first << "  : " << (*it1).second << "  orig: " << (*it2).second << std::endl;
       else
         os << (*it1).first << "  : " << (*it1).second << "  orig: not found" << std::endl;
     }
+
   //for (int i=0;i<gn.mConnectedCurveIndices.size();i++)
   // os << gn.mConnectedCurveIndices[i] << std::endl;;
 

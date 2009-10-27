@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/10/27 16:56:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,12 +174,6 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
           if (!pObject) return NULL;
         }
 
-      // just only show the object value
-      /*
-      C_FLOAT64 *pValue = (C_FLOAT64 *) pObject->getValuePointer();
-      if (pValue != NULL)
-      std::cout << "value = " << *pValue << std::endl;
-      */
       return pObject;
     }
 
@@ -203,8 +197,6 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
-
-  //std::cout << "Parent widget = " << parent->className() << " - " << parent->name() << std::endl;
 
   if (pDialog->exec() == QDialog::Rejected && pCurrentSelection)
     return *pCurrentSelection;
@@ -292,10 +284,6 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
             {
               index[0] = pDialog->mpCBRow->currentItem();
               index[1] = pDialog->mpCBColumn->currentItem();
-              /*
-                  C_FLOAT64 value = (*pArrayAnnotation->array())[index];
-                  std::cout << "its value = " << value << std::endl;
-              */
               returnVector[0] = pArrayAnnotation->addElementReference(index);
             }
 
@@ -310,7 +298,6 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
           && !value)
         {
           // whole matrix should be chosen -> the object itself will be returned
-          //std::cout << "whole matrix should be chosen" << std::endl;
           returnVector.resize(1);
           returnVector[0] = (CCopasiObject *) pArrayAnnotation;
           return returnVector;

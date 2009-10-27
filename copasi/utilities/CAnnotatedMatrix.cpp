@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:53 $
+//   $Date: 2009/10/27 16:56:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -284,8 +284,6 @@ void CArrayAnnotation::appendElementReferences(std::set< const CCopasiObject * >
 
 const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
 {
-  //std::cout << "CArrayAnnotation::getObject() " << cn << std::endl;
-
   if (cn == "")
     {
       return this;
@@ -454,7 +452,6 @@ bool CArrayAnnotation::isEmpty()
   // either the dimension itself ...
   int dim = dimensionality();
 
-  //  std::cout << "Dimensionality = " << dim << std::endl;
   if (dim == 0) return false;
 
   // ... or the size of each dimension should be greater than zero.
@@ -462,9 +459,6 @@ bool CArrayAnnotation::isEmpty()
 
   for (idx = 0; idx < dim; idx++)
     {
-      // std::cout << "size of dim " << idx << " = " << getAnnotationsString(idx, true).size()
-      //     << " -vs- " << getAnnotationsCN(idx).size() << " -vs- " << size()[idx] << std::endl;
-      // if (!getAnnotationsCN(idx).size()) // -> incl. 'sink' and 'source'
       if (!size()[idx])
         return true;
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/16 09:02:14 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:56:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,7 +124,6 @@ void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
   if (cs && cs->isUsed())
     {
       cs = NULL; //don´t accept a scaler that is already used
-      // std::cout << "tried to use a color scale several times!" << std::endl;
     }
 
   if (mpColorScale)
@@ -148,8 +147,6 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
       clearWidget();
       return;
     }
-
-  //std::cout << *mpArray;
 
   CCopasiAbstractArray::index_type index; index.resize(mpArray->dimensionality());
 

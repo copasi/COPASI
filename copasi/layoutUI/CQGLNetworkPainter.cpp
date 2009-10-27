@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.154 $
+//   $Revision: 1.155 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:45:27 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:52:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -626,8 +626,6 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
   CCopasiVector<CLReactionGlyph> reactions;
   reactions = lP->getListOfReactionGlyphs();
-
-  //std::cout << "number of reactions: " << reactions.size() << std::endl;
 
   //now extract curves to draw from reaction
   viewerCurves = std::vector<CGraphCurve>();
@@ -2127,7 +2125,6 @@ bool CQGLNetworkPainter::createDataSets()
         }
       else
         {
-          // std::cout << "empty time series: no variables present" << std::endl;
         }
     }
 
@@ -2258,13 +2255,10 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
                     {
                       if (isnan(val)) // test for NaN
                         {
-                          // std::cout << "NaN value found for " << viewerNodes[i] << std::endl;
-
                           std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(viewerNodes[i]);
 
                           if (itNodeObj != nodeMap.end())
                             {
-                              // std::cout << (*itNodeObj).second << std::endl;
                             }
 
                           setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
@@ -2294,7 +2288,6 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
                     {
                       if (isnan(val)) // test for NaN
                         {
-                          // std::cout << "NaN value found: " << viewerNodes[i] << std::endl;
                           setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
                         }
                       else
@@ -2664,11 +2657,9 @@ void CQGLNetworkPainter::zoomGraph(C_FLOAT64 zoomFactor)
 
 void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
 {
-  //std::cout << "zoom  " << zoomFactor << std::endl;
   this->mCurrentZoom *= zoomFactor;
 
   CLPoint cMax = CLPoint(this->mgraphMax.getX() * zoomFactor, this->mgraphMax.getY() * zoomFactor);
-  //this->setGraphSize(this->mgraphMin, cMax);
 
   if (pParentLayoutWindow != NULL)
     {
@@ -2721,20 +2712,16 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
       this->mFontsizeDouble = this->mFontsizeDouble * zoomFactor;
       this->mFontsize = (int)this->mFontsizeDouble;
 
-      //std::cout << "new font size: " << this->mFontsize << std::endl;
       for (i = 0; i < viewerLabels.size(); i++)
         {
           if (!preserveMinLabelHeightP)
             this->viewerLabels[i].scale(mCurrentZoom);
           else
             {
-              //std::cout << "height of label: " << this->viewerLabels[i].getHeight() << " *  " << zoomFactor << std::endl;
-
               if ((this->viewerLabels[i].getOrigHeight() * mCurrentZoom) >= MIN_HEIGHT)
                 this->viewerLabels[i].scale(mCurrentZoom);
               else
                 {
-                  //std::cout << "set font size to MIN_HEIGHT " << std::endl;
                   this->mFontsizeDouble = (double) MIN_HEIGHT;
                   this->mFontsize = MIN_HEIGHT;
                   this->viewerLabels[i].adaptToHeight(MIN_HEIGHT);
@@ -2961,13 +2948,11 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
 
 void CQGLNetworkPainter::printNodeMap()
 {
-  // std::cout << " node ids to label text mappings: " << std::endl;
   std::map<std::string, CGraphNode>::iterator nodeIt;
   nodeIt = nodeMap.begin();
 
   while (nodeIt != nodeMap.end())
     {
-      // std::cout << (*nodeIt).first << "  :  " << (*nodeIt).second.getLabelText() << std::endl;
       nodeIt++;
     }
 }
@@ -2975,8 +2960,6 @@ void CQGLNetworkPainter::printNodeMap()
 void CQGLNetworkPainter::printNodeInfoForKey(std::string key)
 {
   std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(key);
-  // if (itNodeObj != nodeMap.end())
-  // std::cout << (*itNodeObj).second << std::endl;
 }
 
 std::string CQGLNetworkPainter::getNameForNodeKey(std::string key)

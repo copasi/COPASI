@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/07 21:22:13 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:53:26 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -62,7 +67,7 @@ void CScanProblem::setSubtask(CCopasiTask::Type type)
 }
 
 CCopasiTask::Type CScanProblem::getSubtask() const
-  {return * (CCopasiTask::Type *) getValue("Subtask").pUINT;}
+{return *(CCopasiTask::Type *) getValue("Subtask").pUINT;}
 
 //************************************
 
@@ -72,7 +77,7 @@ void CScanProblem::setOutputInSubtask(bool ois)
 }
 
 const bool & CScanProblem::getOutputInSubtask() const
-  {return * getValue("Output in subtask").pBOOL;}
+{return * getValue("Output in subtask").pBOOL;}
 
 //************************************
 
@@ -82,7 +87,7 @@ void CScanProblem::setAdjustInitialConditions(bool aic)
 }
 
 const bool & CScanProblem::getAdjustInitialConditions() const
-  {return * getValue("Adjust initial conditions").pBOOL;}
+{return * getValue("Adjust initial conditions").pBOOL;}
 
 //************************************
 
@@ -91,29 +96,33 @@ void CScanProblem::load(CReadConfig & C_UNUSED(configBuffer),
 {}
 
 unsigned C_INT32 CScanProblem::getNumberOfScanItems() const
-  {
-    return mpScanItems->size();
-  }
+{
+  return mpScanItems->size();
+}
 
 const CCopasiParameterGroup* CScanProblem::getScanItem(unsigned C_INT32 index) const
-  {
-    CCopasiParameter* tmp = mpScanItems->getParameter(index);
-    if (tmp->getType() != CCopasiParameter::GROUP)
-      {
-        //std::cout << "ERROR: not a parameter group!!!" << std::endl;
-        return NULL;
-      }
-    return (CCopasiParameterGroup*)tmp;
-  }
+{
+  CCopasiParameter* tmp = mpScanItems->getParameter(index);
+
+  if (tmp->getType() != CCopasiParameter::GROUP)
+    {
+      // ERROR: not a parameter group!!!
+      return NULL;
+    }
+
+  return (CCopasiParameterGroup*)tmp;
+}
 
 CCopasiParameterGroup* CScanProblem::getScanItem(unsigned C_INT32 index)
 {
   CCopasiParameter* tmp = mpScanItems->getParameter(index);
+
   if (tmp->getType() != CCopasiParameter::GROUP)
     {
-      //std::cout << "ERROR: not a parameter group!!!" << std::endl;
+      // ERROR: not a parameter group!!!
       return NULL;
     }
+
   return (CCopasiParameterGroup*)tmp;
 }
 

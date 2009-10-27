@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/03 17:43:27 $
+//   $Date: 2009/10/27 16:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,11 +351,6 @@ void CModelEntity::setValue(const C_FLOAT64 & value)
   if (mStatus == FIXED) return;
 
   *mpValue = value;
-
-#ifdef COPASI_DEBUG
-  //if (mStatus == FIXED)
-  //std::cout << "warning: set the transient concentration on a fixed entity" << std::endl;
-#endif
 }
 
 void CModelEntity::setInitialValue(const C_FLOAT64 & initialValue)

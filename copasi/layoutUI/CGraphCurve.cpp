@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/10 15:48:26 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:52:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,10 +41,11 @@ CGraphCurve::CGraphCurve(const CGraphCurve & c)
   mRole = c.mRole;
 }
 
-void CGraphCurve::scale (const double & scaleFactor)
+void CGraphCurve::scale(const double & scaleFactor)
 {
   unsigned int i; // scale all segments
-  for (i = 0;i < mvCurveSegments.size();i++)
+
+  for (i = 0; i < mvCurveSegments.size(); i++)
     {
       mvCurveSegments[i].scale(scaleFactor);
     }
@@ -55,14 +56,15 @@ void CGraphCurve::scale (const double & scaleFactor)
 
 void CGraphCurve::invertOrderOfPoints()
 {
-  //std::cout << " invertOrderOfPoints for " << mvCurveSegments.size() << " segments" << std::endl;
   unsigned int i; // invert order of points in each segment
   CLPoint h; // puffer variable
-  for (i = 0;i < mvCurveSegments.size();i++)
+
+  for (i = 0; i < mvCurveSegments.size(); i++)
     {
       h = mvCurveSegments[i].getStart();
       mvCurveSegments[i].setStart(mvCurveSegments[i].getEnd());
       mvCurveSegments[i].setEnd(h);
+
       if (mvCurveSegments[i].isBezier())
         {
           h = mvCurveSegments[i].getBase1();
@@ -78,6 +80,7 @@ void CGraphCurve::invertOrderOfPoints()
     {// exchange line segment and end point
       CLLineSegment lastSeg = mvCurveSegments[mvCurveSegments.size() - 1];
       CLPoint p = lastSeg.getEnd();
+
       if (lastSeg.isBezier())
         {
           BezierCurve *bezier = new BezierCurve();
@@ -98,6 +101,7 @@ void CGraphCurve::invertOrderOfPoints()
           mArrow.setLine(lastSeg);
           mArrow.setPoint(CLPoint(p.getX(), p.getY()));
         }
+
       //ar = new CArrow(lastSeg, p.getX(), p.getY(), this->currentZoom);
     }
 }

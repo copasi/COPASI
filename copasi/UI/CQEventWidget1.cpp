@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/23 11:45:51 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:56:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,8 +95,6 @@ void CQEventWidget1::slotBtnDeleteClicked()
 /// Slot to create a new event; activated whenever the New button is clicked
 void CQEventWidget1::slotBtnNewClicked()
 {
-  // std::cout << "CQEW1::slotBtnNewClicked()" << std::endl;
-
   // save the current setting values
   saveToEvent();
 
@@ -113,7 +111,6 @@ void CQEventWidget1::slotBtnNewClicked()
       i++;
       name = "event_";
       name += TO_UTF8(QString::number(i));
-      // std::cout << "NAME = " << name << std::endl;
     }
 
   protectedNotify(ListViews::EVENT, ListViews::ADD);
@@ -129,9 +126,7 @@ void CQEventWidget1::slotBtnRevertClicked()
 /*! Slot to change the event name */
 void CQEventWidget1::slotNameChanged()
 {
-  // std::cout << "CQEW1::slotNameChanged - rName = ";
   std::string rName = TO_UTF8(mpLineEditName->text());
-  // std::cout << rName << std::endl;
 }
 
 /*! */
@@ -263,19 +258,16 @@ bool CQEventWidget1::loadFromEvent()
           if (sObjectName == "Compartment")
             {
               sName = FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(it->first)->getObjectDisplayName() + ".Volume");
-              // std::cout << "Compartments: " << UTF8_TO_CHAR(sName) << std::endl;
             }
 
           if (sObjectName == "Metabolite")
             {
               sName = FROM_UTF8("[" + CCopasiRootContainer::getKeyFactory()->get(it->first)->getObjectDisplayName() + "]");
-              // std::cout << "Metabolites: " << UTF8_TO_CHAR(sName) << std::endl;
             }
 
           if (sObjectName.contains("ModelValue"))
             {
               sName = FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(it->first)->getObjectDisplayName());
-              // std::cout << "Global Quantities: " << UTF8_TO_CHAR(sName) << std::endl;
             }
 
 #endif // XXXX
@@ -447,7 +439,6 @@ bool CQEventWidget1::update(ListViews::ObjectType /* objectType */, ListViews::A
 /*! Function to interact with an object of class CEvent */
 bool CQEventWidget1::enterProtected()
 {
-  // std::cout << "CQEW1::enter - key = " << key << std::endl;
   mpEvent = dynamic_cast< CEvent * >(mpObject);
   mCurrentTarget = C_INVALID_INDEX;
 

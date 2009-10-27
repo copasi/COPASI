@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:32 $
+//   $Date: 2009/10/27 16:53:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,7 +207,6 @@ CHybridMethodLSODA *CHybridMethodLSODA::createHybridMethodLSODA(CTrajectoryProbl
 
 CTrajectoryMethod::Status CHybridMethodLSODA::step(const double & deltaT)
 {
-  //outputDebug(std::cout, 0);
   // write the current state to the model
   //  mpProblem->getModel()->setState(mpCurrentState); // is that correct?
 
@@ -312,20 +311,13 @@ void CHybridMethodLSODA::initMethod(C_FLOAT64 start_time)
 
   /* get configuration data */
   mMaxSteps = * getValue("Max Internal Steps").pUINT;
-  //std::cout << "HYBRID.MaxSteps: " << mMaxSteps << std::endl;
   mLowerStochLimit = * getValue("Lower Limit").pDOUBLE;
-  //std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
   mUpperStochLimit = * getValue("Upper Limit").pDOUBLE;
-  //std::cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << std::endl;
   mStepsize = * getValue("Partitioning Stepsize").pDOUBLE;
-  //std::cout << "HYBRID.Partitioning Stepsize: " << mStepsize << std::endl;
   mPartitioningInterval = * getValue("Partitioning Interval").pUINT;
-  //std::cout << "HYBRID.PartitioningInterval: " << mPartitioningInterval << std::endl;
   mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
-  //std::cout << "HYBRID.UseRandomSeed: " << mUseRandomSeed << std::endl;
   mRandomSeed = * getValue("Random Seed").pUINT;
 
-  //std::cout << "HYBRID.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
 
   mStoi = mpModel->getStoiReordered();
@@ -339,12 +331,6 @@ void CHybridMethodLSODA::initMethod(C_FLOAT64 start_time)
   setupPriorityQueue(start_time); // initialize mPQ
 
   mMaxStepsReached = false;
-
-  //deprecated:  mOutputFileName = string(DEFAULT_OUTPUT_FILE_LSODA);
-  //deprecated:  mOutputFile.open(DEFAULT_OUTPUT_FILE_LSODA); // DEFAULT_OUTPUT_FILE in CHybridMethod.h
-  //deprecated:  mOutputCounter = OUTPUT_COUNTER; // OUTPUT_COUNTER in CHybridMethod.h
-
-  //deprecated:  outputDebug(std::cout, 0); // DEBUG
 
   /* CONFIGURE LSODA ***********************************************************************/
 
@@ -753,17 +739,13 @@ void CHybridMethodLSODA::calculateAmu(C_INT32 rIndex)
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = substrates[i].mMultiplicity;
-      //std::cout << "Num ident = " << num_ident << std::endl;
-      //total_substrates += num_ident;
 
       if (num_ident > 1)
         {
           flag = 1;
           number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getValue());
           lower_bound = number - num_ident;
-          //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
           substrate_factor = substrate_factor * pow((double) number, (int) num_ident - 1); //optimization
-          //std::cout << "Substrate factor = " << substrate_factor << std::endl;
 
           number--; // optimization
 
@@ -788,7 +770,6 @@ void CHybridMethodLSODA::calculateAmu(C_INT32 rIndex)
 
   if (flag)
     {
-      //std::cout << "Rate factor = " << rate_factor << std::endl;
       amu *= rate_factor / substrate_factor;;
       mAmu[rIndex] = amu;
     }
@@ -797,7 +778,6 @@ void CHybridMethodLSODA::calculateAmu(C_INT32 rIndex)
       mAmu[rIndex] = rate_factor;
     }
 
-  //std::cout << "Index = " << rIndex << "  Amu = " << amu << std::endl;
   return;
 
   // a more efficient way to calculate mass action kinetics could be included
@@ -927,8 +907,7 @@ void CHybridMethodLSODA::setupBalances()
         }
     }
 
-  mMaxBalance = maxBalance; //std::cout << "mMaxBalance: " << mMaxBalance << std::endl;
-  //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
+  mMaxBalance = maxBalance;
   mMaxIntBeforeStep = INT_MAX - 1 - mMaxSteps * mMaxBalance;
 
   return;
@@ -1164,7 +1143,6 @@ void CHybridMethodLSODA::setupPartition()
       prevFlag->mpNext = NULL;
     }
 
-  //outputDebug(std::cout, 0);
   return;
 }
 
@@ -1188,8 +1166,6 @@ void CHybridMethodLSODA::setupPriorityQueue(C_FLOAT64 startTime)
           calculateAmu(i);
           time = startTime + generateReactionTime(i);
           mPQ.insertStochReaction(i, time);
-          //std::cout << "time: " << mpCurrentState->getTime() << " rIndex: "
-          //<< i << "      ->stoch" << std::endl; // DEBUG
         }
     }
 
@@ -1225,8 +1201,6 @@ void CHybridMethodLSODA::partitionSystem()
                 {
                   insertDeterministicReaction(*iter);
                   mPQ.removeStochReaction(*iter);
-                  //std::cout << "time: " << mpCurrentState->getTime() << " rIndex: " << *iter
-                  //<< " stoch->" << std::endl; // DEBUG
                 }
             }
         }
@@ -1254,8 +1228,6 @@ void CHybridMethodLSODA::partitionSystem()
                   key = mpProblem->getModel()->getTime() + generateReactionTime(*iter);
 
                   mPQ.insertStochReaction(*iter, key);
-                  //std::cout << "time: " << mpCurrentState->getTime() << " rIndex: " << *iter
-                  //<< "      ->stoch" << std::endl; // DEBUG
                 }
 
               mReactionFlags[*iter].mValue++;
@@ -1354,9 +1326,6 @@ std::set<std::string> *CHybridMethodLSODA::getDependsOn(C_INT32 rIndex)
   unsigned C_INT32 i, imax = (*mpReactions)[rIndex]->getFunctionParameters().size();
   unsigned C_INT32 j, jmax;
 
-  //std::vector <const CMetab*> metablist;
-  //std::cout << rIndex << " depends on ";
-
   for (i = 0; i < imax; ++i)
     {
       if ((*mpReactions)[rIndex]->getFunctionParameters()[i]->getUsage() == CFunctionParameter::PARAMETER)
@@ -1370,11 +1339,9 @@ std::set<std::string> *CHybridMethodLSODA::getDependsOn(C_INT32 rIndex)
       for (j = 0; j < jmax; ++j)
         {
           retset->insert(metabKeylist[j]);
-          //std::cout << " " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
         }
     }
 
-  //std::cout << std::endl;
   return retset;
 }
 
@@ -1393,17 +1360,14 @@ std::set<std::string> *CHybridMethodLSODA::getAffects(C_INT32 rIndex)
   // Get the balances  associated with the reaction at this index
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
 
-  //std::cout << rIndex << " affects ";
   for (i = 0; i < mLocalBalances[rIndex].size(); i++)
     {
       if (mLocalBalances[rIndex][i].mMultiplicity != 0)
         {
           retset->insert(mLocalBalances[rIndex][i].mpMetabolite->getKey());
-          //std::cout << " " << mLocalBalances[rIndex][i].mpMetabolite->getObjectName() << ":" << mLocalBalances[rIndex][i].mpMetabolite->getKey();
         }
     }
 
-  //std::cout << std::endl;
   return retset;
 }
 
@@ -1417,30 +1381,6 @@ std::set<std::string> *CHybridMethodLSODA::getAffects(C_INT32 rIndex)
 std::set<C_INT32> *CHybridMethodLSODA::getParticipatesIn(C_INT32 /* rIndex */)
 {
   std::set<C_INT32> *retset = new std::set<C_INT32>;
-  /*
-  CCopasiVector<CReaction::CId2Metab> & subst = (*mpReactions)[rIndex]->getId2Substrates();
-
-  CCopasiVector<CReaction::CId2Metab> & prod = (*mpReactions)[rIndex]->getId2Products();
-
-  CCopasiVector<CReaction::CId2Metab> & modif = (*mpReactions)[rIndex]->getId2Modifiers();
-
-  unsigned C_INT32 i;
-
-  for (i = 0; i < subst.size(); i++)
-    {
-      retset->insert(findMetab(subst[i]->getMetabolite()));
-    }
-
-  for (i = 0; i < prod.size(); i++)
-    {
-      retset->insert(findMetab(prod[i]->getMetabolite()));
-    }
-  for (i = 0; i < modif.size(); i++)
-    {
-      retset->insert(findMetab(modif[i]->getMetabolite()));
-    }
-  */ //TODO reac
-  //std::cout << "getParticipatesIn(" << rIndex << ") is broken!" << std::endl;
   return retset;
 }
 

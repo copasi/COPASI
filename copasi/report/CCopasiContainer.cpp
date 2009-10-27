@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/28 15:12:17 $
+//   $Date: 2009/10/27 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,17 +97,6 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
   objectMap::const_iterator it = range.first;
 
   while (it != range.second && it->second->getObjectType() != Type) ++it;
-
-  //debug
-  /*
-  std::cout << "Container::getObject(); this->getObjectName(): " << getObjectName() << " CN: " << cn << std::endl;
-  objectMap::const_iterator dit, ditEnd=mObjects.end();
-  for (dit=mObjects.begin(); dit != ditEnd; ++dit)
-    std::cout << "   " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
-  ditEnd=range.second;
-  for (dit=range.first; dit != ditEnd; ++dit)
-    std::cout << " * " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
-  */
 
   if (it == range.second) //not found in the list of children
     {

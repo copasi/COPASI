@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2009/10/27 16:52:48 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -49,17 +54,17 @@ void CPlotSpecification::setActive(const bool & active)
 {mActive = active;}
 
 const bool & CPlotSpecification::isActive() const
-  {return mActive;}
+{return mActive;}
 
 bool CPlotSpecification::isLogX() const
-  {
-    return *getValue("log X").pBOOL;
-  }
+{
+  return *getValue("log X").pBOOL;
+}
 
 bool CPlotSpecification::isLogY() const
-  {
-    return *getValue("log Y").pBOOL;
-  }
+{
+  return *getValue("log Y").pBOOL;
+}
 
 void CPlotSpecification::setLogX(bool l)
 {
@@ -99,19 +104,19 @@ bool CPlotSpecification::createDefaultPlot(const CModel* model)
   const CCopasiObject * tmp;
 
   CPlotDataChannelSpec name1 = model->getObject(CCopasiObjectName("Reference=Time"))->getCN();
-  //std::cout << name1 << std::endl;
 
   unsigned C_INT32 i, imax = model->getMetabolites().size();
+
   for (i = 0; i < imax; ++i)
     {
       tmp = model->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));
       name2 = tmp->getCN();
       itemTitle = tmp->getObjectDisplayName();
-      //std::cout << itemTitle << " : " << name2 << std::endl;
 
       plItem = this->createItem(itemTitle, CPlotItem::curve2d);
       plItem->addChannel(name1);
       plItem->addChannel(name2);
     }
+
   return true; //TODO: really check;
 }

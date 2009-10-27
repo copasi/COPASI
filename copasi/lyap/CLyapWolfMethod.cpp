@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:32 $
+//   $Date: 2009/10/27 16:52:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,7 +135,6 @@ double CLyapWolfMethod::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
     }
 
-  //std::cout << mTime - startTime << std::endl;
   return mTime - startTime;
 }
 
@@ -170,8 +169,6 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
     mData.dim = mSystemSize * (1 + mNumExp) + 1;
   else
     mData.dim = mSystemSize * (1 + mNumExp);
-
-  //std::cout << "lyap: " << mSystemSize << " " << mNumExp << " " << mData.dim << std::endl;
 
   //reserve space for exponents. The vectors in the task are resized by the task because they
   //need to have a minimum size defined in the task
@@ -323,20 +320,6 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   for (i = 0; i < mSystemSize; ++i, dbl2 += (mSystemSize + 1))
     * dbl1 += *dbl2;
 
-  //debug output
-  /*  std::cout << mJacobian;
-    std::cout << "y: ";
-    const C_FLOAT64 *cdbl, *cdblEnd = y + 2*mSystemSize;
-    for (cdbl = y + mSystemSize; cdbl != cdblEnd; ++cdbl)
-      std::cout << *cdbl << " ";
-    std::cout << std::endl;
-
-    std::cout << "ydot: ";
-    dblEnd = ydot + 2*mSystemSize;
-    for (dbl = ydot + mSystemSize; dbl != dblEnd; ++dbl)
-      std::cout << *dbl << " ";
-    std::cout << std::endl;*/
-
   return;
 }
 
@@ -373,7 +356,6 @@ bool CLyapWolfMethod::calculate()
 
           /* Currently this is correct since no events are processed. */
           //CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
-          // std::cout << "needed several steps for transient" << std::endl;
 
           mpTask->methodCallback((mTime - startTime) * handlerFactor, true);
         }
@@ -384,7 +366,6 @@ bool CLyapWolfMethod::calculate()
     }
   else
     {
-      // std::cout << "no transient" << std::endl;
     }
 
   //copy working array to state
@@ -433,10 +414,6 @@ bool CLyapWolfMethod::calculate()
           mpTask->mAverageDivergence = mSumDivergence / (mTime - transientTime);
         }
 
-      //       std::cout << mTime << " "
-      //               << mpTask->mLocalExponents[0] << " " << mSumExponents[0]
-      //               << " " << mpTask->mExponents[0] <<  std::endl;
-
       //copy working array to state
       memcpy(mpState->beginIndependent(), mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
       mpState->setTime(mTime);
@@ -466,14 +443,6 @@ void CLyapWolfMethod::orthonormalize()
 
   for (i = 1; i < mNumExp; ++i)
     {
-      /*      C_FLOAT64 norm = 0;
-            C_FLOAT64 *dbl, *dblEnd = mVariables.array() + (i+2) * mSystemSize;
-            for (dbl = mVariables.array() + (i+1)*mSystemSize; dbl != dblEnd; ++dbl)
-              norm += *dbl * *dbl;
-            mNorms[i] = sqrt(norm);
-            std::cout << mNorms[0] << std::endl;
-            for (dbl = mVariables.array() + (i+1)*mSystemSize; dbl != dblEnd; ++dbl)
-              *dbl /= mNorms[i];*/
       dbl += mSystemSize;
       dblEnd = dbl + mSystemSize;
 

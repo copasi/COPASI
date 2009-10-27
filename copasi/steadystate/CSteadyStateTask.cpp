@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/04 14:04:39 $
+//   $Date: 2009/10/27 16:53:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -309,9 +309,6 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   mResult = pMethod->process(mpSteadyState,
                              mJacobianX,
                              mpCallBack);
-
-  //debug
-  //std::cout << pMethod->getMethodLog() << std::endl;
 
   if (mResult == CSteadyStateMethod::notFound)
     restore();

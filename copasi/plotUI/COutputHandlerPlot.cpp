@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.19 $
+$Revision: 1.20 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/03/02 21:02:16 $
+$Date: 2009/10/27 16:52:48 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,6 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
       if (pSpecification->isActive())
         {
           key = pSpecification->CCopasiParameter::getKey();
-          //std::cout << key << std::endl;
 
           if (!mPlotMap.count(key))
             mPlotMap[key] = new PlotWindow(this, pSpecification);
@@ -70,6 +69,7 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
           mInterfaces.insert(mPlotMap[key]);
         }
     }
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   return COutputHandler::compile(listOfContainer, pDataModel);
 }

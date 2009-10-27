@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/08/28 12:38:45 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:53:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -801,8 +801,6 @@ void CTSSAMethod::schur(C_INT &info)
 
   if (info)
     {
-      //  std::cout << "Problems with Schur decomposition " << std::endl;
-
       return;
     }
 
@@ -1229,8 +1227,6 @@ void CTSSAMethod::schur_desc(C_INT &info)
 
   if (info)
     {
-      //   std::cout << "Problems with schur decomposition " << std::endl;
-
       return;
     }
 
@@ -1601,7 +1597,6 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
   /*  if (info) TODO*/
   if (info)
     {
-      //    std::cout << "Problems with the solution of Sylvester equation" << std::endl;
       return;
     }
 
@@ -1693,13 +1688,6 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
   C_INT flag_sylvester;
 
   flag_sylvester = 1;
-
-  if (flag_sylvester == 0)
-    {
-      // std::cout << " Matrix S = mTdInverse *Jacobian * mTd  " << std::endl;
-      // std::cout << S << std::endl;
-      // std::cout << std::endl;
-    }
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
@@ -1838,8 +1826,6 @@ void CTSSAMethod::map_index_desc(C_FLOAT64 *eval_r, C_INT *index, const C_INT & 
     if (eval_r[i] < min_value)
       min_value = eval_r[i];
 
-  // std::cout << "min_value: " << min_value << std::endl;
-
   for (i = 0; i < dim; i++)
     {
       index[i] = 0;
@@ -1869,11 +1855,6 @@ void CTSSAMethod::map_index_desc(C_FLOAT64 *eval_r, C_INT *index, const C_INT & 
     if (eval_r[i] == eval_r[i + 1])
       index[i + 1] = index[i];
 
-  // for (i = 0; i < dim; i ++)
-  //  std::cout << "new index[" << i + 1 << "]:" << index[i] << std::endl;
-
-  // std::cout << "End of test" << std::endl;
-  // std::cout << std::endl;
   return;
 }
 

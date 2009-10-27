@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.383 $
+//   $Revision: 1.384 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:33 $
+//   $Date: 2009/10/27 16:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1587,7 +1587,6 @@ bool CModel::buildNonSimulatedSequence()
         }
     }
 
-  //std::cout << "Non Simulated: " ; //debug
   try
     {
       mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
@@ -2950,7 +2949,7 @@ bool CModel::convert2NonReversible()
         reac0 = steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
         rn2 = reac0->getObjectName() + " (backward)";
-        //std::cout << i << "  ";
+
         fn = reac0->getFunction()->getObjectName();
 
         const CFunction* pFunc = reac0->getFunction();
@@ -2984,9 +2983,6 @@ bool CModel::convert2NonReversible()
                 pdelete(tmp.second);
                 continue;
               }
-
-            //if (tmp.first) std::cout << *tmp.first << "\n\n";
-            //if (tmp.second) std::cout << *tmp.second;
 
             if (tmp.first) CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.first);
 
@@ -3279,10 +3275,7 @@ std::string CModel::suitableForStochasticSimulation() const
 
 #ifdef COPASI_DEBUG
 void CModel::check() const
-{
-  //if (mCompileIsNecessary)
-  //{std::cout << "******** compile should have been called" << std::endl;}
-}
+{}
 #endif
 
 void CModel::buildLinkZero()

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/NodeSizePanel.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/10/04 17:57:58 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:52:19 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,21 +42,17 @@ void NodeSizePanel::setMinAndMaxValues()
 
   if ((tmp) && (ok1) && (ok2) && (val1 < val2))
     tmp->setMinAndMaxValue(val1, val2);
-  //std::cout << "set min and max value " << val1 << " /  " << val2 << std::endl;
+
   close();
 }
 
 void NodeSizePanel::cancel()
 {
-  //std::cout << "cancel" << std::endl;
   close();
 }
 
 void NodeSizePanel::setMinValue()
 {
-  //QWidget *widget = parentWidget();
-  //QString *t = new QString(widget->className());
-  //std::cout << "class: " << *t << std::endl;
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget());
   assert(tmp);
   QString s = lineEdit1->text();
@@ -60,7 +61,6 @@ void NodeSizePanel::setMinValue()
 
   if ((tmp) && (ok))
     tmp->setMinValue(val);
-  //std::cout << "set min value " << val << std::endl;
 }
 
 void NodeSizePanel::setMaxValue()
@@ -70,15 +70,16 @@ void NodeSizePanel::setMaxValue()
   QString s = lineEdit1->text();
   bool ok;
   C_INT32 val = s.toInt(&ok, 10);
+
   if ((tmp) && (ok))
     tmp->setMaxValue(val);
-  //std::cout << "set max value" << val << std::endl;
 }
 
 void NodeSizePanel::init()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget());
   assert(tmp);
+
   if (tmp)
     {
       C_INT32 minV = (C_INT32)(tmp->getMinNodeSize());

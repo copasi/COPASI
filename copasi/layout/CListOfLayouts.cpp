@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:16 $
+//   $Date: 2009/10/27 16:52:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,71 +51,66 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
 
 void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*> & copasimodelmap,
                                   const std::map<std::string, const SBase*>& idMap) const
-  {
-    if (!lol) return;
+{
+  if (!lol) return;
 
-    // we will generate sbml ids that are unique within the sbml file (although
-    // this may not be strictly necessary for the layouts). Therefore we will keep only
-    // one set of IDs:
-    std::map<std::string, const SBase*> sbmlIDs = idMap;
+  // we will generate SBML ids that are unique within the SBML file (although
+  // this may not be strictly necessary for the layouts). Therefore we will keep only
+  // one set of IDs:
+  std::map<std::string, const SBase*> sbmlIDs = idMap;
 
-    //debug output
-    //         std::map<CCopasiObject*, SBase*>::const_iterator it;
-    //         for (it=copasimodelmap.begin(); it != copasimodelmap.end(); ++it)
-    //           {
-    //             std::cout << it->first->getObjectDisplayName() << " -> " << it->second->getId() << " . " << it->second->getName() << std::endl;
-    //}
+  //this will contain the SBML objects that were touched by this method.
+  std::set<SBase*> writtenToSBML;
 
-    //this will contain the SBML objects that were touched by this method.
-    std::set<SBase*> writtenToSBML;
+  //some of the following code is currently useless: Layouts are never part of
+  //the copasimodelmap.
 
-    //some of the following code is currently useless: Layouts are never part of
-    //the copasimodelmap.
+  //write all COPASI object to corresponding libsbml objects
+  unsigned C_INT32 i, imax = this->size();
 
-    //write all copasi object to corresponding libsbml objects
-    unsigned C_INT32 i, imax = this->size();
-    for (i = 0; i < imax; ++i)
-      {
-        CLayout * tmp = (*this)[i];
+  for (i = 0; i < imax; ++i)
+    {
+      CLayout * tmp = (*this)[i];
 
-        //check if the layout exists in the libsbml data
-        std::map<CCopasiObject*, SBase*>::const_iterator it;
-        it = copasimodelmap.find(tmp);
+      //check if the layout exists in the libsbml data
+      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      it = copasimodelmap.find(tmp);
 
-        Layout * pLayout;
-        if (it == copasimodelmap.end()) //not found
-          {
-            //create new object and add to libsbml data structures
-            pLayout = new Layout;
-            lol->appendAndOwn(pLayout);
+      Layout * pLayout;
 
-            //add object to map
-            //copasimodelmap[tmp] = pLayout; should not really be done in export
-          }
-        else
-          {
-            pLayout = dynamic_cast<Layout*>(it->second);
-          }
+      if (it == copasimodelmap.end()) //not found
+        {
+          //create new object and add to libsbml data structures
+          pLayout = new Layout;
+          lol->appendAndOwn(pLayout);
 
-        tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs);
-        writtenToSBML.insert(pLayout);
-      }
+          //add object to map
+          //copasimodelmap[tmp] = pLayout; should not really be done in export
+        }
+      else
+        {
+          pLayout = dynamic_cast<Layout*>(it->second);
+        }
 
-    //check if a something needs to be deleted from the sbml data structures
-    for (i = lol->size(); i > 0;--i)
-      {
-        SBase* object = lol->get(i - 1);
+      tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs);
+      writtenToSBML.insert(pLayout);
+    }
 
-        if (writtenToSBML.find(object) == writtenToSBML.end())
-          {
-            lol->remove(i - 1);
-            pdelete(object);
+  //check if a something needs to be deleted from the SBML data structures
+  for (i = lol->size(); i > 0; --i)
+    {
+      SBase* object = lol->get(i - 1);
 
-            //TODO: delete from map
-            //the object and every object it contains need to be removed from the
-            //map.
-            //For now I do not implement this since layout object are not added to the
-            //map in the first place.
-          }
-      }
-  }
+      if (writtenToSBML.find(object) == writtenToSBML.end())
+        {
+          lol->remove(i - 1);
+          pdelete(object);
+
+          //TODO: delete from map
+          //the object and every object it contains need to be removed from the
+          //map.
+          //For now I do not implement this since layout object are not added to the
+          //map in the first place.
+        }
+    }
+}

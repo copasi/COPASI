@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/10/27 16:53:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -476,18 +476,6 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
           *pScaled = std::numeric_limits<C_FLOAT64>::infinity();
       }
 
-  //std::cout << "scConcCC " << std::endl;
-  //std::cout << (CMatrix<C_FLOAT64>)mScaledConcCC << std::endl;
-
-  //update annotations
-  //   mScaledConcCCAnn->resize();
-  //   mScaledConcCCAnn->setCopasiVector(0, &metabs);
-  //   mScaledConcCCAnn->setCopasiVector(1, &reacs);
-
-  // Scale FluxCC
-  // Reactions are columns and rows
-  //   mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols());
-
   CCopasiVector< CReaction >::const_iterator itReactionCol;
 
   for (itReaction = reacs.begin(),
@@ -510,11 +498,6 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
             *pScaled = (((*itReaction)->getFlux() < 0.0) ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
         }
     }
-
-  //update annotations
-  /*  mScaledFluxCCAnn->resize();
-    mScaledFluxCCAnn->setCopasiVector(0, &reacs);
-    mScaledFluxCCAnn->setCopasiVector(1, &reacs);*/
 }
 
 /**

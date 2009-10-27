@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:15 $
+//   $Date: 2009/10/27 16:53:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,7 +104,6 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
   if (pModel == NULL)
     return false;
 
-  //std::cout << n << std::endl;
   mpState = & pModel->getState();
 
   const CStateTemplate & Template = pModel->getStateTemplate();
@@ -200,146 +199,170 @@ void CTimeSeries::finish()
 //*** the methods to retrieve data from the CTimeSeries *******
 
 const unsigned C_INT32 & CTimeSeries::getRecordedSteps() const
-  {return mRecordedSteps;}
+{return mRecordedSteps;}
 
 const unsigned C_INT32 & CTimeSeries::getNumVariables() const
-  {return mCols;}
+{return mCols;}
 
 const C_FLOAT64 & CTimeSeries::getData(const unsigned C_INT32 & step,
                                        const unsigned C_INT32 & var) const
-  {
-    if (step < mRecordedSteps && var < mCols)
-      return *(mArray + step * mCols + mPivot[var]);
+{
+  if (step < mRecordedSteps && var < mCols)
+    return *(mArray + step * mCols + mPivot[var]);
 
-    return mDummyFloat;
-  }
+  return mDummyFloat;
+}
 
 C_FLOAT64 CTimeSeries::getConcentrationData(const unsigned C_INT32 & step,
     const unsigned C_INT32 & var) const
-  {
-    if (step < mRecordedSteps && var < mCols)
-      {
-        const unsigned C_INT32 & Col = mPivot[var];
-        if (mCompartment[Col] != C_INVALID_INDEX)
-          return *(mArray + step * mCols + Col) * mNumberToQuantityFactor / *(mArray + step * mCols + mCompartment[Col]);
-        else
-          return *(mArray + step * mCols + Col);
-      }
+{
+  if (step < mRecordedSteps && var < mCols)
+    {
+      const unsigned C_INT32 & Col = mPivot[var];
 
-    return mDummyFloat;
-  }
+      if (mCompartment[Col] != C_INVALID_INDEX)
+        return *(mArray + step * mCols + Col) * mNumberToQuantityFactor / *(mArray + step * mCols + mCompartment[Col]);
+      else
+        return *(mArray + step * mCols + Col);
+    }
+
+  return mDummyFloat;
+}
 
 const std::string & CTimeSeries::getTitle(const unsigned C_INT32 & var) const
-  {
-    if (var < mCols)
-      return mTitles[mPivot[var]];
+{
+  if (var < mCols)
+    return mTitles[mPivot[var]];
 
-    return mDummyString;
-  }
+  return mDummyString;
+}
 
 const std::string & CTimeSeries::getKey(const unsigned C_INT32 & var) const
-  {
-    if (var < mCols)
-      return mKeys[mPivot[var]];
+{
+  if (var < mCols)
+    return mKeys[mPivot[var]];
 
-    return mDummyString;
-  }
+  return mDummyString;
+}
 
 std::string CTimeSeries::getSBMLId(const unsigned C_INT32 & var, const CCopasiDataModel* pDataModel) const
-  {
-    std::string key = getKey(var);
-    std::string result("");
+{
+  std::string key = getKey(var);
+  std::string result("");
 
-    if (key != mDummyString)
-      {
-        const CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-        if (pObject != NULL)
-          {
-            std::map<CCopasiObject*, SBase*>::const_iterator pos = const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().find(const_cast<CCopasiObject*>(pObject));
-            if (pos != const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().end())
-              {
-                const SBase* pSBMLObject = pos->second;
-                const Compartment* pSBMLCompartment = NULL;
-                const Species* pSBMLSpecies = NULL;
-                const Parameter* pSBMLParameter = NULL;
-                const Model* pSBMLModel = NULL;
-                switch (pSBMLObject->getTypeCode())
-                  {
+  if (key != mDummyString)
+    {
+      const CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+      if (pObject != NULL)
+        {
+          std::map<CCopasiObject*, SBase*>::const_iterator pos = const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().find(const_cast<CCopasiObject*>(pObject));
+
+          if (pos != const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().end())
+            {
+              const SBase* pSBMLObject = pos->second;
+              const Compartment* pSBMLCompartment = NULL;
+              const Species* pSBMLSpecies = NULL;
+              const Parameter* pSBMLParameter = NULL;
+              const Model* pSBMLModel = NULL;
+
+              switch (pSBMLObject->getTypeCode())
+                {
                   case SBML_COMPARTMENT:
                     pSBMLCompartment = dynamic_cast<const Compartment*>(pSBMLObject);
+
                     if (pSBMLCompartment && pSBMLCompartment->isSetId())
                       {
                         result = pSBMLCompartment->getId();
                       }
+
                     break;
                   case SBML_SPECIES:
                     pSBMLSpecies = dynamic_cast<const Species*>(pSBMLObject);
+
                     if (pSBMLSpecies && pSBMLSpecies->isSetId())
                       {
                         result = pSBMLSpecies->getId();
                       }
+
                     break;
                   case SBML_PARAMETER:
                     pSBMLParameter = dynamic_cast<const Parameter*>(pSBMLObject);
+
                     if (pSBMLParameter && pSBMLParameter->isSetId())
                       {
                         result = pSBMLParameter->getId();
                       }
+
                     break;
                   case SBML_MODEL:
                     pSBMLModel = dynamic_cast<const Model*>(pSBMLObject);
+
                     if (pSBMLModel && pSBMLModel->isSetId())
                       {
                         result = pSBMLModel->getId();
                       }
+
                     break;
                   default:
                     break;
-                  }
-              }
-          }
-      }
-    return result;
-  }
+                }
+            }
+        }
+    }
+
+  return result;
+}
 
 int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, const std::string& separator) const
-  {
-    std::ofstream fileStream(utf8ToLocale(fileName).c_str());
-    std::ostringstream* stringStream = new std::ostringstream();
-    (*stringStream) << "# ";
-    unsigned int counter2;
-    unsigned int maxCount2 = this->getNumVariables();
-    for (counter2 = 0; counter2 < maxCount2;++counter2)
-      {
-        (*stringStream) << this->getTitle(counter2) << separator;
-      }
-    (*stringStream) << std::endl;
-    fileStream << stringStream->str();
-    if (!fileStream.good()) return 1;
-    unsigned int counter;
-    unsigned int maxCount = mRecordedSteps;
-    for (counter = 0; counter < maxCount;++counter)
-      {
-        delete stringStream;
-        stringStream = new std::ostringstream();
-        for (counter2 = 0; counter2 < maxCount2;++counter2)
-          {
-            C_FLOAT64 value;
-            if (writeParticleNumbers)
-              {
-                value = this->getData(counter, counter2);
-              }
-            else
-              {
-                value = this->getConcentrationData(counter, counter2);
-              }
-            (*stringStream) << value << separator;
-          }
-        (*stringStream) << std::endl;
-        fileStream << stringStream->str();
-        if (!fileStream.good()) return 1;
-      }
-    fileStream.close();
-    delete stringStream;
-    return 0;
-  }
+{
+  std::ofstream fileStream(utf8ToLocale(fileName).c_str());
+  std::ostringstream* stringStream = new std::ostringstream();
+  (*stringStream) << "# ";
+  unsigned int counter2;
+  unsigned int maxCount2 = this->getNumVariables();
+
+  for (counter2 = 0; counter2 < maxCount2; ++counter2)
+    {
+      (*stringStream) << this->getTitle(counter2) << separator;
+    }
+
+  (*stringStream) << std::endl;
+  fileStream << stringStream->str();
+
+  if (!fileStream.good()) return 1;
+
+  unsigned int counter;
+  unsigned int maxCount = mRecordedSteps;
+
+  for (counter = 0; counter < maxCount; ++counter)
+    {
+      delete stringStream;
+      stringStream = new std::ostringstream();
+
+      for (counter2 = 0; counter2 < maxCount2; ++counter2)
+        {
+          C_FLOAT64 value;
+
+          if (writeParticleNumbers)
+            {
+              value = this->getData(counter, counter2);
+            }
+          else
+            {
+              value = this->getConcentrationData(counter, counter2);
+            }
+
+          (*stringStream) << value << separator;
+        }
+
+      (*stringStream) << std::endl;
+      fileStream << stringStream->str();
+
+      if (!fileStream.good()) return 1;
+    }
+
+  fileStream.close();
+  delete stringStream;
+  return 0;
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:54:35 $
+//   $Date: 2009/10/27 16:52:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,31 +46,32 @@ CFunction::~CFunction()
 bool CFunction::setInfix(const std::string & infix)
 {
   if (!CEvaluationTree::setInfix(infix)) return false;
+
   if (!initVariables()) return false;
 
   return true;
 }
 
 unsigned C_INT32 CFunction::getVariableIndex(const std::string & name) const
-  {
-    CFunctionParameter::DataType VariableType;
-    return mVariables.findParameterByName(name, VariableType);
-  }
+{
+  CFunctionParameter::DataType VariableType;
+  return mVariables.findParameterByName(name, VariableType);
+}
 
 const C_FLOAT64 & CFunction::getVariableValue(const unsigned C_INT32 & index) const
-  {return *(*mpCallParameters)[index].value;}
+{return *(*mpCallParameters)[index].value;}
 
 void CFunction::setReversible(const TriLogic & reversible)
 {mReversible = reversible;}
 
 const TriLogic & CFunction::isReversible() const
-  {return mReversible;}
+{return mReversible;}
 
 CFunctionParameters & CFunction::getVariables()
 {return mVariables;}
 
 const CFunctionParameters & CFunction::getVariables() const
-  {return mVariables;}
+{return mVariables;}
 
 bool CFunction::addVariable(const std::string & name,
                             CFunctionParameter::Role usage,
@@ -97,17 +98,17 @@ const C_FLOAT64 & CFunction::calcValue(const CCallParameters<C_FLOAT64> & callPa
 
 bool CFunction::dependsOn(const C_FLOAT64 * parameter,
                           const CCallParameters<C_FLOAT64> & callParameters) const
-  {
-    CCallParameters<C_FLOAT64>::const_iterator it = callParameters.begin();
-    CCallParameters<C_FLOAT64>::const_iterator end = callParameters.end();
+{
+  CCallParameters<C_FLOAT64>::const_iterator it = callParameters.begin();
+  CCallParameters<C_FLOAT64>::const_iterator end = callParameters.end();
 
-    while (it != end && parameter != it->value) it++;
+  while (it != end && parameter != it->value) it++;
 
-    if (it != end)
-      return true;
-    else
-      return false;
-  }
+  if (it != end)
+    return true;
+  else
+    return false;
+}
 
 void CFunction::load(CReadConfig & configBuffer,
                      CReadConfig::Mode mode)
@@ -121,12 +122,12 @@ void CFunction::load(CReadConfig & configBuffer,
 
   switch (Type)
     {
-    case 1:
-      setType(UserDefined);
-      break;
+      case 1:
+        setType(UserDefined);
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
@@ -172,6 +173,7 @@ bool CFunction::initVariables()
   //now remove all variables that are not in the tree anymore
   CFunctionParameter::DataType Type;
   unsigned C_INT32 i;
+
   for (i = mVariables.size() - 1; i < C_INVALID_INDEX; i--)
     if (NewVariables.findParameterByName(mVariables[i]->getObjectName(), Type) == C_INVALID_INDEX)
       mVariables.remove(mVariables[i]->getObjectName());
@@ -245,54 +247,60 @@ void CFunction::writeMathML(std::ostream & out,
                             const std::vector<std::vector<std::string> > & env,
                             bool expand, bool fullExpand,
                             unsigned C_INT32 l) const
-  {
-    if (expand && mpRoot)
-      {
-        bool flag = false; //TODO include check if parantheses are necessary
-        if (flag) out << SPC(l) << "<mfenced>" << std::endl;
-        mpRoot->writeMathML(out, env, fullExpand, l + 1);
-        if (flag) out << SPC(l) << "</mfenced>" << std::endl;
-      }
-    else //no expand
-      {
-        out << SPC(l) << "<mrow>" << std::endl;
-        out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
-        out << SPC(l + 1) << "<mfenced>" << std::endl;
+{
+  if (expand && mpRoot)
+    {
+      bool flag = false; //TODO include check if parantheses are necessary
 
-        unsigned C_INT32 i, imax = getVariables().size();
-        for (i = 0; i < imax; ++i)
-          {
-            out << SPC(l + 2) << env[i][0] << std::endl;
-          }
+      if (flag) out << SPC(l) << "<mfenced>" << std::endl;
 
-        out << SPC(l + 1) << "</mfenced>" << std::endl;
-        out << SPC(l) << "</mrow>" << std::endl;
-      }
-  }
+      mpRoot->writeMathML(out, env, fullExpand, l + 1);
+
+      if (flag) out << SPC(l) << "</mfenced>" << std::endl;
+    }
+  else //no expand
+    {
+      out << SPC(l) << "<mrow>" << std::endl;
+      out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
+      out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+      unsigned C_INT32 i, imax = getVariables().size();
+
+      for (i = 0; i < imax; ++i)
+        {
+          out << SPC(l + 2) << env[i][0] << std::endl;
+        }
+
+      out << SPC(l + 1) << "</mfenced>" << std::endl;
+      out << SPC(l) << "</mrow>" << std::endl;
+    }
+}
 
 void CFunction::writeMathML(std::ostream & out, unsigned C_INT32 l) const
-  {
-    //out << "<math>" << std::endl;
+{
+  //out << "<math>" << std::endl;
 
-    out << SPC(l) << "<mrow>" << std::endl;
-    out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
-    out << SPC(l + 1) << "<mfenced>" << std::endl;
+  out << SPC(l) << "<mrow>" << std::endl;
+  out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
+  out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-    unsigned C_INT32 i, imax = getVariables().size();
-    for (i = 0; i < imax; ++i)
-      {
-        out << SPC(l + 2) << "<mi>" << getVariables()[i]->getObjectName() << "</mi>" << std::endl;
-      }
+  unsigned C_INT32 i, imax = getVariables().size();
 
-    out << SPC(l + 1) << "</mfenced>" << std::endl;
-    out << SPC(l) << "</mrow>" << std::endl;
+  for (i = 0; i < imax; ++i)
+    {
+      out << SPC(l + 2) << "<mi>" << getVariables()[i]->getObjectName() << "</mi>" << std::endl;
+    }
 
-    //out << "</math>" << std::endl;
-  }
+  out << SPC(l + 1) << "</mfenced>" << std::endl;
+  out << SPC(l) << "</mrow>" << std::endl;
+
+  //out << "</math>" << std::endl;
+}
 
 std::ostream& operator<<(std::ostream &os, const CFunction & f)
 {
   os << "CFunction: " << f.getObjectName() << "   ";
+
   if (f.mReversible == TriUnspecified)
     os << "(general)";
   else if (f.mReversible == TriFalse)
@@ -308,84 +316,87 @@ std::ostream& operator<<(std::ostream &os, const CFunction & f)
 }
 
 CFunction * CFunction::createCopy() const
-  {
-    CFunction* newFunction = new CFunction();
+{
+  CFunction* newFunction = new CFunction();
 
-    //newFunction->mVariables = this->mVariables; //WRONG! only shallow copy!!
-    newFunction->mReversible = this->mReversible;
+  //newFunction->mVariables = this->mVariables; //WRONG! only shallow copy!!
+  newFunction->mReversible = this->mReversible;
 
-    if (this->mpRoot)
-      newFunction->setRoot(this->mpRoot->copyBranch());
+  if (this->mpRoot)
+    newFunction->setRoot(this->mpRoot->copyBranch());
 
-    //newFunction->mInfix = newFunction->mpRoot->getInfix();
+  //newFunction->mInfix = newFunction->mpRoot->getInfix();
 
-    return newFunction;
-  }
+  return newFunction;
+}
 
 #include "CFunctionAnalyzer.h"
 
 std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNode * /* node */,
     const std::string & name1,
     const std::string & name2) const
-  {
-    if (!this->mpRoot) return std::pair<CFunction *, CFunction *>(NULL, NULL);
-    if (this->mReversible != TriTrue) return std::pair<CFunction *, CFunction *>(NULL, NULL);
+{
+  if (!this->mpRoot) return std::pair<CFunction *, CFunction *>(NULL, NULL);
 
-    //create 2 new functions
-    CFunction* newFunction1 = new CFunction();
-    newFunction1->setObjectName(name1);
+  if (this->mReversible != TriTrue) return std::pair<CFunction *, CFunction *>(NULL, NULL);
 
-    CFunction* newFunction2 = new CFunction();
-    newFunction2->setObjectName(name2);
+  //create 2 new functions
+  CFunction* newFunction1 = new CFunction();
+  newFunction1->setObjectName(name1);
 
-    //when searching for a split point we need to analyze subtrees. For
-    //doing this a representation of the call parameters in the format
-    //used by CFunctionAnalyzer is needed.
-    std::vector<CFunctionAnalyzer::CValue> callParameters;
-    CFunctionAnalyzer::constructCallParameters(this->getVariables(), callParameters, true);
-    // find the split point
-    const CEvaluationNode* splitnode = this->mpRoot->findTopMinus(callParameters);
-    if (!splitnode) return std::pair<CFunction *, CFunction *>(NULL, NULL);
+  CFunction* newFunction2 = new CFunction();
+  newFunction2->setObjectName(name2);
 
-    //std::cout << splitnode << std::endl;
+  //when searching for a split point we need to analyze subtrees. For
+  //doing this a representation of the call parameters in the format
+  //used by CFunctionAnalyzer is needed.
+  std::vector<CFunctionAnalyzer::CValue> callParameters;
+  CFunctionAnalyzer::constructCallParameters(this->getVariables(), callParameters, true);
+  // find the split point
+  const CEvaluationNode* splitnode = this->mpRoot->findTopMinus(callParameters);
 
-    //create the 2 split trees
-    CEvaluationNode* tmpRoots1 = this->mpRoot->splitBranch(splitnode, true); //left side
-    CEvaluationNode* tmpRoots2 = this->mpRoot->splitBranch(splitnode, false); //right side
+  if (!splitnode) return std::pair<CFunction *, CFunction *>(NULL, NULL);
 
-    if (tmpRoots1)
-      newFunction1->setRoot(tmpRoots1);
-    if (tmpRoots2)
-      newFunction2->setRoot(tmpRoots2);
+  //create the 2 split trees
+  CEvaluationNode* tmpRoots1 = this->mpRoot->splitBranch(splitnode, true); //left side
+  CEvaluationNode* tmpRoots2 = this->mpRoot->splitBranch(splitnode, false); //right side
 
-    newFunction1->mVariables = this->mVariables; //copy the parameter list
-    newFunction1->initVariables(); //remove unused parameters
-    newFunction1->mReversible = TriFalse;
+  if (tmpRoots1)
+    newFunction1->setRoot(tmpRoots1);
 
-    newFunction2->mVariables = this->mVariables; //copy the parameter list
-    newFunction2->initVariables(); //remove unused parameters
-    newFunction2->mReversible = TriFalse;
+  if (tmpRoots2)
+    newFunction2->setRoot(tmpRoots2);
 
-    //update the roles
-    C_INT32 i, imax;
+  newFunction1->mVariables = this->mVariables; //copy the parameter list
+  newFunction1->initVariables(); //remove unused parameters
+  newFunction1->mReversible = TriFalse;
 
-    imax = newFunction1->mVariables.size();
-    for (i = 0; i < imax; ++i)
-      {
-        if (newFunction1->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
-          newFunction1->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
-      }
+  newFunction2->mVariables = this->mVariables; //copy the parameter list
+  newFunction2->initVariables(); //remove unused parameters
+  newFunction2->mReversible = TriFalse;
 
-    imax = newFunction2->mVariables.size();
-    for (i = 0; i < imax; ++i)
-      {
-        if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
-          newFunction2->mVariables[i]->setUsage(CFunctionParameter::SUBSTRATE);
-        else if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::SUBSTRATE)
-          newFunction2->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
-      }
+  //update the roles
+  C_INT32 i, imax;
 
-    newFunction1->compile();
-    newFunction2->compile();
-    return std::pair<CFunction *, CFunction *>(newFunction1, newFunction2);
-  }
+  imax = newFunction1->mVariables.size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (newFunction1->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
+        newFunction1->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
+    }
+
+  imax = newFunction2->mVariables.size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
+        newFunction2->mVariables[i]->setUsage(CFunctionParameter::SUBSTRATE);
+      else if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::SUBSTRATE)
+        newFunction2->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
+    }
+
+  newFunction1->compile();
+  newFunction2->compile();
+  return std::pair<CFunction *, CFunction *>(newFunction1, newFunction2);
+}

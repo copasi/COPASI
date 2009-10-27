@@ -84,8 +84,8 @@ bool CUnit::multiply(const CUnit & unit)
       return true;
     }
 
-  //std::cout << "!!! could not multiply units because of symbolic exponent !!!" << std::endl;
-  //assert(false);
+  // could not multiply units because of symbolic exponent !!!
+
   return false;
 }
 
@@ -96,10 +96,7 @@ void CUnit::invert()
 
   if (mSymExpExp != 0)
     {
-      //std::cout << "!!! could not invert units because of symbolic exponent !!!" << std::endl;
-      //assert(false);
-      //would be possible
-      //return;
+      // could not invert units because of symbolic exponent !!!
     }
 
   unsigned int i, imax = mUD.getNumUnits();
@@ -115,19 +112,13 @@ void CUnit::applyExponent(double exp)
 
   if (mSymExpExp != 0)
     {
-      //std::cout << "!!! could not apply numeric exponent because of symbolic exponent !!!" << std::endl;
-      //assert(false);
-      //would be possible
-      //return;
+      // could not apply numeric exponent because of symbolic exponent !!!
     }
 
   unsigned int i, imax = mUD.getNumUnits();
 
   for (i = 0; i < imax; ++i)
     {
-      if (fabs((exp*(double)mUD.getUnit(i)->getExponent()) - (floor(0.5 + exp*(double)mUD.getUnit(i)->getExponent()))) > 1e-10)
-        std::cout << "non integer exponent: " << exp*(double)mUD.getUnit(i)->getExponent() << std::endl;
-
       mUD.getUnit(i)->setExponent(floor(0.5 + exp*(double)mUD.getUnit(i)->getExponent()));
     }
 }
@@ -139,13 +130,13 @@ void CUnit::applyExponent(const std::string& id, int frame)
 
   if ((mSymExpExp == 0) || mSymExp.isEqual(SymbolicExponent(id, frame)))
     {
-      //std::cout << " applied symbolic exponent " << std::endl;
+      // applied symbolic exponent
       ++mSymExpExp;
       mSymExp = SymbolicExponent(id, frame);
     }
   else
     {
-      //std::cout << " !!! could not apply symbolic exponent !!!" << std::endl;
+      // could not apply symbolic exponent !!!
       assert(false);
     }
 }
@@ -157,13 +148,13 @@ void CUnit::applyInverseExponent(const std::string& id, int frame)
 
   if ((mSymExpExp == 0) || mSymExp.isEqual(SymbolicExponent(id, frame)))
     {
-      //std::cout << " applied inverse symbolic exponent " << std::endl;
+      // applied inverse symbolic exponent
       --mSymExpExp;
       mSymExp = SymbolicExponent(id, frame);
     }
   else
     {
-      //std::cout << " !!! could not apply inverse symbolic exponent !!!" << std::endl;
+      // could not apply inverse symbolic exponent !!!
       assert(false);
     }
 }

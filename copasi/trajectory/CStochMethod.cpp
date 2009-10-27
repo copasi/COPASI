@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/10/27 16:53:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,8 +225,6 @@ void CStochMethod::start(const CState * initialState)
       mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
       mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
       mpModel->getMetabolitesX()[i]->refreshConcentration();
-      //std::cout << (*obj)->getObjectName() << std::endl;
-      //obj can later be used to handle variables differently
     }
 
   mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
@@ -245,12 +243,7 @@ void CStochMethod::start(const CState * initialState)
     }
 
   setupDependencyGraphAndBalances();
-  //std::cout << mDG;
   updatePropensities();
-
-  //debug
-  //for (i=0; i<mAmu.size(); ++i) std::cout << mAmu[i] << " ";
-  //std::cout << std::endl;
 
   // call init of the specific simulation method
   initMethod(mpCurrentState->getTime());
@@ -263,17 +256,14 @@ C_INT32 CStochMethod::updatePropensities()
 {
   //mA0Old = mA0;
   mA0 = 0;
-  //std::cout << "        updatePropensities: ";
 
   for (unsigned C_INT32 i = 0; i < mNumReactions; i++)
     {
       mAmuOld[i] = mAmu[i];
       calculateAmu(i);
-      //std::cout << mAmu[i] << " ";
       mA0 += mAmu[i];
     }
 
-  //std::cout << std::endl;
   return 0;
 }
 
@@ -307,17 +297,13 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = substrates[i].mMultiplicity;
-      //std::cout << "Num ident = " << num_ident << std::endl;
-      //total_substrates += num_ident;
 
       if (num_ident > 1)
         {
           flag = 1;
           number = mNumbers[substrates[i].mIndex];
           lower_bound = number - num_ident;
-          //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
           substrate_factor = substrate_factor * pow((double) number, (int)(num_ident - 1));  //optimization
-          //std::cout << "Substrate factor = " << substrate_factor << std::endl;
 
           number--; //optimization
 
@@ -351,14 +337,6 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
       mAmu[index] = rate_factor;
     }
 
-  //debug
-  /*  if (mAmu[index]<0)
-      {
-        std::cout << "negative amu" << std::endl;
-      }*/
-  // a more efficient way to calculate mass action kinetics could be included
-
-  //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;
 }
 
@@ -382,10 +360,6 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
       pTmpMetab = mpModel->getMetabolitesX()[bi->mIndex];
       pTmpMetab->setValue(mNumbers[bi->mIndex]);
       pTmpMetab->refreshConcentration();
-
-      //debug
-      //if (mNumbers[bi->mIndex]<0)
-      //  std::cout << "number negative" << std::endl;
     }
 
   if (mHasAssignments)
@@ -536,7 +510,6 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
       bbb = &mpModel->getReactions()[i]->getChemEq().getBalances();
 
-      //std::cout << std::endl << i << " : ";
       //TODO clear old local balances and substrates
       for (j = 0; j < bbb->size(); j++)
         {
@@ -551,13 +524,11 @@ void CStochMethod::setupDependencyGraphAndBalances()
               if (bb.mMultiplicity > maxBalance) maxBalance = bb.mMultiplicity;
 
               mLocalBalances[i].push_back(bb);
-              //std::cout << bb.mMetabAddr->getObjectName(() << "  ";
             }
         }
 
       bbb = &mpModel->getReactions()[i]->getChemEq().getSubstrates();
 
-      //std::cout << std::endl << i << " : ";
       for (j = 0; j < bbb->size(); j++)
         {
           //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
@@ -569,14 +540,11 @@ void CStochMethod::setupDependencyGraphAndBalances()
           if (1)
             {
               mLocalSubstrates[i].push_back(bb);
-              //std::cout << bb.mMetabAddr->getObjectName(() << "  ";
             }
         }
     }
 
   mMaxBalance = maxBalance;
-  //std::cout << "maxbalance" << mMaxBalance << std::endl;
-  //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
   mMaxIntBeforeStep =        /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
@@ -595,9 +563,6 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
   unsigned C_INT32 i, imax = mpModel->getReactions()[reaction_index]->getFunctionParameters().size();
   unsigned C_INT32 j, jmax;
 
-  //std::vector <const CMetab*> metablist;
-  //std::cout << reaction_index << " depends on ";
-
   for (i = 0; i < imax; ++i)
     {
       if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == CFunctionParameter::PARAMETER)
@@ -611,11 +576,9 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
       for (j = 0; j < jmax; ++j)
         {
           retset->insert(metabKeylist[j]);
-          //std::cout << "  " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
         }
     }
 
-  //std::cout << std::endl;
   return retset;
 }
 
@@ -627,8 +590,6 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
   const CCopasiVector<CChemEqElement> & balances = mpModel->getReactions()[reaction_index]->getChemEq().getBalances();
 
-  //std::cout << reaction_index << " affects ";
-
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
       if (!balances[i]->getMetabolite()) continue;
@@ -637,11 +598,9 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
         if (balances[i]->getMetabolite()->getStatus() != CModelEntity::FIXED)
           {
             retset->insert(balances[i]->getMetabolite()->getKey());
-            //std::cout << " " << balances[i]->getMetabolite().getObjectName() << ":" << balances[i]->getMetabolite().getKey();
           }
     }
 
-  //std::cout << std::endl;
   return retset;
 }
 

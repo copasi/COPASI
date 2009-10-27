@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/14 13:42:47 $
+//   $Date: 2009/10/27 16:52:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,8 +181,6 @@ CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationN
 
 CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& children) const
 {
-  //std::cout << " this->getData() " << this->CEvaluationNode::getData() << std::endl;
-
   CEvaluationNode *newnode = create(mType, mData);
   std::vector<CEvaluationNode*>::const_iterator it = children.begin(), endit = children.end();
 
@@ -258,12 +256,6 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
       tmp -> printRecursively(os, indent + 2);
       tmp = (CEvaluationNode*)tmp->getSibling();
     }
-
-  /*    if (getChild())
-        ((CEvaluationNode*)getChild())->printRecursively(os, indent + 2);
-
-      if (getSibling())
-        ((CEvaluationNode*)getSibling())->printRecursively(os, indent);*/
 }
 
 void CEvaluationNode::printRecursively() const

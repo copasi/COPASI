@@ -207,7 +207,7 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
                   else
                     {
                       tmpMap[p->getId()] = CUnitInformation(CUnitInformation::UNKNOWN);
-                      std::cout << "Could not resolve unit ID " << p->getUnits()  << " for " <<  p->getId() << std::endl;
+                      // "Could not resolve unit ID " << p->getUnits()  << " for " <<  p->getId() << std::endl;
                       //TODO
                     }
                 }
@@ -292,13 +292,11 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
   //Events
   for (i = 0; i < model->getNumEvents(); i++)
     {
-      //std::cout << "Event" << std::endl;
       Event* event = model->getEvent(i);
 
       //trigger
       if (event->isSetTrigger() && event->getTrigger()->isSetMath())
         {
-          //std::cout << "  event trigger" << std::endl;
           CExpressionInformation tmp;
           tmp.mTypeDescription = "Event trigger";
           tmp.mObjectDisplayString = event->isSetName() ? event->getName() : event->getId();
@@ -309,7 +307,6 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
       //delay
       if (event->isSetDelay() && event->getDelay()->isSetMath())
         {
-          //std::cout << "  event delay" << std::endl;
           CExpressionInformation tmp;
           tmp.mTypeDescription = "Event delay";
           tmp.mObjectDisplayString = event->isSetName() ? event->getName() : event->getId();
@@ -325,7 +322,6 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
 
           if (ea->isSetMath())
             {
-              //std::cout << "  event assignment" << std::endl;
               CExpressionInformation tmp;
               tmp.mTypeDescription = "Event assignment";
               tmp.mObjectDisplayString = ea->getVariable(); //TODO
@@ -738,9 +734,6 @@ void CUnitInterfaceSBML::determineUnits()
               std::cout << std::endl;
             }
 
-          //if (it->mObjectDisplayString=="Glucose-1-phosphate adenyltransferase")
-          //  std::cout << "hit!" << std::endl;
-
           handleOneExpression(*it);
         }
     }
@@ -763,10 +756,6 @@ void CUnitInterfaceSBML::handleOneExpression(CExpressionInformation & ei)
     }
   else
     {
-      /*      if (ei.mPerTime)
-              {
-                std::cout << "rate rules" << std::endl;
-              }*/
       CUnitInformation * pNodeUnit = getMappedUnitFromIdentifier(ei.mRootObject, environment);
 
       if (!pNodeUnit) return;
@@ -774,20 +763,19 @@ void CUnitInterfaceSBML::handleOneExpression(CExpressionInformation & ei)
       CUnitInformation sourceUnit = *pNodeUnit;
 
       if (ei.mPerTime && sourceUnit.getInfo() > CUnitInformation::UNKNOWN)
-        {//devide unit of rule target by time
-          //std::cout << "rate rule enter" << std::endl;
+        {
+          //devide unit of rule target by time
           CUnitInformation invTime = mSBMLTimeUnit;
           invTime.invert();
           sourceUnit.multiply(invTime);
         }
 
       CUnitInformation tmp = recursion(ei.mpExpression, sourceUnit, environment);
-      //tmp.setStatus()
 
       if (ei.mPerTime && tmp.getInfo() > CUnitInformation::UNKNOWN)
-        {//multiply unit of the rate rule expression by time
+        {
+          //multiply unit of the rate rule expression by time
           tmp.multiply(mSBMLTimeUnit);
-          //std::cout << "rate rule return" << std::endl;
         }
 
       handleTerminalNode(tmp, pNodeUnit, NULL);
@@ -806,9 +794,6 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
     const CUnitInformation & ui,
     const CEnvironmentInformation & ei)
 {
-#ifdef UNIT_DEBUG
-  std::cout << "recursion: " << ui.getDisplayString() << std::endl;
-#endif
 
   CUnitInformation ret;
 
@@ -832,7 +817,6 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
       if (node->getType() == AST_NAME_TIME)
         {
           //TODO: does not work???
-          //std::cout << "time" << std::endl;
           CUnitInformation tmpTimeUnit = mSBMLTimeUnit;
           return handleTerminalNode(ui, &tmpTimeUnit, node);
         }
@@ -855,9 +839,6 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
       CUnitInformation * pNodeUnit = getMappedUnitFromIdentifier(getIdentifier(node), ei);
 
       if (!pNodeUnit) return mSBMLConflictUnit;
-
-      //if (getIdentifier(node)=="PIP2_PM") for debugging...
-      //  std::cout << getIdentifier(node)<< std::endl;
 
       return handleTerminalNode(ui, pNodeUnit, node);
     }//is object node
@@ -922,13 +903,13 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
 
   else if (isFunctionCall(node))
     {
-      //std::cout << "function call" << std::endl;
+      // function call
       //check if the object is a function call
       FunctionDefinition *fd = resolveFunctionName(getIdentifier(node));
 
       if (fd)
         {
-          //std::cout << "could resolve function call" << std::endl;
+          // could resolve function call
           unsigned int i, numArgs = fd->getNumArguments();
           assert(numArgs == node->getNumChildren());
 
@@ -938,7 +919,6 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
           for (i = 0; i < numArgs; ++i)
             tmpMap[fd->getArgument(i)->getName()] = node->getChild(i);
 
-          //std::cout << i  << fd->getArgument(i)->getName() << std::endl;
           CEnvironmentInformation tmpEI = ei;
           tmpEI.push(tmpMap);
           return recursion(fd->getBody(), ui, tmpEI);
@@ -947,7 +927,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
 
   else if (isBuiltInFunctionCall(node))
     {
-      //std::cout << "built in function" << std::endl;
+      // built in function
       switch (node->getType())
         {
           case AST_FUNCTION_ARCCOS:
@@ -1012,8 +992,6 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
   //TODO numbers, functions, calls, variables, choice, delay, time, ...
   //logicals (comparison operators), constants (pi, ...),  ...
 
-  //std::cout << "not handled " << node->getType() << std::endl;
-
   //fallback: just to make sure the whole tree is covered
   unsigned int i, numChildren = node->getNumChildren();
 
@@ -1025,9 +1003,6 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
 
 CUnitInformation CUnitInterfaceSBML::handleTerminalNode(const CUnitInformation & ui, CUnitInformation *pNodeUnit, const ASTNode* node)
 {
-#ifdef UNIT_DEBUG
-  std::cout << "terminal: assign " << ui.getDisplayString() << "  to " << pNodeUnit->getDisplayString() <<  std::endl;
-#endif
   //TODO handle case where conflict flag is set before
 
   if (ui.getInfo() == CUnitInformation::UNKNOWN)
@@ -1047,7 +1022,6 @@ CUnitInformation CUnitInterfaceSBML::handleTerminalNode(const CUnitInformation &
         return ui;
       else //there is a conflict
         {
-          //std::cout << ui.getDisplayString() << "   " << pNodeUnit->getDisplayString() << std::endl;
           if (ui.getInfo() < pNodeUnit->getInfo())  //the new unit is more reliable
             {
               *pNodeUnit = ui;
@@ -1083,7 +1057,6 @@ CUnitInformation CUnitInterfaceSBML::recursionEqual(const ASTNode* node,
   unsigned int i, numChildren = node->getNumChildren();
   std::vector<CUnitInformation> childUnits;
   childUnits.resize(numChildren);
-  //std::cout << "+ " << numChildren << std::endl;
 
   //first deal with the unit that is passed from above
   if (ui.getInfo() > CUnitInformation::UNKNOWN)
@@ -1139,7 +1112,6 @@ CUnitInformation CUnitInterfaceSBML::recursionTimes(const ASTNode* node,
   unsigned int i, numChildren = node->getNumChildren();
   std::vector<CUnitInformation> childUnits;
   childUnits.resize(numChildren);
-  //std::cout << "* " << numChildren << std::endl;
 
   // ask all children for their unit
   std::vector<int> unknown;
@@ -1221,7 +1193,6 @@ CUnitInformation CUnitInterfaceSBML::recursionDivide(const ASTNode* node,
   assert(numChildren == 2);
   std::vector<CUnitInformation> childUnits;
   childUnits.resize(numChildren);
-  //std::cout << "/ " << numChildren << std::endl;
 
   // ask all children for their unit
   std::vector<int> unknown;
@@ -1308,9 +1279,6 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
 
   ret = ui;
 
-#ifdef UNIT_DEBUG
-  std::cout << "power: " << ui.getDisplayString() << std::endl;
-#endif
   unsigned int numChildren = node->getNumChildren();
   assert(numChildren == 2);
   std::vector<CUnitInformation> childUnits;
@@ -1327,7 +1295,6 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
       //check if the exponent is integer
       if (fabs(res.result - floor(res.result + 0.5)) < 1e-100)
         {
-          //std::cout << "fixed exponent is integer" << std::endl;
           int intExp = (int) floor(res.result + 0.5);
 
           if (ui.getInfo() == CUnitInformation::UNKNOWN)
@@ -1351,7 +1318,6 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
         }
       else
         {
-          //std::cout << "fixed exponent is non integer" << std::endl;
           //TODO perhaps rather conflict???
           childUnits[0] = recursion(node->getChild(0), CUnitInformation(CUnitInformation::UNKNOWN), ei);
         }
@@ -1360,13 +1326,11 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
     }
   else
     {
-      //std::cout << "exponent could not be evaluated" << std::endl;
       //the exponent could not be determined as a number
 
       //special case: exponent is an identifier
       if (node->getChild(1)->isName())
         {
-          //std::cout << "exponent is identifier " << node->getChild(1)->getName() <<  std::endl;
           if (ui.getInfo() == CUnitInformation::UNKNOWN)
             {
               childUnits[0] = recursion(node->getChild(0), CUnitInformation(CUnitInformation::UNKNOWN), ei);
@@ -1388,7 +1352,6 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
         }
       else //exponent is neither a number nor a simple identifier. Units of the base are unknown
         {
-          //std::cout << "exponent is: " << std::string(SBML_formulaToString(node->getChild(1))) << std::endl;
           childUnits[0] = recursion(node->getChild(0), CUnitInformation(CUnitInformation::UNKNOWN), ei);
         }
     }
@@ -1397,10 +1360,6 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
   //TODO
 
   //TODO deal with conflicts
-
-#ifdef UNIT_DEBUG
-  std::cout << "  power return   " << ret.getDisplayString() << std::endl;
-#endif
 
   return ret;
 }
@@ -1438,7 +1397,6 @@ CUnitInformation CUnitInterfaceSBML::recursionPiecewise(const ASTNode* node,
   unsigned int i, numChildren = node->getNumChildren();
   std::vector<CUnitInformation> childUnits;
   childUnits.resize(numChildren);
-  //std::cout << "+ " << numChildren << std::endl;
 
   //first do the recursion for the logical parts (the children with uneven index)
   for (i = 1; i < numChildren; i += 2)
@@ -1599,7 +1557,6 @@ double CUnitInterfaceSBML::getValueFromNumberNode(const ASTNode* node)
 
         //TODO rational number format
       default:
-        std::cout << "unsupported number format" << std::endl;
         return std::numeric_limits< double >::quiet_NaN();
     }
 }

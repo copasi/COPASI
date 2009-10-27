@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:35:33 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -194,9 +194,6 @@ void PlotWindow::printAsImage()
   QRect rect;
   rect.setSize(this->size());
 
-  //  std::cout << "size: " << rect.width() << " x " << rect.height() << std::endl;
-
-//  if (extensionName == "png")
   if (fileName.endsWith(".png"))
     {
       QPixmap pixmap(rect.width(), rect.height());
@@ -209,7 +206,6 @@ void PlotWindow::printAsImage()
       pixmap.save(fileName, "PNG");
     }
 
-//  if (extensionName == "svg")
   if (fileName.endsWith(".svg"))
     {
       QSvgGenerator generator;

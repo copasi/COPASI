@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/06 19:40:42 $
+//   $Date: 2009/10/27 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,52 +20,53 @@
 #include "utilities/utility.h"
 
 const std::string CPlotItem::TypeName[] =
-  {
-    "Unset",
-    "2D Curve",
-    "Histogram",
+{
+  "Unset",
+  "2D Curve",
+  "Histogram",
 
-    "2D Plot",
-    "SimWiz",
-    ""
-  };
+  "2D Plot",
+  "SimWiz",
+  ""
+};
 
 const char* CPlotItem::XMLType[] =
-  {
-    "Unset",
-    "Curve2D",
-    "Histogram1DItem",
+{
+  "Unset",
+  "Curve2D",
+  "Histogram1DItem",
 
-    "Plot2D",
-    "SimWiz",
-    NULL
-  };
+  "Plot2D",
+  "SimWiz",
+  NULL
+};
 
 const std::string CPlotItem::RecordingActivityName[] =
-  {
-    "",
-    "Before",
-    "During",
-    "",
-    "After"
-  };
+{
+  "",
+  "Before",
+  "During",
+  "",
+  "After"
+};
 
 const char* CPlotItem::XMLRecordingActivity[] =
-  {
-    "NotSet",
-    "before",
-    "during",
-    "before&during",
-    "after",
-    "before&after",
-    "during&after",
-    "before&during&after",
-    NULL
-  };
+{
+  "NotSet",
+  "before",
+  "during",
+  "before&during",
+  "after",
+  "before&after",
+  "during&after",
+  "before&during&after",
+  NULL
+};
 
 CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName) //static
 {
   unsigned C_INT32 i = 0;
+
   while (TypeName[i] != typeName && TypeName[i] != "") i++;
 
   if (CPlotItem::TypeName[i] != "") return (CPlotItem::Type) i;
@@ -93,23 +94,13 @@ CPlotItem::CPlotItem(const CPlotItem & src,
     mpXMLActivity(NULL),
     channels(src.getChannels())
 {
-  /*
-  std::cout << "Creating new PlotItem from Template: " << this << std::endl;
-  for(unsigned int counter=0; counter < src.getChannels().size(); counter++)
-  {
-     std::cout << "Channel " << counter << ": " << src.getChannels()[counter] << std::endl;
-  }
-  for(unsigned int counter=0; counter < this->getChannels().size(); counter++)
-  {
-     std::cout << "New Channel " << counter << ": " << this->getChannels()[counter] << std::endl;
-  }
-  */
   setType(src.mType);
 }
 
 void CPlotItem::setType(CPlotItem::Type type)
 {
   if (type == mType) return;
+
   if (mType != unset) clear();
 
   mType = type;
@@ -161,34 +152,35 @@ void CPlotItem::initObjects()
 {}
 
 const CPlotItem::Type & CPlotItem::getType() const
-  {return mType;}
+{return mType;}
 
 void CPlotItem::setActivity(const COutputInterface::Activity & activity)
 {
   switch (mType)
     {
-    case curve2d:
-    case histoItem1d:
-      mActivity = activity;
-      assert (COutputInterface::BEFORE <= mActivity &&
-              mActivity <= (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER));
-      * mpXMLActivity = XMLRecordingActivity[mActivity];
-      break;
+      case curve2d:
+      case histoItem1d:
+        mActivity = activity;
+        assert(COutputInterface::BEFORE <= mActivity &&
+               mActivity <= (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER));
+        * mpXMLActivity = XMLRecordingActivity[mActivity];
+        break;
 
-    default:
-      mActivity = (COutputInterface::Activity) 0;
-      break;
+      default:
+        mActivity = (COutputInterface::Activity) 0;
+        break;
     }
 }
 
 const COutputInterface::Activity & CPlotItem::getActivity() const
-  {
-    COutputInterface::Activity Activity;
+{
+  COutputInterface::Activity Activity;
 
-    switch (mType)
-      {
+  switch (mType)
+    {
       case curve2d:
       case histoItem1d:
+
         if (!mpXMLActivity)
           const_cast<CPlotItem *>(this)->mpXMLActivity =
             getParameter("Recording Activity")->getValue().pSTRING;
@@ -208,19 +200,19 @@ const COutputInterface::Activity & CPlotItem::getActivity() const
 
       default:
         break;
-      }
+    }
 
-    return mActivity;
-  }
+  return mActivity;
+}
 
 std::vector<CPlotDataChannelSpec> & CPlotItem::getChannels()
 {return channels;}
 
 const std::vector<CPlotDataChannelSpec> & CPlotItem::getChannels() const
-  {return channels;}
+{return channels;}
 
 unsigned C_INT32 CPlotItem::getNumChannels() const
-  {return channels.size();}
+{return channels.size();}
 
 void CPlotItem::addChannel(const CPlotDataChannelSpec & channel)
 {
@@ -228,9 +220,9 @@ void CPlotItem::addChannel(const CPlotDataChannelSpec & channel)
 }
 
 const std::string & CPlotItem::getTitle() const
-  {
-    return getObjectName();
-  }
+{
+  return getObjectName();
+}
 
 void CPlotItem::setTitle(const std::string & title)
 {

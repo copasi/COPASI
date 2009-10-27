@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2009/10/27 16:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,7 @@ void CMMLOutput::writeRHS(std::ostream & out,
       out << SPC(l + 0) << "Error: invalid metabolite" << std::endl;
       return;
     }
+
   if (!pReac)
     {
       out << SPC(l + 0) << "Error: invalid reaction" << std::endl;
@@ -70,8 +71,11 @@ void CMMLOutput::writeRHS(std::ostream & out,
     }
 
   const CCopasiVector < CChemEqElement > & balances = pReac->getChemEq().getBalances();
+
   C_FLOAT64 balance = 0;
+
   unsigned C_INT32 i, imax = balances.size();
+
   for (i = 0; i < imax; ++i)
     {
       if (balances[i]->getMetaboliteKey() == pMetab->getKey())
@@ -119,8 +123,11 @@ void CMMLOutput::writeRHS(std::ostream & out,
     {
       std::vector<std::vector<std::string> > params;
       createParameterMapping(pReac, params, numbers);
+
       if (expand) out << SPC(l + 1) << "<mfenced>" << std::endl;
+
       pReac->getFunction()->writeMathML(out, params, expand, expandFull, l + 1);
+
       if (expand) out << SPC(l + 1) << "</mfenced>" << std::endl;
     }
 
@@ -138,74 +145,81 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
   unsigned C_INT32 j, jmax;
   unsigned C_INT32 i, imax = functionParams.size();
   params.resize(imax);
+
   for (i = 0; i < imax; ++i)
     {
       params[i].resize(1);
 
       std::string name;
+
       //std::ostringstream number;
       switch (functionParams[i]->getUsage())
         {
-        case CFunctionParameter::SUBSTRATE:
-        case CFunctionParameter::PRODUCT:
-        case CFunctionParameter::MODIFIER:
-          if (functionParams[i]->getType() == CFunctionParameter::FLOAT64)
-            {
-              name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectDisplayName();
-              //params[i][0] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
-              params[i][0] = "<mi>[" + name + "]</mi>";
-            }
-          else if (functionParams[i]->getType() == CFunctionParameter::VFLOAT64)
-            {
-              jmax = pReac->getParameterMappings()[i].size();
-              params[i].resize(jmax);
-              for (j = 0; j < jmax; ++j)
-                {
-                  name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
-                  //params[i][j] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
-                  params[i][j] = "<mi>[" + name + "]</mi>";
-                }
-            }
-          else assert(false);
-          break;
+          case CFunctionParameter::SUBSTRATE:
+          case CFunctionParameter::PRODUCT:
+          case CFunctionParameter::MODIFIER:
 
-        case CFunctionParameter::PARAMETER:
-          if (pReac->isLocalParameter(i))
-            {
-              if (numbers)
-                {
-                  std::ostringstream number;
-                  number << pReac->getParameterValue(functionParams[i]->getObjectName());
-                  params[i][0] = "<mn>" + number.str() + "</mn>";
-                }
-              else
-                {
-                  name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
-                  //params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
-                  params[i][0] = "<msub><mi>" + CMathMl::fixName(name) + "</mi><mi>("
-                                 + CMathMl::fixName(pReac->getObjectName()) + ")</mi></msub>";
-                }
-            }
-          else
-            {
-              name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
-              params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
-              //params[i][0] = "<mi>ggg</mi>";
-            }
-          break;
+            if (functionParams[i]->getType() == CFunctionParameter::FLOAT64)
+              {
+                name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectDisplayName();
+                //params[i][0] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
+                params[i][0] = "<mi>[" + name + "]</mi>";
+              }
+            else if (functionParams[i]->getType() == CFunctionParameter::VFLOAT64)
+              {
+                jmax = pReac->getParameterMappings()[i].size();
+                params[i].resize(jmax);
 
-        case CFunctionParameter::VOLUME:
-          name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
-          params[i][0] = "<msub><mi>V</mi><mi>" + CMathMl::fixName(name)
-                         + "</mi></msub>";
-          break;
+                for (j = 0; j < jmax; ++j)
+                  {
+                    name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
+                    //params[i][j] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
+                    params[i][j] = "<mi>[" + name + "]</mi>";
+                  }
+              }
+            else assert(false);
 
-        case CFunctionParameter::TIME:
-          params[i][0] = "<mi>time</mi>";
-          break;
+            break;
 
-        default:
-          break;
+          case CFunctionParameter::PARAMETER:
+
+            if (pReac->isLocalParameter(i))
+              {
+                if (numbers)
+                  {
+                    std::ostringstream number;
+                    number << pReac->getParameterValue(functionParams[i]->getObjectName());
+                    params[i][0] = "<mn>" + number.str() + "</mn>";
+                  }
+                else
+                  {
+                    name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+                    //params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
+                    params[i][0] = "<msub><mi>" + CMathMl::fixName(name) + "</mi><mi>("
+                                   + CMathMl::fixName(pReac->getObjectName()) + ")</mi></msub>";
+                  }
+              }
+            else
+              {
+                name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+                params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
+                //params[i][0] = "<mi>ggg</mi>";
+              }
+
+            break;
+
+          case CFunctionParameter::VOLUME:
+            name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+            params[i][0] = "<msub><mi>V</mi><mi>" + CMathMl::fixName(name)
+                           + "</mi></msub>";
+            break;
+
+          case CFunctionParameter::TIME:
+            params[i][0] = "<mi>time</mi>";
+            break;
+
+          default:
+            break;
         }
     }
 }
@@ -243,8 +257,6 @@ void CMMLOutput::writeRHS_ModelEntity(std::ostream & out,
   out << SPC(l + 0) << "<mrow>" << std::endl;
 
   pEntity->getExpressionPtr()->writeMathML(out, expandFull, l + 1);
-  // pEntity->getExpressionPtr()->writeMathML(std::cout, expandFull, l + 1);
-  // std::cout << std::endl;
 
   out << SPC(l + 0) << "</mrow>" << std::endl;
 }
@@ -259,6 +271,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
   //write equations for compartments
   C_INT32 i, imax = model->getCompartments().size();
+
   for (i = 0; i < imax; i++)
     {
       if (model->getCompartments()[i]->getStatus() == CModelEntity::ODE)
@@ -326,6 +339,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
   //write equations for metabs
   imax = model->getMetabolites().size();
+
   for (i = 0; i < imax; i++)
     {
       if (model->getMetabolites()[i]->getStatus() == CModelEntity::REACTIONS)
@@ -333,6 +347,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
           std::set<std::string> reacKeys = listReactionsForMetab(model, model->getMetabolites()[i]->getKey());
           std::set<std::string>::const_iterator it, itEnd = reacKeys.end();
+
           for (it = reacKeys.begin(); it != itEnd; ++it)
             {
               hasContents = true;
@@ -341,15 +356,19 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
               //first column (lhs)
               mml << SPC(l + 2) << "<mtd>" << std::endl;
+
               if (it == reacKeys.begin())
                 writeLHS(mml, model->getMetabolites()[i]->getObjectDisplayName(),
                          model->getMetabolites()[i]->getCompartment()->getObjectName(), l + 3);
+
               mml << SPC(l + 2) << "</mtd>" << std::endl;
 
               //second column ("=")
               mml << SPC(l + 2) << "<mtd>" << std::endl;
+
               if (it == reacKeys.begin())
                 mml << SPC(l + 3) << "<mo>=</mo>" << std::endl;
+
               mml << SPC(l + 2) << "</mtd>" << std::endl;
 
               //third column (rhs)
@@ -417,6 +436,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
   //write differential equations for model values
   imax = model->getModelValues().size();
+
   for (i = 0; i < imax; ++i)
     if (model->getModelValues()[i]->getStatus() == CModelEntity::ODE)
       {
@@ -444,6 +464,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
   //write assignment rules
   imax = model->getModelValues().size();
+
   for (i = 0; i < imax; ++i)
     if (model->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
       {
@@ -471,17 +492,6 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
       }
 
   mml << SPC(l) << "</mtable>" << std::endl;
-
-  //   QWidget* tmp = dynamic_cast<QWidget*>(parent());
-  //   if (tmp) tmp->setCursor(Qt::WaitCursor);
-  //
-  //   mMmlWidget->setContent(FROM_UTF8(mml.str()));
-  //   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
-  //   //std::cout << mml.str() << std::endl;
-  //
-  //   if (tmp) tmp->unsetCursor();
-  //
-  //   btnSaveToFile->setEnabled(hasContents);
 }
 
 std::set<std::string> CMMLOutput::listReactionsForMetab(const CModel* model,
@@ -495,6 +505,7 @@ std::set<std::string> CMMLOutput::listReactionsForMetab(const CModel* model,
     {
       const CCopasiVector <CChemEqElement> &Balances = Reactions[j]->getChemEq().getBalances();
       C_INT32 i, imax = Balances.size();
+
       for (i = 0; i < imax; i++)
         if (key == Balances[i]->getMetaboliteKey())
           {

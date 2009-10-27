@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.188 $
+//   $Revision: 1.189 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 00:51:58 $
+//   $Date: 2009/10/27 16:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,7 +280,6 @@ void CReaction::setParameterValue(const std::string & parameterName,
   //first find index
   CFunctionParameter::DataType Type;
   unsigned C_INT32 index = mMap.findParameterByName(parameterName, Type);
-  //std::cout << "reaction::setParameterValue  " << parameterName << " index " << index << std::endl;
 
   if (index == C_INVALID_INDEX) return;
 
@@ -305,7 +304,6 @@ CCopasiParameterGroup & CReaction::getParameters()
 
 void CReaction::setParameterMapping(const C_INT32 & index, const std::string & key)
 {
-  //std::cout << "CReaction::setParameterMapping, index = " << index << ", key = " << key << std::endl;
   if (!mpFunction) fatalError();
 
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::FLOAT64) fatalError(); //wrong data type
@@ -599,7 +597,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
     {
       if (mMap.getFunctionParameters().getNumberOfParametersByUsage(role) != 1)
         {
-          //std::cout << "not exactly one variable of this role as vector" << std::endl;
+          // not exactly one variable of this role as vector.
           fatalError();
         }
 
@@ -608,7 +606,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 
       if (!pParameter)
         {
-          //std::cout << "could not find variable" << std::endl;
+          // could not find variable.
           fatalError();
         }
 
@@ -630,7 +628,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 
       if (imax > n)
         {
-          //std::cout << "no. of metabs not matching function definition" << std::endl;
+          // no. of metabs not matching function definition.
           fatalError();
         }
 
@@ -645,13 +643,13 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 
           if (!pParameter)
             {
-              //std::cout << "could not find variable" << std::endl;
+              // could not find variable.
               fatalError();
             }
 
           if (pParameter->getType() >= CFunctionParameter::VINT32)
             {
-              //std::cout << "unexpected vector variable" << std::endl;
+              // unexpected vector variable.
               fatalError();
             }
 
@@ -702,7 +700,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   if (mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER)
       != ParameterSize)
     {
-      //std::cout << "no. of parameters not matching function definition" << std::endl;
+      // no. of parameters not matching function definition.
       fatalError();
     }
 
@@ -720,13 +718,13 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
       if (!pParameter)
         {
-          //std::cout << "could not find variable" << std::endl;
+          // could not find variable.
           fatalError();
         }
 
       if (pParameter->getType() != CFunctionParameter::FLOAT64)
         {
-          //std::cout << "unexpected parameter type" << std::endl;
+          // unexpected parameter type.
           fatalError();
         }
 
@@ -1640,6 +1638,4 @@ std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
 }
 
 void CReaction::printDebug() const
-{
-  // std::cout << *this;
-}
+{}

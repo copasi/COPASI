@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:18:35 $
+//   $Date: 2009/10/27 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,14 +71,6 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
   mpCheckAfter->setChecked(curve->getActivity() & COutputInterface::AFTER);
-
-  //for debugging:
-  //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
-  //  std::cout << "  title: " << curve->title << std::endl;
-  //  std::cout << "  " << curve->mChannels.size() << "  " << curve->mChannels[0].object << "  " << curve->mChannels[1].object << std::endl;
-
-  //  std::string sss = CCopasiContainer::ObjectFromName(ListOfContainer, curve->mChannels[0].object)->getObjectUniqueName().c_str();
-  //  std::cout << "uni : " << sss << " *** " << std::endl;
 
   return true; //TODO
 }

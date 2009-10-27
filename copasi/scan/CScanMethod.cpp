@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:20 $
+//   $Date: 2009/10/27 16:53:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CReadConfig.h"
-#include "randomGenerator/CRandom.h" 
+#include "randomGenerator/CRandom.h"
 //#include "utilities/CWriteConfig.h"
 #include "CScanProblem.h"
 #include "CScanMethod.h"
@@ -88,18 +88,21 @@ CScanItem::CScanItem(CCopasiParameterGroup* si)
   CCopasiDataModel* pDataModel = si->getObjectDataModel();
   assert(pDataModel != NULL);
   const CCopasiObject * tmpObject = pDataModel->getObject(tmpString);
+
   if (!tmpObject) {mpValue = NULL; return;}
+
   if (!tmpObject->isValueDbl()) {mpValue = NULL; return;}
+
   mpValue = const_cast<CCopasiObject *>(tmpObject);
 }
 
 unsigned C_INT32 CScanItem::getNumSteps() const {return mNumSteps;};
 
 void CScanItem::restoreValue() const
-  {
-    if (mpValue)
-      mpValue->setObjectValue(mStoreValue);
-  };
+{
+  if (mpValue)
+    mpValue->setObjectValue(mStoreValue);
+};
 
 void CScanItem::storeValue()
 {
@@ -125,9 +128,9 @@ bool CScanItem::isValidScanItem()
 }
 
 const CCopasiObject * CScanItem::getObject() const
-  {
-    return mpValue;
-  }
+{
+  return mpValue;
+}
 //*******
 
 CScanItemRepeat::CScanItemRepeat(CCopasiParameterGroup* si)
@@ -144,9 +147,8 @@ void CScanItemRepeat::step()
   //the index
   if (mIndex > mNumSteps)
     mFlagFinished = true;
-  ++mIndex;
 
-  //  std::cout << "SIRepeat " << mIndex-1<< std::endl;
+  ++mIndex;
 }
 
 //*******
@@ -158,11 +160,13 @@ CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si)
   mLog = * si->getValue("log").pBOOL;
   mMin = * si->getValue("Minimum").pDOUBLE;
   mMax = * si->getValue("Maximum").pDOUBLE;
+
   if (mLog)
     {
       mMin = log(mMin);
       mMax = log(mMax);
     }
+
   mFaktor = (mMax - mMin) / mNumSteps;
 
   //TODO: log scanning of negative values?
@@ -175,14 +179,14 @@ void CScanItemLinear::step()
 
   if (mLog)
     Value = exp(Value);
+
   //the index
   if (mIndex > mNumSteps)
     mFlagFinished = true;
 
   if (mpValue) mpValue->setObjectValue(Value);
-  ++mIndex;
 
-  //std::cout << "SILinear " << mMin + (mIndex-1)*mFaktor<< std::endl;
+  ++mIndex;
 }
 
 bool CScanItemLinear::isValidScanItem()
@@ -217,15 +221,17 @@ CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg)
     mLog(false)
 {
   mRandomType = * si->getValue("Distribution type").pUINT;
-  //std::cout << " ****** " << mRandomType << std::endl;
+
   mLog = * si->getValue("log").pBOOL;
   mMin = * si->getValue("Minimum").pDOUBLE;
   mMax = * si->getValue("Maximum").pDOUBLE;
+
   if (mLog)
     {
       mMin = log(mMin);
       mMax = log(mMax);
     }
+
   mNumSteps = 0;
   mFaktor = (mMax - mMin);
 }
@@ -240,30 +246,36 @@ void CScanItemRandom::step()
   else
     {
       C_FLOAT64 tmpF;
+
       switch (mRandomType)
         {
-        case 0:             //uniform
-          Value = mMin + mRg->getRandomCC() * mFaktor;
-          if (mLog)
-            Value = exp(Value);
-          break;
+          case 0:             //uniform
+            Value = mMin + mRg->getRandomCC() * mFaktor;
 
-        case 1:             //normal
-          tmpF = mRg->getRandomNormal01();
-          Value = mMin + tmpF * mMax;
-          if (mLog)
-            Value = exp(Value);
-          break;
+            if (mLog)
+              Value = exp(Value);
 
-        case 2:             //poisson
-          Value = mRg->getRandomPoisson(mMin);
-          //if (mLog)
-          //  *mpValue = exp(*mpValue);
-          break;
+            break;
+
+          case 1:             //normal
+            tmpF = mRg->getRandomNormal01();
+            Value = mMin + tmpF * mMax;
+
+            if (mLog)
+              Value = exp(Value);
+
+            break;
+
+          case 2:             //poisson
+            Value = mRg->getRandomPoisson(mMin);
+            //if (mLog)
+            //  *mpValue = exp(*mpValue);
+            break;
         }
     }
 
   if (mpValue) mpValue->setObjectValue(Value);
+
   ++mIndex;
 }
 
@@ -303,7 +315,7 @@ bool CScanItemRandom::isValidScanItem()
   mST = st;
   mNumSteps = 0;
 }
- 
+
 void CScanItemBreak::step()
 {
   //the index
@@ -314,7 +326,7 @@ void CScanItemBreak::step()
       //TODO: tell the task what exactly to do...
       mST->outputSeparatorCallback();
     }
- 
+
   ++mIndex;
 }*/
 
@@ -356,7 +368,9 @@ CScanMethod::~CScanMethod()
 bool CScanMethod::cleanupScanItems()
 {
   if (!mpProblem) return false;
+
   unsigned C_INT32 i, imax = mScanItems.size();
+
   for (i = 0; i < imax; ++i) if (mScanItems[i]) delete mScanItems[i];
 
   mScanItems.clear();
@@ -368,6 +382,7 @@ bool CScanMethod::init()
   if (!mpProblem) return false;
 
   mpTask = dynamic_cast< CScanTask * >(getObjectParent());
+
   if (mpTask == NULL) return false;
 
   cleanupScanItems();
@@ -376,6 +391,7 @@ bool CScanMethod::init()
   std::set< const CCopasiObject * > ObjectSet;
 
   unsigned C_INT32 i, imax = mpProblem->getNumberOfScanItems();
+
   for (i = 0; i < imax; ++i)
     {
       mScanItems.push_back(CScanItem::createScanItemFromParameterGroup(mpProblem->getScanItem(i),
@@ -390,10 +406,12 @@ bool CScanMethod::init()
 
   //set mLastNestingItem
   mLastNestingItem = -1;
+
   if (imax != 0)
     {
       //search from the end
       C_INT32 j;
+
       for (j = mScanItems.size() - 1; j >= 0; --j)
         {
           if (mScanItems[j]->isNesting())
@@ -464,7 +482,6 @@ bool CScanMethod::loop(unsigned C_INT32 level)
 
 bool CScanMethod::calculate()
 {
-  //std::cout << "*********** Scan: calculate... ************" << std::endl;
   std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
   std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
 
@@ -483,6 +500,7 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CScanProblem * pP = dynamic_cast<const CScanProblem *>(pProblem);
+
   if (!pP)
     {
       //not a TrajectoryProblem
@@ -504,6 +522,7 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
       CScanItem * si = CScanItem::createScanItemFromParameterGroup(mpProblem->getScanItem(i),
                        mpRandomGenerator,
                        (CScanTask*)(getObjectParent()));
+
       if (!si)
         {
           //parameter group could not be interpreted

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.267 $
+//   $Revision: 1.268 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 16:22:24 $
+//   $Date: 2009/10/27 16:56:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -870,10 +870,6 @@ bool CopasiUI3Window::slotFileSave()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   std::string FileName = (*CCopasiRootContainer::getDatamodelList())[0]->getFileName();
-
-#ifdef DEBUG_UI
-  std::cout << "Filename = " << FileName << std::endl;
-#endif
 
   if (mSaveAsRequired || FileName == "")
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Date: 2009/10/27 16:53:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -250,7 +250,6 @@ void CCSPMethod::sminverse(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT
 
   if (info != 0)
     {
-      // std::cout << "After dgesv_  INFO\n" << info << std::endl;
       return;
     }
 
@@ -1575,7 +1574,6 @@ void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
   for (m = 0; m < M; m++)
     for (j = M; j < N; j++)
       {
-        // std::cout << " m " << m << " j " << j << std::endl;
         for (n = 0; n < M; n++)
           P(m, j) += TAU(m, n) * ALA(n, j);
       }
@@ -1583,7 +1581,6 @@ void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
   for (j = M ; j < N; j++)
     for (m = 0; m < M; m++)
       {
-        //std::cout << " j " << j << " m " << m << std::endl;
         for (n = 0; n < M; n++)
           Q(j, m) += ALA(j, n) * TAU(n, m);
       }

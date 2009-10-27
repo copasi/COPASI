@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/CHistogram.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/01 18:53:52 $
+//   $Date: 2009/10/27 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ void CHistogram::addValue(const C_FLOAT64 & val)
     return;
 
   mUptodate = false;
-  //std::cout << val<< "  " << (C_INT32)(val/mIncrement)<< std::endl;
+
   mMap[(C_INT32)floor(val * mInvIncrement)]++;
   mMap[(((C_INT32)floor(val * mInvIncrement))) + 1];
   ++mCount;
@@ -130,13 +130,11 @@ void CHistogram::updateArray()
   std::map<C_INT32, C_INT32>::const_iterator it, itEnd = mMap.end();
 
   for (it = mMap.begin(), i = 1; it != itEnd; ++it, ++i)
-    {//TODO use pointer increments instead of [...]
+    {
+      //TODO use pointer increments instead of [...]
       mXArray[i] = it->first * mIncrement;
       mYArray[i] = (double)it->second * tmpFactor;
-      //std::cout <<it->first <<" " <<it->second << " : " << mXArray[i] << " " << mYArray[i] << std::endl;
     }
-
-  //std::cout << std::endl;
 
   mUptodate = true;
 }

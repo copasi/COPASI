@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/07/28 10:58:34 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -341,8 +341,6 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
   if (pExpression == NULL) return info;
 
-  //std::cout << pExpression->getRoot()->getDisplayString(pExpression).c_str() << std::endl;
-
   const std::vector<CEvaluationNode*>& objectNodes = pExpression->getNodeList();
   unsigned j, jmax = objectNodes.size();
 
@@ -356,8 +354,6 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          //std::cout << cn << std::endl;
-
           const CCopasiObject* mObject = mpModel->getObjectDataModel()->getObject(cn);
 
           if (mObject == NULL) return info;
@@ -368,7 +364,6 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
-              //std::cout << host << std::endl;
             }
 
           if (mObject == NULL) return info;
@@ -383,17 +378,12 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
               cn = pObject->getCN() + host;
 
-              //std::cout << cn << std::endl;
-
               pObjectNode->setData("<" + cn + ">");
             }
         }
     }
 
   pExpression->updateTree();
-
-  //std::cout << pExpression->getRoot()->getDisplayString(pExpression).c_str() << std::endl;
-  //std::cout <<  std::endl;
 
   return true;
 }
@@ -503,8 +493,6 @@ bool CModelMerging::copyEventAssignmentExpression(const CEventAssignment * sourc
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
 
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
   unsigned j, jmax = objectNodes.size();
 
@@ -517,8 +505,6 @@ bool CModelMerging::copyEventAssignmentExpression(const CEventAssignment * sourc
           if (pObjectNode == NULL) return info;
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
 
@@ -539,16 +525,11 @@ bool CModelMerging::copyEventAssignmentExpression(const CEventAssignment * sourc
 
           cn = pObject->getCN() + host;
 
-          //std::cout << cn << std::endl;
-
           pObjectNode->setData("<" + cn + ">");
         }
     }
 
   tmp->updateTree();
-
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-  //std::cout <<  std::endl;
 
   newAssignment->setExpression(tmp->getInfix().c_str());
 
@@ -567,8 +548,6 @@ bool CModelMerging::copyDelayExpression(const CEvent * sourceEvent, CEvent * new
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
 
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
   unsigned j, jmax = objectNodes.size();
 
@@ -581,8 +560,6 @@ bool CModelMerging::copyDelayExpression(const CEvent * sourceEvent, CEvent * new
           if (pObjectNode == NULL) return info;
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
 
@@ -603,16 +580,11 @@ bool CModelMerging::copyDelayExpression(const CEvent * sourceEvent, CEvent * new
 
           cn = pObject->getCN() + host;
 
-          //std::cout << cn << std::endl;
-
           pObjectNode->setData("<" + cn + ">");
         }
     }
 
   tmp->updateTree();
-
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-  //std::cout <<  std::endl;
 
   newEvent->setDelayExpression(tmp->getInfix().c_str());
 
@@ -631,8 +603,6 @@ bool CModelMerging::copyTriggerExpression(const CEvent * sourceEvent, CEvent * n
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
 
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
   unsigned j, jmax = objectNodes.size();
 
@@ -645,8 +615,6 @@ bool CModelMerging::copyTriggerExpression(const CEvent * sourceEvent, CEvent * n
           if (pObjectNode == NULL) return info;
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
 
@@ -667,16 +635,11 @@ bool CModelMerging::copyTriggerExpression(const CEvent * sourceEvent, CEvent * n
 
           cn = pObject->getCN() + host;
 
-          //std::cout << cn << std::endl;
-
           pObjectNode->setData("<" + cn + ">");
         }
     }
 
   tmp->updateTree();
-
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-  //std::cout <<  std::endl;
 
   newEvent->setTriggerExpression(tmp->getInfix().c_str());
 
@@ -695,8 +658,6 @@ bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEnti
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
 
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
   unsigned j, jmax = objectNodes.size();
 
@@ -709,8 +670,6 @@ bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEnti
           if (pObjectNode == NULL) return info;
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
 
@@ -731,16 +690,11 @@ bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEnti
 
           cn = pObject->getCN() + host;
 
-          //std::cout << cn << std::endl;
-
           pObjectNode->setData("<" + cn + ">");
         }
     }
 
   tmp->updateTree();
-
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-  //std::cout <<  std::endl;
 
   newEntity->setExpression(tmp->getInfix().c_str());
 
@@ -759,8 +713,6 @@ bool CModelMerging::copyInitialExpression(const CModelEntity * sourceEntity, CMo
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
 
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
   unsigned j, jmax = objectNodes.size();
 
@@ -773,8 +725,6 @@ bool CModelMerging::copyInitialExpression(const CModelEntity * sourceEntity, CMo
           if (pObjectNode == NULL) return info;
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
 
@@ -795,16 +745,11 @@ bool CModelMerging::copyInitialExpression(const CModelEntity * sourceEntity, CMo
 
           cn = pObject->getCN() + host;
 
-          //std::cout << cn << std::endl;
-
           pObjectNode->setData("<" + cn + ">");
         }
     }
 
   tmp->updateTree();
-
-  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
-  //std::cout <<  std::endl;
 
   newEntity->setInitialExpression(tmp->getInfix().c_str());
 

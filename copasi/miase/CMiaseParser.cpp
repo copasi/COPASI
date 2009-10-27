@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 19:54:03 $
+//   $Date: 2009/10/27 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -623,7 +623,6 @@ void CMiaseParser::endElement(const char *el)
   if ((strcmp(el, "Notes") == 0) && (myParser->mTmpDepth == 0))
     {
       tmpObj = myParser->getLastObj();
-      //    std::cout<<"Content:\n"<<myParser->mContent<<std::endl;
       tmpObj->getNotes()->setNotes(myParser->mContent);
       myParser->newState(myParser->mLastState);
     }
@@ -661,7 +660,7 @@ void CMiaseParser::endElement(const char *el)
   else if (strcmp(el, "Output") == 0)
     {
       myParser->newState(STATE_LIST_OF_OUTPUTS);
-      //    std::cout<<"Content:\n"<<myParser->mContent<<std::endl;
+
       //TODO: addContent to Output
       myParser->mMiase->getSed()->getLastOutput()->saveWholeOutput(myParser->mContent);
     }
@@ -783,8 +782,6 @@ void CMiaseParser::load(std::string filename)
 void CMiaseParser::error(std::string errorString)
 {
   myParser->newState(STATE_STOPPED);
-  std::cout << errorString << std::endl;
-  //  XML_StopParser(myParser->mXmlParser, false);
 }
 
 bool CMiaseParser::isValid(const char *el)

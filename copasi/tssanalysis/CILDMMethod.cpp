@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/07/29 16:06:54 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:53:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,18 +107,8 @@ void CILDMMethod::step(const double & deltaT)
   // TO REMOVE : mpModel->applyAssignments();
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
-  //std::cout << std::endl;
-  // std::cout << "*****************************" << std::endl;
-  // std::cout << "Next step t=: " << mTime << std::endl;
-
   C_INT flag_jacob;
   flag_jacob = 1;  // Set flag_jacob=0 to printing Jacobian
-
-  if (flag_jacob == 0)
-    {
-      //std::cout << "Jacobian at the reference point:" << std::endl;
-      //std::cout << mJacobian << std::endl;
-    }
 
   // To get the reduced Stoichiometry Matrix;
 
@@ -232,8 +222,6 @@ void CILDMMethod::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::WARNING,
                      MCTSSAMethod + 5, mTime - deltaT);
 
-      //std::cout << " WARNING:  There are problems with calculation of Jacobi matrix. Please check  the problem. " << std::endl;
-
       goto integration;
     }
 
@@ -252,8 +240,6 @@ void CILDMMethod::step(const double & deltaT)
       std::cout << "Schur Decomposition" << std::endl;
       std::cout << "mR - block upper triangular matrix :" << std::endl;
       std::cout << mR << std::endl;
-      //std::cout << "mQ - transformation matrix" << std::endl;
-      //std::cout << mQ << std::endl;
     }
 
 #endif
@@ -278,7 +264,6 @@ void CILDMMethod::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::WARNING,
                      MCTSSAMethod + 6, mTime - deltaT);
 
-      //std::cout << "WARNING.  All eigenvalues are positive. No reduction is possible" << std::endl;
       failed = 1;
       goto integration;
     }
@@ -332,7 +317,6 @@ void CILDMMethod::step(const double & deltaT)
               CCopasiMessage(CCopasiMessage::WARNING,
                              MCTSSAMethod + 7, slow, mTime - deltaT);
 
-              //std::cout << "WARNING.  There are problems with calculation of Sylvester equation for mode number" <<< slow << std::endl;
               failed_while = 1;
               goto integration;
             }
@@ -343,7 +327,6 @@ void CILDMMethod::step(const double & deltaT)
       for (i = slow ; i < dim; i++)
         if (mR(i , i) >= 0)
           {
-            //           std::cout << "positive eigenvalues for mode number " << i << std::endl;
             failed_while = 1;
             goto integration;
           }
@@ -364,13 +347,11 @@ void CILDMMethod::step(const double & deltaT)
 
       deuflhard(slow, info);
       help = help + 1;
-      //std::cout << "Test_Deuflh   help=" << help << std::endl;
 
       failed_while = 0;
 
       if (info)
         {
-          //       std::cout << "deuflhard criteria does not fullfield for mode number " << slow << std::endl;
           failed_while = 1;
           goto integration;
         }
@@ -419,16 +400,7 @@ integration:
       for (i = 0; i < dim; i++)
         for (j = 0; j < dim; j++)
           orthog_prove(i, j) = orthog(i, j);
-
-      //std::cout << "Proof the orthogonality of the transformation  matrix mTdInverse:" << orthog_prove << std::endl;
     }
-
-  /** This part is in development. To activate it set flag_develop = 0
-   //   std::cout << "Another sorting - from fast to  slow" << std::endl;
-   //   std::cout << "mR_desc - block upper triangular matrix :" << std::endl;
-   //   std::cout << mR_desc << std::endl;
-   //std::cout << std::endl;
-  */
 
   C_INT flag_develop;
   flag_develop = 0; //1;
@@ -442,8 +414,6 @@ integration:
                mR_desc - block upper triangular matrix (with ordered eigenvalues) */
 
       schur_desc(info_schur_desc);
-
-      //std::cout << "info_schur_desc: " << info_schur_desc << std::endl;
 
       for (i = 0; i < dim; i++)
         for (j = 0; j < dim; j++)
@@ -465,13 +435,6 @@ integration:
       mat_anal_fast_space(slow_desc);
       mat_anal_mod_space(slow_desc);
 
-      //       std::cout << "Slow space_Orthogonal:" << std::endl;
-      //       for (i = 0; i < dim; i ++)
-      //         {
-      //           std::cout << "Contribution to slow space:" << mpModel->getMetabolitesX()[i]->getObjectName() << "  " << mVfast_space[i] << std::endl;
-      //}
-      //       std::cout << std::endl;
-
       CVector<C_FLOAT64> Reac_slow_space_orth;
       Reac_slow_space_orth.resize(reacs_size);
 
@@ -484,13 +447,6 @@ integration:
               Reac_slow_space_orth[i] = Reac_slow_space_orth[i] + mVfast_space[j] * Stoichiom(j, i);
             }
         }
-
-      //       std::cout << "Reac_slow_space_orth:" << std::endl;
-      //       for (j = 0; j < reacs_size; j++)
-      //         std::cout << Reac_slow_space_orth[j] << " ";
-      //       std::cout << std::endl;
-      //
-      //       std::cout << std::endl;
 
       for (i = 0; i < dim; i++)
         for (j = 0; j < dim; j++)
@@ -576,35 +532,6 @@ integration:
               Slow_react_contr(j, i) = (Slow_react_contr(j , i)) / denom_reac[i] * 100;
           }
 
-      /*
-      std::cout << "Time:  " << mTime - deltaT << std::endl;
-      std::cout << std::endl;
-
-               std::cout << "Reactions contribution to the mode:" << std::endl;
-               for (i = 0; i < dim; i ++)
-                 {
-                   std::cout << "Mode N: " << i + 1 << std::endl;
-                   for (j = 0; j < reacs_size; j++)
-             std::cout << " Reaction " << j + 1 << "." <<  mpModel->getReactions()[j]->getObjectName() << ": " << Mode_react_contr(i, j) << std::endl;
-             std::cout << std::endl;
-          }
-
-               std::cout << "***********************" << std::endl;
-
-               std::cout << "Reactions distribution between modes:" << std::endl;
-
-               for (j = 0; j < reacs_size; j++)
-                 {
-                   std::cout << "Reaction: " << j + 1  << " " <<  mpModel->getReactions()[j]->getObjectName() << ": " << std::endl;
-                   for (i = 0; i < dim; i++)
-                       std::cout <<  "Mode " << i + 1 << ":  " << Slow_react_contr(i, j)<< std::endl;
-             std::cout << std::endl;
-             //  std::cout << Slow_react_contr(i, j) << " ";
-                   //std::cout << std::endl;
-        }
-
-      std::cout << "***********************" << std::endl;
-      */
       for (i = 0; i < reacs_size; i ++)
         {
           Reac_slow_space[i] = 0;
@@ -627,11 +554,6 @@ integration:
         else
           mReacSlowSpace[i] = 0;
 
-//            std::cout << "Reac_slow_space:" << std::endl;
-      //          for (j = 0; j < reacs_size; j++)
-      //          std::cout << Reac_slow_space[j] << " ";
-      //      std::cout << std::endl;
-
       for (i = 0; i < reacs_size; i ++)
         {
           Reac_fast_space[i] = 0;
@@ -650,10 +572,6 @@ integration:
           Reac_fast_space[i] = Reac_fast_space[i] / length * 100;
         else
           Reac_fast_space[i] = 0;
-
-//  std::cout << "Reac_fast_space for time =" << mTime - deltaT << std::endl;
-//  for (j = 0; j < reacs_size; j++)
-//    std::cout << "Reaction " << j + 1 << ". " <<  mpModel->getReactions()[j]->getObjectName() << ": " << Reac_fast_space[j] << std::endl;
 
 #ifdef ILDMDEBUG
 
@@ -774,7 +692,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
       if (iter > itermax)
         {
           info = 1;
-          //  std::cout << "iter > itermax" << iter << std::endl;
           return;
         }
 
@@ -877,7 +794,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
       if (ok != 0)
         {
           info = 2;
-          //   std::cout << "info : dgesv_ ok != 0" << std::endl;
           break;
         }
 
@@ -912,7 +828,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
       if (g2 / g1 > 1.0)
         {
           info = 1;
-          // std::cout << "info : stop criterion" << std::endl;
           break;
         }
     } /* end while */
@@ -929,8 +844,6 @@ void CILDMMethod::start(const CState * initialState)
   integrationMethodStart(initialState);
 
   mDtol = * getValue("Deuflhard Tolerance").pUDOUBLE;
-
-  std::cout << mDtol << std::endl;
 
   /* ILDM related staff  */
 
@@ -1017,25 +930,12 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   CVector<C_FLOAT64> x_help;
   x_help.resize(dim);
 
-  //  if (flag_deufl == 0)
-  //    std::cout << "Prove from the DeuflhardFunction " << std::endl;
-
   for (j = 0; j < dim; j++)
     {
       x_help[j] = mY_initial[j] * number2conc;
     }
 
   calculateDerivativesX(x_help.array(), dxdt.array());
-
-  //   if (flag_deufl == 0)
-  //     {
-  //       std::cout << std::endl;
-  //       for (i = 0; i < dim; i++)
-  //         {
-  //           std::cout << "dxdt[" << i << "] = " << dxdt[i] << std::endl;
-  //}
-  //       std::cout << std::endl;
-  //}
 
   for (i = 0; i < dim; i++)
     {
@@ -1057,7 +957,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   if (info)
     {
       /* TODO */
-      //  std::cout << "info: newton iteration stop" << std::endl;
 
       return;
     }
@@ -1090,24 +989,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
         x_relax[i] = x_relax[i] + mTd(i, j) * c_relax[j];
     }
 
-  //   if (flag_deufl == 0)
-  //     {
-  //       std::cout << std::endl;
-  //       std::cout << "x_help - current concentration " << std::endl;
-  //       std::cout << "x_relax = mTd * c_relax " << std::endl;
-  //       std::cout << "c_full = mTdInverse * x_help " << std::endl;
-  //       std::cout << "c_relax(i) = c_full(i), i < slow;  = mCfast(i - slow), i>=slow " << std::endl;
-  //       for (i = 0; i < dim; i++)
-  //         {
-  //           std::cout << "  x_help[" << i << "] = " << x_help[i] << std::endl;
-  //           std::cout << "  x_relax: " << x_relax[i] << std::endl;
-  //           std::cout << "  c_relax. " << c_relax[i] << std::endl;
-  //           std::cout << "  c_full " << c_full[i] << std::endl;
-  //           std::cout << std::endl;
-  //}
-  //       std::cout << std::endl;
-  //}
-
   calculateDerivativesX(x_relax.array(), dxdt_relax.array());
 
   for (i = 0; i < dim; i++)
@@ -1117,18 +998,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
       for (j = 0; j < dim; j++)
         g_relax[i] = g_relax[i] + mTdInverse(i, j) * dxdt_relax[j];
     }
-
-  //   if (flag_deufl == 0)
-  //     {
-  //       std::cout << std::endl;
-  //       for (i = 0; i < dim; i++)
-  //         {
-  //           std::cout << "g_full[" << i << "] = " << g_full[i] << std::endl;
-  //           std::cout << "g_relax[" << i << "] = " << g_relax[i] << std::endl;
-  //}
-  //       std::cout << std::endl;
-  //       std::cout << "mEps = " << mEPS << std::endl;
-  //}
 
   CVector<C_FLOAT64> re;
   re.resize(slow);
@@ -1159,13 +1028,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
     info = 1;
   else
     info = 0;
-
-  //   if (flag_deufl == 0)
-  //     {
-  //       std::cout << "max from DeuflhardFunction: " << max << std::endl;
-  //       std::cout << "end of DeuflhardFunction" << std::endl;
-  //       std::cout << std::endl;
-  //}
 
   return;
 }

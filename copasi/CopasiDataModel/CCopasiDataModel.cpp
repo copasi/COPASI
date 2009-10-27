@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.144 $
+//   $Revision: 1.145 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 16:26:54 $
+//   $Date: 2009/10/27 16:52:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,13 +71,8 @@ CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
 
 bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::string & newCN) const
 {
-  //std::cout << "CDataModelRenameHandler::handle()" << std::endl;
-  //std::cout << " old: " << oldCN << std::endl;
-  //std::cout << " new: " << newCN << std::endl;
-
   const std::set<CRegisteredObjectName*> nameSet = CRegisteredObjectName::getSet();
 
-  //std::cout << " ************ " << nameSet.size() << std::endl;
   std::set<CRegisteredObjectName*>::const_iterator it, itEnd = nameSet.end();
 
   for (it = nameSet.begin(); it != itEnd; ++it)
@@ -87,17 +82,10 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
            ((*it)->size() > oldCN.size() && (**it)[oldCN.size()] == ',')) &&
           oldCN.compare(0, oldCN.size(), **it, 0, oldCN.size()) == 0)
         {
-          //std::cout << "   match:   " << **it << std::endl;
           (**it).replace(0, oldCN.size(), newCN);
-          //std::cout << "     -->    " << **it << std::endl;
-        }
-      else
-        {
-          //std::cout << "            " << **it << std::endl;
         }
     }
 
-  //std::cout << " " << std::endl;
   return true;
 }
 
@@ -225,7 +213,6 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
     }
   else if (!Line.find("<?xml") != std::string::npos)
     {
-      //std::cout << "XML Format" << std::endl;
       File.seekg(0, std::ios_base::beg);
 
       CCopasiXML XML;

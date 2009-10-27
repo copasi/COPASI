@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:15 $
+//   $Date: 2009/10/27 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,9 +49,11 @@ std::vector<C_INT32> COutputAssistant::getListOfDefaultOutputDescriptions(const 
   std::vector<C_INT32> ret;
 
   problem = NULL; //DEBUG only!!!
+
   if (!problem) //generate full list
     {
       Map::const_iterator it, itEnd = mMap.end();
+
       for (it = mMap.begin(); it != itEnd; ++it)
         ret.push_back(it->first);
 
@@ -59,17 +61,20 @@ std::vector<C_INT32> COutputAssistant::getListOfDefaultOutputDescriptions(const 
     }
 
   const CModel* pModel = problem->getModel();
+
   if (!pModel) return ret;
 
   //TODO use CObjectLists::existsFixedMetab()
 
   const CTrajectoryProblem* tp = dynamic_cast<const CTrajectoryProblem*>(problem);
+
   if (tp)
     {
       return ret;
     }
 
   const CSteadyStateProblem* ssp = dynamic_cast<const CSteadyStateProblem*>(problem);
+
   if (ssp)
     {
       return ret;
@@ -85,12 +90,12 @@ C_INT32 COutputAssistant::getDefaultReportIndex(const CCopasiProblem * problem)
 
   switch (problem->getType())
     {
-    case CCopasiTask::steadyState:
-      return 1000;
-    case CCopasiTask::timeCourse:
-      return 1000;
-    default:
-      return - 1;
+      case CCopasiTask::steadyState:
+        return 1000;
+      case CCopasiTask::timeCourse:
+        return 1000;
+      default:
+        return - 1;
     }
 }
 
@@ -118,12 +123,12 @@ C_INT32 COutputAssistant::getDefaultPlotIndex(const CCopasiProblem * problem)
 
   switch (problem->getType())
     {
-    case CCopasiTask::steadyState:
-      return 0;
-    case CCopasiTask::timeCourse:
-      return 0;
-    default:
-      return - 1;
+      case CCopasiTask::steadyState:
+        return 0;
+      case CCopasiTask::timeCourse:
+        return 0;
+      default:
+        return - 1;
     }
 }
 
@@ -363,19 +368,18 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 {
   if (task == NULL)
     {
-      //std::cout << "task==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
     }
+
   if (task->getProblem() == NULL)
     {
-      //std::cout << "problem==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
     }
 
   CModel* pModel = task->getProblem()->getModel();
+
   if (pModel == NULL)
     {
-      //std::cout << "model==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
     }
 
@@ -389,131 +393,133 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
   switch (idMod)
     {
-    case 0:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      break;
-    case 1:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      break;
-    case 2:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONCENTRATIONS, pModel);
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      break;
-    case 3:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::METAB_NUMBERS, pModel);
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      break;
-    case 4:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      break;
-    case 5:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      break;
-    case 6:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, pModel);
-      break;
-    case 7:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
-      break;
-    case 8:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      break;
-    case 9:
-      data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
-      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
-      break;
-    case 10:  // :TODO: Implement me!
+      case 0:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+      case 1:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+      case 2:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONCENTRATIONS, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+      case 3:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_NUMBERS, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+      case 4:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+      case 5:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+      case 6:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, pModel);
+        break;
+      case 7:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
+        break;
+      case 8:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+      case 9:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+      case 10:  // :TODO: Implement me!
       {
         CPlotSpecification * pPlotSpecification = NULL;
         CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+
         if (pTask == NULL) return NULL;
 
         CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+
         if (pFitProblem == NULL) return NULL;
 
         const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
@@ -539,8 +545,10 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
               {
                 std::string Name = (*it)->getObjectName();
                 const CCopasiObject * pObject = pDataModel->getObject(Name);
+
                 if (pObject != NULL)
                   Name = pObject->getObjectDisplayName();
+
                 Name = pExperiment->getObjectName() + "," + Name;
 
                 data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Measured Value")));
@@ -551,6 +559,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Fitted Value")));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Fitted Value)");
+
                 if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
                   LineTypes.push_back(0);
                 else
@@ -587,13 +596,15 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         return pPlotSpecification;
       }
       break;
-    case 11:
+      case 11:
       {
         CPlotSpecification * pPlotSpecification = NULL;
         CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+
         if (pTask == NULL) return NULL;
 
         CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+
         if (pFitProblem == NULL) return NULL;
 
         const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
@@ -630,6 +641,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 it = FittingPoints.begin();
 
                 unsigned C_INT32 LineType;
+
                 if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
                   LineType = 0;
                 else
@@ -639,6 +651,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                   {
                     std::string Name = (*it++)->getObjectName();
                     const CCopasiObject * pObject = pDataModel->getObject(Name);
+
                     if (pObject != NULL)
                       Name = pObject->getObjectDisplayName();
 
@@ -660,13 +673,15 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         return pPlotSpecification;
       }
       break;
-    case 12:
+      case 12:
       {
         CPlotSpecification * pPlotSpecification = NULL;
         CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+
         if (pTask == NULL) return NULL;
 
         CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+
         if (pFitProblem == NULL) return NULL;
 
         const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
@@ -674,6 +689,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
         std::map< const CCopasiObject *, CPlotSpecification * > PlotSpecMap;
         std::map< const CCopasiObject *, CPlotSpecification * >::iterator Found;
+
         for (i = 0; i < imax; i++)
           {
             const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
@@ -688,6 +704,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             CPlotDataChannelSpec ChannelX =
               (*it)->getObject(CCopasiObjectName("Reference=Independent Value"))->getCN();
             unsigned C_INT32 LineType;
+
             if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
               LineType = 0;
             else
@@ -697,6 +714,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
               {
                 const CCopasiObject * pObject =
                   pDataModel->getObject((*it)->getObjectName());
+
                 if (pObject == NULL) continue;
 
                 if ((Found = PlotSpecMap.find(pObject)) != PlotSpecMap.end())
@@ -706,6 +724,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                     unsigned C_INT32 i = 0;
                     std::ostringstream sname;
                     sname << pObject->getObjectDisplayName();
+
                     while (!(pPlotSpecification =
                                pDataModel->getPlotDefinitionList()->createPlotSpec(sname.str(),
                                    CPlotItem::plot2d)))
@@ -743,16 +762,19 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                   }
               }
           }
+
         return pPlotSpecification;
       }
       break;
-    case 13:
+      case 13:
       {
         CPlotSpecification * pPlotSpecification = NULL;
         CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+
         if (pTask == NULL) return NULL;
 
         CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+
         if (pFitProblem == NULL) return NULL;
 
         //        const C_FLOAT64 & SolutionValue = pFitProblem->getSolutionValue();
@@ -788,11 +810,13 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     {
       data1.insert(data1.begin(), pTime);
       CReportDefinition* pReportDef = createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType, pDataModel);
+
       if (activate && pReportDef)
         {
           task->getReport().setReportDefinition(pReportDef);
           //TODO: also set a default filename?
         }
+
       return pReportDef;
     }
   else //plot
@@ -817,22 +841,13 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
   std::vector<const CCopasiObject*>::const_iterator it, itEnd = y.end();
 
-#ifdef COPASI_DEBUG
-  /*  std::cout << "COutputAssistant::createPlot:" << std::endl;
-    std::cout << " name: " << name << std::endl;
-
-    std::cout << x -> getObjectDisplayName() << std::endl;
-
-    for (it = y.begin(); it != itEnd; ++it)
-      std::cout << (*it)->getObjectDisplayName() << std::endl;*/
-#endif // COPASI_DEBUG
-
   //create plot with unique name
   unsigned C_INT32 i = 0;
   CPlotSpecification* pPl;
   std::ostringstream sname;
   sname << name;
   assert(pDataModel != NULL);
+
   while (!(pPl = pDataModel->getPlotDefinitionList()->createPlotSpec(sname.str(),
                  CPlotItem::plot2d)))
     {
@@ -842,7 +857,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
     }
 
   // Set the task type
-  // :TODO: This is currently not implmented for plots.
+  // :TODO: This is currently not implemented for plots.
 
   //create curves
 
@@ -854,9 +869,9 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
   for (it = y.begin(); it != itEnd; ++it)
     {
       if (!(*it)) continue;
+
       name2 = (*it)->getCN();
       itemTitle = (*it)->getObjectDisplayName();
-      //std::cout << itemTitle << " : " << name2 << std::endl;
 
       plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
       plItem->addChannel(name1);
@@ -875,19 +890,13 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
 {
   std::vector<const CCopasiObject*>::const_iterator it, itEnd = d.end();
 
-#ifdef COPASI_DEBUG
-  /*  std::cout << "COutputAssistant::createTable:" << std::endl;
-    std::cout << " name: " << name << std::endl;
-    for (it = d.begin(); it != itEnd; ++it)
-      std::cout << (*it)->getObjectDisplayName() << std::endl;*/
-#endif // COPASI_DEBUG
-
   //create plot with unique name
   unsigned C_INT32 i = 0;
   CReportDefinition * pReport = NULL;
   std::ostringstream sname;
   sname << name;
   assert(pDataModel != NULL);
+
   while (!(pReport = pDataModel->getReportDefinitionList()->createReportDefinition(sname.str(), comment)))
     {
       i++;
@@ -904,6 +913,7 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
   for (it = d.begin(); it != itEnd; ++it)
     {
       if (!(*it)) continue;
+
       pReport->getTableAddr()->push_back((*it)->getCN());
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:17:54 $
+//   $Date: 2009/10/27 16:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -304,7 +304,6 @@ void CReactionInterface::clearFunction()
 
 void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction)
 {
-  //std::cout << "setChemEqString: " << eq << std::endl;
   mChemEqI.setChemEqString(eq);
   findAndSetFunction(newFunction);
 }

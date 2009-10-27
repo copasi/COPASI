@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CMathMLToTeX.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/01 00:04:46 $
+//   $Author: shoops $
+//   $Date: 2009/10/27 16:53:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,6 @@ void CMathMLToTeX::convert(QString &text)
     {
       if (text.count("<mtable>") > 1)
         {
-          // std::cout << "The MathML contains <mtable> more than one. Needs more handling." << std::endl;
           text = "The MathML contains <mtable> more than one. Needs more handling.";
           return;
         }
@@ -173,8 +172,6 @@ void CMathMLToTeX::convert(QString &text)
 /// normal equation node
 void CMathMLToTeX::mNode(QString &text)
 {
-  // std::cout << "BEFORE: Text:\n" << text << std::endl;
-
   CStructureParser xmlParser(0);
   QXmlSimpleReader xmlReader;
 
@@ -186,8 +183,6 @@ void CMathMLToTeX::mNode(QString &text)
   xmlReader.parse(xmlSource);
 
   text = xmlParser.getTeX();
-
-  // std::cout << "AFTER: Text:\n" << text << std::endl;
 }
 
 /// converting <mtable> ... </mtable>

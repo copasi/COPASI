@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:17 $
+//   $Date: 2009/10/27 16:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@ CDotOutput::CDotOutput()
 void CDotOutput::writeDependencies(std::ostream & os, const CModel* pModel, const CCopasiObject * rootNode)
 {
   const CCopasiObject * obj;
+
   if (rootNode)
     obj = rootNode;
   else
@@ -47,6 +48,7 @@ void CDotOutput::writeDependencies(std::ostream & os, const CModel* pModel, cons
 
   //nodes
   std::map<const CCopasiObject*, ObjectData>::const_iterator it, itEnd = mObjects.end();
+
   for (it = mObjects.begin(); it != itEnd; ++it)
     {
       writeObjectNode(os, it->first, it->second);
@@ -56,21 +58,23 @@ void CDotOutput::writeDependencies(std::ostream & os, const CModel* pModel, cons
 }
 
 void CDotOutput::findObjectsWithUpdateMethod(const CCopasiObject * obj, std::set<const CCopasiObject*> & objectSet, unsigned int recursion) const
-  {
-    if (!obj) return;
-    if (recursion > 10) return; //limit recursion
-    //it is assumed  *obj has no UpdateMethod
+{
+  if (!obj) return;
 
-    std::set< const CCopasiObject * >::const_iterator it, itEnd = obj->getDirectDependencies().end();
-    //std::cout << pO->getObjectName() <<  pO->getValueReference()->getDirectDependencies().size() << std::endl;
-    for (it = obj->getDirectDependencies().begin(); it != itEnd; ++it)
-      {
-        if ((*it)->hasUpdateMethod())
-          objectSet.insert(*it);
-        else
-          findObjectsWithUpdateMethod(*it, objectSet, recursion + 1);
-      }
-  }
+  if (recursion > 10) return; //limit recursion
+
+  //it is assumed  *obj has no UpdateMethod
+
+  std::set< const CCopasiObject * >::const_iterator it, itEnd = obj->getDirectDependencies().end();
+
+  for (it = obj->getDirectDependencies().begin(); it != itEnd; ++it)
+    {
+      if ((*it)->hasUpdateMethod())
+        objectSet.insert(*it);
+      else
+        findObjectsWithUpdateMethod(*it, objectSet, recursion + 1);
+    }
+}
 
 void CDotOutput::writeDotRecursively(const CCopasiObject * obj, std::ostream & os)
 {
@@ -78,25 +82,26 @@ void CDotOutput::writeDotRecursively(const CCopasiObject * obj, std::ostream & o
   if ((!mOnlyAlgebraicDependencies) || obj->hasUpdateMethod())
     {
       std::set< const CCopasiObject * >::const_iterator it, itEnd = obj->getDirectDependencies().end();
-      //std::cout << pO->getObjectName() <<  pO->getValueReference()->getDirectDependencies().size() << std::endl;
+
       for (it = obj->getDirectDependencies().begin(); it != itEnd; ++it)
         {
           //skip deps on compartments
           if (mSkipCompartments)
             if ((*it)->getObjectParent() && ((*it)->getObjectParent()->getObjectType() == "Compartment"
                                              || (*it)->getObjectType() == "Compartment")) continue;
+
           if (mOnlyAlgebraicDependencies)
             {
               if ((*it)->hasUpdateMethod())
                 {
                   writeEdge(os, obj, *it);
-                  //std::cout << "\"" << obj->getObjectDisplayName() << "\" -> \"" << (*it)->getObjectDisplayName() << "\"" << std::endl;
                 }
               else
                 {//find indirect dependencies
                   std::set<const CCopasiObject* > tmpObjectSet;
                   findObjectsWithUpdateMethod(*it, tmpObjectSet);
                   std::set<const CCopasiObject* >::const_iterator tmpIt, tmpItEnd = tmpObjectSet.end();
+
                   for (tmpIt = tmpObjectSet.begin(); tmpIt != tmpItEnd; ++tmpIt)
                     writeEdge(os, obj, *tmpIt, true); //
                 }
@@ -104,7 +109,6 @@ void CDotOutput::writeDotRecursively(const CCopasiObject * obj, std::ostream & o
           else
             {
               writeEdge(os, obj, *it);
-              //std::cout << "\"" << obj->getObjectDisplayName() << "\" -> \"" << (*it)->getObjectDisplayName() << "\"" << std::endl;
             }
         }
     }
@@ -116,7 +120,6 @@ void CDotOutput::writeDotRecursively(const CCopasiObject * obj, std::ostream & o
       container = (CCopasiContainer*)obj;
 
       CCopasiContainer::objectMap::const_iterator it = container->getObjects().begin();
-      // int cnt = container->getObjects().size();
 
       for (; it != container->getObjects().end(); ++it)
         {
@@ -130,40 +133,44 @@ void CDotOutput::writeDotRecursively(const CCopasiObject * obj, std::ostream & o
 
           writeDotRecursively(it->second, os);
         }
+
       //return;
     }
 }
 
 void CDotOutput::writeObjectNode(std::ostream & os, const CCopasiObject * ptr, const ObjectData & od) const
-  {
-    os << "//" << std::endl;
+{
+  os << "//" << std::endl;
 
-    bool flagUM = ptr->hasUpdateMethod();
-    bool flagRM = ptr->getRefresh() != NULL;
-    bool flagInUpToDateList = od.mInUpToDateList;
+  bool flagUM = ptr->hasUpdateMethod();
+  bool flagRM = ptr->getRefresh() != NULL;
+  bool flagInUpToDateList = od.mInUpToDateList;
 
-    std::ostringstream oss;
-    if (od.mSimulatedRefreshesIndex != -1)
-      oss << "SR=" << od.mSimulatedRefreshesIndex << " ";
-    if (od.mNonSimulatedRefreshesIndex != -1)
-      oss << "NSR=" << od.mNonSimulatedRefreshesIndex << " ";
-    if (od.mConstantRefreshesIndex != -1)
-      oss << "CR=" << od.mConstantRefreshesIndex << " ";
+  std::ostringstream oss;
 
-    os << "\"" << ptr->getObjectDisplayName() << "\" [shape=plaintext, color=blue, " << std::endl;
-    os << "label=<\n";
-    os << "<TABLE CELLSPACING=\"0\">\n";
-    os << "  <TR><TD COLSPAN=\"4\">" << ptr->getObjectDisplayName() << "</TD></TR>\n";
-    os << "  <TR>\n";
-    os << "    <TD " << (flagUM ? "BGCOLOR=\"red\"" : " ") << "><FONT POINT-SIZE=\"7.0\">UM</FONT>" << "" << "</TD>\n";
-    os << "    <TD " << (flagRM ? "BGCOLOR=\"green\"" : " ") << "><FONT POINT-SIZE=\"7.0\">RM</FONT>" << "" << "</TD>\n";
-    os << "    <TD " << (flagInUpToDateList ? "BGCOLOR=\"blue\"" : " ") << "><FONT POINT-SIZE=\"7.0\">UtD</FONT>" << "" << "</TD>\n";
-    os << "    <TD><FONT POINT-SIZE=\"7.0\">" << oss.str() << " </FONT></TD>\n";
-    os << "  </TR>\n";
-    os << "</TABLE>\n";
-    os << "\n";
-    os << ">];\n";
-  }
+  if (od.mSimulatedRefreshesIndex != -1)
+    oss << "SR=" << od.mSimulatedRefreshesIndex << " ";
+
+  if (od.mNonSimulatedRefreshesIndex != -1)
+    oss << "NSR=" << od.mNonSimulatedRefreshesIndex << " ";
+
+  if (od.mConstantRefreshesIndex != -1)
+    oss << "CR=" << od.mConstantRefreshesIndex << " ";
+
+  os << "\"" << ptr->getObjectDisplayName() << "\" [shape=plaintext, color=blue, " << std::endl;
+  os << "label=<\n";
+  os << "<TABLE CELLSPACING=\"0\">\n";
+  os << "  <TR><TD COLSPAN=\"4\">" << ptr->getObjectDisplayName() << "</TD></TR>\n";
+  os << "  <TR>\n";
+  os << "    <TD " << (flagUM ? "BGCOLOR=\"red\"" : " ") << "><FONT POINT-SIZE=\"7.0\">UM</FONT>" << "" << "</TD>\n";
+  os << "    <TD " << (flagRM ? "BGCOLOR=\"green\"" : " ") << "><FONT POINT-SIZE=\"7.0\">RM</FONT>" << "" << "</TD>\n";
+  os << "    <TD " << (flagInUpToDateList ? "BGCOLOR=\"blue\"" : " ") << "><FONT POINT-SIZE=\"7.0\">UtD</FONT>" << "" << "</TD>\n";
+  os << "    <TD><FONT POINT-SIZE=\"7.0\">" << oss.str() << " </FONT></TD>\n";
+  os << "  </TR>\n";
+  os << "</TABLE>\n";
+  os << "\n";
+  os << ">];\n";
+}
 
 void CDotOutput::writeEdge(std::ostream & os, const CCopasiObject * ptr1, const CCopasiObject * ptr2, bool indirect)
 {
@@ -185,6 +192,7 @@ void CDotOutput::updateObjectNodesFromModel(const CModel* model)
   const std::set< const CCopasiObject * > & objectSet = model->getUptoDateObjects();
 
   std::set< const CCopasiObject * >::const_iterator it, itEnd = objectSet.end();
+
   for (it = objectSet.begin(); it != itEnd; ++it)
     {
       mObjects[*it].mInUpToDateList = true;
@@ -193,23 +201,29 @@ void CDotOutput::updateObjectNodesFromModel(const CModel* model)
   unsigned int i, imax;
 
   imax = model->getListOfSimulatedRefreshes().size();
+
   for (i = 0; i < imax; ++i)
     {
       ObjectData * pOD = getObjectDataFromRefresh(model->getListOfSimulatedRefreshes()[i]);
+
       if (pOD) pOD->mSimulatedRefreshesIndex = i;
     }
 
   imax = model->getListOfNonSimulatedRefreshes().size();
+
   for (i = 0; i < imax; ++i)
     {
       ObjectData * pOD = getObjectDataFromRefresh(model->getListOfNonSimulatedRefreshes()[i]);
+
       if (pOD) pOD->mNonSimulatedRefreshesIndex = i;
     }
 
   imax = model->getListOfConstantRefreshes().size();
+
   for (i = 0; i < imax; ++i)
     {
       ObjectData * pOD = getObjectDataFromRefresh(model->getListOfConstantRefreshes()[i]);
+
       if (pOD) pOD->mConstantRefreshesIndex = i;
     }
 
@@ -222,12 +236,12 @@ void CDotOutput::updateObjectNodesFromModel(const CModel* model)
 CDotOutput::ObjectData * CDotOutput::getObjectDataFromRefresh(const Refresh* ref)
 {
   std::map <const CCopasiObject*, ObjectData>::iterator it, itEnd = mObjects.end();
+
   for (it = mObjects.begin(); it != itEnd; ++it)
     {
       if (it->first->getRefresh() == ref) return &it->second;
     }
 
-  // std::cout << "Object for Refresh method not found!" << std::endl;
   return NULL;
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 19:53:47 $
+//   $Date: 2009/10/27 16:52:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -434,7 +434,6 @@ void CQLayoutMainWindow::createMenus()
 
 void CQLayoutMainWindow::loadSBMLFile()
 {
-  // std::cout << "load SBMLfile" << std::endl;
   CListOfLayouts *pLayoutList;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
