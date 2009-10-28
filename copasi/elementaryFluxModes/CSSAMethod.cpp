@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/22 14:58:11 $
+//   $Author: aekamal $
+//   $Date: 2009/10/28 14:11:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -154,9 +154,21 @@ bool CSSAMethod::process(CProcessReport *)
 bool
 CSSAMethod::calculate()
 {
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhSteps);
 
-  if (!mpModel) return false;
+      return false;
+    }
+
+  if (!mpModel)
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhSteps);
+
+      return false;
+    }
 
   //initialize matrices for calculation;
   //  if (mpModel->compileIfNecessary(NULL))
@@ -169,7 +181,15 @@ CSSAMethod::calculate()
   //    return false;
 
   if (!testForMixingStability())
-    return false;
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhSteps);
+
+      return false;
+    }
+
+  if (mpCallBack)
+    mpCallBack->finish(mhSteps);
 
   return true;
 }

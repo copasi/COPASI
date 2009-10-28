@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/10/19 15:51:46 $
+//   $Date: 2009/10/28 14:11:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -465,7 +465,13 @@ bool COptMethodGA::optimise()
 {
   bool Continue = true;
 
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
+      return false;
+    }
 
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
@@ -532,6 +538,9 @@ bool COptMethodGA::optimise()
 
   if (!Continue)
     {
+      if (mpCallBack)
+        mpCallBack->finish(mhGenerations);
+
       cleanup();
       return false;
     }
@@ -586,6 +595,9 @@ bool COptMethodGA::optimise()
       if (mpCallBack)
         Continue &= mpCallBack->progress(mhGenerations);
     }
+
+  if (mpCallBack)
+    mpCallBack->finish(mhGenerations);
 
   cleanup();
 

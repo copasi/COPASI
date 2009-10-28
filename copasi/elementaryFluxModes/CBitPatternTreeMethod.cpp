@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/02 13:05:42 $
+//   $Author: aekamal $
+//   $Date: 2009/10/28 14:11:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,7 +123,13 @@ bool CBitPatternTreeMethod::calculate()
 {
   bool Continue = true;
 
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhProgressCounter);
+
+      return false;
+    }
 
   while (mpStepMatrix->getNumUnconvertedRows() > 0 &&
          Continue)

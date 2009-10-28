@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-$Revision: 1.23 $
+$Revision: 1.24 $
 $Name:  $
-$Author: shoops $
-$Date: 2009/08/14 13:41:37 $
+$Author: aekamal $
+$Date: 2009/10/28 14:11:51 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,7 +189,13 @@ bool CEFMAlgorithm::initialize()
 
 bool CEFMAlgorithm::calculate()
 {
-  if (!initialize()) return false;
+  if (!initialize())
+    {
+      if (mpCallBack)
+        mpCallBack->finish(mhSteps);
+
+      return false;
+    }
 
   calculateFluxModes();
 
