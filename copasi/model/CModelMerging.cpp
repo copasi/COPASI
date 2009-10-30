@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:47 $
+//   $Author: nsimus $
+//   $Date: 2009/10/30 16:22:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,18 +21,18 @@
 #include "model/CEvent.h"
 #include "model/CChemEqElement.h"
 
-CModelMerging::CModelMerging(CModel* pModel, CModel* mModel)
+CModelAdd::CModelAdd(CModel* pModel, CModel* mModel)
     : mpModel(pModel), mmModel(mModel)
 {
 }
 
-void CModelMerging::setModel(CModel* pModel, CModel* mModel)
+void CModelAdd::setModel(CModel* pModel, CModel* mModel)
 {
   mpModel = pModel;
   mmModel = mModel;
 }
 
-void CModelMerging::simpleCall()
+void CModelAdd::simpleCall()
 {
   if (!mpModel)
     {
@@ -45,6 +45,7 @@ void CModelMerging::simpleCall()
     }
 
   keyMap[mmModel->getKey()] = mpModel->getKey();
+
   std::string name = "model_2"; // temporary we do not take care about naming conflicts.
   // : "model_2" is the appendix for the names  of compartments and reactions,
   // comming form the second model
@@ -64,46 +65,921 @@ void CModelMerging::simpleCall()
       return;
     }
 
-  /* to replace :  dummy choice of metabolites  to merge */
-  unsigned C_INT32 i, imax = mpModel->getMetabolites().size();
-  unsigned C_INT32 j, jmax = imax;
+  mpModel->compileIfNecessary(NULL);
+}
+
+bool CModelAdd::addEvents(std::string name)
+{
+
+  bool info = false;
+
+  unsigned C_INT32 i, imax = mmModel->getEvents().size();
 
   for (i = 0; i < imax; ++i)
     {
-      const CMetab* metab = mpModel->getMetabolites()[i];
+      const CEvent* sourceEvent = mmModel->getEvents()[i];
 
-      std::string metabName = metab->getObjectName();
+      if (!sourceEvent) return info;
 
-      for (j = i + 1; j < jmax; ++j)
+      //create new event
+
+      std::string eventName;
+
+      eventName = sourceEvent->getObjectName();
+
+      std::string appendix = "";
+#if 0
+      unsigned int counter = 2;
+      std::ostringstream numberStream;
+
+      while (mpModel->getEvents().getIndex(eventName + appendix) != C_INVALID_INDEX)
         {
-          CMetab*  metab1 = mpModel->getMetabolites()[j];
+          numberStream.str("");
+          numberStream << "_" << counter;
+          counter++;
+          appendix = numberStream.str();
+        }
 
-          if (metab1->getObjectName() == metabName)
+#else
+      appendix = "_" + name;
+#endif
+
+      CEvent* newEvent = mpModel->createEvent(eventName + appendix);
+
+      if (newEvent == NULL) return info;
+
+      /* copy trigger expression */
+
+      if (sourceEvent->getTriggerExpressionPtr() != NULL)
+        {
+          if (!copyTriggerExpression(sourceEvent, newEvent))
+            return info;
+        }
+      else
+        {
+          return info;
+        }
+
+      /* set whether the calculation or the assignment shall be delayed */
+
+      newEvent->setDelayAssignment(sourceEvent->getDelayAssignment());
+
+      /* copy the delay expression */
+
+      if (sourceEvent->getDelayExpressionPtr() != NULL)
+        if (!copyDelayExpression(sourceEvent, newEvent)) return info;
+
+      /* copy the assignments */
+
+      unsigned C_INT32 j, jmax = sourceEvent->getAssignments().size();
+
+      for (j = 0; j < jmax; ++j)
+        {
+          const CEventAssignment* sourceAssignment = sourceEvent->getAssignments()[j];
+
+          if (!sourceAssignment) return info;
+
+          std::string key = sourceAssignment->getTargetKey();
+
+          CEventAssignment* newAssignment = new CEventAssignment;
+
+          newEvent->getAssignments().add(newAssignment);
+
+          newAssignment->setTargetKey(keyMap[key]);
+
+          if (sourceAssignment->getExpressionPtr() != NULL)
             {
-
-              std::string toKey = metab->getKey();
-              std::string key = metab1->getKey();
-
-              progress = mergeMetabolites(toKey, key);
-
-              if (!progress)
-                {
-                  CCopasiMessage(CCopasiMessage::ERROR, MCModelMerging + 2, metab1->getObjectName().c_str(), metabName.c_str());
-                  return;
-                }
-
-              /* currently,  before we do not delete metabolites from the model */
-              metab1->setStatus(CModelEntity::FIXED);
-              metab1->setInitialConcentration(0);
-
-              //  else
-              //   pdelete(metab1);
+              if (!copyEventAssignmentExpression(sourceAssignment, newAssignment))
+                return info;
+            }
+          else
+            {
+              return info;
             }
         }
     }
 
+  return true;
+}
+bool CModelAdd::copyEventAssignmentExpression(const CEventAssignment * sourceAssignment, CEventAssignment * newAssignment)
+{
+
+  bool info = false;
+
+  const CExpression* pExpression = sourceAssignment->getExpressionPtr();
+
+  if (pExpression == NULL) return info;
+
+  CExpression* tmp;
+  tmp = new CExpression(*pExpression, mmModel);
+
+  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
+  unsigned j, jmax = objectNodes.size();
+
+  for (j = 0; j < jmax; ++j)
+    {
+      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+        {
+          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
+
+          if (pObjectNode == NULL) return info;
+
+          CCopasiObjectName cn = pObjectNode->getObjectCN();
+
+          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+
+          if (mObject == NULL) return info;
+
+          std::string host = "";
+
+          if (mObject->isReference())
+            {
+              host = ",Reference=" + mObject->getObjectName();
+              mObject = mObject->getObjectParent();
+            }
+
+          if (mObject == NULL) return info;
+
+          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
+          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+
+          cn = pObject->getCN() + host;
+
+          pObjectNode->setData("<" + cn + ">");
+        }
+    }
+
+  tmp->updateTree();
+
+  newAssignment->setExpression(tmp->getInfix().c_str());
+
+  return true;
+}
+
+bool CModelAdd::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEvent)
+{
+
+  bool info = false;
+
+  const CExpression* pExpression = sourceEvent->getDelayExpressionPtr();
+
+  if (pExpression == NULL) return info;
+
+  CExpression* tmp;
+  tmp = new CExpression(*pExpression, mmModel);
+
+  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
+  unsigned j, jmax = objectNodes.size();
+
+  for (j = 0; j < jmax; ++j)
+    {
+      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+        {
+          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
+
+          if (pObjectNode == NULL) return info;
+
+          CCopasiObjectName cn = pObjectNode->getObjectCN();
+
+          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+
+          if (mObject == NULL) return info;
+
+          std::string host = "";
+
+          if (mObject->isReference())
+            {
+              host = ",Reference=" + mObject->getObjectName();
+              mObject = mObject->getObjectParent();
+            }
+
+          if (mObject == NULL) return info;
+
+          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
+          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+
+          cn = pObject->getCN() + host;
+
+          pObjectNode->setData("<" + cn + ">");
+        }
+    }
+
+  tmp->updateTree();
+
+  newEvent->setDelayExpression(tmp->getInfix().c_str());
+
+  return true;
+}
+
+bool CModelAdd::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEvent)
+{
+
+  bool info = false;
+
+  const CExpression* pExpression = sourceEvent->getTriggerExpressionPtr();
+
+  if (pExpression == NULL) return info;
+
+  CExpression* tmp;
+  tmp = new CExpression(*pExpression, mmModel);
+
+  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
+  unsigned j, jmax = objectNodes.size();
+
+  for (j = 0; j < jmax; ++j)
+    {
+      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+        {
+          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
+
+          if (pObjectNode == NULL) return info;
+
+          CCopasiObjectName cn = pObjectNode->getObjectCN();
+
+          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+
+          if (mObject == NULL) return info;
+
+          std::string host = "";
+
+          if (mObject->isReference())
+            {
+              host = ",Reference=" + mObject->getObjectName();
+              mObject = mObject->getObjectParent();
+            }
+
+          if (mObject == NULL) return info;
+
+          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
+          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+
+          cn = pObject->getCN() + host;
+
+          pObjectNode->setData("<" + cn + ">");
+        }
+    }
+
+  tmp->updateTree();
+
+  newEvent->setTriggerExpression(tmp->getInfix().c_str());
+
+  return true;
+}
+
+bool CModelAdd::copyExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity)
+{
+
+  bool info = false;
+
+  const CExpression* pExpression = sourceEntity->getExpressionPtr();
+
+  if (pExpression == NULL) return info;
+
+  CExpression* tmp;
+  tmp = new CExpression(*pExpression, mmModel);
+
+  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
+  unsigned j, jmax = objectNodes.size();
+
+  for (j = 0; j < jmax; ++j)
+    {
+      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+        {
+          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
+
+          if (pObjectNode == NULL) return info;
+
+          CCopasiObjectName cn = pObjectNode->getObjectCN();
+
+          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+
+          if (mObject == NULL) return info;
+
+          std::string host = "";
+
+          if (mObject->isReference())
+            {
+              host = ",Reference=" + mObject->getObjectName();
+              mObject = mObject->getObjectParent();
+            }
+
+          if (mObject == NULL) return info;
+
+          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
+          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+
+          cn = pObject->getCN() + host;
+
+          pObjectNode->setData("<" + cn + ">");
+        }
+    }
+
+  tmp->updateTree();
+
+  newEntity->setExpression(tmp->getInfix().c_str());
+
+  return true;
+}
+
+bool CModelAdd::copyInitialExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity)
+{
+
+  bool info = false;
+
+  const CExpression* pExpression = sourceEntity->getInitialExpressionPtr();
+
+  if (pExpression == NULL) return info;
+
+  CExpression* tmp;
+  tmp = new CExpression(*pExpression, mmModel);
+
+  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
+  unsigned j, jmax = objectNodes.size();
+
+  for (j = 0; j < jmax; ++j)
+    {
+      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+        {
+          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
+
+          if (pObjectNode == NULL) return info;
+
+          CCopasiObjectName cn = pObjectNode->getObjectCN();
+
+          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+
+          if (mObject == NULL) return info;
+
+          std::string host = "";
+
+          if (mObject->isReference())
+            {
+              host = ",Reference=" + mObject->getObjectName();
+              mObject = mObject->getObjectParent();
+            }
+
+          if (mObject == NULL) return info;
+
+          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
+          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+
+          cn = pObject->getCN() + host;
+
+          pObjectNode->setData("<" + cn + ">");
+        }
+    }
+
+  tmp->updateTree();
+
+  newEntity->setInitialExpression(tmp->getInfix().c_str());
+
+  return info;
+}
+
+bool CModelAdd::addCompartments(std::string name)
+{
+
+  unsigned C_INT32 i, imax = mmModel->getCompartments().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CCompartment* sourceComp = mmModel->getCompartments()[i];
+
+      if (!sourceComp) return false;
+
+      //create new compartment
+
+      std::string newName = sourceComp->getObjectName() + "_" + name;
+
+      CCompartment* newComp = mpModel->createCompartment(newName, sourceComp->getInitialValue());
+
+      if (!newComp) return false;
+
+      newComp->setStatus(sourceComp->getStatus());
+
+      newComp->setDimensionality(sourceComp->getDimensionality());
+
+      keyMap[sourceComp->getKey()] = newComp->getKey();
+      nameMap[sourceComp->getObjectName()] = newName;
+    }
+
+  return true;
+}
+
+bool CModelAdd::addCompartmentsExpressions()
+{
+
+  bool info = false;
+
+  unsigned C_INT32 i, imax = mmModel->getCompartments().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CCompartment* sourceComp = mmModel->getCompartments()[i];
+
+      if (!sourceComp) return info;
+
+      std::string newKey = keyMap[sourceComp->getKey()];
+
+      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+
+      CCompartment*  newComp = dynamic_cast< CCompartment * >(pObject);
+
+      if (!newComp) return info;
+
+      switch (newComp ->getStatus())
+        {
+          case CModelEntity::FIXED:
+
+            break;
+          case CModelEntity::ASSIGNMENT:
+
+            if (!copyExpression(sourceComp, newComp)) return info;
+
+            break;
+
+          case CModelEntity::ODE:
+
+            if (!copyExpression(sourceComp, newComp)) return info;
+
+            if (sourceComp->getInitialExpression() != "")
+              if (!copyInitialExpression(sourceComp, newComp)) return info;
+
+            break;
+
+          default:
+
+            return info;
+
+            break;
+        }
+    }
+
+  return true;
+}
+
+bool CModelAdd::addMetabolites(std::string name)
+{
+  bool info = false;
+
+  unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CMetab* sourceMetab = mmModel->getMetabolites()[i];
+      const CCompartment* sourceComp =  sourceMetab->getCompartment();
+
+      if (!sourceMetab) return info;
+
+      if (!sourceComp) return info;
+
+      //create new metabolite
+
+      std::string newName = sourceMetab->getObjectName() + "_" + name;
+
+      CMetab* newMetab = mpModel->createMetabolite(sourceMetab->getObjectName(), nameMap[sourceComp->getObjectName()], sourceMetab->getInitialConcentration());
+
+      if (!newMetab) return info;
+
+      newMetab->setStatus(sourceMetab->getStatus());
+
+      keyMap[sourceMetab->getKey()] = newMetab->getKey();
+      nameMap[sourceMetab->getObjectName()] = newName;
+    }
+
+  return true;
+}
+
+bool CModelAdd::addMetabolitesExpressions()
+{
+  bool info = false;
+
+  unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CMetab* sourceMetab = mmModel->getMetabolites()[i];
+
+      if (!sourceMetab) return info;
+
+      std::string newKey = keyMap[sourceMetab->getKey()];
+
+      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+
+      CMetab*  newMetab = dynamic_cast< CMetab * >(pObject);
+
+      if (!newMetab) return info;
+
+      switch (newMetab ->getStatus())
+        {
+          case CModelEntity::FIXED:
+
+            break;
+          case CModelEntity::ASSIGNMENT:
+
+            if (!copyExpression(sourceMetab, newMetab)) return info;
+
+            break;
+
+          case CModelEntity::ODE:
+
+            if (!copyExpression(sourceMetab, newMetab)) return info;
+
+            if (sourceMetab->getInitialExpression() != "")
+              if (!copyInitialExpression(sourceMetab, newMetab)) return info;
+
+            break;
+
+          case CModelEntity::REACTIONS:
+
+            break;
+          default:
+
+            return info;
+
+            break;
+        }
+    }
+
+  return true;
+}
+
+bool CModelAdd::addModelValues(std::string name)
+{
+  bool info = false;
+
+  unsigned C_INT32 i, imax = mmModel->getModelValues().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CModelValue* sourceModVal = mmModel->getModelValues()[i];
+
+      if (!sourceModVal) return info;
+
+      //create new model value
+
+      std::string newName = sourceModVal->getObjectName() + "_" + name;
+
+      CModelValue* newModVal = mpModel->createModelValue(newName, sourceModVal->getInitialValue());
+
+      if (!newModVal) return info;
+
+      newModVal->setStatus(sourceModVal->getStatus());
+
+      keyMap[sourceModVal->getKey()] = newModVal->getKey();
+      nameMap[sourceModVal->getObjectName()] = newName;
+    }
+
+  return true;
+}
+
+bool CModelAdd::addModelValuesExpressions()
+{
+  bool info = false;
+
+  unsigned C_INT32 i, imax = mmModel->getModelValues().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CModelValue* sourceModVal = mmModel->getModelValues()[i];
+
+      if (!sourceModVal) return info;
+
+      std::string newKey = keyMap[sourceModVal->getKey()];
+
+      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+
+      CModelValue*  newModVal = dynamic_cast<CModelValue * >(pObject);
+
+      if (!newModVal) return info;
+
+      switch (newModVal ->getStatus())
+        {
+          case CModelEntity::FIXED:
+
+            break;
+          case CModelEntity::ASSIGNMENT:
+
+            if (!copyExpression(sourceModVal, newModVal)) return info;
+
+            break;
+
+          case CModelEntity::ODE:
+
+            if (!copyExpression(sourceModVal, newModVal)) return info;
+
+            if (sourceModVal->getInitialExpression() != "")
+              if (!copyInitialExpression(sourceModVal, newModVal)) return info;
+
+            break;
+
+          default:
+
+            return info;
+
+            break;
+        }
+    }
+
+  return true;
+}
+
+bool CModelAdd::addReactions(std::string name)
+{
+
+  bool info = false;
+
+  //create copies of the relevant reactions
+
+  unsigned C_INT32 i, imax = mmModel->getReactions().size();
+
+  unsigned C_INT32 ic, icmax = mmModel->getCompartments().size();
+
+  for (ic = 0; ic < icmax; ++ic)
+    {
+      const CCompartment* sourceComp = mmModel->getCompartments()[ic];
+
+      if (!sourceComp) return info;
+
+      for (i = 0; i < imax; ++i)
+        {
+          CReaction * sourceReac = mmModel->getReactions()[i];
+
+          if (reactionInvolvesCompartment(sourceReac, sourceComp))
+            {
+
+              std::string newName = sourceReac->getObjectName() + "_" + name;
+
+              CReaction* newReac = mpModel->createReaction(newName);
+
+              if (!newReac) return info;
+
+              //copy the chemical equation. If the involved metabs are among those that
+              //were copied with the compartment, replace them. Otherwise keep the original metab
+              newReac->setReversible(sourceReac->isReversible());
+              std::map<std::string, std::string>::const_iterator mapIt;
+              std::string targetKey;
+              unsigned C_INT32 j, jmax = sourceReac->getChemEq().getSubstrates().size();
+
+              for (j = 0; j < jmax; ++j)
+                {
+                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getSubstrates()[j];
+                  //check if the metab is in the map. If yes, translate it, otherwise not.
+                  mapIt = keyMap.find(sourceElement->getMetaboliteKey());
+
+                  if (mapIt == keyMap.end())
+                    {
+                      targetKey = sourceElement->getMetaboliteKey();
+                    }
+                  else
+                    targetKey = mapIt->second;
+
+                  newReac->addSubstrate(targetKey, sourceElement->getMultiplicity());
+                }
+
+              jmax = sourceReac->getChemEq().getProducts().size();
+
+              for (j = 0; j < jmax; ++j)
+                {
+                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getProducts()[j];
+                  //check if the metab is in the map. If yes, translate it, otherwise not.
+                  mapIt = keyMap.find(sourceElement->getMetaboliteKey());
+
+                  if (mapIt == keyMap.end())
+                    {
+                      targetKey = sourceElement->getMetaboliteKey();
+                    }
+                  else
+                    targetKey = mapIt->second;
+
+                  newReac->addProduct(targetKey, sourceElement->getMultiplicity());
+                }
+
+              jmax = sourceReac->getChemEq().getModifiers().size();
+
+              for (j = 0; j < jmax; ++j)
+                {
+                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getModifiers()[j];
+                  //check if the metab is in the map. If yes, translate it, otherwise not.
+
+                  mapIt = keyMap.find(sourceElement->getMetaboliteKey());
+
+                  if (mapIt == keyMap.end())
+                    {
+                      targetKey = sourceElement->getMetaboliteKey();
+                    }
+                  else
+                    targetKey = mapIt->second;
+
+                  newReac->addModifier(targetKey);
+                }
+
+              //set the kinetic function
+              newReac->setFunction(const_cast<CFunction*>(sourceReac->getFunction()));
+
+              //mapping and local parameters
+              for (j = 0; j < newReac->getFunctionParameters().size(); ++j)
+                {
+                  switch (newReac->getFunctionParameters()[j]->getUsage())
+                    {
+                      case CFunctionParameter::SUBSTRATE:
+                      case CFunctionParameter::PRODUCT:
+                      case CFunctionParameter::MODIFIER:
+                        //translate the metab keys
+                      {
+                        bool isVector = (newReac->getFunctionParameters()[j]->getType() == CFunctionParameter::VFLOAT64);
+
+                        //we assume that only SUBSTRATE, PRODUCT, MODIFIER can be vectors
+                        if (isVector)
+                          newReac->clearParameterMapping(j);
+
+                        unsigned C_INT32 k;
+
+                        for (k = 0; k < sourceReac->getParameterMappings()[j].size(); ++k)
+                          {
+                            mapIt = keyMap.find(sourceReac->getParameterMappings()[j][k]);
+
+                            if (mapIt == keyMap.end())
+                              {
+                                targetKey = sourceReac->getParameterMappings()[j][k];
+                              }
+                            else
+                              targetKey = mapIt->second;
+
+                            if (isVector)
+                              newReac->addParameterMapping(j, targetKey);
+                            else
+                              newReac->setParameterMapping(j, targetKey);
+                          }
+                      }
+                      break;
+
+                      case CFunctionParameter::TIME:
+                        //just copy the key
+                      {
+                        mapIt = keyMap.find(sourceReac->getParameterMappings()[j][0]);
+
+                        if (mapIt == keyMap.end())
+                          {
+                            targetKey = sourceReac->getParameterMappings()[j][0];
+                          }
+                        else
+                          targetKey = mapIt->second;
+
+                        newReac->setParameterMapping(j, targetKey);
+                      }
+                      break;
+
+                      case CFunctionParameter::VOLUME:
+
+                        //translate the compartment key if necessary
+                        if (sourceReac->getParameterMappings()[j][0] == sourceComp->getKey())
+                          newReac->setParameterMapping(j, keyMap[sourceComp->getKey()]);
+                        else
+                          {
+                            mapIt = keyMap.find(sourceReac->getParameterMappings()[j][0]);
+
+                            if (mapIt == keyMap.end())
+                              {
+                                targetKey = sourceReac->getParameterMappings()[j][0];
+                              }
+                            else
+                              targetKey = mapIt->second;
+
+                            newReac->setParameterMapping(j, targetKey);
+                          }
+
+                        //TODO: this needs to be adapted when sets of compartments will be copied
+                        break;
+
+                      case CFunctionParameter::PARAMETER:
+
+                        if (sourceReac->isLocalParameter(j))
+                          newReac->setParameterValue(newReac->getFunctionParameters()[j]->getObjectName(),
+                                                     sourceReac->getParameterValue(newReac->getFunctionParameters()[j]->getObjectName()));
+                        else
+                          {
+                            mapIt = keyMap.find(sourceReac->getParameterMappings()[j][0]);
+
+                            if (mapIt == keyMap.end())
+                              {
+                                targetKey = sourceReac->getParameterMappings()[j][0];
+                              }
+                            else
+                              targetKey = mapIt->second;
+
+                            newReac->setParameterMapping(j,  targetKey);
+                          }
+
+                        break;
+
+                      default:
+                        return info;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+  return true;
+}
+
+//static
+bool CModelAdd::reactionInvolvesCompartment(const CReaction * reac, const CCompartment* comp)
+{
+  if (!reac) return false;
+
+  if (!comp) return false;
+
+  unsigned C_INT32 i, imax = reac->getChemEq().getSubstrates().size();
+
+  for (i = 0; i < imax; ++i)
+    if (reac->getChemEq().getSubstrates()[i]->getMetabolite()->getCompartment() == comp)
+      return true;
+
+  imax = reac->getChemEq().getProducts().size();
+
+  for (i = 0; i < imax; ++i)
+    if (reac->getChemEq().getProducts()[i]->getMetabolite()->getCompartment() == comp)
+      return true;
+
+  imax = reac->getChemEq().getModifiers().size();
+
+  for (i = 0; i < imax; ++i)
+    if (reac->getChemEq().getModifiers()[i]->getMetabolite()->getCompartment() == comp)
+      return true;
+
+  return false;
+}
+
+const std::string CModelMerging::TypeName[] =
+{
+  "ignore",
+  "merge",
+  ""
+};
+
+CModelMerging::CModelMerging(CModel* pModel)
+    : mpModel(pModel)
+{
+}
+
+void CModelMerging::setModel(CModel* pModel)
+{
+  mpModel = pModel;
+}
+
+void  CModelMerging::simpleCall(std::vector< std::string > & toKey, std::vector< std::string > & objectKey)
+{
+  if (!mpModel)
+    {
+      fatalError();
+    }
+
+  unsigned C_INT32 i, j, imax = mpModel->getMetabolites().size();
+
+  CMetab * metab;
+  CMetab * metab1;
+  CMetab* tmp;
+  std::string empty = "";
+
+  for (i = 0; i < imax; ++i)
+    {
+      metab = mpModel->getMetabolites()[i];
+
+      for (j = 0; j < imax; ++j)
+        {
+          if (objectKey[i] != "")
+            {
+              tmp = mpModel->getMetabolites()[j];
+
+              if (tmp->getKey() == objectKey[i])
+                {
+                  metab1 = tmp;
+                  toKey[j] = empty;
+                }
+            }
+        }
+
+      if (! mergeMetabolites(metab->getKey(), objectKey[i]))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCModelMerging + 2,
+                         metab1->getObjectName().c_str(), metab->getObjectName().c_str());
+          return;
+        }
+    }
+
+  for (i = 0; i < imax; ++i)
+    {
+      tmp = mpModel->getMetabolites()[i];
+
+      if (toKey[i] == empty) pdelete(tmp);
+    }
+
   mpModel->compileIfNecessary(NULL);
 }
+
 bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 {
 
@@ -386,816 +1262,4 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
   pExpression->updateTree();
 
   return true;
-}
-
-bool CModelMerging::addEvents(std::string name)
-{
-
-  bool info = false;
-
-  unsigned C_INT32 i, imax = mmModel->getEvents().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CEvent* sourceEvent = mmModel->getEvents()[i];
-
-      if (!sourceEvent) return info;
-
-      //create new event
-
-      std::string eventName;
-
-      eventName = sourceEvent->getObjectName();
-
-      std::string appendix = "";
-#if 0
-      unsigned int counter = 2;
-      std::ostringstream numberStream;
-
-      while (mpModel->getEvents().getIndex(eventName + appendix) != C_INVALID_INDEX)
-        {
-          numberStream.str("");
-          numberStream << "_" << counter;
-          counter++;
-          appendix = numberStream.str();
-        }
-
-#else
-      appendix = "_" + name;
-#endif
-
-      CEvent* newEvent = mpModel->createEvent(eventName + appendix);
-
-      if (newEvent == NULL) return info;
-
-      /* copy trigger expression */
-
-      if (sourceEvent->getTriggerExpressionPtr() != NULL)
-        {
-          if (!copyTriggerExpression(sourceEvent, newEvent))
-            return info;
-        }
-      else
-        {
-          return info;
-        }
-
-      /* set whether the calculation or the assignment shall be delayed */
-
-      newEvent->setDelayAssignment(sourceEvent->getDelayAssignment());
-
-      /* copy the delay expression */
-
-      if (sourceEvent->getDelayExpressionPtr() != NULL)
-        if (!copyDelayExpression(sourceEvent, newEvent)) return info;
-
-      /* copy the assignments */
-
-      unsigned C_INT32 j, jmax = sourceEvent->getAssignments().size();
-
-      for (j = 0; j < jmax; ++j)
-        {
-          const CEventAssignment* sourceAssignment = sourceEvent->getAssignments()[j];
-
-          if (!sourceAssignment) return info;
-
-          std::string key = sourceAssignment->getTargetKey();
-
-          CEventAssignment* newAssignment = new CEventAssignment;
-
-          newEvent->getAssignments().add(newAssignment);
-
-          newAssignment->setTargetKey(keyMap[key]);
-
-          if (sourceAssignment->getExpressionPtr() != NULL)
-            {
-              if (!copyEventAssignmentExpression(sourceAssignment, newAssignment))
-                return info;
-            }
-          else
-            {
-              return info;
-            }
-        }
-    }
-
-  return true;
-}
-bool CModelMerging::copyEventAssignmentExpression(const CEventAssignment * sourceAssignment, CEventAssignment * newAssignment)
-{
-
-  bool info = false;
-
-  const CExpression* pExpression = sourceAssignment->getExpressionPtr();
-
-  if (pExpression == NULL) return info;
-
-  CExpression* tmp;
-  tmp = new CExpression(*pExpression, mmModel);
-
-  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
-        {
-          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-
-          if (pObjectNode == NULL) return info;
-
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-
-          if (mObject == NULL) return info;
-
-          std::string host = "";
-
-          if (mObject->isReference())
-            {
-              host = ",Reference=" + mObject->getObjectName();
-              mObject = mObject->getObjectParent();
-            }
-
-          if (mObject == NULL) return info;
-
-          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
-
-          cn = pObject->getCN() + host;
-
-          pObjectNode->setData("<" + cn + ">");
-        }
-    }
-
-  tmp->updateTree();
-
-  newAssignment->setExpression(tmp->getInfix().c_str());
-
-  return true;
-}
-
-bool CModelMerging::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEvent)
-{
-
-  bool info = false;
-
-  const CExpression* pExpression = sourceEvent->getDelayExpressionPtr();
-
-  if (pExpression == NULL) return info;
-
-  CExpression* tmp;
-  tmp = new CExpression(*pExpression, mmModel);
-
-  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
-        {
-          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-
-          if (pObjectNode == NULL) return info;
-
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-
-          if (mObject == NULL) return info;
-
-          std::string host = "";
-
-          if (mObject->isReference())
-            {
-              host = ",Reference=" + mObject->getObjectName();
-              mObject = mObject->getObjectParent();
-            }
-
-          if (mObject == NULL) return info;
-
-          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
-
-          cn = pObject->getCN() + host;
-
-          pObjectNode->setData("<" + cn + ">");
-        }
-    }
-
-  tmp->updateTree();
-
-  newEvent->setDelayExpression(tmp->getInfix().c_str());
-
-  return true;
-}
-
-bool CModelMerging::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEvent)
-{
-
-  bool info = false;
-
-  const CExpression* pExpression = sourceEvent->getTriggerExpressionPtr();
-
-  if (pExpression == NULL) return info;
-
-  CExpression* tmp;
-  tmp = new CExpression(*pExpression, mmModel);
-
-  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
-        {
-          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-
-          if (pObjectNode == NULL) return info;
-
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-
-          if (mObject == NULL) return info;
-
-          std::string host = "";
-
-          if (mObject->isReference())
-            {
-              host = ",Reference=" + mObject->getObjectName();
-              mObject = mObject->getObjectParent();
-            }
-
-          if (mObject == NULL) return info;
-
-          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
-
-          cn = pObject->getCN() + host;
-
-          pObjectNode->setData("<" + cn + ">");
-        }
-    }
-
-  tmp->updateTree();
-
-  newEvent->setTriggerExpression(tmp->getInfix().c_str());
-
-  return true;
-}
-
-bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity)
-{
-
-  bool info = false;
-
-  const CExpression* pExpression = sourceEntity->getExpressionPtr();
-
-  if (pExpression == NULL) return info;
-
-  CExpression* tmp;
-  tmp = new CExpression(*pExpression, mmModel);
-
-  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
-        {
-          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-
-          if (pObjectNode == NULL) return info;
-
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-
-          if (mObject == NULL) return info;
-
-          std::string host = "";
-
-          if (mObject->isReference())
-            {
-              host = ",Reference=" + mObject->getObjectName();
-              mObject = mObject->getObjectParent();
-            }
-
-          if (mObject == NULL) return info;
-
-          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
-
-          cn = pObject->getCN() + host;
-
-          pObjectNode->setData("<" + cn + ">");
-        }
-    }
-
-  tmp->updateTree();
-
-  newEntity->setExpression(tmp->getInfix().c_str());
-
-  return true;
-}
-
-bool CModelMerging::copyInitialExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity)
-{
-
-  bool info = false;
-
-  const CExpression* pExpression = sourceEntity->getInitialExpressionPtr();
-
-  if (pExpression == NULL) return info;
-
-  CExpression* tmp;
-  tmp = new CExpression(*pExpression, mmModel);
-
-  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
-        {
-          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-
-          if (pObjectNode == NULL) return info;
-
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-
-          if (mObject == NULL) return info;
-
-          std::string host = "";
-
-          if (mObject->isReference())
-            {
-              host = ",Reference=" + mObject->getObjectName();
-              mObject = mObject->getObjectParent();
-            }
-
-          if (mObject == NULL) return info;
-
-          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
-
-          cn = pObject->getCN() + host;
-
-          pObjectNode->setData("<" + cn + ">");
-        }
-    }
-
-  tmp->updateTree();
-
-  newEntity->setInitialExpression(tmp->getInfix().c_str());
-
-  return info;
-}
-
-bool CModelMerging::addCompartments(std::string name)
-{
-
-  unsigned C_INT32 i, imax = mmModel->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CCompartment* sourceComp = mmModel->getCompartments()[i];
-
-      if (!sourceComp) return false;
-
-      //create new compartment
-
-      std::string newName = sourceComp->getObjectName() + "_" + name;
-
-      CCompartment* newComp = mpModel->createCompartment(newName, sourceComp->getInitialValue());
-
-      if (!newComp) return false;
-
-      newComp->setStatus(sourceComp->getStatus());
-
-      newComp->setDimensionality(sourceComp->getDimensionality());
-
-      keyMap[sourceComp->getKey()] = newComp->getKey();
-      nameMap[sourceComp->getObjectName()] = newName;
-    }
-
-  return true;
-}
-
-bool CModelMerging::addCompartmentsExpressions()
-{
-
-  bool info = false;
-
-  unsigned C_INT32 i, imax = mmModel->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CCompartment* sourceComp = mmModel->getCompartments()[i];
-
-      if (!sourceComp) return info;
-
-      std::string newKey = keyMap[sourceComp->getKey()];
-
-      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
-
-      CCompartment*  newComp = dynamic_cast< CCompartment * >(pObject);
-
-      if (!newComp) return info;
-
-      switch (newComp ->getStatus())
-        {
-          case CModelEntity::FIXED:
-
-            break;
-          case CModelEntity::ASSIGNMENT:
-
-            if (!copyExpression(sourceComp, newComp)) return info;
-
-            break;
-
-          case CModelEntity::ODE:
-
-            if (!copyExpression(sourceComp, newComp)) return info;
-
-            if (sourceComp->getInitialExpression() != "")
-              if (!copyInitialExpression(sourceComp, newComp)) return info;
-
-            break;
-
-          default:
-
-            return info;
-
-            break;
-        }
-    }
-
-  return true;
-}
-
-bool CModelMerging::addMetabolites(std::string name)
-{
-  bool info = false;
-
-  unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CMetab* sourceMetab = mmModel->getMetabolites()[i];
-      const CCompartment* sourceComp =  sourceMetab->getCompartment();
-
-      if (!sourceMetab) return info;
-
-      if (!sourceComp) return info;
-
-      //create new metabolite
-
-      std::string newName = sourceMetab->getObjectName() + "_" + name;
-
-      CMetab* newMetab = mpModel->createMetabolite(sourceMetab->getObjectName(), nameMap[sourceComp->getObjectName()], sourceMetab->getInitialConcentration());
-
-      if (!newMetab) return info;
-
-      newMetab->setStatus(sourceMetab->getStatus());
-
-      keyMap[sourceMetab->getKey()] = newMetab->getKey();
-      nameMap[sourceMetab->getObjectName()] = newName;
-    }
-
-  return true;
-}
-
-bool CModelMerging::addMetabolitesExpressions()
-{
-  bool info = false;
-
-  unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CMetab* sourceMetab = mmModel->getMetabolites()[i];
-
-      if (!sourceMetab) return info;
-
-      std::string newKey = keyMap[sourceMetab->getKey()];
-
-      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
-
-      CMetab*  newMetab = dynamic_cast< CMetab * >(pObject);
-
-      if (!newMetab) return info;
-
-      switch (newMetab ->getStatus())
-        {
-          case CModelEntity::FIXED:
-
-            break;
-          case CModelEntity::ASSIGNMENT:
-
-            if (!copyExpression(sourceMetab, newMetab)) return info;
-
-            break;
-
-          case CModelEntity::ODE:
-
-            if (!copyExpression(sourceMetab, newMetab)) return info;
-
-            if (sourceMetab->getInitialExpression() != "")
-              if (!copyInitialExpression(sourceMetab, newMetab)) return info;
-
-            break;
-
-          case CModelEntity::REACTIONS:
-
-            break;
-          default:
-
-            return info;
-
-            break;
-        }
-    }
-
-  return true;
-}
-
-bool CModelMerging::addModelValues(std::string name)
-{
-  bool info = false;
-
-  unsigned C_INT32 i, imax = mmModel->getModelValues().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CModelValue* sourceModVal = mmModel->getModelValues()[i];
-
-      if (!sourceModVal) return info;
-
-      //create new model value
-
-      std::string newName = sourceModVal->getObjectName() + "_" + name;
-
-      CModelValue* newModVal = mpModel->createModelValue(newName, sourceModVal->getInitialValue());
-
-      if (!newModVal) return info;
-
-      newModVal->setStatus(sourceModVal->getStatus());
-
-      keyMap[sourceModVal->getKey()] = newModVal->getKey();
-      nameMap[sourceModVal->getObjectName()] = newName;
-    }
-
-  return true;
-}
-
-bool CModelMerging::addModelValuesExpressions()
-{
-  bool info = false;
-
-  unsigned C_INT32 i, imax = mmModel->getModelValues().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CModelValue* sourceModVal = mmModel->getModelValues()[i];
-
-      if (!sourceModVal) return info;
-
-      std::string newKey = keyMap[sourceModVal->getKey()];
-
-      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
-
-      CModelValue*  newModVal = dynamic_cast<CModelValue * >(pObject);
-
-      if (!newModVal) return info;
-
-      switch (newModVal ->getStatus())
-        {
-          case CModelEntity::FIXED:
-
-            break;
-          case CModelEntity::ASSIGNMENT:
-
-            if (!copyExpression(sourceModVal, newModVal)) return info;
-
-            break;
-
-          case CModelEntity::ODE:
-
-            if (!copyExpression(sourceModVal, newModVal)) return info;
-
-            if (sourceModVal->getInitialExpression() != "")
-              if (!copyInitialExpression(sourceModVal, newModVal)) return info;
-
-            break;
-
-          default:
-
-            return info;
-
-            break;
-        }
-    }
-
-  return true;
-}
-
-bool CModelMerging::addReactions(std::string name)
-{
-
-  bool info = false;
-
-  //create copies of the relevant reactions
-
-  unsigned C_INT32 i, imax = mmModel->getReactions().size();
-
-  unsigned C_INT32 ic, icmax = mmModel->getCompartments().size();
-
-  for (ic = 0; ic < icmax; ++ic)
-    {
-      const CCompartment* sourceComp = mmModel->getCompartments()[ic];
-
-      if (!sourceComp) return info;
-
-      for (i = 0; i < imax; ++i)
-        {
-          CReaction * sourceReac = mmModel->getReactions()[i];
-
-          if (reactionInvolvesCompartment(sourceReac, sourceComp))
-            {
-
-              std::string newName = sourceReac->getObjectName() + "_" + name;
-
-              CReaction* newReac = mpModel->createReaction(newName);
-
-              if (!newReac) return info;
-
-              //copy the chemical equation. If the involved metabs are among those that
-              //were copied with the compartment, replace them. Otherwise keep the original metab
-              newReac->setReversible(sourceReac->isReversible());
-              std::map<std::string, std::string>::const_iterator mapIt;
-              std::string targetKey;
-              unsigned C_INT32 j, jmax = sourceReac->getChemEq().getSubstrates().size();
-
-              for (j = 0; j < jmax; ++j)
-                {
-                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getSubstrates()[j];
-                  //check if the metab is in the map. If yes, translate it, otherwise not.
-                  mapIt = keyMap.find(sourceElement->getMetaboliteKey());
-
-                  if (mapIt == keyMap.end())
-                    {
-                      targetKey = sourceElement->getMetaboliteKey();
-                    }
-                  else
-                    targetKey = mapIt->second;
-
-                  newReac->addSubstrate(targetKey, sourceElement->getMultiplicity());
-                }
-
-              jmax = sourceReac->getChemEq().getProducts().size();
-
-              for (j = 0; j < jmax; ++j)
-                {
-                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getProducts()[j];
-                  //check if the metab is in the map. If yes, translate it, otherwise not.
-                  mapIt = keyMap.find(sourceElement->getMetaboliteKey());
-
-                  if (mapIt == keyMap.end())
-                    {
-                      targetKey = sourceElement->getMetaboliteKey();
-                    }
-                  else
-                    targetKey = mapIt->second;
-
-                  newReac->addProduct(targetKey, sourceElement->getMultiplicity());
-                }
-
-              jmax = sourceReac->getChemEq().getModifiers().size();
-
-              for (j = 0; j < jmax; ++j)
-                {
-                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getModifiers()[j];
-                  //check if the metab is in the map. If yes, translate it, otherwise not.
-
-                  mapIt = keyMap.find(sourceElement->getMetaboliteKey());
-
-                  if (mapIt == keyMap.end())
-                    {
-                      targetKey = sourceElement->getMetaboliteKey();
-                    }
-                  else
-                    targetKey = mapIt->second;
-
-                  newReac->addModifier(targetKey);
-                }
-
-              //set the kinetic function
-              newReac->setFunction(const_cast<CFunction*>(sourceReac->getFunction()));
-
-              //mapping and local parameters
-              for (j = 0; j < newReac->getFunctionParameters().size(); ++j)
-                {
-                  switch (newReac->getFunctionParameters()[j]->getUsage())
-                    {
-                      case CFunctionParameter::SUBSTRATE:
-                      case CFunctionParameter::PRODUCT:
-                      case CFunctionParameter::MODIFIER:
-                        //translate the metab keys
-                      {
-                        bool isVector = (newReac->getFunctionParameters()[j]->getType() == CFunctionParameter::VFLOAT64);
-
-                        //we assume that only SUBSTRATE, PRODUCT, MODIFIER can be vectors
-                        if (isVector)
-                          newReac->clearParameterMapping(j);
-
-                        unsigned C_INT32 k;
-
-                        for (k = 0; k < sourceReac->getParameterMappings()[j].size(); ++k)
-                          {
-                            mapIt = keyMap.find(sourceReac->getParameterMappings()[j][k]);
-
-                            if (mapIt == keyMap.end())
-                              {
-                                targetKey = sourceReac->getParameterMappings()[j][k];
-                              }
-                            else
-                              targetKey = mapIt->second;
-
-                            if (isVector)
-                              newReac->addParameterMapping(j, targetKey);
-                            else
-                              newReac->setParameterMapping(j, targetKey);
-                          }
-                      }
-                      break;
-
-                      case CFunctionParameter::TIME:
-                        //just copy the key
-                        newReac->setParameterMapping(j, sourceReac->getParameterMappings()[j][0]);
-                        break;
-
-                      case CFunctionParameter::VOLUME:
-
-                        //translate the compartment key if necessary
-                        if (sourceReac->getParameterMappings()[j][0] == sourceComp->getKey())
-                          newReac->setParameterMapping(j, keyMap[sourceComp->getKey()]);
-                        else
-                          newReac->setParameterMapping(j, sourceReac->getParameterMappings()[j][0]);
-
-                        //TODO: this needs to be adapted when sets of compartments will be copied
-                        break;
-
-                      case CFunctionParameter::PARAMETER:
-
-                        if (sourceReac->isLocalParameter(j))
-                          newReac->setParameterValue(newReac->getFunctionParameters()[j]->getObjectName(),
-                                                     sourceReac->getParameterValue(newReac->getFunctionParameters()[j]->getObjectName()));
-                        else
-                          newReac->setParameterMapping(j, sourceReac->getParameterMappings()[j][0]);
-
-                        break;
-
-                      default:
-                        return info;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-  return true;
-}
-
-//static
-bool CModelMerging::reactionInvolvesCompartment(const CReaction * reac, const CCompartment* comp)
-{
-  if (!reac) return false;
-
-  if (!comp) return false;
-
-  unsigned C_INT32 i, imax = reac->getChemEq().getSubstrates().size();
-
-  for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getSubstrates()[i]->getMetabolite()->getCompartment() == comp)
-      return true;
-
-  imax = reac->getChemEq().getProducts().size();
-
-  for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getProducts()[i]->getMetabolite()->getCompartment() == comp)
-      return true;
-
-  imax = reac->getChemEq().getModifiers().size();
-
-  for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getModifiers()[i]->getMetabolite()->getCompartment() == comp)
-      return true;
-
-  return false;
 }
