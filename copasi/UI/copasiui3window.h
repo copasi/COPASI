@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/06/29 10:50:13 $
+//   $Date: 2009/10/30 16:10:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,6 +121,7 @@ protected slots:
 
 #ifdef WITH_MERGEMODEL
   void slotAddFileOpen(QString file = QString::null);
+  void slotAddModel();
   void slotMergeModels();
 #endif
 
@@ -173,6 +174,7 @@ private:
   QAction* mpaExpandModel;
 #ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;
+  QAction* mpaMergeModels;
 #endif
   SliderDialog* mpSliders;
   ObjectBrowserDialog * mpObjectBrowser;

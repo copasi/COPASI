@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.268 $
+//   $Revision: 1.269 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:56:43 $
+//   $Author: nsimus $
+//   $Date: 2009/10/30 16:10:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -373,8 +373,11 @@ void CopasiUI3Window::createActions()
   //     QAction* mpaObjectBrowser;
 
 #ifdef WITH_MERGEMODEL
-  mpaAddModel = new QAction(QPixmap(fileadd), "&Add ...", Qt::SHIFT + Qt::CTRL + Qt::Key_A, this, "addmodel"); // TODO : replace fileopen, find simbol for add
+  mpaAddModel = new QAction(QPixmap(fileadd), "&Add ...", Qt::SHIFT + Qt::CTRL + Qt::Key_A, this, "addmodel");
   connect(mpaAddModel, SIGNAL(activated()), this, SLOT(slotAddFileOpen()));
+
+  mpaMergeModels = new QAction("&Merge ...", Qt::SHIFT + Qt::CTRL + Qt::Key_M, this, "mergemodel");
+  connect(mpaMergeModels, SIGNAL(activated()), this, SLOT(slotMergeModels()));
 #endif
 }
 
@@ -394,6 +397,7 @@ void CopasiUI3Window::createToolBar()
 
 #ifdef WITH_MERGEMODEL
   tb->addAction(mpaAddModel);
+  //tb->addAction(mpaMergeModels);
 #endif
 
   tb->addSeparator();
@@ -431,6 +435,7 @@ void CopasiUI3Window::createMenuBar()
 
 #ifdef WITH_MERGEMODEL
   pFileMenu->addAction(mpaAddModel);
+  //pFileMenu->addAction(mpaMergeModels);
 #endif
 
   pFileMenu->addSeparator();
@@ -453,6 +458,7 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction(mpaUpdateInitialState);
   mpTools->addAction(mpaSliders);
   mpTools->addAction(mpaCapture);
+  mpTools->addAction(mpaMergeModels);
 
   mpTools->addSeparator();
 #ifdef COPASI_DEBUG
@@ -843,7 +849,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
                                 QMessageBox::Ok, QMessageBox::Ok);
         }
 
-      if (success)  slotMergeModels();
+      if (success)  slotAddModel();
 
       //(*CCopasiRootContainer::getDatamodelList())[1]->getModel()->cleanup();
       CCopasiRootContainer::removeDatamodel(1);
@@ -1824,14 +1830,38 @@ void CopasiUI3Window::slotExpandModel()
 
 #ifdef WITH_MERGEMODEL
 
-void CopasiUI3Window::slotMergeModels()
+#include "UI/CQMergingData.h"
+void CopasiUI3Window::slotAddModel()
 {
+
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   CModel *mModel = (*CCopasiRootContainer::getDatamodelList())[1]->getModel();
-  CModelMerging mm(pModel, mModel);
-  mm.simpleCall();
+  CModelAdd add(pModel, mModel);
+  add.simpleCall();
 
   ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
+}
+
+void CopasiUI3Window::slotMergeModels()
+{
+  ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  if (pModel->getMetabolites().size() == 0)
+    CQMessageBox::critical(this, QString("File Error"),
+                           QString("Error. Could not merge!"),
+                           QMessageBox::Ok, QMessageBox::Ok);
+  else
+    {
+
+      CQMergingData *widget = new CQMergingData;
+      widget->show();
+
+      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
+    }
 }
 #endif
 

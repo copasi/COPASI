@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.ui,v $ </comment>
+<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: nsimus $ </comment>
+<comment>   $Date: 2009/10/30 16:11:56 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQMergingData</class>
+ <widget class="QDialog" name="CQMergingData">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>654</width>
+    <height>209</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Merging Data</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTableWidget" name="mpTable">
+     <row>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>2</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>3</string>
+      </property>
+     </row>
+     <column>
+      <property name="text">
+       <string>Column Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Status</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Hidden</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>&lt;&gt;</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Model Object</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Hidden</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="_2">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="mpBtnMerge">
+       <property name="text">
+        <string>&amp;Merge</string>
+       </property>
+       <property name="shortcut">
+        <string>Alt+O</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpBtnCancel">
+       <property name="text">
+        <string>&amp;Cancel</string>
+       </property>
+       <property name="shortcut">
+        <string>Alt+C</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>mpBtnMerge</tabstop>
+  <tabstop>mpBtnCancel</tabstop>
+ </tabstops>
+ <includes>
+  <include location="global">string</include>
+  <include location="global">map</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpBtnMerge</sender>
+   <signal>clicked()</signal>
+   <receiver>CQMergingData</receiver>
+   <slot>slotBtnMerge()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>30</x>
+     <y>445</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>CQMergingData</receiver>
+   <slot>slotBtnCancel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>111</x>
+     <y>445</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
