@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/20 11:57:15 $
+//   $Date: 2009/10/30 16:23:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 class CModel;
 class CCompartment;
@@ -26,10 +27,10 @@ class CExpression;
 class CEvent;
 class CEventAssignment;
 
-class CModelMerging
+class CModelAdd
 {
 public:
-  CModelMerging(CModel* pModel, CModel* mModel);
+  CModelAdd(CModel* pModel, CModel* mModel);
 
   void setModel(CModel* pModel, CModel* mModel);
 
@@ -58,9 +59,6 @@ protected:
   bool  copyExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity);
   bool  copyInitialExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity);
 
-  bool  mergeMetabolites(std::string toKey, std::string key);
-  bool mergeInExpression(std::string toKey, std::string key, CExpression *pExpression);
-
   /**
    * determine whether the one of the substrate, products, or modifiers of the reaction
    * is located in the given compartmen
@@ -69,6 +67,39 @@ protected:
 
   CModel * mpModel;
   CModel * mmModel;
+};
+
+class CModelMerging
+{
+public:
+  CModelMerging(CModel* pModel);
+
+  void setModel(CModel* pModel);
+
+  ///just a simple method to call during development
+  void simpleCall(std::vector< std::string > & toKey, std::vector< std::string > & objectKey);
+
+  /**
+  ** Enumeration of the types of columns known to COPASI.
+  **/
+  enum Type
+  {
+    ignore = 0,
+    merge
+  };
+
+  /**
+  ** String literals for the GUI to display type names of columns known
+  ** to COPASI.
+  **/
+  static const std::string TypeName[];
+
+protected:
+
+  bool  mergeMetabolites(std::string toKey, std::string key);
+  bool  mergeInExpression(std::string toKey, std::string key, CExpression *pExpression);
+
+  CModel * mpModel;
 };
 
 #endif // CMODELMERGING_H
