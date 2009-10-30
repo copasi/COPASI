@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.19 $
+ $Revision: 1.20 $
  $Name:  $
  $Author: pwilly $
- $Date: 2009/10/12 14:15:50 $
+ $Date: 2009/10/30 12:52:41 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,8 @@ protected slots:
   void assistantBtnClicked();
 
   void changeMethod(int);
+
+  void adjustTable();
 
 protected:
   virtual bool enterProtected();

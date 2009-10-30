@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/10/12 13:35:12 $
+//   $Date: 2009/10/30 12:52:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <QtDebug>
 
 #include <QFrame>
 #include <QVBoxLayout>
@@ -137,11 +139,11 @@ void TaskWidget::addMethodParameterTable(unsigned int row)
   mpMethodLayout->addWidget(mpLblParameter, row, 0);
   mpMethodLayout->addWidget(mpTblParameter, row, 1, row, 2);
 
-  if (row == 0)
-    {
-      mpSpacer1 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-      mpMethodLayout->addItem(mpSpacer1, row + 1, 2);
-    }
+#ifdef DEBUG_UI
+  qDebug() << "row = " << row;
+#endif
+
+  connect(mpTblParameter, SIGNAL(cellChanged(int, int)), this, SLOT(adjustTable()));
 
   return;
 }
@@ -157,14 +159,10 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
 
-//  QWidget* pParent = mpMethodLayout->mainWidget();
-
-//  mpLblMethod = new QLabel(pParent, "mpLblMethod");
   mpLblMethod = new QLabel(0, "mpLblMethod");
   mpLblMethod->setText(tr("Method"));
   mpLblMethod->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
-//  mpBoxMethod = new QComboBox(false, pParent, "mpBoxMethod");
   mpBoxMethod = new QComboBox();
 
   unsigned C_INT32 i;
@@ -304,6 +302,9 @@ bool TaskWidget::loadMethod()
 
       unsigned C_INT32 i;
       CCopasiParameter::Type Type;
+#ifdef DEBUG_UI
+      qDebug() << "mpMethod->size() = " << mpMethod->size();
+#endif
 
       for (i = 0; i < mpMethod->size(); i++)
         {
@@ -319,26 +320,26 @@ bool TaskWidget::loadMethod()
           mpTblParameter->setItem(i, 0, itemValue);
         }
 
-      mpTblParameter->resizeColumnsToContents();
-      mpTblParameter->resizeRowsToContents();
-
-      mpTblParameter->horizontalHeaderItem(0)->setSizeHint(QSize(mpTblParameter->columnWidth(0), 22));
-
-      QHeaderView* vHeader = mpTblParameter->verticalHeader();
-
-      if (mpTblParameter->sizePolicy().verticalPolicy() == QSizePolicy::Maximum)
+      if (!mpMethod->size())
         {
-          mpTblParameter->setMaximumHeight(vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5);
+          mpTblParameter->setFixedSize(100, 10);
         }
-      else
-        {
-          mpTblParameter->setMinimumHeight(vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5);
-        }
-
-      mpTblParameter->setMinimumWidth(mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 22);
     }
 
   return true;
+}
+
+void TaskWidget::adjustTable()
+{
+#ifdef DEBUG_UI
+  qDebug() << "--> TaskWidget::adjustTable <--";
+#endif
+
+  mpTblParameter->resizeColumnsToContents();
+  mpTblParameter->resizeRowsToContents();
+
+  mpTblParameter->setFixedSize(mpTblParameter->columnWidth(0) + mpTblParameter->verticalHeader()->sizeHint().width() + 5,
+                               mpTblParameter->verticalHeader()->sizeHint().height() * mpTblParameter->rowCount() + 5);
 }
 
 bool TaskWidget::saveMethod()
