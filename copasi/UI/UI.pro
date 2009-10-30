@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.222 $
+#   $Revision: 1.223 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2009/10/12 14:56:45 $
+#   $Author: nsimus $
+#   $Date: 2009/10/30 16:19:50 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.222 $ $Author: pwilly $ $Date: 2009/10/12 14:56:45 $
+# $Revision: 1.223 $ $Author: nsimus $ $Date: 2009/10/30 16:19:50 $
 ######################################################################
 
 LIB = UI
@@ -335,6 +335,7 @@ FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
+FORMS += CQMergingData.ui
 
 # headers generated from .ui files
 HEADERS += \
@@ -362,7 +363,7 @@ HEADERS += \
 #    DefaultplotDialog.h \
 #    TimeSeriesSubwidget.h \
 #    objectdebug.h \
-
+     CQMergingData.h \
 
 # sources generated from .ui files
 SOURCES += \
@@ -390,7 +391,7 @@ SOURCES += \
  #   DefaultplotDialog.cpp \
  #   TimeSeriesSubwidget.cpp \
  #   objectdebug.cpp \
-
+     CQMergingData.cpp \
 
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h
