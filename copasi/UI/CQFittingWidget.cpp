@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/25 21:02:46 $
+//   $Author: pwilly $
+//   $Date: 2009/10/30 13:07:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,6 +313,7 @@ void CQFittingWidget::init()
   mpHeaderWidget->setTaskName("Parameter Estimation");
 
   vboxLayout->insertWidget(0, mpHeaderWidget);
+  vboxLayout->insertSpacing(1, 14);      // space between header and body
   vboxLayout->addWidget(mpBtnWidget);
 
   addMethodSelectionBox(CFitTask::ValidMethods, 0);

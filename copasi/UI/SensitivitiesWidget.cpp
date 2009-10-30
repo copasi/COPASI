@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 14:04:26 $
+//   $Author: pwilly $
+//   $Date: 2009/10/30 13:07:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,6 +143,7 @@ void SensitivitiesWidget::init()
   mpHeaderWidget->setTaskName("Sensitivities");
 
   verticalLayout->insertWidget(0, mpHeaderWidget);  // header
+  verticalLayout->insertSpacing(1, 14);      // space between header and body
   verticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   addMethodParameterTable(0);
