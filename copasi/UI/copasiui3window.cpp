@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.269 $
+//   $Revision: 1.270 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/10/30 16:10:35 $
+//   $Author: pwilly $
+//   $Date: 2009/10/31 11:54:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -458,7 +458,9 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction(mpaUpdateInitialState);
   mpTools->addAction(mpaSliders);
   mpTools->addAction(mpaCapture);
+#ifdef WITH_MERGEMODEL
   mpTools->addAction(mpaMergeModels);
+#endif
 
   mpTools->addSeparator();
 #ifdef COPASI_DEBUG
