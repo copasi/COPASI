@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/28 18:15:52 $
+//   $Author: pwilly $
+//   $Date: 2009/10/31 11:59:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,7 +159,6 @@ void CQMCAWidget::init()
   vboxLayout->addWidget(mpBtnWidget);     // 'footer'
 
   addMethodParameterTable(0);
-  mpTblParameter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 }
 
 bool CQMCAWidget::loadParameterTable()
@@ -218,15 +217,7 @@ bool CQMCAWidget::loadParameterTable()
         }
     }
 
-  mpTblParameter->resizeColumnsToContents();
-  mpTblParameter->resizeRowsToContents();
-
-  mpTblParameter->horizontalHeaderItem(0)->setSizeHint(QSize(mpTblParameter->columnWidth(0), 22));
-
-  QHeaderView* vHeader = mpTblParameter->verticalHeader();
-
-  mpTblParameter->setMinimumHeight(vHeader->sizeHint().height() * mpTblParameter->rowCount() + 5);
-  mpTblParameter->setMinimumWidth(mpTblParameter->columnWidth(0) + vHeader->sizeHint().width() + 22);
+  // the table will be automatically adjusted -> 31.10.09
 
   return true;
 }
