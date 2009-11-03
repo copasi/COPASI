@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.ui,v $ </comment>
-<comment>   $Revision: 1.19 $ </comment>
+<comment>   $Revision: 1.20 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2009/10/05 15:01:33 $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2009/11/03 07:40:40 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -20,7 +20,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>584</width>
+    <width>618</width>
     <height>477</height>
    </rect>
   </property>
@@ -70,7 +70,10 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
+     </property>
+     <property name="usesScrollButtons">
+      <bool>true</bool>
      </property>
      <widget class="QWidget" name="mpOptimizationPage">
       <attribute name="title">
