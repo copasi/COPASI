@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:18:35 $
+//   $Author: pwilly $
+//   $Date: 2009/11/03 12:40:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
-#include "plotwidget1.h"
+#include "PlotSubwidget.h"
 
 void HistoWidget::buttonPressedX()
 {
@@ -70,10 +70,10 @@ void HistoWidget::buttonPressedX()
   //check if more than one object was selected...
   if (objects.size() > 1)
     {
-      PlotWidget1* pParent;
+      PlotSubwidget* pParent;
       QObject* tmp = this;
 
-      while (!(pParent = dynamic_cast<PlotWidget1*>(tmp)) && this)
+      while (!(pParent = dynamic_cast<PlotSubwidget *>(tmp)) && this)
         tmp = tmp->parent();
 
       if (pParent) //tell the parent to create the remaining histogram descriptions.

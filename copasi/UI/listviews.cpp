@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.279 $
+//   $Revision: 1.280 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:57:12 $
+//   $Author: pwilly $
+//   $Date: 2009/11/03 12:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,7 +98,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
-#include "plotUI/plotwidget1.h"
+#include "plotUI/PlotSubwidget.h"
 #include "model/CModel.h"
 
 /**------FolderListItem::FolderListItem(QListView *parent, Folder *f)---->
@@ -243,7 +243,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     mpFittingResultWidget(NULL),
     parametersWidget(NULL),
     mpPlotsWidget(NULL),
-    plotWidget1(NULL),
+    mpPlotSubwidget(NULL),
     mpReactionsWidget(NULL),
     reactionsWidget1(NULL),
     scanWidget(NULL),
@@ -465,9 +465,9 @@ void ListViews::ConstructNodeWidgets()
 
   mpPlotsWidget->hide();
 
-  if (!plotWidget1) plotWidget1 = new PlotWidget1(this);
+  if (!mpPlotSubwidget) mpPlotSubwidget = new PlotSubwidget(this);
 
-  plotWidget1->hide();
+  mpPlotSubwidget->hide();
 
   if (!mpReactionsWidget) mpReactionsWidget = new CQReactionsWidget(this);
 
@@ -587,7 +587,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return tableDefinition1;
         break;
       case 42:
-        return plotWidget1;
+        return mpPlotSubwidget;
         break;
       case 5:
         return functionWidget1;

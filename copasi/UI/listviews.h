@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.161 $
+//   $Revision: 1.162 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/14 13:41:37 $
+//   $Author: pwilly $
+//   $Date: 2009/11/03 12:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,7 +78,7 @@ class CQUpdatesWidget;
 class CQOptimizationWidget;
 class CQOptimizationResult;
 class CopasiWidget;
-class PlotWidget1;
+class PlotSubwidget;
 class CQPlotsWidget;
 class CQSplashWidget;
 class TimeSeriesWidget;
@@ -252,7 +252,7 @@ private:
   CQFittingResult *mpFittingResultWidget;
   ParametersWidget *parametersWidget;
   CQPlotsWidget *mpPlotsWidget;
-  PlotWidget1 *plotWidget1;
+  PlotSubwidget *mpPlotSubwidget;
   CQReactionsWidget *mpReactionsWidget;
   CTabWidget *reactionsWidget1;
   ScanWidget *scanWidget;
