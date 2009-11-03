@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.223 $
+#   $Revision: 1.224 $
 #   $Name:  $
-#   $Author: nsimus $
-#   $Date: 2009/10/30 16:19:50 $
+#   $Author: pwilly $
+#   $Date: 2009/11/03 13:39:58 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.223 $ $Author: nsimus $ $Date: 2009/10/30 16:19:50 $
+# $Revision: 1.224 $ $Author: pwilly $ $Date: 2009/11/03 13:39:58 $
 ######################################################################
 
 LIB = UI
@@ -50,6 +50,7 @@ HEADERS	+= \
   CQGlobalQuantitiesWidget.h \
   CQLyapWidget.h \
   CQMCAWidget.h \
+  CQMergingData.h \
   CQModelValue.h \
   CQMoietiesTaskResult.h \
   CQOptimizationWidget.h \
@@ -81,14 +82,13 @@ HEADERS	+= \
   CCopasiSimpleSelectionTree.h \
   ChemEqValidator.h \
   CMCAResultWidget.h \
-  CReportDefinitionSelect.h \
   CopasiFileDialog.h \
   CopasiSlider.h \
   CopasiTableWidget.h \
   copasiWidget.h \
   copasiui3window.h \
   CProgressBar.h \
-  CTabWidget.h \
+  CReportDefinitionSelect.h \
   CQArrayAnnotationsWidget.h \
   CQBarChart.h \
   CQBaseDataModel.h \
@@ -109,6 +109,7 @@ HEADERS	+= \
   CQLyapResultWidget.h \
   CQMathMatrixWidget.h \
   CQMessageBox.h \
+  CQMmlScrollView.h \
   CQPlotDM.h \
   CQReactionDM.h \
   CQReportDM.h \
@@ -123,14 +124,15 @@ HEADERS	+= \
   CQUpdatesWidget.h \
   CQValidator.h \
   CScanContainerWidget.h \
+  CTabWidget.h \
   CTimeSeriesTable.h \
   DataModelGUI.h \
   DataModel.txt.h \
   FunctionItemWidget.h \
   FunctionWidget1.h \
+  listviews.h \
   ModelWidget.h \
   MyLineEdit.h \
-  listviews.h \
   ObjectBrowserDialog.h \
   ObjectBrowserItem.h \
   ObjectBrowserWidget.h \
@@ -145,9 +147,7 @@ HEADERS	+= \
   TaskWidget.h \
   TimeSeriesWidget.h \
   Tree.h \
-  TSSWidget.h \
-#        CQExpressionMmlWidgetStack.h \
-  CQMmlScrollView.h
+  TSSWidget.h
 
 ### Source files that belong to widgets generated from uic4 forms
 SOURCES	+= \
@@ -167,6 +167,7 @@ SOURCES	+= \
   CQGlobalQuantitiesWidget.cpp \
   CQLyapWidget.cpp \
   CQMCAWidget.cpp \
+  CQMergingData.cpp \
   CQModelValue.cpp \
   CQMoietiesTaskResult.cpp \
   CQOptimizationWidget.cpp \
@@ -197,14 +198,13 @@ SOURCES	+= \
   CCopasiSelectionWidget.cpp \
   CCopasiSimpleSelectionTree.cpp \
   CMCAResultWidget.cpp \
-  CReportDefinitionSelect.cpp \
   CopasiFileDialog.cpp \
   CopasiSlider.cpp \
   CopasiTableWidget.cpp \
   copasiWidget.cpp \
   copasiui3window.cpp \
   CProgressBar.cpp \
-  CTabWidget.cpp \
+  CReportDefinitionSelect.cpp \
   CQArrayAnnotationsWidget.cpp \
   CQBarChart.cpp \
   CQBaseDataModel.cpp \
@@ -224,6 +224,7 @@ SOURCES	+= \
   CQLyapResultWidget.cpp \
   CQMathMatrixWidget.cpp \
   CQMessageBox.cpp \
+  CQMmlScrollView.cpp \
   CQPlotDM.cpp \
   CQReactionDM.cpp \
   CQReportDM.cpp \
@@ -238,13 +239,14 @@ SOURCES	+= \
   CQUpdatesWidget.cpp \
   CQValidator.cpp \
   CScanContainerWidget.cpp \
+  CTabWidget.cpp \
   CTimeSeriesTable.cpp \
   DataModelGUI.cpp \
   FunctionItemWidget.cpp \
   FunctionWidget1.cpp \
+  listviews.cpp \
   ModelWidget.cpp \
   MyLineEdit.cpp \
-  listviews.cpp \
   ObjectBrowserDialog.cpp \
   ObjectBrowserItem.cpp \
   ObjectBrowserWidget.cpp \
@@ -259,9 +261,7 @@ SOURCES	+= \
   TaskWidget.cpp \
   TimeSeriesWidget.cpp \
   Tree.cpp \
-  TSSWidget.cpp \
-#        CQExpressionMmlWidgetStack.cpp \
-  CQMmlScrollView.cpp
+  TSSWidget.cpp
 
 
 
@@ -314,6 +314,7 @@ FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
 FORMS += CQLyapWidget.ui
 FORMS += CQMCAWidget.ui
+FORMS += CQMergingData.ui
 FORMS += CQModelValue.ui
 FORMS += CQMoietiesTaskResult.ui
 FORMS += CQOptimizationWidget.ui
@@ -335,63 +336,22 @@ FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
-FORMS += CQMergingData.ui
 
 # headers generated from .ui files
 HEADERS += \
-#    CMCAResultSubwidget.h \
     CQExperimentData.h \
-#    CQExperimentSelection.h \
     CQFileDialogBtnGrp.h \
-#    CQFittingResult.h \
-#    CQFittingResultTab1.h \
-#    CQMatrixDialog.h \
-#    CQMoietiesTaskResult.h \
-#    CQMoietiesTaskWidget.h \
-##    CQOptimizationResult.h \
-#    CQPreferenceDialog.h \
-#    CQProgressItem.h \
     CQProgressItemBar.h \
     CQProgressItemText.h \
-#    CQSplashWidget.h \
-#    CQStartValueReset.h \
-#    #CQTSSAResultSubWidget.h \
-#    CQTaskBtnWidget.h \
-#    CQTaskHeaderWidget.h \
     CQTextDialog.h \
-#    CUpDownSubwidget.h \
-#    DefaultplotDialog.h \
-#    TimeSeriesSubwidget.h \
-#    objectdebug.h \
-     CQMergingData.h \
 
 # sources generated from .ui files
 SOURCES += \
- #   CMCAResultSubwidget.cpp \
     CQExperimentData.cpp \
- #   CQExperimentSelection.cpp \
     CQFileDialogBtnGrp.cpp \
- #   CQFittingResult.cpp \
- #   CQFittingResultTab1.cpp \
- #   CQMatrixDialog.cpp \
- #   CQMoietiesTaskResult.cpp \
- #   CQMoietiesTaskWidget.cpp \
- #   #CQOptimizationResult.cpp \
- #   CQPreferenceDialog.cpp \
- #   CQProgressItem.cpp \
     CQProgressItemBar.cpp \
     CQProgressItemText.cpp \
- #   CQSplashWidget.cpp \
- #   CQStartValueReset.cpp \
- #   #CQTSSAResultSubWidget.cpp \
- #   CQTaskBtnWidget.cpp \
- #   CQTaskHeaderWidget.cpp \
     CQTextDialog.cpp \
- #   CUpDownSubwidget.cpp \
- #   DefaultplotDialog.cpp \
- #   TimeSeriesSubwidget.cpp \
- #   objectdebug.cpp \
-     CQMergingData.cpp \
 
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h
