@@ -13,25 +13,6 @@
 
 #include "PlotSubwidget.h"
 
-/*
-#include <qvariant.h>
-#include <qpushbutton.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-//#include <q3frame.h>
-#include <qtabwidget.h>
-#include <qwidget.h>
-#include <qtoolbutton.h>
-#include <qlayout.h>
-//Added by qt3to4:
-//#include <Q3HBoxLayout>
-//#include <Q3GridLayout>
-
-//#include <qtooltip.h>
-//#include <qwhatsthis.h>
- */
 #include "curve2dwidget.h"
 #include "HistoWidget.h"
 #include "plotwindow.h"
@@ -68,9 +49,6 @@ PlotSubwidget::PlotSubwidget(QWidget* parent, const char* name, Qt::WFlags fl)
  *  Destroys the object and frees any allocated resources
  */
 PlotSubwidget::~PlotSubwidget()
-{}
-
-void PlotSubwidget::init()
 {}
 
 //-----------------------------------------------------------------------------

@@ -15,46 +15,9 @@
 #define PLOTSUBWIDGET_H
 
 #include "ui_PlotSubwidget.h"
-/*
-#include <vector>
-#include <string>
-#include <fstream>
-#include <qvariant.h>
-//Added by qt3to4:
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-//#include <Q3Frame>
-#include <QFrame>
 
-#include "UI/copasiWidget.h"
- */
 #include "plot/CPlotSpecification.h"
 
-/*
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
- */
-/*
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
- */
-/*
-class QSpacerItem;
-class QComboBox;
-class QLineEdit;
-class QCheckBox;
-class QLabel;
-//class Q3Frame;
-//class QFrame;
-class QPushButton;
-class QTabWidget;
-class QWidget;
-class QToolButton;
- */
 class PlotWindow;
 class Curve2DWidget;
 
@@ -101,42 +64,6 @@ protected:
 
   CPlotItem::Type mType;
 
-  /*
-    Q3GridLayout* PlotWidget1Layout;
-    Q3HBoxLayout* layoutTitle;
-    Q3HBoxLayout* layoutButtons;
-    Q3HBoxLayout* layoutCurves;
-  */
-  /*
-    QGridLayout* PlotWidget1Layout;
-    QHBoxLayout* layoutTitle;
-    QHBoxLayout* layoutButtons;
-    QHBoxLayout* layoutCurves;
-    QSpacerItem* spacerCurves;
-
-    QComboBox* comboType;
-    QLineEdit* titleLineEdit;
-    QCheckBox* activeCheckBox;
-    QLabel* labelTitle;
-    QLabel* labelType;
-    QLabel* labelScale;
-    QCheckBox* checkLogX;
-    QCheckBox* checkLogY;
-  //  Q3Frame* lineButtons;
-    QFrame* lineButtons;
-    QTabWidget* tabs;
-    QLabel* labelCurves;
-    QToolButton* addCurveButton;
-    QToolButton* addHistoButton;
-    QToolButton* deleteCurveButton;
-  //  Q3Frame* line1;
-    QFrame* line1;
-
-    QPushButton* startPlotButton;
-    QPushButton* deletePlotButton;
-    QPushButton* addPlotButton;
-    QPushButton* resetButton;
-  */
 protected slots:
 
   /**
@@ -187,10 +114,6 @@ protected:
    * An empty histogram description is generated.
    */
   void addHisto1D();
-
-private:
-//  Ui::PlotSubwidget ui;
-  void init();
 };
 
 #endif // PLOTWIDGET1_H
