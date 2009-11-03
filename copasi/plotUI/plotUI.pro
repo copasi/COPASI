@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.6 $
+#   $Revision: 1.7 $
 #   $Name:  $
 #   $Author: pwilly $
-#   $Date: 2009/06/22 20:47:04 $
+#   $Date: 2009/11/03 11:56:14 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.6 $ $Author: pwilly $ $Date: 2009/06/22 20:47:04 $
+# $Revision: 1.7 $ $Author: pwilly $ $Date: 2009/11/03 11:56:14 $
 ######################################################################
 
 LIB = plotUI
@@ -23,7 +23,7 @@ include(../common.pri)
 CONFIG += qt
 
 HEADERS += CHistogram.h \
-           plotwidget1.h \
+           PlotSubwidget.h \
            CopasiPlot.h \
            COutputHandlerPlot.h \
            plotwindow.h \
@@ -32,11 +32,13 @@ HEADERS += CHistogram.h \
 
 SOURCES += CHistogram.cpp \
            CopasiPlot.cpp \
-           plotwidget1.cpp \
+           PlotSubwidget.cpp \
            plotwindow.cpp \
            COutputHandlerPlot.cpp \
            scrollbar.cpp \
            scrollzoomer.cpp
+
+FORMS += PlotSubwidget.ui
 
 #The following line was changed from FORMS to FORMS3 by qt3to4
 FORMS3 +=  curve2dwidget.ui
