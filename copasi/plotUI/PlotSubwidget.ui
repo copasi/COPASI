@@ -208,7 +208,7 @@
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
-   <header>ui/copasiWidget.h</header>
+   <header>UI/copasiWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
