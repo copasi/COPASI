@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 13:28:58 $
+//   $Author: shoops $
+//   $Date: 2009/11/04 19:51:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,7 +151,7 @@ public:
   void deepCopy(const CCopasiVector< CType > & source)
   {
     cleanup();
-    resize(source.size());
+    std::vector< CType * >::resize(source.size());
 
     unsigned C_INT32 i, imax = size();
     iterator Target = begin();
@@ -174,16 +174,16 @@ public:
   }
 
   iterator begin()
-  {return static_cast< std::vector< CType * > *>(this)->begin();}
+  {return std::vector< CType * >::begin();}
 
   const_iterator begin() const
-  {return static_cast<const std::vector< CType * > *>(this)->begin();}
+  {return std::vector< CType * >::begin();}
 
   iterator end()
-  {return static_cast< std::vector< CType * > *>(this)->end();}
+  {return std::vector< CType * >::end();}
 
   const_iterator end() const
-  {return static_cast<const std::vector< CType * > *>(this)->end();}
+  {return std::vector< CType * >::end();}
 
   /**
    *  Cleanup
@@ -197,7 +197,6 @@ public:
       if (*it)
         if ((*it)->getObjectParent() == this)
           {
-            //                (*it)->cleanup();
             CCopasiContainer::remove(*it);
             (*it)->setObjectParent(NULL);
             delete(*it);
@@ -376,7 +375,7 @@ public:
    *  @return unsigned C_INT32 size
    */
   virtual unsigned C_INT32 size() const
-  {return static_cast< const std::vector< CType * > * >(this)->size();}
+  {return std::vector< CType * >::size();}
 
   /**
    *  Resizes the vector but does not create new member objects
@@ -390,7 +389,7 @@ public:
 
     if (OldSize < newSize)
       {
-        static_cast< std::vector< CType * > * >(this)->resize(newSize);
+        std::vector< CType * >::resize(newSize);
 
         unsigned C_INT32 i;
         iterator Target = begin() + OldSize;
@@ -416,7 +415,7 @@ public:
                 CCopasiContainer::remove(*Target);
             }
 
-        static_cast< std::vector< CType * > * >(this)->resize(newSize);
+        std::vector< CType * >::resize(newSize);
       }
   }
 
@@ -442,7 +441,7 @@ public:
             CCopasiContainer::remove(*Target);
         }
 
-    static_cast< std::vector< CType * > * >(this)->resize(0);
+    std::vector< CType * >::resize(0);
   }
 
   /**
