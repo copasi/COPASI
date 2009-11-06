@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/09/28 14:53:30 $
+//   $Author: shoops $
+//   $Date: 2009/11/06 16:02:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,7 +266,7 @@ bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action 
   if (objectType != ListViews::MIRIAM)
     return true;
 
-  if (key != mpMIRIAMInfo->getKey())
+  if (key == "" || key != mpMIRIAMInfo->getKey())
     return true;
 
   bool success = true;
