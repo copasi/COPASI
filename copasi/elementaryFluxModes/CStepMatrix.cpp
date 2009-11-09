@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/29 16:33:48 $
+//   $Date: 2009/11/09 16:37:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,7 +81,8 @@ CStepMatrix::CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix):
   // We need to add the information of the unconverted rows of nullspace matrix
   // to the columns
 
-  if (nullspaceMatrix.size() != 0)
+  if (nullspaceMatrix.size() != 0 &&
+      mFirstUnconvertedRow < mRows)
     {
       pValue = & nullspaceMatrix(mFirstUnconvertedRow, 0);
     }
