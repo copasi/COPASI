@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.270 $
+//   $Revision: 1.271 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/31 11:54:13 $
+//   $Author: nsimus $
+//   $Date: 2009/11/09 13:04:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1860,7 +1860,7 @@ void CopasiUI3Window::slotMergeModels()
     {
 
       CQMergingData *widget = new CQMergingData;
-      widget->show();
+      widget->exec();
 
       ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
     }
