@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/11/06 17:20:38 $
+//   $Date: 2009/11/09 13:04:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,6 @@
 // All rights reserved.
 
 #include "CModelMerging.h"
-
 #include "CModel.h"
 #include "function/CExpression.h"
 #include "report/CCopasiObject.h"
@@ -970,7 +969,9 @@ void  CModelMerging::simpleCall(std::vector< std::string > & toKey, std::vector<
     }
 
   for (i = 0; i < imax; ++i)
-    if (objectKey[i] != empty) mpModel->removeMetabolite(objectKey[i] , false);
+    {
+      if (objectKey[i] != empty) mpModel->removeMetabolite(objectKey[i] , false);
+    }
 
   mpModel->compileIfNecessary(NULL);
 }
