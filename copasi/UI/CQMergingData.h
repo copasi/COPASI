@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/10/30 16:11:56 $
+//   $Date: 2009/11/09 13:12:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ class CQMergingData : public QDialog, public Ui::CQMergingData
   Q_OBJECT
 
 public:
-  CQMergingData(QWidget* parent = 0, const char* name = 0);
+  CQMergingData(QWidget* parent = 0, Qt::WindowFlags fl = 0);
   ~CQMergingData();
 
   std::vector< std::string > mObjectKey;

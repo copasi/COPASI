@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/10/30 16:11:56 $
+//   $Date: 2009/11/09 13:12:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,8 +104,8 @@ static const unsigned char copasi_data[] =
  *  name 'name'.'
  */
 
-CQMergingData::CQMergingData(QWidget* parent, const char* name)
-    : QDialog(parent, name)
+CQMergingData::CQMergingData(QWidget* parent, Qt::WindowFlags fl)
+    : QDialog(parent, fl)
 {
   setupUi(this);
 
