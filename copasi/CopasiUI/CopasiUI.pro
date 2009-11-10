@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.149 $
+#   $Revision: 1.150 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2009/06/22 21:00:08 $
+#   $Author: shoops $
+#   $Date: 2009/11/10 16:52:10 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.149 $ $Author: pwilly $ $Date: 2009/06/22 21:00:08 $
+# $Revision: 1.150 $ $Author: shoops $ $Date: 2009/11/10 16:52:10 $
 ######################################################################
 
 TEMPLATE = app
@@ -50,52 +50,63 @@ contains(BUILD_OS, WIN32) {
 contains(BUILD_OS, Linux) {
   CONFIG += opengl
 
-  LIBS += -lfreetype
-
   LIBS = -L../lib \
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 
-  contains(QMAKE_LFLAGS, -static) {
-   LIBS += -Wl,-lqt-mt \
-           -Wl,-lGL \
-           -Wl,-lXxf86vm \
-           -Wl,-lXcursor \
-           -Wl,-lXft \
-           -Wl,-lfontconfig \
-           -Wl,-lpthread
-  }
+  QMAKE_LFLAGS -= -static
+
+#  linux-icc {
+#    OBJECTS += $(QTDIR)//src/corelib/.obj/release-static/qvariant.o
+#  }
 
   release {
-    dynamic_LFLAGS = $${QMAKE_LFLAGS}
+    dynamic_LFLAGS  = $${QMAKE_LFLAGS}
     dynamic_LFLAGS -= -static
 
-    dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic
-    dynamic_LIBS -= -Wl,-lqt-mt
-    dynamic_LIBS -= -Wl,-lXcursor
-    dynamic_LIBS -= -Wl,-lXft
-    dynamic_LIBS -= -Wl,-lfontconfig
-    dynamic_LIBS -= -Wl,-lpthread
+    dynamic_LIBS  = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic
+    dynamic_LIBS -= -lpthread
+
+    dynamic_LIBS += -lQt3Support \
+                    -lQtSvg \
+                    -lQtSql \
+                    -lQtNetwork \
+                    -lQtXml \
+                    -lQtOpenGL \
+                    -lQtGui \
+                    -lQtCore
+
+    dynamic_LIBS += -lGLU \
+                    -lGL \
+                    -Wl,--start-group \
+                      -lfreetype \
+                      -lXrender \
+                      -lfontconfig \
+                      -lXext \
+                      -lX11 \
+                    -Wl,--end-group \
+                    -lz \
+                    -lm \
+                    -lrt \
+                    -lpthread \
+                    -ldl
 
     dynamic.target   = CopasiUI-dynamic
     dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${TARGETDEPS}
     dynamic.commands = \
-      $(LINK) $${dynamic_LFLAGS} -L$(QTDIR)/lib -L/usr/X11R6/lib \
-              -o $@ $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${dynamic_LIBS} \
-              -Wl,--start-group \
-              -lqt-mt -lXrender -lXrandr -lXcursor -lXinerama -lXft \
-              -lfreetype -lfontconfig -lSM -lICE -lXext -lX11 -lm \
-              -Wl,--end-group \
-              -ldl -lpthread && \
+      $(LINK) $${dynamic_LFLAGS} -L$(QTDIR)/lib -L/usr/lib \
+              -o $@ $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${dynamic_LIBS} && \
               strip $@
 
     QMAKE_EXTRA_UNIX_TARGETS += dynamic
 
-#    distribution.extra = make $${dynamic.target}; \
-    distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
+    contains(DYNAMIC, TRUE) {
+      distribution.extra = make $${dynamic.target};
+    }
 
+    distribution.extra += ../../admin/mkbuild.sh $${BUILD_OS}
   }
 }
 

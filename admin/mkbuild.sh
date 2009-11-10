@@ -299,16 +299,6 @@ echo "Set the icon in the Info.plist file."
     cp ../copasi/CopasiSE/CopasiSE  copasi/bin
     chmod 755 copasi/bin/CopasiSE
 
-    if [ x"$license" = xUS ]; then
-      if [ x"$DYNAMIC" == "xTRUE" ]; then
-        UPLOAD copasi/bin/CopasiSE \
-          $license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
-      else
-        UPLOAD copasi/bin/CopasiSE \
-          $license/Copasi-AllSE/$1/CopasiSE-$build
-      fi
-    fi
-    
     cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
     chmod 444 copasi/share/copasi/config/*
 
@@ -326,12 +316,26 @@ echo "Set the icon in the Info.plist file."
        copasi/share/copasi/doc/html/figures
     chmod 644 copasi/share/copasi/doc/html/figures/*.png
 
-    if [ x"$DYNAMIC" == "xTRUE" ]; then
-      tar -czf ../Copasi-$build-$1-Dynamic.tar.gz copasi
-    else
-      tar -czf ../Copasi-$build-$1.tar.gz copasi
+    tar -czf ../Copasi-$build-$1.tar.gz copasi
+
+    if [ x"$license" = xUS ]; then
+      UPLOAD copasi/bin/CopasiSE \
+        $license/Copasi-AllSE/$1/CopasiSE-$build
     fi
 
+    cp ../copasi/CopasiUI/CopasiUI-dynamic  copasi/bin/CopasiUI
+    chmod 755 copasi/bin/CopasiUI
+
+    cp ../copasi/CopasiSE/CopasiSE-dynamic  copasi/bin/CopasiSE
+    chmod 755 copasi/bin/CopasiSE
+
+    tar -czf ../Copasi-$build-$1-Dynamic.tar.gz copasi
+
+    if [ x"$license" = xUS ]; then
+      UPLOAD copasi/bin/CopasiSE \
+        $license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
+    fi
+    
     cd ..
     ;;
   esac

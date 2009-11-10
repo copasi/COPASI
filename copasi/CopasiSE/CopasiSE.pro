@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
-#   $Revision: 1.39 $
+#   $Revision: 1.40 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/01/28 03:56:27 $
+#   $Date: 2009/11/10 16:52:10 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.39 $ $Author: shoops $ $Date: 2009/01/28 03:56:27 $
+# $Revision: 1.40 $ $Author: shoops $ $Date: 2009/11/10 16:52:10 $
 ######################################################################
 
 TEMPLATE = app
@@ -61,6 +61,7 @@ contains(BUILD_OS, Linux) {
     dynamic_LFLAGS -= -static
 
     dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic
+    dynamic_LIBS -= -lpthread
     dynamic.target   = CopasiSE-dynamic
     dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${TARGETDEPS}
     dynamic.commands = \
@@ -69,12 +70,14 @@ contains(BUILD_OS, Linux) {
               -Wl,--start-group -Wl,-Bstatic \
               -lm \
               -Wl,--end-group -Wl,-Bdynamic \
-              -ldl -lpthread && \
+              -lpthread -ldl && \
               strip $@
 
     QMAKE_EXTRA_UNIX_TARGETS += dynamic
 
-    distribution.extra = make $${dynamic.target};
+    contains(DYNAMIC, TRUE) {
+      distribution.extra = make $${dynamic.target};
+    }
   }
 }
 
