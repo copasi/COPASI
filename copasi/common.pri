@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.110 $ 
+#   $Revision: 1.111 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/10/26 19:00:39 $ 
+#   $Date: 2009/11/10 17:01:25 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.110 $ $Author: shoops $ $Date: 2009/10/26 19:00:39 $  
+# $Revision: 1.111 $ $Author: shoops $ $Date: 2009/11/10 17:01:25 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -503,9 +503,15 @@ contains(BUILD_OS, Linux) {
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
-#    LIBS += -lmkl_lapack -lmkl_ia32 -lg2c -lpthread
-    LIBS += -lmkl_lapack -lmkl_ia32 -lguide -lpthread
-    LIBS  +=  -L$${MKL_PATH}/lib/32
+
+    LIBS += $${MKL_PATH}/lib/32/libmkl_solver.a \
+            -Wl,--start-group \
+              $${MKL_PATH}/lib/32/libmkl_intel.a \
+              $${MKL_PATH}/lib/32/libmkl_sequential.a \
+              $${MKL_PATH}/lib/32/libmkl_core.a \
+            -Wl,--end-group \
+            -lpthread
+
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
