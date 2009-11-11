@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.271 $
+//   $Revision: 1.272 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/11/09 13:04:17 $
+//   $Author: shoops $
+//   $Date: 2009/11/11 14:58:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -500,7 +500,7 @@ void CopasiUI3Window::createMenuBar()
   help->insertItem("&License", this, SLOT(license()));
   help->insertItem("About &Qt", this, SLOT(aboutQt()));
   help->insertSeparator();
-  help->insertItem("What's &This", this, SLOT(whatsThis()), Qt::SHIFT + Qt::Key_F1);
+  // help->insertItem("What's &This", this, SLOT(whatsThis()), Qt::SHIFT + Qt::Key_F1);
 }
 
 //***** Slots ***************************
