@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/10/28 14:11:51 $
+//   $Author: shoops $
+//   $Date: 2009/11/11 17:39:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -710,6 +710,8 @@ void CBitPatternTreeMethod::buildFluxModes()
 
 void CBitPatternTreeMethod::convertToIntegers(CVectorCore< C_FLOAT64 > & values)
 {
+  static const C_FLOAT64 limit = 10.0 / std::numeric_limits< C_INT32 >::max();
+
   size_t Size = values.size();
 
   unsigned C_INT32 m00, m01, m10, m11;
@@ -767,7 +769,7 @@ void CBitPatternTreeMethod::convertToIntegers(CVectorCore< C_FLOAT64 > & values)
           m11 = m10;
           m10 = t;
 
-          if (fabs(x - (C_FLOAT64) ai) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+          if (fabs(x - (C_FLOAT64) ai) < limit)
             break;     // SH: We reached the numerical precision of the machine;
 
           x = 1 / (x - (C_FLOAT64) ai);
