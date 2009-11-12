@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/27 16:33:59 $
+//   $Author: shoops $
+//   $Date: 2009/11/12 16:23:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,10 +131,8 @@ void CQReportDefinition::btnAdvancedClicked()
       // copy.
       CReportDefinition * pStore = mpReportDefinition;
 
-      mpReportDefinition = new CReportDefinition();
-
       // We avoid the renaming signal.
-      mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
+      mpReportDefinition = new CReportDefinition(TO_UTF8(mpName->text()), mpDataModel);
 
       mChanged = true;
       save();
@@ -147,8 +145,7 @@ void CQReportDefinition::btnAdvancedClicked()
       delete mpReportDefinition;
 
       mpReportDefinition = pStore;
-      // Reset the name in the display.
-      mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
+
       mChanged = true;
     }
 }
