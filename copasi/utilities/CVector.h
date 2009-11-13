@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:56:57 $
+//   $Date: 2009/11/13 14:42:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,21 +168,21 @@ public:
    * Resize the vector. The previous content is lost
    * @param unsigned C_INT32 size
    */
-  void resize(unsigned C_INT32 size)
+  void resize(unsigned C_INT32 size, const bool & copy = false)
   {
     //TODO: maybe we should only resize if the vector gets bigger
     //or much smaller?
     if (size == CVectorCore< CType >::mSize) return;
 
-    if (CVectorCore< CType >::mVector)
-      {
-        delete [] CVectorCore< CType >::mVector;
-        CVectorCore< CType >::mVector = NULL;
-      }
+    unsigned C_INT32 OldSize = CVectorCore< CType >::mSize;
+    CType * OldVector = CVectorCore< CType >::mVector;
 
+    //TODO: maybe we should only resize if the vector gets bigger
+    //or much smaller?
     CVectorCore< CType >::mSize = size;
+    CVectorCore< CType >::mVector = NULL;
 
-    if (CVectorCore< CType >::mSize)
+    if (CVectorCore< CType >::mSize > 0)
       {
         try
           {
@@ -191,18 +191,29 @@ public:
 
         catch (...)
           {
-            CVectorCore< CType >::mVector = NULL;
-          }
-
-        if (CVectorCore< CType >::mVector == NULL)
-          {
             CVectorCore< CType >::mSize = 0;
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
+            CVectorCore< CType >::mVector = NULL;
           }
       }
 
-    //TODO: maybe we should only resize if the vector gets bigger
-    //or much smaller?
+    if (copy &&
+        CVectorCore< CType >::mVector != NULL &&
+        OldVector != NULL)
+      {
+        memcpy(CVectorCore< CType >::mVector, OldVector, std::min(CVectorCore< CType >::mSize, OldSize) * sizeof(CType));
+      }
+
+    if (OldVector != NULL)
+      {
+        delete [] OldVector;
+      }
+
+    // Check if allocation failed
+    if (CVectorCore< CType >::mVector == NULL &&
+        size > 0)
+      {
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
+      }
   }
 
   /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/05 15:03:00 $
+//   $Author: shoops $
+//   $Date: 2009/11/13 14:42:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,8 +23,6 @@
 #include <qwt_legend.h>
 #include <qwt_legend_item.h>
 #include <qwt_scale_engine.h>
-//Added by qt3to4:
-#include <Q3MemArray>
 
 #include <float.h>
 #include <limits>
@@ -71,7 +69,7 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
   minX = maxX = *xIt++;
   minY = maxY = *yIt++;
 
-  // We have to rememember whether we have an initial NaN
+  // We have to remember whether we have an initial NaN
   bool isNaNminX = isnan(minX);
   bool isNaNmaxX = isnan(maxX);
   bool isNaNminY = isnan(minY);
@@ -445,7 +443,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
               DataIndex.second = ActivityObjects[ItemActivity].size() - 1;
 
               // Allocate the data buffer
-              mData[ItemActivity].push_back(new Q3MemArray<double>(500));
+              mData[ItemActivity].push_back(new CVector<double>(500));
 
               // Store the pointer to the current object value. (Only if it has a double or integer value
               // and the value pointer actually exists. If not, use a dummy value.)
@@ -497,7 +495,7 @@ void CopasiPlot::output(const Activity & activity)
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
     if (ItemActivity & activity && mData[ItemActivity].size())
       {
-        std::vector< Q3MemArray< double > * > & data = mData[ItemActivity];
+        std::vector< CVector< double > * > & data = mData[ItemActivity];
         unsigned C_INT32 & ndata = mDataSize[ItemActivity];
 
         if ((imax = data.size()) != 0)
@@ -507,7 +505,7 @@ void CopasiPlot::output(const Activity & activity)
                 unsigned C_INT32 newSize = data[0]->size() + 1000;
 
                 for (i = 0; i < imax; i++)
-                  data[i]->resize(newSize); // :TODO: check for allocation problems
+                  data[i]->resize(newSize, true); // :TODO: check for allocation problems
 
                 //tell the curves that the location of the data has changed
                 //otherwise repaint events could crash
@@ -517,9 +515,9 @@ void CopasiPlot::output(const Activity & activity)
             //the data that needs to be stored internally:
             for (i = 0; i < imax; ++i)
               if (mObjectInteger[ItemActivity][i])
-                data[i]->at(ndata) = *(C_INT32 *)mObjectValues[ItemActivity][i];
+                (*data[i])[ndata] = *(C_INT32 *)mObjectValues[ItemActivity][i];
               else
-                data[i]->at(ndata) = *mObjectValues[ItemActivity][i];
+                (*data[i])[ndata] = *mObjectValues[ItemActivity][i];
 
             ++ndata;
           }
@@ -555,7 +553,7 @@ void CopasiPlot::separate(const Activity & activity)
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
     if (ItemActivity & activity && mData[ItemActivity].size())
       {
-        std::vector< Q3MemArray< double > * > & data = mData[ItemActivity];
+        std::vector< CVector< double > * > & data = mData[ItemActivity];
         unsigned C_INT32 & ndata = mDataSize[ItemActivity];
 
         if ((imax = data.size()) != 0)
@@ -574,7 +572,7 @@ void CopasiPlot::separate(const Activity & activity)
 
             //the data that needs to be stored internally:
             for (i = 0; i < imax; ++i)
-              data[i]->at(ndata) = MissingValue;
+              (*data[i])[ndata] = MissingValue;
 
             ++ndata;
           }
@@ -621,14 +619,14 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
   for (k = 0; k < kmax; k++)
     if ((unsigned C_INT32) mCurveActivities[k] == activity)
       {
-        std::vector< Q3MemArray< double > * > & data = mData[activity];
+        std::vector< CVector< double > * > & data = mData[activity];
         unsigned C_INT32 & ndata = mDataSize[activity];
 
         switch (mCurveTypes[k])
           {
             case CPlotItem::curve2d:
-              mCurves[k]->setData(MyQwtCPointerData(data[mDataIndex[k][0].second]->data(),
-                                                    data[mDataIndex[k][1].second]->data(),
+              mCurves[k]->setData(MyQwtCPointerData(data[mDataIndex[k][0].second]->array(),
+                                                    data[mDataIndex[k][1].second]->array(),
                                                     ndata));
               break;
 
@@ -713,11 +711,11 @@ bool CopasiPlot::saveData(const std::string & filename)
   fs << "\n";
 
   unsigned C_INT32 i, imax = mObjects.size();
-  std::vector< Q3MemArray< double > * > Data;
+  std::vector< CVector< double > * > Data;
   Data.resize(imax);
 
-  std::vector< Q3MemArray< double > * >::const_iterator itData;
-  std::vector< Q3MemArray< double > * >::const_iterator endData = Data.end();
+  std::vector< CVector< double > * >::const_iterator itData;
+  std::vector< CVector< double > * >::const_iterator endData = Data.end();
 
   std::vector< unsigned C_INT32 > Offset;
   std::vector< unsigned C_INT32 >::const_iterator itOffset;
@@ -767,7 +765,7 @@ bool CopasiPlot::saveData(const std::string & filename)
         {
           for (itData = Data.begin(); itData != endData; ++itData)
             {
-              if (*itData) fs << (*itData)->at(i);
+              if (*itData) fs << (**itData)[i];
               else fs << MissingValue;
 
               fs << "\t";
@@ -821,7 +819,7 @@ bool CopasiPlot::saveData(const std::string & filename)
         {
           for (itData = Data.begin(), itOffset = Offset.begin(); itData != endData; ++itData)
             {
-              if (*itData) fs << (*itData)->at(i + *itOffset);
+              if (*itData) fs << (**itData)[i + *itOffset];
               else fs << MissingValue;
 
               fs << "\t";
@@ -875,7 +873,7 @@ bool CopasiPlot::saveData(const std::string & filename)
         {
           for (itData = Data.begin(), itOffset = Offset.begin(); itData != endData; ++itData)
             {
-              if (*itData) fs << (*itData)->at(i + *itOffset);
+              if (*itData) fs << (**itData)[i + *itOffset];
               else fs << MissingValue;
 
               fs << "\t";
@@ -959,7 +957,7 @@ void CopasiPlot::clearBuffers()
 
   for (Activity = 0; Activity < ActivitySize; Activity++)
     {
-      std::vector< Q3MemArray< double > * > & data = mData[Activity];
+      std::vector< CVector< double > * > & data = mData[Activity];
 
       // Delete each QMemArray
       for (i = 0, imax = data.size(); i < imax; i++)
