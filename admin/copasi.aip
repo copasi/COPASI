@@ -43,24 +43,26 @@
     <ROW Component="LICENSE.txt" ComponentId="{87B4EA4F-8063-4F76-BDF7-99350150AEE3}" Directory_="APPDIR" Attributes="0" KeyPath="LICENSE.txt" Type="0"/>
     <ROW Component="MIRIAMResources.xml" ComponentId="{799962BC-34C7-4444-888B-1213EF6AC444}" Directory_="config_DIR" Attributes="0" KeyPath="MIRIAMResources.xml" Type="0"/>
     <ROW Component="PerceivedType_1" ComponentId="{DF030F8B-A766-45B8-A8AE-D3AB00BEC798}" Directory_="APPDIR" Attributes="4" KeyPath="PerceivedType_1"/>
-    <ROW Component="Qt3Support4.dll" ComponentId="{E4413218-2E7E-42E9-971F-E249B058961C}" Directory_="bin_DIR" Attributes="0" KeyPath="Qt3Support4.dll"/>
-    <ROW Component="QtCore4.dll" ComponentId="{0E1E1A2F-EA11-430E-A0D0-EA38E44560DE}" Directory_="bin_DIR" Attributes="0" KeyPath="QtCore4.dll"/>
-    <ROW Component="QtGui4.dll" ComponentId="{60848252-E772-4F38-9176-72709664CF3E}" Directory_="bin_DIR" Attributes="0" KeyPath="QtGui4.dll"/>
-    <ROW Component="QtNetwork4.dll" ComponentId="{19F47CF3-E8D1-4803-958F-A0204E7352C6}" Directory_="bin_DIR" Attributes="0" KeyPath="QtNetwork4.dll"/>
-    <ROW Component="QtOpenGL4.dll" ComponentId="{7B774EE9-D824-414C-A012-3DD2FF6D7111}" Directory_="bin_DIR" Attributes="0" KeyPath="QtOpenGL4.dll"/>
-    <ROW Component="QtSql4.dll" ComponentId="{67752834-7C42-48F3-8094-AB3E67D8144F}" Directory_="bin_DIR" Attributes="0" KeyPath="QtSql4.dll"/>
-    <ROW Component="QtSvg4.dll" ComponentId="{860971A7-7219-4E7A-8E62-ACD1D40B2CDE}" Directory_="bin_DIR" Attributes="0" KeyPath="QtSvg4.dll"/>
-    <ROW Component="QtXml4.dll" ComponentId="{5BA22CAC-E0DC-41AE-86A7-07DC7CA21C60}" Directory_="bin_DIR" Attributes="0" KeyPath="QtXml4.dll"/>
+    <ROW Component="Qt3Support4.dll" ComponentId="{19EED726-B2A7-4E28-B7D4-2E5503005407}" Directory_="bin_DIR" Attributes="0" KeyPath="Qt3Support4.dll"/>
+    <ROW Component="QtCore4.dll" ComponentId="{A2BF5D4A-8CB1-4B54-93A3-F83F478AC5A8}" Directory_="bin_DIR" Attributes="0" KeyPath="QtCore4.dll"/>
+    <ROW Component="QtGui4.dll" ComponentId="{BC8447A2-D8A4-49D1-A75D-840BBCE89B15}" Directory_="bin_DIR" Attributes="0" KeyPath="QtGui4.dll"/>
+    <ROW Component="QtNetwork4.dll" ComponentId="{F2907373-8E51-492D-BF7C-3A22843337B4}" Directory_="bin_DIR" Attributes="0" KeyPath="QtNetwork4.dll"/>
+    <ROW Component="QtOpenGL4.dll" ComponentId="{8D5E3542-80CE-4739-812C-9E3DC0F26F7A}" Directory_="bin_DIR" Attributes="0" KeyPath="QtOpenGL4.dll"/>
+    <ROW Component="QtSql4.dll" ComponentId="{EFC47867-3711-40DB-9556-BB5688A4C67A}" Directory_="bin_DIR" Attributes="0" KeyPath="QtSql4.dll"/>
+    <ROW Component="QtSvg4.dll" ComponentId="{891F1535-7CA5-4C29-8FE7-7084619E7504}" Directory_="bin_DIR" Attributes="0" KeyPath="QtSvg4.dll"/>
+    <ROW Component="QtXml4.dll" ComponentId="{D3073686-7790-4E92-9FB1-7039709C423B}" Directory_="bin_DIR" Attributes="0" KeyPath="QtXml4.dll"/>
     <ROW Component="README.txt" ComponentId="{4F9D3A12-77E9-41D2-AC58-E4684E63A4EE}" Directory_="APPDIR" Attributes="0" KeyPath="README.txt" Type="0"/>
     <ROW Component="TutWiz_Step1.html" ComponentId="{D9A58644-F85B-4FC5-A53E-B849BF79FE00}" Directory_="html_DIR" Attributes="0" KeyPath="TutWiz_Step1.html" Type="0"/>
     <ROW Component="brusselator.cps" ComponentId="{D7ED136C-BB0F-4739-9B7B-89F12B8627EE}" Directory_="examples_DIR" Attributes="0" KeyPath="brusselator.cps" Type="0"/>
     <ROW Component="command" ComponentId="{5A07C51A-1D21-4DF6-A6DA-050E5C32BAB2}" Directory_="APPDIR" Attributes="4" KeyPath="__4"/>
     <ROW Component="cps" ComponentId="{E62377FB-AC3C-4FBC-ACD8-FA8B1813731D}" Directory_="APPDIR" Attributes="4" KeyPath="_"/>
+    <ROW Component="msvcp80.dll" ComponentId="{9D6DBE44-5457-4173-9816-84ED83C0AC49}" Directory_="bin_DIR" Attributes="0" KeyPath="msvcp80.dll"/>
+    <ROW Component="msvcr80.dll" ComponentId="{14F20661-B16F-4594-87A9-4B18F85AFFB0}" Directory_="bin_DIR" Attributes="0" KeyPath="msvcr80.dll"/>
     <ROW Component="open" ComponentId="{102D3063-DEA3-4E69-AF32-24D6ED680EF2}" Directory_="APPDIR" Attributes="4" KeyPath="__3"/>
     <ROW Component="shell" ComponentId="{204FCDFD-1F05-46E3-88C4-931D75005CDC}" Directory_="APPDIR" Attributes="4" KeyPath="__2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon MIRIAMResources.xml QtXml4.dll Qt3Support4.dll QtCore4.dll QtGui4.dll QtOpenGL4.dll QtSvg4.dll QtSql4.dll QtNetwork4.dll"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon MIRIAMResources.xml QtXml4.dll msvcp80.dll msvcr80.dll Qt3Support4.dll QtCore4.dll QtGui4.dll QtNetwork4.dll QtOpenGL4.dll QtSql4.dll QtSvg4.dll"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -85,13 +87,13 @@
     <ROW File="PlotCurveSelectionDialog.png" Component_="DefaultPlotAdded.jpg" FileName="PlotCu~1.png|PlotCurveSelectionDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\PlotCurveSelectionDialog.png" SelfReg="false" Sequence="26"/>
     <ROW File="PlotDefinition.png" Component_="DefaultPlotAdded.jpg" FileName="PlotDe~1.png|PlotDefinition.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\PlotDefinition.png" SelfReg="false" Sequence="27"/>
     <ROW File="PlotWindow.png" Component_="DefaultPlotAdded.jpg" FileName="PlotWi~1.png|PlotWindow.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\PlotWindow.png" SelfReg="false" Sequence="28"/>
-    <ROW File="Qt3Support4.dll" Component_="Qt3Support4.dll" FileName="Qt3Sup~1.dll|Qt3Support4.dll" Attributes="0" SourcePath="..\..\..\distribution\Qt3Support4.dll" SelfReg="false" Sequence="37"/>
-    <ROW File="QtCore4.dll" Component_="QtCore4.dll" FileName="QtCore4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtCore4.dll" SelfReg="false" Sequence="38"/>
-    <ROW File="QtGui4.dll" Component_="QtGui4.dll" FileName="QtGui4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtGui4.dll" SelfReg="false" Sequence="39"/>
-    <ROW File="QtNetwork4.dll" Component_="QtNetwork4.dll" FileName="QtNetw~1.dll|QtNetwork4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtNetwork4.dll" SelfReg="false" Sequence="43"/>
-    <ROW File="QtOpenGL4.dll" Component_="QtOpenGL4.dll" FileName="QtOpen~1.dll|QtOpenGL4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtOpenGL4.dll" SelfReg="false" Sequence="40"/>
-    <ROW File="QtSql4.dll" Component_="QtSql4.dll" FileName="QtSql4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtSql4.dll" SelfReg="false" Sequence="42"/>
-    <ROW File="QtSvg4.dll" Component_="QtSvg4.dll" FileName="QtSvg4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtSvg4.dll" SelfReg="false" Sequence="41"/>
+    <ROW File="Qt3Support4.dll" Component_="Qt3Support4.dll" FileName="Qt3Sup~1.dll|Qt3Support4.dll" Attributes="0" SourcePath="..\..\..\distribution\Qt3Support4.dll" SelfReg="false" Sequence="39"/>
+    <ROW File="QtCore4.dll" Component_="QtCore4.dll" FileName="QtCore4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtCore4.dll" SelfReg="false" Sequence="40"/>
+    <ROW File="QtGui4.dll" Component_="QtGui4.dll" FileName="QtGui4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtGui4.dll" SelfReg="false" Sequence="41"/>
+    <ROW File="QtNetwork4.dll" Component_="QtNetwork4.dll" FileName="QtNetw~1.dll|QtNetwork4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtNetwork4.dll" SelfReg="false" Sequence="42"/>
+    <ROW File="QtOpenGL4.dll" Component_="QtOpenGL4.dll" FileName="QtOpen~1.dll|QtOpenGL4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtOpenGL4.dll" SelfReg="false" Sequence="43"/>
+    <ROW File="QtSql4.dll" Component_="QtSql4.dll" FileName="QtSql4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtSql4.dll" SelfReg="false" Sequence="44"/>
+    <ROW File="QtSvg4.dll" Component_="QtSvg4.dll" FileName="QtSvg4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtSvg4.dll" SelfReg="false" Sequence="45"/>
     <ROW File="QtXml4.dll" Component_="QtXml4.dll" FileName="QtXml4.dll" Attributes="0" SourcePath="..\..\..\distribution\QtXml4.dll" SelfReg="false" Sequence="36"/>
     <ROW File="README.txt" Component_="README.txt" FileName="README.txt" Attributes="0" SourcePath="..\setup\copasi\README.txt" SelfReg="false" Sequence="15"/>
     <ROW File="ReactionDialog.png" Component_="DefaultPlotAdded.jpg" FileName="Reacti~1.png|ReactionDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ReactionDialog.png" SelfReg="false" Sequence="29"/>
@@ -107,6 +109,8 @@
     <ROW File="TutWiz_Step6.html" Component_="TutWiz_Step1.html" FileName="TutWiz~6.htm|TutWiz-Step6.html" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\TutWiz-Step6.html" SelfReg="false" Sequence="9"/>
     <ROW File="YeastGlycolysis.gps" Component_="brusselator.cps" FileName="YeastG~1.gps|YeastGlycolysis.gps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\YeastGlycolysis.gps" SelfReg="false" Sequence="14"/>
     <ROW File="brusselator.cps" Component_="brusselator.cps" FileName="brusse~1.cps|brusselator.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\brusselator.cps" SelfReg="false" Sequence="10"/>
+    <ROW File="msvcp80.dll" Component_="msvcp80.dll" FileName="msvcp80.dll" Attributes="0" SourcePath="..\..\..\distribution\msvcp80.dll" SelfReg="false" Sequence="37"/>
+    <ROW File="msvcr80.dll" Component_="msvcr80.dll" FileName="msvcr80.dll" Attributes="0" SourcePath="..\..\..\distribution\msvcr80.dll" SelfReg="false" Sequence="38"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageName="..\Copasi-26-WIN32" Languages="en" InstallationType="4"/>
