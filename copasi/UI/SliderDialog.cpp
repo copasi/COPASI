@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/28 07:57:55 $
+//   $Date: 2009/11/13 08:35:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,6 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
     mSliderValueChanged(false),
     mSliderPressed(false)
 {
-  setWindowFlags(windowFlags() | Qt::WStyle_StaysOnTop);
   QVBoxLayout* pMainLayout = new QVBoxLayout(this);
   this->setLayout(pMainLayout);
   pMainLayout->setContentsMargins(5, 5, 5, 5);
