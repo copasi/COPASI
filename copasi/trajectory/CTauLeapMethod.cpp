@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Date: 2009/11/18 17:07:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,18 +179,8 @@ CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
       time = endTime;
     }
 
+  *mpCurrentState = mpProblem->getModel()->getState();
   mpCurrentState->setTime(time);
-
-  // get back the particle numbers
-
-  /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
-
-  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
-  // of metabs determined by reaction. In addition they are expected at the beginning of the
-  // MetabolitesX which is not the case if we have metabolites of type ODE.
-  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getValue();
 
   return NORMAL;
 }
