@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:16 $
+//   $Date: 2009/11/18 16:21:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,11 @@
 #include <sstream>
 #endif // COPASI_SBW_INTEGRATION
 
+#ifdef Darwin
+# include <QDir>
+# include "UI/qtUtilities.h"
+#endif // Darwin
+
 int main(int argc, char **argv)
 {
   QApplication a(argc, argv);
@@ -57,6 +62,15 @@ int main(int argc, char **argv)
       return 1;
     }
 
+#ifdef Darwin
+  std::string PluginDir;
+
+  COptions::getValue("CopasiDir", PluginDir);
+  PluginDir += "/Contents/plugins";
+
+  QApplication::setLibraryPaths(QStringList(FROM_UTF8(PluginDir)));
+#endif // Darwin
+
   // Create the global data model.
   CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
   assert(pDataModel != NULL);
@@ -65,8 +79,10 @@ int main(int argc, char **argv)
   CopasiUI3Window *pWindow = CopasiUI3Window::create();
 
 #ifdef COPASI_SBW_INTEGRATION
+
   if (COptions::compareValue("SBWRegister", true))
     goto finish;
+
 #endif // COPASI_SBW_INTEGRATION
 
   if (pWindow != NULL)
@@ -77,12 +93,13 @@ int main(int argc, char **argv)
     }
 
 finish:
+
   try // To suppress any access violations during destruction works only under Windows
     {
       CCopasiRootContainer::destroy();
     }
   catch (...)
-  {}
+    {}
 
   return 0;
 }
