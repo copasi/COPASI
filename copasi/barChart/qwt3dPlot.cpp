@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/16 09:20:59 $
+//   $Author: shoops $
+//   $Date: 2009/11/19 16:50:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,10 @@
 #include "copasi/UI/CQMessageBox.h"
 
 Plot3d::Plot3d(QWidget* parent, const char* name)
-    : BaseWidget(parent, name)
+    : BaseWidget(parent, name),
+    mpColumnScale(NULL),
+    mpRowScale(NULL)
+
 {
   mpGrid = new Q3GridLayout(mpFrame, 0, 0);
   mpPlot = new Qwt3D::SurfacePlot(mpFrame);
