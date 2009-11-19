@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/09 21:15:15 $
+//   $Date: 2009/11/19 19:01:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 
 #include "CTrajectoryMethod.h"
 #include "CLsodaMethod.h"
+#include "CStochDirectMethod.h"
 #include "CStochMethod.h"
 #include "CHybridMethod.h"
 #include "CHybridMethodLSODA.h"
@@ -48,6 +49,10 @@ CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
       case unset:
       case deterministic:
         pMethod = new CLsodaMethod();
+        break;
+
+      case directMethod:
+        pMethod = CStochDirectMethod::createStochDirectMethod(pProblem);
         break;
 
       case stochastic:

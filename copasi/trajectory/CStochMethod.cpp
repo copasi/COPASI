@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Date: 2009/11/19 19:01:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
     }
   else if (result == 1)
     {
-      method = new CStochDirectMethod();
+//      method = new CStochDirectMethod();
     }
   else if (result == 2)
     {

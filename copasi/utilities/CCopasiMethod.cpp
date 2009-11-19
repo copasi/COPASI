@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:55:55 $
+//   $Date: 2009/11/19 19:01:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ const std::string CCopasiMethod::SubTypeName[] =
   "Enhanced Newton",
   "Deterministic (LSODA)",
   "Deterministic (LSODAR)",
+  "Stochastic (Direct method)",
   "Stochastic (Gibson + Bruck)",
   "Hybrid (Runge-Kutta)",
   "Hybrid (LSODA)",
@@ -98,6 +99,7 @@ const char* CCopasiMethod::XMLSubType[] =
   "Deterministic(LSODA)",
   "Deterministic(LSODAR)",
   "Stochastic",
+  "DirectMethod",
   "Hybrid",
   "Hybrid (LSODA)",
   "TimeScaleSeparation(ILDM,Deuflhard)",

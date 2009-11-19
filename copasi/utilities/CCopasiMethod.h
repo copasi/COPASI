@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:55:55 $
+//   $Date: 2009/11/19 19:01:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,6 +62,7 @@ public:
     Newton,
     deterministic,
     LSODAR,
+    directMethod,
     stochastic,
     hybrid,
     hybridLSODA,
