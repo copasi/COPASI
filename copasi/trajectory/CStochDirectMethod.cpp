@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/19 19:01:52 $
+//   $Date: 2009/11/20 18:26:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,15 +47,13 @@
 #define mtxIdx(row,col,intv)  ((row)+(col)*(intv))
 
 CStochDirectMethod *
-CStochDirectMethod::createStochDirectMethod(CTrajectoryProblem * pProblem)
+CStochDirectMethod::createStochDirectMethod()
 {
-  C_INT32 result = 2; // next reaction method as default
+  CStochDirectMethod * pMethod = NULL;
 
-  CStochDirectMethod * method = NULL;
+  pMethod = new CStochDirectMethod();
 
-  method = new CStochDirectMethod();
-
-  return method;
+  return pMethod;
 }
 
 CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
@@ -167,29 +165,22 @@ CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
       }
 
   // do several steps:
-  C_FLOAT64 time = mpCurrentState->getTime();
-  C_FLOAT64 endtime = time + deltaT;
+  C_FLOAT64 Time = mpCurrentState->getTime();
+  C_FLOAT64 EndTime = Time + deltaT;
 
-  for (i = 0; ((i < (unsigned C_INT32) mMaxSteps) && (simTime < endtime)); i++)
+  for (i = 0; ((i < (unsigned C_INT32) mMaxSteps) && (Time < EndTime)); i++)
     {
-      simTime += doSingleStep(simTime, endtime);
+      Time += doSingleStep(Time, EndTime);
     }
 
-  mpCurrentState->setTime(endtime);
+  *mpCurrentState = mpProblem->getModel()->getState();
+  mpCurrentState->setTime(EndTime);
 
   if ((i >= (unsigned C_INT32) mMaxSteps) && (!mMaxStepsReached))
     {
       mMaxStepsReached = true; //only report this message once
       CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
     }
-
-  // get back the particle numbers:
-
-  /* Set the variable Metabolites */
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
-
-  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
   return NORMAL;
 }
@@ -210,8 +201,6 @@ void CStochDirectMethod::start(const CState * initialState)
 
   mpModel = mpProblem->getModel();
   assert(mpModel);
-
-  mHasAssignments = modelHasAssignments(mpModel);
 
   unsigned C_INT32 i, j, k, l;
 
@@ -420,19 +409,11 @@ void CStochDirectMethod::start(const CState * initialState)
       mA0 += mAmu[i];
     }
 
-  printf("CStochDirectMethod::start --- Have initialized\n");
-
-  if (!isPrinted)
-    {
-      printKinetics();
-      isPrinted = true;
-    }
-
-  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
-
   mpModel->updateSimulatedValues(false); //for assignments
   mMaxStepsReached = false;
-  simTime = mpCurrentState->getTime();
+
+  mNextReactionTime = mpCurrentState->getTime();
+  mNextReactionIndex = C_INVALID_INDEX;
 
   return;
 }
@@ -515,96 +496,60 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
   return true;
 }
 
-//static
-bool CStochDirectMethod::modelHasAssignments(const CModel* pModel)
+C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 endTime)
 {
-  C_INT32 i, imax = pModel->getNumModelValues();
 
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getModelValues()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  imax = pModel->getNumMetabs();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getMetabolites()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  imax = pModel->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getCompartments()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  return false;
-}
-
-C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 end_time)
-{
   unsigned C_INT32 i, j, l;
-  int rxn;
-  C_FLOAT64 step_time, rand, sum;
 
-  if (mA0 == 0)
+  if (mNextReactionIndex == C_INVALID_INDEX)
     {
-      step_time = std::numeric_limits<C_FLOAT64>::infinity();
+      if (mA0 == 0)
+        {
+          return endTime - curTime;
+        }
+
+      mNextReactionTime = curTime - 1.0 * log(mpRandomGenerator->getRandomOO()) / mA0;
+
+      // We are sure that we have at least 1 reaction
+      mNextReactionIndex = 0;
+      C_FLOAT64 sum = 0.0;
+      C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
+
+      for (; (sum < rand) && (mNextReactionIndex < mNumReactions); ++mNextReactionIndex)
+        {
+          sum += mAmu[mNextReactionIndex];
+        }
+
+      mNextReactionIndex--;
     }
-  else
+
+  if (mNextReactionTime >= endTime)
     {
-      rand = mpRandomGenerator->getRandomOO();
-      step_time = -1 * log(rand) / mA0;
+      return endTime - curTime;
     }
 
-  rand = mpRandomGenerator->getRandomOO() * mA0;
-  sum = 0;
-  rxn = -1;
-
-  while ((sum < rand) && (rxn < (int)mNumReactions))
-    {
-      ++rxn;
-      sum += mAmu[rxn];
-    }
-
-  l = chgLen[rxn];
+  l = chgLen[mNextReactionIndex];
 
   for (i = 0; i < l; i++)
     {
-      j = chgTable[mtxIdx(i, rxn, mNumSpecies)];
-      species[j] += chgVec[mtxIdx(j, rxn, mNumSpecies)];
+      j = chgTable[mtxIdx(i, mNextReactionIndex, mNumSpecies)];
+      species[j] += chgVec[mtxIdx(j, mNextReactionIndex, mNumSpecies)];
       mpModel->getMetabolitesX()[j]->setValue(species[j]);
     }
 
-  std::vector< Refresh * >::const_iterator itCalcualtion =  calculations[rxn].begin();
-  std::vector< Refresh * >::const_iterator endCalcualtion =  calculations[rxn].end();
+  std::vector< Refresh * >::const_iterator itCalcualtion =  calculations[mNextReactionIndex].begin();
+  std::vector< Refresh * >::const_iterator endCalcualtion =  calculations[mNextReactionIndex].end();
 
   while (itCalcualtion != endCalcualtion)
     {
       (**itCalcualtion++)();
     }
 
-  l = dpgLen[rxn];
+  l = dpgLen[mNextReactionIndex];
 
   for (i = 0; i < l; i++)
     {
-      calculateAmu(dpgTable[mtxIdx(rxn, i, mNumReactions)]);
+      calculateAmu(dpgTable[mtxIdx(mNextReactionIndex, i, mNumReactions)]);
     }
 
   mA0 = 0.0;
@@ -612,7 +557,9 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 end_time
   for (i = 0; i < mNumReactions; i++)
     mA0 += mAmu[i];
 
-  return step_time;
+  mNextReactionIndex = C_INVALID_INDEX;
+
+  return mNextReactionTime - curTime;
 }
 
 C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
@@ -666,56 +613,4 @@ C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
     }
 
   return 0;
-}
-
-void CStochDirectMethod::printKinetics(void)
-{
-  C_INT32 i, j, k, l;
-  printf("Species Populations: ");
-
-  for (i = 0; i < (C_INT32)mNumSpecies; i++)
-    printf("%0.0f ", species[i]);
-
-  printf("\n");
-
-  for (i = 0; i < (C_INT32)mNumReactions; i++)
-    {
-      printf("Reaction-%ld --- State: ", i);
-      l = steLen[i];
-
-      for (j = 0; j < l; j++)
-        {
-          k = steTable[mtxIdx(j, i, mNumSpecies)];
-          printf("%.0fS%ld ", steVec[mtxIdx(k, i, mNumSpecies)], k);
-
-          if (j < (l - 1))
-            printf("+ ");
-        }
-
-      printf(" | Change: [");
-      l = chgLen[i];
-
-      for (j = 0; j < l; j++)
-        {
-          k = chgTable[mtxIdx(j, i, mNumSpecies)];
-          printf("(S%ld: %.0f) ", k, chgVec[mtxIdx(k, i, mNumSpecies)]);
-        }
-
-      printf(" ]\n");
-    }
-
-  printf("Species Table maps species to reaction:\n");
-
-  for (i = 0; i < (C_INT32)mNumReactions; i++)
-    {
-      printf("Fired Reaction-R%ld related to:  ", i);
-      l = dpgLen[i];
-
-      for (j = 0; j < l; j++)
-        printf("R%ld ", dpgTable[mtxIdx(i, j, mNumReactions)]);
-
-      printf("\n");
-    }
-
-  printf("\n");
 }

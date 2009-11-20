@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/19 19:01:52 $
+//   $Date: 2009/11/20 18:26:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,6 @@ protected:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CStochDirectMethod(const CCopasiContainer * pParent = NULL);
-  void printKinetics();
   C_INT32 calculateAmu(C_INT32 index);
   C_FLOAT64 doSingleStep(C_FLOAT64 curTime, C_FLOAT64 end_time);
 
@@ -69,8 +68,7 @@ public:
   /**
    *  Chooses a stochastic method adequate for the problem
    */
-  static CStochDirectMethod *
-  createStochDirectMethod(CTrajectoryProblem * pProblem = NULL);
+  static CStochDirectMethod * createStochDirectMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -98,7 +96,7 @@ public:
 
 private:
   /**
-   * Intialize the method parameter
+   * Initialize the method parameter
    */
   void initializeParameter();
   void initVariable(int mNumSpecies, int mNumReactionss);
@@ -138,18 +136,6 @@ protected:
   unsigned C_INT32 mNumReactions, mNumSpecies;
 
   /**
-   * index of first metab in a CState
-   */
-  unsigned C_INT32 mFirstMetabIndex;
-
-  /**
-   * tests if the model contains a global value with an assignment rule that is
-   * used in calculations
-   */
-  static bool modelHasAssignments(const CModel* pModel);
-  bool mHasAssignments;
-
-  /**
   * max number of single stochastic steps to do in one step()
   */
   C_INT32 mMaxSteps;
@@ -164,7 +150,9 @@ protected:
   C_FLOAT64 *chgVec;  //state change vector
   std::vector< Refresh * > *calculations;
 
-  C_FLOAT64 simTime;
+  C_FLOAT64 mNextReactionTime;
+  unsigned C_INT32 mNextReactionIndex;
+
   C_FLOAT64 *mAmu, **rcRt;
   C_FLOAT64 mA0;
   bool mMaxStepsReached;
