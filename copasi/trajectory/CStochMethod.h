@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:28:13 $
+//   $Date: 2009/11/20 18:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,8 +202,7 @@ public:
   /**
    *  Chooses a stochastic method adequate for the problem
    */
-  static CStochMethod *
-  createStochMethod(CTrajectoryProblem * pProblem = NULL);
+  static CStochMethod * createStochMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

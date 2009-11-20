@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Date: 2009/11/20 18:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,7 +178,7 @@ bool CHybridMethodLSODA::elevateChildren()
 /**
  *   Creates a HybridMethodLSODA adequate for the problem.
  */
-CHybridMethodLSODA *CHybridMethodLSODA::createHybridMethodLSODA(CTrajectoryProblem * C_UNUSED(pProblem))
+CHybridMethodLSODA *CHybridMethodLSODA::createHybridMethodLSODA()
 {
   C_INT32 result = 1;
   CHybridMethodLSODA * method = NULL;

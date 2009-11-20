@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/18 17:07:05 $
+//   $Date: 2009/11/20 18:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,7 @@
  *   Creates a TauLeapMethod adequate for the problem.
  *   (only regular TauLeapMethod so far)
  */
-CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSED(pProblem))
+CTauLeapMethod *CTauLeapMethod::createTauLeapMethod()
 {
   C_INT32 result = 1; // regular TauLeap method as default
   /*  if (pProblem && pProblem->getModel())

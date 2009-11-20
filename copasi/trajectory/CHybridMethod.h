@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:28:13 $
+//   $Date: 2009/11/20 18:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,8 +146,7 @@ public:
    *  Creates a HybridMethod adequate for the problem.
    *  (only CHybridNextReactionRKMethod so far)
    */
-  static CHybridMethod *
-  createHybridMethod(CTrajectoryProblem * pProblem = NULL);
+  static CHybridMethod * createHybridMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

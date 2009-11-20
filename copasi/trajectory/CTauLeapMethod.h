@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.12 $
+ $Revision: 1.13 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/05/21 15:28:13 $
+ $Date: 2009/11/20 18:24:25 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,7 @@ public:
    *   (only regular CTauLeapMethod so far)
    */
   static CTauLeapMethod *
-  createTauLeapMethod(CTrajectoryProblem * pProblem = NULL);
+  createTauLeapMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

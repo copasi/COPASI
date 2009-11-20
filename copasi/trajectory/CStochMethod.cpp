@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/19 19:01:52 $
+//   $Date: 2009/11/20 18:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,14 +50,9 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 }
 
 CStochMethod *
-CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
+CStochMethod::createStochMethod()
 {
   C_INT32 result = 2; // next reaction method as default
-
-  if (pProblem && pProblem->getModel())
-    {
-      result = checkModel(pProblem->getModel());
-    }
 
   CStochMethod * method = NULL;
 

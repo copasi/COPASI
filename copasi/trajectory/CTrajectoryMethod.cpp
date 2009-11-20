@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/19 19:01:52 $
+//   $Date: 2009/11/20 18:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,23 +52,23 @@ CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
         break;
 
       case directMethod:
-        pMethod = CStochDirectMethod::createStochDirectMethod(pProblem);
+        pMethod = CStochDirectMethod::createStochDirectMethod();
         break;
 
       case stochastic:
-        pMethod = CStochMethod::createStochMethod(pProblem);
+        pMethod = CStochMethod::createStochMethod();
         break;
 
       case hybrid:
-        pMethod = CHybridMethod::createHybridMethod(pProblem);
+        pMethod = CHybridMethod::createHybridMethod();
         break;
 
       case hybridLSODA:
-        pMethod = CHybridMethodLSODA::createHybridMethodLSODA(pProblem);
+        pMethod = CHybridMethodLSODA::createHybridMethodLSODA();
         break;
 
       case tauLeap:
-        pMethod = CTauLeapMethod::createTauLeapMethod(pProblem);
+        pMethod = CTauLeapMethod::createTauLeapMethod();
         break;
 
       default:

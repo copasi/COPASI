@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionLSODAMethod.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:13 $
+   $Author: shoops $
+   $Date: 2009/11/20 18:24:25 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,23 +35,23 @@
 #include "trajectory/CHybridMethodLSODA.h"
 
 class CHybridNextReactionLSODAMethod : public CHybridMethodLSODA
-  {
-    friend CHybridMethodLSODA *
-    CHybridMethodLSODA::createHybridMethodLSODA(CTrajectoryProblem *pProblem);
+{
+  friend CHybridMethodLSODA *
+  CHybridMethodLSODA::createHybridMethodLSODA();
 
-  private:
-    // Lifecycle methods
-    /**
-     *   Default constructor
-     */
-    CHybridNextReactionLSODAMethod(const CCopasiContainer * pParent = NULL);
+private:
+  // Lifecycle methods
+  /**
+   *   Default constructor
+   */
+  CHybridNextReactionLSODAMethod(const CCopasiContainer * pParent = NULL);
 
-  public:
-    /**
-     *   Do one iteration of the simulation
-     *   @return Current simulation time or -1 in case of an error
-     */
-    C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endTime);
-  };
+public:
+  /**
+   *   Do one iteration of the simulation
+   *   @return Current simulation time or -1 in case of an error
+   */
+  C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endTime);
+};
 
 #endif // COPASI_CHybridNextReactionLSODAMethod

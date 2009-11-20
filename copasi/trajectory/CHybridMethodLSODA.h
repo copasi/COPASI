@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:28:13 $
+//   $Date: 2009/11/20 18:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,7 +158,7 @@ public:
    *  (only CHybridNextReactionLSODAMethod so far)
    */
   static CHybridMethodLSODA *
-  createHybridMethodLSODA(CTrajectoryProblem * pProblem = NULL);
+  createHybridMethodLSODA();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

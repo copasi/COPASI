@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Date: 2009/11/20 18:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,7 +156,7 @@ bool CHybridMethod::elevateChildren()
  *   Creates a HybridMethod adequate for the problem.
  *   (only CHybridNextReactionRKMethod so far)
  */
-CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(pProblem))
+CHybridMethod *CHybridMethod::createHybridMethod()
 {
   C_INT32 result = 1; // hybrid NextReactionRungeKutta method as default
   /*  if (pProblem && pProblem->getModel())
