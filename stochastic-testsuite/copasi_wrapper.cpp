@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/23 19:53:49 $
+//   $Author: gauges $
+//   $Date: 2009/11/20 12:45:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,12 +66,18 @@ int main(int argc, char *argv[])
       exit(1);
     }
 
-  char* pSBMLFilename = argv[1];
-  char* pEndTime = argv[2];
-  char* pStepNumber = argv[3];
-  char* pRepeats = argv[4];
-  char* pOutputFilename = argv[5];
+  const char* pSBMLFilename = argv[1];
+
+  const char* pEndTime = argv[2];
+
+  const char* pStepNumber = argv[3];
+
+  const char* pRepeats = argv[4];
+
+  const char* pOutputFilename = argv[5];
+
   unsigned int NUMARGS = 6;
+
   /*
   std::cout << "Input : " << pSBMLFilename << std::endl;
   std::cout << "Endtime : " << pEndTime << std::endl;
@@ -80,14 +86,22 @@ int main(int argc, char *argv[])
   std::cout << "Output file: " << pOutputFilename << std::endl;
   */
   char** pSBMLSpeciesIds = new char * [argc - NUMARGS];
+
   unsigned int i, iMax = argc;
+
   CTrajectoryTask* pTrajectoryTask = NULL;
+
   CScanTask* pScanTask = NULL;
 
   std::string CWD = COptions::getPWD();
+
   double endTime = strToDouble(pEndTime, &pEndTime);
+
   double stepNumber = strToDouble(pStepNumber, &pStepNumber);
-  long int repeats = strtol(pRepeats, &pRepeats , 10);
+
+  char** pTmpP = (char**)(&pRepeats);
+
+  long int repeats = strtol(pRepeats, pTmpP , 10);
 
   if (endTime == 0.0)
     {
@@ -153,6 +167,7 @@ int main(int argc, char *argv[])
       // create a trajectory task
       pTrajectoryTask = new CTrajectoryTask();
       pTrajectoryTask->setMethodType(CCopasiMethod::stochastic);
+      //pTrajectoryTask->setMethodType(CCopasiMethod::directMethod);
       pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
 
       pTrajectoryTask->setScheduled(false);
