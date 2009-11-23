@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/20 18:26:47 $
+//   $Date: 2009/11/23 17:13:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,28 @@ CStochDirectMethod::createStochDirectMethod()
 }
 
 CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::directMethod, pParent)
+    CTrajectoryMethod(CCopasiMethod::directMethod, pParent),
+    mpRandomGenerator(NULL),
+    mpModel(NULL),
+    mNumReactions(0),
+    mNumSpecies(0),
+    mMaxSteps(1000000),
+    dpgLen(NULL),
+    dpgTable(NULL),
+    steLen(NULL),
+    steTable(NULL),
+    chgLen(NULL),
+    chgTable(NULL),
+    species(NULL),
+    steVec(NULL),
+    chgVec(NULL),
+    calculations(NULL),
+    mNextReactionTime(0.0),
+    mNextReactionIndex(C_INVALID_INDEX),
+    mAmu(NULL),
+    rcRt(NULL),
+    mA0(0.0),
+    mMaxStepsReached(false)
 {
   initializeParameter();
   isPrinted = false;
@@ -72,7 +93,28 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
 
 CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
                                        const CCopasiContainer * pParent):
-    CTrajectoryMethod(src, pParent)
+    CTrajectoryMethod(src, pParent),
+    mpRandomGenerator(NULL),
+    mpModel(src.mpModel),
+    mNumReactions(src.mNumReactions),
+    mNumSpecies(src.mNumSpecies),
+    mMaxSteps(src.mMaxSteps),
+    dpgLen(NULL),
+    dpgTable(NULL),
+    steLen(NULL),
+    steTable(NULL),
+    chgLen(NULL),
+    chgTable(NULL),
+    species(NULL),
+    steVec(NULL),
+    chgVec(NULL),
+    calculations(NULL),
+    mNextReactionTime(src.mNextReactionTime),
+    mNextReactionIndex(src.mNextReactionIndex),
+    mAmu(NULL),
+    rcRt(NULL),
+    mA0(src.mA0),
+    mMaxStepsReached(src.mMaxStepsReached)
 {
   initializeParameter();
   isPrinted = false;

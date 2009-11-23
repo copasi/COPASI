@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/20 18:26:47 $
+//   $Date: 2009/11/23 17:13:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,30 +114,13 @@ protected:
   CModel *mpModel;
 
   /**
-   * The graph of reactions and their dependent reactions. When a reaction is
-   * executed, the propensities for each of its dependents must be updated.
-   */
-  //CDependencyGraph mDG;
-
-  /**
-   * The balances of the reactions as integers
-   */
-  //std::vector < std::vector <CStochBalance> > mLocalBalances;
-
-  /**
-   * the substrates of each reaction with their multiplicities
-   */
-  //std::vector < std::vector <CStochBalance> > mLocalSubstrates;
-
-  /**
    * The particle and reaction numbers
    */
-
   unsigned C_INT32 mNumReactions, mNumSpecies;
 
   /**
-  * max number of single stochastic steps to do in one step()
-  */
+   * max number of single stochastic steps to do in one step()
+   */
   C_INT32 mMaxSteps;
 
   bool isPrinted;
