@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.280 $
+//   $Revision: 1.281 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/11/03 12:40:09 $
+//   $Author: ssahle $
+//   $Date: 2009/11/23 13:33:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,10 +35,8 @@
 
 #include "CQCompartmentsWidget.h"
 #include "CQCompartment.h"
-#ifdef COPASI_DEBUG
 #include "CQEventsWidget.h"
 #include "CQEventWidget1.h"
-#endif // COAPSI_DEBUG
 #include "CQFunctionsWidget.h"
 #include "FunctionWidget1.h"
 #ifdef HAVE_MML
@@ -220,10 +218,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
     compartmentsWidget1(NULL),
     defaultWidget(NULL),
     differentialEquations(NULL),
-#ifdef COPASI_DEBUG
     eventsWidget(NULL),
     eventWidget1(NULL),
-#endif // COPASI_DEBUG
     mpFunctionsWidget(NULL),
     functionWidget1(NULL),
     lyapWidget(NULL),
@@ -364,8 +360,6 @@ void ListViews::ConstructNodeWidgets()
   differentialEquations->hide();
 #endif // HAVE_MML
 
-#ifdef COPASI_DEBUG
-
   if (!eventsWidget) eventsWidget = new CQEventsWidget(this);
 
   eventsWidget->hide();
@@ -373,7 +367,6 @@ void ListViews::ConstructNodeWidgets()
   if (!eventWidget1) eventWidget1 = new CQEventWidget1(this);
 
   eventWidget1->hide();
-#endif // COPASI_DEBUG
 
   if (!mpFunctionsWidget) mpFunctionsWidget = new CQFunctionsWidget(this);
 
@@ -578,11 +571,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 115:
         return mpModelValueWidget;
         break;
-#ifdef COPASI_DEBUG
       case 116:
         return eventWidget1;
         break;
-#endif // COPASI_DEBUG
       case 43:
         return tableDefinition1;
         break;
@@ -622,11 +613,9 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 115:
         return mpGlobalQuantitiesWidget;
         break;
-#ifdef COPASI_DEBUG
       case 116:
         return eventsWidget;
         break;
-#endif // COPASI_DEBUG
       case 117:
         return parametersWidget;
         break;
@@ -1146,10 +1135,8 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   dataModel->updateModelValues();
   updateAllListviews(115);
 
-#ifdef COPASI_DEBUG
   dataModel->updateEvents();
   updateAllListviews(116);
-#endif // COPASI_DEBUG
 
   dataModel->updateFunctions();
   updateAllListviews(5);
