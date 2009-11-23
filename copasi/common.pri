@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.111 $ 
+#   $Revision: 1.112 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/11/10 17:01:25 $ 
+#   $Author: ssahle $ 
+#   $Date: 2009/11/23 10:53:32 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.111 $ $Author: shoops $ $Date: 2009/11/10 17:01:25 $  
+# $Revision: 1.112 $ $Author: ssahle $ $Date: 2009/11/23 10:53:32 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -65,9 +65,12 @@ QMAKE_CFLAGS   += $$(CFLAGS)
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_LFLAGS  += $$(LDFLAGS)
 
+DEFINES += WITH_CSPMETHOD
+
 debug {
   DEFINES += COPASI_DEBUG
   DEFINES += COPASI_EXTUNIT
+  #DEFINES += WITH_MERGEMODEL
 
   isEmpty(COPASI_SRC_PACKAGE) {
     # DEFINES += COPASI_TSS
