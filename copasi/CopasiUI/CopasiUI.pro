@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.150 $
+#   $Revision: 1.151 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/11/10 16:52:10 $
+#   $Date: 2009/11/23 15:45:40 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.150 $ $Author: shoops $ $Date: 2009/11/10 16:52:10 $
+# $Revision: 1.151 $ $Author: shoops $ $Date: 2009/11/23 15:45:40 $
 ######################################################################
 
 TEMPLATE = app
@@ -86,6 +86,8 @@ contains(BUILD_OS, Linux) {
                       -lfontconfig \
                       -lXext \
                       -lX11 \
+                      -lSM \
+                      -lICE \
                     -Wl,--end-group \
                     -lz \
                     -lm \
@@ -103,7 +105,7 @@ contains(BUILD_OS, Linux) {
     QMAKE_EXTRA_UNIX_TARGETS += dynamic
 
     contains(DYNAMIC, TRUE) {
-      distribution.extra = make $${dynamic.target};
+      distribution.extra = make $${dynamic.target} &&
     }
 
     distribution.extra += ../../admin/mkbuild.sh $${BUILD_OS}
