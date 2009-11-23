@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/23 17:13:59 $
+//   $Date: 2009/11/23 18:52:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,15 +123,13 @@ protected:
    */
   C_INT32 mMaxSteps;
 
-  bool isPrinted;
-
   C_INT32 *dpgLen, *dpgTable; //Table mapping species to reactions
   C_INT32 *steLen, *steTable; //Table mapping species states in reactions to species
   C_INT32 *chgLen, *chgTable; //Table mapping state change in reactions to species
   C_FLOAT64 *species; //species populations
   C_FLOAT64 *steVec;  //species states vector
   C_FLOAT64 *chgVec;  //state change vector
-  std::vector< Refresh * > *calculations;
+  std::vector< std::vector< Refresh * > > mCalculations;
 
   C_FLOAT64 mNextReactionTime;
   unsigned C_INT32 mNextReactionIndex;

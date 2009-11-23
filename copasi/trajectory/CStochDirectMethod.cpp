@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/23 17:13:59 $
+//   $Date: 2009/11/23 18:52:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,7 @@ CStochDirectMethod::createStochDirectMethod()
 
 CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::directMethod, pParent),
-    mpRandomGenerator(NULL),
+    mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
     mpModel(NULL),
     mNumReactions(0),
     mNumSpecies(0),
@@ -72,7 +72,7 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     species(NULL),
     steVec(NULL),
     chgVec(NULL),
-    calculations(NULL),
+    mCalculations(),
     mNextReactionTime(0.0),
     mNextReactionIndex(C_INVALID_INDEX),
     mAmu(NULL),
@@ -81,20 +81,12 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     mMaxStepsReached(false)
 {
   initializeParameter();
-  isPrinted = false;
-  dpgLen = dpgTable = steLen = NULL;
-  steTable =  chgLen = chgTable = NULL;
-  species = steVec = chgVec = NULL;
-  mAmu = NULL;
-  rcRt = NULL;
-  calculations = NULL;
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
 }
 
 CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
                                        const CCopasiContainer * pParent):
     CTrajectoryMethod(src, pParent),
-    mpRandomGenerator(NULL),
+    mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
     mpModel(src.mpModel),
     mNumReactions(src.mNumReactions),
     mNumSpecies(src.mNumSpecies),
@@ -108,7 +100,7 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
     species(NULL),
     steVec(NULL),
     chgVec(NULL),
-    calculations(NULL),
+    mCalculations(src.mCalculations),
     mNextReactionTime(src.mNextReactionTime),
     mNextReactionIndex(src.mNextReactionIndex),
     mAmu(NULL),
@@ -117,19 +109,10 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
     mMaxStepsReached(src.mMaxStepsReached)
 {
   initializeParameter();
-  isPrinted = false;
-  dpgLen = dpgTable = steLen = NULL;
-  steTable =  chgLen = chgTable = NULL;
-  species = steVec = chgVec = NULL;
-  mAmu = NULL;
-  rcRt = NULL;
-  calculations = NULL;
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
 }
 
 CStochDirectMethod::~CStochDirectMethod()
 {
-  delete mpRandomGenerator;
   pfree(dpgLen);
   pfree(dpgTable);
   pfree(steLen);
@@ -141,43 +124,14 @@ CStochDirectMethod::~CStochDirectMethod()
   pfree(chgVec);
   pfree(mAmu);
   pfree(rcRt);
-  //delete calculations; // Can't free
-  mpRandomGenerator = NULL;
+  pdelete(mpRandomGenerator);
 }
 
 void CStochDirectMethod::initializeParameter()
 {
-  CCopasiParameter *pParm;
-
   assertParameter("Max Internal Steps", CCopasiParameter::INT, (C_INT32) 1000000);
-  assertParameter("Subtype", CCopasiParameter::UINT, (unsigned C_INT32) 2);
   assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
   assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
-
-  // Check whether we have a method with the old parameter names
-  if ((pParm = getParameter("STOCH.MaxSteps")) != NULL)
-    {
-      setValue("Max Internal Steps", *pParm->getValue().pINT);
-      removeParameter("STOCH.MaxSteps");
-
-      if ((pParm = getParameter("STOCH.Subtype")) != NULL)
-        {
-          setValue("Subtype", *pParm->getValue().pUINT);
-          removeParameter("STOCH.Subtype");
-        }
-
-      if ((pParm = getParameter("STOCH.UseRandomSeed")) != NULL)
-        {
-          setValue("Use Random Seed", *pParm->getValue().pBOOL);
-          removeParameter("STOCH.UseRandomSeed");
-        }
-
-      if ((pParm = getParameter("STOCH.RandomSeed")) != NULL)
-        {
-          setValue("Random Seed", *pParm->getValue().pUINT);
-          removeParameter("STOCH.RandomSeed");
-        }
-    }
 }
 
 bool CStochDirectMethod::elevateChildren()
@@ -287,7 +241,7 @@ void CStochDirectMethod::start(const CState * initialState)
 
   if (rcRt == NULL)  rcRt = (C_FLOAT64 **)malloc(sizeof(C_FLOAT64 *) * mNumReactions);
 
-  if (calculations == NULL)  calculations = new std::vector< Refresh * >[mNumReactions];
+  mCalculations.clear();
 
   if (species == NULL)
     {
@@ -436,7 +390,7 @@ void CStochDirectMethod::start(const CState * initialState)
             }
         }
 
-      calculations[i] = CCopasiObject::buildUpdateSequence(dependend, changed);
+      mCalculations.push_back(CCopasiObject::buildUpdateSequence(dependend, changed));
     }
 
   for (i = 0; i < mNumReactions; i++)
@@ -579,8 +533,8 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 endTime)
       mpModel->getMetabolitesX()[j]->setValue(species[j]);
     }
 
-  std::vector< Refresh * >::const_iterator itCalcualtion =  calculations[mNextReactionIndex].begin();
-  std::vector< Refresh * >::const_iterator endCalcualtion =  calculations[mNextReactionIndex].end();
+  std::vector< Refresh * >::const_iterator itCalcualtion =  mCalculations[mNextReactionIndex].begin();
+  std::vector< Refresh * >::const_iterator endCalcualtion =  mCalculations[mNextReactionIndex].end();
 
   while (itCalcualtion != endCalcualtion)
     {
