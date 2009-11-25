@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/19 19:01:52 $
+//   $Date: 2009/11/25 18:13:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,8 +58,8 @@ const unsigned C_INT32 CTrajectoryTask::ValidMethods[] =
 {
   CCopasiMethod::deterministic,
   CCopasiMethod::stochastic,
-#ifdef COPASI_DEBUG
   CCopasiMethod::directMethod,
+#ifdef COPASI_DEBUG
   CCopasiMethod::tauLeap,
 #endif // COPASI_DEBUG
   CCopasiMethod::hybrid,
