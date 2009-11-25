@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/23 18:52:18 $
+//   $Date: 2009/11/25 17:50:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,9 +20,11 @@
 
 #include <set>
 #include <vector>
+
 #include "copasi/trajectory/CTrajectoryMethod.h"
-#include "CStochMethod.h"
+#include "copasi/trajectory/CStochMethod.h"
 #include "copasi/utilities/CDependencyGraph.h"
+#include "copasi/model/CState.h"
 
 class CModel;
 class CMetab;
@@ -34,6 +36,35 @@ class CStochDirectMethod : public CTrajectoryMethod
   friend CTrajectoryMethod *
   CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
       CTrajectoryProblem * pProblem);
+
+private:
+  class CReactionDependencies
+  {
+  public:
+    // Operations
+    CReactionDependencies();
+    CReactionDependencies(const CReactionDependencies & src);
+    ~CReactionDependencies();
+    CReactionDependencies & operator = (const CReactionDependencies & rhs);
+
+    // Attributes
+    // Information needed to update the systems state
+    CVector< C_FLOAT64 > mSpeciesMultiplier;
+    CVector< C_FLOAT64 * > mMethodSpecies;
+    CVector< C_FLOAT64 * > mModelSpecies;
+
+    std::vector< Refresh * > mCalculations;
+
+    // List of reactions which propensity depends on the state changes.
+    CVector< size_t > mDependentReactions;
+
+    // Information needed to calculate the propensity of the current reaction
+    CVector< C_FLOAT64 > mSubstrateMultiplier;
+    CVector< C_FLOAT64 * > mMethodSubstrates;
+    CVector< C_FLOAT64 * > mModelSubstrates;
+
+    C_FLOAT64 * mpParticleFlux;
+  };
 
 protected:
   /**
@@ -116,26 +147,53 @@ protected:
   /**
    * The particle and reaction numbers
    */
-  unsigned C_INT32 mNumReactions, mNumSpecies;
+  size_t mNumReactions, mNumSpecies;
 
   /**
    * max number of single stochastic steps to do in one step()
    */
   C_INT32 mMaxSteps;
 
-  C_INT32 *dpgLen, *dpgTable; //Table mapping species to reactions
-  C_INT32 *steLen, *steTable; //Table mapping species states in reactions to species
-  C_INT32 *chgLen, *chgTable; //Table mapping state change in reactions to species
-  C_FLOAT64 *species; //species populations
-  C_FLOAT64 *steVec;  //species states vector
-  C_FLOAT64 *chgVec;  //state change vector
-  std::vector< std::vector< Refresh * > > mCalculations;
+  // area of length of rows of dependent reaction (see dpgTable)
+  // C_INT32 *dpgLen;
+  // rows of indexes of reaction propensities which need to be recalculated if a reaction fires
+  // C_INT32 *dpgTable;
+
+  // area of length of rows of substrates changed by a reaction
+  // C_INT32 *steLen;
+  // rows of indexes of substrates changed by a reaction
+  // C_INT32 *steTable;
+  // rows of stoichiometry of substrates changed by a reaction
+  // C_FLOAT64 *steVec;
+
+  // area of length of rows of species changed by a reaction
+  // C_INT32 *chgLen;
+  // rows of indexes of species changed by a reaction
+  // C_INT32 *chgTable;
+  // rows of stoichiometry of species changed by a reaction
+  // C_FLOAT64 *chgVec;
+
+  // Area of particle numbers of the species
+  // C_FLOAT64 *species;
+
+  // Vector of refresh sequences which need to be calculate when a reaction fires.
+  // std::vector< std::vector< Refresh * > > mCalculations;
 
   C_FLOAT64 mNextReactionTime;
   unsigned C_INT32 mNextReactionIndex;
+  bool mDoCorrection;
 
-  C_FLOAT64 *mAmu, **rcRt;
+  // Area of propensities of the reactions
+  CVector< C_FLOAT64 > mAmu;
+  CState mSpecies;
+  CVector< CReactionDependencies > mReactionDependencies;
+
+  // Area of pointers to the model's particle fluxes of the reactions
+  // C_FLOAT64 **rcRt;
+
+  // Total propensity (sum over mAmu[i])
   C_FLOAT64 mA0;
+
   bool mMaxStepsReached;
 };
 

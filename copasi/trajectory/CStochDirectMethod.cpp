@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/23 18:52:18 $
+//   $Date: 2009/11/25 17:50:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,9 +45,50 @@
 #include "model/CModel.h"
 
 #define mtxIdx(row,col,intv)  ((row)+(col)*(intv))
+CStochDirectMethod::CReactionDependencies::CReactionDependencies():
+    mSpeciesMultiplier(0),
+    mMethodSpecies(0),
+    mModelSpecies(0),
+    mCalculations(),
+    mDependentReactions(0),
+    mSubstrateMultiplier(0),
+    mMethodSubstrates(0),
+    mModelSubstrates(0),
+    mpParticleFlux(NULL)
+{}
 
-CStochDirectMethod *
-CStochDirectMethod::createStochDirectMethod()
+CStochDirectMethod::CReactionDependencies::CReactionDependencies(const CReactionDependencies & src):
+    mSpeciesMultiplier(src.mSpeciesMultiplier),
+    mMethodSpecies(src.mMethodSpecies),
+    mModelSpecies(src.mModelSpecies),
+    mCalculations(src.mCalculations),
+    mDependentReactions(src.mDependentReactions),
+    mSubstrateMultiplier(src.mSubstrateMultiplier),
+    mMethodSubstrates(src.mMethodSubstrates),
+    mModelSubstrates(src.mModelSubstrates),
+    mpParticleFlux(src.mpParticleFlux)
+{}
+
+CStochDirectMethod::CReactionDependencies::~CReactionDependencies()
+{}
+
+CStochDirectMethod::CReactionDependencies & CStochDirectMethod::CReactionDependencies::operator = (const CStochDirectMethod::CReactionDependencies & rhs)
+{
+  mSpeciesMultiplier = rhs.mSpeciesMultiplier;
+  mMethodSpecies = rhs.mMethodSpecies;
+  mModelSpecies = rhs.mModelSpecies;
+  mCalculations = rhs.mCalculations;
+  mDependentReactions = rhs.mDependentReactions;
+  mSubstrateMultiplier = rhs.mSubstrateMultiplier;
+  mMethodSubstrates = rhs.mMethodSubstrates;
+  mModelSubstrates = rhs.mModelSubstrates;
+  mpParticleFlux = rhs.mpParticleFlux;
+
+  return * this;
+}
+
+// static
+CStochDirectMethod * CStochDirectMethod::createStochDirectMethod()
 {
   CStochDirectMethod * pMethod = NULL;
 
@@ -63,20 +104,12 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     mNumReactions(0),
     mNumSpecies(0),
     mMaxSteps(1000000),
-    dpgLen(NULL),
-    dpgTable(NULL),
-    steLen(NULL),
-    steTable(NULL),
-    chgLen(NULL),
-    chgTable(NULL),
-    species(NULL),
-    steVec(NULL),
-    chgVec(NULL),
-    mCalculations(),
     mNextReactionTime(0.0),
     mNextReactionIndex(C_INVALID_INDEX),
-    mAmu(NULL),
-    rcRt(NULL),
+    mDoCorrection(true),
+    mAmu(0),
+    mSpecies(),
+    mReactionDependencies(0),
     mA0(0.0),
     mMaxStepsReached(false)
 {
@@ -91,20 +124,12 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
     mNumReactions(src.mNumReactions),
     mNumSpecies(src.mNumSpecies),
     mMaxSteps(src.mMaxSteps),
-    dpgLen(NULL),
-    dpgTable(NULL),
-    steLen(NULL),
-    steTable(NULL),
-    chgLen(NULL),
-    chgTable(NULL),
-    species(NULL),
-    steVec(NULL),
-    chgVec(NULL),
-    mCalculations(src.mCalculations),
     mNextReactionTime(src.mNextReactionTime),
     mNextReactionIndex(src.mNextReactionIndex),
-    mAmu(NULL),
-    rcRt(NULL),
+    mDoCorrection(src.mDoCorrection),
+    mAmu(src.mAmu),
+    mSpecies(src.mSpecies),
+    mReactionDependencies(src.mReactionDependencies),
     mA0(src.mA0),
     mMaxStepsReached(src.mMaxStepsReached)
 {
@@ -113,17 +138,6 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
 
 CStochDirectMethod::~CStochDirectMethod()
 {
-  pfree(dpgLen);
-  pfree(dpgTable);
-  pfree(steLen);
-  pfree(steTable);
-  pfree(chgLen);
-  pfree(chgTable);
-  pfree(species);
-  pfree(steVec);
-  pfree(chgVec);
-  pfree(mAmu);
-  pfree(rcRt);
   pdelete(mpRandomGenerator);
 }
 
@@ -198,7 +212,10 @@ void CStochDirectMethod::start(const CState * initialState)
   mpModel = mpProblem->getModel();
   assert(mpModel);
 
-  unsigned C_INT32 i, j, k, l;
+  if (mpModel->getModelType() == CModel::deterministic)
+    mDoCorrection = true;
+  else
+    mDoCorrection = false;
 
   //initialize the vector of ints that contains the particle numbers
   //for the discrete simulation. This also floors all particle numbers in the model.
@@ -206,192 +223,121 @@ void CStochDirectMethod::start(const CState * initialState)
   mNumReactions = mpModel->getReactions().size();
   mNumSpecies = mpModel->getMetabolitesX().size();
 
-  pfree(dpgLen);
-  pfree(dpgTable);
-  pfree(steLen);
-  pfree(steTable);
-  pfree(chgLen);
-  pfree(chgTable);
-  pfree(species);
-  pfree(steVec);
-  pfree(chgVec);
-  pfree(mAmu);
-  pfree(rcRt);
-  //delete calculations; // Can't free
+  mAmu.resize(mNumReactions);
+  mAmu = 0.0;
 
-  if (species == NULL)  species = (C_FLOAT64 *)malloc(sizeof(C_FLOAT64) * mNumSpecies);
+  // Create a local copy of the state where the particle number are rounded to integers
+  mSpecies = mpModel->getState();
 
-  if (dpgLen == NULL)  dpgLen = (C_INT32 *)malloc(sizeof(C_INT32) * mNumReactions);
+  const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
 
-  if (dpgTable == NULL)  dpgTable = (C_INT32 *)malloc(sizeof(C_INT32) * mNumReactions * mNumReactions);
+  CModelEntity *const* ppEntity = StateTemplate.beginIndependent();
+  CModelEntity *const* endEntity = StateTemplate.endFixed();
+  C_FLOAT64 * pValue = mSpecies.beginIndependent();
 
-  if (steLen == NULL)  steLen = (C_INT32 *)malloc(sizeof(C_INT32) * mNumReactions);
-
-  if (steTable == NULL)  steTable = (C_INT32 *)malloc(sizeof(C_INT32) * mNumReactions * mNumSpecies);
-
-  if (chgLen == NULL)  chgLen = (C_INT32 *)malloc(sizeof(C_INT32) * mNumReactions);
-
-  if (chgTable == NULL)  chgTable = (C_INT32 *)malloc(sizeof(C_INT32) * mNumReactions * mNumSpecies);
-
-  if (steVec == NULL)  steVec = (C_FLOAT64 *)malloc(sizeof(C_FLOAT64) * mNumReactions * mNumSpecies);
-
-  if (chgVec == NULL)  chgVec = (C_FLOAT64 *)malloc(sizeof(C_FLOAT64) * mNumReactions * mNumSpecies);
-
-  if (mAmu == NULL)  mAmu = (C_FLOAT64 *)malloc(sizeof(C_FLOAT64) * mNumReactions);
-
-  if (rcRt == NULL)  rcRt = (C_FLOAT64 **)malloc(sizeof(C_FLOAT64 *) * mNumReactions);
-
-  mCalculations.clear();
-
-  if (species == NULL)
+  for (; ppEntity != endEntity; ++ppEntity, ++pValue)
     {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate species memory\n");
-      exit(1);
+      if (dynamic_cast< const CMetab * >(*ppEntity) != NULL)
+        {
+          *pValue = floor(*pValue + 0.5);
+        }
     }
 
-  if (dpgLen == NULL)
+  // Build the reaction dependencies
+  mReactionDependencies.resize(mNumReactions);
+
+  CCopasiVector< CReaction >::const_iterator it = mpModel->getReactions().begin();
+  CCopasiVector< CReaction >::const_iterator end = mpModel->getReactions().end();
+  CReactionDependencies * pDependencies = mReactionDependencies.array();
+
+  for (; it  != end; ++it, ++pDependencies)
     {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate species length vector memory\n");
-      exit(1);
-    }
+      const CCopasiVector<CChemEqElement> & Balances = (*it)->getChemEq().getBalances();
 
-  if (dpgTable == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate species table memory\n");
-      exit(1);
-    }
+      pDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
 
-  if (steLen == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate state length vector memory\n");
-      exit(1);
-    }
-
-  if (steTable == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate state table memory\n");
-      exit(1);
-    }
-
-  if (chgLen == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate state change length vector memory\n");
-      exit(1);
-    }
-
-  if (chgTable == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate state change table memory\n");
-      exit(1);
-    }
-
-  if (steVec == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate status vector memory\n");
-      exit(1);
-    }
-
-  if (chgVec == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate status change vector memory\n");
-      exit(1);
-    }
-
-  if (mAmu == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate propensity vector memory\n");
-      exit(1);
-    }
-
-  if (rcRt == NULL)
-    {
-      fprintf(stderr, "CStochDirectMethod::start Error --- Can't allocate reaction rate vector memory\n");
-      exit(1);
-    }
-
-  for (i = 0; i < mNumSpecies; i++)
-    {
-      species[i] = 0.0;
-    }
-
-  for (i = 0; i < mNumReactions; i++)
-    {
-      mAmu[i] = 0.0;
-      dpgLen[i] = steLen[i] = chgLen[i] = 0;
-    }
-
-  for (i = 0; i < (mNumReactions*mNumSpecies); i++)
-    {
-      steTable[i] = chgTable[i] = -1;
-    }
-
-  for (i = 0; i < (mNumReactions*mNumReactions); i++)
-    {
-      dpgTable[i] = -1;
-    }
-
-  for (i = 0; i < mNumSpecies; i++)
-    for (j = 0; j < mNumReactions; j++)
-      steVec[mtxIdx(i, j, mNumSpecies)] = chgVec[mtxIdx(i, j, mNumSpecies)] = 0.0;
-
-  for (i = 0; i < mNumSpecies; i++)
-    species[i] = floor(mpModel->getMetabolitesX()[i]->getValue());
-
-  for (i = 0; i < mNumReactions; i++)
-    {
-      const CCopasiVector<CChemEqElement> * bbb;
-
-      rcRt[i] = (double *)mpModel->getReactions()[i]->getParticleFluxReference()->getValuePointer();
+      pDependencies->mSpeciesMultiplier.resize(Balances.size());
+      pDependencies->mMethodSpecies.resize(Balances.size());
+      pDependencies->mModelSpecies.resize(Balances.size());
 
       std::set< const CCopasiObject * > changed;
-      bbb = &mpModel->getReactions()[i]->getChemEq().getBalances();
 
-      //std::cout << std::endl << i << " : ";
-      //TODO clear old local balances and substrates
-      for (j = l = 0; j < bbb->size(); j++)
+      CCopasiVector< CChemEqElement >::const_iterator itBalance = Balances.begin();
+      CCopasiVector< CChemEqElement >::const_iterator endBalance = Balances.end();
+
+      size_t Index = 0;
+
+      for (; itBalance != endBalance; ++itBalance)
         {
-          assert((*bbb)[j]->getMetabolite());
+          const CMetab * pMetab = (*itBalance)->getMetabolite();
 
-          if (((*bbb)[j]->getMetabolite()->getStatus()) != CModelEntity::FIXED)
+          if (pMetab->getStatus() == CModelEntity::REACTIONS)
             {
-              k = mpModel->getMetabolitesX().getIndex((*bbb)[j]->getMetabolite());
-              chgTable[mtxIdx(l, i, mNumSpecies)] = k;
-              chgVec[mtxIdx(k, i, mNumSpecies)] = floor((*bbb)[j]->getMultiplicity() + 0.5);
-              changed.insert((*bbb)[j]->getMetabolite()->getValueReference());
-              l++;
+              pDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
+              pDependencies->mMethodSpecies[Index] = mSpecies.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+              pDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+
+              changed.insert(pMetab->getValueReference());
+
+              Index++;
             }
         }
 
-      chgLen[i] = l;
+      // Correct over allocation for metabolites which are not determined by reactions
+      pDependencies->mSpeciesMultiplier.resize(Index, true);
+      pDependencies->mMethodSpecies.resize(Index, true);
+      pDependencies->mModelSpecies.resize(Index, true);
 
-      bbb = &mpModel->getReactions()[i]->getChemEq().getSubstrates();
+      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
 
-      //std::cout << std::endl << i << " : ";
-      steLen[i] = bbb->size();
+      pDependencies->mSubstrateMultiplier.resize(Substrates.size());
+      pDependencies->mMethodSubstrates.resize(Substrates.size());
+      pDependencies->mModelSubstrates.resize(Substrates.size());
 
-      for (j = 0; j < bbb->size(); j++)
+      CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
+      CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
+
+      Index = 0;
+
+      for (; itSubstrate != endSubstrate; ++itSubstrate, ++Index)
         {
-          assert((*bbb)[j]->getMetabolite());
-          k = mpModel->getMetabolitesX().getIndex((*bbb)[j]->getMetabolite());
-          steTable[mtxIdx(j, i, mNumSpecies)] = k;
-          steVec[mtxIdx(k, i, mNumSpecies)] = floor((*bbb)[j]->getMultiplicity() + 0.5);
+          const CMetab * pMetab = (*itSubstrate)->getMetabolite();
+
+          pDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
+          pDependencies->mMethodSubstrates[Index] = mSpecies.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+          pDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+
+          // TODO handle species of type ASSIGNMENT and ODE.
+          // These need to be checked whether they are sufficiently close to an integer
         }
 
       std::set< const CCopasiObject * > dependend;
 
-      for (j = 0; j < mNumReactions; j++)
+      CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
+      pDependencies->mDependentReactions.resize(mNumReactions);
+
+      Index = 0;
+      size_t Count = 0;
+
+      for (; itReaction != end; ++itReaction, ++Index)
         {
-          if (mpModel->getReactions()[j]->getParticleFluxReference()->dependsOn(changed))
+          if ((*itReaction)->getParticleFluxReference()->dependsOn(changed))
             {
-              dependend.insert(mpModel->getReactions()[j]->getParticleFluxReference());
-              l = dpgLen[i];
-              dpgTable[mtxIdx(i, l, mNumReactions)] = j;
-              dpgLen[i] = l + 1;
+              dependend.insert((*itReaction)->getParticleFluxReference());
+              pDependencies->mDependentReactions[Count] = Index;
+
+              Count++;
             }
         }
 
-      mCalculations.push_back(CCopasiObject::buildUpdateSequence(dependend, changed));
+      pDependencies->mDependentReactions.resize(Count, true);
+
+      pDependencies->mCalculations = CCopasiObject::buildUpdateSequence(dependend, changed);
     }
+
+  mpModel->updateSimulatedValues(false); //for assignments
+
+  unsigned C_INT32 i;
 
   for (i = 0; i < mNumReactions; i++)
     {
@@ -405,7 +351,6 @@ void CStochDirectMethod::start(const CState * initialState)
       mA0 += mAmu[i];
     }
 
-  mpModel->updateSimulatedValues(false); //for assignments
   mMaxStepsReached = false;
 
   mNextReactionTime = mpCurrentState->getTime();
@@ -494,9 +439,6 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
 
 C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 endTime)
 {
-
-  unsigned C_INT32 i, j, l;
-
   if (mNextReactionIndex == C_INVALID_INDEX)
     {
       if (mA0 == 0)
@@ -504,16 +446,20 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 endTime)
           return endTime - curTime;
         }
 
-      mNextReactionTime = curTime - 1.0 * log(mpRandomGenerator->getRandomOO()) / mA0;
+      mNextReactionTime = curTime - log(mpRandomGenerator->getRandomOO()) / mA0;
 
       // We are sure that we have at least 1 reaction
       mNextReactionIndex = 0;
+
       C_FLOAT64 sum = 0.0;
       C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
 
-      for (; (sum < rand) && (mNextReactionIndex < mNumReactions); ++mNextReactionIndex)
+      C_FLOAT64 * pAmu = mAmu.array();
+      C_FLOAT64 * endAmu = pAmu + mAmu.size();
+
+      for (; (sum < rand) && (pAmu != endAmu); ++pAmu, ++mNextReactionIndex)
         {
-          sum += mAmu[mNextReactionIndex];
+          sum += *pAmu;
         }
 
       mNextReactionIndex--;
@@ -524,34 +470,48 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 endTime)
       return endTime - curTime;
     }
 
-  l = chgLen[mNextReactionIndex];
+  CReactionDependencies & Dependencies = mReactionDependencies[mNextReactionIndex];
 
-  for (i = 0; i < l; i++)
+  // Update the method internal and model species numbers
+  C_FLOAT64 ** ppModelSpecies = Dependencies.mModelSpecies.array();
+  C_FLOAT64 ** ppLocalSpecies = Dependencies.mMethodSpecies.array();
+  C_FLOAT64 * pMultiplier = Dependencies.mSpeciesMultiplier.array();
+  C_FLOAT64 * endMultiplier = pMultiplier + Dependencies.mSpeciesMultiplier.size();
+
+  for (; pMultiplier != endMultiplier; ++pMultiplier, ++ppLocalSpecies, ++ppModelSpecies)
     {
-      j = chgTable[mtxIdx(i, mNextReactionIndex, mNumSpecies)];
-      species[j] += chgVec[mtxIdx(j, mNextReactionIndex, mNumSpecies)];
-      mpModel->getMetabolitesX()[j]->setValue(species[j]);
+      **ppLocalSpecies += *pMultiplier;
+      **ppModelSpecies = **ppLocalSpecies;
     }
 
-  std::vector< Refresh * >::const_iterator itCalcualtion =  mCalculations[mNextReactionIndex].begin();
-  std::vector< Refresh * >::const_iterator endCalcualtion =  mCalculations[mNextReactionIndex].end();
+  // Calculate all values which depend on the firing reaction
+  std::vector< Refresh * >::const_iterator itCalcualtion =  Dependencies.mCalculations.begin();
+  std::vector< Refresh * >::const_iterator endCalcualtion =  Dependencies.mCalculations.end();
 
   while (itCalcualtion != endCalcualtion)
     {
       (**itCalcualtion++)();
     }
 
-  l = dpgLen[mNextReactionIndex];
+  // calculate the propensities which depend on the firing reaction
+  size_t * pDependentReaction = Dependencies.mDependentReactions.array();
+  size_t * endDependentReactions = pDependentReaction + Dependencies.mDependentReactions.size();
 
-  for (i = 0; i < l; i++)
+  for (; pDependentReaction != endDependentReactions; ++pDependentReaction)
     {
-      calculateAmu(dpgTable[mtxIdx(mNextReactionIndex, i, mNumReactions)]);
+      calculateAmu(*pDependentReaction);
     }
+
+  // calculate the total propensity
+  C_FLOAT64 * pAmu = mAmu.array();
+  C_FLOAT64 * endAmu = pAmu + mAmu.size();
 
   mA0 = 0.0;
 
-  for (i = 0; i < mNumReactions; i++)
-    mA0 += mAmu[i];
+  for (; pAmu != endAmu; ++pAmu)
+    {
+      mA0 += *pAmu;
+    }
 
   mNextReactionIndex = C_INVALID_INDEX;
 
@@ -560,37 +520,57 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 endTime)
 
 C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
 {
-  C_FLOAT64 amu , substrate_factor;
-  C_FLOAT64 num_ident, lower_bound, number;
-  int j, k, l, flag;
+  CReactionDependencies & Dependencies = mReactionDependencies[index];
 
-  amu = substrate_factor = 1.0;
-  l = steLen[index];
+  mAmu[index] = *Dependencies.mpParticleFlux;
 
-  for (j = flag = 0; j < l; j++)
+  if (!mDoCorrection)
     {
-      k = steTable[mtxIdx(j, index, mNumSpecies)];
-      num_ident = steVec[mtxIdx(k, index, mNumSpecies)];
+      return 0;
+    }
 
-      if (num_ident > 1)
+  C_FLOAT64 Amu = 1.0;
+  C_FLOAT64 SubstrateFactor = 1.0;
+  C_FLOAT64 Multiplicity;
+  C_FLOAT64 LowerBound;
+  C_FLOAT64 Number;
+
+  bool ApplyCorrection = false;
+
+  C_FLOAT64 * pMultiplier = Dependencies.mSubstrateMultiplier.array();
+  C_FLOAT64 * endMultiplier = pMultiplier + Dependencies.mSpeciesMultiplier.size();
+  C_FLOAT64 ** ppLocalSubstrate = Dependencies.mMethodSubstrates.array();
+  C_FLOAT64 ** ppModelSubstrate = Dependencies.mModelSubstrates.array();
+
+  for (; pMultiplier != endMultiplier; ++pMultiplier, ++ppLocalSubstrate, ++ppModelSubstrate)
+    {
+      Multiplicity = *pMultiplier;
+
+      **ppLocalSubstrate = floor(**ppModelSubstrate + 0.5);
+
+      if (Multiplicity > 1.01)
         {
-          flag = 1;
-          number = species[k];
-          lower_bound = number - num_ident;
-          substrate_factor = substrate_factor * pow((double) number, (int)(num_ident - 1));  //optimization
-          number--;
+          ApplyCorrection = true;
 
-          while (number > lower_bound)
+          Number = **ppLocalSubstrate;
+
+          LowerBound = Number - Multiplicity;
+          SubstrateFactor = SubstrateFactor * pow(Number, Multiplicity - 1.0);  //optimization
+          Number -= 1.0;
+
+          while (Number > LowerBound)
             {
-              amu *= number;
-              number--;
+              Amu *= Number;
+              Number -= 1.0;
             }
         }
     }
 
-  if ((amu == 0) || (substrate_factor == 0))   // at least one substrate particle number is zero
+  // at least one substrate particle number is zero
+  if (fabs(Amu) < 100.0 * std::numeric_limits<C_FLOAT64>::epsilon() ||
+      fabs(SubstrateFactor)  < 100.0 * std::numeric_limits<C_FLOAT64>::epsilon())
     {
-      mAmu[index] = 0;
+      mAmu[index] = 0.0;
       return 0;
     }
 
@@ -598,14 +578,9 @@ C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
   //C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
-  if (flag)
+  if (ApplyCorrection)
     {
-      amu *= *rcRt[index] / substrate_factor;
-      mAmu[index] = amu;
-    }
-  else
-    {
-      mAmu[index] = *rcRt[index];
+      mAmu[index] = *Dependencies.mpParticleFlux * Amu / SubstrateFactor;
     }
 
   return 0;
