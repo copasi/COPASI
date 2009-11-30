@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/25 17:50:12 $
+//   $Date: 2009/11/30 15:27:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -538,7 +538,7 @@ C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
   bool ApplyCorrection = false;
 
   C_FLOAT64 * pMultiplier = Dependencies.mSubstrateMultiplier.array();
-  C_FLOAT64 * endMultiplier = pMultiplier + Dependencies.mSpeciesMultiplier.size();
+  C_FLOAT64 * endMultiplier = pMultiplier + Dependencies.mSubstrateMultiplier.size();
   C_FLOAT64 ** ppLocalSubstrate = Dependencies.mMethodSubstrates.array();
   C_FLOAT64 ** ppModelSubstrate = Dependencies.mModelSubstrates.array();
 
