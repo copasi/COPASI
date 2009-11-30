@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/10/30 16:23:20 $
+//   $Date: 2009/11/30 13:17:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ protected:
 
   /**
    * determine whether the one of the substrate, products, or modifiers of the reaction
-   * is located in the given compartmen
+   * is located in the given compartment
    */
   static bool reactionInvolvesCompartment(const CReaction * reac, const CCompartment* comp);
 
