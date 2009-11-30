@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/11/09 13:04:53 $
+//   $Date: 2009/11/30 13:17:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,7 +142,7 @@ bool CModelAdd::addEvents(std::string name)
 
           CEventAssignment* newAssignment = new CEventAssignment;
 
-          newEvent->getAssignments().add(newAssignment);
+          newEvent->getAssignments().add(newAssignment, true);
 
           newAssignment->setTargetKey(keyMap[key]);
 
