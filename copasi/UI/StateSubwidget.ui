@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.ui,v $ </comment>
-<comment>   $Revision: 1.20 $ </comment>
+<comment>   $Revision: 1.21 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/11/03 07:40:40 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2009/11/30 18:44:04 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -100,7 +100,7 @@
           <number>0</number>
          </property>
          <property name="numCols">
-          <number>5</number>
+          <number>7</number>
          </property>
          <property name="readOnly">
           <bool>true</bool>
@@ -118,6 +118,16 @@
          <column>
           <property name="text">
            <string>Concentration</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Particle Number</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Rate</string>
           </property>
          </column>
          <column>
@@ -222,7 +232,7 @@
           <number>0</number>
          </property>
          <property name="numCols">
-          <number>3</number>
+          <number>4</number>
          </property>
          <property name="readOnly">
           <bool>true</bool>
@@ -235,6 +245,11 @@
          <column>
           <property name="text">
            <string>Flux</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Particle Flux</string>
           </property>
          </column>
          <column>
