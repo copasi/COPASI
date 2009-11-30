@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 19:55:15 $
+//   $Author: shoops $
+//   $Date: 2009/11/30 19:28:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,32 +17,6 @@
 #include <qvariant.h>
 
 #include "ui_CQTrajectoryWidget.h"
-/*
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-#include <QLabel>
-#include <Q3Frame>
-
-class CTrajectoryProblem;
-class CQValidatorInt;
-class CQValidatorDouble;
-
-#include <Qt3Support/Q3MimeSourceFactory>
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <QtGui/QCheckBox>
-#include <Qt3Support/Q3Frame>
-#include <Qt3Support/Q3GridLayout>
-#include <Qt3Support/Q3HBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QSpacerItem>
-#include <Qt3Support/Q3VBoxLayout>
- */
 
 class CTrajectoryProblem;
 class CQValidatorInt;
@@ -61,6 +35,7 @@ public:
   ~CQTrajectoryWidget();
 
   virtual bool runTask();
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 public slots:
   void slotDuration();
@@ -87,6 +62,7 @@ private:
   void init();
   void destroy();
   void checkTimeSeries();
+  void showUnits();
 };
 
 #endif // CQTRAJECTORYWIDGET_H

@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.6 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/04/12 22:27:44 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2009/11/30 19:28:01 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -19,7 +19,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>553</width>
+    <width>475</width>
     <height>235</height>
    </rect>
   </property>
@@ -29,28 +29,40 @@
   <property name="caption" stdset="0" >
    <string>Time Course</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <layout class="QGridLayout" >
-     <item row="4" column="0" colspan="4" >
-      <widget class="Line" name="line2" >
-       <property name="frameShape" >
-        <enum>QFrame::HLine</enum>
+    <layout class="QGridLayout" name="mpGridLayout" >
+     <item row="0" column="0" >
+      <widget class="QLabel" name="mpLblDuration" >
+       <property name="text" >
+        <string>Duration</string>
        </property>
-       <property name="frameShadow" >
-        <enum>QFrame::Sunken</enum>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap" >
+        <bool>false</bool>
        </property>
       </widget>
      </item>
      <item row="0" column="1" >
       <widget class="QLineEdit" name="mpEditDuration" />
      </item>
-     <item row="5" column="1" >
-      <widget class="QLineEdit" name="mpEditIntegrationInterval" >
-       <property name="readOnly" >
-        <bool>true</bool>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="mpLblIntervalSize" >
+       <property name="text" >
+        <string>Interval Size</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap" >
+        <bool>false</bool>
        </property>
       </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QLineEdit" name="mpEditIntervalSize" />
      </item>
      <item row="1" column="2" >
       <widget class="QLabel" name="mpLblIntervals" >
@@ -68,34 +80,8 @@
      <item row="1" column="3" >
       <widget class="QLineEdit" name="mpEditIntervals" />
      </item>
-     <item row="6" column="0" >
-      <widget class="QLabel" name="mpLblOutputInterval" >
-       <property name="text" >
-        <string>Output Interval</string>
-       </property>
-       <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap" >
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="mpLblIntervalSize" >
-       <property name="text" >
-        <string>Interval Size</string>
-       </property>
-       <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap" >
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="1" colspan="3" >
-      <layout class="QHBoxLayout" >
+      <layout class="QHBoxLayout" name="mpLayoutDelayed" >
        <item>
         <widget class="QCheckBox" name="mpCheckDelay" >
          <property name="text" >
@@ -107,7 +93,7 @@
         <widget class="QLineEdit" name="mpEditDelay" />
        </item>
        <item>
-        <spacer name="spacer1" >
+        <spacer name="mpSpacer" >
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
@@ -124,16 +110,20 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="0" >
-      <widget class="QLabel" name="mpLblDuration" >
+     <item row="3" column="1" colspan="3" >
+      <widget class="QCheckBox" name="mpCheckSave" >
        <property name="text" >
-        <string>Duration</string>
+        <string>Save Result in Memory</string>
        </property>
-       <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="4" >
+      <widget class="Line" name="mpLine2" >
+       <property name="frameShape" >
+        <enum>QFrame::HLine</enum>
        </property>
-       <property name="wordWrap" >
-        <bool>false</bool>
+       <property name="frameShadow" >
+        <enum>QFrame::Sunken</enum>
        </property>
       </widget>
      </item>
@@ -150,6 +140,26 @@
        </property>
       </widget>
      </item>
+     <item row="5" column="1" >
+      <widget class="QLineEdit" name="mpEditIntegrationInterval" >
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" >
+      <widget class="QLabel" name="mpLblOutputInterval" >
+       <property name="text" >
+        <string>Output Interval</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
      <item row="6" column="1" >
       <widget class="QLineEdit" name="mpEditOutputInterval" >
        <property name="readOnly" >
@@ -157,20 +167,10 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QLineEdit" name="mpEditIntervalSize" />
-     </item>
-     <item row="3" column="1" colspan="2" >
-      <widget class="QCheckBox" name="mpCheckSave" >
-       <property name="text" >
-        <string>Save Result in Memory</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line1" >
+    <widget class="Line" name="mpLine1" >
      <property name="frameShape" >
       <enum>QFrame::HLine</enum>
      </property>
@@ -195,7 +195,6 @@
   <tabstop>mpEditDuration</tabstop>
   <tabstop>mpEditIntervalSize</tabstop>
   <tabstop>mpEditIntervals</tabstop>
-  <tabstop>mpCheckDelay</tabstop>
   <tabstop>mpEditDelay</tabstop>
   <tabstop>mpCheckSave</tabstop>
  </tabstops>

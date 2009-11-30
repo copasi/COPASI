@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 21:02:46 $
+//   $Date: 2009/11/30 19:28:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,9 +66,9 @@ void CQTrajectoryWidget::init()
 
   mpHeaderWidget->setTaskName("Time Course");
 
-  vboxLayout->insertWidget(0, mpHeaderWidget);  // header
-  vboxLayout->insertSpacing(1, 14);       // space between header and body
-  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
+  verticalLayout->insertWidget(0, mpHeaderWidget);  // header
+  verticalLayout->insertSpacing(1, 14);       // space between header and body
+  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   addMethodSelectionBox(CTrajectoryTask::ValidMethods, 0);
   addMethodParameterTable(1);
@@ -268,6 +268,8 @@ bool CQTrajectoryWidget::loadTask()
   loadCommon();
   loadMethod();
 
+  showUnits();
+
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(pTask->getProblem());
   assert(trajectoryproblem);
@@ -409,4 +411,44 @@ void CQTrajectoryWidget::updateIntervals()
                                       " to " +
                                       QString::number(InitialTime + Duration));
     }
+}
+
+// virtual
+bool CQTrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & /* key */)
+{
+  switch (objectType)
+    {
+      case ListViews::MODEL:
+
+        if (action == ListViews::CHANGE)
+          {
+            showUnits();
+          }
+
+        break;
+
+      default:
+        break;
+    }
+
+  return true;
+}
+
+void CQTrajectoryWidget::showUnits()
+{
+  const CModel * pModel = NULL;
+
+  QString TimeUnits;
+
+  if (mpDataModel != NULL &&
+      (pModel = mpDataModel->getModel()) != NULL)
+    {
+      TimeUnits = " (" + FROM_UTF8(pModel->getTimeUnitsDisplayString()) + ")";
+    }
+
+  mpLblDuration->setText("Duration" + TimeUnits);
+  mpLblIntervalSize->setText("Interval Size" + TimeUnits);
+  mpCheckDelay->setText("Interval Size" + TimeUnits);
+  mpLblIntegrationInterval->setText("Interval Size" + TimeUnits);
+  mpLblOutputInterval->setText("Interval Size" + TimeUnits);
 }
