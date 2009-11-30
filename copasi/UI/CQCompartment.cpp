@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/28 18:16:48 $
+//   $Author: shoops $
+//   $Date: 2009/11/30 17:45:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,9 +34,6 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
     : CopasiWidget(parent, name)
 {
   setupUi(this);
-
-  connect(mpExpressionEMW->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
-  connect(mpInitialExpressionEMW->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
 
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
@@ -283,6 +280,7 @@ bool CQCompartment::enterProtected()
 
 bool CQCompartment::leave()
 {
+  // This is now always enabled, i.e., a save is always performed!
   if (mpBtnCommit->isEnabled())
     {
       if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED)

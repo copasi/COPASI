@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/28 18:11:02 $
+//   $Author: shoops $
+//   $Date: 2009/11/30 17:45:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -219,9 +219,6 @@ void CQModelValue::slotInitialExpressionValid(bool valid)
 
 void CQModelValue::init()
 {
-  connect(mpExpressionEMW->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
-  connect(mpInitialExpressionEMW->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
-
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
@@ -249,6 +246,7 @@ bool CQModelValue::update(ListViews::ObjectType /* objectType */,
 
 bool CQModelValue::leave()
 {
+  // This is now always enabled, i.e., a save is always performed!
   if (mpBtnCommit->isEnabled())
     {
       if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED)
