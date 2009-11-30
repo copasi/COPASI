@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.137 $
+//   $Revision: 1.138 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/11 14:11:11 $
+//   $Author: nsimus $
+//   $Date: 2009/11/30 13:19:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -353,7 +353,10 @@ const MESSAGES Messages[] =
 
   //CModelMerging
   {MCModelMerging + 1, "CModelMerging (1): An error has occured while constructing the temporary (joined)  data model."},
-  {MCModelMerging + 2, "CModelMerging (2): Failed while merging  species  \"%s\" with species  \"%s\" . "},
+  {MCModelMerging + 2, "CModelMerging (2): Failed while merging the  species  \"%s\" with the species  \"%s\" . "},
+
+//CModelExpansion
+  {MCModelExpansion + 1, "CModelExpansion (1): An error has occured while creation of the array of compartments."},
 
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
