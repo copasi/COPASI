@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/25 17:50:12 $
+//   $Date: 2009/12/01 19:54:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,27 +42,74 @@ private:
   {
   public:
     // Operations
+    /**
+     * Default constructor
+     */
     CReactionDependencies();
+
+    /**
+     * Copy constructor
+     * @param const CReactionDependencies & src
+     */
     CReactionDependencies(const CReactionDependencies & src);
+
+    /**
+     * Destructor
+     */
     ~CReactionDependencies();
+
+    /**
+     * Assignment operator
+     * @param const CReactionDependencies & rhs
+     * @return CReactionDependencies &
+     */
     CReactionDependencies & operator = (const CReactionDependencies & rhs);
 
     // Attributes
-    // Information needed to update the systems state
+
+    /**
+     * Vector of multiplier to calculate the new state
+     */
     CVector< C_FLOAT64 > mSpeciesMultiplier;
+
+    /**
+     * Vector of pointers to method internal species values to calculate the new state.
+     */
     CVector< C_FLOAT64 * > mMethodSpecies;
+
+    /**
+     * Vector of pointers to model species values to calculate the new state.
+     */
     CVector< C_FLOAT64 * > mModelSpecies;
 
+    /**
+     * Vector of refresh methods which need to be executed to update all values required for simulation
+     */
     std::vector< Refresh * > mCalculations;
 
-    // List of reactions which propensity depends on the state changes.
+    /**
+     * A vector of indexes of reaction which propensities have to be recalculated.
+     */
     CVector< size_t > mDependentReactions;
 
-    // Information needed to calculate the propensity of the current reaction
+    /**
+     * Vector of multiplier to calculate the new propensity.
+     */
     CVector< C_FLOAT64 > mSubstrateMultiplier;
+
+    /**
+     * Vector of pointers to method internal species values to calculate the new propensity.
+     */
     CVector< C_FLOAT64 * > mMethodSubstrates;
+
+    /**
+     * Vector of pointers to model species values to calculate the new propensity.
+     */
     CVector< C_FLOAT64 * > mModelSubstrates;
 
+    /**
+     * A pointer to the particle flux of the reaction.
+     */
     C_FLOAT64 * mpParticleFlux;
   };
 
@@ -72,8 +119,20 @@ protected:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CStochDirectMethod(const CCopasiContainer * pParent = NULL);
-  C_INT32 calculateAmu(C_INT32 index);
-  C_FLOAT64 doSingleStep(C_FLOAT64 curTime, C_FLOAT64 end_time);
+
+  /**
+   * Calculate the propensity of the indexed reaction
+   * @param const C_INT32 & index
+   */
+  void calculateAmu(const C_INT32 & index);
+
+  /**
+   * Fire the next reaction if it fire before the endTime
+   * @param const C_FLOAT64 & curTime
+   * @param const C_FLOAT64 & endTime
+   * @return C_FLOAT64 timeAfterStep
+   */
+  C_FLOAT64 doSingleStep(const C_FLOAT64 & curTime, const C_FLOAT64 & endTime);
 
 public:
   /**
@@ -130,7 +189,6 @@ private:
    * Initialize the method parameter
    */
   void initializeParameter();
-  void initVariable(int mNumSpecies, int mNumReactionss);
 
 protected:
 
@@ -152,48 +210,47 @@ protected:
   /**
    * max number of single stochastic steps to do in one step()
    */
-  C_INT32 mMaxSteps;
+  unsigned C_INT32 mMaxSteps;
 
-  // area of length of rows of dependent reaction (see dpgTable)
-  // C_INT32 *dpgLen;
-  // rows of indexes of reaction propensities which need to be recalculated if a reaction fires
-  // C_INT32 *dpgTable;
-
-  // area of length of rows of substrates changed by a reaction
-  // C_INT32 *steLen;
-  // rows of indexes of substrates changed by a reaction
-  // C_INT32 *steTable;
-  // rows of stoichiometry of substrates changed by a reaction
-  // C_FLOAT64 *steVec;
-
-  // area of length of rows of species changed by a reaction
-  // C_INT32 *chgLen;
-  // rows of indexes of species changed by a reaction
-  // C_INT32 *chgTable;
-  // rows of stoichiometry of species changed by a reaction
-  // C_FLOAT64 *chgVec;
-
-  // Area of particle numbers of the species
-  // C_FLOAT64 *species;
-
-  // Vector of refresh sequences which need to be calculate when a reaction fires.
-  // std::vector< std::vector< Refresh * > > mCalculations;
-
+  /**
+   * The time the next reaction fires
+   */
   C_FLOAT64 mNextReactionTime;
+
+  /**
+   * The index of the next reaction which fires
+   */
   unsigned C_INT32 mNextReactionIndex;
+
+  /**
+   * A boolean flag indicating whether correction for higher order reactions need to be applied
+   */
   bool mDoCorrection;
 
-  // Area of propensities of the reactions
+  /**
+   * A vector of reaction propensities
+   */
   CVector< C_FLOAT64 > mAmu;
-  CState mSpecies;
+
+  /**
+   * The method internal state which contains particle rounded particle numbers.
+   */
+  CState mMethodState;
+
+  /**
+   * A vector containing dependency information to minimize the required updates.
+   */
   CVector< CReactionDependencies > mReactionDependencies;
 
-  // Area of pointers to the model's particle fluxes of the reactions
-  // C_FLOAT64 **rcRt;
-
-  // Total propensity (sum over mAmu[i])
+  /**
+   * Total propensity (sum over mAmu[i])
+   */
   C_FLOAT64 mA0;
 
+  /**
+   * A boolean flag indicating whether the maximum steps have been reached. This
+   * is used to avoid multiple messages.
+   */
   bool mMaxStepsReached;
 };
 

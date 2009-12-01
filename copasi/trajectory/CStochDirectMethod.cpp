@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/30 15:27:28 $
+//   $Date: 2009/12/01 19:54:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,7 +108,7 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     mNextReactionIndex(C_INVALID_INDEX),
     mDoCorrection(true),
     mAmu(0),
-    mSpecies(),
+    mMethodState(),
     mReactionDependencies(0),
     mA0(0.0),
     mMaxStepsReached(false)
@@ -128,7 +128,7 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
     mNextReactionIndex(src.mNextReactionIndex),
     mDoCorrection(src.mDoCorrection),
     mAmu(src.mAmu),
-    mSpecies(src.mSpecies),
+    mMethodState(src.mMethodState),
     mReactionDependencies(src.mReactionDependencies),
     mA0(src.mA0),
     mMaxStepsReached(src.mMaxStepsReached)
@@ -156,29 +156,13 @@ bool CStochDirectMethod::elevateChildren()
 
 CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
 {
-  // write the current state to the model:
-  //mpProblem->getModel()->setState(mpCurrentState); //?
-
-  // check for possible overflows:
-  unsigned C_INT32 i;
-  unsigned C_INT32 imax;
-  unsigned C_INT32 mMaxIntBeforeStep = (1 << 30);
-
-  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
-  // of metabs determined by reaction. In addition they are expected at the beginning of the
-  // MetabolitesX which is not the case if we have metabolites of type ODE.
-  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolitesX()[i]->getValue() >= mMaxIntBeforeStep)
-      {
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "at least one particle number got to big.");
-        // TODO:throw exception or something like that
-      }
-
   // do several steps:
   C_FLOAT64 Time = mpCurrentState->getTime();
   C_FLOAT64 EndTime = Time + deltaT;
 
-  for (i = 0; ((i < (unsigned C_INT32) mMaxSteps) && (Time < EndTime)); i++)
+  unsigned C_INT32 Steps;
+
+  for (Steps = 0; (Steps <  mMaxSteps) && (Time < EndTime); Steps++)
     {
       Time += doSingleStep(Time, EndTime);
     }
@@ -186,7 +170,7 @@ CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
   *mpCurrentState = mpProblem->getModel()->getState();
   mpCurrentState->setTime(EndTime);
 
-  if ((i >= (unsigned C_INT32) mMaxSteps) && (!mMaxStepsReached))
+  if (Steps >=  mMaxSteps && !mMaxStepsReached)
     {
       mMaxStepsReached = true; //only report this message once
       CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
@@ -227,13 +211,13 @@ void CStochDirectMethod::start(const CState * initialState)
   mAmu = 0.0;
 
   // Create a local copy of the state where the particle number are rounded to integers
-  mSpecies = mpModel->getState();
+  mMethodState = mpModel->getState();
 
   const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
 
   CModelEntity *const* ppEntity = StateTemplate.beginIndependent();
   CModelEntity *const* endEntity = StateTemplate.endFixed();
-  C_FLOAT64 * pValue = mSpecies.beginIndependent();
+  C_FLOAT64 * pValue = mMethodState.beginIndependent();
 
   for (; ppEntity != endEntity; ++ppEntity, ++pValue)
     {
@@ -242,6 +226,15 @@ void CStochDirectMethod::start(const CState * initialState)
           *pValue = floor(*pValue + 0.5);
         }
     }
+
+  // Update the model state so that the species are all represented by integers.
+  mpModel->setState(mMethodState);
+  mpModel->updateSimulatedValues(false); //for assignments
+
+  // TODO handle species of type ASSIGNMENT.
+  // These need to be checked whether they are sufficiently close to an integer
+
+  C_FLOAT64 * pMethodStateValue = mMethodState.beginIndependent() - 1;
 
   // Build the reaction dependencies
   mReactionDependencies.resize(mNumReactions);
@@ -274,7 +267,7 @@ void CStochDirectMethod::start(const CState * initialState)
           if (pMetab->getStatus() == CModelEntity::REACTIONS)
             {
               pDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
-              pDependencies->mMethodSpecies[Index] = mSpecies.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+              pDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
               pDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
 
               changed.insert(pMetab->getValueReference());
@@ -283,7 +276,7 @@ void CStochDirectMethod::start(const CState * initialState)
             }
         }
 
-      // Correct over allocation for metabolites which are not determined by reactions
+      // Correct allocation for metabolites which are not determined by reactions
       pDependencies->mSpeciesMultiplier.resize(Index, true);
       pDependencies->mMethodSpecies.resize(Index, true);
       pDependencies->mModelSpecies.resize(Index, true);
@@ -304,11 +297,8 @@ void CStochDirectMethod::start(const CState * initialState)
           const CMetab * pMetab = (*itSubstrate)->getMetabolite();
 
           pDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          pDependencies->mMethodSubstrates[Index] = mSpecies.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+          pDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
           pDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
-
-          // TODO handle species of type ASSIGNMENT and ODE.
-          // These need to be checked whether they are sufficiently close to an integer
         }
 
       std::set< const CCopasiObject * > dependend;
@@ -437,7 +427,7 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
   return true;
 }
 
-C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 endTime)
+C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FLOAT64 & endTime)
 {
   if (mNextReactionIndex == C_INVALID_INDEX)
     {
@@ -518,7 +508,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 endTime)
   return mNextReactionTime - curTime;
 }
 
-C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
+void CStochDirectMethod::calculateAmu(const C_INT32 & index)
 {
   CReactionDependencies & Dependencies = mReactionDependencies[index];
 
@@ -526,7 +516,7 @@ C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
 
   if (!mDoCorrection)
     {
-      return 0;
+      return;
     }
 
   C_FLOAT64 Amu = 1.0;
@@ -546,6 +536,7 @@ C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
     {
       Multiplicity = *pMultiplier;
 
+      // TODO We should check the error introduced through rounding.
       **ppLocalSubstrate = floor(**ppModelSubstrate + 0.5);
 
       if (Multiplicity > 1.01)
@@ -571,7 +562,7 @@ C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
       fabs(SubstrateFactor)  < 100.0 * std::numeric_limits<C_FLOAT64>::epsilon())
     {
       mAmu[index] = 0.0;
-      return 0;
+      return;
     }
 
   // rate_factor is the rate function divided by substrate_factor.
@@ -583,5 +574,5 @@ C_INT32 CStochDirectMethod::calculateAmu(C_INT32 index)
       mAmu[index] = *Dependencies.mpParticleFlux * Amu / SubstrateFactor;
     }
 
-  return 0;
+  return;
 }
