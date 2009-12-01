@@ -1,7 +1,8 @@
 #!/bin/bash 
 
 
-TESTSDIR=./dsmts23-20080307
+TESTSDIR=./dsmts24
+#TESTSDIR=./dsmts23-20080307
 
 HEAD=/usr/bin/head
 CUT=/usr/bin/cut
@@ -34,6 +35,8 @@ function getSpecies()
     $HEAD -n1 $1 | $CUT -d ',' -f 2- | $SED -e ' s/,/ /g; s/[ \t\r\n]*$//';
 }
 
+TOTALTIME=0.0
+
 
 for MODEL in $MODELS;do
   # set parameters 
@@ -51,7 +54,12 @@ for MODEL in $MODELS;do
   if [ -e $INFILE ] ; then
     echo "$WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST"
     rm -f $OUTFILE
-    $WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST || RESULT="failed" ;
+    exec 3>&1 4>&2
+    TIME=$( { time -p $WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST || RESULT="failed"  1>&3 2>&4; } 2>&1 )  # Captures time only.
+    exec 3>&- 4>&-
+    TIME=`echo $TIME |  /usr/bin/awk '{print $4}'` 
+    echo "time: $TIME seconds"
+    TOTALTIME=`echo "$TIME + $TOTALTIME" | /usr/bin/bc` 
     if [ "e$RESULT" == "efailed" ] ; then
       echo "ERROR: Simulation failed.";
       rm -f $OUTFILE;
@@ -94,3 +102,5 @@ for MODEL in $MODELS;do
   fi
   echo "$MODEL $RESULT"
 done
+
+echo "Time used for simulations: $TOTALTIME seconds";
