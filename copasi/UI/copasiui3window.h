@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/10/30 16:10:45 $
+//   $Author: shoops $
+//   $Date: 2009/12/02 16:12:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,9 @@ public:
 
   std::string exportSBMLToString();
 
+protected:
+  virtual void closeEvent(QCloseEvent* e);
+
 public slots:
   void slotShowSliders(bool flag);
 
@@ -106,7 +109,6 @@ protected slots:
   void slotQuit();
   void slotPreferences();
   void slotConvertToIrreversible();
-  void closeEvent(QCloseEvent* e);
   void listViewsFolderChanged(Q3ListViewItem* item);
   void slotOpenRecentFile(int index);
   void slotOpenRecentSBMLFile(int index);
