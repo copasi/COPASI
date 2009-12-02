@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Date: 2009/12/02 16:14:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "DataModelGUI.h"
 #include "CQProgressItemText.h"
 #include "CQProgressItemBar.h"
+#include "CQMessageBox.h"
 
 extern QApplication *pApp;
 
@@ -79,6 +80,7 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
                            type,
                            pValue,
                            pEndValue);
+
   if (hItem == C_INVALID_INDEX) return hItem;
 
   if (hItem >= mProgressItemList.size()) // we need to resize
@@ -92,6 +94,7 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
         mProgressItemList[i] = tmp[i];
 
       imax *= 2;
+
       while (i < imax) mProgressItemList[i++] = NULL;
     }
 
@@ -185,4 +188,9 @@ bool CProgressBar::setName(const std::string & name)
 }
 
 void CProgressBar::closeEvent(QCloseEvent *e)
-{e->ignore();}
+{
+  CQMessageBox::information(this, "COPASI", "COPASI is currently executing tasks.\n"
+                            "Please stop them first before closing COPASI.");
+
+  e->ignore();
+}
