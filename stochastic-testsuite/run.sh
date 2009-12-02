@@ -1,12 +1,11 @@
 #!/bin/bash 
 
 
-TESTSDIR=./dsmts24
-#TESTSDIR=./dsmts23-20080307
+TESTSDIR=./dmsts-24
 
-HEAD=/usr/bin/head
-CUT=/usr/bin/cut
-SED=//usr/bin/sed
+HEAD=head
+CUT=cut
+SED=sed
 
 #HEAD=/sw/bin/head
 #CUT=/sw/bin/cut
@@ -36,7 +35,6 @@ function getSpecies()
 }
 
 TOTALTIME=0.0
-
 
 for MODEL in $MODELS;do
   # set parameters 
@@ -102,5 +100,4 @@ for MODEL in $MODELS;do
   fi
   echo "$MODEL $RESULT"
 done
-
 echo "Time used for simulations: $TOTALTIME seconds";
