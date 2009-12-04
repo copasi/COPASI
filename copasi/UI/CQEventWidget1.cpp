@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:56:43 $
+//   $Date: 2009/12/04 19:19:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,8 @@
 
 #include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
+#include "CQIcons.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CEvent.h"
@@ -154,6 +156,11 @@ void CQEventWidget1::init()
   // hide the label and widget with respect to expression
   mpLabelEA->hide();
   mpExpressionEA->hide();
+
+  // Set the icons for the buttons
+  mpBtnSelectObject->setIcon(CQIcons::getIcon(CQIcons::SelectObject));
+  mpBtnAddTarget->setIcon(CQIcons::getIcon(CQIcons::Add));
+  mpBtnDeleteTarget->setIcon(CQIcons::getIcon(CQIcons::Delete));
 }
 
 /*! Slot to add a new target without object target nor its expression
@@ -184,7 +191,8 @@ void CQEventWidget1::slotAddTarget()
  */
 void CQEventWidget1::slotDeleteTarget()
 {
-  if (mCurrentTarget > mAssignments.size() - 1) return;
+  if (mCurrentTarget > mAssignments.size() - 1 ||
+      mAssignments.size() == 0) return;
 
   mAssignments.erase(mAssignments.begin() + mCurrentTarget);
   delete mpLBTarget->takeItem(mCurrentTarget);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/31 14:33:33 $
+//   $Author: shoops $
+//   $Date: 2009/12/04 19:19:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,9 +78,9 @@ bool CQProgressDialog::removeProgressItem(CQProgressItem * pItem)
 
 void CQProgressDialog::init()
 {
-  mpBtnPause->setIcon(CQIcons::qt_get_icon(CQIcons::Pause));
-  mpBtnContinue->setIcon(CQIcons::qt_get_icon(CQIcons::Continue));
-  mpBtnStop->setIcon(CQIcons::qt_get_icon(CQIcons::Stop));
+  mpBtnPause->setIcon(CQIcons::getIcon(CQIcons::Pause));
+  mpBtnContinue->setIcon(CQIcons::getIcon(CQIcons::Continue));
+  mpBtnStop->setIcon(CQIcons::getIcon(CQIcons::Stop));
 
   mpLine->hide();
   //  mpBtnPause->hide();
