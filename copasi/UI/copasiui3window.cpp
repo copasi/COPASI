@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.272 $
+//   $Revision: 1.273 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/11 14:58:42 $
+//   $Date: 2009/12/07 19:56:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include <QComboBox>
 #include <QToolBar>
 #include <QTextEdit>
+#include <QFontDialog>
 
 #include <vector>
 #include <sstream>
@@ -370,6 +371,9 @@ void CopasiUI3Window::createActions()
   mpaExpandModel = new QAction("Create array of compartments (debug version)", 0, this, "expandmodel");
   connect(mpaExpandModel, SIGNAL(activated()), this, SLOT(slotExpandModel()));
 
+  mpaFontSelectionDialog = new QAction("Select the Application Font", 0, this, "Select Font");
+  connect(mpaFontSelectionDialog, SIGNAL(activated()), this, SLOT(slotFontSelection()));
+
   //     QAction* mpaObjectBrowser;
 
 #ifdef WITH_MERGEMODEL
@@ -483,6 +487,7 @@ void CopasiUI3Window::createMenuBar()
   mpTools->insertSeparator();
   mpaUpdateMIRIAM->addTo(mpTools);
   mpTools->insertItem("&Preferences", this, SLOT(slotPreferences()), Qt::CTRL + Qt::Key_P, 3);
+  mpTools->addAction(mpaFontSelectionDialog);
 
 #ifdef COPASI_LICENSE_COM
   mpTools->insertItem("&Registration", this, SLOT(slotRegistration()));
@@ -1821,6 +1826,20 @@ void CopasiUI3Window::slotCapture()
   pixmap.save(fileName, "PNG");
 }
 
+void CopasiUI3Window::slotFontSelection()
+{
+  bool ok;
+
+  QFont font = QFontDialog::getFont(&ok, QFont("Times", 12), this);
+
+  if (ok)
+    {
+      qApp->setFont(font);
+      // font is set to the font the user selected
+    }
+
+  return;
+}
 void CopasiUI3Window::slotExpandModel()
 {
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
