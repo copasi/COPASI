@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.206 $
+//   $Revision: 1.207 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/26 22:25:15 $
+//   $Date: 2009/12/08 19:13:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5358,7 +5358,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
 
 void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
 {
-  CCopasiParameter* p;
+  CCopasiParameter * p = NULL;
 
   switch (mCurrentElement)
     {
@@ -8671,87 +8671,84 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
         name = mParser.getAttributeValue("name", papszAttrs);
         sType = mParser.getAttributeValue("type", papszAttrs);
 
-        if (sType == "float")
-          {
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::DOUBLE;
-            d = CCopasiXMLInterface::DBL(sValue.c_str());
-            pValue = &d;
-          }
-        else if (sType == "unsignedFloat")
-          {
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::UDOUBLE;
-            d = CCopasiXMLInterface::DBL(sValue.c_str());
-            pValue = &d;
-          }
-        else if (sType == "integer")
-          {
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::INT;
-            i = atoi(sValue.c_str());
-            pValue = &i;
-          }
-        else if (sType == "unsignedInteger")
-          {
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::UINT;
-            ui = atoi(sValue.c_str());
-            pValue = &ui;
-          }
-        else if (sType == "bool")
-          {
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::BOOL;
+        type = (CCopasiParameter::Type) toEnum(sType.c_str(), CCopasiParameter::XMLType);
 
-            if (sValue == "0" || sValue == "false")
-              {
-                b = false;
-              }
-            else
-              {
-                b = true;
-              }
+        switch (type)
+          {
+            case CCopasiParameter::DOUBLE:
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+              d = CCopasiXMLInterface::DBL(sValue.c_str());
+              pValue = &d;
+              break;
 
-            pValue = &b;
-          }
-        else if (sType == "string")
-          {
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::STRING;
-            pValue = &sValue;
-          }
-        else if (sType == "key")
-          {
-            // This is the old key the mapping is done when the parameter is added to a group.
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::KEY;
-            pValue = &sValue;
-          }
-        else if (sType == "file")
-          {
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::FILE;
-            pValue = &sValue;
-          }
-        else if (sType == "cn")
-          {
-            sValue = mParser.getAttributeValue("value", papszAttrs);
-            type = CCopasiParameter::CN;
-            pValue = &sValue;
-          }
-        else if (sType == "expression")
-          {
-            type = CCopasiParameter::EXPRESSION;
-            mParser.pushElementHandler(&mParser.mCharacterDataElement);
-            mParser.onStartElement(pszName, papszAttrs);
-          }
-        else
-          {
-            fatalError();
+            case CCopasiParameter::UDOUBLE:
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+              d = CCopasiXMLInterface::DBL(sValue.c_str());
+              pValue = &d;
+              break;
+
+            case CCopasiParameter::INT:
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+              i = atoi(sValue.c_str());
+              pValue = &i;
+              break;
+
+            case CCopasiParameter::UINT:
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+              ui = atoi(sValue.c_str());
+              pValue = &ui;
+              break;
+
+            case CCopasiParameter::BOOL:
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+
+              if (sValue == "0" || sValue == "false")
+                {
+                  b = false;
+                }
+              else
+                {
+                  b = true;
+                }
+
+              pValue = &b;
+              break;
+
+            case CCopasiParameter::STRING:
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+              pValue = &sValue;
+              break;
+
+            case CCopasiParameter::KEY:
+              // This is the old key the mapping is done when the parameter is added to a group.
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+              pValue = &sValue;
+              break;
+
+            case CCopasiParameter::FILE:
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+              pValue = &sValue;
+              break;
+
+            case CCopasiParameter::CN:
+              sValue = mParser.getAttributeValue("value", papszAttrs);
+              pValue = &sValue;
+              break;
+
+            case CCopasiParameter::EXPRESSION:
+              mParser.pushElementHandler(&mParser.mCharacterDataElement);
+              mParser.onStartElement(pszName, papszAttrs);
+              break;
+
+            default:
+              type = CCopasiParameter::INVALID;
+              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), sType, mParser.getCurrentLineNumber());
+              pValue = NULL;
+              break;
           }
 
         mCommon.pCurrentParameter = new CCopasiParameter(name, type, pValue);
+
         break;
 
       default:
@@ -8775,7 +8772,8 @@ void CCopasiXMLParser::ParameterElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Parameter", mParser.getCurrentLineNumber());
 
-        if (mCommon.pCurrentParameter->getType() == CCopasiParameter::EXPRESSION)
+        if (mCommon.pCurrentParameter != NULL &&
+            mCommon.pCurrentParameter->getType() == CCopasiParameter::EXPRESSION)
           {
             mCommon.pCurrentParameter->setValue(mCommon.CharacterData);
           }

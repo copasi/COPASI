@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.138 $
+//   $Revision: 1.139 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/11/30 13:19:46 $
+//   $Author: shoops $
+//   $Date: 2009/12/08 19:13:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,6 +134,7 @@ const MESSAGES Messages[] =
    " Please note: Tasks, reports, and plots may have been affected by these changes and may no longer work as expected."},
   {MCXML + 15, "XML (15): Multiple events with order '%d' encountered. The problem has been fixed."
    "Please verify that the automatic correction represents the intended behavior."},
+  {MCXML + 16, "XML (16): Unknown parameter '%s' with type '%s' encountered at line '%d'."},
 
   // CCopasiMessage
   {MCCopasiMessage + 1, "Message (1): No more messages."},
