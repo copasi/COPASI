@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:31:50 $
+//   $Date: 2009/12/08 17:22:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,33 +183,33 @@ void CEigen::initObjects()
 
 //Get the max eigenvalue real part
 const C_FLOAT64 & CEigen::getMaxrealpart() const
-  {
-    return mMaxrealpart;
-  }
+{
+  return mMaxrealpart;
+}
 
 //Get the max eigenvalue imaginary  part
 const C_FLOAT64 & CEigen::getMaximagpart() const
-  {
-    return mMaximagpart;
-  }
+{
+  return mMaximagpart;
+}
 
 // Get the number of zero eigenvalues
 const C_INT32 & CEigen::getNzero() const
-  {
-    return mNzero;
-  }
+{
+  return mNzero;
+}
 
 //Get the eigenvalue stiffness
 const C_FLOAT64 & CEigen::getStiffness() const
-  {
-    return mStiffness;
-  }
+{
+  return mStiffness;
+}
 
 //Get the eigenvalue hierarchy
 const C_FLOAT64 & CEigen::getHierarchy() const
-  {
-    return mHierarchy;
-  }
+{
+  return mHierarchy;
+}
 
 //initialize variables for eigenvalue calculations
 //
@@ -231,7 +231,7 @@ void CEigen::cleanup()
 
 void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
 {
-  assert (matrix.numRows() == matrix.numCols());
+  assert(matrix.numRows() == matrix.numCols());
   mN = matrix.numRows();
   initialize();
 
@@ -421,12 +421,12 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
       else if (mInfo <= mN)
         {
           // Warning
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCEigen + 2, mInfo);
+          CCopasiMessage(CCopasiMessage::WARNING, MCEigen + 2, mInfo);
         }
       else if (mInfo == mN + 1)
         {
           // Warning
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCEigen + 3, mInfo);
+          CCopasiMessage(CCopasiMessage::WARNING, MCEigen + 3, mInfo);
         }
       else if (mInfo == mN + 2)
         {
@@ -456,6 +456,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   // The sort order is ascending however we need descending
   unsigned C_INT32 *pTo = Pivot.array();
   unsigned C_INT32 *pFrom = pTo + mN - 1;
+
   for (; pTo < pFrom; ++pTo, --pFrom)
     {
       unsigned C_INT32 Tmp = *pFrom;
@@ -477,6 +478,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
       // for the largest real part
       if (mR[i] > mMaxrealpart)
         mMaxrealpart = mR[i];
+
       // for the largest imaginary part
       if (fabs(mI[i]) > mMaximagpart)
         mMaximagpart = fabs(mI[i]);
@@ -493,9 +495,11 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
           // positive real part
           if (mR[i] >= resolution)
             mNposreal++;
+
           // negative real part
           if (mR[i] <= -resolution)
             mNnegreal++;
+
           if (fabs(mI[i]) > resolution)
             {
               // complex
@@ -511,6 +515,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
       else
         {
           mR[i] = 0.0;
+
           if (fabs(mI[i]) > resolution)
             {
               // pure imaginary
@@ -536,6 +541,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
         mx = 0;
       else
         mx = mN - 1;
+
       if (mNposreal == mN)
         mn = mNposreal - 1;
       else if (mR[mNposreal - 1] < fabs(mR[mNposreal]))
@@ -553,12 +559,14 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 
   maxt = tott = fabs(1 / mR[mn]);
   distt = 0.0;
+
   for (i = 1; i < mN; i++)
     if (i != mn)
       {
         distt += maxt - fabs(1 / mR[i]);
         tott += fabs(1 / mR[i]);
       }
+
   mHierarchy = distt / tott / (mN - 1);
 
   //TODO add some metric that indicates the possibility of oscillations
@@ -569,44 +577,44 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
  * Return number of real eigenvalues WeiSun 3/28/02
  */
 const C_INT32 & CEigen::getNreal() const
-  {
-    return mNreal;
-  }
+{
+  return mNreal;
+}
 
 /**
  * Return the number of imaginary eigenvalue numbers
  */
 const C_INT32 & CEigen::getNimag() const
-  {
-    return mNimag;
-  }
+{
+  return mNimag;
+}
 
 const C_INT32 & CEigen::getNcplxconj() const
-  {
-    return mNcplxconj;
-  }
+{
+  return mNcplxconj;
+}
 
 /**
  * Return the number of eigenvalues with positive real part
  */
 const C_INT32 & CEigen::getNposreal() const
-  {
-    return mNposreal;
-  }
+{
+  return mNposreal;
+}
 
 /**
  * Return the number of eigenvalues with negative real part
  */
 const C_INT32 & CEigen::getNnegreal() const
-  {
-    return mNnegreal;
-  }
+{
+  return mNnegreal;
+}
 
 const CVector< C_FLOAT64 > & CEigen::getI() const
-  {return mI;}
+{return mI;}
 
 const CVector< C_FLOAT64 > & CEigen::getR() const
-  {return mR;}
+{return mR;}
 
 std::ostream &operator<<(std::ostream &os, const CEigen &A)
 {
