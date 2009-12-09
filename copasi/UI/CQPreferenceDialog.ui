@@ -1,178 +1,139 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.ui,v $ </comment>
-<comment>   $Revision: 1.2 $ </comment>
+<comment>   $Revision: 1.3 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2007/06/23 16:29:21 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2009/12/09 16:41:49 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>CQPreferenceDialog</class>
-<comment> All rights reserved. </comment>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>CQPreferenceDialog</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>261</width>
-            <height>225</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Preferences</string>
-    </property>
-    <property name="sizeGripEnabled">
+ <comment> All rights reserved. </comment>
+ <class>CQPreferenceDialog</class>
+ <widget class="QDialog" name="CQPreferenceDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>379</width>
+    <height>243</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Preferences</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QTreeWidget" name="mpTreeWidget" >
+     <column>
+      <property name="text" >
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Value</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="mpBtnLayout" >
+     <item>
+      <widget class="QPushButton" name="mpBtnOk" >
+       <property name="text" >
+        <string>&amp;OK</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
         <bool>true</bool>
-    </property>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>Layout1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>190</y>
-                <width>240</width>
-                <height>28</height>
-            </rect>
-        </property>
-        <hbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <property name="margin">
-                <number>0</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>mpBtnOk</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;OK</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-                <property name="default">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>mpBtnCancel</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Cancel</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-            </widget>
-        </hbox>
-    </widget>
-    <widget class="QListView">
-        <column>
-            <property name="text">
-                <string>Name</string>
-            </property>
-            <property name="clickable">
-                <bool>true</bool>
-            </property>
-            <property name="resizable">
-                <bool>true</bool>
-            </property>
-        </column>
-        <column>
-            <property name="text">
-                <string>Value</string>
-            </property>
-            <property name="clickable">
-                <bool>true</bool>
-            </property>
-            <property name="resizable">
-                <bool>true</bool>
-            </property>
-        </column>
-        <property name="name">
-            <cstring>mpListView</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>238</width>
-                <height>170</height>
-            </rect>
-        </property>
-        <property name="sizePolicy">
-            <sizepolicy>
-                <hsizetype>7</hsizetype>
-                <vsizetype>7</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-            </sizepolicy>
-        </property>
-        <property name="allColumnsShowFocus">
-            <bool>true</bool>
-        </property>
-        <property name="defaultRenameAction">
-            <enum>Accept</enum>
-        </property>
-    </widget>
-</widget>
-<connections>
-    <connection>
-        <sender>mpBtnOk</sender>
-        <signal>clicked()</signal>
-        <receiver>CQPreferenceDialog</receiver>
-        <slot>slotBtnOk()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>CQPreferenceDialog</receiver>
-        <slot>slotBtnCancel()</slot>
-    </connection>
-    <connection>
-        <sender>mpListView</sender>
-        <signal>clicked(QListViewItem*,const QPoint&amp;,int)</signal>
-        <receiver>CQPreferenceDialog</receiver>
-        <slot>editItem(QListViewItem*,const QPoint&amp;,int)</slot>
-    </connection>
-    <connection>
-        <sender>mpListView</sender>
-        <signal>returnPressed(QListViewItem*)</signal>
-        <receiver>CQPreferenceDialog</receiver>
-        <slot>editItem(QListViewItem*)</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>mpListView</tabstop>
-    <tabstop>mpBtnOk</tabstop>
-    <tabstop>mpBtnCancel</tabstop>
-</tabstops>
-<slots>
-    <slot access="protected">slotBtnOk()</slot>
-    <slot access="protected">slotBtnCancel()</slot>
-    <slot access="private">init()</slot>
-    <slot access="protected">editItem(QListViewItem*,const QPoint&amp;,int)</slot>
-    <slot access="protected">editItem(QListViewItem*)</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpBtnCancel" >
+       <property name="text" >
+        <string>&amp;Cancel</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>mpBtnOk</tabstop>
+  <tabstop>mpBtnCancel</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpBtnOk</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPreferenceDialog</receiver>
+   <slot>slotBtnOk()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPreferenceDialog</receiver>
+   <slot>slotBtnCancel()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpTreeWidget</sender>
+   <signal>itemDoubleClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>CQPreferenceDialog</receiver>
+   <slot>slotItemDoubleClicked(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>189</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>189</x>
+     <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
