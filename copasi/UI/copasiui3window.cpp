@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.273 $
+//   $Revision: 1.274 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/12/07 19:56:08 $
+//   $Author: nsimus $
+//   $Date: 2009/12/14 12:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,6 +62,7 @@ extern const char * CopasiLicense;
 #ifdef WITH_MERGEMODEL
 #include "model/CModelMerging.h"
 #endif
+#include "model/CModelExpansion.h"
 
 #include "./icons/filenew.xpm"
 #include "./icons/fileopen.xpm"
@@ -1840,11 +1841,13 @@ void CopasiUI3Window::slotFontSelection()
 
   return;
 }
+
+#include "UI/CQExpandModelData.h"
 void CopasiUI3Window::slotExpandModel()
 {
-  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  CModelExpansion me(pModel);
-  me.simpleCall();
+
+  CQExpandModelData *widget = new CQExpandModelData;
+  widget->exec();
 
   ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
 }

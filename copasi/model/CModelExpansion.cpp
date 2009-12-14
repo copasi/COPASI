@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/11/30 13:15:23 $
+//   $Date: 2009/12/14 12:55:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,15 @@ void CModelExpansion::setModel(CModel* pModel)
   mpModel = pModel;
 }
 
-void CModelExpansion::simpleCall()
+void CModelExpansion::simpleCall(const CCompartment * source  , int  mult)
 {
+
+  if (mult < 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCModelExpansion + 2);
+      return;
+    }
+
   if (!mpModel) return;
 
   if (!mpModel->getCompartments().size()) return;
@@ -45,10 +52,8 @@ void CModelExpansion::simpleCall()
     {
       const CCompartment* sourceComp = mpModel->getCompartments()[i];
 
-      if (!sourceComp)
-        continue; //TODO error handling, should not happen
-
       ci.keyMap[sourceComp->getKey()] = "";
+      nameInSet(sourceComp->getObjectName());
     }
 
   imax = mpModel->getMetabolites().size();
@@ -57,10 +62,16 @@ void CModelExpansion::simpleCall()
     {
       const CMetab* sourceMetab = mpModel->getMetabolites()[i];
 
-      if (!sourceMetab)
-        continue; //TODO error handling, should not happen
-
       ci.keyMap[sourceMetab->getKey()] = "";
+    }
+
+  imax = mpModel->getReactions().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      CReaction * sourceReac = mpModel->getReactions()[i];
+
+      nameInSet(sourceReac->getObjectName());
     }
 
   imax = mpModel->getModelValues().size();
@@ -69,20 +80,36 @@ void CModelExpansion::simpleCall()
     {
       const CModelValue* sourceModVal = mpModel->getModelValues()[i];
 
-      if (!sourceModVal)
-        continue; //TODO error handling, should not happen
-
       ci.keyMap[sourceModVal->getKey()] = "";
+      nameInSet(sourceModVal->getObjectName());
     }
 
-  CCompartment * source = mpModel->getCompartments()[0];
+  imax = mpModel->getEvents().size();
 
-  ci = copyCompartment(source, "copy");
+  for (i = 0; i < imax; ++i)
+    {
+      const CEvent* sourceEvent = mpModel->getEvents()[i];
 
-  bool  progress  =     copyCompartmentsExpressions(source)
-                        &&  copyMetabolitesExpressions(source)
-                        &&  copyModelValuesExpressions("copy")
-                        &&  copyEvents("copy");
+      nameInSet(sourceEvent->getObjectName());
+    }
+
+  bool progress;
+
+  C_INT m;
+
+  for (m = 0; m < mult; ++m)
+    {
+      std::ostringstream newname;
+      newname <<  source->getObjectName() << "_" << m;
+      name = newname.str();
+
+      ci = copyCompartment(source, m);
+
+      progress  =     copyCompartmentsExpressions(source)
+                      &&  copyMetabolitesExpressions(source)
+                      &&  copyModelValuesExpressions(m)
+                      &&  copyEvents(m);
+    }
 
   if (!progress)
     {
@@ -93,7 +120,74 @@ void CModelExpansion::simpleCall()
   mpModel->compileIfNecessary(NULL);
 }
 
-CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompartment* source, std::string name) const
+/**
+ **      This method tests whether the given C name already assigned,
+ **      put the new name (in cappital letters:
+ **      all names can be upper or lower case)
+ **      in the set of assigned names
+ **      or  modify the name
+ **/
+
+std::string CModelExpansion::testName(const std::string & mname)
+{
+  std::locale C("C");
+  char ch;
+
+  std::ostringstream newname, tmp;
+
+  unsigned C_INT32 name_size = mname.size();
+  unsigned C_INT32 i;
+
+  for (i = 0; i < name_size; i++)
+    {
+      ch = mname[i];
+
+      if (std::isalpha(ch, C) && std::islower(ch, C))
+        tmp << (char) toupper(ch);
+      else
+        tmp << ch;
+    }
+
+  if (NameSet.find(tmp.str()) == NameSet.end())
+    {
+      NameSet.insert(tmp.str());
+
+      return mname;
+    }
+  else
+    {
+      newname << mname << "_";
+
+      return testName(newname.str());
+    }
+}
+
+void CModelExpansion::nameInSet(const std::string & mname)
+{
+  std::locale C("C");
+  char ch;
+
+  std::ostringstream newname, tmp;
+
+  unsigned C_INT32 name_size = mname.size();
+  unsigned C_INT32 i;
+
+  for (i = 0; i < name_size; i++)
+    {
+      ch = mname[i];
+
+      if (std::isalpha(ch, C) && std::islower(ch, C))
+        tmp << (char) toupper(ch);
+      else
+        tmp << ch;
+    }
+
+  NameSet.insert(tmp.str());
+
+  return;
+}
+
+CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompartment* source, C_INT32 & count)
 {
   CompartmentInfo ret;
 
@@ -102,7 +196,7 @@ CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompart
   if (!source) return ret;
 
   //create new compartment
-  CCompartment* newComp = mpModel->createCompartment(name, source->getInitialValue());
+  CCompartment* newComp = mpModel->createCompartment(testName(name), source->getInitialValue());
 
   if (!newComp) return ret;
 
@@ -139,7 +233,11 @@ CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompart
 
       if (reactionInvolvesCompartment(pReac, source))
         {
-          CReaction* pNewReac = mpModel->createReaction(pReac->getObjectName() + "_" + name);
+
+          std::ostringstream newname;
+          newname << pReac->getObjectName() <<  "_" << count;
+
+          CReaction* pNewReac = mpModel->createReaction(testName(newname.str()));
 
           if (!pNewReac)
             continue; //should not happen TODO: error handling
@@ -300,9 +398,7 @@ bool CModelExpansion::reactionInvolvesCompartment(const CReaction * reac, const 
   return false;
 }
 
-/* DEVELOPMENT : handle non constant model values, metabolites, compartments */
-
-bool CModelExpansion::copyModelValuesExpressions(std::string name)
+bool CModelExpansion::copyModelValuesExpressions(C_INT32 & count)
 {
   bool info = false;
 
@@ -327,7 +423,10 @@ bool CModelExpansion::copyModelValuesExpressions(std::string name)
 
           if (infix != newInfix)
             {
-              newModVal = mpModel->createModelValue(source->getObjectName() + "_" + name, source->getInitialValue());
+              std::ostringstream newname;
+              newname << source->getObjectName() << "_" << count;
+
+              newModVal = mpModel->createModelValue(testName(newname.str()), source->getInitialValue());
               newModVal->setStatus(source->getStatus());
               newModVal->setExpression(newInfix);
 
@@ -345,7 +444,10 @@ bool CModelExpansion::copyModelValuesExpressions(std::string name)
           if (infix != newInfix)
             if (ci.keyMap[source->getKey()] == "")
               {
-                newModVal = mpModel->createModelValue(source->getObjectName() + "_" + name, source->getInitialValue());
+                std::ostringstream newname;
+                newname << source->getObjectName() << "_" << count;
+
+                newModVal = mpModel->createModelValue(testName(newname.str()), source->getInitialValue());
                 newModVal->setStatus(source->getStatus());
 
                 const CExpression* tmpExpression = source->getExpressionPtr();
@@ -489,7 +591,7 @@ std::string CModelExpansion::copyExpression(const CExpression * pExpression)
   return tmp->getInfix().c_str();
 }
 
-bool CModelExpansion::copyEvents(std::string name)
+bool CModelExpansion::copyEvents(C_INT32 & count)
 {
 
   bool info = false;
@@ -522,7 +624,11 @@ bool CModelExpansion::copyEvents(std::string name)
           if (trigger != infix)
             {
               trigger = infix;
-              newEvent = mpModel->createEvent(sourceEvent->getObjectName() + "_" + name);
+
+              std::ostringstream newname;
+              newname << sourceEvent->getObjectName() << "_" << count;
+
+              newEvent = mpModel->createEvent(testName(newname.str()));
               newEvent->setTriggerExpression(trigger);
             }
         }
@@ -542,7 +648,10 @@ bool CModelExpansion::copyEvents(std::string name)
 
               if (newEvent == NULL)
                 {
-                  newEvent = mpModel->createEvent(sourceEvent->getObjectName() + "_" + name);
+                  std::ostringstream newname;
+                  newname << sourceEvent->getObjectName() << "_" << count;
+
+                  newEvent = mpModel->createEvent(testName(newname.str()));
                   newEvent->setTriggerExpression(trigger);
                 }
             }
@@ -600,7 +709,9 @@ bool CModelExpansion::copyEvents(std::string name)
 
       if (newEvent == NULL && !identic)
         {
-          newEvent = mpModel->createEvent(sourceEvent->getObjectName() + "_" + name);
+          std::ostringstream newname;
+          newname << sourceEvent->getObjectName() << "_" << count;
+          newEvent = mpModel->createEvent(testName(newname.str()));
           newEvent->setTriggerExpression(trigger);
           newEvent->setDelayExpression(delay);
           newEvent->setDelayAssignment(sourceEvent->getDelayAssignment());
