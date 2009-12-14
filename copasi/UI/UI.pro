@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.226 $
+#   $Revision: 1.227 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/12/09 16:41:49 $
+#   $Author: nsimus $
+#   $Date: 2009/12/14 12:56:18 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.226 $ $Author: shoops $ $Date: 2009/12/09 16:41:49 $
+# $Revision: 1.227 $ $Author: nsimus $ $Date: 2009/12/14 12:56:18 $
 ######################################################################
 
 LIB = UI
@@ -73,6 +73,7 @@ HEADERS	+= \
   SliderSettingsDialog.h \
   StateSubwidget.h \
   SteadyStateWidget.h \
+  CQExpandModelData.h \
 #
 ### other headers (not belonging to generated widgets)
   AboutDialog.h \
@@ -191,6 +192,7 @@ SOURCES	+= \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
   SteadyStateWidget.cpp \
+  CQExpandModelData.cpp \
 #
 ### other sources (not belonging to generated widgets)
   AboutDialog.cpp \
@@ -339,6 +341,7 @@ FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
+FORMS += CQExpandModelData.ui
 
 # headers generated from .ui files
 HEADERS += \
