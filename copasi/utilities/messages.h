@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.139 $
+//   $Revision: 1.140 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/12/08 19:13:42 $
+//   $Author: nsimus $
+//   $Date: 2009/12/14 12:57:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -358,6 +358,7 @@ const MESSAGES Messages[] =
 
 //CModelExpansion
   {MCModelExpansion + 1, "CModelExpansion (1): An error has occured while creation of the array of compartments."},
+  {MCModelExpansion + 2, "CModelExpansion (2): Negative number of copies ."},
 
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
