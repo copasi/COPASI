@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauLine.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/24 18:13:13 $
+   $Date: 2009/12/14 17:47:14 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,11 +142,21 @@ void CTableauLine::reduce(C_FLOAT64 & r1, C_FLOAT64 & r2)
     {
       if (GCD1 > GCD2)
         {
-          GCD1 -= GCD2;
+          GCD1 %= GCD2;
+
+          if (GCD1 == 0)
+            {
+              GCD1 = GCD2;
+            }
         }
       else
         {
-          GCD2 -= GCD1;
+          GCD2 %= GCD1;
+
+          if (GCD2 == 0)
+            {
+              GCD2 = GCD1;
+            }
         }
     }
 

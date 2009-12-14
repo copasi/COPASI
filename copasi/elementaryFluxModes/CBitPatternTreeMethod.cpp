@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/11 17:39:45 $
+//   $Date: 2009/12/14 17:47:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -791,11 +791,21 @@ void CBitPatternTreeMethod::convertToIntegers(CVectorCore< C_FLOAT64 > & values)
         {
           if (GCD1 > GCD2)
             {
-              GCD1 -= GCD2;
+              GCD1 %= GCD2;
+
+              if (GCD1 == 0)
+                {
+                  GCD1 = GCD2;
+                }
             }
           else
             {
-              GCD2 -= GCD1;
+              GCD2 %= GCD1;
+
+              if (GCD2 == 0)
+                {
+                  GCD2 = GCD1;
+                }
             }
         }
 
