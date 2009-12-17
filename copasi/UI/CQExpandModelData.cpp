@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/12/14 12:54:47 $
+//   $Date: 2009/12/17 10:54:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,6 +107,16 @@ void CQExpandModelData::slotOK()
     if (mCompartmentName[i] ==  name) source =  pModel->getCompartments()[i];
 
   int mult =  mpEditNumber->text().toInt();
+
+  if (mult < 0)
+    {
+
+      CQMessageBox::critical(this, QString("Error"),
+                             QString("The choise of the Number of copies is incorect  ! "),
+                             QMessageBox::Ok, QMessageBox::Ok);
+
+      return;
+    }
 
   CModelExpansion me(pModel);
   me.simpleCall(source, mult);
