@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/12/14 12:55:20 $
+//   $Date: 2009/12/17 10:55:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,12 +31,6 @@ void CModelExpansion::setModel(CModel* pModel)
 
 void CModelExpansion::simpleCall(const CCompartment * source  , int  mult)
 {
-
-  if (mult < 0)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCModelExpansion + 2);
-      return;
-    }
 
   if (!mpModel) return;
 
