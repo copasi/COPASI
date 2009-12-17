@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQIcons.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/12/04 19:19:27 $
+//   $Author: ssahle $
+//   $Date: 2009/12/17 02:47:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@ public:
     unknown_ID
   };
 
-  static QPixmap CQIcons::getIcon(const IconID & id);
+  static QPixmap getIcon(const IconID & id);
 };
 
 #endif // CQICONS_H
