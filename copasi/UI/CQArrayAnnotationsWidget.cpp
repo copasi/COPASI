@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:56:43 $
+//   $Author: pwilly $
+//   $Date: 2009/12/21 19:07:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -770,6 +770,9 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
       qDebug() << "col = " << col << " - row = " << row;
 #endif
 
+      mpPlot3d->mpPlot->mpSliderColumn->setValue(0);
+      mpPlot3d->mpPlot->mpSliderRow->setValue(0);
+
       if (mpContentTable->isRowSelected(row, true))
         {
           mpPlot3d->mpPlot->sliderMoved(-1, row);
@@ -786,6 +789,8 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
         {
 #ifdef DEBUG_UI
           qDebug() << "mpContentTable->currentColumn() = " << mpContentTable->currentColumn() << " - mpContentTable->currentRow() = " << mpContentTable->currentRow();
+          qDebug() << "mpPlot3d->mpPlot->mpSliderColumn->value() = " << mpPlot3d->mpPlot->mpSliderColumn->value() << " - mpPlot3d->mpPlot->mpSliderRow->value() = " << mpPlot3d->mpPlot->mpSliderRow->value();
+          qDebug() << "mpContentTable->numCols() = " << mpContentTable->numCols() << " - mpContentTable->numRows() = " << mpContentTable->numRows();
 #endif
 
           if (mpContentTable->currentRow() == -1 && mpContentTable->currentColumn() == -1)
@@ -863,6 +868,10 @@ void CQArrayAnnotationsWidget::fillBarChart()
   mBarChartFilled = true;
 
   if (!mpArray) return;
+
+#ifdef DEBUG_UI
+  qDebug() << "mRowIndex = " << mRowIndex << " - mIndex.size() = " << mIndex.size();
+#endif
 
   assert(mRowIndex < mIndex.size());
 
