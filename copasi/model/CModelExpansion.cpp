@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/12/17 10:55:17 $
+//   $Author: shoops $
+//   $Date: 2010/01/05 18:41:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,7 +89,7 @@ void CModelExpansion::simpleCall(const CCompartment * source  , int  mult)
 
   bool progress;
 
-  C_INT m;
+  C_INT32 m;
 
   for (m = 0; m < mult; ++m)
     {
