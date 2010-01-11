@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: aekamal $
+//   $Date: 2010/01/11 15:30:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@ protected:
 
 protected slots:
   virtual void languageChange();
+  virtual void slotBtnNewClicked();
   virtual void slotBtnDeleteClicked();
   virtual void slotBtnClearClicked();
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);

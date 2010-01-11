@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/07/27 16:49:06 $
+//   $Date: 2010/01/11 15:30:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,11 @@ CQCompartmentsWidget::~CQCompartmentsWidget()
 void CQCompartmentsWidget::languageChange()
 {
   retranslateUi(this);
+}
+
+void CQCompartmentsWidget::slotBtnNewClicked()
+{
+  mpCompartmentDM->insertRow();
 }
 
 void CQCompartmentsWidget::slotBtnDeleteClicked()

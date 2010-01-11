@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/07/27 16:49:06 $
+//   $Date: 2010/01/11 15:30:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,6 +81,11 @@ CQSpeciesWidget::~CQSpeciesWidget()
 void CQSpeciesWidget::languageChange()
 {
   retranslateUi(this);
+}
+
+void CQSpeciesWidget::slotBtnNewClicked()
+{
+  mpSpecieDM->insertRow();
 }
 
 void CQSpeciesWidget::slotBtnDeleteClicked()

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportsWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/07/27 16:50:57 $
+//   $Date: 2010/01/11 15:30:51 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -73,6 +73,11 @@ CQReportsWidget::~CQReportsWidget()
 void CQReportsWidget::languageChange()
 {
   retranslateUi(this);
+}
+
+void CQReportsWidget::slotBtnNewClicked()
+{
+  mpReportDM->insertRow();
 }
 
 void CQReportsWidget::slotBtnDeleteClicked()

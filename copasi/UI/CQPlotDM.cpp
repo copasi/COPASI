@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/08/11 13:18:05 $
+//   $Author: aekamal $
+//   $Date: 2010/01/11 15:30:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,7 +163,7 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec("", CPlotItem::plot2d);
+      (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec(TO_UTF8(createNewName("Plot", COL_NAME_PLOTS)), CPlotItem::plot2d);
     }
 
   endInsertRows();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/07/27 16:49:06 $
+//   $Date: 2010/01/11 15:30:51 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -71,6 +71,11 @@ CQFunctionsWidget::~CQFunctionsWidget()
 void CQFunctionsWidget::languageChange()
 {
   retranslateUi(this);
+}
+
+void CQFunctionsWidget::slotBtnNewClicked()
+{
+  mpFunctionDM->insertRow();
 }
 
 void CQFunctionsWidget::slotBtnDeleteClicked()

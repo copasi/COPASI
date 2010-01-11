@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/09/18 18:01:08 $
+//   $Date: 2010/01/11 15:30:51 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -223,7 +223,7 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      CCopasiRootContainer::getFunctionList()->add(new CKinFunction(""), true);
+      CCopasiRootContainer::getFunctionList()->add(new CKinFunction(TO_UTF8(createNewName("Function", COL_NAME_FUNCTIONS))), true);
     }
 
   endInsertRows();
