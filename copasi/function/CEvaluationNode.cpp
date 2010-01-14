@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:20 $
+//   $Date: 2010/01/14 19:58:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,7 +181,7 @@ CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationN
 
 CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& children) const
 {
-  CEvaluationNode *newnode = create(mType, mData);
+  CEvaluationNode *newnode = create(mType, getData());
   std::vector<CEvaluationNode*>::const_iterator it = children.begin(), endit = children.end();
 
   while (it != endit)
