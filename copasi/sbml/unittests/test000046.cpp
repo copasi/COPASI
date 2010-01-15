@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000046.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:39:42 $
+//   $Date: 2010/01/15 16:03:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ void test000046::test_stoichiometricExpression()
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
-  CPPUNIT_ASSERT(fabs((pModelValue->getValue() - 3.7) / 3.7) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pModelValue->getInitialValue() - 3.7) / 3.7) < 1e-3);
 
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
   const CReaction* pReaction1 = pModel->getReactions()[0];
@@ -193,4 +193,4 @@ const char* test000046::MODEL_STRING =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000027.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/03 09:50:32 $
+//   $Date: 2010/01/15 16:03:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ void test000027::test_hasOnlySubstanceUnits()
   const CModelValue* pFactor = pModel->getModelValues()[1];
   CPPUNIT_ASSERT(pFactor != NULL);
   CPPUNIT_ASSERT(pFactor->getStatus() == CModelEntity::FIXED);
-  CPPUNIT_ASSERT(fabs((pFactor->getValue() - pModel->getQuantity2NumberFactor()) / pModel->getQuantity2NumberFactor()) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pFactor->getInitialValue() - pModel->getQuantity2NumberFactor()) / pModel->getQuantity2NumberFactor()) < 1e-3);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
