@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
               case COL_NAME_COMPARTMENTS:
-                return QVariant(QString("No Name"));
+                return QVariant(QString("New Compartment"));
               case COL_TYPE_COMPARTMENTS:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
               case COL_IVOLUME:
@@ -254,8 +254,8 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
       else if (index.column() == COL_IVOLUME)
         pComp->setInitialValue(value.toDouble());
 
-      if (defaultRow && this->index(index.row(), COL_NAME_COMPARTMENTS).data().toString() == "No Name")
-        pComp->setObjectName(TO_UTF8(createNewName("Compartment", COL_NAME_COMPARTMENTS)));
+      if (defaultRow && this->index(index.row(), COL_NAME_COMPARTMENTS).data().toString() == "compartment")
+        pComp->setObjectName(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, "");
@@ -270,7 +270,7 @@ bool CQCompartmentDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(TO_UTF8(createNewName("Compartment", COL_NAME_COMPARTMENTS)));
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
     }
 
   endInsertRows();

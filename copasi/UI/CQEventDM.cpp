@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
               case COL_NAME_EVENTS:
-                return QVariant(QString("No Name"));
+                return QVariant(QString("New Event"));
               case COL_ORDER_EVENTS:
               {
                 if (role == Qt::DisplayRole)
@@ -204,8 +204,8 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
       else if (index.column() == COL_ORDER_EVENTS)
         pEvent->setOrder(value.toUInt());
 
-      if (defaultRow && this->index(index.row(), COL_NAME_EVENTS).data().toString() == "No Name")
-        pEvent->setObjectName(TO_UTF8(createNewName("Event", COL_NAME_EVENTS)));
+      if (defaultRow && this->index(index.row(), COL_NAME_EVENTS).data().toString() == "event")
+        pEvent->setObjectName(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, "");
@@ -220,7 +220,7 @@ bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(TO_UTF8(createNewName("Event", COL_NAME_EVENTS)));
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
     }
 
   endInsertRows();

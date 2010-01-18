@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -91,7 +91,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
               case COL_NAME_GQ:
-                return QVariant(QString("No Name"));
+                return QVariant(QString("New Quantity"));
               case COL_TYPE_GQ:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
               case COL_INITIAL_GQ:
@@ -224,8 +224,8 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
       else if (index.column() == COL_INITIAL_GQ)
         pGQ->setInitialValue(value.toDouble());
 
-      if (defaultRow && this->index(index.row(), COL_NAME_GQ).data().toString() == "No Name")
-        pGQ->setObjectName(TO_UTF8(createNewName("Quantity", COL_NAME_GQ)));
+      if (defaultRow && this->index(index.row(), COL_NAME_GQ).data().toString() == "quantity")
+        pGQ->setObjectName(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, "");
@@ -240,7 +240,7 @@ bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(TO_UTF8(createNewName("Quantity", COL_NAME_GQ)));
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
     }
 
   endInsertRows();

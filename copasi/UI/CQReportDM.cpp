@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -68,7 +68,7 @@ QVariant CQReportDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
               case COL_NAME_REPORTS:
-                return QVariant(QString("No Name"));
+                return QVariant(QString("New Report"));
               default:
                 return QVariant(QString(""));
             }
@@ -133,8 +133,8 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
       if (index.column() == COL_NAME_REPORTS)
         pRepDef->setObjectName(TO_UTF8(value.toString()));
 
-      if (defaultRow && this->index(index.row(), COL_NAME_REPORTS).data().toString() == "No Name")
-        pRepDef->setObjectName(TO_UTF8(createNewName("Report", COL_NAME_REPORTS)));
+      if (defaultRow && this->index(index.row(), COL_NAME_REPORTS).data().toString() == "report")
+        pRepDef->setObjectName(TO_UTF8(createNewName("report", COL_NAME_REPORTS)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::REPORT, ListViews::CHANGE, "");
@@ -149,7 +149,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(createNewName("Report", COL_NAME_REPORTS)), "");
+      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(createNewName("report", COL_NAME_REPORTS)), "");
     }
 
   endInsertRows();

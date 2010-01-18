@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,7 +126,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
               case COL_NAME_SPECIES:
-                return QVariant(QString("No Name"));
+                return QVariant(QString("New Species"));
               case COL_COMPARTMENT:
               {
                 const CCopasiVector < CCompartment > & compartments =
@@ -428,8 +428,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
             }
         }
 
-      if (defaultRow && this->index(index.row(), COL_NAME_SPECIES).data().toString() == "No Name")
-        pSpe->setObjectName(TO_UTF8(createNewName("Species", COL_NAME_SPECIES)));
+      if (defaultRow && this->index(index.row(), COL_NAME_SPECIES).data().toString() == "species")
+        pSpe->setObjectName(TO_UTF8(createNewName("species", COL_NAME_SPECIES)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");
@@ -449,7 +449,7 @@ bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createMetabolite(TO_UTF8(createNewName("Species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createMetabolite(TO_UTF8(createNewName("species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
     }
 
   endInsertRows();

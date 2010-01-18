@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
               case COL_NAME_REACTIONS:
-                return QVariant(QString("No Name"));
+                return QVariant(QString("New Reaction"));
               default:
                 return QVariant(QString(""));
             }
@@ -191,8 +191,8 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
       else if (index.column() == COL_EQUATION)
         setEquation(pRea, index, value);
 
-      if (defaultRow && this->index(index.row(), COL_NAME_REACTIONS).data().toString() == "No Name")
-        pRea->setObjectName(TO_UTF8(createNewName("Reaction", COL_NAME_REACTIONS)));
+      if (defaultRow && this->index(index.row(), COL_NAME_REACTIONS).data().toString() == "reaction")
+        pRea->setObjectName(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, "");
@@ -304,7 +304,7 @@ bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("Reaction", COL_NAME_REACTIONS)));
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
     }
 
   endInsertRows();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -90,7 +90,7 @@ QVariant CQFunctionDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
               case COL_NAME_FUNCTIONS:
-                return QVariant(QString("No Name"));
+                return QVariant(QString("New Function"));
               case COL_TYPE_FUNCTIONS:
                 return QVariant(QString(FROM_UTF8(CEvaluationTree::TypeName[4])));
               default:
@@ -207,8 +207,8 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
             }
         }
 
-      if (defaultRow && this->index(index.row(), COL_NAME_FUNCTIONS).data().toString() == "No Name")
-        pFunc->setObjectName(TO_UTF8(createNewName("Function", COL_NAME_FUNCTIONS)));
+      if (defaultRow && this->index(index.row(), COL_NAME_FUNCTIONS).data().toString() == "function")
+        pFunc->setObjectName(TO_UTF8(createNewName("function", COL_NAME_FUNCTIONS)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, "");
@@ -223,7 +223,7 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      CCopasiRootContainer::getFunctionList()->add(new CKinFunction(TO_UTF8(createNewName("Function", COL_NAME_FUNCTIONS))), true);
+      CCopasiRootContainer::getFunctionList()->add(new CKinFunction(TO_UTF8(createNewName("function", COL_NAME_FUNCTIONS))), true);
     }
 
   endInsertRows();

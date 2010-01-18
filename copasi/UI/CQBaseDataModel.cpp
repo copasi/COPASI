@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:28 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 
   for (unsigned C_INT32 i = 1;; ++i)
     {
-      nname = name + " " + QString::number(i);
+      nname = name + "_" + QString::number(i);
 
       for (j = 0; j < jmax; ++j)
         if (index(j, nameCol).data() == nname) break;

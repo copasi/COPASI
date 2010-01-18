@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/01/18 15:50:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
               case COL_NAME_PLOTS:
-                return QVariant(QString("No Name"));
+                return QVariant(QString("New Plot"));
               case COL_ACTIVE_PLOTS:
                 return QVariant(true);
               default:
@@ -147,8 +147,8 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
       else if (index.column() == COL_ACTIVE_PLOTS)
         pPS->setActive(value.toBool());
 
-      if (defaultRow && this->index(index.row(), COL_NAME_PLOTS).data().toString() == "No Name")
-        pPS->setObjectName(TO_UTF8(createNewName("Plot", COL_NAME_PLOTS)));
+      if (defaultRow && this->index(index.row(), COL_NAME_PLOTS).data().toString() == "plot")
+        pPS->setObjectName(TO_UTF8(createNewName("plot", COL_NAME_PLOTS)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, "");
@@ -163,7 +163,7 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec(TO_UTF8(createNewName("Plot", COL_NAME_PLOTS)), CPlotItem::plot2d);
+      (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec(TO_UTF8(createNewName("plot", COL_NAME_PLOTS)), CPlotItem::plot2d);
     }
 
   endInsertRows();
