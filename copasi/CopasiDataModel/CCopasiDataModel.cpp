@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.145 $
+//   $Revision: 1.146 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:20 $
+//   $Date: 2010/01/19 17:49:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -276,6 +276,29 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           mpTaskList->setObjectName("TaskList");
           add(mpTaskList, true);
           addDefaultTasks();
+
+          // We need to initialize all the task so that results are available
+
+          // We suppress all errors and warnings
+          unsigned C_INT32 Size = CCopasiMessage::size();
+
+          CCopasiVectorN< CCopasiTask >::iterator it = mpTaskList->begin();
+          CCopasiVectorN< CCopasiTask >::iterator end = mpTaskList->end();
+
+          for (; it != end; ++it)
+            {
+              try
+                {
+                  (*it)->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+                }
+
+              catch (...) {}
+            }
+
+          // Remove error messages created by the task initialization as this may fail
+          // due to incomplete task specification at this time.
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
         }
 
       if (XML.getReportList())
@@ -499,6 +522,29 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport,
 
   // We have at least one task of every type
   addDefaultTasks();
+
+  // We need to initialize all the task so that results are available
+
+  // We suppress all errors and warnings
+  unsigned C_INT32 Size = CCopasiMessage::size();
+
+  CCopasiVectorN< CCopasiTask >::iterator it = mpTaskList->begin();
+  CCopasiVectorN< CCopasiTask >::iterator end = mpTaskList->end();
+
+  for (; it != end; ++it)
+    {
+      try
+        {
+          (*it)->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+        }
+
+      catch (...) {}
+    }
+
+  // Remove error messages created by the task initialization as this may fail
+  // due to incomplete task specification at this time.
+  while (CCopasiMessage::size() > Size)
+    CCopasiMessage::getLastMessage();
 
   pdelete(mpReportDefinitionList);
   mpReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", this);
