@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/11/19 16:50:06 $
+//   $Author: pwilly $
+//   $Date: 2010/01/21 10:55:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@ Plot3d::Plot3d(QWidget* parent, const char* name)
   mpPlot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   mpPlot->setRotation(30, 0, 15);
   //setScale(1,1,1);
-  mpPlot->setShift(0.15, 0, 0);
+  mpPlot->setShift(0, 0, 0);
 
   mTitle = QString("");
   mColorLegend = true;
@@ -55,6 +55,9 @@ Plot3d::Plot3d(QWidget* parent, const char* name)
 Plot3d::~Plot3d()
 {}
 
+/*
+ * Function to set zoom of view
+ */
 void Plot3d::setZoom()
 {
 #ifdef DEBUG_UI
@@ -70,6 +73,9 @@ void Plot3d::setZoom()
   mpPlot->setZoom(zoom);
 }
 
+/*
+ * Function to plot data
+ */
 void Plot3d::plotData()
 {
 #ifdef DEBUG_UI
@@ -136,6 +142,7 @@ void Plot3d::setAxes()
   mpPlot->coordinates()->axes[Qwt3D::Z1].setLineWidth(2, 0.7, 0.2);
   mpPlot->coordinates()->axes[Qwt3D::Z1].setTicOrientation(-1, 1, 0);
   mpPlot->coordinates()->axes[Qwt3D::Z1].setTicLength(majorTicLength, minorTicLength);
+
   mpPlot->coordinates()->axes[Qwt3D::Z2].setScale(new ValueScale);
 
   if ((mData.maxValue > 0) && (mData.minValue < 0))
@@ -147,6 +154,7 @@ void Plot3d::setAxes()
   mpPlot->coordinates()->axes[Qwt3D::Z2].setLineWidth(2, 0.7, 0.2);
   mpPlot->coordinates()->axes[Qwt3D::Z2].setTicOrientation(-1, -1, 0);
   mpPlot->coordinates()->axes[Qwt3D::Z2].setTicLength(majorTicLength, minorTicLength);
+
   mpPlot->coordinates()->axes[Qwt3D::Z3].setScale(new ValueScale);
 
   if ((mData.maxValue > 0) && (mData.minValue < 0))
@@ -158,6 +166,7 @@ void Plot3d::setAxes()
   mpPlot->coordinates()->axes[Qwt3D::Z3].setLineWidth(2, 0.7, 0.2);
   mpPlot->coordinates()->axes[Qwt3D::Z3].setTicOrientation(1, -1, 0);
   mpPlot->coordinates()->axes[Qwt3D::Z3].setTicLength(majorTicLength, minorTicLength);
+
   mpPlot->coordinates()->axes[Qwt3D::Z4].setScale(new ValueScale);
 
   if ((mData.maxValue > 0) && (mData.minValue < 0))
@@ -218,18 +227,21 @@ void Plot3d::setAxes()
   mpPlot->coordinates()->axes[Qwt3D::Y1].setMinors(0);
   //mpPlot->coordinates()->axes[Qwt3D::Y1].setLineWidth(2, 0.7, 0);
   mpPlot->coordinates()->axes[Qwt3D::Y1].setTicLength(majorTicLength, 0);
+
   mpPlot->coordinates()->axes[Qwt3D::Y2].setLabelString("rows");
   mpPlot->coordinates()->axes[Qwt3D::Y2].setScale(new RowScale(mpRowScale, getRowSliderPos()));
   mpPlot->coordinates()->axes[Qwt3D::Y2].setMajors(mData.rows - 1);
   mpPlot->coordinates()->axes[Qwt3D::Y2].setMinors(0);
   //mpPlot->coordinates()->axes[Qwt3D::Y2].setLineWidth(2, 0.7, 0);
   mpPlot->coordinates()->axes[Qwt3D::Y2].setTicLength(majorTicLength, 0);
+
   mpPlot->coordinates()->axes[Qwt3D::Y3].setLabelString("rows");
   mpPlot->coordinates()->axes[Qwt3D::Y3].setScale(new RowScale(mpRowScale, getRowSliderPos()));
   mpPlot->coordinates()->axes[Qwt3D::Y3].setMajors(mData.rows - 1);
   mpPlot->coordinates()->axes[Qwt3D::Y3].setMinors(0);
   //mpPlot->coordinates()->axes[Qwt3D::Y3].setLineWidth(2, 0.7, 0);
   mpPlot->coordinates()->axes[Qwt3D::Y3].setTicLength(majorTicLength, 0);
+
   mpPlot->coordinates()->axes[Qwt3D::Y4].setLabelString("rows");
   mpPlot->coordinates()->axes[Qwt3D::Y4].setScale(new RowScale(mpRowScale, getRowSliderPos()));
   mpPlot->coordinates()->axes[Qwt3D::Y4].setMajors(mData.rows - 1);
@@ -358,21 +370,21 @@ void Plot3d::setSlider()
   if (mpSlider)
     if (mData.valueZone != 0)
       {
-        mpSliderColumn->setMinimum(0);
+        mpSliderColumn->setMinValue(0);
 
         if (mData.columns == 1)
-          mpSliderColumn->setMaximum((mData.columns - 1) * mScaleFactor);
+          mpSliderColumn->setMaxValue((mData.columns - 1) * 1000);
         else
-          mpSliderColumn->setMaximum(mData.columns * mScaleFactor);
+          mpSliderColumn->setMaxValue(mData.columns * 1000);
 
-        mpSliderRow->setMinimum(0);
+        mpSliderRow->setMinValue(0);
 
         if (mData.rows == 1)
-          mpSliderRow->setMaxValue((mData.rows - 1) * mScaleFactor);
+          mpSliderRow->setMaxValue((mData.rows - 1) * 1000);
         else
-          mpSliderRow->setMaximum(mData.rows * mScaleFactor);
+          mpSliderRow->setMaxValue(mData.rows * 1000);
 
-        sliderMoved(mpSliderColumn->value() / mScaleFactor, mpSliderRow->value() / mScaleFactor);
+        sliderMoved(mpSliderColumn->value() / 1000, mpSliderRow->value() / 1000);
       }
 }
 
