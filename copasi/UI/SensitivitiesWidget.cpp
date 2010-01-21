@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/10/30 13:07:40 $
+//   $Date: 2010/01/21 10:52:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,6 +260,9 @@ CCopasiMethod * SensitivitiesWidget::createMethod(const CCopasiMethod::SubType &
 
 bool SensitivitiesWidget::runTask()
 {
+  if (FunctionChooser->getCurrentObjectList() != CObjectLists::SINGLE_OBJECT)
+    FunctionLineEdit->setText(QApplication::translate("SensitivitiesWidget", "[Please Choose Object.] --->", 0, QApplication::UnicodeUTF8));
+
   if (!commonBeforeRunTask()) return false;
 
   bool success = true;
@@ -384,9 +387,9 @@ void SensitivitiesWidget::updateLineeditEnable(const SensWidgetComboBox* box, QW
   if (box->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     enable = true;
 
-  if (w1) w1->setEnabled(enable);
+  if (w1) w1->setVisible(enable);
 
-  if (w2) w2->setEnabled(enable);
+  if (w2) w2->setVisible(enable);
 }
 
 void SensitivitiesWidget::updateAllLineditEnable()
