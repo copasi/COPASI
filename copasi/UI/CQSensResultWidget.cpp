@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: pwilly $
+//   $Date: 2010/01/21 10:49:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,22 +109,20 @@ CQSensResultWidget::~CQSensResultWidget()
 void CQSensResultWidget::newResult()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+  // clear the old one
+  clearArrays();
+
   CSensTask * pTask =
     dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Sensitivities"]);
 
   if (!pTask)
-    {
-      clearArrays();
-      return;
-    }
+    return;
 
   CSensProblem * pProblem = dynamic_cast< CSensProblem * >(pTask->getProblem());
 
   if (!pProblem)
-    {
-      clearArrays();
-      return;
-    }
+    return;
 
   mpResult = pProblem->getResultAnnotated();
   mpScaledResult = pProblem->getScaledResultAnnotated();
