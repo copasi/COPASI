@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:16 $
+//   $Author: gauges $
+//   $Date: 2010/01/24 11:33:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ CLMetabGlyph::CLMetabGlyph(const SpeciesGlyph & sbml,
   if (sbml.getSpeciesId() != "")
     {
       std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getSpeciesId());
+
       if (it != modelmap.end())
         setModelObjectKey(it->second);
     }
@@ -67,24 +68,26 @@ CLMetabGlyph & CLMetabGlyph::operator= (const CLMetabGlyph & rhs)
 void CLMetabGlyph::exportToSBML(SpeciesGlyph * g,
                                 const std::map<CCopasiObject*, SBase*> & copasimodelmap,
                                 std::map<std::string, const SBase*>& sbmlIDs) const
-  {
-    if (!g) return;
+{
+  if (!g) return;
 
-    //call the coresponding method of the base class
-    CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
+  //call the coresponding method of the base class
+  CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
 
-    //reference to model objects
-    CCopasiObject* tmp = getModelObject();
-    if (tmp)
-      {
-        std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
-        if (it != copasimodelmap.end())
-          {
-            if (it->second)
-              g->setSpeciesId(it->second->getId());
-          }
-      }
-  }
+  //reference to model objects
+  CCopasiObject* tmp = getModelObject();
+
+  if (tmp)
+    {
+      std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+
+      if (it != copasimodelmap.end())
+        {
+          if (it->second)
+            g->setSpeciesId(it->second->getId());
+        }
+    }
+}
 
 std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g)
 {
@@ -93,7 +96,7 @@ std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g)
 }
 
 void CLMetabGlyph::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 //********* CLCompartmentGlyph ************************************************
 
@@ -117,6 +120,7 @@ CLCompartmentGlyph::CLCompartmentGlyph(const CompartmentGlyph & sbml,
   if (sbml.getCompartmentId() != "")
     {
       std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getCompartmentId());
+
       if (it != modelmap.end())
         setModelObjectKey(it->second);
     }
@@ -136,24 +140,26 @@ CLCompartmentGlyph & CLCompartmentGlyph::operator= (const CLCompartmentGlyph & r
 void CLCompartmentGlyph::exportToSBML(CompartmentGlyph * cg,
                                       const std::map<CCopasiObject*, SBase*> & copasimodelmap,
                                       std::map<std::string, const SBase*>& sbmlIDs) const
-  {
-    if (!cg) return;
+{
+  if (!cg) return;
 
-    //call the coresponding method of the base class
-    CLGraphicalObject::exportToSBML(cg, copasimodelmap, sbmlIDs);
+  //call the coresponding method of the base class
+  CLGraphicalObject::exportToSBML(cg, copasimodelmap, sbmlIDs);
 
-    //reference to model objects
-    CCopasiObject* tmp = getModelObject();
-    if (tmp)
-      {
-        std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
-        if (it != copasimodelmap.end())
-          {
-            if (it->second)
-              cg->setCompartmentId(it->second->getId());
-          }
-      }
-  }
+  //reference to model objects
+  CCopasiObject* tmp = getModelObject();
+
+  if (tmp)
+    {
+      std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+
+      if (it != copasimodelmap.end())
+        {
+          if (it->second)
+            cg->setCompartmentId(it->second->getId());
+        }
+    }
+}
 
 std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g)
 {
@@ -162,7 +168,7 @@ std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g)
 }
 
 void CLCompartmentGlyph::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 //********** CLTextGlyph ******************************************************
 
@@ -203,6 +209,7 @@ CLTextGlyph::CLTextGlyph(const TextGlyph & sbml,
   if (sbml.getOriginOfTextId() != "")
     {
       std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getOriginOfTextId());
+
       if (it != modelmap.end())
         setModelObjectKey(it->second);
     }
@@ -224,12 +231,12 @@ CLTextGlyph & CLTextGlyph::operator= (const CLTextGlyph & rhs)
 }
 
 std::string CLTextGlyph::getText() const
-  {
-    if (mIsTextSet)
-      return mText;
-    else
-      return getModelObjectDisplayName();
-  }
+{
+  if (mIsTextSet)
+    return mText;
+  else
+    return getModelObjectDisplayName();
+}
 
 void CLTextGlyph::setText(const std::string & t)
 {
@@ -244,69 +251,82 @@ void CLTextGlyph::clearText()
 }
 
 CLGraphicalObject* CLTextGlyph::getGraphicalObject() const
-  {
-    return dynamic_cast<CLGraphicalObject*>(CCopasiRootContainer::getKeyFactory()->get(mGraphicalObjectKey));
-  }
+{
+  return dynamic_cast<CLGraphicalObject*>(CCopasiRootContainer::getKeyFactory()->get(mGraphicalObjectKey));
+}
 
 void CLTextGlyph::exportToSBML(TextGlyph * g,
                                const std::map<CCopasiObject*, SBase*> & copasimodelmap,
                                std::map<std::string, const SBase*>& sbmlIDs) const
-  {
-    if (!g) return;
+{
+  if (!g) return;
 
-    //call the coresponding method of the base class
-    CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
+  //call the coresponding method of the base class
+  CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
 
-    //reference to model objects
-    CCopasiObject* tmp = getModelObject();
-    if (tmp)
-      {
-        std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
-        if (it != copasimodelmap.end())
-          {
-            if (it->second)
-              g->setOriginOfTextId(it->second->getId());
-          }
-      }
+  //reference to model objects
+  CCopasiObject* tmp = getModelObject();
 
-    //explicit text
-    if (isTextSet())
-      {
-        g->setText(mText);
-      }
-  }
+  if (tmp)
+    {
+      std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+
+      if (it != copasimodelmap.end())
+        {
+          if (it->second)
+            g->setOriginOfTextId(it->second->getId());
+        }
+    }
+
+  //explicit text
+  if (isTextSet())
+    {
+      g->setText(mText);
+    }
+}
 
 void CLTextGlyph::exportReferenceToSBML(TextGlyph * g, const std::map<const CLBase*, const SBase*> & layoutmap) const
-  {
-    if (!g) return;
+{
+  if (!g) return;
 
-    //reference to layout object
-    CLGraphicalObject* tmp = getGraphicalObject();
-    if (tmp)
-      {
-        std::map<const CLBase*, const SBase*>::const_iterator it = layoutmap.find(tmp);
-        if (it != layoutmap.end() && it->second)
-          {
-            //we need to cast here since layout objects in libsbml don´t inherit the getId() method
-            //from SBase
-            const GraphicalObject* pGO = dynamic_cast<const GraphicalObject*>(it->second);
-            if (pGO)
-              g->setGraphicalObjectId(pGO->getId());
-          }
-      }
-  }
+  //reference to layout object
+  CLGraphicalObject* tmp = getGraphicalObject();
+
+  if (tmp)
+    {
+      std::map<const CLBase*, const SBase*>::const_iterator it = layoutmap.find(tmp);
+
+      if (it != layoutmap.end() && it->second)
+        {
+          //we need to cast here since layout objects in libsbml don´t inherit the getId() method
+          //from SBase
+          const GraphicalObject* pGO = dynamic_cast<const GraphicalObject*>(it->second);
+
+          if (pGO)
+            g->setGraphicalObjectId(pGO->getId());
+        }
+    }
+}
 
 std::ostream & operator<<(std::ostream &os, const CLTextGlyph & g)
 {
   os << "TextGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
+
   if (g.mIsTextSet)
     os << "  Explicit text is: \"" << g.mText << "\"\n";
 
   CLGraphicalObject* tmp = g.getGraphicalObject();
+
   if (tmp)
     os << "  Label for: \"" << tmp->getObjectName() << "\"\n";
+
   return os;
 }
 
 void CLTextGlyph::print(std::ostream * ostream) const
 {*ostream << *this;}
+
+void CLTextGlyph::setGraphicalObjectKey(const std::string & k)
+{
+  mGraphicalObjectKey = k;
+}

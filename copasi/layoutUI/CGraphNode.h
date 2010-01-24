@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/09/01 09:48:23 $
+//   $Author: gauges $
+//   $Date: 2010/01/24 11:33:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,73 +26,74 @@
 #include "layout/CLCurve.h"
 
 class CGraphNode : public CLMetabGlyph
+{
+private:
+  C_FLOAT64 msize;
+  std::string morigNodeKey;
+  std::string mObjectKey; // corresponding sbml object key
+
+  std::string mLabelText; // if node has a label, the string content should be stored here (additionally to label)
+
+  CLPoint getPointOnRectangle(CLBoundingBox r, CLPoint p);
+  //std::vector<int> mConnectedCurveIndices; // indices of curves in CQGLNetworkPainter viewerNodes attached to the node
+
+public:
+
+  CGraphNode(const std::string & name = "GraphNode",
+             const CCopasiContainer * pParent = NULL);
+
+  CGraphNode(const CLMetabGlyph & src,
+             const CCopasiContainer * pParent = NULL);
+
+  CGraphNode(const CGraphNode & src,
+
+             const CCopasiContainer * pParent = NULL);
+
+  C_FLOAT64 getSize() {return this->msize;}
+  //void setSize(C_FLOAT64 newSize, std::vector<CLCurve> *viewerCurves);
+  void setSize(C_FLOAT64 newSize);
+
+  std::string getObjectKey() {return this->mObjectKey;}
+  void setObjectKey(std::string key) {mObjectKey = key;}
+
+  //void adaptCurvesForRectangles(std::vector<CLCurve> *viewerCurves);
+
+  std::string getOrigNodeKey() {return this->morigNodeKey;}
+
+  std::string getLabelText() {return this->mLabelText;}
+  void setLabelText(std::string name);
+
+  //std::vector<int> getCurveIndices(){return this->mConnectedCurveIndices;}
+
+  //    void addCurveIndex(int indx)
+  //    {
+  //      this->mConnectedCurveIndices.push_back(indx);
+  //}
+  //
+  //    void addArrowIndex(int indx)
+  //    {
+  //      this->mConnectedCurveIndices.push_back(indx);
+  //}
+  //    void addCurveIndex(int indx)
+  //    {
+  //      this->mConnectedCurveIndices.push_back(indx);
+  //}
+
+  virtual void scale(const double & scaleFactor)
   {
-  private:
-    C_FLOAT64 msize;
-    std::string morigNodeKey;
-    std::string mObjectKey; // corresponding sbml object key
+    this->mBBox.scale(scaleFactor);
+    this->msize = this->msize * scaleFactor;
+  }
 
-    std::string mLabelText; // if node has a label, the string content should be stored here (additionally to label)
+  virtual void scale(const double & scaleFactor, bool changeSizeP)
+  {
+    this->mBBox.scale(scaleFactor);
 
-    CLPoint getPointOnRectangle(CLBoundingBox r, CLPoint p);
-    //std::vector<int> mConnectedCurveIndices; // indices of curves in CQGLNetworkPainter viewerNodes attached to the node
-
-  public:
-
-    CGraphNode(const std::string & name = "GraphNode",
-               const CCopasiContainer * pParent = NULL);
-
-    CGraphNode(const CLMetabGlyph & src,
-               const CCopasiContainer * pParent = NULL);
-
-    CGraphNode(const CGraphNode & src,
-
-               const CCopasiContainer * pParent = NULL);
-
-    C_FLOAT64 getSize(){return this->msize;}
-    //void setSize(C_FLOAT64 newSize, std::vector<CLCurve> *viewerCurves);
-    void setSize(C_FLOAT64 newSize);
-
-    std::string getObjectKey(){return this->mObjectKey;}
-    void setObjectKey(std::string key){mObjectKey = key;}
-
-    //void adaptCurvesForRectangles(std::vector<CLCurve> *viewerCurves);
-
-    std::string getOrigNodeKey(){return this->morigNodeKey;}
-
-    std::string getLabelText(){return this->mLabelText;}
-    void setLabelText(std::string name){this->mLabelText = name;}
-
-    //std::vector<int> getCurveIndices(){return this->mConnectedCurveIndices;}
-
-    //    void addCurveIndex(int indx)
-    //    {
-    //      this->mConnectedCurveIndices.push_back(indx);
-    //}
-    //
-    //    void addArrowIndex(int indx)
-    //    {
-    //      this->mConnectedCurveIndices.push_back(indx);
-    //}
-    //    void addCurveIndex(int indx)
-    //    {
-    //      this->mConnectedCurveIndices.push_back(indx);
-    //}
-
-    virtual void scale (const double & scaleFactor)
-    {
-      this->mBBox.scale(scaleFactor);
+    if (changeSizeP)
       this->msize = this->msize * scaleFactor;
-    }
+  }
 
-    virtual void scale (const double & scaleFactor, bool changeSizeP)
-    {
-      this->mBBox.scale(scaleFactor);
-      if (changeSizeP)
-        this->msize = this->msize * scaleFactor;
-    }
-
-    friend std::ostream & operator<<(std::ostream &os, const CGraphNode & gn);
-  };
+  friend std::ostream & operator<<(std::ostream &os, const CGraphNode & gn);
+};
 
 #endif

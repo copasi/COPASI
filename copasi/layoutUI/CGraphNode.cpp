@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/09/01 09:48:24 $
+//   $Author: gauges $
+//   $Date: 2010/01/24 11:33:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,28 +26,31 @@
 CGraphNode::CGraphNode(const std::string & name,
                        const CCopasiContainer * pParent)
     : CLMetabGlyph(name, pParent)
+    , msize(CVisParameters::DEFAULT_NODE_SIZE)
+    , morigNodeKey("")
+    , mObjectKey("")
+    , mLabelText("")
 {
-  msize = CVisParameters::DEFAULT_NODE_SIZE;
-  morigNodeKey = "";
-  mObjectKey = "";
 }
 
 CGraphNode::CGraphNode(const CLMetabGlyph & src,
                        const CCopasiContainer * pParent)
     : CLMetabGlyph(src, pParent)
+    , msize(CVisParameters::DEFAULT_NODE_SIZE)
+    , morigNodeKey(src.getKey())
+    , mObjectKey(src.getModelObjectKey())
+    , mLabelText("")
 {
-  msize = CVisParameters::DEFAULT_NODE_SIZE;
-  morigNodeKey = src.getKey();
-  mObjectKey = src.getModelObjectKey();
 }
 
 CGraphNode::CGraphNode(const CGraphNode & src,
                        const CCopasiContainer * pParent)
     : CLMetabGlyph(src, pParent)
+    , msize(src.msize)
+    , morigNodeKey(src.morigNodeKey)
+    , mObjectKey(src.mObjectKey)
+    , mLabelText(src.mLabelText)
 {
-  msize = src.msize;
-  morigNodeKey = src.morigNodeKey;
-  mObjectKey = src.mObjectKey;
 }
 
 void CGraphNode::setSize(C_FLOAT64 newSize)
@@ -66,4 +69,9 @@ std::ostream & operator<<(std::ostream &os, const CGraphNode & gn)
   // os << gn.mConnectedCurveIndices[i] << std::endl;;
 
   return os;
+}
+
+void CGraphNode::setLabelText(std::string name)
+{
+  this->mLabelText = name;
 }
