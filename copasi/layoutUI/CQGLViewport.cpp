@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 17:41:15 $
+//   $Author: gauges $
+//   $Date: 2010/01/25 10:47:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,14 +14,13 @@
 #include "CQGLViewport.h"
 
 #include <qgl.h>
-#include <qscrollbar.h>
-#include <qrect.h>
-#include <q3hbox.h>
-#include <qlayout.h>
-//Added by qt3to4:
+#include <QScrollBar>
+#include <QRect>
+#include <QHBoxLayout>
+#include <QLayout>
 #include <QResizeEvent>
-#include <Q3VBoxLayout>
-#include <Q3Frame>
+#include <QVBoxLayout>
+#include <QFrame>
 
 #include <iostream>
 
@@ -32,19 +31,25 @@
 /**
  * Constructor.
  */
-CQGLViewport::CQGLViewport(QWidget* pParent, const char* name, Qt::WFlags f): Q3Frame(pParent, name, f)
+CQGLViewport::CQGLViewport(QWidget* pParent, const char* name, Qt::WFlags f):
+    QFrame(pParent, name, f)
+    , mpVerticalScrollbar(new QScrollBar(Qt::Vertical, NULL, "vertical scrollbar"))
+    , mpHorizontalScrollbar(new QScrollBar(Qt::Horizontal, NULL, "horizontal scrollbar"))
+    , mpNetworkPainter(NULL)
 {
-  Q3VBoxLayout* pVBoxLayout = new Q3VBoxLayout(this);
-  Q3HBox* pHBox = new Q3HBox(this);
+  QVBoxLayout* pVBoxLayout = new QVBoxLayout();
+  this->setLayout(pVBoxLayout);
+  QFrame* pHBox = new QFrame(this);
+  pHBox->setLayout(new QHBoxLayout());
   pVBoxLayout->addWidget(pHBox);
   QGLFormat format;
   format.setDoubleBuffer(TRUE);
-  mpNetworkPainter = new CQGLNetworkPainter(format, pHBox, "gl graph");
-  mpVerticalScrollbar = new QScrollBar(Qt::Vertical, pHBox, "vertical scrollbar");
-  mpVerticalScrollbar->setLineStep(1);
-  mpHorizontalScrollbar = new QScrollBar(Qt::Horizontal, this, "horizontal scrollbar");
-  mpHorizontalScrollbar->setLineStep(1);
-  pVBoxLayout->addWidget(mpHorizontalScrollbar);
+  this->mpNetworkPainter = new CQGLNetworkPainter(format, pHBox, "gl graph");
+  pHBox->layout()->addWidget(this->mpNetworkPainter);
+  pHBox->layout()->addWidget(this->mpVerticalScrollbar);
+  this->mpVerticalScrollbar->setLineStep(1);
+  pVBoxLayout->addWidget(this->mpHorizontalScrollbar);
+  this->mpHorizontalScrollbar->setLineStep(1);
   connect(this->mpVerticalScrollbar, SIGNAL(valueChanged(int)), this, SLOT(slotVValueChanged(int)));
   connect(this->mpHorizontalScrollbar, SIGNAL(valueChanged(int)), this, SLOT(slotHValueChanged(int)));
 }
@@ -58,13 +63,13 @@ CQGLViewport::~CQGLViewport()
 void CQGLViewport::resizeEvent(QResizeEvent* e)
 {
   this->updateScrollbars();
-  Q3Frame::resizeEvent(e);
+  QFrame::resizeEvent(e);
 }
 
 const CQGLNetworkPainter* CQGLViewport::getPainter() const
-  {
-    return this->mpNetworkPainter;
-  }
+{
+  return this->mpNetworkPainter;
+}
 
 CQGLNetworkPainter* CQGLViewport::getPainter()
 {
@@ -99,6 +104,7 @@ void CQGLViewport::updateScrollbars()
   double graphHeight = (max.getY() - min.getY()) * zoom;
   double rectangleHeight = this->contentsRect().height();
   double rectangleWidth = this->contentsRect().width();
+
   if (graphHeight < rectangleHeight)
     {
       this->mpVerticalScrollbar->hide();
@@ -111,6 +117,7 @@ void CQGLViewport::updateScrollbars()
       this->mpVerticalScrollbar->show();
       this->mpNetworkPainter->update();
     }
+
   if (graphWidth < rectangleWidth)
     {
       this->mpHorizontalScrollbar->hide();
@@ -153,6 +160,6 @@ void CQGLViewport::updateWidget()
 }
 
 bool CQGLViewport::isCircleMode() const
-  {
-    return this->mpNetworkPainter->isCircleMode();
-  }
+{
+  return this->mpNetworkPainter->isCircleMode();
+}

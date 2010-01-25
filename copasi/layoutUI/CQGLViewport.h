@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 17:41:15 $
+//   $Author: gauges $
+//   $Date: 2010/01/25 10:47:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,72 +11,71 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <q3frame.h>
-//Added by qt3to4:
-#include <QResizeEvent>
+#include <QFrame>
 
 class CQGLNetworkPainter;
 class QScrollBar;
 class CLayout;
+class QResizeEvent;
 
 /**
  * This class is supposed to act as a sort of scrollview for a
  * CQGLNetworkPainter.
  */
-class CQGLViewport : public Q3Frame
-  {
-    Q_OBJECT
+class CQGLViewport : public QFrame
+{
+  Q_OBJECT
 
-  protected:
-    QScrollBar* mpVerticalScrollbar;
-    QScrollBar* mpHorizontalScrollbar;
-    CQGLNetworkPainter* mpNetworkPainter;
+protected:
+  QScrollBar* mpVerticalScrollbar;
+  QScrollBar* mpHorizontalScrollbar;
+  CQGLNetworkPainter* mpNetworkPainter;
 
-  public:
-    /**
-     * Constructor.
-     */
-    CQGLViewport(QWidget* pParent = 0, const char* name = 0, Qt::WFlags f = 0);
+public:
+  /**
+   * Constructor.
+   */
+  CQGLViewport(QWidget* pParent = 0, const char* name = 0, Qt::WFlags f = 0);
 
-    /**
-     * Destructor.
-     */
-    virtual ~CQGLViewport();
+  /**
+   * Destructor.
+   */
+  virtual ~CQGLViewport();
 
-    const CQGLNetworkPainter* getPainter() const;
+  const CQGLNetworkPainter* getPainter() const;
 
-    CQGLNetworkPainter* getPainter();
+  CQGLNetworkPainter* getPainter();
 
-    /**
-     * Pass the layout on to the network painters createGraph and set the
-     * scrollbar ranges.
-     */
-    void createGraph(CLayout *lP);
+  /**
+   * Pass the layout on to the network painters createGraph and set the
+   * scrollbar ranges.
+   */
+  void createGraph(CLayout *lP);
 
-    /**
-     * Sets the zoom factor on the network painter and updates the
-     *scrollbars.
-     */
-    void setZoomFactor(double zoom);
+  /**
+   * Sets the zoom factor on the network painter and updates the
+   *scrollbars.
+   */
+  void setZoomFactor(double zoom);
 
-    void resetView();
+  void resetView();
 
-    /**
-     * Returns whether the layout window is in circle (animation mode) or not.
-     * This method only calls the corresponding method in the contained network
-     * painter.
-     */
-    bool isCircleMode() const;
+  /**
+   * Returns whether the layout window is in circle (animation mode) or not.
+   * This method only calls the corresponding method in the contained network
+   * painter.
+   */
+  bool isCircleMode() const;
 
-  protected:
-    virtual void resizeEvent(QResizeEvent* e);
+protected:
+  virtual void resizeEvent(QResizeEvent* e);
 
-    void updateScrollbars();
+  void updateScrollbars();
 
-  protected slots:
-    void slotVValueChanged(int value);
-    void slotHValueChanged(int value);
+protected slots:
+  void slotVValueChanged(int value);
+  void slotHValueChanged(int value);
 
-  public slots:
-    void updateWidget();
-  };
+public slots:
+  void updateWidget();
+};

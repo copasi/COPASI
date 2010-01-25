@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:19 $
+//   $Author: gauges $
+//   $Date: 2010/01/25 10:47:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,21 +17,21 @@
 
 #include "CQLayoutMainWindow.h"
 
-#include <qaction.h>
-#include <qcombobox.h>
-#include <q3frame.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qpushbutton.h>
-#include <qsplitter.h>
-#include <q3vbox.h>
-#include <qfiledialog.h>
+#include <QAction>
+#include <QComboBox>
+#include <QFrame>
+#include <QLabel>
+#include <QLayout>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QMenu>
+#include <QPushButton>
+#include <QSplitter>
+#include <QVBoxLayout>
+#include <QFileDialog>
+#include <QToolBar>
 #include <qwt_slider.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QPixmap>
 #include <QCloseEvent>
 
@@ -61,40 +61,53 @@
 using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
-    Q3MainWindow(NULL, name)
+    QMainWindow(NULL, name)
+    , mpVisParameters(new CVisParameters)
+    , mpParaPanel(new CQParaPanel)
+    , mpValTable(new CQCurrentValueTable)
+    , mpSplitter(new QSplitter(Qt::Horizontal))
+    , mpGLViewport(NULL)
+    , mpTimeSlider(new QwtSlider(NULL, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough))
+    , mpFrame(new QFrame)
+    , mpMainBox(new QFrame)
+    , mpInfoBox(new QFrame)
+    , mpControlWidget(new CQPlayerControlWidget)
+    , mDataPresent(false)
+    , mCurrentPlace(QString::null)
+    , mpLayout(pLayout)
 {
-  mpLayout = pLayout;
-  mCurrentPlace = QString::null;
-  mDataPresent = false;
-  mpVisParameters = new CVisParameters();
-  setCaption(tr("Reaction network graph"));
-  mpMainBox = new Q3VBox(this);
+  this->setCaption(tr("Reaction network graph"));
+  this->setCentralWidget(mpMainBox);
+  this->mpMainBox->setLayout(new QVBoxLayout());
 
   // create split window with parameter panel and graph panel
-  mpSplitter = new QSplitter(Qt::Horizontal, mpMainBox);
-  mpSplitter->setCaption("Test");
+  this->mpSplitter->setCaption("Test");
+  this->mpMainBox->layout()->addWidget(this->mpSplitter);
 
-  mpInfoBox = new Q3VBox(mpSplitter);
+  this->mpSplitter->addWidget(this->mpInfoBox);
+  this->mpInfoBox->setLayout(new QVBoxLayout);
 
-  mpParaPanel = new CQParaPanel(mpInfoBox);
+  this->mpInfoBox->layout()->addWidget(this->mpParaPanel);
+  this->mpInfoBox->layout()->addWidget(this->mpValTable);
 
-  mpValTable = new CQCurrentValueTable(mpInfoBox);
   // Create OpenGL widget
-  mpGLViewport = new CQGLViewport(mpSplitter, "Network layout");
+  // we initialize it here because the parent has to be present
+  this->mpGLViewport = new CQGLViewport(this->mpSplitter);
+  this->mpGLViewport->setCaption("Network layout");
+  this->mpSplitter->addWidget(this->mpGLViewport);
 
-  if (pLayout != NULL)
+  if (this->mpLayout != NULL)
     {
-      CLDimensions dim = pLayout->getDimensions();
+      CLDimensions dim = this->mpLayout->getDimensions();
       CLPoint c1;
       CLPoint c2(dim.getWidth(), dim.getHeight());
-      mpGLViewport->createGraph(mpLayout); // create local data structures
+      this->mpGLViewport->createGraph(this->mpLayout); // create local data structures
     }
 
-  mpSplitter->setResizeMode(mpInfoBox, QSplitter::KeepSize);
+  this->mpSplitter->setResizeMode(this->mpInfoBox, QSplitter::KeepSize);
 
-  mpFrame = new Q3Frame(mpMainBox);
+  this->mpMainBox->layout()->addWidget(this->mpFrame);
 
-  this->mpControlWidget = new CQPlayerControlWidget(mpFrame);
   connect(this->mpControlWidget, SIGNAL(play()), this, SLOT(startAnimation()));
   connect(this->mpControlWidget, SIGNAL(pause()), this, SLOT(pauseAnimation()));
   connect(this->mpControlWidget, SIGNAL(stop()), this, SLOT(stopAnimation()));
@@ -103,23 +116,22 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   connect(this->mpControlWidget, SIGNAL(step_backward()), this, SLOT(stepBackwardAnimation()));
   connect(this->mpControlWidget, SIGNAL(step_forward()), this, SLOT(stepForwardAnimation()));
 
-  mpTimeSlider = new QwtSlider(mpFrame, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
-  mpTimeSlider->setRange(0, 100, 1, 0);
-  mpTimeSlider->setValue(0.0);
+  this->mpTimeSlider->setRange(0, 100, 1, 0);
+  this->mpTimeSlider->setValue(0.0);
   this->mpTimeSlider->setEnabled(false);
 
-  mpTimeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  mpFrame->setFixedHeight(68);
-  connect(mpTimeSlider, SIGNAL(valueChanged(double)),
+  this->mpTimeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  this->mpFrame->setFixedHeight(68);
+  connect(this->mpTimeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
 
-  Q3GridLayout* bottomBoxlayout = new Q3GridLayout(mpFrame, 2, 2, 3, 6);
-  bottomBoxlayout->addMultiCellWidget(mpTimeSlider, 0, 1, 1, 1, Qt::AlignTop);
-  bottomBoxlayout->addMultiCellWidget(this->mpControlWidget, 0, 1, 0, 0, Qt::AlignTop);
-  QSpacerItem* theSpacer = new QSpacerItem(20, 20);
-  bottomBoxlayout->addItem(theSpacer, 1, 0);
+  QGridLayout* pGridLayout = new QGridLayout(NULL, 2, 2, 3, 6);
+  this->mpFrame->setLayout(pGridLayout);
+  pGridLayout->addMultiCellWidget(this->mpTimeSlider, 0, 1, 1, 1, Qt::AlignTop);
+  pGridLayout->addMultiCellWidget(this->mpControlWidget, 0, 1, 0, 0, Qt::AlignTop);
+  QSpacerItem* pSpacer = new QSpacerItem(20, 20);
+  pGridLayout->addItem(pSpacer, 1, 0);
 
-  setCentralWidget(mpMainBox);
   loadData(); // try to load data (if already present)
   // the action have to be created before mpLoadDataAction is used below
   // the menus have to be created after the player control widget is created
@@ -129,12 +141,13 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   createActions();
   createMenus();
 
-  this->mpToolbar = new Q3ToolBar(this, "layout toolbar");
-  this->mpLoadDataAction->addTo(this->mpToolbar);
+  this->mpToolbar = this->addToolBar(tr("layout toolbar"));
+  this->mpToolbar->addAction(this->mpLoadDataAction);
   this->mpToolbar->addSeparator();
-  QLabel* pLabel = new QLabel("zoom factor:", this->mpToolbar);
-  pLabel->show();
-  this->mpZoomComboBox = new QComboBox("zoom box", this->mpToolbar);
+  QLabel* pLabel = new QLabel("zoom factor:");
+  this->mpToolbar->addWidget(pLabel);
+  this->mpZoomComboBox = new QComboBox(NULL, "zoom box");
+  this->mpToolbar->addWidget(this->mpZoomComboBox);
   QStringList l;
   l.push_back("1%");
   l.push_back("2%");
@@ -155,7 +168,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   this->mpZoomComboBox->insertStringList(l);
   this->mpZoomComboBox->setCurrentItem(10);
   this->mpZoomComboBox->setEditable(FALSE);
-  this->mpZoomComboBox->show();
   connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
   connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
@@ -166,7 +178,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   this->setTabOrder(this->mpToolbar, this->mpParaPanel);
   this->setTabOrder(this->mpParaPanel, this->mpValTable);
   this->setTabOrder(this->mpValTable, this->mpControlWidget);
-  this->show();
 }
 
 void CQLayoutMainWindow::parameterTableValueChanged(int row)
@@ -321,10 +332,10 @@ void CQLayoutMainWindow::createActions()
   mpCreatePicture->setStatusTip("create a picture from the current view and save it to file");
   connect(mpCreatePicture, SIGNAL(activated()), this, SLOT(saveImage()));
 
-  mpRectangluarShape = new QAction("Rectangle", this);
-  mpRectangluarShape->setShortcut(Qt::CTRL + Qt::Key_R);
-  mpRectangluarShape->setStatusTip("Show labels as rectangles");
-  connect(mpRectangluarShape, SIGNAL(activated()), this, SLOT(mapLabelsToRectangles()));
+  mpRectangularShape = new QAction("Rectangle", this);
+  mpRectangularShape->setShortcut(Qt::CTRL + Qt::Key_R);
+  mpRectangularShape->setStatusTip("Show labels as rectangles");
+  connect(mpRectangularShape, SIGNAL(activated()), this, SLOT(mapLabelsToRectangles()));
 
   mpCircularShape = new QAction("Circle", this);
   mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
@@ -347,30 +358,26 @@ void CQLayoutMainWindow::createActions()
 
 void CQLayoutMainWindow::createMenus()
 {
-  mpFileMenu = new Q3PopupMenu(this);
-  mpFileMenu->insertSeparator();
-  mpCloseAction->addTo(mpFileMenu);
+  this->mpFileMenu = this->menuBar()->addMenu(tr("File"));
+  this->mpFileMenu->addSeparator();
+  this->mpFileMenu->addAction(this->mpCloseAction);
 
-  mpLabelShapeMenu = new Q3PopupMenu(this);
-
-  mpRectangluarShape->addTo(mpLabelShapeMenu);
-  mpCircularShape->addTo(mpLabelShapeMenu);
   // play menu
-  this->mpPlayMenu = new Q3PopupMenu(this);
-  this->mpControlWidget->getPlayAction()->addTo(this->mpPlayMenu);
-  this->mpControlWidget->getPauseAction()->addTo(this->mpPlayMenu);
-  this->mpControlWidget->getStopAction()->addTo(this->mpPlayMenu);
-  this->mpControlWidget->getForwardAction()->addTo(this->mpPlayMenu);
-  this->mpControlWidget->getBackwardAction()->addTo(this->mpPlayMenu);
-  this->mpControlWidget->getStepForwardAction()->addTo(this->mpPlayMenu);
-  this->mpControlWidget->getStepBackwardAction()->addTo(this->mpPlayMenu);
-  this->mpPlayMenu->insertSeparator();
+  this->mpPlayMenu = this->menuBar()->addMenu("Play");
+  this->mpPlayMenu->addAction(this->mpControlWidget->getPlayAction());
+  this->mpPlayMenu->addAction(this->mpControlWidget->getPauseAction());
+  this->mpPlayMenu->addAction(this->mpControlWidget->getStopAction());
+  this->mpPlayMenu->addAction(this->mpControlWidget->getForwardAction());
+  this->mpPlayMenu->addAction(this->mpControlWidget->getBackwardAction());
+  this->mpPlayMenu->addAction(this->mpControlWidget->getStepForwardAction());
+  this->mpPlayMenu->addAction(this->mpControlWidget->getStepBackwardAction());
+  this->mpPlayMenu->addSeparator();
   this->mLoopItemId = this->mpPlayMenu->insertItem("loop animation", this, SLOT(slotLoopActivated()));
-  this->mpPlayMenu->insertSeparator();
-  this->mpLoadDataAction->addTo(this->mpPlayMenu);
+  this->mpPlayMenu->addSeparator();
+  this->mpPlayMenu->addAction(this->mpLoadDataAction);
 
   // view menu
-  mpViewMenu = new Q3PopupMenu(this);
+  this->mpViewMenu = this->menuBar()->addMenu("View");
   mpViewMenu->insertItem("parameters", 1001);
   mpViewMenu->setItemChecked(1001, TRUE);
   mpViewMenu->insertItem("value table", 1002);
@@ -380,10 +387,9 @@ void CQLayoutMainWindow::createMenus()
   mpViewMenu->insertItem("toolbar", 1004);
   mpViewMenu->setItemChecked(1004, TRUE);
   connect(this->mpViewMenu, SIGNAL(activated(int)), this, SLOT(slotViewActivated(int)));
-  mpViewMenu->insertSeparator();
+  mpViewMenu->addSeparator();
   mpViewMenu->insertItem("Reset View", this, SLOT(slotResetView()));
-  mpZoomMenu = new Q3PopupMenu(this);
-  mpViewMenu->insertItem("Zoom", mpZoomMenu);
+  this->mpZoomMenu = this->mpViewMenu->addMenu("Zoom");
   int id;
   id = mpZoomMenu->insertItem("1%", 1);
   mpZoomMenu->setItemChecked(id, false);
@@ -418,18 +424,15 @@ void CQLayoutMainWindow::createMenus()
   id = mpZoomMenu->insertItem("500%", 500);
   mpZoomMenu->setItemChecked(id, false);
   connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
-  this->mpViewMenu->insertSeparator();
-  mpCreatePicture->addTo(mpViewMenu);
+  this->mpViewMenu->addSeparator();
+  this->mpViewMenu->addAction(this->mpCreatePicture);
 
-  mpOptionsMenu = new Q3PopupMenu(this);
-  mpOptionsMenu->insertItem("Shape of Label", mpLabelShapeMenu);
-  mpMimaNodeSizes->addTo(mpOptionsMenu);
-  mpSFontSize->addTo(mpOptionsMenu);
-
-  menuBar()->insertItem("File", mpFileMenu);
-  menuBar()->insertItem("Play", this->mpPlayMenu);
-  menuBar()->insertItem("View", this->mpViewMenu);
-  menuBar()->insertItem("Options", mpOptionsMenu);
+  this->mpOptionsMenu = this->menuBar()->addMenu("Options");
+  this->mpLabelShapeMenu = this->mpOptionsMenu->addMenu("Shape of Label");
+  this->mpLabelShapeMenu->addAction(this->mpRectangularShape);
+  this->mpLabelShapeMenu->addAction(this->mpCircularShape);
+  this->mpOptionsMenu->addAction(this->mpMimaNodeSizes);
+  this->mpOptionsMenu->addAction(this->mpSFontSize);
 }
 
 void CQLayoutMainWindow::loadSBMLFile()

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.155 $
+//   $Revision: 1.156 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:19 $
+//   $Author: gauges $
+//   $Date: 2010/01/25 10:47:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,24 +15,23 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qstring.h>
-#include <qbitmap.h>
-#include <qpainter.h>
-#include <qrect.h>
-#include <qpoint.h>
-#include <qpixmap.h>
-#include <qevent.h>
-#include <qsize.h>
-#include <qcolor.h>
-#include <qtimer.h>
-#include <q3canvas.h>
+#include <QAction>
+#include <QString>
+#include <QBitmap>
+#include <QPainter>
+#include <QRect>
+#include <QPoint>
+#include <QPixmap>
+#include <QEvent>
+#include <QSize>
+#include <QTimer>
+#include <Q3Canvas>
 
-#include <qfontinfo.h>
-#include <qfontdatabase.h>
-//Added by qt3to4:
+#include <QFontInfo>
+#include <QFontDatabase>
 #include <QContextMenuEvent>
-#include <Q3ValueList>
-#include <Q3PopupMenu>
+#include <QList>
+#include <QMenu>
 
 #include <iostream>
 #include <limits>
@@ -2773,11 +2772,12 @@ QImage CQGLNetworkPainter::getImage()
 
 void CQGLNetworkPainter::contextMenuEvent(QContextMenuEvent *cme)
 {
-  Q3PopupMenu *contextMenu = new Q3PopupMenu(this);
-  zoomInAction->addTo(contextMenu);
-  zoomOutAction->addTo(contextMenu);
-  setFontSizeAction->addTo(contextMenu);
-  contextMenu->exec(cme->globalPos());
+  QMenu *pContextMenu = new QMenu();
+  pContextMenu->addAction(this->zoomInAction);
+  pContextMenu->addAction(this->zoomOutAction);
+  pContextMenu->addAction(this->setFontSizeAction);
+  pContextMenu->popup(cme->globalPos());
+  delete pContextMenu;
 }
 
 void CQGLNetworkPainter::testOpenGL()
@@ -2996,9 +2996,9 @@ void CQGLNetworkPainter::printAvailableFonts()
         {
           QString style = *s;
           QString dstyle = "\t" + style + " (";
-          Q3ValueList<int> smoothies = fdb.smoothSizes(family, style);
+          QList<int> smoothies = fdb.smoothSizes(family, style);
 
-          for (Q3ValueList<int>::Iterator points = smoothies.begin();
+          for (QList<int>::iterator points = smoothies.begin();
                points != smoothies.end(); ++points)
             {
               dstyle += QString::number(*points) + " ";
