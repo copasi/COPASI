@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeNode.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/22 14:57:10 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@ CBitPatternTreeNode::CBitPatternTreeNode(void):
 {}
 
 CBitPatternTreeNode::CBitPatternTreeNode(const size_t & index,
-    const std::list< CStepMatrixColumn * > & patterns):
+    const std::vector< CStepMatrixColumn * > & patterns):
     mIndex(index),
     mpZeroSet(NULL),
     mIgnoreCheck(false),
@@ -34,6 +34,7 @@ CBitPatternTreeNode::CBitPatternTreeNode(const size_t & index,
     mpSetChild(NULL),
     mpStepMatrixColumn(NULL)
 {
+  // Note: patterns may contain NULL pointers
   switch (patterns.size())
     {
       case 0:
@@ -41,22 +42,57 @@ CBitPatternTreeNode::CBitPatternTreeNode(const size_t & index,
         break;
 
       case 1:
-        mpZeroSet = new CZeroSet((*patterns.begin())->getZeroSet());
-        mpStepMatrixColumn = *patterns.begin();
-        break;
+      {
+        std::vector< CStepMatrixColumn * >::const_iterator it = patterns.begin();
+
+        // This should never happen.
+        assert(*it != NULL);
+
+        mpZeroSet = new CZeroSet((*it)->getZeroSet());
+        mpStepMatrixColumn = *it;
+      }
+      break;
 
       default:
       {
-        std::list<CStepMatrixColumn *>::const_iterator it = patterns.begin();
-        std::list<CStepMatrixColumn *>::const_iterator end = patterns.end();
-        mpZeroSet = new CZeroSet((*it)->getZeroSet());
+        std::vector< CStepMatrixColumn * >::const_iterator it = patterns.begin();
+        std::vector< CStepMatrixColumn * >::const_iterator end = patterns.end();
+
+        // This should never happen.
+
+        for (; it != end; ++it)
+          {
+            if (*it != NULL)
+              {
+                break;
+              }
+          }
+
+        // This should never happen.
+        assert(*it != NULL);
+
+        CStepMatrixColumn * pFirstColumn = *it;
+
+        mpZeroSet = new CZeroSet(pFirstColumn->getZeroSet());
+        size_t Count = 1;
 
         for (++it; it != end; ++it)
           {
-            *mpZeroSet |= (*it)->getZeroSet();
+            if (*it != NULL)
+              {
+                *mpZeroSet |= (*it)->getZeroSet();
+                Count++;
+              }
           }
 
-        splitPatterns(patterns);
+        if (Count != 1)
+          {
+            splitPatterns(patterns);
+          }
+        else
+          {
+            mpStepMatrixColumn = pFirstColumn;
+          }
       }
       break;
     }
@@ -74,13 +110,13 @@ const CStepMatrixColumn * CBitPatternTreeNode::getStepMatrixColumn() const
   return mpStepMatrixColumn;
 }
 
-void CBitPatternTreeNode::splitPatterns(const std::list<CStepMatrixColumn *> & patterns)
+void CBitPatternTreeNode::splitPatterns(const std::vector< CStepMatrixColumn * > & patterns)
 {
   size_t Index = mIndex;
   CZeroSet::CIndex Bit(mIndex);
 
-  std::list<CStepMatrixColumn *> SetPatterns;
-  std::list<CStepMatrixColumn *> UnsetPatterns;
+  std::vector< CStepMatrixColumn * > SetPatterns;
+  std::vector< CStepMatrixColumn * > UnsetPatterns;
 
   while (UnsetPatterns.empty() || SetPatterns.empty())
     {
@@ -90,18 +126,21 @@ void CBitPatternTreeNode::splitPatterns(const std::list<CStepMatrixColumn *> & p
       mIndex = Index;
       Bit = mIndex;
 
-      std::list<CStepMatrixColumn *>::const_iterator it = patterns.begin();
-      std::list<CStepMatrixColumn *>::const_iterator end = patterns.end();
+      std::vector< CStepMatrixColumn * >::const_iterator it = patterns.begin();
+      std::vector< CStepMatrixColumn * >::const_iterator end = patterns.end();
 
       for (; it != end; ++it)
         {
-          if ((*it)->getZeroSet().isSet(Bit))
+          if (*it != NULL)
             {
-              SetPatterns.push_back((*it));
-            }
-          else
-            {
-              UnsetPatterns.push_back((*it));
+              if ((*it)->getZeroSet().isSet(Bit))
+                {
+                  SetPatterns.push_back((*it));
+                }
+              else
+                {
+                  UnsetPatterns.push_back((*it));
+                }
             }
         }
 
@@ -126,4 +165,26 @@ void CBitPatternTreeNode::splitPatterns(const std::list<CStepMatrixColumn *> & p
 size_t CBitPatternTreeNode::nextAvailableIndex() const
 {
   return mIndex + 1;
+}
+
+size_t CBitPatternTreeNode::getChildrenCount() const
+{
+  if (mpStepMatrixColumn != NULL)
+    {
+      return 1;
+    }
+
+  size_t Count = 0;
+
+  if (mpUnsetChild != NULL)
+    {
+      Count = mpUnsetChild->getChildrenCount();
+    }
+
+  if (mpSetChild != NULL)
+    {
+      Count += mpSetChild->getChildrenCount();
+    }
+
+  return Count;
 }

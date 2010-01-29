@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/09 13:50:08 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 #include "copasi.h"
 
 #include "CZeroSet.h"
+#include "CStepMatrixColumn.h"
 
 CZeroSet::CIndex::CIndex(const size_t & index):
     mIndex(index / (CHAR_BIT * sizeof(unsigned C_INT32))),
@@ -88,6 +89,23 @@ CZeroSet::CZeroSet(const CZeroSet & src):
 CZeroSet::~CZeroSet()
 {}
 
+bool CZeroSet::isExtremeRay(const std::vector< CStepMatrixColumn * > & columns) const
+{
+  std::vector< CStepMatrixColumn * >::const_iterator it = columns.begin();
+  std::vector< CStepMatrixColumn * >::const_iterator end = columns.end();
+
+  for (; it != end; ++it)
+    {
+      if (*it != NULL &&
+          (*it)->getZeroSet() >= *this)
+        {
+          return false;
+        }
+    }
+
+  return true;
+}
+
 std::ostream & operator << (std::ostream & os, const CZeroSet & set)
 {
   const unsigned C_INT32 * pIt = set.mBitSet.array();
@@ -95,6 +113,8 @@ std::ostream & operator << (std::ostream & os, const CZeroSet & set)
 
   size_t CurrentBit = 0;
   size_t LastBit = set.mBitSet.size() * CHAR_BIT * sizeof(unsigned C_INT32) - set.mIgnoredBits;
+
+  os << ' ';
 
   for (; pIt != pEnd; ++pIt)
     {

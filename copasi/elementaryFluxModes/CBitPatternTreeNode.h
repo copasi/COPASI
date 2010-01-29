@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeNode.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include <list>
 
 #include "copasi/elementaryFluxModes/CZeroSet.h"
+#include "copasi/elementaryFluxModes/CStepMatrix.h"
 
 class CStepMatrixColumn;
 
@@ -30,7 +31,7 @@ public:
   CBitPatternTreeNode(const CBitPatternTreeNode & src);
 
   CBitPatternTreeNode(const size_t & index,
-                      const std::list< CStepMatrixColumn * > & patterns);
+                      const std::vector< CStepMatrixColumn * > & patterns);
 
   virtual ~CBitPatternTreeNode(void);
 
@@ -74,8 +75,10 @@ public:
     return mpSetChild;
   }
 
+  size_t getChildrenCount() const;
+
 private:
-  void splitPatterns(const std::list< CStepMatrixColumn * > & patterns);
+  void splitPatterns(const std::vector< CStepMatrixColumn * > & patterns);
 
   size_t nextAvailableIndex() const;
 

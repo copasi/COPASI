@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:13:13 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,14 +18,17 @@
 #include <vector>
 
 #include "copasi/elementaryFluxModes/CStepMatrixColumn.h"
+#include "copasi/utilities/CVector.h"
 
 template <class CType> class CMatrix;
 
-class CStepMatrix: public std::list< CStepMatrixColumn * >
+class CStepMatrix: private CVector< CStepMatrixColumn * >
 {
+private:
+  typedef CStepMatrixColumn ** iterator;
+
 public:
-  typedef std::list< CStepMatrixColumn * >::iterator iterator;
-  typedef std::list< CStepMatrixColumn * >::const_iterator const_iterator;
+  typedef CStepMatrixColumn *const* const_iterator;
 
   friend std::ostream & operator << (std::ostream &, const CStepMatrix &);
 
@@ -38,22 +41,11 @@ public:
 
   ~CStepMatrix();
 
-  inline void add(CStepMatrixColumn * pColumn)
-  {
-    if (pColumn != NULL)
-      {
-        push_back(pColumn);
-      }
-  }
+public:
 
-  inline void remove(CStepMatrixColumn * pColumn)
-  {
-    if (pColumn != NULL)
-      {
-        remove(pColumn);
-        delete pColumn;
-      }
-  }
+  const_iterator begin() const;
+
+  const_iterator end() const;
 
   void convertRow();
 
@@ -73,16 +65,58 @@ public:
                                 const CStepMatrixColumn * pPositive,
                                 const CStepMatrixColumn * pNegative);
 
-  bool splitColumns(std::list< CStepMatrixColumn * > & PositiveColumns,
-                    std::list< CStepMatrixColumn * > & NegativeColumns,
-                    std::list< CStepMatrixColumn * > & NullColumns);
+  // TODO CRITICAL Remove Debug Code
+  void removeColumn(CStepMatrixColumn * pColumn);
 
-  void removeInvalidColumns(const std::vector< CStepMatrixColumn * > & invalidColumns);
+  bool splitColumns(std::vector< CStepMatrixColumn * > & PositiveColumns,
+                    std::vector< CStepMatrixColumn * > & NegativeColumns,
+                    std::vector< CStepMatrixColumn * > & NullColumns);
+
+  void removeInvalidColumns(std::vector< CStepMatrixColumn * > & invalidColumns);
+
+  void compact();
 
   void getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
                           CVector< size_t > & indexes) const;
 
 private:
+  void add(CStepMatrixColumn * pColumn)
+  {
+    if (pColumn != NULL)
+      {
+        if (mInsert >= mBeyond)
+          {
+            size_t OldSize = size();
+
+            resize(std::max((size_t) 2, 2 * OldSize), true);
+
+            mInsert = array() + OldSize;
+            mBeyond = array() + size();
+
+            memset(mInsert, NULL, OldSize * sizeof(CStepMatrixColumn *));
+
+            //We need to update the iterators.
+            iterator it = array();
+            iterator end = mInsert;
+
+            for (; it != end; ++it)
+              {
+                if (*it != NULL)
+                  {
+                    (*it)->setIterator(it);
+                  }
+              }
+          }
+
+        pColumn->setIterator(mInsert);
+        *mInsert = pColumn;
+
+        mInsert++;
+      }
+
+    return;
+  }
+
   void convertRow(const size_t & index,
                   CMatrix< C_INT32 > & nullspaceMatrix);
 
@@ -93,6 +127,10 @@ private:
   CVector< size_t > mPivot;
 
   size_t mFirstUnconvertedRow;
+
+  iterator mInsert;
+
+  iterator mBeyond;
 };
 
 #endif // COPASI_CStepMatrix

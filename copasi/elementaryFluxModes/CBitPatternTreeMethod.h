@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:13:13 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "copasi/elementaryFluxModes/CEFMMethod.h"
+#include "copasi/elementaryFluxModes/CStepMatrix.h"
 #include "copasi/utilities/CMatrix.h"
 
 class CStepMatrix;
@@ -29,6 +30,52 @@ class CZeroSet;
 class CBitPatternTreeMethod: public CEFMMethod
 {
   friend CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType);
+
+public:
+  /**
+   * A static method that calculates the kernel of a full column rank matrix.
+   * Note, the input matrix is used as work area and will be modified during the calculation.
+   * @param const CMatrix< C_INT32 > & matrix
+   * @param CMatrix< C_INT32 > & kernel
+   * @param CVector< size_t > & rowPivot
+   * @return bool success
+   */
+  static bool CalculateKernel(CMatrix< C_INT32 > & matrix,
+                              CMatrix< C_INT32 > & kernel,
+                              CVector< size_t > & rowPivot);
+
+  /**
+   * Calculate the greatest common divisor (GCD) of 2 positive integers. On return
+   * m and n contain the GCD
+   * @param C_INT32 & m
+   * @param C_INT32 & n
+   */
+  static inline void GCD(C_INT32 & m, C_INT32 & n)
+  {
+    assert(m > 0 && n > 0);
+
+    while (m != n)
+      {
+        if (m > n)
+          {
+            m %= n;
+
+            if (m == 0)
+              {
+                m = n;
+              }
+          }
+        else
+          {
+            n %= m;
+
+            if (n == 0)
+              {
+                n = m;
+              }
+          }
+      }
+  }
 
 protected:
   /**
@@ -95,9 +142,9 @@ private:
 
   /**
    * Remove the invalid columns from the step matrix
-   * @param const std::list< CStepMatrixColumn * > & nullColumns
+   * @param const std::vector< CStepMatrix::iterator > & nullColumns
    */
-  void removeInvalidColumns(const std::list< CStepMatrixColumn * > & nullColumns);
+  void findRemoveInvalidColumns(const std::vector< CStepMatrixColumn * > & nullColumns);
 
   /**
    * Postprocess the step matrix to construct the flux modes.
@@ -113,7 +160,7 @@ private:
   /**
    * Multiply values so that values contains only integers.
    */
-  void convertToIntegers(CVectorCore< C_FLOAT64 > & values);
+  void convertToIntegers(CMatrix< C_FLOAT64 > & values);
 
   /**
    * Get the index of the unset bits of the flux mode.
@@ -144,6 +191,21 @@ protected:
   unsigned C_INT32 mhProgressCounter;
 
   /**
+   * The current combination used for process report.
+   */
+  unsigned C_INT32 mProgressCounter2;
+
+  /**
+   * The max combination used for process report.
+   */
+  unsigned C_INT32 mProgressCounter2Max;
+
+  /**
+   * Handle to the process report item "Combination"
+   */
+  unsigned C_INT32 mhProgressCounter2;
+
+  /**
    * A vector to recording the expansion of the stoichiometry matrix.
    */
   std::vector< std::pair< size_t, bool > > mReactionForward;
@@ -151,12 +213,12 @@ protected:
   /**
    * A vector recording the pivots for the QR factorization
    */
-  CVector< size_t > mQRPivot;
+  CVector< size_t > mReactionPivot;
 
   /**
-   * A vector to record the row (species) rearrangements for the QR factorization.
+   * The transpose of the expanded stoichiometry matrix.
    */
-  CMatrix< C_FLOAT64 > mExpandedStoiTranspose;
+  CMatrix< C_INT32 > mExpandedStoiTranspose;
 
   /**
    * A pointer to the step matrix for creating the flux modes
@@ -171,7 +233,7 @@ protected:
   /**
    * A list of invalid columns currently in the step matrix
    */
-  std::list< CStepMatrixColumn * > mNewColumns;
+  std::vector< CStepMatrixColumn * > mNewColumns;
 
   /**
    * The minimum set size use to determine whether a linear combination is allowed.
@@ -182,6 +244,11 @@ protected:
    * The currently process step
    */
   size_t mStep;
+
+  /**
+   * Boolean value indicating whether combination should continue.
+   */
+  bool mContinueCombination;
 };
 
 #endif // COPASI_CBitPatternTreeMethod

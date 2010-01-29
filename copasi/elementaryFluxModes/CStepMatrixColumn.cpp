@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/14 17:47:14 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,23 +18,38 @@
 #include "copasi.h"
 
 #include "CStepMatrixColumn.h"
+#include "CBitPatternTreeMethod.h"
 
 CStepMatrixColumn::CStepMatrixColumn(const size_t & size):
     mZeroSet(size),
-    mReaction()
+    mReaction(),
+    mIterator(NULL)
 {}
 
 CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
                                      CStepMatrixColumn const * pPositive,
                                      CStepMatrixColumn const * pNegative):
     mZeroSet(set),
-    mReaction()
+    mReaction(),
+    mIterator(NULL)
 {
-  C_INT32 GCD1 = -1;
-  C_INT32 GCD2;
-
   C_INT32 PosMult = -pNegative->getMultiplier();
   C_INT32 NegMult = pPositive->getMultiplier();
+
+  C_INT32 GCD1 = abs(PosMult);
+  C_INT32 GCD2 = abs(NegMult);
+
+  // Divide PosMult and NegMult by GCD(PosMult, NegMult);
+  CBitPatternTreeMethod::GCD(GCD1, GCD2);
+
+  if (GCD1 != 1)
+    {
+      PosMult /= GCD1;
+      NegMult /= GCD1;
+    }
+
+  // -1 is used to identify the start of the GCD search.
+  GCD1 = -1;
 
   mReaction.resize(pPositive->mReaction.size());
   std::vector< C_INT32 >::iterator it = mReaction.begin();
@@ -60,30 +75,10 @@ CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
 
       GCD2 = abs(*it);
 
-      while (GCD1 != GCD2)
-        {
-          if (GCD1 > GCD2)
-            {
-              GCD1 %= GCD2;
-
-              if (GCD1 == 0)
-                {
-                  GCD1 = GCD2;
-                }
-            }
-          else
-            {
-              GCD2 %= GCD1;
-
-              if (GCD2 == 0)
-                {
-                  GCD2 = GCD1;
-                }
-            }
-        }
+      CBitPatternTreeMethod::GCD(GCD1, GCD2);
     }
 
-  if (abs(GCD1) > 1)
+  if (GCD1 > 1)
     {
       for (it = mReaction.begin(); it != end; ++it)
         {
@@ -93,7 +88,11 @@ CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
 }
 
 CStepMatrixColumn::~CStepMatrixColumn()
-{}
+{
+  assert(*mIterator = this);
+
+  *mIterator = NULL;
+}
 
 const CZeroSet & CStepMatrixColumn::getZeroSet() const
 {
@@ -113,4 +112,35 @@ void CStepMatrixColumn::push_front(const C_INT32 & value)
 void CStepMatrixColumn::truncate()
 {
   mReaction.pop_back();
+}
+
+std::ostream & operator << (std::ostream & os, const CStepMatrixColumn & c)
+{
+  os << ' ';
+
+  size_t Size = c.mZeroSet.getNumberOfBits();
+  CZeroSet::CIndex Index;
+  size_t i = 0;
+  size_t imax = Size - c.mReaction.size();
+
+  for (; i < imax; ++i, ++Index)
+    {
+      if (c.mZeroSet.isSet(Index))
+        {
+          os << "*\t";
+        }
+      else
+        {
+          os << ".\t";
+        }
+    }
+
+  for (i = c.mReaction.size(); i > 0;)
+    {
+      --i;
+
+      os << c.mReaction[i] << "\t";;
+    }
+
+  return os;
 }

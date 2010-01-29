@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTree.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/01 15:58:41 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@ CBitPatternTree::CBitPatternTree():
     mpRoot(NULL)
 {}
 
-CBitPatternTree::CBitPatternTree(const std::list< CStepMatrixColumn * > & patterns):
+CBitPatternTree::CBitPatternTree(const std::vector< CStepMatrixColumn * > & patterns):
     mpRoot(NULL)
 {
   if (!patterns.empty())
@@ -46,4 +46,14 @@ bool CBitPatternTree::isExtremeRay(const CZeroSet & set) const
     }
 
   return true;
+}
+
+size_t CBitPatternTree::size() const
+{
+  if (mpRoot != NULL)
+    {
+      return mpRoot->getChildrenCount();
+    }
+
+  return 0;
 }

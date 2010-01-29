@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/22 14:57:10 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,11 @@
 
 #include <limits.h> // needed for CHAR_BIT, <limits.h> is not the same as <limits>
 
+#include <vector>
+
 #include "copasi/utilities/CVector.h"
+
+class CStepMatrixColumn;
 
 class CZeroSet
 {
@@ -81,6 +85,11 @@ public:
   inline size_t getNumberOfUnsetBits() const
   {
     return mBitSet.size() * CHAR_BIT * sizeof(unsigned C_INT32) - mIgnoredBits - mNumberSetBits;
+  }
+
+  inline size_t getNumberOfBits() const
+  {
+    return mBitSet.size() * CHAR_BIT * sizeof(unsigned C_INT32) - mIgnoredBits;
   }
 
   inline CZeroSet & operator |= (const CZeroSet & rhs)
@@ -150,6 +159,8 @@ public:
     return memcmp(mBitSet.array(), rhs.mBitSet.array(),
                   mBitSet.size() * sizeof(unsigned C_INT32)) == 0;
   }
+
+  bool isExtremeRay(const std::vector< CStepMatrixColumn * > & columns) const;
 
   // Attributes
 private:

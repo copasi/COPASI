@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:13:13 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,9 @@
 
 class CStepMatrixColumn
 {
+public:
+  friend std::ostream & operator << (std::ostream &, const CStepMatrixColumn &);
+
   // Operations
 public:
   CStepMatrixColumn(const size_t & size = 0);
@@ -50,11 +53,20 @@ public:
 
   void truncate();
 
+  inline void setIterator(CStepMatrixColumn **it)
+  {
+    mIterator = it;
+  }
+
   // Attributes
 private:
   CZeroSet mZeroSet;
 
   std::vector< C_INT32 > mReaction;
+
+  CStepMatrixColumn ** mIterator;
 };
+
+std::ostream & operator << (std::ostream &, const CStepMatrixColumn &);
 
 #endif // COPASI_CStepMatrixColumn

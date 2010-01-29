@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/09 16:37:28 $
+//   $Date: 2010/01/29 21:59:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,28 +19,34 @@
 #include "utilities/CMatrix.h"
 
 CStepMatrix::CStepMatrix():
-    std::list< CStepMatrixColumn * >(),
+    CVector< CStepMatrixColumn * >(0),
     mRows(0),
     mPivot(0),
     mFirstUnconvertedRow(0)
 {}
 
 CStepMatrix::CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix):
-    std::list< CStepMatrixColumn * >(),
+    CVector< CStepMatrixColumn * >(0),
     mRows(nullspaceMatrix.numRows()),
     mPivot(nullspaceMatrix.numRows()),
     mFirstUnconvertedRow(0)
 {
   size_t Cols = nullspaceMatrix.numCols();
 
+  resize(Cols);
+  iterator it = array();
+  mInsert = mBeyond = it + Cols;
+
   CVector< CStepMatrixColumn * > Columns(Cols);
   CStepMatrixColumn ** pColumn = Columns.array();
   CStepMatrixColumn ** pColumnEnd = pColumn + Cols;
 
-  for (; pColumn != pColumnEnd; ++pColumn)
+  for (; pColumn != pColumnEnd; ++pColumn, ++it)
     {
       *pColumn = new CStepMatrixColumn(mRows);
-      push_back(*pColumn);
+
+      (*pColumn)->setIterator(it);
+      *it = *pColumn;
     }
 
   size_t i;
@@ -71,8 +77,7 @@ CStepMatrix::CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix):
             }
         }
 
-      if ((hasNegative && !hasPositive) ||
-          (!hasNegative && hasPositive))
+      if ((!hasNegative && hasPositive))
         {
           convertRow(i, nullspaceMatrix);
         }
@@ -100,16 +105,20 @@ CStepMatrix::CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix):
           (*pColumn)->push_front(*pValue);
         }
     }
+
+  // TODO CRITICAL Remove Debug code.
 }
 
 CStepMatrix::~CStepMatrix()
 {
-  iterator it = begin();
-  const_iterator itEnd = end();
+  iterator it = array();
 
-  for (; it != itEnd; ++it)
+  for (; it != mInsert; ++it)
     {
-      delete *it;
+      if (*it != NULL)
+        {
+          delete *it;
+        }
     }
 }
 
@@ -117,12 +126,15 @@ void CStepMatrix::convertRow()
 {
   CZeroSet::CIndex Index(mFirstUnconvertedRow);
 
-  iterator it = begin();
-  const_iterator itEnd = end();
+  iterator it = array();
 
-  for (; it != itEnd; ++it)
+  for (; it != mInsert; ++it)
     {
-      if ((*it)->getMultiplier() != 0)
+      assert(*it != NULL);
+
+      assert((*it)->getMultiplier() >= 0);
+
+      if ((*it)->getMultiplier() > 0)
         {
           (*it)->unsetBit(Index);
         }
@@ -148,61 +160,51 @@ CStepMatrixColumn * CStepMatrix::addColumn(const CZeroSet & set,
     CStepMatrixColumn const * pNegative)
 {
   CStepMatrixColumn * pColumn = new CStepMatrixColumn(set, pPositive, pNegative);
-  push_back(pColumn);
+
+  add(pColumn);
 
   return pColumn;
 }
 
-bool CStepMatrix::splitColumns(std::list< CStepMatrixColumn * > & PositiveColumns,
-                               std::list< CStepMatrixColumn * > & NegativeColumns,
-                               std::list< CStepMatrixColumn * > & NullColumns)
+// TODO CRITICAL Remove Debug Code
+void CStepMatrix::removeColumn(CStepMatrixColumn * pColumn)
 {
-  PositiveColumns.clear();
-  NegativeColumns.clear();
+  delete pColumn;
+}
 
-  iterator it = begin();
-  const_iterator itEnd = end();
+bool CStepMatrix::splitColumns(std::vector< CStepMatrixColumn * > & PositiveColumns,
+                               std::vector< CStepMatrixColumn * > & NegativeColumns,
+                               std::vector< CStepMatrixColumn * > & NullColumns)
+{
+  assert(PositiveColumns.empty());
+  assert(NegativeColumns.empty());
+  assert(NullColumns.empty());
 
-  while (it != itEnd)
+  iterator it = array();
+
+  for (; it != mInsert; ++it)
     {
-      const C_FLOAT64 & Value = (*it)->getMultiplier();
+      assert(*it != NULL);
 
-      if (Value > 0.0)
+      const C_INT32 & Value = (*it)->getMultiplier();
+
+      if (Value > 0)
         {
           PositiveColumns.push_back(*it);
-          ++it;
         }
-      else if (Value < 0.0)
+      else if (Value < 0)
         {
           NegativeColumns.push_back(*it);
-
-          // Since all negative columns have to be removed this is the perfect place to do so.
-          it = erase(it);
         }
       else
         {
           NullColumns.push_back(*it);
-          ++it;
         }
     }
 
   if (NegativeColumns.empty())
     {
-      convertRow();
-
-      return false;
-    }
-  else if (PositiveColumns.empty())
-    {
-      // We can not remove the negative columns therefore we add them again.
-      std::list< CStepMatrixColumn * >::const_iterator itNeg = NegativeColumns.begin();
-      std::list< CStepMatrixColumn * >::const_iterator endNeg = NegativeColumns.end();
-
-      for (; itNeg != endNeg; ++itNeg)
-        {
-          push_back(*itNeg);
-        }
-
+      // We do not have any linear combinations, thus we can convert immediately
       convertRow();
 
       return false;
@@ -211,15 +213,14 @@ bool CStepMatrix::splitColumns(std::list< CStepMatrixColumn * > & PositiveColumn
   return true;
 }
 
-void CStepMatrix::removeInvalidColumns(const std::vector< CStepMatrixColumn * > & invalidColumns)
+void CStepMatrix::removeInvalidColumns(std::vector< CStepMatrixColumn * > & invalidColumns)
 {
-  std::vector< CStepMatrixColumn * >::const_iterator it = invalidColumns.begin();
-  std::vector< CStepMatrixColumn * >::const_iterator end = invalidColumns.end();
+  std::vector< CStepMatrixColumn * >::iterator it = invalidColumns.begin();
+  std::vector< CStepMatrixColumn * >::iterator end = invalidColumns.end();
 
   for (; it != end; ++it)
     {
-      remove(*it);
-      delete *it;
+      removeColumn(*it);
     }
 }
 
@@ -248,22 +249,36 @@ void CStepMatrix::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
   return;
 }
 
+CStepMatrix::const_iterator CStepMatrix::begin() const
+{
+  return array();
+}
+
+CStepMatrix::const_iterator CStepMatrix::end() const
+{
+  return mInsert;
+}
+
 void CStepMatrix::convertRow(const size_t & index,
                              CMatrix< C_INT32 > & nullspaceMatrix)
 {
   CZeroSet::CIndex Index(mFirstUnconvertedRow);
 
-  iterator it = begin();
-  const_iterator itEnd = end();
+  iterator it = array();
+
   C_INT32 * pValue = & nullspaceMatrix(index, 0);
 
   if (mFirstUnconvertedRow != index)
     {
       C_INT32 * pFirstUnconvertedValue = & nullspaceMatrix(mFirstUnconvertedRow, 0);
 
-      for (; it != itEnd; ++it, ++pValue, ++pFirstUnconvertedValue)
+      for (; it != mInsert; ++it, ++pValue, ++pFirstUnconvertedValue)
         {
-          if (*pValue != 0)
+          // At this point the matrix is compact since no columns have been destroyed,
+          // i.e., we do not need to check whether *it != NULL.
+          assert(*pValue >= 0);
+
+          if (*pValue > 0)
             {
               (*it)->unsetBit(Index);
             }
@@ -278,7 +293,7 @@ void CStepMatrix::convertRow(const size_t & index,
     }
   else
     {
-      for (; it != itEnd; ++it, ++pValue)
+      for (; it != mInsert; ++it, ++pValue)
         {
           if (*pValue != 0)
             {
@@ -290,43 +305,37 @@ void CStepMatrix::convertRow(const size_t & index,
   mFirstUnconvertedRow++;
 }
 
+void CStepMatrix::compact()
+{
+  iterator from = array();
+  iterator to = array();
+
+  for (; from != mInsert; ++from)
+    {
+      if (*from != NULL)
+        {
+          (*from)->setIterator(to);
+          *to = *from;
+
+          ++to;
+        }
+    }
+
+  mInsert = to;
+}
+
 std::ostream & operator << (std::ostream & os, const CStepMatrix & m)
 {
   os << m.mPivot << std::endl;
 
-  size_t i;
   CZeroSet::CIndex Bit;
 
   CStepMatrix::const_iterator it;
   CStepMatrix::const_iterator end = m.end();
 
-  for (i = 0, Bit = 0; i < m.mFirstUnconvertedRow; ++i, ++Bit)
+  for (it = m.begin(); it != end; ++it)
     {
-      for (it = m.begin(); it != end; ++it)
-        {
-          if ((*it)->getZeroSet().isSet(Bit))
-            {
-              os << "*\t";
-            }
-          else
-            {
-              os << ".\t";
-            }
-        }
-
-      os << std::endl;
-    }
-
-  for (i = m.mRows - m.mFirstUnconvertedRow; i > 0;)
-    {
-      --i;
-
-      for (it = m.begin(); it != end; ++it)
-        {
-          os << (*it)->getReaction()[i] << '\t';
-        }
-
-      os << std::endl;
+      os << **it << std::endl;
     }
 
   return os;
