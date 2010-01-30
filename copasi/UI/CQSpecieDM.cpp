@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Author: shoops $
+//   $Date: 2010/01/30 16:20:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,9 +22,9 @@
 #include "CQSpecieDM.h"
 #include "qtUtilities.h"
 
-CQSpecieDM::CQSpecieDM(QObject *parent)
-    : CQBaseDataModel(parent)
-
+CQSpecieDM::CQSpecieDM(QObject *parent):
+    CQBaseDataModel(parent),
+    mFlagConc(true)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
