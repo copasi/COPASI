@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskResult.ui,v $ </comment>
-<comment>   $Revision: 1.6 $ </comment>
+<comment>   $Revision: 1.7 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/10/12 11:47:49 $ </comment>
+<comment>   $Author: aekamal $ </comment>
+<comment>   $Date: 2010/02/01 16:48:36 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -25,7 +25,7 @@
    </rect>
   </property>
   <property name="caption" stdset="0">
-   <string>Moieties Result</string>
+   <string>Mass Conservation Result</string>
   </property>
   <layout class="QGridLayout">
    <item row="1" column="0" colspan="2">
@@ -73,7 +73,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>&lt;h2&gt;Moieties Result&lt;/h2&gt;</string>
+      <string>&lt;h2&gt;Mass Conservation Result&lt;/h2&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>false</bool>

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskWidget.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:51 $
+//   $Author: aekamal $
+//   $Date: 2010/02/01 16:48:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@
 
 void CQMoietiesTaskWidget::init()
 {
-  mpHeaderWidget->setTaskName("Moieties");
+  mpHeaderWidget->setTaskName("Mass Conservation");
   mpHeaderWidget->mpUpdateModel->hide();
 
   vboxLayout->insertWidget(0, mpHeaderWidget);
