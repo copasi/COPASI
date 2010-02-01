@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: pwilly $
+//   $Date: 2010/02/01 19:43:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 #define STATEWIDGET_H
 
 #include "UI/copasiWidget.h"
+#include "steadystate/CSteadyStateTask.h"
+
 //Added by qt3to4:
 /*
 #include <Q3VBoxLayout>
@@ -57,6 +59,7 @@ public:
 protected slots:
   //virtual void slotBtnCancelClicked();
   //virtual void slotBtnOKClicked();
+  virtual void slotSaveAsInitialClicked();
 
 protected:
   virtual bool enterProtected();
@@ -70,6 +73,7 @@ protected:
   QGridLayout* mWidgetLayout;
   StateSubwidget* mCentralWidget;
   bool mUpToDate;
+  CSteadyStateTask * pSteadyStateTask;
 };
 
 #endif
