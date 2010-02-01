@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:53:25 $
+//   $Author: pwilly $
+//   $Date: 2010/02/01 08:55:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -336,6 +336,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   // Reset the time.
   mpSteadyState->setTime(InitialTime);
 
+  output(COutputInterface::DURING);
   output(COutputInterface::AFTER);
 
   return (mResult != CSteadyStateMethod::notFound);
