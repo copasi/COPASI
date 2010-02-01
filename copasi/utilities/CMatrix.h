@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/13 17:18:38 $
+//   $Date: 2010/02/01 15:29:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -337,18 +337,18 @@ public:
 
           if (to != from)
             {
-              memcpy(pTmp, mArray + i, mCols * sizeof(CType));
+              memcpy(pTmp, mArray + i * mCols, mCols * sizeof(CType));
 
               while (from != i)
                 {
-                  memcpy(mArray + to, mArray + from, mCols * sizeof(CType));
+                  memcpy(mArray + to * mCols, mArray + from * mCols, mCols * sizeof(CType));
                   Applied[to] = true;
 
                   to = from;
                   from = pivot[to];
                 }
 
-              memcpy(mArray + to, pTmp, mCols * sizeof(CType));
+              memcpy(mArray + to * mCols, pTmp, mCols * sizeof(CType));
             }
 
           Applied[to] = true;
