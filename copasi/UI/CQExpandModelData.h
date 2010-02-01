@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/12/14 12:54:47 $
+//   $Date: 2010/02/01 11:39:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ public:
   ~CQExpandModelData();
 
   std::vector< std::string > mCompartmentName;
+  std::vector< std::string > mMetaboliteName;
 
 protected:
   QSignalMapper * mpComboMap;
@@ -59,6 +60,7 @@ protected:
 
 protected slots:
   void slotCompartmentChanged(/* int row */);
+  void slotApplyDiffusion(bool show);
 
 private:
   void load();

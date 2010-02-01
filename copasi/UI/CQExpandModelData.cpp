@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/12/17 10:54:12 $
+//   $Date: 2010/02/01 11:39:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,7 @@ void CQExpandModelData::load()
   pdelete(mpComboMap);
   mpComboMap = new QSignalMapper(this);
   connect(mpComboMap, SIGNAL(mapped(int)), this, SLOT(slotCompartmentChanged(/* int */)));
+  connect(mpCheckDiffusion, SIGNAL(toggled(bool)), this, SLOT(slotApplyDiffusion(bool)));
 
   pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
@@ -92,6 +93,11 @@ void CQExpandModelData::load()
 
   mpEditNumber->setText(QString::number(1));
   mpEditNumber->setEnabled(true);
+
+  mpCheckDiffusion->setChecked(false);
+  slotApplyDiffusion(false);
+
+  if (mpCheckDiffusion->isChecked()) slotApplyDiffusion(true);
 }
 void CQExpandModelData::slotOK()
 {
@@ -118,8 +124,23 @@ void CQExpandModelData::slotOK()
       return;
     }
 
+  std::string metabname;
+  const CMetab* metab;
+  bool diff = mpCheckDiffusion->isChecked();
+
+  if (diff)
+    {
+
+      metabname =  static_cast<std::string >(mpBoxMetaboliteName->currentText().toUtf8());
+      imax = source->getMetabolites().size();
+
+      for (i = 0; i < imax; ++i)
+        if (mMetaboliteName[i] ==  metabname) metab  =  source->getMetabolites()[i];
+    }
+
   CModelExpansion me(pModel);
-  me.simpleCall(source, mult);
+  //me.simpleCall(source, mult);
+  me.simpleCall(source, metab, mult, diff);
 
   accept();
 }
@@ -134,5 +155,69 @@ void CQExpandModelData::slotCompartmentChanged(/* int row */)
 
   mpEditNumber->setText(QString::number(1));
 
+  std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
+
+  unsigned C_INT32 i, imax = pModel->getCompartments().size();
+
+  std::string key;
+
+  const CCompartment* source;
+
+  for (i = 0; i < imax; ++i)
+    if (mCompartmentName[i] ==  name) source =  pModel->getCompartments()[i];
+
+  if (mpCheckDiffusion->isChecked())
+    slotApplyDiffusion(true);
+  else
+    slotApplyDiffusion(false);
+
   return;
+}
+
+void CQExpandModelData::slotApplyDiffusion(bool show)
+{
+
+  mpBoxMetaboliteName->clear();
+
+  if (show)
+    {
+      mpLblMetaboliteName->show();
+      mpBoxMetaboliteName->show();
+
+      std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
+
+      unsigned C_INT32 i, imax = pModel->getCompartments().size();
+
+      const CCompartment* comp;
+
+      for (i = 0; i < imax; ++i)
+        if (mCompartmentName[i] ==  name) comp =  pModel->getCompartments()[i];
+
+      imax = comp->getMetabolites().size();
+      mMetaboliteName.resize(imax);
+
+      for (i = 0; i < imax; ++i)
+        {
+          const CMetab* metab = comp->getMetabolites()[i];
+          mMetaboliteName[i] = metab->getObjectName();
+        }
+
+      for (i = 0; i < imax; ++i)
+        mpBoxMetaboliteName->insertItem(FROM_UTF8(mMetaboliteName[i]));
+
+      for (i = 0; i < imax; i++)
+        {
+
+          mpBoxMetaboliteName->setEditable(false);
+
+          //mpComboMap->setMapping(mpBoxMetaboliteName, i);
+          //connect(mpBoxMetaboliteName, SIGNAL(activated(int)), mpComboMap, SLOT(map()));
+        }
+    }
+
+  else
+    {
+      mpLblMetaboliteName->hide();
+      mpBoxMetaboliteName->hide();
+    }
 }

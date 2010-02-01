@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:51:18 $
+//   $Author: nsimus $
+//   $Date: 2010/02/01 11:39:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@ void CModelExpansion::setModel(CModel* pModel)
   mpModel = pModel;
 }
 
-void CModelExpansion::simpleCall(const CCompartment * source  , int  mult)
+void CModelExpansion::simpleCall(const CCompartment * source, const CMetab* metab,  int  mult, bool diff)
 {
 
   if (!mpModel) return;
@@ -93,19 +93,59 @@ void CModelExpansion::simpleCall(const CCompartment * source  , int  mult)
 
   C_INT32 m;
 
+  std::vector< std::string > metabKey;
+  metabKey.resize(mult + 1);
+
+  if (diff) metabKey[0] = metab->getKey();
+
   for (m = 0; m < mult; ++m)
     {
       std::ostringstream newname;
-      newname <<  source->getObjectName() << "_" << m;
+      newname << "copy_" << m;
       name = newname.str();
 
-      ci = copyCompartment(source, m);
+      ci = copyCompartment(source);
 
       progress  =     copyCompartmentsExpressions(source)
                       &&  copyMetabolitesExpressions(source)
-                      &&  copyModelValuesExpressions(m)
-                      &&  copyEvents(m);
+                      &&  copyModelValuesExpressions(name)
+                      &&  copyEvents(name);
+
+      if (diff) metabKey[m+1] = ci.keyMap[metab->getKey()];
     }
+
+  if (diff)
+    for (m = 0; m < mult; ++m)
+      {
+
+        std::ostringstream reacname;
+        reacname <<  "diffusion_" << m;
+
+        CReaction* reac = mpModel->createReaction(testName(reacname.str()));
+
+        if (!reac)
+          continue;
+
+        reac->setReversible(true);
+
+        reac->addSubstrate(metabKey[m], 1);
+        reac->addProduct(metabKey[m+1], 1);
+        reac->setFunction("Mass action (reversible)");
+        reac->addParameterMapping("substrate", metabKey[m]);
+        reac->addParameterMapping("product", metabKey[m+1]);
+
+        std::ostringstream k1, k2;
+        k1 << "k1{" << reac->getObjectName() << "}";
+        k2 << "k2{" << reac->getObjectName() << "}";
+
+        CModelValue* modval1 = mpModel->createModelValue(testName(k1.str()), 1.);
+        modval1->setStatus(CModelValue::FIXED);
+        reac->setParameterMapping(0, modval1->getKey());
+
+        CModelValue* modval2 = mpModel->createModelValue(testName(k2.str()), 1.);
+        modval2->setStatus(CModelValue::FIXED);
+        reac->setParameterMapping(2, modval2->getKey());
+      }
 
   if (!progress)
     {
@@ -183,7 +223,7 @@ void CModelExpansion::nameInSet(const std::string & mname)
   return;
 }
 
-CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompartment* source, C_INT32 & count)
+CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompartment* source)
 {
   CompartmentInfo ret;
 
@@ -231,7 +271,7 @@ CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompart
         {
 
           std::ostringstream newname;
-          newname << pReac->getObjectName() <<  "_" << count;
+          newname << pReac->getObjectName() <<  "{" << newComp->getObjectName()  << "}";
 
           CReaction* pNewReac = mpModel->createReaction(testName(newname.str()));
 
@@ -394,7 +434,7 @@ bool CModelExpansion::reactionInvolvesCompartment(const CReaction * reac, const 
   return false;
 }
 
-bool CModelExpansion::copyModelValuesExpressions(C_INT32 & count)
+bool CModelExpansion::copyModelValuesExpressions(std::string copyname)
 {
   bool info = false;
 
@@ -420,7 +460,7 @@ bool CModelExpansion::copyModelValuesExpressions(C_INT32 & count)
           if (infix != newInfix)
             {
               std::ostringstream newname;
-              newname << source->getObjectName() << "_" << count;
+              newname << source->getObjectName() << "{" << copyname << "}";
 
               newModVal = mpModel->createModelValue(testName(newname.str()), source->getInitialValue());
               newModVal->setStatus(source->getStatus());
@@ -441,7 +481,7 @@ bool CModelExpansion::copyModelValuesExpressions(C_INT32 & count)
             if (ci.keyMap[source->getKey()] == "")
               {
                 std::ostringstream newname;
-                newname << source->getObjectName() << "_" << count;
+                newname << source->getObjectName() << "{" << copyname << "}";
 
                 newModVal = mpModel->createModelValue(testName(newname.str()), source->getInitialValue());
                 newModVal->setStatus(source->getStatus());
@@ -587,7 +627,7 @@ std::string CModelExpansion::copyExpression(const CExpression * pExpression)
   return tmp->getInfix().c_str();
 }
 
-bool CModelExpansion::copyEvents(C_INT32 & count)
+bool CModelExpansion::copyEvents(std::string copyname)
 {
 
   bool info = false;
@@ -622,7 +662,7 @@ bool CModelExpansion::copyEvents(C_INT32 & count)
               trigger = infix;
 
               std::ostringstream newname;
-              newname << sourceEvent->getObjectName() << "_" << count;
+              newname << sourceEvent->getObjectName() << "{" << copyname << "}";
 
               newEvent = mpModel->createEvent(testName(newname.str()));
               newEvent->setTriggerExpression(trigger);
@@ -645,7 +685,7 @@ bool CModelExpansion::copyEvents(C_INT32 & count)
               if (newEvent == NULL)
                 {
                   std::ostringstream newname;
-                  newname << sourceEvent->getObjectName() << "_" << count;
+                  newname << sourceEvent->getObjectName() << "{" << copyname << "}";
 
                   newEvent = mpModel->createEvent(testName(newname.str()));
                   newEvent->setTriggerExpression(trigger);
@@ -706,7 +746,7 @@ bool CModelExpansion::copyEvents(C_INT32 & count)
       if (newEvent == NULL && !identic)
         {
           std::ostringstream newname;
-          newname << sourceEvent->getObjectName() << "_" << count;
+          newname << sourceEvent->getObjectName() << "{" << copyname << "}";
           newEvent = mpModel->createEvent(testName(newname.str()));
           newEvent->setTriggerExpression(trigger);
           newEvent->setDelayExpression(delay);

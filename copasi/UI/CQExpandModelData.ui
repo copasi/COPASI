@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: nsimus $ </comment>
-<comment>   $Date: 2009/12/14 12:54:47 $ </comment>
+<comment>   $Date: 2010/02/01 11:39:09 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -13,14 +13,15 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQExpandModelData</class>
  <widget class="QDialog" name="CQExpandModelData">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>562</width>
-    <height>173</height>
+    <width>615</width>
+    <height>203</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,9 +32,9 @@
   </property>
   <layout class="QVBoxLayout">
    <item>
-    <widget class="QWidget" name="" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
+    <widget class="QFrame" name="frame">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
        <widget class="QLabel" name="mpLblCompartmentName">
         <property name="text">
          <string>Compartment to copy </string>
@@ -46,10 +47,10 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1">
        <widget class="QComboBox" name="mpBoxCompartmentName"/>
       </item>
-      <item>
+      <item row="0" column="2">
        <widget class="QLabel" name="mpLblNumber">
         <property name="minimumSize">
          <size>
@@ -68,7 +69,7 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="3">
        <widget class="QLineEdit" name="mpEditNumber">
         <property name="enabled">
          <bool>false</bool>
@@ -80,6 +81,32 @@
          </sizepolicy>
         </property>
        </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="mpCheckDiffusion">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string>include diffusion</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mpLblMetaboliteName">
+        <property name="text">
+         <string>Contained Metabolites</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="mpBoxMetaboliteName"/>
       </item>
      </layout>
     </widget>
