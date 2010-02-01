@@ -398,10 +398,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQOptimizationResult.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQOptimizationWidget.cpp"
 				>
 			</File>

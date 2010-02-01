@@ -1,10 +1,11 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.ui,v $ </comment>
-<comment>   $Revision: 1.3 $ </comment>
+<comment>   $Revision: 1.4 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/07/16 15:47:26 $ </comment>
+<comment>   $Author: aekamal $ </comment>
+<comment>   $Date: 2010/02/01 16:49:14 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,229 +13,196 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>CQOptimizationResult</class>
-<comment> All rights reserved. </comment>
-<widget class="CopasiWidget">
-    <property name="name">
-        <cstring>CQOptimizationResult</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>568</width>
-            <height>306</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Fitting Result</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>mpHBox</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>mpLblResult</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>&lt;h2&gt;Optimization Result&lt;/h2&gt;</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtnUpdateModel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Update Model</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtnSave</cstring>
-                    </property>
-                    <property name="text">
-                        <string>save data</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>mpGrid</cstring>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLineEdit" row="3" column="1">
-                    <property name="name">
-                        <cstring>mpEditCPUTime</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>LineEditPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="3" column="0">
-                    <property name="name">
-                        <cstring>mpEditEvaluations</cstring>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="3" column="2">
-                    <property name="name">
-                        <cstring>mpEditSpeed</cstring>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="2">
-                    <property name="name">
-                        <cstring>mpLblSpeed</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Evaluations/second [1/s]</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>mpLblEvaluations</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Function Evaluations</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="1">
-                    <property name="name">
-                        <cstring>mpLblCPUTime</cstring>
-                    </property>
-                    <property name="text">
-                        <string>CPU Time [s]</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>mpLblObjectiveValue</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Objective Value</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="1" column="0">
-                    <property name="name">
-                        <cstring>mpEditObjectiveValue</cstring>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QTable">
-            <column>
-                <property name="text">
-                    <string>Parameter</string>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Value</string>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Gradient</string>
-                </property>
-            </column>
-            <property name="name">
-                <cstring>mpParameters</cstring>
-            </property>
-            <property name="numRows">
-                <number>0</number>
-            </property>
-            <property name="numCols">
-                <number>0</number>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>mpSpacer</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>40</height>
-                </size>
-            </property>
-        </spacer>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>mpBtnSave</sender>
-        <signal>clicked()</signal>
-        <receiver>CQOptimizationResult</receiver>
-        <slot>slotSave()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnUpdateModel</sender>
-        <signal>clicked()</signal>
-        <receiver>CQOptimizationResult</receiver>
-        <slot>slotUpdateModel()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in declaration">copasiWidget.h</include>
-    <include location="local" impldecl="in implementation">CQOptimizationResult.ui.h</include>
-</includes>
-<forwards>
-    <forward>class COptTask</forward>
-    <forward>class COptProblem</forward>
-</forwards>
-<variables>
-    <variable access="private">const COptProblem * mpProblem;</variable>
-    <variable access="private">const COptTask * mpTask;</variable>
-</variables>
-<slots>
-    <slot access="private" specifier="non virtual">slotSave( void )</slot>
-    <slot access="private" specifier="non virtual">slotUpdateModel()</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
-    <function returnType="bool">leave()</function>
-    <function access="protected" returnType="bool">enterProtected()</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+ <comment> All rights reserved. </comment>
+ <class>CQOptimizationResult</class>
+ <widget class="CopasiWidget" name="CQOptimizationResult">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>570</width>
+    <height>559</height>
+   </rect>
+  </property>
+  <property name="caption" stdset="0">
+   <string>Fitting Result</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QLabel" name="mpLblResult">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&lt;h2&gt;Optimization Result&lt;/h2&gt;</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpBtnUpdateModel">
+       <property name="text">
+        <string>Update Model</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpBtnSave">
+       <property name="text">
+        <string>save data</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout">
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="mpEditCPUTime">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLineEdit" name="mpEditEvaluations">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLineEdit" name="mpEditSpeed">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLabel" name="mpLblSpeed">
+       <property name="text">
+        <string>Evaluations/second [1/s]</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mpLblEvaluations">
+       <property name="text">
+        <string>Function Evaluations</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="mpLblCPUTime">
+       <property name="text">
+        <string>CPU Time [s]</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="mpLblObjectiveValue">
+       <property name="text">
+        <string>Objective Value</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLineEdit" name="mpEditObjectiveValue">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Q3Table" name="mpParameters">
+     <property name="numRows">
+      <number>0</number>
+     </property>
+     <property name="numCols">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3Table</class>
+   <extends>Q3Frame</extends>
+   <header>q3table.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CopasiWidget</class>
+   <extends>QWidget</extends>
+   <header>copasiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="local">copasiWidget.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpBtnSave</sender>
+   <signal>clicked()</signal>
+   <receiver>CQOptimizationResult</receiver>
+   <slot>slotSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnUpdateModel</sender>
+   <signal>clicked()</signal>
+   <receiver>CQOptimizationResult</receiver>
+   <slot>slotUpdateModel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
