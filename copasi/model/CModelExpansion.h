@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/12/14 12:55:28 $
+//   $Date: 2010/02/01 11:40:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 #include <copasi.h>
 
 class CModel;
+class CMetab;
 class CCompartment;
 class CReaction;
 class CModelEntity;
@@ -35,8 +36,8 @@ public:
 
   void setModel(CModel* pModel);
 
-  ///just a simple method to call during development
-  void simpleCall(const CCompartment* source, int mult);
+  //just a simple method to call during development
+  void simpleCall(const CCompartment* source, const CMetab* metab, int mult, bool diff);
 
 protected:
 
@@ -49,7 +50,7 @@ protected:
     std::string key;
   };
 
-  CompartmentInfo copyCompartment(const CCompartment* source, C_INT32 & count);
+  CompartmentInfo copyCompartment(const CCompartment* source);
 
   CompartmentInfo ci;
 
@@ -66,8 +67,8 @@ protected:
   bool  copyCompartmentsExpressions(const CCompartment *source);
   bool  copyMetabolitesExpressions(const CCompartment *source);
 
-  bool  copyModelValuesExpressions(C_INT32 & count);
-  bool  copyEvents(C_INT32 & count);
+  bool  copyModelValuesExpressions(std::string copyname);
+  bool  copyEvents(std::string copyname);
 
   std::string copyExpression(const CExpression *pExpression);
   std::string testName(const std::string & mname);
