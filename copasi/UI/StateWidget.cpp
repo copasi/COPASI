@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: pwilly $
+//   $Date: 2010/02/01 19:42:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,6 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
-#include "steadystate/CSteadyStateTask.h"
 #include "model/CModel.h"
 
 //#include "report/CKeyFactory.h"
@@ -69,6 +68,7 @@ StateWidget::StateWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   Layout5->addWidget(cancelChanges);*/
 
   // signals and slots connections
+  connect(setInitialState, SIGNAL(clicked()), this, SLOT(slotSaveAsInitialClicked()));
   //connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   //connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
 }
@@ -85,7 +85,7 @@ bool StateWidget::loadFromBackend()
 {
   mUpToDate = true;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CSteadyStateTask * pSteadyStateTask
+  pSteadyStateTask
   = dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
 
   if (!pSteadyStateTask) return false;
@@ -128,4 +128,9 @@ bool StateWidget::enterProtected()
   // ...;
 
   return true;
+}
+
+void StateWidget::slotSaveAsInitialClicked()
+{
+  pSteadyStateTask->setInitialState();
 }
