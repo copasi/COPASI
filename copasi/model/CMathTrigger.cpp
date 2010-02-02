@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/01 16:10:37 $
+//   $Date: 2010/02/02 15:33:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,11 @@ const bool & CMathTrigger::CRootFinder::isEquality() const
   return mEquality;
 }
 
+bool CMathTrigger::CRootFinder::isTrue() const
+{
+  return mTrue > 0.5;
+}
+
 CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression() const
 {
   CEvaluationNode * pTrueExpression = NULL;
@@ -96,8 +101,6 @@ void CMathTrigger::CRootFinder::toggle(const bool & equality)
   if (mDiscrete &&
       equality == true)
     {
-      // TODO CRITICAL This does not work for discrete roots with a previous value of 0
-      // However, we do not know at this point what the previous value was.
       mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
     }
   else if (!mDiscrete &&

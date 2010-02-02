@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/01 00:32:25 $
+//   $Date: 2010/02/02 15:33:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,16 +68,22 @@ public:
     void determineDiscrete(const std::set< const CCopasiObject * > & stateVariables);
 
     /**
-     * Check whther the root change only during discrete events.
+     * Check whether the root change only during discrete events.
      * @return const bool & isDiscrete
      */
     const bool & isDiscrete() const;
 
     /**
-     * Check whther the root is checked for equality.
+     * Check whether the root is checked for equality.
      * @return const bool & isEquality
      */
     const bool & isEquality() const;
+
+    /**
+     * Check whether the root's current state is true .
+     * @return bool isTrue
+     */
+    bool isTrue() const;
 
     /**
      * Retrieve the expression evaluating the truth value
