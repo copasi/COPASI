@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 17:41:15 $
+//   $Author: gauges $
+//   $Date: 2010/02/02 17:41:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,13 +13,12 @@
 
 #include "CQPlayerControlWidget.h"
 
-#include <qtoolbutton.h>
-#include <qpixmap.h>
-#include <qicon.h>
-#include <qlayout.h>
-#include <qaction.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
+#include <QToolButton>
+#include <QPixmap>
+#include <QIcon>
+#include <QLayout>
+#include <QAction>
+#include <QGridLayout>
 
 #include "play.xpm"
 #include "stop.xpm"
@@ -31,7 +30,7 @@
 
 CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent, const char* name): QWidget(pParent, name), mNumSteps(0), mCurrentStep(0), mPlaying(false)
 {
-  Q3GridLayout* pLayout = new Q3GridLayout(this, 2, 3);
+  QGridLayout* pLayout = new QGridLayout(this, 2, 3);
   this->mpStepBackwardButton = new QToolButton(this);
   this->mpStepBackwardButton->setIconSet(QPixmap(backward_single_xpm));
   pLayout->addWidget(this->mpStepBackwardButton, 0, 0);
@@ -101,6 +100,7 @@ void CQPlayerControlWidget::setCurrentStep(unsigned int currentStep)
     {
       this->mCurrentStep = this->mNumSteps - 1;
     }
+
   this->updateButtons();
   this->updateActions();
 }
@@ -154,26 +154,32 @@ void CQPlayerControlWidget::updateActions()
         {
           this->mpPlayAction->setEnabled(FALSE);
         }
+
       if (this->mpPauseAction->isEnabled())
         {
           this->mpPauseAction->setEnabled(FALSE);
         }
+
       if (this->mpStopAction->isEnabled())
         {
           this->mpStopAction->setEnabled(FALSE);
         }
+
       if (this->mpForwardAction->isEnabled())
         {
           this->mpForwardAction->setEnabled(FALSE);
         }
+
       if (this->mpStepForwardAction->isEnabled())
         {
           this->mpStepForwardAction->setEnabled(FALSE);
         }
+
       if (this->mpBackwardAction->isEnabled())
         {
           this->mpBackwardAction->setEnabled(FALSE);
         }
+
       if (this->mpStepBackwardAction->isEnabled())
         {
           this->mpStepBackwardAction->setEnabled(FALSE);
@@ -193,26 +199,32 @@ void CQPlayerControlWidget::updateActions()
             {
               this->mpPauseAction->setEnabled(TRUE);
             }
+
           if (this->mpBackwardAction->isEnabled())
             {
               this->mpBackwardAction->setEnabled(FALSE);
             }
+
           if (this->mpStepBackwardAction->isEnabled())
             {
               this->mpStepBackwardAction->setEnabled(FALSE);
             }
+
           if (this->mpPlayAction->isEnabled() == FALSE)
             {
               this->mpPlayAction->setEnabled(TRUE);
             }
+
           if (this->mpStopAction->isEnabled() == FALSE)
             {
               this->mpStopAction->setEnabled(TRUE);
             }
+
           if (this->mpForwardAction->isEnabled() == FALSE)
             {
               this->mpForwardAction->setEnabled(TRUE);
             }
+
           if (this->mpStepForwardAction->isEnabled() == FALSE)
             {
               this->mpStepForwardAction->setEnabled(TRUE);
@@ -227,26 +239,32 @@ void CQPlayerControlWidget::updateActions()
             {
               this->mpForwardAction->setEnabled(FALSE);
             }
+
           if (this->mpStepForwardAction->isEnabled())
             {
               this->mpStepForwardAction->setEnabled(FALSE);
             }
+
           if (this->mpPlayAction->isEnabled())
             {
               this->mpPlayAction->setEnabled(FALSE);
             }
+
           if (this->mpPauseAction->isEnabled())
             {
               this->mpPauseAction->setEnabled(FALSE);
             }
+
           if (this->mpBackwardAction->isEnabled() == FALSE)
             {
               this->mpBackwardAction->setEnabled(TRUE);
             }
+
           if (this->mpStepBackwardAction->isEnabled() == FALSE)
             {
               this->mpStepBackwardAction->setEnabled(TRUE);
             }
+
           if (this->mpStopAction->isEnabled() == FALSE)
             {
               this->mpStopAction->setEnabled(TRUE);
@@ -259,22 +277,27 @@ void CQPlayerControlWidget::updateActions()
             {
               this->mpPlayAction->setEnabled(TRUE);
             }
+
           if (this->mpStopAction->isEnabled() == FALSE)
             {
               this->mpStopAction->setEnabled(TRUE);
             }
+
           if (this->mpForwardAction->isEnabled() == FALSE)
             {
               this->mpForwardAction->setEnabled(TRUE);
             }
+
           if (this->mpBackwardAction->isEnabled() == FALSE)
             {
               this->mpBackwardAction->setEnabled(TRUE);
             }
+
           if (this->mpStepBackwardAction->isEnabled() == FALSE)
             {
               this->mpStepBackwardAction->setEnabled(TRUE);
             }
+
           if (this->mpStepForwardAction->isEnabled() == FALSE)
             {
               this->mpStepForwardAction->setEnabled(TRUE);
@@ -291,28 +314,34 @@ void CQPlayerControlWidget::updateButtons()
       if (this->mpPlayButton->isEnabled())
         {
           this->mpPlayButton->setEnabled(FALSE);
+
           if (this->mPlaying)
             {
               // reset the icon
               this->mpPlayButton->setIconSet(QPixmap(play_xpm));
             }
         }
+
       if (this->mpStopButton->isEnabled())
         {
           this->mpStopButton->setEnabled(FALSE);
         }
+
       if (this->mpForwardButton->isEnabled())
         {
           this->mpForwardButton->setEnabled(FALSE);
         }
+
       if (this->mpStepForwardButton->isEnabled())
         {
           this->mpStepForwardButton->setEnabled(FALSE);
         }
+
       if (this->mpBackwardButton->isEnabled())
         {
           this->mpBackwardButton->setEnabled(FALSE);
         }
+
       if (this->mpStepBackwardButton->isEnabled())
         {
           this->mpStepBackwardButton->setEnabled(FALSE);
@@ -332,26 +361,32 @@ void CQPlayerControlWidget::updateButtons()
             {
               this->mpPlayButton->setIconSet(QPixmap(pause_xpm));
             }
+
           if (this->mpBackwardButton->isEnabled())
             {
               this->mpBackwardButton->setEnabled(FALSE);
             }
+
           if (this->mpStepBackwardButton->isEnabled())
             {
               this->mpStepBackwardButton->setEnabled(FALSE);
             }
+
           if (this->mpPlayButton->isEnabled() == FALSE)
             {
               this->mpPlayButton->setEnabled(TRUE);
             }
+
           if (this->mpStopButton->isEnabled() == FALSE)
             {
               this->mpStopButton->setEnabled(TRUE);
             }
+
           if (this->mpForwardButton->isEnabled() == FALSE)
             {
               this->mpForwardButton->setEnabled(TRUE);
             }
+
           if (this->mpStepForwardButton->isEnabled() == FALSE)
             {
               this->mpStepForwardButton->setEnabled(TRUE);
@@ -366,23 +401,28 @@ void CQPlayerControlWidget::updateButtons()
             {
               this->mpForwardButton->setEnabled(FALSE);
             }
+
           if (this->mpStepForwardButton->isEnabled())
             {
               this->mpStepForwardButton->setEnabled(FALSE);
             }
+
           if (this->mpPlayButton->isEnabled())
             {
               this->mpPlayButton->setIconSet(QPixmap(play_xpm));
               this->mpPlayButton->setEnabled(FALSE);
             }
+
           if (this->mpBackwardButton->isEnabled() == FALSE)
             {
               this->mpBackwardButton->setEnabled(TRUE);
             }
+
           if (this->mpStepBackwardButton->isEnabled() == FALSE)
             {
               this->mpStepBackwardButton->setEnabled(TRUE);
             }
+
           if (this->mpStopButton->isEnabled() == FALSE)
             {
               this->mpStopButton->setEnabled(TRUE);
@@ -395,22 +435,27 @@ void CQPlayerControlWidget::updateButtons()
             {
               this->mpPlayButton->setEnabled(TRUE);
             }
+
           if (this->mpStopButton->isEnabled() == FALSE)
             {
               this->mpStopButton->setEnabled(TRUE);
             }
+
           if (this->mpForwardButton->isEnabled() == FALSE)
             {
               this->mpForwardButton->setEnabled(TRUE);
             }
+
           if (this->mpBackwardButton->isEnabled() == FALSE)
             {
               this->mpBackwardButton->setEnabled(TRUE);
             }
+
           if (this->mpStepBackwardButton->isEnabled() == FALSE)
             {
               this->mpStepBackwardButton->setEnabled(TRUE);
             }
+
           if (this->mpStepForwardButton->isEnabled() == FALSE)
             {
               this->mpStepForwardButton->setEnabled(TRUE);
@@ -433,6 +478,7 @@ void CQPlayerControlWidget::slot_step_forward_clicked()
     {
       ++this->mCurrentStep;
     }
+
   this->updateButtons();
   this->updateActions();
   emit step_forward();
@@ -444,15 +490,16 @@ void CQPlayerControlWidget::slot_step_backward_clicked()
     {
       --this->mCurrentStep;
     }
+
   this->updateButtons();
   this->updateActions();
   emit step_backward();
 }
 
 bool CQPlayerControlWidget::isPlaying() const
-  {
-    return this->mPlaying;
-  }
+{
+  return this->mPlaying;
+}
 
 QAction* CQPlayerControlWidget::getPlayAction()
 {
