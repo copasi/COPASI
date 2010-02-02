@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/ParaPanel.ui.h,v $
-//   $Revision: 1.9 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.cpp,v $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/11 10:31:33 $
+//   $Date: 2010/02/02 16:45:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,27 +11,19 @@
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Qt headers
+#include <QString>
+#include <QValidator>
 
-/****************************************************************************
- ** ui.h extension file, included from the uic-generated form implementation.
- **
- ** If you want to add, delete, or rename functions or slots, use
- ** Qt Designer to update this file, preserving your code.
- **
- ** You should not define a constructor or destructor in this file.
- ** Instead, write your code in functions called init() and destroy().
- ** These will automatically be called by the form's constructor and
- ** destructor.
- *****************************************************************************/
-#include "copasi.h"
-#include "copasi/layoutUI/CVisParameters.h"
-#include "copasi/layoutUI/CQLayoutMainWindow.h"
+// local copasi headers
+#include "CQLayoutMainWindow.h"
+#include "ParaPanel.h"
 
-#include <qstring.h>
-#include <qvalidator.h>
+CQParaPanel::CQParaPanel(QWidget* parent , const char* name):
+    QWidget(parent, name)
+{
+  setupUi(this);
+}
 
 void CQParaPanel::enableModeChoice()
 {
@@ -69,6 +61,7 @@ void CQParaPanel::changeFrameRate()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
+
   if (tmp) tmp -> setStepsPerSecond(mpSpinBox1->value());
 }
 
@@ -76,6 +69,7 @@ void CQParaPanel::setGlobalScaling()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
+
   if (tmp) tmp -> setGlobalScaling();
 }
 
@@ -83,6 +77,7 @@ void CQParaPanel::setIndividualScaling()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
+
   if (tmp) tmp -> setIndividualScaling();
 }
 
@@ -100,10 +95,12 @@ void CQParaPanel::stepEdit_returnPressed()
   QString line = mpStepEdit->text();
   bool ok;
   int val = line.toInt(&ok, 10);
+
   if (ok)
     {
       CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
       assert(tmp);
+
       if (tmp) tmp -> setValueOnSlider(val);
     }
 }
@@ -112,6 +109,7 @@ void CQParaPanel::setSizeMode()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
+
   if (tmp) tmp -> setSizeMode();
 }
 
@@ -119,5 +117,6 @@ void CQParaPanel::setColorMode()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
+
   if (tmp) tmp -> setColorMode();
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/NodeSizePanel.ui.h,v $
-//   $Revision: 1.4 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/NodeSizePanel.cpp,v $
+//   $Revision: 1.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:19 $
+//   $Author: gauges $
+//   $Date: 2010/02/02 16:45:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,23 +11,19 @@
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Qt headers
+#include <QString>
+#include <QWidget>
 
-/****************************************************************************
- ** ui.h extension file, included from the uic-generated form implementation.
- **
- ** If you want to add, delete, or rename functions or slots, use
- ** Qt Designer to update this file, preserving your code.
- **
- ** You should not define a constructor or destructor in this file.
- ** Instead, write your code in functions called init() and destroy().
- ** These will automatically be called by the form's constructor and
- ** destructor.
- *****************************************************************************/
-#include "copasi.h"
-#include "copasi/layoutUI/CQLayoutMainWindow.h"
+// global headers
+#include <assert.h>
+
+// global copasi headers
+#include <copasi/copasi.h>
+
+// local copasi headers
+#include "NodeSizePanel.h"
+#include "CQLayoutMainWindow.h"
 
 void NodeSizePanel::setMinAndMaxValues()
 {
@@ -75,8 +71,10 @@ void NodeSizePanel::setMaxValue()
     tmp->setMaxValue(val);
 }
 
-void NodeSizePanel::init()
+NodeSizePanel::NodeSizePanel(QWidget* parent , const char* name , bool modal , Qt::WindowFlags fl):
+    QDialog(parent, name, modal, fl)
 {
+  setupUi(this);
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget());
   assert(tmp);
 

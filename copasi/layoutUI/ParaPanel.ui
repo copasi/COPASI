@@ -1,10 +1,11 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.ui,v $ </comment>
-<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Revision: 1.9 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: gauges $ </comment>
-<comment>   $Date: 2008/09/11 10:31:33 $ </comment>
+<comment>   $Date: 2010/02/02 16:45:22 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,325 +13,353 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>CQParaPanel</class>
-<comment> All rights reserved. </comment>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>CQParaPanel</cstring>
-    </property>
-    <property name="enabled">
-        <bool>true</bool>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>27</x>
-            <y>0</y>
-            <width>301</width>
-            <height>454</height>
-        </rect>
-    </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>0</hsizetype>
-            <vsizetype>5</vsizetype>
+ <comment> All rights reserved. </comment>
+ <class>CQParaPanel</class>
+ <widget class="QWidget" name="CQParaPanel">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>358</width>
+    <height>454</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form1</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <item>
+    <layout class="QGridLayout">
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="mpStepEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="mpStepLabel">
+       <property name="text">
+        <string>Step Number</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="Q3ButtonGroup" name="mpScalingButtonGroup">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <layout class="QVBoxLayout">
+        <item>
+         <widget class="QRadioButton" name="mpIndividScalButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
-        </sizepolicy>
-    </property>
-    <property name="caption">
-        <string>Form1</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>mpLayout2</cstring>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLineEdit" row="4" column="1">
-                    <property name="name">
-                        <cstring>mpStepEdit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>0</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="4" column="0">
-                    <property name="name">
-                        <cstring>mpStepLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Step Number</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                </widget>
-                <widget class="QButtonGroup" row="2" column="1">
-                    <property name="name">
-                        <cstring>mpScalingButtonGroup</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="title">
-                        <string></string>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QRadioButton">
-                            <property name="name">
-                                <cstring>mpIndividScalButton</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Individual Scaling</string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton">
-                            <property name="name">
-                                <cstring>mpGlobalScalButton</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Global Scaling</string>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>mpFrameRateLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Frame rate (frames/sec)</string>
-                    </property>
-                    <property name="alignment">
-                        <set>WordBreak|AlignVCenter|AlignRight</set>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>mpSpinBox1</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>mpSchedModeLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Scheduling Mode</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>mpIndividScalButton</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="3" column="0">
-                    <property name="name">
-                        <cstring>mpSchedModeLabel_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Mapping Mode</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>mpIndividScalButton</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>mpParaLabel</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>12</pointsize>
-                            <bold>1</bold>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Simulation Parameters</string>
-                    </property>
-                </widget>
-                <widget class="QButtonGroup" row="3" column="1">
-                    <property name="name">
-                        <cstring>mpScalingButtonGroup_2</cstring>
-                    </property>
-                    <property name="title">
-                        <string></string>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QRadioButton">
-                            <property name="name">
-                                <cstring>mpSizeModeButton</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Size Mode</string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton">
-                            <property name="name">
-                                <cstring>mpColorModeButton</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Color Mode</string>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget class="QSpinBox" row="1" column="1">
-                    <property name="name">
-                        <cstring>mpSpinBox1</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>50</number>
-                    </property>
-                    <property name="minValue">
-                        <number>1</number>
-                    </property>
-                    <property name="value">
-                        <number>10</number>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>mpSpacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>50</height>
-                </size>
-            </property>
-        </spacer>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>mpSpinBox1</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>CQParaPanel</receiver>
-        <slot>changeFrameRate()</slot>
-    </connection>
-    <connection>
-        <sender>mpGlobalScalButton</sender>
-        <signal>clicked()</signal>
-        <receiver>CQParaPanel</receiver>
-        <slot>setGlobalScaling()</slot>
-    </connection>
-    <connection>
-        <sender>mpIndividScalButton</sender>
-        <signal>clicked()</signal>
-        <receiver>CQParaPanel</receiver>
-        <slot>setIndividualScaling()</slot>
-    </connection>
-    <connection>
-        <sender>mpStepEdit</sender>
-        <signal>returnPressed()</signal>
-        <receiver>CQParaPanel</receiver>
-        <slot>stepEdit_returnPressed()</slot>
-    </connection>
-    <connection>
-        <sender>mpSizeModeButton</sender>
-        <signal>clicked()</signal>
-        <receiver>CQParaPanel</receiver>
-        <slot>setSizeMode()</slot>
-    </connection>
-    <connection>
-        <sender>mpColorModeButton</sender>
-        <signal>clicked()</signal>
-        <receiver>CQParaPanel</receiver>
-        <slot>setColorMode()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>mpSpinBox1</tabstop>
-    <tabstop>mpIndividScalButton</tabstop>
-    <tabstop>mpGlobalScalButton</tabstop>
-</tabstops>
-<includes>
-    <include location="local" impldecl="in implementation">ParaPanel.ui.h</include>
-</includes>
-<slots>
-    <slot>changeFrameRate()</slot>
-    <slot>setGlobalScaling()</slot>
-    <slot>setIndividualScaling()</slot>
-    <slot>stepEdit_returnPressed()</slot>
-    <slot>setSizeMode()</slot>
-    <slot>setColorMode()</slot>
-</slots>
-<functions>
-    <function>enableParameterChoice()</function>
-    <function>disableParameterChoice()</function>
-    <function>enableModeChoice()</function>
-    <function>disableModeChoice()</function>
-    <function>enableStepNumberChoice()</function>
-    <function>disableStepNumberChoice()</function>
-    <function>setStepNumber( int i )</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Individual Scaling</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="mpGlobalScalButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Global Scaling</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="mpFrameRateLabel">
+       <property name="text">
+        <string>Frame rate (frames/sec)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="buddy">
+        <cstring>mpSpinBox1</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mpSchedModeLabel">
+       <property name="text">
+        <string>Scheduling Mode</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+       <property name="buddy">
+        <cstring>mpIndividScalButton</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="mpSchedModeLabel_2">
+       <property name="text">
+        <string>Mapping Mode</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+       <property name="buddy">
+        <cstring>mpIndividScalButton</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <widget class="QLabel" name="mpParaLabel">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Simulation Parameters</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="Q3ButtonGroup" name="mpScalingButtonGroup_2">
+       <property name="title">
+        <string/>
+       </property>
+       <layout class="QVBoxLayout">
+        <item>
+         <widget class="QRadioButton" name="mpSizeModeButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Size Mode</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="mpColorModeButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Color Mode</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="mpSpinBox1">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>50</number>
+       </property>
+       <property name="value">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="mpSpacer1">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>50</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3ButtonGroup</class>
+   <extends>Q3GroupBox</extends>
+   <header>Qt3Support/Q3ButtonGroup</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mpSpinBox1</tabstop>
+  <tabstop>mpIndividScalButton</tabstop>
+  <tabstop>mpGlobalScalButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpSpinBox1</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CQParaPanel</receiver>
+   <slot>changeFrameRate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpGlobalScalButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQParaPanel</receiver>
+   <slot>setGlobalScaling()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpIndividScalButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQParaPanel</receiver>
+   <slot>setIndividualScaling()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpStepEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>CQParaPanel</receiver>
+   <slot>stepEdit_returnPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpSizeModeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQParaPanel</receiver>
+   <slot>setSizeMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpColorModeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQParaPanel</receiver>
+   <slot>setColorMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

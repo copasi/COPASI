@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.27 $
+#   $Revision: 1.28 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/01/07 18:56:40 $
+#   $Author: gauges $
+#   $Date: 2010/02/02 16:45:22 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,9 @@ HEADERS = CQGLNetworkPainter.h \
           CVisParameters.h \
           CQCurrentValueTable.h \
           BezierCurve.h \
+          FontChooser.h \
+          ParaPanel.h \
+          NodeSizePanel.h \
           RGTextureSpec.h \
           CLabel.h
 
@@ -52,23 +55,21 @@ SOURCES = CQLayoutMainWindow.cpp \
           CQCurrentValueTable.cpp \
           CQGLViewport.cpp \
           BezierCurve.cpp \
+          FontChooser.cpp \
+          ParaPanel.cpp \
+          NodeSizePanel.cpp \
           RGTextureSpec.cpp \
           CLabel.cpp
 
 
 
-#The following line was changed from FORMS to FORMS3 by qt3to4
-FORMS3 = ParaPanel.ui \
+FORMS = ParaPanel.ui \
         NodeSizePanel.ui \
         FontChooser.ui
-
-       # CQCopasiLayoutWidget.ui
 
 INCLUDEPATH += $${QWT_PATH}/include/
 
 DISTFILES += layoutUI.vcproj
-#The following line was inserted by qt3to4
+
 QT +=  opengl qt3support 
-#The following line was inserted by qt3to4
-CONFIG += uic3
 
