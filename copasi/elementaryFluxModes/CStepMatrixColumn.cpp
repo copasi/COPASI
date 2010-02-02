@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/01/29 21:59:25 $
+//   $Date: 2010/02/02 18:09:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,11 +33,11 @@ CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
     mReaction(),
     mIterator(NULL)
 {
-  C_INT32 PosMult = -pNegative->getMultiplier();
-  C_INT32 NegMult = pPositive->getMultiplier();
+  C_INT64 PosMult = -pNegative->getMultiplier();
+  C_INT64 NegMult = pPositive->getMultiplier();
 
-  C_INT32 GCD1 = abs(PosMult);
-  C_INT32 GCD2 = abs(NegMult);
+  C_INT64 GCD1 = abs(PosMult);
+  C_INT64 GCD2 = abs(NegMult);
 
   // Divide PosMult and NegMult by GCD(PosMult, NegMult);
   CBitPatternTreeMethod::GCD(GCD1, GCD2);
@@ -52,14 +52,15 @@ CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
   GCD1 = -1;
 
   mReaction.resize(pPositive->mReaction.size());
-  std::vector< C_INT32 >::iterator it = mReaction.begin();
-  std::vector< C_INT32 >::iterator end = mReaction.end();
+  std::vector< C_INT64 >::iterator it = mReaction.begin();
+  std::vector< C_INT64 >::iterator end = mReaction.end();
 
-  std::vector< C_INT32 >::const_iterator itPos = pPositive->mReaction.begin();
-  std::vector< C_INT32 >::const_iterator itNeg = pNegative->mReaction.begin();
+  std::vector< C_INT64 >::const_iterator itPos = pPositive->mReaction.begin();
+  std::vector< C_INT64 >::const_iterator itNeg = pNegative->mReaction.begin();
 
   for (; it != end; ++it, ++itPos, ++itNeg)
     {
+      // TODO We need to check that we do not have numerical overflow
       *it = PosMult * *itPos + NegMult * *itNeg;
 
       if (*it == 0 || GCD1 == 1)
@@ -99,12 +100,12 @@ const CZeroSet & CStepMatrixColumn::getZeroSet() const
   return mZeroSet;
 }
 
-std::vector< C_INT32 > & CStepMatrixColumn::getReaction()
+std::vector< C_INT64 > & CStepMatrixColumn::getReaction()
 {
   return mReaction;
 }
 
-void CStepMatrixColumn::push_front(const C_INT32 & value)
+void CStepMatrixColumn::push_front(const C_INT64 & value)
 {
   mReaction.insert(mReaction.begin(), value);
 }

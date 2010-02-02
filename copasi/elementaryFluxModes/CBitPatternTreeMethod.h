@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/01/29 21:59:25 $
+//   $Date: 2010/02/02 18:09:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,22 +35,22 @@ public:
   /**
    * A static method that calculates the kernel of a full column rank matrix.
    * Note, the input matrix is used as work area and will be modified during the calculation.
-   * @param const CMatrix< C_INT32 > & matrix
-   * @param CMatrix< C_INT32 > & kernel
+   * @param const CMatrix< C_INT64 > & matrix
+   * @param CMatrix< C_INT64 > & kernel
    * @param CVector< size_t > & rowPivot
    * @return bool success
    */
-  static bool CalculateKernel(CMatrix< C_INT32 > & matrix,
-                              CMatrix< C_INT32 > & kernel,
+  static bool CalculateKernel(CMatrix< C_INT64 > & matrix,
+                              CMatrix< C_INT64 > & kernel,
                               CVector< size_t > & rowPivot);
 
   /**
    * Calculate the greatest common divisor (GCD) of 2 positive integers. On return
    * m and n contain the GCD
-   * @param C_INT32 & m
-   * @param C_INT32 & n
+   * @param C_INT64 & m
+   * @param C_INT64 & n
    */
-  static inline void GCD(C_INT32 & m, C_INT32 & n)
+  static inline void GCD(C_INT64 & m, C_INT64 & n)
   {
     assert(m > 0 && n > 0);
 
@@ -129,7 +129,7 @@ private:
    * Construct the kernel matrix
    * @param CMatrix< C_FLOAT64> & kernel
    */
-  void buildKernelMatrix(CMatrix< C_INT32 > & kernel);
+  void buildKernelMatrix(CMatrix< C_INT64 > & kernel);
 
   /**
    * Create all possible linear combinations of the bit pattern nodes pPositive
@@ -160,7 +160,7 @@ private:
   /**
    * Multiply values so that values contains only integers.
    */
-  void convertToIntegers(CMatrix< C_FLOAT64 > & values);
+  // void convertToIntegers(CMatrix< C_FLOAT64 > & values);
 
   /**
    * Get the index of the unset bits of the flux mode.
@@ -218,7 +218,7 @@ protected:
   /**
    * The transpose of the expanded stoichiometry matrix.
    */
-  CMatrix< C_INT32 > mExpandedStoiTranspose;
+  CMatrix< C_INT64 > mExpandedStoiTranspose;
 
   /**
    * A pointer to the step matrix for creating the flux modes

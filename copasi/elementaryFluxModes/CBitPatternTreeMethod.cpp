@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/01/29 21:59:25 $
+//   $Date: 2010/02/02 18:09:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,7 +122,7 @@ bool CBitPatternTreeMethod::initialize()
   if (mpModel == NULL) return false;
 
   // We first build the kernel matrix
-  CMatrix< C_INT32 > KernelMatrix;
+  CMatrix< C_INT64 > KernelMatrix;
   buildKernelMatrix(KernelMatrix);
 
   mMinimumSetSize = KernelMatrix.numRows() - KernelMatrix.numCols() - 2;
@@ -195,18 +195,23 @@ bool CBitPatternTreeMethod::calculate()
           if (mpCallBack)
             mpCallBack->finish(mhProgressCounter2);
 
-          // We can now destroy all negative columns, which removes them from
-          // the step matrix.
-          mpStepMatrix->removeInvalidColumns(NegativeColumns);
+          Continue &= mContinueCombination;
 
-          // Remove columns of the step matrix which are no longer extreme rays.
-          findRemoveInvalidColumns(NullColumns);
+          if (Continue)
+            {
+              // We can now destroy all negative columns, which removes them from
+              // the step matrix.
+              mpStepMatrix->removeInvalidColumns(NegativeColumns);
 
-          // We compact the step matrix which has empty columns due to the removal of columns above.
-          mpStepMatrix->compact();
+              // Remove columns of the step matrix which are no longer extreme rays.
+              findRemoveInvalidColumns(NullColumns);
 
-          // Now we can convert the processed row.
-          mpStepMatrix->convertRow();
+              // We compact the step matrix which has empty columns due to the removal of columns above.
+              mpStepMatrix->compact();
+
+              // Now we can convert the processed row.
+              mpStepMatrix->convertRow();
+            }
         }
 
       mProgressCounter = mProgressCounterMax - mpStepMatrix->getNumUnconvertedRows();
@@ -334,7 +339,7 @@ void CBitPatternTreeMethod::findRemoveInvalidColumns(const std::vector< CStepMat
   mNewColumns.clear();
 }
 
-void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT32 > & kernelInt)
+void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
 {
   // Calculate the kernel matrix
   // of the reduced stoichiometry matrix to get the kernel matrix for the:
@@ -378,8 +383,8 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT32 > & kernelInt)
   const C_FLOAT64 *pStoiEnd = pStoi + Stoi.size();
   const C_FLOAT64 *pStoiRowEnd;
 
-  C_INT32 *pExpandedStoiTranspose;
-  C_INT32 *pExpandedStoiTransposeColumn = mExpandedStoiTranspose.array();
+  C_INT64 *pExpandedStoiTranspose;
+  C_INT64 *pExpandedStoiTransposeColumn = mExpandedStoiTranspose.array();
 
   std::vector< const CReaction * >::const_iterator itReactionPivot;
   std::vector< const CReaction * >::const_iterator endReactionPivot;
@@ -393,6 +398,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT32 > & kernelInt)
 
       for (; pStoi < pStoiRowEnd; ++pStoi, pExpandedStoiTranspose += NumSpecies, ++itReactionExpansion)
         {
+          // TODO CRITICAL We should check the we have integer stoichiometry.
           if (itReactionExpansion->second == false)
             {
               *pExpandedStoiTranspose = -floor(*pStoi + 0.5);
@@ -407,7 +413,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT32 > & kernelInt)
     }
 
   // Calculate the kernel of the matrix
-  CMatrix< C_INT32 > ExpandedStoiTranspose(mExpandedStoiTranspose);
+  CMatrix< C_INT64 > ExpandedStoiTranspose(mExpandedStoiTranspose);
   CalculateKernel(ExpandedStoiTranspose, kernelInt, mReactionPivot);
 
   return;
@@ -435,49 +441,31 @@ void CBitPatternTreeMethod::buildFluxModes()
         }
 
       // Build the stoichiometry matrix reduced to the reactions participating in the current mode.
-      CMatrix< C_INT32 > A(NumReactions, NumSpecies);
+      CMatrix< C_INT64 > A(NumReactions, NumSpecies);
 
       size_t * pIndex = Indexes.array();
       size_t * pIndexEnd = pIndex + NumReactions;
-      C_INT32 * pARow = A.array();
+      C_INT64 * pARow = A.array();
 
       for (; pIndex != pIndexEnd; ++pIndex, pARow += NumSpecies)
         {
-          memcpy(pARow, &mExpandedStoiTranspose(*pIndex, 0), NumSpecies * sizeof(C_INT32));
+          memcpy(pARow, &mExpandedStoiTranspose(*pIndex, 0), NumSpecies * sizeof(C_INT64));
         }
 
       // Calculate the kernel of the matrix
-      CMatrix< C_INT32 > ExpandedStoiTranspose(A);
-      CMatrix< C_INT32 > Kernel;
+      CMatrix< C_INT64 > ExpandedStoiTranspose(A);
+      CMatrix< C_INT64 > Kernel;
       CVector< size_t > Pivot;
       CalculateKernel(ExpandedStoiTranspose, Kernel, Pivot);
 
       size_t NumCols = Kernel.numCols();
 
-      if (NumCols != 1)
-        {
-          // This is an error
-          std::cout << Kernel << std::endl;
-
-          pIndex = Indexes.array();
-
-          for (; pIndex != pIndexEnd; ++pIndex)
-            {
-              std::pair< size_t, bool > & ReactionForward = mReactionForward[*pIndex];
-
-              std::cout <<
-                        CChemEqInterface::getChemEqString(mpModel,
-                                                          *mReorderedReactions[ReactionForward.first],
-                                                          true) << std::endl;
-            }
-        }
-
       // Now we create the flux mode as we have the multiplier and reaction indexes.
       // We need to invert the sign of the multiplier for reactions which are not forward.
       // A flux mode is reversible if all reactions are reversible;
 
-      C_INT32 * pColumn = Kernel.array();
-      C_INT32 * pColumnEnd = pColumn + NumCols;
+      C_INT64 * pColumn = Kernel.array();
+      C_INT64 * pColumnEnd = pColumn + NumCols;
 
       for (; pColumn != pColumnEnd; ++pColumn)
         {
@@ -485,7 +473,7 @@ void CBitPatternTreeMethod::buildFluxModes()
           bool Reversible = true;
 
           pIndex = Indexes.array();
-          C_INT32 * pFluxMultiplier = pColumn;
+          C_INT64 * pFluxMultiplier = pColumn;
 
           for (; pIndex != pIndexEnd; ++pIndex, pFluxMultiplier += NumCols)
             {
@@ -519,6 +507,7 @@ void CBitPatternTreeMethod::buildFluxModes()
     }
 }
 
+#ifdef XXXX
 void CBitPatternTreeMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
 {
   bool Problems = false;
@@ -623,6 +612,7 @@ void CBitPatternTreeMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
         }
     }
 }
+#endif //
 
 void CBitPatternTreeMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
     CVector< size_t > & indexes) const
@@ -658,8 +648,8 @@ void CBitPatternTreeMethod::addMode(const CFluxMode & mode)
 }
 
 // static
-bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT32 > & matrix,
-    CMatrix< C_INT32 > & kernel,
+bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
+    CMatrix< C_INT64 > & kernel,
     CVector< size_t > & rowPivot)
 {
   // std::cout << matrix << std::endl;
@@ -682,23 +672,23 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT32 > & matrix,
 
   CVector< size_t > RowPivot(rowPivot);
 
-  CVector< C_INT32 > Identity(NumRows);
+  CVector< C_INT64 > Identity(NumRows);
   Identity = 1;
 
-  C_INT32 * pColumn = matrix.array();
-  C_INT32 * pColumnEnd = pColumn + NumCols;
+  C_INT64 * pColumn = matrix.array();
+  C_INT64 * pColumnEnd = pColumn + NumCols;
 
-  C_INT32 * pActiveRow;
-  C_INT32 * pActiveRowStart = pColumn;
-  C_INT32 * pActiveRowEnd = pColumnEnd;
+  C_INT64 * pActiveRow;
+  C_INT64 * pActiveRowStart = pColumn;
+  C_INT64 * pActiveRowEnd = pColumnEnd;
 
-  C_INT32 * pRow;
-  C_INT32 * pRowEnd = pColumn + matrix.size();
+  C_INT64 * pRow;
+  C_INT64 * pRowEnd = pColumn + matrix.size();
 
-  C_INT32 * pCurrent;
-  C_INT32 * pIdentity;
+  C_INT64 * pCurrent;
+  C_INT64 * pIdentity;
 
-  CVector< C_INT32 > SwapTmp(NumCols);
+  CVector< C_INT64 > SwapTmp(NumCols);
 
   size_t CurrentRowIndex = 0;
   size_t CurrentColumnIndex = 0;
@@ -735,16 +725,16 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT32 > & matrix,
       if (NonZeroIndex != CurrentRowIndex)
         {
           // Swap rows
-          memcpy(SwapTmp.array(), matrix[CurrentRowIndex], NumCols * sizeof(C_INT32));
-          memcpy(matrix[CurrentRowIndex], matrix[NonZeroIndex], NumCols * sizeof(C_INT32));
-          memcpy(matrix[NonZeroIndex], SwapTmp.array(), NumCols * sizeof(C_INT32));
+          memcpy(SwapTmp.array(), matrix[CurrentRowIndex], NumCols * sizeof(C_INT64));
+          memcpy(matrix[CurrentRowIndex], matrix[NonZeroIndex], NumCols * sizeof(C_INT64));
+          memcpy(matrix[NonZeroIndex], SwapTmp.array(), NumCols * sizeof(C_INT64));
 
           // Record pivot
           size_t tmp = RowPivot[CurrentRowIndex];
           RowPivot[CurrentRowIndex] = RowPivot[NonZeroIndex];
           RowPivot[NonZeroIndex] = tmp;
 
-          C_INT32 TMP = Identity[CurrentRowIndex];
+          C_INT64 TMP = Identity[CurrentRowIndex];
           Identity[CurrentRowIndex]  = Identity[NonZeroIndex];
           Identity[NonZeroIndex] = TMP;
         }
@@ -763,12 +753,12 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT32 > & matrix,
       pRow = pActiveRowStart + NumCols;
       pIdentity = Identity.array() + CurrentRowIndex + 1;
 
-      C_INT32 ActiveRowValue = *(pActiveRowStart + CurrentColumnIndex);
+      C_INT64 ActiveRowValue = *(pActiveRowStart + CurrentColumnIndex);
       *(pActiveRowStart + CurrentColumnIndex) = Identity[CurrentRowIndex];
 
       for (; pRow < pRowEnd; pRow += NumCols, ++pIdentity)
         {
-          C_INT32 RowValue = *(pRow + CurrentColumnIndex);
+          C_INT64 RowValue = *(pRow + CurrentColumnIndex);
 
           if (RowValue == 0)
             continue;
@@ -776,13 +766,13 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT32 > & matrix,
           *(pRow + CurrentColumnIndex) = 0;
 
           // compute GCD(*pActiveRowStart, *pRow)
-          C_INT32 GCD1 = abs(ActiveRowValue);
-          C_INT32 GCD2 = abs(RowValue);
+          C_INT64 GCD1 = abs(ActiveRowValue);
+          C_INT64 GCD2 = abs(RowValue);
 
           GCD(GCD1, GCD2);
 
-          C_INT32 alpha = ActiveRowValue / GCD1;
-          C_INT32 beta = RowValue / GCD1;
+          C_INT64 alpha = ActiveRowValue / GCD1;
+          C_INT64 beta = RowValue / GCD1;
 
           // update rest of row
           pActiveRow = pActiveRowStart;
@@ -841,18 +831,18 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT32 > & matrix,
 
   kernel.resize(KernelRows, KernelCols);
 
-  CMatrix< C_INT32 > Kernel(KernelRows, KernelCols);
+  CMatrix< C_INT64 > Kernel(KernelRows, KernelCols);
   Kernel = 0;
 
-  C_INT32 * pKernelInt = Kernel.array();
-  C_INT32 * pKernelIntEnd = pKernelInt + Kernel.size();
+  C_INT64 * pKernelInt = Kernel.array();
+  C_INT64 * pKernelIntEnd = pKernelInt + Kernel.size();
 
   pActiveRowStart = matrix[CurrentRowIndex];
   pActiveRowEnd = matrix[NumRows];
 
   // Null space matrix identity part
   pIdentity = Identity.array() + CurrentRowIndex;
-  C_INT32 * pKernelColumn = Kernel.array();
+  C_INT64 * pKernelColumn = Kernel.array();
 
   for (; pActiveRowStart < pActiveRowEnd; pActiveRowStart += NumCols, ++pKernelColumn, ++pIdentity)
     {
@@ -910,7 +900,7 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT32 > & matrix,
 
   for (; pRow < pRowEnd; ++pPivot, pRow += KernelCols)
     {
-      memcpy(kernel[*pPivot], pRow, KernelCols * sizeof(C_INT32));
+      memcpy(kernel[*pPivot], pRow, KernelCols * sizeof(C_INT64));
     }
 
   // std::cout << kernel << std::endl << std::endl;

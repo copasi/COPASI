@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/01/29 21:59:25 $
+//   $Date: 2010/02/02 18:09:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@ CStepMatrix::CStepMatrix():
     mFirstUnconvertedRow(0)
 {}
 
-CStepMatrix::CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix):
+CStepMatrix::CStepMatrix(CMatrix< C_INT64 > & nullspaceMatrix):
     CVector< CStepMatrixColumn * >(0),
     mRows(nullspaceMatrix.numRows()),
     mPivot(nullspaceMatrix.numRows()),
@@ -51,7 +51,7 @@ CStepMatrix::CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix):
 
   size_t i;
   size_t j;
-  const C_INT32 * pValue = nullspaceMatrix.array();
+  const C_INT64 * pValue = nullspaceMatrix.array();
   size_t * pPivot = mPivot.array();
 
   std::vector< size_t > NegativeRows;
@@ -67,11 +67,11 @@ CStepMatrix::CStepMatrix(CMatrix< C_INT32 > & nullspaceMatrix):
 
       for (j = 0; j < Cols; ++j, ++pValue)
         {
-          if (*pValue > 0.0)
+          if (*pValue > 0)
             {
               hasPositive = true;
             }
-          else if (*pValue < 0.0)
+          else if (*pValue < 0)
             {
               hasNegative = true;
             }
@@ -260,17 +260,17 @@ CStepMatrix::const_iterator CStepMatrix::end() const
 }
 
 void CStepMatrix::convertRow(const size_t & index,
-                             CMatrix< C_INT32 > & nullspaceMatrix)
+                             CMatrix< C_INT64 > & nullspaceMatrix)
 {
   CZeroSet::CIndex Index(mFirstUnconvertedRow);
 
   iterator it = array();
 
-  C_INT32 * pValue = & nullspaceMatrix(index, 0);
+  C_INT64 * pValue = & nullspaceMatrix(index, 0);
 
   if (mFirstUnconvertedRow != index)
     {
-      C_INT32 * pFirstUnconvertedValue = & nullspaceMatrix(mFirstUnconvertedRow, 0);
+      C_INT64 * pFirstUnconvertedValue = & nullspaceMatrix(mFirstUnconvertedRow, 0);
 
       for (; it != mInsert; ++it, ++pValue, ++pFirstUnconvertedValue)
         {
