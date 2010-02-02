@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.ui,v $ </comment>
-<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Revision: 1.5 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2010/02/01 16:49:14 $ </comment>
+<comment>   $Author: gauges $ </comment>
+<comment>   $Date: 2010/02/02 15:25:23 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -163,7 +163,7 @@
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
-   <header>copasiwidget.h</header>
+   <header>copasiWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
