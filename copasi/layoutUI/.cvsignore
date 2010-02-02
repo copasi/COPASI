@@ -1,9 +1,3 @@
 auto
 moc_*.cpp
 Makefile
-NodeSizePanel.h
-ParaPanel.h
-ParaPanel.cpp
-NodeSizePanel.cpp
-FontChooser.h
-FontChooser.cpp
