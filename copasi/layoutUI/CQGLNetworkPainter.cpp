@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.156 $
+//   $Revision: 1.157 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/25 10:47:54 $
+//   $Date: 2010/02/02 18:02:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,8 @@
 #include <QEvent>
 #include <QSize>
 #include <QTimer>
-#include <Q3Canvas>
+#include <QGraphicsScene>
+#include <QGraphicsTextItem>
 
 #include <QFontInfo>
 #include <QFontDatabase>
@@ -1641,16 +1642,14 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
 
   QPixmap pixmap(width, height);
   pixmap.fill(QColor(255, 255, 255));
-  Q3Canvas canvas(width, height);
-  Q3CanvasText canvasText(QString(text.c_str()), &canvas);
-  canvasText.setFont(font);
-  canvasText.setColor(QColor(0, 0, 0));
+  QGraphicsScene scene(0.0, 0.0, width, height);
+  QGraphicsTextItem* pTextItem = scene.addText(QString(text.c_str()), font);
+  pTextItem->setDefaultTextColor(QColor(0, 0, 0));
   // also move one to the right and one down to generate one column
   // and one row of transparent pixels
-  canvasText.moveBy(1, 1);
-  canvasText.show();
+  pTextItem->moveBy(1.0, 1.0);
   QPainter painter(&pixmap);
-  canvas.drawArea(canvas.rect(), &painter);
+  scene.render(&painter);
 
   RGTextureSpec* texture = new RGTextureSpec();
   texture->textureData = new GLubyte[height * width];
@@ -2989,7 +2988,6 @@ void CQGLNetworkPainter::printAvailableFonts()
   for (QStringList::Iterator f = families.begin(); f != families.end(); ++f)
     {
       QString family = *f;
-      qDebug(family);
       QStringList styles = fdb.styles(family);
 
       for (QStringList::Iterator s = styles.begin(); s != styles.end(); ++s)
@@ -3005,7 +3003,6 @@ void CQGLNetworkPainter::printAvailableFonts()
             }
 
           dstyle = dstyle.left(dstyle.length() - 1) + ")";
-          qDebug(dstyle);
         }
     }
 }
