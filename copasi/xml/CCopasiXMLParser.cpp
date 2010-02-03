@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.207 $
+//   $Revision: 1.208 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/12/08 19:13:42 $
+//   $Author: gauges $
+//   $Date: 2010/02/03 13:50:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -8742,7 +8742,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
             default:
               type = CCopasiParameter::INVALID;
-              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), sType, mParser.getCurrentLineNumber());
+              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), sType.c_str(), mParser.getCurrentLineNumber());
               pValue = NULL;
               break;
           }
