@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Date: 2010/02/03 16:43:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,8 +16,8 @@
 
 #include <qwidget.h>
 
-class QToolButton;
 class QAction;
+class QPushButton;
 
 class CQPlayerControlWidget : public QWidget
 {
@@ -47,12 +47,12 @@ protected:
   unsigned int mCurrentStep;
   bool mPlaying;
 
-  QToolButton* mpPlayButton;
-  QToolButton* mpStopButton;
-  QToolButton* mpForwardButton;
-  QToolButton* mpBackwardButton;
-  QToolButton* mpStepForwardButton;
-  QToolButton* mpStepBackwardButton;
+  QPushButton* mpPlayButton;
+  QPushButton* mpStopButton;
+  QPushButton* mpForwardButton;
+  QPushButton* mpBackwardButton;
+  QPushButton* mpStepForwardButton;
+  QPushButton* mpStepBackwardButton;
 
   QAction* mpPlayAction;
   QAction* mpPauseAction;

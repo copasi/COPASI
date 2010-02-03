@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Date: 2010/02/03 16:43:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,12 +13,12 @@
 
 #include "CQPlayerControlWidget.h"
 
-#include <QToolButton>
-#include <QPixmap>
-#include <QIcon>
-#include <QLayout>
 #include <QAction>
 #include <QGridLayout>
+#include <QIcon>
+#include <QLayout>
+#include <QPixmap>
+#include <QPushButton>
 
 #include "play.xpm"
 #include "stop.xpm"
@@ -30,25 +30,26 @@
 
 CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent): QWidget(pParent), mNumSteps(0), mCurrentStep(0), mPlaying(false)
 {
-  QGridLayout* pLayout = new QGridLayout(this);
-  this->mpStepBackwardButton = new QToolButton(this);
+  QGridLayout* pLayout = new QGridLayout;
+  this->setLayout(pLayout);
+  this->mpStepBackwardButton = new QPushButton;
   this->mpStepBackwardButton->setIcon(QPixmap(backward_single_xpm));
-  pLayout->addWidget(this->mpStepBackwardButton, 0, 0);
-  this->mpPlayButton = new QToolButton(this);
+  pLayout->addWidget(this->mpStepBackwardButton, 0, 0, 1, 1);
+  this->mpPlayButton = new QPushButton;
   this->mpPlayButton->setIcon(QPixmap(play_xpm));
-  pLayout->addWidget(this->mpPlayButton, 0, 1);
-  this->mpStepForwardButton = new QToolButton(this);
-  pLayout->addWidget(this->mpStepForwardButton, 0, 2);
+  pLayout->addWidget(this->mpPlayButton, 0, 1, 1, 1);
+  this->mpStepForwardButton = new QPushButton;
+  pLayout->addWidget(this->mpStepForwardButton, 0, 2, 1, 1);
   this->mpStepForwardButton->setIcon(QPixmap(forward_single_xpm));
-  this->mpBackwardButton = new QToolButton(this);
+  this->mpBackwardButton = new QPushButton;
   this->mpBackwardButton->setIcon(QPixmap(backward_xpm));
-  pLayout->addWidget(this->mpBackwardButton, 1, 0);
-  this->mpStopButton = new QToolButton(this);
+  pLayout->addWidget(this->mpBackwardButton, 1, 0, 1, 1);
+  this->mpStopButton = new QPushButton;
   this->mpStopButton->setIcon(QPixmap(stop_xpm));
-  pLayout->addWidget(this->mpStopButton, 1, 1);
-  this->mpForwardButton = new QToolButton(this);
+  pLayout->addWidget(this->mpStopButton, 1, 1, 1, 1);
+  this->mpForwardButton = new QPushButton;
   this->mpForwardButton->setIcon(QPixmap(forward_xpm));
-  pLayout->addWidget(this->mpForwardButton, 1, 2);
+  pLayout->addWidget(this->mpForwardButton, 1, 2, 1, 1);
   this->createActions();
   this->updateButtons();
   this->updateActions();

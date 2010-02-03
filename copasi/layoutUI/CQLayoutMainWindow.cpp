@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Date: 2010/02/03 16:43:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,6 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
 #include "CQLayoutMainWindow.h"
 
 #include <QAction>
@@ -106,6 +105,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
     }
 
   this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpInfoBox), 0);
+  this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpGLViewport), 1);
 
   this->mpMainBox->layout()->addWidget(this->mpFrame);
 
@@ -128,8 +128,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
 
   QGridLayout* pGridLayout = new QGridLayout(NULL);
   this->mpFrame->setLayout(pGridLayout);
-  pGridLayout->addWidget(this->mpTimeSlider, 0, 1, 1, 1, Qt::AlignTop);
-  pGridLayout->addWidget(this->mpControlWidget, 0, 1, 0, 0, Qt::AlignTop);
+  pGridLayout->addWidget(this->mpTimeSlider, 1, 1, 2, 1, Qt::AlignTop);
+  pGridLayout->addWidget(this->mpControlWidget, 0, 0, 4, 1, Qt::AlignTop);
   QSpacerItem* pSpacer = new QSpacerItem(20, 20);
   pGridLayout->addItem(pSpacer, 1, 0);
 
@@ -375,6 +375,8 @@ void CQLayoutMainWindow::createMenus()
   this->mpPlayMenu->addAction(this->mpControlWidget->getStepBackwardAction());
   this->mpPlayMenu->addSeparator();
   this->mpLoopItemAction = this->mpPlayMenu->addAction("loop animation");
+  this->mpLoopItemAction->setCheckable(true);
+  this->mpLoopItemAction->setChecked(false);
   connect(this->mpLoopItemAction, SIGNAL(toggled(bool)) , this, SLOT(slotLoopActivated(bool)));
   this->mpPlayMenu->addSeparator();
   this->mpPlayMenu->addAction(this->mpLoadDataAction);
@@ -384,7 +386,7 @@ void CQLayoutMainWindow::createMenus()
   this->mpParameterTableAction = this->mpViewMenu->addAction("parameters");
   this->mpParameterTableAction->setCheckable(true);
   this->mpParameterTableAction->setChecked(true);
-  connect(this->mpParameterTableAction, SIGNAL(toggled(bool)), this, SLOT(slotParametersToggled(bool)));
+  connect(this->mpParameterTableAction, SIGNAL(toggled(bool)), this, SLOT(slotParameterTableToggled(bool)));
   this->mpValueTableAction = this->mpViewMenu->addAction("value table");
   this->mpValueTableAction->setCheckable(true);
   this->mpValueTableAction->setChecked(true);
@@ -400,23 +402,39 @@ void CQLayoutMainWindow::createMenus()
   connect(pAction, SIGNAL(toggled(bool)), this, SLOT(slotToolbarToggled(bool)));
   mpViewMenu->addAction("Reset View", this, SLOT(slotResetView()));
   this->mpZoomMenu = this->mpViewMenu->addMenu("Zoom");
-  this->mpZoomActionGroup->addAction("1%");
-  this->mpZoomActionGroup->addAction("2%");
-  this->mpZoomActionGroup->addAction("3%");
-  this->mpZoomActionGroup->addAction("4%");
-  this->mpZoomActionGroup->addAction("5%");
-  this->mpZoomActionGroup->addAction("10%");
-  this->mpZoomActionGroup->addAction("20%");
-  this->mpZoomActionGroup->addAction("30%");
-  this->mpZoomActionGroup->addAction("40%");
-  this->mpZoomActionGroup->addAction("50%");
+  pAction = this->mpZoomActionGroup->addAction("1%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("2%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("3%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("4%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("5%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("10%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("20%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("30%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("40%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("50%");
+  pAction->setCheckable(true);
   pAction = this->mpZoomActionGroup->addAction("100%");
+  pAction->setCheckable(true);
   pAction->setChecked(true);
-  this->mpZoomActionGroup->addAction("150%");
-  this->mpZoomActionGroup->addAction("200%");
-  this->mpZoomActionGroup->addAction("300%");
-  this->mpZoomActionGroup->addAction("400%");
-  this->mpZoomActionGroup->addAction("500%");
+  pAction = this->mpZoomActionGroup->addAction("150%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("200%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("300%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("400%");
+  pAction->setCheckable(true);
+  pAction = this->mpZoomActionGroup->addAction("500%");
+  pAction->setCheckable(true);
   connect(this->mpZoomActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
   this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
   this->mpViewMenu->addSeparator();
@@ -843,7 +861,9 @@ void CQLayoutMainWindow::slotActivated(int index)
   // update menu items
   if (index >= 0 && index < 15)
     {
-      this->mpZoomActionGroup->actions().at(index)->setChecked(true);
+      QAction* pAction = this->mpZoomActionGroup->actions().at(index);
+      pAction->setChecked(true);
+      this->setZoomFactor(pAction->text());
     }
 }
 
