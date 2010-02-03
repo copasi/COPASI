@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.28 $
+#   $Revision: 1.29 $
 #   $Name:  $
 #   $Author: gauges $
-#   $Date: 2010/02/02 16:45:22 $
+#   $Date: 2010/02/03 13:54:10 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,9 +67,11 @@ FORMS = ParaPanel.ui \
         NodeSizePanel.ui \
         FontChooser.ui
 
+
+#INCLUDEPATH += $${QWT_PATH}/include/qwt-qt4
 INCLUDEPATH += $${QWT_PATH}/include/
 
 DISTFILES += layoutUI.vcproj
 
-QT +=  opengl qt3support 
+QT +=  opengl 
 
