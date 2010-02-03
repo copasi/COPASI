@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Author: gauges $
+//   $Date: 2010/02/03 13:51:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,17 +38,18 @@
 #define COL_SHOW         2
 
 std::vector<const CCopasiObject*> CQLayoutsWidget::getObjects() const
-  {
-    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-    CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
-    std::vector<const CCopasiObject*> ret;
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
+  std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = pListOfLayouts->size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back((*pListOfLayouts)[i]);
+  C_INT32 i, imax = pListOfLayouts->size();
 
-    return ret;
-  }
+  for (i = 0; i < imax; ++i)
+    ret.push_back((*pListOfLayouts)[i]);
+
+  return ret;
+}
 
 void CQLayoutsWidget::init()
 {
@@ -72,6 +73,7 @@ void CQLayoutsWidget::updateHeaderUnits()
 void CQLayoutsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
+
   const CLayout * pLayout = static_cast< const CLayout * >(obj);
 
   // Name
@@ -81,6 +83,7 @@ void CQLayoutsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
   table->setCellWidget(row, COL_SHOW, pButton);
   connect(pButton, SIGNAL(signal_show(int)), this, SLOT(slot_show(int)));
   std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(obj->getKey());
+
   // if this layout does not have an entry in the layout window map, add one
   if (pos == this->mLayoutWindowMap.end())
     {
@@ -101,9 +104,9 @@ void CQLayoutsWidget::defaultTableLineContent(unsigned C_INT32 /*row*/, unsigned
 }
 
 QString CQLayoutsWidget::defaultObjectName() const
-  {
-    return "layout";
-  }
+{
+  return "layout";
+}
 
 CCopasiObject* CQLayoutsWidget::createNewObject(const std::string & /*name*/)
 {
@@ -133,6 +136,7 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
   QString layoutList = "Are you sure you want to delete listed LAYOUT(S) ?\n";
 
   unsigned C_INT32 i, imax = keys.size();
+
   for (i = 0; i < imax; i++) //all compartments
     {
       CLayout* pLayout =
@@ -150,13 +154,15 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                    // Yes or Enter
+      case 0:                    // Yes or Enter
       {
         assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
         for (i = 0; i < imax; i++)
           {
             (*CCopasiRootContainer::getDatamodelList())[0]->removeLayout(keys[i]);
             std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(keys[i]);
+
             if (pos != this->mLayoutWindowMap.end() && pos->second != NULL)
               {
                 // close the window
@@ -171,8 +177,8 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
         break;
       }
 
-    default:                    // No or Escape
-      break;
+      default:                    // No or Escape
+        break;
     }
 }
 
@@ -197,6 +203,7 @@ void CQLayoutsWidget::slotDoubleClicked(int row, int C_UNUSED(col),
                                         int C_UNUSED(m), const QPoint & C_UNUSED(n))
 {
   if (row >= table->numRows() || row < 0) return;
+
   if (mRO && (row == table->numRows() - 1)) return;
 
   std::string key = mKeys[row];
@@ -241,12 +248,14 @@ void CQLayoutsWidget::slot_show(int row)
 {
   std::string key = mKeys[row];
   CLayout* pLayout = dynamic_cast<CLayout*>(CCopasiRootContainer::getKeyFactory()->get(key));
+
   if (pLayout != NULL)
     {
       // check if we already have a widget for the layout
       // if yes, open it, else create one and add it to the map
       bool createNew = false;
       std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(key);
+
       if (pos != this->mLayoutWindowMap.end())
         {
           if (pos->second == NULL)
@@ -264,9 +273,11 @@ void CQLayoutsWidget::slot_show(int row)
         {
           createNew = true;
         }
+
       if (createNew)
         {
-          CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout, pLayout->getObjectName().c_str());
+          CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout);
+          pWin->setWindowTitle(pLayout->getObjectName().c_str());
           pWin->resize(900, 600);
           pWin->show();
 
@@ -293,10 +304,12 @@ CQShowLayoutButton::CQShowLayoutButton(unsigned int row, QWidget* pParent, const
 void CQLayoutsWidget::deleteLayoutWindows()
 {
   std::map<std::string, CQLayoutMainWindow*>::iterator it = this->mLayoutWindowMap.begin(), endit = this->mLayoutWindowMap.end();
+
   while (it != endit)
     {
       delete it->second;
       ++it;
     }
+
   this->mLayoutWindowMap.clear();
 }
