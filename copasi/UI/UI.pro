@@ -1,10 +1,15 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.228 $
+#   $Revision: 1.229 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2010/02/01 16:49:14 $
+#   $Author: gauges $
+#   $Date: 2010/02/03 18:08:40 $
 # End CVS Header
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.228 $ $Author: aekamal $ $Date: 2010/02/01 16:49:14 $
+# $Revision: 1.229 $ $Author: gauges $ $Date: 2010/02/03 18:08:40 $
 ######################################################################
 
 LIB = UI
@@ -280,7 +285,6 @@ SOURCES	+= \
 ### uic3 forms
 FORMS3 += CMCAResultSubwidget.ui
 FORMS3 += CQExperimentSelection.ui
-#FORMS3 += CQFileDialogBtnGrp.ui
 FORMS3 += CQFittingResult.ui
 FORMS3 += CQFittingResultTab1.ui
 FORMS3 += CQMatrixDialog.ui
@@ -348,7 +352,6 @@ FORMS += CQExpandModelData.ui
 # headers generated from .ui files
 HEADERS += \
     CQExperimentData.h \
-    CQFileDialogBtnGrp.h \
     CQProgressItemBar.h \
     CQProgressItemText.h \
     CQTextDialog.h \
@@ -356,7 +359,6 @@ HEADERS += \
 # sources generated from .ui files
 SOURCES += \
     CQExperimentData.cpp \
-    CQFileDialogBtnGrp.cpp \
     CQProgressItemBar.cpp \
     CQProgressItemText.cpp \
     CQTextDialog.cpp \
