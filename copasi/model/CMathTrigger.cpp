@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/02 15:33:49 $
+//   $Date: 2010/02/03 14:53:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,7 @@ CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression() const
 
   pTrueExpression = new CEvaluationNodeLogical(CEvaluationNodeLogical::GT, "GT");
   pTrueExpression->addChild(new CEvaluationNodeObject(&mTrue));
-  pTrueExpression->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0"));
+  pTrueExpression->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.5"));
 
   return pTrueExpression;
 }
@@ -402,24 +402,24 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource,
   // Equality can be determined between Boolean and double values.
   if (CEvaluationNode::type(pLeft->getType()) != CEvaluationNode::LOGICAL)
     {
-      // We treat x EQ y as (x GE y) EQ (y GE x)
+      // We treat x EQ y as (x GE y) AND (y GE x)
 
       // Create a temporary expression and compile it.
-      CEvaluationNode * pEQ = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
+      CEvaluationNode * pAND = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
       CEvaluationNode * pGE = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
       pGE->addChild(copyBranch(pLeft));
       pGE->addChild(copyBranch(pRight));
-      pEQ->addChild(pGE);
+      pAND->addChild(pGE);
 
       pGE = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
       pGE->addChild(copyBranch(pRight));
       pGE->addChild(copyBranch(pLeft));
-      pEQ->addChild(pGE);
+      pAND->addChild(pGE);
 
-      success &= compileEQ(pEQ, pTrueExpression);
+      success &= compileAND(pAND, pTrueExpression);
 
       // Delete the temporary
-      pdelete(pEQ);
+      pdelete(pAND);
     }
   else
     {
