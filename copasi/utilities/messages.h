@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.141 $
+//   $Revision: 1.142 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 17:18:42 $
+//   $Date: 2010/02/03 21:15:38 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -363,6 +368,7 @@ const MESSAGES Messages[] =
   //CEFMAnalysis
   {MCEFMAnalysis + 1, "CEFMAnalysis (1): Invalid task."},
   {MCEFMAnalysis + 2, "CEFMAnalysis (2): Invalid problem."},
+  {MCEFMAnalysis + 3, "CEFMAnalysis (3): Non integer stoichiometry found for reaction '%s'."},
 
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
