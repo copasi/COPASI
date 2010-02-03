@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:48 $
+//   $Date: 2010/02/03 21:15:18 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -63,16 +68,6 @@ const char* CPlotItem::XMLRecordingActivity[] =
   NULL
 };
 
-CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName) //static
-{
-  unsigned C_INT32 i = 0;
-
-  while (TypeName[i] != typeName && TypeName[i] != "") i++;
-
-  if (CPlotItem::TypeName[i] != "") return (CPlotItem::Type) i;
-  else return CPlotItem::unset;
-}
-
 CPlotItem::CPlotItem(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CPlotItem::Type & type):
@@ -121,7 +116,7 @@ void CPlotItem::setType(CPlotItem::Type type)
       mpXMLActivity =
         assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"))->getValue().pSTRING;
 
-      mActivity = (COutputInterface::Activity) toEnum(mpXMLActivity->c_str(), XMLRecordingActivity);
+      mActivity = toEnum(mpXMLActivity->c_str(), XMLRecordingActivity, COutputInterface::DURING);
 
       if (mActivity < COutputInterface::BEFORE ||
           (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER) < mActivity)
@@ -185,7 +180,7 @@ const COutputInterface::Activity & CPlotItem::getActivity() const
           const_cast<CPlotItem *>(this)->mpXMLActivity =
             getParameter("Recording Activity")->getValue().pSTRING;
 
-        Activity = (COutputInterface::Activity) toEnum(mpXMLActivity->c_str(), XMLRecordingActivity);
+        Activity = toEnum(mpXMLActivity->c_str(), XMLRecordingActivity, COutputInterface::DURING);
 
         if (Activity < COutputInterface::BEFORE ||
             (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER) < Activity)

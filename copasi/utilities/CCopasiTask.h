@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 16:26:54 $
+//   $Date: 2010/02/03 21:15:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -296,15 +301,6 @@ public:
    * @param CCopasiTask::Type & type
    */
   void setType(const Type & type);
-
-  /**
-   * Convert an XMLType string to the matching enum value
-   * Returns CCopasiTask::unset if no match is found.
-   * @param (const char * xmlTypeName)
-   * @return CCopasiTask::Type type
-   */
-  static
-  CCopasiTask::Type XMLNameToEnum(const char * xmlTypeName);
 
   /**
    * Retrieve the key for the task.

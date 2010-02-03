@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 16:26:54 $
+//   $Date: 2010/02/03 21:15:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -90,17 +95,6 @@ bool CCopasiTask::isValidMethod(const unsigned C_INT32 & method,
     if (method == validMethods[i]) return true;
 
   return false;
-}
-
-//static
-CCopasiTask::Type CCopasiTask::XMLNameToEnum(const char * xmlTypeName)
-{
-  unsigned C_INT32 i = 0;
-
-  while (XMLType[i] && strcmp(xmlTypeName, XMLType[i])) i++;
-
-  if (XMLType[i]) return (CCopasiTask::Type) i;
-  else return CCopasiTask::unset;
 }
 
 CCopasiTask::CCopasiTask(const std::string & name,

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/30 12:52:41 $
+//   $Author: shoops $
+//   $Date: 2010/02/03 21:15:18 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -168,7 +173,7 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
   unsigned C_INT32 i;
 
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
-    mpBoxMethod->insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[validMethods[i]]));
+    mpBoxMethod->insertItem(QString::fromUtf8(CCopasiMethod::SubTypeName[validMethods[i]]));
 
   mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
@@ -237,7 +242,7 @@ void TaskWidget::changeMethod(int /* index */)
     pdelete(mpMethod);
 
   CCopasiMethod::SubType Type =
-    CCopasiMethod::TypeNameToEnum(TO_UTF8(mpBoxMethod->currentText()));
+    toEnum(TO_UTF8(mpBoxMethod->currentText()), CCopasiMethod::SubTypeName, CCopasiMethod::unset);
 
   mpMethod = createMethod(Type);
 
@@ -292,7 +297,7 @@ bool TaskWidget::loadMethod()
   if (!mpMethod) return false;
 
   if (mpBoxMethod)
-    mpBoxMethod->setCurrentText(FROM_UTF8(CCopasiMethod::SubTypeName[mpMethod->getSubType()]));
+    mpBoxMethod->setCurrentText(QString::fromUtf8(CCopasiMethod::SubTypeName[mpMethod->getSubType()]));
 
   if (mpTblParameter)
     {

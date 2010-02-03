@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.34 $
+$Revision: 1.35 $
 $Name:  $
-$Author: gauges $
-$Date: 2009/07/27 17:28:40 $
+$Author: shoops $
+$Date: 2010/02/03 21:15:17 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -643,17 +643,6 @@ void FixXHTML(const std::string &original, std::string &fixed)
 
       Str = Str.substr(len - i - 1);
     }
-}
-
-int toEnum(const char * attribute,
-           const char ** enumNames)
-{
-  if (!attribute) return - 1;
-
-  for (int i = 0; *enumNames; i++, enumNames++)
-    if (!strcmp(attribute, *enumNames)) return i;
-
-  return - 1;
 }
 
 #if (defined SunOS || defined Linux)

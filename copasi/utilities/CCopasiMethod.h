@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/19 19:01:21 $
+//   $Date: 2010/02/03 21:15:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -89,7 +94,7 @@ public:
    * String literals for the GUI to display sub type names of methods known
    * to COPASI.
    */
-  static const std::string SubTypeName[];
+  static const char* SubTypeName[];
 
   /**
    * XML sub type names of methods known to COPASI.
@@ -139,15 +144,6 @@ protected:
                 const CCopasiContainer * pParent = NULL);
 
 public:
-  /**
-   * Convert a SubTypeName to the matching enum value.
-   * Returns CCopasiMethod::unset if no match is found.
-   * @param (const std::string & subTypeName)
-   * @return CCopasiMethod::SubType type
-   */
-  static
-  CCopasiMethod::SubType TypeNameToEnum(const std::string & subTypeName);
-
   /**
    * Copy constructor
    * @param const CCopasiMethodr & src

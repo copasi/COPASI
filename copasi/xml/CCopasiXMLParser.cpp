@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.208 $
+//   $Revision: 1.209 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/03 13:50:02 $
+//   $Author: shoops $
+//   $Date: 2010/02/03 21:15:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -681,7 +686,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
         mKey = mParser.getAttributeValue("key", papszAttrs);
         Name = mParser.getAttributeValue("name", papszAttrs);
         type = mParser.getAttributeValue("type", papszAttrs);
-        Type = (CEvaluationTree::Type)toEnum(type, CEvaluationTree::XMLType);
+        Type = toEnum(type, CEvaluationTree::XMLType, CEvaluationTree::UserDefined);
         Reversible = mParser.getAttributeValue("reversible", papszAttrs, false);
 
         if (!Reversible) // We may have an old file format using positive
@@ -1385,8 +1390,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         Name = mParser.getAttributeValue("name", papszAttrs);
 
         timeUnit = mParser.getAttributeValue("timeUnit", papszAttrs);
-        TimeUnit =
-          (CModel::TimeUnit)toEnum(timeUnit, CModel::TimeUnitNames);
+        TimeUnit = toEnum(timeUnit, CModel::TimeUnitNames, CModel::s);
 
         if (TimeUnit == -1)
           {
@@ -1397,37 +1401,32 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
           }
 
         volumeUnit = mParser.getAttributeValue("volumeUnit", papszAttrs);
-        VolumeUnit =
-          (CModel::VolumeUnit)toEnum(volumeUnit, CModel::VolumeUnitNames);
+        VolumeUnit = toEnum(volumeUnit, CModel::VolumeUnitNames, CModel::ml);
 
         if (VolumeUnit == -1) fatalError();
 
         //the next 2 attributes are introduced in Build 31, they have a default for
         //reading older cps files
         areaUnit = mParser.getAttributeValue("areaUnit", papszAttrs, "m\xc2\xb2");
-        AreaUnit =
-          (CModel::AreaUnit)toEnum(areaUnit, CModel::AreaUnitNames);
+        AreaUnit = toEnum(areaUnit, CModel::AreaUnitNames, CModel::m2);
 
         if (AreaUnit == -1) AreaUnit = CModel::m2; //TODO warning
 
         lengthUnit = mParser.getAttributeValue("lengthUnit", papszAttrs, "m");
-        LengthUnit =
-          (CModel::LengthUnit)toEnum(lengthUnit, CModel::LengthUnitNames);
+        LengthUnit = toEnum(lengthUnit, CModel::LengthUnitNames, CModel::m);
 
         if (LengthUnit == -1) LengthUnit = CModel::m; //TODO warning
 
         quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
-        QuantityUnit =
-          (CModel::QuantityUnit) toEnum(quantityUnit, CModel::QuantityUnitNames);
+        QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitNames, CModel::mMol);
 
         if (QuantityUnit == -1)
-          QuantityUnit =
-            (CModel::QuantityUnit) toEnum(quantityUnit, CModel::QuantityUnitOldXMLNames);
+          QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitOldXMLNames, CModel::mMol);
 
         if (QuantityUnit == -1) fatalError();
 
-        ModelType = (CModel::ModelType)
-                    toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"), CModel::ModelTypeNames);
+        ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
+                           CModel::ModelTypeNames, CModel::deterministic);
 
         if (ModelType == -1) fatalError();
 
@@ -1937,7 +1936,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
         mKey = mParser.getAttributeValue("key", papszAttrs);
         Name = mParser.getAttributeValue("name", papszAttrs);
         simulationType = mParser.getAttributeValue("simulationType", papszAttrs, "fixed");
-        SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
+        SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModel::FIXED);
         Dimensionality = mParser.getAttributeValue("dimensionality", papszAttrs, "3");
 
         mpCompartment = new CCompartment();
@@ -2209,7 +2208,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
               simulationType = reactions;
           }
 
-        SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
+        SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModelEntity::REACTIONS);
         Compartment = mParser.getAttributeValue("compartment", papszAttrs);
 
         mpMetabolite = new CMetab();
@@ -2483,7 +2482,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
               simulationType = mParser.getAttributeValue("simulationType", papszAttrs);
           }
 
-        SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
+        SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
 
         mpMV = new CModelValue();
         mCommon.KeyMap.addFix(mKey, mpMV);
@@ -5287,7 +5286,8 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
         // create a new CPlotSpecification element depending on the type
         name = mParser.getAttributeValue("name", papszAttrs);
         sType = mParser.getAttributeValue("type", papszAttrs);
-        mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, (CPlotItem::Type) toEnum(sType.c_str(), CPlotItem::XMLType));
+        mCommon.pCurrentPlotItem =
+          mCommon.pCurrentPlot->createItem(name, toEnum(sType.c_str(), CPlotItem::XMLType, CPlotItem::unset));
 
         return;
         break;
@@ -5517,7 +5517,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
         name = mParser.getAttributeValue("name", papszAttrs);
         mCommon.pCurrentPlot->setObjectName(name);
         sType = mParser.getAttributeValue("type", papszAttrs);
-        mCommon.pCurrentPlot->setType((CPlotItem::Type) toEnum(sType, CPlotItem::XMLType));
+        mCommon.pCurrentPlot->setType(toEnum(sType, CPlotItem::XMLType, CPlotItem::curve2d));
         active = mParser.getAttributeValue("active", papszAttrs, "true");
 
         mCommon.pCurrentPlot->setActive(mParser.toBool(active));
@@ -7925,7 +7925,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
 
         Key = mParser.getAttributeValue("key", papszAttrs, false);
         type = mParser.getAttributeValue("type", papszAttrs);
-        Type = (CCopasiTask::Type)toEnum(type, CCopasiTask::XMLType);
+        Type = toEnum(type, CCopasiTask::XMLType, CCopasiTask::unset);
         Scheduled = mParser.toBool(mParser.getAttributeValue("scheduled", papszAttrs, "false"));
         UpdateModel = mParser.toBool(mParser.getAttributeValue("updateModel", papszAttrs, "false"));
 
@@ -8671,7 +8671,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
         name = mParser.getAttributeValue("name", papszAttrs);
         sType = mParser.getAttributeValue("type", papszAttrs);
 
-        type = (CCopasiParameter::Type) toEnum(sType.c_str(), CCopasiParameter::XMLType);
+        type = toEnum(sType.c_str(), CCopasiParameter::XMLType, CCopasiParameter::INVALID);
 
         switch (type)
           {
@@ -8829,7 +8829,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
             // first set the type of the with setMethodType of the current task
             // object
             CCopasiMethod::SubType type =
-              (CCopasiMethod::SubType) toEnum(sType.c_str(), CCopasiMethod::XMLSubType);
+              toEnum(sType.c_str(), CCopasiMethod::XMLSubType, CCopasiMethod::unset);
 
             if (type != CCopasiMethod::unset)
               {
@@ -9237,8 +9237,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
         Key = mParser.getAttributeValue("key", papszAttrs);
         Name = mParser.getAttributeValue("name", papszAttrs);
-        type = (CCopasiTask::Type)toEnum(mParser.getAttributeValue("taskType", papszAttrs),
-                                         CCopasiTask::XMLType);
+        type = toEnum(mParser.getAttributeValue("taskType", papszAttrs),
+                      CCopasiTask::XMLType, CCopasiTask::unset);
 
         Separator = mParser.getAttributeValue("separator", papszAttrs, "\t");
         Precision = mParser.getAttributeValue("precision", papszAttrs, "6");
@@ -10373,7 +10373,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
         AssociatedEntityKey = mParser.getAttributeValue("associatedEntityKey", papszAttrs);
         ObjectCN = mParser.getAttributeValue("objectCN", papszAttrs);
         objectType = mParser.getAttributeValue("objectType", papszAttrs);
-        ObjectType = (CSlider::Type) toEnum(objectType, CSlider::TypeName);
+        ObjectType = toEnum(objectType, CSlider::TypeName, CSlider::Float);
         tmp = mParser.getAttributeValue("objectValue", papszAttrs);
         ObjectValue = CCopasiXMLInterface::DBL(tmp);
         tmp = mParser.getAttributeValue("minValue", papszAttrs);

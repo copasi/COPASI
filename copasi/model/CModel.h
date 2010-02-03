@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.183 $
+//   $Revision: 1.184 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/09/06 13:55:15 $
+//   $Author: shoops $
+//   $Date: 2010/02/03 21:15:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -85,7 +90,7 @@ public:
   /**
    *  Enum of valid quantity units
    */
-  enum QuantityUnit {dimensionlessQuantity = 0, Mol, mMol, microMol, nMol, pMol, fMol, number};
+  enum QuantityUnit {dimensionlessQuantity = 0, Mol, mMol, microMol, nMol, pMol, fMol, number, OldXML};
 
   /**
    * String representation of valid quantity units as used in old (up to Build 18)

@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/07/23 19:53:47 $
+   $Date: 2010/02/03 21:15:17 $
    End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -94,14 +99,24 @@ void FixXHTML(const std::string &original, std::string &fixed)
 
 /**
   * Convert an attribute to enum. If attribute is NULL
-  * or no matching name is found -1 is returned. Note: enumNames must be
-  * zero terminated.
+  * or no matching name is found the parameter enumDefault is returned.
+  * Note: enumNames must be zero terminated.
   * @param const char * attribute
   * @param const char ** enumNames
-  * @return bool
+  * @param const CType & enumDefault
+  * @return CType enum
   */
-int toEnum(const char * attribute,
-           const char ** enumNames);
+template <class CType> CType toEnum(const char * attribute,
+                                    const char ** enumNames,
+                                    const CType & enumDefault)
+{
+  if (!attribute) return enumDefault;
+
+  for (int i = 0; *enumNames; i++, enumNames++)
+    if (!strcmp(attribute, *enumNames)) return static_cast< CType >(i);
+
+  return enumDefault;
+}
 
 /**
  * Convert a utf8 string to the local used code page

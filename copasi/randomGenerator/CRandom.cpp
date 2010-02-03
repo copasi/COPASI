@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:03:42 $
+//   $Date: 2010/02/03 21:15:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -26,38 +31,20 @@
 #include "utilities/CCopasiMessage.h"
 
 const std::string CRandom::TypeName[] =
-  {
-    "r250",
-    "Mersenne Twister",
-    "Mersenne Twister (HR)",
-    ""
-  };
+{
+  "r250",
+  "Mersenne Twister",
+  "Mersenne Twister (HR)",
+  ""
+};
 
 const char * CRandom::XMLType[] =
-  {
-    "r250",
-    "MersenneTwister",
-    "MersenneTwisterHR",
-    NULL
-  };
-
-CRandom::Type CRandom::TypeNameToEnum(const std::string & typeName)
 {
-  unsigned C_INT32 i = 0;
-  while (TypeName[i] != typeName && TypeName[i] != "") i++;
-
-  if (CRandom::TypeName[i] != "") return (CRandom::Type) i;
-  else return CRandom::mt19937;
-}
-
-CRandom::Type CRandom::XMLNameToEnum(const char * xmlTypeName)
-{
-  unsigned C_INT32 i = 0;
-  while (strcmp(xmlTypeName, XMLType[i]) && XMLType[i]) i++;
-
-  if (XMLType[i]) return (CRandom::Type) i;
-  else return CRandom::mt19937;
-}
+  "r250",
+  "MersenneTwister",
+  "MersenneTwisterHR",
+  NULL
+};
 
 CRandom * CRandom::createGenerator(CRandom::Type type,
                                    unsigned C_INT32 seed)
@@ -69,25 +56,25 @@ CRandom * CRandom::createGenerator(CRandom::Type type,
 
   switch (type)
     {
-    case r250:
-      RandomGenerator = new Cr250(seed);
-      RandomGenerator->mType = type;
-      break;
+      case r250:
+        RandomGenerator = new Cr250(seed);
+        RandomGenerator->mType = type;
+        break;
 
-    case mt19937:
-      RandomGenerator = new Cmt19937(seed);
-      RandomGenerator->mType = type;
-      break;
+      case mt19937:
+        RandomGenerator = new Cmt19937(seed);
+        RandomGenerator->mType = type;
+        break;
 
-    case mt19937HR:
-      RandomGenerator = new Cmt19937HR(seed);
-      RandomGenerator->mType = type;
-      break;
+      case mt19937HR:
+        RandomGenerator = new Cmt19937HR(seed);
+        RandomGenerator->mType = type;
+        break;
 
-    default:
-      RandomGenerator = new Cmt19937(seed);
-      RandomGenerator->mType = type;
-      break;
+      default:
+        RandomGenerator = new Cmt19937(seed);
+        RandomGenerator->mType = type;
+        break;
     }
 
   return RandomGenerator;
@@ -235,6 +222,7 @@ unsigned C_INT32 CRandom::getRandomU(const unsigned C_INT32 & max)
 
   do
     NumberU = getRandomU();
+
   while (NumberU >= Limit);
 
   return NumberU % Max;
@@ -254,6 +242,7 @@ C_INT32 CRandom::getRandomS(const C_INT32 & max)
 
   do
     NumberU = getRandomU();
+
   while (NumberU >= Limit);
 
   return mNumberU % Max;
@@ -345,22 +334,32 @@ C_FLOAT64 CRandom::getRandomNormalLog(const C_FLOAT64 & mean,
 C_FLOAT64 CRandom::getRandomPoisson(const C_FLOAT64 & mu)
 {
   if (mu == varp.muprev) goto S10;
+
   if (mu < 10.0) goto S120;
+
   varp.muprev = mu;
   varp.s = sqrt(mu);
   varp.d = 6.0 * mu * mu;
-  varp.ll = (long) (mu - 1.1484);
+  varp.ll = (long)(mu - 1.1484);
 S10:
   varp.g = mu + varp.s * getRandomNormal01();
+
   if (varp.g < 0.0) goto S20;
-  varp.ignpoi = (long) (varp.g);
+
+  varp.ignpoi = (long)(varp.g);
+
   if (varp.ignpoi >= varp.ll) return varp.ignpoi;
+
   varp.fk = (float)varp.ignpoi;
   varp.difmuk = mu - varp.fk;
   varp.u = getRandomCC();
+
   if (varp.d*varp.u >= varp.difmuk*varp.difmuk*varp.difmuk) return varp.ignpoi;
+
 S20:
+
   if (mu == varp.muold) goto S30;
+
   varp.muold = mu;
   varp.omega = 0.3989423 / varp.s;
   varp.b1 = 4.166667E-2 / mu;
@@ -371,27 +370,37 @@ S20:
   varp.c0 = 1.0 - varp.b1 + 3.0 * varp.b2 - 15.0 * varp.c3;
   varp.c = 0.1069 / mu;
 S30:
+
   if (varp.g < 0.0) goto S50;
+
   varp.kflag = 0;
   goto S70;
 S40:
+
   if (varp.fy - varp.u*varp.fy <= varp.py*exp(varp.px - varp.fx)) return varp.ignpoi;
+
 S50:
   varp.e = getRandomExp();
   varp.u = getRandomCC();
   varp.u += (varp.u - 1.0);
   varp. t = 1.8 + fsign(varp.e, varp.u);
+
   if (varp.t <= -0.6744) goto S50;
-  varp.ignpoi = (long) (mu + varp.s * varp.t);
+
+  varp.ignpoi = (long)(mu + varp.s * varp.t);
   varp.fk = (float)varp.ignpoi;
   varp.difmuk = mu - varp.fk;
   varp.kflag = 1;
   goto S70;
 S60:
+
   if (varp.c*fabs(varp.u) > varp.py*exp(varp.px + varp.e) - varp.fy*exp(varp.fx + varp.e)) goto S50;
+
   return varp.ignpoi;
 S70:
+
   if (varp.ignpoi >= 10) goto S80;
+
   varp.px = -mu;
   varp.py = pow(mu, (double)varp.ignpoi) / *(varp.fact + varp.ignpoi);
   goto S110;
@@ -399,7 +408,9 @@ S80:
   varp.del = 8.333333E-2 / varp.fk;
   varp.del -= (4.8 * varp.del * varp.del * varp.del);
   varp.v = varp.difmuk / varp.fk;
+
   if (fabs(varp.v) <= 0.25) goto S90;
+
   varp.px = varp.fk * log(1.0 + varp.v) - varp.difmuk - varp.del;
   goto S100;
 S90:
@@ -412,43 +423,57 @@ S110:
   varp.xx = varp.x * varp.x;
   varp.fx = -0.5 * varp.xx;
   varp.fy = varp.omega * (((varp.c3 * varp.xx + varp.c2) * varp.xx + varp.c1) * varp.xx + varp.c0);
+
   if (varp.kflag <= 0) goto S40;
+
   goto S60;
 S120:
   varp.muprev = -1.0E37;
+
   if (mu == varp.muold) goto S130;
 
   if (mu >= 0.0) goto S125;
+
   fprintf(stderr, "MU < 0 in IGNPOI: MU %16.6E\n", mu);
   fputs("Abort\n", stderr);
   exit(1);
 S125:
   varp.muold = mu;
-  varp.m = std::max(1L, (long) (mu));
+  varp.m = std::max(1L, (long)(mu));
   varp.l = 0;
   varp.p = exp(-mu);
   varp.q = varp.p0 = varp.p;
 S130:
   varp.u = getRandomCC();
   varp.ignpoi = 0;
+
   if (varp.u <= varp.p0) return varp.ignpoi;
+
   if (varp.l == 0) goto S150;
+
   varp.j = 1;
+
   if (varp.u > 0.458) varp.j = std::min(varp.l, varp.m);
+
   for (varp.k = varp.j; varp.k <= varp.l; varp.k++)
     {
       if (varp.u <= *(varp.pp + varp.k - 1)) goto S180;
     }
+
   if (varp.l == 35) goto S130;
+
 S150:
   varp.l += 1;
+
   for (varp.k = varp.l; varp.k <= 35; varp.k++)
     {
       varp.p = varp.p * mu / (float)varp.k;
       varp.q += varp.p;
       *(varp.pp + varp.k - 1) = varp.q;
+
       if (varp.u <= varp.q) goto S170;
     }
+
   varp.l = 35;
   goto S130;
 S170:
@@ -474,9 +499,13 @@ S20:
   vare.a += *vare.q1;
 S30:
   vare.u += vare.u;
+
   if (vare.u < 1.0) goto S20;
+
   vare.u -= 1.0;
+
   if (vare.u > *vare.q1) goto S60;
+
   vare.sexpo = vare.a + vare.u;
   return vare.sexpo;
 S60:
@@ -485,9 +514,13 @@ S60:
   vare.umin = vare.ustar;
 S70:
   vare.ustar = getRandomCC();
+
   if (vare.ustar < vare.umin) vare.umin = vare.ustar;
+
   vare.i += 1;
+
   if (vare.u > *(vare.q + vare.i - 1)) goto S70;
+
   vare.sexpo = vare.a + vare.umin**vare.q1;
   return vare.sexpo;
 }

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.384 $
+//   $Revision: 1.385 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:47 $
+//   $Date: 2010/02/03 21:15:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -1950,12 +1955,7 @@ C_FLOAT64 CModel::calculateDivergence() const
 
 bool CModel::setVolumeUnit(const std::string & name)
 {
-  int unit = toEnum(name.c_str(), VolumeUnitNames);
-
-  if (-1 == unit)
-    return setVolumeUnit(ml);
-  else
-    return setVolumeUnit((CModel::VolumeUnit) unit);
+  return setVolumeUnit(toEnum(name.c_str(), VolumeUnitNames, ml));
 }
 
 bool CModel::setVolumeUnit(const CModel::VolumeUnit & unit)
@@ -1978,12 +1978,7 @@ CModel::VolumeUnit CModel::getVolumeUnitEnum() const
 
 bool CModel::setAreaUnit(const std::string & name)
 {
-  int unit = toEnum(name.c_str(), AreaUnitNames);
-
-  if (-1 == unit)
-    return setAreaUnit(m2);
-  else
-    return setAreaUnit((CModel::AreaUnit) unit);
+  return setAreaUnit(toEnum(name.c_str(), AreaUnitNames, m2));
 }
 
 bool CModel::setAreaUnit(const CModel::AreaUnit & unit)
@@ -2005,12 +2000,7 @@ CModel::AreaUnit CModel::getAreaUnitEnum() const
 //****
 bool CModel::setLengthUnit(const std::string & name)
 {
-  int unit = toEnum(name.c_str(), LengthUnitNames);
-
-  if (-1 == unit)
-    return setLengthUnit(m);
-  else
-    return setLengthUnit((CModel::LengthUnit) unit);
+  return setLengthUnit(toEnum(name.c_str(), LengthUnitNames, m));
 }
 
 bool CModel::setLengthUnit(const CModel::LengthUnit & unit)
@@ -2033,12 +2023,7 @@ CModel::LengthUnit CModel::getLengthUnitEnum() const
 
 bool CModel::setTimeUnit(const std::string & name)
 {
-  int unit = toEnum(name.c_str(), TimeUnitNames);
-
-  if (-1 == unit)
-    return setTimeUnit(s);
-  else
-    return setTimeUnit((CModel::TimeUnit) unit);
+  return setTimeUnit(toEnum(name.c_str(), TimeUnitNames, s));
 }
 
 bool CModel::setTimeUnit(const CModel::TimeUnit & unit)
@@ -2061,15 +2046,12 @@ CModel::TimeUnit CModel::getTimeUnitEnum() const
 
 bool CModel::setQuantityUnit(const std::string & name)
 {
-  int unit = toEnum(name.c_str(), QuantityUnitNames);
+  QuantityUnit unit = toEnum(name.c_str(), QuantityUnitNames, OldXML);
 
-  if (-1 == unit)
-    unit = toEnum(name.c_str(), QuantityUnitOldXMLNames);
+  if (unit = OldXML)
+    unit = toEnum(name.c_str(), QuantityUnitOldXMLNames, mMol);
 
-  if (-1 == unit)
-    return setQuantityUnit(mMol);
-  else
-    return setQuantityUnit((CModel::QuantityUnit) unit);
+  return setQuantityUnit(unit);
 }
 
 bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
