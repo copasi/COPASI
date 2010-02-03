@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-  $Revision: 1.11 $
+  $Revision: 1.12 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/02/03 19:34:09 $
+  $Date: 2010/02/03 21:53:35 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,8 +149,6 @@ bool CEFMMethod::isValidProblem(const CCopasiProblem * pProblem)
   const CMatrix< C_FLOAT64 > & RedStoi = pModel->getRedStoi();
   const C_FLOAT64 * pValue = RedStoi.array();
   const C_FLOAT64 * pValueEnd = pValue + RedStoi.size();
-
-  std::cout << 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() << std::endl;
 
   for (; pValue != pValueEnd; ++pValue)
     {
