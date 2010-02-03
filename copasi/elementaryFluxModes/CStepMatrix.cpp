@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/02 18:09:36 $
+//   $Date: 2010/02/03 04:26:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,7 +186,7 @@ bool CStepMatrix::splitColumns(std::vector< CStepMatrixColumn * > & PositiveColu
     {
       assert(*it != NULL);
 
-      const C_INT32 & Value = (*it)->getMultiplier();
+      const C_INT64 & Value = (*it)->getMultiplier();
 
       if (Value > 0)
         {

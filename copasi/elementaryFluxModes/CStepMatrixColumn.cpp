@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/02 18:09:36 $
+//   $Date: 2010/02/03 04:26:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,12 @@
 
 #include "CStepMatrixColumn.h"
 #include "CBitPatternTreeMethod.h"
+
+#ifdef WIN32
+# define abs64 _abs64
+#else
+# define abs64 abs
+#endif // WIN32
 
 CStepMatrixColumn::CStepMatrixColumn(const size_t & size):
     mZeroSet(size),
@@ -36,8 +42,8 @@ CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
   C_INT64 PosMult = -pNegative->getMultiplier();
   C_INT64 NegMult = pPositive->getMultiplier();
 
-  C_INT64 GCD1 = abs(PosMult);
-  C_INT64 GCD2 = abs(NegMult);
+  C_INT64 GCD1 = abs64(PosMult);
+  C_INT64 GCD2 = abs64(NegMult);
 
   // Divide PosMult and NegMult by GCD(PosMult, NegMult);
   CBitPatternTreeMethod::GCD(GCD1, GCD2);
@@ -70,11 +76,11 @@ CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
 
       if (GCD1 == -1)
         {
-          GCD1 = abs(*it);
+          GCD1 = abs64(*it);
           continue;
         }
 
-      GCD2 = abs(*it);
+      GCD2 = abs64(*it);
 
       CBitPatternTreeMethod::GCD(GCD1, GCD2);
     }
