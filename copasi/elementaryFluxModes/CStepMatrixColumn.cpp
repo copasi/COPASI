@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 04:26:11 $
+//   $Date: 2010/02/03 19:34:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,12 +24,6 @@
 
 #include "CStepMatrixColumn.h"
 #include "CBitPatternTreeMethod.h"
-
-#ifdef WIN32
-# define abs64 _abs64
-#else
-# define abs64 abs
-#endif // WIN32
 
 CStepMatrixColumn::CStepMatrixColumn(const size_t & size):
     mZeroSet(size),

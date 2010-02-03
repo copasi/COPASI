@@ -1,10 +1,15 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-  $Revision: 1.10 $
+  $Revision: 1.11 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/02/03 17:18:42 $
+  $Date: 2010/02/03 19:34:09 $
   End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,7 +26,7 @@
  *  The various method like RandomSearch or GA have to be derived from
  *  this class.
  *
- *  Created for Copasi by Stefan Hoops 2002
+ *  Created for COPASI by Stefan Hoops 2002
  */
 
 #include "copasi.h"
@@ -32,10 +37,11 @@
 
 #include "CEFMAlgorithm.h"
 #include "CBitPatternTreeMethod.h"
-
 #ifdef COPASI_SSA
 # include "CSSAMethod.h"
 #endif
+
+#include "model/CModel.h"
 
 CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
 {
@@ -125,6 +131,43 @@ bool CEFMMethod::initialize()
 bool CEFMMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
+
+  if (pProblem == NULL)
+    {
+      return false;
+    }
+
+  const CModel * pModel = pProblem ->getModel();
+
+  if (pModel == NULL)
+    {
+      return false;
+    }
+
+  // Check that the stoichiometry matrix contains only integers.
+
+  const CMatrix< C_FLOAT64 > & RedStoi = pModel->getRedStoi();
+  const C_FLOAT64 * pValue = RedStoi.array();
+  const C_FLOAT64 * pValueEnd = pValue + RedStoi.size();
+
+  std::cout << 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() << std::endl;
+
+  for (; pValue != pValueEnd; ++pValue)
+    {
+      if (fabs(*pValue - floor(*pValue + 0.5)) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+        {
+          break;
+        }
+    }
+
+  if (pValue != pValueEnd)
+    {
+      const CReaction * pReaction = pModel->getReactions()[(pValue - RedStoi.array()) % RedStoi.numCols()];
+
+      CCopasiMessage(CCopasiMessage::ERROR, MCEFMAnalysis + 3, pReaction->getObjectName().c_str());
+
+      return false;
+    }
 
   return true;
 }

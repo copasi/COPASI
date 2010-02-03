@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 17:18:42 $
+//   $Date: 2010/02/03 19:34:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -89,6 +94,11 @@ bool CEFMTask::initialize(const OutputFlag & of,
   CEFMMethod * pMethod = dynamic_cast<CEFMMethod *>(mpMethod);
 
   if (pMethod == NULL) return false;
+
+  if (!mpMethod->isValidProblem(mpProblem))
+    {
+      return false;
+    }
 
   return CCopasiTask::initialize(of, pOutputHandler, pOstream);
 }

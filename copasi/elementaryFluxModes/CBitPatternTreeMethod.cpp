@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 17:18:42 $
+//   $Date: 2010/02/03 19:34:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -770,8 +775,8 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
           *(pRow + CurrentColumnIndex) = 0;
 
           // compute GCD(*pActiveRowStart, *pRow)
-          C_INT64 GCD1 = abs(ActiveRowValue);
-          C_INT64 GCD2 = abs(RowValue);
+          C_INT64 GCD1 = abs64(ActiveRowValue);
+          C_INT64 GCD2 = abs64(RowValue);
 
           GCD(GCD1, GCD2);
 
@@ -783,7 +788,7 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
           pCurrent = pRow;
           *pIdentity *= alpha;
 
-          GCD1 = abs(*pIdentity);
+          GCD1 = abs64(*pIdentity);
 
           for (; pActiveRow < pActiveRowEnd; ++pActiveRow, ++pCurrent)
             {
