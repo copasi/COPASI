@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-  $Revision: 1.9 $
+  $Revision: 1.10 $
   $Name:  $
   $Author: shoops $
-  $Date: 2009/12/07 17:14:50 $
+  $Date: 2010/02/03 17:18:42 $
   End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 
 #include "CEFMTask.h"
 #include "CEFMMethod.h"
+#include "CEFMProblem.h"
 
 #include "CEFMAlgorithm.h"
 #include "CBitPatternTreeMethod.h"
@@ -67,20 +68,23 @@ CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
 // Default constructor
 CEFMMethod::CEFMMethod():
     CCopasiMethod(CCopasiTask::fluxMode, CCopasiMethod::unset),
-    mReorderedReactions()
+    mpFluxModes(NULL),
+    mpReorderedReactions(NULL)
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::CEFMMethod(const CCopasiTask::Type & taskType,
                        const CEFMMethod::SubType & subType,
                        const CCopasiContainer * pParent):
     CCopasiMethod(taskType, subType, pParent),
-    mReorderedReactions()
+    mpFluxModes(NULL),
+    mpReorderedReactions(NULL)
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::CEFMMethod(const CEFMMethod & src,
                        const CCopasiContainer * pParent):
     CCopasiMethod(src, pParent),
-    mReorderedReactions(src.mReorderedReactions)
+    mpFluxModes(src.mpFluxModes),
+    mpReorderedReactions(src.mpReorderedReactions)
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::~CEFMMethod()
@@ -93,6 +97,28 @@ bool CEFMMethod::calculate(void)
 
 bool CEFMMethod::initialize()
 {
+  CEFMTask * pTask = dynamic_cast< CEFMTask * >(getObjectParent());
+
+  if (pTask == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCEFMAnalysis + 1);
+      return false;
+    }
+
+  CEFMProblem * pProblem = dynamic_cast< CEFMProblem *>(pTask->getProblem());
+
+  if (pProblem == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCEFMAnalysis + 2);
+      return false;
+    }
+
+  mpFluxModes = & pProblem->getFluxModes();
+  mpReorderedReactions = & pProblem->getReorderedReactions();
+
+  mpReorderedReactions->clear();
+  mpFluxModes->clear();
+
   return true;
 }
 
@@ -102,9 +128,3 @@ bool CEFMMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   return true;
 }
-
-const std::vector< CFluxMode > & CEFMMethod::getFluxModes() const
-{return mFluxModes;}
-
-const std::vector< const CReaction * > & CEFMMethod::getReorderedReactions() const
-{return mReorderedReactions;}

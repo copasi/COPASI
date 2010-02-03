@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMProblem.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/10/02 16:25:42 $
+   $Date: 2010/02/03 17:18:42 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,9 @@
 
 //  Default constructor
 CEFMProblem::CEFMProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::optimization, pParent)
+    CCopasiProblem(CCopasiTask::optimization, pParent),
+    mFluxModes(),
+    mReorderedReactions()
 {
   initializeParameter();
   initObjects();
@@ -37,7 +39,9 @@ CEFMProblem::CEFMProblem(const CCopasiContainer * pParent):
 // copy constructor
 CEFMProblem::CEFMProblem(const CEFMProblem& src,
                          const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent)
+    CCopasiProblem(src, pParent),
+    mFluxModes(src.mFluxModes),
+    mReorderedReactions(src.mReorderedReactions)
 {
   initializeParameter();
   initObjects();
@@ -67,6 +71,18 @@ bool CEFMProblem::initialize()
 {
   return CCopasiProblem::initialize();
 }
+
+const std::vector< CFluxMode > & CEFMProblem::getFluxModes() const
+{return mFluxModes;}
+
+std::vector< CFluxMode > & CEFMProblem::getFluxModes()
+{return mFluxModes;}
+
+const std::vector< const CReaction * > & CEFMProblem::getReorderedReactions() const
+{return mReorderedReactions;}
+
+std::vector< const CReaction * > & CEFMProblem::getReorderedReactions()
+{return mReorderedReactions;}
 
 void CEFMProblem::printResult(std::ostream * ostream) const
 {
@@ -133,11 +149,8 @@ void CEFMProblem::printResult(std::ostream * ostream) const
       *ostream << std::endl;
 
       // EFM vs Reaction
-      std::vector< const CReaction * >::const_iterator itReaction =
-        static_cast< const CEFMMethod * >(pTask->getMethod())->getReorderedReactions().begin();
-
-      std::vector< const CReaction * >::const_iterator endReaction =
-        static_cast< const CEFMMethod * >(pTask->getMethod())->getReorderedReactions().end();
+      std::vector< const CReaction * >::const_iterator itReaction = mReorderedReactions.begin();
+      std::vector< const CReaction * >::const_iterator endReaction = mReorderedReactions.end();
 
       // Column header
       *ostream << "#";
@@ -154,8 +167,7 @@ void CEFMProblem::printResult(std::ostream * ostream) const
 
       for (j = 0; itMode != endMode; ++itMode, j++)
         {
-          itReaction =
-            static_cast< const CEFMMethod * >(pTask->getMethod())->getReorderedReactions().begin();
+          itReaction = mReorderedReactions.begin();
 
           *ostream << j + 1;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-$Revision: 1.24 $
+$Revision: 1.25 $
 $Name:  $
-$Author: aekamal $
-$Date: 2009/10/28 14:11:51 $
+$Author: shoops $
+$Date: 2010/02/03 17:18:42 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,6 +115,11 @@ void CEFMAlgorithm::initObjects()
 
 bool CEFMAlgorithm::initialize()
 {
+  if (!CEFMMethod::initialize())
+    {
+      return false;
+    }
+
   CEFMTask * pTask = dynamic_cast< CEFMTask *>(getObjectParent());
 
   if (pTask == NULL) return false;
@@ -123,7 +128,7 @@ bool CEFMAlgorithm::initialize()
 
   if (mpModel == NULL) return false;
 
-  mFluxModes.clear();
+  mpFluxModes->clear();
 
   /* ModelStoi is the transpose of the models stoichiometry matrix */
   const CTransposeView< CMatrix< C_FLOAT64 > > ModelStoi(mpModel->getStoi());
@@ -145,7 +150,7 @@ bool CEFMAlgorithm::initialize()
 
   /* Vector to keep track of the rearrangements necessary to put the */
   /* reversible reactions to the top of stoichiometry matrix */
-  mReorderedReactions.resize(numRows);
+  mpReorderedReactions->resize(numRows);
 
   /* Reversible reaction counter */
   mReversible = 0;
@@ -168,7 +173,7 @@ bool CEFMAlgorithm::initialize()
       else
         Insert = InsertIrreversible--;
 
-      mReorderedReactions[Insert] = Reaction[row];
+      (*mpReorderedReactions)[Insert] = Reaction[row];
 
       for (col = 0; col < numCols; col++)
         mStoi[Insert][col] = ModelStoi(row, col);
@@ -225,7 +230,7 @@ void CEFMAlgorithm::calculateFluxModes()
 
       /* Build the elementary flux modes to be returned */
       if (Continue)
-        buildFluxModes(mFluxModes);
+        buildFluxModes();
 
       /* Delete the current / final tableau matrix */
       pdelete(mpCurrentTableau);
@@ -348,16 +353,16 @@ void CEFMAlgorithm::calculateNextTableau()
   mpNextTableau = NULL;
 }
 
-void CEFMAlgorithm::buildFluxModes(std::vector < CFluxMode > & fluxModes)
+void CEFMAlgorithm::buildFluxModes()
 {
-  fluxModes.clear();
+  mpFluxModes->clear();
 
   std::list< const CTableauLine * >::iterator a = mpCurrentTableau->begin();
   std::list< const CTableauLine * >::iterator end = mpCurrentTableau->end();
 
   while (a != end)
     {
-      fluxModes.push_back(CFluxMode(*a));
+      mpFluxModes->push_back(CFluxMode(*a));
       a++;
     }
 }

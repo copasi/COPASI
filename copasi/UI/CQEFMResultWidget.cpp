@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/06 14:48:49 $
+//   $Date: 2010/02/03 17:18:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,10 +123,32 @@ bool CQEFMResultWidget::leave()
 }
 
 // virtual
-bool CQEFMResultWidget::update(ListViews::ObjectType /* objectType */,
-                               ListViews::Action /* action */,
+bool CQEFMResultWidget::update(ListViews::ObjectType objectType,
+                               ListViews::Action action,
                                const std::string & /* key */)
 {
+  // TODO CRITICAL We need to update the task when a new model is loaded.
+  switch (objectType)
+    {
+      case ListViews::MODEL:
+
+        switch (action)
+          {
+            case ListViews::ADD:
+            case ListViews::DELETE:
+              loadResult(NULL);
+              break;
+
+            default:
+              break;
+          }
+
+        break;
+
+      default:
+        break;
+    }
+
   return true;
 }
 

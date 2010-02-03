@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.h,v $
-$Revision: 1.16 $
+$Revision: 1.17 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/08/14 13:41:37 $
+$Date: 2010/02/03 17:18:42 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,10 @@ private:
    */
   void calculateNextTableau();
 
-  void buildFluxModes(std::vector < CFluxMode > & fluxModes);
+  /**
+   * Construct the flux modes
+   */
+  void buildFluxModes();
 
   // Attributes
 protected:

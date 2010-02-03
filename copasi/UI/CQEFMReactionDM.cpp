@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMReactionDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/01 19:59:21 $
+//   $Date: 2010/02/03 17:18:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
 #include "qtUtilities.h"
 
 #include "elementaryFluxModes/CEFMTask.h"
-#include "elementaryFluxModes/CEFMMethod.h"
+#include "elementaryFluxModes/CEFMProblem.h"
 #include "elementaryFluxModes/CFluxMode.h"
 #include "model/CReaction.h"
 
@@ -113,8 +113,8 @@ void CQEFMReactionDM::setTask(const CEFMTask * pTask)
       mBeginModes = mpTask->getFluxModes().begin();
       mModesSize = mpTask->getFluxModes().size();
 
-      mBeginReactions = static_cast< const CEFMMethod * >(mpTask->getMethod())->getReorderedReactions().begin();
-      mReactionsSize = static_cast< const CEFMMethod * >(mpTask->getMethod())->getReorderedReactions().size();
+      mBeginReactions = static_cast< const CEFMProblem * >(mpTask->getProblem())->getReorderedReactions().begin();
+      mReactionsSize = static_cast< const CEFMProblem * >(mpTask->getProblem())->getReorderedReactions().size();
     }
   else
     {

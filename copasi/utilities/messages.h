@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.140 $
+//   $Revision: 1.141 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/12/14 12:57:12 $
+//   $Author: shoops $
+//   $Date: 2010/02/03 17:18:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -229,7 +229,7 @@ const MESSAGES Messages[] =
   {MCSBML + 69, "SBML (69): MIRIAM annotations can't currently be exported to SBML.\nIf you have added new MIRIAM annotations to model elements or changed existing annotations, those changes will not be present in the exported SBML file.\nTo conserve your changes, please consider saving the model as a COPASI file."},
   {MCSBML + 70, "SBML (70): Could not export mathematical expression for %s in %s with name \"%s\"."},
   {MCSBML + 71, "SBML (71): The time units of some events were ignored. Since ids on event are optional, only those events with ids are listed below. Units might be displayed incorrectly.\nEvents: %s"},
-  {MCSBML + 72, "SBML (72): Error in eventassignment. Eventassignments may only assign values to compartments, species or global parameters, object with id \"%s\" is neither compartment, species or global parameter. Ignoring assignment."},
+  {MCSBML + 72, "SBML (72): Error in event assignment. Event assignments may only assign values to compartments, species or global parameters, object with id \"%s\" is neither compartment, species or global parameter. Ignoring assignment."},
   {MCSBML + 73, "SBML (73): Could not export %s. %s has been ignored."},
   {MCSBML + 74, "SBML (74): Invalid id \"%s\" found in an expression."},
   {MCSBML + 75, "SBML (75): Invalid id RDF/XML found and corrected."},
@@ -353,12 +353,16 @@ const MESSAGES Messages[] =
    " time '%d' due to a negative delay."},
 
   //CModelMerging
-  {MCModelMerging + 1, "CModelMerging (1): An error has occured while constructing the temporary (joined)  data model."},
+  {MCModelMerging + 1, "CModelMerging (1): An error has occurred while constructing the temporary (joined)  data model."},
   {MCModelMerging + 2, "CModelMerging (2): Failed while merging the  species  \"%s\" with the species  \"%s\" . "},
 
-//CModelExpansion
-  {MCModelExpansion + 1, "CModelExpansion (1): An error has occured while creation of the array of compartments."},
+  //CModelExpansion
+  {MCModelExpansion + 1, "CModelExpansion (1): An error has occurred while creation of the array of compartments."},
   {MCModelExpansion + 2, "CModelExpansion (2): Negative number of copies ."},
+
+  //CEFMAnalysis
+  {MCEFMAnalysis + 1, "CEFMAnalysis (1): Invalid task."},
+  {MCEFMAnalysis + 2, "CEFMAnalysis (2): Invalid problem."},
 
   // This must be the last element of the message list! Do not delete!
   {0, NULL}

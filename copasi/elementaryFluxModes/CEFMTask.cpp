@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/01 19:58:29 $
+//   $Date: 2010/02/03 17:18:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,7 +119,7 @@ std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
   tmp.precision(0);
 
   const std::vector< const CReaction * > & ReorderedReactions =
-    static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions();
+    static_cast<CEFMProblem *>(mpProblem)->getReorderedReactions();
 
   unsigned C_INT32 j;
   CFluxMode::const_iterator itMode = fluxMode.begin();
@@ -165,15 +165,15 @@ std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
 
 const std::vector< CFluxMode > & CEFMTask::getFluxModes() const
 {
-  return static_cast<const CEFMMethod *>(mpMethod)->getFluxModes();
+  return static_cast<const CEFMProblem *>(mpProblem)->getFluxModes();
 }
 
 std::string CEFMTask::getReactionEquation(const std::map< size_t, C_FLOAT64 >::const_iterator & itReaction) const
 {
-  CEFMMethod * pMethod = static_cast<CEFMMethod *>(mpMethod);
+  CEFMProblem * pProblem = static_cast<CEFMProblem *>(mpProblem);
 
   const CReaction * pReaction =
-    pMethod->getReorderedReactions()[itReaction->first];
+    pProblem->getReorderedReactions()[itReaction->first];
 
 #ifdef COPASI_SSA
 
@@ -209,7 +209,7 @@ std::pair< C_FLOAT64, C_FLOAT64 > CEFMTask::getSpeciesChanges(const CFluxMode & 
   std::string Key = metab.getKey();
 
   const std::vector< const CReaction * > & ReorderedReactions =
-    static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions();
+    static_cast<CEFMProblem *>(mpProblem)->getReorderedReactions();
 
   for (; itReaction != endReaction; ++itReaction)
     {
@@ -353,7 +353,7 @@ std::map< const CMetab *, C_FLOAT64 > CEFMTask::getNetReactionData(const CFluxMo
   CFluxMode::const_iterator endReaction = fluxMode.end();
 
   const std::vector< const CReaction * > & ReorderedReactions =
-    static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions();
+    static_cast<CEFMProblem *>(mpProblem)->getReorderedReactions();
 
   const CMetab * pSpecies;
 

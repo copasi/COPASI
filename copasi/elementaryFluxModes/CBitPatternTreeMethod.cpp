@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/02 18:09:36 $
+//   $Date: 2010/02/03 17:18:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,10 +106,13 @@ void CBitPatternTreeMethod::initObjects()
 
 bool CBitPatternTreeMethod::initialize()
 {
+  if (!CEFMMethod::initialize())
+    {
+      return false;
+    }
+
   pdelete(mpStepMatrix);
   mReactionForward.clear();
-  mReorderedReactions.clear();
-  mFluxModes.clear();
 
   mContinueCombination = true;
 
@@ -354,11 +357,11 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
     {
       if ((*itReaction)->isReversible())
         {
-          // mReorderedReactions.push_back(*itReaction);
+          // mpReorderedReactons->push_back(*itReaction);
           mReactionForward.push_back(std::make_pair(ReactionCounter, false));
         }
 
-      mReorderedReactions.push_back(*itReaction);
+      mpReorderedReactions->push_back(*itReaction);
       mReactionForward.push_back(std::make_pair(ReactionCounter, true));
     }
 
@@ -435,7 +438,8 @@ void CBitPatternTreeMethod::buildFluxModes()
 
       // Remove trivial modes, i.e., reversible reactions
       if (NumReactions == 2 &&
-          mReorderedReactions[mReactionForward[Indexes[0]].first] == mReorderedReactions[mReactionForward[Indexes[1]].first])
+          (*mpReorderedReactions)[mReactionForward[Indexes[0]].first] ==
+          (*mpReorderedReactions)[mReactionForward[Indexes[1]].first])
         {
           continue;
         }
@@ -491,7 +495,7 @@ void CBitPatternTreeMethod::buildFluxModes()
               Reactions[ReactionForward.first] =
                 (ReactionForward.second == true) ? *pFluxMultiplier : -*pFluxMultiplier;
 
-              if (!mReorderedReactions[ReactionForward.first]->isReversible())
+              if (!(*mpReorderedReactions)[ReactionForward.first]->isReversible())
                 {
                   Reversible = false;
                 }
@@ -632,8 +636,8 @@ void CBitPatternTreeMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn
 // private
 void CBitPatternTreeMethod::addMode(const CFluxMode & mode)
 {
-  std::vector< CFluxMode >::iterator itMode = mFluxModes.begin();
-  std::vector< CFluxMode >::iterator endMode = mFluxModes.end();
+  std::vector< CFluxMode >::iterator itMode = mpFluxModes->begin();
+  std::vector< CFluxMode >::iterator endMode = mpFluxModes->end();
 
   for (; itMode != endMode; ++itMode)
     {
@@ -643,7 +647,7 @@ void CBitPatternTreeMethod::addMode(const CFluxMode & mode)
         }
     }
 
-  mFluxModes.push_back(mode);
+  mpFluxModes->push_back(mode);
   return;
 }
 
