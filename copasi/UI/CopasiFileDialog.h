@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 09:41:23 $
+//   $Author: gauges $
+//   $Date: 2010/02/03 18:00:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,8 +20,6 @@
 
 #include <qstring.h>
 #include <qdir.h>
-
-#include "CQFileDialogBtnGrp.h"
 
 class CopasiFileDialog
 {
