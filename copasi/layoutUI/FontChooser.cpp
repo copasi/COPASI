@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/FontChooser.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/02 16:45:22 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,11 +25,12 @@
 #include "CQLayoutMainWindow.h"
 #include "CQGLNetworkPainter.h"
 
-FontChooser::FontChooser(QWidget* parent , const char* name , bool modal , Qt::WindowFlags fl)
-    : QDialog(parent, name, modal, fl)
+FontChooser::FontChooser(QWidget* parent , bool modal , Qt::WindowFlags fl)
+    : QDialog(parent, fl)
 {
   setupUi(this);
-  QString className = QString(parentWidget()->className());
+  this->setModal(modal);
+  QString className = QString(parentWidget()->metaObject()->className());
 
   if (className == "CQLayoutMainWindow")
     {
@@ -57,7 +58,7 @@ FontChooser::FontChooser(QWidget* parent , const char* name , bool modal , Qt::W
 
 void FontChooser::changeFontSize()
 {
-  QString className = QString(parentWidget()->className());
+  QString className = QString(parentWidget()->metaObject()->className());
   C_INT32 val = spinBox1->value();
 
   if (className == "CQLayoutMainWindow")

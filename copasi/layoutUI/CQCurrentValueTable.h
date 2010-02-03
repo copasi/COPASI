@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/21 19:16:25 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ protected:
   QPushButton* mpUncheckAllButton;
 
 public:
-  CQCurrentValueTable(QWidget *parent = 0, const char *name = 0);
+  CQCurrentValueTable(QWidget *parent = 0);
   ~CQCurrentValueTable();
 
   void setNumRows(int rows);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/25 10:47:54 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,8 +60,8 @@
 
 using namespace std;
 
-CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
-    QMainWindow(NULL, name)
+CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
+    QMainWindow(NULL)
     , mpVisParameters(new CVisParameters)
     , mpParaPanel(new CQParaPanel)
     , mpValTable(new CQCurrentValueTable)
@@ -74,14 +74,15 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
     , mpControlWidget(new CQPlayerControlWidget)
     , mDataPresent(false)
     , mCurrentPlace(QString::null)
+    , mpZoomActionGroup(new QActionGroup(this))
     , mpLayout(pLayout)
 {
-  this->setCaption(tr("Reaction network graph"));
+  this->setWindowTitle(tr("Reaction network graph"));
   this->setCentralWidget(mpMainBox);
   this->mpMainBox->setLayout(new QVBoxLayout());
 
   // create split window with parameter panel and graph panel
-  this->mpSplitter->setCaption("Test");
+  this->mpSplitter->setWindowTitle("Test");
   this->mpMainBox->layout()->addWidget(this->mpSplitter);
 
   this->mpSplitter->addWidget(this->mpInfoBox);
@@ -93,7 +94,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   // Create OpenGL widget
   // we initialize it here because the parent has to be present
   this->mpGLViewport = new CQGLViewport(this->mpSplitter);
-  this->mpGLViewport->setCaption("Network layout");
+  this->mpGLViewport->setWindowTitle("Network layout");
   this->mpSplitter->addWidget(this->mpGLViewport);
 
   if (this->mpLayout != NULL)
@@ -104,7 +105,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
       this->mpGLViewport->createGraph(this->mpLayout); // create local data structures
     }
 
-  this->mpSplitter->setResizeMode(this->mpInfoBox, QSplitter::KeepSize);
+  this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpInfoBox), 0);
 
   this->mpMainBox->layout()->addWidget(this->mpFrame);
 
@@ -125,10 +126,10 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   connect(this->mpTimeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
 
-  QGridLayout* pGridLayout = new QGridLayout(NULL, 2, 2, 3, 6);
+  QGridLayout* pGridLayout = new QGridLayout(NULL);
   this->mpFrame->setLayout(pGridLayout);
-  pGridLayout->addMultiCellWidget(this->mpTimeSlider, 0, 1, 1, 1, Qt::AlignTop);
-  pGridLayout->addMultiCellWidget(this->mpControlWidget, 0, 1, 0, 0, Qt::AlignTop);
+  pGridLayout->addWidget(this->mpTimeSlider, 0, 1, 1, 1, Qt::AlignTop);
+  pGridLayout->addWidget(this->mpControlWidget, 0, 1, 0, 0, Qt::AlignTop);
   QSpacerItem* pSpacer = new QSpacerItem(20, 20);
   pGridLayout->addItem(pSpacer, 1, 0);
 
@@ -146,7 +147,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   this->mpToolbar->addSeparator();
   QLabel* pLabel = new QLabel("zoom factor:");
   this->mpToolbar->addWidget(pLabel);
-  this->mpZoomComboBox = new QComboBox(NULL, "zoom box");
+  this->mpZoomComboBox = new QComboBox(NULL);
+  this->mpZoomComboBox->setWindowTitle("zoom box");
   this->mpToolbar->addWidget(this->mpZoomComboBox);
   QStringList l;
   l.push_back("1%");
@@ -165,8 +167,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   l.push_back("300%");
   l.push_back("400%");
   l.push_back("500%");
-  this->mpZoomComboBox->insertStringList(l);
-  this->mpZoomComboBox->setCurrentItem(10);
+  this->mpZoomComboBox->addItems(l);
+  this->mpZoomComboBox->setCurrentIndex(10);
   this->mpZoomComboBox->setEditable(FALSE);
   connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
   connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
@@ -372,58 +374,51 @@ void CQLayoutMainWindow::createMenus()
   this->mpPlayMenu->addAction(this->mpControlWidget->getStepForwardAction());
   this->mpPlayMenu->addAction(this->mpControlWidget->getStepBackwardAction());
   this->mpPlayMenu->addSeparator();
-  this->mLoopItemId = this->mpPlayMenu->insertItem("loop animation", this, SLOT(slotLoopActivated()));
+  this->mpLoopItemAction = this->mpPlayMenu->addAction("loop animation");
+  connect(this->mpLoopItemAction, SIGNAL(toggled(bool)) , this, SLOT(slotLoopActivated(bool)));
   this->mpPlayMenu->addSeparator();
   this->mpPlayMenu->addAction(this->mpLoadDataAction);
 
   // view menu
   this->mpViewMenu = this->menuBar()->addMenu("View");
-  mpViewMenu->insertItem("parameters", 1001);
-  mpViewMenu->setItemChecked(1001, TRUE);
-  mpViewMenu->insertItem("value table", 1002);
-  mpViewMenu->setItemChecked(1002, TRUE);
-  mpViewMenu->insertItem("player control", 1003);
-  mpViewMenu->setItemChecked(1003, TRUE);
-  mpViewMenu->insertItem("toolbar", 1004);
-  mpViewMenu->setItemChecked(1004, TRUE);
-  connect(this->mpViewMenu, SIGNAL(activated(int)), this, SLOT(slotViewActivated(int)));
+  this->mpParameterTableAction = this->mpViewMenu->addAction("parameters");
+  this->mpParameterTableAction->setCheckable(true);
+  this->mpParameterTableAction->setChecked(true);
+  connect(this->mpParameterTableAction, SIGNAL(toggled(bool)), this, SLOT(slotParametersToggled(bool)));
+  this->mpValueTableAction = this->mpViewMenu->addAction("value table");
+  this->mpValueTableAction->setCheckable(true);
+  this->mpValueTableAction->setChecked(true);
+  connect(this->mpValueTableAction, SIGNAL(toggled(bool)), this, SLOT(slotValueTableToggled(bool)));
+  QAction* pAction = this->mpViewMenu->addAction("player control");
+  pAction->setCheckable(true);
+  pAction->setChecked(true);
+  connect(pAction, SIGNAL(toggled(bool)), this, SLOT(slotPlayerControlToggled(bool)));
+  pAction = this->mpViewMenu->addAction("toolbar");
+  pAction->setCheckable(true);
+  pAction->setChecked(true);
   mpViewMenu->addSeparator();
-  mpViewMenu->insertItem("Reset View", this, SLOT(slotResetView()));
+  connect(pAction, SIGNAL(toggled(bool)), this, SLOT(slotToolbarToggled(bool)));
+  mpViewMenu->addAction("Reset View", this, SLOT(slotResetView()));
   this->mpZoomMenu = this->mpViewMenu->addMenu("Zoom");
-  int id;
-  id = mpZoomMenu->insertItem("1%", 1);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("2%", 2);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("3%", 3);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("4%", 4);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("5%", 5);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("10%", 10);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("20%", 20);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("30%", 30);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("40%", 40);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("50%", 50);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("100%", 100);
-  mpZoomMenu->setItemChecked(id, true);
-  id = mpZoomMenu->insertItem("150%", 150);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("200%", 200);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("300%", 300);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("400%", 400);
-  mpZoomMenu->setItemChecked(id, false);
-  id = mpZoomMenu->insertItem("500%", 500);
-  mpZoomMenu->setItemChecked(id, false);
-  connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+  this->mpZoomActionGroup->addAction("1%");
+  this->mpZoomActionGroup->addAction("2%");
+  this->mpZoomActionGroup->addAction("3%");
+  this->mpZoomActionGroup->addAction("4%");
+  this->mpZoomActionGroup->addAction("5%");
+  this->mpZoomActionGroup->addAction("10%");
+  this->mpZoomActionGroup->addAction("20%");
+  this->mpZoomActionGroup->addAction("30%");
+  this->mpZoomActionGroup->addAction("40%");
+  this->mpZoomActionGroup->addAction("50%");
+  pAction = this->mpZoomActionGroup->addAction("100%");
+  pAction->setChecked(true);
+  this->mpZoomActionGroup->addAction("150%");
+  this->mpZoomActionGroup->addAction("200%");
+  this->mpZoomActionGroup->addAction("300%");
+  this->mpZoomActionGroup->addAction("400%");
+  this->mpZoomActionGroup->addAction("500%");
+  connect(this->mpZoomActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
+  this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
   this->mpViewMenu->addSeparator();
   this->mpViewMenu->addAction(this->mpCreatePicture);
 
@@ -752,12 +747,12 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-QIconSet CQLayoutMainWindow::createStartIcon()
+QIcon CQLayoutMainWindow::createStartIcon()
 {
-  QImage img = QImage();
   C_INT32 w = 19;
   C_INT32 h = 19;
-  img.create(w, h, 8, 2);
+  QImage img = QImage(w, h, QImage::Format_Indexed8);
+  img.setNumColors(2);
   img.setColor(0, qRgb(0, 0, 200));
   C_INT16 x, y;
 
@@ -784,18 +779,18 @@ QIconSet CQLayoutMainWindow::createStartIcon()
     }
 
   QPixmap *pixmap = new QPixmap();
-  pixmap->convertFromImage(img);
-  QIconSet iconset = QIconSet(*pixmap);
+  pixmap->fromImage(img);
+  QIcon iconset = QIcon(*pixmap);
   delete pixmap;
   return iconset;
 }
 
-QIconSet CQLayoutMainWindow::createStopIcon()
+QIcon CQLayoutMainWindow::createStopIcon()
 {
-  QImage img = QImage();
   C_INT32 w = 20;
   C_INT32 h = 20;
-  img.create(w, h, 8, 2);
+  QImage img = QImage(w, h, QImage::Format_Indexed8);
+  img.setNumColors(2);
   img.setColor(0, qRgb(0, 0, 200));
   C_INT16 x, y;
 
@@ -819,8 +814,8 @@ QIconSet CQLayoutMainWindow::createStopIcon()
     }
 
   QPixmap *pixmap = new QPixmap();
-  pixmap->convertFromImage(img);
-  QIconSet iconset = QIconSet(*pixmap);
+  pixmap->fromImage(img);
+  QIcon iconset = QIcon(*pixmap);
   delete pixmap;
   return iconset;
 }
@@ -845,41 +840,18 @@ bool CQLayoutMainWindow::maybeSave()
 
 void CQLayoutMainWindow::slotActivated(int index)
 {
-  QString item = this->mpZoomComboBox->text(index);
-  this->setZoomFactor(item.latin1());
   // update menu items
-  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
-
   if (index >= 0 && index < 15)
     {
-      unsigned int id = ids[index];
-      disconnect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
-      this->mpZoomMenu->setItemChecked(1, false);
-      this->mpZoomMenu->setItemChecked(2, false);
-      this->mpZoomMenu->setItemChecked(3, false);
-      this->mpZoomMenu->setItemChecked(4, false);
-      this->mpZoomMenu->setItemChecked(5, false);
-      this->mpZoomMenu->setItemChecked(10, false);
-      this->mpZoomMenu->setItemChecked(20, false);
-      this->mpZoomMenu->setItemChecked(30, false);
-      this->mpZoomMenu->setItemChecked(40, false);
-      this->mpZoomMenu->setItemChecked(50, false);
-      this->mpZoomMenu->setItemChecked(100, false);
-      this->mpZoomMenu->setItemChecked(150, false);
-      this->mpZoomMenu->setItemChecked(200, false);
-      this->mpZoomMenu->setItemChecked(300, false);
-      this->mpZoomMenu->setItemChecked(400, false);
-      this->mpZoomMenu->setItemChecked(500, false);
-      this->mpZoomMenu->setItemChecked(id, true);
-      connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+      this->mpZoomActionGroup->actions().at(index)->setChecked(true);
     }
 }
 
-void CQLayoutMainWindow::setZoomFactor(std::string s)
+void CQLayoutMainWindow::setZoomFactor(QString s)
 {
-  s.erase(s.size() - 1);
+  s.remove(s.size() - 1, 1);
   // create a number from the text
-  double n = strToDouble(s.c_str(), NULL);
+  double n = s.toDouble();
   n /= 100.0;
   this->mpGLViewport->setZoomFactor(n);
 }
@@ -887,104 +859,51 @@ void CQLayoutMainWindow::setZoomFactor(std::string s)
 void CQLayoutMainWindow::slotResetView()
 {
   // check the 100% zoom entry
-  disconnect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
-  this->mpZoomMenu->setItemChecked(1, false);
-  this->mpZoomMenu->setItemChecked(2, false);
-  this->mpZoomMenu->setItemChecked(3, false);
-  this->mpZoomMenu->setItemChecked(4, false);
-  this->mpZoomMenu->setItemChecked(5, false);
-  this->mpZoomMenu->setItemChecked(10, false);
-  this->mpZoomMenu->setItemChecked(20, false);
-  this->mpZoomMenu->setItemChecked(30, false);
-  this->mpZoomMenu->setItemChecked(40, false);
-  this->mpZoomMenu->setItemChecked(50, false);
-  this->mpZoomMenu->setItemChecked(100, true);
-  this->mpZoomMenu->setItemChecked(150, false);
-  this->mpZoomMenu->setItemChecked(200, false);
-  this->mpZoomMenu->setItemChecked(300, false);
-  this->mpZoomMenu->setItemChecked(400, false);
-  this->mpZoomMenu->setItemChecked(500, false);
-  connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+  disconnect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
+  this->mpZoomActionGroup->actions().at(10)->setChecked(true);
+  connect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
   // update toolbar
   disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
-  this->mpZoomComboBox->setCurrentItem(this->mpZoomMenu->indexOf(100));
+  this->mpZoomComboBox->setCurrentIndex(10);
   connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
   this->mpGLViewport->resetView();
 }
 
-void CQLayoutMainWindow::slotZoomItemActivated(int id)
+void CQLayoutMainWindow::slotZoomItemActivated(QAction* pAction)
 {
   // if the item is not checked, uncheck all other and check this one
   // set the zoom factor
-  if (!this->mpZoomMenu->isItemChecked(id))
-    {
-      disconnect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
-      this->mpZoomMenu->setItemChecked(1, false);
-      this->mpZoomMenu->setItemChecked(2, false);
-      this->mpZoomMenu->setItemChecked(3, false);
-      this->mpZoomMenu->setItemChecked(4, false);
-      this->mpZoomMenu->setItemChecked(5, false);
-      this->mpZoomMenu->setItemChecked(10, false);
-      this->mpZoomMenu->setItemChecked(20, false);
-      this->mpZoomMenu->setItemChecked(30, false);
-      this->mpZoomMenu->setItemChecked(40, false);
-      this->mpZoomMenu->setItemChecked(50, false);
-      this->mpZoomMenu->setItemChecked(100, false);
-      this->mpZoomMenu->setItemChecked(150, false);
-      this->mpZoomMenu->setItemChecked(200, false);
-      this->mpZoomMenu->setItemChecked(300, false);
-      this->mpZoomMenu->setItemChecked(400, false);
-      this->mpZoomMenu->setItemChecked(500, false);
-      this->mpZoomMenu->setItemChecked(id, true);
-      QString text = this->mpZoomMenu->text(id);
-      this->setZoomFactor(text.latin1());
-      connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
-      // update toolbar
-      disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
-      this->mpZoomComboBox->setCurrentItem(this->mpZoomMenu->indexOf(id));
-      connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
-    }
+  QString text = pAction->text();
+  this->setZoomFactor(text);
+  // update toolbar
+  disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  this->mpZoomComboBox->setCurrentIndex(this->mpZoomComboBox->findText(text));
+  connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
 }
 
 void CQLayoutMainWindow::slotZoomIn()
 {
-  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
-  int checkedItem = 0;
-  unsigned int i, iMax = 15;
+  QAction* pAction = this->mpZoomActionGroup->checkedAction();
+  QList<QAction*> actions = this->mpZoomActionGroup->actions();
+  int index = actions.indexOf(pAction);
 
-  for (i = 0; i < iMax; ++i)
+  if (index < actions.size() - 1)
     {
-      if (this->mpZoomMenu->isItemChecked(ids[i]))
-        {
-          checkedItem = i;
-          break;
-        }
-    }
-
-  if (checkedItem != 14)
-    {
-      slotZoomItemActivated(ids[++checkedItem]);
+      ++index;
+      actions.at(index)->setChecked(true);
     }
 }
 
 void CQLayoutMainWindow::slotZoomOut()
 {
-  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
-  int checkedItem = 0;
-  unsigned int i, iMax = 15;
+  QAction* pAction = this->mpZoomActionGroup->checkedAction();
+  QList<QAction*> actions = this->mpZoomActionGroup->actions();
+  int index = actions.indexOf(pAction);
 
-  for (i = 0; i < iMax; ++i)
+  if (index > 0)
     {
-      if (this->mpZoomMenu->isItemChecked(ids[i]))
-        {
-          checkedItem = i;
-          break;
-        }
-    }
-
-  if (checkedItem != 0)
-    {
-      slotZoomItemActivated(ids[--checkedItem]);
+      --index;
+      actions.at(index)->setChecked(true);
     }
 }
 
@@ -1066,68 +985,12 @@ void CQLayoutMainWindow::stepBackwardAnimation()
     }
 }
 
-void CQLayoutMainWindow::slotViewActivated(int id)
+void CQLayoutMainWindow::slotParameterTableToggled(bool checked)
 {
-  switch (id)
-    {
-      case 1001:
-
-        if (!this->mpViewMenu->isItemChecked(id))
-          {
-            this->mpParaPanel->show();
-          }
-        else
-          {
-            this->mpParaPanel->hide();
-          }
-
-        this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
-        break;
-      case 1002:
-
-        if (!this->mpViewMenu->isItemChecked(id))
-          {
-            this->mpValTable->show();
-          }
-        else
-          {
-            this->mpValTable->hide();
-          }
-
-        this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
-        break;
-      case 1003:
-
-        if (!this->mpViewMenu->isItemChecked(id))
-          {
-            this->mpFrame->show();
-          }
-        else
-          {
-            this->mpFrame->hide();
-          }
-
-        this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
-        break;
-      case 1004:
-
-        if (!this->mpViewMenu->isItemChecked(id))
-          {
-            this->mpToolbar->show();
-          }
-        else
-          {
-            this->mpToolbar->hide();
-          }
-
-        this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
-        break;
-      default:
-        break;
-    }
+  (checked == true) ? this->mpParaPanel->show() : this->mpParaPanel->hide();
 
   // if all object in the info box are hidden, we hide the info box
-  if (this->mpViewMenu->isItemChecked(1001) == FALSE && this->mpViewMenu->isItemChecked(1002) == FALSE /*&& this->mpViewMenu->isItemChecked(1003) == FALSE*/)
+  if (!checked && !this->mpValueTableAction->isChecked())
     {
       this->mpInfoBox->hide();
     }
@@ -1137,8 +1000,32 @@ void CQLayoutMainWindow::slotViewActivated(int id)
     }
 }
 
-void CQLayoutMainWindow::slotLoopActivated()
+void CQLayoutMainWindow::slotValueTableToggled(bool checked)
 {
-  this->mLooping = !this->mpPlayMenu->isItemChecked(this->mLoopItemId);
-  this->mpPlayMenu->setItemChecked(this->mLoopItemId, this->mLooping);
+  (checked == true) ? this->mpValTable->show() : this->mpValTable->hide();
+
+  // if all object in the info box are hidden, we hide the info box
+  if (!checked && !this->mpParameterTableAction->isChecked())
+    {
+      this->mpInfoBox->hide();
+    }
+  else
+    {
+      this->mpInfoBox->show();
+    }
+}
+
+void CQLayoutMainWindow::slotToolbarToggled(bool checked)
+{
+  (checked == true) ? this->mpToolbar->show() : this->mpToolbar->hide();
+}
+
+void CQLayoutMainWindow::slotPlayerControlToggled(bool checked)
+{
+  (checked == true) ? this->mpFrame->show() : this->mpFrame->hide();
+}
+
+void CQLayoutMainWindow::slotLoopActivated(bool checked)
+{
+  this->mLooping = checked;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.157 $
+//   $Revision: 1.158 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/02 18:02:23 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,8 +107,8 @@ const GLfloat CQGLNetworkPainter::MIRROR_Y[] =
 
 const C_INT32 CQGLNetworkPainter::MIN_HEIGHT = 10;
 
-CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent, const char *name)
-    : QGLWidget(format, parent, name),
+CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent)
+    : QGLWidget(format, parent),
     mIsInitialized(false)
 {
   initializeGraphPainter(parent);
@@ -1657,7 +1657,7 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
   texture->textureHeight = height;
   texture->textWidth = rect.width();
   texture->textHeight = rect.height();
-  QImage image = pixmap.convertToImage(); // UR
+  QImage image = pixmap.toImage(); // UR
   // write the texture to a file to check if they were created correctly
   //assert(image.save(text+".png","PNG"));
   int i, j;
@@ -1724,7 +1724,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   painter2.drawText(c, Qt::AlignCenter, FROM_UTF8(s));
   painter2.end();
 
-  QImage img = pm.convertToImage();
+  QImage img = pm.toImage();
   QImage timg = QGLWidget::convertToGLFormat(img);
 
   glTexImage2D(GL_TEXTURE_2D, 0, 3, timg.width(), timg.height(), 0,
@@ -2163,7 +2163,8 @@ void CQGLNetworkPainter::runAnimation()
       stepsPerSecond = pParentLayoutWindow->getStepsPerSecond();
     }
 
-  regularTimer->start((int)(1000 / stepsPerSecond), false); // emit signal in chosen frame rate
+  regularTimer->setSingleShot(false);
+  regularTimer->start((int)(1000 / stepsPerSecond)); // emit signal in chosen frame rate
 }
 
 void CQGLNetworkPainter::triggerAnimationStep()

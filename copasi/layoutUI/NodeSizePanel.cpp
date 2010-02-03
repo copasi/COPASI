@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/NodeSizePanel.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/02 16:45:22 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,10 +71,11 @@ void NodeSizePanel::setMaxValue()
     tmp->setMaxValue(val);
 }
 
-NodeSizePanel::NodeSizePanel(QWidget* parent , const char* name , bool modal , Qt::WindowFlags fl):
-    QDialog(parent, name, modal, fl)
+NodeSizePanel::NodeSizePanel(QWidget* parent , bool modal , Qt::WindowFlags fl):
+    QDialog(parent, fl)
 {
   setupUi(this);
+  this->setModal(modal);
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget());
   assert(tmp);
 

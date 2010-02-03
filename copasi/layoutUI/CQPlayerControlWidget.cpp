@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/02 17:41:01 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,26 +28,26 @@
 #include "forward_single.xpm"
 #include "backward_single.xpm"
 
-CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent, const char* name): QWidget(pParent, name), mNumSteps(0), mCurrentStep(0), mPlaying(false)
+CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent): QWidget(pParent), mNumSteps(0), mCurrentStep(0), mPlaying(false)
 {
-  QGridLayout* pLayout = new QGridLayout(this, 2, 3);
+  QGridLayout* pLayout = new QGridLayout(this);
   this->mpStepBackwardButton = new QToolButton(this);
-  this->mpStepBackwardButton->setIconSet(QPixmap(backward_single_xpm));
+  this->mpStepBackwardButton->setIcon(QPixmap(backward_single_xpm));
   pLayout->addWidget(this->mpStepBackwardButton, 0, 0);
   this->mpPlayButton = new QToolButton(this);
-  this->mpPlayButton->setIconSet(QPixmap(play_xpm));
+  this->mpPlayButton->setIcon(QPixmap(play_xpm));
   pLayout->addWidget(this->mpPlayButton, 0, 1);
   this->mpStepForwardButton = new QToolButton(this);
   pLayout->addWidget(this->mpStepForwardButton, 0, 2);
-  this->mpStepForwardButton->setIconSet(QPixmap(forward_single_xpm));
+  this->mpStepForwardButton->setIcon(QPixmap(forward_single_xpm));
   this->mpBackwardButton = new QToolButton(this);
-  this->mpBackwardButton->setIconSet(QPixmap(backward_xpm));
+  this->mpBackwardButton->setIcon(QPixmap(backward_xpm));
   pLayout->addWidget(this->mpBackwardButton, 1, 0);
   this->mpStopButton = new QToolButton(this);
-  this->mpStopButton->setIconSet(QPixmap(stop_xpm));
+  this->mpStopButton->setIcon(QPixmap(stop_xpm));
   pLayout->addWidget(this->mpStopButton, 1, 1);
   this->mpForwardButton = new QToolButton(this);
-  this->mpForwardButton->setIconSet(QPixmap(forward_xpm));
+  this->mpForwardButton->setIcon(QPixmap(forward_xpm));
   pLayout->addWidget(this->mpForwardButton, 1, 2);
   this->createActions();
   this->updateButtons();
@@ -107,7 +107,7 @@ void CQPlayerControlWidget::setCurrentStep(unsigned int currentStep)
 
 void CQPlayerControlWidget::slot_pause_clicked()
 {
-  this->mpPlayButton->setIconSet(QPixmap(play_xpm));
+  this->mpPlayButton->setIcon(QPixmap(play_xpm));
   this->mPlaying = !this->mPlaying;
   this->mpPauseAction->setEnabled(FALSE);
   emit pause();
@@ -121,7 +121,7 @@ void CQPlayerControlWidget::slot_play_clicked()
     }
   else
     {
-      this->mpPlayButton->setIconSet(QPixmap(pause_xpm));
+      this->mpPlayButton->setIcon(QPixmap(pause_xpm));
       this->mPlaying = !this->mPlaying;
       this->mpPauseAction->setEnabled(TRUE);
       emit play();
@@ -318,7 +318,7 @@ void CQPlayerControlWidget::updateButtons()
           if (this->mPlaying)
             {
               // reset the icon
-              this->mpPlayButton->setIconSet(QPixmap(play_xpm));
+              this->mpPlayButton->setIcon(QPixmap(play_xpm));
             }
         }
 
@@ -355,11 +355,11 @@ void CQPlayerControlWidget::updateButtons()
           // buttons are enabled
           if (!this->mPlaying)
             {
-              this->mpPlayButton->setIconSet(QPixmap(play_xpm));
+              this->mpPlayButton->setIcon(QPixmap(play_xpm));
             }
           else
             {
-              this->mpPlayButton->setIconSet(QPixmap(pause_xpm));
+              this->mpPlayButton->setIcon(QPixmap(pause_xpm));
             }
 
           if (this->mpBackwardButton->isEnabled())
@@ -409,7 +409,7 @@ void CQPlayerControlWidget::updateButtons()
 
           if (this->mpPlayButton->isEnabled())
             {
-              this->mpPlayButton->setIconSet(QPixmap(play_xpm));
+              this->mpPlayButton->setIcon(QPixmap(play_xpm));
               this->mpPlayButton->setEnabled(FALSE);
             }
 

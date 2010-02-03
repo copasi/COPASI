@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/FontChooser.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/02 16:45:22 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@ class FontChooser : public QDialog, public Ui::FontChooser
   Q_OBJECT
 
 public:
-  FontChooser(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
+  FontChooser(QWidget* parent = 0, bool modal = false, Qt::WindowFlags fl = 0);
 
 private slots:
   void changeFontSize();

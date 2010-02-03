@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/02 16:45:22 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,8 @@
 #include "CQLayoutMainWindow.h"
 #include "ParaPanel.h"
 
-CQParaPanel::CQParaPanel(QWidget* parent , const char* name):
-    QWidget(parent, name)
+CQParaPanel::CQParaPanel(QWidget* parent):
+    QWidget(parent)
 {
   setupUi(this);
 }

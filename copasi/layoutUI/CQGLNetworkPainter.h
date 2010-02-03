@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/25 10:47:54 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 // All rights reserved.
 
 #ifndef CQGLNETWORKPAINTER_H_
-#define  CQGLNETWORKPAINTER_H_
+#define CQGLNETWORKPAINTER_H_
 
 //#include<iostream>
 #include <qgl.h>
@@ -62,7 +62,7 @@ class CQGLNetworkPainter : public QGLWidget
   Q_OBJECT        // must include this if you use Qt signals/slots
 
 public:
-  CQGLNetworkPainter(const QGLFormat& format, QWidget *parent = 0, const char *name = 0);
+  CQGLNetworkPainter(const QGLFormat& format, QWidget *parent = 0);
   ~CQGLNetworkPainter();
 
   CSimSummaryInfo *pSummaryInfo;

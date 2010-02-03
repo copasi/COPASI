@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/21 19:16:25 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,8 +25,8 @@
 #include "copasi/UI/qtUtilities.h"
 #include "copasi/layoutUI/CQLayoutMainWindow.h"
 
-CQCurrentValueTable::CQCurrentValueTable(QWidget *parent, const char *name)
-    : QWidget(parent, name)
+CQCurrentValueTable::CQCurrentValueTable(QWidget *parent)
+    : QWidget(parent)
 {
   init();
   this->show();

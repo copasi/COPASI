@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/25 10:47:54 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,10 +31,10 @@
 /**
  * Constructor.
  */
-CQGLViewport::CQGLViewport(QWidget* pParent, const char* name, Qt::WFlags f):
-    QFrame(pParent, name, f)
-    , mpVerticalScrollbar(new QScrollBar(Qt::Vertical, NULL, "vertical scrollbar"))
-    , mpHorizontalScrollbar(new QScrollBar(Qt::Horizontal, NULL, "horizontal scrollbar"))
+CQGLViewport::CQGLViewport(QWidget* pParent, Qt::WFlags f):
+    QFrame(pParent, f)
+    , mpVerticalScrollbar(new QScrollBar(Qt::Vertical, NULL))
+    , mpHorizontalScrollbar(new QScrollBar(Qt::Horizontal, NULL))
     , mpNetworkPainter(NULL)
 {
   QVBoxLayout* pVBoxLayout = new QVBoxLayout();
@@ -44,12 +44,12 @@ CQGLViewport::CQGLViewport(QWidget* pParent, const char* name, Qt::WFlags f):
   pVBoxLayout->addWidget(pHBox);
   QGLFormat format;
   format.setDoubleBuffer(TRUE);
-  this->mpNetworkPainter = new CQGLNetworkPainter(format, pHBox, "gl graph");
+  this->mpNetworkPainter = new CQGLNetworkPainter(format, pHBox);
   pHBox->layout()->addWidget(this->mpNetworkPainter);
   pHBox->layout()->addWidget(this->mpVerticalScrollbar);
-  this->mpVerticalScrollbar->setLineStep(1);
+  this->mpVerticalScrollbar->setSingleStep(1);
   pVBoxLayout->addWidget(this->mpHorizontalScrollbar);
-  this->mpHorizontalScrollbar->setLineStep(1);
+  this->mpHorizontalScrollbar->setSingleStep(1);
   connect(this->mpVerticalScrollbar, SIGNAL(valueChanged(int)), this, SLOT(slotVValueChanged(int)));
   connect(this->mpHorizontalScrollbar, SIGNAL(valueChanged(int)), this, SLOT(slotHValueChanged(int)));
 }

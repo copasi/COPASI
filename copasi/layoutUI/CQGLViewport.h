@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/25 10:47:54 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ public:
   /**
    * Constructor.
    */
-  CQGLViewport(QWidget* pParent = 0, const char* name = 0, Qt::WFlags f = 0);
+  CQGLViewport(QWidget* pParent = 0, Qt::WFlags f = 0);
 
   /**
    * Destructor.

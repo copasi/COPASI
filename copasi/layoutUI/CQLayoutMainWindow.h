@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/25 10:47:54 $
+//   $Date: 2010/02/03 13:53:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #define SIMGUI_H_
 #include <QMainWindow>
 #include <QString>
-#include <QIconSet>
+#include <QIcon>
 
 #include <string>
 
@@ -27,22 +27,21 @@
 #include "CVisParameters.h"
 #include "copasi.h"
 
-class QwtSlider;
-class CQGLViewport;
-class QSplitter;
-class QComboBox;
-class QAction;
-class QMenu;
-class CVisParameters;
-class CQParaPanel;
-class CQCurrentValueTable;
-class QSplitter;
-class QwtSlider;
-class QFrame;
-class QToolBar;
 class CLayout;
+class CQCurrentValueTable;
+class CQGLViewport;
+class CQParaPanel;
 class CQPlayerControlWidget;
+class CVisParameters;
+class QAction;
+class QActionGroup;
 class QCloseEvent;
+class QComboBox;
+class QFrame;
+class QMenu;
+class QSplitter;
+class QToolBar;
+class QwtSlider;
 
 class CQLayoutMainWindow : public QMainWindow
 {
@@ -53,7 +52,7 @@ signals:
   void signal_close(const CQLayoutMainWindow* pWindow);
 
 public:
-  CQLayoutMainWindow(CLayout* pLayout = NULL, const char *name = 0);
+  CQLayoutMainWindow(CLayout* pLayout = NULL);
   void setIndividualScaling();
   void setGlobalScaling();
   void setSizeMode();
@@ -82,7 +81,7 @@ public:
 
 protected:
   void closeEvent(QCloseEvent *event);
-  void setZoomFactor(std::string s);
+  void setZoomFactor(QString s);
 
 private slots:
   void loadSBMLFile();
@@ -103,12 +102,15 @@ private slots:
   void stepForwardAnimation();
   void stepBackwardAnimation();
   void slotResetView();
-  void slotZoomItemActivated(int id);
+  void slotZoomItemActivated(QAction* pAction);
   void slotActivated(int);
   void slotZoomIn();
   void slotZoomOut();
-  void slotViewActivated(int id);
-  void slotLoopActivated();
+  void slotValueTableToggled(bool checked);
+  void slotParameterTableToggled(bool checked);
+  void slotPlayerControlToggled(bool checked);
+  void slotToolbarToggled(bool checked);
+  void slotLoopActivated(bool checked);
   void parameterTableValueChanged(int row);
 
 public slots:
@@ -119,8 +121,8 @@ private:
   void createActions();
   void createMenus();
   bool maybeSave();
-  QIconSet createStartIcon();
-  QIconSet createStopIcon();
+  QIcon createStartIcon();
+  QIcon createStopIcon();
 
   CVisParameters *mpVisParameters;
   QMenu *mpFileMenu;
@@ -157,7 +159,10 @@ private:
   QToolBar* mpToolbar;
   QComboBox* mpZoomComboBox;
   bool mLooping;
-  int mLoopItemId;
+  QAction* mpLoopItemAction;
+  QAction* mpValueTableAction;
+  QAction* mpParameterTableAction;
+  QActionGroup* mpZoomActionGroup;
   CLayout* mpLayout;
 };
 
