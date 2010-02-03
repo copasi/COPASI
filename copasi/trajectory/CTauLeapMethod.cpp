@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/20 18:24:25 $
+//   $Date: 2010/02/03 21:22:30 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -154,8 +159,6 @@ bool CTauLeapMethod::elevateChildren()
 
 CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
 {
-  unsigned C_INT32 i, imax;
-
   // write the current state to the model
   // mpProblem->getModel()->setState(mpCurrentState); // is that correct?
 
