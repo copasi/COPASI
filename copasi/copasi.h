@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/26 21:29:57 $
+//   $Date: 2010/02/03 19:33:16 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -76,6 +81,7 @@
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
+# define abs64 abs
 #else
 #ifdef WIN32
 # define C_INT64 __int64
@@ -95,6 +101,7 @@
 # define finite _finite       // they just have a different name for this guy
 # define min _cpp_min         // they just have a different name for this guy
 # define max _cpp_max         // they just have a different name for this guy
+# define abs64 _abs64
 #else
 # define C_INT64 long long int
 # ifndef LLONG_MAX
@@ -105,6 +112,7 @@
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
+# define abs64 abs
 #endif
 #endif
 
