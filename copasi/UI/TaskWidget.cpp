@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 21:15:18 $
+//   $Date: 2010/02/04 14:07:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,17 +117,17 @@ void TaskWidget::addMethodParameterTable(unsigned int row)
     {
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
 
-      mpMethodLayout = new QGridLayout();
+      mpMethodLayout = new QGridLayout(this);
       mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->setStretchFactor(mpMethodLayout, 10);
     }
 
-  mpLblParameter = new QLabel(0, "mpLblParameter");
+  mpLblParameter = new QLabel(this, "mpLblParameter");
   mpLblParameter->setText(tr("Parameter"));
   mpLblParameter->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
-  mpTblParameter = new QTableWidget();
+  mpTblParameter = new QTableWidget(this);
   mpTblParameter->setSelectionMode(QAbstractItemView::SingleSelection);
   mpTblParameter->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -159,7 +159,7 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
     {
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
 
-      mpMethodLayout = new QGridLayout();
+      mpMethodLayout = new QGridLayout(this);
       mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
@@ -168,7 +168,7 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
   mpLblMethod->setText(tr("Method"));
   mpLblMethod->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
-  mpBoxMethod = new QComboBox();
+  mpBoxMethod = new QComboBox(this);
 
   unsigned C_INT32 i;
 
@@ -190,12 +190,12 @@ void TaskWidget::revertBtnClicked()
 {
   if (!mpTask) return;
 
-  CCopasiMethod* method = mpTask->getMethod();
+  CCopasiMethod* pMethod = mpTask->getMethod();
 
-  if (method != mpMethod)
+  if (pMethod != mpMethod)
     {
       pdelete(mpMethod);
-      mpMethod = method;
+      mpMethod = pMethod;
     }
 
   loadTask();
@@ -301,7 +301,7 @@ bool TaskWidget::loadMethod()
 
   if (mpTblParameter)
     {
-      QString value;
+      QString Value;
 
       mpTblParameter->setRowCount(mpMethod->size());
 
@@ -317,17 +317,17 @@ bool TaskWidget::loadMethod()
           mpTblParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
           mpTblParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpMethod->getName(i)));
 
-          value = getParameterValue(mpMethod, i, &Type);
+          Value = getParameterValue(mpMethod, i, &Type);
 
-          QTableWidgetItem *itemValue = new QTableWidgetItem();
-          itemValue->setData(Qt::EditRole, QVariant(value));
-          itemValue->setTextAlignment(Qt::AlignRight);
-          mpTblParameter->setItem(i, 0, itemValue);
+          QTableWidgetItem *pValueItem = new QTableWidgetItem();
+          pValueItem->setData(Qt::EditRole, QVariant(Value));
+          pValueItem->setTextAlignment(Qt::AlignRight);
+          mpTblParameter->setItem(i, 0, pValueItem);
         }
 
       if (!mpMethod->size())
         {
-          mpTblParameter->setFixedSize(100, 10);
+          mpTblParameter->setFixedSize(100, 20);
         }
     }
 
@@ -364,7 +364,7 @@ bool TaskWidget::saveMethod()
   mpMethod = mpTask->getMethod();
 
   unsigned C_INT32 i;
-  QString value;
+  QString Value;
   CCopasiParameter::Type Type;
 
   for (i = 0; i < mpMethod->size(); i++)
@@ -375,11 +375,11 @@ bool TaskWidget::saveMethod()
       if (!mpTblParameter->item(i, 0))
         continue;
 
-      value = mpTblParameter->item(i, 0)->text();
+      Value = mpTblParameter->item(i, 0)->text();
 
-      if (value != getParameterValue(mpMethod, i, &Type))
+      if (Value != getParameterValue(mpMethod, i, &Type))
         {
-          setParameterValue(mpMethod, i, value);
+          setParameterValue(mpMethod, i, Value);
           mChanged = true;
         }
     }
