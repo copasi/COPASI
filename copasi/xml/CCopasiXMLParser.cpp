@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.209 $
+//   $Revision: 1.210 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/03 21:15:17 $
+//   $Author: gauges $
+//   $Date: 2010/02/05 13:00:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -7038,7 +7038,7 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
 
           if (text)
             mCommon.pTextGlyph->setText(text);
-          else if (originOfText)
+          else if (originOfText && originOfText[0])
             {
               CCopasiObject * pObj = mCommon.KeyMap.get(originOfText);
               CModelEntity * pME = dynamic_cast<CModelEntity *>(pObj);
