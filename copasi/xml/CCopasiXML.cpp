@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.122 $
+//   $Revision: 1.123 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/08 13:16:13 $
+//   $Author: gauges $
+//   $Date: 2010/02/05 14:58:44 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -1424,21 +1429,30 @@ bool CCopasiXML::saveLayoutList()
           for (j = 0; j < jmax; ++j)
             {
               CLTextGlyph* cg = pLayout->getListOfTextGlyphs()[j];
-              Attributes.erase();
-              Attributes.add("key", cg->getKey());
-              Attributes.add("name", cg->getObjectName());
-              Attributes.add("graphicalObject", cg->getGraphicalObjectKey());
+              // we only export the text glyph if it either has a text
+              // or a valid originOfText
+              std::string id = cg->getModelObjectKey();
 
-              if (cg->isTextSet())
-                Attributes.add("text", cg->getText());
-              else
-                Attributes.add("originOfText", cg->getModelObjectKey());
+              if (cg->isTextSet() || id.find_first_not_of(" \t\r\n") != std::string::npos)
+                {
+                  Attributes.erase();
+                  Attributes.add("key", cg->getKey());
+                  Attributes.add("name", cg->getObjectName());
+                  Attributes.add("graphicalObject", cg->getGraphicalObjectKey());
 
-              startSaveElement("TextGlyph", Attributes);
+                  if (cg->isTextSet())
+                    Attributes.add("text", cg->getText());
+                  else
+                    {
+                      Attributes.add("originOfText", id);
+                    }
 
-              saveBoundingBox(cg->getBoundingBox());
+                  startSaveElement("TextGlyph", Attributes);
 
-              endSaveElement("TextGlyph");
+                  saveBoundingBox(cg->getBoundingBox());
+
+                  endSaveElement("TextGlyph");
+                }
             }
 
           endSaveElement("ListOfTextGlyphs");
