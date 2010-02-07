@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.385 $
+//   $Revision: 1.386 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 21:15:17 $
+//   $Date: 2010/02/07 16:23:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1500,12 +1500,6 @@ bool CModel::buildApplyInitialValuesSequence()
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
-      if ((*ppEntity)->getStatus() == ODE ||
-          (*ppEntity)->getStatus() == REACTIONS)
-        {
-          mApplyInitialValuesRefreshes.push_back((*ppEntity)->getRateReference()->getRefresh());
-        }
-
       if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
         {
           mApplyInitialValuesRefreshes.push_back(pMetab->getConcentrationReference()->getRefresh());
@@ -1546,7 +1540,7 @@ bool CModel::buildNonSimulatedSequence()
 
   for (; itMetab != endMetab; ++itMetab)
     {
-      Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Concentration")));
+      Objects.insert((*itMetab)->getConcentrationReference());
       Objects.insert((*itMetab)->getValueReference());
 
       switch ((*itMetab)->getStatus())
@@ -1570,7 +1564,7 @@ bool CModel::buildNonSimulatedSequence()
   for (; itStep != endStep; ++itStep)
     {
       Objects.insert((*itStep)->getObject(CCopasiObjectName("Reference=Flux")));
-      Objects.insert((*itStep)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+      Objects.insert((*itStep)->getParticleFluxReference());
     }
 
   // Model Values
@@ -1600,26 +1594,6 @@ bool CModel::buildNonSimulatedSequence()
     {
       mNonSimulatedRefreshes.clear();
       success = false;
-    }
-
-  // We have to remove the refresh calls already covered by mConstantRefreshes
-  std::vector< Refresh * >::const_iterator itConstantRefresh = mApplyInitialValuesRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endConstantRefresh = mApplyInitialValuesRefreshes.end();
-
-  std::vector< Refresh * >::iterator itRefresh;
-  std::vector< Refresh * >::iterator endRefresh;
-
-  for (; itConstantRefresh != endConstantRefresh; ++itConstantRefresh)
-    {
-      itRefresh = mNonSimulatedRefreshes.begin();
-      endRefresh = mNonSimulatedRefreshes.end();
-
-      for (; itRefresh != endRefresh; ++itRefresh)
-        if ((*itRefresh)->isEqual(*itConstantRefresh))
-          {
-            mNonSimulatedRefreshes.erase(itRefresh);
-            break;
-          }
     }
 
   return success;
