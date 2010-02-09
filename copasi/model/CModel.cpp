@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.386 $
+//   $Revision: 1.387 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/07 16:23:15 $
+//   $Date: 2010/02/09 16:53:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2022,7 +2022,7 @@ bool CModel::setQuantityUnit(const std::string & name)
 {
   QuantityUnit unit = toEnum(name.c_str(), QuantityUnitNames, OldXML);
 
-  if (unit = OldXML)
+  if (unit == OldXML)
     unit = toEnum(name.c_str(), QuantityUnitOldXMLNames, mMol);
 
   return setQuantityUnit(unit);
