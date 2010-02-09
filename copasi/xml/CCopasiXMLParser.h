@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 13:16:13 $
+//   $Date: 2010/02/09 22:20:29 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -2133,47 +2138,6 @@ private:
     virtual void end(const XML_Char *pszName);
   };
 
-  class ProblemInitialStateElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
-  {
-    // Attributes
-  private:
-    /**
-     * Enum of invoked parsers
-     */
-    enum Element
-    {
-      InitialState = 0
-    };
-
-    // Operations
-  public:
-    /**
-     * Constructor
-     */
-    ProblemInitialStateElement(CCopasiXMLParser & parser,
-                               SCopasiXMLParserCommon & common);
-
-    /**
-     * Destructor
-     */
-    virtual ~ProblemInitialStateElement();
-
-    /**
-     * Start element handler
-     * @param const XML_Char *pszName
-     * @param const XML_Char **papszAttrs
-     */
-    virtual void start(const XML_Char *pszName,
-                       const XML_Char **papszAttrs);
-
-    /**
-     * End element handler
-     * @param const XML_Char *pszName
-     */
-    virtual void end(const XML_Char *pszName);
-  };
-
   class ParameterElement:
       public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
@@ -2215,6 +2179,47 @@ private:
     virtual void end(const XML_Char *pszName);
   };
 
+  class ParameterTextElement:
+      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     * Enum of invoked parsers
+     */
+    enum Element
+    {
+      ParameterText = 0
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ParameterTextElement(CCopasiXMLParser & parser,
+                         SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ParameterTextElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
   class ParameterGroupElement:
       public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
@@ -2226,14 +2231,14 @@ private:
     enum Element
     {
       ParameterGroup = 0,
-      Parameter
+      Content
     };
 
-    CCopasiParameterGroup* oldGroup;
     ParameterElement* mpParameterHandler;
+    ParameterTextElement* mpParameterTextHandler;
     ParameterGroupElement* mpParameterGroupHandler;
 
-    int level;
+    bool mDerivedElement;
 
     // Operations
   public:
@@ -2261,59 +2266,12 @@ private:
      * @param const XML_Char *pszName
      */
     virtual void end(const XML_Char *pszName);
-  };
-
-  class ProblemElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
-  {
-    // Attributes
-  private:
-    /**
-     * Enum of invoked parsers
-     */
-    enum Element
-    {
-      Problem = 0,
-      Parameter,
-      ParameterGroup,
-      InitialState
-    };
-
-    ProblemInitialStateElement* mpInitialStateHandler;
-    ParameterGroupElement* mpParameterGroupHandler;
-    ParameterElement* mpParameterHandler;
 
     /**
-     * The line number the unknown parameter was encountered.
+     * Set the derived element for which the handler is called such as methods and problems
+     * @param CCopasiParameterGroup * pDerivedElement
      */
-    unsigned C_INT32 mLineNumber;
-
-    // Operations
-  public:
-    /**
-     * Constructor
-     */
-    ProblemElement(CCopasiXMLParser & parser,
-                   SCopasiXMLParserCommon & common);
-
-    /**
-     * Destructor
-     */
-    virtual ~ProblemElement();
-
-    /**
-     * Start element handler
-     * @param const XML_Char *pszName
-     * @param const XML_Char **papszAttrs
-     */
-    virtual void start(const XML_Char *pszName,
-                       const XML_Char **papszAttrs);
-
-    /**
-     * End element handler
-     * @param const XML_Char *pszName
-     */
-    virtual void end(const XML_Char *pszName);
+    void setDerivedElement(CCopasiParameterGroup * pDerivedElement);
   };
 
   class MethodElement:
@@ -2327,12 +2285,10 @@ private:
     enum Element
     {
       Method = 0,
-      Parameter,
-      ParameterGroup
+      Content
     };
 
-    ParameterElement* mpParameterHandler;
-    ParameterGroupElement* mpParameterGroupHandler;
+    ParameterGroupElement* mpContentHandler;
 
     /**
      * The line number the unknown parameter was encountered.
@@ -2384,7 +2340,7 @@ private:
     };
 
     ReportInstanceElement* mpReportElement;
-    ProblemElement* mpProblemElement;
+    ParameterGroupElement* mpProblemElement;
     MethodElement* mpMethodElement;
 
     // Operations

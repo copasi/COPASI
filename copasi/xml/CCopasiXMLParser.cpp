@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.210 $
+//   $Revision: 1.211 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/05 13:00:46 $
+//   $Author: shoops $
+//   $Date: 2010/02/09 22:20:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1448,78 +1448,106 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
       case MiriamAnnotation:
 
         if (!strcmp(pszName, "MiriamAnnotation"))
-          mpCurrentHandler = &mParser.mMiriamAnnotationElement;
+          {
+            mpCurrentHandler = &mParser.mMiriamAnnotationElement;
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case Comment:
 
         if (!strcmp(pszName, "Comment"))
-          mpCurrentHandler = &mParser.mCommentElement;
+          {
+            mpCurrentHandler = &mParser.mCommentElement;
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case InitialExpression:
 
         if (!strcmp(pszName, "InitialExpression"))
-          mpCurrentHandler = &mParser.mCharacterDataElement;
+          {
+            mpCurrentHandler = &mParser.mCharacterDataElement;
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case ListOfCompartments:
 
         if (!strcmp(pszName, "ListOfCompartments"))
-          mpCurrentHandler = new ListOfCompartmentsElement(mParser, mCommon);
+          {
+            mpCurrentHandler = new ListOfCompartmentsElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case ListOfMetabolites:
 
         if (!strcmp(pszName, "ListOfMetabolites"))
-          mpCurrentHandler = new ListOfMetabolitesElement(mParser, mCommon);
+          {
+            mpCurrentHandler = new ListOfMetabolitesElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case ListOfModelValues:
 
         if (!strcmp(pszName, "ListOfModelValues"))
-          mpCurrentHandler = new ListOfModelValuesElement(mParser, mCommon);
+          {
+            mpCurrentHandler = new ListOfModelValuesElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case ListOfReactions:
 
         if (!strcmp(pszName, "ListOfReactions"))
-          mpCurrentHandler = new ListOfReactionsElement(mParser, mCommon);
+          {
+            mpCurrentHandler = new ListOfReactionsElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case ListOfEvents:
 
         if (!strcmp(pszName, "ListOfEvents"))
-          mpCurrentHandler = new ListOfEventsElement(mParser, mCommon);
+          {
+            mpCurrentHandler = new ListOfEventsElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case StateTemplate:
 
         if (!strcmp(pszName, "StateTemplate"))
-          mpCurrentHandler = new StateTemplateElement(mParser, mCommon);
+          {
+            mpCurrentHandler = new StateTemplateElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       case InitialState:
 
         if (!strcmp(pszName, "InitialState"))
-          mpCurrentHandler = new InitialStateElement(mParser, mCommon);
+          {
+            mpCurrentHandler = new InitialStateElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
 
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
         break;
     }
 
@@ -5431,9 +5459,6 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                       break;
 
                     case CCopasiParameter::EXPRESSION:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pEXPRESSION);
-                      break;
-
                     case CCopasiParameter::GROUP:
                     case CCopasiParameter::INVALID:
                       break;
@@ -5665,9 +5690,6 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
                       break;
 
                     case CCopasiParameter::EXPRESSION:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pEXPRESSION);
-                      break;
-
                     case CCopasiParameter::GROUP:
                     case CCopasiParameter::INVALID:
                       break;
@@ -7892,7 +7914,12 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
   return;
 }
 
-CCopasiXMLParser::TaskElement::TaskElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common), mpReportElement(NULL), mpProblemElement(NULL), mpMethodElement(NULL)
+CCopasiXMLParser::TaskElement::TaskElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler < CCopasiXMLParser,
+    SCopasiXMLParserCommon > (parser, common),
+    mpReportElement(NULL),
+    mpProblemElement(NULL),
+    mpMethodElement(NULL)
 {}
 
 CCopasiXMLParser::TaskElement::~TaskElement()
@@ -8016,9 +8043,10 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           {
             if (!mpProblemElement)
               {
-                mpProblemElement = new ProblemElement(mParser, mCommon);
+                mpProblemElement = new ParameterGroupElement(mParser, mCommon);
               }
 
+            mpProblemElement->setDerivedElement(mCommon.pCurrentTask->getProblem());
             mpCurrentHandler = mpProblemElement;
           }
 
@@ -8188,349 +8216,20 @@ void CCopasiXMLParser::ReportInstanceElement::end(const XML_Char* pszName)
     }
 }
 
-CCopasiXMLParser::ProblemElement::ProblemElement(CCopasiXMLParser & parser,
-    SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common), mpInitialStateHandler(NULL), mpParameterGroupHandler(NULL), mpParameterHandler(NULL)
-{}
-
-CCopasiXMLParser::ProblemElement::~ProblemElement()
-{
-  pdelete(mpInitialStateHandler);
-  pdelete(mpParameterGroupHandler);
-  pdelete(mpParameterHandler);
-}
-
-void CCopasiXMLParser::ProblemElement::start(const XML_Char *pszName,
-    const XML_Char ** papszAttrs)
-{
-  mCurrentElement++; // We should always be on the next element
-  mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
-
-  switch (mCurrentElement)
-    {
-      case Problem:
-
-        if (!strcmp(pszName, "Problem"))
-          {}
-
-        return;
-        break;
-
-      case Parameter:
-
-        if (!strcmp(pszName, "Parameter"))
-          {
-            mLineNumber = mParser.getCurrentLineNumber();
-
-            if (!mpParameterHandler)
-              {
-                mpParameterHandler = new ParameterElement(mParser, mCommon);
-              }
-
-            mpCurrentHandler = mpParameterHandler;
-          }
-
-        break;
-
-      case ParameterGroup:
-
-        if (!strcmp(pszName, "ParameterGroup"))
-          {
-            mLineNumber = mParser.getCurrentLineNumber();
-
-            if (!mpParameterGroupHandler)
-              {
-                mpParameterGroupHandler = new ParameterGroupElement(mParser, mCommon);
-              }
-
-            mpCurrentHandler = mpParameterGroupHandler;
-          }
-
-        break;
-
-      case InitialState:
-
-        if (!strcmp(pszName, "InitialState"))
-          {
-            if (!mpInitialStateHandler)
-              {
-                mpInitialStateHandler = new ProblemInitialStateElement(mParser, mCommon);
-              }
-
-            mpCurrentHandler = mpInitialStateHandler;
-          }
-
-        break;
-
-      default:
-        mLastKnownElement = mCurrentElement - 1;
-        mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
-        break;
-    }
-
-  if (mpCurrentHandler)
-    mParser.pushElementHandler(mpCurrentHandler);
-
-  mParser.onStartElement(pszName, papszAttrs);
-}
-
-void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
-{
-  CCopasiParameter* p;
-
-  switch (mCurrentElement)
-    {
-      case Problem:
-
-        if (strcmp(pszName, "Problem"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Problem", mParser.getCurrentLineNumber());
-
-        mCurrentElement = START_ELEMENT;
-        mParser.popElementHandler();
-        mParser.onEndElement(pszName);
-        break;
-
-      case Parameter:
-
-        if (strcmp(pszName, "Parameter"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "Parameter", mParser.getCurrentLineNumber());
-
-        // add the parameter in mCommon.pCurrentParameter to the Problem of
-        // the current task.
-        p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
-
-        if (p)
-          {
-            switch (p->getType())
-              {
-                case CCopasiParameter::INT:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
-                  break;
-
-                case CCopasiParameter::UINT:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pUINT);
-                  break;
-
-                case CCopasiParameter::DOUBLE:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pDOUBLE);
-                  break;
-
-                case CCopasiParameter::UDOUBLE:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pUDOUBLE);
-                  break;
-
-                case CCopasiParameter::BOOL:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pBOOL);
-                  break;
-
-                case CCopasiParameter::STRING:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pSTRING);
-                  break;
-
-                case CCopasiParameter::KEY:
-                {
-                  CCopasiObject * pObject =
-                    mCommon.KeyMap.get(*mCommon.pCurrentParameter->getValue().pKEY);
-
-                  if (pObject)
-                    p->setValue(pObject->getKey());
-                  else
-                    {
-                      p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
-                      mCommon.UnmappedKeyParameters.push_back(p);
-                    }
-                }
-                break;
-
-                case CCopasiParameter::FILE:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pFILE);
-                  break;
-
-                case CCopasiParameter::CN:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
-                  break;
-
-                case CCopasiParameter::EXPRESSION:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pEXPRESSION);
-                  break;
-
-                case CCopasiParameter::GROUP:
-                case CCopasiParameter::INVALID:
-                  break;
-
-                default:
-                  fatalError();
-                  break;
-              }
-          }
-        else
-          {
-            // TODO CRITICAL Key parameters are not re-mapped.
-            mCommon.pCurrentTask->getProblem()->addParameter(*mCommon.pCurrentParameter);
-          }
-
-        pdelete(mCommon.pCurrentParameter);
-        mCurrentElement = Problem;
-        break;
-
-      case ParameterGroup:
-
-        if (strcmp(pszName, "ParameterGroup"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ParameterGroup", mParser.getCurrentLineNumber());
-
-        // add the parameter in mCommon.pCurrentParameter to the Problem of
-        // the current task.
-        p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
-
-        if (p)
-          {
-            switch (p->getType())
-              {
-                case CCopasiParameter::GROUP:
-                  *(CCopasiParameterGroup *) p =
-                    * (CCopasiParameterGroup *) mCommon.pCurrentParameter;
-                  break;
-
-                case CCopasiParameter::INT:
-                case CCopasiParameter::UINT:
-                case CCopasiParameter::DOUBLE:
-                case CCopasiParameter::UDOUBLE:
-                case CCopasiParameter::BOOL:
-                case CCopasiParameter::STRING:
-                case CCopasiParameter::CN:
-                case CCopasiParameter::KEY:
-                case CCopasiParameter::FILE:
-                case CCopasiParameter::EXPRESSION:
-                case CCopasiParameter::INVALID:
-                  break;
-
-                default:
-                  fatalError();
-                  break;
-              }
-          }
-        else
-          {
-            CCopasiMessage(CCopasiMessage::RAW, MCXML + 4,
-                           mCommon.pCurrentParameter->getObjectName().c_str(),
-                           mLineNumber);
-          }
-
-        pdelete(mCommon.pCurrentParameter);
-        mCurrentElement = Problem;
-        break;
-
-      case InitialState:
-
-        if (strcmp(pszName, "InitialState"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "InitialState", mParser.getCurrentLineNumber());
-
-        // get the string that corresponds to initial state from
-        // mComon.Comment, parse it to get the individual values and set
-        // the values.
-        // !!!!!!!!!!!!!!!!
-        mCommon.CharacterData = "";
-        mCurrentElement = Problem;
-        break;
-
-      case UNKNOWN_ELEMENT:
-        mCurrentElement = mLastKnownElement;
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                       pszName, "???", mParser.getCurrentLineNumber());
-        break;
-    }
-
-  return;
-}
-
-CCopasiXMLParser::ProblemInitialStateElement::ProblemInitialStateElement(CCopasiXMLParser & parser,
-    SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
-{}
-
-CCopasiXMLParser::ProblemInitialStateElement::~ProblemInitialStateElement()
-{}
-
-void CCopasiXMLParser::ProblemInitialStateElement::start(const XML_Char* pszName,
-    const XML_Char** papszAttrs)
-{
-  mCurrentElement++; /* We should always be on the next element */
-
-  switch (mCurrentElement)
-    {
-      case InitialState:
-
-        if (strcmp(pszName, "InitialState"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "InitialState", mParser.getCurrentLineNumber());
-
-        mParser.enableCharacterDataHandler(true);
-        break;
-
-      default:
-        mLastKnownElement = mCurrentElement - 1;
-        mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
-        break;
-    }
-
-  return;
-}
-
-void CCopasiXMLParser::ProblemInitialStateElement::end(const XML_Char* pszName)
-{
-  switch (mCurrentElement)
-    {
-      case InitialState:
-
-        if (strcmp(pszName, "InitialState"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "InitialState", mParser.getCurrentLineNumber());
-
-        mCommon.CharacterData = mParser.getCharacterData("\x0a\x0d\t ", "");
-        mCurrentElement = START_ELEMENT;
-        mParser.popElementHandler();
-        mParser.onEndElement(pszName);
-        break;
-
-      case UNKNOWN_ELEMENT:
-        mCurrentElement = mLastKnownElement;
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                       pszName, "???", mParser.getCurrentLineNumber());
-        break;
-    }
-
-  return;
-}
-
 CCopasiXMLParser::ParameterGroupElement::ParameterGroupElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
-    oldGroup(NULL),
     mpParameterHandler(NULL),
+    mpParameterTextHandler(NULL),
     mpParameterGroupHandler(NULL),
-    level(-1)
+    mDerivedElement(false)
 {}
 
 CCopasiXMLParser::ParameterGroupElement::~ParameterGroupElement()
 {
   pdelete(mpParameterHandler);
+  pdelete(mpParameterTextHandler);
   pdelete(mpParameterGroupHandler);
-  pdelete(oldGroup);
 }
 
 void CCopasiXMLParser::ParameterGroupElement::start(const XML_Char *pszName,
@@ -8544,7 +8243,11 @@ void CCopasiXMLParser::ParameterGroupElement::start(const XML_Char *pszName,
     {
       case ParameterGroup:
 
-        if (!strcmp(pszName, "ParameterGroup"))
+        if (mDerivedElement)
+          {
+            return;
+          }
+        else if (!strcmp(pszName, "ParameterGroup"))
           {
             name = mParser.getAttributeValue("name", papszAttrs);
             mCommon.ParameterGroupStack.push(new CCopasiParameterGroup(name));
@@ -8553,7 +8256,7 @@ void CCopasiXMLParser::ParameterGroupElement::start(const XML_Char *pszName,
 
         break;
 
-      case Parameter:
+      case Content:
 
         if (!strcmp(pszName, "Parameter"))
           {
@@ -8563,6 +8266,15 @@ void CCopasiXMLParser::ParameterGroupElement::start(const XML_Char *pszName,
               }
 
             mpCurrentHandler = mpParameterHandler;
+          }
+        else if (!strcmp(pszName, "ParameterText"))
+          {
+            if (!mpParameterTextHandler)
+              {
+                mpParameterTextHandler = new ParameterTextElement(mParser, mCommon);
+              }
+
+            mpCurrentHandler = mpParameterTextHandler;
           }
         else if (!strcmp(pszName, "ParameterGroup"))
           {
@@ -8592,11 +8304,13 @@ void CCopasiXMLParser::ParameterGroupElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
 {
+  CCopasiParameter * pParameter = NULL;
+
   switch (mCurrentElement)
     {
       case ParameterGroup:
 
-        if (strcmp(pszName, "ParameterGroup"))
+        if (strcmp(pszName, "ParameterGroup") && !mDerivedElement)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ParameterGroup", mParser.getCurrentLineNumber());
 
@@ -8606,16 +8320,34 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
 
         mParser.popElementHandler();
         mParser.onEndElement(pszName);
+        mDerivedElement = false;
 
         break;
 
-      case Parameter:
+      case Content:
 
-        if (!strcmp(pszName, "Parameter") && !strcmp(pszName, "ParameterGroup"))
+        if (!strcmp(pszName, "Parameter") &&
+            !strcmp(pszName, "ParameterText") &&
+            !strcmp(pszName, "ParameterGroup"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Parameter", mParser.getCurrentLineNumber());
 
-        mCommon.ParameterGroupStack.top()->addParameter(* mCommon.pCurrentParameter);
+        // Derived elements like methods and problems have already parameters:
+        if (mDerivedElement)
+          {
+            pParameter =
+              mCommon.ParameterGroupStack.top()->getParameter(mCommon.pCurrentParameter->getObjectName());
+          }
+
+        if (pParameter != NULL)
+          {
+            *pParameter = *mCommon.pCurrentParameter;
+          }
+        else
+          {
+            mCommon.ParameterGroupStack.top()->addParameter(*mCommon.pCurrentParameter);
+          }
+
         pdelete(mCommon.pCurrentParameter);
 
         mCurrentElement = ParameterGroup;
@@ -8634,6 +8366,12 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
   return;
 }
 
+void CCopasiXMLParser::ParameterGroupElement::setDerivedElement(CCopasiParameterGroup * pDerivedElement)
+{
+  mCommon.ParameterGroupStack.push(pDerivedElement);
+  mDerivedElement = true;
+}
+
 CCopasiXMLParser::ParameterElement::ParameterElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
@@ -8647,9 +8385,11 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 {
   mCurrentElement++; // We should always be on the next element
 
+  const char * cValue = NULL;
+  const char * cType = NULL;
+
   std::string name;
-  std::string sType;
-  std::string sValue;
+  std::string sValue("");
 
   void * pValue = NULL;
   CCopasiParameter::Type type;
@@ -8669,38 +8409,38 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
         // Parameter has attributes name, type and value
         name = mParser.getAttributeValue("name", papszAttrs);
-        sType = mParser.getAttributeValue("type", papszAttrs);
+        cType = mParser.getAttributeValue("type", papszAttrs);
+        type = toEnum(cType, CCopasiParameter::XMLType, CCopasiParameter::INVALID);
+        cValue = mParser.getAttributeValue("value", papszAttrs);
 
-        type = toEnum(sType.c_str(), CCopasiParameter::XMLType, CCopasiParameter::INVALID);
+        if (cValue != NULL)
+          {
+            sValue = cValue;
+          }
 
         switch (type)
           {
             case CCopasiParameter::DOUBLE:
-              sValue = mParser.getAttributeValue("value", papszAttrs);
               d = CCopasiXMLInterface::DBL(sValue.c_str());
               pValue = &d;
               break;
 
             case CCopasiParameter::UDOUBLE:
-              sValue = mParser.getAttributeValue("value", papszAttrs);
               d = CCopasiXMLInterface::DBL(sValue.c_str());
               pValue = &d;
               break;
 
             case CCopasiParameter::INT:
-              sValue = mParser.getAttributeValue("value", papszAttrs);
               i = atoi(sValue.c_str());
               pValue = &i;
               break;
 
             case CCopasiParameter::UINT:
-              sValue = mParser.getAttributeValue("value", papszAttrs);
               ui = atoi(sValue.c_str());
               pValue = &ui;
               break;
 
             case CCopasiParameter::BOOL:
-              sValue = mParser.getAttributeValue("value", papszAttrs);
 
               if (sValue == "0" || sValue == "false")
                 {
@@ -8715,34 +8455,14 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
               break;
 
             case CCopasiParameter::STRING:
-              sValue = mParser.getAttributeValue("value", papszAttrs);
-              pValue = &sValue;
-              break;
-
             case CCopasiParameter::KEY:
-              // This is the old key the mapping is done when the parameter is added to a group.
-              sValue = mParser.getAttributeValue("value", papszAttrs);
-              pValue = &sValue;
-              break;
-
             case CCopasiParameter::FILE:
-              sValue = mParser.getAttributeValue("value", papszAttrs);
-              pValue = &sValue;
-              break;
-
             case CCopasiParameter::CN:
-              sValue = mParser.getAttributeValue("value", papszAttrs);
               pValue = &sValue;
-              break;
-
-            case CCopasiParameter::EXPRESSION:
-              mParser.pushElementHandler(&mParser.mCharacterDataElement);
-              mParser.onStartElement(pszName, papszAttrs);
               break;
 
             default:
-              type = CCopasiParameter::INVALID;
-              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), sType.c_str(), mParser.getCurrentLineNumber());
+              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mParser.getCurrentLineNumber());
               pValue = NULL;
               break;
           }
@@ -8772,8 +8492,92 @@ void CCopasiXMLParser::ParameterElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Parameter", mParser.getCurrentLineNumber());
 
-        if (mCommon.pCurrentParameter != NULL &&
-            mCommon.pCurrentParameter->getType() == CCopasiParameter::EXPRESSION)
+        mCurrentElement = START_ELEMENT;
+        mParser.popElementHandler();
+        mParser.onEndElement(pszName);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::ParameterTextElement::ParameterTextElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ParameterTextElement::~ParameterTextElement()
+{}
+
+void CCopasiXMLParser::ParameterTextElement::start(const XML_Char *pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; // We should always be on the next element
+
+  std::string name;
+  const char * cType;
+  CCopasiParameter::Type type;
+
+  switch (mCurrentElement)
+    {
+      case ParameterText:
+
+        if (strcmp(pszName, "ParameterText"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Parameter", mParser.getCurrentLineNumber());
+
+        // Parameter has attributes name, type and value
+        name = mParser.getAttributeValue("name", papszAttrs);
+        cType = mParser.getAttributeValue("type", papszAttrs);
+        type = toEnum(cType, CCopasiParameter::XMLType, CCopasiParameter::INVALID);
+
+        switch (type)
+          {
+            case CCopasiParameter::EXPRESSION:
+              mParser.pushElementHandler(&mParser.mCharacterDataElement);
+              mParser.onStartElement(pszName, papszAttrs);
+              break;
+
+            default:
+              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mParser.getCurrentLineNumber());
+              break;
+          }
+
+        mCommon.pCurrentParameter = new CCopasiParameter(name, type, NULL);
+
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ParameterTextElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ParameterText:
+
+        if (strcmp(pszName, "ParameterText"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Parameter", mParser.getCurrentLineNumber());
+
+        if (mCommon.pCurrentParameter != NULL)
           {
             mCommon.pCurrentParameter->setValue(mCommon.CharacterData);
           }
@@ -8798,13 +8602,14 @@ void CCopasiXMLParser::ParameterElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::MethodElement::MethodElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common), mpParameterHandler(NULL), mpParameterGroupHandler(NULL)
+    CXMLElementHandler < CCopasiXMLParser,
+    SCopasiXMLParserCommon > (parser, common),
+    mpContentHandler(NULL)
 {}
 
 CCopasiXMLParser::MethodElement::~MethodElement()
 {
-  pdelete(mpParameterHandler);
-  pdelete(mpParameterGroupHandler);
+  pdelete(mpContentHandler);
 }
 
 void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
@@ -8841,41 +8646,19 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
               }
 
             mCommon.pCurrentTask->getMethod()->setObjectName(name);
-          }
 
-        return;
-        break;
-
-      case Parameter:
-
-        if (!strcmp(pszName, "Parameter"))
-          {
-            mLineNumber = mParser.getCurrentLineNumber();
-
-            if (!mpParameterHandler)
+            if (!mpContentHandler)
               {
-                mpParameterHandler = new ParameterElement(mParser, mCommon);
+                mpContentHandler = new ParameterGroupElement(mParser, mCommon);
               }
 
-            mpCurrentHandler = mpParameterHandler;
+            mpContentHandler->setDerivedElement(mCommon.pCurrentTask->getMethod());
+            mpCurrentHandler = mpContentHandler;
           }
 
         break;
 
-      case ParameterGroup:
-
-        if (!strcmp(pszName, "ParameterGroup"))
-          {
-            mLineNumber = mParser.getCurrentLineNumber();
-
-            if (!mpParameterGroupHandler)
-              {
-                mpParameterGroupHandler = new ParameterGroupElement(mParser, mCommon);
-              }
-
-            mpCurrentHandler = mpParameterGroupHandler;
-          }
-
+      case Content:
         break;
 
       default:
@@ -8894,8 +8677,6 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
 {
-  CCopasiParameter* p;
-
   switch (mCurrentElement)
     {
       case Method:
@@ -8909,136 +8690,7 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
         mParser.onEndElement(pszName);
         break;
 
-      case Parameter:
-
-        if (strcmp(pszName, "Parameter"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "Parameter", mParser.getCurrentLineNumber());
-
-        // add the parameter in mCommon.pCurrentParameter to the Problem of
-        // the current task.
-
-        p = mCommon.pCurrentTask->getMethod()->getParameter(mCommon.pCurrentParameter->getObjectName());
-
-        if (p)
-          {
-            switch (p->getType())
-              {
-                case CCopasiParameter::INT:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
-                  break;
-
-                case CCopasiParameter::UINT:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pUINT);
-                  break;
-
-                case CCopasiParameter::DOUBLE:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pDOUBLE);
-                  break;
-
-                case CCopasiParameter::UDOUBLE:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pUDOUBLE);
-                  break;
-
-                case CCopasiParameter::BOOL:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pBOOL);
-                  break;
-
-                case CCopasiParameter::STRING:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pSTRING);
-                  break;
-
-                case CCopasiParameter::KEY:
-                {
-                  CCopasiObject * pObject =
-                    mCommon.KeyMap.get(* mCommon.pCurrentParameter->getValue().pKEY);
-
-                  if (pObject)
-                    p->setValue(pObject->getKey());
-                  else
-                    {
-                      p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
-                      mCommon.UnmappedKeyParameters.push_back(p);
-                    }
-                }
-                break;
-
-                case CCopasiParameter::FILE:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pFILE);
-                  break;
-
-                case CCopasiParameter::CN:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
-                  break;
-
-                case CCopasiParameter::EXPRESSION:
-                  p->setValue(* mCommon.pCurrentParameter->getValue().pEXPRESSION);
-                  break;
-
-                case CCopasiParameter::GROUP:
-                case CCopasiParameter::INVALID:
-                  break;
-
-                default:
-                  fatalError();
-                  break;
-              }
-          }
-        else
-          {
-            mCommon.pCurrentTask->getMethod()->addParameter(*mCommon.pCurrentParameter);
-          }
-
-        pdelete(mCommon.pCurrentParameter);
-        mCurrentElement = Method;
-        break;
-
-      case ParameterGroup:
-
-        if (strcmp(pszName, "ParameterGroup"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ParameterGroup", mParser.getCurrentLineNumber());
-
-        // add the parameter in mCommon.pCurrentParameter to the Problem of
-        // the current task.
-        p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
-
-        if (p)
-          {
-            switch (p->getType())
-              {
-                case CCopasiParameter::GROUP:
-                  *(CCopasiParameterGroup *) p =
-                    * (CCopasiParameterGroup *) mCommon.pCurrentParameter;
-                  break;
-
-                case CCopasiParameter::INT:
-                case CCopasiParameter::UINT:
-                case CCopasiParameter::DOUBLE:
-                case CCopasiParameter::UDOUBLE:
-                case CCopasiParameter::BOOL:
-                case CCopasiParameter::STRING:
-                case CCopasiParameter::KEY:
-                case CCopasiParameter::FILE:
-                case CCopasiParameter::EXPRESSION:
-                case CCopasiParameter::CN:
-                case CCopasiParameter::INVALID:
-                  break;
-
-                default:
-                  fatalError();
-                  break;
-              }
-          }
-        else
-          {
-            CCopasiMessage(CCopasiMessage::RAW, MCXML + 4,
-                           mCommon.pCurrentParameter->getObjectName().c_str(),
-                           mLineNumber);
-          }
-
-        pdelete(mCommon.pCurrentParameter);
-        mCurrentElement = Method;
+      case Content:
         break;
 
       case UNKNOWN_ELEMENT:
