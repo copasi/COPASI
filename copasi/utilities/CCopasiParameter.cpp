@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 12:32:31 $
+//   $Date: 2010/02/09 22:18:35 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -111,46 +116,122 @@ CCopasiParameter::~CCopasiParameter()
 
 CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
 {
-  assert(mType == rhs.mType);
-
   if (getObjectName() != rhs.getObjectName())
     setObjectName(rhs.getObjectName());
 
-  switch (mType)
+  switch (rhs.mType)
     {
       case CCopasiParameter::DOUBLE:
       case CCopasiParameter::UDOUBLE:
-        *mValue.pDOUBLE = *rhs.mValue.pDOUBLE;
+
+        if (mType != DOUBLE &&
+            mType != UDOUBLE)
+          {
+            deleteValue();
+            mType = rhs.mType;
+            createValue(rhs.mValue);
+          }
+        else
+          {
+            mType = rhs.mType;
+            *mValue.pDOUBLE = *rhs.mValue.pDOUBLE;
+          }
+
         break;
 
       case CCopasiParameter::INT:
-        *mValue.pINT = *rhs.mValue.pINT;
-        break;
-
       case CCopasiParameter::UINT:
-        *mValue.pUINT = *rhs.mValue.pUINT;
+
+        if (mType != INT &&
+            mType != UINT)
+          {
+            deleteValue();
+            mType = rhs.mType;
+            createValue(rhs.mValue);
+          }
+        else
+          {
+            mType = rhs.mType;
+            *mValue.pINT = *rhs.mValue.pINT;
+          }
+
         break;
 
       case CCopasiParameter::BOOL:
-        *mValue.pBOOL = *rhs.mValue.pBOOL;
+
+        if (mType != BOOL)
+          {
+            deleteValue();
+            mType = BOOL;
+            createValue(rhs.mValue);
+          }
+        else
+          {
+            *mValue.pBOOL = *rhs.mValue.pBOOL;
+          }
+
         break;
 
       case CCopasiParameter::STRING:
       case CCopasiParameter::KEY:
       case CCopasiParameter::FILE:
       case CCopasiParameter::EXPRESSION:
-        *mValue.pSTRING = *rhs.mValue.pSTRING;
+
+        if (mType != STRING &&
+            mType != KEY &&
+            mType != FILE &&
+            mType != EXPRESSION)
+          {
+            deleteValue();
+            mType = rhs.mType;
+            createValue(rhs.mValue);
+          }
+        else
+          {
+            mType = rhs.mType;
+            *mValue.pSTRING = *rhs.mValue.pSTRING;
+          }
+
         break;
 
       case CCopasiParameter::CN:
-        *mValue.pCN = *rhs.mValue.pCN;
+
+        if (mType != CN)
+          {
+            deleteValue();
+            mType = CN;
+            createValue(rhs.mValue);
+          }
+        else
+          {
+            *mValue.pCN = *rhs.mValue.pCN;
+          }
+
         break;
 
       case CCopasiParameter::GROUP:
-        *static_cast<CCopasiParameterGroup *>(this) = *static_cast<const CCopasiParameterGroup *>(&rhs);
+
+        if (mType != GROUP)
+          {
+            deleteValue();
+            mType = GROUP;
+            createValue(rhs.mValue);
+          }
+
+        *static_cast<CCopasiParameterGroup *>(this) =
+          *static_cast<const CCopasiParameterGroup *>(&rhs);
+
         break;
 
       case CCopasiParameter::INVALID:
+
+        if (mType != INVALID)
+          {
+            deleteValue();
+            mType = INVALID;
+            createValue(rhs.mValue);
+          }
+
         break;
     }
 
@@ -391,6 +472,10 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
         break;
 
       case CCopasiParameter::GROUP:
+        mValue.pGROUP = new std::vector< CCopasiParameter * >;
+        mSize = sizeof(std::vector< CCopasiParameter * >);
+        break;
+
       case CCopasiParameter::INVALID:
         mValue.pVOID = NULL;
         mSize = 0;
@@ -402,7 +487,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
 
 void CCopasiParameter::deleteValue()
 {
-  if (!mValue.pVOID) return;
+  if (mValue.pVOID == NULL) return;
 
   switch (mType)
     {
@@ -432,6 +517,13 @@ void CCopasiParameter::deleteValue()
 
       case CCopasiParameter::CN:
         delete mValue.pCN;
+        break;
+
+      case CCopasiParameter::GROUP:
+        delete mValue.pGROUP;
+        break;
+
+      case CCopasiParameter::INVALID:
         break;
 
       default:
