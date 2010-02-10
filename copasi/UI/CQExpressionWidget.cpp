@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/09 07:33:01 $
+//   $Author: shoops $
+//   $Date: 2010/02/10 20:13:10 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -150,8 +155,6 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
           this, SLOT(slotSelectionChanged()));
   connect(this, SIGNAL(textChanged()),
           this, SLOT(slotTextChanged()));
-
-  mCursor = textCursor();
 }
 
 CQExpressionWidget::~CQExpressionWidget()
@@ -684,6 +687,16 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   // clear the text edit
   clear();
 
+  mCursor = textCursor();
+
+  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  std::vector<CCopasiContainer*> containers;
+  containers.push_back(pDataModel);
+  containers.push_back(pFunDB);
+
   std::string Expression = expression;
   std::string out_str = "";
 
@@ -694,6 +707,8 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
   QTextCharFormat f = expressionHighlighter->COPASIObjectFormat;
   QColor color2 = f.foreground().color();
+
+  setCurrentCharFormat(f1);
 
   while (i < Expression.length())
     {
@@ -712,13 +727,6 @@ void CQExpressionWidget::setExpression(const std::string & expression)
             }
 
           CCopasiObjectName temp_CN(objectName);
-          CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
-          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-          CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-          assert(pDataModel != NULL);
-          std::vector<CCopasiContainer*> containers;
-          containers.push_back(pDataModel);
-          containers.push_back(pFunDB);
           CCopasiObject* temp_object = pDataModel->ObjectFromName(containers, temp_CN);
 
           if (temp_object != NULL)
@@ -738,6 +746,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
               setCurrentCharFormat(f);
               insertPlainText(FROM_UTF8("<" + DisplayName + ">"));
+              setCurrentCharFormat(f1);
             }
 
           continue;
@@ -751,7 +760,6 @@ void CQExpressionWidget::setExpression(const std::string & expression)
       else
         {
           out_str = Expression[i];
-          setCurrentCharFormat(f1);
           insertPlainText(FROM_UTF8(out_str));
         }
 
