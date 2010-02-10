@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.152 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/10 19:08:53 $
+//   $Date: 2010/02/10 20:34:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -967,8 +967,10 @@ CConcentrationReference::CConcentrationReference(const CCopasiContainer * pParen
     CCopasiObjectReference< C_FLOAT64 >("Concentration", pParent, reference),
     mpApplyInitialValuesRefresh(NULL)
 {
+  const CMetab * pMetab = static_cast< const CMetab * >(pParent);
+
   mpApplyInitialValuesRefresh =
-    new RefreshTemplate< CMetab >(static_cast< const CMetab * >(pParent),
+    new RefreshTemplate< CMetab >(const_cast< CMetab * >(pMetab),
                                   &CMetab::refreshConcentration);
 }
 
@@ -977,8 +979,10 @@ CConcentrationReference::CConcentrationReference(const CConcentrationReference &
     CCopasiObjectReference< C_FLOAT64 >(src, pParent),
     mpApplyInitialValuesRefresh(NULL)
 {
+  const CMetab * pMetab = static_cast< const CMetab * >(pParent);
+
   mpApplyInitialValuesRefresh =
-    new RefreshTemplate< CMetab >(static_cast< const CMetab * >(pParent),
+    new RefreshTemplate< CMetab >(const_cast< CMetab * >(pMetab),
                                   &CMetab::refreshConcentration);
 }
 
