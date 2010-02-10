@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/08 19:52:01 $
+//   $Date: 2010/02/10 19:08:53 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -36,6 +41,7 @@ class CCompartment;
 class CReadConfig;
 class CMetabOld;
 class CModel;
+class CConcentrationReference;
 
 class CMetab : public CModelEntity
 {
@@ -102,7 +108,7 @@ private:
 
 protected:
   CCopasiObjectReference<C_FLOAT64> *mpIConcReference;
-  CCopasiObjectReference<C_FLOAT64> *mpConcReference;
+  CConcentrationReference *mpConcReference;
   CCopasiObjectReference<C_FLOAT64> *mpConcRateReference;
   CCopasiObjectReference<C_FLOAT64> *mpTTReference;
 
@@ -236,9 +242,9 @@ public:
 
   /**
    * Retrieve object referencing the concentration
-   * @return CCopasiObject * concentrationReference
+   * @return CConcentrationReference * concentrationReference
    */
-  CCopasiObject * getConcentrationReference() const;
+  CConcentrationReference * getConcentrationReference() const;
 
   /**
    * Refresh the initial value
@@ -413,6 +419,13 @@ public:
   virtual const std::set< const CCopasiObject * > &
   getDirectDependencies(const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
 
+  /**
+   * Retrieve the refresh call which calculates the concentration based on state values needed
+   * when applying the initial state.
+   * @return Refresh * applyInitialValueRefresh
+   */
+  Refresh * getApplyInitialValueRefresh() const;
+
   // Attributes
 private:
   /**
@@ -420,6 +433,11 @@ private:
    * i.e., it is always empty
    */
   static std::set< const CCopasiObject * > EmptyDependencies;
+
+  /**
+   * The refresh call needed when applying initial values.
+   */
+  Refresh * mpApplyInitialValuesRefresh;
 };
 
 class CParticleReference : public CCopasiObjectReference< C_FLOAT64 >

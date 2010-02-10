@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.387 $
+//   $Revision: 1.388 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/09 16:53:54 $
+//   $Date: 2010/02/10 19:08:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1493,6 +1493,8 @@ bool CModel::buildApplyInitialValuesSequence()
 
   mApplyInitialValuesRefreshes.clear();
 
+  std::set< const CCopasiObject * > Objects;
+
   const CMetab * pMetab;
 
   CModelEntity ** ppEntity =  mStateTemplate.beginIndependent();
@@ -1500,10 +1502,37 @@ bool CModel::buildApplyInitialValuesSequence()
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
-      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+      if ((*ppEntity)->getStatus() == ODE)
         {
-          mApplyInitialValuesRefreshes.push_back(pMetab->getConcentrationReference()->getRefresh());
+          // TODO We need only to calculate rates which are constant since the other will
+          // be updated by the simulation request.
+          Objects.insert((*ppEntity)->getRateReference());
         }
+
+      // Species of type assignment have a second pseudo state value the concentration,
+      // which always can be directly calculated.
+      if ((*ppEntity)->getStatus() == ASSIGNMENT &&
+          (pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+        {
+          mApplyInitialValuesRefreshes.push_back(pMetab->getConcentrationReference()->getApplyInitialValueRefresh());
+        }
+    }
+
+  std::set< const CCopasiObject * > UpToDate;
+
+  try
+    {
+      std::vector< Refresh * > RateRefreshes =
+        CCopasiObject::buildUpdateSequence(Objects, UpToDate);
+
+      mApplyInitialValuesRefreshes.insert(mApplyInitialValuesRefreshes.end(),
+                                          RateRefreshes.begin(),
+                                          RateRefreshes.end());
+    }
+  catch (...)
+    {
+      mApplyInitialValuesRefreshes.clear();
+      success = false;
     }
 
   return success;

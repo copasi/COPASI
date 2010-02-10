@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.151 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 15:15:16 $
+//   $Date: 2010/02/10 19:08:53 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -747,7 +752,7 @@ std::set< const CCopasiObject * > CMetab::getDeletedObjects() const
 CCopasiObject * CMetab::getInitialConcentrationReference() const
 {return mpIConcReference;}
 
-CCopasiObject * CMetab::getConcentrationReference() const
+CConcentrationReference * CMetab::getConcentrationReference() const
 {return mpConcReference;}
 
 C_FLOAT64 CMetab::getConcentrationRate() const
@@ -959,30 +964,45 @@ std::set< const CCopasiObject * > CConcentrationReference::EmptyDependencies;
 
 CConcentrationReference::CConcentrationReference(const CCopasiContainer * pParent,
     C_FLOAT64 & reference) :
-    CCopasiObjectReference< C_FLOAT64 >("Concentration", pParent, reference)
-{}
+    CCopasiObjectReference< C_FLOAT64 >("Concentration", pParent, reference),
+    mpApplyInitialValuesRefresh(NULL)
+{
+  mpApplyInitialValuesRefresh =
+    new RefreshTemplate< CMetab >(static_cast< const CMetab * >(pParent),
+                                  &CMetab::refreshConcentration);
+}
 
 CConcentrationReference::CConcentrationReference(const CConcentrationReference & src,
     const CCopasiContainer * pParent) :
-    CCopasiObjectReference< C_FLOAT64 >(src, pParent)
-{}
+    CCopasiObjectReference< C_FLOAT64 >(src, pParent),
+    mpApplyInitialValuesRefresh(NULL)
+{
+  mpApplyInitialValuesRefresh =
+    new RefreshTemplate< CMetab >(static_cast< const CMetab * >(pParent),
+                                  &CMetab::refreshConcentration);
+}
 
 CConcentrationReference::~CConcentrationReference()
-{}
+{
+  pdelete(mpApplyInitialValuesRefresh);
+}
 
 // virtual
 const std::set< const CCopasiObject * > &
 CConcentrationReference::getDirectDependencies(const std::set< const CCopasiObject * > & context) const
 {
-  static std::set< const CCopasiObject * > EmptySet;
-
   // If the concentration was changed in the context it has no further dependencies
   if (context.count(this) > 0)
     {
-      return EmptySet;
+      return EmptyDependencies;
     }
 
   return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
+}
+
+Refresh * CConcentrationReference::getApplyInitialValueRefresh() const
+{
+  return mpApplyInitialValuesRefresh;
 }
 
 // static
@@ -1005,6 +1025,12 @@ CParticleReference::~CParticleReference()
 const std::set< const CCopasiObject * > &
 CParticleReference::getDirectDependencies(const std::set< const CCopasiObject * > & context) const
 {
+  // If the particle number was changed in the context it has no further dependencies
+  if (context.count(this) > 0)
+    {
+      return EmptyDependencies;
+    }
+
   const CMetab * pSpecies = static_cast< const CMetab * >(getObjectParent());
 
   // In an assignment the particles have always dependencies
