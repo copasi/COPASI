@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:48 $
+//   $Date: 2010/02/10 19:07:50 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -377,7 +382,9 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
   // be ignored anyway, i.e., no need to sort them.
   for (itSet = DependencySet.begin(), endSet = DependencySet.end(); itSet != endSet;)
     if ((*itSet)->getRefresh() == NULL ||
-        (*itSet)->getDirectDependencies(context).size() == 0)
+        ((dynamic_cast< const CParticleReference * >(*itSet) != NULL ||
+          dynamic_cast< const CConcentrationReference * >(*itSet) != NULL) &&
+         (*itSet)->getDirectDependencies(context).size() == 0))
       {
         const CCopasiObject * pObject = *itSet;
         ++itSet;
