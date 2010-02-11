@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.113 $ 
+#   $Revision: 1.114 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/02/11 15:35:02 $ 
+#   $Date: 2010/02/11 16:15:23 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.113 $ $Author: shoops $ $Date: 2010/02/11 15:35:02 $  
+# $Revision: 1.114 $ $Author: shoops $ $Date: 2010/02/11 16:15:23 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -196,6 +196,10 @@ contains(BUILD_OS, WIN32) {
      !build_pass: message("Using Intel Compiler.")
      DEFINES += COPASI_ICC
      DEFINES += _CRT_SECURE_NO_WARNINGS
+  }
+
+  !isEmpty(INTELRD_PATH) {
+    QMAKE_LFLAGS   += /LIBPATH:\""$${INTELRD_PATH}"\"
   }
   
   QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
