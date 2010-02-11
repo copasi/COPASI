@@ -25,14 +25,6 @@ shift
 goto LOOP
 
 :QMAKE
-cd copasi
-del /S Makefile*
-del commandline\CConfigurationFile.obj
-del UI\copasiui3window.obj 
-del UI\CQSplashWidget.obj 
-del CopasiUI\main.obj 
-del CopasiSE\CopasiSE.obj
-
 if '%QT4DIR%' == '' goto QT4DIR_NotSet
 set QMAKE=%QT4DIR%\bin\qmake
 goto CONFIGURE
@@ -45,8 +37,23 @@ goto CONFIGURE
 :QTDIR_NotSet
 set QMAKE=qmake
 
+rem Clean
+del /S Makefile*
+del copasi\commandline\CConfigurationFile.obj
+del copasi\UI\copasiui3window.obj 
+del copasi\UI\CQSplashWidget.obj 
+del copasi\CopasiUI\main.obj 
+del copasi\CopasiSE\CopasiSE.obj
+
 :CONFIGURE
-echo executing in copasi:
+cd copasi
+echo Executing in copasi:
+
+cp copasi.pro tmp_win32.pro
+echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
+%QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
+del tmp_win32*
+
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
@@ -56,15 +63,15 @@ cd libs
 nmake qmake_all
 cd ..
 
-rem force relink
-
 cd ..
 
 rem Build the semantic test suite wrapper
 cd semantic-test-suite
-echo executing in semantic-test-suite:
-rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
+echo Executing in semantic-test-suite:
+
+echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
@@ -73,8 +80,10 @@ cd ..
 rem Build the stochastic test suite wrapper
 cd stochastic-testsuite
 echo executing in stochastic-testsuite:
-rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
+
+echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
@@ -83,8 +92,10 @@ cd ..
 rem Build the SBML test suite wrapper
 cd sbml-testsuite
 echo executing in sbml-testsuite:
-rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
+
+echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
