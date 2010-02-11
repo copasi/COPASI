@@ -1,10 +1,15 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.29 $
+#   $Revision: 1.30 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/02/03 13:54:10 $
+#   $Author: shoops $
+#   $Date: 2010/02/11 15:38:15 $
 # End CVS Header
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,6 +26,8 @@ include(../lib.pri)
 include(../common.pri)
 
 CONFIG += qt
+
+QT +=  opengl 
 
 HEADERS = CQGLNetworkPainter.h \
           CArrow.h \
@@ -62,16 +69,10 @@ SOURCES = CQLayoutMainWindow.cpp \
           CLabel.cpp
 
 
-
 FORMS = ParaPanel.ui \
         NodeSizePanel.ui \
         FontChooser.ui
 
 
-#INCLUDEPATH += $${QWT_PATH}/include/qwt-qt4
-INCLUDEPATH += $${QWT_PATH}/include/
-
 DISTFILES += layoutUI.vcproj
-
-QT +=  opengl 
 
