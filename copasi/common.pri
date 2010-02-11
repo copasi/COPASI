@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.112 $ 
+#   $Revision: 1.113 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2009/11/23 10:53:32 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/02/11 15:35:02 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.112 $ $Author: ssahle $ $Date: 2009/11/23 10:53:32 $  
+# $Revision: 1.113 $ $Author: shoops $ $Date: 2010/02/11 15:35:02 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -257,16 +262,16 @@ contains(BUILD_OS, WIN32) {
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
-    QMAKE_CXXFLAGS += -I\"$${MKL_PATH}\include\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${MKL_PATH}\ia32\lib\"
-    QMAKE_LFLAGS += /LIBPATH:\"$${MKL_PATH}\..\lib\ia32\"
+    QMAKE_CXXFLAGS += -I\""$${MKL_PATH}"\include\"
+    QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\ia32\lib\"
+    QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\ia32\"
     LIBS += mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib
     LIBS += libiomp5mt.lib
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
-      QMAKE_CXXFLAGS   += -I\"$${CLAPACK_PATH}\include\"
-      QMAKE_LFLAGS += /LIBPATH:\"$${CLAPACK_PATH}\lib\"
+      QMAKE_CXXFLAGS   += -I\""$${CLAPACK_PATH}"\include\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}"\lib\"
       LIBS += clapack.lib
     } else {
       error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
@@ -283,11 +288,11 @@ contains(BUILD_OS, WIN32) {
   }
 
   !isEmpty(EXPAT_PATH) {
-    QMAKE_CXXFLAGS += -I\"$${EXPAT_PATH}\Source\lib\"
-    QMAKE_CXXFLAGS += -I\"$${EXPAT_PATH}\include\"
-    QMAKE_LFLAGS   += /LIBPATH:\"$${EXPAT_PATH}\StaticLibs\"
-    QMAKE_LFLAGS   += /LIBPATH:\"$${EXPAT_PATH}\bin\"
-    QMAKE_LFLAGS   += /LIBPATH:\"$${EXPAT_PATH}\lib\"
+    QMAKE_CXXFLAGS += -I\""$${EXPAT_PATH}"\Source\lib\"
+    QMAKE_CXXFLAGS += -I\""$${EXPAT_PATH}"\include\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\StaticLibs\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\bin\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\lib\"
   } else {
     error( "EXPAT_PATH must be specified" )
   }
@@ -295,9 +300,9 @@ contains(BUILD_OS, WIN32) {
   LIBS += libsbml$${RUNTIME}.lib
   
   !isEmpty(SBML_PATH) {
-    QMAKE_CXXFLAGS += -I\"$${SBML_PATH}\include\"
-    QMAKE_LFLAGS   += /LIBPATH:\"$${SBML_PATH}\lib\"
-    QMAKE_LFLAGS   += /LIBPATH:\"$${SBML_PATH}\bin\"
+    QMAKE_CXXFLAGS += -I\""$${SBML_PATH}"\include\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"\lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"\bin\"
   } else {
     error( "SBML_PATH must be specified" )
   }
@@ -306,8 +311,8 @@ contains(BUILD_OS, WIN32) {
   LIBS += raptor$${RUNTIME}.lib
     
   !isEmpty(RAPTOR_PATH) {
-    QMAKE_CXXFLAGS += -I\"$${RAPTOR_PATH}\include\"
-    QMAKE_LFLAGS   += /LIBPATH:\"$${RAPTOR_PATH}\lib\"
+    QMAKE_CXXFLAGS += -I\""$${RAPTOR_PATH}"\include\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}"\lib\"
   } else {
     error( "RAPTOR_PATH must be specified" )
   }
@@ -316,22 +321,22 @@ contains(BUILD_OS, WIN32) {
     LIBS    += SBW$${RUNTIME}.lib ws2_32.lib
 
     !isEmpty(SBW_PATH){
-      QMAKE_CXXFLAGS += -I"$${SBW_PATH}\include"
-      QMAKE_LFLAGS   += /LIBPATH:"$${SBW_PATH}\lib"
+      QMAKE_CXXFLAGS += -I""$${SBW_PATH}"\include"
+      QMAKE_LFLAGS   += /LIBPATH:""$${SBW_PATH}"\lib"
       
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES *= WIN32
     }
      
     !isEmpty(QWT_PATH){
-       LIBS+=  -L$${QWT_PATH}/lib
-       INCLUDEPATH += $${QWT_PATH}/include
+       LIBS+=  -L"$${QWT_PATH}"/lib
+       INCLUDEPATH += "$${QWT_PATH}"/include
     }
     LIBS += -lqwt
     
     !isEmpty(QWT3D_PATH){
-      LIBS += -L$${QWT3D_PATH}/lib/
-      INCLUDEPATH += $${QWT3D_PATH}/include
+      LIBS += -L"$${QWT3D_PATH}"/lib/
+      INCLUDEPATH += "$${QWT3D_PATH}"/include
     } 
 
 #    DEFINES        += QWT3D_NODLL
