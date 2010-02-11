@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/11 16:25:06 $
+//   $Date: 2010/02/11 19:48:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -795,7 +795,7 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
           for (; pActiveRow < pActiveRowEnd; ++pActiveRow, ++pCurrent)
             {
               // Assert that we do not have a numerical overflow.
-              asssert(fabs(((C_FLOAT64) alpha) *((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) *((C_FLOAT64) * pActiveRow)) < std::numeric_limits< C_INT64 >::max());
+              assert(fabs(((C_FLOAT64) alpha) *((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) *((C_FLOAT64) * pActiveRow)) < std::numeric_limits< C_INT64 >::max());
 
               *pCurrent = alpha * *pCurrent - beta * *pActiveRow;
 
