@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.212 $
+//   $Revision: 1.213 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/11 19:27:35 $
+//   $Date: 2010/02/11 20:10:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -6902,8 +6902,6 @@ void CCopasiXMLParser::ReactionGlyphElement::end(const XML_Char *pszName)
             break;
 
           case Dimensions:
-            //tell the handler where to continue
-            mCurrentElement = BoundingBox;
             break;
 
           case Curve:
