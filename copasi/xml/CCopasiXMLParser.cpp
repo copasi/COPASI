@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.211 $
+//   $Revision: 1.212 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/09 22:20:29 $
+//   $Author: gauges $
+//   $Date: 2010/02/11 19:27:35 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -6030,11 +6030,14 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
 
           mCommon.pCompartmentGlyph = new CLCompartmentGlyph(name);
 
-          CCompartment * pComp = dynamic_cast< CCompartment * >(mCommon.KeyMap.get(compartment));
+          if (compartment && compartment[0])
+            {
+              CCompartment * pComp = dynamic_cast< CCompartment * >(mCommon.KeyMap.get(compartment));
 
-          if (!pComp) fatalError();
+              if (!pComp) fatalError();
 
-          mCommon.pCompartmentGlyph->setModelObjectKey(pComp->getKey());
+              mCommon.pCompartmentGlyph->setModelObjectKey(pComp->getKey());
+            }
 
           mCommon.pCurrentLayout->addCompartmentGlyph(mCommon.pCompartmentGlyph);
           mCommon.KeyMap.addFix(key, mCommon.pCompartmentGlyph);
@@ -6270,11 +6273,14 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
 
           mCommon.pMetaboliteGlyph = new CLMetabGlyph(name);
 
-          CMetab * pMetab = dynamic_cast< CMetab * >(mCommon.KeyMap.get(metabolite));
+          if (metabolite && metabolite[0])
+            {
+              CMetab * pMetab = dynamic_cast< CMetab * >(mCommon.KeyMap.get(metabolite));
 
-          if (!pMetab) fatalError();
+              if (!pMetab) fatalError();
 
-          mCommon.pMetaboliteGlyph->setModelObjectKey(pMetab->getKey());
+              mCommon.pMetaboliteGlyph->setModelObjectKey(pMetab->getKey());
+            }
 
           mCommon.pCurrentLayout->addMetaboliteGlyph(mCommon.pMetaboliteGlyph);
           mCommon.KeyMap.addFix(key, mCommon.pMetaboliteGlyph);
@@ -6781,11 +6787,14 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
 
           mCommon.pReactionGlyph = new CLReactionGlyph(name);
 
-          CReaction * pReaction = dynamic_cast< CReaction * >(mCommon.KeyMap.get(reaction));
+          if (reaction && reaction[0])
+            {
+              CReaction * pReaction = dynamic_cast< CReaction * >(mCommon.KeyMap.get(reaction));
 
-          if (!pReaction) fatalError();
+              if (!pReaction) fatalError();
 
-          mCommon.pReactionGlyph->setModelObjectKey(pReaction->getKey());
+              mCommon.pReactionGlyph->setModelObjectKey(pReaction->getKey());
+            }
 
           mCommon.pCurrentLayout->addReactionGlyph(mCommon.pReactionGlyph);
           mCommon.KeyMap.addFix(key, mCommon.pReactionGlyph);
