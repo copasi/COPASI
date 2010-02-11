@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
- $Revision: 1.27 $
+ $Revision: 1.28 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/02/23 16:20:17 $
+ $Date: 2010/02/11 19:42:49 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -66,9 +71,6 @@ bool CSteadyStateProblem::initialize()
 {
   if (!mpModel) return false;
 
-  if (!mpModel->isAutonomous())
-    CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
-
   return true;
 }
 
@@ -84,7 +86,7 @@ void CSteadyStateProblem::setJacobianRequested(bool & jacobianRequested)
  * @return bool jacobianRequested
  */
 bool CSteadyStateProblem::isJacobianRequested() const
-  {return * getValue("JacobianRequested").pBOOL;}
+{return * getValue("JacobianRequested").pBOOL;}
 
 /**
  * Set whether stabilty analysis is requested.
@@ -98,7 +100,7 @@ void CSteadyStateProblem::setStabilityAnalysisRequested(bool & stabilityAnalysis
  * @return bool stabilityAnalysisRequested
  */
 bool CSteadyStateProblem::isStabilityAnalysisRequested() const
-  {return * getValue("StabilityAnalysisRequested").pBOOL;}
+{return * getValue("StabilityAnalysisRequested").pBOOL;}
 
 /**
  * Load a steadystate problem

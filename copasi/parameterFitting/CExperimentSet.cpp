@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-$Revision: 1.31 $
+$Revision: 1.32 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/07/23 17:28:23 $
+$Date: 2010/02/11 19:42:49 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,6 +322,22 @@ CExperiment * CExperimentSet::getExperiment(const std::string & name)
 
 const CExperiment * CExperimentSet::getExperiment(const std::string & name) const
 {return static_cast<const CExperiment *>(getGroup(name));}
+
+bool CExperimentSet::hasDataForTaskType(const CCopasiTask::Type & type) const
+{
+  std::vector< CExperiment * >::const_iterator it = mpExperiments->begin() + mNonExperiments;
+  std::vector< CExperiment * >::const_iterator end = mpExperiments->end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getExperimentType() == type)
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
 
 const CCopasiTask::Type & CExperimentSet::getExperimentType(const unsigned C_INT32 & index) const
 {return getExperiment(index)->getExperimentType();}

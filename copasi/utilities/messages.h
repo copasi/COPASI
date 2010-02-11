@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.142 $
+//   $Revision: 1.143 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 21:15:38 $
+//   $Date: 2010/02/11 19:42:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -278,7 +278,7 @@ const MESSAGES Messages[] =
   {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
 
   {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
-   "Therefore, the calculation of a steady state is not very meaningful."},
+   "Therefore, the calculation of a steady state using the Newton method is not very meaningful."},
 
   {MCFitting + 1, "CFitting (1): Failed to determine work area size for matrix inversion. "
    "dsytrf returned with error '%d'."},

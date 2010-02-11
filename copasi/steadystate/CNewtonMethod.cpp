@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:25 $
+//   $Date: 2010/02/11 19:42:49 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -731,6 +736,12 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
   if (!CSteadyStateMethod::isValidProblem(pProblem)) return false;
+
+  const CModel * pModel = pProblem->getModel();
+
+  if (!pModel->isAutonomous() &&
+      *getValue("Use Newton").pBOOL)
+    CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
 
   //const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
 

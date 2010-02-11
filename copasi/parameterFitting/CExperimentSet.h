@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/07/23 17:28:23 $
+   $Date: 2010/02/11 19:42:49 $
    End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -126,6 +131,13 @@ public:
    * @return const CExperiment * experiment
    */
   const CExperiment * getExperiment(const std::string & name) const;
+
+  /**
+   * Check whether the set contains data for the the given task type
+   * @param const CCopasiTask::Type & type
+   * @return bool hasDataForTaskType
+   */
+  bool hasDataForTaskType(const CCopasiTask::Type & type) const;
 
   /**
    * Retrieve the indexed experiment type

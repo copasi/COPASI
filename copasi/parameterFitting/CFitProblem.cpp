@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 13:17:53 $
+//   $Date: 2010/02/11 19:42:49 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -351,7 +356,11 @@ bool CFitProblem::initialize()
     mpSteadyState =
       static_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
 
-  mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+  // We only need to initialize the steady-state task if steady-state data is present.
+  if (mpExperimentSet->hasDataForTaskType(CCopasiTask::steadyState))
+    {
+      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+    }
 
   mpTrajectory =
     dynamic_cast< CTrajectoryTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmTimeCourseCN));
@@ -360,7 +369,11 @@ bool CFitProblem::initialize()
     mpTrajectory =
       static_cast<CTrajectoryTask *>((*pDataModel->getTaskList())["Time-Course"]);
 
-  mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+  // We only need to initialize the trajectory task if time course data is present.
+  if (mpExperimentSet->hasDataForTaskType(CCopasiTask::timeCourse))
+    {
+      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+    }
 
   ContainerList.clear();
 

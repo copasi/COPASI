@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/02/01 19:57:02 $
+//   $Author: shoops $
+//   $Date: 2010/02/11 19:42:49 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -144,8 +149,6 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
 
 bool CSteadyStateTask::updateMatrices()
 {
-  if (!mpMethod->isValidProblem(mpProblem)) return false;
-
   if (!mpProblem->getModel()) return false;
 
   const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
