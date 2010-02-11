@@ -49,7 +49,7 @@ del copasi\CopasiSE\CopasiSE.obj
 cd copasi
 echo Executing in copasi:
 
-cp copasi.pro tmp_win32.pro
+copy copasi.pro tmp_win32.pro
 echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
 del tmp_win32*
