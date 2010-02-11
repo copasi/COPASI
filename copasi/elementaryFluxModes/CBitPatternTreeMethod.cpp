@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/04 17:05:27 $
+//   $Date: 2010/02/11 16:25:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -795,14 +795,13 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
           for (; pActiveRow < pActiveRowEnd; ++pActiveRow, ++pCurrent)
             {
               // Assert that we do not have a numerical overflow.
-              C_FLOAT64 tst = ((C_FLOAT64) alpha) * ((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) * ((C_FLOAT64) * pActiveRow);
-              *pCurrent = alpha * *pCurrent - beta * *pActiveRow;
+              asssert(fabs(((C_FLOAT64) alpha) *((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) *((C_FLOAT64) * pActiveRow)) < std::numeric_limits< C_INT64 >::max());
 
-              assert(!abs(tst - *pCurrent) > 0);
+              *pCurrent = alpha * *pCurrent - beta * *pActiveRow;
 
               // We check that the row values do not have any common divisor.
               if (GCD1 > 1 &&
-                  (GCD2 = abs(*pCurrent)) > 0)
+                  (GCD2 = abs64(*pCurrent)) > 0)
                 {
                   GCD(GCD1, GCD2);
                 }
