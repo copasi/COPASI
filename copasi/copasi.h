@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 19:33:16 $
+//   $Date: 2010/02/11 12:59:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -197,7 +197,9 @@ extern std::ofstream DebugFile;
 
 # define DEBUG_OUT(s) {DebugFile << (s) << std::endl;}
 #else
-# define NDEBUG
+# ifndef NDEBUG
+#  define NDEBUG
+# endif // not NDEBUG
 # define DEBUG_OUT(s)
 #endif // COPASI_DEBUG
 
