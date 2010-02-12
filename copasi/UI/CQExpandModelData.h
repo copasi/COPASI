@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/02/01 11:39:09 $
+//   $Date: 2010/02/12 12:14:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -53,8 +58,8 @@ public:
 
   std::vector< std::string > mCompartmentName;
   std::vector< std::string > mMetaboliteName;
-
 protected:
+  QCheckBox* pCheckBox;
   QSignalMapper * mpComboMap;
   CModel* pModel;
 

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/02/01 11:39:09 $
+//   $Date: 2010/02/12 12:14:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -129,18 +134,39 @@ void CQExpandModelData::slotOK()
   bool diff = mpCheckDiffusion->isChecked();
 
   if (diff)
+    imax = source->getMetabolites().size();
+
+  std::vector< std::string  > listOfMetabolites;
+
+  if (diff)
+    for (i = 0; i < imax; ++i)
+      {
+        pCheckBox = dynamic_cast< QCheckBox* >(mpSpeciesTable->cellWidget(i, 1));
+
+        if (pCheckBox == NULL); //TODO
+
+        if (pCheckBox->isChecked())
+          {
+            metab = source->getMetabolites()[i];
+            listOfMetabolites.push_back(metab->getKey());
+          }
+      }
+
+#if 0
+  std::vector< std::string >::iterator it = listOfMetabolites.begin();
+  std::vector< std::string >::iterator end = listOfMetabolites.end();
+
+  while (it != end)
     {
 
-      metabname =  static_cast<std::string >(mpBoxMetaboliteName->currentText().toUtf8());
-      imax = source->getMetabolites().size();
-
-      for (i = 0; i < imax; ++i)
-        if (mMetaboliteName[i] ==  metabname) metab  =  source->getMetabolites()[i];
+      std::cout << (*it)  << std::endl;
+      ++it;
     }
 
+#endif
+
   CModelExpansion me(pModel);
-  //me.simpleCall(source, mult);
-  me.simpleCall(source, metab, mult, diff);
+  me.simpleCall(source, listOfMetabolites, mult, diff);
 
   accept();
 }
@@ -177,14 +203,12 @@ void CQExpandModelData::slotCompartmentChanged(/* int row */)
 void CQExpandModelData::slotApplyDiffusion(bool show)
 {
 
-  mpBoxMetaboliteName->clear();
+  mpSpeciesTable->clearContents();
 
   if (show)
     {
-      mpLblMetaboliteName->show();
-      mpBoxMetaboliteName->show();
 
-      std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
+      std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());
 
       unsigned C_INT32 i, imax = pModel->getCompartments().size();
 
@@ -202,22 +226,20 @@ void CQExpandModelData::slotApplyDiffusion(bool show)
           mMetaboliteName[i] = metab->getObjectName();
         }
 
-      for (i = 0; i < imax; ++i)
-        mpBoxMetaboliteName->insertItem(FROM_UTF8(mMetaboliteName[i]));
+      mpSpeciesTable->setRowCount(imax);
 
       for (i = 0; i < imax; i++)
         {
+          QTableWidgetItem *nameItem = new QTableWidgetItem();
+          nameItem->setText(FROM_UTF8(mMetaboliteName[i]));
+          mpSpeciesTable->setItem(i, 0, nameItem);
 
-          mpBoxMetaboliteName->setEditable(false);
+          pCheckBox = new QCheckBox(mpSpeciesTable);
+          mpSpeciesTable->setCellWidget(i, 1, pCheckBox);
 
-          //mpComboMap->setMapping(mpBoxMetaboliteName, i);
-          //connect(mpBoxMetaboliteName, SIGNAL(activated(int)), mpComboMap, SLOT(map()));
+          pCheckBox->setChecked(false);
         }
     }
 
-  else
-    {
-      mpLblMetaboliteName->hide();
-      mpBoxMetaboliteName->hide();
-    }
+  mpSpeciesTable->resizeColumnToContents(0);
 }

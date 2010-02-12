@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/02/01 11:40:07 $
+//   $Date: 2010/02/12 12:15:30 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,6 +26,7 @@
 #include <fstream>
 #include <ctype.h>
 #include <copasi.h>
+#include <vector>
 
 class CModel;
 class CMetab;
@@ -37,7 +43,7 @@ public:
   void setModel(CModel* pModel);
 
   //just a simple method to call during development
-  void simpleCall(const CCompartment* source, const CMetab* metab, int mult, bool diff);
+  void simpleCall(const CCompartment* source, std::vector< std::string  > listOfMetabolites, int mult, bool diff);
 
 protected:
 

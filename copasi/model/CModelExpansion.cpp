@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/02/01 11:39:50 $
+//   $Date: 2010/02/12 12:15:16 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -31,7 +36,7 @@ void CModelExpansion::setModel(CModel* pModel)
   mpModel = pModel;
 }
 
-void CModelExpansion::simpleCall(const CCompartment * source, const CMetab* metab,  int  mult, bool diff)
+void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::string  > listOfMetabolites,  int  mult, bool diff)
 {
 
   if (!mpModel) return;
@@ -93,10 +98,19 @@ void CModelExpansion::simpleCall(const CCompartment * source, const CMetab* meta
 
   C_INT32 m;
 
-  std::vector< std::string > metabKey;
-  metabKey.resize(mult + 1);
+  std::vector< std::vector<std::string> > metabMap;
 
-  if (diff) metabKey[0] = metab->getKey();
+  if (diff)
+    {
+      imax = listOfMetabolites.size();
+      metabMap.resize(imax);
+
+      for (i = 0; i < imax; ++i)
+        {
+          metabMap[i].resize(mult + 1);
+          metabMap[i][0] = listOfMetabolites[i];
+        }
+    }
 
   for (m = 0; m < mult; ++m)
     {
@@ -111,41 +125,48 @@ void CModelExpansion::simpleCall(const CCompartment * source, const CMetab* meta
                       &&  copyModelValuesExpressions(name)
                       &&  copyEvents(name);
 
-      if (diff) metabKey[m+1] = ci.keyMap[metab->getKey()];
+      if (diff)
+        for (i = 0; i < imax; ++i)
+          metabMap[i][m+1] = ci.keyMap[listOfMetabolites[i]];
     }
 
   if (diff)
-    for (m = 0; m < mult; ++m)
-      {
+    {
+      std::ostringstream k1, k2;
+      k1 << "k1{diffusion}";
+      k2 << "k2{diffusion}";
 
-        std::ostringstream reacname;
-        reacname <<  "diffusion_" << m;
+      CModelValue* modval1 = mpModel->createModelValue(testName(k1.str()), 1.);
+      modval1->setStatus(CModelValue::FIXED);
 
-        CReaction* reac = mpModel->createReaction(testName(reacname.str()));
+      CModelValue* modval2 = mpModel->createModelValue(testName(k2.str()), 1.);
+      modval2->setStatus(CModelValue::FIXED);
 
-        if (!reac)
-          continue;
+      for (m = 0; m < mult; ++m)
+        {
 
-        reac->setReversible(true);
+          for (i = 0; i < imax; ++i)
+            {
+              std::ostringstream reacname;
+              reacname <<  "diffusion_" << m << "_" << i;
 
-        reac->addSubstrate(metabKey[m], 1);
-        reac->addProduct(metabKey[m+1], 1);
-        reac->setFunction("Mass action (reversible)");
-        reac->addParameterMapping("substrate", metabKey[m]);
-        reac->addParameterMapping("product", metabKey[m+1]);
+              CReaction* reac = mpModel->createReaction(testName(reacname.str()));
 
-        std::ostringstream k1, k2;
-        k1 << "k1{" << reac->getObjectName() << "}";
-        k2 << "k2{" << reac->getObjectName() << "}";
+              if (!reac) continue;
 
-        CModelValue* modval1 = mpModel->createModelValue(testName(k1.str()), 1.);
-        modval1->setStatus(CModelValue::FIXED);
-        reac->setParameterMapping(0, modval1->getKey());
+              reac->setReversible(true);
 
-        CModelValue* modval2 = mpModel->createModelValue(testName(k2.str()), 1.);
-        modval2->setStatus(CModelValue::FIXED);
-        reac->setParameterMapping(2, modval2->getKey());
-      }
+              reac->addSubstrate(metabMap[i][m], 1);
+              reac->addProduct(metabMap[i][m+1], 1);
+              reac->setFunction("Mass action (reversible)");
+              reac->addParameterMapping("substrate", metabMap[i][m]);
+              reac->addParameterMapping("product", metabMap[i][m+1]);
+
+              reac->setParameterMapping(0, modval1->getKey());
+              reac->setParameterMapping(2, modval2->getKey());
+            }
+        }
+    }
 
   if (!progress)
     {
