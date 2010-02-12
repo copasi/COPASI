@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/27 13:57:52 $
+//   $Author: shoops $
+//   $Date: 2010/02/12 18:58:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -112,6 +117,7 @@ void CQFittingItemWidget::init()
   mUpperInfChanged = false;
 
   mpTable->horizontalHeader()->hide();
+  mpTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   mpTable->setAlternatingRowColors(true);
   mpTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   mpTable->setSelectionBehavior(QAbstractItemView::SelectRows);
