@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.213 $
+//   $Revision: 1.214 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/11 20:10:17 $
+//   $Author: shoops $
+//   $Date: 2010/02/12 16:50:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -527,11 +527,24 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
         {
           mCommon.pFunctionList->remove("Objective Function");
         }
+
+      return;
+    }
+
+  if (!strcmp(pszName, "ParameterGroup"))
+    {
+      mCurrentElement = START_ELEMENT;
     }
   else if (!strcmp(pszName, "GUI") && mCommon.pGUI == NULL)
-    CCopasiMessage::getLastMessage();
-  else
-    pdelete(mpCurrentHandler);
+    {
+      CCopasiMessage::getLastMessage();
+    }
+
+  // We must not delete the unknown element  handler
+  if (mpCurrentHandler != &mParser.mUnknownElement)
+    {
+      pdelete(mpCurrentHandler);
+    }
 
   //TODO why no case statement with error checking (like in other elements)?
 
@@ -8325,9 +8338,10 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
         mCommon.ParameterGroupStack.pop();
         mCurrentElement = START_ELEMENT;
 
+        mDerivedElement = false;
+
         mParser.popElementHandler();
         mParser.onEndElement(pszName);
-        mDerivedElement = false;
 
         break;
 
