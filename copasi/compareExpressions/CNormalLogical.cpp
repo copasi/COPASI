@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:50:08 $
+//   $Author: gauges $
+//   $Date: 2010/02/13 13:49:23 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -631,7 +636,7 @@ bool CNormalLogical::simplify()
   eliminateNullItems(this->mAndSets, tmpSet, true);
   cleanSetOfSets(tmpSet);
 
-  if (result = this->generateCanonicalDNF(tmpSet))
+  if ((result = this->generateCanonicalDNF(tmpSet)))
     {
       cleanSetOfSets(this->mAndSets);
       this->mAndSets = tmpSet;
