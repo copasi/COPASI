@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Date: 2010/02/13 11:32:49 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -54,7 +59,7 @@ void CQCurrentValueTable::init()
   pLayout->addWidget(pHBox);
   this->mpCheckAllButton = new QPushButton("Check all", pHBox);
   this->mpUncheckAllButton = new QPushButton("Uncheck all", pHBox);
-  connect(this->mpTable, SIGNAL(valueChanged(int, int)), this, SLOT(tableValueChanged(int, int)));
+  connect(this->mpTable, SIGNAL(cellChanged(int, int)), this, SLOT(tableValueChanged(int, int)));
   connect(this->mpCheckAllButton, SIGNAL(clicked()), this, SLOT(slotCheckAllClicked()));
   connect(this->mpUncheckAllButton, SIGNAL(clicked()), this, SLOT(slotUncheckAllClicked()));
   resize(QSize(202, 153).expandedTo(minimumSizeHint()));
