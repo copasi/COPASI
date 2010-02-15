@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-$Revision: 1.19 $
+$Revision: 1.20 $
 $Name:  $
-$Author: gauges $
-$Date: 2009/02/18 20:54:48 $
+$Author: shoops $
+$Date: 2010/02/15 18:17:01 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@ bool CKeyFactory::isValidKey(const std::string & key,
   if (key == "" && prefix == "") return true;
 
   unsigned C_INT32 digitsStart = key.length() - 1;
+
   while (isDigit(key[digitsStart]) && digitsStart) --digitsStart;
 
   if (digitsStart < 1 || digitsStart > key.length() - 2 || key[digitsStart] != '_') return false;
@@ -47,7 +48,9 @@ bool CKeyFactory::isValidKey(const std::string & key,
     }
 
   unsigned C_INT32 prefixEnd = 0;
+
   while (isPrefix(key[prefixEnd]) && prefixEnd < digitsStart) ++prefixEnd;
+
   return (prefixEnd == digitsStart);
 }
 
@@ -61,32 +64,32 @@ CKeyFactory::CDecisionVector::CDecisionVector(const std::string & str):
   unsigned C_INT32 i, imax;
 
   for (i = 0, imax = size(); i < imax; i++)
-    (* (CVector< bool > *) this)[i] = false;
+    (*(CVector< bool > *) this)[i] = false;
 
   for (i = 0, imax = str.length(); i < imax; i++)
-    (* (CVector< bool > *) this)[(unsigned C_INT32) str[i]] = true;
+    (*(CVector< bool > *) this)[(unsigned C_INT32) str[i]] = true;
 }
 
 CKeyFactory::CDecisionVector::~CDecisionVector() {}
 
-const bool & CKeyFactory::CDecisionVector::operator () (const unsigned char & c) const
-  {return (* (CVector< bool > *) this)[(unsigned C_INT32) c];}
+const bool & CKeyFactory::CDecisionVector::operator()(const unsigned char & c) const
+{return (*(CVector< bool > *) this)[(unsigned C_INT32) c];}
 
 CKeyFactory::HashTable::HashTable():
     mBeyond(0),
     mSize(128),
-    mpTable(new CVector< CCopasiObject * >(128)),
+    mTable(128),
     mFree()
-{memset(mpTable->array(), 0, mSize * sizeof(CCopasiObject *));}
+{memset(mTable.array(), 0, mSize * sizeof(CCopasiObject *));}
 
 CKeyFactory::HashTable::HashTable(const CKeyFactory::HashTable & src):
     mBeyond(src.mBeyond),
     mSize(src.mSize),
-    mpTable(new CVector< CCopasiObject * >(* src.mpTable)),
+    mTable(src.mTable),
     mFree(src.mFree)
 {}
 
-CKeyFactory::HashTable::~HashTable() {pdelete(mpTable);}
+CKeyFactory::HashTable::~HashTable() {}
 
 unsigned C_INT32 CKeyFactory::HashTable::add(CCopasiObject * pObject)
 {
@@ -102,20 +105,16 @@ unsigned C_INT32 CKeyFactory::HashTable::add(CCopasiObject * pObject)
       index = mBeyond;
 
       mBeyond++;
+
       if (mBeyond > mSize)
         {
-          CVector< CCopasiObject * > * pTmp = mpTable;
-          mpTable = new CVector< CCopasiObject * >(mSize * 2);
-          memcpy(mpTable->array(), pTmp->array(),
-                 mSize * sizeof(CCopasiObject *));
-          memset(mpTable->array() + mSize, 0,
-                 mSize * sizeof(CCopasiObject *));
+          mTable.resize(mSize * 2, true);
+          memset(mTable.array() + mSize, 0, mSize * sizeof(CCopasiObject *));
           mSize *= 2;
-          delete pTmp;
         }
     }
 
-  (*mpTable)[index] = pObject;
+  mTable[index] = pObject;
   return index;
 }
 
@@ -124,25 +123,21 @@ bool CKeyFactory::HashTable::addFix(const unsigned C_INT32 & index,
 {
   while (index >= mSize)
     {
-      CVector< CCopasiObject * > * pTmp = mpTable;
-      mpTable = new CVector< CCopasiObject * >(mSize * 2);
-      memcpy(mpTable->array(), pTmp->array(),
-             mSize * sizeof(CCopasiObject *));
-      memset(mpTable->array() + mSize, 0,
+      mTable.resize(mSize * 2, true);
+      memset(mTable.array() + mSize, 0,
              mSize * sizeof(CCopasiObject *));
       mSize *= 2;
-      delete pTmp;
     }
 
-  if ((*mpTable)[index]) return false;
+  if (mTable[index]) return false;
 
-  (*mpTable)[index] = pObject;
+  mTable[index] = pObject;
   return true;
 }
 
 CCopasiObject * CKeyFactory::HashTable::get(const unsigned C_INT32 & index)
 {
-  if (index < mSize) return (*mpTable)[index];
+  if (index < mSize) return mTable[index];
 
   return NULL;
 }
@@ -151,9 +146,9 @@ bool CKeyFactory::HashTable::remove(const unsigned C_INT32 & index)
 {
   if (index < mSize)
     {
-      if (!(*mpTable)[index]) return false;
+      if (!mTable[index]) return false;
 
-      (*mpTable)[index] = NULL;
+      mTable[index] = NULL;
       mFree.push(index);
 
       return true;
@@ -177,6 +172,7 @@ std::string CKeyFactory::add(const std::string & prefix,
 {
   std::map< std::string, CKeyFactory::HashTable >::iterator it =
     mKeyTable.find(prefix);
+
   if (it == mKeyTable.end())
     {
       std::pair<std::map< std::string, CKeyFactory::HashTable >::iterator, bool> ret =
@@ -194,6 +190,7 @@ std::string CKeyFactory::add(const std::string & prefix,
 bool CKeyFactory::addFix(const std::string & key, CCopasiObject * pObject)
 {
   unsigned C_INT32 pos = key.length() - 1;
+
   while (isDigit(key[pos]) && pos) --pos;
 
   std::string Prefix = key.substr(0, pos);
@@ -201,6 +198,7 @@ bool CKeyFactory::addFix(const std::string & key, CCopasiObject * pObject)
 
   std::map< std::string, CKeyFactory::HashTable >::iterator it =
     mKeyTable.find(Prefix);
+
   if (it == mKeyTable.end())
     {
       std::pair<std::map< std::string, CKeyFactory::HashTable >::iterator, bool> ret =
@@ -215,19 +213,23 @@ bool CKeyFactory::addFix(const std::string & key, CCopasiObject * pObject)
 bool CKeyFactory::remove(const std::string & key)
 {
   unsigned C_INT32 pos = key.length();
+
   if (pos == 0) return false;
 
   --pos;
+
   while (isDigit(key[pos]) && pos) --pos;
 
   std::string Prefix = key.substr(0, pos);
 
   unsigned C_INT32 index = 0;
+
   if (pos + 1 < key.length())
     index = atoi(key.substr(pos + 1).c_str());
 
   std::map< std::string, CKeyFactory::HashTable >::iterator it =
     mKeyTable.find(Prefix);
+
   if (it == mKeyTable.end()) return false;
 
   return it->second.remove(index);
@@ -238,6 +240,7 @@ CCopasiObject * CKeyFactory::get(const std::string & key)
   if (key.length() == 0) return NULL;
 
   unsigned C_INT32 pos = key.length() - 1; //TODO !!!pos can be invalid (-1); not anymore, but look for other errors like this
+
   while (isDigit(key[pos]) && pos) --pos;
 
   std::string Prefix = key.substr(0, pos);
@@ -245,6 +248,7 @@ CCopasiObject * CKeyFactory::get(const std::string & key)
 
   std::map< std::string, CKeyFactory::HashTable >::iterator it =
     mKeyTable.find(Prefix);
+
   if (it == mKeyTable.end()) return NULL;
 
   return it->second.get(index);
