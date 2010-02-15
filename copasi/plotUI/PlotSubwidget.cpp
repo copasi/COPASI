@@ -6,6 +6,11 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -352,30 +357,6 @@ void PlotSubwidget::resetPlot()
   loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
 }
 
-void PlotSubwidget::typeChanged()
-{
-  CPlotItem::Type newType;
-
-  switch (comboType->currentItem())
-    {
-      case 0:
-        newType = CPlotItem::plot2d;
-        break;
-      default :
-        fatalError();
-    }
-
-  if (mType == newType)
-    return; //do nothing
-
-  mType = newType;
-
-  //clear tabWidget
-  while (tabs->currentPage()) delete tabs->currentPage();
-
-  //TODO: perhaps create empty tab
-}
-
 //-----------------------------------------------------------------------------
 
 bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
@@ -394,7 +375,6 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
   switch (mType)
     {
       case CPlotItem::plot2d:
-        comboType->setCurrentItem(0);
         checkLogX->setChecked(pspec->isLogX());
         checkLogY->setChecked(pspec->isLogY());
         break;

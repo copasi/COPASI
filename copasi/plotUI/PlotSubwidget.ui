@@ -1,21 +1,22 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
-<comment>   $Revision: 1.11 $ </comment>
+<comment>   $Revision: 1.12 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/07/14 11:09:51 $ </comment>
+<comment>   $Date: 2010/02/03 17:59:26 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
+<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
  <comment> All rights reserved. </comment>
  <class>PlotSubwidget</class>
- <widget class="CopasiWidget" name="PlotSubwidget" >
-  <property name="geometry" >
+ <widget class="CopasiWidget" name="PlotSubwidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -23,99 +24,90 @@
     <height>450</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="PlotWidget1Layout" >
-   <item row="0" column="0" >
-    <widget class="QLabel" name="labelTitle" >
-     <property name="text" >
+  <layout class="QGridLayout" name="PlotWidget1Layout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelTitle">
+     <property name="text">
       <string>Plot title</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2" >
-    <layout class="QHBoxLayout" name="layoutTitle" >
+   <item row="0" column="1" colspan="3">
+    <layout class="QHBoxLayout" name="layoutTitle">
      <item>
-      <widget class="QLineEdit" name="titleLineEdit" />
+      <widget class="QLineEdit" name="titleLineEdit"/>
      </item>
      <item>
-      <widget class="QCheckBox" name="activeCheckBox" >
-       <property name="text" >
+      <widget class="QCheckBox" name="activeCheckBox">
+       <property name="text">
         <string>active?</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="labelType" >
-     <property name="text" >
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelType">
+     <property name="text">
       <string>Type</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QComboBox" name="comboType" >
-     <item>
-      <property name="text" >
-       <string>2D Plot</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="labelScale" >
-     <property name="text" >
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelScale">
+     <property name="text">
       <string>Axis scales</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" >
-    <widget class="QCheckBox" name="checkLogX" >
-     <property name="text" >
+   <item row="2" column="1">
+    <widget class="QCheckBox" name="checkLogX">
+     <property name="text">
       <string>log X-axis</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" >
-    <widget class="QCheckBox" name="checkLogY" >
-     <property name="text" >
+   <item row="3" column="1">
+    <widget class="QCheckBox" name="checkLogY">
+     <property name="text">
       <string>log Y-axis</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="3" >
-    <widget class="Line" name="line1" >
-     <property name="orientation" >
+   <item row="4" column="0" colspan="4">
+    <widget class="Line" name="line1">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2" >
-    <widget class="QLabel" name="labelCurves" >
-     <property name="text" >
+   <item row="5" column="0" colspan="2">
+    <widget class="QLabel" name="labelCurves">
+     <property name="text">
       <string>Curve specifications</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="2" >
-    <layout class="QHBoxLayout" name="layoutCurves" >
+   <item row="5" column="3">
+    <layout class="QHBoxLayout" name="layoutCurves">
      <item>
-      <spacer name="spacerCurves" >
-       <property name="orientation" >
+      <spacer name="spacerCurves">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -124,83 +116,99 @@
       </spacer>
      </item>
      <item>
-      <widget class="QToolButton" name="addCurveButton" >
-       <property name="text" >
+      <widget class="QToolButton" name="addCurveButton">
+       <property name="text">
         <string>New curve...</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="addHistoButton" >
-       <property name="text" >
+      <widget class="QToolButton" name="addHistoButton">
+       <property name="text">
         <string>New histogram</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="deleteCurveButton" >
-       <property name="text" >
+      <widget class="QToolButton" name="deleteCurveButton">
+       <property name="text">
         <string>Delete</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="6" column="0" colspan="3" >
-    <widget class="QTabWidget" name="tabs" >
-     <property name="usesScrollButtons" >
+   <item row="6" column="0" colspan="4">
+    <widget class="QTabWidget" name="tabs">
+     <property name="usesScrollButtons">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
        <string>Tab 1</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="tab_2" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
        <string>Tab 2</string>
       </attribute>
      </widget>
     </widget>
    </item>
-   <item row="7" column="0" colspan="3" >
-    <widget class="Line" name="lineButton" >
-     <property name="orientation" >
+   <item row="7" column="0" colspan="4">
+    <widget class="Line" name="lineButton">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="3" >
-    <layout class="QHBoxLayout" name="layoutButtons" >
+   <item row="8" column="0" colspan="4">
+    <layout class="QHBoxLayout" name="layoutButtons">
      <item>
-      <widget class="QPushButton" name="startPlotButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="startPlotButton">
+       <property name="text">
         <string>Commit</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="resetButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="resetButton">
+       <property name="text">
         <string>Revert</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="addPlotButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="addPlotButton">
+       <property name="text">
         <string>New Plot</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="deletePlotButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="deletePlotButton">
+       <property name="text">
         <string>Delete plot</string>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="typeLineEdit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>2D Plot</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -220,11 +228,11 @@
    <receiver>PlotSubwidget</receiver>
    <slot>addCurveSlot()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>338</x>
      <y>159</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>283</x>
      <y>139</y>
     </hint>
@@ -236,11 +244,11 @@
    <receiver>PlotSubwidget</receiver>
    <slot>addHistoSlot()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>416</x>
      <y>158</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>400</x>
      <y>138</y>
     </hint>
@@ -252,11 +260,11 @@
    <receiver>PlotSubwidget</receiver>
    <slot>removeCurve()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>515</x>
      <y>154</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>521</x>
      <y>140</y>
     </hint>
@@ -268,11 +276,11 @@
    <receiver>PlotSubwidget</receiver>
    <slot>commitPlot()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>107</x>
      <y>415</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>41</x>
      <y>401</y>
     </hint>
@@ -284,11 +292,11 @@
    <receiver>PlotSubwidget</receiver>
    <slot>resetPlot()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>172</x>
      <y>414</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>174</x>
      <y>398</y>
     </hint>
@@ -300,11 +308,11 @@
    <receiver>PlotSubwidget</receiver>
    <slot>addPlot()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>357</x>
      <y>416</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>356</x>
      <y>398</y>
     </hint>
@@ -316,29 +324,13 @@
    <receiver>PlotSubwidget</receiver>
    <slot>deletePlot()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>477</x>
      <y>414</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>514</x>
      <y>399</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>comboType</sender>
-   <signal>activated(int)</signal>
-   <receiver>PlotSubwidget</receiver>
-   <slot>typeChanged()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>156</x>
-     <y>64</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>252</x>
-     <y>63</y>
     </hint>
    </hints>
   </connection>

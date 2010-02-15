@@ -6,6 +6,11 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -96,8 +101,6 @@ protected slots:
    * cancels changes to the plot definition
    */
   void resetPlot();
-
-  void typeChanged();
 
 protected:
   /**
