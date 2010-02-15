@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.274 $
+//   $Revision: 1.275 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/12/14 12:54:04 $
+//   $Author: shoops $
+//   $Date: 2010/02/15 22:02:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -702,7 +707,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
       if (!success)
         {
           QString Message = "Error while loading file " + newFile + QString("!\n\n");
-          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+          Message += FROM_UTF8(CCopasiMessage::getAllMessageText(true));
 
           CQMessageBox::critical(this, QString("File Error"), Message,
                                  QMessageBox::Ok, QMessageBox::Ok);

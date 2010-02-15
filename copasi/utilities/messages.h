@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.143 $
+//   $Revision: 1.144 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/11 19:42:49 $
+//   $Date: 2010/02/15 22:02:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,6 +140,7 @@ const MESSAGES Messages[] =
   {MCXML + 15, "XML (15): Multiple events with order '%d' encountered. The problem has been fixed."
    "Please verify that the automatic correction represents the intended behavior."},
   {MCXML + 16, "XML (16): Unknown parameter '%s' with type '%s' encountered at line '%d'."},
+  {MCXML + 17, "XML (17): Invalid initial state specification encountered at line '%d'."},
 
   // CCopasiMessage
   {MCCopasiMessage + 1, "Message (1): No more messages."},

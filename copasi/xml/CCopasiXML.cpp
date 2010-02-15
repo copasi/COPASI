@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.124 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/05 14:58:44 $
+//   $Author: shoops $
+//   $Date: 2010/02/15 22:02:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -835,11 +835,12 @@ bool CCopasiXML::saveModel()
   Attributes.add("objectReference", "");
   std::pair< std::string, std::string > Variable;
 
-  CModelEntity *const* Entity = mpModel->getStateTemplate().getEntities();
+  CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities();
+  CModelEntity *const* ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
 
-  for (i = 0, imax = mpModel->getStateTemplate().size(); i < imax; i++, ++Entity)
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
-      Attributes.setValue(0, (*Entity)->getKey());
+      Attributes.setValue(0, (*ppEntity)->getKey());
 
       saveElement("StateTemplateVariable", Attributes);
     }
@@ -849,16 +850,13 @@ bool CCopasiXML::saveModel()
   Attributes.erase();
   Attributes.add("type", "initialState");
   startSaveElement("InitialState", Attributes);
-  CState InitialState = mpModel->getInitialState();
-
   *mpOstream << mIndent;
+  ppEntity = mpModel->getStateTemplate().getEntities();
 
-  *mpOstream << (DBL) InitialState.getTime();
-  C_FLOAT64 * it = InitialState.beginIndependent();
-  C_FLOAT64 * end = InitialState.endFixed();
-
-  for (; it != end; ++it)
-    *mpOstream << " " << (DBL) *it;
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      *mpOstream << (DBL)(*ppEntity)->getInitialValue();
+    }
 
   *mpOstream << std::endl;
 

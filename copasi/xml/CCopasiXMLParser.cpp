@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.214 $
+//   $Revision: 1.215 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/12 16:50:11 $
+//   $Date: 2010/02/15 22:02:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2837,7 +2837,7 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
         order = mParser.getAttributeValue("order", papszAttrs, "1");
         Order = (unsigned C_INT32) atoi(order);
         DelayAssignment =
-          mParser.toBool(mParser.getAttributeValue("delayAssignment", papszAttrs));
+          mParser.toBool(mParser.getAttributeValue("delayAssignment", papszAttrs, false));
 
         mCommon.pEvent = new CEvent();
         mCommon.KeyMap.addFix(mKey, mCommon.pEvent);
@@ -4887,7 +4887,9 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
           }
 
         if (it != end || !Values.fail() || !Values.eof())
-          fatalError();
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 17, mParser.getCurrentLineNumber());
+          }
 
         mCommon.pModel->setInitialState(IState);
 
