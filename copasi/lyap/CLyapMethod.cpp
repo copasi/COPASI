@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:11 $
+//   $Date: 2010/02/15 18:18:35 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -141,13 +146,13 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!pLP)
     {
       //not a LyapProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 1);
+      CCopasiMessage(CCopasiMessage::ERROR, MCLyap + 1);
       return false;
     }
 
   if ((!pLP->divergenceRequested()) && (pLP->getExponentNumber() < 1))
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCLyap + 2);
       return false;
     }
 
@@ -156,7 +161,7 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (pLP->getExponentNumber() > tmp)
     {
       //to few exponents
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 3, tmp, tmp);
+      CCopasiMessage(CCopasiMessage::ERROR, MCLyap + 3, tmp, tmp);
       return false;
     }
 

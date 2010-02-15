@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:26 $
+//   $Date: 2010/02/15 18:18:35 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -513,7 +518,7 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (imax <= 0)
     {
       //no scan items
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "There is nothing to scan.");
+      CCopasiMessage(CCopasiMessage::WARNING, "There is nothing to scan.");
       return false;
     }
 
@@ -526,7 +531,7 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
       if (!si)
         {
           //parameter group could not be interpreted
-          CCopasiMessage(CCopasiMessage::EXCEPTION, "Internal problem with scan definition.");
+          CCopasiMessage(CCopasiMessage::ERROR, "Internal problem with scan definition.");
           return false;
         }
 
