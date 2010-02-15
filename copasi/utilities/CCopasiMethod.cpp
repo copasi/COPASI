@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 21:15:17 $
+//   $Date: 2010/02/15 22:50:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,12 +191,6 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (pProblem->getModel()->getEvents().size())
     {
-      if (mType == CCopasiTask::steadyState)
-        {
-          CCopasiMessage(CCopasiMessage::WARNING, MCCopasiMethod + 4, "Steady-State");
-          return false;
-        }
-
       if (mType == CCopasiTask::mca)
         {
           CCopasiMessage(CCopasiMessage::WARNING, MCCopasiMethod + 4, "Metabolic Control Analysis");
