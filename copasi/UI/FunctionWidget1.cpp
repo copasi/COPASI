@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.171 $
+//   $Revision: 1.172 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: aekamal $
+//   $Date: 2010/02/15 15:15:34 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -242,7 +247,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags f
   Table1->verticalHeader()->hide();
   Table1->setLeftMargin(0);
   Table1->setColumnStretchable(COL_NAME, true);
-  Table1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  Table1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
   FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 5, 1, 1);
 
   //******** applications table *******************************
@@ -266,11 +271,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags f
   Table2->setTopMargin(0);
   Table2->setShowGrid(false);
   //Table2->setColumnStretchable(1, true);
-  Table2->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+  Table2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   FunctionWidget1Layout->addMultiCellWidget(Table2, 7, 7, 1, 1);
-
-  QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding);
-  FunctionWidget1Layout->addItem(spacer2, 10, 1);
 
   //***************************************
 
