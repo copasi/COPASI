@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/23 18:51:47 $
+//   $Date: 2010/02/15 18:17:49 $
 // End CVS Header
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -130,7 +135,7 @@ CCopasiVector< CCopasiDataModel > * CCopasiRootContainer::getDatamodelList()
 CCopasiDataModel * CCopasiRootContainer::addDatamodel()
 {
   CCopasiDataModel* pDataModel = new CCopasiDataModel(pRootContainer->mWithGUI);
-  assert(pRootContainer->mpDataModelList->add(pDataModel, true));
+  pRootContainer->mpDataModelList->add(pDataModel, true);
   return pDataModel;
 }
 
