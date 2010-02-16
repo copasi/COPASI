@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/16 13:47:10 $
+//   $Date: 2010/02/16 09:51:52 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -38,27 +43,31 @@
 #include "copasi/utilities/CCopasiMessage.h"
 
 bool compareProducts::operator()(const CNormalProduct* product1, const CNormalProduct* product2) const
-  {
-    // first compare the factors
-    if (product1->getFactor() < product2->getFactor())
-      {
-        return true;
-      }
-    else if (product2->getFactor() < product1->getFactor())
-      {
-        return false;
-      }
-    std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
-    std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = product1->getItemPowers().end();
-    std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2;
-    std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2End = product2->getItemPowers().end();
-    for (it = product1->getItemPowers().begin(), it2 = product2->getItemPowers().begin(); (it != itEnd) && (it2 != it2End); ++it, ++it2)
-      {
-        if (**it < **it2) return true;
-        if (**it2 < **it) return false;
-      }
-    return (product1->getItemPowers().size() < product2->getItemPowers().size());
-  }
+{
+  // first compare the factors
+  if (product1->getFactor() < product2->getFactor())
+    {
+      return true;
+    }
+  else if (product2->getFactor() < product1->getFactor())
+    {
+      return false;
+    }
+
+  std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
+  std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = product1->getItemPowers().end();
+  std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2;
+  std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2End = product2->getItemPowers().end();
+
+  for (it = product1->getItemPowers().begin(), it2 = product2->getItemPowers().begin(); (it != itEnd) && (it2 != it2End); ++it, ++it2)
+    {
+      if (**it < **it2) return true;
+
+      if (**it2 < **it) return false;
+    }
+
+  return (product1->getItemPowers().size() < product2->getItemPowers().size());
+}
 
 /**
  * Default constructor
@@ -74,33 +83,39 @@ CNormalSum::CNormalSum(const CNormalSum& src): CNormalBase(src)
   std::set<CNormalProduct*, compareProducts >::const_iterator it;
   std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = src.mProducts.end();
   const CNormalProduct* pTmpProduct = NULL;
+
   for (it = src.mProducts.begin(); it != itEnd; ++it)
     {
       pTmpProduct = *it;
       //std::string s = pTmpProduct->toString();
-      assert(mProducts.insert(new CNormalProduct(*pTmpProduct)).second == true);
+      bool tmpRes = mProducts.insert(new CNormalProduct(*pTmpProduct)).second;
+      assert(tmpRes == true);
     }
 
   std::set<CNormalFraction*>::const_iterator it2;
   std::set<CNormalFraction*>::const_iterator it2End = src.mFractions.end();
+
   for (it2 = src.mFractions.begin(); it2 != it2End; ++it2)
     {
-      assert(mFractions.insert(new CNormalFraction(**it2)).second == true);
+      bool tmpRes = mFractions.insert(new CNormalFraction(**it2)).second;
+      assert(tmpRes == true);
     }
 }
 
 /**
  * Assignment operator
  */
-CNormalSum & CNormalSum::operator=(const CNormalSum& src)
+CNormalSum & CNormalSum::operator=(const CNormalSum & src)
 {
   std::set<CNormalProduct*, compareProducts >::const_iterator it;
   std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = src.mProducts.end();
+
   for (it = src.mProducts.begin(); it != itEnd; ++it)
     mProducts.insert(new CNormalProduct(**it));
 
   std::set<CNormalFraction*>::const_iterator it2;
   std::set<CNormalFraction*>::const_iterator it2End = src.mFractions.end();
+
   for (it2 = src.mFractions.begin(); it2 != it2End; ++it2)
     mFractions.insert(new CNormalFraction(**it2));
 
@@ -114,11 +129,13 @@ CNormalSum::~CNormalSum()
 {
   std::set<CNormalProduct*, compareProducts >::const_iterator it;
   std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = mProducts.end();
+
   for (it = mProducts.begin(); it != itEnd; ++it)
     delete *it;
 
   std::set<CNormalFraction*>::const_iterator it2;
   std::set<CNormalFraction*>::const_iterator it2End = mFractions.end();
+
   for (it2 = mFractions.begin(); it2 != it2End; ++it2)
     delete *it2;
 }
@@ -128,9 +145,9 @@ CNormalSum::~CNormalSum()
  * @return int
  */
 int CNormalSum::getSize() const
-  {
-    return mProducts.size() + mFractions.size();
-  }
+{
+  return mProducts.size() + mFractions.size();
+}
 
 /**
  * Add product to this sum.
@@ -142,21 +159,26 @@ bool CNormalSum::add(const CNormalProduct& product)
     {
       return true;
     }
+
   std::set<CNormalProduct*, compareProducts >::iterator it;
   std::set<CNormalProduct*, compareProducts >::iterator itEnd = mProducts.end();
+
   for (it = mProducts.begin(); it != itEnd; ++it)
     {
       if ((*it)->checkSamePowerList(product))
         {
           (*it)->setFactor((*it)->getFactor() + product.getFactor());
+
           // if this results in a 0, remove the item
           if (fabs((*it)->getFactor()) < 1.0E-100)
             {
               mProducts.erase(*it);
             }
+
           return true;
         }
     }
+
   CNormalProduct* tmp = new CNormalProduct(product);
   mProducts.insert(tmp);
   return true;
@@ -170,8 +192,10 @@ bool CNormalSum::add(const CNormalFraction& fraction)
 {
   if (fraction.getNumerator().getSize() == 0)
     return true;
+
   std::set<CNormalFraction*>::iterator it;
   std::set<CNormalFraction*>::iterator itEnd = mFractions.end();
+
   for (it = mFractions.begin(); it != itEnd; ++it)
     {
       if (**it == fraction)
@@ -180,6 +204,7 @@ bool CNormalSum::add(const CNormalFraction& fraction)
           return true;
         }
     }
+
   CNormalFraction* tmp = new CNormalFraction(fraction);
   mFractions.insert(tmp);
   return true;
@@ -193,18 +218,22 @@ bool CNormalSum::add(const CNormalSum& sum)
 {
   std::set<CNormalProduct*, compareProducts >::const_iterator itProduct = sum.mProducts.begin();
   std::set<CNormalProduct*, compareProducts >::const_iterator itProductEnd = sum.mProducts.end();
+
   while (itProduct != itProductEnd)
     {
       add(**itProduct);
       ++itProduct;
     }
+
   std::set<CNormalFraction*>::const_iterator itFraction = sum.getFractions().begin();
   std::set<CNormalFraction*>::const_iterator itFractionEnd = sum.getFractions().end();
+
   while (itFraction != itFractionEnd)
     {
       add(**itFraction);
       ++itFraction;
     }
+
   return true;
 }
 
@@ -218,11 +247,13 @@ bool CNormalSum::multiply(const C_FLOAT64& number)
     {
       std::set<CNormalProduct*, compareProducts >::iterator it3;
       std::set<CNormalProduct*, compareProducts >::iterator it3End = mProducts.end();
+
       for (it3 = mProducts.begin(); it3 != it3End; ++it3)
         delete *it3;
 
       std::set<CNormalFraction*>::iterator it4;
       std::set<CNormalFraction*>::iterator it4End = mFractions.end();
+
       for (it4 = mFractions.begin(); it4 != it4End; ++it4)
         delete *it4;
 
@@ -231,11 +262,13 @@ bool CNormalSum::multiply(const C_FLOAT64& number)
 
   std::set<CNormalProduct*, compareProducts >::iterator it;
   std::set<CNormalProduct*, compareProducts >::iterator itEnd = mProducts.end();
+
   for (it = mProducts.begin(); it != itEnd; ++it)
     (*it)->multiply(number);
 
   std::set<CNormalFraction*>::iterator it2;
   std::set<CNormalFraction*>::iterator it2End = mFractions.end();
+
   for (it2 = mFractions.begin(); it2 != it2End; ++it2)
     (*it2)->multiply(number);
 
@@ -250,11 +283,13 @@ bool CNormalSum::multiply(const CNormalItemPower& itemPower)
 {
   std::set<CNormalProduct*, compareProducts >::iterator it;
   std::set<CNormalProduct*, compareProducts >::iterator itEnd = mProducts.end();
+
   for (it = mProducts.begin(); it != itEnd; ++it)
     (*it)->multiply(itemPower);
 
   std::set<CNormalFraction*>::iterator it2;
   std::set<CNormalFraction*>::iterator it2End = mFractions.end();
+
   for (it2 = mFractions.begin(); it2 != it2End; ++it2)
     (*it2)->multiply(itemPower);
 
@@ -272,6 +307,7 @@ bool CNormalSum::multiply(const CNormalSum& sum)
   std::set<CNormalProduct*, compareProducts >::iterator it;
   std::set<CNormalProduct*, compareProducts >::iterator itEnd = tmpProducts.end();
   CNormalSum* pSum = NULL;
+
   for (it = tmpProducts.begin(); it != itEnd; ++it)
     {
       pSum = (*it)->multiply(sum);
@@ -280,6 +316,7 @@ bool CNormalSum::multiply(const CNormalSum& sum)
       delete pSum;
       delete *it;
     }
+
   return true;
 }
 
@@ -295,6 +332,7 @@ bool CNormalSum::multiply(const CNormalLcm& lcm)
   mProducts.clear();
   std::set<CNormalProduct*, compareProducts >::const_iterator it2;
   std::set<CNormalProduct*, compareProducts >::const_iterator it2End = tmpProducts.end();
+
   for (it2 = tmpProducts.begin(); it2 != it2End; ++it2)
     {
       const CNormalSum* summand = (*it2)->multiply(lcm);
@@ -305,6 +343,7 @@ bool CNormalSum::multiply(const CNormalLcm& lcm)
 
   std::set<CNormalFraction*>::const_iterator it;
   std::set<CNormalFraction*>::const_iterator itEnd = mFractions.end();
+
   for (it = mFractions.begin(); it != itEnd; ++it)
     {
       const CNormalSum* summand2 = (*it)->multiply(lcm);
@@ -314,6 +353,7 @@ bool CNormalSum::multiply(const CNormalLcm& lcm)
       delete summand2;
       delete *it;
     }
+
   mFractions.clear();  //after multiplication this sum does not contain fractions anymore
   return true;
 }
@@ -327,85 +367,97 @@ bool CNormalSum::divide(const CNormalItemPower& itemPower)
 {
   std::set<CNormalProduct*, compareProducts >::iterator it;
   std::set<CNormalProduct*, compareProducts >::iterator itEnd = mProducts.end();
+
   for (it = mProducts.begin(); it != itEnd; ++it)
     (*it)->remove(itemPower);
+
   return true;
 }
 
 C_FLOAT64 CNormalSum::checkFactor(const CNormalItemPower& itemPower) const //sum does not contain fractions!!
-  {
-    // TODO incorporate the denominator of the product if it is not 1
-    C_FLOAT64 exp = itemPower.getExp();
-    std::set<CNormalProduct*, compareProducts >::const_iterator it;
-    std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = mProducts.end();
-    for (it = mProducts.begin(); it != itEnd; ++it)
-      {
-        bool containsFactor = false;
-        std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2;
-        std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2End = (*it)->getItemPowers().end();
-        for (it2 = (*it)->getItemPowers().begin(); it2 != it2End; ++it2)
-          {
-            if ((*it2)->getItem().areEqual(itemPower.getItem()))
-              {
-                exp = (*it2)->getExp() < exp ? (*it2)->getExp() : exp;
-                containsFactor = true;
-                break;
-              }
-          }
-        if (containsFactor == false)
-          return 0;
-      }
-    return exp;
-  }
+{
+  // TODO incorporate the denominator of the product if it is not 1
+  C_FLOAT64 exp = itemPower.getExp();
+  std::set<CNormalProduct*, compareProducts >::const_iterator it;
+  std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = mProducts.end();
+
+  for (it = mProducts.begin(); it != itEnd; ++it)
+    {
+      bool containsFactor = false;
+      std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2;
+      std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2End = (*it)->getItemPowers().end();
+
+      for (it2 = (*it)->getItemPowers().begin(); it2 != it2End; ++it2)
+        {
+          if ((*it2)->getItem().areEqual(itemPower.getItem()))
+            {
+              exp = (*it2)->getExp() < exp ? (*it2)->getExp() : exp;
+              containsFactor = true;
+              break;
+            }
+        }
+
+      if (containsFactor == false)
+        return 0;
+    }
+
+  return exp;
+}
 
 /**
  * Retrieve the set of products of this sum.
  * @return mProducts
  */
 const std::set<CNormalProduct*, compareProducts >& CNormalSum::getProducts() const
-  {
-    return mProducts;
-  }
+{
+  return mProducts;
+}
 
 /**
  * Retrieve the set of fractions of this sum.
  * @return mFractions.
  */
 const std::set<CNormalFraction*>& CNormalSum::getFractions() const
-  {
-    return mFractions;
-  }
+{
+  return mFractions;
+}
 
 /**
  * Examine equality of two sums.
  * @return bool.
  */
 bool CNormalSum::operator==(const CNormalSum & rhs) const
-  {
-    if (mProducts.size() != rhs.mProducts.size())
-      return false;
-    if (mFractions.size() != rhs.mFractions.size())
-      return false;
-    std::set<CNormalProduct*, compareProducts >::const_iterator it;
-    std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = this->mProducts.end();
-    std::set<CNormalProduct*, compareProducts >::const_iterator it2;
-    std::set<CNormalProduct*, compareProducts >::const_iterator it2End = rhs.mProducts.end();
-    for (it = mProducts.begin(), it2 = rhs.mProducts.begin(); it != itEnd; ++it, ++it2)
-      {
-        if (!(**it == **it2))
-          return false;
-      }
-    std::set<CNormalFraction*>::const_iterator it3;
-    std::set<CNormalFraction*>::const_iterator it3End = this->mFractions.end();
-    std::set<CNormalFraction*>::const_iterator it4;
-    std::set<CNormalFraction*>::const_iterator it4End = rhs.mFractions.end();
-    for (it3 = mFractions.begin(), it4 = rhs.mFractions.begin(); it3 != it3End; ++it3, ++it4)
-      {
-        if (!(**it3 == **it4))
-          return false;
-      }
-    return true;
-  }
+{
+  if (mProducts.size() != rhs.mProducts.size())
+    return false;
+
+  if (mFractions.size() != rhs.mFractions.size())
+    return false;
+
+  std::set<CNormalProduct*, compareProducts >::const_iterator it;
+  std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = this->mProducts.end();
+  std::set<CNormalProduct*, compareProducts >::const_iterator it2;
+  std::set<CNormalProduct*, compareProducts >::const_iterator it2End = rhs.mProducts.end();
+
+  for (it = mProducts.begin(), it2 = rhs.mProducts.begin(); it != itEnd; ++it, ++it2)
+    {
+      if (!(**it == **it2))
+        return false;
+    }
+
+  std::set<CNormalFraction*>::const_iterator it3;
+  std::set<CNormalFraction*>::const_iterator it3End = this->mFractions.end();
+  std::set<CNormalFraction*>::const_iterator it4;
+  std::set<CNormalFraction*>::const_iterator it4End = rhs.mFractions.end();
+
+  for (it3 = mFractions.begin(), it4 = rhs.mFractions.begin(); it3 != it3End; ++it3, ++it4)
+    {
+      if (!(**it3 == **it4))
+        return false;
+    }
+
+  return true;
+}
 
 std::ostream & operator<< (std::ostream &os, const CNormalSum & d)
 {
@@ -414,111 +466,128 @@ std::ostream & operator<< (std::ostream &os, const CNormalSum & d)
 }
 
 std::string CNormalSum::toString() const
-  {
-    std::ostringstream os;
-    if (this->getSize() != 0)
-      {
-        bool firstSummand = true;
-        std::set<CNormalProduct*, compareProducts >::const_iterator it;
-        std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = this->mProducts.end();
-        for (it = this->mProducts.begin(); it != itEnd; ++it)
-          {
-            if (firstSummand == false)
-              os << " + ";
-            os << **it;
-            firstSummand = false;
-          }
-        std::set<CNormalFraction*>::const_iterator it2;
-        std::set<CNormalFraction*>::const_iterator it2End = this->mFractions.end();
-        for (it2 = this->mFractions.begin(); it2 != it2End; ++it2)
-          {
-            if (firstSummand == false)
-              os << " + ";
-            os << **it2;
-            firstSummand = false;
-          }
-      }
-    else
-      os << "0.0";
-    return os.str();
-  }
+{
+  std::ostringstream os;
+
+  if (this->getSize() != 0)
+    {
+      bool firstSummand = true;
+      std::set<CNormalProduct*, compareProducts >::const_iterator it;
+      std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = this->mProducts.end();
+
+      for (it = this->mProducts.begin(); it != itEnd; ++it)
+        {
+          if (firstSummand == false)
+            os << " + ";
+
+          os << **it;
+          firstSummand = false;
+        }
+
+      std::set<CNormalFraction*>::const_iterator it2;
+      std::set<CNormalFraction*>::const_iterator it2End = this->mFractions.end();
+
+      for (it2 = this->mFractions.begin(); it2 != it2End; ++it2)
+        {
+          if (firstSummand == false)
+            os << " + ";
+
+          os << **it2;
+          firstSummand = false;
+        }
+    }
+  else
+    os << "0.0";
+
+  return os.str();
+}
 
 CNormalBase * CNormalSum::copy() const
-  {
-    return new CNormalSum(*this);
-  }
+{
+  return new CNormalSum(*this);
+}
 
 bool CNormalSum::operator<(const CNormalSum& rhs) const
-  {
-    bool result = false;
-    if (this->mFractions.size() < rhs.mFractions.size())
-      {
-        result = true;
-      }
-    else if (this->mFractions.size() == rhs.mFractions.size())
-      {
-        std::set<CNormalFraction*>::const_iterator it = this->mFractions.begin(), endit = this->mFractions.end();
-        std::set<CNormalFraction*>::const_iterator it2 = rhs.mFractions.begin(), endit2 = rhs.mFractions.end();
-        while (result == false && it != endit)
-          {
-            if ((**it) < (**it2))
-              {
-                result = true;
-              }
-            // if the fraction from the RHS is smaller than the one from here we
-            // stop and declare that the rhs is smaller
-            else if (!((**it) == (**it2)))
-              {
-                break;
-              }
-            ++it;
-            ++it2;
-          }
-        // if all fractions were equal
-        if (result == false && it == endit)
-          {
-            if (this->mProducts.size() < rhs.mProducts.size())
-              {
-                result = true;
-              }
-            else if (this->mProducts.size() == rhs.mProducts.size())
-              {
-                std::set<CNormalProduct*, compareProducts>::const_iterator it3 = this->mProducts.begin(), endit3 = this->mProducts.end();
-                std::set<CNormalProduct*, compareProducts>::const_iterator it4 = rhs.mProducts.begin(), endit4 = rhs.mProducts.end();
-                // I can not use the sorter to compare because the sorter does
-                // not take the factor of a product into account.
-                // This is a feature, but a bug
-                while (result == false && it3 != endit3)
-                  {
-                    if ((**it3) < (**it4))
-                      {
-                        result = true;
-                      }
-                    // if the fraction from the RHS is smaller than the one from here we
-                    // stop and declare that the rhs is smaller
-                    else if (!((**it3) == (**it4)))
-                      {
-                        break;
-                      }
-                    ++it3;
-                    ++it4;
-                  }
-              }
-          }
-      }
-    return result;
-  }
+{
+  bool result = false;
+
+  if (this->mFractions.size() < rhs.mFractions.size())
+    {
+      result = true;
+    }
+  else if (this->mFractions.size() == rhs.mFractions.size())
+    {
+      std::set<CNormalFraction*>::const_iterator it = this->mFractions.begin(), endit = this->mFractions.end();
+      std::set<CNormalFraction*>::const_iterator it2 = rhs.mFractions.begin(), endit2 = rhs.mFractions.end();
+
+      while (result == false && it != endit)
+        {
+          if ((**it) < (**it2))
+            {
+              result = true;
+            }
+          // if the fraction from the RHS is smaller than the one from here we
+          // stop and declare that the rhs is smaller
+          else if (!((**it) == (**it2)))
+            {
+              break;
+            }
+
+          ++it;
+          ++it2;
+        }
+
+      // if all fractions were equal
+      if (result == false && it == endit)
+        {
+          if (this->mProducts.size() < rhs.mProducts.size())
+            {
+              result = true;
+            }
+          else if (this->mProducts.size() == rhs.mProducts.size())
+            {
+              std::set<CNormalProduct*, compareProducts>::const_iterator it3 = this->mProducts.begin(), endit3 = this->mProducts.end();
+              std::set<CNormalProduct*, compareProducts>::const_iterator it4 = rhs.mProducts.begin(), endit4 = rhs.mProducts.end();
+
+              // I can not use the sorter to compare because the sorter does
+              // not take the factor of a product into account.
+              // This is a feature, but a bug
+              while (result == false && it3 != endit3)
+                {
+                  if ((**it3) < (**it4))
+                    {
+                      result = true;
+                    }
+                  // if the fraction from the RHS is smaller than the one from here we
+                  // stop and declare that the rhs is smaller
+                  else if (!((**it3) == (**it4)))
+                    {
+                      break;
+                    }
+
+                  ++it3;
+                  ++it4;
+                }
+            }
+        }
+    }
+
+  return result;
+}
 
 void CNormalSum::setProducts(const std::set<CNormalProduct*, compareProducts>& set)
 {
   std::set<CNormalProduct*, compareProducts>::const_iterator it = this->mProducts.begin(), endit = this->mProducts.end();
+
   while (it != endit)
     {
       delete *it;
       ++it;
     }
+
   it = set.begin(), endit = set.end();
   this->mProducts.clear();
+
   while (it != endit)
     {
       this->mProducts.insert(new CNormalProduct(**it));
@@ -529,13 +598,16 @@ void CNormalSum::setProducts(const std::set<CNormalProduct*, compareProducts>& s
 void CNormalSum::setFractions(const std::set<CNormalFraction*>& set)
 {
   std::set<CNormalFraction*>::const_iterator it = this->mFractions.begin(), endit = this->mFractions.end();
+
   while (it != endit)
     {
       delete *it;
       ++it;
     }
+
   it = set.begin(), endit = set.end();
   this->mFractions.clear();
+
   while (it != endit)
     {
       this->mFractions.insert(new CNormalFraction(**it));
@@ -553,6 +625,7 @@ bool CNormalSum::simplify()
   this->mFractions.clear();
   std::set<CNormalFraction*>::iterator it3 = fractionsCopy.begin(), endit3 = fractionsCopy.end();
   CNormalFraction* pTmpFraction = NULL;
+
   while (it3 != endit3)
     {
       pTmpFraction = *it3;
@@ -561,6 +634,7 @@ bool CNormalSum::simplify()
       delete pTmpFraction;
       ++it3;
     }
+
   std::set<CNormalProduct*, compareProducts>::iterator it = this->mProducts.begin(), endit = this->mProducts.end();
   // add code to find general power items with exponent 1 where the parent
   // power item also has exponent 1
@@ -571,16 +645,18 @@ bool CNormalSum::simplify()
   std::vector<CNormalBase*> newProducts;
   // go through all products and check the denominators
   CNormalProduct* pTmpProduct;
+
   while (it != endit)
     {
       pTmpProduct = *it;
       pTmpProduct->simplify();
+
       if (pTmpProduct->getItemPowers().size() == 1 &&
           fabs(((*pTmpProduct->getItemPowers().begin())->getExp() - 1.0) / 1.0) < 1e-12 &&
           (*pTmpProduct->getItemPowers().begin())->getItemType() == CNormalItemPower::POWER &&
           ((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getRight().checkNumeratorOne() &&
           ((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getRight().checkDenominatorOne()
-)
+         )
         {
           if (((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().checkDenominatorOne())
             {
@@ -590,12 +666,14 @@ bool CNormalSum::simplify()
             {
               newProducts.push_back(((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().copy());
             }
+
           delete pTmpProduct;
         }
       else
         {
           // if the denominator is not NULL, transform the product to a fraction
           CNormalGeneralPower* pDenom = pTmpProduct->getDenominator();
+
           if (pDenom == NULL || pDenom->checkIsOne())
             {
               newProducts.push_back(pTmpProduct);
@@ -606,6 +684,7 @@ bool CNormalSum::simplify()
               // the product have to be set to 1 by calling setDenominatorsOne on the product
               pTmpProduct->setDenominatorsOne();
               CNormalFraction* pFraction = NULL;
+
               if (pDenom->getRight().checkIsOne())
                 {
                   // the denominator is the left side of pDenom
@@ -647,22 +726,28 @@ bool CNormalSum::simplify()
                   pFraction->setDenominator(*pTmpSum);
                   delete pTmpSum;
                 }
+
               delete pTmpProduct;
               newProducts.push_back(pFraction);
             }
+
           if (pDenom != NULL) delete pDenom;
         }
+
       ++it;
     }
+
   this->mProducts.clear();
   std::vector<CNormalBase*>::const_iterator it2 = newProducts.begin(), endit2 = newProducts.end();
   const CNormalFraction* pFrac = NULL;
   const CNormalSum* pSum = NULL;
   const CNormalProduct* pProd = NULL;
   std::set<CNormalSum*> multipliers;
+
   while (it2 != endit2)
     {
       pProd = dynamic_cast<const CNormalProduct*>(*it2);
+
       if (pProd != NULL)
         {
           this->add(*pProd);
@@ -670,6 +755,7 @@ bool CNormalSum::simplify()
       else
         {
           pFrac = dynamic_cast<const CNormalFraction*>(*it2);
+
           if (pFrac != NULL)
             {
               this->add(*pFrac);
@@ -677,6 +763,7 @@ bool CNormalSum::simplify()
           else
             {
               pSum = dynamic_cast<const CNormalSum*>(*it2);
+
               if (pSum != NULL)
                 {
                   this->add(*pSum);
@@ -727,52 +814,61 @@ bool CNormalSum::simplify()
                 }
             }
         }
+
       delete *it2;
       ++it2;
     }
+
   std::set<CNormalSum*>::iterator it4 = multipliers.begin(), endit4 = multipliers.end();
+
   while (it4 != endit4)
     {
       this->multiply(**it4);
       delete *it4;
       ++it4;
     }
+
   return result;
 }
 
 bool CNormalSum::checkIsOne() const
-  {
-    bool result = false;
-    if ((mProducts.size() == 1))
-      {
+{
+  bool result = false;
 
-        CNormalGeneralPower* pTmpPow = (*mProducts.begin())->getDenominator();
-        if ((mFractions.size() == 0)
-            && ((*mProducts.begin())->getItemPowers().size() == 0)
-            && (fabs((*mProducts.begin())->getFactor() - 1.0) < 1.E-100)
-            && ((pTmpPow == NULL) || (pTmpPow->checkIsOne()))
-)
-          {
-            result = true;
-          }
-        if (pTmpPow != NULL) delete pTmpPow;
-      }
-    return result;
-  }
+  if ((mProducts.size() == 1))
+    {
+
+      CNormalGeneralPower* pTmpPow = (*mProducts.begin())->getDenominator();
+
+      if ((mFractions.size() == 0)
+          && ((*mProducts.begin())->getItemPowers().size() == 0)
+          && (fabs((*mProducts.begin())->getFactor() - 1.0) < 1.E-100)
+          && ((pTmpPow == NULL) || (pTmpPow->checkIsOne()))
+         )
+        {
+          result = true;
+        }
+
+      if (pTmpPow != NULL) delete pTmpPow;
+    }
+
+  return result;
+}
 
 bool CNormalSum::checkIsZero() const
-  {
-    // fractions must be zero and products must be either 0 or 1 with a
-    // factor of 0.0
-    if (mFractions.size() == 0 &&
-        (mProducts.size() == 0
-         || (mProducts.size() == 1 && ((*mProducts.begin())->getItemPowers().size() == 0) && (fabs((*mProducts.begin())->getFactor() - 0.0) < 1.E-100)))
-)
-      {
-        return true;
-      }
-    return false;
-  }
+{
+  // fractions must be zero and products must be either 0 or 1 with a
+  // factor of 0.0
+  if (mFractions.size() == 0 &&
+      (mProducts.size() == 0
+       || (mProducts.size() == 1 && ((*mProducts.begin())->getItemPowers().size() == 0) && (fabs((*mProducts.begin())->getFactor() - 0.0) < 1.E-100)))
+     )
+    {
+      return true;
+    }
+
+  return false;
+}
 
 CNormalSum* CNormalSum::createUnitSum()
 {

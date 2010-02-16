@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/28 13:54:16 $
+//   $Author: gauges $
+//   $Date: 2010/02/16 09:51:52 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -336,7 +341,8 @@ int main(int argc, char** argv)
                   // metabolite and multiplies it by the compartment
                   ss << "<" << pos->second->getObject(CCopasiObjectName("Reference=Concentration"))->getCN() << "> * <" << dynamic_cast<const CMetab*>(pos->second)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))->getCN() << ">";
                   pTmpMV->setStatus(CModelEntity::ASSIGNMENT);
-                  assert(pTmpMV->setExpression(ss.str()));
+                  bool tmpRes = pTmpMV->setExpression(ss.str());
+                  assert(tmpRes == true);
 
                   pTable->push_back(pTmpMV->getObject(CCopasiObjectName("Reference=Value"))->getCN());
                 }

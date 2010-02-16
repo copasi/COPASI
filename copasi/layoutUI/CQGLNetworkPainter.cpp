@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.158 $
+//   $Revision: 1.159 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Date: 2010/02/16 09:51:52 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -1659,7 +1664,8 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
   texture->textHeight = rect.height();
   QImage image = pixmap.toImage(); // UR
   // write the texture to a file to check if they were created correctly
-  //assert(image.save(text+".png","PNG"));
+  //bool tmpRes=image.save(text+".png","PNG");
+  //assert(tmpRes == true);
   int i, j;
   int firstWhitePixel = height;
   char pixelValue;
