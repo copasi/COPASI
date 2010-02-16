@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2010/02/03 21:15:17 $
+   $Author: gauges $
+   $Date: 2010/02/16 09:32:53 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #define COPASI_utilities
 
 #include <string>
+#include <string.h>
 // #include <stdio.h>
 #include <stdarg.h>
 
