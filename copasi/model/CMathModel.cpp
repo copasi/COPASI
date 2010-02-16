@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:33 $
+//   $Date: 2010/02/16 00:09:26 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -524,16 +529,17 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
     {
       Store = *pX;
 
-      if (fabs(*pRate) < 1e4 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(Store))
+      if (fabs(*pRate) < 1e4 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(Store) ||
+          fabs(*pRate) < 1e4 * std::numeric_limits< C_FLOAT64 >::min())
         {
-          if (fabs(Store) < 100 * DBL_MIN)
+          if (fabs(Store) < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
             {
               X1 = 0.0;
 
               if (Store < 0.0)
-                X2 = -200.0 * DBL_MIN;
+                X2 = -200.0 * std::numeric_limits< C_FLOAT64 >::min();
               else
-                X2 = 200.0 * DBL_MIN;
+                X2 = 200.0 * std::numeric_limits< C_FLOAT64 >::min();
 
               InvDelta = X2;
             }
