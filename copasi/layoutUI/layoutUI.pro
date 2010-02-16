@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.30 $
+#   $Revision: 1.31 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2010/02/11 15:38:15 $
+#   $Author: gauges $
+#   $Date: 2010/02/16 09:44:49 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,9 +23,14 @@
 LIB = layoutUI
 
 include(../lib.pri)
-include(../common.pri)
+# qt has to be set after lib.pri is included because lib.pri unsets it 
+
+# qt has to be set before common.pri is included,
+# otherwise the qwt includes will not be set correctly
 
 CONFIG += qt
+include(../common.pri)
+
 
 QT +=  opengl 
 
