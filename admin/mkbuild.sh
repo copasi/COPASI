@@ -3,6 +3,7 @@
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
 SCP=${COPASI_SCP:-scp}
+AWK=${COPASI_AWK:-gawk}
 
 if [ x"$COPASI_UPLOAD" != x ]; then
   function UPLOAD () {
@@ -26,11 +27,11 @@ AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
 VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 
 if [ x"$#" = x1 ]; then
-  major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
-  minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
-  build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
+  major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
+  minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
+  build=`${AWK} -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
 
-  license=`gawk -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} $0 ~ "USE_LICENSE=COM" {license = "COM"} END {print license} ' copasi/Makefile`
+  license=`${AWK} -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} $0 ~ "USE_LICENSE=COM" {license = "COM"} END {print license} ' copasi/Makefile`
 
   rm Copasi-$build-$1*.*
 
@@ -152,8 +153,8 @@ if [ x"$#" = x1 ]; then
       -fs HFS+ -layout NONE
 
 # Mount temporary package image drive
-    drive=`hdid Copasi-tmp.dmg | gawk -- '{print $1}'`
-    TMPDIR=`df -l | gawk -- '$1 ~ "'$drive'" {print $6}'`
+    drive=`hdid Copasi-tmp.dmg | ${AWK} -- '{print $1}'`
+    TMPDIR=`df -l | ${AWK} -- '$1 ~ "'$drive'" {print $6}'`
     echo $drive '->' $TMPDIR
 
     echo "Copying application bundle."
