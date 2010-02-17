@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.172 $
+//   $Revision: 1.173 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/02/15 15:15:34 $
+//   $Author: shoops $
+//   $Date: 2010/02/17 19:32:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,8 @@
  ** function obtained from the functions database.It is the second level
  ** widget for functions.
  ***********************************************************************/
+
+#include <QApplication>
 
 #include <qvariant.h>
 #include <qlabel.h>
@@ -151,8 +153,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags f
 
 #ifdef HAVE_MML
   mMmlWidget = new QtMmlWidget(mScrollView->viewport());
-  mMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
-  mMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
 
   mScrollView->addChild(mMmlWidget);
 #endif // HAVE_MML
@@ -1252,6 +1252,8 @@ void FunctionWidget1::updateMmlWidget()
 
   //  mMmlWidget->setContent(FROM_UTF8(mml.str()));
   mMmlWidget->setContent(MMLStr);
+  mMmlWidget->setBaseFontPointSize(qApp->font().pointSize());
+  mMmlWidget->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
 
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   mScrollView->setMinimumHeight(mMmlWidget->sizeHint().height() + 30);

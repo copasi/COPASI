@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidgetStack.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2010/02/17 19:32:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,6 +22,8 @@
 // All rights reserved.
 
 #include "CQExpressionMmlWidgetStack.h"
+
+#include <QApplication>
 
 //#include <qvariant.h>
 //#include <qtextedit.h>
@@ -69,9 +76,6 @@ CQExpressionMmlWidgetStack::CQExpressionMmlWidgetStack(QWidget* parent, const ch
   addWidget(mpVBox, 1);
 
   mMmlWidget = new QtMmlWidget(mScrollView->viewport());
-  mMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
-  mMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
-
   mScrollView->addChild(mMmlWidget);
 
   mScrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
@@ -106,6 +110,8 @@ void CQExpressionMmlWidgetStack::updateExpressionWidget()
     ((CQExpressionWidget *)widget(0))->mpValidator->getExpression()->writeMathML(mml, false, 0);
 
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
+  mMmlWidget->setBaseFontPointSize(qApp->font().pointSize());
+  mMmlWidget->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
 
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   mScrollView->setMinimumHeight(mMmlWidget->sizeHint().height() + 30);

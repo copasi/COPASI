@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2010/02/17 19:32:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -81,8 +86,6 @@ void CQDifferentialEquations::init()
 
   mpMMLWidget = new QtMmlWidget(mpScrollView->viewport());
   mpMMLWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  mpMMLWidget->setBaseFontPointSize(this->fontInfo().pointSize());
-  mpMMLWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
   mpMMLWidget->show();
 
   mpScrollView->addChild(mpMMLWidget);
@@ -145,6 +148,9 @@ void CQDifferentialEquations::slotUpdateWidget()
   if (tmp) tmp->setCursor(Qt::WaitCursor);
 
   mpMMLWidget->setContent(FROM_UTF8(mml.str()));
+  mpMMLWidget->setBaseFontPointSize(qApp->font().pointSize());
+  mpMMLWidget->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
+
   mpScrollView->resizeContents(mpMMLWidget->sizeHint().width(), mpMMLWidget->sizeHint().height());
 
   if (tmp) tmp->unsetCursor();

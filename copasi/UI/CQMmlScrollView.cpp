@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMmlScrollView.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 14:04:26 $
+//   $Date: 2010/02/17 19:32:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,6 +22,8 @@
  */
 
 #include "CQMmlScrollView.h"
+
+#include <QApplication>
 
 #ifdef HAVE_MML
 # include "mml/qtmmlwidget.h"
@@ -34,8 +41,6 @@ CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WF
 #ifdef HAVE_MML
   mpMmlWidget = new QtMmlWidget(viewport() /*, "mpMmlWidget"*/);
   mpMmlWidget->setMinimumSize(QSize(0, 0));
-  mpMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
-  mpMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
   setWidget(mpMmlWidget);
 #endif // HAVE_MML
 
@@ -53,6 +58,8 @@ void CQMmlScrollView::updateWidget(std::ostringstream &mml)
 {
 #ifdef HAVE_MML
   mpMmlWidget->setContent(FROM_UTF8(mml.str()));
+  mpMmlWidget->setBaseFontPointSize(qApp->font().pointSize());
+  mpMmlWidget->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
 
   mpMmlWidget->resize(mpMmlWidget->sizeHint().width(), mpMmlWidget->sizeHint().height());
   setMinimumHeight(mpMmlWidget->sizeHint().height() + 30);
