@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/07 19:56:08 $
+//   $Date: 2010/02/17 19:35:03 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -120,7 +125,10 @@ protected slots:
   void slotCapture();
   void slotUpdateMIRIAM();
   void slotExpandModel();
+
+#ifdef Linux
   void slotFontSelection();
+#endif // Linux
 
 #ifdef WITH_MERGEMODEL
   void slotAddFileOpen(QString file = QString::null);
@@ -150,6 +158,10 @@ private:
 
   void updateTitle();
 
+#ifdef Linux
+  void setApplicationFont();
+#endif // Linux
+
   DataModelGUI* dataModel; // to keep track of the data model..
   ListViews *listViews;
   QComboBox * mpBoxSelectFramework;
@@ -175,7 +187,10 @@ private:
   QAction* mpaCapture;
   QAction* mpaUpdateMIRIAM;
   QAction* mpaExpandModel;
+
+#ifdef Linux
   QAction* mpaFontSelectionDialog;
+#endif // Linux
 
 #ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;

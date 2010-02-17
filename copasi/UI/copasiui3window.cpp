@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.275 $
+//   $Revision: 1.276 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/15 22:02:09 $
+//   $Date: 2010/02/17 19:35:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,10 @@
 #include <QComboBox>
 #include <QToolBar>
 #include <QTextEdit>
+
+#ifdef Linux
 #include <QFontDialog>
+#endif // Linux
 
 #include <vector>
 #include <sstream>
@@ -304,6 +307,10 @@ CopasiUI3Window::CopasiUI3Window():
   mpAutoSaveTimer->start(AutoSaveInterval); // every 10 minutes
   connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
   // ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
+
+#ifdef Linux
+  setApplicationFont();
+#endif // Linux
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -377,8 +384,10 @@ void CopasiUI3Window::createActions()
   mpaExpandModel = new QAction("Create array of compartments (debug version)", 0, this, "expandmodel");
   connect(mpaExpandModel, SIGNAL(activated()), this, SLOT(slotExpandModel()));
 
+#ifdef Linux
   mpaFontSelectionDialog = new QAction("Select the Application Font", 0, this, "Select Font");
   connect(mpaFontSelectionDialog, SIGNAL(activated()), this, SLOT(slotFontSelection()));
+#endif // Linux
 
   //     QAction* mpaObjectBrowser;
 
@@ -1832,20 +1841,51 @@ void CopasiUI3Window::slotCapture()
   pixmap.save(fileName, "PNG");
 }
 
+#ifdef Linux
 void CopasiUI3Window::slotFontSelection()
 {
   bool ok;
 
-  QFont font = QFontDialog::getFont(&ok, QFont("Times", 12), this);
+  QFont Font = QFontDialog::getFont(&ok, qApp->font(), this);
 
   if (ok)
     {
-      qApp->setFont(font);
-      // font is set to the font the user selected
+      qApp->setFont(Font);
+
+      QString ApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
+      CCopasiRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(ApplicationFont));
     }
 
   return;
 }
+
+void CopasiUI3Window::setApplicationFont()
+{
+  std::string ApplicationFont = CCopasiRootContainer::getConfiguration()->getApplicationFont();
+
+  if (ApplicationFont == "")
+    {
+      return;
+    }
+
+  QFont Font = qApp->font();
+  QString qApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
+
+  if (ApplicationFont == TO_UTF8(qApplicationFont))
+    {
+      // We are using the default
+      CCopasiRootContainer::getConfiguration()->setApplicationFont("");
+      return;
+    }
+
+  // The user has chosen another font
+  QString FontFamily = FROM_UTF8(ApplicationFont);
+  FontFamily.remove(QRegExp("; [0-9]*"));
+  int FontSize = FROM_UTF8(ApplicationFont).remove(0, FontFamily.length() + 2).toInt();
+
+  qApp->setFont(QFont(FontFamily, FontSize));
+}
+#endif // Linux
 
 #include "UI/CQExpandModelData.h"
 void CopasiUI3Window::slotExpandModel()

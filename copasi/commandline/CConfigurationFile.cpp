@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.13 $
+$Revision: 1.14 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/07/17 17:24:16 $
+$Date: 2010/02/17 19:35:02 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,6 +112,9 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL)
+#ifdef Linux
+    , mpApplicationFont(NULL)
+#endif
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -123,6 +126,9 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL)
+#ifdef Linux
+    , mpApplicationFont(NULL)
+#endif
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -134,6 +140,9 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL)
+#ifdef Linux
+    , mpApplicationFont(NULL)
+#endif
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -174,6 +183,12 @@ void CConfigurationFile::initializeParameter()
 {
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
+
+#ifdef Linux
+  mpApplicationFont =
+    assertParameter("Application Font", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
+#endif // Linux
+
 #ifdef COPASI_LICENSE_COM
   assertGroup("Registration");
 #endif // COPASI_LICENSE_COM
@@ -245,6 +260,18 @@ CMIRIAMResources & CConfigurationFile::getRecentMIRIAMResources()
 
 void CConfigurationFile::setRecentMIRIAMResources(const CMIRIAMResources & miriamResources)
 {* mpRecentMIRIAMResources = miriamResources;}
+
+#ifdef Linux
+const std::string CConfigurationFile::getApplicationFont() const
+{
+  return *mpApplicationFont;
+}
+
+void CConfigurationFile::setApplicationFont(const std::string & applicationFont)
+{
+  *mpApplicationFont = applicationFont;
+}
+#endif // Linux
 
 CConfigurationFile::CXML::CXML():
     CCopasiXMLInterface(),
