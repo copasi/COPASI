@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.276 $
+//   $Revision: 1.277 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/17 19:35:03 $
+//   $Date: 2010/02/17 19:44:42 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -502,7 +502,10 @@ void CopasiUI3Window::createMenuBar()
   mpTools->insertSeparator();
   mpaUpdateMIRIAM->addTo(mpTools);
   mpTools->insertItem("&Preferences", this, SLOT(slotPreferences()), Qt::CTRL + Qt::Key_P, 3);
+
+#ifdef Linux
   mpTools->addAction(mpaFontSelectionDialog);
+#endif // Linux
 
 #ifdef COPASI_LICENSE_COM
   mpTools->insertItem("&Registration", this, SLOT(slotRegistration()));
