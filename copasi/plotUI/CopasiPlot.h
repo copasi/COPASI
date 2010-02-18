@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/13 14:42:35 $
+//   $Date: 2010/02/18 20:01:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -300,6 +305,11 @@ private:
    * The next time a plot update is performed
    */
   CCopasiTimeVariable mNextPlotTime;
+
+  /**
+   * Indicates whether redrawing/updating shall be suppressed during initialization.
+   */
+  bool mIgnoreUpdate;
 
 public:
   /**

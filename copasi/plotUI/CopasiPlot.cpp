@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/13 14:42:35 $
+//   $Date: 2010/02/18 20:01:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -184,14 +189,18 @@ CopasiPlot::CopasiPlot(QWidget* parent):
     QwtPlot(parent),
     mCurveMap(),
     mpPlotSpecification(NULL),
-    mpZoomer(NULL)
+    mpZoomer(NULL),
+    mNextPlotTime(),
+    mIgnoreUpdate(false)
 {}
 
 CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
     QwtPlot(parent),
     mCurveMap(),
     mpPlotSpecification(NULL),
-    mpZoomer(NULL)
+    mpZoomer(NULL),
+    mNextPlotTime(),
+    mIgnoreUpdate(false)
 {
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
@@ -237,6 +246,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
 
 bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 {
+  mIgnoreUpdate = true;
   mpPlotSpecification = plotspec;
 
   if (mpZoomer) mpZoomer->setEnabled(false);
@@ -327,11 +337,13 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
             break;
 
           default :
+            mIgnoreUpdate = true;
             fatalError();
+            break;
         }
     }
 
-  // Remove unused curves if definitioan has changed
+  // Remove unused curves if definition has changed
   std::map< std::string, QwtPlotCurve * >::iterator it = CurveMap.begin();
   std::map< std::string, QwtPlotCurve * >::iterator end = CurveMap.end();
 
@@ -353,6 +365,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setAxisAutoScale(yLeft);
 
   replot();
+  mIgnoreUpdate = true;
 
   return true; //TODO really check!
 }
@@ -927,7 +940,8 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
   if (w && w->inherits("QwtLegendItem"))
     static_cast< QwtLegendItem * >(w)->setChecked(on);
 
-  replot();
+  if (!mIgnoreUpdate)
+    replot();
 }
 
 void CopasiPlot::setCurvesVisibility(const bool & visibility)
@@ -945,7 +959,8 @@ void CopasiPlot::setCurvesVisibility(const bool & visibility)
         static_cast< QwtLegendItem * >(w)->setChecked(visibility);
     }
 
-  replot();
+  if (!mIgnoreUpdate)
+    replot();
 }
 
 void CopasiPlot::clearBuffers()
