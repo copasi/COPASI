@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/11 19:42:49 $
+//   $Date: 2010/02/18 17:00:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -708,7 +708,7 @@ bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
   return true;
 }
 
-C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particlefluxes) const
+C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particlefluxes)
 {
   C_FLOAT64 tmp, store = 0;
 
@@ -726,10 +726,178 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
         store = tmp;
 
       if (isnan(tmp))
-        return DBL_MAX;
+        {
+          store = std::numeric_limits< C_FLOAT64 >::infinity();
+          break;
+        }
     }
 
-  return store;
+  // New criterion: We solve Jacobian * x = current rates an compare x with the current state
+  // Calculate the Jacobian
+  calculateJacobianX(store);
+
+  // Invert the Jacobian
+  C_INT info = 0;
+  char T = 'T'; /* difference between fortran's and c's matrix storage */
+  C_INT one = 1;
+
+  // DebugFile << "Jacobian: " << *mpJacobianX << std::endl;
+
+  /* We use dgetrf_ and dgetrs_ to solve
+      mJacobian * b = mH for b (the result is in mdxdt) */
+
+  /* int dgetrf_(integer *m,
+    *             integer *n,
+    *             doublereal *a,
+    *             integer * lda,
+    *             integer *ipiv,
+    *             integer *info)
+    *
+    *  Purpose
+    *  =======
+    *
+    *  DGETRF computes an LU factorization of a general M-by-N matrix A
+    *  using partial pivoting with row interchanges.
+    *
+    *  The factorization has the form
+    *     A = P * L * U
+    *  where P is a permutation matrix, L is lower triangular with unit
+    *  diagonal elements (lower trapezoidal if m > n), and U is upper
+    *  triangular (upper trapezoidal if m < n).
+    *
+    *  This is the right-looking Level 3 BLAS version of the algorithm.
+    *
+    *  Arguments
+    *  =========
+    *
+    *  m       (input) INTEGER
+    *          The number of rows of the matrix A.  m >= 0.
+    *
+    *  n       (input) INTEGER
+    *          The number of columns of the matrix A.  n >= 0.
+    *
+    *  a       (input/output) DOUBLE PRECISION array, dimension (lda,n)
+    *          On entry, the m by n matrix to be factored.
+    *          On exit, the factors L and U from the factorization
+    *          A = P*L*U; the unit diagonal elements of L are not stored.
+    *
+    *  lda     (input) INTEGER
+    *          The leading dimension of the array A.  lda >= max(1,m).
+    *
+    *  ipiv    (output) INTEGER array, dimension (min(m,n))
+    *          The pivot indices; for 1 <= i <= min(m,n), row i of the
+    *          matrix was interchanged with row ipiv(i).
+    *
+    *  info    (output) INTEGER
+    *          = 0: successful exit
+    *          < 0: if info = -k, the k-th argument had an illegal value
+    *          > 0: if info = k, U(k,k) is exactly zero. The factorization
+    *               has been completed, but the factor U is exactly
+    *               singular, and division by zero will occur if it is used
+    *               to solve a system of equations.
+    */
+  dgetrf_(&mDimension, &mDimension, mpJacobianX->array(),
+          &mDimension, mIpiv, &info);
+
+  if (info)
+    {
+      if (info > 0)
+        {
+          //if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+          if (mKeepProtocol)
+            mMethodLog << "    Target criterion failed. Jacobian could not be inverted.\n";
+
+          return store;
+        }
+
+      fatalError();
+    }
+
+  /* int dgetrs_(char *trans,
+    *             integer *n,
+    *             integer *nrhs,
+    *             doublereal *a,
+    *             integer *lda,
+    *             integer *ipiv,
+    *             doublereal *b,
+    *             integer * ldb,
+    *             integer *info)
+    *  Arguments
+    *  =========
+    *
+    *  trans   (input) CHARACTER*1
+    *          Specifies the form of the system of equations:
+    *          = 'N':  a * x = b  (No transpose)
+    *          = 'T':  a'* x = b  (Transpose)
+    *          = 'C':  a'* x = b  (Conjugate transpose = Transpose)
+    *
+    *  n       (input) INTEGER
+    *          The order of the matrix a.  n >= 0.
+    *
+    *  nrhs    (input) INTEGER
+    *          The number of right hand sides, i.e., the number of columns
+    *          of the matrix b.  nrhs >= 0.
+    *
+    *  a       (input) DOUBLE PRECISION array, dimension (lda,n)
+    *          The factors L and U from the factorization a = P*L*U
+    *          as computed by DGETRF.
+    *
+    *  lda     (input) INTEGER
+    *          The leading dimension of the array a.  lda >= max(1,n).
+    *
+    *  ipiv    (input) INTEGER array, dimension (n)
+    *          The pivot indices from DGETRF; for 1<=i<=n, row i of the
+    *          matrix was interchanged with row ipiv(i).
+    *
+    *  b       (input/output) DOUBLE PRECISION array, dimension (ldb,nrhs)
+    *          On entry, the right hand side matrix b.
+    *          On exit, the solution matrix x.
+    *
+    *  ldb     (input) INTEGER
+    *          The leading dimension of the array b.  ldb >= max(1,n).
+    *
+    *  info    (output) INTEGER
+    *          = 0:  successful exit
+    *          < 0:  if info = -i, the i-th argument had an illegal value
+    */
+  CVector< C_FLOAT64 > TargetState = particlefluxes;
+
+  dgetrs_(&T, &mDimension, &one, mpJacobianX->array(),
+          &mDimension, mIpiv, TargetState.array(), &mDimension, &info);
+
+  if (info)
+    fatalError();
+
+  C_FLOAT64 * pTargetState = TargetState.array();
+  C_FLOAT64 * pTargetStateEnd = pTargetState + TargetState.size();
+  C_FLOAT64 * pCurrentState = mpSteadyState->beginIndependent();
+  pAtol = mAtol.array();
+
+  C_FLOAT64 AlternateTarget1 = 0.0;
+  C_FLOAT64 AlternateTarget2 = 0.0;
+
+  for (; pTargetState != pTargetStateEnd; ++pTargetState, ++pCurrentState)
+    {
+      // TODO CRITICAL prevent division by 0
+      tmp = fabs(*pTargetState) / std::max(fabs(*pCurrentState), *pAtol);
+
+      if (tmp > AlternateTarget1)
+        {
+          AlternateTarget1 = tmp;
+        }
+
+      AlternateTarget2 += tmp * tmp;
+
+      //      std::cout << *pTargetState << ", " << *pCurrentState << ", " << *pAtol << ", " << tmp << std::endl;
+    }
+
+  AlternateTarget2 = sqrt(AlternateTarget2) / TargetState.size();
+
+//  std::cout << "Alternate Target 1: " << AlternateTarget1 << std::endl;
+//  std::cout << "Alternate Target 2: " << AlternateTarget2 << std::endl;
+//  std::cout << "Old Target:         " << store << std::endl;
+
+  return AlternateTarget2;
 }
 
 //virtual
@@ -816,7 +984,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
   mDimension = mpProblem->getModel()->getStateTemplate().getNumIndependent();
 
-  mAtol = mpModel->initializeAtolVector(1.0, true);
+  mAtol = mpModel->initializeAtolVector(*mpSSResolution, true);
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);
