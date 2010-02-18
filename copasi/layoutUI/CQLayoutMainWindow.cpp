@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.98 $
+//   $Revision: 1.99 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/03 16:43:21 $
+//   $Date: 2010/02/18 15:09:54 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -555,6 +560,7 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
   C_FLOAT64 val;
   mpValTable->setNumRows(dataSet.getNumberOfElements());
   mpValTable->setNumCols(2);
+  disconnect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 
   while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
@@ -563,6 +569,8 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
       mpValTable->setRowInTable(i, key, name, val);
       i++;
     }
+
+  connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 }
 
 void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
@@ -570,6 +578,7 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
   int i = 0;
   std::string key, name;
   C_FLOAT64 val;
+  disconnect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 
   while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
@@ -583,6 +592,8 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
 
       i++;
     }
+
+  connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 }
 
 // adds the item given by s to the list of items to animate (no change, if it is already present)
