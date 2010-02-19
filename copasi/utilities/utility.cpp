@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.35 $
+$Revision: 1.36 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/02/03 21:15:17 $
+$Date: 2010/02/19 14:54:37 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,7 +140,7 @@ std::string unQuote(const std::string & name)
       // Remove surrounding double quotes.
       Name = Name.substr(1, len - 2);
 
-      // Remove escape seqences.
+      // Remove escape sequences.
       std::string::size_type pos = Name.find("\\");
 
       while (pos != std::string::npos)
