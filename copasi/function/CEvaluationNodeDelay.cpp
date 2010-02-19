@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:15:28 $
+//   $Author: shoops $
+//   $Date: 2010/02/19 18:18:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,19 +24,20 @@
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
-    mCallNodes()
+    mpDelayedObject(NULL),
+    mpDeltaT(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
-    const Data & /*data*/):
+    const Data & /* data */):
     CEvaluationNode((Type)(CEvaluationNode::DELAY | subType), "delay"),
-    mCallNodes()
+    mpDelayedObject(NULL),
+    mpDeltaT(NULL)
 {
-  mData = unQuote(mData);
-
   switch (subType)
     {
       case DELAY:
+        mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         break;
 
       default:
@@ -49,22 +50,15 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
     CEvaluationNode(src),
-    mCallNodes(src.mCallNodes)
+    mpDelayedObject(NULL),
+    mpDeltaT(NULL)
 {}
 
 CEvaluationNodeDelay::~CEvaluationNodeDelay() {}
 
 const C_FLOAT64 & CEvaluationNodeDelay::value() const
 {
-  C_FLOAT64 &Value = *const_cast<C_FLOAT64 *>(&mValue);
-
-  switch (mType & 0x00FFFFFF)
-    {
-      case DELAY:
-      default:
-        return Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-        break;
-    }
+  return mValue;
 }
 
 bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
@@ -74,6 +68,16 @@ bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
+        mpDelayedObject = static_cast<CEvaluationNode *>(getChild());
+
+        if (mpDelayedObject == NULL) return false;
+
+        mpDeltaT = static_cast<CEvaluationNode *>(mpDelayedObject->getSibling());
+
+        if (mpDeltaT == NULL) return false;
+
+        return (mpDeltaT->getSibling() == NULL); // We must have exactly 2 children
+
         break;
 
       default:
@@ -86,97 +90,72 @@ bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
 
 std::string CEvaluationNodeDelay::getInfix() const
 {
-  std::string Infix = quote(mData, "-+^*/%(){},\t\r\n") + "(";
-
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-      {
-        std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-        std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
-
-        if (it != end) Infix += (*it++)->getInfix();
-
-        for (; it != end; ++it)
-          Infix += "," + (*it)->getInfix();
-      }
-
-      break;
+        return mData + "(" + mpDelayedObject->getInfix() + "," + mpDeltaT->getInfix() + ")";
+        break;
 
       default:
         return "@";
         break;
     }
-
-  return Infix + ")";
 }
 
 std::string CEvaluationNodeDelay::getDisplayString(const CEvaluationTree * pTree) const
 {
-  std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
-
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-      {
-        std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-        std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
-
-        if (it != end) DisplayString += (*it++)->getDisplayString(pTree);
-
-        for (; it != end; ++it)
-          DisplayString += "," + (*it)->getDisplayString(pTree);
-      }
-
-      break;
+        return mData + "(" + mpDelayedObject->getDisplayString(pTree) + "," + mpDeltaT->getDisplayString(pTree) + ")";
+        break;
 
       default:
         return "@";
         break;
     }
-
-  return DisplayString + ")";
 }
 
 std::string CEvaluationNodeDelay::getDisplay_C_String(const CEvaluationTree * pTree) const
 {
-  std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
-
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-      {
-        std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-        std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
-
-        if (it != end) DisplayString += (*it++)->getDisplay_C_String(pTree);
-
-        for (; it != end; ++it)
-          DisplayString += "," + (*it)->getDisplay_C_String(pTree);
-      }
-
-      break;
+        return mData + "(" + mpDelayedObject->getDisplay_C_String(pTree) + "," + mpDeltaT->getDisplay_C_String(pTree) + ")";
+        break;
 
       default:
         return "@";
         break;
     }
-
-  return DisplayString + ")";
 }
 
-std::string CEvaluationNodeDelay::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
+std::string CEvaluationNodeDelay::getDisplay_MMD_String(const CEvaluationTree * pTree) const
 {
-  std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n");
+  switch (mType & 0x00FFFFFF)
+    {
+      case DELAY:
+        return mData + "(" + mpDelayedObject->getDisplay_MMD_String(pTree) + "," + mpDeltaT->getDisplay_MMD_String(pTree) + ")";
+        break;
 
-  return DisplayString;
+      default:
+        return "@";
+        break;
+    }
 }
 
-std::string CEvaluationNodeDelay::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
+std::string CEvaluationNodeDelay::getDisplay_XPP_String(const CEvaluationTree * pTree) const
 {
-  std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n");
+  switch (mType & 0x00FFFFFF)
+    {
+      case DELAY:
+        return mData + "(" + mpDelayedObject->getDisplay_XPP_String(pTree) + "," + mpDeltaT->getDisplay_XPP_String(pTree) + ")";
+        break;
 
-  return DisplayString;
+      default:
+        return "@";
+        break;
+    }
 }
 
 CEvaluationNode* CEvaluationNodeDelay::createNodeFromASTTree(const ASTNode& node)
@@ -209,27 +188,6 @@ ASTNode* CEvaluationNodeDelay::toAST(const CCopasiDataModel* pDataModel) const
   return pNode;
 }
 
-bool CEvaluationNodeDelay::addChild(CCopasiNode< Data > * pChild,
-                                    CCopasiNode< Data > * pAfter)
-{
-  CCopasiNode< Data >::addChild(pChild, pAfter);
-  mCallNodes.push_back(static_cast<CEvaluationNode *>(pChild));
-
-  return true;
-}
-
-bool CEvaluationNodeDelay::removeChild(CCopasiNode< Data > * pChild)
-{
-  std::vector<CEvaluationNode *>::iterator it = mCallNodes.begin();
-  std::vector<CEvaluationNode *>::iterator end = mCallNodes.end();
-
-  while (it != end && *it != pChild) ++it;
-
-  if (it != end) mCallNodes.erase(it);
-
-  return CCopasiNode< Data >::removeChild(pChild);
-}
-
 #include "utilities/copasimathml.h"
 
 void CEvaluationNodeDelay::writeMathML(std::ostream & out,
@@ -240,7 +198,6 @@ void CEvaluationNodeDelay::writeMathML(std::ostream & out,
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-      {
         out << SPC(l) << "<mrow>" << std::endl;
 
         out << SPC(l + 1) << "<mi>" << mData << "</mi>" << std::endl;
@@ -249,25 +206,18 @@ void CEvaluationNodeDelay::writeMathML(std::ostream & out,
         out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
         out << SPC(l + 2) << "<mrow>" << std::endl;
 
-        std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-        std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+        mpDelayedObject->writeMathML(out, env, expand, l + 3);
 
-        if (it != end)(*it++)->writeMathML(out, env, expand, l + 3);
+        out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
 
-        for (; it != end; ++it)
-          {
-
-            out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
-            (*it)->writeMathML(out, env, expand, l + 3);
-          }
+        mpDeltaT->writeMathML(out, env, expand, l + 3);
 
         out << SPC(l + 2) << "</mrow>" << std::endl;
         out << SPC(l + 2) << "<mo>) </mo>" << std::endl;
 
         out << SPC(l + 1) << "</mrow>" << std::endl;
         out << SPC(l) << "</mrow>" << std::endl;
-      }
-      break;
+        break;
 
       default:
         break;

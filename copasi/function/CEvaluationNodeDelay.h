@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:15:28 $
+//   $Author: shoops $
+//   $Date: 2010/02/19 18:18:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,30 +110,6 @@ public:
   ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
   /**
-   * Add a child to a node.
-   * If pAfter == this the child will be inserted at the front of the list
-   * of children.
-   * @param CCopasiNode< Data > * pChild
-   * @param CCopasiNode< Data > * pAfter
-   *        (default: NULL appended to the list of children)
-   * @return bool Success
-   */
-  virtual bool addChild(CCopasiNode< Data > * pChild,
-                        CCopasiNode< Data > * pAfter = NULL);
-
-  /**
-   * Remove a child from a node.
-   * @param CCopasiNode< Data > * pChild
-   * @return bool Success
-   */
-  virtual bool removeChild(CCopasiNode< Data > * pChild);
-
-  /**
-   *  returns the vector of child nodes, corresponding to the arguments of a function call
-   */
-  const std::vector<CEvaluationNode *> getListOfChildNodes() const {return mCallNodes;}
-
-  /**
    * generate display MathML recursively
    */
   virtual void writeMathML(std::ostream & out,
@@ -155,7 +131,8 @@ public:
   virtual std::string getInfix() const;
 
 private:
-  std::vector<CEvaluationNode *> mCallNodes;
+  CEvaluationNode * mpDelayedObject;
+  CEvaluationNode * mpDeltaT;
 };
 
 #endif // COPASI_CEvaluationNodeDelay
