@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:15:28 $
+//   $Author: shoops $
+//   $Date: 2010/02/19 18:17:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -288,14 +288,6 @@ private:
 
   static C_FLOAT64 rnormal(const C_FLOAT64 & mean,
                            const C_FLOAT64 & sd);
-
-  static C_FLOAT64 fire(const C_FLOAT64 & root,
-                        const C_FLOAT64 & active);
-
-  static C_FLOAT64 equality(const C_FLOAT64 & fireX,
-                            const C_FLOAT64 & equalX,
-                            const C_FLOAT64 & fireY,
-                            const C_FLOAT64 & equalY);
 
   // Attributes
 private:

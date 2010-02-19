@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:15:28 $
+//   $Author: shoops $
+//   $Date: 2010/02/19 18:17:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,29 +43,6 @@ C_FLOAT64 CEvaluationNodeFunction::runiform(const C_FLOAT64 & lowerBound,
 C_FLOAT64 CEvaluationNodeFunction::rnormal(const C_FLOAT64 & mean,
     const C_FLOAT64 & sd)
 {return mpRandom->getRandomNormal(mean, sd);}
-
-// static
-C_FLOAT64 CEvaluationNodeFunction::fire(const C_FLOAT64 & root,
-                                        const C_FLOAT64 & active)
-{
-  return (root >= 0) && (active >= 0);
-}
-
-// static
-C_FLOAT64 CEvaluationNodeFunction::equality(const C_FLOAT64 & fireX,
-    const C_FLOAT64 & equalX,
-    const C_FLOAT64 & fireY,
-    const C_FLOAT64 & equalY)
-{
-  bool FireX = (fireX > 0);
-  bool EqualX = (equalX > 0);
-  bool FireY = (fireY > 0);
-  bool EqualY = (equalY > 0);
-
-  bool Equal = (FireX && EqualX && !FireY) || (FireY && EqualY && !FireX) || (FireX && FireY);
-
-  return Equal ? 1.0 : 2.0;
-}
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -1300,6 +1277,29 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         if (!flag) out << SPC(l + 2) << "</mfenced>" << std::endl;
 
+        break;
+
+      case RUNIFORM:
+      case RNORMAL:
+        out << SPC(l) << "<mrow>" << std::endl;
+
+        out << SPC(l + 1) << "<mi>" << mData << "</mi>" << std::endl;
+        out << SPC(l + 1) << "<mo> &ApplyFunction; </mo>" << std::endl;
+        out << SPC(l + 1) << "<mrow>" << std::endl;
+        out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
+        out << SPC(l + 2) << "<mrow>" << std::endl;
+
+        mpArg1->writeMathML(out, env, expand, l + 3);
+
+        out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
+
+        mpArg2->writeMathML(out, env, expand, l + 3);
+
+        out << SPC(l + 2) << "</mrow>" << std::endl;
+        out << SPC(l + 2) << "<mo>) </mo>" << std::endl;
+
+        out << SPC(l + 1) << "</mrow>" << std::endl;
+        out << SPC(l) << "</mrow>" << std::endl;
         break;
 
       default:
