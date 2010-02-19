@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/14 13:42:47 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:15:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -54,7 +59,8 @@ public:
     WHITESPACE = 0x0a000000,
     LOGICAL = 0x0b000000,
     MV_FUNCTION = 0x0c000000, // This not yet implemented
-    VECTOR = 0x0d000000
+    VECTOR = 0x0d000000,
+    DELAY = 0x0e000000
   };
 
   // Methods
@@ -399,6 +405,7 @@ protected:
 #include "CEvaluationNodeCall.h"
 #include "CEvaluationNodeChoice.h"
 #include "CEvaluationNodeConstant.h"
+#include "CEvaluationNodeDelay.h"
 #include "CEvaluationNodeFunction.h"
 #include "CEvaluationNodeLogical.h"
 #include "CEvaluationNodeNumber.h"

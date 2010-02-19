@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/01/14 19:58:15 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:15:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -55,6 +60,11 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
       case CEvaluationNode::CONSTANT:
         pNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType) subType(type),
                                             contents);
+        break;
+
+      case CEvaluationNode::DELAY:
+        pNode = new CEvaluationNodeDelay((CEvaluationNodeDelay::SubType) subType(type),
+                                         contents);
         break;
 
       case CEvaluationNode::FUNCTION:
@@ -444,6 +454,7 @@ bool CEvaluationNode::operator==(const CEvaluationNode& right) const
           case CEvaluationNode::NUMBER:
           case CEvaluationNode::OBJECT:
           case CEvaluationNode::CALL:
+          case CEvaluationNode::DELAY:
           case CEvaluationNode::STRUCTURE:
           case CEvaluationNode::VARIABLE:
           case CEvaluationNode::WHITESPACE:
@@ -506,6 +517,7 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
           case CEvaluationNode::NUMBER:
           case CEvaluationNode::OBJECT:
           case CEvaluationNode::CALL:
+          case CEvaluationNode::DELAY:
           case CEvaluationNode::STRUCTURE:
           case CEvaluationNode::VARIABLE:
           case CEvaluationNode::WHITESPACE:

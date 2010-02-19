@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/19 14:57:37 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:15:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,8 +48,7 @@ public:
   {
     INVALID = 0x00FFFFFF,
     FUNCTION = 0x00000000,
-    EXPRESSION = 0x00000001,
-    DELAY = 0x00000002
+    EXPRESSION = 0x00000001
   };
 
   // Operations

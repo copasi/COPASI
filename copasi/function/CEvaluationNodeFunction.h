@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:15:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -274,11 +279,6 @@ private:
 
   static inline C_FLOAT64 plus(C_FLOAT64 value)
   {return value;}
-
-  //static inline C_FLOAT64 delay(const C_FLOAT64& /*delay_expr*/,const C_FLOAT64& /*expr*/)
-  //{
-  //    return nan("");
-  //}
 
   static inline C_FLOAT64 copasiNot(C_FLOAT64 value)
   {return (value != 0.0) ? 0.0 : 1.0;}

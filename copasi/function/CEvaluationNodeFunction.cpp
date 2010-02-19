@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:15:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -289,7 +294,6 @@ std::string CEvaluationNodeFunction::getInfix() const
 
         case RUNIFORM:
         case RNORMAL:
-          //       case DELAY:
           return mData + "(" + mpArg1->getInfix() + "," + mpArg2->getInfix() + ")";
 
         default:
@@ -515,7 +519,6 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
           case FACTORIAL:
           case RUNIFORM:
           case RNORMAL:
-            // case DELAY:
           default:
             data = "ILLEGAL FUNCTION";
             break;
@@ -599,7 +602,6 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
           case FACTORIAL:
           case RUNIFORM:
           case RNORMAL:
-            // case DELAY:
           default:
             data = "@"; //TODO
             break;
@@ -778,33 +780,12 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
         subType = NOT;
         data = "not";
         break;
-        //    case AST_FUNCTION_DELAY:
-        //      subType = DELAY;
-        //      data = "delay";
-        //      break;
       default:
         subType = INVALID;
         break;
     }
 
-  // all functions have one child
-  // convert child and add the converted node as child
-  // to the current node.
-  // delay has two children
-  /*
-  if(subType == DELAY)
-  {
-      CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
-      ASTNode* child = node.getLeftChild();
-      CEvaluationNode* convertedChildNode = CEvaluationTree::convertASTNode(*child);
-      convertedNode->addChild(convertedChildNode);
-      child = node.getRightChild();
-      convertedChildNode = CEvaluationTree::convertASTNode(*child);
-      convertedNode->addChild(convertedChildNode);
-      return convertedNode;
-  }
-
-  else*/ if (subType !=       INVALID)
+  if (subType !=       INVALID)
     {
       CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
       ASTNode* child = node.getLeftChild();
@@ -951,9 +932,6 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
       case NOT:
         node->setType(AST_LOGICAL_NOT);
         break;
-        //      case DELAY:
-        //        node->setType(AST_FUNCTION_DELAY);
-        //        break;
       case RUNIFORM:
       case RNORMAL:
         // :TODO: Bug 894: Implement me.
@@ -961,17 +939,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         break;
     }
 
-  // for all but INVALID and DELAY one child has to be converted
-  /*
-     if(subType == DELAY)
-     {
-         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-         node->addChild(child->toAST());
-         child = dynamic_cast<const CEvaluationNode*>(this->getChild()->getSibling());
-         node->addChild(child->toAST());
-     }
-
-     else*/ if (subType !=       INVALID)
+  if (subType !=       INVALID)
     {
       // the following is a workaround for a bug in libsbml 3.1.1 and 3.2.0
       // where libsbml does not handle the case correctly that a root

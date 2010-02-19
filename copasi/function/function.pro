@@ -1,10 +1,15 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/function.pro,v $
-#   $Revision: 1.28 $
+#   $Revision: 1.29 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2008/12/18 17:33:22 $
+#   $Author: gauges $
+#   $Date: 2010/02/19 15:15:28 $
 # End CVS Header
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -16,7 +21,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.28 $ $Author: shoops $ $Date: 2008/12/18 17:33:22 $
+# $Revision: 1.29 $ $Author: gauges $ $Date: 2010/02/19 15:15:28 $
 ######################################################################
 
 LIB = function
@@ -33,6 +38,7 @@ HEADERS += \
            CEvaluationNodeCall.h \
            CEvaluationNodeChoice.h \
            CEvaluationNodeConstant.h \
+           CEvaluationNodeDelay.h \
            CEvaluationNodeFunction.h \
            CEvaluationNodeLogical.h \
            CEvaluationNodeNumber.h \
@@ -62,6 +68,7 @@ SOURCES += \
            CEvaluationNodeCall.cpp \
            CEvaluationNodeChoice.cpp \
            CEvaluationNodeConstant.cpp \
+           CEvaluationNodeDelay.cpp \
            CEvaluationNodeFunction.cpp \
            CEvaluationNodeLogical.cpp \
            CEvaluationNodeNumber.cpp \

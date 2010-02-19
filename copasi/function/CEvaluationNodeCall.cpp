@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/19 14:57:37 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:15:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,6 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     {
       case FUNCTION:
       case EXPRESSION:
-      case DELAY:
         break;
 
       default:
@@ -96,7 +95,6 @@ const C_FLOAT64 & CEvaluationNodeCall::value() const
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
-      case DELAY:
       {
         std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
         std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
@@ -134,21 +132,6 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
         mpCallParameters = buildParameters(mCallNodes);
         break;
-
-        /*case DELAY:
-          mpFunction = CCopasiRootContainer::getUnsupportedDelay();
-
-          if (!mpFunction) return false;
-
-          // Since it is not guaranteed that the function name is "delay",
-          // we need to update the data.
-          mData = mpFunction->getObjectName();
-
-          if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return false;
-
-          mpCallParameters = buildParameters(mCallNodes);
-          break;
-        */
 
       case EXPRESSION:
         mpExpression =
@@ -209,7 +192,6 @@ std::string CEvaluationNodeCall::getInfix() const
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
-      case DELAY:
       {
         std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
         std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
@@ -249,7 +231,6 @@ std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree)
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
-      case DELAY:
       {
         std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
         std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
@@ -288,7 +269,6 @@ std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTr
 
   switch (mType & 0x00FFFFFF)
     {
-      case DELAY:
       case FUNCTION:
       {
         std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
@@ -349,12 +329,6 @@ CEvaluationNode* CEvaluationNodeCall::createNodeFromASTTree(const ASTNode& node)
   SubType subType = CEvaluationNodeCall::FUNCTION;
   std::string data = node.getName();
 
-  if (node.getType() == AST_FUNCTION_DELAY)
-    {
-      subType = CEvaluationNodeCall::DELAY;
-      data = "delay";
-    }
-
   CEvaluationNodeCall* pConvertedNode = new CEvaluationNodeCall(subType, data);
   unsigned int i, iMax = node.getNumChildren();
 
@@ -370,21 +344,14 @@ ASTNode* CEvaluationNodeCall::toAST(const CCopasiDataModel* pDataModel) const
 {
   ASTNode* pNode = NULL;
 
-  if (((CEvaluationNodeCall::SubType)CEvaluationNode::subType(mType)) == CEvaluationNodeCall::DELAY)
-    {
-      pNode = new ASTNode(AST_FUNCTION_DELAY);
-    }
-  else
-    {
-      pNode = new ASTNode(AST_FUNCTION);
-      const std::string funName = this->getData();
-      CEvaluationTree* pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
-      assert(pFun != NULL);
+  pNode = new ASTNode(AST_FUNCTION);
+  const std::string funName = this->getData();
+  CEvaluationTree* pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
+  assert(pFun != NULL);
 
-      if (pFun == NULL || pFun->getSBMLId().empty()) fatalError();
+  if (pFun == NULL || pFun->getSBMLId().empty()) fatalError();
 
-      pNode->setName(pFun->getSBMLId().c_str());
-    }
+  pNode->setName(pFun->getSBMLId().c_str());
 
   const CEvaluationNode* child = static_cast<const CEvaluationNode*>(this->getChild());
 
@@ -491,9 +458,6 @@ const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
       case EXPRESSION:
         return CCopasiRootContainer::getFunctionList()->findFunction(mData);
 
-        //case DELAY:
-        //return CCopasiRootContainer::getUnsupportedDelay();
-
       default:
         return NULL;
     }
@@ -509,7 +473,6 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
-      case DELAY:
       {
 
         if (!expand || !mpFunction)

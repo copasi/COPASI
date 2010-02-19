@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:15:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -397,9 +402,12 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
         pResultNode = CEvaluationNodeConstant::createNodeFromASTTree(node);
         break;
       case AST_FUNCTION:
-      case AST_FUNCTION_DELAY:
         // create a function call node
         pResultNode = CEvaluationNodeCall::createNodeFromASTTree(node);
+        break;
+      case AST_FUNCTION_DELAY:
+        // create a function call node
+        pResultNode = CEvaluationNodeDelay::createNodeFromASTTree(node);
         break;
       case AST_FUNCTION_ABS:
       case AST_FUNCTION_ARCCOS:
@@ -434,8 +442,6 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
       case AST_FUNCTION_TAN:
       case AST_FUNCTION_TANH:
       case AST_LOGICAL_NOT:
-        //case AST_FUNCTION_DELAY:
-        // create a CEvaluationNodeFunction
         pResultNode = CEvaluationNodeFunction::createNodeFromASTTree(node);
         break;
 
@@ -453,12 +459,6 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
       case AST_FUNCTION_PIECEWISE:
         pResultNode = CEvaluationNodeChoice::createNodeFromASTTree(node);
         break;
-        //case AST_FUNCTION_DELAY:
-        //  pResultNode=new CEvaluationNodeCall();
-        // create an unsupported element error
-        // Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 1,
-        //                          node.getName());
-        //break;
       case AST_UNKNOWN:
         // create an unknown element error
         Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 2);
