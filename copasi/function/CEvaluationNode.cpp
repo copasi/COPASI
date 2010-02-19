@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:15:28 $
+//   $Author: shoops $
+//   $Date: 2010/02/19 18:17:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -454,7 +454,6 @@ bool CEvaluationNode::operator==(const CEvaluationNode& right) const
           case CEvaluationNode::NUMBER:
           case CEvaluationNode::OBJECT:
           case CEvaluationNode::CALL:
-          case CEvaluationNode::DELAY:
           case CEvaluationNode::STRUCTURE:
           case CEvaluationNode::VARIABLE:
           case CEvaluationNode::WHITESPACE:
@@ -466,6 +465,7 @@ bool CEvaluationNode::operator==(const CEvaluationNode& right) const
           case CEvaluationNode::LOGICAL:
           case CEvaluationNode::MV_FUNCTION:
           case CEvaluationNode::VECTOR:
+          case CEvaluationNode::DELAY:
           case CEvaluationNode::INVALID:
             break;
         }
@@ -517,7 +517,6 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
           case CEvaluationNode::NUMBER:
           case CEvaluationNode::OBJECT:
           case CEvaluationNode::CALL:
-          case CEvaluationNode::DELAY:
           case CEvaluationNode::STRUCTURE:
           case CEvaluationNode::VARIABLE:
           case CEvaluationNode::WHITESPACE:
@@ -529,6 +528,7 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
           case CEvaluationNode::LOGICAL:
           case CEvaluationNode::MV_FUNCTION:
           case CEvaluationNode::VECTOR:
+          case CEvaluationNode::DELAY:
           case CEvaluationNode::INVALID:
             break;
         }
