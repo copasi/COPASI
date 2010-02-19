@@ -451,6 +451,14 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_FUNCTION_2;
 %}
 
+(delay|DELAY)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeDelay(CEvaluationNodeDelay::DELAY,
+                                    yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION_2;
+%}
+
 (if|IF)/\(   %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF,
