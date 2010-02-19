@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/09/16 13:55:18 $
+//   $Date: 2010/02/19 15:37:22 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -6818,7 +6823,7 @@ ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CCopasiDa
 
 void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiDataModel& dataModel)
 {
-  if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CALL && (CEvaluationNodeCall::SubType)CEvaluationNode::subType(pNode->getType()) != CEvaluationNodeCall::DELAY)
+  if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CALL)
     {
       std::string funName = dynamic_cast<const CEvaluationNodeCall*>(pNode)->getData();
       CEvaluationTree* pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
