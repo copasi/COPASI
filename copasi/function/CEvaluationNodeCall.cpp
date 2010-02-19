@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/09/07 15:02:28 $
+//   $Author: shoops $
+//   $Date: 2010/02/19 14:57:37 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -45,8 +50,16 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     mpExpression(NULL),
     mCallNodes(),
     mpCallParameters(NULL),
+    mQuotesRequired(false),
     mBooleanRequired(false)
 {
+  std::string::size_type len = mData.length();
+
+  if (len > 1 && mData[0] == '"' && mData[len - 1] == '"')
+    {
+      mQuotesRequired = true;
+    }
+
   mData = unQuote(mData);
 
   switch (subType)
@@ -70,6 +83,7 @@ CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
     mpExpression(src.mpExpression),
     mCallNodes(src.mCallNodes),
     mpCallParameters(NULL),
+    mQuotesRequired(src.mQuotesRequired),
     mBooleanRequired(src.mBooleanRequired)
 {mpCallParameters = buildParameters(mCallNodes);}
 
@@ -181,7 +195,16 @@ bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
 
 std::string CEvaluationNodeCall::getInfix() const
 {
-  std::string Infix = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+  std::string Infix;
+
+  if (mQuotesRequired)
+    {
+      Infix = "\"" + quote(mData, "-+^*/%(){},\t\r\n\"") + "\"(";
+    }
+  else
+    {
+      Infix = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+    }
 
   switch (mType & 0x00FFFFFF)
     {
@@ -212,7 +235,16 @@ std::string CEvaluationNodeCall::getInfix() const
 
 std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree) const
 {
-  std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+  std::string DisplayString;
+
+  if (mQuotesRequired)
+    {
+      DisplayString = "\"" + quote(mData, "-+^*/%(){},\t\r\n\"") + "\"(";
+    }
+  else
+    {
+      DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+    }
 
   switch (mType & 0x00FFFFFF)
     {
@@ -243,7 +275,16 @@ std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree)
 
 std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTree) const
 {
-  std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+  std::string DisplayString;
+
+  if (mQuotesRequired)
+    {
+      DisplayString = "\"" + quote(mData, "-+^*/%(){},\t\r\n\"") + "\"(";
+    }
+  else
+    {
+      DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+    }
 
   switch (mType & 0x00FFFFFF)
     {
@@ -273,14 +314,32 @@ std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTr
 
 std::string CEvaluationNodeCall::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
 {
-  std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n");
+  std::string DisplayString;
+
+  if (mQuotesRequired)
+    {
+      DisplayString = "\"" + quote(mData, "-+^*/%(){},\t\r\n\"") + "\"(";
+    }
+  else
+    {
+      DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+    }
 
   return DisplayString;
 }
 
 std::string CEvaluationNodeCall::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
 {
-  std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n");
+  std::string DisplayString;
+
+  if (mQuotesRequired)
+    {
+      DisplayString = "\"" + quote(mData, "-+^*/%(){},\t\r\n\"") + "\"(";
+    }
+  else
+    {
+      DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+    }
 
   return DisplayString;
 }

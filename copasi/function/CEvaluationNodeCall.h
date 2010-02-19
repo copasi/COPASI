@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Date: 2010/02/19 14:57:37 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -226,6 +231,7 @@ private:
   CExpression * mpExpression;
   std::vector<CEvaluationNode *> mCallNodes;
   CCallParameters< C_FLOAT64 > * mpCallParameters;
+  bool mQuotesRequired;
   bool mBooleanRequired;
 };
 
