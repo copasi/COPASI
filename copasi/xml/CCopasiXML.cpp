@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.124 $
+//   $Revision: 1.125 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/15 22:02:09 $
+//   $Date: 2010/02/19 14:53:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -855,7 +855,7 @@ bool CCopasiXML::saveModel()
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
-      *mpOstream << (DBL)(*ppEntity)->getInitialValue();
+      *mpOstream << (DBL)(*ppEntity)->getInitialValue() << " ";
     }
 
   *mpOstream << std::endl;
