@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.247 $
+//   $Revision: 1.248 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:53:25 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:39:30 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -578,7 +583,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
   // evaluate and apply the initial expressions
   this->applyStoichiometricExpressions(copasi2sbmlmap, sbmlModel);
-  //this->createDelayFunctionDefinition();
   this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
 
   // remove the temporary avogadro parameter if one was created
@@ -1157,20 +1161,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
       hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
-      /*
-      if (compartment == NULL)
-        {
-          compartment = pos->second->getCompartment();
-        }
-      else
-        {
-
-          if (singleCompartment && compartment != pos->second->getCompartment())
-            {
-              singleCompartment = false;
-            }
-        }
-        */
       copasiReaction->addModifier(pos->second->getKey());
     }
 
@@ -1235,11 +1225,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
               fatalError();
             }
 
-          /**
-           * Removed because this no longer works for variable volumes
-          this->replaceSubstanceOnlySpeciesNodes(node, mSubstanceOnlySpecies);
-          */
-
           /* if it is a single compartment reaction, we have to divide the whole kinetic
           ** equation by the compartment because copasi expects
           ** kinetic laws that specify concentration/time for single compartment
@@ -1291,6 +1276,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
 
                               if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
                                 {
+                                  // add the id of the reaction to the set so that we can create an error message later.
                                   this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
                                 }
                             }
@@ -4471,7 +4457,7 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
 
       while (treeIt != NULL)
         {
-          if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL && ((CEvaluationNodeCall::SubType)CEvaluationNode::subType(treeIt->getType())) != CEvaluationNodeCall::DELAY)
+          if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
             {
               // unQuote not necessary since getIndex in CCopasiVector takes care of this.
               CEvaluationTree* pTree = pFunctionDB->findFunction((*treeIt).getData());
@@ -6836,13 +6822,6 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
       ++it;
     }
 }
-
-/*
-void SBMLImporter::createDelayFunctionDefinition()
-{
-  // TODO
-}
- */
 
 void SBMLImporter::findAvogadroConstant(Model* pSBMLModel, double factor)
 {
