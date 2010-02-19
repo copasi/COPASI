@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:50:08 $
+//   $Author: gauges $
+//   $Date: 2010/02/19 15:27:55 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -32,6 +37,7 @@
 #include "function/CEvaluationNode.h"
 #include "function/CEvaluationNodeOperator.h"
 #include "function/CEvaluationNodeConstant.h"
+#include "function/CEvaluationNodeDelay.h"
 #include "function/CEvaluationNodeFunction.h"
 #include "function/CEvaluationNodeNumber.h"
 #include "function/CEvaluationNodeObject.h"
@@ -1145,7 +1151,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalGeneralPower& pow)
 
 CEvaluationNode* convertToCEvaluationNode(const CNormalCall& call)
 {
-  CEvaluationNodeCall* pCall = NULL;
+  CEvaluationNode* pCall = NULL;
 
   // check if the name contains any non-whitespace characters at all
   if (call.getName().find_first_not_of("\t\r\n ") != std::string::npos)
@@ -1161,14 +1167,19 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalCall& call)
             type = CEvaluationNodeCall::FUNCTION;
             break;
           case CNormalCall::DELAY:
-            type = CEvaluationNodeCall::DELAY;
+            pCall = new CEvaluationNodeDelay(CEvaluationNodeDelay::DELAY, "delay");
             break;
           case CNormalCall::INVALID:
             break;
         }
 
-      pCall = new CEvaluationNodeCall(type, call.getName());
+      if (!pCall)
+        {
+          pCall = new CEvaluationNodeCall(type, call.getName());
+        }
+
       const std::vector<CNormalFraction*>& children = call.getFractions();
+
       std::vector<CNormalFraction*>::const_iterator it = children.begin(), endit = children.end();
 
       while (it != endit)
@@ -1417,7 +1428,7 @@ CNormalCall * createCall(const CEvaluationNode* node)
   CNormalCall* pCall = NULL;
   CEvaluationNode::Type type = CEvaluationNode::type(node->getType());
 
-  if (type == CEvaluationNode::CALL)
+  if (type == CEvaluationNode::CALL || type == CEvaluationNode::DELAY)
     {
       // create a call object and add all children
       pCall = new CNormalCall();
@@ -1434,22 +1445,26 @@ CNormalCall * createCall(const CEvaluationNode* node)
           pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
         }
 
-      CEvaluationNodeCall::SubType subType = (CEvaluationNodeCall::SubType)CEvaluationNode::subType(node->getType());
-
-      switch (subType)
+      if (type == CEvaluationNode::DELAY)
         {
-          case CEvaluationNodeCall::EXPRESSION:
-            pCall->setType(CNormalCall::EXPRESSION);
-            break;
-          case CEvaluationNodeCall::FUNCTION:
-            pCall->setType(CNormalCall::FUNCTION);
-            break;
-          case CEvaluationNodeCall::DELAY:
-            pCall->setType(CNormalCall::DELAY);
-            break;
-          case CEvaluationNodeCall::INVALID:
-            pCall->setType(CNormalCall::INVALID);
-            break;
+          pCall->setType(CNormalCall::DELAY);
+        }
+      else
+        {
+          CEvaluationNodeCall::SubType subType = (CEvaluationNodeCall::SubType)CEvaluationNode::subType(node->getType());
+
+          switch (subType)
+            {
+              case CEvaluationNodeCall::EXPRESSION:
+                pCall->setType(CNormalCall::EXPRESSION);
+                break;
+              case CEvaluationNodeCall::FUNCTION:
+                pCall->setType(CNormalCall::FUNCTION);
+                break;
+              case CEvaluationNodeCall::INVALID:
+                pCall->setType(CNormalCall::INVALID);
+                break;
+            }
         }
     }
 

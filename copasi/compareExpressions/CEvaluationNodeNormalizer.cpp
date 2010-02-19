@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/09/16 11:59:44 $
+//   $Date: 2010/02/19 15:27:55 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -53,6 +58,9 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalize(const CEvaluationNode* pNo
             break;
           case CEvaluationNode::CONSTANT:
             pResult = normalizeCEvaluationNodeConstant(dynamic_cast<const CEvaluationNodeConstant*>(pNode));
+            break;
+          case CEvaluationNode::DELAY:
+            pResult = normalizeCEvaluationNodeDelay(dynamic_cast<const CEvaluationNodeDelay*>(pNode));
             break;
           case CEvaluationNode::OPERATOR:
             pResult = normalizeCEvaluationNodeOperator(dynamic_cast<const CEvaluationNodeOperator*>(pNode));
@@ -233,7 +241,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
           case CEvaluationNodeFunction::RNORMAL:
             //case CEvaluationNodeFunction::DELAY:
             // normalize all children
-            pResult = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType()), "");
+            pResult = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
             pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
             if (pTmpResult != NULL)
@@ -277,6 +285,60 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
   return pResult;
 }
 
+CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeDelay(const CEvaluationNodeDelay* pNode)
+{
+  CEvaluationNodeDelay* pResult = NULL;
+
+  if (pNode != NULL)
+    {
+      CEvaluationNode* pTmpResult = NULL;
+      CCopasiNode<std::string>* pTmpNode = NULL;
+
+      switch ((CEvaluationNodeDelay::SubType)CEvaluationNode::subType(pNode->getType()))
+        {
+          case CEvaluationNodeDelay::INVALID:
+            break;
+          case CEvaluationNodeDelay::DELAY:
+            pResult = dynamic_cast<CEvaluationNodeDelay*>(CEvaluationNode::create(pNode->getType(), pNode->getData()));
+            // add normalized call nodes
+            const std::vector<CEvaluationNode*>& callNodes = pNode->getListOfChildNodes();
+            std::vector<CEvaluationNode*>::const_iterator it = callNodes.begin(), endit = callNodes.end();
+
+            while (it != endit)
+              {
+                pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(*it));
+
+                if (pTmpResult != NULL)
+                  {
+                    pResult->addChild(pTmpResult);
+                  }
+                else
+                  {
+                    // delete all newly created call nodes
+                    while (!pResult->getListOfChildNodes().empty())
+                      {
+                        pTmpNode = pResult->getChild();
+                        pResult->removeChild(pTmpNode);
+                        delete pTmpNode;
+                      }
+
+                    delete pResult;
+                    pResult = NULL;
+                    break;
+                  }
+
+                ++it;
+              }
+
+            break;
+        }
+
+      if (pResult == NULL) pResult = static_cast<CEvaluationNodeDelay*>(pNode->copyBranch());
+    }
+
+  return pResult;
+}
+
 CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeCall(const CEvaluationNodeCall* pNode)
 {
   CEvaluationNodeCall* pResult = NULL;
@@ -292,7 +354,6 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeCall(const C
             break;
           case CEvaluationNodeCall::EXPRESSION:
           case CEvaluationNodeCall::FUNCTION:
-          case CEvaluationNodeCall::DELAY:
             pResult = dynamic_cast<CEvaluationNodeCall*>(CEvaluationNode::create(pNode->getType(), pNode->getData()));
             // add normalized call nodes
             const std::vector<CEvaluationNode*>& callNodes = pNode->getListOfChildNodes();
@@ -360,7 +421,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeChoice(const
           case CEvaluationNodeChoice::IF:
             // create a new choice node with normalized if, true and false
             // elements
-            pResult = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "");
+            pResult = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "if");
             // if element
             pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
@@ -436,7 +497,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeLogical(cons
           case CEvaluationNodeLogical::NE:
           case CEvaluationNodeLogical::LT:
           case CEvaluationNodeLogical::LE:
-            pResult = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()), "");
+            pResult = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
             pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
             if (pTmpResult != NULL)
@@ -463,7 +524,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeLogical(cons
             break;
           case CEvaluationNodeLogical::GT:
             // turn the order of the operands and change to LT
-            pResult = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "");
+            pResult = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "<");
             pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
 
             if (pTmpResult != NULL)
@@ -490,7 +551,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeLogical(cons
             break;
           case CEvaluationNodeLogical::GE:
             // turn the order of the operands and change to LE
-            pResult = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE, "");
+            pResult = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE, "<=");
             pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
 
             if (pTmpResult != NULL)
@@ -676,7 +737,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMultiplyNode(const CEvaluat
                     }
                 }
 
-              if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
+              if (pChild2 && CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
                   if (fabs(pChild2->value() - 1.0) < ZERO)
                     {
@@ -1115,11 +1176,37 @@ void CEvaluationNodeNormalizer::findChainNodes(CEvaluationNodeOperator* pNode, s
 CEvaluationNodeOperator* CEvaluationNodeNormalizer::buildOperatorBranchFromChain(CEvaluationNodeOperator::SubType subType, const std::vector<CEvaluationNode*>& chainNodes)
 {
   CEvaluationNodeOperator* pResult = NULL;
+  std::string data;
+
+  switch (subType)
+    {
+      case CEvaluationNodeOperator::POWER:
+        data = "^";
+        break;
+      case CEvaluationNodeOperator::MULTIPLY:
+        data = "*";
+        break;
+      case CEvaluationNodeOperator::DIVIDE:
+        data = "/";
+        break;
+      case CEvaluationNodeOperator::MODULUS:
+        data = "%";
+        break;
+      case CEvaluationNodeOperator::PLUS:
+        data = "+";
+        break;
+      case CEvaluationNodeOperator::MINUS:
+        data = "-";
+        break;
+      default:
+        fatalError();
+        break;
+    }
 
   if (chainNodes.size() > 1)
     {
       std::vector<CEvaluationNode*>::const_reverse_iterator it = chainNodes.rbegin(), endit = chainNodes.rend();
-      CEvaluationNodeOperator* pTmpOperator = new CEvaluationNodeOperator(subType, "");
+      CEvaluationNodeOperator* pTmpOperator = new CEvaluationNodeOperator(subType, data);
       // add the first child
       pTmpOperator->addChild(*it);
       ++it;
@@ -1128,7 +1215,7 @@ CEvaluationNodeOperator* CEvaluationNodeNormalizer::buildOperatorBranchFromChain
       while (it != endit)
         {
           pTmpOperator->addChild(*it);
-          pResult = new CEvaluationNodeOperator(subType, "");
+          pResult = new CEvaluationNodeOperator(subType, data);
           pResult->addChild(pTmpOperator);
           pTmpOperator = pResult;
           ++it;
