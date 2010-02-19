@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:27:55 $
+//   $Author: shoops $
+//   $Date: 2010/02/19 19:06:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -292,21 +292,19 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeDelay(const 
   if (pNode != NULL)
     {
       CEvaluationNode* pTmpResult = NULL;
-      CCopasiNode<std::string>* pTmpNode = NULL;
 
       switch ((CEvaluationNodeDelay::SubType)CEvaluationNode::subType(pNode->getType()))
         {
           case CEvaluationNodeDelay::INVALID:
             break;
           case CEvaluationNodeDelay::DELAY:
-            pResult = dynamic_cast<CEvaluationNodeDelay*>(CEvaluationNode::create(pNode->getType(), pNode->getData()));
-            // add normalized call nodes
-            const std::vector<CEvaluationNode*>& callNodes = pNode->getListOfChildNodes();
-            std::vector<CEvaluationNode*>::const_iterator it = callNodes.begin(), endit = callNodes.end();
+            pResult = new CEvaluationNodeDelay((CEvaluationNodeDelay::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
+            pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
-            while (it != endit)
+            if (pTmpResult != NULL)
               {
-                pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(*it));
+                pResult->addChild(pTmpResult);
+                pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
 
                 if (pTmpResult != NULL)
                   {
@@ -314,26 +312,23 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeDelay(const 
                   }
                 else
                   {
-                    // delete all newly created call nodes
-                    while (!pResult->getListOfChildNodes().empty())
-                      {
-                        pTmpNode = pResult->getChild();
-                        pResult->removeChild(pTmpNode);
-                        delete pTmpNode;
-                      }
-
                     delete pResult;
                     pResult = NULL;
-                    break;
                   }
-
-                ++it;
+              }
+            else
+              {
+                delete pResult;
+                pResult = NULL;
               }
 
             break;
         }
 
-      if (pResult == NULL) pResult = static_cast<CEvaluationNodeDelay*>(pNode->copyBranch());
+      if (pResult == NULL)
+        {
+          pResult = static_cast<CEvaluationNodeDelay*>(pNode->copyBranch());
+        }
     }
 
   return pResult;
