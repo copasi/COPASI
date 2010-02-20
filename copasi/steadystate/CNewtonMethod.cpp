@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/18 17:00:58 $
+//   $Date: 2010/02/20 16:00:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -710,38 +710,16 @@ bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 
 C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particlefluxes)
 {
-  C_FLOAT64 tmp, store = 0;
-
-  // We look at all ODE determined entity and dependent species rates.
-  const C_FLOAT64 * pIt = particlefluxes.array();
-  const C_FLOAT64 * pEnd = pIt + particlefluxes.size();
-  const C_FLOAT64 * pAtol = mAtol.array();
-  CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
-
-  for (; pIt != pEnd; ++pIt, ++pAtol, ++ppEntity)
-    {
-      tmp = fabs(*pIt) / std::min(*pAtol, std::max(100.0 * DBL_MIN, fabs((*ppEntity)->getValue())));
-
-      if (tmp > store)
-        store = tmp;
-
-      if (isnan(tmp))
-        {
-          store = std::numeric_limits< C_FLOAT64 >::infinity();
-          break;
-        }
-    }
+  C_FLOAT64 tmp;
 
   // New criterion: We solve Jacobian * x = current rates an compare x with the current state
   // Calculate the Jacobian
-  calculateJacobianX(store);
+  calculateJacobianX(*mpSSResolution);
 
   // Invert the Jacobian
   C_INT info = 0;
   char T = 'T'; /* difference between fortran's and c's matrix storage */
   C_INT one = 1;
-
-  // DebugFile << "Jacobian: " << *mpJacobianX << std::endl;
 
   /* We use dgetrf_ and dgetrs_ to solve
       mJacobian * b = mH for b (the result is in mdxdt) */
@@ -807,7 +785,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
           if (mKeepProtocol)
             mMethodLog << "    Target criterion failed. Jacobian could not be inverted.\n";
 
-          return store;
+          return std::numeric_limits< C_FLOAT64 >::infinity();
         }
 
       fatalError();
@@ -860,26 +838,27 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
     *          = 0:  successful exit
     *          < 0:  if info = -i, the i-th argument had an illegal value
     */
-  CVector< C_FLOAT64 > TargetState = particlefluxes;
+  CVector< C_FLOAT64 > Distance = particlefluxes;
 
   dgetrs_(&T, &mDimension, &one, mpJacobianX->array(),
-          &mDimension, mIpiv, TargetState.array(), &mDimension, &info);
+          &mDimension, mIpiv, Distance.array(), &mDimension, &info);
 
   if (info)
     fatalError();
 
-  C_FLOAT64 * pTargetState = TargetState.array();
-  C_FLOAT64 * pTargetStateEnd = pTargetState + TargetState.size();
+  // We look at all ODE determined entity and dependent species rates.
+  C_FLOAT64 * pDistance = Distance.array();
+  C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
   C_FLOAT64 * pCurrentState = mpSteadyState->beginIndependent();
-  pAtol = mAtol.array();
+  const C_FLOAT64 * pAtol = mAtol.array();
 
   C_FLOAT64 AlternateTarget1 = 0.0;
   C_FLOAT64 AlternateTarget2 = 0.0;
 
-  for (; pTargetState != pTargetStateEnd; ++pTargetState, ++pCurrentState)
+  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState)
     {
       // TODO CRITICAL prevent division by 0
-      tmp = fabs(*pTargetState) / std::max(fabs(*pCurrentState), *pAtol);
+      tmp = fabs(*pDistance) / std::max(fabs(*pCurrentState), *pAtol);
 
       if (tmp > AlternateTarget1)
         {
@@ -887,15 +866,9 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
         }
 
       AlternateTarget2 += tmp * tmp;
-
-      //      std::cout << *pTargetState << ", " << *pCurrentState << ", " << *pAtol << ", " << tmp << std::endl;
     }
 
-  AlternateTarget2 = sqrt(AlternateTarget2) / TargetState.size();
-
-//  std::cout << "Alternate Target 1: " << AlternateTarget1 << std::endl;
-//  std::cout << "Alternate Target 2: " << AlternateTarget2 << std::endl;
-//  std::cout << "Old Target:         " << store << std::endl;
+  AlternateTarget2 = sqrt(AlternateTarget2) / Distance.size();
 
   return AlternateTarget2;
 }
