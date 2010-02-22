@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/Cmd5.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.2.30.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2007/01/08 15:25:04 $
+   $Date: 2010/02/22 17:01:50 $
    End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -50,6 +55,8 @@ These notices must be retained in any copies of any part of this
 documentation and/or software.
 
  */
+
+#include <string.h>
 
 #include "copasi.h"
 
@@ -121,15 +128,16 @@ void Cmd5::update(std::istream & stream)
 
 // Cmd5 finalization. Ends an Cmd5 message-digest operation, writing the
 // the message digest and zeroizing the context.
-void Cmd5::finalize ()
+void Cmd5::finalize()
 {
   unsigned char bits[8];
   unsigned C_INT32 index, padLen;
-  static unsigned char PADDING[64] = {
-                                       0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                                     };
+  static unsigned char PADDING[64] =
+  {
+    0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  };
 
   if (mFinalized)
     {
@@ -141,7 +149,7 @@ void Cmd5::finalize ()
   encode(bits, mCount, 8);
 
   // Pad out to 56 mod 64.
-  index = (unsigned C_INT32) ((mCount[0] >> 3) & 0x3f);
+  index = (unsigned C_INT32)((mCount[0] >> 3) & 0x3f);
   padLen = (index < 56) ? (56 - index) : (120 - index);
   update(PADDING, padLen);
 
@@ -175,11 +183,12 @@ std::string Cmd5::digest(std::istream & message)  // digest as a 33-byte ascii-h
   if (!Digest.mFinalized)
     {
       std::cerr << "Cmd5::hex_digest:  Can't get digest if you haven't " <<
-      "finalized the digest!" << std::endl;
+                "finalized the digest!" << std::endl;
       return "";
     }
 
   char * pStr = str;
+
   for (i = 0; i < 16; i++, pStr += 2)
     sprintf(pStr, "%02x", Digest.mDigest[i]);
 
@@ -223,7 +232,7 @@ void Cmd5::init()
 #define S44 21
 
 // Cmd5 basic transformation. Transforms state based on block.
-void Cmd5::transform (unsigned char block[64])
+void Cmd5::transform(unsigned char block[64])
 {
 
   unsigned C_INT32 a = mState[0];
@@ -232,7 +241,7 @@ void Cmd5::transform (unsigned char block[64])
   unsigned C_INT32 d = mState[3];
   unsigned C_INT32 x[16];
 
-  decode (x, block, 64);
+  decode(x, block, 64);
 
   assert(!mFinalized);  // not just a user error, since the method is private
 
@@ -319,17 +328,17 @@ void Cmd5::transform (unsigned char block[64])
 
 // Encodes input (UINT4) into output (unsigned char). Assumes len is
 // a multiple of 4.
-void Cmd5::encode (unsigned char *output, unsigned C_INT32 *input, unsigned C_INT32 len)
+void Cmd5::encode(unsigned char *output, unsigned C_INT32 *input, unsigned C_INT32 len)
 {
 
   unsigned int i, j;
 
   for (i = 0, j = 0; j < len; i++, j += 4)
     {
-      output[j] = (unsigned char) (input[i] & 0xff);
-      output[j + 1] = (unsigned char) ((input[i] >> 8) & 0xff);
-      output[j + 2] = (unsigned char) ((input[i] >> 16) & 0xff);
-      output[j + 3] = (unsigned char) ((input[i] >> 24) & 0xff);
+      output[j] = (unsigned char)(input[i] & 0xff);
+      output[j + 1] = (unsigned char)((input[i] >> 8) & 0xff);
+      output[j + 2] = (unsigned char)((input[i] >> 16) & 0xff);
+      output[j + 3] = (unsigned char)((input[i] >> 24) & 0xff);
     }
 }
 
@@ -351,7 +360,7 @@ void Cmd5::decode(unsigned C_INT32 *output,
 
 // ROTATE_LEFT rotates x left n bits.
 
-inline unsigned C_INT32 Cmd5::rotate_left (unsigned C_INT32 x, unsigned C_INT32 n)
+inline unsigned C_INT32 Cmd5::rotate_left(unsigned C_INT32 x, unsigned C_INT32 n)
 {return (x << n) | (x >> (32 - n));}
 
 // F, G, H and I are basic Cmd5 functions.
@@ -374,7 +383,7 @@ inline unsigned C_INT32 Cmd5::H(unsigned C_INT32 x,
 inline unsigned C_INT32 Cmd5::I(unsigned C_INT32 x,
                                 unsigned C_INT32 y,
                                 unsigned C_INT32 z)
-{return y ^ (x | ~z);}
+{return y ^(x | ~z);}
 
 // FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
 // Rotation is separate from addition to prevent recomputation.
