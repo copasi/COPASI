@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229 $
+#   $Revision: 1.229.2.1 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/02/03 18:08:40 $
+#   $Author: shoops $
+#   $Date: 2010/02/22 17:42:57 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229 $ $Author: gauges $ $Date: 2010/02/03 18:08:40 $
+# $Revision: 1.229.2.1 $ $Author: shoops $ $Date: 2010/02/22 17:42:57 $
 ######################################################################
 
 LIB = UI
@@ -381,8 +381,7 @@ contains(USE_LICENSE, COM) {
 }
 #endif // COPAS_LICENSE_COM
 
-DISTFILES += UI.vcproj \
-             icons/Copasi.ico \
+DISTFILES += icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \
              icons/CopasiDoc.ico \
              icons/CopasiDoc??-Alpha.xpm \

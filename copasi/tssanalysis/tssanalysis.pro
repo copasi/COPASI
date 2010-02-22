@@ -1,10 +1,15 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/tssanalysis.pro,v $
-#   $Revision: 1.10 $
+#   $Revision: 1.10.2.1 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/04/21 16:20:02 $
+#   $Date: 2010/02/22 17:43:01 $
 # End CVS Header
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -34,6 +39,3 @@ SOURCES += CILDMMethod.cpp \
            CTSSAProblem.cpp \
            CTSSATask.cpp \
            CCSPMethod.cpp
-
-
-DISTFILES += tssanalysis.vcproj
