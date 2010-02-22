@@ -37,6 +37,8 @@ goto CONFIGURE
 :QTDIR_NotSet
 set QMAKE=qmake
 
+:CONFIGURE
+
 rem Clean
 del /S Makefile*
 del copasi\commandline\debug\CConfigurationFile.obj
@@ -50,7 +52,6 @@ del copasi\CopasiUI\release\main.obj
 del copasi\CopasiSE\debug\CopasiSE.obj
 del copasi\CopasiSE\release\CopasiSE.obj
 
-:CONFIGURE
 cd copasi
 echo Executing in copasi:
 
