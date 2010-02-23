@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.61.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/11/20 18:24:25 $
+//   $Author: ssahle $
+//   $Date: 2010/02/23 14:54:25 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -1806,6 +1811,13 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   /* Random Seed */
   // nothing to be done here
+
+  //events are not supported at the moment
+  if (pTP->getModel()->getEvents().size() > 0)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 23);
+      return false;
+    }
 
   return true;
 }

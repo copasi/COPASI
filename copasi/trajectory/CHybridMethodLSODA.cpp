@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.25.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/11/20 18:24:25 $
+//   $Author: ssahle $
+//   $Date: 2010/02/23 14:54:25 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -1717,6 +1722,13 @@ bool CHybridMethodLSODA::isValidProblem(const CCopasiProblem * pProblem)
 
   if (mLowerStochLimit > mUpperStochLimit)
     CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
+
+  //events are not supported at the moment
+  if (pTP->getModel()->getEvents().size() > 0)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 23);
+      return false;
+    }
 
   return true;
 }

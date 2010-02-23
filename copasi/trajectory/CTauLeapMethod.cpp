@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.27.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/03 21:22:30 $
+//   $Author: ssahle $
+//   $Date: 2010/02/23 14:54:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -564,6 +564,13 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
     {
       // tau-value is not positive
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 11, mTau);
+      return false;
+    }
+
+  //events are not supported at the moment
+  if (pTP->getModel()->getEvents().size() > 0)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 23);
       return false;
     }
 
