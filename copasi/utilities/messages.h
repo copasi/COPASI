@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144 $
+//   $Revision: 1.144.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/15 22:02:09 $
+//   $Author: ssahle $
+//   $Date: 2010/02/23 14:58:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,7 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a species with an ODE rule.\nStochastic simulation is not possible."},
   {MCTrajectoryMethod + 21, "CTrajectoryMethod (21): The model contains a compartment with an ODE rule.\nStochastic simulation is not possible."},
   {MCTrajectoryMethod + 22, "CTrajectoryMethod (22): The quantity units in the model is dimensionless. \nIt is not possible to calculate particle numbers. Stochastic simulation is not possible."},
+  {MCTrajectoryMethod + 23, "CTrajectoryMethod (23): The model contains events. Stochastic simulation is not possible with this version of COPASI."},
 
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
