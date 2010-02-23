@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.63.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/18 20:01:58 $
+//   $Author: ssahle $
+//   $Date: 2010/02/23 15:16:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,18 +189,18 @@ CopasiPlot::CopasiPlot(QWidget* parent):
     QwtPlot(parent),
     mCurveMap(),
     mpPlotSpecification(NULL),
-    mpZoomer(NULL),
     mNextPlotTime(),
-    mIgnoreUpdate(false)
+    mIgnoreUpdate(false),
+    mpZoomer(NULL)
 {}
 
 CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
     QwtPlot(parent),
     mCurveMap(),
     mpPlotSpecification(NULL),
-    mpZoomer(NULL),
     mNextPlotTime(),
-    mIgnoreUpdate(false)
+    mIgnoreUpdate(false),
+    mpZoomer(NULL)
 {
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
