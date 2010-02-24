@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.73.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/19 15:37:22 $
+//   $Date: 2010/02/24 14:47:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -598,12 +598,32 @@ void CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
   // make sure the SBML Document already exists and that it has a Model set
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
+  if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 3))
+    {
+      check_for_spatial_size_units(dataModel, this->mIncompatibilities);
+    }
+
   CCopasiVector<CMetab>::const_iterator it = dataModel.getModel()->getMetabolites().begin(), endit = dataModel.getModel()->getMetabolites().end();
+  this->mSpatialSizeUnitsSpecies.clear();
 
   while (it != endit)
     {
       createMetabolite(**it);
       ++it;
+    }
+
+  if (!this->mSpatialSizeUnitsSpecies.empty())
+    {
+      std::ostringstream os;
+      std::set<std::string>::const_iterator sit = this->mSpatialSizeUnitsSpecies.begin(), sendit = this->mSpatialSizeUnitsSpecies.end();
+
+      while (sit != sendit)
+        {
+          os << *sit << ", ";
+          ++sit;
+        }
+
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 84, os.str().substr(0, os.str().size() - 2).c_str());
     }
 }
 
@@ -624,6 +644,18 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
           pSBMLSpecies = this->mpSBMLDocument->getModel()->createSpecies();
           this->mCOPASI2SBMLMap[&metab] = pSBMLSpecies;
           pSBMLSpecies->setId(sbmlId);
+        }
+      else
+        {
+          // clear the spatialSizeUnits attribute if there is any
+          if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 3))
+            {
+              if (pSBMLSpecies->isSetSpatialSizeUnits())
+                {
+                  pSBMLSpecies->unsetSpatialSizeUnits();
+                  this->mSpatialSizeUnitsSpecies.insert(pSBMLSpecies->getId());
+                }
+            }
         }
     }
   else
@@ -1840,9 +1872,153 @@ void CSBMLExporter::isModelSBMLL2V1Compatible(const CCopasiDataModel& dataModel,
  * If it can be exported, the result vector will be empty, otherwise it will
  * contain a number of messages that specify why it can't be exported.
  */
-void CSBMLExporter::isModelSBMLL2V3Compatible(const CCopasiDataModel& /*dataModel*/, std::vector<SBMLIncompatibility>& /*result*/)
+void CSBMLExporter::isModelSBMLL2V3Compatible(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
 {
-  // there are no special checks for the Level and Version yet
+  // if there is an SBML model, which means the model was imported from SBML,
+  // we have to check for spatial size units on species in the SBML model
+  // because those are not allowed in SBMLLl2V3 and above
+  check_for_spatial_size_units(dataModel, result);
+}
+
+/**
+ * Go through all species in the model and check if the corresponding species
+ * in the SBML model has the spatialSizeUnits attribute set.
+ * This attribute is not supported in SBML L2V3 and above, so we have to get
+ * rid of this attribute when we export to a level equal to or higher than
+ * L2V3.
+ * If the attribute has the same value as the compartments units, we can just
+ * delete it without changing the model, otherwise we have to give a
+ * corresponding warning.
+ */
+void CSBMLExporter::check_for_spatial_size_units(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
+{
+  const SBMLDocument* pSBMLDocument = const_cast<const SBMLDocument*>(const_cast<CCopasiDataModel&>(dataModel).getCurrentSBMLDocument());
+
+  if (pSBMLDocument != NULL)
+    {
+      // check all species in the model if they have a spatial size attribute set
+      // and if it is identical to the unit of the compartment the species is in
+      const CModel* pModel = dataModel.getModel();
+
+      if (pModel != NULL)
+        {
+          CCopasiVector<CMetab>::const_iterator it = pModel->getMetabolites().begin(), endit = pModel->getMetabolites().end();
+          std::set<std::string> badSpecies;
+          const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+          std::map<CCopasiObject*, SBase*>::const_iterator pos;
+          const Species* pSBMLSpecies = NULL;
+          std::string spatialSizeUnits;
+
+          while (it != endit)
+            {
+              pos = copasi2sbmlmap.find(*it);
+
+              if (pos != copasi2sbmlmap.end())
+                {
+                  // check for the spatial size units attribute
+                  pSBMLSpecies = dynamic_cast<const Species*>(pos->second);
+                  assert(pSBMLSpecies != NULL);
+
+                  if (pSBMLSpecies == NULL) continue;
+
+                  if (pSBMLSpecies->isSetSpatialSizeUnits())
+                    {
+                      spatialSizeUnits = pSBMLSpecies->getSpatialSizeUnits();
+                      // check if the units are the same as the one on the species
+                      // compartment
+                      assert(pSBMLDocument->getModel() != NULL);
+                      const Compartment* pCompartment = pSBMLDocument->getModel()->getCompartment(pSBMLSpecies->getCompartment());
+                      assert(pCompartment != NULL);
+
+                      if (pCompartment != NULL)
+                        {
+                          UnitDefinition* pUDef1 = NULL;
+                          UnitDefinition* pUDef2 = NULL;
+
+                          if (pCompartment->isSetUnits())
+                            {
+                              assert(pSBMLDocument->getModel() != NULL);
+
+                              if (pSBMLDocument->getModel() != NULL)
+                                {
+                                  pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId(pCompartment->getUnits(), pSBMLDocument->getModel());
+                                }
+                            }
+                          else
+                            {
+                              // the compartment has the default units associated with the
+                              // symbol length , area or volume depending on the spatial size
+                              // of the compartment
+                              assert(pSBMLDocument->getModel() != NULL);
+
+                              if (pSBMLDocument->getModel() != NULL)
+                                {
+                                  switch (pCompartment->getSpatialDimensions())
+                                    {
+                                      case 0:
+                                        // the species is not allowed to have a
+                                        // spatialDimensionsUnit attribute
+                                        CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 83 , pSBMLSpecies->getId().c_str());
+                                        break;
+                                      case 1:
+                                        pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("length", pSBMLDocument->getModel());
+                                        break;
+                                      case 2:
+                                        pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("area", pSBMLDocument->getModel());
+                                        break;
+                                      case 3:
+                                        pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("volume", pSBMLDocument->getModel());
+                                        break;
+                                      default:
+                                        CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 82 , pCompartment->getId().c_str());
+                                        break;
+                                    }
+                                }
+                            }
+
+                          if (pUDef1 != NULL && pUDef2 != NULL)
+                            {
+                              // compare the two unit definitions
+                              if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUDef1, pUDef2))
+                                {
+                                  // add the species to bad species
+                                  badSpecies.insert(pSBMLSpecies->getId());
+                                }
+                            }
+
+                          // delete the unit definitions
+                          if (pUDef1 != NULL)
+                            {
+                              delete pUDef1;
+                            }
+
+                          if (pUDef2 != NULL)
+                            {
+                              delete pUDef2;
+                            }
+                        }
+                    }
+                }
+
+              ++it;
+            }
+
+          if (!badSpecies.empty())
+            {
+              // create the incompatibility message
+              std::ostringstream os;
+              std::set<std::string>::const_iterator sit = badSpecies.begin(), sendit = badSpecies.end();
+
+              while (sit != sendit)
+                {
+                  os << *sit << ", ";
+                  ++sit;
+                }
+
+              result.push_back(SBMLIncompatibility(2, os.str().substr(0, os.str().size() - 2).c_str()));
+            }
+        }
+    }
 }
 
 /**

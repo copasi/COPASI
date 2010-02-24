@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/incompatibilities.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/26 13:09:51 $
+//   $Date: 2010/02/24 14:47:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -74,6 +79,11 @@ const INCOMPATIBILITY Incompatibilities[] =
     10, 0, 0, SBMLIncompatibility::ERROR,
     "SBML Incompatibility (10): Object that refers the \"%s\" of %s \"%s\" has been referenced in a mathematical expression. This is only allowed for SBML Level 2 Version 2 or above.",
     "Mathematical Expressions in SBML Level 1 or Level 2 Version 1 files can only reference the transient values of compartments, species and global parameters. Referencing reaction fluxes is only supported for SBML Level 2 Version 2 or newer."
+  },
+  {
+    11, 2, 3, SBMLIncompatibility::WARNING,
+    "SBML Incompatibility (11): Warning. The spatialSizeUnits attribute needs to be removed from the following species: %s",
+    "SBML Version before L2V3 allowed the user to set the spatialSizeUnits attribute on a species. When converting such a model to SBML L2V3 or higher, the attribute has to be removed. If the units given in the attribute are the same as the ones given for the compartment of the species, the model does not change when the attribute is removed. In some cases COPASI thinks that the units given in the attribute are different from the units of the compartment. In these cases you will see this warning."
   },
   // This must be the last element of the message list! Do not delete!
   {9999, 0, 0, SBMLIncompatibility::UNDEFINED, NULL, NULL}

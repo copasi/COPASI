@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/26 13:09:51 $
+//   $Date: 2010/02/24 14:47:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -74,6 +79,7 @@ protected:
   bool mDocumentDisowned;
   bool mExportCOPASIMIRIAM;
   std::map<std::string, Parameter*> mParameterReplacementMap;
+  std::set<std::string> mSpatialSizeUnitsSpecies;
 
 public:
   /**
@@ -285,6 +291,18 @@ protected:
    * contain a number of messages that specify why it can't be exported.
    */
   static void isModelSBMLL2V3Compatible(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+
+  /**
+   * Go through all species in the model and check if the corresponding species
+   * in the SBML model has the spatialSizeUnits attribute set.
+   * This attribute is not supported in SBML L2V3 and above, so we have to get
+   * rid of this attribute when we export to a level equal to or higher than
+   * L2V3.
+   * If the attribute has the same value as the compartments units, we can just
+   * delete it without changing the model, otherwise we have to give a
+   * corresponding warning.
+   */
+  static void check_for_spatial_size_units(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
 
   /**
    * Checks wether the model contains a metabolite that is defined by an ODE

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.82.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/27 09:56:11 $
+//   $Date: 2010/02/24 14:47:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -457,13 +462,6 @@ protected:
   static void normalizeSBMLUnit(Unit* pU);
 
   /**
-   * This method takes the id of a unit as it can appear in an SBML file, and
-   * returns a new UnitDefinition object for that id.
-   */
-  static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId,
-      const Model* pSBMLModel);
-
-  /**
    * Imports all initial assignments if there are any.
    */
   void importInitialAssignments(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlMap, const CModel* pCOPASIModel);
@@ -586,6 +584,13 @@ public:
    * given in cubic meters are identical.
    */
   static bool areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2);
+
+  /**
+   * This method takes the id of a unit as it can appear in an SBML file, and
+   * returns a new UnitDefinition object for that id.
+   */
+  static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId,
+      const Model* pSBMLModel);
 
   CProcessReport* getImportHandlerAddr();
 
