@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.25.2.1 $
+//   $Revision: 1.25.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2010/02/23 14:54:25 $
+//   $Date: 2010/02/24 14:02:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1683,23 +1683,9 @@ std::ostream & operator<<(std::ostream & os, const CHybridLSODABalance & d)
 //virtual
 bool CHybridMethodLSODA::isValidProblem(const CCopasiProblem * pProblem)
 {
-  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
-  //      CCopasiMessage
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 7);
-      return false;
-    }
+  if (!CTrajectoryMethod::isValidProblem(pProblem)) return false;
 
   const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
-
-  if (!pTP)
-    {
-      //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
-      return false;
-    }
 
   if (pTP->getDuration() < 0.0)
     {
@@ -1708,12 +1694,49 @@ bool CHybridMethodLSODA::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  //check for rules
+  C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
+          return false;
+        }
+    }
+
+  imax = pTP->getModel()->getNumMetabs();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
+          return false;
+        }
+    }
+
+  imax = pTP->getModel()->getCompartments().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
+          return false;
+        }
+    }
+
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
 
   if (message != "")
     {
       //model not suitable, message describes the problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
       return false;
     }
 
@@ -1721,12 +1744,12 @@ bool CHybridMethodLSODA::isValidProblem(const CCopasiProblem * pProblem)
   mUpperStochLimit = * getValue("Upper Limit").pDOUBLE;
 
   if (mLowerStochLimit > mUpperStochLimit)
-    CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
+    CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
 
   //events are not supported at the moment
   if (pTP->getModel()->getEvents().size() > 0)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 23);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
       return false;
     }
 

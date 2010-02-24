@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.76.2.1 $
+//   $Revision: 1.76.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2010/02/23 14:54:25 $
+//   $Date: 2010/02/24 14:02:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -614,14 +614,14 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (pTP->getDuration() < 0.0)
     {
       //back integration not possible
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 9);
       return false;
     }
 
   if (pTP->getModel()->getTotSteps() < 1)
     {
       //at least one reaction necessary
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 17);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
       return false;
     }
 
@@ -633,7 +633,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
         {
           //ode rule found
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 18);
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
           return false;
         }
     }
@@ -645,7 +645,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
         {
           //ode rule found
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 20);
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
           return false;
         }
     }
@@ -657,7 +657,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
         {
           //ode rule found
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 21);
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
           return false;
         }
     }
@@ -676,27 +676,27 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (message != "")
     {
       //model not suitable, message describes the problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
       return false;
     }
 
   if (* getValue("Max Internal Steps").pINT <= 0)
     {
       //max steps should be at least 1
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 15);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 15);
       return false;
     }
 
   if (pTP->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 22);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 22);
       return false;
     }
 
   //events are not supported at the moment
   if (pTP->getModel()->getEvents().size() > 0)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 23);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
       return false;
     }
 

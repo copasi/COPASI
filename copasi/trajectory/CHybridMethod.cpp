@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.61.2.1 $
+//   $Revision: 1.61.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2010/02/23 14:54:25 $
+//   $Date: 2010/02/24 14:02:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1722,26 +1722,14 @@ std::ostream & operator<<(std::ostream & os, const CHybridBalance & d)
 //virtual
 bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 7);
-      return false;
-    }
+  if (!CTrajectoryMethod::isValidProblem(pProblem)) return false;
 
   const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
-
-  if (!pTP)
-    {
-      //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
-      return false;
-    }
 
   if (pTP->getDuration() < 0.0)
     {
       //back integration not possible
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 9);
       return false;
     }
 
@@ -1753,7 +1741,7 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
       if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
         {
           //ode rule found
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 18);
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
           return false;
         }
 
@@ -1766,6 +1754,30 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
                 }*/
     }
 
+  imax = pTP->getModel()->getNumMetabs();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
+          return false;
+        }
+    }
+
+  imax = pTP->getModel()->getCompartments().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
+          return false;
+        }
+    }
+
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
@@ -1773,7 +1785,7 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (message != "")
     {
       //model not suitable, message describes the problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
       return false;
     }
 
@@ -1781,7 +1793,7 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (* getValue("Max Internal Steps").pINT <= 0)
     {
       //max steps should be at least 1
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 15);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 15);
       return false;
     }
 
@@ -1791,7 +1803,7 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (mLowerStochLimit > mUpperStochLimit)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
       return false;
     }
 
@@ -1799,7 +1811,7 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (* getValue("Runge Kutta Stepsize").pDOUBLE <= 0.0)
     {
       // Runge Kutta Stepsize must be positive
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 13);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 13);
       return false;
     }
 
@@ -1815,7 +1827,7 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
   //events are not supported at the moment
   if (pTP->getModel()->getEvents().size() > 0)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 23);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
       return false;
     }
 

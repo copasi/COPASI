@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27.2.1 $
+//   $Revision: 1.27.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2010/02/23 14:54:25 $
+//   $Date: 2010/02/24 14:02:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -543,8 +543,52 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (pTP->getDuration() < 0.0)
     {
       //back integration not possible
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 9);
       return false;
+    }
+
+  if (pTP->getModel()->getTotSteps() < 1)
+    {
+      //at least one reaction necessary
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
+      return false;
+    }
+
+  //check for ODE rules
+  C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
+          return false;
+        }
+    }
+
+  imax = pTP->getModel()->getNumMetabs();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
+          return false;
+        }
+    }
+
+  imax = pTP->getModel()->getCompartments().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
+          return false;
+        }
     }
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
@@ -554,7 +598,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (message != "")
     {
       //model not suitable, message describes the problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
       return false;
     }
 
@@ -563,14 +607,20 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (mTau <= 0.0)
     {
       // tau-value is not positive
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 11, mTau);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 11, mTau);
+      return false;
+    }
+
+  if (pTP->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 22);
       return false;
     }
 
   //events are not supported at the moment
   if (pTP->getModel()->getEvents().size() > 0)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 23);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
       return false;
     }
 
