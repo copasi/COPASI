@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.63.2.1 $
+//   $Revision: 1.63.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/02/23 15:16:43 $
+//   $Author: shoops $
+//   $Date: 2010/02/25 17:15:20 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -337,7 +337,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
             break;
 
           default :
-            mIgnoreUpdate = true;
+            mIgnoreUpdate = false;
             fatalError();
             break;
         }
@@ -365,7 +365,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setAxisAutoScale(yLeft);
 
   replot();
-  mIgnoreUpdate = true;
+  mIgnoreUpdate = false;
 
   return true; //TODO really check!
 }
