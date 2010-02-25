@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.64.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/11 19:42:49 $
+//   $Date: 2010/02/25 17:16:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,6 +183,13 @@ bool CFitProblem::elevateChildren()
 {
   // This call is necessary since CFitProblem is derived from COptProblem.
   if (!COptProblem::elevateChildren()) return false;
+
+  // Due to a naming conflict the following parameters may have been overwritten during
+  // the load of a CopasiML file we replace them with default values if that was the case.
+  mpParmSteadyStateCN =
+    assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
+  mpParmTimeCourseCN =
+    assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
 
   CCopasiVectorN< CCopasiTask > * pTasks = NULL;
   CCopasiDataModel* pDataModel = getObjectDataModel();
