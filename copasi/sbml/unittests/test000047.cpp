@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000047.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/03 09:50:33 $
+//   $Date: 2010/02/25 09:02:23 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -65,9 +70,9 @@ void test000047::test_delay()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  const CEvaluationNodeCall* pCallNode = dynamic_cast<const CEvaluationNodeCall*>(pNode);
-  CPPUNIT_ASSERT(pCallNode != NULL);
-  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
+  const CEvaluationNodeDelay* pDelayNode = dynamic_cast<const CEvaluationNodeDelay*>(pNode);
+  CPPUNIT_ASSERT(pDelayNode != NULL);
+  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pDelayNode->getChild());
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
