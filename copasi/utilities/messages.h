@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144.2.2 $
+//   $Revision: 1.144.2.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/24 14:47:16 $
+//   $Author: shoops $
+//   $Date: 2010/02/25 18:22:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,6 +142,7 @@ const MESSAGES Messages[] =
    "Please verify that the automatic correction represents the intended behavior."},
   {MCXML + 16, "XML (16): Unknown parameter '%s' with type '%s' encountered at line '%d'."},
   {MCXML + 17, "XML (17): Invalid initial state specification encountered at line '%d'."},
+  {MCXML + 18, "XML (18): Unknown method '%s' encountered at line '%d' selecting default '%s'."},
 
   // CCopasiMessage
   {MCCopasiMessage + 1, "Message (1): No more messages."},

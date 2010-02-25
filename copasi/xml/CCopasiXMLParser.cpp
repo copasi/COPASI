@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.1 $
+//   $Revision: 1.215.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/23 17:31:51 $
+//   $Date: 2010/02/25 18:22:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -8653,7 +8653,10 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
               }
             else
               {
-                fatalError();
+                // We use the default method for this task and issue a warning
+                CCopasiMessage(CCopasiMessage::WARNING, MCXML + 18, sType.c_str(),
+                               mParser.getCurrentLineNumber(),
+                               CCopasiMethod::XMLSubType[mCommon.pCurrentTask->getMethod()->getSubType()]);
               }
 
             mCommon.pCurrentTask->getMethod()->setObjectName(name);
