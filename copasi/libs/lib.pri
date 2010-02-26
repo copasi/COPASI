@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/lib.pri,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.4.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/01/28 03:56:28 $ 
+#   $Date: 2010/02/26 16:50:24 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -12,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2009/01/28 03:56:28 $  
+# $Revision: 1.4.2.1 $ $Author: shoops $ $Date: 2010/02/26 16:50:24 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -24,12 +29,12 @@ TARGET = $$LIB
 
 win32 {
   debug {
-    OBJECTS = $$join(COPASI_LIBS, ".lib ../../tmp/debug/", ../../tmp/debug/, .lib)
+    OBJECTS = $$join(COPASI_LIBS, ".lib $$TMPDIR/debug/", $$TMPDIR/debug/, .lib)
     DESTDIR = ../../lib/debug
   }
 
   release {
-    OBJECTS = $$join(COPASI_LIBS, ".lib ../../tmp/release/", ../../tmp/release/, .lib)
+    OBJECTS = $$join(COPASI_LIBS, ".lib $$TMPDIR/release/", $$TMPDIR/release/, .lib)
     DESTDIR = ../../lib/release
   }
 } else {
@@ -40,7 +45,14 @@ win32 {
     $$join(COPASI_LIBS, ".a; $$QMAKE_AR $@ *.o; rm *.o; tar -xzf $$TMPDIR/lib", "tar -xzf $$TMPDIR/lib", ".a; $$QMAKE_AR $@ *.o; rm *.o");
 
   contains(BUILD_OS, Darwin) {
-    BuildLib.commands += ranlib -s $@
+    debug {
+      BuildLib.commands = \
+        touch $@; \
+        $(CHK_DIR_EXISTS) $$DESTDIR || $(MKDIR) $$DESTDIR; \
+        $$join(COPASI_LIBS, ".a $$DESTDIR; cp $$TMPDIR/lib", "cp $$TMPDIR/lib", ".a $$DESTDIR");
+    } else {
+      BuildLib.commands += ranlib -s $@
+    }
   }
 
   BuildLib.target = $$DESTDIR/$(TARGET)

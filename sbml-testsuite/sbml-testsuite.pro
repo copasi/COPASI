@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/sbml-testsuite.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.2.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/07/28 13:51:19 $ 
+#   $Date: 2010/02/26 16:50:39 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -21,7 +26,9 @@ DEPENDPATH += ../copasi/
 INCLUDEPATH += ..
 INCLUDEPATH += ../copasi
 
-COPASI_LIBS += COPASISE
+include(../copasi/app.pri)
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 contains(BUILD_OS, WIN32) {
   CONFIG += console

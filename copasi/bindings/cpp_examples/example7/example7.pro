@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example7/example7.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.2.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/10/13 17:19:37 $ 
+#   $Date: 2010/02/26 16:50:23 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -21,7 +26,9 @@ DEPENDPATH += ../../..
 INCLUDEPATH += ../../../..
 INCLUDEPATH += ../../..
 
-COPASI_LIBS += COPASISE
+include(../../../app.pri)
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 contains(BUILD_OS, WIN32) {
   CONFIG += console
@@ -63,7 +70,7 @@ contains(BUILD_OS, Darwin){
   LIBS = $$join(COPASI_LIBS, ".a  ../../../lib/lib", ../../../lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../copasi/lib/lib", ../../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../../lib/lib", ../../../lib/lib, .a)
 }
 
 

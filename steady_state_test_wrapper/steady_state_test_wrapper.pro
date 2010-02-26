@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/steady_state_test_wrapper/steady_state_test_wrapper.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.1.2.1 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2009/08/17 13:28:40 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/02/26 16:50:24 $ 
 # End CVS Header 
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -20,7 +25,9 @@ DEPENDPATH += ../copasi/
 INCLUDEPATH += ../copasi/
 INCLUDEPATH += ..
 
-COPASI_LIBS += COPASISE
+include(../copasi/app.pri)
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 contains(BUILD_OS, WIN32) {
   LIBS += $$join(COPASI_LIBS, ".lib  ../copasi/lib/", ../copasi/lib/, .lib)

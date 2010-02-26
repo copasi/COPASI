@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/stochastic-testsuite.pro,v $ 
-#   $Revision: 1.11 $ 
+#   $Revision: 1.11.14.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/03/12 01:53:46 $ 
+#   $Date: 2010/02/26 16:50:25 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2008/03/12 01:53:46 $  
+# $Revision: 1.11.14.1 $ $Author: shoops $ $Date: 2010/02/26 16:50:25 $  
 ######################################################################
 
 TEMPLATE = app
@@ -29,7 +34,9 @@ DEPENDPATH += ../copasi/
 INCLUDEPATH += ..
 INCLUDEPATH += ../copasi
 
-COPASI_LIBS += COPASISE
+include(../copasi/app.pri)
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 
 contains(BUILD_OS, WIN32) {
