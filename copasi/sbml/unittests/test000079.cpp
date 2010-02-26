@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000079.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 10:50:34 $
+//   $Date: 2010/02/26 07:14:05 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -23,7 +28,7 @@ CCopasiDataModel* test000079::pCOPASIDATAMODEL = NULL;
 void test000079::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(false, 0, NULL);
+  CCopasiRootContainer::init(0, NULL, false);
   // Create the global data model.
   pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }

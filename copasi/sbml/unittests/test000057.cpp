@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000057.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:39:43 $
+//   $Date: 2010/02/26 07:14:05 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -33,7 +38,7 @@ CCopasiDataModel* test000057::pCOPASIDATAMODEL = NULL;
 void test000057::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(false, 0, NULL);
+  CCopasiRootContainer::init(0, NULL, false);
   // Create the global data model.
   pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
@@ -163,9 +168,11 @@ void test000057::test_bug1006()
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 5);
   CModelValue *pMV1 = NULL, *pMV2 = NULL, *pMV3 = NULL, *pMV4 = NULL, *pMV5 = NULL;
   unsigned int i, iMax = pModel->getModelValues().size();
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       CModelValue* pTmpMV = pModel->getModelValues()[i];
+
       if (pTmpMV->getSBMLId() == pParameter1->getId())
         {
           pMV1 = pTmpMV;
@@ -187,6 +194,7 @@ void test000057::test_bug1006()
           pMV5 = pTmpMV;
         }
     }
+
   CPPUNIT_ASSERT(pMV1 != NULL);
   CPPUNIT_ASSERT(pMV2 != NULL);
   CPPUNIT_ASSERT(pMV3 != NULL);
@@ -330,4 +338,4 @@ const char* test000057::MODEL_STRING =
   "    </listOfInitialAssignments>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;

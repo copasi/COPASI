@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000070.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:41:10 $
+//   $Date: 2010/02/26 07:14:05 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,7 +34,7 @@ CCopasiDataModel* test000070::pCOPASIDATAMODEL = NULL;
 void test000070::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(false, 0, NULL);
+  CCopasiRootContainer::init(0, NULL, false);
   // Create the global data model.
   pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
@@ -45,7 +50,8 @@ void test000070::test_bug1084()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   // now try to export several times
   unsigned int i, iMax = 5;
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       std::string s = pDataModel->exportSBMLToString(NULL, 2, 3);
       CPPUNIT_ASSERT(!s.empty());
@@ -391,4 +397,4 @@ const char* test000070::MODEL_STRING1 =
   "  </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
