@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.151.2.2 $
+#   $Revision: 1.151.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/26 16:50:25 $
+#   $Date: 2010/02/26 17:27:15 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.151.2.2 $ $Author: shoops $ $Date: 2010/02/26 16:50:25 $
+# $Revision: 1.151.2.3 $ $Author: shoops $ $Date: 2010/02/26 17:27:15 $
 ######################################################################
 
 TEMPLATE = app
@@ -35,8 +35,8 @@ INCLUDEPATH += ..
 
 include(../app.pri)
 
-COPASI_LIBS += $${COPASI_LIBS_SE}
 COPASI_LIBS += $${COPASI_LIBS_UI}
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 contains(BUILD_OS, WIN32) {
   RC_FILE = CopasiUI.rc
