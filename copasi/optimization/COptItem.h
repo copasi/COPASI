@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:20 $
+//   $Date: 2010/02/26 16:01:20 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -237,6 +242,20 @@ private:
    * properly initialized.
    */
   void initializeParameter();
+
+  /**
+   * Compile the lower bound to hold the value given by the bound
+   * @param const std::vector< CCopasiContainer * > & listOfContainer
+   * @return bool success
+   */
+  bool compileLowerBound(const std::vector< CCopasiContainer * > & listOfContainer);
+
+  /**
+   * Compile the upper bound to hold the value given by the bound
+   * @param const std::vector< CCopasiContainer * > & listOfContainer
+   * @return bool success
+   */
+  bool compileUpperBound(const std::vector< CCopasiContainer * > & listOfContainer);
 
   //Attributes:
 protected:
