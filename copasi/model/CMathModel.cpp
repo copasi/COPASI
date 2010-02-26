@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/16 00:09:26 $
+//   $Date: 2010/02/26 18:01:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,8 +251,8 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
 
       // Process the events for which we have found a root.
       // A found root is indicated by roots[i] = 1 or 0 otherwise.
-      while (*ppEvent == pProcessEvent &&
-             pFoundRoot != pFoundRootEnd)
+      while (pFoundRoot != pFoundRootEnd &&
+             *ppEvent == pProcessEvent)
         {
           // We must only toggle the roots which are marked.
           if (*pFoundRoot > 0)
