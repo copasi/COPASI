@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.9.2.1 $
+//   $Revision: 1.9.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/26 20:50:58 $
+//   $Author: gauges $
+//   $Date: 2010/03/01 08:56:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(false, 0, NULL);
+      CCopasiRootContainer::init(0, NULL, false);
     }
 
   catch (copasi::autoexcept &e)
@@ -77,9 +77,9 @@ int main(int argc, char *argv[])
   CTrajectoryTask* pTrajectoryTask = NULL;
 
   std::string CWD = COptions::getPWD();
-  double startTime = strToDouble(pStartTime, &pStartTime);
-  double endTime = strToDouble(pEndTime, &pEndTime);
-  double stepNumber = strToDouble(pStepNumber, &pStepNumber);
+  double startTime = strToDouble(pStartTime, NULL);
+  double endTime = strToDouble(pEndTime, NULL);
+  double stepNumber = strToDouble(pStepNumber, NULL);
 
   if (startTime < 0.0)
     {
