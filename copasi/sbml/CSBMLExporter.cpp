@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.73.2.1 $
+//   $Revision: 1.73.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/24 14:47:16 $
+//   $Date: 2010/03/02 17:49:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5118,37 +5118,6 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                                     }
                                 }
                             }
-                        }
-                    }
-                }
-            }
-        }
-      else if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
-        {
-          std::vector<CCopasiContainer*> containers;
-          containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-          const CCopasiObject* pObject = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
-          assert(pObject);
-
-          if (pObject->isReference())
-            {
-              const CCopasiObject* pParent = pObject->getObjectParent();
-              // check if the parent is a metabolite
-              const CMetab* pMetab = dynamic_cast<const CMetab*>(pParent);
-
-              if (pMetab != NULL)
-                {
-                  // check if pLeft is a number node that
-                  // corresponds to Avogadros number
-                  if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::NUMBER && (((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pLeft->getType())) == CEvaluationNodeNumber::DOUBLE || ((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pLeft->getType())) == CEvaluationNodeNumber::ENOTATION))
-                    {
-                      double value = dynamic_cast<const CEvaluationNodeNumber*>(pLeft)->value();
-
-                      if ((factor - value) / factor <= 1e-3)
-                        {
-                          // copyBranch should be OK since the node has no
-                          // children anyway
-                          pResult = pRight->copyBranch();
                         }
                     }
                 }
