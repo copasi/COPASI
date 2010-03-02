@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.248 $
+//   $Revision: 1.248.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/19 15:39:30 $
+//   $Date: 2010/03/02 12:42:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -4781,6 +4781,21 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
 
 void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME, CModelEntity::Status status, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
+  if (!rule->isSetMath())
+    {
+      std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(pME);
+      assert(pos != copasi2sbmlmap.end());
+      std::string id = "@";
+
+      if (pos != copasi2sbmlmap.end())
+        {
+          id = pos->second->getId();
+        }
+
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 85 , id.c_str());
+      return;
+    }
+
   if (rule->getTypeCode() == SBML_ASSIGNMENT_RULE)
     {
       this->checkRuleMathConsistency(rule, copasi2sbmlmap);
