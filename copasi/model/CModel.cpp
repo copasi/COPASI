@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.388 $
+//   $Revision: 1.388.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/10 19:08:53 $
+//   $Date: 2010/03/02 15:56:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1885,6 +1885,8 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
                                 const C_FLOAT64 & derivationFactor,
                                 const C_FLOAT64 & /* resolution */)
 {
+  C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
+
   unsigned C_INT32 Dim = mCurrentState.getNumIndependent();
   unsigned C_INT32 Col;
 
@@ -1923,8 +1925,8 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
         }
       else
         {
-          X1 = Store * (1.0 + derivationFactor);
-          X2 = Store * (1.0 - derivationFactor);
+          X1 = Store * (1.0 + DerivationFactor);
+          X2 = Store * (1.0 - DerivationFactor);
         }
 
       InvDelta = 1.0 / (X2 - X1);
@@ -3796,7 +3798,7 @@ CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const 
   if (reducedModel)
     Atol.resize(mStateTemplate.getNumIndependent());
   else
-    Atol.resize(mStateTemplate.getNumIndependent() + mStateTemplate.getNumDependent());
+    Atol.resize(mStateTemplate.getNumIndependent() + getNumDependentReactionMetabs());
 
   C_FLOAT64 * pAtol = Atol.array();
   C_FLOAT64 * pEnd = pAtol + Atol.size();
