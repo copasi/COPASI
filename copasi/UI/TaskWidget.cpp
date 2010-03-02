@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.50.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/04 14:07:09 $
+//   $Date: 2010/03/02 17:19:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,7 +117,7 @@ void TaskWidget::addMethodParameterTable(unsigned int row)
     {
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
 
-      mpMethodLayout = new QGridLayout(this);
+      mpMethodLayout = new QGridLayout();
       mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->setStretchFactor(mpMethodLayout, 10);
@@ -159,7 +159,7 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
     {
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
 
-      mpMethodLayout = new QGridLayout(this);
+      mpMethodLayout = new QGridLayout();
       mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
