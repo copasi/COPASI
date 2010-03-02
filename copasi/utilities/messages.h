@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144.2.4 $
+//   $Revision: 1.144.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/02 12:59:46 $
+//   $Date: 2010/03/02 16:18:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -250,7 +250,6 @@ const MESSAGES Messages[] =
   {MCSBML + 82, "SBML (82): SBML compartment with id \"%s\" has invalid spatial dimensions value."},
   {MCSBML + 83, "SBML (83): SBML species \"%s\" is located in zero dimensional compartment and can not have the spatialDimensionsUnits attribute set."},
   {MCSBML + 84, "SBML (84): The spatialSizeUnit attribute was deleted from some species because the attribute is not compatible with the exported version of SBML. This might have changed the model. Changed species: %s"},
-  {MCSBML + 85, "SBML (85): The rule for object with id \"%s\" does not contain an expression so it has been irnored."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
