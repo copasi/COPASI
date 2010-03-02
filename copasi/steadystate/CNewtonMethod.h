@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/18 17:00:58 $
+//   $Date: 2010/03/02 15:57:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,5 +180,7 @@ private:
   bool containsNaN() const;
 
   void cleanup();
+
+  bool solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C_FLOAT64 > & B) const;
 };
 #endif // COPASI_CNewtonMethod

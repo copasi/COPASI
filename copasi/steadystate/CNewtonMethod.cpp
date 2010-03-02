@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.95.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/20 16:00:44 $
+//   $Date: 2010/03/02 15:57:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,8 @@
 #include "utilities/utility.h"
 #include "utilities/CProcessReport.h"
 
-#include "clapackwrap.h"        //use CLAPACK
+#include "clapackwrap.h"
+#include "blaswrap.h"
 
 CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
     CSteadyStateMethod(CCopasiMethod::Newton, pParent),
@@ -371,145 +372,34 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
 
 CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentValue)
 {
-  C_INT info = 0;
-  char T = 'T'; /* difference between fortran's and c's matrix storage */
-  C_INT one = 1;
-
   memcpy(mXold.array(), mpX, mDimension * sizeof(C_FLOAT64));
 
   // DebugFile << "Iteration: " << k << std::endl;
 
   calculateJacobianX(currentValue);
 
-  // DebugFile << "Jacobian: " << *mpJacobianX << std::endl;
-
-  /* We use dgetrf_ and dgetrs_ to solve
-      mJacobian * b = mH for b (the result is in mdxdt) */
-
-  /* int dgetrf_(integer *m,
-    *             integer *n,
-    *             doublereal *a,
-    *             integer * lda,
-    *             integer *ipiv,
-    *             integer *info)
-    *
-    *  Purpose
-    *  =======
-    *
-    *  DGETRF computes an LU factorization of a general M-by-N matrix A
-    *  using partial pivoting with row interchanges.
-    *
-    *  The factorization has the form
-    *     A = P * L * U
-    *  where P is a permutation matrix, L is lower triangular with unit
-    *  diagonal elements (lower trapezoidal if m > n), and U is upper
-    *  triangular (upper trapezoidal if m < n).
-    *
-    *  This is the right-looking Level 3 BLAS version of the algorithm.
-    *
-    *  Arguments
-    *  =========
-    *
-    *  m       (input) INTEGER
-    *          The number of rows of the matrix A.  m >= 0.
-    *
-    *  n       (input) INTEGER
-    *          The number of columns of the matrix A.  n >= 0.
-    *
-    *  a       (input/output) DOUBLE PRECISION array, dimension (lda,n)
-    *          On entry, the m by n matrix to be factored.
-    *          On exit, the factors L and U from the factorization
-    *          A = P*L*U; the unit diagonal elements of L are not stored.
-    *
-    *  lda     (input) INTEGER
-    *          The leading dimension of the array A.  lda >= max(1,m).
-    *
-    *  ipiv    (output) INTEGER array, dimension (min(m,n))
-    *          The pivot indices; for 1 <= i <= min(m,n), row i of the
-    *          matrix was interchanged with row ipiv(i).
-    *
-    *  info    (output) INTEGER
-    *          = 0: successful exit
-    *          < 0: if info = -k, the k-th argument had an illegal value
-    *          > 0: if info = k, U(k,k) is exactly zero. The factorization
-    *               has been completed, but the factor U is exactly
-    *               singular, and division by zero will occur if it is used
-    *               to solve a system of equations.
-    */
-  dgetrf_(&mDimension, &mDimension, mpJacobianX->array(),
-          &mDimension, mIpiv, &info);
-
-  if (info)
+  if (!solveJacobianXeqB(mH, mdxdt))
     {
-      if (info > 0)
+      // TODO CRITICAL We need to check that mH != 0
+      C_FLOAT64 * pH = mH.array();
+      C_FLOAT64 * pHEnd = pH + mH.size();
+
+      for (; pH != pHEnd; ++pH)
         {
-          //if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+          if (fabs(*pH) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            break;
+        }
+
+      if (pH == pHEnd)
+        {
           if (mKeepProtocol)
-            mMethodLog << "    Newton step failed. Jacobian could not be inverted.\n";
+            mMethodLog << "    Newton step failed. Jacobian could not be inverted.\n\n";
 
           return CNewtonMethod::singularJacobian;
         }
-
-      fatalError();
     }
 
-  /* int dgetrs_(char *trans,
-    *             integer *n,
-    *             integer *nrhs,
-    *             doublereal *a,
-    *             integer *lda,
-    *             integer *ipiv,
-    *             doublereal *b,
-    *             integer * ldb,
-    *             integer *info)
-    *  Arguments
-    *  =========
-    *
-    *  trans   (input) CHARACTER*1
-    *          Specifies the form of the system of equations:
-    *          = 'N':  a * x = b  (No transpose)
-    *          = 'T':  a'* x = b  (Transpose)
-    *          = 'C':  a'* x = b  (Conjugate transpose = Transpose)
-    *
-    *  n       (input) INTEGER
-    *          The order of the matrix a.  n >= 0.
-    *
-    *  nrhs    (input) INTEGER
-    *          The number of right hand sides, i.e., the number of columns
-    *          of the matrix b.  nrhs >= 0.
-    *
-    *  a       (input) DOUBLE PRECISION array, dimension (lda,n)
-    *          The factors L and U from the factorization a = P*L*U
-    *          as computed by DGETRF.
-    *
-    *  lda     (input) INTEGER
-    *          The leading dimension of the array a.  lda >= max(1,n).
-    *
-    *  ipiv    (input) INTEGER array, dimension (n)
-    *          The pivot indices from DGETRF; for 1<=i<=n, row i of the
-    *          matrix was interchanged with row ipiv(i).
-    *
-    *  b       (input/output) DOUBLE PRECISION array, dimension (ldb,nrhs)
-    *          On entry, the right hand side matrix b.
-    *          On exit, the solution matrix x.
-    *
-    *  ldb     (input) INTEGER
-    *          The leading dimension of the array b.  ldb >= max(1,n).
-    *
-    *  info    (output) INTEGER
-    *          = 0:  successful exit
-    *          < 0:  if info = -i, the i-th argument had an illegal value
-    */
-  dgetrs_(&T, &mDimension, &one, mpJacobianX->array(),
-          &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
-
-  if (info)
-    fatalError();
-
   C_FLOAT64 newValue = currentValue * 1.001;
-
-  // copy values of increment to h
-  mH = mdxdt;
 
   //repeat till the new max rate is smaller than the old.
   //max 32 times
@@ -710,141 +600,16 @@ bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 
 C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particlefluxes)
 {
-  C_FLOAT64 tmp;
-
-  // New criterion: We solve Jacobian * x = current rates an compare x with the current state
+  // New criterion: We solve Jacobian * x = current rates and compare x with the current state
   // Calculate the Jacobian
   calculateJacobianX(*mpSSResolution);
 
-  // Invert the Jacobian
-  C_INT info = 0;
-  char T = 'T'; /* difference between fortran's and c's matrix storage */
-  C_INT one = 1;
+  CVector< C_FLOAT64 > Distance;
 
-  /* We use dgetrf_ and dgetrs_ to solve
-      mJacobian * b = mH for b (the result is in mdxdt) */
-
-  /* int dgetrf_(integer *m,
-    *             integer *n,
-    *             doublereal *a,
-    *             integer * lda,
-    *             integer *ipiv,
-    *             integer *info)
-    *
-    *  Purpose
-    *  =======
-    *
-    *  DGETRF computes an LU factorization of a general M-by-N matrix A
-    *  using partial pivoting with row interchanges.
-    *
-    *  The factorization has the form
-    *     A = P * L * U
-    *  where P is a permutation matrix, L is lower triangular with unit
-    *  diagonal elements (lower trapezoidal if m > n), and U is upper
-    *  triangular (upper trapezoidal if m < n).
-    *
-    *  This is the right-looking Level 3 BLAS version of the algorithm.
-    *
-    *  Arguments
-    *  =========
-    *
-    *  m       (input) INTEGER
-    *          The number of rows of the matrix A.  m >= 0.
-    *
-    *  n       (input) INTEGER
-    *          The number of columns of the matrix A.  n >= 0.
-    *
-    *  a       (input/output) DOUBLE PRECISION array, dimension (lda,n)
-    *          On entry, the m by n matrix to be factored.
-    *          On exit, the factors L and U from the factorization
-    *          A = P*L*U; the unit diagonal elements of L are not stored.
-    *
-    *  lda     (input) INTEGER
-    *          The leading dimension of the array A.  lda >= max(1,m).
-    *
-    *  ipiv    (output) INTEGER array, dimension (min(m,n))
-    *          The pivot indices; for 1 <= i <= min(m,n), row i of the
-    *          matrix was interchanged with row ipiv(i).
-    *
-    *  info    (output) INTEGER
-    *          = 0: successful exit
-    *          < 0: if info = -k, the k-th argument had an illegal value
-    *          > 0: if info = k, U(k,k) is exactly zero. The factorization
-    *               has been completed, but the factor U is exactly
-    *               singular, and division by zero will occur if it is used
-    *               to solve a system of equations.
-    */
-  dgetrf_(&mDimension, &mDimension, mpJacobianX->array(),
-          &mDimension, mIpiv, &info);
-
-  if (info)
+  if (!solveJacobianXeqB(Distance, particlefluxes))
     {
-      if (info > 0)
-        {
-          //if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-          if (mKeepProtocol)
-            mMethodLog << "    Target criterion failed. Jacobian could not be inverted.\n";
-
-          return std::numeric_limits< C_FLOAT64 >::infinity();
-        }
-
-      fatalError();
+      return std::numeric_limits< C_FLOAT64 >::infinity();
     }
-
-  /* int dgetrs_(char *trans,
-    *             integer *n,
-    *             integer *nrhs,
-    *             doublereal *a,
-    *             integer *lda,
-    *             integer *ipiv,
-    *             doublereal *b,
-    *             integer * ldb,
-    *             integer *info)
-    *  Arguments
-    *  =========
-    *
-    *  trans   (input) CHARACTER*1
-    *          Specifies the form of the system of equations:
-    *          = 'N':  a * x = b  (No transpose)
-    *          = 'T':  a'* x = b  (Transpose)
-    *          = 'C':  a'* x = b  (Conjugate transpose = Transpose)
-    *
-    *  n       (input) INTEGER
-    *          The order of the matrix a.  n >= 0.
-    *
-    *  nrhs    (input) INTEGER
-    *          The number of right hand sides, i.e., the number of columns
-    *          of the matrix b.  nrhs >= 0.
-    *
-    *  a       (input) DOUBLE PRECISION array, dimension (lda,n)
-    *          The factors L and U from the factorization a = P*L*U
-    *          as computed by DGETRF.
-    *
-    *  lda     (input) INTEGER
-    *          The leading dimension of the array a.  lda >= max(1,n).
-    *
-    *  ipiv    (input) INTEGER array, dimension (n)
-    *          The pivot indices from DGETRF; for 1<=i<=n, row i of the
-    *          matrix was interchanged with row ipiv(i).
-    *
-    *  b       (input/output) DOUBLE PRECISION array, dimension (ldb,nrhs)
-    *          On entry, the right hand side matrix b.
-    *          On exit, the solution matrix x.
-    *
-    *  ldb     (input) INTEGER
-    *          The leading dimension of the array b.  ldb >= max(1,n).
-    *
-    *  info    (output) INTEGER
-    *          = 0:  successful exit
-    *          < 0:  if info = -i, the i-th argument had an illegal value
-    */
-  CVector< C_FLOAT64 > Distance = particlefluxes;
-
-  dgetrs_(&T, &mDimension, &one, mpJacobianX->array(),
-          &mDimension, mIpiv, Distance.array(), &mDimension, &info);
-
-  if (info)
-    fatalError();
 
   // We look at all ODE determined entity and dependent species rates.
   C_FLOAT64 * pDistance = Distance.array();
@@ -852,25 +617,38 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
   C_FLOAT64 * pCurrentState = mpSteadyState->beginIndependent();
   const C_FLOAT64 * pAtol = mAtol.array();
 
-  C_FLOAT64 AlternateTarget1 = 0.0;
-  C_FLOAT64 AlternateTarget2 = 0.0;
+  // Assure that all values are updated.
+  mpModel->updateSimulatedValues(true);
 
-  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState)
+  CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
+  const CMetab * pMetab = NULL;
+  C_FLOAT64 Number2Quantity = mpModel->getNumber2QuantityFactor();
+
+  C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
+  C_FLOAT64 RelativeDistance = 0.0; // Total relative distance
+
+  C_FLOAT64 tmp;
+
+  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++ppEntity)
     {
-      // TODO CRITICAL prevent division by 0
+      // Prevent division by 0
       tmp = fabs(*pDistance) / std::max(fabs(*pCurrentState), *pAtol);
+      RelativeDistance += tmp * tmp;
 
-      if (tmp > AlternateTarget1)
+      tmp = fabs(*pDistance);
+
+      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
         {
-          AlternateTarget1 = tmp;
+          tmp *= Number2Quantity / fabs(pMetab->getCompartment()->getValue());
         }
 
-      AlternateTarget2 += tmp * tmp;
+      AbsoluteDistance += tmp * tmp;
     }
 
-  AlternateTarget2 = sqrt(AlternateTarget2) / Distance.size();
+  RelativeDistance = sqrt(RelativeDistance);
+  AbsoluteDistance = sqrt(AbsoluteDistance);
 
-  return AlternateTarget2;
+  return std::max(RelativeDistance, AbsoluteDistance);
 }
 
 //virtual
@@ -994,4 +772,268 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
     }
 
   return true;
+}
+
+bool CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C_FLOAT64 > & B) const
+{
+  X = B;
+
+  C_INT M = mpJacobianX->numCols();
+  C_INT N = mpJacobianX->numRows();
+
+  if (M == 0 || N == 0 || M != N)
+    {
+      return false;
+    }
+
+  bool success = true;
+
+  C_INT LDA = std::max< C_INT >(1, M);
+  C_INT NRHS = 1;
+
+  // We need the transpose of the Jacobian;
+  CMatrix< C_FLOAT64 > JT(M, N);
+  C_FLOAT64 * mpJ = mpJacobianX->array();
+  C_FLOAT64 * mpJTcolumn = JT.array();
+  C_FLOAT64 * mpJTcolumnEnd = mpJTcolumn + M;
+  C_FLOAT64 * mpJT = JT.array();
+  C_FLOAT64 * mpJTEnd = mpJT + JT.size();
+
+  for (; mpJTcolumn != mpJTcolumnEnd; ++mpJTcolumn)
+    {
+      mpJT = mpJTcolumn;
+
+      for (; mpJT < mpJTEnd; mpJT += M, ++mpJ)
+        {
+          *mpJT = *mpJ;
+        }
+    }
+
+  CVector< C_INT > JPVT(M);
+  JPVT = 0;
+
+  C_FLOAT64 RCOND = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
+
+  C_INT RANK = 0;
+
+  CVector< C_FLOAT64 > WORK(1);
+  C_INT LWORK = -1;
+  C_INT INFO;
+
+  /*
+      SUBROUTINE DGELSY(M, N, NRHS, A, LDA, B, LDB, JPVT, RCOND, RANK,
+     $                   WORK, LWORK, INFO)
+   *
+   *  -- LAPACK driver routine (version 3.2) --
+   *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+   *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+   *     November 2006
+   *
+   *     .. Scalar Arguments ..
+      INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
+      DOUBLE PRECISION   RCOND
+   *     ..
+   *     .. Array Arguments ..
+      INTEGER            JPVT(*)
+      DOUBLE PRECISION   A(LDA, * ), B(LDB, * ), WORK(*)
+   *     ..
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DGELSY computes the minimum-norm solution to a real linear least
+   *  squares problem:
+   *      minimize || A * X - B ||
+   *  using a complete orthogonal factorization of A.  A is an M-by-N
+   *  matrix which may be rank-deficient.
+   *
+   *  Several right hand side vectors b and solution vectors x can be
+   *  handled in a single call; they are stored as the columns of the
+   *  M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+   *  matrix X.
+   *
+   *  The routine first computes a QR factorization with column pivoting:
+   *      A * P = Q * [ R11 R12 ]
+   *                  [  0  R22 ]
+   *  with R11 defined as the largest leading submatrix whose estimated
+   *  condition number is less than 1/RCOND.  The order of R11, RANK,
+   *  is the effective rank of A.
+   *
+   *  Then, R22 is considered to be negligible, and R12 is annihilated
+   *  by orthogonal transformations from the right, arriving at the
+   *  complete orthogonal factorization:
+   *     A * P = Q * [ T11 0 ] * Z
+   *                 [  0  0 ]
+   *  The minimum-norm solution is then
+   *     X = P * Z' [ inv(T11)*Q1'*B ]
+   *                [        0       ]
+   *  where Q1 consists of the first RANK columns of Q.
+   *
+   *  This routine is basically identical to the original xGELSX except
+   *  three differences:
+   *    o The call to the subroutine xGEQPF has been substituted by the
+   *      the call to the subroutine xGEQP3. This subroutine is a Blas-3
+   *      version of the QR factorization with column pivoting.
+   *    o Matrix B (the right hand side) is updated with Blas-3.
+   *    o The permutation of matrix B (the right hand side) is faster and
+   *      more simple.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  M       (input) INTEGER
+   *          The number of rows of the matrix A.  M >= 0.
+   *
+   *  N       (input) INTEGER
+   *          The number of columns of the matrix A.  N >= 0.
+   *
+   *  NRHS    (input) INTEGER
+   *          The number of right hand sides, i.e., the number of
+   *          columns of matrices B and X. NRHS >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the M-by-N matrix A.
+   *          On exit, A has been overwritten by details of its
+   *          complete orthogonal factorization.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,M).
+   *
+   *  B       (input/output) DOUBLE PRECISION array, dimension (LDB,NRHS)
+   *          On entry, the M-by-NRHS right hand side matrix B.
+   *          On exit, the N-by-NRHS solution matrix X.
+   *
+   *  LDB     (input) INTEGER
+   *          The leading dimension of the array B. LDB >= max(1,M,N).
+   *
+   *  JPVT    (input/output) INTEGER array, dimension (N)
+   *          On entry, if JPVT(i) .ne. 0, the i-th column of A is permuted
+   *          to the front of AP, otherwise column i is a free column.
+   *          On exit, if JPVT(i) = k, then the i-th column of AP
+   *          was the k-th column of A.
+   *
+   *  RCOND   (input) DOUBLE PRECISION
+   *          RCOND is used to determine the effective rank of A, which
+   *          is defined as the order of the largest leading triangular
+   *          submatrix R11 in the QR factorization with pivoting of A,
+   *          whose estimated condition number < 1/RCOND.
+   *
+   *  RANK    (output) INTEGER
+   *          The effective rank of A, i.e., the order of the submatrix
+   *          R11.  This is the same as the order of the submatrix T11
+   *          in the complete orthogonal factorization of A.
+   *
+   *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
+   *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+   *
+   *  LWORK   (input) INTEGER
+   *          The dimension of the array WORK.
+   *          The unblocked strategy requires that:
+   *             LWORK >= MAX(MN+3*N+1, 2*MN+NRHS ),
+   *          where MN = min(M, N ).
+   *          The block algorithm requires that:
+   *             LWORK >= MAX(MN+2*N+N*(N+1), 2*MN+NB*NRHS ),
+   *          where NB is an upper bound on the blocksize returned
+   *          by ILAENV for the routines DGEQP3, DTZRZF, STZRQF, DORMQR,
+   *          and DORMRZ.
+   *
+   *          If LWORK = -1, then a workspace query is assumed; the routine
+   *          only calculates the optimal size of the WORK array, returns
+   *          this value as the first entry of the WORK array, and no error
+   *          message related to LWORK is issued by XERBLA.
+   *
+   *  INFO    (output) INTEGER
+   *          = 0: successful exit
+   *          < 0: If INFO = -i, the i-th argument had an illegal value.
+   *
+   *  Further Details
+   *  ===============
+   *
+   *  Based on contributions by
+   *    A. Petitet, Computer Science Dept., Univ. of Tenn., Knoxville, USA
+   *    E. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
+   *    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
+   *
+   *  =====================================================================
+   */
+
+  dgelsy_(&M, &N, &NRHS, JT.array(), &LDA, X.array(), &LDA, JPVT.array(), &RCOND, &RANK,
+          WORK.array(), &LWORK, &INFO);
+
+  if (INFO < 0)
+    {
+      fatalError();
+    }
+
+  LWORK = (C_INT) WORK[0];
+  WORK.resize(LWORK);
+
+  dgelsy_(&M, &N, &NRHS, JT.array(), &LDA, X.array(), &LDA, JPVT.array(), &RCOND, &RANK,
+          WORK.array(), &LWORK, &INFO);
+
+  if (INFO < 0)
+    {
+      fatalError();
+    }
+
+  if (RANK != M)
+    {
+      // We need to check whether the || Ax - b || is sufficiently small.
+      // Calculate Ax
+      char T = 'N';
+      M = 1;
+      C_FLOAT64 Alpha = 1.0;
+      C_FLOAT64 Beta = 0.0;
+
+      CVector< C_FLOAT64 > Solution = B;
+
+      dgemm_(&T, &T, &M, &N, &N, &Alpha, X.array(), &M,
+             mpJacobianX->array(), &N, &Beta, Solution.array(), &M);
+
+      // Calculate absolute and relative error
+      C_FLOAT64 *pSolution = Solution.array();
+      C_FLOAT64 *pSolutionEnd = pSolution + Solution.size();
+      const C_FLOAT64 *pB = B.array();
+      C_FLOAT64 * pCurrentState = mpSteadyState->beginIndependent();
+      const C_FLOAT64 * pAtol = mAtol.array();
+
+      // Assure that all values are updated.
+      mpModel->updateSimulatedValues(true);
+
+      CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
+      const CMetab * pMetab = NULL;
+      C_FLOAT64 Number2Quantity = mpModel->getNumber2QuantityFactor();
+
+      C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
+      C_FLOAT64 RelativeDistance = 0.0; // Total relative distance
+
+      C_FLOAT64 tmp;
+
+      for (; pSolution != pSolutionEnd; ++pSolution, ++pB, ++pCurrentState, ++pAtol, ++ppEntity)
+        {
+          // Prevent division by 0
+          tmp = fabs(*pSolution - *pB) / std::max(fabs(*pCurrentState), *pAtol);
+          RelativeDistance += tmp * tmp;
+
+          tmp = fabs(*pSolution - *pB);
+
+          if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+            {
+              tmp *= Number2Quantity / fabs(pMetab->getCompartment()->getValue());
+            }
+
+          AbsoluteDistance += tmp * tmp;
+        }
+
+      RelativeDistance = sqrt(RelativeDistance);
+      AbsoluteDistance = sqrt(AbsoluteDistance);
+
+      if (RelativeDistance > *mpSSResolution ||
+          AbsoluteDistance > *mpSSResolution)
+        {
+          success = false;
+        }
+    }
+
+  return success;
 }
