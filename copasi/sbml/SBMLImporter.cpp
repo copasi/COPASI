@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.248.2.3 $
+//   $Revision: 1.248.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/03 12:48:39 $
+//   $Date: 2010/03/03 15:42:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -7772,8 +7772,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
         }
 
       assert(pAssignment != NULL);
-      pCOPASIEvent->getAssignments().add(pAssignment);
-      pdelete(pAssignment);
+      pCOPASIEvent->getAssignments().add(pAssignment, true);
     }
 
   copasi2sbmlmap[pCOPASIEvent] = const_cast<Event*>(pEvent);
