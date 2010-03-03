@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229.2.1 $
+#   $Revision: 1.229.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/22 17:42:57 $
+#   $Date: 2010/03/03 18:09:55 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,19 +21,10 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229.2.1 $ $Author: shoops $ $Date: 2010/02/22 17:42:57 $
+# $Revision: 1.229.2.2 $ $Author: shoops $ $Date: 2010/03/03 18:09:55 $
 ######################################################################
 
 LIB = UI
-include(../lib.pri)
-
-CONFIG	+= qt
-include(../common.pri)
-
-DEPENDPATH += ..
-INCLUDEPATH	+= ..
-INCLUDEPATH += $${QWT3D_PATH}/include
-
 
 # Input
 
@@ -363,10 +354,12 @@ SOURCES += \
     CQProgressItemText.cpp \
     CQTextDialog.cpp \
 
-!contains(DEFINES, HAVE_MML) {
+!isEmpty(COPASI_SRC_PACKAGE) {
   HEADERS -= CQDifferentialEquations.h
-#  HEADERS -= CQDifferentialEquations.ui.h
   SOURCES -= CQDifferentialEquations.cpp
+  
+  DISTFILES += CQDifferentialEquations.h
+  DISTFILES += CQDifferentialEquations.cpp
 }
 
 
@@ -411,8 +404,11 @@ DISTFILES += icons/Copasi.ico \
              icons/edit_Icon.xpm \
              icons/photo.xpm
              
+include(../lib.pri)
 
+CONFIG += qt 
 
+include(../common.pri)
 
 #The following line was inserted by qt3to4
 QT += xml  opengl qt3support 

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.114 $ 
+#   $Revision: 1.114.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/02/11 16:15:23 $ 
+#   $Date: 2010/03/03 18:09:59 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.114 $ $Author: shoops $ $Date: 2010/02/11 16:15:23 $  
+# $Revision: 1.114.2.1 $ $Author: shoops $ $Date: 2010/03/03 18:09:59 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -31,7 +31,7 @@ isEmpty(BUILD_OS) {
 
     MY_QT4DIR = $$system(echo %QT4DIR%)
     contains(MY_QT4DIR, %QT4DIR%) {
-      My_QTDIR = $$system(echo %QTDIR%)
+      MY_QTDIR = $$system(echo %QTDIR%)
       contains(MY_QTDIR, %QTDIR%) {
         QMAKE_QMAKE = qmake.exe
         !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=???.")
@@ -40,6 +40,7 @@ isEmpty(BUILD_OS) {
         !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
       }
 	} else {
+      QMAKE_QMAKE = $(QT4DIR)\bin\qmake.exe
       !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=$(QT4DIR).")
 	}
 
@@ -48,6 +49,7 @@ isEmpty(BUILD_OS) {
     message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
   }
 }
+
 DEFINES += $$BUILD_OS
 
 TARGETDEPS += Makefile
@@ -592,7 +594,7 @@ QMAKE_EXTRA_UNIX_TARGETS += DEP1
       $(MKDIR) ../../copasi_src/copasi; \
     $(CHK_DIR_EXISTS) ../../copasi_src/copasi/$$SRC_TARGET || \
       $(MKDIR) ../../copasi_src/copasi/$$SRC_TARGET; \
-    $(COPY_FILE) --parents $(SOURCES) $(HEADERS) $(FORMS) $(DIST) \
+    $(COPY_FILE) --parents $${SOURCES} $${HEADERS} $${FORMS} $${FORMS3} $${DISTFILES} \
       ../../copasi_src/copasi/$$SRC_TARGET/
 
   QMAKE_EXTRA_UNIX_TARGETS += src_distribution

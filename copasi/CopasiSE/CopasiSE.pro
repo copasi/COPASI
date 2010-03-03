@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
-#   $Revision: 1.40.2.2 $
+#   $Revision: 1.40.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/26 16:50:24 $
+#   $Date: 2010/03/03 18:09:54 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.40.2.2 $ $Author: shoops $ $Date: 2010/02/26 16:50:24 $
+# $Revision: 1.40.2.3 $ $Author: shoops $ $Date: 2010/03/03 18:09:54 $
 ######################################################################
 
 TEMPLATE = app
@@ -30,11 +30,15 @@ SRC_TARGET = CopasiSE
 
 CONFIG -= qt
 
-include(../common.pri)
-
 DEPENDPATH += ..
 INCLUDEPATH += ..
 
+# Input
+HEADERS +=
+
+SOURCES += CopasiSE.cpp
+
+include(../common.pri)
 include(../app.pri)
 
 COPASI_LIBS += $${COPASI_LIBS_SE}
@@ -106,11 +110,6 @@ contains(BUILD_OS, Darwin){
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
 
-
-# Input
-HEADERS +=
-
-SOURCES += CopasiSE.cpp
 
 release {
   distribution.path = .

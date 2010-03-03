@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.31.2.1 $
+#   $Revision: 1.31.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/22 17:42:55 $
+#   $Date: 2010/03/03 18:09:54 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,16 +21,6 @@
 # All rights reserved.
 
 LIB = layoutUI
-
-include(../lib.pri)
-# qt has to be set after lib.pri is included because lib.pri unsets it 
-
-# qt has to be set before common.pri is included,
-# otherwise the qwt includes will not be set correctly
-
-CONFIG += qt
-include(../common.pri)
-
 
 QT +=  opengl 
 
@@ -77,5 +67,12 @@ SOURCES = CQLayoutMainWindow.cpp \
 FORMS = ParaPanel.ui \
         NodeSizePanel.ui \
         FontChooser.ui
+
+include(../lib.pri)
+
+CONFIG += qt
+
+include(../common.pri)
+
 
 

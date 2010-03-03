@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/MIRIAM.pro,v $
-#   $Revision: 1.16.2.1 $
+#   $Revision: 1.16.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/22 17:43:02 $
+#   $Date: 2010/03/03 18:10:02 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,9 +21,6 @@
 # All rights reserved.
 
 LIB = MIRIAM
-
-include(../lib.pri)
-include(../common.pri)
 
 CONFIG -= qt
 
@@ -84,6 +81,9 @@ SOURCES += WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.cpp
 SOURCES += WebServicesIssues/stdsoap2.cpp
 
 DISTFILES += WebServicesIssues/MiriamWebServicesSoapBinding.nsmap
+
+include(../lib.pri)
+include(../common.pri)
 
 #The following line was inserted by qt3to4
 QT +=  qt3support 

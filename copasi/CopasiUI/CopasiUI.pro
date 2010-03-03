@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.151.2.3 $
+#   $Revision: 1.151.2.4 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/26 17:27:15 $
+#   $Date: 2010/03/03 18:09:56 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,19 +21,25 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.151.2.3 $ $Author: shoops $ $Date: 2010/02/26 17:27:15 $
+# $Revision: 1.151.2.4 $ $Author: shoops $ $Date: 2010/03/03 18:09:56 $
 ######################################################################
 
 TEMPLATE = app
 
 SRC_TARGET = CopasiUI
 
+# Input
+HEADERS += resource.h
+
+SOURCES += main.cpp
+
+DISTFILES += CopasiUI.rc
+
 include(../common.pri)
+include(../app.pri)
 
 DEPENDPATH += ..
 INCLUDEPATH += ..
-
-include(../app.pri)
 
 COPASI_LIBS += $${COPASI_LIBS_UI}
 COPASI_LIBS += $${COPASI_LIBS_SE}
@@ -150,19 +156,12 @@ contains(BUILD_OS, Darwin){
   }
 }
 
-# Input
-HEADERS += resource.h
-
-SOURCES += main.cpp
-
 release {
   distribution.path = .
   distribution.file = CopasiUI
 
   INSTALLS += distribution
 }
-
-DISTFILES += CopasiUI.rc
 
 #The following line was inserted by qt3to4
 QT += xml  opengl qt3support 

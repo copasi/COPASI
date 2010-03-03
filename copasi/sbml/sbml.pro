@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $
-#   $Revision: 1.21.2.1 $
+#   $Revision: 1.21.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/22 17:42:55 $
+#   $Date: 2010/03/03 18:09:53 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -22,13 +22,6 @@
 
 LIB = sbmlimport
 SRC_TARGET = sbml
-
-include(../lib.pri)
-include(../common.pri)
-
-contains(BUILD_OS, WIN32) {
-  DEFINES += LIBSBML_STATIC
-}
 
 # Input
 HEADERS += StdException.h \
@@ -52,6 +45,12 @@ SOURCES += StdException.cpp \
            SBMLUtils.cpp \
            UnitConversionFactory.cpp
 
+include(../lib.pri)
+include(../common.pri)
+
+contains(BUILD_OS, WIN32) {
+  DEFINES += LIBSBML_STATIC
+}
 
 #The following line was inserted by qt3to4
 QT +=  qt3support 

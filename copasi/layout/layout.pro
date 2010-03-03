@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $
-#   $Revision: 1.6.2.1 $
+#   $Revision: 1.6.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/22 17:42:57 $
+#   $Date: 2010/03/03 18:09:55 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,9 +21,6 @@
 # All rights reserved. 
 
 LIB = layout
-
-include(../lib.pri)
-include(../common.pri)
 
 # Input
 HEADERS += CLayout.h \
@@ -47,6 +44,8 @@ SOURCES += CLayout.cpp \
            CLReactionGlyph.cpp \
            SBMLDocumentLoader.cpp
 
+include(../lib.pri)
+include(../common.pri)
 
 #The following line was inserted by qt3to4
 QT +=  qt3support 

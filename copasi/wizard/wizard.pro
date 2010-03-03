@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.pro,v $
-#   $Revision: 1.14.2.1 $
+#   $Revision: 1.14.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/22 17:43:01 $
+#   $Date: 2010/03/03 18:10:00 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,22 +20,17 @@ LANGUAGE	= C++
 
 LIB= wizard
 
-include(../lib.pri)
-include(../common.pri)
-
-CONFIG	+= qt
-
-unix {
-  UI_DIR = .
-  MOC_DIR = .
-  OBJECTS_DIR = .
-}
-
- FORMS3	= wizard.ui
-
+FORMS3	= wizard.ui
 
 DISTFILES += help_html/figures/*.png \
              help_html/*.html
+             
+include(../lib.pri)
+
+CONFIG += qt 
+
+include(../common.pri)
+
 #The following line was inserted by qt3to4
 QT += xml  opengl qt3support 
 #The following line was inserted by qt3to4

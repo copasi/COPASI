@@ -17,9 +17,6 @@
 
 LIB = sbmlunit
 
-include(../lib.pri)
-include(../common.pri)
-
 # Input
 HEADERS +=  CUnitInterfaceSBML.h \
             CUnit.h \
@@ -31,3 +28,5 @@ SOURCES +=  CUnitInterfaceSBML.cpp \
             Expression2PresentationMML.cpp \
             Expression2PresentationMMLUnits.cpp
 
+include(../lib.pri)
+include(../common.pri)

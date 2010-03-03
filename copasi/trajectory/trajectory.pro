@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/trajectory.pro,v $
-#   $Revision: 1.16.2.1 $
+#   $Revision: 1.16.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/22 17:43:02 $
+#   $Date: 2010/03/03 18:10:00 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,13 +21,10 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.16.2.1 $ $Author: shoops $ $Date: 2010/02/22 17:43:02 $
+# $Revision: 1.16.2.2 $ $Author: shoops $ $Date: 2010/03/03 18:10:00 $
 ######################################################################
 
 LIB = trajectory
-
-include(../lib.pri)
-include(../common.pri)
 
 # Input
 HEADERS += CHybridMethod.h \
@@ -58,6 +55,8 @@ SOURCES += CHybridMethod.cpp \
            CTrajectoryProblem.cpp \
            CTrajectoryTask.cpp
 
+include(../lib.pri)
+include(../common.pri)
 
 #The following line was inserted by qt3to4
 QT +=  qt3support 
