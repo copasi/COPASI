@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.146.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/01/19 17:49:54 $
+//   $Author: gauges $
+//   $Date: 2010/03/03 09:12:42 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -210,6 +215,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       mSaveFileName += ".cps";
       mSaveFileName = CDirEntry::normalize(mSaveFileName);
       mSBMLFileName = "";
+
+      pdelete(mpCurrentSBMLDocument);
+
+      this->mCopasi2SBMLMap.clear();
     }
   else if (!Line.find("<?xml") != std::string::npos)
     {
@@ -268,6 +277,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         }
 
       newModel(XML.getModel(), pProcessReport);
+
+      pdelete(mpCurrentSBMLDocument);
+
+      this->mCopasi2SBMLMap.clear();
 
       if (XML.getTaskList())
         {
