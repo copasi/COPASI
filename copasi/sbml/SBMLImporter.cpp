@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.248.2.2 $
+//   $Revision: 1.248.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/02 16:18:49 $
+//   $Date: 2010/03/03 12:48:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,7 +134,28 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
           if (unitId == "substance")
             {
-              std::pair<CModel::QuantityUnit, bool> qUnit = this->handleSubstanceUnit(uDef);
+              std::pair<CModel::QuantityUnit, bool> qUnit;
+
+              try
+                {
+                  qUnit = this->handleSubstanceUnit(uDef);
+                }
+              catch (...)
+                {
+                  std::ostringstream os;
+                  os << "Error while importing substance units.";
+
+                  // check if the last message on the stack is an exception
+                  // and if so, add the message text to the current exception
+                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+                    {
+                      // we only want the message, not the timestamp line
+                      std::string text = CCopasiMessage::peekLastMessage().getText();
+                      os << text.substr(text.find("\n"));
+                    }
+
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                }
 
               if (qUnit.second == false)
                 {
@@ -150,7 +171,28 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
             }
           else if (unitId == "time")
             {
-              std::pair<CModel::TimeUnit, bool> tUnit = this->handleTimeUnit(uDef);
+              std::pair<CModel::TimeUnit, bool> tUnit;
+
+              try
+                {
+                  tUnit = this->handleTimeUnit(uDef);
+                }
+              catch (...)
+                {
+                  std::ostringstream os;
+                  os << "Error while importing time units.";
+
+                  // check if the last message on the stack is an exception
+                  // and if so, add the message text to the current exception
+                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+                    {
+                      // we only want the message, not the timestamp line
+                      std::string text = CCopasiMessage::peekLastMessage().getText();
+                      os << text.substr(text.find("\n"));
+                    }
+
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                }
 
               if (tUnit.second == false)
                 {
@@ -166,7 +208,28 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
             }
           else if (unitId == "volume")
             {
-              std::pair<CModel::VolumeUnit, bool> vUnit = this->handleVolumeUnit(uDef);
+              std::pair<CModel::VolumeUnit, bool> vUnit;
+
+              try
+                {
+                  vUnit = this->handleVolumeUnit(uDef);
+                }
+              catch (...)
+                {
+                  std::ostringstream os;
+                  os << "Error while importing volume units.";
+
+                  // check if the last message on the stack is an exception
+                  // and if so, add the message text to the current exception
+                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+                    {
+                      // we only want the message, not the timestamp line
+                      std::string text = CCopasiMessage::peekLastMessage().getText();
+                      os << text.substr(text.find("\n"));
+                    }
+
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                }
 
               if (vUnit.second == false)
                 {
@@ -182,7 +245,28 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
             }
           else if ((unitId == "area"))
             {
-              std::pair<CModel::AreaUnit, bool> vUnit = this->handleAreaUnit(uDef);
+              std::pair<CModel::AreaUnit, bool> vUnit;
+
+              try
+                {
+                  vUnit = this->handleAreaUnit(uDef);
+                }
+              catch (...)
+                {
+                  std::ostringstream os;
+                  os << "Error while importing area units.";
+
+                  // check if the last message on the stack is an exception
+                  // and if so, add the message text to the current exception
+                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+                    {
+                      // we only want the message, not the timestamp line
+                      std::string text = CCopasiMessage::peekLastMessage().getText();
+                      os << text.substr(text.find("\n"));
+                    }
+
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                }
 
               if (vUnit.second == false)
                 {
@@ -198,7 +282,28 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
             }
           else if ((unitId == "length"))
             {
-              std::pair<CModel::LengthUnit, bool> vUnit = this->handleLengthUnit(uDef);
+              std::pair<CModel::LengthUnit, bool> vUnit;
+
+              try
+                {
+                  vUnit = this->handleLengthUnit(uDef);
+                }
+              catch (...)
+                {
+                  std::ostringstream os;
+                  os << "Error while importing length units.";
+
+                  // check if the last message on the stack is an exception
+                  // and if so, add the message text to the current exception
+                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+                    {
+                      // we only want the message, not the timestamp line
+                      std::string text = CCopasiMessage::peekLastMessage().getText();
+                      os << text.substr(text.find("\n"));
+                    }
+
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                }
 
               if (vUnit.second == false)
                 {
@@ -318,7 +423,30 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           fatalError();
         }
 
-      CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, this->mpCopasiModel, copasi2sbmlmap, sbmlModel);
+      CCompartment* pCopasiCompartment = NULL;
+
+      try
+        {
+          pCopasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, this->mpCopasiModel, copasi2sbmlmap, sbmlModel);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing compartment \"";
+          os << sbmlCompartment->getId() << "\".";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
       std::string key = sbmlCompartment->getId();
 
       if (mLevel == 1)
@@ -326,7 +454,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           key = sbmlCompartment->getName();
         }
 
-      compartmentMap[key] = copasiCompartment;
+      compartmentMap[key] = pCopasiCompartment;
       ++step;
 
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
@@ -359,11 +487,34 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           fatalError();
         }
 
-      CCompartment* copasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
+      CCompartment* pCopasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
 
-      if (copasiCompartment != NULL)
+      if (pCopasiCompartment != NULL)
         {
-          CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, this->mpCopasiModel, copasiCompartment, copasi2sbmlmap, sbmlModel);
+          CMetab* pCopasiMetabolite = NULL;
+
+          try
+            {
+              pCopasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, this->mpCopasiModel, pCopasiCompartment, copasi2sbmlmap, sbmlModel);
+            }
+          catch (...)
+            {
+              std::ostringstream os;
+              os << "Error while importing species \"";
+              os << sbmlSpecies->getId() << "\".";
+
+              // check if the last message on the stack is an exception
+              // and if so, add the message text to the current exception
+              if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+                {
+                  // we only want the message, not the timestamp line
+                  std::string text = CCopasiMessage::peekLastMessage().getText();
+                  os << text.substr(text.find("\n"));
+                }
+
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+            }
+
           std::string key;
 
           if (this->mLevel == 1)
@@ -375,7 +526,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               key = sbmlSpecies->getId();
             }
 
-          this->speciesMap[key] = copasiMetabolite;
+          this->speciesMap[key] = pCopasiMetabolite;
         }
       else
         {
@@ -414,7 +565,28 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           fatalError();
         }
 
-      this->createCModelValueFromParameter(sbmlParameter, this->mpCopasiModel, copasi2sbmlmap);
+      try
+        {
+          this->createCModelValueFromParameter(sbmlParameter, this->mpCopasiModel, copasi2sbmlmap);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing parameter \"";
+          os << sbmlParameter->getId() << "\".";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
       ++step;
 
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
@@ -458,7 +630,28 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   for (counter = 0; counter < num; counter++)
     {
-      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, this->mpCopasiModel, copasi2sbmlmap, pTmpFunctionDB);
+      try
+        {
+          this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, this->mpCopasiModel, copasi2sbmlmap, pTmpFunctionDB);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing reaction \"";
+          os << sbmlModel->getReaction(counter)->getId() << "\".";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
       ++step;
 
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
@@ -536,7 +729,29 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           fatalError();
         }
 
-      this->importSBMLRule(sbmlRule, copasi2sbmlmap, sbmlModel);
+      // improve the error message a bit.
+      try
+        {
+          this->importSBMLRule(sbmlRule, copasi2sbmlmap, sbmlModel);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing rule for variable \"";
+          os << sbmlRule->getVariable() << "\".";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
       ++step;
 
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
@@ -6711,50 +6926,70 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                 }
               else
                 {
-                  // create a CEvaluationNode based tree from the math
-                  // expression
-                  const ASTNode* pMath = pInitialAssignment->getMath();
-                  assert(pMath != NULL);
-                  ConverterASTNode tmpNode(*pMath);
-                  this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlMap);
-                  // replace the object names
-                  this->replaceObjectNames(&tmpNode, copasi2sbmlMap, true);
-                  // replace time with initial time
-                  this->replace_time_with_initial_time(&tmpNode, pCopasiModel);
-                  // now we convert the node to a CEvaluationNode
-                  CExpression* pExpression = new CExpression;
-                  pExpression->setTree(tmpNode);
-
-                  if (dynamic_cast<CMetab*>(pos->second) != NULL)
+                  try
                     {
-                      CMetab* pMetab = dynamic_cast<CMetab*>(pos->second);
-                      std::map<CCopasiObject*, SBase*>::const_iterator pos2 = copasi2sbmlMap.find(pMetab);
-                      assert(pos2 != copasi2sbmlMap.end());
-                      Species* pSBMLSpecies = dynamic_cast<Species*>(pos2->second);
-                      assert(pSBMLSpecies != NULL);
-                      const CCompartment* pCompartment = pMetab->getCompartment();
-                      assert(pCompartment != NULL);
+                      // create a CEvaluationNode based tree from the math
+                      // expression
+                      const ASTNode* pMath = pInitialAssignment->getMath();
+                      assert(pMath != NULL);
+                      ConverterASTNode tmpNode(*pMath);
+                      this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlMap);
+                      // replace the object names
+                      this->replaceObjectNames(&tmpNode, copasi2sbmlMap, true);
+                      // replace time with initial time
+                      this->replace_time_with_initial_time(&tmpNode, pCopasiModel);
+                      // now we convert the node to a CEvaluationNode
+                      CExpression* pExpression = new CExpression;
+                      pExpression->setTree(tmpNode);
 
-                      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
+                      if (dynamic_cast<CMetab*>(pos->second) != NULL)
                         {
-                          // divide the expression by the volume
-                          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                          CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-                          pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-                          pOperatorNode->addChild(pVolumeNode);
-                          pExpression->setRoot(pOperatorNode);
+                          CMetab* pMetab = dynamic_cast<CMetab*>(pos->second);
+                          std::map<CCopasiObject*, SBase*>::const_iterator pos2 = copasi2sbmlMap.find(pMetab);
+                          assert(pos2 != copasi2sbmlMap.end());
+                          Species* pSBMLSpecies = dynamic_cast<Species*>(pos2->second);
+                          assert(pSBMLSpecies != NULL);
+                          const CCompartment* pCompartment = pMetab->getCompartment();
+                          assert(pCompartment != NULL);
+
+                          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
+                            {
+                              // divide the expression by the volume
+                              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
+                              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+                              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
+                              pOperatorNode->addChild(pVolumeNode);
+                              pExpression->setRoot(pOperatorNode);
+                            }
+
+                          pMetab->setInitialExpressionPtr(pExpression);
+                        }
+                      else if (dynamic_cast<CCompartment*>(pos->second) != NULL || dynamic_cast<CModelValue*>(pos->second) != NULL)
+                        {
+                          CModelEntity* pME = dynamic_cast<CModelEntity*>(pos->second);
+                          pME->setInitialExpressionPtr(pExpression);
+                        }
+                      else
+                        {
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 59, symbol.c_str());
+                        }
+                    }
+                  catch (...)
+                    {
+                      std::ostringstream os;
+                      os << "Error while importing initial assignment for symbol \"";
+                      os << symbol << "\".";
+
+                      // check if the last message on the stack is an exception
+                      // and if so, add the message text to the current exception
+                      if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+                        {
+                          // we only want the message, not the timestamp line
+                          std::string text = CCopasiMessage::peekLastMessage().getText();
+                          os << "\n" << text.substr(text.find("\n") + 1);
                         }
 
-                      pMetab->setInitialExpressionPtr(pExpression);
-                    }
-                  else if (dynamic_cast<CCompartment*>(pos->second) != NULL || dynamic_cast<CModelValue*>(pos->second) != NULL)
-                    {
-                      CModelEntity* pME = dynamic_cast<CModelEntity*>(pos->second);
-                      pME->setInitialExpressionPtr(pExpression);
-                    }
-                  else
-                    {
-                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 59, symbol.c_str());
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                     }
                 }
             }
@@ -7256,7 +7491,27 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
 
   for (i = 0; i < iMax; ++i)
     {
-      this->importEvent(pSBMLModel->getEvent(i), pSBMLModel, pCopasiModel, copasi2sbmlmap);
+      try
+        {
+          this->importEvent(pSBMLModel->getEvent(i), pSBMLModel, pCopasiModel, copasi2sbmlmap);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing event ";
+          os << i + 1 << ".";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << "\n" << text.substr(text.find("\n") + 1);
+            }
+
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
     }
 }
 
@@ -7422,76 +7677,103 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           continue;
         }
 
-      pMath = pEventAssignment->getMath();
-      assert(pMath != NULL);
-      // convert and set math expression
-      pTmpNode = new ConverterASTNode(*pMath);
-      this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
-      // replace the object names
-      this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
-      // check if the model entity is a species and if it has the
-      // hasOnlySubstanceUnits flag set
-      // if so, we have to divide the expression by the volume of the species
-      // compartment
-      // now we convert the node to a CEvaluationNode
-      std::map<CCopasiObject*, SBase*>::const_iterator pos2 = copasi2sbmlmap.find(pObject);
+      CExpression* pExpression = NULL;
+      CEventAssignment* pAssignment = NULL;
 
-      // we should always end up with an object, otherwise there is something
-      // wrong
-      if (pos2 == copasi2sbmlmap.end()) fatalError();
-
-      CExpression* pExpression = new CExpression;
-      pExpression->setTree(*pTmpNode);
-      delete pTmpNode;
-
-      if (pos2->second->getTypeCode() == SBML_SPECIES && dynamic_cast<const Species*>(pos2->second)->getHasOnlySubstanceUnits() == true)
+      try
         {
-          // divide the expression by the volume
-          // check if the top level node is a multiplication and one
-          // of the children is the volume of the compartment the species
-          // is in. If this is the case, just drop the multiplication
-          // instead of dividing
-          bool multiplication = false;
-          const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);
-          assert(pMetab != NULL);
-          const CCompartment* pCompartment = pMetab->getCompartment();
+          pMath = pEventAssignment->getMath();
+          assert(pMath != NULL);
+          // convert and set math expression
+          pTmpNode = new ConverterASTNode(*pMath);
+          this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
+          // replace the object names
+          this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
+          // check if the model entity is a species and if it has the
+          // hasOnlySubstanceUnits flag set
+          // if so, we have to divide the expression by the volume of the species
+          // compartment
+          // now we convert the node to a CEvaluationNode
+          std::map<CCopasiObject*, SBase*>::const_iterator pos2 = copasi2sbmlmap.find(pObject);
 
-          if (pCompartment->getDimensionality() != 0)
+          // we should always end up with an object, otherwise there is something
+          // wrong
+          if (pos2 == copasi2sbmlmap.end()) fatalError();
+
+          pExpression = new CExpression;
+          pExpression->setTree(*pTmpNode);
+          delete pTmpNode;
+
+          if (pos2->second->getTypeCode() == SBML_SPECIES && dynamic_cast<const Species*>(pos2->second)->getHasOnlySubstanceUnits() == true)
             {
+              // divide the expression by the volume
+              // check if the top level node is a multiplication and one
+              // of the children is the volume of the compartment the species
+              // is in. If this is the case, just drop the multiplication
+              // instead of dividing
+              bool multiplication = false;
+              const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);
+              assert(pMetab != NULL);
+              const CCompartment* pCompartment = pMetab->getCompartment();
 
-              if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
-                  (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
+              if (pCompartment->getDimensionality() != 0)
                 {
-                  const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
-                  const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
 
-                  if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                  if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
+                      (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
                     {
+                      const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
+                      const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
 
-                      pExpression->setRoot(pChild2->copyBranch());
-                      multiplication = true;
+                      if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                        {
+
+                          pExpression->setRoot(pChild2->copyBranch());
+                          multiplication = true;
+                        }
+                      else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                        {
+                          pExpression->setRoot(pChild1->copyBranch());
+                          multiplication = true;
+                        }
                     }
-                  else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+
+                  if (multiplication == false)
                     {
-                      pExpression->setRoot(pChild1->copyBranch());
-                      multiplication = true;
+                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
+                      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+                      pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
+                      pOperatorNode->addChild(pVolumeNode);
+                      pExpression->setRoot(pOperatorNode);
                     }
-                }
-
-              if (multiplication == false)
-                {
-                  CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                  CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-                  pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-                  pOperatorNode->addChild(pVolumeNode);
-                  pExpression->setRoot(pOperatorNode);
                 }
             }
+
+          pAssignment = new CEventAssignment(pObject->getKey(), pCOPASIEvent);
+          pAssignment->setExpressionPtr(pExpression);
+        }
+      catch (...)
+        {
+          pdelete(pAssignment);
+          std::ostringstream os;
+          os << "Error while importing event assignment for variable \"";
+          os << variable << "\".";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << "\n" << text.substr(text.find("\n") + 1);
+            }
+
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
-      CEventAssignment Assignment(pObject->getKey(), pCOPASIEvent);
-      Assignment.setExpressionPtr(pExpression);
-      pCOPASIEvent->getAssignments().add(Assignment);
+      assert(pAssignment != NULL);
+      pCOPASIEvent->getAssignments().add(pAssignment);
+      pdelete(pAssignment);
     }
 
   copasi2sbmlmap[pCOPASIEvent] = const_cast<Event*>(pEvent);
@@ -7522,7 +7804,31 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
       // now we import all function definitions that do not have any dependencies
       if (it->second.empty())
         {
-          CFunction* pFun = this->createCFunctionFromFunctionDefinition(it->first, pTmpFunctionDB, pSBMLModel, copasi2sbmlmap);
+          CFunction* pFun = NULL;
+
+          try
+            {
+              pFun = this->createCFunctionFromFunctionDefinition(it->first, pTmpFunctionDB, pSBMLModel, copasi2sbmlmap);
+            }
+          catch (...)
+            {
+              std::ostringstream os;
+              os << "Error while importing function definition \"";
+              os << it->first->getId() << "\".";
+
+              // check if the last message on the stack is an exception
+              // and if so, add the message text to the current exception
+              if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+                {
+                  // we only want the message, not the timestamp line
+                  std::string text = CCopasiMessage::peekLastMessage().getText();
+                  os << "\n" << text.substr(text.find("\n") + 1);
+                }
+
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+            }
+
+          assert(pFun != NULL);
           copasi2sbmlmap[pFun] = const_cast<FunctionDefinition*>(it->first);
           this->mFunctionNameMapping[it->first->getId()] = pFun->getObjectName();
           // next we delete the imported function definitions from the dependencies of
