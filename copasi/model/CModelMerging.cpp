@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.2.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/11/30 13:17:42 $
+//   $Author: shoops $
+//   $Date: 2010/03/03 20:33:19 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -929,7 +934,7 @@ void CModelMerging::setModel(CModel* pModel)
   mpModel = pModel;
 }
 
-void  CModelMerging::simpleCall(std::vector< std::string > & toKey, std::vector< std::string > & objectKey)
+void  CModelMerging::simpleCall(std::vector< std::string > & /* toKey */, std::vector< std::string > & objectKey)
 {
   if (!mpModel)
     {
