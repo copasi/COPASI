@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/mml.pro,v $ 
-#   $Revision: 1.7.2.2 $ 
+#   $Revision: 1.7.2.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/03 18:09:56 $ 
+#   $Date: 2010/03/03 22:17:45 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,18 +17,19 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.7.2.2 $ $Author: shoops $ $Date: 2010/03/03 18:09:56 $
+# $Revision: 1.7.2.3 $ $Author: shoops $ $Date: 2010/03/03 22:17:45 $
 ######################################################################
 
 LIB = mml
-
-CONFIG += qt
 
 # Input
 HEADERS += qtmmlwidget.h
 SOURCES += qtmmlwidget.cpp
 
 include(../lib.pri)
+
+CONFIG += qt
+
 include(../common.pri)
 
 #The following line was inserted by qt3to4
