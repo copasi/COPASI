@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.31.2.2 $
+#   $Revision: 1.31.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/03 18:09:54 $
+#   $Date: 2010/03/03 19:12:10 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -68,6 +68,15 @@ FORMS = ParaPanel.ui \
         NodeSizePanel.ui \
         FontChooser.ui
 
+DISTFILES += load_data.xpm \
+             play.xpm \
+             stop.xpm \
+             pause.xpm \
+             forward.xpm \
+             backward.xpm \
+             forward_single.xpm \
+             backward_single.xpm
+             
 include(../lib.pri)
 
 CONFIG += qt
