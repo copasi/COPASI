@@ -380,7 +380,7 @@ dnl to prevent calling aclocal, automake and configure again
  \$QMAKE \$QMAKE_ARG && \\
  cat Makefile | \\
  sed -e 's/(MAKEFILE): *\$/(MAKEFILE): Makefile/' \\
-     -e 'sxQMAKE.*=.*qmakexQMAKE = \'$QMAKE'x' > \$\$.tmp && \\
+     -e 'sxQMAKE.*=.*qmakexQMAKE = '\$QMAKE'x' > \$\$.tmp && \\
  mv \$\$.tmp Makefile && \\
  echo depend:  >> Makefile && \\
  echo "	touch Makefile" >> Makefile && \\
