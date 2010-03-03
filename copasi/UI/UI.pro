@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229.2.2 $
+#   $Revision: 1.229.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/03 18:09:55 $
+#   $Date: 2010/03/03 19:33:22 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229.2.2 $ $Author: shoops $ $Date: 2010/03/03 18:09:55 $
+# $Revision: 1.229.2.3 $ $Author: shoops $ $Date: 2010/03/03 19:33:22 $
 ######################################################################
 
 LIB = UI
@@ -362,18 +362,6 @@ SOURCES += \
   DISTFILES += CQDifferentialEquations.cpp
 }
 
-
-#ifdef COPASI_LICENSE_COM
-contains(USE_LICENSE, COM) {
-# FORMS3 += CQRegistrationDialog.ui
-
-  HEADERS += CQRegistrationDialog.h \
-             CQRegistrationDialog.ui.h
-
-  SOURCES += CQRegistrationDialog.cpp
-}
-#endif // COPAS_LICENSE_COM
-
 DISTFILES += icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \
              icons/CopasiDoc.ico \
@@ -409,6 +397,17 @@ include(../lib.pri)
 CONFIG += qt 
 
 include(../common.pri)
+
+#ifdef COPASI_LICENSE_COM
+contains(USE_LICENSE, COM) {
+# FORMS3 += CQRegistrationDialog.ui
+
+  HEADERS += CQRegistrationDialog.h \
+             CQRegistrationDialog.ui.h
+
+  SOURCES += CQRegistrationDialog.cpp
+}
+#endif // COPASI_LICENSE_COM
 
 #The following line was inserted by qt3to4
 QT += xml  opengl qt3support 
