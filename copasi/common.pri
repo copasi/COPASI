@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.114.2.1 $ 
+#   $Revision: 1.114.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/03 18:09:59 $ 
+#   $Date: 2010/03/03 18:38:58 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.114.2.1 $ $Author: shoops $ $Date: 2010/03/03 18:09:59 $  
+# $Revision: 1.114.2.2 $ $Author: shoops $ $Date: 2010/03/03 18:38:58 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -594,7 +594,7 @@ QMAKE_EXTRA_UNIX_TARGETS += DEP1
       $(MKDIR) ../../copasi_src/copasi; \
     $(CHK_DIR_EXISTS) ../../copasi_src/copasi/$$SRC_TARGET || \
       $(MKDIR) ../../copasi_src/copasi/$$SRC_TARGET; \
-    $(COPY_FILE) --parents $${SOURCES} $${HEADERS} $${FORMS} $${FORMS3} $${DISTFILES} \
+    $(COPY_FILE) --parents $${SOURCES} $${HEADERS} $${FORMS} $${FORMS3} $(DIST) \
       ../../copasi_src/copasi/$$SRC_TARGET/
 
   QMAKE_EXTRA_UNIX_TARGETS += src_distribution
