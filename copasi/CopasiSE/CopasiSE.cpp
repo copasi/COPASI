@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.46.2.1 $
+//   $Revision: 1.46.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/02 08:49:29 $
+//   $Date: 2010/03/03 09:10:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -613,11 +613,6 @@ int exportSBML()
 
   switch (SBMLSchema)
     {
-      case copasi::SBMLSchema_L1V1:
-        Level = 1;
-        Version = 1;
-        break;
-
       case copasi::SBMLSchema_L1V2:
         Level = 1;
         Version = 2;
@@ -633,15 +628,15 @@ int exportSBML()
         Version = 2;
         break;
 
-      case copasi::SBMLSchema_L2V4:
-        Level = 2;
-        Version = 4;
-        break;
-
       case copasi::SBMLSchema_L2V3:
-      default:
         Level = 2;
         Version = 3;
+        break;
+
+      case copasi::SBMLSchema_L2V4:
+      default:
+        Level = 2;
+        Version = 4;
         break;
     }
 

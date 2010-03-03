@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-//   $Revision: 1.25.14.1 $
+//   $Revision: 1.25.14.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/02 08:49:29 $
+//   $Date: 2010/03/03 09:10:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -747,7 +747,10 @@ void copasi::COptionParser::parse_value(const char *value)
 
         if (strcmp(value, "L1V1") == 0)
           {
-            evalue = SBMLSchema_L1V1;
+            std::string error("export to SBML '");
+            error += value;
+            error += "' is not supported in COPASI";
+            throw option_error(error);
           }
         else if (strcmp(value, "L1V2") == 0)
           {

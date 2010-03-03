@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-//   $Revision: 1.19.14.1 $
+//   $Revision: 1.19.14.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/02 08:49:29 $
+//   $Date: 2010/03/03 09:10:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,6 @@ enum autothrow
 
 enum SBMLSchema_enum
 {
-  SBMLSchema_L1V1,
   SBMLSchema_L1V2,
   SBMLSchema_L2V1,
   SBMLSchema_L2V2,
