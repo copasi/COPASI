@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.14.2.2 $
+//   $Revision: 1.14.2.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/02/24 14:02:46 $
+//   $Author: shoops $
+//   $Date: 2010/03/04 03:21:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,6 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 
-#define mtxIdx(row,col,intv)  ((row)+(col)*(intv))
 CStochDirectMethod::CReactionDependencies::CReactionDependencies():
     mSpeciesMultiplier(0),
     mMethodSpecies(0),
@@ -107,7 +106,6 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
     mpModel(NULL),
     mNumReactions(0),
-    mNumSpecies(0),
     mMaxSteps(1000000),
     mNextReactionTime(0.0),
     mNextReactionIndex(C_INVALID_INDEX),
@@ -127,7 +125,6 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
     mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
     mpModel(src.mpModel),
     mNumReactions(src.mNumReactions),
-    mNumSpecies(src.mNumSpecies),
     mMaxSteps(src.mMaxSteps),
     mNextReactionTime(src.mNextReactionTime),
     mNextReactionIndex(src.mNextReactionIndex),
@@ -210,7 +207,6 @@ void CStochDirectMethod::start(const CState * initialState)
   //for the discrete simulation. This also floors all particle numbers in the model.
 
   mNumReactions = mpModel->getReactions().size();
-  mNumSpecies = mpModel->getMetabolitesX().size();
 
   mAmu.resize(mNumReactions);
   mAmu = 0.0;
@@ -523,16 +519,17 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
 void CStochDirectMethod::calculateAmu(const C_INT32 & index)
 {
   CReactionDependencies & Dependencies = mReactionDependencies[index];
+  C_FLOAT64 & Amu = mAmu[index];
 
-  mAmu[index] = *Dependencies.mpParticleFlux;
+  Amu = *Dependencies.mpParticleFlux;
 
   if (!mDoCorrection)
     {
       return;
     }
 
-  C_FLOAT64 Amu = 1.0;
-  C_FLOAT64 SubstrateFactor = 1.0;
+  C_FLOAT64 SubstrateMultiplier = 1.0;
+  C_FLOAT64 SubstrateDevisor = 1.0;
   C_FLOAT64 Multiplicity;
   C_FLOAT64 LowerBound;
   C_FLOAT64 Number;
@@ -558,22 +555,21 @@ void CStochDirectMethod::calculateAmu(const C_INT32 & index)
           Number = **ppLocalSubstrate;
 
           LowerBound = Number - Multiplicity;
-          SubstrateFactor = SubstrateFactor * pow(Number, Multiplicity - 1.0);  //optimization
+          SubstrateDevisor *= pow(Number, Multiplicity - 1.0);  //optimization
           Number -= 1.0;
 
           while (Number > LowerBound)
             {
-              Amu *= Number;
+              SubstrateMultiplier *= Number;
               Number -= 1.0;
             }
         }
     }
 
   // at least one substrate particle number is zero
-  if (fabs(Amu) < 100.0 * std::numeric_limits<C_FLOAT64>::epsilon() ||
-      fabs(SubstrateFactor)  < 100.0 * std::numeric_limits<C_FLOAT64>::epsilon())
+  if (SubstrateMultiplier < 0.5 || SubstrateDevisor < 0.5)
     {
-      mAmu[index] = 0.0;
+      Amu = 0.0;
       return;
     }
 
@@ -583,7 +579,7 @@ void CStochDirectMethod::calculateAmu(const C_INT32 & index)
   //C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
   if (ApplyCorrection)
     {
-      mAmu[index] = *Dependencies.mpParticleFlux * Amu / SubstrateFactor;
+      Amu *= SubstrateMultiplier / SubstrateDevisor;
     }
 
   return;
