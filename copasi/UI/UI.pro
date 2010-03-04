@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229.2.4 $
+#   $Revision: 1.229.2.5 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/04 14:19:20 $
+#   $Date: 2010/03/04 15:01:55 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229.2.4 $ $Author: shoops $ $Date: 2010/03/04 14:19:20 $
+# $Revision: 1.229.2.5 $ $Author: shoops $ $Date: 2010/03/04 15:01:55 $
 ######################################################################
 
 LIB = UI
@@ -275,20 +275,35 @@ SOURCES	+= \
 
 ### uic3 forms
 FORMS3 += CMCAResultSubwidget.ui
+HEADERS += CMCAResultSubwidget.ui.h
 FORMS3 += CQExperimentSelection.ui
+HEADERS += CQExperimentSelection.ui.h 
 FORMS3 += CQFittingResult.ui
+HEADERS += CQFittingResult.ui.h
 FORMS3 += CQFittingResultTab1.ui
+HEADERS += CQFittingResultTab1.ui.h
 FORMS3 += CQMatrixDialog.ui
+HEADERS += CQMatrixDialog.ui.h
 FORMS3 += CQMoietiesTaskWidget.ui
+HEADERS += CQMoietiesTaskWidget.ui.h
 FORMS3 += CQSplashWidget.ui
+HEADERS += CQSplashWidget.ui.h
 FORMS3 += CQStartValueReset.ui
+HEADERS += CQStartValueReset.ui.h
 FORMS3 += CQTSSAResultSubWidget.ui
+HEADERS += CQTSSAResultSubWidget.ui.h
 FORMS3 += CQTaskBtnWidget.ui
+HEADERS += CQTaskBtnWidget.ui.h
 FORMS3 += CQTaskHeaderWidget.ui
+HEADERS += CQTaskHeaderWidget.ui.h
 FORMS3 += CUpDownSubwidget.ui
+HEADERS += CUpDownSubwidget.ui.h
 FORMS3 += DefaultplotDialog.ui
+HEADERS += DefaultplotDialog.ui.h
 FORMS3 += TimeSeriesSubwidget.ui
+HEADERS += TimeSeriesSubwidget.ui.h
 FORMS3 += objectdebug.ui
+HEADERS += objectdebug.ui.h
 
 ### uic3 forms that do not work at the moment
 #FORMS3 += CQExperimentData.ui
