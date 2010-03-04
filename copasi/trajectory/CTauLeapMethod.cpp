@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27.2.4 $
+//   $Revision: 1.27.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/04 04:17:02 $
+//   $Date: 2010/03/04 14:20:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -644,12 +644,6 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
     {
       //model not suitable, message describes the problem
       CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
-      return false;
-    }
-
-  if (pTP->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 22);
       return false;
     }
 

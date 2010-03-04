@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.76.2.2 $
+//   $Revision: 1.76.2.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/02/24 14:02:46 $
+//   $Author: shoops $
+//   $Date: 2010/03/04 14:20:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -684,12 +684,6 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
     {
       //max steps should be at least 1
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 15);
-      return false;
-    }
-
-  if (pTP->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 22);
       return false;
     }
 
