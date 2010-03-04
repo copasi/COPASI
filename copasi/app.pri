@@ -47,13 +47,13 @@ macx:debug {
     
     contains(DEFINES, HAVE_MML) {
       COPASI_LIBS_UI += mml
-      COPASI_LIBS_UI += tex
     }
 
     COPASI_LIBS_UI += barChart
     COPASI_LIBS_UI += layoutUI
     COPASI_LIBS_UI += MIRIAMUI
     COPASI_LIBS_UI += plotUI
+    COPASI_LIBS_UI += tex
     COPASI_LIBS_UI += UI
     COPASI_LIBS_UI += wizard
     
