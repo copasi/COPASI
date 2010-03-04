@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229.2.5 $
+#   $Revision: 1.229.2.6 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/04 15:01:55 $
+#   $Date: 2010/03/04 16:27:48 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229.2.5 $ $Author: shoops $ $Date: 2010/03/04 15:01:55 $
+# $Revision: 1.229.2.6 $ $Author: shoops $ $Date: 2010/03/04 16:27:48 $
 ######################################################################
 
 LIB = UI
@@ -368,7 +368,7 @@ FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
 FORMS += CQExpandModelData.ui
 
-!isEmpty(COPASI_SRC_PACKAGE) {
+contains(COPASI_SRC_PACKAGE, true) {
   HEADERS -= CQDifferentialEquations.h
   SOURCES -= CQDifferentialEquations.cpp
   

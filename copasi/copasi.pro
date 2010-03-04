@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.60.2.1 $
+#   $Revision: 1.60.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/02/26 16:50:24 $
+#   $Date: 2010/03/04 16:27:48 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.60.2.1 $ $Author: shoops $ $Date: 2010/02/26 16:50:24 $
+# $Revision: 1.60.2.2 $ $Author: shoops $ $Date: 2010/03/04 16:27:48 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -107,7 +107,7 @@ macx:debug {
   }
 }
 
-isEmpty(COPASI_SRC_PACKAGE) {
+!contains(COPASI_SRC_PACKAGE, true) {
   # The bindings
   !contains(BUILD_BINDINGS, no) {
     macx:debug {
