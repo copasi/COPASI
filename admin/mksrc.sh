@@ -411,7 +411,7 @@ echo @echo off > config.status.bat
 echo echo running: configure.bat %* >> config.status.bat
 echo configure.bat %* >> config.status.bat
 
-set arguments=
+set arguments="COPASI_SRC_PACKAGE=true"
 
 :LOOP
 if '%1' == ''                      goto QMAKE
