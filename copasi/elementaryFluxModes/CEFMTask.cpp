@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 19:34:09 $
+//   $Date: 2010/03/04 18:11:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,10 +47,12 @@
 const unsigned C_INT32 CEFMTask::ValidMethods[] =
 {
   CCopasiMethod::EFMAlgorithm,
+#ifdef COPASI_DEBUG
   CCopasiMethod::EFMBitPatternTreeAlgorithm,
+#endif // COPASI_DEBUG
 #ifdef COPASI_SSA
   CCopasiMethod::stoichiometricStabilityAnalysis,
-#endif
+#endif // COPASI_SSA
   0
 };
 
