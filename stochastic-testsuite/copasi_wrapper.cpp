@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.16.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/11/20 13:13:46 $
+//   $Author: shoops $
+//   $Date: 2010/03/04 20:24:04 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -149,7 +154,7 @@ int main(int argc, char *argv[])
 
           for (j = 0; j < jMax; ++j)
             {
-              if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
+              if (metabolites[j]->getSBMLId() == unQuote(pSBMLSpeciesIds[i]))
                 {
                   pTable->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=ParticleNumber"))->getCN());
                   //std::cout << "adding metabolite " << metabolites[j]->getObjectName() << " to report." << std::endl;
@@ -166,8 +171,9 @@ int main(int argc, char *argv[])
 
       // create a trajectory task
       pTrajectoryTask = new CTrajectoryTask();
-      pTrajectoryTask->setMethodType(CCopasiMethod::stochastic);
-      //pTrajectoryTask->setMethodType(CCopasiMethod::directMethod);
+      // pTrajectoryTask->setMethodType(CCopasiMethod::stochastic);
+      pTrajectoryTask->setMethodType(CCopasiMethod::directMethod);
+      // pTrajectoryTask->setMethodType(CCopasiMethod::tauLeap);
       pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
 
       pTrajectoryTask->setScheduled(false);
