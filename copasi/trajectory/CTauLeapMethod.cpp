@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27.2.3 $
+//   $Revision: 1.27.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/04 03:18:58 $
+//   $Date: 2010/03/04 04:17:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -271,7 +271,7 @@ void CTauLeapMethod::start(const CState * initialState)
   C_FLOAT64 * pValue = mMethodState.beginIndependent();
 
   mFirstReactionSpeciesIndex = 0;
-  size_t Index = 0;
+  size_t Index = 1;
 
   for (; ppEntity != endEntity; ++ppEntity, ++pValue, ++Index)
     {
@@ -306,6 +306,7 @@ void CTauLeapMethod::start(const CState * initialState)
 
       pDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
 
+      pDependencies->mMethodSpeciesIndex.resize(Balances.size());
       pDependencies->mSpeciesMultiplier.resize(Balances.size());
       pDependencies->mMethodSpecies.resize(Balances.size());
       pDependencies->mModelSpecies.resize(Balances.size());
@@ -445,7 +446,7 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
   pAmu = mAmu.array();
   C_FLOAT64 * pK = mK.array();
 
-  for (; pAmu != pAmuEnd; ++pAmu)
+  for (; pAmu != pAmuEnd; ++pAmu, ++pK)
     {
       if ((lambda = *pAmu * ds) < 0.0)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
