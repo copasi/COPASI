@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229.2.3 $
+#   $Revision: 1.229.2.4 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/03 19:33:22 $
+#   $Date: 2010/03/04 14:19:20 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229.2.3 $ $Author: shoops $ $Date: 2010/03/03 19:33:22 $
+# $Revision: 1.229.2.4 $ $Author: shoops $ $Date: 2010/03/04 14:19:20 $
 ######################################################################
 
 LIB = UI
@@ -279,15 +279,12 @@ FORMS3 += CQExperimentSelection.ui
 FORMS3 += CQFittingResult.ui
 FORMS3 += CQFittingResultTab1.ui
 FORMS3 += CQMatrixDialog.ui
-#FORMS3 += CQMoietiesTaskResult.ui
 FORMS3 += CQMoietiesTaskWidget.ui
-#FORMS3 += CQProgressItem.ui
 FORMS3 += CQSplashWidget.ui
 FORMS3 += CQStartValueReset.ui
 FORMS3 += CQTSSAResultSubWidget.ui
 FORMS3 += CQTaskBtnWidget.ui
 FORMS3 += CQTaskHeaderWidget.ui
-#FORMS3 += CQTextDialog.ui
 FORMS3 += CUpDownSubwidget.ui
 FORMS3 += DefaultplotDialog.ui
 FORMS3 += TimeSeriesSubwidget.ui
@@ -295,8 +292,24 @@ FORMS3 += objectdebug.ui
 
 ### uic3 forms that do not work at the moment
 #FORMS3 += CQExperimentData.ui
+HEADERS += CQExperimentData.h
+HEADERS += CQExperimentData.ui.h
+SOURCES += CQExperimentData.cpp
+
 #FORMS3 += CQProgressItemBar.ui
+HEADERS += CQProgressItemBar.h
+HEADERS += CQProgressItemBar.ui.h
+SOURCES += CQProgressItemBar.cpp
+
 #FORMS3 += CQProgressItemText.ui
+HEADERS += CQProgressItemText.h
+HEADERS += CQProgressItemText.ui.h
+SOURCES += CQProgressItemText.cpp
+
+#FORMS3 += CQTextDialog.ui
+HEADERS += CQTextDialog.h
+HEADERS += CQTextDialog.ui.h
+SOURCES += CQTextDialog.cpp
 
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
@@ -339,20 +352,6 @@ FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
 FORMS += CQExpandModelData.ui
-
-# headers generated from .ui files
-HEADERS += \
-    CQExperimentData.h \
-    CQProgressItemBar.h \
-    CQProgressItemText.h \
-    CQTextDialog.h \
-
-# sources generated from .ui files
-SOURCES += \
-    CQExperimentData.cpp \
-    CQProgressItemBar.cpp \
-    CQProgressItemText.cpp \
-    CQTextDialog.cpp \
 
 !isEmpty(COPASI_SRC_PACKAGE) {
   HEADERS -= CQDifferentialEquations.h
