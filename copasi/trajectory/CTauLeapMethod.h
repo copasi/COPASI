@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.13 $
+ $Revision: 1.13.2.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/11/20 18:24:25 $
+ $Date: 2010/03/04 03:18:58 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,31 +20,17 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/**
- *   CTauLeapMethod
- *
- *   This class implements the tau-Leap method for the simulation of a
- *   biochemical system over time (see Gillespie (2001): Approximate
- *   accelerated stochastic simulation of chemically reacting systems.
- *   J. Chemical Physics, 115:1716-1733).
- *
- *   File name: CTauLeapMethod.h
- *   Author: Juergen Pahle
- *   Email: juergen.pahle@eml-r.villa-bosch.de
- *
- *   Last change: 20, December 2004
- *
- *   (C) European Media Lab 2004.
- */
 #ifndef COPASI_CTauLeapMethod
 #define COPASI_CTauLeapMethod
 
 /* INCLUDES ******************************************************************/
 #include "trajectory/CTrajectoryMethod.h"
 #include "utilities/CCopasiVector.h"
+#include "copasi/model/CState.h"
 
 /* DEFINE ********************************************************************/
 #define TAU                    0.01
+#define EPS                    0.03
 #define USE_RANDOM_SEED        false
 #define RANDOM_SEED            1
 #define INT_EPSILON            0.1
@@ -58,6 +49,76 @@ class CTauLeapMethod : public CTrajectoryMethod
   friend CTrajectoryMethod *
   CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
       CTrajectoryProblem * pProblem);
+
+  class CReactionDependencies
+  {
+  public:
+    // Operations
+    /**
+     * Default constructor
+     */
+    CReactionDependencies();
+
+    /**
+     * Copy constructor
+     * @param const CReactionDependencies & src
+     */
+    CReactionDependencies(const CReactionDependencies & src);
+
+    /**
+     * Destructor
+     */
+    ~CReactionDependencies();
+
+    /**
+     * Assignment operator
+     * @param const CReactionDependencies & rhs
+     * @return CReactionDependencies &
+     */
+    CReactionDependencies & operator = (const CReactionDependencies & rhs);
+
+    // Attributes
+
+    /**
+     * Vector of multiplier to calculate the new state
+     */
+    CVector< C_FLOAT64 > mSpeciesMultiplier;
+
+    /**
+     * Vector of indexes of the species for method internal calculations
+     */
+    CVector< size_t > mMethodSpeciesIndex;
+
+    /**
+     * Vector of pointers to method internal species values to calculate the new state.
+     */
+    CVector< C_FLOAT64 * > mMethodSpecies;
+
+    /**
+     * Vector of pointers to model species values to calculate the new state.
+     */
+    CVector< C_FLOAT64 * > mModelSpecies;
+
+    /**
+     * Vector of multiplier to calculate the new propensity.
+     */
+    CVector< C_FLOAT64 > mSubstrateMultiplier;
+
+    /**
+     * Vector of pointers to method internal species values to calculate the new propensity.
+     */
+    CVector< C_FLOAT64 * > mMethodSubstrates;
+
+    /**
+     * Vector of pointers to model species values to calculate the new propensity.
+     */
+    CVector< C_FLOAT64 * > mModelSubstrates;
+
+    /**
+     * A pointer to the particle flux of the reaction.
+     */
+    C_FLOAT64 * mpParticleFlux;
+  };
 
   /* PUBLIC METHODS ************************************************************/
 
@@ -84,10 +145,8 @@ public:
 
   /**
    *   Creates a CTauLeapMethod adequate for the problem.
-   *   (only regular CTauLeapMethod so far)
    */
-  static CTauLeapMethod *
-  createTauLeapMethod();
+  static CTauLeapMethod * createTauLeapMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -123,11 +182,6 @@ protected:
   CTauLeapMethod(const CCopasiContainer * pParent = NULL);
 
   /**
-   * Initializes the solver.
-   */
-  void initMethod();
-
-  /**
    *   Cleans up memory, etc.
    */
   void cleanup();
@@ -138,25 +192,7 @@ protected:
    *
    *  @param  ds A C_FLOAT64 specifying the timestep
    */
-  void doSingleStep(C_FLOAT64 ds);
-
-  /**
-   *   Test the model if it is proper to perform stochastic simulations on.
-   *   Several properties are tested (e.g. integer stoichometry, all
-   *   reactions take place in one compartment only, irreversibility...).
-   *
-   *   @param model The model to be checked
-   *   @return 1, if hybrid simulation is possible; <0, if an error occured.
-   */
-  static C_INT32 checkModel(CModel * model);
-
-  /**
-   *   Sets up an internal representation of the balances for each reaction.
-   *   This is done in order to be able to deal with fixed metabolites and
-   *   to avoid a time consuming search for the indices of metabolites in the
-   *   model.
-   */
-  void setupBalances();
+  C_FLOAT64 doSingleStep(C_FLOAT64 ds);
 
   /**
    * Calculate the propensities for all reactions
@@ -166,7 +202,7 @@ protected:
   /**
    * Calculate one of the propensities
    */
-  C_INT32 calculateAmu(C_INT32 reaction_index);
+  void calculateAmu(const C_INT32 & index);
 
   /**
    *   Updates the system according to the probabilistic
@@ -190,9 +226,9 @@ protected:
   CModel * mpModel;
 
   /**
-   *   A pointer to the reactions of the model.
+   * The method internal state which contains particle rounded particle numbers.
    */
-  const CCopasiVectorNS <CReaction> * mpReactions;
+  CState mMethodState;
 
   /**
    *   Number of reactions.
@@ -200,22 +236,22 @@ protected:
   unsigned C_INT32 mNumReactions;
 
   /**
-   *   A pointer to the metabolites of the model.
+   * A vector containing dependency information to minimize the required updates.
    */
-  CCopasiVector <CMetab> * mpMetabolites;
+  CVector< CReactionDependencies > mReactionDependencies;
 
   /**
    *   Number of variable metabolites.
    */
-  unsigned C_INT32 mNumNumbers;
+  unsigned C_INT32 mNumReactionSpecies;
 
   /**
-   *   The propensities of the stochastic reactions.
+   * A vector of reaction propensities
    */
-  std::vector <C_FLOAT64> mAmu;
+  CVector< C_FLOAT64 > mAmu;
 
   /**
-   *   The sum of propensities.
+   * Total propensity (sum over mAmu[i])
    */
   C_FLOAT64 mA0;
 
@@ -223,27 +259,27 @@ protected:
    *   The k-values of the reactions, that is the
    *   probabilistic number of firings within one leap.
    */
-  std::vector <C_INT64> mK;
+  CVector< C_FLOAT64 > mK;
 
   /**
-   *   The particle numbers.
+   *   For tau-selection method
    */
-  std::vector <C_INT64> mNumbers;
+  CVector< C_FLOAT64> mAvgDX;
 
   /**
-   *   Local representation of the stoichiometry.
+   *   For tau-selection method
    */
-  std::vector < std::vector <CHybridBalance> > mLocalBalances;
+  CVector< C_FLOAT64> mSigDX;
 
   /**
-   *   Local representation of the substrates.
+   *   The tolerance ratio x(t+t')< eps*x(t)
    */
-  std::vector < std::vector <CHybridBalance> > mLocalSubstrates;
+  C_FLOAT64 mEpsilon;
 
   /**
-   *   The tau value to use.
+   * The maximum number of tau leap steps allowed for an integrations step
    */
-  C_FLOAT64 mTau;
+  unsigned C_INT32 mMaxSteps;
 
   /**
    *   Specifies if the mRandomSeed should be used.
@@ -262,34 +298,14 @@ protected:
   CRandom * mpRandomGenerator;
 
   /**
-   *   Variables used for the generation of poisson-distr.
-   *   random variables.
-   */
-  C_FLOAT64 sq, alxm, g, oldm;
-  static const C_FLOAT64 cof[6];
-
-  /**
    * indicates if the correction N^2 -> N*(N-1) should be performed
    */
   bool mDoCorrection;
 
   /**
-   * Indicates whether the model has global quantities with assignment rules.
-   * If it has, we will use a less efficient way to update the model
-   * state to handle this.
-   */
-  bool mHasAssignments;
-
-  /**
-   * tests if the model contains a global value with an assignment rule that is
-   * used in calculations
-   */
-  static bool modelHasAssignments(const CModel* pModel);
-
-  /**
    * index of first metab in a CState
    */
-  unsigned C_INT32 mFirstMetabIndex;
+  size_t mFirstReactionSpeciesIndex;
 };
 
 #endif // COPASI_CTauLeapMethod

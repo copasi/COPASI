@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144.2.5 $
+//   $Revision: 1.144.2.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/02 16:18:49 $
+//   $Author: shoops $
+//   $Date: 2010/03/04 03:18:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,7 +103,7 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 7, "CTrajectoryMethod (7): Problem is not set."},
   {MCTrajectoryMethod + 8, "CTrajectoryMethod (8): Problem is not a trajectory problem."},
   {MCTrajectoryMethod + 9, "CTrajectoryMethod (9): Negative time steps not possible with stochastic simulation."},
-  {MCTrajectoryMethod + 10, "CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems.\nYou can try to reduce the tau-value."},
+  {MCTrajectoryMethod + 10, "CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems.\nYou can try to reduce the epsilon value."},
   {MCTrajectoryMethod + 11, "CTrajectoryMethod (11): Invalid tau-value ('%.2f'). Tau must have a positive value."},
   {MCTrajectoryMethod + 12, "CTrajectoryMethod (12): Internal step limit exceeded."},
   {MCTrajectoryMethod + 13, "CTrajectoryMethod (13): Runge Kutta Step size must be positive in hybrid method."},

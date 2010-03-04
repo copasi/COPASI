@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27.2.2 $
+//   $Revision: 1.27.2.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/02/24 14:02:46 $
+//   $Author: shoops $
+//   $Date: 2010/03/04 03:18:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,45 @@
 #include "utilities/CIndexedPriorityQueue.h"
 #include "randomGenerator/CRandom.h"
 
+CTauLeapMethod::CReactionDependencies::CReactionDependencies():
+    mSpeciesMultiplier(0),
+    mMethodSpeciesIndex(0),
+    mMethodSpecies(0),
+    mModelSpecies(0),
+    mSubstrateMultiplier(0),
+    mMethodSubstrates(0),
+    mModelSubstrates(0),
+    mpParticleFlux(NULL)
+{}
+
+CTauLeapMethod::CReactionDependencies::CReactionDependencies(const CReactionDependencies & src):
+    mSpeciesMultiplier(src.mSpeciesMultiplier),
+    mMethodSpeciesIndex(src.mMethodSpeciesIndex),
+    mMethodSpecies(src.mMethodSpecies),
+    mModelSpecies(src.mModelSpecies),
+    mSubstrateMultiplier(src.mSubstrateMultiplier),
+    mMethodSubstrates(src.mMethodSubstrates),
+    mModelSubstrates(src.mModelSubstrates),
+    mpParticleFlux(src.mpParticleFlux)
+{}
+
+CTauLeapMethod::CReactionDependencies::~CReactionDependencies()
+{}
+
+CTauLeapMethod::CReactionDependencies & CTauLeapMethod::CReactionDependencies::operator = (const CTauLeapMethod::CReactionDependencies & rhs)
+{
+  mSpeciesMultiplier = rhs.mSpeciesMultiplier;
+  mMethodSpeciesIndex = rhs.mMethodSpeciesIndex;
+  mMethodSpecies = rhs.mMethodSpecies;
+  mModelSpecies = rhs.mModelSpecies;
+  mSubstrateMultiplier = rhs.mSubstrateMultiplier;
+  mMethodSubstrates = rhs.mMethodSubstrates;
+  mModelSubstrates = rhs.mModelSubstrates;
+  mpParticleFlux = rhs.mpParticleFlux;
+
+  return * this;
+}
+
 /* PUBLIC METHODS ************************************************************/
 
 /**
@@ -68,10 +107,7 @@
 CTauLeapMethod *CTauLeapMethod::createTauLeapMethod()
 {
   C_INT32 result = 1; // regular TauLeap method as default
-  /*  if (pProblem && pProblem->getModel())
-      {
-      result = checkModel(pProblem->getModel());
-      }*/
+
   CTauLeapMethod * method = NULL;
 
   switch (result)
@@ -127,14 +163,14 @@ void CTauLeapMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Tau", CCopasiParameter::DOUBLE, (C_FLOAT64) TAU);
+  assertParameter("Epsilon", CCopasiParameter::DOUBLE, (C_FLOAT64) EPS);
+  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
   assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
   assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("TAULEAP.Tau")) != NULL)
     {
-      setValue("Tau", *pParm->getValue().pDOUBLE);
       removeParameter("TAULEAP.Tau");
 
       if ((pParm = getParameter("TAULEAP.UseRandomSeed")) != NULL)
@@ -159,8 +195,6 @@ bool CTauLeapMethod::elevateChildren()
 
 CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
 {
-  // write the current state to the model
-  // mpProblem->getModel()->setState(mpCurrentState); // is that correct?
 
   // do several steps
   C_FLOAT64 time = mpCurrentState->getTime();
@@ -168,18 +202,17 @@ CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
 
   C_FLOAT64 ds;
 
-  ds = mTau;
+  unsigned C_INT32 Steps = 0;
 
-  while ((time + ds) < endTime)
+  while (time < endTime)
     {
-      doSingleStep(ds);
+      ds = doSingleStep(endTime - time);
       time += ds;
-    }
 
-  if (time < endTime)
-    {
-      doSingleStep(endTime - time);
-      time = endTime;
+      if (++Steps > mMaxSteps)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
+        }
     }
 
   *mpCurrentState = mpProblem->getModel()->getState();
@@ -190,22 +223,139 @@ CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
 
 void CTauLeapMethod::start(const CState * initialState)
 {
+  /* get configuration data */
+
+  bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
+  unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
+
+  if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
+
+  mEpsilon = * getValue("Epsilon").pDOUBLE;
+  mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
+  mRandomSeed = * getValue("Random Seed").pUINT;
+  mMaxSteps = * getValue("Max Internal Steps").pUINT;
+
   *mpCurrentState = *initialState;
 
   mpModel = mpProblem->getModel();
-  mpModel->setState(*mpCurrentState);
+  assert(mpModel);
 
   if (mpModel->getModelType() == CModel::deterministic)
     mDoCorrection = true;
   else
     mDoCorrection = false;
 
-  mHasAssignments = modelHasAssignments(mpModel);
+  //initialize the vector of ints that contains the particle numbers
+  //for the discrete simulation. This also floors all particle numbers in the model.
 
-  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
+  mNumReactions = mpModel->getReactions().size();
 
-  // call init of the simulation method, can be overloaded in derived classes
-  initMethod();
+  mAmu.resize(mNumReactions);
+  mAmu = 0.0;
+
+  mAmu.resize(mNumReactions);
+  mK.resize(mNumReactions);
+
+  mNumReactionSpecies = mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
+
+  mAvgDX.resize(mNumReactionSpecies);
+  mSigDX.resize(mNumReactionSpecies);
+
+  // Create a local copy of the state where the particle number are rounded to integers
+  mMethodState = mpModel->getState();
+
+  const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
+
+  CModelEntity *const* ppEntity = StateTemplate.beginIndependent();
+  CModelEntity *const* endEntity = StateTemplate.endFixed();
+  C_FLOAT64 * pValue = mMethodState.beginIndependent();
+
+  mFirstReactionSpeciesIndex = 0;
+  size_t Index = 0;
+
+  for (; ppEntity != endEntity; ++ppEntity, ++pValue, ++Index)
+    {
+      if (dynamic_cast< const CMetab * >(*ppEntity) != NULL)
+        {
+          *pValue = floor(*pValue + 0.5);
+
+          if (mFirstReactionSpeciesIndex == 0 &&
+              (*ppEntity)->getStatus() == CModelEntity::REACTIONS)
+            {
+              mFirstReactionSpeciesIndex = Index;
+            }
+        }
+    }
+
+  // Update the model state so that the species are all represented by integers.
+  mpModel->setState(mMethodState);
+  mpModel->updateSimulatedValues(false); //for assignments
+
+  C_FLOAT64 * pMethodStateValue = mMethodState.beginIndependent() - 1;
+
+  // Build the reaction dependencies
+  mReactionDependencies.resize(mNumReactions);
+
+  CCopasiVector< CReaction >::const_iterator it = mpModel->getReactions().begin();
+  CCopasiVector< CReaction >::const_iterator end = mpModel->getReactions().end();
+  CReactionDependencies * pDependencies = mReactionDependencies.array();
+
+  for (; it  != end; ++it, ++pDependencies)
+    {
+      const CCopasiVector<CChemEqElement> & Balances = (*it)->getChemEq().getBalances();
+
+      pDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
+
+      pDependencies->mSpeciesMultiplier.resize(Balances.size());
+      pDependencies->mMethodSpecies.resize(Balances.size());
+      pDependencies->mModelSpecies.resize(Balances.size());
+
+      CCopasiVector< CChemEqElement >::const_iterator itBalance = Balances.begin();
+      CCopasiVector< CChemEqElement >::const_iterator endBalance = Balances.end();
+
+      Index = 0;
+
+      for (; itBalance != endBalance; ++itBalance)
+        {
+          const CMetab * pMetab = (*itBalance)->getMetabolite();
+
+          if (pMetab->getStatus() == CModelEntity::REACTIONS)
+            {
+              pDependencies->mMethodSpeciesIndex[Index] = StateTemplate.getIndex(pMetab) - mFirstReactionSpeciesIndex;
+              pDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
+              pDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
+              pDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+
+              Index++;
+            }
+        }
+
+      // Correct allocation for metabolites which are not determined by reactions
+      pDependencies->mMethodSpeciesIndex.resize(Index, true);
+      pDependencies->mSpeciesMultiplier.resize(Index, true);
+      pDependencies->mMethodSpecies.resize(Index, true);
+      pDependencies->mModelSpecies.resize(Index, true);
+
+      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
+
+      pDependencies->mSubstrateMultiplier.resize(Substrates.size());
+      pDependencies->mMethodSubstrates.resize(Substrates.size());
+      pDependencies->mModelSubstrates.resize(Substrates.size());
+
+      CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
+      CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
+
+      Index = 0;
+
+      for (; itSubstrate != endSubstrate; ++itSubstrate, ++Index)
+        {
+          const CMetab * pMetab = (*itSubstrate)->getMetabolite();
+
+          pDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
+          pDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+          pDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+        }
+    }
 
   return;
 }
@@ -217,55 +367,6 @@ void CTauLeapMethod::start(const CState * initialState)
  *
  *  @param model A reference to an instance of a CModel
  */
-void CTauLeapMethod::initMethod()
-{
-  unsigned C_INT32 i;
-
-  mpReactions = &mpModel->getReactions();
-  mNumReactions = mpReactions->size();
-  mpMetabolites = &(const_cast < CCopasiVector < CMetab > & >(mpModel->getMetabolitesX()));
-  mAmu.clear();
-  mAmu.resize(mpReactions->size());
-  mK.clear();
-  mK.resize(mpReactions->size());
-
-  mNumNumbers = mpModel->getMetabolitesX().size();
-  mNumbers.clear();
-  mNumbers.resize(mNumNumbers);
-
-  for (i = 0; i < mNumNumbers; ++i)
-    {
-      mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
-      mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
-      mpModel->getMetabolitesX()[i]->refreshConcentration();
-    }
-
-  //TODO also put fixed variables here
-
-  mpModel->updateSimulatedValues(false); //for assignments
-
-  //  imax = mpCurrentState->getNumFixed();
-  //  for (i = 0; i < imax; ++i, Dbl++)
-  //    *Dbl = floor(*Dbl);
-
-  /* get configuration data */
-  mTau = * getValue("Tau").pDOUBLE;
-  mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
-  mRandomSeed = * getValue("Random Seed").pUINT;
-
-  if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
-
-  /* set up internal data structures */
-  setupBalances(); // initialize mBalances (has to be called first!)
-
-  /* poission-distr. random number generation */
-  sq = -1.0;
-  alxm = -1.0;
-  g = -1.0;
-  oldm = -1.0;
-
-  return;
-}
 
 /**
  *  Cleans up memory, etc.
@@ -279,117 +380,82 @@ void CTauLeapMethod::cleanup()
 }
 
 /**
- *   Test the model if it is proper to perform stochastic simulations on.
- *   Several properties are tested (e.g. integer stoichometry, all reactions
- *   take place in one compartment only, irreversibility...).
- *
- *   @return 0, if everything is ok; <0, if an error occured.
- */
-C_INT32 CTauLeapMethod::checkModel(CModel * model)
-{
-  CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
-  CMatrix <C_FLOAT64> mStoi = model->getStoi();
-  C_INT32 i, multInt, numReactions = mpReactions->size();
-  unsigned C_INT32 j;
-  C_FLOAT64 multFloat;
-  //  C_INT32 metabSize = mpMetabolites->size();
-
-  for (i = 0; i < numReactions; i++) // for every reaction
-    {
-      // TEST getCompartmentNumber() == 1
-      if ((*mpReactions)[i]->getCompartmentNumber() != 1) return - 1;
-
-      // TEST isReversible() == 0
-      if ((*mpReactions)[i]->isReversible() != 0) return - 2;
-
-      // TEST integer stoichometry
-      // Iterate through each the metabolites
-      // juergen: the number of rows of mStoi equals the number of non-fixed metabs!
-      //  for (j=0; i<metabSize; j++)
-      for (j = 0; j < mStoi.numRows(); j++)
-        {
-          multFloat = mStoi[j][i];
-          multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
-
-          if ((multFloat - multInt) > INT_EPSILON) return - 3; // INT_EPSILON in CTauLeapMethod.h
-        }
-    }
-
-  return 1; // Model is appropriate for hybrid simulation
-}
-
-/**
  *  Simulates the system over the next interval of time. The timestep
  *  is given as argument.
  *
  *  @param  ds A C_FLOAT64 specifying the timestep
  */
-void CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
+C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 {
   unsigned C_INT32 i;
-  C_FLOAT64 lambda;
+  C_FLOAT64 lambda, tmp, t1, t2;
 
   updatePropensities();
 
-  for (i = 0; i < mNumReactions; i++)
+  mAvgDX = 0.0;
+  mSigDX = 0.0;
+
+  const CReactionDependencies * pReaction = mReactionDependencies.array();
+  const C_FLOAT64 * pAmu = mAmu.array();
+  const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;
+
+  for (; pAmu != pAmuEnd; ++pAmu, ++pReaction)
     {
-      if ((lambda = mAmu[i] * ds) < 0.0)
+      const C_FLOAT64 * pMultiplicity = pReaction->mSpeciesMultiplier.array();
+      const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + pReaction->mSpeciesMultiplier.size();
+      const size_t * pIndex = pReaction->mMethodSpeciesIndex.array();
+
+      for (; pMultiplicity != pMultiplicityEnd; ++pMultiplicity, ++pIndex)
+        {
+          mAvgDX[*pIndex] += *pMultiplicity * *pAmu;
+          mSigDX[*pIndex] += *pMultiplicity * *pMultiplicity * *pAmu;
+        }
+    }
+
+  t1 = t2 = std::numeric_limits< C_FLOAT64 >::infinity();
+
+  const C_FLOAT64 * pNumber = mMethodState.beginIndependent() + mFirstReactionSpeciesIndex - 1;
+  const C_FLOAT64 * pNumberEnd = pNumber + mNumReactionSpecies;
+  C_FLOAT64 * pAvgDX = mAvgDX.array();
+  C_FLOAT64 * pSigDX = mSigDX.array();
+
+  for (; pNumber != pNumberEnd; ++pNumber, ++pAvgDX, ++pSigDX)
+    {
+      if ((tmp = mEpsilon * fabs(*pNumber)) < 1.0)
+        tmp = 1.0;
+
+      *pAvgDX = tmp / fabs(*pAvgDX);
+      *pSigDX = (tmp * tmp) / fabs(*pSigDX);
+
+      if (t1 > *pAvgDX)
+        t1 = *pAvgDX;
+
+      if (t2 > *pSigDX)
+        t2 = *pSigDX;
+    }
+
+  if (t1 > t2)
+    tmp = t2;
+  else
+    tmp = t1;
+
+  if (tmp < ds)
+    ds = tmp;
+
+  pAmu = mAmu.array();
+  C_FLOAT64 * pK = mK.array();
+
+  for (; pAmu != pAmuEnd; ++pAmu)
+    {
+      if ((lambda = *pAmu * ds) < 0.0)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
 
-      mK[i] = (C_INT64)mpRandomGenerator->getRandomPoisson(mAmu[i] * ds);
+      *pK = mpRandomGenerator->getRandomPoisson(lambda);
     }
 
   updateSystem();
-  return;
-}
 
-/**
- *   Sets up an internal representation of the balances for each reaction.
- *   This is done in order to be able to deal with fixed metabolites and
- *   to avoid a time consuming search for the indices of metabolites in the
- *   model.
- */
-void CTauLeapMethod::setupBalances()
-{
-  unsigned C_INT32 i, j;
-  CHybridBalance newElement;
-
-  mNumReactions = mpReactions->size();
-  mLocalBalances.clear();
-  mLocalBalances.resize(mNumReactions);
-  mLocalSubstrates.clear();
-  mLocalSubstrates.resize(mNumReactions);
-
-  for (i = 0; i < mNumReactions; i++)
-    {
-      const CCopasiVector <CChemEqElement> * balances =
-        &(*mpReactions)[i]->getChemEq().getBalances();
-
-      for (j = 0; j < balances->size(); j++)
-        {
-          newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
-          newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
-          // + 0.5 to get a rounding out of the static_cast to C_INT32!
-          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
-
-          if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
-            mLocalBalances[i].push_back(newElement); // element is copied for the push_back
-        }
-
-      balances = &(*mpReactions)[i]->getChemEq().getSubstrates();
-
-      for (j = 0; j < balances->size(); j++)
-        {
-          newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
-          newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
-          // + 0.5 to get a rounding out of the static_cast to C_INT32!
-          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
-
-          mLocalSubstrates[i].push_back(newElement); // element is copied for the push_back
-        }
-    }
-
-  return;
+  return ds;
 }
 
 void CTauLeapMethod::updatePropensities()
@@ -406,94 +472,69 @@ void CTauLeapMethod::updatePropensities()
   return;
 }
 
-C_INT32 CTauLeapMethod::calculateAmu(C_INT32 index)
+void CTauLeapMethod::calculateAmu(const C_INT32 & index)
 {
+  CReactionDependencies & Dependencies = mReactionDependencies[index];
+  C_FLOAT64 & Amu = mAmu[index];
+
+  Amu = *Dependencies.mpParticleFlux;
+
   if (!mDoCorrection)
     {
-      mAmu[index] = mpModel->getReactions()[index]->calculateParticleFlux();
-      return 0;
+      return;
     }
 
-  // We need the product of the cmu and hmu for this step.
-  // We calculate this in one go, as there are fewer steps to
-  // perform and we eliminate some possible rounding errors.
-  C_FLOAT64 amu = 1; // initially
-  //C_INT32 total_substrates = 0;
-  C_INT32 num_ident = 0;
-  C_INT64 number = 0;
-  C_INT64 lower_bound;
-  // substrate_factor - The substrates, raised to their multiplicities,
-  // multiplied with one another. If there are, e.g. m substrates of type m,
-  // and n of type N, then substrate_factor = M^m * N^n.
-  C_FLOAT64 substrate_factor = 1;
-  // First, find the reaction associated with this index.
-  // Keep a pointer to this.
-  // Iterate through each substrate in the reaction
-  const std::vector<CHybridBalance> & substrates = mLocalSubstrates[index];
+  C_FLOAT64 SubstrateMultiplier = 1.0;
+  C_FLOAT64 SubstrateDevisor = 1.0;
+  C_FLOAT64 Multiplicity;
+  C_FLOAT64 LowerBound;
+  C_FLOAT64 Number;
 
-  int flag = 0;
+  bool ApplyCorrection = false;
 
-  for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
+  C_FLOAT64 * pMultiplier = Dependencies.mSubstrateMultiplier.array();
+  C_FLOAT64 * endMultiplier = pMultiplier + Dependencies.mSubstrateMultiplier.size();
+  C_FLOAT64 ** ppLocalSubstrate = Dependencies.mMethodSubstrates.array();
+  C_FLOAT64 ** ppModelSubstrate = Dependencies.mModelSubstrates.array();
+
+  for (; pMultiplier != endMultiplier; ++pMultiplier, ++ppLocalSubstrate, ++ppModelSubstrate)
     {
-      num_ident = substrates[i].mMultiplicity;
+      Multiplicity = *pMultiplier;
 
-      if (num_ident > 1)
+      // TODO We should check the error introduced through rounding.
+      **ppLocalSubstrate = floor(**ppModelSubstrate + 0.5);
+
+      if (Multiplicity > 1.01)
         {
-          flag = 1;
-          number = mNumbers[substrates[i].mIndex];
-          lower_bound = number - num_ident;
-          substrate_factor = substrate_factor * pow((double) number, (int)(num_ident - 1));  //optimization
+          ApplyCorrection = true;
 
-          number--; //optimization
+          Number = **ppLocalSubstrate;
 
-          while (number > lower_bound)
+          LowerBound = Number - Multiplicity;
+          SubstrateDevisor *= pow(Number, Multiplicity - 1.0);  //optimization
+          Number -= 1.0;
+
+          while (Number > LowerBound)
             {
-              amu *= number;
-              number--;
+              SubstrateMultiplier *= Number;
+              Number -= 1.0;
             }
         }
     }
 
-  if ((amu == 0) || (substrate_factor == 0))  // at least one substrate particle number is zero
+  // at least one substrate particle number is zero
+  if (SubstrateMultiplier < 0.5 || SubstrateDevisor < 0.5)
     {
-      mAmu[index] = 0;
-      return 0;
+      Amu = 0.0;
+      return;
     }
 
-  // We assume that all substrates are in the same compartment.
-  // If there are no substrates, then volume is irrelevant. Otherwise,
-  // we can use the volume of the compartment for the first substrate.
-  //if (substrates.size() > 0) //check again!!
-  /*if (total_substrates > 1) //check again!!
+  if (ApplyCorrection)
     {
-      C_FLOAT64 invvolumefactor =
-        pow((double)
-            (substrates[0]->getMetabolite().getCompartment()->getVolumeInv()
-             * substrates[0]->getMetabolite().getModel()->getNumber2QuantityFactor()),
-            (int) total_substrates - 1);
-      amu *= invvolumefactor;
-      substrate_factor *= invvolumefactor;
-    }*/
-
-  // rate_factor is the rate function divided by substrate_factor.
-  // It would be more efficient if this was generated directly, since in effect we
-  // are multiplying and then dividing by the same thing (substrate_factor)!
-  C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
-
-  if (flag)
-    {
-      //cout << "Rate factor = " << rate_factor << endl;
-      amu *= rate_factor / substrate_factor;
-      mAmu[index] = amu;
-    }
-  else
-    {
-      mAmu[index] = rate_factor;
+      Amu *= SubstrateMultiplier / SubstrateDevisor;
     }
 
-  return 0;
-
-  // a more efficient way to calculate mass action kinetics could be included
+  return;
 }
 
 /**
@@ -502,33 +543,36 @@ C_INT32 CTauLeapMethod::calculateAmu(C_INT32 index)
  */
 void CTauLeapMethod::updateSystem()
 {
-  unsigned C_INT32 i;
-  std::vector<CHybridBalance>::const_iterator it;
-  CMetab* pTmpMetab;
+  const CReactionDependencies * pReaction = mReactionDependencies.array();
+  const C_FLOAT64 * pK = mK.array();
+  const C_FLOAT64 * pKEnd = pK + mNumReactions;
 
-  for (i = 0; i < mNumReactions; i++)
-    for (it = mLocalBalances[i].begin(); it != mLocalBalances[i].end(); it++)
-      {
-        mNumbers[it->mIndex] += mK[i] * (C_INT64)(it->mMultiplicity);
-        pTmpMetab = mpModel->getMetabolitesX()[it->mIndex];
-        pTmpMetab->setValue(mNumbers[it->mIndex]);
-        pTmpMetab->refreshConcentration();
-      }
-
-  if (mHasAssignments)
+  for (; pK != pKEnd; ++pK, ++pReaction)
     {
-      mpModel->updateSimulatedValues(false);
+      const C_FLOAT64 * pMultiplicity = pReaction->mSpeciesMultiplier.array();
+      const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + pReaction->mSpeciesMultiplier.size();
+      C_FLOAT64 * const * pSpecies = pReaction->mMethodSpecies.array();
 
-      for (i = 0; i < mNumNumbers; ++i)
+      for (; pMultiplicity != pMultiplicityEnd; ++pMultiplicity, ++pSpecies)
         {
-          if (mpModel->getMetabolitesX()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-            {
-              mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
-              mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
-              mpModel->getMetabolitesX()[i]->refreshConcentration();
-            }
+          **pSpecies += *pK * *pMultiplicity;
         }
     }
+
+  const C_FLOAT64 * pSpecies = mMethodState.beginIndependent() + mFirstReactionSpeciesIndex - 1;
+
+  const C_FLOAT64 * pSpeciesEnd = pSpecies + mNumReactionSpecies;
+
+  for (; pSpecies != pSpeciesEnd; ++pSpecies)
+    {
+      if (*pSpecies < -0.5)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
+        }
+    }
+
+  mpModel->setState(mMethodState);
+  mpModel->updateSimulatedValues(false);
 
   return;
 }
@@ -602,15 +646,6 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  mTau = * getValue("Tau").pDOUBLE;
-
-  if (mTau <= 0.0)
-    {
-      // tau-value is not positive
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 11, mTau);
-      return false;
-    }
-
   if (pTP->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 22);
@@ -625,46 +660,4 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   return true;
-}
-
-//static
-bool CTauLeapMethod::modelHasAssignments(const CModel* pModel)
-{
-  C_INT32 i, imax = pModel->getNumModelValues();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getModelValues()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  imax = pModel->getNumMetabs();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getMetabolites()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  imax = pModel->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getCompartments()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  return false;
 }
