@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.73.2.3 $
+//   $Revision: 1.73.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/05 11:46:29 $
+//   $Date: 2010/03/05 20:51:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2451,6 +2451,18 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   this->mSBMLLevel = sbmlLevel;
   this->mSBMLVersion = sbmlVersion;
   mHandledSBMLObjects.clear();
+  /*
+  if(sbmlLevel == 1)
+  {
+    this->mIncompatibilities=CSBMLExporter::isModelSBMLCompatible(dataModel, sbmlLevel, sbmlVersion);
+    if(!this->mIncompatibilities.empty())
+    {
+      this->outputIncompatibilities();
+      this->mIncompatibilities.clear();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Model not compatible with SBML Level 1. Can not export to that level.");
+    }
+  }
+  */
   createSBMLDocument(dataModel);
 
   if (this->mpSBMLDocument && this->mpSBMLDocument->getModel())
@@ -4160,66 +4172,6 @@ void CSBMLExporter::convertToLevel1()
         }
     }
 
-  /*
-  Event* pEvent = NULL;
-  iMax = pModel->getNumEvents();
-  for (i = 0;i < iMax;++i)
-    {
-      pEvent = pModel->getEvent(i);
-      assert(pEvent != NULL);
-      const Trigger* pTrigger = pEvent->getTrigger();
-      assert(pTrigger != NULL);
-      const ASTNode* pMath = pTrigger->getMath();
-      assert(pMath != NULL);
-      std::string message = "event with id \"";
-      message += pEvent->getId();
-      message += "\"";
-      ASTNode* pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
-      assert(pNewMath!=NULL);
-      if (pNewMath != NULL)
-        {
-          Trigger* pNewTrigger = new Trigger(pNewMath);
-          delete pNewMath;
-          pEvent->setTrigger(pNewTrigger);
-          delete pNewTrigger;
-        }
-      else
-        {
-          fatalError();
-        }
-      unsigned int j, jMax = pEvent->getNumEventAssignments();
-      const EventAssignment* pEA = NULL;
-      for (j = 0;j < jMax;++j)
-        {
-          pEA = pEvent->getEventAssignment(i);
-          assert(pEA != NULL);
-          pMath = pEA->getMath();
-          assert(pMath != NULL);
-          message = "event assignment for variable with id \"";
-          message += pEA->getVariable();
-          message += "\" in event with id \"";
-          message += pEvent->getId();
-          message + "\"";
-          pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
-          assert(pNewMath!=NULL);
-          if (pNewMath != NULL)
-            {
-              // delete the old event assignment and create a new one
-              EventAssignment* pNewEA = new EventAssignment(*pEA);
-              pNewEA->setMath(pNewMath);
-              delete pNewMath;
-              pEvent->getListOfEventAssignments()->remove(j);
-              delete pEA;
-              pEvent->addEventAssignment(pNewEA);
-              delete pNewEA;
-            }
-          else
-            {
-              fatalError();
-            }
-        }
-    }
-    */
   iMax = pModel->getNumReactions();
 
   for (i = 0; i < iMax; ++i)
@@ -4424,11 +4376,15 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         for (i = 0; i < iMax; ++i)
           {
             pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(i));
-            assert(pChild != NULL);
 
             if (pChild != NULL)
               {
                 pResult->addChild(pChild);
+              }
+            else
+              {
+                delete pResult;
+                pResult = NULL;
               }
           }
     }
