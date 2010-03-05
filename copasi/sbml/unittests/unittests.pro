@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.29.2.4 $ 
+#   $Revision: 1.29.2.5 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/03/05 11:34:27 $ 
+#   $Date: 2010/03/05 13:54:47 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -34,13 +34,14 @@ contains(BUILD_OS, WIN32) {
 }
 
 contains(BUILD_OS, Linux) {
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
+         $${LIBS}
+
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+
 !isEmpty(CPPUNIT_PATH) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
   INCLUDEPATH += $${CPPUNIT_PATH}/include
-
-  LIBS = -L../lib \
-         $$join(COPASI_LIBS, " -l", -l) \
-         $${LIBS}
 }
 
 }
