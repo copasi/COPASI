@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27.2.5 $
+//   $Revision: 1.27.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/04 14:20:28 $
+//   $Date: 2010/03/05 01:06:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,14 +200,11 @@ CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
   C_FLOAT64 time = mpCurrentState->getTime();
   C_FLOAT64 endTime = time + deltaT;
 
-  C_FLOAT64 ds;
-
   unsigned C_INT32 Steps = 0;
 
   while (time < endTime)
     {
-      ds = doSingleStep(endTime - time);
-      time += ds;
+      time += doSingleStep(endTime - time);
 
       if (++Steps > mMaxSteps)
         {
@@ -389,7 +386,7 @@ void CTauLeapMethod::cleanup()
 C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 {
   unsigned C_INT32 i;
-  C_FLOAT64 lambda, tmp, t1, t2;
+  C_FLOAT64 Lambda, Tmp, Tau, Tau1, Tau2;
 
   updatePropensities();
 
@@ -413,7 +410,7 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
         }
     }
 
-  t1 = t2 = std::numeric_limits< C_FLOAT64 >::infinity();
+  Tau1 = Tau2 = std::numeric_limits< C_FLOAT64 >::infinity();
 
   const C_FLOAT64 * pNumber = mMethodState.beginIndependent() + mFirstReactionSpeciesIndex - 1;
   const C_FLOAT64 * pNumberEnd = pNumber + mNumReactionSpecies;
@@ -422,41 +419,54 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 
   for (; pNumber != pNumberEnd; ++pNumber, ++pAvgDX, ++pSigDX)
     {
-      if ((tmp = mEpsilon * fabs(*pNumber)) < 1.0)
-        tmp = 1.0;
+      if ((Tmp = mEpsilon * fabs(*pNumber)) < 1.0)
+        Tmp = 1.0;
 
-      *pAvgDX = tmp / fabs(*pAvgDX);
-      *pSigDX = (tmp * tmp) / fabs(*pSigDX);
+      *pAvgDX = Tmp / fabs(*pAvgDX);
+      *pSigDX = (Tmp * Tmp) / fabs(*pSigDX);
 
-      if (t1 > *pAvgDX)
-        t1 = *pAvgDX;
+      if (Tau1 > *pAvgDX)
+        Tau1 = *pAvgDX;
 
-      if (t2 > *pSigDX)
-        t2 = *pSigDX;
+      if (Tau2 > *pSigDX)
+        Tau2 = *pSigDX;
     }
 
-  if (t1 > t2)
-    tmp = t2;
-  else
-    tmp = t1;
+  Tau = std::min(Tau1, Tau2);
 
-  if (tmp < ds)
-    ds = tmp;
+  if (ds < Tau)
+    Tau = ds;
 
   pAmu = mAmu.array();
   C_FLOAT64 * pK = mK.array();
+  C_FLOAT64 * pKEnd = pK + mNumReactions;
 
   for (; pAmu != pAmuEnd; ++pAmu, ++pK)
     {
-      if ((lambda = *pAmu * ds) < 0.0)
+      if ((Lambda = *pAmu * Tau) < 0.0)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
 
-      *pK = mpRandomGenerator->getRandomPoisson(lambda);
+      *pK = mpRandomGenerator->getRandomPoisson(Lambda);
     }
 
-  updateSystem();
+  while (!updateSystem())
+    {
+      Tau *= 0.5;
 
-  return ds;
+      pK = mK.array();
+
+      for (; pK != pKEnd; ++pK)
+        {
+          *pK *= 0.5;
+
+          if (fabs(floor(*pK + 0.75) - *pK) > 0, 5)
+            {
+              *pK += mpRandomGenerator->getRandomCC() < 0.5 ? - 0.5 : 0.5;
+            }
+        }
+    }
+
+  return Tau;
 }
 
 void CTauLeapMethod::updatePropensities()
@@ -542,9 +552,12 @@ void CTauLeapMethod::calculateAmu(const C_INT32 & index)
  *   Updates the system according to the probabilistic
  *   number of firings mK[i] of each reaction i
  */
-void CTauLeapMethod::updateSystem()
+bool CTauLeapMethod::updateSystem()
 {
   const CReactionDependencies * pReaction = mReactionDependencies.array();
+
+  CState OldState(mMethodState);
+
   const C_FLOAT64 * pK = mK.array();
   const C_FLOAT64 * pKEnd = pK + mNumReactions;
 
@@ -568,14 +581,16 @@ void CTauLeapMethod::updateSystem()
     {
       if (*pSpecies < -0.5)
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
+          // We need to undo the changes
+          mMethodState = OldState;
+          return false;
         }
     }
 
   mpModel->setState(mMethodState);
   mpModel->updateSimulatedValues(false);
 
-  return;
+  return true;
 }
 
 //virtual

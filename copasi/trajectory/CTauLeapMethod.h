@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.13.2.1 $
+ $Revision: 1.13.2.2 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/03/04 03:18:58 $
+ $Date: 2010/03/05 01:06:58 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,7 +208,7 @@ protected:
    *   Updates the system according to the probabilistic
    *   number of firings mK[i] of each reaction i
    */
-  void updateSystem();
+  bool updateSystem();
 
   /* VARIABLES *****************************************************************/
 
