@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/license.pro,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.6.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/06/15 19:18:38 $ 
+#   $Date: 2010/03/05 22:35:00 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -12,12 +17,13 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2009/06/15 19:18:38 $  
+# $Revision: 1.6.2.1 $ $Author: shoops $ $Date: 2010/03/05 22:35:00 $  
 ######################################################################
 
 CONFIG -= qt
 CONFIG += exceptions
 CONFIG += debug
+CONFIG += console
 
 QMAKE_QMAKE = $(QTDIR)/bin/qmake
 
