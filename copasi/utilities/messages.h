@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144.2.7 $
+//   $Revision: 1.144.2.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/04 14:20:28 $
+//   $Author: gauges $
+//   $Date: 2010/03/05 11:46:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,6 +249,9 @@ const MESSAGES Messages[] =
   {MCSBML + 82, "SBML (82): SBML compartment with id \"%s\" has invalid spatial dimensions value."},
   {MCSBML + 83, "SBML (83): SBML species \"%s\" is located in zero dimensional compartment and can not have the spatialDimensionsUnits attribute set."},
   {MCSBML + 84, "SBML (84): The spatialSizeUnit attribute was deleted from some species because the attribute is not compatible with the exported version of SBML. This might have changed the model. Changed species: %s"},
+  {MCSBML + 85, "SBML (85): Call to delay function used in function definition \"%s\". COPASI can't import this model."},
+  {MCSBML + 86, "SBML (86): COPASI found calls to the delay function in one or more reaction kinetics. These calls have been replaced by a reference to a global parameter which has an expression that corresponds to the original delay call."},
+  {MCSBML + 87, "SBML (87): Reactions with references to local kinetic parameters found in delay calls.\nLocal parameters in the following reactions have been converted to global variables:\n%s"},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

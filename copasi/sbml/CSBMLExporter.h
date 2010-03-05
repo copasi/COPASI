@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.30.2.1 $
+//   $Revision: 1.30.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/24 14:47:17 $
+//   $Date: 2010/03/05 11:46:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -576,12 +576,6 @@ protected:
    * If index is greater than the number of children - 1, NULL is returned.
    */
   XMLNode* replaceChild(const XMLNode* pParent, const XMLNode* pNewChild, unsigned int index);
-
-  /**
-   * This method goes through the given SBML model and collects all ids and
-   * meta ids used in the model.
-   */
-  void collectIds(Model* pModel, std::map<std::string, const SBase*>& ids, std::map<std::string, const SBase*>& metaIds);
 
   /**
    * This method goes through the given datamodel and collects all SBML ids.
