@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.29.2.3 $ 
+#   $Revision: 1.29.2.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/03/03 16:14:28 $ 
+#   $Date: 2010/03/05 11:34:27 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,9 +20,10 @@ TEMPLATE = app
 
 CONFIG -= qt
 
-LIBS += -L../../lib/ -lCOPASISE 
-
 include(../../common.pri)
+include(../../app.pri)
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 INCLUDEPATH += ../../..
 
@@ -40,8 +41,6 @@ contains(BUILD_OS, Linux) {
   LIBS = -L../lib \
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
-
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
 }
 
 }
@@ -57,23 +56,21 @@ contains(BUILD_OS, SunOS) {
 
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
-   
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
 }
 
 }  
 
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
-  
-!isEmpty(CPPUNIT_PATH) {
-  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
-  INCLUDEPATH += $${CPPUNIT_PATH}/include
 
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  
+!isEmpty(CPPUNIT_PATH) {
+  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
+  INCLUDEPATH += $${CPPUNIT_PATH}/include
 
 }
 
@@ -171,7 +168,8 @@ HEADERS += utilities.hpp \
            test000087.h \
            test000088.h \
            test000089.h \
-           test000090.h 
+           test000090.h \
+           test000091.h 
 
 
 SOURCES += utilities.cpp \
@@ -265,6 +263,7 @@ SOURCES += utilities.cpp \
            test000088.cpp \ 
            test000089.cpp \ 
            test000090.cpp \ 
+           test000091.cpp \ 
            test.cpp
 
 
