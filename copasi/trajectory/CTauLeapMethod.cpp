@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27.2.7 $
+//   $Revision: 1.27.2.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/08 13:12:07 $
+//   $Date: 2010/03/08 18:27:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,7 +164,7 @@ void CTauLeapMethod::initializeParameter()
   CCopasiParameter *pParm;
 
   assertParameter("Epsilon", CCopasiParameter::DOUBLE, (C_FLOAT64) EPS);
-  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
   assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
   assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
 
@@ -385,7 +385,6 @@ void CTauLeapMethod::cleanup()
  */
 C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 {
-  unsigned C_INT32 i;
   C_FLOAT64 Lambda, Tmp, Tau, Tau1, Tau2;
 
   updatePropensities();
@@ -458,7 +457,7 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
         {
           *pK *= 0.5;
 
-          if (fabs(floor(*pK + 0.75) - *pK) > 0.5)
+          if (*pK < floor(*pK + 0.75))
             {
               *pK += mpRandomGenerator->getRandomCC() < 0.5 ? - 0.5 : 0.5;
             }
