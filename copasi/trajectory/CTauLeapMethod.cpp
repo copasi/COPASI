@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27.2.6 $
+//   $Revision: 1.27.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/05 01:06:58 $
+//   $Date: 2010/03/08 13:12:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -452,14 +452,13 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
   while (!updateSystem())
     {
       Tau *= 0.5;
-
       pK = mK.array();
 
       for (; pK != pKEnd; ++pK)
         {
           *pK *= 0.5;
 
-          if (fabs(floor(*pK + 0.75) - *pK) > 0, 5)
+          if (fabs(floor(*pK + 0.75) - *pK) > 0.5)
             {
               *pK += mpRandomGenerator->getRandomCC() < 0.5 ? - 0.5 : 0.5;
             }
