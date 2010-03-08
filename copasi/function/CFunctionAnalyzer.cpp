@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.18.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:20 $
+//   $Author: ssahle $
+//   $Date: 2010/03/08 16:21:35 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -1037,7 +1042,7 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
             if (pME)
               {
                 if (pME->getStatus() == CModelEntity::FIXED)
-                  callParameters[i] = CValue(pME->getValue());
+                  callParameters[i] = CValue(pME->getInitialValue());
                 else
                   callParameters[i] = CValue::positive;
               }
