@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.72.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Date: 2010/03/08 18:13:15 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -112,7 +117,7 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
   for (i = 1; it != end; ++it, i++)
     {
       found = mIndexMap.find(*it);
-      assert (found != mIndexMap.end());
+      assert(found != mIndexMap.end());
 
       // Build new order
       InitialValues[i - 1] = *(mpInitialValues + found->second);
@@ -130,36 +135,38 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
       if ((*it)->isUsed())
         switch ((*it)->getStatus())
           {
-          case CModelEntity::FIXED:
-            Fixed++;
-            break;
+            case CModelEntity::FIXED:
+              Fixed++;
+              break;
 
-          case CModelEntity::REACTIONS:
-            if (static_cast< CMetab * >(*it)->isDependent())
-              {
-                assert (Fixed == 0);
-                Dependent++;
-              }
-            else
-              {
-                assert (Dependent == 0);
-                Independent++;
-              }
-            break;
+            case CModelEntity::REACTIONS:
 
-          case CModelEntity::ODE:
-            assert (Dependent == 0);
-            Independent++;
-            break;
+              if (static_cast< CMetab * >(*it)->isDependent())
+                {
+                  assert(Fixed == 0);
+                  Dependent++;
+                }
+              else
+                {
+                  assert(Dependent == 0);
+                  Independent++;
+                }
 
-          case CModelEntity::ASSIGNMENT:
-            assert (Fixed == 0);
-            Dependent++;
-            break;
+              break;
 
-          case CModelEntity::TIME:
-            assert (false);
-            break;
+            case CModelEntity::ODE:
+              assert(Dependent == 0);
+              Independent++;
+              break;
+
+            case CModelEntity::ASSIGNMENT:
+              assert(Fixed == 0);
+              Dependent++;
+              break;
+
+            case CModelEntity::TIME:
+              assert(false);
+              break;
           }
       else
         Fixed++;
@@ -212,23 +219,24 @@ CModelEntity *const* CStateTemplate::beginFixed() const {return mpBeginFixed;}
 CModelEntity *const* CStateTemplate::endFixed() const {return mpEnd;}
 
 unsigned C_INT32 CStateTemplate::getNumIndependent() const
-  {return mpBeginDependent - mpBeginIndependent;}
+{return mpBeginDependent - mpBeginIndependent;}
 unsigned C_INT32 CStateTemplate::getNumDependent() const
-  {return mpBeginFixed - mpBeginDependent;}
+{return mpBeginFixed - mpBeginDependent;}
 unsigned C_INT32 CStateTemplate::getNumVariable() const
-  {return mpBeginFixed - mpBeginIndependent;}
+{return mpBeginFixed - mpBeginIndependent;}
 unsigned C_INT32 CStateTemplate::getNumFixed() const
-  {return mpEnd - mpBeginFixed;}
+{return mpEnd - mpBeginFixed;}
 
 unsigned C_INT32 CStateTemplate::getIndex(const CModelEntity * entity) const
-  {
-    std::map< CModelEntity *, unsigned C_INT32 >::const_iterator found =
-      mIndexMap.find(const_cast< CModelEntity * >(entity));
-    if (found != mIndexMap.end())
-      return found->second;
+{
+  std::map< CModelEntity *, unsigned C_INT32 >::const_iterator found =
+    mIndexMap.find(const_cast< CModelEntity * >(entity));
 
-    return C_INVALID_INDEX;
-  }
+  if (found != mIndexMap.end())
+    return found->second;
+
+  return C_INVALID_INDEX;
+}
 
 const unsigned C_INT32 & CStateTemplate::size() const
 {return mInsert;}
@@ -331,13 +339,13 @@ const C_FLOAT64 * CState::beginFixed() const {return mpBeginFixed;}
 const C_FLOAT64 * CState::endFixed() const {return mpEnd;}
 
 unsigned C_INT32 CState::getNumIndependent() const
-  {return mpBeginDependent - mpBeginIndependent;}
+{return mpBeginDependent - mpBeginIndependent;}
 unsigned C_INT32 CState::getNumDependent() const
-  {return mpBeginFixed - mpBeginDependent;}
+{return mpBeginFixed - mpBeginDependent;}
 unsigned C_INT32 CState::getNumVariable() const
-  {return mpBeginFixed - mpBeginIndependent;}
+{return mpBeginFixed - mpBeginIndependent;}
 unsigned C_INT32 CState::getNumFixed() const
-  {return mpEnd - mpBeginFixed;}
+{return mpEnd - mpBeginFixed;}
 
 C_FLOAT64 * CState::resize(const unsigned C_INT32 & size)
 {
@@ -370,4 +378,20 @@ void CState::updateIterator(const unsigned C_INT32 & numIndependent,
   mpBeginDependent = mpBeginIndependent + numIndependent;
   mpBeginFixed = mpBeginDependent + numDependent;
   mpEnd = mpBeginFixed + numFixed;
+}
+
+std::ostream &operator << (std::ostream & os, const CState & s)
+{
+  os << "(";
+
+  const C_FLOAT64 * pValue = s.mpValues;
+
+  for (; pValue != s.mpEnd; ++pValue)
+    {
+      os << "\t" << *pValue;
+    }
+
+  os << "\t)";
+
+  return os;
 }
