@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.103.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/25 18:13:04 $
+//   $Date: 2010/03/08 18:20:35 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -358,7 +363,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
   do
     {
-      // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
+      // TODO Provide a call back method for resolving simultaneous assignments.
       StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
 
       if (StateChanged)
@@ -377,7 +382,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             pModel->setState(*mpCurrentState);
             pModel->updateSimulatedValues(mUpdateMoieties);
 
-            // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
+            // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
@@ -391,7 +396,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
             pModel->processRoots(*mpCurrentTime, true, mpTrajectoryMethod->getRoots());
 
-            // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
+            // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
             pModel->processRoots(*mpCurrentTime, false, mpTrajectoryMethod->getRoots());

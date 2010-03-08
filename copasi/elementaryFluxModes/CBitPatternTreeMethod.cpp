@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/11 19:48:47 $
+//   $Date: 2010/03/08 18:19:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,7 +408,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
 
       for (; pStoi < pStoiRowEnd; ++pStoi, pExpandedStoiTranspose += NumSpecies, ++itReactionExpansion)
         {
-          // TODO CRITICAL We should check the we have integer stoichiometry.
+          // TODO We should check the we have integer stoichiometry.
           if (itReactionExpansion->second == false)
             {
               *pExpandedStoiTranspose = -floor(*pStoi + 0.5);

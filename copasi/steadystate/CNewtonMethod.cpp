@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.95.2.1 $
+//   $Revision: 1.95.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/02 15:57:51 $
+//   $Date: 2010/03/08 18:20:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -380,7 +380,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
 
   if (!solveJacobianXeqB(mH, mdxdt))
     {
-      // TODO CRITICAL We need to check that mH != 0
+      // We need to check that mH != 0
       C_FLOAT64 * pH = mH.array();
       C_FLOAT64 * pHEnd = pH + mH.size();
 

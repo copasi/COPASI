@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 17:18:42 $
+//   $Date: 2010/03/08 18:20:19 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -127,7 +132,7 @@ bool CQEFMResultWidget::update(ListViews::ObjectType objectType,
                                ListViews::Action action,
                                const std::string & /* key */)
 {
-  // TODO CRITICAL We need to update the task when a new model is loaded.
+  // We need to update the task when a new model is loaded.
   switch (objectType)
     {
       case ListViews::MODEL:
