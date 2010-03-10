@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144 $
+//   $Revision: 1.145 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/15 22:02:09 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:28:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -371,6 +371,7 @@ const MESSAGES Messages[] =
   {MCEFMAnalysis + 2, "CEFMAnalysis (2): Invalid problem."},
   {MCEFMAnalysis + 3, "CEFMAnalysis (3): Non integer stoichiometry found for reaction '%s'."},
 
+  {MCLayout + 1, "CLayout (1): Could not open image file '%s'."},
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
 };
