@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.59 $ -->
+<!--   $Revision: 1.60 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2009/08/02 16:37:11 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2010/03/10 12:49:44 $ -->
 <!-- End CVS Header -->
+
+<!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
@@ -582,6 +587,128 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="ListOfLayouts" id="copasi.ListOfLayouts" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Layout" id="copasi.Layout" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Dimensions" minOccurs="1">
+                      <xs:complexType>
+                        <xs:attribute name="width" type="xs:double" use="required"/>
+                        <xs:attribute name="height" type="xs:double" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ListOfCompartmentGlyphs" id="copasi.ListOfCompartmentGlyphs" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="CompartmentGlyph" id="copasi.CompartmentGlyph" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="BoundingBox" type="cBOUNDING_BOX" minOccurs="1"/>
+                              </xs:sequence>
+                              <xs:attribute name="key" type="cLAYOUT_OBJECT_KEY" use="required"/>
+                              <xs:attribute name="name" type="xs:string" use="optional"/>
+                              <xs:attribute name="compartment" type="cKEYREF" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ListOfMetabGlyphs" id="copasi.ListOfMetabGlyphs" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="MetaboliteGlyph" id="copasi.MetabolitGlyph" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="BoundingBox" type="cBOUNDING_BOX" minOccurs="1"/>
+                              </xs:sequence>
+                              <xs:attribute name="key" type="cLAYOUT_OBJECT_KEY" use="required"/>
+                              <xs:attribute name="name" type="xs:string" use="optional"/>
+                              <xs:attribute name="metabolite" type="cKEYREF" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ListOfReactionGlyphs" id="copasi.ListOfReactionGlyphs" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ReactionGlyph" id="copasi.ReactionGlyph" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="BoundingBox" type="cBOUNDING_BOX" minOccurs="0"/>
+                                <xs:element name="Curve" type="cLAYOUT_CURVE" minOccurs="0"/>
+                                <xs:element name="ListOfMetaboliteReferenceGlyphs" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="MetaboliteReferenceGlyph" minOccurs="1" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="BoundingBox" type="cBOUNDING_BOX" minOccurs="0"/>
+                                            <xs:element name="Curve" type="cLAYOUT_CURVE" minOccurs="0"/>
+                                          </xs:sequence>
+                                          <xs:attribute name="key" type="cLAYOUT_OBJECT_KEY" use="required"/>
+                                          <xs:attribute name="name" type="xs:string" use="optional"/>
+                                          <xs:attribute name="metaboliteGlyph" type="cKEYREF" use="optional"/>
+                                          <xs:attribute name="role" type="xs:string" use="optional"/>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute name="key" type="cLAYOUT_OBJECT_KEY" use="required"/>
+                              <xs:attribute name="name" type="xs:string" use="optional"/>
+                              <xs:attribute name="reaction" type="cKEYREF" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ListOfTextGlyphs" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="TextGlyph" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="BoundingBox" type="cBOUNDING_BOX" minOccurs="1"/>
+                              </xs:sequence>
+                              <xs:attribute name="key" type="cLAYOUT_OBJECT_KEY" use="required"/>
+                              <xs:attribute name="name" type="xs:string" use="optional"/>
+                              <xs:attribute name="graphicalObject" type="cKEYREF" use="optional"/>
+                              <xs:attribute name="originOfText" type="cKEYREF" use="optional"/>
+                              <xs:attribute name="text" type="xs:string" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ListOfAdditionalGraphicalObjects" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="AdditionalGraphicalObject" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="BoundingBox" type="cBOUNDING_BOX" minOccurs="1"/>
+                              </xs:sequence>
+                              <xs:attribute name="key" type="cLAYOUT_OBJECT_KEY" use="required"/>
+                              <xs:attribute name="name" type="xs:string" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ListOfRenderInformation" type="cLIST_OF_LOCAL_RENDER_INFORMATION" minOccurs="0" />
+                  </xs:sequence>
+                  <xs:attribute name="key" type="cLAYOUT_OBJECT_KEY" use="required"/>
+                  <xs:attribute name="name" type="xs:string" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ListOfGLobalRenderInformation" type="cLIST_OF_GLOBAL_RENDER_INFORMATION" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="SBMLReference" minOccurs="0">
           <xs:annotation>
             <xs:documentation>
@@ -888,6 +1015,18 @@
       <xs:pattern value="[_a-zA-Z][_a-zA-Z0-9]*"/>
     </xs:restriction>
   </xs:simpleType>
+  <!-- I need two simple data types for the render extension that -->
+  <!-- look like SBML ids, but that are not derived from ID. -->
+  <xs:simpleType name="cSBMLPseudoId" id="copasi.SBMLPseudoId">
+  	<xs:restriction base="xs:string">
+      <xs:pattern value="[_a-zA-Z][_a-zA-Z0-9]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cSBMLPseudoIdRef" id="copasi.SBMLPseudoIdRef">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[_a-zA-Z][_a-zA-Z0-9]*"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="cMODEL_KEY" id="copasi.MODEL_KEY">
     <xs:restriction base="cKEY">
       <xs:pattern value="Model_\d+"/>
@@ -1073,4 +1212,437 @@
       <xs:pattern value="ode|assignment|fixed"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="cLAYOUT_OBJECT_KEY" id="copasi.LAYOUT_OBJECT_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Layout_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="cBOUNDING_BOX">
+    <xs:sequence>
+      <xs:element name="Position" minOccurs="1">
+        <xs:complexType>
+          <xs:attribute name="x" type="xs:double" use="required"/>
+          <xs:attribute name="y" type="xs:double" use="required"/>
+          <xs:attribute name="z" type="xs:double" use="optional" default="0.0"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Dimensions" minOccurs="1">
+        <xs:complexType>
+          <xs:attribute name="width" type="xs:double" use="required"/>
+          <xs:attribute name="height" type="xs:double" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cLAYOUT_POINT">
+    <xs:attribute name="x" type="xs:double" use="required"/>
+    <xs:attribute name="y" type="xs:double" use="required"/>
+    <xs:attribute name="z" type="xs:double" use="optional" default="0.0"/>
+  </xs:complexType>
+  <xs:complexType name="LineSegment">
+    <xs:sequence>
+      <xs:element name="Start" type="cLAYOUT_POINT"/>
+      <xs:element name="End" type="cLAYOUT_POINT"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CubicBezier">
+    <xs:complexContent>
+      <xs:extension base="LineSegment">
+        <xs:sequence>
+          <xs:element name="BasePoint1" type="cLAYOUT_POINT" minOccurs="0"/>
+          <xs:element name="BasePoint2" type="cLAYOUT_POINT" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="cLAYOUT_CURVE">
+    <xs:sequence>
+      <xs:element name="ListOfCurveSegments" minOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="CurveSegment" type="LineSegment" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="cTRANSFORMATION">
+    <xs:attribute name="transform">
+      <xs:simpleType>
+      	<xs:restriction base="xs:string">
+      	  <!-- pattern for 6 or 12 comma separated floating point values -->	
+      	  <xs:pattern value="((\s*[+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?\s*,){5}|(\s*[+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?\s*,){11})(\s*[+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?\s*)" />
+      	</xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+  
+  <!-- data type for key, role and type lists -->
+  <xs:simpleType name="cCommaSeparatedStringList">
+    <xs:restriction base="xs:string">
+      <!-- pattern for a komma separated list of string. -->
+      <!-- the list may also be empty -->	
+      <xs:pattern value="^(\s*\S+\s*,)*(\s*\S+\s*)?" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="cGRAPHICAL_PRIMITIVE1D">
+    <xs:complexContent>
+      <xs:extension base="cTRANSFORMATION">
+       <xs:attribute name="stroke" type="cCOLOR_VALUE_OR_ID" use="optional" />
+       <xs:attribute name="stroke-width" type="xs:double" use="optional" />
+       <xs:attribute name="stroke-dasharray" use="optional">
+         <xs:simpleType>
+         	<xs:list itemType="xs:integer" />
+         </xs:simpleType>
+       </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cGRAPHICAL_PRIMITIVE2D">
+    <xs:complexContent>
+      <xs:extension base="cGRAPHICAL_PRIMITIVE1D">
+       <xs:attribute name="fill" type="cCOLOR_VALUE_OR_ID" use="optional" />
+       <xs:attribute name="fill-rule" use="optional">
+         <xs:simpleType>
+           <xs:restriction base="xs:string">
+             <xs:enumeration value="nonzero" />
+             <xs:enumeration value="evenodd" />
+           </xs:restriction>
+         </xs:simpleType>
+       </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:simpleType name="cREL_ABS_VALUE">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\s*((([+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?)([+-][0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?%))|([+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?%?))\s*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="cFONT_STYLE" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="normal" />
+      <xs:enumeration value="italic" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="cFONT_WEIGHT" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="normal" />
+      <xs:enumeration value="bold" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="cTEXT_ANCHOR" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="start" />
+      <xs:enumeration value="middle" />
+      <xs:enumeration value="end" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="cVTEXT_ANCHOR" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="top" />
+      <xs:enumeration value="middle" />
+      <xs:enumeration value="bottom" />
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:complexType name="cIMAGE">
+    <xs:complexContent>
+      <xs:extension base="cTRANSFORMATION">
+       <xs:attribute name="x" type="cREL_ABS_VALUE" use="required" />
+       <xs:attribute name="y" type="cREL_ABS_VALUE" use="required" />
+       <xs:attribute name="z" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+       <xs:attribute name="width" type="cREL_ABS_VALUE" use="required" />
+       <xs:attribute name="height" type="cREL_ABS_VALUE" use="required" />
+       <xs:attribute name="href" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cTEXT" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="cGRAPHICAL_PRIMITIVE1D">
+       <xs:attribute name="x" type="cREL_ABS_VALUE" use="required" />
+       <xs:attribute name="y" type="cREL_ABS_VALUE" use="required" />
+       <xs:attribute name="z" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+       <xs:attribute name="font-family" type="cREL_ABS_VALUE" use="optional" />
+       <xs:attribute name="font-size" type="cREL_ABS_VALUE" use="optional" />
+       <xs:attribute name="font-style" type="cFONT_STYLE" use="optional" />
+       <xs:attribute name="font-weight" type="cFONT_WEIGHT" use="optional" />
+       <xs:attribute name="text-anchor" type="cTEXT_ANCHOR" use="optional" />
+       <xs:attribute name="vtext-anchor" type="cVTEXT_ANCHOR" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:group name="cGROUP_ELEMENTS" id="copasi.cGROUP_ELEMENTS">
+    <xs:choice>
+      <xs:element name="Group" type="cGROUP" />
+      <xs:element name="Text" type="cTEXT" />
+      <xs:element name="Rectangle" type="cRECTANGLE" />
+      <xs:element name="Ellipse" type="cELLIPSE" />
+      <xs:element name="Polygon" type="cPOLYGON" />
+      <xs:element name="Image" type="cIMAGE" />
+      <xs:element name="Curve" type="cRENDER_CURVE" />
+    </xs:choice>
+  </xs:group>
+
+  <xs:complexType name="cGROUP">
+    <xs:complexContent>
+      <xs:extension base="cGRAPHICAL_PRIMITIVE2D">
+      	<xs:sequence>
+         <xs:group ref="cGROUP_ELEMENTS" minOccurs="0" maxOccurs="unbounded" />
+      	</xs:sequence>
+        <xs:attribute name="font-family" type="cREL_ABS_VALUE" use="optional" />
+        <xs:attribute name="font-size" type="cREL_ABS_VALUE" use="optional" />
+        <xs:attribute name="font-style" type="cFONT_STYLE" use="optional" />
+        <xs:attribute name="font-weight" type="cFONT_WEIGHT" use="optional" />
+        <xs:attribute name="text-anchor" type="cTEXT_ANCHOR" use="optional" />
+        <xs:attribute name="vtext-anchor" type="cVTEXT_ANCHOR" use="optional" />
+        <xs:attribute name="startHead" type="cSBMLPseudoIdRef" use="optional" />
+        <xs:attribute name="endHead" type="cSBMLPseudoIdRef" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="cRECTANGLE">
+    <xs:complexContent>
+      <xs:extension base="cGRAPHICAL_PRIMITIVE2D">
+        <xs:attribute name="x" type="cREL_ABS_VALUE" use="required" />
+        <xs:attribute name="y" type="cREL_ABS_VALUE" use="required" />
+        <xs:attribute name="z" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+        <xs:attribute name="width" type="cREL_ABS_VALUE" use="required" />
+        <xs:attribute name="height" type="cREL_ABS_VALUE" use="required" />
+        <xs:attribute name="rx" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+        <xs:attribute name="ry" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="cELLIPSE">
+    <xs:complexContent>
+      <xs:extension base="cGRAPHICAL_PRIMITIVE2D">
+        <xs:attribute name="cx" type="cREL_ABS_VALUE" use="required" />
+        <xs:attribute name="cy" type="cREL_ABS_VALUE" use="required" />
+        <xs:attribute name="cz" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+        <xs:attribute name="rx" type="cREL_ABS_VALUE" use="required" />
+        <xs:attribute name="ry" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="cRENDER_CURVE_ELEMENT">
+    <xs:attribute name="x" type="cREL_ABS_VALUE" use="required" />
+    <xs:attribute name="y" type="cREL_ABS_VALUE" use="required" />
+    <xs:attribute name="z" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+    <xs:attribute name="basePoint1_x" type="cREL_ABS_VALUE" use="optional" />
+    <xs:attribute name="basePoint1_y" type="cREL_ABS_VALUE" use="optional" />
+    <xs:attribute name="basePoint1_z" type="cREL_ABS_VALUE" use="optional" />
+    <xs:attribute name="basePoint2_x" type="cREL_ABS_VALUE" use="optional" />
+    <xs:attribute name="basePoint2_y" type="cREL_ABS_VALUE" use="optional" />
+    <xs:attribute name="basePoint2_z" type="cREL_ABS_VALUE" use="optional" />
+  </xs:complexType>
+  
+  <xs:complexType name="cRENDER_CURVE_ELEMENTS">
+  	<xs:sequence>
+  	  <xs:element name="cRENDER_CURVE_ELEMENT" minOccurs="1" maxOccurs="unbounded" />
+  	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="cRENDER_CURVE">
+    <xs:complexContent>
+      <xs:extension base="cGRAPHICAL_PRIMITIVE1D">
+        <xs:sequence>
+          <xs:element name="ListOfElements" type="cRENDER_CURVE_ELEMENTS" />
+        </xs:sequence>
+        <xs:attribute name="startHead" type="cSBMLPseudoIdRef" use="optional" />
+        <xs:attribute name="endHead" type="cSBMLPseudoIdRef" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cPOLYGON">
+    <xs:complexContent>
+      <xs:extension base="cGRAPHICAL_PRIMITIVE2D">
+        <xs:sequence>
+          <xs:element name="ListOfElements" type="cRENDER_CURVE_ELEMENTS" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:simpleType name="cCOLOR_VALUE">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="#([0-9a-f]|[0-9A-F]){8}|#([0-9a-f]|[0-9A-F]){6}" />
+    </xs:restriction>	
+  </xs:simpleType>
+  
+  <xs:simpleType name="cCOLOR_VALUE_OR_ID">
+    <xs:union memberTypes="cSBMLPseudoIdRef cCOLOR_VALUE"/>
+  </xs:simpleType>
+  
+  <xs:complexType name="cGRADIENT_STOP">
+    <xs:attribute name="offset" type="cREL_ABS_VALUE" use="required" />
+    <xs:attribute name="stop-color" type="cCOLOR_VALUE" use="required" />
+  </xs:complexType>
+  
+  <xs:complexType name="cGRADIENT_BASE">
+    <xs:sequence>
+      <xs:element name="Stop" type="cGRADIENT_STOP" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="id" type="cSBMLPseudoId" use="required" />
+  </xs:complexType>
+  
+  <xs:complexType name="cRADIAL_GRADIENT">
+    <xs:complexContent>
+      <xs:extension base="cGRADIENT_BASE">
+        <xs:attribute name="cx" type="cREL_ABS_VALUE" use="optional" default="50%" />
+        <xs:attribute name="cy" type="cREL_ABS_VALUE" use="optional" default="50%" />
+        <xs:attribute name="cz" type="cREL_ABS_VALUE" use="optional" default="50%" />
+        <xs:attribute name="r" type="cREL_ABS_VALUE" use="optional" default="50%" />
+        <xs:attribute name="fx" type="cREL_ABS_VALUE" use="optional" />
+        <xs:attribute name="fy" type="cREL_ABS_VALUE" use="optional" />
+        <xs:attribute name="fz" type="cREL_ABS_VALUE" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cLINEAR_GRADIENT">
+    <xs:complexContent>
+      <xs:extension base="cGRADIENT_BASE">
+        <xs:attribute name="x1" type="cREL_ABS_VALUE" use="optional" default="0%" />
+        <xs:attribute name="y1" type="cREL_ABS_VALUE" use="optional" default="0%" />
+        <xs:attribute name="z1" type="cREL_ABS_VALUE" use="optional" default="0%" />
+        <xs:attribute name="x2" type="cREL_ABS_VALUE" use="optional" default="100%" />
+        <xs:attribute name="y2" type="cREL_ABS_VALUE" use="optional" default="100%" />
+        <xs:attribute name="z2" type="cREL_ABS_VALUE" use="optional" default="100%" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:group name="cGRADIENT_GROUP" id="copasi.cGRADIENT_GROUP">
+    <xs:choice>
+      <xs:element name="RadialGradient" type="cRADIAL_GRADIENT" />
+      <xs:element name="LinearGradient" type="cLINEAR_GRADIENT" />
+    </xs:choice>
+  </xs:group>
+  
+  <xs:complexType name="cCOLOR_DEFINITION">
+    <xs:attribute name="id" type="cSBMLPseudoId" use="required" />
+    <xs:attribute name="value" type="cCOLOR_VALUE" use="required" />
+  </xs:complexType>
+  
+  <xs:complexType name="cLINE_ENDING">
+    <xs:sequence>
+      <xs:element name="BoundingBox" type="cBOUNDING_BOX" />
+      <xs:element name="Group" type="cGROUP" />
+    </xs:sequence>
+    <xs:attribute name="id" type="cSBMLPseudoId" use="required" />
+  </xs:complexType>
+  
+  <xs:complexType name="cRENDER_INFORMATION_BASE">
+    <xs:sequence>
+      <xs:element name="ListOfColorDefinitions" minOccurs="0">
+      	<xs:complexType>
+      	  <xs:sequence>
+      	    <xs:element name="ColorDefinition" type="cCOLOR_DEFINITION" minOccurs="1" maxOccurs="unbounded" />
+      	  </xs:sequence>
+      	</xs:complexType>
+     </xs:element> 	
+     <xs:element name="ListOfGradientDefinitions" minOccurs="0">
+      	<xs:complexType>
+      	  <xs:sequence>
+      	  	<xs:group ref="cGRADIENT_GROUP" minOccurs="1" maxOccurs="unbounded" />
+      	  </xs:sequence>
+      	</xs:complexType>
+     </xs:element> 	
+     <xs:element name="ListOfLineEndings" minOccurs="0">
+      	<xs:complexType>
+      	  <xs:sequence>
+      	    <xs:element name="LineEnding" type="cLINE_ENDING" minOccurs="1" maxOccurs="unbounded" />
+      	  </xs:sequence>
+      	</xs:complexType>
+     </xs:element> 	
+    </xs:sequence>
+    <xs:attribute name="backgroundColor" type="cCOLOR_VALUE" use="optional" default="#FFFFFFFF" />
+    <xs:attribute name="referenceRenderInformation" type="cKEYREF" use="optional" />
+    <xs:attribute name="name" type="xs:string" use="optional" />
+  </xs:complexType>
+  
+  <xs:complexType name="cSTYLE">
+    <xs:sequence>
+      <xs:element name="Group" type="cGROUP" />
+    </xs:sequence>
+    <xs:attribute name="roleList" type="cCommaSeparatedStringList" use="optional" />
+    <xs:attribute name="typeList" type="cCommaSeparatedStringList" use="optional" />
+  </xs:complexType>
+  
+  <xs:complexType name="cGLOBAL_STYLE">
+    <xs:complexContent>
+      <xs:extension base="cSTYLE" />
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="cLOCAL_STYLE">
+    <xs:complexContent>
+      <xs:extension base="cSTYLE" >
+      	<!-- actually we could be more specific here since we know that the strings are keys -->
+      	<!-- but I am not sure if this is woth the trouble. -->
+        <xs:attribute name="keyList" type="cCommaSeparatedStringList" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="cLOCAL_RENDER_INFORMATION">
+    <xs:complexContent>
+      <xs:extension base="cRENDER_INFORMATION_BASE">
+        <xs:sequence>
+          <xs:element name="ListOfStyles" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Style" type="cLOCAL_STYLE" minOccurs="1" maxOccurs="unbounded" />
+              </xs:sequence>  
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cGLOBAL_RENDER_INFORMATION">
+    <xs:complexContent>
+      <xs:extension base="cRENDER_INFORMATION_BASE">
+        <xs:sequence>
+          <xs:element name="ListOfStyles" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>	
+                <xs:element name="Style" type="cGLOBAL_STYLE" minOccurs="1" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="cLIST_OF_GLOBAL_RENDER_INFORMATION">
+    <xs:sequence>
+      <xs:element name="RenderInformation" type="cGLOBAL_RENDER_INFORMATION" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="cLIST_OF_LOCAL_RENDER_INFORMATION">
+    <xs:sequence>
+      <xs:element name="RenderInformation" type="cLOCAL_RENDER_INFORMATION" />
+    </xs:sequence>
+  </xs:complexType>
+  
 </xs:schema>
