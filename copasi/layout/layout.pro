@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $
-#   $Revision: 1.7 $
+#   $Revision: 1.8 $
 #   $Name:  $
 #   $Author: gauges $
-#   $Date: 2010/03/10 12:26:12 $
+#   $Date: 2010/03/10 13:11:45 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -73,7 +73,6 @@ HEADER += CLColorDefinition.h \
            CLTransformation.h \
            CLTransformation2D.h \
            CLUnresolvedReferenceException.h \
-	   tga_image.h \
            utility_classes.h
 }
 
@@ -124,7 +123,6 @@ SOURCES += CLColorDefinition.cpp \
            CLTransformation.cpp \
            CLTransformation2D.cpp \
            CLUnresolvedReferenceException.cpp \
-	   tga_image.cpp \
            utility_classes.cpp
 }
 
