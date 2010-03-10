@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/06/30 15:44:55 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:27:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -104,6 +109,7 @@ public:
   COutputDefinitionVector * getPlotDefinitionList();
 
   CListOfLayouts * getListOfLayouts();
+  const CListOfLayouts * getListOfLayouts() const;
   bool removeLayout(const std::string& key);
 
   SCopasiXMLGUI * getGUI();
@@ -133,6 +139,10 @@ public:
    */
   const CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
                                        const CCopasiObjectName & objName) const;
+
+#ifdef USE_CRENDER_EXTENSION
+  const std::string& getReferenceDirectory() const;
+#endif // USE_CRENDER_EXTENSION
 
   // Attributes
 protected:
@@ -169,6 +179,17 @@ protected:
    * was created by an SBML import.
    */
   std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
+
+#ifdef USE_CRENDER_EXTENSION
+  // if we want to display images in the render extension,
+  // those images can be png or jpg files with a relative path name.
+  // If the path is relative, it is considered to be relative to the
+  // path of the filename it came from.
+  // Because of this, I need to know the reference directory where
+  // the render information came from because it can either come from
+  // an imported SBML file or from a loaded cps file.
+  std::string mReferenceDir;
+#endif // USE_CRENDER_EXTENSION
 
 public:
   /**

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.147 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/01/19 17:49:54 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:27:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -106,6 +111,9 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mRenameHandler(this),
     mpCurrentSBMLDocument(NULL),
     mSBMLFileName(""),
+#ifdef USE_CRENDER_EXTENSION
+    mReferenceDir(""),
+#endif // USE_CRENDER_EXTENSION
     pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
 
@@ -209,6 +217,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 
       mSaveFileName += ".cps";
       mSaveFileName = CDirEntry::normalize(mSaveFileName);
+#ifdef USE_CRENDER_EXTENSION
+      // we have to store the reference directory
+      mReferenceDir = CDirEntry::dirName(mSaveFileName);
+#endif // USE_CRENDER_EXTENSION
       mSBMLFileName = "";
     }
   else if (!Line.find("<?xml") != std::string::npos)
@@ -334,6 +346,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         }
 
       mSaveFileName = CDirEntry::normalize(FileName);
+#ifdef USE_CRENDER_EXTENSION
+      // we have to store the reference directory
+      mReferenceDir = CDirEntry::dirName(mSaveFileName);
+#endif // USE_CRENDER_EXTENSION
     }
   else
     {
@@ -503,6 +519,10 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport,
       mpModel = new CModel(this);
       mSaveFileName = "";
       mSBMLFileName = "";
+#ifdef USE_CRENDER_EXTENSION
+      // we have to reset the reference directory
+      mReferenceDir = "";
+#endif // USE_CRENDER_EXTENSION
 
       pdelete(mpCurrentSBMLDocument);
 
@@ -667,13 +687,16 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 
   mSaveFileName += ".cps";
   mSaveFileName = CDirEntry::normalize(mSaveFileName);
+#ifdef USE_CRENDER_EXTENSION
+  // store the reference directory
+  mReferenceDir = CDirEntry::dirName(mSaveFileName);
+#endif // USE_CRENDER_EXTENSION
   mSBMLFileName = CDirEntry::normalize(FileName);
 
   pdelete(mpCurrentSBMLDocument);
 
   mpCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
-
   return newModel(pModel, pImportHandler, pLol);
 }
 
@@ -1192,6 +1215,9 @@ CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
 COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList()
 {return mpPlotDefinitionList;}
 
+const CListOfLayouts * CCopasiDataModel::getListOfLayouts() const
+{return mpListOfLayouts;}
+
 CListOfLayouts * CCopasiDataModel::getListOfLayouts()
 {return mpListOfLayouts;}
 
@@ -1314,3 +1340,10 @@ CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopasiConta
 {
   return const_cast<CCopasiObject *>(const_cast<const CCopasiDataModel*>(this)->ObjectFromName(listOfContainer, objName));
 }
+
+#ifdef USE_CRENDER_EXTENSION
+const std::string& CCopasiDataModel::getReferenceDirectory() const
+{
+  return this->mReferenceDir;
+}
+#endif // USE_CRENDER_EXTENSION
