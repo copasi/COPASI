@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/16 22:29:58 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:26:12 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -32,159 +37,242 @@ class Point;
  * libsbml layout extension
  */
 class CLBase
-  {
-  public:
-    CLBase() {};
-    CLBase(const CLBase &) {};
-    CLBase(const SBase &) {};
-  };
+{
+public:
+  CLBase() {};
+  CLBase(const CLBase &) {};
+  CLBase(const SBase &) {};
+  // make CLBase polymorphic so that we can dynamic cast from CLBase to
+  // CLGraphicalObject
+  virtual ~CLBase() {};
+};
 
 /**
  * This class describes a Point in a layout
  * It is 2-dimensional at the moment
  */
 class CLPoint : public CLBase
+{
+protected:
+
+  C_FLOAT64 mX, mY;
+#ifdef USE_CRENDER_EXTENSION
+  C_FLOAT64 mZ;
+#endif // USE_CRENDER_EXTENSION
+
+public:
+
+  CLPoint():
+      mX(0.0)
+      , mY(0.0)
+#ifdef USE_CRENDER_EXTENSION
+      , mZ(0.0)
+#endif // USE_CRENDER_EXTENSION
+  {};
+
+  CLPoint(const C_FLOAT64 & x
+          , const C_FLOAT64 & y
+#ifdef USE_CRENDER_EXTENSION
+          , const C_FLOAT64 & z = 0.0
+#endif // USE_CRENDER_EXTENSION
+         ):
+      mX(x)
+      , mY(y)
+#ifdef USE_CRENDER_EXTENSION
+      , mZ(z)
+#endif // USE_CRENDER_EXTENSION
+  {};
+
+  /**
+   * constructor from libsbml object
+   */
+  CLPoint(const Point& p);
+
+  const C_FLOAT64 & getX() const {return mX;};
+  const C_FLOAT64 & getY() const {return mY;};
+#ifdef USE_CRENDER_EXTENSION
+  const C_FLOAT64 & getZ() const {return mZ;};
+#endif // USE_CRENDER_EXTENSION
+
+  C_FLOAT64 & getX() {return mX;};
+  C_FLOAT64 & getY() {return mY;};
+#ifdef USE_CRENDER_EXTENSION
+  C_FLOAT64 & getZ() {return mZ;};
+#endif // USE_CRENDER_EXTENSION
+
+  void setX(const C_FLOAT64 & x) {mX = x;};
+  void setY(const C_FLOAT64 & y) {mY = y;};
+#ifdef USE_CRENDER_EXTENSION
+  void setZ(const C_FLOAT64 & z) {mZ = z;};
+#endif // USE_CRENDER_EXTENSION
+
+  void scale(const double & scaleFactor) {mX *= scaleFactor; mY *= scaleFactor;}
+
+  bool operator==(const CLPoint & rhs) const
   {
-  protected:
-
-    C_FLOAT64 mX, mY;
-
-  public:
-
-    CLPoint()
-        : mX(0), mY(0) {};
-
-    CLPoint(const C_FLOAT64 & x, const C_FLOAT64 & y)
-        : mX(x), mY(y) {};
-
-    /**
-     * constructor from libsbml object
-     */
-    CLPoint(const Point& p);
-
-    const C_FLOAT64 & getX() const {return mX;};
-    const C_FLOAT64 & getY() const {return mY;};
-
-    C_FLOAT64 & getX() {return mX;};
-    C_FLOAT64 & getY() {return mY;};
-
-    void setX(const C_FLOAT64 & x) {mX = x;};
-    void setY(const C_FLOAT64 & y) {mY = y;};
-
-    void scale (const double & scaleFactor){mX *= scaleFactor;mY *= scaleFactor;}
-
-    bool operator==(const CLPoint & rhs) const
-      {return (mX == rhs.mX) && (mY == rhs.mY);};
-
-    // sort columnwise, point p1 is < point p2 if x-component is <, if x es are equal, check for y
-    bool operator<(const CLPoint & rhs) const
-      {
-        if (mX == rhs.mX)
-          return (mY < rhs.mY);
-        else
-          return (mX < rhs.mX);
-      };
-
-    /**
-     * convert to sbml point
-     */
-    Point getSBMLPoint() const;
-
-    /**
-      * insert operator
-      */
-    friend std::ostream & operator<<(std::ostream &os, const CLPoint & p);
+    bool result = (mX == rhs.mX) && (mY == rhs.mY);
+#ifdef USE_CRENDER_EXTENSION
+    result &= mZ == rhs.mZ;
+#endif // USE_CRENDER_EXTENSION
+    return result;
   };
+
+  // sort columnwise, point p1 is < point p2 if x-component is <, if x es are equal, check for y
+  bool operator<(const CLPoint & rhs) const
+  {
+    if (mX == rhs.mX)
+#ifdef USE_CRENDER_EXTENSION
+      if (mY == rhs.mY)
+        {
+          return (mZ < rhs.mZ);
+        }
+      else
+        {
+          return (mY < rhs.mY);
+        }
+
+#else
+      return (mY < rhs.mY);
+#endif // USE_CRENDER_EXTENSION
+    else
+      return (mX < rhs.mX);
+  };
+
+  /**
+   * convert to sbml point
+   */
+  Point getSBMLPoint() const;
+
+  /**
+    * insert operator
+    */
+  friend std::ostream & operator<<(std::ostream &os, const CLPoint & p);
+};
 
 /**
  * This class describes a size in a layout.
  * It is 2-dimensional at the moment.
  */
 class CLDimensions : public CLBase
+{
+protected:
+
+  C_FLOAT64 mWidth, mHeight;
+#ifdef USE_CRENDER_EXTENSION
+  C_FLOAT64 mDepth;
+#endif // USE_CRENDER_EXTENSION
+
+public:
+
+  CLDimensions() :
+      mWidth(0.0)
+      , mHeight(0.0)
+#ifdef USE_CRENDER_EXTENSION
+      , mDepth(0.0)
+#endif // USE_CRENDER_EXTENSION
+
+  {};
+
+  CLDimensions(const C_FLOAT64 & w
+               , const C_FLOAT64 & h
+#ifdef USE_CRENDER_EXTENSION
+               , const C_FLOAT64 & d = 0.0
+#endif // USE_CRENDER_EXTENSION
+              ):
+      mWidth(w)
+      , mHeight(h)
+#ifdef USE_CRENDER_EXTENSION
+      , mDepth(d)
+#endif // USE_CRENDER_EXTENSION
+  {};
+
+  /**
+   * constructor from libsbml object
+   */
+  CLDimensions(const Dimensions& d);
+
+  const C_FLOAT64 & getWidth() const {return mWidth;};
+  const C_FLOAT64 & getHeight() const {return mHeight;};
+#ifdef USE_CRENDER_EXTENSION
+  const C_FLOAT64 & getDepth() const {return mDepth;};
+#endif // USE_CRENDER_EXTENSION
+
+  C_FLOAT64 & getWidth() {return mWidth;};
+  C_FLOAT64 & getHeight() {return mHeight;};
+#ifdef USE_CRENDER_EXTENSION
+  C_FLOAT64 & getDepth() {return mDepth;};
+#endif // USE_CRENDER_EXTENSION
+
+  void setWidth(const C_FLOAT64 & w) {mWidth = w;};
+  void setHeight(const C_FLOAT64 & h) {mHeight = h;};
+#ifdef USE_CRENDER_EXTENSION
+  void setDepth(const C_FLOAT64 & d) {mDepth = d;};
+#endif // USE_CRENDER_EXTENSION
+
+  void scale(const double & scaleFactor)
   {
-  protected:
+    mWidth *= scaleFactor;
+    mHeight *= scaleFactor;
+#ifdef USE_CRENDER_EXTENSION
+    mDepth *= scaleFactor;
+#endif // USE_CRENDER_EXTENSION
+  }
 
-    C_FLOAT64 mWidth, mHeight;
+  /**
+   * convert to sbml dimension
+   */
+  Dimensions getSBMLDimensions() const;
 
-  public:
-
-    CLDimensions()
-        : mWidth(0), mHeight(0) {};
-
-    CLDimensions(const C_FLOAT64 & w, const C_FLOAT64 & h)
-        : mWidth(w), mHeight(h) {};
-
-    /**
-     * constructor from libsbml object
-     */
-    CLDimensions(const Dimensions& d);
-
-    const C_FLOAT64 & getWidth() const {return mWidth;};
-    const C_FLOAT64 & getHeight() const {return mHeight;};
-
-    C_FLOAT64 & getWidth() {return mWidth;};
-    C_FLOAT64 & getHeight() {return mHeight;};
-
-    void setWidth(const C_FLOAT64 & w) {mWidth = w;};
-    void setHeight(const C_FLOAT64 & h) {mHeight = h;};
-
-    void scale (const double & scaleFactor){mWidth *= scaleFactor;mHeight *= scaleFactor;}
-
-    /**
-     * convert to sbml dimension
-     */
-    Dimensions getSBMLDimensions() const;
-
-    /**
-      * insert operator
-      */
-    friend std::ostream & operator<<(std::ostream &os, const CLDimensions & d);
-  };
+  /**
+    * insert operator
+    */
+  friend std::ostream & operator<<(std::ostream &os, const CLDimensions & d);
+};
 
 /**
  * This class describes a bounding box.
  */
 class CLBoundingBox : public CLBase
-  {
-  protected:
+{
+protected:
 
-    CLPoint mPosition;
+  CLPoint mPosition;
 
-    CLDimensions mDimensions;
+  CLDimensions mDimensions;
 
-  public:
+public:
 
-    CLBoundingBox()
-        : mPosition(), mDimensions() {};
+  CLBoundingBox()
+      : mPosition(), mDimensions() {};
 
-    CLBoundingBox(const CLPoint & p, const CLDimensions & d)
-        : mPosition(p), mDimensions(d) {};
+  CLBoundingBox(const CLPoint & p, const CLDimensions & d)
+      : mPosition(p), mDimensions(d) {};
 
-    /**
-     * constructor from libsbml object
-     */
-    CLBoundingBox(const BoundingBox & bb);
+  /**
+   * constructor from libsbml object
+   */
+  CLBoundingBox(const BoundingBox & bb);
 
-    const CLPoint & getPosition() const {return mPosition;};
-    const CLDimensions & getDimensions() const {return mDimensions;};
+  const CLPoint & getPosition() const {return mPosition;};
+  const CLDimensions & getDimensions() const {return mDimensions;};
 
-    CLPoint & getPosition() {return mPosition;};
-    CLDimensions & getDimensions() {return mDimensions;};
+  CLPoint & getPosition() {return mPosition;};
+  CLDimensions & getDimensions() {return mDimensions;};
 
-    void setPosition(const CLPoint & p) {mPosition = p;};
-    void setDimensions(const CLDimensions & d) {mDimensions = d;};
+  void setPosition(const CLPoint & p) {mPosition = p;};
+  void setDimensions(const CLDimensions & d) {mDimensions = d;};
 
-    /**
-     * convert to sbml bounding box
-     */
-    BoundingBox getSBMLBoundingBox() const;
+  /**
+   * convert to sbml bounding box
+   */
+  BoundingBox getSBMLBoundingBox() const;
 
-    void scale (const double & scaleFactor){mPosition.scale(scaleFactor);mDimensions.scale(scaleFactor);}
+  void scale(const double & scaleFactor) {mPosition.scale(scaleFactor); mDimensions.scale(scaleFactor);}
 
-    /**
-      * insert operator
-      */
-    friend std::ostream & operator<<(std::ostream &os, const CLBoundingBox & bb);
-  };
+  /**
+    * insert operator
+    */
+  friend std::ostream & operator<<(std::ostream &os, const CLBoundingBox & bb);
+};
 
 #endif

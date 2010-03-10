@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:56:03 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:26:12 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -26,6 +31,10 @@
 #include "CLGlyphs.h"
 #include "CLReactionGlyph.h"
 
+#ifdef USE_CRENDER_EXTENSION
+#include <copasi/layout/CLLocalRenderInformation.h>
+#endif /* USE_CRENDER_EXTENSION */
+
 class Layout;
 
 /**
@@ -33,121 +42,174 @@ class Layout;
  * is exactly corresponding to the sbml layout extension
  */
 class CLayout : public CLBase, public CCopasiContainer
-  {
-  protected:
+{
+protected:
 
-    std::string mKey;
+  std::string mKey;
 
-    CLDimensions mDimensions;
+  CLDimensions mDimensions;
 
-    CCopasiVector<CLCompartmentGlyph> mvCompartments;
-    CCopasiVector<CLMetabGlyph> mvMetabs;
-    CCopasiVector<CLReactionGlyph> mvReactions;
-    CCopasiVector<CLTextGlyph> mvLabels;
-    CCopasiVector<CLGraphicalObject> mvGraphicalObjects;
+  CCopasiVector<CLCompartmentGlyph> mvCompartments;
+  CCopasiVector<CLMetabGlyph> mvMetabs;
+  CCopasiVector<CLReactionGlyph> mvReactions;
+  CCopasiVector<CLTextGlyph> mvLabels;
+  CCopasiVector<CLGraphicalObject> mvGraphicalObjects;
+#ifdef USE_CRENDER_EXTENSION
+  CCopasiVector<CLLocalRenderInformation> mvLocalRenderInformationObjects;
+#endif /* USE_CRENDER_EXTENSION */
 
-  public:
+public:
 
-    CLayout(const std::string & name = "Layout",
-            const CCopasiContainer * pParent = NULL);
+  CLayout(const std::string & name = "Layout",
+          const CCopasiContainer * pParent = NULL);
 
-    CLayout(const CLayout & src,
-            const CCopasiContainer * pParent = NULL);
+  CLayout(const CLayout & src,
+          const CCopasiContainer * pParent = NULL);
 
-    /**
-     * constructor from libsbml object.
-     * Does not read the whole libsbml tree. Additional
-     * work is done in SBMLDocumentLoader
-     */
-    CLayout(const Layout & sbml,
-            std::map<std::string, std::string> & layoutmap,
-            const CCopasiContainer * pParent = NULL);
+  /**
+   * constructor from libsbml object.
+   * Does not read the whole libsbml tree. Additional
+   * work is done in SBMLDocumentLoader
+   */
+  CLayout(const Layout & sbml,
+          std::map<std::string, std::string> & layoutmap,
+          const CCopasiContainer * pParent = NULL);
 
-    ~CLayout();
+  ~CLayout();
 
-    /**
-     *  Retrieves the key of the layout
-     */
-    virtual const std::string & getKey() const
-      {return mKey;};
+  /**
+   *  Retrieves the key of the layout
+   */
+  virtual const std::string & getKey() const
+  {return mKey;};
 
-    const CLDimensions & getDimensions() const {return mDimensions;};
-    void setDimensions(const CLDimensions & d) {mDimensions = d;};
+  const CLDimensions & getDimensions() const {return mDimensions;};
+  void setDimensions(const CLDimensions & d) {mDimensions = d;};
 
-    //*******************
+  //*******************
 
-    const CCopasiVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs() const
-      {return mvCompartments;};
+  const CCopasiVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs() const
+  {return mvCompartments;};
 
-    /**
-     *  add Glyph to layout. The layout takes ownership of the glyph.
-     */
-    void addCompartmentGlyph(CLCompartmentGlyph * glyph);
+  /**
+   *  add Glyph to layout. The layout takes ownership of the glyph.
+   */
+  void addCompartmentGlyph(CLCompartmentGlyph * glyph);
 
-    //*******************
+  //*******************
 
-    const CCopasiVector<CLMetabGlyph> & getListOfMetaboliteGlyphs() const
-      {return mvMetabs;};
+  const CCopasiVector<CLMetabGlyph> & getListOfMetaboliteGlyphs() const
+  {return mvMetabs;};
 
-    /**
-     *  add Glyph to layout. The layout takes ownership of the glyph.
-     */
-    void addMetaboliteGlyph(CLMetabGlyph * glyph);
+  /**
+   *  add Glyph to layout. The layout takes ownership of the glyph.
+   */
+  void addMetaboliteGlyph(CLMetabGlyph * glyph);
 
-    //*******************
+  //*******************
 
-    const CCopasiVector<CLReactionGlyph> & getListOfReactionGlyphs() const
-      {return mvReactions;};
+  const CCopasiVector<CLReactionGlyph> & getListOfReactionGlyphs() const
+  {return mvReactions;};
 
-    /**
-     *  add Glyph to layout. The layout takes ownership of the glyph.
-     */
-    void addReactionGlyph(CLReactionGlyph * glyph);
+  /**
+   *  add Glyph to layout. The layout takes ownership of the glyph.
+   */
+  void addReactionGlyph(CLReactionGlyph * glyph);
 
-    //*******************
+  //*******************
 
-    const CCopasiVector<CLTextGlyph> & getListOfTextGlyphs() const
-      {return mvLabels;};
+  const CCopasiVector<CLTextGlyph> & getListOfTextGlyphs() const
+  {return mvLabels;};
 
-    /**
-     *  add Glyph to layout. The layout takes ownership of the glyph.
-     */
-    void addTextGlyph(CLTextGlyph * glyph);
+  /**
+   *  add Glyph to layout. The layout takes ownership of the glyph.
+   */
+  void addTextGlyph(CLTextGlyph * glyph);
 
-    //*******************
+  //*******************
 
-    const CCopasiVector<CLGraphicalObject> & getListOfGraphicalObjects() const
-      {return mvGraphicalObjects;};
+  const CCopasiVector<CLGraphicalObject> & getListOfGraphicalObjects() const
+  {return mvGraphicalObjects;};
 
-    /**
-     *  add Glyph to layout. The layout takes ownership of the glyph.
-     */
-    void addGraphicalObject(CLGraphicalObject * glyph);
+  /**
+   *  add Glyph to layout. The layout takes ownership of the glyph.
+   */
+  void addGraphicalObject(CLGraphicalObject * glyph);
 
-    virtual void scale (const double & scaleFactor){this->mDimensions.scale(scaleFactor);}
-    /**
-      * insert operator
-      */
-    friend std::ostream & operator<<(std::ostream &os, const CLayout & g);
-    void print(std::ostream * ostream) const;
+#ifdef USE_CRENDER_EXTENSION
+  //*******************
 
-    void exportToDotFile(std::ostream & os) const;
+  /**
+   * Returns a const reference to the list of local render information objects.
+   */
+  const CCopasiVector<CLLocalRenderInformation> & getListOfLocalRenderInformationObjects() const
+  {return this->mvLocalRenderInformationObjects;};
 
-    /**
-     * This method writes the information of the copasi layout object into the
-     * corresponding sbml object
-     */
-    void exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
-                      std::map<std::string, const SBase*>& sbmlIDs) const;
+  /**
+   * Returns a reference to the list of local render information objects.
+   */
+  CCopasiVector<CLLocalRenderInformation> & getListOfLocalRenderInformationObjects()
+  {return this->mvLocalRenderInformationObjects;};
 
-  protected:
-    void writeDotNode(std::ostream & os, const std::string & id,
-                      const std::string & label,
-                      int t = 0) const;
+  /**
+   * Returns a const pointer to the local render information with the given index or NULL
+   * if the index is invalid.
+   */
+  const CLLocalRenderInformation* getRenderInformation(unsigned C_INT32 index) const;
 
-    void writeDotEdge(std::ostream & os, const std::string & id1,
-                      const std::string & id2,
-                      int t = 0) const;
-  };
+  /**
+   * Returns a pointer to the local render information with the given index or NULL
+   * if the index is invalid.
+   */
+  CLLocalRenderInformation* getRenderInformation(unsigned C_INT32 index);
+
+  /**
+   *  add local render information to layout. The layout takes ownership of the object.
+   */
+  void addLocalRenderInformation(CLLocalRenderInformation* pRenderInfo);
+
+  /**
+   * This methods calculates the bounding box of the layout.
+   * It traverses all layout objects and looks for the minimal and maximal x
+   * and y values that occur in the layout.
+   * These values are returned in the form of a bounding box where the minimal
+   * values are stored in the position and the maxima are given as the minimal
+   * values plus the corresponding dimension.
+   */
+  CLBoundingBox calculateBoundingBox() const;
+#endif /* USE_CRENDER_EXTENSION */
+
+  virtual void scale(const double & scaleFactor) {this->mDimensions.scale(scaleFactor);}
+  /**
+    * insert operator
+    */
+  friend std::ostream & operator<<(std::ostream &os, const CLayout & g);
+  void print(std::ostream * ostream) const;
+
+  void exportToDotFile(std::ostream & os) const;
+
+  /**
+   * This method writes the information of the copasi layout object into the
+   * corresponding sbml object
+   */
+  void exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                    std::map<std::string, const SBase*>& sbmlIDs
+#ifdef USE_CRENDER_EXTENSION
+                    , const std::map<std::string, std::string>& globalKeyToIdMap
+                    //    ,const std::map<std::string,std::map<std::string,std::string> >& globalColorKeyToIdMapMap
+                    //    ,const std::map<std::string,std::map<std::string,std::string> >& globalGradientKeyToIdMapMap
+                    //    ,const std::map<std::string,std::map<std::string,std::string> >& globalLineEndingKeyToIdMapMap
+#endif /* USE_CRENDER_EXTENSION */
+                   ) const;
+
+protected:
+  void writeDotNode(std::ostream & os, const std::string & id,
+                    const std::string & label,
+                    int t = 0) const;
+
+  void writeDotEdge(std::ostream & os, const std::string & id1,
+                    const std::string & id2,
+                    int t = 0) const;
+};
 
 #endif

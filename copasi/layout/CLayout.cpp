@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:20 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:26:12 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -23,6 +28,7 @@
 #include "copasi.h"
 
 #include "CLayout.h"
+#include "SBMLDocumentLoader.h"
 
 #include "report/CKeyFactory.h"
 #include "sbml/CSBMLExporter.h"
@@ -39,6 +45,9 @@ CLayout::CLayout(const std::string & name,
     mvReactions("ListOfReactionGlyphs", this),
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
+#ifdef USE_CRENDER_EXTENSION
+    , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
+#endif /* USE_CRENDER_EXTENSION */
 {}
 
 CLayout::CLayout(const CLayout & src,
@@ -52,6 +61,9 @@ CLayout::CLayout(const CLayout & src,
     mvReactions(src.mvReactions, this),
     mvLabels(src.mvLabels, this),
     mvGraphicalObjects(src.mvGraphicalObjects, this)
+#ifdef USE_CRENDER_EXTENSION
+    , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
+#endif /* USE_CRENDER_EXTENSION */
 {
   //TODO references from one glyph to another have to be reconstructed after
   //     copying. This applies to Labels and species reference glyphs
@@ -69,6 +81,9 @@ CLayout::CLayout(const Layout & sbml,
     mvReactions("ListOfReactionGlyphs", this),
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
+#ifdef USE_CRENDER_EXTENSION
+    , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
+#endif /* USE_CRENDER_EXTENSION */
 {
   //add the copasi key to the map
   layoutmap[sbml.getId()] = mKey;
@@ -233,7 +248,14 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
 }
 
 void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
-                           std::map<std::string, const SBase*>& sbmlIDs) const
+                           std::map<std::string, const SBase*>& sbmlIDs
+#ifdef USE_CRENDER_EXTENSION
+                           , const std::map<std::string, std::string>& globalKeyToIdMap
+                           //,const std::map<std::string,std::map<std::string,std::string> >& globalColorKeyToIdMapMap
+                           //,const std::map<std::string,std::map<std::string,std::string> >& globalGradientKeyToIdMapMap
+                           //,const std::map<std::string,std::map<std::string,std::string> >& globalLineEndingKeyToIdMapMap
+#endif /* USE_CRENDER_EXTENSION */
+                          ) const
 {
   if (!layout) return;
 
@@ -413,4 +435,303 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
           tmp->exportReferenceToSBML(const_cast<TextGlyph*>(dynamic_cast<const TextGlyph*>(it->second)), layoutmap);
         }
     }
+
+#ifdef USE_CRENDER_EXTENSION
+  // export the local render information
+  imax = this->mvLocalRenderInformationObjects.size();
+  LocalRenderInformation* pLRI = NULL;
+  std::map<std::string, std::string> keyToIdMap;
+
+  /*
+  std::map<std::string,std::string> colorKeyToIdMap;
+  std::map<std::string,std::string> gradientKeyToIdMap;
+  std::map<std::string,std::string> lineEndingKeyToIdMap;
+  std::map<std::string,std::map<std::string,std::string> > colorKeyToIdMapMap;
+  std::map<std::string,std::map<std::string,std::string> > gradientKeyToIdMapMap;
+  std::map<std::string,std::map<std::string,std::string> > lineEndingKeyToIdMapMap;
+  */
+  for (i = 0; i < imax; ++i)
+    {
+      //colorKeyToIdMap.clear();
+      //gradientKeyToIdMap.clear();
+      //lineEndingKeyToIdMap.clear();
+      //pLRI=this->mvLocalRenderInformationObjects[i]->toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
+      pLRI = this->mvLocalRenderInformationObjects[i]->toSBML();
+      keyToIdMap.insert(std::pair<std::string, std::string>(this->mvLocalRenderInformationObjects[i]->getKey(), pLRI->getId()));
+      //colorKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getId(),colorKeyToIdMap));
+      //gradientKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getId(),gradientKeyToIdMap));
+      //lineEndingKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getId(),lineEndingKeyToIdMap));
+      // fix the references to layout objects in id lists
+      std::map<const CLBase*, const SBase*>::const_iterator layoutMapIt = layoutmap.begin(), layoutMapEndit = layoutmap.end();
+      std::map<std::string, std::string> layoutObjectKeyToIdMap;
+      const CLGraphicalObject* pGObject = NULL;
+
+      while (layoutMapIt != layoutMapEndit)
+        {
+          pGObject = dynamic_cast<const CLGraphicalObject*>(layoutMapIt->first);
+
+          if (pGObject != NULL)
+            {
+              layoutObjectKeyToIdMap.insert(std::pair<std::string, std::string>(pGObject->getKey(), layoutMapIt->second->getId()));
+            }
+
+          ++layoutMapIt;
+        }
+
+      unsigned int j, jMax = pLRI->getNumStyles();
+
+      for (j = 0; j < jMax; ++j)
+        {
+          SBMLDocumentLoader::convertLayoutObjectKeys(*(pLRI->getStyle(j)), layoutObjectKeyToIdMap);
+        }
+
+      layout->getListOfLocalRenderInformation()->appendAndOwn(pLRI);
+    }
+
+  // we need to add the ids from the global render information object to the keyToIdMap
+  SBMLDocumentLoader::combineMaps(globalKeyToIdMap, keyToIdMap);
+  // fix the references
+  /*
+  SBMLDocumentLoader::convertRenderInformationReferencesKeys<LocalRenderInformation>(*layout->getListOfLocalRenderInformation(),keyToIdMap);
+  // fix the color ids, gradient ids and line ending ids.
+  std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;
+  std::map<std::string,std::map<std::string,std::string> > expandedColorKeyToIdMapMap, expandedGradientKeyToIdMapMap, expandedLineEndingKeyToIdMapMap;
+  for(i=0;i < imax; ++i)
+  {
+      // a set to check for endless loops
+      std::set<std::string> ids;
+      colorKeyToIdMap.clear();
+      gradientKeyToIdMap.clear();
+      lineEndingKeyToIdMap.clear();
+      pLRI=dynamic_cast<LocalRenderInformation*>(layout->getRenderInformation(i));
+      assert(pLRI != NULL);
+      std::string s=pLRI->getId();
+      // replace this with the expansion code from SBMLDocumentLoader
+      std::set<std::string> chain;
+      SBMLDocumentLoader::expandKeyToIdMaps(pLRI,
+              *(layout->getListOfLocalRenderInformation()),
+              expandedColorKeyToIdMapMap,
+              expandedGradientKeyToIdMapMap,
+              expandedLineEndingKeyToIdMapMap,
+              colorKeyToIdMapMap,
+              gradientKeyToIdMapMap,
+              lineEndingKeyToIdMapMap,
+              chain,
+              globalColorKeyToIdMapMap,
+              globalGradientKeyToIdMapMap,
+              globalLineEndingKeyToIdMapMap
+         );
+      SBMLDocumentLoader::convertPropertyKeys<LocalRenderInformation>(pLRI,colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
+  }
+  */
+#endif /* USE_CRENDER_EXTENSION */
 }
+
+#ifdef USE_CRENDER_EXTENSION
+void CLayout::addLocalRenderInformation(CLLocalRenderInformation * pRenderInfo)
+{
+  if (pRenderInfo)
+    {
+      this->mvLocalRenderInformationObjects.add(pRenderInfo, true); //true means vector takes ownership
+    }
+}
+
+/**
+ * Returns a const pointer to the local render information with the given index or NULL
+ * if the index is invalid.
+ */
+const CLLocalRenderInformation* CLayout::getRenderInformation(unsigned C_INT32 index) const
+{
+  if (index >= this->mvLocalRenderInformationObjects.size()) return NULL;
+
+  return this->mvLocalRenderInformationObjects[index];
+}
+
+/**
+ * Returns a pointer to the local render information with the given index or NULL
+ * if the index is invalid.
+ */
+CLLocalRenderInformation* CLayout::getRenderInformation(unsigned C_INT32 index)
+{
+  if (index >= this->mvLocalRenderInformationObjects.size()) return NULL;
+
+  return this->mvLocalRenderInformationObjects[index];
+}
+
+/**
+ * This methods calculates the bounding box of the layout.
+ * It traverses all layout objects and looks for the minimal and maximal x
+ * and y values that occur in the layout.
+ * These values are returned in the form of a bounding box where the minimal
+ * values are stored in the position and the maxima are given as the minimal
+ * values plus the corresponding dimension.
+ */
+CLBoundingBox CLayout::calculateBoundingBox() const
+{
+  double minX = std::numeric_limits<double>::max();
+  double minY = minX;
+  double maxX = -minX;
+  double maxY = -minX;
+
+  const CLGraphicalObject* pObject = NULL;
+  const CLCurve* pCurve = NULL;
+  const CLBoundingBox* pBB;
+  const CLPoint* pP = NULL;
+  const CLDimensions* pDim;
+  unsigned int i, iMax = this->getListOfCompartmentGlyphs().size();
+  double x, y, x2, y2;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfCompartmentGlyphs()[i];
+      pBB = &pObject->getBoundingBox();
+      pP = &pBB->getPosition();
+      x = pP->getX();
+      y = pP->getY();
+      pDim = &pBB->getDimensions();
+      x2 = x + pDim->getWidth();
+      y2 = y + pDim->getHeight();
+      minX = (minX < x) ? minX : x;
+      minY = (minY < y) ? minY : y;
+      maxX = (maxX > x2) ? maxX : x2;
+      maxY = (maxY > y2) ? maxY : y2;
+    }
+
+  iMax = this->getListOfMetaboliteGlyphs().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfMetaboliteGlyphs()[i];
+      pBB = &pObject->getBoundingBox();
+      pP = &pBB->getPosition();
+      x = pP->getX();
+      y = pP->getY();
+      pDim = &pBB->getDimensions();
+      x2 = x + pDim->getWidth();
+      y2 = y + pDim->getHeight();
+      minX = (minX < x) ? minX : x;
+      minY = (minY < y) ? minY : y;
+      maxX = (maxX > x2) ? maxX : x2;
+      maxY = (maxY > y2) ? maxY : y2;
+    }
+
+  iMax = this->getListOfTextGlyphs().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfTextGlyphs()[i];
+      pBB = &pObject->getBoundingBox();
+      pP = &pBB->getPosition();
+      x = pP->getX();
+      y = pP->getY();
+      pDim = &pBB->getDimensions();
+      x2 = x + pDim->getWidth();
+      y2 = y + pDim->getHeight();
+      minX = (minX < x) ? minX : x;
+      minY = (minY < y) ? minY : y;
+      maxX = (maxX > x2) ? maxX : x2;
+      maxY = (maxY > y2) ? maxY : y2;
+    }
+
+  iMax = this->getListOfGraphicalObjects().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfGraphicalObjects()[i];
+      pBB = &pObject->getBoundingBox();
+      pP = &pBB->getPosition();
+      x = pP->getX();
+      y = pP->getY();
+      pDim = &pBB->getDimensions();
+      x2 = x + pDim->getWidth();
+      y2 = y + pDim->getHeight();
+      minX = (minX < x) ? minX : x;
+      minY = (minY < y) ? minY : y;
+      maxX = (maxX > x2) ? maxX : x2;
+      maxY = (maxY > y2) ? maxY : y2;
+    }
+
+  const CLReactionGlyph* pRG = NULL;
+
+  const CLMetabReferenceGlyph* pSRG = NULL;
+
+  unsigned int j, jMax;
+
+  iMax = this->getListOfReactionGlyphs().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pRG = this->getListOfReactionGlyphs()[i];
+
+      if (pRG->getCurve().getNumCurveSegments() > 0)
+        {
+          pCurve = &pRG->getCurve();
+          CLBoundingBox bb = pCurve->calculateBoundingBox();
+          pP = &bb.getPosition();
+          x = pP->getX();
+          y = pP->getY();
+          pDim = &bb.getDimensions();
+          x2 = x + pDim->getWidth();
+          y2 = y + pDim->getHeight();
+          minX = (minX < x) ? minX : x;
+          minY = (minY < y) ? minY : y;
+          maxX = (maxX > x2) ? maxX : x2;
+          maxY = (maxY > y2) ? maxY : y2;
+        }
+      else
+        {
+          pBB = &pRG->getBoundingBox();
+          pP = &pBB->getPosition();
+          x = pP->getX();
+          y = pP->getY();
+          pDim = &pBB->getDimensions();
+          x2 = x + pDim->getWidth();
+          y2 = y + pDim->getHeight();
+          minX = (minX < x) ? minX : x;
+          minY = (minY < y) ? minY : y;
+          maxX = (maxX > x2) ? maxX : x2;
+          maxY = (maxY > y2) ? maxY : y2;
+        }
+
+      jMax = pRG->getListOfMetabReferenceGlyphs().size();
+
+      for (j = 0; j < jMax; ++j)
+        {
+          pSRG = pRG->getListOfMetabReferenceGlyphs()[j];
+
+          if (pSRG->getCurve().getNumCurveSegments() > 0)
+            {
+              pCurve = &pSRG->getCurve();
+              CLBoundingBox bb = pCurve->calculateBoundingBox();
+              pP = &bb.getPosition();
+              x = pP->getX();
+              y = pP->getY();
+              pDim = &bb.getDimensions();
+              x2 = x + pDim->getWidth();
+              y2 = y + pDim->getHeight();
+              minX = (minX < x) ? minX : x;
+              minY = (minY < y) ? minY : y;
+              maxX = (maxX > x2) ? maxX : x2;
+              maxY = (maxY > y2) ? maxY : y2;
+            }
+          else
+            {
+              pBB = &pSRG->getBoundingBox();
+              pP = &pBB->getPosition();
+              x = pP->getX();
+              y = pP->getY();
+              pDim = &pBB->getDimensions();
+              x2 = x + pDim->getWidth();
+              y2 = y + pDim->getHeight();
+              minX = (minX < x) ? minX : x;
+              minY = (minY < y) ? minY : y;
+              maxX = (maxX > x2) ? maxX : x2;
+              maxY = (maxY > y2) ? maxY : y2;
+            }
+        }
+    }
+
+  return CLBoundingBox(CLPoint(minX, minY), CLDimensions(maxX - minX, maxY - minY));
+}
+
+#endif /* USE_CRENDER_EXTENSION */

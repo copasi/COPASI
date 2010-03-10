@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:16 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:26:12 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -31,6 +36,9 @@ CLGraphicalObject::CLGraphicalObject(const std::string & name,
     CCopasiContainer(name, pParent, "LayoutElement"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
+#ifdef USE_CRENDER_EXTENSION
+    mObjectRole(""),
+#endif // USE_CRENDER_EXTENSION
     mBBox()
 {};
 
@@ -40,6 +48,9 @@ CLGraphicalObject::CLGraphicalObject(const CLGraphicalObject & src,
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(src.mModelObjectKey),
+#ifdef USE_CRENDER_EXTENSION
+    mObjectRole(src.mObjectRole),
+#endif // USE_CRENDER_EXTENSION
     mBBox(src.mBBox)
 {};
 
@@ -50,6 +61,9 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
     CCopasiContainer(sbml.getId(), pParent, "LayoutElement"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
+#ifdef USE_CRENDER_EXTENSION
+    mObjectRole(sbml.getObjectRole()),
+#endif // USE_CRENDER_EXTENSION
     mBBox(*sbml.getBoundingBox())
 {
   //add the copasi key to the map
@@ -74,58 +88,92 @@ CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
   //object flag cannot be accessed, it is private.
 
   mModelObjectKey = rhs.mModelObjectKey;
+#ifdef USE_CRENDER_EXTENSION
+  this->mObjectRole = rhs.mObjectRole;
+#endif // USE_CRENDER_EXTENSION
   mBBox = rhs.mBBox;
 
   return *this;
 }
 
 CCopasiObject * CLGraphicalObject::getModelObject() const
-  {
-    return CCopasiRootContainer::getKeyFactory()->get(mModelObjectKey);
-  }
+{
+  return CCopasiRootContainer::getKeyFactory()->get(mModelObjectKey);
+}
 
 std::string CLGraphicalObject::getModelObjectName() const
-  {
-    CCopasiObject * tmp = getModelObject();
-    if (tmp)
-      return tmp->getObjectName();
-    else
-      return "";
-  }
+{
+  CCopasiObject * tmp = getModelObject();
+
+  if (tmp)
+    return tmp->getObjectName();
+  else
+    return "";
+}
 
 std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, bool /* richtext */) const
-  {
-    CCopasiObject * tmp = getModelObject();
-    if (tmp)
-      return tmp->getObjectName();
-    else
-      return "";
-  }
+{
+  CCopasiObject * tmp = getModelObject();
+
+  if (tmp)
+    return tmp->getObjectName();
+  else
+    return "";
+}
 
 void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
                                      const std::map<CCopasiObject*, SBase*> & /* copasimodelmap */,
                                      std::map<std::string, const SBase*>& sbmlIDs) const
-  {
-    if (!sbmlobject) return;
+{
+  if (!sbmlobject) return;
 
-    //Name and ID
-    std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout_glyph_");
-    sbmlobject->setId(id);
-    sbmlIDs.insert(std::pair<const std::string, const SBase*>(id, sbmlobject));
+  //Name and ID
+  std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout_glyph_");
+  sbmlobject->setId(id);
+  sbmlIDs.insert(std::pair<const std::string, const SBase*>(id, sbmlobject));
 
-    //Bounding box
-    BoundingBox tmpbox = mBBox.getSBMLBoundingBox();
-    sbmlobject->setBoundingBox(&tmpbox);
-  }
+  //Bounding box
+  BoundingBox tmpbox = mBBox.getSBMLBoundingBox();
+  sbmlobject->setBoundingBox(&tmpbox);
+#ifdef USE_CRENDER_EXTENSION
+
+  if (this->mObjectRole.find_first_not_of(" \t\r\n") != std::string::npos)
+    {
+      sbmlobject->setObjectRole(this->mObjectRole);
+    }
+
+#endif // USE_CRENDER_EXTENSION
+}
 
 std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g)
 {
   os << "GraphicalObject \"" << g.getObjectName() << "\" " << g.mBBox << std::endl;
   std::string tmp = g.getModelObjectDisplayName();
+
   if (tmp != "")
     os << "  refers to " << tmp << std::endl;
+
   return os;
 }
 
 void CLGraphicalObject::print(std::ostream * ostream) const
 {*ostream << *this;}
+
+#ifdef USE_CRENDER_EXTENSION
+/**
+ * Method to set the role of a graphical object.
+ */
+void CLGraphicalObject::setObjectRole(const std::string& role)
+{
+  this->mObjectRole = role;
+}
+
+/**
+ * Method to read the object role of an object.
+ */
+const std::string& CLGraphicalObject::getObjectRole() const
+{
+  return this->mObjectRole;
+}
+
+#endif // USE_CRENDER_EXTENSION

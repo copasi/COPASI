@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:20 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:26:12 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,6 +27,7 @@
 #include "CListOfLayouts.h"
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
+#include "SBMLDocumentLoader.h"
 
 #include "sbml/layout/Layout.h"
 
@@ -29,6 +35,9 @@ CListOfLayouts::CListOfLayouts(const std::string & name,
                                const CCopasiContainer * pParent):
     CCopasiVector<CLayout>(name, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this))
+#ifdef USE_CRENDER_EXTENSION
+    , mvGlobalRenderInformationObjects("ListOfGlobalRenderInformationObjects", this)
+#endif /* USE_CRENDER_EXTENSION */
 {}
 
 CListOfLayouts::~CListOfLayouts()
@@ -54,7 +63,69 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
 {
   if (!lol) return;
 
-  // we will generate SBML ids that are unique within the SBML file (although
+  unsigned C_INT32 i, imax;
+#ifdef USE_CRENDER_EXTENSION
+  // the global render information has to be handled first, because we might need
+  // some of the maps for the export of the local render information in the layout
+  ListOfLayouts* pLoL = dynamic_cast<ListOfLayouts*>(lol);
+  assert(pLoL != NULL);
+  imax = this->mvGlobalRenderInformationObjects.size();
+  GlobalRenderInformation* pGRI = NULL;
+  std::map<std::string, std::string> keyToIdMap;
+
+  /*
+  std::map<std::string,std::string> colorKeyToIdMap;
+  std::map<std::string,std::string> gradientKeyToIdMap;
+  std::map<std::string,std::string> lineEndingKeyToIdMap;
+  std::map<std::string,std::map<std::string,std::string> > colorKeyToIdMapMap;
+  std::map<std::string,std::map<std::string,std::string> > gradientKeyToIdMapMap;
+  std::map<std::string,std::map<std::string,std::string> > lineEndingKeyToIdMapMap;
+  */
+  for (i = 0; i < imax; ++i)
+    {
+      //colorKeyToIdMap.clear();
+      //gradientKeyToIdMap.clear();
+      //lineEndingKeyToIdMap.clear();
+      //pGRI=this->mvGlobalRenderInformationObjects[i]->toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
+      pGRI = this->mvGlobalRenderInformationObjects[i]->toSBML();
+      // add the id and key to the map
+      keyToIdMap.insert(std::pair<std::string, std::string>(this->mvGlobalRenderInformationObjects[i]->getKey(), pGRI->getId()));
+      //colorKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),colorKeyToIdMap));
+      //gradientKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),gradientKeyToIdMap));
+      //lineEndingKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),lineEndingKeyToIdMap));
+      pLoL->appendAndOwn(pGRI);
+    }
+
+  // fix the references
+  SBMLDocumentLoader::convertRenderInformationReferencesKeys<GlobalRenderInformation>(*pLoL, keyToIdMap);
+  // fix the color ids, gradient ids and line ending ids.
+  /*
+  std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;
+  std::map<std::string,std::map<std::string,std::string> > expandedColorKeyToIdMapMap, expandedGradientKeyToIdMapMap, expandedLineEndingKeyToIdMapMap;
+  std::map<std::string,std::map<std::string,std::string> > tmpMap1,tmpMap2,tmpMap3;
+  for(i=0;i < imax; ++i)
+  {
+      pGRI=dynamic_cast<GlobalRenderInformation*>(pLoL->get(i));
+      assert(pGRI != NULL);
+      std::set<std::string> chain;
+      SBMLDocumentLoader::expandKeyToIdMaps(pGRI,
+              *pLoL,
+              expandedColorKeyToIdMapMap,
+              expandedGradientKeyToIdMapMap,
+              expandedLineEndingKeyToIdMapMap,
+              colorKeyToIdMapMap,
+              gradientKeyToIdMapMap,
+              lineEndingKeyToIdMapMap,
+              chain,
+              tmpMap1,
+              tmpMap2,
+              tmpMap3
+              );
+      SBMLDocumentLoader::convertPropertyKeys<GlobalRenderInformation>(pGRI,expandedColorKeyToIdMapMap[pGRI->getId()],expandedGradientKeyToIdMapMap[pGRI->getId()],expandedLineEndingKeyToIdMapMap[pGRI->getId()]);
+  }
+  */
+#endif /* USE_CRENDER_EXTENSION */
+  // we will generate sbml ids that are unique within the sbml file (although
   // this may not be strictly necessary for the layouts). Therefore we will keep only
   // one set of IDs:
   std::map<std::string, const SBase*> sbmlIDs = idMap;
@@ -66,7 +137,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
   //the copasimodelmap.
 
   //write all COPASI object to corresponding libsbml objects
-  unsigned C_INT32 i, imax = this->size();
+  imax = this->size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -92,7 +163,12 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
           pLayout = dynamic_cast<Layout*>(it->second);
         }
 
+#ifdef USE_CRENDER_EXTENSION
+      //tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs,keyToIdMap,colorKeyToIdMapMap,gradientKeyToIdMapMap,lineEndingKeyToIdMapMap);
+      tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs, keyToIdMap);
+#else
       tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs);
+#endif /* USE_CRENDER_EXTENSION */
       writtenToSBML.insert(pLayout);
     }
 
@@ -114,3 +190,42 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
         }
     }
 }
+
+#ifdef USE_CRENDER_EXTENSION
+void CListOfLayouts::addGlobalRenderInformation(CLGlobalRenderInformation * pRenderInfo)
+{
+  if (pRenderInfo)
+    {
+      this->mvGlobalRenderInformationObjects.add(pRenderInfo, true); //true means vector takes ownership
+    }
+}
+
+/**
+ *  Returns a pointer to the global render information object with the given index.
+ *  If the index is invalid, NULL is returned.
+ */
+CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(unsigned C_INT32 index)
+{
+  if (index < this->mvGlobalRenderInformationObjects.size())
+    {
+      return this->mvGlobalRenderInformationObjects[index];
+    }
+
+  return NULL;
+}
+
+/**
+ *  Returns a const pointer to the global render information object with the given index.
+ *  If the index is invalid, NULL is returned.
+ */
+const CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(unsigned C_INT32 index) const
+{
+  if (index < this->mvGlobalRenderInformationObjects.size())
+    {
+      return this->mvGlobalRenderInformationObjects[index];
+    }
+
+  return NULL;
+}
+
+#endif /* USE_CRENDER_EXTENSION */
