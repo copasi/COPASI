@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/03 17:18:42 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:29:11 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -67,6 +72,7 @@ Message;
 #define MCModelMerging           MCopasiBase + 3500
 #define MCModelExpansion         MCopasiBase + 3600
 #define MCEFMAnalysis            MCopasiBase + 3700
+#define MCLayout                 MCopasiBase + 3800
 
 /**
  *  This throws an exception with information where the error occurred.
