@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Date: 2010/03/10 13:54:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,10 +108,9 @@ public:
 protected:
 #ifndef USE_CRENDER_EXTENSION
   void closeEvent(QCloseEvent *event);
-#else
+#endif // USE_CRENDER_EXTENSION
 public:
   void setZoomFactor(QString s);
-#endif // USE_CRENDER_EXTENSION
 
 private slots:
   void loadSBMLFile();

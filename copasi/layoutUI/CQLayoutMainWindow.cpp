@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Date: 2010/03/10 13:54:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -884,15 +884,6 @@ bool CQLayoutMainWindow::maybeSave()
   return true;
 }
 
-void CQLayoutMainWindow::setZoomFactor(QString s)
-{
-  s.remove(s.size() - 1, 1);
-  // create a number from the text
-  double n = s.toDouble();
-  n /= 100.0;
-  this->mpGLViewport->setZoomFactor(n);
-}
-
 void CQLayoutMainWindow::slotResetView()
 {
 #ifndef USE_CRENDER_EXTENSION
@@ -907,6 +898,17 @@ void CQLayoutMainWindow::slotResetView()
 #endif // USE_CRENDER_EXTENSION
   this->mpGLViewport->resetView();
 }
+
+#ifdef USE_CRENDER_EXTENSION
+void CQLayoutMainWindow::setZoomFactor(QString s)
+{
+  s.remove(s.size() - 1, 1);
+  // create a number from the text
+  double n = s.toDouble();
+  n /= 100.0;
+  this->mpGLViewport->setZoomFactor(n);
+}
+#endif // USE_CRENDER_EXTENSION
 
 #ifndef USE_CRENDER_EXTENSION
 void CQLayoutMainWindow::slotActivated(int index)
