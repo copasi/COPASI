@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/09 22:20:29 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:57:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,20 @@ class CLCurve;
 class CLLineSegment;
 class CLMetabReferenceGlyph;
 class CCopasiDataModel;
+
+#ifdef USE_CRENDER_EXTENSION
+
+class CLRenderInformationBase;
+class CLGradientBase;
+class CLLineEnding;
+class CLStyle;
+class CLGroup;
+class CLText;
+class CLRenderPoint;
+
+#include <vector>
+
+#endif /* USE_CRENDER_EXTENSION */
 
 struct SCopasiXMLParserCommon
 {
@@ -236,6 +250,18 @@ struct SCopasiXMLParserCommon
   CLCurve *pCurve;
   CLLineSegment *pLineSegment;
   CLMetabReferenceGlyph* pMetaboliteReferenceGlyph;
+
+#ifdef USE_CRENDER_EXTENSION
+
+  CLRenderInformationBase* pRenderInformation;
+  CLGradientBase* pGradient;
+  CLLineEnding* pLineEnding;
+  CLStyle* pStyle;
+  CLGroup* pGroup;
+  CLText* pText;
+  std::vector<CLRenderPoint*>* pListOfCurveElements;
+
+#endif /* USE_CRENDER_EXTENSION */
 
   /**
    * Nesting level of the currently processed parameter group
@@ -3522,6 +3548,9 @@ private:
       ListOfReactionGlyphs,
       ListOfTextGlyphs,
       ListOfAdditionalGOs
+#ifdef USE_CRENDER_EXTENSION
+      , ListOfLocalRenderInformation
+#endif // USE_CRENDER_EXTENSION
     };
 
     unsigned C_INT32 mLineNumber;
@@ -3549,6 +3578,9 @@ private:
     {
       ListOfLayouts = 0,
       Layout
+#ifdef USE_CRENDER_EXTENSION
+      , ListOfGlobalRenderInformation
+#endif // USE_CRENDER_EXTENSION
     };
 
     // Operations
@@ -3661,6 +3693,1077 @@ private:
      */
     virtual void end(const XML_Char *pszName);
   };
+
+#ifdef USE_CRENDER_EXTENSION
+  class GradientStopElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      GradientStop = 0
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    GradientStopElement(CCopasiXMLParser & parser,
+                        SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~GradientStopElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class LinearGradientElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      LinearGradient = 0,
+      GradientStop
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    LinearGradientElement(CCopasiXMLParser & parser,
+                          SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~LinearGradientElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class RadialGradientElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      RadialGradient = 0,
+      GradientStop
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    RadialGradientElement(CCopasiXMLParser & parser,
+                          SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~RadialGradientElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ColorDefinitionElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ColorDefinition = 0
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ColorDefinitionElement(CCopasiXMLParser & parser,
+                           SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ColorDefinitionElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ListOfColorDefinitionsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ListOfColorDefinitions = 0,
+      ColorDefinition
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfColorDefinitionsElement(CCopasiXMLParser & parser,
+                                  SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfColorDefinitionsElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ListOfGradientDefinitionsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ListOfGradientDefinitions = 0,
+      GradientDefinition
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfGradientDefinitionsElement(CCopasiXMLParser & parser,
+                                     SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfGradientDefinitionsElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ListOfLineEndingsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ListOfLineEndings = 0,
+      LineEnding
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfLineEndingsElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfLineEndingsElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class LineEndingElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      LineEnding = 0,
+      BoundingBox,
+      Group
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    LineEndingElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~LineEndingElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ImageElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      Image = 0
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ImageElement(CCopasiXMLParser & parser,
+                 SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ImageElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class RectangleElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      Rectangle = 0
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    RectangleElement(CCopasiXMLParser & parser,
+                     SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~RectangleElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class EllipseElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      Ellipse = 0
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    EllipseElement(CCopasiXMLParser & parser,
+                   SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~EllipseElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class TextElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      RenderText = 0
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    TextElement(CCopasiXMLParser & parser,
+                SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~TextElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class RenderCurveElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      RenderCurve = 0,
+      ListOfElements
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    RenderCurveElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~RenderCurveElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class PolygonElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      Polygon = 0,
+      ListOfElements
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    PolygonElement(CCopasiXMLParser & parser,
+                   SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~PolygonElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ListOfCurveElementsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ListOfCurveElements = 0,
+      CurveElement
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfCurveElementsElement(CCopasiXMLParser & parser,
+                               SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfCurveElementsElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class CurveElementElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      CurveElement = 0
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    CurveElementElement(CCopasiXMLParser & parser,
+                        SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~CurveElementElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class LocalStyleElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      LocalStyle = 0,
+      Group
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    LocalStyleElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~LocalStyleElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class GlobalStyleElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      GlobalStyle = 0,
+      Group
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    GlobalStyleElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~GlobalStyleElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ListOfLocalStylesElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ListOfLocalStyles = 0,
+      LocalStyle
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfLocalStylesElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfLocalStylesElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ListOfGlobalStylesElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ListOfGlobalStyles = 0,
+      GlobalStyle
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfGlobalStylesElement(CCopasiXMLParser & parser,
+                              SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfGlobalStylesElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ListOfLocalRenderInformationElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ListOfLocalRenderInformation = 0,
+      LocalRenderInformation
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfLocalRenderInformationElement(CCopasiXMLParser & parser,
+                                        SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfLocalRenderInformationElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class ListOfGlobalRenderInformationElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      ListOfGlobalRenderInformation = 0,
+      GlobalRenderInformation
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfGlobalRenderInformationElement(CCopasiXMLParser & parser,
+                                         SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfGlobalRenderInformationElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class LocalRenderInformationElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      LocalRenderInformation = 0,
+      ListOfColorDefinitions,
+      ListOfGradientDefinitions,
+      ListOfLineEndings,
+      ListOfStyles
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    LocalRenderInformationElement(CCopasiXMLParser & parser,
+                                  SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~LocalRenderInformationElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class GlobalRenderInformationElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      GlobalRenderInformation = 0,
+      ListOfColorDefinitions,
+      ListOfGradientDefinitions,
+      ListOfLineEndings,
+      ListOfStyles
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    GlobalRenderInformationElement(CCopasiXMLParser & parser,
+                                   SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~GlobalRenderInformationElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class GroupElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      Group = 0,
+      GroupChild
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    GroupElement(CCopasiXMLParser & parser,
+                 SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~GroupElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+  class BoundingBoxElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    enum Element
+    {
+      BoundingBox = 0,
+      Position,
+      Dimensions
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    BoundingBoxElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~BoundingBoxElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+  };
+
+#endif /* USE_CRENDER_EXTENSION */
+
   // Operations
 private:
   /**

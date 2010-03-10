@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215 $
+//   $Revision: 1.216 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/15 22:02:09 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:57:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,31 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "layout/CListOfLayouts.h"
 #include "report/CCopasiRootContainer.h"
+
+#ifdef USE_CRENDER_EXTENSION
+
+#include <copasi/layout/CLGradientStop.h>
+#include <copasi/layout/CLGradientBase.h>
+#include <copasi/layout/CLLinearGradient.h>
+#include <copasi/layout/CLRadialGradient.h>
+#include <copasi/layout/CLColorDefinition.h>
+#include <copasi/layout/CLRenderPoint.h>
+#include <copasi/layout/CLRenderCubicBezier.h>
+#include <copasi/layout/CLTransformation.h>
+#include <copasi/layout/CLTransformation2D.h>
+#include <copasi/layout/CLImage.h>
+#include <copasi/layout/CLText.h>
+#include <copasi/layout/CLRenderCurve.h>
+#include <copasi/layout/CLPolygon.h>
+#include <copasi/layout/CLEllipse.h>
+#include <copasi/layout/CLRectangle.h>
+#include <copasi/layout/CLLocalStyle.h>
+#include <copasi/layout/CLGlobalStyle.h>
+#include <copasi/layout/CLRenderInformationBase.h>
+#include <copasi/layout/CLLocalRenderInformation.h>
+#include <copasi/layout/CLGlobalRenderInformation.h>
+
+#endif // USE_CRENDER_EXTENSION
 
 #define START_ELEMENT   -1
 #define UNKNOWN_ELEMENT -2
@@ -201,6 +226,17 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pCurve = NULL;
   mCommon.pLineSegment = NULL;
   mCommon.pMetaboliteReferenceGlyph = NULL;
+#ifdef USE_CRENDER_EXTENSION
+
+  mCommon.pRenderInformation = NULL;
+  mCommon.pGradient = NULL;
+  mCommon.pLineEnding = NULL;
+  mCommon.pStyle = NULL;
+  mCommon.pGroup = NULL;
+  mCommon.pText = NULL;
+  mCommon.pListOfCurveElements = NULL;
+
+#endif /* USE_CRENDER_EXTENSION */
 
   enableElementHandler(true);
 }
@@ -6044,6 +6080,15 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
           compartment = mParser.getAttributeValue("compartment", papszAttrs);
 
           mCommon.pCompartmentGlyph = new CLCompartmentGlyph(name);
+#ifdef USE_CRENDER_EXTENSION
+          const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
+
+          if (objectRole != NULL && objectRole[0] != 0)
+            {
+              mCommon.pCompartmentGlyph->setObjectRole(objectRole);
+            }
+
+#endif // USE_CRENDER_EXTENSION
 
           if (compartment && compartment[0])
             {
@@ -6287,6 +6332,15 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
           metabolite = mParser.getAttributeValue("metabolite", papszAttrs);
 
           mCommon.pMetaboliteGlyph = new CLMetabGlyph(name);
+#ifdef USE_CRENDER_EXTENSION
+          const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
+
+          if (objectRole != NULL && objectRole[0] != 0)
+            {
+              mCommon.pMetaboliteGlyph->setObjectRole(objectRole);
+            }
+
+#endif // USE_CRENDER_EXTENSION
 
           if (metabolite && metabolite[0])
             {
@@ -6532,6 +6586,15 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
           role = mParser.getAttributeValue("role", papszAttrs);
 
           mCommon.pMetaboliteReferenceGlyph = new CLMetabReferenceGlyph(name);
+#ifdef USE_CRENDER_EXTENSION
+          const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
+
+          if (objectRole != NULL && objectRole[0] != 0)
+            {
+              mCommon.pMetaboliteReferenceGlyph->setObjectRole(objectRole);
+            }
+
+#endif // USE_CRENDER_EXTENSION
 
           CLMetabGlyph * pMetabGlyph = dynamic_cast< CLMetabGlyph * >(mCommon.KeyMap.get(metaboliteGlyph));
 
@@ -6801,6 +6864,15 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
           reaction = mParser.getAttributeValue("reaction", papszAttrs);
 
           mCommon.pReactionGlyph = new CLReactionGlyph(name);
+#ifdef USE_CRENDER_EXTENSION
+          const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
+
+          if (objectRole != NULL && objectRole[0] != 0)
+            {
+              mCommon.pReactionGlyph->setObjectRole(objectRole);
+            }
+
+#endif // USE_CRENDER_EXTENSION
 
           if (reaction && reaction[0])
             {
@@ -7074,6 +7146,15 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
           text = mParser.getAttributeValue("text", papszAttrs, false);
 
           mCommon.pTextGlyph = new CLTextGlyph(name);
+#ifdef USE_CRENDER_EXTENSION
+          const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
+
+          if (objectRole != NULL && objectRole[0] != 0)
+            {
+              mCommon.pTextGlyph->setObjectRole(objectRole);
+            }
+
+#endif // USE_CRENDER_EXTENSION
 
           CLGraphicalObject * pGO = dynamic_cast<CLGraphicalObject *>(mCommon.KeyMap.get(graphicalObject));
 
@@ -7328,7 +7409,15 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
           name = mParser.getAttributeValue("name", papszAttrs);
 
           mCommon.pAdditionalGO = new CLGraphicalObject(name);
+#ifdef USE_CRENDER_EXTENSION
+          const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
 
+          if (objectRole != NULL && objectRole[0] != 0)
+            {
+              mCommon.pAdditionalGO->setObjectRole(objectRole);
+            }
+
+#endif // USE_CRENDER_EXTENSION
           mCommon.pCurrentLayout->addGraphicalObject(mCommon.pAdditionalGO);
           mCommon.KeyMap.addFix(key, mCommon.pAdditionalGO);
         }
@@ -7539,7 +7628,7 @@ CCopasiXMLParser::LayoutElement::~LayoutElement()
 
 void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  mCurrentElement++; /* We should always be on hte next element */
+  mCurrentElement++; /* We should always be on the next element */
   mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
 
@@ -7616,6 +7705,15 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
           mpCurrentHandler = new ListOfAdditionalGOsElement(mParser, mCommon);
 
         break;
+
+#ifdef USE_CRENDER_EXTENSION
+      case ListOfLocalRenderInformation:
+
+        if (!strcmp(pszName, "ListOfRenderInformation"))
+          mpCurrentHandler = new ListOfLocalRenderInformationElement(mParser, mCommon);
+
+        break;
+#endif /* USE_CRENDER_EXTENSION */
 
       default:
         mLastKnownElement = mCurrentElement - 1;
@@ -7712,6 +7810,17 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
             pdelete(mpCurrentHandler);
             break;
 
+#ifdef USE_CRENDER_EXTENSION
+          case ListOfLocalRenderInformation:
+
+            if (strcmp(pszName, "ListOfRenderInformation"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfRenderInformation", mParser.getCurrentLineNumber());
+
+            pdelete(mpCurrentHandler);
+            break;
+#endif /* USE_CRENDER_EXTENSION */
+
           case UNKNOWN_ELEMENT:
             //mCurrentElement = mLastKnownElement;
             mCurrentElement = Layout;
@@ -7775,7 +7884,24 @@ void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
         mParser.pushElementHandler(mpCurrentHandler);
         mpCurrentHandler->start(pszName, papszAttrs);
         break;
+#ifdef USE_CRENDER_EXTENSION
+      case ListOfGlobalRenderInformation:
 
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "ListOfGlobalRenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfGlobalRenderInformation", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new ListOfGlobalRenderInformationElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+#endif /* USE_CRENDER_EXTENSION */
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
@@ -7822,7 +7948,20 @@ void CCopasiXMLParser::ListOfLayoutsElement::end(const XML_Char * pszName)
         //no need to delete Handler (since it is the only one the destructor
         //will handle it)
         break;
+#ifdef USE_CRENDER_EXTENSION
+      case ListOfGlobalRenderInformation:
 
+        if (strcmp(pszName, "ListOfGlobalRenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfGlobalRenderInformation", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfLayouts;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+#endif /* USE_CRENDER_EXTENSION */
       case UNKNOWN_ELEMENT:
         mCurrentElement = mLastKnownElement;
         break;
@@ -10326,3 +10465,3620 @@ void CCopasiXMLParser::setDatamodel(CCopasiDataModel* pDataModel)
 {
   this->mCommon.pDataModel = pDataModel;
 }
+
+#ifdef USE_CRENDER_EXTENSION
+
+// ListOfGlobalRenderInformation
+
+CCopasiXMLParser::ListOfGlobalRenderInformationElement::ListOfGlobalRenderInformationElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfGlobalRenderInformationElement::~ListOfGlobalRenderInformationElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfGlobalRenderInformationElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+      case ListOfGlobalRenderInformation:
+
+        if (strcmp(pszName, "ListOfGlobalRenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfGlobalRenderInformation", mParser.getCurrentLineNumber());
+
+        break;
+
+      case GlobalRenderInformation:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "RenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new GlobalRenderInformationElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfGlobalRenderInformationElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ListOfGlobalRenderInformation:
+
+        if (strcmp(pszName, "ListOfGlobalRenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfGlobalRenderInformation", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case GlobalRenderInformation:
+
+        if (strcmp(pszName, "RenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfGlobalRenderInformation;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// ListOfLocalRenderInformation
+
+CCopasiXMLParser::ListOfLocalRenderInformationElement::ListOfLocalRenderInformationElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfLocalRenderInformationElement::~ListOfLocalRenderInformationElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfLocalRenderInformationElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+      case ListOfLocalRenderInformation:
+
+        if (strcmp(pszName, "ListOfRenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfRenderInformation", mParser.getCurrentLineNumber());
+
+        break;
+
+      case LocalRenderInformation:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "RenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new LocalRenderInformationElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfLocalRenderInformationElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ListOfLocalRenderInformation:
+
+        if (strcmp(pszName, "ListOfRenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfRenderInformation", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case LocalRenderInformation:
+
+        if (strcmp(pszName, "RenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfLocalRenderInformation;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// ColorDefinitionElement
+
+CCopasiXMLParser::ColorDefinitionElement::ColorDefinitionElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ColorDefinitionElement::~ColorDefinitionElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ColorDefinitionElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Id;
+  const char * Value;
+  CLColorDefinition* pColorDef = NULL;
+
+  switch (mCurrentElement)
+    {
+      case ColorDefinition:
+
+        if (strcmp(pszName, "ColorDefinition"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ColorDefinition", mParser.getCurrentLineNumber());
+
+        Id = mParser.getAttributeValue("id", papszAttrs);
+        Value = mParser.getAttributeValue("value", papszAttrs);
+        pColorDef = new  CLColorDefinition();
+        pColorDef->setColorValue(Value);
+        pColorDef->setId(Id);
+        mCommon.pRenderInformation->addColorDefinition(pColorDef);
+        // delete the color definition again since the add method made a copy
+        delete pColorDef;
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ColorDefinitionElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ColorDefinition:
+
+        if (strcmp(pszName, "ColorDefinition"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ColorDefinition", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// GradientStop
+
+CCopasiXMLParser::GradientStopElement::GradientStopElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::GradientStopElement::~GradientStopElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::GradientStopElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Offset;
+  const char * StopColor;
+  CLGradientStop* pStop = NULL;
+
+  switch (mCurrentElement)
+    {
+      case GradientStop:
+
+        if (strcmp(pszName, "Stop"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Stop", mParser.getCurrentLineNumber());
+
+        Offset = mParser.getAttributeValue("offset", papszAttrs);
+        StopColor = mParser.getAttributeValue("stop-color", papszAttrs);
+        pStop = new CLGradientStop();
+        pStop->setOffset(Offset);
+        pStop->setStopColor(StopColor);
+        mCommon.pGradient->addGradientStop(pStop);
+        // delete the gradient stop again since the add method made a copy
+        delete pStop;
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::GradientStopElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case GradientStop:
+
+        if (strcmp(pszName, "Stop"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Stop", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// LinearGradient
+
+CCopasiXMLParser::LinearGradientElement::LinearGradientElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::LinearGradientElement::~LinearGradientElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::LinearGradientElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * X1;
+  const char * Y1;
+  const char * Z1;
+  const char * X2;
+  const char * Y2;
+  const char * Z2;
+  const char * ID;
+  const char * SPREADMETHOD;
+  CLLinearGradient* pLinearGradient = NULL;
+
+  switch (mCurrentElement)
+    {
+      case LinearGradient:
+
+        if (strcmp(pszName, "LinearGradient"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "LinearGradient", mParser.getCurrentLineNumber());
+
+        X1 = mParser.getAttributeValue("x1", papszAttrs);
+        Y1 = mParser.getAttributeValue("y1", papszAttrs);
+        Z1 = mParser.getAttributeValue("z1", papszAttrs, false);
+        X2 = mParser.getAttributeValue("x2", papszAttrs);
+        Y2 = mParser.getAttributeValue("y2", papszAttrs);
+        Z2 = mParser.getAttributeValue("z2", papszAttrs, false);
+        ID = mParser.getAttributeValue("id", papszAttrs);
+        SPREADMETHOD = mParser.getAttributeValue("spreadMethod", papszAttrs, "pad");
+        pLinearGradient = new CLLinearGradient();
+        pLinearGradient->setId(ID);
+
+        if (Z1 == NULL)
+          {
+            pLinearGradient->setPoint1(CLRelAbsVector(X1), CLRelAbsVector(Y1));
+          }
+        else
+          {
+            pLinearGradient->setPoint1(CLRelAbsVector(X1), CLRelAbsVector(Y1), CLRelAbsVector(Z1));
+          }
+
+        if (Z2 == NULL)
+          {
+            pLinearGradient->setPoint2(CLRelAbsVector(X2), CLRelAbsVector(Y2));
+          }
+        else
+          {
+            pLinearGradient->setPoint2(CLRelAbsVector(X2), CLRelAbsVector(Y2), CLRelAbsVector(Z2));
+          }
+
+        if (!strcmp(SPREADMETHOD, "reflect"))
+          {
+            pLinearGradient->setSpreadMethod(CLGradientBase::REFLECT);
+          }
+        else if (!strcmp(SPREADMETHOD, "repeat"))
+          {
+            pLinearGradient->setSpreadMethod(CLGradientBase::REPEAT);
+          }
+        else
+          {
+            pLinearGradient->setSpreadMethod(CLGradientBase::PAD);
+          }
+
+        mCommon.pGradient = pLinearGradient;
+        break;
+
+      case GradientStop:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "Stop"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Stop", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new GradientStopElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::LinearGradientElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case LinearGradient:
+
+        if (strcmp(pszName, "LinearGradient"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "LinearGradient", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pRenderInformation->addGradientDefinition(mCommon.pGradient);
+        // delete the gradient since the add method made a copy
+        delete mCommon.pGradient;
+        mCommon.pGradient = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case GradientStop:
+
+        if (strcmp(pszName, "Stop"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Stop", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = LinearGradient;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// RadialGradient
+
+CCopasiXMLParser::RadialGradientElement::RadialGradientElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::RadialGradientElement::~RadialGradientElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::RadialGradientElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * CX;
+  const char * CY;
+  const char * CZ;
+  const char * R;
+  const char * FX;
+  const char * FY;
+  const char * FZ;
+  const char * ID;
+  const char * SPREADMETHOD;
+  CLRadialGradient* pRadialGradient = NULL;
+
+  switch (mCurrentElement)
+    {
+      case RadialGradient:
+
+        if (strcmp(pszName, "RadialGradient"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "RadialGradient", mParser.getCurrentLineNumber());
+
+        CX = mParser.getAttributeValue("cx", papszAttrs, false);
+        CY = mParser.getAttributeValue("cy", papszAttrs, false);
+        CZ = mParser.getAttributeValue("cz", papszAttrs, false);
+        FX = mParser.getAttributeValue("fx", papszAttrs, false);
+        FY = mParser.getAttributeValue("fy", papszAttrs, false);
+        FZ = mParser.getAttributeValue("fz", papszAttrs, false);
+        R =  mParser.getAttributeValue("r", papszAttrs);
+        ID = mParser.getAttributeValue("id", papszAttrs);
+        SPREADMETHOD = mParser.getAttributeValue("spreadMethod", papszAttrs, "pad");
+        pRadialGradient = new CLRadialGradient();
+        pRadialGradient->setId(ID);
+
+        if (CX == NULL)
+          {
+            CX = "50%";
+          }
+
+        if (CY == NULL)
+          {
+            CY = "50%";
+          }
+
+        if (CZ == NULL)
+          {
+            CZ = "50%";
+          }
+
+        pRadialGradient->setCenter(CLRelAbsVector(CX), CLRelAbsVector(CY), CLRelAbsVector(CZ));
+
+        if (R == NULL)
+          {
+            R = "50%";
+          }
+
+        pRadialGradient->setRadius(CLRelAbsVector(R));
+
+        if (FX == NULL)
+          {
+            FX = CX;
+          }
+
+        if (FY == NULL)
+          {
+            FY = CY;
+          }
+
+        if (FZ == NULL)
+          {
+            FZ = CZ;
+          }
+
+        pRadialGradient->setFocalPoint(CLRelAbsVector(FX), CLRelAbsVector(FY), CLRelAbsVector(FZ));
+
+        if (!strcmp(SPREADMETHOD, "reflect"))
+          {
+            pRadialGradient->setSpreadMethod(CLGradientBase::REFLECT);
+          }
+        else if (!strcmp(SPREADMETHOD, "repeat"))
+          {
+            pRadialGradient->setSpreadMethod(CLGradientBase::REPEAT);
+          }
+        else
+          {
+            pRadialGradient->setSpreadMethod(CLGradientBase::PAD);
+          }
+
+        mCommon.pGradient = pRadialGradient;
+        break;
+
+      case GradientStop:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "Stop"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Stop", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new GradientStopElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::RadialGradientElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case RadialGradient:
+
+        if (strcmp(pszName, "RadialGradient"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "RadialGradient", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pRenderInformation->addGradientDefinition(mCommon.pGradient);
+        // delete the gradient since the add method made a copy
+        delete mCommon.pGradient;
+        mCommon.pGradient = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case GradientStop:
+
+        if (strcmp(pszName, "Stop"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Stop", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = RadialGradient;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// Rectangle Element
+
+CCopasiXMLParser::RectangleElement::RectangleElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::RectangleElement::~RectangleElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::RectangleElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Transform;
+  const char * Stroke;
+  const char * StrokeWidth;
+  const char * StrokeDashArray;
+  const char * Fill;
+  const char * FillRule;
+  const char * X;
+  const char * Y;
+  const char * Z;
+  const char * WIDTH;
+  const char * HEIGHT;
+  const char * RX;
+  const char * RY;
+  CLRectangle* pRectangle = NULL;
+
+  switch (mCurrentElement)
+    {
+      case Rectangle:
+
+        if (strcmp(pszName, "Rectangle"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Rectangle", mParser.getCurrentLineNumber());
+
+        Transform = mParser.getAttributeValue("transform", papszAttrs, false);
+        Stroke = mParser.getAttributeValue("stroke", papszAttrs, false);
+        StrokeWidth = mParser.getAttributeValue("stroke-width", papszAttrs, false);
+        StrokeDashArray = mParser.getAttributeValue("stroke-dasharray", papszAttrs, false);
+        Fill = mParser.getAttributeValue("fill", papszAttrs, false);
+        FillRule = mParser.getAttributeValue("fill-rule", papszAttrs, false);
+        X = mParser.getAttributeValue("x", papszAttrs);
+        Y = mParser.getAttributeValue("y", papszAttrs);
+        Z = mParser.getAttributeValue("z", papszAttrs, "0.0");
+        WIDTH = mParser.getAttributeValue("width", papszAttrs);
+        HEIGHT = mParser.getAttributeValue("height", papszAttrs);
+        RX = mParser.getAttributeValue("rx", papszAttrs, "0.0");
+        RY = mParser.getAttributeValue("ry", papszAttrs, "0.0");
+        pRectangle = new CLRectangle();
+
+        if (Transform != NULL)
+          {
+            pRectangle->parseTransformation(Transform);
+          }
+
+        if (Stroke != NULL)
+          {
+            pRectangle->setStroke(Stroke);
+          }
+
+        if (StrokeWidth != NULL)
+          {
+            double width = strtod(StrokeWidth, NULL);
+            pRectangle->setStrokeWidth(width);
+          }
+
+        if (StrokeDashArray != NULL)
+          {
+            pRectangle->parseDashArray(StrokeDashArray);
+          }
+
+        if (Fill != NULL)
+          {
+            pRectangle->setFillColor(Fill);
+          }
+
+        if (FillRule != NULL)
+          {
+            std::string f(FillRule);
+
+            if (f == "nonzero")
+              {
+                pRectangle->setFillRule(CLGraphicalPrimitive2D::NONZERO);
+              }
+            else if (f == "evenodd")
+              {
+                pRectangle->setFillRule(CLGraphicalPrimitive2D::EVENODD);
+              }
+            else
+              {
+                pRectangle->setFillRule(CLGraphicalPrimitive2D::INHERIT);
+              }
+          }
+
+        pRectangle->setCoordinatesAndSize(CLRelAbsVector(X), CLRelAbsVector(Y), CLRelAbsVector(Z), CLRelAbsVector(WIDTH), CLRelAbsVector(HEIGHT));
+        pRectangle->setRadii(CLRelAbsVector(RX), CLRelAbsVector(RY));
+        mCommon.pGroup->addChildElement(pRectangle);
+        // delete the gradient stop again since the add method made a copy
+        delete pRectangle;
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::RectangleElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case Rectangle:
+
+        if (strcmp(pszName, "Rectangle"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Rectangle", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// Ellipse Element
+
+CCopasiXMLParser::EllipseElement::EllipseElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::EllipseElement::~EllipseElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::EllipseElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Transform;
+  const char * Stroke;
+  const char * StrokeWidth;
+  const char * StrokeDashArray;
+  const char * Fill;
+  const char * FillRule;
+  const char * CX;
+  const char * CY;
+  const char * CZ;
+  const char * RX;
+  const char * RY;
+  CLEllipse* pEllipse = NULL;
+
+  switch (mCurrentElement)
+    {
+      case Ellipse:
+
+        if (strcmp(pszName, "Ellipse"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Ellipse", mParser.getCurrentLineNumber());
+
+        Transform = mParser.getAttributeValue("transform", papszAttrs, false);
+        Stroke = mParser.getAttributeValue("stroke", papszAttrs, false);
+        StrokeWidth = mParser.getAttributeValue("stroke-width", papszAttrs, false);
+        StrokeDashArray = mParser.getAttributeValue("stroke-dasharray", papszAttrs, false);
+        Fill = mParser.getAttributeValue("fill", papszAttrs, false);
+        FillRule = mParser.getAttributeValue("fill-rule", papszAttrs, false);
+        CX = mParser.getAttributeValue("cx", papszAttrs);
+        CY = mParser.getAttributeValue("cy", papszAttrs);
+        CZ = mParser.getAttributeValue("cz", papszAttrs, "0.0");
+        RX = mParser.getAttributeValue("rx", papszAttrs);
+        RY = mParser.getAttributeValue("ry", papszAttrs, RX);
+        pEllipse = new CLEllipse();
+
+        if (Transform != NULL)
+          {
+            pEllipse->parseTransformation(Transform);
+          }
+
+        if (Stroke != NULL)
+          {
+            pEllipse->setStroke(Stroke);
+          }
+
+        if (StrokeWidth != NULL)
+          {
+            double width = strtod(StrokeWidth, NULL);
+            pEllipse->setStrokeWidth(width);
+          }
+
+        if (StrokeDashArray != NULL)
+          {
+            pEllipse->parseDashArray(StrokeDashArray);
+          }
+
+        if (Fill != NULL)
+          {
+            pEllipse->setFillColor(Fill);
+          }
+
+        if (FillRule != NULL)
+          {
+            std::string f(FillRule);
+
+            if (f == "nonzero")
+              {
+                pEllipse->setFillRule(CLGraphicalPrimitive2D::NONZERO);
+              }
+            else if (f == "evenodd")
+              {
+                pEllipse->setFillRule(CLGraphicalPrimitive2D::EVENODD);
+              }
+            else
+              {
+                pEllipse->setFillRule(CLGraphicalPrimitive2D::INHERIT);
+              }
+          }
+
+        pEllipse->setCenter3D(CLRelAbsVector(CX), CLRelAbsVector(CY), CLRelAbsVector(CZ));
+        pEllipse->setRadii(CLRelAbsVector(RX), CLRelAbsVector(RY));
+        mCommon.pGroup->addChildElement(pEllipse);
+        // delete the gradient stop again since the add method made a copy
+        delete pEllipse;
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::EllipseElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case Ellipse:
+
+        if (strcmp(pszName, "Ellipse"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Ellipse", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// Polygon Element
+
+CCopasiXMLParser::PolygonElement::PolygonElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::PolygonElement::~PolygonElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::PolygonElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Transform;
+  const char * Stroke;
+  const char * StrokeWidth;
+  const char * StrokeDashArray;
+  const char * Fill;
+  const char * FillRule;
+  CLPolygon* pPolygon = NULL;
+
+  switch (mCurrentElement)
+    {
+      case Polygon:
+
+        if (strcmp(pszName, "Polygon"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Polygon", mParser.getCurrentLineNumber());
+
+        Transform = mParser.getAttributeValue("transform", papszAttrs, false);
+        Stroke = mParser.getAttributeValue("stroke", papszAttrs, false);
+        StrokeWidth = mParser.getAttributeValue("stroke-width", papszAttrs, false);
+        StrokeDashArray = mParser.getAttributeValue("stroke-dasharray", papszAttrs, false);
+        Fill = mParser.getAttributeValue("fill", papszAttrs, false);
+        FillRule = mParser.getAttributeValue("fill-rule", papszAttrs, false);
+        pPolygon = new CLPolygon();
+
+        if (Transform != NULL)
+          {
+            pPolygon->parseTransformation(Transform);
+          }
+
+        if (Stroke != NULL)
+          {
+            pPolygon->setStroke(Stroke);
+          }
+
+        if (StrokeWidth != NULL)
+          {
+            double width = strtod(StrokeWidth, NULL);
+            pPolygon->setStrokeWidth(width);
+          }
+
+        if (StrokeDashArray != NULL)
+          {
+            pPolygon->parseDashArray(StrokeDashArray);
+          }
+
+        if (Fill != NULL)
+          {
+            pPolygon->setFillColor(Fill);
+          }
+
+        if (FillRule != NULL)
+          {
+            std::string f(FillRule);
+
+            if (f == "nonzero")
+              {
+                pPolygon->setFillRule(CLGraphicalPrimitive2D::NONZERO);
+              }
+            else if (f == "evenodd")
+              {
+                pPolygon->setFillRule(CLGraphicalPrimitive2D::EVENODD);
+              }
+            else
+              {
+                pPolygon->setFillRule(CLGraphicalPrimitive2D::INHERIT);
+              }
+          }
+
+        mCommon.pGroup->addChildElement(pPolygon);
+        // delete the polygon again since the addElement method made a copy
+        delete pPolygon;
+        pPolygon = dynamic_cast<CLPolygon*>(mCommon.pGroup->getElement(mCommon.pGroup->getNumElements() - 1));
+        assert(pPolygon != NULL);
+        mCommon.pListOfCurveElements = pPolygon->getListOfElements();
+        break;
+
+      case ListOfElements:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "ListOfElements"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfElements", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new ListOfCurveElementsElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::PolygonElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case Polygon:
+
+        if (strcmp(pszName, "Polygon"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Polygon", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pListOfCurveElements = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case ListOfElements:
+
+        if (strcmp(pszName, "ListOfElements"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfElements", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = Polygon;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// RenderCurve Element
+
+CCopasiXMLParser::RenderCurveElement::RenderCurveElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::RenderCurveElement::~RenderCurveElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::RenderCurveElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Transform;
+  const char * Stroke;
+  const char * StrokeWidth;
+  const char * StrokeDashArray;
+  const char * StartHead;
+  const char * EndHead;
+  CLRenderCurve* pRenderCurve = NULL;
+
+  switch (mCurrentElement)
+    {
+      case RenderCurve:
+
+        if (strcmp(pszName, "Curve"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Curve", mParser.getCurrentLineNumber());
+
+        Transform = mParser.getAttributeValue("transform", papszAttrs, false);
+        Stroke = mParser.getAttributeValue("stroke", papszAttrs, false);
+        StrokeWidth = mParser.getAttributeValue("stroke-width", papszAttrs, false);
+        StrokeDashArray = mParser.getAttributeValue("stroke-dasharray", papszAttrs, false);
+        StartHead = mParser.getAttributeValue("startHead", papszAttrs, false);
+        EndHead = mParser.getAttributeValue("endHead", papszAttrs, false);
+        pRenderCurve = new CLRenderCurve();
+
+        if (Transform != NULL)
+          {
+            pRenderCurve->parseTransformation(Transform);
+          }
+
+        if (Stroke != NULL)
+          {
+            pRenderCurve->setStroke(Stroke);
+          }
+
+        if (StrokeWidth != NULL)
+          {
+            double width = strtod(StrokeWidth, NULL);
+            pRenderCurve->setStrokeWidth(width);
+          }
+
+        if (StrokeDashArray != NULL)
+          {
+            pRenderCurve->parseDashArray(StrokeDashArray);
+          }
+
+        if (StartHead != NULL)
+          {
+            pRenderCurve->setStartHead(StartHead);
+          }
+
+        if (EndHead != NULL)
+          {
+            pRenderCurve->setEndHead(EndHead);
+          }
+
+        mCommon.pGroup->addChildElement(pRenderCurve);
+        // delete the polygon again since the addElement method made a copy
+        delete pRenderCurve;
+        pRenderCurve = dynamic_cast<CLRenderCurve*>(mCommon.pGroup->getElement(mCommon.pGroup->getNumElements() - 1));
+        assert(pRenderCurve != NULL);
+        mCommon.pListOfCurveElements = pRenderCurve->getListOfCurveElements();
+        break;
+
+      case ListOfElements:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "ListOfElements"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfElements", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new ListOfCurveElementsElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::RenderCurveElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case RenderCurve:
+
+        if (strcmp(pszName, "Curve"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Curve", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pListOfCurveElements = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case ListOfElements:
+
+        if (strcmp(pszName, "ListOfElements"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfElements", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = RenderCurve;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// Text Element
+
+CCopasiXMLParser::TextElement::TextElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::TextElement::~TextElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::TextElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Transform;
+  const char * Stroke;
+  const char * StrokeWidth;
+  const char * StrokeDashArray;
+  const char * X;
+  const char * Y;
+  const char * Z;
+  const char * FontFamily;
+  const char * FontSize;
+  const char * FontWeight;
+  const char * FontStyle;
+  const char * TextAnchor;
+  const char * VTextAnchor;
+  CLText* pText = NULL;
+
+  switch (mCurrentElement)
+    {
+      case RenderText:
+
+        if (strcmp(pszName, "Text"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Text", mParser.getCurrentLineNumber());
+
+        Transform = mParser.getAttributeValue("transform", papszAttrs, false);
+        Stroke = mParser.getAttributeValue("stroke", papszAttrs, false);
+        StrokeWidth = mParser.getAttributeValue("stroke-width", papszAttrs, false);
+        StrokeDashArray = mParser.getAttributeValue("stroke-dasharray", papszAttrs, false);
+        X = mParser.getAttributeValue("x", papszAttrs);
+        Y = mParser.getAttributeValue("y", papszAttrs);
+        Z = mParser.getAttributeValue("z", papszAttrs, "0.0");
+        FontFamily = mParser.getAttributeValue("font-family", papszAttrs, false);
+        FontSize = mParser.getAttributeValue("font-size", papszAttrs, false);
+        FontWeight = mParser.getAttributeValue("font-weight", papszAttrs, false);
+        FontStyle = mParser.getAttributeValue("font-style", papszAttrs, false);
+        TextAnchor = mParser.getAttributeValue("text-anchor", papszAttrs, false);
+        VTextAnchor = mParser.getAttributeValue("vtext-anchor", papszAttrs, false);
+        pText = new CLText(NULL);
+
+        if (Transform != NULL)
+          {
+            pText->parseTransformation(Transform);
+          }
+
+        if (Stroke != NULL)
+          {
+            pText->setStroke(Stroke);
+          }
+
+        if (StrokeWidth != NULL)
+          {
+            double width = strtod(StrokeWidth, NULL);
+            pText->setStrokeWidth(width);
+          }
+
+        if (StrokeDashArray != NULL)
+          {
+            pText->parseDashArray(StrokeDashArray);
+          }
+
+        pText->setCoordinates(CLRelAbsVector(X), CLRelAbsVector(Y), CLRelAbsVector(Z));
+
+        if (FontFamily != NULL)
+          {
+            pText->setFontFamily(FontFamily);
+          }
+
+        if (FontSize != NULL)
+          {
+            pText->setFontSize(CLRelAbsVector(FontSize));
+          }
+
+        if (FontStyle != NULL)
+          {
+            std::string s(FontStyle);
+
+            if (s == "normal")
+              {
+                pText->setFontStyle(CLText::STYLE_NORMAL);
+              }
+            else if (s == "italic")
+              {
+                pText->setFontStyle(CLText::STYLE_ITALIC);
+              }
+          }
+
+        if (FontWeight != NULL)
+          {
+            std::string s(FontWeight);
+
+            if (s == "normal")
+              {
+                pText->setFontWeight(CLText::WEIGHT_NORMAL);
+              }
+            else if (s == "bold")
+              {
+                pText->setFontWeight(CLText::WEIGHT_BOLD);
+              }
+          }
+
+        if (TextAnchor != NULL)
+          {
+            std::string s(TextAnchor);
+
+            if (s == "start")
+              {
+                pText->setTextAnchor(CLText::ANCHOR_START);
+              }
+            else if (s == "middle")
+              {
+                pText->setTextAnchor(CLText::ANCHOR_MIDDLE);
+              }
+            else if (s == "end")
+              {
+                pText->setTextAnchor(CLText::ANCHOR_END);
+              }
+          }
+
+        if (VTextAnchor != NULL)
+          {
+            std::string s(VTextAnchor);
+
+            if (s == "top")
+              {
+                pText->setVTextAnchor(CLText::ANCHOR_TOP);
+              }
+            else if (s == "middle")
+              {
+                pText->setVTextAnchor(CLText::ANCHOR_MIDDLE);
+              }
+            else if (s == "bottom")
+              {
+                pText->setVTextAnchor(CLText::ANCHOR_BOTTOM);
+              }
+          }
+
+        mCommon.pGroup->addChildElement(pText);
+        // delete the text element again since the add method made a copy
+        delete pText;
+        mCommon.pText = dynamic_cast<CLText*>(mCommon.pGroup->getElement(mCommon.pGroup->getNumElements() - 1));
+        assert(mCommon.pText != NULL);
+        mParser.enableCharacterDataHandler();
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::TextElement::end(const XML_Char * pszName)
+{
+  std::string text;
+
+  switch (mCurrentElement)
+    {
+      case RenderText:
+
+        if (strcmp(pszName, "Text"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Text", mParser.getCurrentLineNumber());
+
+        text = mParser.getCharacterData("\x0a\x0d\t ", "");
+        assert(mCommon.pText != NULL);
+        mCommon.pText->setText(text);
+        mCommon.pText = NULL;
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// Image Element
+
+CCopasiXMLParser::ImageElement::ImageElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ImageElement::~ImageElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ImageElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Transform;
+  const char * X;
+  const char * Y;
+  const char * Z;
+  const char * WIDTH;
+  const char * HEIGHT;
+  const char * HREF;
+  CLImage* pImage = NULL;
+
+  switch (mCurrentElement)
+    {
+      case Image:
+
+        if (strcmp(pszName, "Image"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Image", mParser.getCurrentLineNumber());
+
+        Transform = mParser.getAttributeValue("transform", papszAttrs, false);
+        X = mParser.getAttributeValue("x", papszAttrs);
+        Y = mParser.getAttributeValue("y", papszAttrs);
+        Z = mParser.getAttributeValue("z", papszAttrs, "0.0");
+        WIDTH = mParser.getAttributeValue("width", papszAttrs);
+        HEIGHT = mParser.getAttributeValue("height", papszAttrs);
+        HREF = mParser.getAttributeValue("href", papszAttrs);
+        pImage = new CLImage();
+
+        if (Transform != NULL)
+          {
+            pImage->parseTransformation(Transform);
+          }
+
+        pImage->setCoordinates(CLRelAbsVector(X), CLRelAbsVector(Y), CLRelAbsVector(Z));
+        pImage->setDimensions(CLRelAbsVector(WIDTH), CLRelAbsVector(HEIGHT));
+        pImage->setImageReference(HREF);
+        mCommon.pGroup->addChildElement(pImage);
+        // delete the image again since the add method made a copy
+        delete pImage;
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ImageElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case Image:
+
+        if (strcmp(pszName, "Image"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Image", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// Group Element
+
+CCopasiXMLParser::GroupElement::GroupElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::GroupElement::~GroupElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::GroupElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+
+  // TODO This will not work for groups, since the order of children is not fixed.
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Transform;
+  const char * Stroke;
+  const char * StrokeWidth;
+  const char * StrokeDashArray;
+  const char * Fill;
+  const char * FillRule;
+  const char * FontFamily;
+  const char * FontSize;
+  const char * FontWeight;
+  const char * FontStyle;
+  const char * TextAnchor;
+  const char * VTextAnchor;
+  const char * StartHead;
+  const char * EndHead;
+  mpCurrentHandler = NULL;
+  CLGroup* pGroup = NULL;
+
+  switch (mCurrentElement)
+    {
+      case Group:
+
+        if (strcmp(pszName, "Group"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Group", mParser.getCurrentLineNumber());
+
+        Transform = mParser.getAttributeValue("transform", papszAttrs, false);
+        Stroke = mParser.getAttributeValue("stroke", papszAttrs, false);
+        StrokeWidth = mParser.getAttributeValue("stroke-width", papszAttrs, false);
+        StrokeDashArray = mParser.getAttributeValue("stroke-dasharray", papszAttrs, false);
+        Fill = mParser.getAttributeValue("fill", papszAttrs, false);
+        FillRule = mParser.getAttributeValue("fill-rule", papszAttrs, false);
+        FontFamily = mParser.getAttributeValue("font-family", papszAttrs, false);
+        FontSize = mParser.getAttributeValue("font-size", papszAttrs, false);
+        FontWeight = mParser.getAttributeValue("font-weight", papszAttrs, false);
+        FontStyle = mParser.getAttributeValue("font-style", papszAttrs, false);
+        TextAnchor = mParser.getAttributeValue("text-anchor", papszAttrs, false);
+        VTextAnchor = mParser.getAttributeValue("vtext-anchor", papszAttrs, false);
+        StartHead = mParser.getAttributeValue("startHead", papszAttrs, false);
+        EndHead = mParser.getAttributeValue("endHead", papszAttrs, false);
+        pGroup = new CLGroup();
+
+        if (Transform != NULL)
+          {
+            pGroup->parseTransformation(Transform);
+          }
+
+        if (Stroke != NULL)
+          {
+            pGroup->setStroke(Stroke);
+          }
+
+        if (StrokeWidth != NULL)
+          {
+            double width = strtod(StrokeWidth, NULL);
+            pGroup->setStrokeWidth(width);
+          }
+
+        if (StrokeDashArray != NULL)
+          {
+            pGroup->parseDashArray(StrokeDashArray);
+          }
+
+        if (Fill != NULL)
+          {
+            pGroup->setFillColor(Fill);
+          }
+
+        if (FillRule != NULL)
+          {
+            std::string f(FillRule);
+
+            if (f == "nonzero")
+              {
+                pGroup->setFillRule(CLGraphicalPrimitive2D::NONZERO);
+              }
+            else if (f == "evenodd")
+              {
+                pGroup->setFillRule(CLGraphicalPrimitive2D::EVENODD);
+              }
+            else
+              {
+                pGroup->setFillRule(CLGraphicalPrimitive2D::INHERIT);
+              }
+          }
+
+        if (FontFamily != NULL)
+          {
+            pGroup->setFontFamily(FontFamily);
+          }
+
+        if (FontSize != NULL)
+          {
+            pGroup->setFontSize(CLRelAbsVector(FontSize));
+          }
+
+        if (FontStyle != NULL)
+          {
+            std::string s(FontStyle);
+
+            if (s == "normal")
+              {
+                pGroup->setFontStyle(CLText::STYLE_NORMAL);
+              }
+            else if (s == "italic")
+              {
+                pGroup->setFontStyle(CLText::STYLE_ITALIC);
+              }
+          }
+
+        if (FontWeight != NULL)
+          {
+            std::string s(FontWeight);
+
+            if (s == "normal")
+              {
+                pGroup->setFontWeight(CLText::WEIGHT_NORMAL);
+              }
+            else if (s == "bold")
+              {
+                pGroup->setFontWeight(CLText::WEIGHT_BOLD);
+              }
+          }
+
+        if (TextAnchor != NULL)
+          {
+            std::string s(TextAnchor);
+
+            if (s == "start")
+              {
+                pGroup->setTextAnchor(CLText::ANCHOR_START);
+              }
+            else if (s == "middle")
+              {
+                pGroup->setTextAnchor(CLText::ANCHOR_MIDDLE);
+              }
+            else if (s == "end")
+              {
+                pGroup->setTextAnchor(CLText::ANCHOR_END);
+              }
+          }
+
+        if (VTextAnchor != NULL)
+          {
+            std::string s(VTextAnchor);
+
+            if (s == "top")
+              {
+                pGroup->setVTextAnchor(CLText::ANCHOR_TOP);
+              }
+            else if (s == "middle")
+              {
+                pGroup->setVTextAnchor(CLText::ANCHOR_MIDDLE);
+              }
+            else if (s == "bottom")
+              {
+                pGroup->setVTextAnchor(CLText::ANCHOR_BOTTOM);
+              }
+          }
+
+        if (StartHead != NULL)
+          {
+            pGroup->setStartHead(StartHead);
+          }
+
+        if (EndHead != NULL)
+          {
+            pGroup->setEndHead(EndHead);
+          }
+
+        // now we have to check where to add the group
+        // it could belong to another group,
+        // a style or a line ending
+        if (mCommon.pGroup != NULL)
+          {
+            mCommon.pGroup->addChildElement(pGroup);
+            mCommon.pGroup = dynamic_cast<CLGroup*>(mCommon.pGroup->getElement(mCommon.pGroup->getNumElements() - 1));
+          }
+        else if (mCommon.pStyle != NULL)
+          {
+            mCommon.pStyle->setGroup(pGroup);
+            mCommon.pGroup = mCommon.pStyle->getGroup();
+          }
+        else
+          {
+            assert(mCommon.pLineEnding != NULL);
+            mCommon.pLineEnding->setGroup(pGroup);
+            mCommon.pGroup = mCommon.pLineEnding->getGroup();
+          }
+
+        assert(mCommon.pGroup != NULL);
+        // delete the group element again since the add/set methods made a copy
+        delete pGroup;
+        return;
+        break;
+
+        // a group can have many different children
+      case GroupChild:
+
+        // handle the possible children
+        if (!strcmp(pszName, "Curve"))
+          {
+            mpCurrentHandler = new RenderCurveElement(mParser, mCommon);
+          }
+        else if (!strcmp(pszName, "Text"))
+          {
+            mpCurrentHandler = new TextElement(mParser, mCommon);
+          }
+        else if (!strcmp(pszName, "Rectangle"))
+          {
+            mpCurrentHandler = new RectangleElement(mParser, mCommon);
+          }
+        else if (!strcmp(pszName, "Polygon"))
+          {
+            mpCurrentHandler = new PolygonElement(mParser, mCommon);
+          }
+        else if (!strcmp(pszName, "Ellipse"))
+          {
+            mpCurrentHandler = new EllipseElement(mParser, mCommon);
+          }
+        else if (!strcmp(pszName, "Group"))
+          {
+            mpCurrentHandler = new GroupElement(mParser, mCommon);
+          }
+        else if (!strcmp(pszName, "Image"))
+          {
+            mpCurrentHandler = new ImageElement(mParser, mCommon);
+          }
+
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  if (mpCurrentHandler != NULL)
+    {
+      mParser.pushElementHandler(mpCurrentHandler);
+    }
+
+  mpCurrentHandler->start(pszName, papszAttrs);
+
+  return;
+}
+
+void CCopasiXMLParser::GroupElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case Group:
+
+        if (strcmp(pszName, "Group"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Group", mParser.getCurrentLineNumber());
+
+        // if the group is part of another group, we have to set mCommon.pGroup
+        // to that group, otherwise, we have to set it to NULL
+        if (dynamic_cast<CLGroup*>(mCommon.pGroup->getObjectParent()) != NULL)
+          {
+            mCommon.pGroup = dynamic_cast<CLGroup*>(mCommon.pGroup->getObjectParent());
+          }
+        else
+          {
+            if (dynamic_cast<CLStyle*>(mCommon.pGroup->getObjectParent()) != NULL)
+              {
+                // if this group is the child of a style, we should set some default values on attributes
+                // so that they are set explicitly
+                if (!mCommon.pGroup->isSetStroke())
+                  {
+                    mCommon.pGroup->setStroke("none");
+                  }
+
+                if (!mCommon.pGroup->isSetStrokeWidth())
+                  {
+                    mCommon.pGroup->setStrokeWidth(0.0);
+                  }
+
+                if (!mCommon.pGroup->isSetFill())
+                  {
+                    mCommon.pGroup->setFillColor("none");
+                  }
+
+                if (!mCommon.pGroup->isSetFillRule())
+                  {
+                    mCommon.pGroup->setFillRule(CLGraphicalPrimitive2D::NONZERO);
+                  }
+
+                if (!mCommon.pGroup->isSetFontFamily())
+                  {
+                    mCommon.pGroup->setFontFamily("sans-serif");
+                  }
+
+                if (!mCommon.pGroup->isSetFontWeight())
+                  {
+                    mCommon.pGroup->setFontWeight(CLText::WEIGHT_NORMAL);
+                  }
+
+                if (!mCommon.pGroup->isSetFontStyle())
+                  {
+                    mCommon.pGroup->setFontStyle(CLText::STYLE_NORMAL);
+                  }
+
+                if (!mCommon.pGroup->isSetTextAnchor())
+                  {
+                    mCommon.pGroup->setTextAnchor(CLText::ANCHOR_START);
+                  }
+
+                if (!mCommon.pGroup->isSetVTextAnchor())
+                  {
+                    mCommon.pGroup->setVTextAnchor(CLText::ANCHOR_TOP);
+                  }
+
+                if (!mCommon.pGroup->isSetStartHead())
+                  {
+                    mCommon.pGroup->setStartHead("none");
+                  }
+
+                if (!mCommon.pGroup->isSetEndHead())
+                  {
+                    mCommon.pGroup->setEndHead("none");
+                  }
+              }
+
+            mCommon.pGroup = NULL;
+          }
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case GroupChild:
+
+        // a group can have many different children
+        if (strcmp(pszName, "Curve")
+            && strcmp(pszName, "Text")
+            && strcmp(pszName, "Rectangle")
+            && strcmp(pszName, "Polygon")
+            && strcmp(pszName, "Ellipse")
+            && strcmp(pszName, "Group")
+            && strcmp(pszName, "Image")
+           )
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                           pszName, "???", mParser.getCurrentLineNumber());
+          }
+
+        //tell the handler where to continue
+        mCurrentElement = Group;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// Curve Element Element
+
+CCopasiXMLParser::CurveElementElement::CurveElementElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::CurveElementElement::~CurveElementElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::CurveElementElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * X;
+  const char * Y;
+  const char * Z;
+  const char * BP1X;
+  const char * BP1Y;
+  const char * BP1Z;
+  const char * BP2X;
+  const char * BP2Y;
+  const char * BP2Z;
+  CLRenderPoint* pCurveElement = NULL;
+
+  switch (mCurrentElement)
+    {
+      case CurveElement:
+
+        if (strcmp(pszName, "Element"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Element", mParser.getCurrentLineNumber());
+
+        X = mParser.getAttributeValue("x", papszAttrs);
+        Y = mParser.getAttributeValue("y", papszAttrs);
+        Z = mParser.getAttributeValue("z", papszAttrs, "0.0");
+        BP1X = mParser.getAttributeValue("basePoint1_x", papszAttrs, false);
+        BP1Y = mParser.getAttributeValue("basePoint1_y", papszAttrs, false);
+        BP1Z = mParser.getAttributeValue("basePoint1_z", papszAttrs, "0.0");
+        BP2X = mParser.getAttributeValue("basePoint2_x", papszAttrs, false);
+        BP2Y = mParser.getAttributeValue("basePoint2_y", papszAttrs, false);
+        BP2Z = mParser.getAttributeValue("basePoint2_z", papszAttrs, "0.0");
+
+        // for a cubic bezier, x any y value for both basepoints are mandatory
+        if (BP1X != NULL && BP1Y != NULL && BP2X != NULL && BP2Y != NULL)
+          {
+            pCurveElement = new CLRenderCubicBezier(CLRelAbsVector(BP1X), CLRelAbsVector(BP1Y), CLRelAbsVector(BP1Z),
+                                                    CLRelAbsVector(BP2X), CLRelAbsVector(BP2Y), CLRelAbsVector(BP2Z),
+                                                    CLRelAbsVector(X), CLRelAbsVector(Y), CLRelAbsVector(Z));
+          }
+        else
+          {
+            pCurveElement = new CLRenderPoint(CLRelAbsVector(X), CLRelAbsVector(Y), CLRelAbsVector(Z));
+          }
+
+        mCommon.pListOfCurveElements->push_back(pCurveElement);
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::CurveElementElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case CurveElement:
+
+        if (strcmp(pszName, "Element"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Element", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// LineEnding Element
+
+CCopasiXMLParser::LineEndingElement::LineEndingElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::LineEndingElement::~LineEndingElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::LineEndingElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+  mpCurrentHandler = NULL;
+
+  const char * Id;
+  const char * EnableRotationalMapping;
+  CLLineEnding* pLineEnding = NULL;
+
+  switch (mCurrentElement)
+    {
+      case LineEnding:
+
+        if (strcmp(pszName, "LineEnding"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "LineEnding", mParser.getCurrentLineNumber());
+
+        Id = mParser.getAttributeValue("id", papszAttrs);
+        EnableRotationalMapping = mParser.getAttributeValue("enableRotationalMapping", papszAttrs, "true");
+        pLineEnding = new CLLineEnding();
+        pLineEnding->setId(Id);
+
+        if (!strcmp(EnableRotationalMapping, "true"))
+          {
+            pLineEnding->setEnableRotationalMapping(true);
+          }
+        else
+          {
+            pLineEnding->setEnableRotationalMapping(false);
+          }
+
+        mCommon.pRenderInformation->addLineEnding(pLineEnding);
+        // delete the line ending again since the addLineEnding method made a copy
+        delete pLineEnding;
+        assert(mCommon.pRenderInformation->getNumLineEndings() > 0);
+        mCommon.pLineEnding = mCommon.pRenderInformation->getLineEnding(mCommon.pRenderInformation->getNumLineEndings() - 1);
+        break;
+
+      case BoundingBox:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "BoundingBox"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "BoundingBox", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new BoundingBoxElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+
+      case Group:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "Group"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Group", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new GroupElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::LineEndingElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case LineEnding:
+
+        if (strcmp(pszName, "LineEnding"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "LineEnding", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pLineEnding = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case BoundingBox:
+
+        if (strcmp(pszName, "BoundingBox"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "BoundingBox", mParser.getCurrentLineNumber());
+
+        pdelete(mpCurrentHandler);
+        break;
+
+      case Group:
+
+        if (strcmp(pszName, "Group"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Group", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = LineEnding;
+        pdelete(mpCurrentHandler);
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// GlobalStyle Element
+
+CCopasiXMLParser::GlobalStyleElement::GlobalStyleElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::GlobalStyleElement::~GlobalStyleElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::GlobalStyleElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * RoleList;
+  const char * TypeList;
+  CLGlobalStyle* pGlobalStyle = NULL;
+
+  switch (mCurrentElement)
+    {
+      case GlobalStyle:
+
+        if (strcmp(pszName, "Style"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Style", mParser.getCurrentLineNumber());
+
+        RoleList = mParser.getAttributeValue("roleList", papszAttrs, false);
+        TypeList = mParser.getAttributeValue("typeList", papszAttrs, false);
+        pGlobalStyle = new CLGlobalStyle();
+
+        if (RoleList != NULL)
+          {
+            std::set<std::string> s;
+            CLStyle::readIntoSet(RoleList, s);
+            pGlobalStyle->setRoleList(s);
+          }
+
+        if (TypeList != NULL)
+          {
+            std::set<std::string> s;
+            CLStyle::readIntoSet(TypeList, s);
+            pGlobalStyle->setTypeList(s);
+          }
+
+        assert(dynamic_cast<CLGlobalRenderInformation*>(mCommon.pRenderInformation) != NULL);
+        static_cast<CLGlobalRenderInformation*>(mCommon.pRenderInformation)->addStyle(pGlobalStyle);
+        // delete the line ending again since the addGlobalStyle method made a copy
+        delete pGlobalStyle;
+        assert(static_cast<CLGlobalRenderInformation*>(mCommon.pRenderInformation)->getNumStyles() > 0);
+        mCommon.pStyle = static_cast<CLGlobalRenderInformation*>(mCommon.pRenderInformation)->getStyle(static_cast<CLGlobalRenderInformation*>(mCommon.pRenderInformation)->getNumStyles() - 1);
+        break;
+
+      case Group:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "Group"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Group", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new GroupElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::GlobalStyleElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case GlobalStyle:
+
+        if (strcmp(pszName, "Style"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Style", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pStyle = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case Group:
+
+        if (strcmp(pszName, "Group"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Group", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = GlobalStyle;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// LocalStyle Element
+
+CCopasiXMLParser::LocalStyleElement::LocalStyleElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::LocalStyleElement::~LocalStyleElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::LocalStyleElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * RoleList;
+  const char * TypeList;
+  const char * KeyList;
+  CLLocalStyle* pLocalStyle = NULL;
+
+  switch (mCurrentElement)
+    {
+      case LocalStyle:
+
+        if (strcmp(pszName, "Style"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Style", mParser.getCurrentLineNumber());
+
+        RoleList = mParser.getAttributeValue("roleList", papszAttrs, false);
+        TypeList = mParser.getAttributeValue("typeList", papszAttrs, false);
+        KeyList = mParser.getAttributeValue("keyList", papszAttrs, false);
+        pLocalStyle = new CLLocalStyle();
+
+        if (RoleList != NULL)
+          {
+            std::set<std::string> s;
+            CLStyle::readIntoSet(RoleList, s);
+            pLocalStyle->setRoleList(s);
+          }
+
+        if (TypeList != NULL)
+          {
+            std::set<std::string> s;
+            CLStyle::readIntoSet(TypeList, s);
+            pLocalStyle->setTypeList(s);
+          }
+
+        if (KeyList != NULL)
+          {
+            std::set<std::string> s;
+            CLStyle::readIntoSet(KeyList, s);
+            // we need to translate the keys from the file to the actual keys assigned now
+            std::set<std::string> s_conv;
+            std::set<std::string>::const_iterator keyIt = s.begin(), keyEndit = s.end();
+            CLGraphicalObject* pGO = NULL;
+
+            while (keyIt != keyEndit)
+              {
+                pGO = dynamic_cast<CLGraphicalObject *>(mCommon.KeyMap.get(*keyIt));
+                assert(pGO);
+
+                if (pGO != NULL)
+                  {
+                    s_conv.insert(pGO->getKey());
+                  }
+
+                ++keyIt;
+              }
+
+            pLocalStyle->setKeyList(s_conv);
+          }
+
+        assert(dynamic_cast<CLLocalRenderInformation*>(mCommon.pRenderInformation) != NULL);
+        static_cast<CLLocalRenderInformation*>(mCommon.pRenderInformation)->addStyle(pLocalStyle);
+        // delete the line ending again since the addLocalStyle method made a copy
+        delete pLocalStyle;
+        assert(static_cast<CLLocalRenderInformation*>(mCommon.pRenderInformation)->getNumStyles() > 0);
+        mCommon.pStyle = static_cast<CLLocalRenderInformation*>(mCommon.pRenderInformation)->getStyle(static_cast<CLLocalRenderInformation*>(mCommon.pRenderInformation)->getNumStyles() - 1);
+        break;
+
+      case Group:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "Group"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Group", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new GroupElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::LocalStyleElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case LocalStyle:
+
+        if (strcmp(pszName, "Style"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Style", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pStyle = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case Group:
+
+        if (strcmp(pszName, "Group"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Group", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = LocalStyle;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// ListOfColorDefinitions
+
+CCopasiXMLParser::ListOfColorDefinitionsElement::ListOfColorDefinitionsElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfColorDefinitionsElement::~ListOfColorDefinitionsElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfColorDefinitionsElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+      case ListOfColorDefinitions:
+
+        if (strcmp(pszName, "ListOfColorDefinitions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfColorDefinitions", mParser.getCurrentLineNumber());
+
+        break;
+
+      case ColorDefinition:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "ColorDefinition"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ColorDefinition", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new ColorDefinitionElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfColorDefinitionsElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ListOfColorDefinitions:
+
+        if (strcmp(pszName, "ListOfColorDefinitions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfColorDefinitions", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case ColorDefinition:
+
+        if (strcmp(pszName, "ColorDefinition"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ColorDefinition", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfColorDefinitions;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// ListOfGradientDefinitions
+
+CCopasiXMLParser::ListOfGradientDefinitionsElement::ListOfGradientDefinitionsElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfGradientDefinitionsElement::~ListOfGradientDefinitionsElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfGradientDefinitionsElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+      case ListOfGradientDefinitions:
+
+        if (strcmp(pszName, "ListOfGradientDefinitions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfGradientDefinitions", mParser.getCurrentLineNumber());
+
+        break;
+
+      case GradientDefinition:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "RadialGradient"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new RadialGradientElement(mParser, mCommon);
+          }
+        else if (!strcmp(pszName, "LinearGradient"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new LinearGradientElement(mParser, mCommon);
+          }
+        else
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                           pszName, "???", mParser.getCurrentLineNumber());
+          }
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfGradientDefinitionsElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ListOfGradientDefinitions:
+
+        if (strcmp(pszName, "ListOfGradientDefinitions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfGradientDefinitions", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case GradientDefinition:
+
+        if (strcmp(pszName, "LinearGradient") && strcmp(pszName, "RadialGradient"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "???", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfGradientDefinitions;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// ListOfLineEndings
+
+CCopasiXMLParser::ListOfLineEndingsElement::ListOfLineEndingsElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfLineEndingsElement::~ListOfLineEndingsElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfLineEndingsElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+      case ListOfLineEndings:
+
+        if (strcmp(pszName, "ListOfLineEndings"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfLineEndings", mParser.getCurrentLineNumber());
+
+        break;
+
+      case LineEnding:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "LineEnding"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "LineEnding", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new LineEndingElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfLineEndingsElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ListOfLineEndings:
+
+        if (strcmp(pszName, "ListOfLineEndings"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfLineEndings", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case LineEnding:
+
+        if (strcmp(pszName, "LineEnding"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "LineEnding", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfLineEndings;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// ListOfLocalStyles
+
+CCopasiXMLParser::ListOfLocalStylesElement::ListOfLocalStylesElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfLocalStylesElement::~ListOfLocalStylesElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfLocalStylesElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+      case ListOfLocalStyles:
+
+        if (strcmp(pszName, "ListOfStyles"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfStyles", mParser.getCurrentLineNumber());
+
+        break;
+
+      case LocalStyle:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "Style"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Style", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new LocalStyleElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfLocalStylesElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ListOfLocalStyles:
+
+        if (strcmp(pszName, "ListOfStyles"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfStyles", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case LocalStyle:
+
+        if (strcmp(pszName, "Style"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Style", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfLocalStyles;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// ListOfGlobalStyles
+
+CCopasiXMLParser::ListOfGlobalStylesElement::ListOfGlobalStylesElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfGlobalStylesElement::~ListOfGlobalStylesElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfGlobalStylesElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+      case ListOfGlobalStyles:
+
+        if (strcmp(pszName, "ListOfStyles"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfStyles", mParser.getCurrentLineNumber());
+
+        break;
+
+      case GlobalStyle:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "Style"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Style", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new GlobalStyleElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfGlobalStylesElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ListOfGlobalStyles:
+
+        if (strcmp(pszName, "ListOfStyles"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfStyles", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case GlobalStyle:
+
+        if (strcmp(pszName, "Style"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Style", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfGlobalStyles;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// ListOfCurveElements
+
+CCopasiXMLParser::ListOfCurveElementsElement::ListOfCurveElementsElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfCurveElementsElement::~ListOfCurveElementsElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfCurveElementsElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+      case ListOfCurveElements:
+
+        if (strcmp(pszName, "ListOfElements"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "ListOfElements", mParser.getCurrentLineNumber());
+
+        break;
+
+      case CurveElement:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (strcmp(pszName, "Element"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Element", mParser.getCurrentLineNumber());
+
+        //only one type of tags may occur here, so if the handler exists
+        //it must be the correct one
+        if (!mpCurrentHandler)
+          mpCurrentHandler = new CurveElementElement(mParser, mCommon);
+
+        mParser.pushElementHandler(mpCurrentHandler);
+        mpCurrentHandler->start(pszName, papszAttrs);
+        break;
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfCurveElementsElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case ListOfCurveElements:
+
+        if (strcmp(pszName, "ListOfElements"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfElements", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case CurveElement:
+
+        if (strcmp(pszName, "Element"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Element", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = ListOfCurveElements;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// GlobalRenderInformation Element
+
+CCopasiXMLParser::GlobalRenderInformationElement::GlobalRenderInformationElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::GlobalRenderInformationElement::~GlobalRenderInformationElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::GlobalRenderInformationElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+  mpCurrentHandler = NULL;
+  const char* background;
+
+  switch (mCurrentElement)
+    {
+      case GlobalRenderInformation:
+
+        if (strcmp(pszName, "RenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+
+        mCommon.pLayoutList->addGlobalRenderInformation(new CLGlobalRenderInformation());
+        // delete the global render information again since the addGlobalRenderInformationObject method made a copy
+        assert(mCommon.pLayoutList->getListOfGlobalRenderInformationObjects().size() > 0);
+        mCommon.pRenderInformation = mCommon.pLayoutList->getListOfGlobalRenderInformationObjects()[mCommon.pLayoutList->getListOfGlobalRenderInformationObjects().size() - 1];
+        background = mParser.getAttributeValue("backgroundColor", papszAttrs);
+        assert(background != NULL);
+
+        if (background != NULL)
+          {
+            mCommon.pRenderInformation->setBackgroundColor(background);
+          }
+
+        return;
+        break;
+
+      case ListOfColorDefinitions:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "ListOfColorDefinitions"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            mpCurrentHandler = new ListOfColorDefinitionsElement(mParser, mCommon);
+          }
+
+        break;
+
+      case ListOfGradientDefinitions:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "ListOfGradientDefinitions"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            mpCurrentHandler = new ListOfGradientDefinitionsElement(mParser, mCommon);
+          }
+
+        break;
+
+      case ListOfLineEndings:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "ListOfLineEndings"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            mpCurrentHandler = new ListOfLineEndingsElement(mParser, mCommon);
+          }
+
+        break;
+
+      case ListOfStyles:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "ListOfStyles"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            mpCurrentHandler = new ListOfGlobalStylesElement(mParser, mCommon);
+          }
+
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  if (mpCurrentHandler != NULL)
+    {
+      mParser.pushElementHandler(mpCurrentHandler);
+    }
+
+  mParser.onStartElement(pszName, papszAttrs);
+  return;
+}
+
+void CCopasiXMLParser::GlobalRenderInformationElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case GlobalRenderInformation:
+
+        if (strcmp(pszName, "RenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pRenderInformation = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case ListOfColorDefinitions:
+
+        if (strcmp(pszName, "ListOfColorDefinitions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfColorDefinitions", mParser.getCurrentLineNumber());
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case ListOfGradientDefinitions:
+
+        if (strcmp(pszName, "ListOfGradientDefinitions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfGradientDefinitions", mParser.getCurrentLineNumber());
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case ListOfLineEndings:
+
+        if (strcmp(pszName, "ListOfLineEndings"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfLineEndings", mParser.getCurrentLineNumber());
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case ListOfStyles:
+
+        if (strcmp(pszName, "ListOfStyles"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfStyles", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = GlobalRenderInformation;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// LocalRenderInformation Element
+
+CCopasiXMLParser::LocalRenderInformationElement::LocalRenderInformationElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::LocalRenderInformationElement::~LocalRenderInformationElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::LocalRenderInformationElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+  mpCurrentHandler = NULL;
+  const char* background;
+
+  switch (mCurrentElement)
+    {
+      case LocalRenderInformation:
+
+        if (strcmp(pszName, "RenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+
+        mCommon.pCurrentLayout->addLocalRenderInformation(new CLLocalRenderInformation());
+        // delete the global render information again since the addLocalRenderInformationObject method made a copy
+        assert(mCommon.pCurrentLayout->getListOfLocalRenderInformationObjects().size() > 0);
+        mCommon.pRenderInformation = mCommon.pCurrentLayout->getListOfLocalRenderInformationObjects()[mCommon.pCurrentLayout->getListOfLocalRenderInformationObjects().size() - 1];
+        background = mParser.getAttributeValue("backgroundColor", papszAttrs);
+        assert(background != NULL);
+
+        if (background != NULL)
+          {
+            mCommon.pRenderInformation->setBackgroundColor(background);
+          }
+
+        return;
+        break;
+
+      case ListOfColorDefinitions:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "ListOfColorDefinitions"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            mpCurrentHandler = new ListOfColorDefinitionsElement(mParser, mCommon);
+          }
+
+        break;
+
+      case ListOfGradientDefinitions:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "ListOfGradientDefinitions"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            mpCurrentHandler = new ListOfGradientDefinitionsElement(mParser, mCommon);
+          }
+
+        break;
+
+      case ListOfLineEndings:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "ListOfLineEndings"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            mpCurrentHandler = new ListOfLineEndingsElement(mParser, mCommon);
+          }
+
+        break;
+
+      case ListOfStyles:
+
+        //only one type of tags may occur here, so we can throw an exception.
+        //No need to silently ignore unknown tags here.
+        if (!strcmp(pszName, "ListOfStyles"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            mpCurrentHandler = new ListOfLocalStylesElement(mParser, mCommon);
+          }
+
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
+
+  return;
+}
+
+void CCopasiXMLParser::LocalRenderInformationElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case LocalRenderInformation:
+
+        if (strcmp(pszName, "RenderInformation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+        mCommon.pRenderInformation = NULL;
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+
+      case ListOfColorDefinitions:
+
+        if (strcmp(pszName, "ListOfColorDefinitions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfColorDefinitions", mParser.getCurrentLineNumber());
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case ListOfGradientDefinitions:
+
+        if (strcmp(pszName, "ListOfGradientDefinitions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfGradientDefinitions", mParser.getCurrentLineNumber());
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case ListOfLineEndings:
+
+        if (strcmp(pszName, "ListOfLineEndings"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfLineEndings", mParser.getCurrentLineNumber());
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case ListOfStyles:
+
+        if (strcmp(pszName, "ListOfStyles"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfStyles", mParser.getCurrentLineNumber());
+
+        //tell the handler where to continue
+        mCurrentElement = LocalRenderInformation;
+
+        //no need to delete Handler (since it is the only one the destructor
+        //will handle it)
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+// BoundingBox Element
+
+CCopasiXMLParser::BoundingBoxElement::BoundingBoxElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::BoundingBoxElement::~BoundingBoxElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::BoundingBoxElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+  mpCurrentHandler = NULL;
+  const char * X;
+  const char * Y;
+  const char * WIDTH;
+  const char * HEIGHT;
+
+  switch (mCurrentElement)
+    {
+      case BoundingBox:
+
+        if (strcmp(pszName, "BoundingBox"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "BoundingBox", mParser.getCurrentLineNumber());
+
+        break;
+      case Position:
+
+        if (strcmp(pszName, "Position"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Position", mParser.getCurrentLineNumber());
+
+        X = mParser.getAttributeValue("x", papszAttrs);
+        Y = mParser.getAttributeValue("y", papszAttrs);
+        mCommon.pLineEnding->getBoundingBox()->setPosition(CLPoint(CCopasiXMLInterface::DBL(X), CCopasiXMLInterface::DBL(Y)));
+        break;
+      case Dimensions:
+
+        if (strcmp(pszName, "Dimensions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+
+        WIDTH = mParser.getAttributeValue("width", papszAttrs);
+        HEIGHT = mParser.getAttributeValue("height", papszAttrs);
+        mCommon.pLineEnding->getBoundingBox()->setDimensions(CLDimensions(CCopasiXMLInterface::DBL(WIDTH), CCopasiXMLInterface::DBL(HEIGHT)));
+        break;
+
+      default:
+        mLastKnownElement = mCurrentElement - 1;
+        mCurrentElement = UNKNOWN_ELEMENT;
+        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mParser.onStartElement(pszName, papszAttrs);
+        break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::BoundingBoxElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+      case BoundingBox:
+
+        if (strcmp(pszName, "BoundingBox"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "BoundingBox", mParser.getCurrentLineNumber());
+
+        mParser.popElementHandler();
+
+        //reset handler
+        mCurrentElement = START_ELEMENT;
+        //call parent handler
+        mParser.onEndElement(pszName);
+        break;
+      case Position:
+
+        if (strcmp(pszName, "Position"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Position", mParser.getCurrentLineNumber());
+
+        break;
+      case Dimensions:
+
+        if (strcmp(pszName, "Dimensions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+
+        mCurrentElement = BoundingBox;
+        break;
+
+      case UNKNOWN_ELEMENT:
+        mCurrentElement = mLastKnownElement;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  return;
+}
+
+#endif /* USE_CRENDER_EXTENSION */
