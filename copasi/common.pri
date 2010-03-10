@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.114 $ 
+#   $Revision: 1.115 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/02/11 16:15:23 $ 
+#   $Author: gauges $ 
+#   $Date: 2010/03/10 13:04:36 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.114 $ $Author: shoops $ $Date: 2010/02/11 16:15:23 $  
+# $Revision: 1.115 $ $Author: gauges $ $Date: 2010/03/10 13:04:36 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -135,6 +135,11 @@ contains(BUILD_OS, Darwin) {
        QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
     }
   }
+  # on Mac OS X 10.6 x86 has to be added to config to make sure COPASI is build
+  # as a 32 bit version, gcc on 10.6 builds 64 bit binaries by default
+  #CONFIG += x86
+  # enable this to build support for the render extension
+  #DEFINES += USE_CRENDER_EXTENSION
  
   INCLUDEPATH += /System/Library/Frameworks/Accelerate.framework/Headers
   INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
@@ -187,6 +192,14 @@ contains(BUILD_OS, Darwin) {
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
   LIBS += -lz
+
+# only needed for the class CLSimpleImageTexturizer which is only
+# needed if we want to create bitmaps from layouts in the backend
+#  contains(DEFINES, USE_CRENDER_EXTENSION){
+#    INCLUDEPATH += /opt/local/include
+#    LIBS += -L/opt/local/lib -lpng
+#    LIBS += -ljpeg
+#  }  
 }
 
 contains(BUILD_OS, WIN32) {
@@ -436,6 +449,8 @@ contains(BUILD_OS, Linux) {
       QMAKE_POST_LINK = strip $(TARGET)
     }
   }
+  # enable this to build support for the render extension
+  #DEFINES += USE_CRENDER_EXTENSION
 
   contains(PACKAGE, yes) {
     QMAKE_LFLAGS -= -static
@@ -575,6 +590,12 @@ contains(BUILD_OS, Linux) {
     } else {
       LIBS += -lqwtplot3d
     }
+# only needed for the class CLSimpleImageTexturizer which is only
+# needed if we want to create bitmaps from layouts in the backend
+#contains(DEFINES,USE_CRENDER_EXTENSION) {           
+#	LIBS += -lpng
+#       LIBS += -ljpeg
+#}
   }
 }
 
