@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.125 $
+//   $Revision: 1.126 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/19 14:53:25 $
+//   $Author: gauges $
+//   $Date: 2010/03/10 12:51:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,35 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotItem.h"
 #include "layout/CListOfLayouts.h"
+
+#ifdef USE_CRENDER_EXTENSION
+
+#include <copasi/layout/CLLocalRenderInformation.h>
+#include <copasi/layout/CLGlobalRenderInformation.h>
+#include <copasi/layout/CLRenderInformationBase.h>
+#include <copasi/layout/CLLocalStyle.h>
+#include <copasi/layout/CLGlobalStyle.h>
+#include <copasi/layout/CLColorDefinition.h>
+#include <copasi/layout/CLGradientBase.h>
+#include <copasi/layout/CLLinearGradient.h>
+#include <copasi/layout/CLRadialGradient.h>
+#include <copasi/layout/CLLineEnding.h>
+#include <copasi/layout/CLRenderPoint.h>
+#include <copasi/layout/CLRenderCubicBezier.h>
+#include <copasi/layout/CLGroup.h>
+#include <copasi/layout/CLTransformation2D.h>
+#include <copasi/layout/CLImage.h>
+#include <copasi/layout/CLGraphicalPrimitive1D.h>
+#include <copasi/layout/CLText.h>
+#include <copasi/layout/CLRenderCurve.h>
+#include <copasi/layout/CLGraphicalPrimitive2D.h>
+#include <copasi/layout/CLRectangle.h>
+#include <copasi/layout/CLEllipse.h>
+#include <copasi/layout/CLPolygon.h>
+#include <copasi/layout/CLGradientStop.h>
+#include <copasi/layout/CLLineEnding.h>
+
+#endif /* USE_CRENDER_EXTENSION */
 
 // class CCopasiTask;
 // class CCopasiReport;
@@ -1331,6 +1360,14 @@ bool CCopasiXML::saveLayoutList()
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
               Attributes.add("compartment", cg->getModelObjectKey());
+#ifdef USE_CRENDER_EXTENSION
+
+              if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
+                {
+                  Attributes.add("objectRole", cg->getObjectRole());
+                }
+
+#endif // USE_CRENDER_EXTENSION
               startSaveElement("CompartmentGlyph", Attributes);
 
               saveBoundingBox(cg->getBoundingBox());
@@ -1355,6 +1392,14 @@ bool CCopasiXML::saveLayoutList()
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
               Attributes.add("metabolite", cg->getModelObjectKey());
+#ifdef USE_CRENDER_EXTENSION
+
+              if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
+                {
+                  Attributes.add("objectRole", cg->getObjectRole());
+                }
+
+#endif // USE_CRENDER_EXTENSION
               startSaveElement("MetaboliteGlyph", Attributes);
 
               saveBoundingBox(cg->getBoundingBox());
@@ -1379,6 +1424,14 @@ bool CCopasiXML::saveLayoutList()
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
               Attributes.add("reaction", cg->getModelObjectKey());
+#ifdef USE_CRENDER_EXTENSION
+
+              if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
+                {
+                  Attributes.add("objectRole", cg->getObjectRole());
+                }
+
+#endif // USE_CRENDER_EXTENSION
               startSaveElement("ReactionGlyph", Attributes);
 
               if (cg->getCurve().getNumCurveSegments() == 0)
@@ -1399,6 +1452,14 @@ bool CCopasiXML::saveLayoutList()
                   Attributes.add("metaboliteGlyph", mrg->getMetabGlyphKey());
                   //Attributes.add("metaboliteReference", mrg->getXXX());
                   Attributes.add("role", CLMetabReferenceGlyph::XMLRole[mrg->getRole()]);
+#ifdef USE_CRENDER_EXTENSION
+
+                  if (mrg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
+                    {
+                      Attributes.add("objectRole", mrg->getObjectRole());
+                    }
+
+#endif // USE_CRENDER_EXTENSION
                   startSaveElement("MetaboliteReferenceGlyph", Attributes);
 
                   if (mrg->getCurve().getNumCurveSegments() == 0)
@@ -1445,6 +1506,15 @@ bool CCopasiXML::saveLayoutList()
                       Attributes.add("originOfText", id);
                     }
 
+#ifdef USE_CRENDER_EXTENSION
+
+                  if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
+                    {
+                      Attributes.add("objectRole", cg->getObjectRole());
+                    }
+
+#endif // USE_CRENDER_EXTENSION
+
                   startSaveElement("TextGlyph", Attributes);
 
                   saveBoundingBox(cg->getBoundingBox());
@@ -1469,6 +1539,14 @@ bool CCopasiXML::saveLayoutList()
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
+#ifdef USE_CRENDER_EXTENSION
+
+              if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
+                {
+                  Attributes.add("objectRole", cg->getObjectRole());
+                }
+
+#endif // USE_CRENDER_EXTENSION
               startSaveElement("AdditionalGraphicalObject", Attributes);
 
               saveBoundingBox(cg->getBoundingBox());
@@ -1479,9 +1557,27 @@ bool CCopasiXML::saveLayoutList()
           endSaveElement("ListOfAdditionalGraphicalObjects");
         }
 
+#ifdef USE_CRENDER_EXTENSION
+
+      // save the local render information
+      if (pLayout->getListOfLocalRenderInformationObjects().size() > 0)
+        {
+          saveListOfLocalRenderInformation(pLayout->getListOfLocalRenderInformationObjects());
+        }
+
+#endif /* USE_CRENDER_EXTENSION */
       endSaveElement("Layout");
     }
 
+#ifdef USE_CRENDER_EXTENSION
+
+  // save the global render information list
+  if (mpLayoutList->getListOfGlobalRenderInformationObjects().size() > 0)
+    {
+      saveListOfGlobalRenderInformation(mpLayoutList->getListOfGlobalRenderInformationObjects());
+    }
+
+#endif /* USE_CRENDER_EXTENSION */
   endSaveElement("ListOfLayouts");
 
   return success;
@@ -1593,3 +1689,845 @@ bool CCopasiXML::buildFunctionList()
 
   return success;
 }
+
+#ifdef USE_CRENDER_EXTENSION
+
+/**
+ * Saves the list of global render information objects.
+ */
+void CCopasiXML::saveListOfGlobalRenderInformation(const CCopasiVector<CLGlobalRenderInformation>& list)
+{
+  startSaveElement("ListOfGlobalRenderInformation");
+  unsigned int i, iMax = list.size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      saveGlobalRenderInformation(*list[i]);
+    }
+
+  endSaveElement("ListOfGlobalRenderInformation");
+}
+
+/**
+ * Saves the list of local render information objects.
+ */
+void CCopasiXML::saveListOfLocalRenderInformation(const CCopasiVector<CLLocalRenderInformation>& list)
+{
+  startSaveElement("ListOfRenderInformation");
+  unsigned int i, iMax = list.size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      saveLocalRenderInformation(*list[i]);
+    }
+
+  endSaveElement("ListOfRenderInformation");
+}
+
+/**
+ * Saves a single global render information object.
+ */
+void CCopasiXML::saveGlobalRenderInformation(const CLGlobalRenderInformation& renderInfo)
+{
+  // first we create the attributes that are common to all render information objects
+  CXMLAttributeList attributes;
+  saveRenderInformationAttributes(renderInfo, attributes);
+  startSaveElement("RenderInformation", attributes);
+  // now we save the definition that are the same for all render information objects
+  saveRenderInformationDefinitionElements(renderInfo);
+  // last we save the global styles
+  unsigned int i, iMax = renderInfo.getNumStyles();
+
+  if (iMax > 0)
+    {
+      startSaveElement("ListOfStyles");
+
+      for (i = 0; i < iMax; ++i)
+        {
+          saveGlobalStyle(*(dynamic_cast<const CLGlobalStyle*>(renderInfo.getStyle(i))));
+        }
+
+      endSaveElement("ListOfStyles");
+    }
+
+  endSaveElement("RenderInformation");
+}
+
+/**
+ * Saves a single local render information object.
+ */
+void CCopasiXML::saveLocalRenderInformation(const CLLocalRenderInformation& renderInfo)
+{
+  // first we create the attributes that are common to all render information objects
+  CXMLAttributeList attributes;
+  saveRenderInformationAttributes(renderInfo, attributes);
+  startSaveElement("RenderInformation", attributes);
+  // now we save the definition that are the same for all render information objects
+  saveRenderInformationDefinitionElements(renderInfo);
+  // last we save the global styles
+  unsigned int i, iMax = renderInfo.getNumStyles();
+
+  if (iMax > 0)
+    {
+      startSaveElement("ListOfStyles");
+
+      for (i = 0; i < iMax; ++i)
+        {
+          saveLocalStyle(*(dynamic_cast<const CLLocalStyle*>(renderInfo.getStyle(i))));
+        }
+
+      endSaveElement("ListOfStyles");
+    }
+
+  endSaveElement("RenderInformation");
+}
+
+void CCopasiXML::saveRenderInformationAttributes(const CLRenderInformationBase& renderInfo, CXMLAttributeList& attributes)
+{
+  // save the key
+  attributes.add("key", renderInfo.getKey());
+  // save the name
+  std::string s = renderInfo.getName();
+  const char* ws = " \t\n\r";
+
+  if (s.find_first_not_of(ws) != std::string::npos)
+    {
+      attributes.add("name", s);
+    }
+
+  // save the background color
+  s = renderInfo.getBackgroundColor();
+
+  if (s.find_first_not_of(ws) != std::string::npos)
+    {
+      // save the name
+      attributes.add("backgroundColor", s);
+    }
+
+  // save the reference render information key
+  s = renderInfo.getReferenceRenderInformationKey();
+
+  if (s.find_first_not_of(ws) != std::string::npos)
+    {
+      // save the name
+      attributes.add("referenceRenderInformation", s);
+    }
+}
+
+/**
+ * Saves color definitions , gradient definitions and line endings.
+ */
+void CCopasiXML::saveRenderInformationDefinitionElements(const CLRenderInformationBase& renderInfo)
+{
+  unsigned int i, iMax = renderInfo.getNumColorDefinitions();
+
+  if (iMax > 0)
+    {
+      startSaveElement("ListOfColorDefinitions");
+
+      for (i = 0; i < iMax; ++i)
+        {
+          saveColorDefinition(*(renderInfo.getColorDefinition(i)));
+        }
+
+      endSaveElement("ListOfColorDefinitions");
+    }
+
+  iMax = renderInfo.getNumGradientDefinitions();
+
+  if (iMax > 0)
+    {
+      startSaveElement("ListOfGradientDefinitions");
+      const CLGradientBase* pGradient = NULL;
+
+      for (i = 0; i < iMax; ++i)
+        {
+          pGradient = renderInfo.getGradientDefinition(i);
+
+          if (dynamic_cast<const CLRadialGradient*>(pGradient))
+            {
+              saveRadialGradient(*static_cast<const CLRadialGradient*>(pGradient));
+            }
+          else if (dynamic_cast<const CLLinearGradient*>(pGradient))
+            {
+              saveLinearGradient(*static_cast<const CLLinearGradient*>(pGradient));
+            }
+        }
+
+      endSaveElement("ListOfGradientDefinitions");
+    }
+
+  iMax = renderInfo.getNumLineEndings();
+
+  if (iMax > 0)
+    {
+      startSaveElement("ListOfLineEndings");
+
+      for (i = 0; i < iMax; ++i)
+        {
+          saveLineEnding(*(renderInfo.getLineEnding(i)));
+        }
+
+      endSaveElement("ListOfLineEndings");
+    }
+}
+
+/**
+ * Save a single color definition element.
+ */
+void CCopasiXML::saveColorDefinition(const CLColorDefinition& color)
+{
+  CXMLAttributeList attributes;
+  attributes.add("id", color.getId());
+  attributes.add("value", color.createValueString());
+  saveElement("ColorDefinition", attributes);
+}
+
+/**
+ * Saves a single linear gradient definition.
+ */
+void CCopasiXML::saveLinearGradient(const CLLinearGradient& gradient)
+{
+  CXMLAttributeList attributes;
+  // first we create the common attributes
+  saveGradientAttributes(gradient, attributes);
+  // now we add the attributes specific to the radial gradient
+  attributes.add("x1", gradient.getXPoint1().toString());
+  attributes.add("y1", gradient.getYPoint1().toString());
+
+  if (gradient.getZPoint1() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("z1", gradient.getZPoint1().toString());
+    }
+
+  attributes.add("x2", gradient.getXPoint2().toString());
+  attributes.add("y2", gradient.getYPoint2().toString());
+
+  if (gradient.getZPoint2() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("z2", gradient.getZPoint2().toString());
+    }
+
+  startSaveElement("LinearGradient", attributes);
+  // save the gradient stops
+  saveGradientElements(gradient);
+  endSaveElement("LinearGradient");
+}
+
+/**
+ * Saves a single radial gradient definition.
+ */
+void CCopasiXML::saveRadialGradient(const CLRadialGradient& gradient)
+{
+  CXMLAttributeList attributes;
+  // first we create the common attributes
+  saveGradientAttributes(gradient, attributes);
+  // now we add the attributes specific to the radial gradient
+  attributes.add("cx", gradient.getCenterX().toString());
+  attributes.add("cy", gradient.getCenterY().toString());
+  attributes.add("cz", gradient.getCenterZ().toString());
+  attributes.add("r", gradient.getRadius().toString());
+  attributes.add("fx", gradient.getFocalPointX().toString());
+  attributes.add("fy", gradient.getFocalPointY().toString());
+  attributes.add("fz", gradient.getFocalPointZ().toString());
+  startSaveElement("RadialGradient", attributes);
+  // save the gradient stops
+  saveGradientElements(gradient);
+  endSaveElement("RadialGradient");
+}
+
+/**
+ * Adds the attributes common to radial and linear gradient.
+ */
+void CCopasiXML::saveGradientAttributes(const CLGradientBase& gradient, CXMLAttributeList& attributes)
+{
+  attributes.add("id", gradient.getId());
+
+  switch (gradient.getSpreadMethod())
+    {
+      case CLGradientBase::REPEAT:
+        attributes.add("spreadMethod", "repeat");
+        break;
+      case CLGradientBase::REFLECT:
+        attributes.add("spreadMethod", "reflect");
+        break;
+      case CLGradientBase::PAD:
+      default:
+        attributes.add("spreadMethod", "pad");
+        break;
+    }
+}
+
+/**
+ * Saves the elements that are common to linear and radial gradients.
+ */
+void CCopasiXML::saveGradientElements(const CLGradientBase& gradient)
+{
+  unsigned int i, iMax = gradient.getNumGradientStops();
+
+  if (iMax > 0)
+    {
+      for (i = 0; i < iMax; ++i)
+        {
+          saveGradientStop(*(gradient.getGradientStop(i)));
+        }
+    }
+}
+
+/**
+ * Saves a single gradient stop element.
+ */
+void CCopasiXML::saveGradientStop(const CLGradientStop& stop)
+{
+  CXMLAttributeList attributes;
+  attributes.add("offset", stop.getOffset().toString());
+  attributes.add("stop-color", stop.getStopColor());
+  saveElement("Stop", attributes);
+}
+
+void CCopasiXML::saveLineEnding(const CLLineEnding& lineEnding)
+{
+  // create the attributes
+  CXMLAttributeList attributes;
+  attributes.add("id", lineEnding.getId());
+  attributes.add("enableRotationalMapping", lineEnding.getIsEnabledRotationalMapping() ? std::string("true") : std::string("false"));
+  startSaveElement("LineEnding", attributes);
+  // a line ending has a bounding box
+  saveBoundingBox(*(lineEnding.getBoundingBox()));
+  // and a group element
+  assert(lineEnding.getGroup() != NULL);
+  saveGroupElement(*lineEnding.getGroup());
+  endSaveElement("LineEnding");
+}
+
+/**
+ * Saves a single local style element.
+ */
+void CCopasiXML::saveLocalStyle(const CLLocalStyle& style)
+{
+  // first we create the attributes
+  CXMLAttributeList attributes;
+  saveStyleAttributes(style, attributes);
+
+  // now we add the attributes that are specific to local styles
+  if (style.getNumKeys() > 0)
+    {
+      attributes.add("keyList", CLStyle::createStringFromSet(style.getKeyList()));
+    }
+
+  startSaveElement("Style", attributes);
+  saveStyleElements(style);
+  endSaveElement("Style");
+}
+
+/**
+ * Saves a single local style element.
+ */
+void CCopasiXML::saveGlobalStyle(const CLGlobalStyle& style)
+{
+  // first we create the attributes
+  CXMLAttributeList attributes;
+  saveStyleAttributes(style, attributes);
+  startSaveElement("Style", attributes);
+  saveStyleElements(style);
+  endSaveElement("Style");
+}
+
+/**
+ * Adds the attributes common to both style types.
+ */
+void CCopasiXML::saveStyleAttributes(const CLStyle& style, CXMLAttributeList& attributes)
+{
+  attributes.add("key", style.getKey());
+
+  if (style.getNumRoles() > 0)
+    {
+      attributes.add("roleList", CLStyle::createStringFromSet(style.getRoleList()));
+    }
+
+  if (style.getNumTypes() > 0)
+    {
+      attributes.add("typeList", CLStyle::createStringFromSet(style.getTypeList()));
+    }
+}
+
+/**
+ * Saves the elements common to both style types.
+ */
+void CCopasiXML::saveStyleElements(const CLStyle& style)
+{
+  assert(style.getGroup() != NULL);
+  saveGroupElement(*(style.getGroup()));
+}
+
+/**
+ * Saves a group element.
+ */
+void CCopasiXML::saveGroupElement(const CLGroup& group)
+{
+  CXMLAttributeList attributes;
+  save2DAttributes(group, attributes);
+  saveTextAttributes<CLGroup>(group, attributes);
+  saveArrowHeadAttributes<CLGroup>(group, attributes);
+  startSaveElement("Group", attributes);
+  unsigned int i, iMax = group.getNumElements();
+
+  if (iMax > 0)
+    {
+      for (i = 0; i < iMax; ++i)
+        {
+          saveTransformation2D(*dynamic_cast<const CLTransformation2D*>(group.getElement(i)));
+        }
+    }
+
+  endSaveElement("Group");
+}
+
+/**
+ * Saves the attributes for a transformation.
+ */
+void CCopasiXML::saveTransformationAttributes(const CLTransformation2D& transformation, CXMLAttributeList& attributes)
+{
+  // transformation
+  if (!transformation.isIdentityMatrix())
+    {
+      // check if it is a 2D or a 3D transformation
+      if (transformation.is2DTransformation())
+        {
+          if (transformation.isSetMatrix())
+            {
+              attributes.add("transform", transformation.get2DTransformationString());
+            }
+        }
+      else
+        {
+          if (transformation.isSetMatrix())
+            {
+              attributes.add("transform", transformation.get3DTransformationString());
+            }
+        }
+    }
+}
+
+/**
+ * Saves the attributes for a 1D element
+ */
+void CCopasiXML::save1DAttributes(const CLGraphicalPrimitive1D& primitive, CXMLAttributeList& attributes)
+{
+  // first we go and add the transformation attributes because each 1D element is automatically a transformation element.
+  saveTransformationAttributes(primitive, attributes);
+
+  // stroke
+  if (primitive.isSetStroke())
+    {
+      attributes.add("stroke", primitive.getStroke());
+    }
+
+  // stroke size
+  if (primitive.isSetStrokeWidth())
+    {
+      std::ostringstream os;
+      os << primitive.getStrokeWidth();
+      attributes.add("stroke-width", os.str());
+    }
+
+  // stroke dash array
+  if (primitive.isSetDashArray())
+    {
+      std::ostringstream os;
+      unsigned int i, iMax = primitive.getDashArray().size();
+      os << primitive.getDashArray()[0];
+
+      for (i = 1; i < iMax; ++i)
+        {
+          os << ", " << primitive.getDashArray()[i];
+        }
+
+      attributes.add("stroke-dasharray", os.str());
+    }
+}
+
+/**
+ * Saves the attributes for a 2D element
+ */
+void CCopasiXML::save2DAttributes(const CLGraphicalPrimitive2D& primitive, CXMLAttributeList& attributes)
+{
+  // first we go and add the 1D attributes because each 2D element is automatically a 1D element.
+  save1DAttributes(primitive, attributes);
+
+  // fill
+  if (primitive.isSetFill())
+    {
+      attributes.add("fill", primitive.getFillColor());
+    }
+
+  // fill rule
+  if (primitive.isSetFillRule())
+    {
+      switch (primitive.getFillRule())
+        {
+          case CLGraphicalPrimitive2D::EVENODD:
+            attributes.add("fill-rule", "evenodd");
+            break;
+          case CLGraphicalPrimitive2D::NONZERO:
+          default:
+            attributes.add("fill-rule", "nonzero");
+            break;
+        }
+    }
+}
+
+/**
+ * Saves the attributes for a text element.
+ * We make this a template so that we can use it for a group as well as a text element.
+ */
+template<typename TEXTELEMENT>
+void CCopasiXML::saveTextAttributes(const TEXTELEMENT& text, CXMLAttributeList& attributes)
+{
+  // text size
+  if (text.isSetFontSize())
+    {
+      attributes.add("font-size", text.getFontSize().toString());
+    }
+
+  // font family
+  if (text.isSetFontFamily())
+    {
+      attributes.add("font-family", text.getFontFamily());
+    }
+
+  // font weight
+  if (text.isSetFontWeight())
+    {
+      switch (text.getFontWeight())
+        {
+          case CLText::WEIGHT_BOLD:
+            attributes.add("font-weight", "bold");
+            break;
+          default:
+            break;
+        }
+    }
+
+  // font style
+  if (text.isSetFontStyle())
+    {
+      switch (text.getFontStyle())
+        {
+          case CLText::STYLE_ITALIC:
+            attributes.add("font-style", "italic");
+            break;
+          default:
+            break;
+        }
+    }
+
+  // text anchor
+  if (text.isSetTextAnchor())
+    {
+      switch (text.getTextAnchor())
+        {
+          case CLText::ANCHOR_MIDDLE:
+            attributes.add("text-anchor", "middle");
+            break;
+          case CLText::ANCHOR_END:
+            attributes.add("text-anchor", "end");
+            break;
+          case CLText::ANCHOR_START:
+            attributes.add("text-anchor", "start");
+            break;
+          default:
+            break;
+        }
+    }
+
+  // vertical text anchor
+  if (text.isSetVTextAnchor())
+    {
+      switch (text.getVTextAnchor())
+        {
+          case CLText::ANCHOR_MIDDLE:
+            attributes.add("vtext-anchor", "middle");
+            break;
+          case CLText::ANCHOR_BOTTOM:
+            attributes.add("vtext-anchor", "bottom");
+            break;
+          case CLText::ANCHOR_TOP:
+            attributes.add("vtext-anchor", "top");
+            break;
+          default:
+            break;
+        }
+    }
+}
+
+/**
+ * Saves the startHead and endHead attribute as found in group and curves.
+ * We write it as a template so that it can be used on curves and group elements.
+ */
+template<typename HEADELEMENT>
+void CCopasiXML::saveArrowHeadAttributes(const HEADELEMENT& element, CXMLAttributeList& attributes)
+{
+  // start head
+  if (element.isSetStartHead())
+    {
+      attributes.add("startHead", element.getStartHead());
+    }
+
+  // start head
+  if (element.isSetEndHead())
+    {
+      attributes.add("endHead", element.getEndHead());
+    }
+}
+
+/**
+ * Saves a class that is subclasses from Transformation2D.
+ * This covers images, curves, rectangles, ellipses, polygons, text elements and groups.
+ */
+void CCopasiXML::saveTransformation2D(const CLTransformation2D& transformation)
+{
+  if (dynamic_cast<const CLGraphicalPrimitive1D*>(&transformation))
+    {
+      if (dynamic_cast<const CLRenderCurve*>(&transformation))
+        {
+          saveRenderCurveElement(static_cast<const CLRenderCurve&>(transformation));
+        }
+      else if (dynamic_cast<const CLGraphicalPrimitive2D*>(&transformation))
+        {
+          if (dynamic_cast<const CLRectangle*>(&transformation))
+            {
+              saveRectangleElement(static_cast<const CLRectangle&>(transformation));
+            }
+          else if (dynamic_cast<const CLEllipse*>(&transformation))
+            {
+              saveEllipseElement(static_cast<const CLEllipse&>(transformation));
+            }
+          else if (dynamic_cast<const CLPolygon*>(&transformation))
+            {
+              savePolygonElement(static_cast<const CLPolygon&>(transformation));
+            }
+          else if (dynamic_cast<const CLGroup*>(&transformation))
+            {
+              saveGroupElement(static_cast<const CLGroup&>(transformation));
+            }
+          else
+            {
+              // we should never end up here.
+              assert(false);
+            }
+        }
+      else if (dynamic_cast<const CLText*>(&transformation))
+        {
+          saveRenderTextElement(static_cast<const CLText&>(transformation));
+        }
+      else
+        {
+          // we should never end up here.
+          assert(false);
+        }
+    }
+  else if (dynamic_cast<const CLImage*>(&transformation))
+    {
+      saveImageElement(static_cast<const CLImage&>(transformation));
+    }
+  else
+    {
+      // we should never end up here.
+      assert(false);
+    }
+}
+
+/**
+ * saves a single image element.
+ */
+void CCopasiXML::saveImageElement(const CLImage& image)
+{
+  CXMLAttributeList attributes;
+  // first we add the attributes for a transformation
+  saveTransformationAttributes(image, attributes);
+  // now we add the image specific attributes
+  attributes.add("x", image.getX().toString());
+  attributes.add("y", image.getY().toString());
+
+  if (image.getZ() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("z", image.getZ().toString());
+    }
+
+  attributes.add("width", image.getWidth().toString());
+  attributes.add("height", image.getHeight().toString());
+  attributes.add("href", image.getImageReference());
+  saveElement("Image", attributes);
+}
+
+/**
+ * saves a single rectangle element.
+ */
+void CCopasiXML::saveRectangleElement(const CLRectangle& rectangle)
+{
+  CXMLAttributeList attributes;
+  // first we add the attributes for a 2D object
+  save2DAttributes(rectangle, attributes);
+  // now we add the rectangle specific attributes
+  attributes.add("x", rectangle.getX().toString());
+  attributes.add("y", rectangle.getY().toString());
+
+  if (rectangle.getZ() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("z", rectangle.getZ().toString());
+    }
+
+  attributes.add("width", rectangle.getWidth().toString());
+  attributes.add("height", rectangle.getHeight().toString());
+
+  if (rectangle.getRadiusX() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("rx", rectangle.getRadiusX().toString());
+    }
+
+  if (rectangle.getRadiusY() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("ry", rectangle.getRadiusY().toString());
+    }
+
+  saveElement("Rectangle", attributes);
+}
+
+/**
+ * saves a single ellipse element.
+ */
+void CCopasiXML::saveEllipseElement(const CLEllipse& ellipse)
+{
+  CXMLAttributeList attributes;
+  // first we add the attributes for a 2D object
+  save2DAttributes(ellipse, attributes);
+  // now we add the ellipse specific attributes
+  attributes.add("cx", ellipse.getCX().toString());
+  attributes.add("cy", ellipse.getCY().toString());
+
+  if (ellipse.getCZ() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("cz", ellipse.getCZ().toString());
+    }
+
+  if (ellipse.getRX() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("rx", ellipse.getRX().toString());
+    }
+
+  if (ellipse.getRY() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("ry", ellipse.getRY().toString());
+    }
+
+  saveElement("Ellipse", attributes);
+}
+
+/**
+ * saves a single text element.
+ */
+void CCopasiXML::saveRenderTextElement(const CLText& text)
+{
+  CXMLAttributeList attributes;
+  // first we add the attributes for a 1D object
+  save1DAttributes(text, attributes);
+  // save text attributes
+  attributes.add("x", text.getX().toString());
+  attributes.add("y", text.getY().toString());
+
+  if (text.getZ() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("z", text.getZ().toString());
+    }
+
+  // next we add the text specific attributes
+  saveTextAttributes<CLText>(text, attributes);
+  startSaveElement("Text", attributes);
+  saveData(text.getText());
+  endSaveElement("Text");
+}
+
+/**
+ * saves a single image element.
+ */
+void CCopasiXML::savePolygonElement(const CLPolygon& polygon)
+{
+  CXMLAttributeList attributes;
+  // first we add the attributes for a 2D object
+  save2DAttributes(polygon, attributes);
+  startSaveElement("Polygon", attributes);
+  saveCurveElements(*polygon.getListOfElements());
+  endSaveElement("Polygon");
+}
+
+/**
+ * saves a single image element.
+ */
+void CCopasiXML::saveRenderCurveElement(const CLRenderCurve& curve)
+{
+  CXMLAttributeList attributes;
+  // first we add the attributes for a 1D object
+  save1DAttributes(curve, attributes);
+  // next we add the arrow head attributes
+  saveArrowHeadAttributes<CLRenderCurve>(curve, attributes);
+  startSaveElement("Curve", attributes);
+  saveCurveElements(*curve.getListOfCurveElements());
+  endSaveElement("Curve");
+}
+
+/**
+ * saves a vector of curve elements. This can be called from the polygon as well as the curve.
+ */
+void CCopasiXML::saveCurveElements(const std::vector<CLRenderPoint*>& curveElements)
+{
+  startSaveElement("ListOfElements");
+  unsigned int i, iMax = curveElements.size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      saveRenderPoint(*curveElements[i]);
+    }
+
+  endSaveElement("ListOfElements");
+}
+
+/**
+ * saves a single render point element.
+ */
+void CCopasiXML::saveRenderPoint(const CLRenderPoint& point)
+{
+  CXMLAttributeList attributes;
+  attributes.add("x", point.x().toString());
+  attributes.add("y", point.y().toString());
+
+  if (point.z() != CLRelAbsVector(0.0, 0.0))
+    {
+      attributes.add("z", point.z().toString());
+    }
+
+  const CLRenderCubicBezier* pCB = dynamic_cast<const CLRenderCubicBezier*>(&point);
+
+  if (pCB != NULL)
+    {
+      attributes.add("basePoint1_x", pCB->basePoint1_X().toString());
+      attributes.add("basePoint1_y", pCB->basePoint1_Y().toString());
+
+      if (pCB->basePoint1_Z() != CLRelAbsVector(0.0, 0.0))
+        {
+          attributes.add("basePoint1_z", pCB->basePoint1_Z().toString());
+        }
+
+      attributes.add("basePoint2_x", pCB->basePoint2_X().toString());
+      attributes.add("basePoint2_y", pCB->basePoint2_Y().toString());
+
+      if (pCB->basePoint2_Z() != CLRelAbsVector(0.0, 0.0))
+        {
+          attributes.add("basePoint2_z", pCB->basePoint2_Z().toString());
+        }
+    }
+
+  saveElement("Element", attributes);
+}
+
+#endif /* USE_CRENDER_EXTENSION */
