@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQScreenshotDialog.ui,v $ </comment>
+<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: gauges $ </comment>
+<comment>   $Date: 2010/03/10 12:33:51 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>screenshot_option_dialog</class>
+ <widget class="QDialog" name="screenshot_option_dialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>477</width>
+    <height>330</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Screenshot Settings</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_6">
+   <property name="leftMargin">
+    <number>12</number>
+   </property>
+   <property name="bottomMargin">
+    <number>6</number>
+   </property>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_8">
+     <property name="spacing">
+      <number>-1</number>
+     </property>
+     <item>
+      <widget class="QFrame" name="frame">
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="visible_area_label">
+          <property name="text">
+           <string>visible area: (x=0.0, y=0.0, width=0.0, height=0.0)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="layout_area_label">
+          <property name="text">
+           <string>layout area: (x=0.0, y=0.0, width=0.0, height=0.0)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QLabel" name="image_width_label">
+                <property name="toolTip">
+                 <string extracomment="the x position of the area that is drawn"/>
+                </property>
+                <property name="text">
+                 <string>image width (pixels):</string>
+                </property>
+                <property name="buddy">
+                 <cstring>image_width_spinbox</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="image_width_spinbox">
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="minimum">
+                 <number>100</number>
+                </property>
+                <property name="maximum">
+                 <number>10000</number>
+                </property>
+                <property name="singleStep">
+                 <number>100</number>
+                </property>
+                <property name="value">
+                 <number>1000</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <item>
+               <widget class="QLabel" name="image_height_label">
+                <property name="toolTip">
+                 <string extracomment="the y position of the area that is drawn"/>
+                </property>
+                <property name="text">
+                 <string>image height (pixels):</string>
+                </property>
+                <property name="buddy">
+                 <cstring>image_height_spinbox</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="image_height_spinbox">
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="minimum">
+                 <number>100</number>
+                </property>
+                <property name="maximum">
+                 <number>10000</number>
+                </property>
+                <property name="singleStep">
+                 <number>100</number>
+                </property>
+                <property name="value">
+                 <number>1000</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="button_group">
+            <property name="title">
+             <string/>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <item>
+                <widget class="QRadioButton" name="visible_button">
+                 <property name="toolTip">
+                  <string extracomment="if selected, the area that is currently visible will be in the screenshot"/>
+                 </property>
+                 <property name="text">
+                  <string>visible area</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="complete_button">
+                 <property name="toolTip">
+                  <string extracomment="if selected, the complete layout is drawn"/>
+                 </property>
+                 <property name="text">
+                  <string>complete layout</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="custom_button">
+                 <property name="toolTip">
+                  <string extracomment="the area given by the coordinates below is drawn"/>
+                 </property>
+                 <property name="text">
+                  <string>custom size</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QLabel" name="x_label">
+                <property name="toolTip">
+                 <string extracomment="the x position of the area that is drawn"/>
+                </property>
+                <property name="text">
+                 <string>x:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>x_line_edit</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="x_line_edit">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>0.0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QLabel" name="y_label">
+                <property name="toolTip">
+                 <string extracomment="the y position of the area that is drawn"/>
+                </property>
+                <property name="text">
+                 <string>y:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>y_line_edit</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="y_line_edit">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>0.0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>13</width>
+              <height>53</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLabel" name="width_label">
+                <property name="toolTip">
+                 <string extracomment="the width in model coordinates of the area that is drawn"/>
+                </property>
+                <property name="text">
+                 <string>width:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>width_line_edit</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="width_line_edit">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>0.0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="height_label">
+                <property name="toolTip">
+                 <string extracomment="the height in model coordinates of the area that is drawn"/>
+                </property>
+                <property name="text">
+                 <string>height:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>height_line_edit</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="height_line_edit">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>0.0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>13</width>
+              <height>17</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_13">
+          <item>
+           <widget class="QCheckBox" name="draw_selection_checkbox">
+            <property name="toolTip">
+             <string extracomment="determines if the selection is visible in the screenshot"/>
+            </property>
+            <property name="text">
+             <string>draw selection</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QDialogButtonBox" name="buttonBox">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="standardButtons">
+             <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>screenshot_option_dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>screenshot_option_dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>296</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>custom_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>screenshot_option_dialog</receiver>
+   <slot>slot_custom_area_toggled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>92</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>332</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slot_custom_area_toggled(bool)</slot>
+ </slots>
+</ui>

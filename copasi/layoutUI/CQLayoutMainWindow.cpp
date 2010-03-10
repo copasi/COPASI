@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/18 15:09:54 $
+//   $Date: 2010/03/10 12:33:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,9 @@
 #include "NodeSizePanel.h"
 #include "ParaPanel.h"
 #include "CQPlayerControlWidget.h"
+#ifndef USE_CRENDER_EXTENSION
 #include "load_data.xpm"
+#endif // USE_CRENDER_EXTENSION
 
 #ifdef DEBUG_UI
 #include <QtDebug>
@@ -64,29 +66,42 @@
 
 using namespace std;
 
+#ifndef USE_CRENDER_EXTENSION
 CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
     QMainWindow(NULL)
+#else
+CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
+    QFrame(pParent)
+#endif // USE_CRENDER_EXTENSION
     , mpVisParameters(new CVisParameters)
     , mpParaPanel(new CQParaPanel)
     , mpValTable(new CQCurrentValueTable)
-    , mpSplitter(new QSplitter(Qt::Horizontal))
+    , mpMainBox(new QFrame(this))
+    , mpSplitter(new QSplitter(Qt::Horizontal, this->mpMainBox))
     , mpGLViewport(NULL)
     , mpTimeSlider(new QwtSlider(NULL, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough))
     , mpFrame(new QFrame)
-    , mpMainBox(new QFrame)
     , mpInfoBox(new QFrame)
     , mpControlWidget(new CQPlayerControlWidget)
     , mDataPresent(false)
     , mCurrentPlace(QString::null)
     , mpZoomActionGroup(new QActionGroup(this))
+#ifdef USE_CRENDER_EXTENSION
+    , mpLayout(NULL)
+#else
     , mpLayout(pLayout)
+#endif // USE_CRENDER_EXTENSION
 {
+#ifndef USE_CRENDER_EXTENSION
   this->setWindowTitle(tr("Reaction network graph"));
   this->setCentralWidget(mpMainBox);
+#else
+  this->QFrame::setLayout(new QVBoxLayout);
+  this->layout()->addWidget(this->mpMainBox);
+#endif // USE_CRENDER_EXTENSION
   this->mpMainBox->setLayout(new QVBoxLayout());
 
   // create split window with parameter panel and graph panel
-  this->mpSplitter->setWindowTitle("Test");
   this->mpMainBox->layout()->addWidget(this->mpSplitter);
 
   this->mpSplitter->addWidget(this->mpInfoBox);
@@ -103,9 +118,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
 
   if (this->mpLayout != NULL)
     {
-      CLDimensions dim = this->mpLayout->getDimensions();
-      CLPoint c1;
-      CLPoint c2(dim.getWidth(), dim.getHeight());
       this->mpGLViewport->createGraph(this->mpLayout); // create local data structures
     }
 
@@ -138,6 +150,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
   QSpacerItem* pSpacer = new QSpacerItem(20, 20);
   pGridLayout->addItem(pSpacer, 1, 0);
 
+#ifndef USE_CRENDER_EXTENSION
   loadData(); // try to load data (if already present)
   // the action have to be created before mpLoadDataAction is used below
   // the menus have to be created after the player control widget is created
@@ -176,13 +189,16 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
   this->mpZoomComboBox->setCurrentIndex(10);
   this->mpZoomComboBox->setEditable(FALSE);
   connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
-  connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
+#endif // USE_CRENDER_EXTENSION
+  connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
   this->mLooping = false;
 
   this->setTabOrder(this->mpGLViewport, this->mpToolbar);
+#ifndef USE_CRENDER_EXTENSION
   this->setTabOrder(this->mpToolbar, this->mpParaPanel);
+#endif // USE_CRENDER_EXTENSION
   this->setTabOrder(this->mpParaPanel, this->mpValTable);
   this->setTabOrder(this->mpValTable, this->mpControlWidget);
 }
@@ -311,6 +327,7 @@ CVisParameters::MAPPING_MODE CQLayoutMainWindow::getMappingMode()
     return CVisParameters::SIZE_DIAMETER_MODE; // default mode
 }
 
+#ifndef USE_CRENDER_EXTENSION
 void CQLayoutMainWindow::createActions()
 {
   //   mpOpenSBMLFile = new QAction("SBML",
@@ -330,37 +347,37 @@ void CQLayoutMainWindow::createActions()
   mpCloseAction = new QAction("Close Window", this);
   mpCloseAction->setShortcut(Qt::CTRL + Qt::Key_W);
   mpCloseAction->setStatusTip("Close Layout Window");
-  connect(mpCloseAction, SIGNAL(activated()), this, SLOT(closeApplication()));
+  connect(mpCloseAction, SIGNAL(triggered()), this, SLOT(closeApplication()));
 
   mDataPresent = false;
 
   mpCreatePicture = new QAction("Create image", this);
   mpCreatePicture->setShortcut(Qt::CTRL + Qt::Key_I);
   mpCreatePicture->setStatusTip("create a picture from the current view and save it to file");
-  connect(mpCreatePicture, SIGNAL(activated()), this, SLOT(saveImage()));
+  connect(mpCreatePicture, SIGNAL(triggered()), this, SLOT(saveImage()));
 
   mpRectangularShape = new QAction("Rectangle", this);
   mpRectangularShape->setShortcut(Qt::CTRL + Qt::Key_R);
   mpRectangularShape->setStatusTip("Show labels as rectangles");
-  connect(mpRectangularShape, SIGNAL(activated()), this, SLOT(mapLabelsToRectangles()));
+  connect(mpRectangularShape, SIGNAL(triggered()), this, SLOT(mapLabelsToRectangles()));
 
   mpCircularShape = new QAction("Circle", this);
   mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
   mpCircularShape->setStatusTip("Show labels as circles");
-  connect(mpCircularShape, SIGNAL(activated()), this, SLOT(mapLabelsToCircles()));
+  connect(mpCircularShape, SIGNAL(triggered()), this, SLOT(mapLabelsToCircles()));
 
   mpMimaNodeSizes = new QAction("Set Min/Max Node Sizes", this);
   mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
   mpMimaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
-  connect(mpMimaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
+  connect(mpMimaNodeSizes, SIGNAL(triggered()), this, SLOT(changeMinMaxNodeSizes()));
 
   mpSFontSize = new QAction("Set Font Size", this);
   mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
   mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
-  connect(mpSFontSize, SIGNAL(activated()), this, SLOT(changeFontSize()));
+  connect(mpSFontSize, SIGNAL(triggered()), this, SLOT(changeFontSize()));
 
   mpLoadDataAction = new QAction(QPixmap(load_data_xpm), "Load data", this);
-  connect(this->mpLoadDataAction, SIGNAL(activated()), this, SLOT(loadData()));
+  connect(this->mpLoadDataAction, SIGNAL(triggered()), this, SLOT(loadData()));
 }
 
 void CQLayoutMainWindow::createMenus()
@@ -452,6 +469,7 @@ void CQLayoutMainWindow::createMenus()
   this->mpOptionsMenu->addAction(this->mpMimaNodeSizes);
   this->mpOptionsMenu->addAction(this->mpSFontSize);
 }
+#endif // USE_CRENDER_EXTENSION
 
 void CQLayoutMainWindow::loadSBMLFile()
 {
@@ -474,9 +492,6 @@ void CQLayoutMainWindow::loadSBMLFile()
       if (pLayoutList->size() > 0)
         {
           pLayout = (*pLayoutList)[0];
-          CLDimensions dim = pLayout->getDimensions();
-          CLPoint c1;
-          CLPoint c2(dim.getWidth(), dim.getHeight());
           mpGLViewport->createGraph(pLayout); // create local data structures
         }
     }
@@ -758,6 +773,7 @@ void CQLayoutMainWindow::setFontSizeForLabels(C_INT32 size)
   mpGLViewport->getPainter()->setFontSizeForLabels((unsigned int) size);
 }
 
+#ifndef USE_CRENDER_EXTENSION
 void CQLayoutMainWindow::closeApplication()
 {
   this->close();
@@ -775,6 +791,7 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
       event->ignore();
     }
 }
+#endif // USE_CRENDER_EXTENSION
 
 QIcon CQLayoutMainWindow::createStartIcon()
 {
@@ -867,17 +884,6 @@ bool CQLayoutMainWindow::maybeSave()
   return true;
 }
 
-void CQLayoutMainWindow::slotActivated(int index)
-{
-  // update menu items
-  if (index >= 0 && index < 15)
-    {
-      QAction* pAction = this->mpZoomActionGroup->actions().at(index);
-      pAction->setChecked(true);
-      this->setZoomFactor(pAction->text());
-    }
-}
-
 void CQLayoutMainWindow::setZoomFactor(QString s)
 {
   s.remove(s.size() - 1, 1);
@@ -889,6 +895,7 @@ void CQLayoutMainWindow::setZoomFactor(QString s)
 
 void CQLayoutMainWindow::slotResetView()
 {
+#ifndef USE_CRENDER_EXTENSION
   // check the 100% zoom entry
   disconnect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
   this->mpZoomActionGroup->actions().at(10)->setChecked(true);
@@ -897,7 +904,20 @@ void CQLayoutMainWindow::slotResetView()
   disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
   this->mpZoomComboBox->setCurrentIndex(10);
   connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+#endif // USE_CRENDER_EXTENSION
   this->mpGLViewport->resetView();
+}
+
+#ifndef USE_CRENDER_EXTENSION
+void CQLayoutMainWindow::slotActivated(int index)
+{
+  // update menu items
+  if (index >= 0 && index < 15)
+    {
+      QAction* pAction = this->mpZoomActionGroup->actions().at(index);
+      pAction->setChecked(true);
+      this->setZoomFactor(pAction->text());
+    }
 }
 
 void CQLayoutMainWindow::slotZoomItemActivated(QAction* pAction)
@@ -937,6 +957,28 @@ void CQLayoutMainWindow::slotZoomOut()
       actions.at(index)->setChecked(true);
     }
 }
+#else
+void CQLayoutMainWindow::setLayout(CLayout* pLayout)
+{
+  if (this->mpLayout == pLayout) return;
+
+  this->mpLayout = pLayout;
+
+  if (this->mpLayout != NULL)
+    {
+      this->mpGLViewport->createGraph(this->mpLayout); // create local data structures
+      this->loadData();
+    }
+
+  this->update();
+}
+
+CQPlayerControlWidget* CQLayoutMainWindow::getControlWidget()
+{
+  return this->mpControlWidget;
+}
+
+#endif // USE_CRENDER_EXTENSION
 
 void CQLayoutMainWindow::stopAnimation()
 {

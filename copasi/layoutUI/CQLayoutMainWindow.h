@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Date: 2010/03/10 12:33:51 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,7 +22,12 @@
 
 #ifndef SIMGUI_H_
 #define SIMGUI_H_
+
+#ifndef USE_CRENDER_EXTENSION
 #include <QMainWindow>
+#else
+#include <QFrame>
+#endif // USE_CRENDER_EXTENSION
 #include <QString>
 #include <QIcon>
 
@@ -42,17 +52,33 @@ class QMenu;
 class QSplitter;
 class QToolBar;
 class QwtSlider;
+class QFrame;
+class QToolBar;
+class CLayout;
+class CQPlayerControlWidget;
+class QCloseEvent;
 
+#ifdef USE_CRENDER_EXTENSION
+class CQLayoutMainWindow : public QFrame
+#else
 class CQLayoutMainWindow : public QMainWindow
+#endif // USE_CRENDER_EXTENSION
 {
 
   Q_OBJECT      // must include this if you use Qt signals/slots
 
+#ifndef USE_CRENDER_EXTENSION
 signals:
   void signal_close(const CQLayoutMainWindow* pWindow);
-
+#endif // USE_CRENDER_EXTENSION
 public:
+#ifdef USE_CRENDER_EXTENSION
+  CQLayoutMainWindow(QWidget* pParent);
+  void setLayout(CLayout* pLayout);
+  CQPlayerControlWidget* getControlWidget();
+#else
   CQLayoutMainWindow(CLayout* pLayout = NULL);
+#endif // USE_CRENDER_EXTENSION
   void setIndividualScaling();
   void setGlobalScaling();
   void setSizeMode();
@@ -80,19 +106,16 @@ public:
   void removeItemInAnimation(std::string s);
 
 protected:
+#ifndef USE_CRENDER_EXTENSION
   void closeEvent(QCloseEvent *event);
+#else
+public:
   void setZoomFactor(QString s);
+#endif // USE_CRENDER_EXTENSION
 
 private slots:
   void loadSBMLFile();
-  void loadData();
   void showAnimation();
-  void saveImage();
-  void closeApplication();
-  void mapLabelsToCircles();
-  void mapLabelsToRectangles();
-  void changeMinMaxNodeSizes();
-  void changeFontSize();
   void showStep(double i);
   void startAnimation();
   void pauseAnimation();
@@ -101,25 +124,40 @@ private slots:
   void backwardAnimation();
   void stepForwardAnimation();
   void stepBackwardAnimation();
-  void slotResetView();
-  void slotZoomItemActivated(QAction* pAction);
+  void parameterTableValueChanged(int row);
+#ifndef USE_CRENDER_EXTENSION
   void slotActivated(int);
+  void slotZoomItemActivated(QAction* pAction);
   void slotZoomIn();
   void slotZoomOut();
+  void closeApplication();
+#else
+// for the new code we need the following slots to be public
+// so that we can use them from the new main window class
+public slots:
+#endif // USE_CRENDER_EXTENSION
+  void slotResetView();
+  void loadData();
+  void saveImage();
+  void mapLabelsToCircles();
+  void mapLabelsToRectangles();
+  void changeMinMaxNodeSizes();
+  void changeFontSize();
   void slotValueTableToggled(bool checked);
   void slotParameterTableToggled(bool checked);
   void slotPlayerControlToggled(bool checked);
   void slotToolbarToggled(bool checked);
   void slotLoopActivated(bool checked);
-  void parameterTableValueChanged(int row);
 
 public slots:
   void changeStepValue(C_INT32 i);
   void endOfAnimationReached();
 
 private:
+#ifndef USE_CRENDER_EXTENSION
   void createActions();
   void createMenus();
+#endif // USE_CRENDER_EXTENSION
   bool maybeSave();
   QIcon createStartIcon();
   QIcon createStopIcon();
@@ -143,12 +181,12 @@ private:
 
   CQParaPanel *mpParaPanel;
   CQCurrentValueTable *mpValTable;
+  QFrame *mpMainBox;
   QSplitter* mpSplitter;
   CQGLViewport *mpGLViewport;
   QwtSlider *mpTimeSlider;
 
   QFrame *mpFrame;
-  QFrame *mpMainBox;
 
   QFrame *mpInfoBox;
 

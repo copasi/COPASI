@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.159 $
+//   $Revision: 1.160 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/16 09:51:52 $
+//   $Date: 2010/03/10 12:33:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2628,15 +2628,15 @@ void CQGLNetworkPainter::createActions()
 {
   zoomInAction = new QAction("Zoom in", this);
   zoomInAction->setShortcut(Qt::CTRL + Qt::Key_P);
-  connect(zoomInAction, SIGNAL(activated()), this, SLOT(zoomIn()));
+  connect(zoomInAction, SIGNAL(triggered()), this, SLOT(zoomIn()));
 
   zoomOutAction = new QAction("Zoom out", this);
   zoomOutAction->setShortcut(Qt::CTRL + Qt::Key_M);
-  connect(zoomOutAction, SIGNAL(activated()), this, SLOT(zoomOut()));
+  connect(zoomOutAction, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
   setFontSizeAction = new QAction("Set Font Size", this);
   setFontSizeAction->setShortcut(Qt::CTRL + Qt::Key_F);
-  connect(setFontSizeAction, SIGNAL(activated()), this, SLOT(setFontSize()));
+  connect(setFontSizeAction, SIGNAL(triggered()), this, SLOT(setFontSize()));
 }
 
 void CQGLNetworkPainter::setFontSize()
