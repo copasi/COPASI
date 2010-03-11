@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Author: shoops $
+//   $Date: 2010/03/11 18:23:42 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -130,28 +135,59 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
 {
   if (index.isValid() && role == Qt::EditRole)
     {
+      bool changed = false;
       bool defaultRow = isDefaultRow(index);
 
       if (defaultRow)
         {
           if (index.data() != value)
-            insertRow();
+            {
+              insertRow();
+              changed = true;
+            }
           else
             return false;
         }
 
       CPlotSpecification *pPS = (CPlotSpecification*)(*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->operator[](index.row());
 
-      if (index.column() == COL_NAME_PLOTS)
-        pPS->setObjectName(TO_UTF8(value.toString()));
-      else if (index.column() == COL_ACTIVE_PLOTS)
-        pPS->setActive(value.toBool());
+      switch (index.column())
+        {
+          case COL_NAME_PLOTS:
+
+            if (pPS->getObjectName() != TO_UTF8(value.toString()))
+              {
+                pPS->setObjectName(TO_UTF8(value.toString()));
+                changed = true;
+              }
+
+            break;
+
+          case COL_ACTIVE_PLOTS:
+
+            if (pPS->isActive() != value.toBool())
+              {
+                pPS->setActive(value.toBool());
+                changed = true;
+              }
+
+            break;
+
+          default:
+            break;
+        }
 
       if (defaultRow && this->index(index.row(), COL_NAME_PLOTS).data().toString() == "plot")
-        pPS->setObjectName(TO_UTF8(createNewName("plot", COL_NAME_PLOTS)));
+        {
+          pPS->setObjectName(TO_UTF8(createNewName("plot", COL_NAME_PLOTS)));
+          changed = true;
+        }
 
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, "");
+      if (changed)
+        {
+          emit dataChanged(index, index);
+          emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, "");
+        }
     }
 
   return true;
