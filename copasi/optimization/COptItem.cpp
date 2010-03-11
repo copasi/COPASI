@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.41.2.1 $
+//   $Revision: 1.41.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/26 16:01:20 $
+//   $Date: 2010/03/11 13:38:32 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -354,7 +354,10 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 
   if (compileLowerBound(listOfContainer))
     {
-      addDirectDependency(mpLowerObject);
+      if (mpLowerObject != NULL)
+        {
+          addDirectDependency(mpLowerObject);
+        }
     }
   else
     {
@@ -364,7 +367,10 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 
   if (compileUpperBound(listOfContainer))
     {
-      addDirectDependency(mpUpperObject);
+      if (mpUpperObject != NULL)
+        {
+          addDirectDependency(mpUpperObject);
+        }
     }
   else
     {
