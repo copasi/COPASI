@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.189.2.1 $
+//   $Revision: 1.189.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/23 08:15:09 $
+//   $Author: shoops $
+//   $Date: 2010/03/11 20:13:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -529,7 +529,21 @@ void CReaction::compile()
 
   if (mpFunction)
     {
-      addDirectDependency(mpFunction);
+      if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
+        {
+          addDirectDependency(mpFunction);
+
+          mpFluxReference->setRefresh(this, &CReaction::calculate);
+          mpParticleFluxReference->setRefresh(this, &CReaction::calculate);
+        }
+      else
+        {
+          mFlux = 0.0;
+          mParticleFlux = 0.0;
+
+          mpFluxReference->clearRefresh();
+          mpParticleFluxReference->clearRefresh();
+        }
 
       unsigned C_INT32 i, j, jmax;
       unsigned C_INT32 imax = mMap.getFunctionParameters().size();
