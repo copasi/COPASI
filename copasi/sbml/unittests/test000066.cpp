@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000066.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:41:10 $
+//   $Date: 2010/03/11 11:52:00 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -39,7 +44,7 @@ CCopasiDataModel* test000066::pCOPASIDATAMODEL = NULL;
 void test000066::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(false, 0, NULL);
+  CCopasiRootContainer::init(0, NULL, false);
   // Create the global data model.
   pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
@@ -169,7 +174,7 @@ const char* test000066::MODEL_STRING1 =
   "   </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 const char* test000066::MODEL_STRING2 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -234,7 +239,7 @@ const char* test000066::MODEL_STRING2 =
   "  </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000066::test_import_reaction_with_constant_flux_global_parameter()
 {
@@ -346,7 +351,7 @@ const char* test000066::MODEL_STRING3 =
   "   </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 const char* test000066::MODEL_STRING4 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -411,7 +416,7 @@ const char* test000066::MODEL_STRING4 =
   "  </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000066::test_import_reaction_with_constant_flux_reversible()
 {
@@ -537,7 +542,7 @@ const char* test000066::MODEL_STRING5 =
   "   </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 const char* test000066::MODEL_STRING6 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -606,7 +611,7 @@ const char* test000066::MODEL_STRING6 =
   "  </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000066::test_import_reaction_with_constant_flux_reversible_global_parameter()
 {
@@ -722,7 +727,7 @@ const char* test000066::MODEL_STRING7 =
   "   </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 const char* test000066::MODEL_STRING8 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -791,4 +796,4 @@ const char* test000066::MODEL_STRING8 =
   "  </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000063.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:41:10 $
+//   $Date: 2010/03/11 11:52:00 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -34,7 +39,7 @@ CCopasiDataModel* test000063::pCOPASIDATAMODEL = NULL;
 void test000063::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(false, 0, NULL);
+  CCopasiRootContainer::init(0, NULL, false);
   // Create the global data model.
   pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
@@ -118,7 +123,7 @@ const char* test000063::MODEL_STRING1 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species. One is determined by an ode , the
@@ -176,7 +181,7 @@ const char* test000063::MODEL_STRING2 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species. The compartment volume is determined by a
@@ -236,7 +241,7 @@ const char* test000063::MODEL_STRING3 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species and a parameter. The parameter is determined
@@ -299,7 +304,7 @@ const char* test000063::MODEL_STRING4 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species and two reactions.
@@ -376,7 +381,7 @@ const char* test000063::MODEL_STRING5 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species and two reactions.
@@ -472,7 +477,7 @@ const char* test000063::MODEL_STRING6 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species. One species is determined by a rate rule,
@@ -535,7 +540,7 @@ const char* test000063::MODEL_STRING7 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species.
@@ -625,7 +630,7 @@ const char* test000063::MODEL_STRING8 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species.
@@ -730,7 +735,7 @@ const char* test000063::MODEL_STRING9 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species.
@@ -807,7 +812,7 @@ const char* test000063::MODEL_STRING10 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species.
@@ -886,7 +891,7 @@ const char* test000063::MODEL_STRING11 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species. One is determined by an assignment, the
@@ -954,7 +959,7 @@ const char* test000063::MODEL_STRING12 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species.
@@ -1042,7 +1047,7 @@ const char* test000063::MODEL_STRING13 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species.
@@ -1132,7 +1137,7 @@ const char* test000063::MODEL_STRING14 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species.
@@ -1220,7 +1225,7 @@ const char* test000063::MODEL_STRING15 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species.
@@ -1310,7 +1315,7 @@ const char* test000063::MODEL_STRING16 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 /**
  * Simple model with two species. One is determined by an ode , the
@@ -1378,4 +1383,4 @@ const char* test000063::MODEL_STRING17 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
