@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.7.2.2 $
+#   $Revision: 1.7.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/03 18:09:59 $
+#   $Date: 2010/03/11 18:24:54 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,34 +17,35 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.7.2.2 $ $Author: shoops $ $Date: 2010/03/03 18:09:59 $
+# $Revision: 1.7.2.3 $ $Author: shoops $ $Date: 2010/03/11 18:24:54 $
 ######################################################################
 
 LIB = plotUI
 
 HEADERS += CHistogram.h \
-           PlotSubwidget.h \
            CopasiPlot.h \
            COutputHandlerPlot.h \
+           HistoWidget.h \
+           PlotSubwidget.h \
            plotwindow.h \
            scrollbar.h \
            scrollzoomer.h
 
 SOURCES += CHistogram.cpp \
            CopasiPlot.cpp \
+           COutputHandlerPlot.cpp \
+           HistoWidget.cpp \
            PlotSubwidget.cpp \
            plotwindow.cpp \
-           COutputHandlerPlot.cpp \
            scrollbar.cpp \
            scrollzoomer.cpp
 
 FORMS += PlotSubwidget.ui
+FORMS +=  HistoWidget.ui
 
 FORMS3 +=  curve2dwidget.ui
-FORMS3 +=  HistoWidget.ui
 
 HEADERS += curve2dwidget.ui.h
-HEADERS +=  HistoWidget.ui.h
 
 DISTFILES += QwtLicense
 
