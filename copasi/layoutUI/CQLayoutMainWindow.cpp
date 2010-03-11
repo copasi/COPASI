@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 13:54:11 $
+//   $Date: 2010/03/11 11:36:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -899,7 +899,6 @@ void CQLayoutMainWindow::slotResetView()
   this->mpGLViewport->resetView();
 }
 
-#ifdef USE_CRENDER_EXTENSION
 void CQLayoutMainWindow::setZoomFactor(QString s)
 {
   s.remove(s.size() - 1, 1);
@@ -908,7 +907,6 @@ void CQLayoutMainWindow::setZoomFactor(QString s)
   n /= 100.0;
   this->mpGLViewport->setZoomFactor(n);
 }
-#endif // USE_CRENDER_EXTENSION
 
 #ifndef USE_CRENDER_EXTENSION
 void CQLayoutMainWindow::slotActivated(int index)
