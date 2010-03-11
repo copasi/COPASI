@@ -83,7 +83,7 @@ void PlotSubwidget::addCurveTab(const std::string & title,
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   curveWidget->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   curveWidget->LoadFromCurveSpec(item);
-  tabs->addTab(curveWidget, item->getTitle().c_str());
+  tabs->addTab(curveWidget, FROM_UTF8(item->getTitle()));
 
   delete item;
 }
@@ -242,11 +242,11 @@ void PlotSubwidget::addHisto1DTab(const std::string & title,
   item->addChannel(x);
   item->setValue("increment", incr);
 
-  HistoWidget * curveWidget = new HistoWidget(tabs);
+  HistoWidget* histo = new HistoWidget(tabs);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  curveWidget->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-  curveWidget->LoadFromCurveSpec(item);
-  tabs->addTab(curveWidget, item->getTitle().c_str());
+  histo->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  histo->LoadFromCurveSpec(item);
+  tabs->addTab(histo, FROM_UTF8(item->getTitle()));
 
   delete item;
 }
@@ -400,7 +400,7 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
           assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
           curve->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
           curve->LoadFromCurveSpec(curves[i]);
-          tabs->addTab(curve, curves[i]->getTitle().c_str());
+          tabs->addTab(curve, FROM_UTF8(curves[i]->getTitle()));
         }
 
       if (curves[i]->getType() == CPlotItem::histoItem1d)
@@ -409,7 +409,7 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
           assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
           histo->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
           histo->LoadFromCurveSpec(curves[i]);
-          tabs->addTab(histo, curves[i]->getTitle().c_str());
+          tabs->addTab(histo, FROM_UTF8(curves[i]->getTitle()));
         }
     }
 
@@ -488,20 +488,48 @@ bool PlotSubwidget::enterProtected()
 
 //-----------------------------------------------------------------------------
 
-bool PlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool PlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates) return true;
+  if (mIgnoreUpdates || !isShown()) return true;
 
   switch (objectType)
     {//TODO: check list:
       case ListViews::MODEL:
-      case ListViews::STATE:
-      case ListViews::COMPARTMENT:
-      case ListViews::METABOLITE:
-      case ListViews::REPORT:
-      case ListViews::PLOT:
-        return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+
+        switch (action)
+          {
+            case ListViews::DELETE:
+              mpObject = NULL;
+              mKey = "";
+              return enterProtected();
+              break;
+
+            default:
+              break;
+          }
+
         break;
+
+      case ListViews::PLOT:
+
+        if (key == mKey)
+          {
+            switch (action)
+              {
+                case ListViews::DELETE:
+                  mpObject = NULL;
+                  mKey = "";
+                  return enterProtected();
+                  break;
+
+                case ListViews::CHANGE:
+                  return enterProtected();
+                  break;
+
+                default:
+                  break;
+              }
+          }
 
       default:
         break;
