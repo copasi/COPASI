@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.14.2.4 $
+//   $Revision: 1.14.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/04 14:20:28 $
+//   $Date: 2010/03/11 19:42:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,9 +111,9 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     mNextReactionIndex(C_INVALID_INDEX),
     mDoCorrection(true),
     mAmu(0),
+    mA0(0.0),
     mMethodState(),
     mReactionDependencies(0),
-    mA0(0.0),
     mMaxStepsReached(false)
 {
   initializeParameter();
@@ -130,9 +130,9 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
     mNextReactionIndex(src.mNextReactionIndex),
     mDoCorrection(src.mDoCorrection),
     mAmu(src.mAmu),
+    mA0(src.mA0),
     mMethodState(src.mMethodState),
     mReactionDependencies(src.mReactionDependencies),
-    mA0(src.mA0),
     mMaxStepsReached(src.mMaxStepsReached)
 {
   initializeParameter();
@@ -208,6 +208,7 @@ void CStochDirectMethod::start(const CState * initialState)
 
   mNumReactions = mpModel->getReactions().size();
 
+  mReactionDependencies.resize(mNumReactions);
   mAmu.resize(mNumReactions);
   mAmu = 0.0;
 
@@ -238,15 +239,22 @@ void CStochDirectMethod::start(const CState * initialState)
   C_FLOAT64 * pMethodStateValue = mMethodState.beginIndependent() - 1;
 
   // Build the reaction dependencies
-  mReactionDependencies.resize(mNumReactions);
+  size_t NumReactions = 0;
 
   CCopasiVector< CReaction >::const_iterator it = mpModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator end = mpModel->getReactions().end();
   CReactionDependencies * pDependencies = mReactionDependencies.array();
 
-  for (; it  != end; ++it, ++pDependencies)
+  for (; it  != end; ++it)
     {
       const CCopasiVector<CChemEqElement> & Balances = (*it)->getChemEq().getBalances();
+      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
+
+      // This reactions does not change anything
+      if (Balances.size() == 0 && Substrates.size() == 0)
+        {
+          continue;
+        }
 
       pDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
 
@@ -281,8 +289,6 @@ void CStochDirectMethod::start(const CState * initialState)
       pDependencies->mSpeciesMultiplier.resize(Index, true);
       pDependencies->mMethodSpecies.resize(Index, true);
       pDependencies->mModelSpecies.resize(Index, true);
-
-      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
 
       pDependencies->mSubstrateMultiplier.resize(Substrates.size());
       pDependencies->mMethodSubstrates.resize(Substrates.size());
@@ -324,7 +330,17 @@ void CStochDirectMethod::start(const CState * initialState)
       pDependencies->mDependentReactions.resize(Count, true);
 
       pDependencies->mCalculations = CCopasiObject::buildUpdateSequence(dependend, changed);
+
+      ++pDependencies;
+      ++NumReactions;
     }
+
+  mNumReactions = NumReactions;
+
+  // Resizing the reaction dependencies does no work. However we do not care as we are
+  // certain that first mNumReactions dependencies are the one which count.
+  // mReactionDependencies.resize(mNumReactions, true);
+  mAmu.resize(mNumReactions, true);
 
   mpModel->updateSimulatedValues(false); //for assignments
 
@@ -447,7 +463,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
       C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
 
       C_FLOAT64 * pAmu = mAmu.array();
-      C_FLOAT64 * endAmu = pAmu + mAmu.size();
+      C_FLOAT64 * endAmu = pAmu + mNumReactions;
 
       for (; (sum < rand) && (pAmu != endAmu); ++pAmu, ++mNextReactionIndex)
         {
@@ -496,7 +512,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
 
   // calculate the total propensity
   C_FLOAT64 * pAmu = mAmu.array();
-  C_FLOAT64 * endAmu = pAmu + mAmu.size();
+  C_FLOAT64 * endAmu = pAmu + mNumReactions;
 
   mA0 = 0.0;
 
