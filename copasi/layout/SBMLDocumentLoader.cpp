@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/03/11 10:59:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,9 @@
 #include "CLayout.h"
 #include "CLReactionGlyph.h"
 #include "CLGlyphs.h"
+#ifdef USE_CRENDER
 #include "CLRenderCurve.h"
+#endif // USE_CRENDER
 
 #include "sbml/SBMLUtils.h" //from the copasi sbml dir
 
