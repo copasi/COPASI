@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.82.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/08 07:28:28 $
+//   $Author: shoops $
+//   $Date: 2010/03/12 02:15:38 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -450,10 +455,19 @@ public:
   void setRefresh(CType * pType,
                   void (CType::*method)(void))
   {
-    pdelete(mpRefresh);
-
-    mpRefresh =
+    Refresh * pRefresh =
       new RefreshTemplate< CType >(pType, method);
+
+    if (mpRefresh != NULL &&
+        mpRefresh->isEqual(pRefresh))
+      {
+        delete pRefresh;
+      }
+    else
+      {
+        pdelete(mpRefresh);
+        mpRefresh = pRefresh;
+      }
 
     return;
   }
