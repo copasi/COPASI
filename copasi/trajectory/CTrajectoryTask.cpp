@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.103.2.1 $
+//   $Revision: 1.103.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/08 18:20:35 $
+//   $Date: 2010/03/12 03:29:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,14 +215,18 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   //unsigned C_INT32 FailCounter = 0;
 
+  C_FLOAT64 Duration = mpTrajectoryProblem->getDuration();
   C_FLOAT64 StepSize = mpTrajectoryProblem->getStepSize();
+  C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
+
+  if (isnan(StepNumber) || StepNumber < std::numeric_limits< C_FLOAT64 >::min())
+    StepNumber = 1.0;
+
   C_FLOAT64 NextTimeToReport;
 
-  const C_FLOAT64 EndTime = *mpCurrentTime + mpTrajectoryProblem->getDuration();
+  const C_FLOAT64 EndTime = *mpCurrentTime + Duration;
   const C_FLOAT64 StartTime = *mpCurrentTime;
   C_FLOAT64 CompareEndTime;
-
-  C_FLOAT64 StepNumber = (mpTrajectoryProblem->getDuration()) / StepSize;
 
   bool (*LE)(const C_FLOAT64 &, const C_FLOAT64 &);
   bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &);
@@ -248,7 +252,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   C_FLOAT64 outputStartTime = mpTrajectoryProblem->getOutputStartTime();
 
-  if (StepSize == 0.0 && mpTrajectoryProblem->getDuration() != 0.0)
+  if (StepSize == 0.0 && Duration != 0.0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryProblem + 1, StepSize);
       return false;
@@ -257,7 +261,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
-  C_FLOAT64 handlerFactor = 100.0 / mpTrajectoryProblem->getDuration();
+  C_FLOAT64 handlerFactor = 100.0 / Duration;
 
   C_FLOAT64 Percentage = 0;
   unsigned C_INT32 hProcess;
