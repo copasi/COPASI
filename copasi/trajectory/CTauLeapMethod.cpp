@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.27.2.8 $
+//   $Revision: 1.27.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/08 18:27:52 $
+//   $Date: 2010/03/12 16:02:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,16 +242,13 @@ void CTauLeapMethod::start(const CState * initialState)
   else
     mDoCorrection = false;
 
-  //initialize the vector of ints that contains the particle numbers
-  //for the discrete simulation. This also floors all particle numbers in the model.
-
+  // Size the arrays
   mNumReactions = mpModel->getReactions().size();
 
+  mReactionDependencies.resize(mNumReactions);
+  mK.resize(mNumReactions);
   mAmu.resize(mNumReactions);
   mAmu = 0.0;
-
-  mAmu.resize(mNumReactions);
-  mK.resize(mNumReactions);
 
   mNumReactionSpecies = mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
 
@@ -291,22 +288,29 @@ void CTauLeapMethod::start(const CState * initialState)
   C_FLOAT64 * pMethodStateValue = mMethodState.beginIndependent() - 1;
 
   // Build the reaction dependencies
-  mReactionDependencies.resize(mNumReactions);
+  size_t NumReactions = 0;
 
   CCopasiVector< CReaction >::const_iterator it = mpModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator end = mpModel->getReactions().end();
-  CReactionDependencies * pDependencies = mReactionDependencies.array();
+  std::vector< CReactionDependencies >::iterator itDependencies = mReactionDependencies.begin();
 
-  for (; it  != end; ++it, ++pDependencies)
+  for (; it  != end; ++it)
     {
       const CCopasiVector<CChemEqElement> & Balances = (*it)->getChemEq().getBalances();
+      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
 
-      pDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
+      // This reactions does not change anything we ignore it
+      if (Balances.size() == 0 && Substrates.size() == 0)
+        {
+          continue;
+        }
 
-      pDependencies->mMethodSpeciesIndex.resize(Balances.size());
-      pDependencies->mSpeciesMultiplier.resize(Balances.size());
-      pDependencies->mMethodSpecies.resize(Balances.size());
-      pDependencies->mModelSpecies.resize(Balances.size());
+      itDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
+
+      itDependencies->mMethodSpeciesIndex.resize(Balances.size());
+      itDependencies->mSpeciesMultiplier.resize(Balances.size());
+      itDependencies->mMethodSpecies.resize(Balances.size());
+      itDependencies->mModelSpecies.resize(Balances.size());
 
       CCopasiVector< CChemEqElement >::const_iterator itBalance = Balances.begin();
       CCopasiVector< CChemEqElement >::const_iterator endBalance = Balances.end();
@@ -319,26 +323,24 @@ void CTauLeapMethod::start(const CState * initialState)
 
           if (pMetab->getStatus() == CModelEntity::REACTIONS)
             {
-              pDependencies->mMethodSpeciesIndex[Index] = StateTemplate.getIndex(pMetab) - mFirstReactionSpeciesIndex;
-              pDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
-              pDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
-              pDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+              itDependencies->mMethodSpeciesIndex[Index] = StateTemplate.getIndex(pMetab) - mFirstReactionSpeciesIndex;
+              itDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
+              itDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
+              itDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
 
               Index++;
             }
         }
 
       // Correct allocation for metabolites which are not determined by reactions
-      pDependencies->mMethodSpeciesIndex.resize(Index, true);
-      pDependencies->mSpeciesMultiplier.resize(Index, true);
-      pDependencies->mMethodSpecies.resize(Index, true);
-      pDependencies->mModelSpecies.resize(Index, true);
+      itDependencies->mMethodSpeciesIndex.resize(Index, true);
+      itDependencies->mSpeciesMultiplier.resize(Index, true);
+      itDependencies->mMethodSpecies.resize(Index, true);
+      itDependencies->mModelSpecies.resize(Index, true);
 
-      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
-
-      pDependencies->mSubstrateMultiplier.resize(Substrates.size());
-      pDependencies->mMethodSubstrates.resize(Substrates.size());
-      pDependencies->mModelSubstrates.resize(Substrates.size());
+      itDependencies->mSubstrateMultiplier.resize(Substrates.size());
+      itDependencies->mMethodSubstrates.resize(Substrates.size());
+      itDependencies->mModelSubstrates.resize(Substrates.size());
 
       CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
       CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
@@ -349,11 +351,20 @@ void CTauLeapMethod::start(const CState * initialState)
         {
           const CMetab * pMetab = (*itSubstrate)->getMetabolite();
 
-          pDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          pDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
-          pDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+          itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
+          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+          itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
         }
+
+      ++itDependencies;
+      ++NumReactions;
     }
+
+  mNumReactions = NumReactions;
+
+  mReactionDependencies.resize(mNumReactions);
+  mAmu.resize(mNumReactions, true);
+  mK.resize(mNumReactions, true);
 
   return;
 }
@@ -392,15 +403,15 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
   mAvgDX = 0.0;
   mSigDX = 0.0;
 
-  const CReactionDependencies * pReaction = mReactionDependencies.array();
+  std::vector< CReactionDependencies >::const_iterator itReaction = mReactionDependencies.begin();
   const C_FLOAT64 * pAmu = mAmu.array();
   const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;
 
-  for (; pAmu != pAmuEnd; ++pAmu, ++pReaction)
+  for (; pAmu != pAmuEnd; ++pAmu, ++itReaction)
     {
-      const C_FLOAT64 * pMultiplicity = pReaction->mSpeciesMultiplier.array();
-      const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + pReaction->mSpeciesMultiplier.size();
-      const size_t * pIndex = pReaction->mMethodSpeciesIndex.array();
+      const C_FLOAT64 * pMultiplicity = itReaction->mSpeciesMultiplier.array();
+      const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + itReaction->mSpeciesMultiplier.size();
+      const size_t * pIndex = itReaction->mMethodSpeciesIndex.array();
 
       for (; pMultiplicity != pMultiplicityEnd; ++pMultiplicity, ++pIndex)
         {
@@ -472,25 +483,24 @@ void CTauLeapMethod::updatePropensities()
   //mA0Old = mA0;
   mA0 = 0;
 
-  for (unsigned C_INT32 i = 0; i < mNumReactions; i++)
+  for (size_t i = 0; i < mNumReactions; i++)
     {
-      calculateAmu(i);
-      mA0 += mAmu[i];
+      mA0 += calculateAmu(i);
     }
 
   return;
 }
 
-void CTauLeapMethod::calculateAmu(const C_INT32 & index)
+const C_FLOAT64 &  CTauLeapMethod::calculateAmu(const size_t & index)
 {
-  CReactionDependencies & Dependencies = mReactionDependencies[index];
+  const CReactionDependencies & Dependencies = mReactionDependencies[index];
   C_FLOAT64 & Amu = mAmu[index];
 
   Amu = *Dependencies.mpParticleFlux;
 
   if (!mDoCorrection)
     {
-      return;
+      return Amu;
     }
 
   C_FLOAT64 SubstrateMultiplier = 1.0;
@@ -501,10 +511,10 @@ void CTauLeapMethod::calculateAmu(const C_INT32 & index)
 
   bool ApplyCorrection = false;
 
-  C_FLOAT64 * pMultiplier = Dependencies.mSubstrateMultiplier.array();
-  C_FLOAT64 * endMultiplier = pMultiplier + Dependencies.mSubstrateMultiplier.size();
-  C_FLOAT64 ** ppLocalSubstrate = Dependencies.mMethodSubstrates.array();
-  C_FLOAT64 ** ppModelSubstrate = Dependencies.mModelSubstrates.array();
+  const C_FLOAT64 * pMultiplier = Dependencies.mSubstrateMultiplier.array();
+  const C_FLOAT64 * endMultiplier = pMultiplier + Dependencies.mSubstrateMultiplier.size();
+  C_FLOAT64 *const* ppLocalSubstrate = Dependencies.mMethodSubstrates.array();
+  C_FLOAT64 *const* ppModelSubstrate = Dependencies.mModelSubstrates.array();
 
   for (; pMultiplier != endMultiplier; ++pMultiplier, ++ppLocalSubstrate, ++ppModelSubstrate)
     {
@@ -535,15 +545,13 @@ void CTauLeapMethod::calculateAmu(const C_INT32 & index)
   if (SubstrateMultiplier < 0.5 || SubstrateDevisor < 0.5)
     {
       Amu = 0.0;
-      return;
     }
-
-  if (ApplyCorrection)
+  else if (ApplyCorrection)
     {
       Amu *= SubstrateMultiplier / SubstrateDevisor;
     }
 
-  return;
+  return Amu;
 }
 
 /**
@@ -552,18 +560,18 @@ void CTauLeapMethod::calculateAmu(const C_INT32 & index)
  */
 bool CTauLeapMethod::updateSystem()
 {
-  const CReactionDependencies * pReaction = mReactionDependencies.array();
+  std::vector< CReactionDependencies >::const_iterator itReaction = mReactionDependencies.begin();
 
   CState OldState(mMethodState);
 
   const C_FLOAT64 * pK = mK.array();
   const C_FLOAT64 * pKEnd = pK + mNumReactions;
 
-  for (; pK != pKEnd; ++pK, ++pReaction)
+  for (; pK != pKEnd; ++pK, ++itReaction)
     {
-      const C_FLOAT64 * pMultiplicity = pReaction->mSpeciesMultiplier.array();
-      const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + pReaction->mSpeciesMultiplier.size();
-      C_FLOAT64 * const * pSpecies = pReaction->mMethodSpecies.array();
+      const C_FLOAT64 * pMultiplicity = itReaction->mSpeciesMultiplier.array();
+      const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + itReaction->mSpeciesMultiplier.size();
+      C_FLOAT64 * const * pSpecies = itReaction->mMethodSpecies.array();
 
       for (; pMultiplicity != pMultiplicityEnd; ++pMultiplicity, ++pSpecies)
         {

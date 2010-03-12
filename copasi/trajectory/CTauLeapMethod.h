@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.13.2.2 $
+ $Revision: 1.13.2.3 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/03/05 01:06:58 $
+ $Date: 2010/03/12 16:02:19 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,8 +201,10 @@ protected:
 
   /**
    * Calculate one of the propensities
+   * @param const size_t & index
+   * @return const C_FLOAT64 & amu
    */
-  void calculateAmu(const C_INT32 & index);
+  const C_FLOAT64 & calculateAmu(const size_t & index);
 
   /**
    *   Updates the system according to the probabilistic
@@ -214,7 +216,7 @@ protected:
 
 private:
   /**
-   * Intialize the method parameter
+   * Initialize the method parameter
    */
   void initializeParameter();
 
@@ -238,7 +240,7 @@ protected:
   /**
    * A vector containing dependency information to minimize the required updates.
    */
-  CVector< CReactionDependencies > mReactionDependencies;
+  std::vector< CReactionDependencies > mReactionDependencies;
 
   /**
    *   Number of variable metabolites.
@@ -303,7 +305,7 @@ protected:
   bool mDoCorrection;
 
   /**
-   * index of first metab in a CState
+   * index of first species in a CState
    */
   size_t mFirstReactionSpeciesIndex;
 };

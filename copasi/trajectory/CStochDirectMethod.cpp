@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.14.2.5 $
+//   $Revision: 1.14.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/11 19:42:13 $
+//   $Date: 2010/03/12 16:02:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -243,24 +243,24 @@ void CStochDirectMethod::start(const CState * initialState)
 
   CCopasiVector< CReaction >::const_iterator it = mpModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator end = mpModel->getReactions().end();
-  CReactionDependencies * pDependencies = mReactionDependencies.array();
+  std::vector< CReactionDependencies >::iterator itDependencies = mReactionDependencies.begin();
 
   for (; it  != end; ++it)
     {
       const CCopasiVector<CChemEqElement> & Balances = (*it)->getChemEq().getBalances();
       const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
 
-      // This reactions does not change anything
+      // This reactions does not change anything we ignore it
       if (Balances.size() == 0 && Substrates.size() == 0)
         {
           continue;
         }
 
-      pDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
+      itDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
 
-      pDependencies->mSpeciesMultiplier.resize(Balances.size());
-      pDependencies->mMethodSpecies.resize(Balances.size());
-      pDependencies->mModelSpecies.resize(Balances.size());
+      itDependencies->mSpeciesMultiplier.resize(Balances.size());
+      itDependencies->mMethodSpecies.resize(Balances.size());
+      itDependencies->mModelSpecies.resize(Balances.size());
 
       std::set< const CCopasiObject * > changed;
 
@@ -275,9 +275,9 @@ void CStochDirectMethod::start(const CState * initialState)
 
           if (pMetab->getStatus() == CModelEntity::REACTIONS)
             {
-              pDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
-              pDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
-              pDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+              itDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
+              itDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
+              itDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
 
               changed.insert(pMetab->getValueReference());
 
@@ -286,13 +286,13 @@ void CStochDirectMethod::start(const CState * initialState)
         }
 
       // Correct allocation for metabolites which are not determined by reactions
-      pDependencies->mSpeciesMultiplier.resize(Index, true);
-      pDependencies->mMethodSpecies.resize(Index, true);
-      pDependencies->mModelSpecies.resize(Index, true);
+      itDependencies->mSpeciesMultiplier.resize(Index, true);
+      itDependencies->mMethodSpecies.resize(Index, true);
+      itDependencies->mModelSpecies.resize(Index, true);
 
-      pDependencies->mSubstrateMultiplier.resize(Substrates.size());
-      pDependencies->mMethodSubstrates.resize(Substrates.size());
-      pDependencies->mModelSubstrates.resize(Substrates.size());
+      itDependencies->mSubstrateMultiplier.resize(Substrates.size());
+      itDependencies->mMethodSubstrates.resize(Substrates.size());
+      itDependencies->mModelSubstrates.resize(Substrates.size());
 
       CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
       CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
@@ -303,15 +303,15 @@ void CStochDirectMethod::start(const CState * initialState)
         {
           const CMetab * pMetab = (*itSubstrate)->getMetabolite();
 
-          pDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          pDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
-          pDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+          itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
+          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+          itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
         }
 
       std::set< const CCopasiObject * > dependend;
 
       CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
-      pDependencies->mDependentReactions.resize(mNumReactions);
+      itDependencies->mDependentReactions.resize(mNumReactions);
 
       Index = 0;
       size_t Count = 0;
@@ -321,25 +321,23 @@ void CStochDirectMethod::start(const CState * initialState)
           if ((*itReaction)->getParticleFluxReference()->dependsOn(changed))
             {
               dependend.insert((*itReaction)->getParticleFluxReference());
-              pDependencies->mDependentReactions[Count] = Index;
+              itDependencies->mDependentReactions[Count] = Index;
 
               Count++;
             }
         }
 
-      pDependencies->mDependentReactions.resize(Count, true);
+      itDependencies->mDependentReactions.resize(Count, true);
 
-      pDependencies->mCalculations = CCopasiObject::buildUpdateSequence(dependend, changed);
+      itDependencies->mCalculations = CCopasiObject::buildUpdateSequence(dependend, changed);
 
-      ++pDependencies;
+      ++itDependencies;
       ++NumReactions;
     }
 
   mNumReactions = NumReactions;
 
-  // Resizing the reaction dependencies does no work. However we do not care as we are
-  // certain that first mNumReactions dependencies are the one which count.
-  // mReactionDependencies.resize(mNumReactions, true);
+  mReactionDependencies.resize(mNumReactions);
   mAmu.resize(mNumReactions, true);
 
   mpModel->updateSimulatedValues(false); //for assignments

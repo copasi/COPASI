@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.15.2.1 $
+//   $Revision: 1.15.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/04 03:21:12 $
+//   $Date: 2010/03/12 16:02:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -250,7 +250,7 @@ protected:
   /**
    * A vector containing dependency information to minimize the required updates.
    */
-  CVector< CReactionDependencies > mReactionDependencies;
+  std::vector< CReactionDependencies > mReactionDependencies;
 
   /**
    * A boolean flag indicating whether the maximum steps have been reached. This
