@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.1 $
+//   $Revision: 1.277.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/03 09:14:09 $
+//   $Author: shoops $
+//   $Date: 2010/03/12 18:02:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1803,6 +1803,8 @@ void CopasiUI3Window::slotUpdateMIRIAM()
 
 void CopasiUI3Window::slotApplyInitialState()
 {
+  ListViews::commit();
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
@@ -1818,6 +1820,8 @@ void CopasiUI3Window::slotApplyInitialState()
 
 void CopasiUI3Window::slotUpdateInitialState()
 {
+  ListViews::commit();
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
@@ -1832,7 +1836,11 @@ void CopasiUI3Window::slotUpdateInitialState()
 }
 
 void CopasiUI3Window::slotFrameworkChanged(int index)
-{ListViews::setFramework(index);}
+{
+  ListViews::commit();
+
+  ListViews::setFramework(index);
+}
 
 void CopasiUI3Window::slotCapture()
 {
@@ -2072,6 +2080,8 @@ void CopasiUI3Window::customEvent(QCustomEvent * event)
 // start the selected analyzer
 void CopasiUI3Window::startSBWAnalyzer(int nId)
 {
+  ListViews::commit();
+
   if ((QStringList::size_type) nId == mAnalyzerModules.size())
     {
       registerSBW();
