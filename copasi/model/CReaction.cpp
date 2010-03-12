@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.189.2.2 $
+//   $Revision: 1.189.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/11 20:13:06 $
+//   $Date: 2010/03/12 17:44:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -761,7 +761,9 @@ const C_FLOAT64 & CReaction::calculateFlux()
 
 const C_FLOAT64 & CReaction::calculateParticleFlux()
 {
-  calculate();
+  if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
+    calculate();
+
   return mParticleFlux;
 }
 
