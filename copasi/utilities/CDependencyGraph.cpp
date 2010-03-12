@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.12.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 19:59:30 $
+//   $Date: 2010/03/12 17:47:40 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,7 +26,8 @@
 
 // node
 
-CDependencyGraphNode::CDependencyGraphNode()
+CDependencyGraphNode::CDependencyGraphNode():
+    mDependents()
 {}
 
 CDependencyGraphNode::~CDependencyGraphNode()
@@ -38,9 +44,9 @@ void CDependencyGraphNode::addDependent(const unsigned C_INT32 & node_num)
 }
 
 const std::set <unsigned C_INT32> & CDependencyGraphNode::getDependents() const
-  {
-    return mDependents;
-  }
+{
+  return mDependents;
+}
 
 // dependency graph
 CDependencyGraph::CDependencyGraph() {}
@@ -66,9 +72,16 @@ void CDependencyGraph::addDependent(const unsigned C_INT32 & node, const unsigne
 }
 
 const std::set <unsigned C_INT32> & CDependencyGraph::getDependents(const unsigned C_INT32 & node) const
-  {
-    return mNodes[node].getDependents();
-  }
+{
+  static std::set< unsigned C_INT32 > NoDependents;
+
+  if (mNodes.size() <= node)
+    {
+      return NoDependents;
+    }
+
+  return mNodes[node].getDependents();
+}
 
 void CDependencyGraph::clear()
 {mNodes.clear();}
@@ -77,6 +90,7 @@ std::ostream & operator<<(std::ostream &os,
                           const CDependencyGraphNode & d)
 {
   std::set <unsigned C_INT32>::const_iterator it;
+
   for (it = d.mDependents.begin(); it != d.mDependents.end(); it++)
     os << *it << "  ";
 
