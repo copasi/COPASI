@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.52.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/10 20:13:10 $
+//   $Author: ssahle $
+//   $Date: 2010/03/12 15:53:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,11 +46,12 @@
 #include <QtDebug>
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
-    : QSyntaxHighlighter(ew)
+    : QSyntaxHighlighter(ew),
+    COPASIObjectPattern("<[^<]*>")
 {
   // COPASI object format
   COPASIObjectFormat.setForeground(QColor(100, 0, 200));
-  COPASIObjectPattern = QRegExp("<[^<]*>");
+  //COPASIObjectPattern = QRegExp("<[^<]*>");
 }
 
 CQExpressionHighlighter::~CQExpressionHighlighter()
@@ -124,7 +125,9 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
     mOldPos(0),
     mObjectClasses(TransientExpression),
     mpCurrentObject(NULL),
-    mNewName("")
+    mNewName(""),
+    eMove(None),
+    eAction(NoAction)
 {
 #ifdef DEBUG_UI
   qDebug() << "in constructor CQEW";
