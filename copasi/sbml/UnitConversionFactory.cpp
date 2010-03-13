@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:18 $
+//   $Author: gauges $
+//   $Date: 2010/03/13 07:51:37 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,6 +21,16 @@ class UnitDefinition;
 #include "sbml/UnitKind.h"
 #include <math.h>
 #include <sstream>
+
+/**
+ * The SBML Level that is passed to constructors of unit definitions.
+ */
+unsigned int UnitConversionFactory::SBML_LEVEL = 2;
+
+/**
+ * The SBML Version that is passed to constructors of unit definitions.
+ */
+unsigned int UnitConversionFactory::SBML_VERSION = 1;
 
 /*
  * Vector that holds the ids for UnitDefinitions that have been created
@@ -39,160 +54,167 @@ UnitDefinition* UnitConversionFactory::convertToSI(const Unit& unit)
 {
   UnitDefinition* pUdef = NULL;
   Unit* pU = NULL;
+
   if (!unit.isSetKind()) return pUdef;
+
   UnitKind_t uKind = unit.getKind();
+
   switch (uKind)
     {
-    case UNIT_KIND_AMPERE:
-      pUdef = convertAmpereToSI(unit);
-      break;
+      case UNIT_KIND_AMPERE:
+        pUdef = convertAmpereToSI(unit);
+        break;
 
-    case UNIT_KIND_BECQUEREL:
-    case UNIT_KIND_HERTZ:
-      pUdef = convertFrequencyToSI(unit);
-      break;
+      case UNIT_KIND_BECQUEREL:
+      case UNIT_KIND_HERTZ:
+        pUdef = convertFrequencyToSI(unit);
+        break;
 
-    case UNIT_KIND_CANDELA:
-      pUdef = convertCandelaToSI(unit);
-      break;
+      case UNIT_KIND_CANDELA:
+        pUdef = convertCandelaToSI(unit);
+        break;
 
-    case UNIT_KIND_CELSIUS:
-      pUdef = convertCelsiusToSI(unit);
-      break;
+      case UNIT_KIND_CELSIUS:
+        pUdef = convertCelsiusToSI(unit);
+        break;
 
-    case UNIT_KIND_COULOMB:
-      pUdef = convertCoulombToSI(unit);
-      break;
+      case UNIT_KIND_COULOMB:
+        pUdef = convertCoulombToSI(unit);
+        break;
 
-    case UNIT_KIND_DIMENSIONLESS:
-    case UNIT_KIND_ITEM:
-    case UNIT_KIND_RADIAN:
-    case UNIT_KIND_STERADIAN:
-      pUdef = convertDimensionlessToSI(unit);
-      break;
+      case UNIT_KIND_DIMENSIONLESS:
+      case UNIT_KIND_ITEM:
+      case UNIT_KIND_RADIAN:
+      case UNIT_KIND_STERADIAN:
+        pUdef = convertDimensionlessToSI(unit);
+        break;
 
-    case UNIT_KIND_FARAD:
-      pUdef = convertFaradToSI(unit);
-      break;
+      case UNIT_KIND_FARAD:
+        pUdef = convertFaradToSI(unit);
+        break;
 
-    case UNIT_KIND_GRAM:
-      pU = new Unit(unit);
-      pU->setScale(pU->getScale() - 3);
-      pU->setKind(UNIT_KIND_KILOGRAM);
-      pUdef = convertKilogramToSI(*pU);
-      delete pU;
-      break;
+      case UNIT_KIND_GRAM:
+        pU = new Unit(unit);
+        pU->setScale(pU->getScale() - 3);
+        pU->setKind(UNIT_KIND_KILOGRAM);
+        pUdef = convertKilogramToSI(*pU);
+        delete pU;
+        break;
 
-    case UNIT_KIND_GRAY:
-    case UNIT_KIND_SIEVERT:
-      pUdef = convertDoseToSI(unit);
-      break;
+      case UNIT_KIND_GRAY:
+      case UNIT_KIND_SIEVERT:
+        pUdef = convertDoseToSI(unit);
+        break;
 
-    case UNIT_KIND_HENRY:
-      pUdef = convertHenryToSI(unit);
-      break;
+      case UNIT_KIND_HENRY:
+        pUdef = convertHenryToSI(unit);
+        break;
 
-    case UNIT_KIND_JOULE:
-      pUdef = convertJouleToSI(unit);
-      break;
+      case UNIT_KIND_JOULE:
+        pUdef = convertJouleToSI(unit);
+        break;
 
-    case UNIT_KIND_KATAL:
-      pUdef = convertKatalToSI(unit);
-      break;
+      case UNIT_KIND_KATAL:
+        pUdef = convertKatalToSI(unit);
+        break;
 
-    case UNIT_KIND_KELVIN:
-      pUdef = convertKelvinToSI(unit);
-      break;
+      case UNIT_KIND_KELVIN:
+        pUdef = convertKelvinToSI(unit);
+        break;
 
-    case UNIT_KIND_KILOGRAM:
-      pUdef = convertKilogramToSI(unit);
-      break;
+      case UNIT_KIND_KILOGRAM:
+        pUdef = convertKilogramToSI(unit);
+        break;
 
-    case UNIT_KIND_LITER:
-    case UNIT_KIND_LITRE:
-      pU = new Unit(unit);
-      pU->setKind(UNIT_KIND_METER);
-      pU->setExponent(pU->getExponent()*3);
-      pU->setScale(pU->getScale() - 3);
-      pUdef = convertMeterToSI(*pU);
-      delete pU;
-      break;
+      case UNIT_KIND_LITER:
+      case UNIT_KIND_LITRE:
+        pU = new Unit(unit);
+        pU->setKind(UNIT_KIND_METER);
+        pU->setExponent(pU->getExponent()*3);
+        pU->setScale(pU->getScale() - 3);
+        pUdef = convertMeterToSI(*pU);
+        delete pU;
+        break;
 
-    case UNIT_KIND_LUMEN:
-      pUdef = convertLumenToSI(unit);
-      break;
+      case UNIT_KIND_LUMEN:
+        pUdef = convertLumenToSI(unit);
+        break;
 
-    case UNIT_KIND_LUX:
-      pUdef = convertLuxToSI(unit);
-      break;
+      case UNIT_KIND_LUX:
+        pUdef = convertLuxToSI(unit);
+        break;
 
-    case UNIT_KIND_METER:
-    case UNIT_KIND_METRE:
-      pUdef = convertMeterToSI(unit);
-      break;
+      case UNIT_KIND_METER:
+      case UNIT_KIND_METRE:
+        pUdef = convertMeterToSI(unit);
+        break;
 
-    case UNIT_KIND_MOLE:
-      pUdef = convertMoleToSI(unit);
-      break;
+      case UNIT_KIND_MOLE:
+        pUdef = convertMoleToSI(unit);
+        break;
 
-    case UNIT_KIND_NEWTON:
-      pUdef = convertNewtonToSI(unit);
-      break;
+      case UNIT_KIND_NEWTON:
+        pUdef = convertNewtonToSI(unit);
+        break;
 
-    case UNIT_KIND_OHM:
-      pUdef = convertOhmToSI(unit);
-      break;
+      case UNIT_KIND_OHM:
+        pUdef = convertOhmToSI(unit);
+        break;
 
-    case UNIT_KIND_PASCAL:
-      pUdef = convertPascalToSI(unit);
-      break;
+      case UNIT_KIND_PASCAL:
+        pUdef = convertPascalToSI(unit);
+        break;
 
-    case UNIT_KIND_SECOND:
-      pUdef = convertSecondToSI(unit);
-      break;
+      case UNIT_KIND_SECOND:
+        pUdef = convertSecondToSI(unit);
+        break;
 
-    case UNIT_KIND_SIEMENS:
-      pUdef = convertSiemensToSI(unit);
-      break;
+      case UNIT_KIND_SIEMENS:
+        pUdef = convertSiemensToSI(unit);
+        break;
 
-    case UNIT_KIND_TESLA:
-      pUdef = convertTeslaToSI(unit);
-      break;
+      case UNIT_KIND_TESLA:
+        pUdef = convertTeslaToSI(unit);
+        break;
 
-    case UNIT_KIND_VOLT:
-      pUdef = convertVoltToSI(unit);
-      break;
+      case UNIT_KIND_VOLT:
+        pUdef = convertVoltToSI(unit);
+        break;
 
-    case UNIT_KIND_WATT:
-      pUdef = convertWattToSI(unit);
-      break;
+      case UNIT_KIND_WATT:
+        pUdef = convertWattToSI(unit);
+        break;
 
-    case UNIT_KIND_WEBER:
-      pUdef = convertWeberToSI(unit);
-      break;
+      case UNIT_KIND_WEBER:
+        pUdef = convertWeberToSI(unit);
+        break;
 
-    case UNIT_KIND_INVALID:
-      delete pUdef;
-      pUdef = NULL;
-      break;
+      case UNIT_KIND_INVALID:
+        delete pUdef;
+        pUdef = NULL;
+        break;
     }
+
   if (pUdef != NULL)
     {
       unsigned int num = 1;
       std::stringstream ss;
       ss << "UnitDefinition_" << num;
+
       while (!UnitConversionFactory::isIdUnused(ss.str()))
         {
           ++num;
           ss.str("");
           ss << "UnitDefinition_" << num;
         }
+
       std::string id = ss.str();
       usedIds.push_back(id);
       pUdef->setId(id);
       UnitKind_t uKind = unit.getKind();
       pUdef->setName(UnitKind_toString(uKind));
     }
+
   return pUdef;
 }
 
@@ -210,8 +232,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertAmpereToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_AMPERE) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
@@ -233,8 +257,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertFrequencyToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_HERTZ && uKind != UNIT_KIND_BECQUEREL) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_SECOND);
   pU->setOffset(0.0);
@@ -256,8 +282,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertCandelaToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_CANDELA) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
@@ -279,8 +307,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertCelsiusToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_CELSIUS) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_KELVIN);
   pU->setOffset(0.0);
@@ -303,14 +333,16 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertCoulombToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_COULOMB) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit();
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
@@ -332,8 +364,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertDimensionlessToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_DIMENSIONLESS && uKind != UNIT_KIND_ITEM && uKind != UNIT_KIND_RADIAN && uKind != UNIT_KIND_STERADIAN) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_DIMENSIONLESS);
   pU->setOffset(0.0);
@@ -356,23 +390,28 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertFaradToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_FARAD) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_KILOGRAM);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(-1*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(4*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -393,8 +432,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertKilogramToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_KILOGRAM) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
@@ -417,15 +458,18 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertDoseToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_GRAM && uKind != UNIT_KIND_SIEVERT) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -446,23 +490,28 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertHenryToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_HENRY) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_KILOGRAM);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -483,19 +532,23 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertJouleToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_JOULE) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -516,15 +569,18 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertKatalToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_KATAL) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_MOLE);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-1*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -545,8 +601,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertKelvinToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_KELVIN) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
@@ -568,7 +626,9 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertLumenToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_LUMEN) return NULL;
+
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_CANDELA);
   UnitDefinition* pUdef = convertCandelaToSI(*pU);
@@ -590,14 +650,17 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertLuxToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_LUX) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_CANDELA);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -618,8 +681,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertMeterToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_METER) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
@@ -641,8 +706,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertMoleToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_MOLE) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
@@ -664,18 +731,22 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertNewtonToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_NEWTON) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_KILOGRAM);
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -696,23 +767,28 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertOhmToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_OHM) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_KILOGRAM);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-3*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -733,18 +809,22 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertPascalToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_PASCAL) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(-1*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -765,8 +845,10 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertSecondToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_SECOND) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pUdef->addUnit(pU);
@@ -788,23 +870,28 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertSiemensToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_SIEMENS) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_KILOGRAM);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(-1*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(3*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -825,19 +912,23 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertTeslaToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_TESLA) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-1*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_KILOGRAM);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -858,23 +949,28 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertVoltToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_VOLT) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-1*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_KILOGRAM);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-3*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -895,19 +991,23 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertWattToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_WATT) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-3*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -928,23 +1028,28 @@ LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertWeberToSI(const Unit& unit)
 {
   UnitKind_t uKind = unit.getKind();
+
   if (uKind != UNIT_KIND_WATT) return NULL;
-  UnitDefinition* pUdef = new UnitDefinition();
+
+  UnitDefinition* pUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-1*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_KILOGRAM);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_METER);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
-  pU = new Unit(UNIT_KIND_SECOND);
+  pU = new Unit(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+  pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
   pUdef->addUnit(pU);
   delete pU;
@@ -1036,29 +1141,35 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
   // take all Units from the first UnitDefinition make copies and put them into the new UnitDefinition
   // go through all Units in the second UnitDefinition, if the same unit already exists in the new
   // UnitDefinition combine them, else add a copy of the Unit to the new UnitDefinition
-  UnitDefinition* pResult = new UnitDefinition();
+  UnitDefinition* pResult = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
   unsigned int maxUnits = uDef1.getNumUnits();
   unsigned int i;
-  for (i = 0; i < maxUnits;++i)
+
+  for (i = 0; i < maxUnits; ++i)
     {
       const Unit* pSrcUnit = uDef1.getUnit(i);
       unsigned int maxUnits2 = pResult->getNumUnits();
       unsigned int j;
       bool exists = false;
-      for (j = 0; j < maxUnits2;++j)
+
+      for (j = 0; j < maxUnits2; ++j)
         {
           Unit* pResultUnit = pResult->getUnit(j);
+
           if (pResultUnit->getKind() == pSrcUnit->getKind())
             {
               exists = true;
+
               // if the offsets are different, we can not combine the units
               if (pResultUnit->getOffset() != pSrcUnit->getOffset())
                 {
                   delete pResult;
                   return NULL;
                 }
+
               pResultUnit->setMultiplier(pResultUnit->getMultiplier()*pSrcUnit->getMultiplier()*pow(10.0, pResultUnit->getScale() - pSrcUnit->getScale()));
               pResultUnit->setExponent(pResultUnit->getExponent() + pSrcUnit->getExponent());
+
               // if the resulting scale is 0, the units have canceled each other out
               // and we set the kind to dimensionless so that it can be eliminated
               // later on
@@ -1068,6 +1179,7 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
                 }
             }
         }
+
       if (!exists)
         {
           Unit* tmpUnit = new Unit(*pSrcUnit);
@@ -1075,27 +1187,34 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
           delete tmpUnit;
         }
     }
+
   maxUnits = uDef2.getNumUnits();
-  for (i = 0; i < maxUnits;++i)
+
+  for (i = 0; i < maxUnits; ++i)
     {
       const Unit* pSrcUnit = uDef2.getUnit(i);
       unsigned int maxUnits2 = pResult->getNumUnits();
       unsigned int j;
       bool exists = false;
-      for (j = 0; j < maxUnits2;++j)
+
+      for (j = 0; j < maxUnits2; ++j)
         {
           Unit* pResultUnit = pResult->getUnit(j);
+
           if (pResultUnit->getKind() == pSrcUnit->getKind())
             {
               exists = true;
+
               // if the offsets are different, we can not combine the units
               if (pResultUnit->getOffset() != pSrcUnit->getOffset())
                 {
                   delete pResult;
                   return NULL;
                 }
+
               pResultUnit->setMultiplier(pResultUnit->getMultiplier()*pSrcUnit->getMultiplier()*pow(10.0, pResultUnit->getScale() - pSrcUnit->getScale()));
               pResultUnit->setExponent(pResultUnit->getExponent() + pSrcUnit->getExponent());
+
               // if the resulting scale is 0, the units have canceled each other out
               // and we set the kind to dimensionless so that it can be eliminated
               // later on
@@ -1105,6 +1224,7 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
                 }
             }
         }
+
       if (!exists)
         {
           Unit* tmpUnit = new Unit(*pSrcUnit);
@@ -1112,12 +1232,15 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
           delete tmpUnit;
         }
     }
+
   UnitDefinition* pTmp = UnitConversionFactory::eliminateDimensionless(pResult);
+
   if (pTmp)
     {
       delete pResult;
       pResult = pTmp;
     }
+
   return pResult;
 }
 
@@ -1135,15 +1258,18 @@ UnitDefinition* UnitConversionFactory::eliminateDimensionless(UnitDefinition* pU
   unsigned int maxUnits = pUdef->getNumUnits();
   UnitDefinition* pTmpUdef = NULL;
   Unit* pU = NULL;
+
   if (maxUnits > 1)
     {
       int scale = 0;
       double multiplier = 1.0;
       unsigned int i = 0;
-      pTmpUdef = new UnitDefinition();
+      pTmpUdef = new UnitDefinition(UnitConversionFactory::SBML_LEVEL, UnitConversionFactory::SBML_VERSION);
+
       while (i < maxUnits)
         {
           pU = new Unit(*(pUdef->getUnit(i)));
+
           if (pU->getKind() != UNIT_KIND_DIMENSIONLESS)
             {
               pTmpUdef->addUnit(pU);
@@ -1154,10 +1280,13 @@ UnitDefinition* UnitConversionFactory::eliminateDimensionless(UnitDefinition* pU
               scale = scale + pU->getScale();
               multiplier = multiplier * pU->getMultiplier();
             }
+
           delete pU;
           ++i;
         }
+
       i = pTmpUdef->getNumUnits();
+
       if (i > 0 && i < maxUnits)
         {
           pTmpUdef->setName(pUdef->getName());
@@ -1172,6 +1301,7 @@ UnitDefinition* UnitConversionFactory::eliminateDimensionless(UnitDefinition* pU
           pTmpUdef = NULL;
         }
     }
+
   return pTmpUdef;
 }
 
@@ -1194,21 +1324,26 @@ UnitDefinition* UnitConversionFactory::convertToSI(const UnitDefinition& uDef)
   UnitDefinition* pTmpDef = NULL;
   unsigned int i;
   unsigned int maxUnits = uDef.getNumUnits();
+
   if (maxUnits > 0)
     {
       pTmpDef = UnitConversionFactory::convertToSI(*(uDef.getUnit(0)));
       pResult = pTmpDef;
-      for (i = 1; i < maxUnits;++i)
+
+      for (i = 1; i < maxUnits; ++i)
         {
           UnitDefinition* pTmpDef2 = UnitConversionFactory::convertToSI(*(uDef.getUnit(i)));
           pResult = UnitConversionFactory::combine(*pTmpDef, *pTmpDef2);
           delete pTmpDef;
           delete pTmpDef2;
+
           // stop if the result was a NULL pointer
           if (!pResult) break;
+
           pTmpDef = pResult;
         }
     }
+
   return pResult;
 }
 
@@ -1229,23 +1364,28 @@ bool UnitConversionFactory::areEquivalent(const UnitDefinition& uDef1, const Uni
   bool equivalent = true;
   UnitDefinition* pTmpUdef1 = UnitConversionFactory::convertToSI(uDef1);
   UnitDefinition* pTmpUdef2 = UnitConversionFactory::convertToSI(uDef2);
+
   if (pTmpUdef1 && pTmpUdef2)
     {
       unsigned int maxUnits = pTmpUdef1->getNumUnits();
+
       if (maxUnits == pTmpUdef2->getNumUnits())
         {
           unsigned int i;
+
           // for all units the UnitKind and the exponent must be the same for the unit
           // definitions to be interconvertible
-          for (i = 0; i < maxUnits;++i)
+          for (i = 0; i < maxUnits; ++i)
             {
               Unit* pUnit1 = pTmpUdef1->getUnit(i);
               Unit* pUnit2 = pTmpUdef2->getUnit(i);
+
               if (pUnit1->getKind() != pUnit2->getKind())
                 {
                   equivalent = false;
                   break;
                 }
+
               if (pUnit1->getExponent() != pUnit2->getExponent())
                 {
                   equivalent = false;
@@ -1257,6 +1397,7 @@ bool UnitConversionFactory::areEquivalent(const UnitDefinition& uDef1, const Uni
         {
           equivalent = false;
         }
+
       delete pTmpUdef1;
       delete pTmpUdef2;
     }
@@ -1264,6 +1405,7 @@ bool UnitConversionFactory::areEquivalent(const UnitDefinition& uDef1, const Uni
     {
       equivalent = false;
     }
+
   return equivalent;
 }
 
@@ -1282,28 +1424,34 @@ bool UnitConversionFactory::areEqual(const UnitDefinition& uDef1, const UnitDefi
   bool equal = true;
   UnitDefinition* pTmpUdef1 = UnitConversionFactory::convertToSI(uDef1);
   UnitDefinition* pTmpUdef2 = UnitConversionFactory::convertToSI(uDef2);
+
   if (pTmpUdef1 && pTmpUdef2)
     {
       unsigned int maxUnits = pTmpUdef1->getNumUnits();
+
       if (maxUnits == pTmpUdef2->getNumUnits())
         {
           unsigned int i;
+
           // for all units the UnitKind and the exponent must be the same for the unit
           // definitions to be interconvertible
-          for (i = 0; i < maxUnits;++i)
+          for (i = 0; i < maxUnits; ++i)
             {
               Unit* pUnit1 = pTmpUdef1->getUnit(i);
               Unit* pUnit2 = pTmpUdef2->getUnit(i);
+
               if (pUnit1->getKind() != pUnit2->getKind())
                 {
                   equal = false;
                   break;
                 }
+
               if (pUnit1->getExponent() != pUnit2->getExponent())
                 {
                   equal = false;
                   break;
                 }
+
               if (pUnit1->getScale() != pUnit2->getScale())
                 {
                   equal = false;
@@ -1315,6 +1463,7 @@ bool UnitConversionFactory::areEqual(const UnitDefinition& uDef1, const UnitDefi
         {
           equal = false;
         }
+
       delete pTmpUdef1;
       delete pTmpUdef2;
     }
@@ -1322,6 +1471,7 @@ bool UnitConversionFactory::areEqual(const UnitDefinition& uDef1, const UnitDefi
     {
       equal = false;
     }
+
   return equal;
 }
 
@@ -1340,6 +1490,7 @@ LIBSBML_EXTERN
 bool UnitConversionFactory::convertValue(double *value, const UnitDefinition& srcUdef, const UnitDefinition& destUdef)
 {
   bool success = true;
+
   if (UnitConversionFactory::areEquivalent(srcUdef, destUdef))
     {
       UnitDefinition* pTmpUdef1 = UnitConversionFactory::convertToSI(srcUdef);
@@ -1356,6 +1507,7 @@ bool UnitConversionFactory::convertValue(double *value, const UnitDefinition& sr
     {
       success = false;
     }
+
   return success;
 }
 
@@ -1371,39 +1523,47 @@ bool UnitConversionFactory::containsOnlyGivenUnits(const UnitDefinition& uDef, c
 {
   bool result = true;
   UnitDefinition* pTmpUdef = UnitConversionFactory::convertToSI(uDef);
+
   if (pTmpUdef)
     {
       unsigned int i;
       unsigned int maxUnits = pTmpUdef->getNumUnits();
-      for (i = 0; i < maxUnits;++i)
+
+      for (i = 0; i < maxUnits; ++i)
         {
           Unit* pU = pTmpUdef->getUnit(i);
           UnitKind_t kind = pU->getKind();
           unsigned int j;
           unsigned int maxUnits2 = unitList.size();
           bool found = false;
-          for (j = 0; j < maxUnits2;++j)
+
+          for (j = 0; j < maxUnits2; ++j)
             {
               const Unit* pU2 = dynamic_cast<const Unit*>(unitList.get(j));
+
               if (!pU2) break;
+
               if (pU2->getKind() == kind)
                 {
                   found = true;
                   break;
                 }
             }
+
           if (!found)
             {
               result = false;
               break;
             }
         }
+
       delete pTmpUdef;
     }
   else
     {
       result = false;
     }
+
   return result;
 }
 
@@ -1419,7 +1579,8 @@ bool UnitConversionFactory::isIdUnused(const std::string& id)
   bool unused = true;
   unsigned int i;
   unsigned int maxIds = usedIds.size();
-  for (i = 0; i < maxIds;++i)
+
+  for (i = 0; i < maxIds; ++i)
     {
       if (id == usedIds[i])
         {
@@ -1427,6 +1588,7 @@ bool UnitConversionFactory::isIdUnused(const std::string& id)
           break;
         }
     }
+
   return unused;
 }
 
@@ -1442,10 +1604,12 @@ std::string UnitConversionFactory::toString(const UnitDefinition& uDef)
   unsigned int maxUnits = uDef.getNumUnits();
   unsigned int i;
   std::stringstream ss;
-  for (i = 0; i < maxUnits;++i)
+
+  for (i = 0; i < maxUnits; ++i)
     {
       ss << "(" << UnitConversionFactory::toString(*(uDef.getUnit(i))) << ") ";
     }
+
   return ss.str();
 }
 
@@ -1466,4 +1630,36 @@ std::string UnitConversionFactory::toString(const Unit& unit)
   std::stringstream ss;
   ss << multiplier << " * (" << UnitKind_toString(kind) << " * 10^" << scale << " + " << offset << ")^" << exponent;
   return ss.str();
+}
+
+/**
+ * Returns the SBML level that is passed to constructors of unit definitions.
+ */
+unsigned int  UnitConversionFactory::getSBMLLevel()
+{
+  return SBML_LEVEL;
+}
+
+/**
+ * Returns the SBML version that is passed to constructors of unit definitions.
+ */
+unsigned int  UnitConversionFactory::getSBMLVersion()
+{
+  return SBML_VERSION;
+}
+
+/**
+ * Changes the SBML level that is passed to constructors of unit definitions.
+ */
+void  UnitConversionFactory::setSBMLLevel(unsigned int level)
+{
+  SBML_LEVEL = level;
+}
+
+/**
+ * Changes the SBML version that is passed to constructors of unit definitions.
+ */
+void  UnitConversionFactory::setSBMLVersion(unsigned int version)
+{
+  SBML_VERSION = version;
 }
