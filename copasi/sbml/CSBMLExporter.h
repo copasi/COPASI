@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/26 13:09:51 $
+//   $Date: 2010/03/13 07:54:07 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -358,7 +363,7 @@ protected:
    * Create the kinetic law for the given reaction.
    * On failure NULL is returned.
    */
-  KineticLaw* createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel);
+  KineticLaw* createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel, unsigned int level, unsigned int version);
 
   /**
    * Go through a CEvaluationNode base tree and add the names

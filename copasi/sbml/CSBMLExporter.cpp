@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/19 15:37:22 $
+//   $Date: 2010/03/13 07:54:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,45 +104,66 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef("time");
+  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
+  uDef.setName("time");
   uDef.setId("time");
-  Unit unit;
+  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
 
   switch (dataModel.getModel()->getTimeUnitEnum())
     {
       case CModel::d:
-        unit = Unit(UNIT_KIND_SECOND, 1, 0);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(0);
         unit.setMultiplier(86400);
         break;
       case CModel::h:
-        unit = Unit(UNIT_KIND_SECOND, 1, 0);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(0);
         unit.setMultiplier(3600);
         break;
       case CModel::min:
-        unit = Unit(UNIT_KIND_SECOND, 1, 0);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(0);
         unit.setMultiplier(60);
         break;
       case CModel::s:
-        unit = Unit(UNIT_KIND_SECOND, 1, 0);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(0);
         unit.setMultiplier(1);
         break;
       case CModel::ms:
-        unit = Unit(UNIT_KIND_SECOND, 1, -3);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(-3);
         break;
       case CModel::micros:
-        unit = Unit(UNIT_KIND_SECOND, 1, -6);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(-6);
         break;
       case CModel::ns:
-        unit = Unit(UNIT_KIND_SECOND, 1, -9);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(-9);
         break;
       case CModel::ps:
-        unit = Unit(UNIT_KIND_SECOND, 1, -12);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(-12);
         break;
       case CModel::fs:
-        unit = Unit(UNIT_KIND_SECOND, 1, -15);
+        unit.setKind(UNIT_KIND_SECOND);
+        unit.setExponent(1);
+        unit.setScale(-15);
         break;
       case CModel::dimensionlessTime:
-        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        unit.setKind(UNIT_KIND_DIMENSIONLESS);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
@@ -180,35 +201,52 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef("volume");
+  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
+  uDef.setName("volume");
   uDef.setId("volume");
-  Unit unit;
+  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
 
   switch (dataModel.getModel()->getVolumeUnitEnum())
     {
       case CModel::l:
-        unit = Unit(UNIT_KIND_LITRE, 1, 0);
+        unit.setKind(UNIT_KIND_LITRE);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       case CModel::ml:
-        unit = Unit(UNIT_KIND_LITRE, 1, -3);
+        unit.setKind(UNIT_KIND_LITRE);
+        unit.setExponent(1);
+        unit.setScale(-3);
         break;
       case CModel::microl:
-        unit = Unit(UNIT_KIND_LITRE, 1, -6);
+        unit.setKind(UNIT_KIND_LITRE);
+        unit.setExponent(1);
+        unit.setScale(-6);
         break;
       case CModel::nl:
-        unit = Unit(UNIT_KIND_LITRE, 1, -9);
+        unit.setKind(UNIT_KIND_LITRE);
+        unit.setExponent(1);
+        unit.setScale(-9);
         break;
       case CModel::pl:
-        unit = Unit(UNIT_KIND_LITRE, 1, -12);
+        unit.setKind(UNIT_KIND_LITRE);
+        unit.setExponent(1);
+        unit.setScale(-12);
         break;
       case CModel::fl:
-        unit = Unit(UNIT_KIND_LITRE, 1, -15);
+        unit.setKind(UNIT_KIND_LITRE);
+        unit.setExponent(1);
+        unit.setScale(-15);
         break;
       case CModel::m3:
-        unit = Unit(UNIT_KIND_METRE, 3, 0);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(3);
+        unit.setScale(0);
         break;
       case CModel::dimensionlessVolume:
-        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        unit.setKind(UNIT_KIND_DIMENSIONLESS);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
@@ -246,35 +284,52 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef("substance");
+  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
+  uDef.setName("substance");
   uDef.setId("substance");
-  Unit unit;
+  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
 
   switch (dataModel.getModel()->getQuantityUnitEnum())
     {
       case CModel::Mol:
-        unit = Unit(UNIT_KIND_MOLE, 1, 0);
+        unit.setKind(UNIT_KIND_MOLE);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       case CModel::mMol:
-        unit = Unit(UNIT_KIND_MOLE, 1, -3);
+        unit.setKind(UNIT_KIND_MOLE);
+        unit.setExponent(1);
+        unit.setScale(-3);
         break;
       case CModel::microMol:
-        unit = Unit(UNIT_KIND_MOLE, 1, -6);
+        unit.setKind(UNIT_KIND_MOLE);
+        unit.setExponent(1);
+        unit.setScale(-6);
         break;
       case CModel::nMol:
-        unit = Unit(UNIT_KIND_MOLE, 1, -9);
+        unit.setKind(UNIT_KIND_MOLE);
+        unit.setExponent(1);
+        unit.setScale(-9);
         break;
       case CModel::pMol:
-        unit = Unit(UNIT_KIND_MOLE, 1, -12);
+        unit.setKind(UNIT_KIND_MOLE);
+        unit.setExponent(1);
+        unit.setScale(-12);
         break;
       case CModel::fMol:
-        unit = Unit(UNIT_KIND_MOLE, 1, -15);
+        unit.setKind(UNIT_KIND_MOLE);
+        unit.setExponent(1);
+        unit.setScale(-15);
         break;
       case CModel::number:
-        unit = Unit(UNIT_KIND_ITEM, 1, 0);
+        unit.setKind(UNIT_KIND_ITEM);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       case CModel::dimensionlessQuantity:
-        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        unit.setKind(UNIT_KIND_DIMENSIONLESS);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
@@ -312,38 +367,57 @@ void CSBMLExporter::createLengthUnit(const CCopasiDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef("length");
+  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
+  uDef.setName("length");
   uDef.setId("length");
-  Unit unit;
+  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
 
   switch (dataModel.getModel()->getLengthUnitEnum())
     {
       case CModel::m:
-        unit = Unit(UNIT_KIND_METRE, 1, 0);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       case CModel::dm:
-        unit = Unit(UNIT_KIND_METRE, 1, -1);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(1);
+        unit.setScale(-1);
         break;
       case CModel::cm:
-        unit = Unit(UNIT_KIND_METRE, 1, -2);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(1);
+        unit.setScale(-2);
         break;
       case CModel::mm:
-        unit = Unit(UNIT_KIND_METRE, 1, -3);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(1);
+        unit.setScale(-3);
         break;
       case CModel::microm:
-        unit = Unit(UNIT_KIND_METRE, 1, -6);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(1);
+        unit.setScale(-6);
         break;
       case CModel::nm:
-        unit = Unit(UNIT_KIND_METRE, 1, -9);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(1);
+        unit.setScale(-9);
         break;
       case CModel::pm:
-        unit = Unit(UNIT_KIND_METRE, 1, -12);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(1);
+        unit.setScale(-12);
         break;
       case CModel::fm:
-        unit = Unit(UNIT_KIND_METRE, 1, -15);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(1);
+        unit.setScale(-15);
         break;
       case CModel::dimensionlessLength:
-        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        unit.setKind(UNIT_KIND_DIMENSIONLESS);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi length unit.");
@@ -381,38 +455,57 @@ void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef("area");
+  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
+  uDef.setName("area");
   uDef.setId("area");
-  Unit unit;
+  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
 
   switch (dataModel.getModel()->getAreaUnitEnum())
     {
       case CModel::m:
-        unit = Unit(UNIT_KIND_METRE, 2, 0);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(2);
+        unit.setScale(0);
         break;
       case CModel::dm:
-        unit = Unit(UNIT_KIND_METRE, 2, -1);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(2);
+        unit.setScale(-1);
         break;
       case CModel::cm:
-        unit = Unit(UNIT_KIND_METRE, 2, -2);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(2);
+        unit.setScale(-2);
         break;
       case CModel::mm:
-        unit = Unit(UNIT_KIND_METRE, 2, -3);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(2);
+        unit.setScale(-3);
         break;
       case CModel::microm:
-        unit = Unit(UNIT_KIND_METRE, 2, -6);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(2);
+        unit.setScale(-6);
         break;
       case CModel::nm:
-        unit = Unit(UNIT_KIND_METRE, 2, -9);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(2);
+        unit.setScale(-9);
         break;
       case CModel::pm:
-        unit = Unit(UNIT_KIND_METRE, 2, -12);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(2);
+        unit.setScale(-12);
         break;
       case CModel::fm:
-        unit = Unit(UNIT_KIND_METRE, 2, -15);
+        unit.setKind(UNIT_KIND_METRE);
+        unit.setExponent(2);
+        unit.setScale(-15);
         break;
       case CModel::dimensionlessLength:
-        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        unit.setKind(UNIT_KIND_DIMENSIONLESS);
+        unit.setExponent(1);
+        unit.setScale(0);
         break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi area unit.");
@@ -491,7 +584,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLCompartment));
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
   pSBMLCompartment->setName(compartment.getObjectName().c_str());
-  pSBMLCompartment->setSpatialDimensions(compartment.getDimensionality());
+  pSBMLCompartment->setSpatialDimensions((unsigned int)compartment.getDimensionality());
   double value = compartment.getInitialValue();
 
   // if the value is NaN, unset the initial volume
@@ -1023,7 +1116,10 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
   /* if there is one on COPASI */
   if ((reaction.getFunction()) != CCopasiRootContainer::getUndefinedFunction())
     {
-      KineticLaw* pKineticLaw = this->createKineticLaw(reaction, dataModel);
+      // make sure the creaated kinetic law has the same level and version as the reaction
+      // we intend to add it to, otherwise the setKineticLaw function of libsbml 4 will fail
+      // to set the kinetic law
+      KineticLaw* pKineticLaw = this->createKineticLaw(reaction, dataModel, pSBMLReaction->getLevel(), pSBMLReaction->getVersion());
 
       if (pKineticLaw != NULL)
         {
@@ -2352,7 +2448,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   if (pOldSBMLDocument == NULL)
     {
-      this->mpSBMLDocument = new SBMLDocument();
+      this->mpSBMLDocument = new SBMLDocument(this->mSBMLLevel, this->mSBMLVersion);
     }
   else
     {
@@ -2912,7 +3008,8 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
 
   if (pNode != NULL)
     {
-      Trigger* pTrigger = new Trigger(pNode);
+      Trigger* pTrigger = new Trigger(this->mSBMLLevel, this->mSBMLVersion);
+      pTrigger->setMath(pNode);
       pSBMLEvent->setTrigger(pTrigger);
       delete pNode;
       delete pTrigger;
@@ -2984,7 +3081,8 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
 
       if (pNode != NULL)
         {
-          Delay* pDelay = new Delay(pNode);
+          Delay* pDelay = new Delay(this->mSBMLLevel, this->mSBMLVersion);
+          pDelay->setMath(pNode);
           pSBMLEvent->setDelay(pDelay);
           delete pNode;
           delete pDelay;
@@ -3331,14 +3429,14 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
     }
 }
 
-KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel)
+KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel, unsigned int level, unsigned int version)
 {
   KineticLaw* pKLaw = NULL;
 
   if (!pKLaw)
     {
       /* create a new KineticLaw */
-      pKLaw = new KineticLaw();
+      pKLaw = new KineticLaw(level, version);
     }
 
   // create the local parameters
