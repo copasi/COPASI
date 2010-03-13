@@ -6,6 +6,11 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -17,8 +22,8 @@
 #include "CUnit.h"
 #include <assert.h>
 
-CUnit::CUnit()
-    : mUD(),
+CUnit::CUnit(unsigned int sbmlLevel, unsigned int sbmlVersion)
+    : mUD(UnitDefinition(sbmlLevel, sbmlVersion)),
     mSymExp(),
     mSymExpExp(0)
 {
@@ -183,15 +188,15 @@ bool CUnit::isDimensionless() const
 
 //************************************************
 
-CUnitInformation::CUnitInformation()
-    : CUnit(),
+CUnitInformation::CUnitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion)
+    : CUnit(sbmlLevel, sbmlVersion),
     mInfo(UNKNOWN),
     mConflict(false)
 {
 }
 
-CUnitInformation::CUnitInformation(INFO info, bool conflict)
-    : CUnit(),
+CUnitInformation::CUnitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion, INFO info, bool conflict)
+    : CUnit(sbmlLevel, sbmlVersion),
     mInfo(info),
     mConflict(conflict)
 {

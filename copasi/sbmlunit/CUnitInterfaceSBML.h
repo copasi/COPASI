@@ -6,6 +6,11 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -34,6 +39,13 @@ class ASTNode;
  */
 class CUnitInterfaceSBML
 {
+private:
+  // disable the assignment operator and the copy constructor
+  // because right now I am too lazy to implement it. R.G.
+  CUnitInterfaceSBML(const CUnitInterfaceSBML& src);
+
+  CUnitInterfaceSBML& operator=(const CUnitInterfaceSBML& src);
+
 public:
 
   /**
@@ -41,6 +53,11 @@ public:
    * the unit information from the model
    */
   CUnitInterfaceSBML(Model * model, bool unitsFromModel);
+
+  /**
+   * Destructor.
+   */
+  ~CUnitInterfaceSBML();
 
   /**
    * initialize the unit interface from an sbml model, without using
@@ -152,8 +169,8 @@ public:
     std::string mObjectDisplayString;
 
     /// Default constructor
-    CExpressionInformation()
-        : mpExpression(NULL), mPerTime(false), mRootObject(), mRootUnit(), mReactionId(), mErrorCode(0)
+    CExpressionInformation(unsigned int sbmlLevel, unsigned int sbmlVersion)
+        : mpExpression(NULL), mPerTime(false), mRootObject(), mRootUnit(CUnitInformation(sbmlLevel, sbmlVersion)), mReactionId(), mErrorCode(0)
     {};
   };
 
@@ -211,13 +228,17 @@ private:
    * is extracted from the model. Otherwise the units are constructed from a
    * set of base units that was provided by initializeSetOfUnits(). .
    */
-  void initializeFromSBMLModel(Model* model, bool unitsFromModel);
+  void initializeFromSBMLModel(bool unitsFromModel);
 
   ///initializes the base units with the defaults (moles, seconds, l, m, m^2)
   void initializeDefaultUnits();
 
   ///the sbml model from which this interface was initialized
   Model * mpModel;
+
+  unsigned int mSBMLLevel;
+
+  unsigned int mSBMLVersion;
 
   /**
     * This maps the id of any sbml object that can be referenced by one id to a copy
@@ -342,14 +363,13 @@ private:
 
   //***********************************************
 
-  CUnitInformation mSBMLTimeUnit;
-  CUnitInformation mSBMLAmountUnit;
-  //CUnit mSBMLConcentrationUnit;
-  CUnitInformation mSBMLVolumeUnit;
-  CUnitInformation mSBMLAreaUnit;
-  CUnitInformation mSBMLLengthUnit;
+  CUnitInformation* mpSBMLTimeUnit;
+  CUnitInformation* mpSBMLAmountUnit;
+  CUnitInformation* mpSBMLVolumeUnit;
+  CUnitInformation* mpSBMLAreaUnit;
+  CUnitInformation* mpSBMLLengthUnit;
 
-  CUnitInformation mSBMLConflictUnit;
+  CUnitInformation* mpSBMLConflictUnit;
 
   int mError;
 

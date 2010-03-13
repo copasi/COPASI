@@ -5,6 +5,11 @@
 //   $Author: shoops $
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -29,7 +34,7 @@ class CUnit
 {
 public:
   ///Default constructor
-  CUnit();
+  CUnit(unsigned int sbmlLevel, unsigned int sbmlVersion);
 
   ///Copy constructor
   CUnit(const CUnit & src);
@@ -122,9 +127,9 @@ public:
   };
 
   ///Default constructor
-  CUnitInformation();
+  CUnitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion);
 
-  CUnitInformation(INFO info, bool conflict = false);
+  CUnitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion, INFO info, bool conflict = false);
 
   CUnitInformation(const CUnit& u, INFO info, bool conflict = false);
 

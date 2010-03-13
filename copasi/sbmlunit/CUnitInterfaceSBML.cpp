@@ -6,6 +6,11 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -17,66 +22,100 @@
 #include "CUnitInterfaceSBML.h"
 #include <sbml/Model.h>
 
-CUnitInterfaceSBML::CUnitInterfaceSBML(Model * model, bool unitsFromModel)
-    : mAssumeDimensionlessOne(false)
+#include <copasi/copasi.h>
+
+CUnitInterfaceSBML::CUnitInterfaceSBML(Model * model, bool unitsFromModel) :
+    mpModel(model),
+    mSBMLLevel(2),
+    mSBMLVersion(4),
+    mAssumeDimensionlessOne(false),
+    mpSBMLTimeUnit(NULL),
+    mpSBMLAmountUnit(NULL),
+    mpSBMLVolumeUnit(NULL),
+    mpSBMLAreaUnit(NULL),
+    mpSBMLLengthUnit(NULL),
+    mpSBMLConflictUnit(NULL)
 {
+  if (this->mpModel != NULL)
+    {
+      this->mSBMLLevel = this->mpModel->getLevel();
+      this->mSBMLVersion = this->mpModel->getVersion();
+    }
+
   initializeDefaultUnits();
-  initializeFromSBMLModel(model, unitsFromModel);
+  initializeFromSBMLModel(unitsFromModel);
+}
+
+/**
+ * Destructor.
+ */
+CUnitInterfaceSBML::~CUnitInterfaceSBML()
+{
+  pdelete(this->mpSBMLTimeUnit);
+  pdelete(this->mpSBMLAmountUnit);
+  pdelete(this->mpSBMLVolumeUnit);
+  pdelete(this->mpSBMLAreaUnit);
+  pdelete(this->mpSBMLLengthUnit);
+  pdelete(this->mpSBMLConflictUnit);
 }
 
 void CUnitInterfaceSBML::initializeDefaultUnits()
 {
-  UnitDefinition tmpTime;
-  Unit tmpUnitTime(UNIT_KIND_SECOND);
+  UnitDefinition tmpTime(this->mSBMLLevel, this->mSBMLVersion);
+  Unit tmpUnitTime(this->mSBMLLevel, this->mSBMLVersion);
+  tmpUnitTime.setKind(UNIT_KIND_SECOND);
   tmpTime.addUnit(&tmpUnitTime);
-  mSBMLTimeUnit = CUnitInformation(&tmpTime, CUnitInformation::DEFAULT);
+  mpSBMLTimeUnit = new CUnitInformation(&tmpTime, CUnitInformation::DEFAULT);
 
-  UnitDefinition tmpAmount;
-  Unit tmpUnitAmount(UNIT_KIND_MOLE);
+  UnitDefinition tmpAmount(this->mSBMLLevel, this->mSBMLVersion);
+  Unit tmpUnitAmount(this->mSBMLLevel, this->mSBMLVersion);
+  tmpUnitAmount.setKind(UNIT_KIND_MOLE);
   tmpAmount.addUnit(&tmpUnitAmount);
-  mSBMLAmountUnit = CUnitInformation(&tmpAmount, CUnitInformation::DEFAULT);
+  mpSBMLAmountUnit = new CUnitInformation(&tmpAmount, CUnitInformation::DEFAULT);
 
-  UnitDefinition tmpVol;
-  Unit tmpUnitVol(UNIT_KIND_LITRE);
+  UnitDefinition tmpVol(this->mSBMLLevel, this->mSBMLVersion);
+  Unit tmpUnitVol(this->mSBMLLevel, this->mSBMLVersion);
+  tmpUnitVol.setKind(UNIT_KIND_LITRE);
   tmpVol.addUnit(&tmpUnitVol);
-  mSBMLVolumeUnit = CUnitInformation(&tmpVol, CUnitInformation::DEFAULT);
+  mpSBMLVolumeUnit = new CUnitInformation(&tmpVol, CUnitInformation::DEFAULT);
 
-  UnitDefinition tmpAr;
-  Unit tmpUnitAr(UNIT_KIND_METRE, 2);
+  UnitDefinition tmpAr(this->mSBMLLevel, this->mSBMLVersion);
+  Unit tmpUnitAr(this->mSBMLLevel, this->mSBMLVersion);
+  tmpUnitAr.setKind(UNIT_KIND_METRE);
+  tmpUnitAr.setExponent(2);
   tmpAr.addUnit(&tmpUnitAr);
-  mSBMLAreaUnit = CUnitInformation(&tmpAr, CUnitInformation::DEFAULT);
+  mpSBMLAreaUnit = new CUnitInformation(&tmpAr, CUnitInformation::DEFAULT);
 
-  UnitDefinition tmpL;
-  Unit tmpUnitL(UNIT_KIND_METRE);
+  UnitDefinition tmpL(this->mSBMLLevel, this->mSBMLVersion);
+  Unit tmpUnitL(this->mSBMLLevel, this->mSBMLVersion);
+  tmpUnitL.setKind(UNIT_KIND_METRE);
   tmpL.addUnit(&tmpUnitL);
-  mSBMLLengthUnit = CUnitInformation(&tmpL, CUnitInformation::DEFAULT);
+  mpSBMLLengthUnit = new CUnitInformation(&tmpL, CUnitInformation::DEFAULT);
 
-  mSBMLConflictUnit = CUnitInformation(CUnitInformation::UNKNOWN, true);
+  mpSBMLConflictUnit = new CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN, true);
 }
 
-void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromModel)
+void CUnitInterfaceSBML::initializeFromSBMLModel(bool unitsFromModel)
 {
-  if (!model) return;
-
-  mpModel = model;
+  if (!this->mpModel) return;
 
   //initialize global units
   if (unitsFromModel)
     {
-      if (model->getUnitDefinition("time"))
-        mSBMLTimeUnit = CUnitInformation(model->getUnitDefinition("time"), CUnitInformation::GLOBAL);
+      if (this->mpModel->getUnitDefinition("time"))
+        (*mpSBMLTimeUnit) = CUnitInformation(this->mpModel->getUnitDefinition("time"), CUnitInformation::GLOBAL);
 
-      if (model->getUnitDefinition("substance"))
-        mSBMLAmountUnit = CUnitInformation(model->getUnitDefinition("substance"), CUnitInformation::GLOBAL);
+      if (this->mpModel->getUnitDefinition("substance"))
+        (*mpSBMLAmountUnit) = CUnitInformation(this->mpModel->getUnitDefinition("substance"), CUnitInformation::GLOBAL);
 
-      if (model->getUnitDefinition("volume"))
-        mSBMLVolumeUnit = CUnitInformation(model->getUnitDefinition("volume"), CUnitInformation::GLOBAL);
+      if (this->mpModel->getUnitDefinition("volume"))
+        (*mpSBMLVolumeUnit) = CUnitInformation(this->mpModel->getUnitDefinition("volume"), CUnitInformation::GLOBAL);
 
-      if (model->getUnitDefinition("area"))
-        mSBMLAreaUnit = CUnitInformation(model->getUnitDefinition("area"), CUnitInformation::GLOBAL);
+      if (this->mpModel->getUnitDefinition("area"))
+        (*mpSBMLAreaUnit) = CUnitInformation(this->mpModel->getUnitDefinition("area"), CUnitInformation::GLOBAL);
 
-      if (model->getUnitDefinition("length"))
-        mSBMLLengthUnit = CUnitInformation(model->getUnitDefinition("length"), CUnitInformation::GLOBAL);
+      if (this->mpModel->getUnitDefinition("length"))
+        (*mpSBMLLengthUnit) = CUnitInformation(this->mpModel->getUnitDefinition("length"), CUnitInformation::GLOBAL);
     }
 
   mSBMLObjectsMap.clear();
@@ -84,24 +123,56 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
   //initialize list of species
   unsigned int i;
 
-  for (i = 0; i < model->getNumSpecies(); i++)
+  for (i = 0; i < this->mpModel->getNumSpecies(); i++)
     {
-      Species * s = model->getSpecies(i);
+      Species * s = this->mpModel->getSpecies(i);
 
       if (unitsFromModel && s->isSetUnits())
-        mSBMLObjectsMap[s->getId()] = CUnitInformation(s->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
+        {
+          std::map<std::string, CUnitInformation>::iterator pos = this->mSBMLObjectsMap.find(s->getId());
+
+          if (pos != this->mSBMLObjectsMap.end())
+            {
+              pos->second = CUnitInformation(s->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
+            }
+          else
+            {
+              mSBMLObjectsMap.insert(std::pair<std::string, CUnitInformation>(s->getId() , CUnitInformation(s->getDerivedUnitDefinition(), CUnitInformation::PROVIDED)));
+            }
+        }
       else //take info from global units
         {
           if (s->getHasOnlySubstanceUnits())
-            mSBMLObjectsMap[s->getId()] = mSBMLAmountUnit;
+            {
+              std::map<std::string, CUnitInformation>::iterator pos = this->mSBMLObjectsMap.find(s->getId());
+
+              if (pos != this->mSBMLObjectsMap.end())
+                {
+                  pos->second = (*mpSBMLAmountUnit);
+                }
+              else
+                {
+                  mSBMLObjectsMap.insert(std::pair<std::string, CUnitInformation>(s->getId(), (*mpSBMLAmountUnit)));
+                }
+            }
           else //concentration
             {
-              CUnit tmp;
-              Compartment* comp = model->getCompartment(s->getCompartment());
+              CUnit tmp(this->mpModel->getLevel(), this->mpModel->getVersion());
+              Compartment* comp = this->mpModel->getCompartment(s->getCompartment());
 
               if (!comp)
                 {
-                  mSBMLObjectsMap[s->getId()] = mSBMLConflictUnit;
+                  std::map<std::string, CUnitInformation>::iterator pos = this->mSBMLObjectsMap.find(s->getId());
+
+                  if (pos != this->mSBMLObjectsMap.end())
+                    {
+                      pos->second = (*mpSBMLConflictUnit);
+                    }
+                  else
+                    {
+                      mSBMLObjectsMap.insert(std::pair<std::string, CUnitInformation>(s->getId(), (*mpSBMLConflictUnit)));
+                    }
+
                   continue;
                 }
 
@@ -110,13 +181,13 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
                   case 0:
                     break;
                   case 1:
-                    tmp = mSBMLLengthUnit;
+                    tmp = (*mpSBMLLengthUnit);
                     break;
                   case 2:
-                    tmp = mSBMLAreaUnit;
+                    tmp = (*mpSBMLAreaUnit);
                     break;
                   case 3:
-                    tmp = mSBMLVolumeUnit;
+                    tmp = (*mpSBMLVolumeUnit);
                     break;
                   default:
                     break;
@@ -124,9 +195,18 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
 
               tmp.invert();
 
-              tmp.multiply(mSBMLAmountUnit);
+              tmp.multiply(*mpSBMLAmountUnit);
 
-              mSBMLObjectsMap[s->getId()] = CUnitInformation(tmp, CUnitInformation::GLOBAL);
+              std::map<std::string, CUnitInformation>::iterator pos = this->mSBMLObjectsMap.find(s->getId());
+
+              if (pos != this->mSBMLObjectsMap.end())
+                {
+                  pos->second = CUnitInformation(tmp, CUnitInformation::GLOBAL);
+                }
+              else
+                {
+                  mSBMLObjectsMap.insert(std::pair<std::string, CUnitInformation>(s->getId(), CUnitInformation(tmp, CUnitInformation::GLOBAL)));
+                }
 
               //TODO: it should be DEFAULT rather than GLOBAL if both amount unit and size unit are DEFAULT.
             }
@@ -134,86 +214,172 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
     }
 
   //initialize list of compartments
-  for (i = 0; i < model->getNumCompartments(); i++)
+  for (i = 0; i < this->mpModel->getNumCompartments(); i++)
     {
-      Compartment *c = model->getCompartment(i);
+      Compartment *c = this->mpModel->getCompartment(i);
 
       if (unitsFromModel && c->isSetUnits())
-        mSBMLObjectsMap[c->getId()] = CUnitInformation(c->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
+        {
+
+          std::map<std::string, CUnitInformation>::iterator pos = this->mSBMLObjectsMap.find(c->getId());
+
+          if (pos != this->mSBMLObjectsMap.end())
+            {
+              pos->second = CUnitInformation(c->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
+            }
+          else
+            {
+              mSBMLObjectsMap.insert(std::pair<std::string, CUnitInformation>(c->getId(), CUnitInformation(c->getDerivedUnitDefinition(), CUnitInformation::PROVIDED)));
+            }
+        }
       else //take info from global units
         {
-          CUnitInformation tmp;
+          CUnitInformation tmp(this->mSBMLLevel, this->mSBMLVersion);
 
           switch (c->getSpatialDimensions())
             {
               case 0:
                 break;
               case 1:
-                tmp = mSBMLLengthUnit;
+                tmp = (*mpSBMLLengthUnit);
                 break;
               case 2:
-                tmp = mSBMLAreaUnit;
+                tmp = (*mpSBMLAreaUnit);
                 break;
               case 3:
-                tmp = mSBMLVolumeUnit;
+                tmp = (*mpSBMLVolumeUnit);
                 break;
               default:
                 break;
             };
 
-          mSBMLObjectsMap[c->getId()] = tmp;
+          std::map<std::string, CUnitInformation>::iterator pos = this->mSBMLObjectsMap.find(c->getId());
+
+          if (pos != this->mSBMLObjectsMap.end())
+            {
+              pos->second = tmp;
+            }
+          else
+            {
+              mSBMLObjectsMap.insert(std::pair<std::string, CUnitInformation>(c->getId(), tmp));
+            }
         }
     }
 
   //initialize list of global parameters
-  for (i = 0; i < model->getNumParameters(); i++)
+  for (i = 0; i < this->mpModel->getNumParameters(); i++)
     {
-      Parameter *p = model->getParameter(i);
+      Parameter *p = this->mpModel->getParameter(i);
 
       if (unitsFromModel && p->isSetUnits())
-        mSBMLObjectsMap[p->getId()] = CUnitInformation(p->getDerivedUnitDefinition(),
-                                      CUnitInformation::PROVIDED);
+        {
+          std::map<std::string, CUnitInformation>::iterator pos = this->mSBMLObjectsMap.find(p->getId());
+
+          if (pos != this->mSBMLObjectsMap.end())
+            {
+              pos->second = CUnitInformation(p->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
+            }
+          else
+            {
+              mSBMLObjectsMap.insert(std::pair<std::string, CUnitInformation>(p->getId(), CUnitInformation(p->getDerivedUnitDefinition(), CUnitInformation::PROVIDED)));
+            }
+        }
       else
-        mSBMLObjectsMap[p->getId()] = CUnitInformation(CUnitInformation::UNKNOWN);
+        {
+          std::map<std::string, CUnitInformation>::iterator pos = this->mSBMLObjectsMap.find(p->getId());
+
+          if (pos != this->mSBMLObjectsMap.end())
+            {
+              pos->second = CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN);
+            }
+          else
+            {
+              mSBMLObjectsMap.insert(std::pair<std::string, CUnitInformation>(p->getId(), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN)));
+            }
+        }
     }
 
   //initialize list of local parameters
   mSBMLLocalParametersMap.clear();
   unsigned int j;
 
-  for (j = 0; j < model->getNumReactions(); j++)
+  for (j = 0; j < this->mpModel->getNumReactions(); j++)
     {
-      Reaction * reaction = model->getReaction(j);
+      Reaction * reaction = this->mpModel->getReaction(j);
       std::map<std::string, CUnitInformation> tmpMap;
 
-      for (i = 0; i < reaction->getKineticLaw()->getNumParameters(); i++)
+      if (reaction->getKineticLaw() != NULL)
         {
-          Parameter *p = reaction->getKineticLaw()->getParameter(i);
-
-          if (unitsFromModel && p->isSetUnits())
+          for (i = 0; i < reaction->getKineticLaw()->getNumParameters(); i++)
             {
-              //tmpMap[p->getId()]=CUnitInformation(p->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
-              UnitDefinition* tmpUD = model->getUnitDefinition(p->getUnits());
+              Parameter *p = reaction->getKineticLaw()->getParameter(i);
 
-              if (tmpUD)
-                tmpMap[p->getId()] = CUnitInformation(tmpUD, CUnitInformation::PROVIDED);
-              else
+              if (unitsFromModel && p->isSetUnits())
                 {
-                  //this is just a workaround
-                  if (p->getUnits() == "dimensionless")
+                  //tmpMap[p->getId()]=CUnitInformation(p->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
+                  UnitDefinition* tmpUD = this->mpModel->getUnitDefinition(p->getUnits());
+
+                  if (tmpUD)
                     {
-                      tmpMap[p->getId()] = CUnitInformation(CUnitInformation::PROVIDED);
+                      std::map<std::string, CUnitInformation>::iterator pos = tmpMap.find(p->getId());
+
+                      if (pos != tmpMap.end())
+                        {
+                          pos->second = CUnitInformation(tmpUD, CUnitInformation::PROVIDED);
+                        }
+                      else
+                        {
+                          tmpMap.insert(std::pair<std::string, CUnitInformation>(p->getId(), CUnitInformation(tmpUD, CUnitInformation::PROVIDED)));
+                        }
                     }
                   else
                     {
-                      tmpMap[p->getId()] = CUnitInformation(CUnitInformation::UNKNOWN);
-                      // "Could not resolve unit ID " << p->getUnits()  << " for " <<  p->getId() << std::endl;
-                      //TODO
+                      //this is just a workaround
+                      if (p->getUnits() == "dimensionless")
+                        {
+                          std::map<std::string, CUnitInformation>::iterator pos = tmpMap.find(p->getId());
+
+                          if (pos != tmpMap.end())
+                            {
+                              pos->second = CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::PROVIDED);
+                            }
+                          else
+                            {
+                              tmpMap.insert(std::pair<std::string, CUnitInformation>(p->getId(), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::PROVIDED)));
+                            }
+                        }
+                      else
+                        {
+                          std::map<std::string, CUnitInformation>::iterator pos = tmpMap.find(p->getId());
+
+                          if (pos != tmpMap.end())
+                            {
+                              pos->second = CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN);
+                            }
+                          else
+                            {
+                              tmpMap.insert(std::pair<std::string, CUnitInformation>(p->getId(), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN)));
+                            }
+
+                          // "Could not resolve unit ID " << p->getUnits()  << " for " <<  p->getId() << std::endl;
+                          //TODO
+                        }
+                    }
+                }
+              else //take info from global units
+                {
+                  std::map<std::string, CUnitInformation>::iterator pos = tmpMap.find(p->getId());
+
+                  if (pos != tmpMap.end())
+                    {
+                      pos->second = CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN);
+                    }
+                  else
+                    {
+                      tmpMap.insert(std::pair<std::string, CUnitInformation>(p->getId(), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN)));
                     }
                 }
             }
-          else //take info from global units
-            tmpMap[p->getId()] = CUnitInformation(CUnitInformation::UNKNOWN);
         }
 
       mSBMLLocalParametersMap[reaction->getId()] = tmpMap;
@@ -223,28 +389,28 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
 
   //**** generate list of all mathematical expressions that need to be considered
 
-  mSBMLExpressions.resize(0);
+  mSBMLExpressions.clear();
 
   //stoichiometry math TODO
 
   //kinetic laws
   //construct the units for amount/time (for kinetic laws)
-  CUnitInformation amountPerTimeUnit = mSBMLTimeUnit;
+  CUnitInformation amountPerTimeUnit = (*mpSBMLTimeUnit);
   amountPerTimeUnit.invert();
-  amountPerTimeUnit.multiply(mSBMLAmountUnit);
+  amountPerTimeUnit.multiply(*mpSBMLAmountUnit);
 
-  if (mSBMLAmountUnit.getInfo() != CUnitInformation::DEFAULT)
+  if (mpSBMLAmountUnit->getInfo() != CUnitInformation::DEFAULT)
     amountPerTimeUnit.setInfo(CUnitInformation::GLOBAL);
 
-  for (i = 0; i < model->getNumReactions(); i++)
+  for (i = 0; i < this->mpModel->getNumReactions(); i++)
     {
-      Reaction * reaction = model->getReaction(i);
+      Reaction * reaction = this->mpModel->getReaction(i);
 
       if (!reaction->getKineticLaw()) continue;
 
       if (!reaction->getKineticLaw()->isSetMath()) continue;
 
-      CExpressionInformation tmp;
+      CExpressionInformation tmp(this->mSBMLLevel, this->mSBMLVersion);
       tmp.mTypeDescription = "Kinetic Law";
       tmp.mObjectDisplayString = reaction->isSetName() ? reaction->getName() : reaction->getId();
       tmp.mpExpression = reaction->getKineticLaw()->getMath();
@@ -256,13 +422,13 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
   //rate rules
   //assignment rules
   //algebraic rules
-  for (i = 0; i < model->getNumRules(); i++)
+  for (i = 0; i < this->mpModel->getNumRules(); i++)
     {
-      Rule* rule = model->getRule(i);
+      Rule* rule = this->mpModel->getRule(i);
 
       if (!rule->isSetMath()) continue;
 
-      CExpressionInformation tmp;
+      CExpressionInformation tmp(this->mSBMLLevel, this->mSBMLVersion);
       tmp.mpExpression = rule->getMath();
 
       if (rule->isRate())
@@ -290,14 +456,14 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
     }
 
   //Events
-  for (i = 0; i < model->getNumEvents(); i++)
+  for (i = 0; i < this->mpModel->getNumEvents(); i++)
     {
-      Event* event = model->getEvent(i);
+      Event* event = this->mpModel->getEvent(i);
 
       //trigger
       if (event->isSetTrigger() && event->getTrigger()->isSetMath())
         {
-          CExpressionInformation tmp;
+          CExpressionInformation tmp(this->mSBMLLevel, this->mSBMLVersion);
           tmp.mTypeDescription = "Event trigger";
           tmp.mObjectDisplayString = event->isSetName() ? event->getName() : event->getId();
           tmp.mpExpression = event->getTrigger()->getMath();
@@ -307,11 +473,11 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
       //delay
       if (event->isSetDelay() && event->getDelay()->isSetMath())
         {
-          CExpressionInformation tmp;
+          CExpressionInformation tmp(this->mSBMLLevel, this->mSBMLVersion);
           tmp.mTypeDescription = "Event delay";
           tmp.mObjectDisplayString = event->isSetName() ? event->getName() : event->getId();
           tmp.mpExpression = event->getDelay()->getMath();
-          tmp.mRootUnit = mSBMLTimeUnit;
+          tmp.mRootUnit = (*mpSBMLTimeUnit);
           mSBMLExpressions.push_back(tmp);
         }
 
@@ -322,7 +488,7 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
 
           if (ea->isSetMath())
             {
-              CExpressionInformation tmp;
+              CExpressionInformation tmp(this->mSBMLLevel, this->mSBMLVersion);
               tmp.mTypeDescription = "Event assignment";
               tmp.mObjectDisplayString = ea->getVariable(); //TODO
               tmp.mpExpression = ea->getMath();
@@ -646,11 +812,11 @@ std::string CUnitInterfaceSBML::getMessageAboutUnknownUnits() const
 void CUnitInterfaceSBML::debugOutput() const
 {
   std::cout << "global units:" << std::endl;
-  std::cout << "Time:        " << mSBMLTimeUnit.getDisplayString() << std::endl;
-  std::cout << "Amount:   " << mSBMLAmountUnit.getDisplayString() << std::endl;
-  std::cout << "Volume:   " << mSBMLVolumeUnit.getDisplayString() << std::endl;
-  std::cout << "Area:        " << mSBMLAreaUnit.getDisplayString() << std::endl;
-  std::cout << "Length:    " << mSBMLLengthUnit.getDisplayString() << std::endl;
+  std::cout << "Time:        " << mpSBMLTimeUnit->getDisplayString() << std::endl;
+  std::cout << "Amount:   " << mpSBMLAmountUnit->getDisplayString() << std::endl;
+  std::cout << "Volume:   " << mpSBMLVolumeUnit->getDisplayString() << std::endl;
+  std::cout << "Area:        " << mpSBMLAreaUnit->getDisplayString() << std::endl;
+  std::cout << "Length:    " << mpSBMLLengthUnit->getDisplayString() << std::endl;
 
   std::cout << std::endl;
 
@@ -765,7 +931,7 @@ void CUnitInterfaceSBML::handleOneExpression(CExpressionInformation & ei)
       if (ei.mPerTime && sourceUnit.getInfo() > CUnitInformation::UNKNOWN)
         {
           //devide unit of rule target by time
-          CUnitInformation invTime = mSBMLTimeUnit;
+          CUnitInformation invTime = (*mpSBMLTimeUnit);
           invTime.invert();
           sourceUnit.multiply(invTime);
         }
@@ -775,7 +941,7 @@ void CUnitInterfaceSBML::handleOneExpression(CExpressionInformation & ei)
       if (ei.mPerTime && tmp.getInfo() > CUnitInformation::UNKNOWN)
         {
           //multiply unit of the rate rule expression by time
-          tmp.multiply(mSBMLTimeUnit);
+          tmp.multiply(*mpSBMLTimeUnit);
         }
 
       handleTerminalNode(tmp, pNodeUnit, NULL);
@@ -795,7 +961,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
     const CEnvironmentInformation & ei)
 {
 
-  CUnitInformation ret;
+  CUnitInformation ret(this->mSBMLLevel, this->mSBMLVersion);
 
   if (!node) return ret;
 
@@ -805,7 +971,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
       if (node->getNumChildren() != 2)
         return ret;
 
-      CUnitInformation tmpTimeUnit = mSBMLTimeUnit;
+      CUnitInformation tmpTimeUnit = (*mpSBMLTimeUnit);
       recursion(node->getChild(1), tmpTimeUnit, ei); //second child should have time units
       return recursion(node->getChild(0), ui, ei); //first child has the same units as the parent
     }
@@ -817,7 +983,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
       if (node->getType() == AST_NAME_TIME)
         {
           //TODO: does not work???
-          CUnitInformation tmpTimeUnit = mSBMLTimeUnit;
+          CUnitInformation tmpTimeUnit = (*mpSBMLTimeUnit);
           return handleTerminalNode(ui, &tmpTimeUnit, node);
         }
 
@@ -838,7 +1004,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
       //now it should be certain that the object is a reference to an sbml object with a mapped unit.
       CUnitInformation * pNodeUnit = getMappedUnitFromIdentifier(getIdentifier(node), ei);
 
-      if (!pNodeUnit) return mSBMLConflictUnit;
+      if (!pNodeUnit) return (*mpSBMLConflictUnit);
 
       return handleTerminalNode(ui, pNodeUnit, node);
     }//is object node
@@ -846,8 +1012,20 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
   //number node
   else if (isNumber(node))
     {
-      CUnitInformation* pNodeUnit;
-      pNodeUnit = &mSBMLNumbersMap[node];
+      CUnitInformation* pNodeUnit = NULL;
+      std::map<const ASTNode*, CUnitInformation>::iterator pos = mSBMLNumbersMap.find(node);
+
+      if (pos != mSBMLNumbersMap.end())
+        {
+          pNodeUnit = &pos->second;
+        }
+      else
+        {
+          pNodeUnit = &((mSBMLNumbersMap.insert(
+                           std::pair<const ASTNode*, CUnitInformation>
+                           (node, CUnitInformation(this->mSBMLLevel, this->mSBMLVersion))
+                         )).first->second);
+        }
 
 //       //check if the node is already in the map
 //       std::map<const ASTNode*, CUnitInformation>::iterator it = mSBMLNumbersMap.find(node);
@@ -960,8 +1138,8 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
           case AST_FUNCTION_FACTORIAL:
           case AST_FUNCTION_LN:
           case AST_FUNCTION_LOG:
-            recursion(node->getChild(0), CUnitInformation(CUnitInformation::DEFAULT), ei);
-            return CUnitInformation(CUnitInformation::DEFAULT);
+            recursion(node->getChild(0), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::DEFAULT), ei);
+            return CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::DEFAULT);
             break;
 
           case AST_FUNCTION_CEILING:
@@ -979,7 +1157,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
     {
       case AST_CONSTANT_E:
       case AST_CONSTANT_PI:
-        return  CUnitInformation(CUnitInformation::DEFAULT);
+        return  CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::DEFAULT);
         break;
 
       case AST_FUNCTION_PIECEWISE:
@@ -996,7 +1174,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
   unsigned int i, numChildren = node->getNumChildren();
 
   for (i = 0; i < numChildren; ++i)
-    recursion(node->getChild(i), CUnitInformation(CUnitInformation::UNKNOWN), ei);
+    recursion(node->getChild(i), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN), ei);
 
   return ret;
 }
@@ -1046,7 +1224,7 @@ CUnitInformation CUnitInterfaceSBML::recursionEqual(const ASTNode* node,
     const CUnitInformation & ui,
     const CEnvironmentInformation & ei)
 {
-  CUnitInformation ret;
+  CUnitInformation ret(this->mSBMLLevel, this->mSBMLVersion);
 
   if (!node) return ret;
 
@@ -1056,7 +1234,7 @@ CUnitInformation CUnitInterfaceSBML::recursionEqual(const ASTNode* node,
 
   unsigned int i, numChildren = node->getNumChildren();
   std::vector<CUnitInformation> childUnits;
-  childUnits.resize(numChildren);
+  childUnits.resize(numChildren, CUnitInformation(this->mSBMLLevel, this->mSBMLVersion));
 
   //first deal with the unit that is passed from above
   if (ui.getInfo() > CUnitInformation::UNKNOWN)
@@ -1101,7 +1279,7 @@ CUnitInformation CUnitInterfaceSBML::recursionTimes(const ASTNode* node,
     const CUnitInformation & ui,
     const CEnvironmentInformation & ei)
 {
-  CUnitInformation ret;
+  CUnitInformation ret(this->mSBMLLevel, this->mSBMLVersion);
 
   if (!node) return ret;
 
@@ -1111,11 +1289,11 @@ CUnitInformation CUnitInterfaceSBML::recursionTimes(const ASTNode* node,
 
   unsigned int i, numChildren = node->getNumChildren();
   std::vector<CUnitInformation> childUnits;
-  childUnits.resize(numChildren);
+  childUnits.resize(numChildren, CUnitInformation(this->mSBMLLevel, this->mSBMLVersion));
 
   // ask all children for their unit
   std::vector<int> unknown;
-  CUnitInformation uu; //unknown units
+  CUnitInformation uu(this->mSBMLLevel, this->mSBMLVersion); //unknown units
 
   for (i = 0; i < numChildren; ++i) //TODO should stop when we know enough
     {
@@ -1154,7 +1332,7 @@ CUnitInformation CUnitInterfaceSBML::recursionTimes(const ASTNode* node,
       unsigned int tmp = unknown.size() ? unknown[0] : 0;
 
       //determine units
-      CUnitInformation tmpUnit;
+      CUnitInformation tmpUnit(this->mSBMLLevel, this->mSBMLVersion);
       bool success = true;
 
       for (i = 0; i < numChildren; ++i)
@@ -1181,7 +1359,7 @@ CUnitInformation CUnitInterfaceSBML::recursionDivide(const ASTNode* node,
     const CUnitInformation & ui,
     const CEnvironmentInformation & ei)
 {
-  CUnitInformation ret;
+  CUnitInformation ret(this->mSBMLLevel, this->mSBMLVersion);
 
   if (!node) return ret;
 
@@ -1192,11 +1370,11 @@ CUnitInformation CUnitInterfaceSBML::recursionDivide(const ASTNode* node,
   unsigned int i, numChildren = node->getNumChildren();
   assert(numChildren == 2);
   std::vector<CUnitInformation> childUnits;
-  childUnits.resize(numChildren);
+  childUnits.resize(numChildren, CUnitInformation(this->mSBMLLevel, this->mSBMLVersion));
 
   // ask all children for their unit
   std::vector<int> unknown;
-  CUnitInformation uu; //unknown units
+  CUnitInformation uu(this->mSBMLLevel, this->mSBMLVersion); //unknown units
 
   for (i = 0; i < numChildren; ++i)
     {
@@ -1273,7 +1451,7 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
     const CUnitInformation & ui,
     const CEnvironmentInformation & ei)
 {
-  CUnitInformation ret;
+  CUnitInformation ret(this->mSBMLLevel, this->mSBMLVersion);
 
   if (!node) return ret;
 
@@ -1282,10 +1460,10 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
   unsigned int numChildren = node->getNumChildren();
   assert(numChildren == 2);
   std::vector<CUnitInformation> childUnits;
-  childUnits.resize(numChildren);
+  childUnits.resize(numChildren, CUnitInformation(this->mSBMLLevel, this->mSBMLVersion));
 
   //the exponent should always be dimensionless
-  childUnits[1] = recursion(node->getChild(1), CUnitInformation(CUnitInformation::DEFAULT), ei);
+  childUnits[1] = recursion(node->getChild(1), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::DEFAULT), ei);
 
   //try to evaluate the exponent
   EvaluationResult res = evaluate(node->getChild(1));
@@ -1299,7 +1477,7 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
 
           if (ui.getInfo() == CUnitInformation::UNKNOWN)
             {
-              childUnits[0] = recursion(node->getChild(0), CUnitInformation(CUnitInformation::UNKNOWN), ei);
+              childUnits[0] = recursion(node->getChild(0), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN), ei);
               ret = childUnits[0];
 
               if (ret.getInfo() > CUnitInformation::UNKNOWN)
@@ -1319,7 +1497,7 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
       else
         {
           //TODO perhaps rather conflict???
-          childUnits[0] = recursion(node->getChild(0), CUnitInformation(CUnitInformation::UNKNOWN), ei);
+          childUnits[0] = recursion(node->getChild(0), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN), ei);
         }
 
       //TODO extend to deal with non integer exponents properly. CUnit needs to support it first.
@@ -1333,7 +1511,7 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
         {
           if (ui.getInfo() == CUnitInformation::UNKNOWN)
             {
-              childUnits[0] = recursion(node->getChild(0), CUnitInformation(CUnitInformation::UNKNOWN), ei);
+              childUnits[0] = recursion(node->getChild(0), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN), ei);
               ret = childUnits[0];
 
               if (ret.getInfo() > CUnitInformation::UNKNOWN)
@@ -1352,7 +1530,7 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
         }
       else //exponent is neither a number nor a simple identifier. Units of the base are unknown
         {
-          childUnits[0] = recursion(node->getChild(0), CUnitInformation(CUnitInformation::UNKNOWN), ei);
+          childUnits[0] = recursion(node->getChild(0), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN), ei);
         }
     }
 
@@ -1386,7 +1564,7 @@ CUnitInformation CUnitInterfaceSBML::recursionPiecewise(const ASTNode* node,
     const CUnitInformation & ui,
     const CEnvironmentInformation & ei)
 {
-  CUnitInformation ret;
+  CUnitInformation ret(this->mSBMLLevel, this->mSBMLVersion);
 
   if (!node) return ret;
 
@@ -1396,11 +1574,11 @@ CUnitInformation CUnitInterfaceSBML::recursionPiecewise(const ASTNode* node,
 
   unsigned int i, numChildren = node->getNumChildren();
   std::vector<CUnitInformation> childUnits;
-  childUnits.resize(numChildren);
+  childUnits.resize(numChildren, CUnitInformation(this->mSBMLLevel, this->mSBMLVersion));
 
   //first do the recursion for the logical parts (the children with uneven index)
   for (i = 1; i < numChildren; i += 2)
-    recursion(node->getChild(i), CUnitInformation(CUnitInformation::UNKNOWN), ei);
+    recursion(node->getChild(i), CUnitInformation(this->mSBMLLevel, this->mSBMLVersion, CUnitInformation::UNKNOWN), ei);
 
   //first deal with the unit that is passed from above
   if (ui.getInfo() > CUnitInformation::UNKNOWN)
