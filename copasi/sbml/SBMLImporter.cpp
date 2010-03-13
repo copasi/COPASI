@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.248 $
+//   $Revision: 1.249 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/19 15:39:30 $
+//   $Date: 2010/03/13 07:52:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -6367,7 +6367,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
     {
       if (unitId == "volume" || unitId == "litre")
         {
-          pUnitDefinition = new UnitDefinition("dummy_volume");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_volume");
+          pUnitDefinition->setName("dummy_volume");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_LITRE);
           pUnit->setExponent(1);
@@ -6376,7 +6378,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "substance" || unitId == "mole")
         {
-          pUnitDefinition = new UnitDefinition("dummy_substance");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_substance");
+          pUnitDefinition->setName("dummy_substance");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_MOLE);
           pUnit->setExponent(1);
@@ -6385,7 +6389,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "time" || unitId == "second")
         {
-          pUnitDefinition = new UnitDefinition("dummy_time");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_time");
+          pUnitDefinition->setName("dummy_time");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_SECOND);
           pUnit->setExponent(1);
@@ -6394,7 +6400,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "area")
         {
-          pUnitDefinition = new UnitDefinition("dummy_area");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_area");
+          pUnitDefinition->setName("dummy_area");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_METRE);
           pUnit->setExponent(2);
@@ -6403,7 +6411,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "length" || unitId == "metre")
         {
-          pUnitDefinition = new UnitDefinition("dummy_length");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_length");
+          pUnitDefinition->setName("dummy_length");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_METRE);
           pUnit->setExponent(1);
@@ -6412,7 +6422,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "ampere")
         {
-          pUnitDefinition = new UnitDefinition("dummy_ampere");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_ampere");
+          pUnitDefinition->setName("dummy_ampere");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_AMPERE);
           pUnit->setExponent(1);
@@ -6421,7 +6433,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "farad")
         {
-          pUnitDefinition = new UnitDefinition("dummy_farad");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_farad");
+          pUnitDefinition->setName("dummy_farad");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_FARAD);
           pUnit->setExponent(1);
@@ -6430,7 +6444,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "joule")
         {
-          pUnitDefinition = new UnitDefinition("dummy_joule");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_joule");
+          pUnitDefinition->setName("dummy_joule");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_JOULE);
           pUnit->setExponent(1);
@@ -6439,7 +6455,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "lux")
         {
-          pUnitDefinition = new UnitDefinition("dummy_lux");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_lux");
+          pUnitDefinition->setName("dummy_lux");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_LUX);
           pUnit->setExponent(1);
@@ -6448,7 +6466,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "radian")
         {
-          pUnitDefinition = new UnitDefinition("dummy_radian");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_radian");
+          pUnitDefinition->setName("dummy_radian");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_RADIAN);
           pUnit->setExponent(1);
@@ -6457,7 +6477,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "volt")
         {
-          pUnitDefinition = new UnitDefinition("dummy_volt");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_volt");
+          pUnitDefinition->setName("dummy_volt");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_VOLT);
           pUnit->setExponent(1);
@@ -6466,7 +6488,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "becquerel")
         {
-          pUnitDefinition = new UnitDefinition("dummy_becquerel");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_becquerel");
+          pUnitDefinition->setName("dummy_becquerel");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_BECQUEREL);
           pUnit->setExponent(1);
@@ -6475,7 +6499,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "gram")
         {
-          pUnitDefinition = new UnitDefinition("dummy_gram");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_gram");
+          pUnitDefinition->setName("dummy_gram");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_GRAM);
           pUnit->setExponent(1);
@@ -6484,7 +6510,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "katal")
         {
-          pUnitDefinition = new UnitDefinition("dummy_katal");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_katal");
+          pUnitDefinition->setName("dummy_katal");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_KATAL);
           pUnit->setExponent(1);
@@ -6493,7 +6521,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "candela")
         {
-          pUnitDefinition = new UnitDefinition("dummy_candela");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_candela");
+          pUnitDefinition->setName("dummy_candela");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_CANDELA);
           pUnit->setExponent(1);
@@ -6502,7 +6532,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "gray")
         {
-          pUnitDefinition = new UnitDefinition("dummy_gray");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_gray");
+          pUnitDefinition->setName("dummy_gray");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_GRAY);
           pUnit->setExponent(1);
@@ -6511,7 +6543,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "kelvin")
         {
-          pUnitDefinition = new UnitDefinition("dummy_kelvin");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_kelvin");
+          pUnitDefinition->setName("dummy_kelvin");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_KELVIN);
           pUnit->setExponent(1);
@@ -6520,7 +6554,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "siemens")
         {
-          pUnitDefinition = new UnitDefinition("dummy_siemens");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_siemens");
+          pUnitDefinition->setName("dummy_siemens");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_SIEMENS);
           pUnit->setExponent(1);
@@ -6529,7 +6565,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "weber")
         {
-          pUnitDefinition = new UnitDefinition("dummy_weber");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_weber");
+          pUnitDefinition->setName("dummy_weber");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_WEBER);
           pUnit->setExponent(1);
@@ -6538,7 +6576,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "Celsius")
         {
-          pUnitDefinition = new UnitDefinition("dummy_celsius");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_celsius");
+          pUnitDefinition->setName("dummy_celsius");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_CELSIUS);
           pUnit->setExponent(1);
@@ -6547,7 +6587,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "henry")
         {
-          pUnitDefinition = new UnitDefinition("dummy_henry");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_henry");
+          pUnitDefinition->setName("dummy_henry");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_HENRY);
           pUnit->setExponent(1);
@@ -6556,7 +6598,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "kilogram")
         {
-          pUnitDefinition = new UnitDefinition("dummy_kilogram");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_kilogram");
+          pUnitDefinition->setName("dummy_kilogram");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_KILOGRAM);
           pUnit->setExponent(1);
@@ -6565,7 +6609,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "newton")
         {
-          pUnitDefinition = new UnitDefinition("dummy_newton");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_newton");
+          pUnitDefinition->setName("dummy_newton");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_NEWTON);
           pUnit->setExponent(1);
@@ -6574,7 +6620,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "sievert")
         {
-          pUnitDefinition = new UnitDefinition("dummy_sievert");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_sievert");
+          pUnitDefinition->setName("dummy_sievert");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_SIEVERT);
           pUnit->setExponent(1);
@@ -6583,7 +6631,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "coulomb")
         {
-          pUnitDefinition = new UnitDefinition("dummy_coulomb");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_coulomb");
+          pUnitDefinition->setName("dummy_coulomb");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_COULOMB);
           pUnit->setExponent(1);
@@ -6592,7 +6642,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "hertz")
         {
-          pUnitDefinition = new UnitDefinition("dummy_hertz");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_hertz");
+          pUnitDefinition->setName("dummy_hertz");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_HERTZ);
           pUnit->setExponent(1);
@@ -6601,7 +6653,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "ohm")
         {
-          pUnitDefinition = new UnitDefinition("dummy_ohm");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_ohm");
+          pUnitDefinition->setName("dummy_ohm");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_OHM);
           pUnit->setExponent(1);
@@ -6610,7 +6664,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "steradian")
         {
-          pUnitDefinition = new UnitDefinition("dummy_steradian");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_steradian");
+          pUnitDefinition->setName("dummy_steradian");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_STERADIAN);
           pUnit->setExponent(1);
@@ -6619,7 +6675,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "dimensionless")
         {
-          pUnitDefinition = new UnitDefinition("dummy_dimensionless");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_dimensionless");
+          pUnitDefinition->setName("dummy_dimensionless");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_DIMENSIONLESS);
           pUnit->setExponent(1);
@@ -6628,7 +6686,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "item")
         {
-          pUnitDefinition = new UnitDefinition("dummy_item");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_item");
+          pUnitDefinition->setName("dummy_item");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_ITEM);
           pUnit->setExponent(1);
@@ -6637,7 +6697,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "lumen")
         {
-          pUnitDefinition = new UnitDefinition("dummy_lumen");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_lumen");
+          pUnitDefinition->setName("dummy_lumen");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_LUMEN);
           pUnit->setExponent(1);
@@ -6646,7 +6708,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "pascal")
         {
-          pUnitDefinition = new UnitDefinition("dummy_pascal");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_pascal");
+          pUnitDefinition->setName("dummy_pascal");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_PASCAL);
           pUnit->setExponent(1);
@@ -6655,7 +6719,9 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "tesla")
         {
-          pUnitDefinition = new UnitDefinition("dummy_tesla");
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_tesla");
+          pUnitDefinition->setName("dummy_tesla");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_TESLA);
           pUnit->setExponent(1);
