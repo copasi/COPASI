@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.95.2.2 $
+//   $Revision: 1.95.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/08 18:20:05 $
+//   $Date: 2010/03/15 14:36:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -645,8 +645,10 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
       AbsoluteDistance += tmp * tmp;
     }
 
-  RelativeDistance = sqrt(RelativeDistance);
-  AbsoluteDistance = sqrt(AbsoluteDistance);
+  RelativeDistance =
+    isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance);
+  AbsoluteDistance =
+    isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance);
 
   return std::max(RelativeDistance, AbsoluteDistance);
 }
