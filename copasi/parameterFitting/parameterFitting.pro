@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/parameterFitting.pro,v $ 
-#   $Revision: 1.8 $ 
+#   $Revision: 1.9 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/12/18 19:01:25 $ 
+#   $Date: 2010/03/16 18:56:26 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -12,14 +17,11 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2008/12/18 19:01:25 $
+# $Revision: 1.9 $ $Author: shoops $ $Date: 2010/03/16 18:56:26 $
 ######################################################################
 
 LIB = fitting
 SRC_TARGET = parameterFitting
-
-include(../lib.pri)
-include(../common.pri)
 
 # Input
 HEADERS += CExperiment.h \
@@ -40,7 +42,8 @@ SOURCES += CExperiment.cpp \
            CFitProblem.cpp \
            CFitTask.cpp
 
+include(../lib.pri)
+include(../common.pri)
 
-DISTFILES += fitting.vcproj
 #The following line was inserted by qt3to4
 QT +=  qt3support 

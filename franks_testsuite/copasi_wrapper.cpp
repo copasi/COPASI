@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 19:53:49 $
+//   $Date: 2010/03/16 18:59:03 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -49,7 +54,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(false, 0, NULL);
+      CCopasiRootContainer::init(0, NULL, false);
     }
 
   catch (copasi::autoexcept &e)
@@ -65,16 +70,16 @@ int main(int argc, char *argv[])
     }
 
   char* pSBMLFilename = argv[1];
-  char* pStartTime = argv[2];
-  char* pEndTime = argv[3];
-  char* pStepNumber = argv[4];
+  const char * pStartTime = argv[2];
+  const char * pEndTime = argv[3];
+  const char * pStepNumber = argv[4];
   char* pOutputFilename = argv[5];
   CTrajectoryTask* pTrajectoryTask = NULL;
 
   std::string CWD = COptions::getPWD();
-  double startTime = strToDouble(pStartTime, &pStartTime);
-  double endTime = strToDouble(pEndTime, &pEndTime);
-  double stepNumber = strToDouble(pStepNumber, &pStepNumber);
+  double startTime = strToDouble(pStartTime, NULL);
+  double endTime = strToDouble(pEndTime, NULL);
+  double stepNumber = strToDouble(pStepNumber, NULL);
 
   if (startTime < 0.0)
     {

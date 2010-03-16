@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/15 22:50:07 $
+//   $Date: 2010/03/16 18:57:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@ CScanTask::CScanTask(const CCopasiContainer * pParent):
   mpProblem = new CScanProblem(this);
   mpMethod = CScanMethod::createMethod();
   this->add(mpMethod, true);
-  ((CScanMethod *) mpMethod)->setProblem((CScanProblem *) mpProblem);
+  static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
 CScanTask::CScanTask(const CScanTask & src,
@@ -63,7 +63,7 @@ CScanTask::CScanTask(const CScanTask & src,
   mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
   mpMethod = CScanMethod::createMethod();
   this->add(mpMethod, true);
-  ((CScanMethod *) mpMethod)->setProblem((CScanProblem *) mpProblem);
+  static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
 CScanTask::~CScanTask()
@@ -123,7 +123,7 @@ bool CScanTask::process(const bool & useInitialValues)
 
   if (!pMethod->init()) return false;
 
-  //init progress bar
+  // init progress bar
   mProgress = 0;
 
   if (mpCallBack)
@@ -131,16 +131,16 @@ bool CScanTask::process(const bool & useInitialValues)
       mpCallBack->setName("performing parameter scan...");
 
       unsigned C_INT32 totalSteps = pMethod->getTotalNumberOfSteps();
-      mpCallBack->addItem("Number of Steps",
-                          CCopasiParameter::UINT,
-                          &mProgress,
-                          &totalSteps);
+      mhProgress = mpCallBack->addItem("Number of Steps",
+                                       CCopasiParameter::UINT,
+                                       &mProgress,
+                                       &totalSteps);
 
       if (mpSubtask)
         mpSubtask->setCallBack(mpCallBack);
     }
 
-  //init output handler (plotting)
+  // init output handler (plotting)
   output(COutputInterface::BEFORE);
 
   //calling the scanner, output is done in the callback
@@ -168,7 +168,7 @@ bool CScanTask::processCallback()
   //do progress bar
   ++mProgress;
 
-  if (mpCallBack) return mpCallBack->progress();
+  if (mpCallBack) return mpCallBack->progress(mhProgress);
 
   return true;
 }

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/01 19:54:20 $
+//   $Date: 2010/03/16 18:57:04 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -205,7 +210,7 @@ protected:
   /**
    * The particle and reaction numbers
    */
-  size_t mNumReactions, mNumSpecies;
+  size_t mNumReactions;
 
   /**
    * max number of single stochastic steps to do in one step()
@@ -233,6 +238,11 @@ protected:
   CVector< C_FLOAT64 > mAmu;
 
   /**
+   * Total propensity (sum over mAmu[i])
+   */
+  C_FLOAT64 mA0;
+
+  /**
    * The method internal state which contains particle rounded particle numbers.
    */
   CState mMethodState;
@@ -240,12 +250,7 @@ protected:
   /**
    * A vector containing dependency information to minimize the required updates.
    */
-  CVector< CReactionDependencies > mReactionDependencies;
-
-  /**
-   * Total propensity (sum over mAmu[i])
-   */
-  C_FLOAT64 mA0;
+  std::vector< CReactionDependencies > mReactionDependencies;
 
   /**
    * A boolean flag indicating whether the maximum steps have been reached. This

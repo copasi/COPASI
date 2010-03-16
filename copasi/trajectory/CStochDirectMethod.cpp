@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/01 19:54:20 $
+//   $Date: 2010/03/16 18:57:04 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -44,7 +49,6 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 
-#define mtxIdx(row,col,intv)  ((row)+(col)*(intv))
 CStochDirectMethod::CReactionDependencies::CReactionDependencies():
     mSpeciesMultiplier(0),
     mMethodSpecies(0),
@@ -102,15 +106,14 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
     mpModel(NULL),
     mNumReactions(0),
-    mNumSpecies(0),
     mMaxSteps(1000000),
     mNextReactionTime(0.0),
     mNextReactionIndex(C_INVALID_INDEX),
     mDoCorrection(true),
     mAmu(0),
+    mA0(0.0),
     mMethodState(),
     mReactionDependencies(0),
-    mA0(0.0),
     mMaxStepsReached(false)
 {
   initializeParameter();
@@ -122,15 +125,14 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
     mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
     mpModel(src.mpModel),
     mNumReactions(src.mNumReactions),
-    mNumSpecies(src.mNumSpecies),
     mMaxSteps(src.mMaxSteps),
     mNextReactionTime(src.mNextReactionTime),
     mNextReactionIndex(src.mNextReactionIndex),
     mDoCorrection(src.mDoCorrection),
     mAmu(src.mAmu),
+    mA0(src.mA0),
     mMethodState(src.mMethodState),
     mReactionDependencies(src.mReactionDependencies),
-    mA0(src.mA0),
     mMaxStepsReached(src.mMaxStepsReached)
 {
   initializeParameter();
@@ -205,8 +207,8 @@ void CStochDirectMethod::start(const CState * initialState)
   //for the discrete simulation. This also floors all particle numbers in the model.
 
   mNumReactions = mpModel->getReactions().size();
-  mNumSpecies = mpModel->getMetabolitesX().size();
 
+  mReactionDependencies.resize(mNumReactions);
   mAmu.resize(mNumReactions);
   mAmu = 0.0;
 
@@ -237,21 +239,28 @@ void CStochDirectMethod::start(const CState * initialState)
   C_FLOAT64 * pMethodStateValue = mMethodState.beginIndependent() - 1;
 
   // Build the reaction dependencies
-  mReactionDependencies.resize(mNumReactions);
+  size_t NumReactions = 0;
 
   CCopasiVector< CReaction >::const_iterator it = mpModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator end = mpModel->getReactions().end();
-  CReactionDependencies * pDependencies = mReactionDependencies.array();
+  std::vector< CReactionDependencies >::iterator itDependencies = mReactionDependencies.begin();
 
-  for (; it  != end; ++it, ++pDependencies)
+  for (; it  != end; ++it)
     {
       const CCopasiVector<CChemEqElement> & Balances = (*it)->getChemEq().getBalances();
+      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
 
-      pDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
+      // This reactions does not change anything we ignore it
+      if (Balances.size() == 0 && Substrates.size() == 0)
+        {
+          continue;
+        }
 
-      pDependencies->mSpeciesMultiplier.resize(Balances.size());
-      pDependencies->mMethodSpecies.resize(Balances.size());
-      pDependencies->mModelSpecies.resize(Balances.size());
+      itDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
+
+      itDependencies->mSpeciesMultiplier.resize(Balances.size());
+      itDependencies->mMethodSpecies.resize(Balances.size());
+      itDependencies->mModelSpecies.resize(Balances.size());
 
       std::set< const CCopasiObject * > changed;
 
@@ -266,9 +275,9 @@ void CStochDirectMethod::start(const CState * initialState)
 
           if (pMetab->getStatus() == CModelEntity::REACTIONS)
             {
-              pDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
-              pDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
-              pDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+              itDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
+              itDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
+              itDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
 
               changed.insert(pMetab->getValueReference());
 
@@ -277,15 +286,13 @@ void CStochDirectMethod::start(const CState * initialState)
         }
 
       // Correct allocation for metabolites which are not determined by reactions
-      pDependencies->mSpeciesMultiplier.resize(Index, true);
-      pDependencies->mMethodSpecies.resize(Index, true);
-      pDependencies->mModelSpecies.resize(Index, true);
+      itDependencies->mSpeciesMultiplier.resize(Index, true);
+      itDependencies->mMethodSpecies.resize(Index, true);
+      itDependencies->mModelSpecies.resize(Index, true);
 
-      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
-
-      pDependencies->mSubstrateMultiplier.resize(Substrates.size());
-      pDependencies->mMethodSubstrates.resize(Substrates.size());
-      pDependencies->mModelSubstrates.resize(Substrates.size());
+      itDependencies->mSubstrateMultiplier.resize(Substrates.size());
+      itDependencies->mMethodSubstrates.resize(Substrates.size());
+      itDependencies->mModelSubstrates.resize(Substrates.size());
 
       CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
       CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
@@ -296,15 +303,15 @@ void CStochDirectMethod::start(const CState * initialState)
         {
           const CMetab * pMetab = (*itSubstrate)->getMetabolite();
 
-          pDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          pDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
-          pDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
+          itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
+          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+          itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
         }
 
       std::set< const CCopasiObject * > dependend;
 
       CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
-      pDependencies->mDependentReactions.resize(mNumReactions);
+      itDependencies->mDependentReactions.resize(mNumReactions);
 
       Index = 0;
       size_t Count = 0;
@@ -314,16 +321,24 @@ void CStochDirectMethod::start(const CState * initialState)
           if ((*itReaction)->getParticleFluxReference()->dependsOn(changed))
             {
               dependend.insert((*itReaction)->getParticleFluxReference());
-              pDependencies->mDependentReactions[Count] = Index;
+              itDependencies->mDependentReactions[Count] = Index;
 
               Count++;
             }
         }
 
-      pDependencies->mDependentReactions.resize(Count, true);
+      itDependencies->mDependentReactions.resize(Count, true);
 
-      pDependencies->mCalculations = CCopasiObject::buildUpdateSequence(dependend, changed);
+      itDependencies->mCalculations = CCopasiObject::buildUpdateSequence(dependend, changed);
+
+      ++itDependencies;
+      ++NumReactions;
     }
+
+  mNumReactions = NumReactions;
+
+  mReactionDependencies.resize(mNumReactions);
+  mAmu.resize(mNumReactions, true);
 
   mpModel->updateSimulatedValues(false); //for assignments
 
@@ -359,14 +374,14 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (pTP->getDuration() < 0.0)
     {
       //back integration not possible
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 9);
       return false;
     }
 
   if (pTP->getModel()->getTotSteps() < 1)
     {
       //at least one reaction necessary
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 17);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
       return false;
     }
 
@@ -382,19 +397,19 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
           if (dynamic_cast<const CModelValue *>(*ppEntity) != NULL)
             {
               // global quantity ode rule found
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 18);
+              CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
               return false;
             }
           else if (dynamic_cast<const CCompartment *>(*ppEntity) != NULL)
             {
               // compartment ode rule found
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 21);
+              CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
               return false;
             }
           else
             {
               // species ode rule found
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 20);
+              CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
               return false;
             }
         }
@@ -407,20 +422,21 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (message != "")
     {
       //model not suitable, message describes the problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
       return false;
     }
 
   if (* getValue("Max Internal Steps").pINT <= 0)
     {
       //max steps should be at least 1
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 15);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 15);
       return false;
     }
 
-  if (pTP->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity)
+  //events are not supported at the moment
+  if (pTP->getModel()->getEvents().size() > 0)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 22);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
       return false;
     }
 
@@ -445,7 +461,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
       C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
 
       C_FLOAT64 * pAmu = mAmu.array();
-      C_FLOAT64 * endAmu = pAmu + mAmu.size();
+      C_FLOAT64 * endAmu = pAmu + mNumReactions;
 
       for (; (sum < rand) && (pAmu != endAmu); ++pAmu, ++mNextReactionIndex)
         {
@@ -494,7 +510,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
 
   // calculate the total propensity
   C_FLOAT64 * pAmu = mAmu.array();
-  C_FLOAT64 * endAmu = pAmu + mAmu.size();
+  C_FLOAT64 * endAmu = pAmu + mNumReactions;
 
   mA0 = 0.0;
 
@@ -511,16 +527,17 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
 void CStochDirectMethod::calculateAmu(const C_INT32 & index)
 {
   CReactionDependencies & Dependencies = mReactionDependencies[index];
+  C_FLOAT64 & Amu = mAmu[index];
 
-  mAmu[index] = *Dependencies.mpParticleFlux;
+  Amu = *Dependencies.mpParticleFlux;
 
   if (!mDoCorrection)
     {
       return;
     }
 
-  C_FLOAT64 Amu = 1.0;
-  C_FLOAT64 SubstrateFactor = 1.0;
+  C_FLOAT64 SubstrateMultiplier = 1.0;
+  C_FLOAT64 SubstrateDevisor = 1.0;
   C_FLOAT64 Multiplicity;
   C_FLOAT64 LowerBound;
   C_FLOAT64 Number;
@@ -546,22 +563,21 @@ void CStochDirectMethod::calculateAmu(const C_INT32 & index)
           Number = **ppLocalSubstrate;
 
           LowerBound = Number - Multiplicity;
-          SubstrateFactor = SubstrateFactor * pow(Number, Multiplicity - 1.0);  //optimization
+          SubstrateDevisor *= pow(Number, Multiplicity - 1.0);  //optimization
           Number -= 1.0;
 
           while (Number > LowerBound)
             {
-              Amu *= Number;
+              SubstrateMultiplier *= Number;
               Number -= 1.0;
             }
         }
     }
 
   // at least one substrate particle number is zero
-  if (fabs(Amu) < 100.0 * std::numeric_limits<C_FLOAT64>::epsilon() ||
-      fabs(SubstrateFactor)  < 100.0 * std::numeric_limits<C_FLOAT64>::epsilon())
+  if (SubstrateMultiplier < 0.5 || SubstrateDevisor < 0.5)
     {
-      mAmu[index] = 0.0;
+      Amu = 0.0;
       return;
     }
 
@@ -571,7 +587,7 @@ void CStochDirectMethod::calculateAmu(const C_INT32 & index)
   //C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
   if (ApplyCorrection)
     {
-      mAmu[index] = *Dependencies.mpParticleFlux * Amu / SubstrateFactor;
+      Amu *= SubstrateMultiplier / SubstrateDevisor;
     }
 
   return;

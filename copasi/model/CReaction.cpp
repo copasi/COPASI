@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.189 $
+//   $Revision: 1.190 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:47 $
+//   $Date: 2010/03/16 18:56:24 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -524,7 +529,21 @@ void CReaction::compile()
 
   if (mpFunction)
     {
-      addDirectDependency(mpFunction);
+      if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
+        {
+          addDirectDependency(mpFunction);
+
+          mpFluxReference->setRefresh(this, &CReaction::calculate);
+          mpParticleFluxReference->setRefresh(this, &CReaction::calculate);
+        }
+      else
+        {
+          mFlux = 0.0;
+          mParticleFlux = 0.0;
+
+          mpFluxReference->clearRefresh();
+          mpParticleFluxReference->clearRefresh();
+        }
 
       unsigned C_INT32 i, j, jmax;
       unsigned C_INT32 imax = mMap.getFunctionParameters().size();
@@ -742,7 +761,9 @@ const C_FLOAT64 & CReaction::calculateFlux()
 
 const C_FLOAT64 & CReaction::calculateParticleFlux()
 {
-  calculate();
+  if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
+    calculate();
+
   return mParticleFlux;
 }
 
@@ -1179,24 +1200,6 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
             pTmpNode = NULL;
           }
 
-        // delay has a second child
-        /*
-        if((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(expression->getType())==CEvaluationNodeFunction::DELAY)
-        {
-            pChildNode=dynamic_cast<CEvaluationNode*>(expression->getChild()->getSibling());
-            assert(pChildNode!=NULL);
-            pChildNode = this->objects2variables(pChildNode, replacementMap, copasi2sbmlmap);
-            if (pChildNode)
-            {
-                pTmpNode->addChild(pChildNode);
-            }
-            else
-            {
-                delete pTmpNode;
-                pTmpNode = NULL;
-            }
-        }
-        */
         break;
       case CEvaluationNode::CALL:
         pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
@@ -1215,6 +1218,25 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
             pOldChildNode = static_cast<CEvaluationNode*>(pOldChildNode->getSibling());
           }
 
+        break;
+      case CEvaluationNode::DELAY:
+        pTmpNode = new CEvaluationNodeDelay(static_cast<CEvaluationNodeDelay::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert all children
+        pOldChildNode = static_cast<CEvaluationNode*>(expression->getChild());
+
+        while (pOldChildNode)
+          {
+            pChildNode = this->objects2variables(pOldChildNode, replacementMap, copasi2sbmlmap);
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+              }
+
+            pOldChildNode = static_cast<CEvaluationNode*>(pOldChildNode->getSibling());
+          }
+
+        pTmpNode->compile(NULL);
         break;
       case CEvaluationNode::STRUCTURE:
         // this should not occur here

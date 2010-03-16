@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/30 19:28:01 $
+//   $Date: 2010/03/16 18:57:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -448,7 +453,7 @@ void CQTrajectoryWidget::showUnits()
 
   mpLblDuration->setText("Duration" + TimeUnits);
   mpLblIntervalSize->setText("Interval Size" + TimeUnits);
-  mpCheckDelay->setText("Interval Size" + TimeUnits);
-  mpLblIntegrationInterval->setText("Interval Size" + TimeUnits);
-  mpLblOutputInterval->setText("Interval Size" + TimeUnits);
+  mpCheckDelay->setText("Suppress Output Before" + TimeUnits);
+  mpLblIntegrationInterval->setText("Integration Interval" + TimeUnits);
+  mpLblOutputInterval->setText("Output Interval" + TimeUnits);
 }

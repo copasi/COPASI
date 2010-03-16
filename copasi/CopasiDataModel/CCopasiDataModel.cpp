@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.147 $
+//   $Revision: 1.148 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:27:43 $
+//   $Author: shoops $
+//   $Date: 2010/03/16 18:55:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,6 +222,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       mReferenceDir = CDirEntry::dirName(mSaveFileName);
 #endif // USE_CRENDER_EXTENSION
       mSBMLFileName = "";
+
+      pdelete(mpCurrentSBMLDocument);
+
+      this->mCopasi2SBMLMap.clear();
     }
   else if (!Line.find("<?xml") != std::string::npos)
     {
@@ -280,6 +284,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         }
 
       newModel(XML.getModel(), pProcessReport);
+
+      pdelete(mpCurrentSBMLDocument);
+
+      this->mCopasi2SBMLMap.clear();
 
       if (XML.getTaskList())
         {

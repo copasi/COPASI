@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277 $
+//   $Revision: 1.278 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/17 19:44:42 $
+//   $Date: 2010/03/16 18:57:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,6 +87,8 @@ extern const char * CopasiLicense;
 #ifdef WITH_MERGEMODEL
 #include "./icons/fileadd.xpm"
 #endif
+
+#include <sbml/SBMLDocument.h>
 
 #define AutoSaveInterval 10*60*1000
 
@@ -1343,7 +1345,7 @@ void CopasiUI3Window::slotExportSBML()
   QString tmp;
   bool exportIncomplete = false;
   int sbmlLevel = 2;
-  int sbmlVersion = 1;
+  int sbmlVersion = 4;
 
   while (Answer == QMessageBox::No)
     {
@@ -1357,13 +1359,24 @@ void CopasiUI3Window::slotExportSBML()
                     + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
                     + ".xml");
       else
-        Default = "untitled.xml";
+        {
+          Default = "untitled.xml";
+        }
 
-      // we need a new dialog the lets the user choose different levels of SBML as soon as support for export to those versions
-      // has been implemented.
+      // if there already is an SBML model, we present the user with the Level
+      // and Version of that document as the selected Level and Version to
+      // export to.
+      if ((*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSBMLDocument() != NULL)
+        {
+          sbmlLevel = (*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSBMLDocument()->getLevel();
+          sbmlVersion = (*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSBMLDocument()->getVersion();
+        }
+
       std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
         CQSBMLFileDialog::getSaveFileName(this, "Export SBML Dialog", Default,
-                                          "Choose a filename and SBML version for SBML export.");
+                                          "Choose a filename and SBML version for SBML export.",
+                                          sbmlLevel,
+                                          sbmlVersion);
       tmp = nameAndVersion.first;
       sbmlLevel = nameAndVersion.second.first;
       sbmlVersion = nameAndVersion.second.second;
@@ -1790,6 +1803,8 @@ void CopasiUI3Window::slotUpdateMIRIAM()
 
 void CopasiUI3Window::slotApplyInitialState()
 {
+  ListViews::commit();
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
@@ -1805,6 +1820,8 @@ void CopasiUI3Window::slotApplyInitialState()
 
 void CopasiUI3Window::slotUpdateInitialState()
 {
+  ListViews::commit();
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
@@ -1819,7 +1836,11 @@ void CopasiUI3Window::slotUpdateInitialState()
 }
 
 void CopasiUI3Window::slotFrameworkChanged(int index)
-{ListViews::setFramework(index);}
+{
+  ListViews::commit();
+
+  ListViews::setFramework(index);
+}
 
 void CopasiUI3Window::slotCapture()
 {
@@ -2059,6 +2080,8 @@ void CopasiUI3Window::customEvent(QCustomEvent * event)
 // start the selected analyzer
 void CopasiUI3Window::startSBWAnalyzer(int nId)
 {
+  ListViews::commit();
+
   if ((QStringList::size_type) nId == mAnalyzerModules.size())
     {
       registerSBW();

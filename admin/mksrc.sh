@@ -358,7 +358,11 @@ if test "x\$prefix" = "xNONE"; then
   ac_configure_args="\$ac_configure_args --prefix \$prefix"
 fi
 
-
+if test x"\${QTDIR}" = x; then
+  QMAKE="qmake" 
+else
+  QMAKE="\${QTDIR}/bin/qmake"
+fi
 
 (
 dnl to prevent calling aclocal, automake and configure again
@@ -371,17 +375,17 @@ dnl to prevent calling aclocal, automake and configure again
 
  cd copasi && \\
  echo executing in \`pwd\`: && \\
- rm -f .qmake.internal.cache */.qmake.internal.cache && \\
- echo "  qmake \$QMAKE_ARG" && \\
- \$QTDIR/bin/qmake \$QMAKE_ARG && \\
+ rm -f .qmake.internal.cache */.qmake.internal.cache && \
+ echo "  \$QMAKE \$QMAKE_ARG" && \\
+ \$QMAKE \$QMAKE_ARG && \\
  cat Makefile | \\
  sed -e 's/(MAKEFILE): *\$/(MAKEFILE): Makefile/' \\
-     -e 'sxQMAKE.*=.*qmakexQMAKE = \\\$(QTDIR)/bin/qmakex'> \$\$.tmp && \\
+     -e 's!QMAKE.*=.*qmake!QMAKE = '\$QMAKE'!' > \$\$.tmp && \\
  mv \$\$.tmp Makefile && \\
  echo depend:  >> Makefile && \\
  echo "	touch Makefile" >> Makefile && \\
  cd ..
-)
+ )
 
 dnl add here all your Makefiles. These will be created by configure
 AC_OUTPUT(Makefile)
@@ -403,42 +407,73 @@ cat  > copasi-${build}-src/configure.bat << E_O_F
 @echo off 
 
 echo @echo off > config.status.bat
-echo echo running: configure.bat %1 %2 %3 %4 %5 %6 %7 %8 %9 >> config.status.bat
-echo configure.bat %1 %2 %3 %4 %5 %6 %7 %8 %9 >> config.status.bat
 
+echo echo running: configure.bat %* >> config.status.bat
+echo configure.bat %* >> config.status.bat
+
+set arguments="COPASI_SRC_PACKAGE=true"
+
+:LOOP
+if '%1' == ''                      goto QMAKE
 if '%1' == '--enable-debug'        goto DEBUG
 if '%1' == '--disable-debug'       goto RELEASE
 if '%1' == '--enable-release'      goto RELEASE
 if '%1' == '--disable-release'     goto DEBUG
-set cps_plus=debug
-set cps_minus=release
-goto QMAKE
+
+set arguments=%arguments% %1
+shift
+goto LOOP
 
 :DEBUG
-shift
-set cps_plus=debug
-set cps_minus=release
-goto QMAKE
-
 :RELEASE
+rem debug and release is ignored
 shift
-set cps_plus=release
-set cps_minus=debug
+goto LOOP
 
 :QMAKE
-cd copasi
+if '%QT4DIR%' == '' goto QT4DIR_NotSet
+set QMAKE=%QT4DIR%\bin\qmake
+goto CONFIGURE
 
-echo executing in copasi:
-rem  echo   for %%d in (%subdirs%) do del %%d\\.qmake.internal.cache
-for %%d in (%subdirs%) do del %%d\\.qmake.internal.cache
-echo   qmake "COPASI_SRC_PACKAGE=true" "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
-%QTDIR%\\bin\\qmake "COPASI_SRC_PACKAGE=true" "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
+:QT4DIR_NotSet
+if '%QTDIR%' == '' goto QTDIR_NotSet
+set QMAKE=%QTDIR%\bin\qmake
+goto CONFIGURE
+
+:QTDIR_NotSet
+set QMAKE=qmake
+
+:CONFIGURE
+
+rem Clean
+del /S Makefile*
+del copasi\commandline\debug\CConfigurationFile.obj
+del copasi\commandline\release\CConfigurationFile.obj
+del copasi\UI\debug\copasiui3window.obj 
+del copasi\UI\release\copasiui3window.obj 
+del copasi\UI\debug\CQSplashWidget.obj 
+del copasi\UI\release\CQSplashWidget.obj 
+del copasi\CopasiUI\debug\main.obj 
+del copasi\CopasiUI\release\main.obj 
+del copasi\CopasiSE\debug\CopasiSE.obj
+del copasi\CopasiSE\release\CopasiSE.obj
+
+cd copasi
+echo Executing in copasi:
+
+copy copasi.pro tmp_win32.pro
+echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
+%QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
+del tmp_win32*
+
+echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 nmake qmake_all
 
-rem force relink
-del CopasiUI\\main.obj CopasiSE\\CopasiSE.obj
-
+cd libs
+nmake qmake_all
+cd ..
 
 cd ..
 E_O_F

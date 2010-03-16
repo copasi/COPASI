@@ -1,10 +1,15 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.60 $
+#   $Revision: 1.61 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/07/30 16:26:54 $
+#   $Date: 2010/03/16 18:54:41 $
 # End CVS Header
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.60 $ $Author: shoops $ $Date: 2009/07/30 16:26:54 $
+# $Revision: 1.61 $ $Author: shoops $ $Date: 2010/03/16 18:54:41 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -69,11 +74,11 @@ addSubdirs($${COPASISE_DIRS})
   COPASIUI_DIRS += layoutUI
   COPASIUI_DIRS += MIRIAMUI
   COPASIUI_DIRS += plotUI
+  COPASIUI_DIRS += tex
   COPASIUI_DIRS += wizard
 
   contains(DEFINES, HAVE_MML) {
     COPASIUI_DIRS += mml
-    COPASIUI_DIRS += tex
   }
 
   addSubdirs($${COPASIUI_DIRS})
@@ -84,19 +89,32 @@ addSubdirs($${COPASISE_DIRS})
 
 # Now build the libs
 
-addSubdirs(libs, $${COPASISE_DIRS} $${COPASIUI_DIRS})
+macx:debug {
+  # Now the excecutables
+  addSubdirs(CopasiSE, $${COPASISE_DIRS})
 
-# Now the excecutables
-addSubdirs(CopasiSE, libs)
+  !contains(BUILD_GUI, no) {
+    addSubdirs(CopasiUI, $${COPASISE_DIRS} $${COPASIUI_DIRS})
+  }
+} else {
+  addSubdirs(libs, $${COPASISE_DIRS} $${COPASIUI_DIRS})
 
-!contains(BUILD_GUI, no) {
-  addSubdirs(CopasiUI, libs)
+  # Now the excecutables
+  addSubdirs(CopasiSE, libs)
+
+  !contains(BUILD_GUI, no) {
+    addSubdirs(CopasiUI, libs)
+  }
 }
 
-isEmpty(COPASI_SRC_PACKAGE) {
+!contains(COPASI_SRC_PACKAGE, true) {
   # The bindings
   !contains(BUILD_BINDINGS, no) {
-    addSubdirs(bindings, libs)
+    macx:debug {
+      addSubdirs(bindings, $${COPASISE_DIRS} $${COPASIUI_DIRS})
+    } else {
+      addSubdirs(bindings, libs)
+    }
   }
 
   # unit tests

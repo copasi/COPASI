@@ -1,41 +1,45 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-//   $Revision: 1.18 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/HistoWidget.cpp,v $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/11/03 12:40:34 $
+//   $Author: shoops $
+//   $Date: 2010/03/16 18:56:25 $
 // End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+#include <qvariant.h>
 
-/****************************************************************************
- ** ui.h extension file, included from the uic-generated form implementation.
- **
- ** If you want to add, delete, or rename functions or slots, use
- ** Qt Designer to update this file, preserving your code.
- **
- ** You should not define a constructor or destructor in this file.
- ** Instead, write your code in functions called init() and destroy().
- ** These will automatically be called by the form's constructor and
- ** destructor.
- *****************************************************************************/
+#include "HistoWidget.h"
+#include "PlotSubwidget.h"
 
-#include "copasi.h"
-
-#include "plot/CPlotItem.h"
-
-#include "report/CCopasiContainer.h"
-#include "report/CCopasiRootContainer.h"
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
-#include "PlotSubwidget.h"
+
+#include "plot/CPlotItem.h"
+#include "report/CCopasiRootContainer.h"
+
+HistoWidget::HistoWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
+    : QWidget(parent, name, fl)
+{
+  setupUi(this);
+
+  const QIcon icon = qt_get_icon(image0_ID);
+  mpBtnVariable->setIcon(icon);
+}
+
+HistoWidget::~HistoWidget()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void HistoWidget::languageChange()
+{
+  retranslateUi(this);
+}
 
 void HistoWidget::buttonPressedX()
 {
@@ -57,14 +61,14 @@ void HistoWidget::buttonPressedX()
   if (objects.size() && objects[0])
     {
       mpObjectX = objects[0];
-      lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
-      lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
+      mpEditVariable->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+      mpEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
     }
   else
     {
       mpObjectX = NULL;
-      lineEditXName->setText("");
-      lineEditTitle->setText("Histogram");
+      mpEditVariable->setText("");
+      mpEditTitle->setText("Histogram");
     }
 
   //check if more than one object was selected...
@@ -77,7 +81,7 @@ void HistoWidget::buttonPressedX()
         tmp = tmp->parent();
 
       if (pParent) //tell the parent to create the remaining histogram descriptions.
-        pParent->createHistograms(objects, lineEditInc->text().toDouble());
+        pParent->createHistograms(objects, mpEditIncrement->text().toDouble());
     }
 }
 
@@ -90,7 +94,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (curve->getChannels().size() != 1) return false;
 
   //title
-  lineEditTitle->setText(FROM_UTF8(curve->getTitle()));
+  mpEditTitle->setText(FROM_UTF8(curve->getTitle()));
 
   //variable
   mpObjectX = NULL;
@@ -101,15 +105,22 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (curve->getChannels().size() >= 1)
     mpObjectX = pDataModel->getObject(curve->getChannels()[0]);
 
-  if (mpObjectX)
-    lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+  if (mpObjectX == pDataModel)
+    {
+      mpObjectX = NULL;
+    }
+
+  if (mpObjectX != NULL)
+    mpEditVariable->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+  else
+    mpEditVariable->setText("");
 
   //other parameters:
   const void* tmp;
 
   if (!(tmp = curve->getValue("increment").pVOID)) return false;
 
-  lineEditInc->setText(QString::number(*(const C_FLOAT64*)tmp));
+  mpEditIncrement->setText(QString::number(*(const C_FLOAT64*)tmp));
 
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
@@ -121,14 +132,14 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
 {
   //title
-  curve->setTitle(TO_UTF8(lineEditTitle->text()));
+  curve->setTitle(TO_UTF8(mpEditTitle->text()));
 
   //channels
   curve->getChannels().clear();
   curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
 
   //other parameters: TODO
-  curve->setValue("increment", lineEditInc->text().toDouble());
+  curve->setValue("increment", mpEditIncrement->text().toDouble());
 
   C_INT32 Activity = 0;
 

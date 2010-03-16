@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/04 19:19:27 $
+//   $Date: 2010/03/16 18:57:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -78,7 +83,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
     return;
 
   unsigned C_INT32 index =
-    pDataModel->getModel()->getEvents().CCopasiVector< CEvent >::getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    pDataModel->getModel()->getEvents().CCopasiVector< CEvent >::getIndex(mpEvent);
 
   pDataModel->getModel()->removeEvent(mKey);
 

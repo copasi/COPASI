@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/19 18:18:58 $
+//   $Date: 2010/03/16 18:55:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,15 +90,22 @@ bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
 
 std::string CEvaluationNodeDelay::getInfix() const
 {
-  switch (mType & 0x00FFFFFF)
+  if (const_cast<CEvaluationNodeDelay*>(this)->compile(NULL))
     {
-      case DELAY:
-        return mData + "(" + mpDelayedObject->getInfix() + "," + mpDeltaT->getInfix() + ")";
-        break;
+      switch (mType & 0x00FFFFFF)
+        {
+          case DELAY:
+            return mData + "(" + mpDelayedObject->getInfix() + "," + mpDeltaT->getInfix() + ")";
+            break;
 
-      default:
-        return "@";
-        break;
+          default:
+            return "@";
+            break;
+        }
+    }
+  else
+    {
+      return "@";
     }
 }
 
@@ -171,6 +178,7 @@ CEvaluationNode* CEvaluationNodeDelay::createNodeFromASTTree(const ASTNode& node
       pConvertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
     }
 
+  pConvertedNode->compile(NULL);
   return pConvertedNode;
 }
 

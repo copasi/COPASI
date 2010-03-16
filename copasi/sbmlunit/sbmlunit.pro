@@ -5,15 +5,17 @@
 #   $Author: shoops $ 
 #   $Date: 2008/04/11 15:21:36 $ 
 # End CVS Header 
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
 
 LIB = sbmlunit
-
-include(../lib.pri)
-include(../common.pri)
 
 # Input
 HEADERS +=  CUnitInterfaceSBML.h \
@@ -26,5 +28,5 @@ SOURCES +=  CUnitInterfaceSBML.cpp \
             Expression2PresentationMML.cpp \
             Expression2PresentationMMLUnits.cpp
 
-
-#DISTFILES +=ssbmlunit.vcproj
+include(../lib.pri)
+include(../common.pri)

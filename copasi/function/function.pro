@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/function.pro,v $
-#   $Revision: 1.29 $
+#   $Revision: 1.30 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/02/19 15:15:28 $
+#   $Author: shoops $
+#   $Date: 2010/03/16 18:55:48 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,13 +21,10 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.29 $ $Author: gauges $ $Date: 2010/02/19 15:15:28 $
+# $Revision: 1.30 $ $Author: shoops $ $Date: 2010/03/16 18:55:48 $
 ######################################################################
 
 LIB = function
-
-include(../lib.pri)
-include(../common.pri)
 
 # Input
 HEADERS += \
@@ -101,8 +98,11 @@ contains(BUILD_PARSER, yes) {
 }
 
 
-DISTFILES += function.vcproj \
-             CEvaluationParser.ypp \
+DISTFILES += CEvaluationParser.ypp \
              CEvaluationLexer.lpp
+             
+include(../lib.pri)
+include(../common.pri)
+
 #The following line was inserted by qt3to4
 QT +=  qt3support 

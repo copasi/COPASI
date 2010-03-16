@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/02 15:33:49 $
+//   $Date: 2010/03/16 18:56:24 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -387,7 +392,7 @@ CProcessQueue::range CProcessQueue::getCalculations()
           // The simulation routine should provide a call back function.
           if (mpResolveSimultaneousAssignments == NULL)
             {
-              // TODO CRITICAL Create an error message
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
             }
 
           return (*mpResolveSimultaneousAssignments)(mCalculations, mTime, mEquality, mCascadingLevel);
@@ -426,7 +431,7 @@ CProcessQueue::range CProcessQueue::getAssignments()
           // The simulation routine should provide a call back function.
           if (mpResolveSimultaneousAssignments == NULL)
             {
-              // TODO CRITICAL Create an error message
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
             }
 
           return (*mpResolveSimultaneousAssignments)(mAssignments, mTime, mEquality, mCascadingLevel);

@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.29 $ 
+#   $Revision: 1.30 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/07/01 15:50:02 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/03/16 18:57:05 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -15,9 +20,10 @@ TEMPLATE = app
 
 CONFIG -= qt
 
-LIBS += -L../../lib/ -lCOPASISE 
-
 include(../../common.pri)
+include(../../app.pri)
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 INCLUDEPATH += ../../..
 
@@ -28,15 +34,14 @@ contains(BUILD_OS, WIN32) {
 }
 
 contains(BUILD_OS, Linux) {
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
+         $${LIBS}
+
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+
 !isEmpty(CPPUNIT_PATH) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
   INCLUDEPATH += $${CPPUNIT_PATH}/include
-
-  LIBS = -L../lib \
-         $$join(COPASI_LIBS, " -l", -l) \
-         $${LIBS}
-
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
 }
 
 }
@@ -52,23 +57,21 @@ contains(BUILD_OS, SunOS) {
 
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
-   
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
 }
 
 }  
 
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
-  
-!isEmpty(CPPUNIT_PATH) {
-  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
-  INCLUDEPATH += $${CPPUNIT_PATH}/include
 
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  
+!isEmpty(CPPUNIT_PATH) {
+  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
+  INCLUDEPATH += $${CPPUNIT_PATH}/include
 
 }
 
@@ -163,7 +166,11 @@ HEADERS += utilities.hpp \
            test000084.h \
            test000085.h \
            test000086.h \
-           test000087.h 
+           test000087.h \
+           test000088.h \
+           test000089.h \
+           test000090.h \
+           test000091.h 
 
 
 SOURCES += utilities.cpp \
@@ -254,6 +261,10 @@ SOURCES += utilities.cpp \
            test000085.cpp \ 
            test000086.cpp \ 
            test000087.cpp \ 
+           test000088.cpp \ 
+           test000089.cpp \ 
+           test000090.cpp \ 
+           test000091.cpp \ 
            test.cpp
 
 

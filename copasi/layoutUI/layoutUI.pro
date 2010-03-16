@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.32 $
+#   $Revision: 1.33 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/03/10 12:33:51 $
+#   $Author: shoops $
+#   $Date: 2010/03/16 18:55:46 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,16 +21,6 @@
 # All rights reserved.
 
 LIB = layoutUI
-
-include(../lib.pri)
-# qt has to be set after lib.pri is included because lib.pri unsets it 
-
-# qt has to be set before common.pri is included,
-# otherwise the qwt includes will not be set correctly
-
-CONFIG += qt
-include(../common.pri)
-
 
 QT +=  opengl 
 
@@ -96,15 +86,22 @@ FORMS = ParaPanel.ui \
         NodeSizePanel.ui \
         FontChooser.ui
 
+DISTFILES += load_data.xpm \
+             play.xpm \
+             stop.xpm \
+             pause.xpm \
+             forward.xpm \
+             backward.xpm \
+             forward_single.xpm \
+             backward_single.xpm
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {           
 FORMS += CQScreenshotDialog.ui 
 }
 
+include(../lib.pri)
 
+CONFIG += qt
 
-#INCLUDEPATH += $${QWT_PATH}/include/qwt-qt4
-INCLUDEPATH += $${QWT_PATH}/include/
-
-DISTFILES += layoutUI.vcproj
+include(../common.pri)
 

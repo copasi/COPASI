@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/16 00:09:26 $
+//   $Date: 2010/03/16 18:56:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,8 +251,8 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
 
       // Process the events for which we have found a root.
       // A found root is indicated by roots[i] = 1 or 0 otherwise.
-      while (*ppEvent == pProcessEvent &&
-             pFoundRoot != pFoundRootEnd)
+      while (pFoundRoot != pFoundRootEnd &&
+             *ppEvent == pProcessEvent)
         {
           // We must only toggle the roots which are marked.
           if (*pFoundRoot > 0)
@@ -328,12 +328,13 @@ size_t CMathModel::getNumRoots() const
 
 void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
 {
-  unsigned C_INT32 NumCols = mpModel->getStateTemplate().getNumVariable() + 1;
+  unsigned C_INT32 NumCols =
+    mpModel->getStateTemplate().getNumIndependent() + mpModel->getNumDependentReactionMetabs() + 1;
 
-  CVector< C_FLOAT64 > Rates;
-  Rates.resize(NumCols);
+  CVector< C_FLOAT64 > Rates(NumCols);
   C_FLOAT64 * pRate = Rates.array();
   *pRate = 1.0; // for time
+
   mpModel->updateSimulatedValues(false);
   mpModel->calculateDerivatives(pRate + 1);
 
@@ -498,36 +499,34 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
 {
   CState State = mpModel->getState();
 
-  //Dim now contains the number of entities with ODEs + number of metabs depending on reactions.
   unsigned C_INT32 NumRows = mRootValues.size();
-  unsigned C_INT32 NumCols = State.getNumVariable() + 1;
 
-  unsigned C_INT32 Col;
+  // Partial derivatives with respect to time and all variables determined by ODEs and reactions.
+  unsigned C_INT32 NumCols =
+    State.getNumIndependent() + mpModel->getNumDependentReactionMetabs() + 1;
+
+  unsigned C_INT32 Col = 0;
 
   jacobian.resize(NumRows, NumCols);
 
-  C_FLOAT64 Store;
-  C_FLOAT64 X1;
-  C_FLOAT64 X2;
-  C_FLOAT64 InvDelta;
+  C_FLOAT64 X1 = 0.0;
+  C_FLOAT64 X2 = 0.0;
+  C_FLOAT64 InvDelta = 0.0;
 
   CVector< C_FLOAT64 > Y1(NumRows);
   CVector< C_FLOAT64 > Y2(NumRows);
 
-  C_FLOAT64 * pY1;
-  C_FLOAT64 * pY2;
-
   C_FLOAT64 * pX = State.beginIndependent() - 1;
   C_FLOAT64 * pXEnd = pX + NumCols;
 
-  C_FLOAT64 * pJacobian;
-  C_FLOAT64 * pJacobianEnd = jacobian.array() + jacobian.size();
+  C_FLOAT64 * pJacobian = jacobian.array();
+  C_FLOAT64 * pJacobianEnd = pJacobian + jacobian.size();
 
   const C_FLOAT64 * pRate = rates.array();
 
-  for (Col = 0; pX != pXEnd; ++pX, ++Col, ++pRate)
+  for (; pX != pXEnd; ++pX, ++Col, ++pRate)
     {
-      Store = *pX;
+      C_FLOAT64 Store = *pX;
 
       if (fabs(*pRate) < 1e4 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(Store) ||
           fabs(*pRate) < 1e4 * std::numeric_limits< C_FLOAT64 >::min())
@@ -568,8 +567,8 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
       *pX = Store;
 
       pJacobian = jacobian.array() + Col;
-      pY1 = Y1.array();
-      pY2 = Y2.array();
+      C_FLOAT64 * pY1 = Y1.array();
+      C_FLOAT64 * pY2 = Y2.array();
 
       for (; pJacobian < pJacobianEnd; pJacobian += NumCols, ++pY1, ++pY2)
         * pJacobian = (*pY2 - *pY1) * InvDelta;

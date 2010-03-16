@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.216 $
+//   $Revision: 1.217 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:57:53 $
+//   $Author: shoops $
+//   $Date: 2010/03/16 18:59:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,6 +113,7 @@ void CCopasiXMLParser::TEMPLATEElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
       case TEMPLATE:
+        mLastKnownElement = TEMPLATE;
 
         if (strcmp(pszName, "TEMPLATE"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
@@ -121,6 +122,7 @@ void CCopasiXMLParser::TEMPLATEElement::start(const XML_Char *pszName,
         return;
 
       case etc:
+        mLastKnownElement = etc;
 
         if (strcmp(pszName, "etc"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
@@ -134,7 +136,6 @@ void CCopasiXMLParser::TEMPLATEElement::start(const XML_Char *pszName,
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mpCurrentHandler = &mParser.mUnknownElement;
         break;
@@ -380,16 +381,19 @@ CCopasiXMLParser::UnknownElement::UnknownElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::UnknownElement::~UnknownElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::UnknownElement::start(const XML_Char * /*pszName*/ ,
     const XML_Char ** /* papszAttrs */)
 {
-  /* We count the level of subelements of the Unknown Elelement */
+  /* We count the level of subelements of the Unknown Element */
   mCurrentElement++;
 
-  if (!mCurrentElement) mLineNumber = mParser.getCurrentLineNumber();
+  if (mCurrentElement == Unknown)
+    {
+      mLineNumber = mParser.getCurrentLineNumber();
+    }
 
   return;
 }
@@ -423,12 +427,13 @@ CCopasiXMLParser::COPASIElement::COPASIElement(CCopasiXMLParser & parser,
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
 {}
 
-CCopasiXMLParser::COPASIElement::~COPASIElement() {pdelete(mpCurrentHandler);}
+CCopasiXMLParser::COPASIElement::~COPASIElement() {deleteCurrentHandler();}
 
 void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   mCurrentElement++; /* We should always be on the next element */
+  mpCurrentHandler = NULL;
 
   const char * versionMajor;
   C_INT32 VersionMajor;
@@ -505,7 +510,7 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
             if (mCommon.pGUI)
               mpCurrentHandler = new GUIElement(mParser, mCommon);
             else
-              mParser.pushElementHandler(&mParser.mUnknownElement);
+              mpCurrentHandler = &mParser.mUnknownElement;
           }
 
         break;
@@ -525,7 +530,7 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
         break;
 
       default:
-        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -576,11 +581,7 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
       CCopasiMessage::getLastMessage();
     }
 
-  // We must not delete the unknown element  handler
-  if (mpCurrentHandler != &mParser.mUnknownElement)
-    {
-      pdelete(mpCurrentHandler);
-    }
+  deleteCurrentHandler();
 
   //TODO why no case statement with error checking (like in other elements)?
 
@@ -594,7 +595,7 @@ CCopasiXMLParser::ListOfFunctionsElement::ListOfFunctionsElement(CCopasiXMLParse
 
 CCopasiXMLParser::ListOfFunctionsElement::~ListOfFunctionsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
@@ -967,7 +968,7 @@ CCopasiXMLParser::MathMLElement::MathMLElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::MathMLElement::~MathMLElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::MathMLElement::start(const XML_Char *pszName,
@@ -1132,7 +1133,7 @@ CCopasiXMLParser::ListOfParameterDescriptionsElement::ListOfParameterDescription
 
 CCopasiXMLParser::ListOfParameterDescriptionsElement::~ListOfParameterDescriptionsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfParameterDescriptionsElement::start(const XML_Char *pszName,
@@ -1238,7 +1239,7 @@ CCopasiXMLParser::ParameterDescriptionElement::ParameterDescriptionElement(CCopa
 
 CCopasiXMLParser::ParameterDescriptionElement::~ParameterDescriptionElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszName,
@@ -1400,11 +1401,7 @@ CCopasiXMLParser::ModelElement::ModelElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::ModelElement::~ModelElement()
 {
-  // We must not delete any staticly allocated element handlers
-  if (mpCurrentHandler != &mParser.mCharacterDataElement &&
-      mpCurrentHandler != &mParser.mCommentElement &&
-      mpCurrentHandler != &mParser.mMiriamAnnotationElement)
-    pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
@@ -1596,7 +1593,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mpCurrentHandler =  &mParser.mUnknownElement;
         break;
     }
 
@@ -1669,7 +1666,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ListOfCompartments", mParser.getCurrentLineNumber());
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
         break;
 
       case ListOfMetabolites:
@@ -1678,7 +1675,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ListOfMetabolites", mParser.getCurrentLineNumber());
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
         break;
 
       case ListOfModelValues:
@@ -1687,7 +1684,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ListOfModelValues", mParser.getCurrentLineNumber());
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
         break;
 
       case ListOfReactions:
@@ -1696,7 +1693,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ListOfReactions", mParser.getCurrentLineNumber());
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
         break;
 
       case ListOfEvents:
@@ -1705,7 +1702,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ListOfEvents", mParser.getCurrentLineNumber());
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
         break;
 
       case StateTemplate:
@@ -1714,7 +1711,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "StateTemplate", mParser.getCurrentLineNumber());
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
         break;
 
       case InitialState:
@@ -1723,7 +1720,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "InitialState", mParser.getCurrentLineNumber());
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
         mCurrentElement = Model;
         break;
 
@@ -1749,7 +1746,7 @@ CCopasiXMLParser::CommentElement::CommentElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::CommentElement::~CommentElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
@@ -1842,7 +1839,7 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
         mCurrentElement = START_ELEMENT;
         mElementEmpty.pop();
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
@@ -1898,7 +1895,7 @@ CCopasiXMLParser::ListOfCompartmentsElement::ListOfCompartmentsElement(CCopasiXM
 
 CCopasiXMLParser::ListOfCompartmentsElement::~ListOfCompartmentsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfCompartmentsElement::start(const XML_Char *pszName,
@@ -2156,7 +2153,7 @@ CCopasiXMLParser::ListOfMetabolitesElement::ListOfMetabolitesElement(CCopasiXMLP
 
 CCopasiXMLParser::ListOfMetabolitesElement::~ListOfMetabolitesElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfMetabolitesElement::start(const XML_Char *pszName,
@@ -2434,7 +2431,7 @@ CCopasiXMLParser::ListOfModelValuesElement::ListOfModelValuesElement(CCopasiXMLP
 
 CCopasiXMLParser::ListOfModelValuesElement::~ListOfModelValuesElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfModelValuesElement::start(const XML_Char *pszName,
@@ -2735,7 +2732,7 @@ CCopasiXMLParser::ListOfEventsElement::ListOfEventsElement(CCopasiXMLParser & pa
 
 CCopasiXMLParser::ListOfEventsElement::~ListOfEventsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfEventsElement::start(const XML_Char *pszName,
@@ -3244,7 +3241,7 @@ CCopasiXMLParser::ListOfReactionsElement::ListOfReactionsElement(CCopasiXMLParse
 
 CCopasiXMLParser::ListOfReactionsElement::~ListOfReactionsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfReactionsElement::start(const XML_Char *pszName,
@@ -3477,8 +3474,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -3581,7 +3577,7 @@ CCopasiXMLParser::ListOfSubstratesElement::ListOfSubstratesElement(CCopasiXMLPar
 
 CCopasiXMLParser::ListOfSubstratesElement::~ListOfSubstratesElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfSubstratesElement::start(const XML_Char *pszName,
@@ -3671,7 +3667,7 @@ CCopasiXMLParser::SubstrateElement::SubstrateElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::SubstrateElement::~SubstrateElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
@@ -3751,7 +3747,7 @@ CCopasiXMLParser::ListOfProductsElement::ListOfProductsElement(CCopasiXMLParser 
 
 CCopasiXMLParser::ListOfProductsElement::~ListOfProductsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfProductsElement::start(const XML_Char *pszName,
@@ -3841,7 +3837,7 @@ CCopasiXMLParser::ProductElement::ProductElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::ProductElement::~ProductElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
@@ -3921,7 +3917,7 @@ CCopasiXMLParser::ListOfModifiersElement::ListOfModifiersElement(CCopasiXMLParse
 
 CCopasiXMLParser::ListOfModifiersElement::~ListOfModifiersElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfModifiersElement::start(const XML_Char *pszName,
@@ -4011,7 +4007,7 @@ CCopasiXMLParser::ModifierElement::ModifierElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::ModifierElement::~ModifierElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
@@ -4091,7 +4087,7 @@ CCopasiXMLParser::ListOfConstantsElement::ListOfConstantsElement(CCopasiXMLParse
 
 CCopasiXMLParser::ListOfConstantsElement::~ListOfConstantsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfConstantsElement::start(const XML_Char *pszName,
@@ -4182,7 +4178,7 @@ CCopasiXMLParser::ConstantElement::ConstantElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::ConstantElement::~ConstantElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
@@ -4264,7 +4260,7 @@ CCopasiXMLParser::KineticLawElement::KineticLawElement(CCopasiXMLParser & parser
 
 CCopasiXMLParser::KineticLawElement::~KineticLawElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
@@ -4394,7 +4390,7 @@ CCopasiXMLParser::ListOfCallParametersElement::ListOfCallParametersElement(CCopa
 
 CCopasiXMLParser::ListOfCallParametersElement::~ListOfCallParametersElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfCallParametersElement::start(const XML_Char *pszName,
@@ -4484,7 +4480,7 @@ CCopasiXMLParser::CallParameterElement::CallParameterElement(CCopasiXMLParser & 
 
 CCopasiXMLParser::CallParameterElement::~CallParameterElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
@@ -4584,7 +4580,7 @@ CCopasiXMLParser::SourceParameterElement::SourceParameterElement(CCopasiXMLParse
 
 CCopasiXMLParser::SourceParameterElement::~SourceParameterElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
@@ -4674,7 +4670,7 @@ CCopasiXMLParser::StateTemplateElement::StateTemplateElement(CCopasiXMLParser & 
 
 CCopasiXMLParser::StateTemplateElement::~StateTemplateElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::StateTemplateElement::start(const XML_Char *pszName,
@@ -4765,7 +4761,7 @@ CCopasiXMLParser::StateTemplateVariableElement::StateTemplateVariableElement(CCo
 
 CCopasiXMLParser::StateTemplateVariableElement::~StateTemplateVariableElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszName,
@@ -4843,7 +4839,7 @@ CCopasiXMLParser::InitialStateElement::InitialStateElement(CCopasiXMLParser & pa
 
 CCopasiXMLParser::InitialStateElement::~InitialStateElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
@@ -4956,7 +4952,7 @@ CCopasiXMLParser::ListOfPlotItemsElement::ListOfPlotItemsElement(CCopasiXMLParse
 
 CCopasiXMLParser::ListOfPlotItemsElement::~ListOfPlotItemsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfPlotItemsElement::start(const XML_Char * pszName,
@@ -5046,7 +5042,7 @@ CCopasiXMLParser::ListOfChannelsElement::ListOfChannelsElement(CCopasiXMLParser 
 
 CCopasiXMLParser::ListOfChannelsElement::~ListOfChannelsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfChannelsElement::start(const XML_Char * pszName,
@@ -5138,7 +5134,7 @@ CCopasiXMLParser::ListOfPlotsElement::ListOfPlotsElement(CCopasiXMLParser & pars
 
 CCopasiXMLParser::ListOfPlotsElement::~ListOfPlotsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
@@ -5289,8 +5285,7 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -5422,8 +5417,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -5653,8 +5647,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -5837,7 +5830,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
         break;
     }
 
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
   return;
 }
 
@@ -6149,8 +6142,7 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
 
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -6210,7 +6202,7 @@ CCopasiXMLParser::ListOfCompartmentGlyphsElement::ListOfCompartmentGlyphsElement
 
 CCopasiXMLParser::ListOfCompartmentGlyphsElement::~ListOfCompartmentGlyphsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfCompartmentGlyphsElement::start(const XML_Char * pszName,
@@ -6400,8 +6392,7 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
 
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -6461,7 +6452,7 @@ CCopasiXMLParser::ListOfMetabGlyphsElement::ListOfMetabGlyphsElement(CCopasiXMLP
 
 CCopasiXMLParser::ListOfMetabGlyphsElement::~ListOfMetabGlyphsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfMetabGlyphsElement::start(const XML_Char * pszName,
@@ -6678,8 +6669,7 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
 
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -6742,7 +6732,7 @@ CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::ListOfMetaboliteRefere
 
 CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::~ListOfMetaboliteReferenceGlyphsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::start(const XML_Char * pszName,
@@ -6955,8 +6945,7 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
 
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -7020,7 +7009,7 @@ CCopasiXMLParser::ListOfReactionGlyphsElement::ListOfReactionGlyphsElement(CCopa
 
 CCopasiXMLParser::ListOfReactionGlyphsElement::~ListOfReactionGlyphsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfReactionGlyphsElement::start(const XML_Char * pszName,
@@ -7228,8 +7217,7 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
 
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -7289,7 +7277,7 @@ CCopasiXMLParser::ListOfTextGlyphsElement::ListOfTextGlyphsElement(CCopasiXMLPar
 
 CCopasiXMLParser::ListOfTextGlyphsElement::~ListOfTextGlyphsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfTextGlyphsElement::start(const XML_Char * pszName,
@@ -7327,8 +7315,7 @@ void CCopasiXMLParser::ListOfTextGlyphsElement::start(const XML_Char * pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -7467,8 +7454,7 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
 
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -7528,7 +7514,7 @@ CCopasiXMLParser::ListOfAdditionalGOsElement::ListOfAdditionalGOsElement(CCopasi
 
 CCopasiXMLParser::ListOfAdditionalGOsElement::~ListOfAdditionalGOsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfAdditionalGOsElement::start(const XML_Char * pszName,
@@ -7635,6 +7621,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
   switch (mCurrentElement)
     {
       case Layout:
+        mLastKnownElement = Layout;
 
         if (strcmp(pszName, "Layout"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
@@ -7655,6 +7642,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case Dimensions:
+        mLastKnownElement = Dimensions;
 
         if (!strcmp(pszName, "Dimensions"))
           {//workload
@@ -7672,6 +7660,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfCompartmentGlyphs:
+        mLastKnownElement = ListOfCompartmentGlyphs;
 
         if (!strcmp(pszName, "ListOfCompartmentGlyphs"))
           mpCurrentHandler = new ListOfCompartmentGlyphsElement(mParser, mCommon);
@@ -7679,6 +7668,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfMetabGlyphs:
+        mLastKnownElement = ListOfMetabGlyphs;
 
         if (!strcmp(pszName, "ListOfMetabGlyphs"))
           mpCurrentHandler = new ListOfMetabGlyphsElement(mParser, mCommon);
@@ -7686,6 +7676,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfReactionGlyphs:
+        mLastKnownElement = ListOfReactionGlyphs;
 
         if (!strcmp(pszName, "ListOfReactionGlyphs"))
           mpCurrentHandler = new ListOfReactionGlyphsElement(mParser, mCommon);
@@ -7693,6 +7684,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfTextGlyphs:
+        mLastKnownElement = ListOfTextGlyphs;
 
         if (!strcmp(pszName, "ListOfTextGlyphs"))
           mpCurrentHandler = new ListOfTextGlyphsElement(mParser, mCommon);
@@ -7700,6 +7692,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfAdditionalGOs:
+        mLastKnownElement = ListOfAdditionalGOs;
 
         if (!strcmp(pszName, "ListOfAdditionalGraphicalObjects"))
           mpCurrentHandler = new ListOfAdditionalGOsElement(mParser, mCommon);
@@ -7708,6 +7701,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
 
 #ifdef USE_CRENDER_EXTENSION
       case ListOfLocalRenderInformation:
+        mLastKnownElement = ListOfLocalRenderInformation;
 
         if (!strcmp(pszName, "ListOfRenderInformation"))
           mpCurrentHandler = new ListOfLocalRenderInformationElement(mParser, mCommon);
@@ -7716,10 +7710,8 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
 #endif /* USE_CRENDER_EXTENSION */
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -7762,7 +7754,7 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                              pszName, "Dimensions", mParser.getCurrentLineNumber());
 
-            pdelete(mpCurrentHandler);
+            deleteCurrentHandler();
             break;
 
           case ListOfCompartmentGlyphs:
@@ -7771,7 +7763,7 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                              pszName, "ListOfCompartmentGlyphs", mParser.getCurrentLineNumber());
 
-            pdelete(mpCurrentHandler);
+            deleteCurrentHandler();
             break;
 
           case ListOfMetabGlyphs:
@@ -7780,7 +7772,7 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                              pszName, "ListOfMetabGlyphs", mParser.getCurrentLineNumber());
 
-            pdelete(mpCurrentHandler);
+            deleteCurrentHandler();
             break;
 
           case ListOfReactionGlyphs:
@@ -7789,7 +7781,7 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                              pszName, "ListOfReactionGlyphs", mParser.getCurrentLineNumber());
 
-            pdelete(mpCurrentHandler);
+            deleteCurrentHandler();
             break;
 
           case ListOfTextGlyphs:
@@ -7798,7 +7790,7 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                              pszName, "ListOfTextGlyphs", mParser.getCurrentLineNumber());
 
-            pdelete(mpCurrentHandler);
+            deleteCurrentHandler();
             break;
 
           case ListOfAdditionalGOs:
@@ -7807,7 +7799,7 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                              pszName, "ListOfAdditionalGraphicalObjects", mParser.getCurrentLineNumber());
 
-            pdelete(mpCurrentHandler);
+            deleteCurrentHandler();
             break;
 
 #ifdef USE_CRENDER_EXTENSION
@@ -7817,13 +7809,12 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                              pszName, "ListOfRenderInformation", mParser.getCurrentLineNumber());
 
-            pdelete(mpCurrentHandler);
+            deleteCurrentHandler();
             break;
 #endif /* USE_CRENDER_EXTENSION */
 
           case UNKNOWN_ELEMENT:
-            //mCurrentElement = mLastKnownElement;
-            mCurrentElement = Layout;
+            mCurrentElement = mLastKnownElement;
             break;
 
           default:
@@ -7833,7 +7824,7 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
         }
     }
 
-  //  pdelete(mpCurrentHandler); //TODO ??? is not done in ModelElement
+  //  deleteCurrentHandler(); //TODO ??? is not done in ModelElement
   return;
 }
 
@@ -7844,7 +7835,7 @@ CCopasiXMLParser::ListOfLayoutsElement::ListOfLayoutsElement(CCopasiXMLParser & 
 
 CCopasiXMLParser::ListOfLayoutsElement::~ListOfLayoutsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
@@ -7982,7 +7973,7 @@ CCopasiXMLParser::ListOfTasksElement::ListOfTasksElement(CCopasiXMLParser & pars
 
 CCopasiXMLParser::ListOfTasksElement::~ListOfTasksElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * pszName,
@@ -8230,8 +8221,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -8452,8 +8442,7 @@ void CCopasiXMLParser::ParameterGroupElement::start(const XML_Char *pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -8804,7 +8793,10 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
               }
             else
               {
-                fatalError();
+                // We use the default method for this task and issue a warning
+                CCopasiMessage(CCopasiMessage::WARNING, MCXML + 18, sType.c_str(),
+                               mParser.getCurrentLineNumber(),
+                               CCopasiMethod::XMLSubType[mCommon.pCurrentTask->getMethod()->getSubType()]);
               }
 
             mCommon.pCurrentTask->getMethod()->setObjectName(name);
@@ -8826,8 +8818,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -8876,7 +8867,7 @@ CCopasiXMLParser::ListOfReportsElement::ListOfReportsElement(CCopasiXMLParser & 
 
 CCopasiXMLParser::ListOfReportsElement::~ListOfReportsElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
@@ -9159,8 +9150,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -9313,7 +9303,7 @@ void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -9453,7 +9443,7 @@ void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -9593,7 +9583,7 @@ void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -9680,7 +9670,7 @@ CCopasiXMLParser::TableElement::TableElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::TableElement::~TableElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::TableElement::start(const XML_Char *pszName,
@@ -9776,7 +9766,7 @@ CCopasiXMLParser::ObjectElement::ObjectElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::ObjectElement::~ObjectElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ObjectElement::start(const XML_Char *pszName,
@@ -9845,7 +9835,7 @@ CCopasiXMLParser::MiriamAnnotationElement::MiriamAnnotationElement(CCopasiXMLPar
 
 CCopasiXMLParser::MiriamAnnotationElement::~MiriamAnnotationElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::MiriamAnnotationElement::start(const XML_Char *pszName,
@@ -9938,7 +9928,7 @@ void CCopasiXMLParser::MiriamAnnotationElement::end(const XML_Char *pszName)
         mCurrentElement = START_ELEMENT;
         mElementEmpty.pop();
 
-        pdelete(mpCurrentHandler);
+        deleteCurrentHandler();
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
@@ -9994,7 +9984,7 @@ CCopasiXMLParser::GUIElement::GUIElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::GUIElement::~GUIElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::GUIElement::start(const XML_Char *pszName,
@@ -10023,7 +10013,7 @@ void CCopasiXMLParser::GUIElement::start(const XML_Char *pszName,
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
+        mpCurrentHandler = &mParser.mUnknownElement;
         break;
     }
 
@@ -10046,7 +10036,7 @@ void CCopasiXMLParser::GUIElement::end(const XML_Char *pszName)
       mParser.onEndElement(pszName);
     }
   else
-    pdelete(mpCurrentHandler);
+    deleteCurrentHandler();
 
   return;
 }
@@ -10058,7 +10048,7 @@ CCopasiXMLParser::ListOfSlidersElement::ListOfSlidersElement(CCopasiXMLParser & 
 
 CCopasiXMLParser::ListOfSlidersElement::~ListOfSlidersElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfSlidersElement::start(const XML_Char *pszName,
@@ -10153,7 +10143,7 @@ CCopasiXMLParser::SliderElement::SliderElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::SliderElement::~SliderElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
@@ -10278,7 +10268,7 @@ CCopasiXMLParser::SBMLReferenceElement::SBMLReferenceElement(CCopasiXMLParser & 
 
 CCopasiXMLParser::SBMLReferenceElement::~SBMLReferenceElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::SBMLReferenceElement::start(const XML_Char *pszName,
@@ -10375,7 +10365,7 @@ CCopasiXMLParser::SBMLMapElement::SBMLMapElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::SBMLMapElement::~SBMLMapElement()
 {
-  pdelete(mpCurrentHandler);
+  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::SBMLMapElement::start(const XML_Char *pszName,

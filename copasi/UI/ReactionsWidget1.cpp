@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.204 $
+//   $Revision: 1.205 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2010/03/16 18:57:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -183,10 +188,13 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   ReactionsWidget1Layout->addMultiCellWidget(Line4, 4, 4, 0, 3);
 
   table = new ParameterTable(this, "table");
+  table->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   ReactionsWidget1Layout->addMultiCellWidget(table, 8, 9, 1, 3);
+  ReactionsWidget1Layout->setRowStretch(9, 10);
 
-  QSpacerItem* spacer = new QSpacerItem(80, 101, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
   ReactionsWidget1Layout->addItem(spacer, 10, 0);
+  //ReactionsWidget1Layout->setRowStretch(10,1);
 
   setTabOrder(LineEdit1, LineEdit2);
   setTabOrder(LineEdit2, CheckBox);

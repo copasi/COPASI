@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229 $
+#   $Revision: 1.230 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/02/03 18:08:40 $
+#   $Author: shoops $
+#   $Date: 2010/03/16 18:57:43 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,19 +21,10 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229 $ $Author: gauges $ $Date: 2010/02/03 18:08:40 $
+# $Revision: 1.230 $ $Author: shoops $ $Date: 2010/03/16 18:57:43 $
 ######################################################################
 
 LIB = UI
-include(../lib.pri)
-
-CONFIG	+= qt
-include(../common.pri)
-
-DEPENDPATH += ..
-INCLUDEPATH	+= ..
-INCLUDEPATH += $${QWT3D_PATH}/include
-
 
 # Input
 
@@ -284,28 +275,56 @@ SOURCES	+= \
 
 ### uic3 forms
 FORMS3 += CMCAResultSubwidget.ui
+HEADERS += CMCAResultSubwidget.ui.h
 FORMS3 += CQExperimentSelection.ui
+HEADERS += CQExperimentSelection.ui.h 
 FORMS3 += CQFittingResult.ui
+HEADERS += CQFittingResult.ui.h
 FORMS3 += CQFittingResultTab1.ui
+HEADERS += CQFittingResultTab1.ui.h
 FORMS3 += CQMatrixDialog.ui
-#FORMS3 += CQMoietiesTaskResult.ui
+HEADERS += CQMatrixDialog.ui.h
 FORMS3 += CQMoietiesTaskWidget.ui
-#FORMS3 += CQProgressItem.ui
+HEADERS += CQMoietiesTaskWidget.ui.h
 FORMS3 += CQSplashWidget.ui
+HEADERS += CQSplashWidget.ui.h
 FORMS3 += CQStartValueReset.ui
+HEADERS += CQStartValueReset.ui.h
 FORMS3 += CQTSSAResultSubWidget.ui
+HEADERS += CQTSSAResultSubWidget.ui.h
 FORMS3 += CQTaskBtnWidget.ui
+HEADERS += CQTaskBtnWidget.ui.h
 FORMS3 += CQTaskHeaderWidget.ui
-#FORMS3 += CQTextDialog.ui
+HEADERS += CQTaskHeaderWidget.ui.h
 FORMS3 += CUpDownSubwidget.ui
+HEADERS += CUpDownSubwidget.ui.h
 FORMS3 += DefaultplotDialog.ui
+HEADERS += DefaultplotDialog.ui.h
 FORMS3 += TimeSeriesSubwidget.ui
+HEADERS += TimeSeriesSubwidget.ui.h
 FORMS3 += objectdebug.ui
+HEADERS += objectdebug.ui.h
 
 ### uic3 forms that do not work at the moment
 #FORMS3 += CQExperimentData.ui
+HEADERS += CQExperimentData.h
+HEADERS += CQExperimentData.ui.h
+SOURCES += CQExperimentData.cpp
+
 #FORMS3 += CQProgressItemBar.ui
+HEADERS += CQProgressItemBar.h
+HEADERS += CQProgressItemBar.ui.h
+SOURCES += CQProgressItemBar.cpp
+
 #FORMS3 += CQProgressItemText.ui
+HEADERS += CQProgressItemText.h
+HEADERS += CQProgressItemText.ui.h
+SOURCES += CQProgressItemText.cpp
+
+#FORMS3 += CQTextDialog.ui
+HEADERS += CQTextDialog.h
+HEADERS += CQTextDialog.ui.h
+SOURCES += CQTextDialog.cpp
 
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
@@ -349,40 +368,15 @@ FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
 FORMS += CQExpandModelData.ui
 
-# headers generated from .ui files
-HEADERS += \
-    CQExperimentData.h \
-    CQProgressItemBar.h \
-    CQProgressItemText.h \
-    CQTextDialog.h \
-
-# sources generated from .ui files
-SOURCES += \
-    CQExperimentData.cpp \
-    CQProgressItemBar.cpp \
-    CQProgressItemText.cpp \
-    CQTextDialog.cpp \
-
-!contains(DEFINES, HAVE_MML) {
+contains(COPASI_SRC_PACKAGE, true) {
   HEADERS -= CQDifferentialEquations.h
-#  HEADERS -= CQDifferentialEquations.ui.h
   SOURCES -= CQDifferentialEquations.cpp
+  
+  DISTFILES += CQDifferentialEquations.h
+  DISTFILES += CQDifferentialEquations.cpp
 }
 
-
-#ifdef COPASI_LICENSE_COM
-contains(USE_LICENSE, COM) {
-# FORMS3 += CQRegistrationDialog.ui
-
-  HEADERS += CQRegistrationDialog.h \
-             CQRegistrationDialog.ui.h
-
-  SOURCES += CQRegistrationDialog.cpp
-}
-#endif // COPAS_LICENSE_COM
-
-DISTFILES += UI.vcproj \
-             icons/Copasi.ico \
+DISTFILES += icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \
              icons/CopasiDoc.ico \
              icons/CopasiDoc??-Alpha.xpm \
@@ -412,8 +406,22 @@ DISTFILES += UI.vcproj \
              icons/edit_Icon.xpm \
              icons/photo.xpm
              
+include(../lib.pri)
 
+CONFIG += qt 
 
+include(../common.pri)
+
+#ifdef COPASI_LICENSE_COM
+contains(USE_LICENSE, COM) {
+# FORMS3 += CQRegistrationDialog.ui
+
+  HEADERS += CQRegistrationDialog.h \
+             CQRegistrationDialog.ui.h
+
+  SOURCES += CQRegistrationDialog.cpp
+}
+#endif // COPASI_LICENSE_COM
 
 #The following line was inserted by qt3to4
 QT += xml  opengl qt3support 

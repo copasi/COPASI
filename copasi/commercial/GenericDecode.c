@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/GenericDecode.c,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:27:05 $
+//   $Date: 2010/03/16 18:55:47 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -129,6 +134,7 @@ int decodeGenericRegCode(const char * c , const char * r)
   //now remove format information and static text from the reg code
   //and seperate into the registration code and check digit
   unformat();
+
   // if the calculated checkdigit matches the one received with
   // the registration code the proceed with the decoding
   if (verifyCheckDigit() == 1)
@@ -142,8 +148,8 @@ int decodeGenericRegCode(const char * c , const char * r)
     {
       //the checkdigit could not be verified
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer,
-                                  "The calculated and received checkdigit do not match.\n");
+      debugBufferCount = sprintf(debugBuffer,
+                                 "The calculated and received checkdigit do not match.\n");
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
       return 1;
@@ -157,6 +163,7 @@ int decodeGenericRegCode(const char * c , const char * r)
 void resetVariables(void)
 {
   int i;
+
   for (i = 0 ; i < 130 ; ++i)
     {
       baseTenNumber[i] = '\0';
@@ -180,13 +187,13 @@ void initializeConfigData(char* config)
   while (pch != NULL)
     {
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "%s\n", pch);
+      debugBufferCount = sprintf(debugBuffer, "%s\n", pch);
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
       //split the name value pair into key and value
       p = strchr(pch, ':');
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "%s\t%d \n", p + 1, dataID);
+      debugBufferCount = sprintf(debugBuffer, "%s\t%d \n", p + 1, dataID);
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
       //the length of the key
@@ -198,6 +205,7 @@ void initializeConfigData(char* config)
       pch = strtok(NULL, "%");
       ++dataID;
     }
+
   //we have finished intializing the variables from the configuration data
   //now calculate the seed length
   //printf("\nTHe seed length\t%d\t%d\t%d\t",userseedlength ,constlength , seqlength);
@@ -211,7 +219,7 @@ void initializeConfigData(char* config)
   // seed charcater in an array
   parseScrambleSequence();
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "The seed is %d length", seedlength);
+  debugBufferCount = sprintf(debugBuffer, "The seed is %d length", seedlength);
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
 }
@@ -225,84 +233,85 @@ type - type of configuration data
 void storeData(int len, char* data, int type)
 {
   char* temp ; //temporary storege for values
+
   switch (type)
     {
 
-    case 1: //minimum length of the name part of user seed
-      temp = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(temp, data, len);
-      namelength = atoi(temp);
-      free(temp);
-      break;
-    case 2: // minimum length of email part of user seed
-      temp = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(temp, data , len);
-      emaillength = atoi(temp);
-      free(temp);
-      break;
+      case 1: //minimum length of the name part of user seed
+        temp = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(temp, data, len);
+        namelength = atoi(temp);
+        free(temp);
+        break;
+      case 2: // minimum length of email part of user seed
+        temp = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(temp, data , len);
+        emaillength = atoi(temp);
+        free(temp);
+        break;
 
-    case 3: // minimum length of hotsyncid part of user seed
-      temp = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(temp, data , len);
-      hotsynclength = atoi(temp);
-      free(temp);
-      break;
+      case 3: // minimum length of hotsyncid part of user seed
+        temp = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(temp, data , len);
+        hotsynclength = atoi(temp);
+        free(temp);
+        break;
 
-    case 4: // the seed combo ee en ne nn hh
-      seedcombo = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(seedcombo, data, len);
-      break;
+      case 4: // the seed combo ee en ne nn hh
+        seedcombo = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(seedcombo, data, len);
+        break;
 
-    case 5: // the length of the user seed
-      temp = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(temp, data, len);
-      userseedlength = atoi(temp);
-      free(temp);
-      break;
+      case 5: // the length of the user seed
+        temp = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(temp, data, len);
+        userseedlength = atoi(temp);
+        free(temp);
+        break;
 
-    case 6:   // the length of the constant
-      temp = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(temp, data, len);
-      constlength = atoi(temp);
-      free(temp);
-      break;
+      case 6:   // the length of the constant
+        temp = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(temp, data, len);
+        constlength = atoi(temp);
+        free(temp);
+        break;
 
-    case 7:  // the constant value
-      constvalue = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(constvalue, data, len);
-      break;
-    case 8:   // the maximum length of a sequence number
-      temp = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(temp, data, len);
-      seqlength = atoi(temp);
-      free(temp);
-      break;
-    case 10: // the scramble order
-      scrambleSequence = (char *)allocateMemory(len , CHAR_TYPE);
-      strncpy(scrambleSequence, data, len);
-      break;
-    case 11: // digits for ascii to number conversion
-      asciidigit = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(asciidigit, data, len);
-      break;
-    case 12: // the list of arithmetic operations
-      mathoperations = (char *)allocateMemory(len , CHAR_TYPE);
-      strncpy(mathoperations, data, len);
-      break;
-    case 13: // the base of the new number
-      base = (char *)allocateMemory(len , CHAR_TYPE);
-      strncpy(base, data, len);
-      break;
-    case 14:  // the new base character set
-      basedigit = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(basedigit, data , len);
-      break;
-    case 15:   //the fromat of the registration code
-      regformat = (char *) allocateMemory(len , CHAR_TYPE);
-      strncpy(regformat, data , len);
-      break;
-    default:
-      break;
+      case 7:  // the constant value
+        constvalue = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(constvalue, data, len);
+        break;
+      case 8:   // the maximum length of a sequence number
+        temp = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(temp, data, len);
+        seqlength = atoi(temp);
+        free(temp);
+        break;
+      case 10: // the scramble order
+        scrambleSequence = (char *)allocateMemory(len , CHAR_TYPE);
+        strncpy(scrambleSequence, data, len);
+        break;
+      case 11: // digits for ascii to number conversion
+        asciidigit = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(asciidigit, data, len);
+        break;
+      case 12: // the list of arithmetic operations
+        mathoperations = (char *)allocateMemory(len , CHAR_TYPE);
+        strncpy(mathoperations, data, len);
+        break;
+      case 13: // the base of the new number
+        base = (char *)allocateMemory(len , CHAR_TYPE);
+        strncpy(base, data, len);
+        break;
+      case 14:  // the new base character set
+        basedigit = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(basedigit, data , len);
+        break;
+      case 15:   //the fromat of the registration code
+        regformat = (char *) allocateMemory(len , CHAR_TYPE);
+        strncpy(regformat, data , len);
+        break;
+      default:
+        break;
     }
 }
 
@@ -319,7 +328,7 @@ void parseMathOperations()
   while (pch != NULL)
     {
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "[%d]=%s\n", count, pch);
+      debugBufferCount = sprintf(debugBuffer, "[%d]=%s\n", count, pch);
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
       //store math operation for this index position.
@@ -338,10 +347,11 @@ void parseScrambleSequence()
   int count = 0;
   //each seed symbol is seperated by ''
   char* pch = strtok(scrambleSequence, ",,");
+
   while (pch != NULL)
     {
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "[%d]=%s\n", count, pch);
+      debugBufferCount = sprintf(debugBuffer, "[%d]=%s\n", count, pch);
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
       scrambleOrder[count] = pch;
@@ -386,8 +396,10 @@ void unformat()
           regFormatCpy++;
           continue;
         }
+
       //go to the next character
       regFormatCpy++;
+
       if (*regCodeCpy != '\0')
         {
           regCodeCpy++;
@@ -397,6 +409,7 @@ void unformat()
           break;
         }
     }
+
   //handle case where registration code is bigger than the format
   //code.
   if (codelength > formatlength)
@@ -408,15 +421,16 @@ void unformat()
           ++i;
         }
     }
+
   unformattedcode[i] = '\0';
   regcode = (char *) allocateMemory(i , CHAR_TYPE);
   regcodelength = i;    //this the actual length of the reg code
   strncpy(regcode, unformattedcode , i);   //store the regcode
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "Unformatted code %s\t and has length %u.\n",
-                              regcode, strlen(unformattedcode));
+  debugBufferCount = sprintf(debugBuffer, "Unformatted code %s\t and has length %u.\n",
+                             regcode, strlen(unformattedcode));
   setDebugMessage(debugBufferCount, debugBuffer);
-  debugBufferCount = sprintf (debugBuffer, "The check digit is %c.\n", checkdigit);
+  debugBufferCount = sprintf(debugBuffer, "The check digit is %c.\n", checkdigit);
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
 }
@@ -449,10 +463,11 @@ void calculateCheckDigit()
   int temp;
   int numberBase = atoi(base); //the new base
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "Verifying the check digit.");
+  debugBufferCount = sprintf(debugBuffer, "Verifying the check digit.");
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
-  for (;i >= 0 ;i--)
+
+  for (; i >= 0 ; i--)
     {
       //start with the  rightmost character
       char c = *(regcode + i);
@@ -461,20 +476,23 @@ void calculateCheckDigit()
       //multiply the character value by the weight
       // and add it to the result of the previous charcters.
       sum = sum + (weight * digitValue);
+
       //change the weight for the next character to 1
       if (weight == 2)
         weight = 1;
       else
         weight = 2;
+
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "%c\t%d", c, sum);
+      debugBufferCount = sprintf(debugBuffer, "%c\t%d", c, sum);
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
     }
+
   temp = sum % (numberBase);
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, " \n%d mod %d  = %d\nThe checkdigit is %c",
-                              sum, numberBase, temp, (char)getDigit(temp));
+  debugBufferCount = sprintf(debugBuffer, " \n%d mod %d  = %d\nThe checkdigit is %c",
+                             sum, numberBase, temp, (char)getDigit(temp));
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
 
@@ -487,11 +505,13 @@ int getDigitValue(char c)
 {
   int done = 0;
   int digit = 0;
+
   while (!done)
     {
       //get the character at the position indicated by
       //digit
       char c1 = *(basedigit + digit);
+
       if (c == c1)
         {
           //if the character at the position indicated by digit
@@ -499,8 +519,10 @@ int getDigitValue(char c)
           // of the charcter.
           break;
         }
+
       ++digit;
     }
+
   return digit;
 }
 /**
@@ -542,9 +564,10 @@ void convertToBaseTen()
   digitValue = (char *)allocateMemory(3 , CHAR_TYPE);
 
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "\nConverting to base ten %s.\n", regcode);
+  debugBufferCount = sprintf(debugBuffer, "\nConverting to base ten %s.\n", regcode);
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
+
   for (pow = 0; pow < regcodelength ; ++pow)
     {
       // Temp holder for sum while it's recalculated --AE 02/05
@@ -554,13 +577,15 @@ void convertToBaseTen()
       //get the number of digits in the weight
       size = getResultSize();
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "Weight : ");
+      debugBufferCount = sprintf(debugBuffer, "Weight : ");
       setDebugMessage(debugBufferCount, debugBuffer);
-      for (x = 0 ;x < size ;++x)
+
+      for (x = 0 ; x < size ; ++x)
         {
-          debugBufferCount = sprintf (debugBuffer, "%d", *(weight + x));
+          debugBufferCount = sprintf(debugBuffer, "%d", *(weight + x));
           setDebugMessage(debugBufferCount, debugBuffer);
         }
+
 #endif
 
       //get the digit
@@ -571,20 +596,22 @@ void convertToBaseTen()
 
       // multiply weight by the digit.
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "* %s\n", digitValue);
+      debugBufferCount = sprintf(debugBuffer, "* %s\n", digitValue);
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
       result = multiply(weight, size, digitValue);
       resultlength = getResultLength();
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "Value : ");
+      debugBufferCount = sprintf(debugBuffer, "Value : ");
       setDebugMessage(debugBufferCount, debugBuffer);
-      for (x = 0 ;x < resultlength ;++x)
+
+      for (x = 0 ; x < resultlength ; ++x)
         {
-          debugBufferCount = sprintf (debugBuffer, "%d", *(result + x));
+          debugBufferCount = sprintf(debugBuffer, "%d", *(result + x));
           setDebugMessage(debugBufferCount, debugBuffer);
         }
-      debugBufferCount = sprintf (debugBuffer, " \n");
+
+      debugBufferCount = sprintf(debugBuffer, " \n");
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
       //add the value of this digit position
@@ -598,24 +625,29 @@ void convertToBaseTen()
       free(weight);
       --index;
     }
+
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "The base ten number is:");
+  debugBufferCount = sprintf(debugBuffer, "The base ten number is:");
   setDebugMessage(debugBufferCount, debugBuffer);
-  for (x = 0 ;x < getResultLength(); ++x)
+
+  for (x = 0 ; x < getResultLength(); ++x)
     {
-      debugBufferCount = sprintf (debugBuffer, "%d", *(sum + x));
+      debugBufferCount = sprintf(debugBuffer, "%d", *(sum + x));
       setDebugMessage(debugBufferCount, debugBuffer);
     }
-  debugBufferCount = sprintf (debugBuffer, "\n");
+
+  debugBufferCount = sprintf(debugBuffer, "\n");
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
-  for (x = 0 ;x < getResultLength(); ++x)
+
+  for (x = 0 ; x < getResultLength(); ++x)
     {
 
       sprintf(buffer, "%d", *(sum + x));
       //get the ascii character
       baseTenNumber[x] = buffer[0];
     }
+
   // Free last sum --AE 02/05
   free(sum);
   free(digitValue);
@@ -640,10 +672,11 @@ void undoArithmetic(const char * baseten)
   ascii = atoi(asciidigit);
 
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "Reversing arithmetic operations%s\n",
-                              baseten);
+  debugBufferCount = sprintf(debugBuffer, "Reversing arithmetic operations%s\n",
+                             baseten);
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
+
   while (*(baseten + i) != '\0')
     {
       if (ascii == 2)
@@ -658,6 +691,7 @@ void undoArithmetic(const char * baseten)
               two[0] = *(baseten + i);
               i = i + 1;
             }
+
           two[1] = *(baseten + i);
           i = i + 1;
           two[2] = '\0';
@@ -680,6 +714,7 @@ void undoArithmetic(const char * baseten)
               three[0] = *(baseten + i);
               i = i + 1;
             }
+
           three[1] = *(baseten + i);
           i = i + 1;
           three[2] = *(baseten + i);
@@ -692,14 +727,18 @@ void undoArithmetic(const char * baseten)
           // as integer value
           seedasinteger[charposn] = number;
         }
+
       ++charposn;
     }
+
 #ifdef DEBUG
-  for (i = 0 ; i < charposn ;++i)
+
+  for (i = 0 ; i < charposn ; ++i)
     {
-      debugBufferCount = sprintf (debugBuffer, "[%d]=%d\t", i, seedasinteger[i]);
+      debugBufferCount = sprintf(debugBuffer, "[%d]=%d\t", i, seedasinteger[i]);
       setDebugMessage(debugBufferCount, debugBuffer);
     }
+
 #endif
 }
 
@@ -717,24 +756,28 @@ int undoMath(int number, int position)
   char temp[3];
   operation = operations[position];
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "Performing operation (%s) for %d at %d\n",
-                              operation, number, position);
+  debugBufferCount = sprintf(debugBuffer, "Performing operation (%s) for %d at %d\n",
+                             operation, number, position);
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
   len = strlen(operation);
+
   if (len > 1)
     {
       //find the operation
       math = *(operation + len - 1);
+
       if (math == 'A')
         token = "A";
       else if (math == 'S')
         token = "S";
       else if (math == 'M')
         token = "M";
+
       //find the operand
       operand = strtok(operation, token);
       ioperand = atoi(operand);
+
       //undo the arithmetic operations
       if (math == 'A')
         {
@@ -748,8 +791,9 @@ int undoMath(int number, int position)
         {
           number = number / ioperand;
         }
+
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "match %c\t%s\n", math, operand);
+      debugBufferCount = sprintf(debugBuffer, "match %c\t%s\n", math, operand);
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
     }
@@ -757,19 +801,23 @@ int undoMath(int number, int position)
     {
       // the operation is reverse the number
       sprintf(temp, "%d", number);
+
       //itoa(number,temp,10);
-      for (x = 0, y = strlen(temp) - 1; x < y ;x++, y--)
+      for (x = 0, y = strlen(temp) - 1; x < y ; x++, y--)
         {
           math = temp[x];
           temp[x] = temp[y];
           temp[y] = math;
         }
+
       number = atoi(temp);
+
       if (number <= 9)
         number = number * 10;
     }
+
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "The number is :%d \n", number);
+  debugBufferCount = sprintf(debugBuffer, "The number is :%d \n", number);
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
   return number;
@@ -785,8 +833,9 @@ void unScrambleSeed()
   char* scrambletoken;
   char symbol;
   char* posn;
+
   // char * temp;
-  for (x = 0 ; x < seedlength ;++x)
+  for (x = 0 ; x < seedlength ; ++x)
     {
 
       /*seed = (char *)allocateMemory(seedlength, CHAR_TYPE);
@@ -797,8 +846,8 @@ void unScrambleSeed()
       posn = scrambletoken + 1;
       charposn = atoi(posn);
 #ifdef DEBUG
-      debugBufferCount = sprintf (debugBuffer, "\n%c : %s : %d\t: %c\n"
-                                  , symbol, posn, seedasinteger[x], seedasinteger[x]);
+      debugBufferCount = sprintf(debugBuffer, "\n%c : %s : %d\t: %c\n"
+                                 , symbol, posn, seedasinteger[x], seedasinteger[x]);
       setDebugMessage(debugBufferCount, debugBuffer);
 #endif
 
@@ -856,9 +905,11 @@ void freememory()
   free(basedigit);
   free(regcode);
   free(regformat);
+
   // Only if we've allocated it --AE 02/05
   if (debugMessage)
     free(debugMessage);
+
   // These weren't free()d before --AE 02/05
   free(registrationcode);
   free(configuration);
@@ -868,6 +919,7 @@ void freememory()
 void * allocateMemory(int size, int dataType)
 {
   void * ptr = 0;
+
   if (dataType == CHAR_TYPE)
     {
       ptr = calloc((size + 1), sizeof(char));
@@ -876,8 +928,10 @@ void * allocateMemory(int size, int dataType)
     {
       ptr = calloc((size + 1), sizeof(int));
     }
+
   if (ptr == NULL)
-    exit (1);
+    exit(1);
+
   return ptr;
 }
 
@@ -886,6 +940,7 @@ void setDebugMessage(int size, char * msg)
 {
 
   int msgLength;
+
   if (debugMessage == 0)
     {
       debugMessage = allocateMemory(size, CHAR_TYPE);
@@ -911,23 +966,26 @@ char* getDebugMessage()
 void setUserName(const char * name)
 {
   int i;
+
   //reset the data
-  for (i = 0 ; i < 20; ++i)
+  for (i = 0 ; i < 21; ++i)
     {
       userName[i] = '\0';
     }
-  i = 0;
-  while (*name != '\0')
+
+  for (i = 0 ; i < 20 && *name != '\0'; ++name)
     {
       if (isalnum(*name))
         {
           userName[i] = toupper(*name);
           ++i;
         }
+
       name++;
     }
+
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "User name is:%s", userName);
+  debugBufferCount = sprintf(debugBuffer, "User name is:%s", userName);
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
 }
@@ -936,23 +994,24 @@ void setUserName(const char * name)
 void setUserEmail(const char * email)
 {
   int i;
+
   //reset the data
-  for (i = 0 ; i < 20; ++i)
+  for (i = 0 ; i < 21; ++i)
     {
       userEmail[i] = '\0';
     }
-  i = 0;
-  while (*email != '\0')
+
+  for (i = 0 ; i < 20 && *email != '\0'; ++email)
     {
       if (isalnum(*email))
         {
           userEmail[i] = toupper(*email);
           ++i;
         }
-      email++;
     }
+
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "User email is:%s", userEmail);
+  debugBufferCount = sprintf(debugBuffer, "User email is:%s", userEmail);
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
 }
@@ -966,10 +1025,12 @@ void createUserSeed()
   int maxSize = strlen(userName) + strlen(userEmail);
 
   seedbasis = allocateMemory(maxSize, CHAR_TYPE);
-  for (i = 0 ; i < 30 ;++i)
+
+  for (i = 0 ; i < 30 ; ++i)
     {
       createdUserSeed[i] = '\0';
     }
+
   if (strncmp(seedcombo , "nn", 2) == 0) //if name only
     {
       strcat(seedbasis, userName);
@@ -992,13 +1053,16 @@ void createUserSeed()
     {
       strcat(seedbasis, userName);
     }
+
   if (*seedbasis == 0)
     {
       free(seedbasis);
       return;
     }
+
   strncat(createdUserSeed, seedbasis, userseedlength);
   length = strlen(createdUserSeed);
+
   while (length < userseedlength)
     {
       charCount = userseedlength - length;
@@ -1007,8 +1071,8 @@ void createUserSeed()
     }
 
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, "UserSeed: %s(%d) ",
-                              createdUserSeed, strlen(createdUserSeed));
+  debugBufferCount = sprintf(debugBuffer, "UserSeed: %s(%d) ",
+                             createdUserSeed, strlen(createdUserSeed));
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
   // Need to free local variable --AE 02/05
@@ -1058,21 +1122,26 @@ const char * createGenericRegCode(const char * pConfig,
 
   // Set the constant
   if (constlength > 3) constlength = 3;
+
   for (i = 0; i < constlength && pConstant[i] != 0; i++)
     constant[i] = pConstant[i];
+
   for (; i < 4; i++)
     constant[i] = 0;
 
   // Set the sequence
   if (seqlength > 3) seqlength = 3;
+
   for (i = 0; i < seqlength && pSequence[i] != 0; i++)
     sequence[i] = pSequence[i];
+
   for (; i < 4; i++)
     sequence[i] = 0;
 
   // Set the date;
   for (i = 0; i < 5 && pDate[i] != 0; i++)
     date[i] = pDate[i];
+
   for (; i < 5; i++)
     date[i] = 0;
 
@@ -1093,28 +1162,28 @@ void scrambleSeed()
   int x , charposn;
   char* scrambletoken;
 
-  for (x = 0 ; x < seedlength ;++x)
+  for (x = 0 ; x < seedlength ; ++x)
     {
       scrambletoken = scrambleOrder[x];
       charposn = atoi(scrambletoken + 1);
 
       switch (*scrambletoken)
         {
-        case 'U':
-          seedasinteger[x] = (int) seed[charposn];
-          break;
+          case 'U':
+            seedasinteger[x] = (int) seed[charposn];
+            break;
 
-        case 'S':
-          seedasinteger[x] = (int) sequence[charposn];
-          break;
+          case 'S':
+            seedasinteger[x] = (int) sequence[charposn];
+            break;
 
-        case 'D':
-          seedasinteger[x] = (int) date[charposn];
-          break;
+          case 'D':
+            seedasinteger[x] = (int) date[charposn];
+            break;
 
-        case 'C':
-          seedasinteger[x] = (int) constant[charposn];
-          break;
+          case 'C':
+            seedasinteger[x] = (int) constant[charposn];
+            break;
         }
     }
 }
@@ -1125,26 +1194,30 @@ void doArithmetic()
   char * pDigit = baseTenNumber;
 
   // First we do the mathematical operations;
-  for (x = 0 ; x < seedlength ;++x)
+  for (x = 0 ; x < seedlength ; ++x)
     seedasinteger[x] = doMath(seedasinteger[x], x);
 
   // Now we encode the numbers in either two or three characters using "0123456789"
-  for (x = 0 ; x < seedlength ;++x)
+  for (x = 0 ; x < seedlength ; ++x)
     {
       switch (asciidigit[0])
         {
-        case '2':
-          if (x != 0 || seedasinteger[x] / 10 != 0)
-            *pDigit++ = '0' + seedasinteger[x] / 10;
-          *pDigit++ = '0' + seedasinteger[x] % 10;
-          break;
+          case '2':
 
-        case '3':
-          if (x != 0 || seedasinteger[x] / 100 != 0)
-            *pDigit++ = '0' + seedasinteger[x] / 100;
-          *pDigit++ = '0' + (seedasinteger[x] % 100) / 10;
-          *pDigit++ = '0' + seedasinteger[x] % 10;
-          break;
+            if (x != 0 || seedasinteger[x] / 10 != 0)
+              *pDigit++ = '0' + seedasinteger[x] / 10;
+
+            *pDigit++ = '0' + seedasinteger[x] % 10;
+            break;
+
+          case '3':
+
+            if (x != 0 || seedasinteger[x] / 100 != 0)
+              *pDigit++ = '0' + seedasinteger[x] / 100;
+
+            *pDigit++ = '0' + (seedasinteger[x] % 100) / 10;
+            *pDigit++ = '0' + seedasinteger[x] % 10;
+            break;
         }
     }
 
@@ -1169,17 +1242,17 @@ int doMath(int number, int position)
 
       switch (token[0])
         {
-        case 'A':
-          number = number + ioperand;
-          break;
+          case 'A':
+            number = number + ioperand;
+            break;
 
-        case 'S':
-          number = number - ioperand;
-          break;
+          case 'S':
+            number = number - ioperand;
+            break;
 
-        case 'M':
-          number = number * ioperand;
-          break;
+          case 'M':
+            number = number * ioperand;
+            break;
         }
     }
   else
@@ -1207,6 +1280,7 @@ void convertFromBaseTen()
   pDigit = baseTenNumber;
   len = strlen(pDigit);
   FIinit(&BaseTen, len);
+
   for (i = len - 1; i >= 0 ; i--, pDigit++)
     BaseTen.pVal[i] = *pDigit - '0';
 
@@ -1216,6 +1290,7 @@ void convertFromBaseTen()
   pDigit = base;
   len = strlen(pDigit);
   FIinit(&Base, len);
+
   for (i = len - 1; i >= 0 ; i--, pDigit++)
     Base.pVal[i] = *pDigit - '0';
 
@@ -1224,6 +1299,7 @@ void convertFromBaseTen()
 
   // Determine the needed number of digits in the new base
   count = 1;
+
   while (FIcompare(&BaseTen, &Power) > 0)
     FIpower(&Base, ++count, &Power, 10);
 
@@ -1233,6 +1309,7 @@ void convertFromBaseTen()
   while (count)
     {
       FIpower(&Base, --count, &Power, 10);
+
       while (FIcompare(&BaseTen, &Power) >= 0)
         {
           BaseNew.pVal[count]++;
@@ -1269,25 +1346,28 @@ void format(char * regCode)
     {
       switch (*pFormat)
         {
-        case '#':
-          if (optional == 0)
-            i++;
-          break;
+          case '#':
 
-        case '[':
-          optional = 1;
-          break;
+            if (optional == 0)
+              i++;
 
-        case ']':
-          optional = 0;
-          break;
+            break;
 
-        default:
-          break;
+          case '[':
+            optional = 1;
+            break;
+
+          case ']':
+            optional = 0;
+            break;
+
+          default:
+            break;
         }
     }
 
   offset = i - regcodelength;
+
   if (offset > 0)
     longformat = 1;
 
@@ -1295,33 +1375,36 @@ void format(char * regCode)
     {
       switch (*pFormat)
         {
-        case '#':
-          if (offset < 0)
-            {
-              *pFormated++ = zero;
-              offset++;
-            }
-          else if (*pUnformated != 0x00)
-            *pFormated++ = *pUnformated++;
+          case '#':
 
-          break;
+            if (offset < 0)
+              {
+                *pFormated++ = zero;
+                offset++;
+              }
+            else if (*pUnformated != 0x00)
+              *pFormated++ = *pUnformated++;
 
-        case '^':
-          *pFormated++ = calculatedcheckdigit;
-          break;
+            break;
 
-        case '[':
-          optional = 1;
-          break;
+          case '^':
+            *pFormated++ = calculatedcheckdigit;
+            break;
 
-        case ']':
-          optional = 0;
-          break;
+          case '[':
+            optional = 1;
+            break;
 
-        default:
-          if (optional == 0 || longformat == 1)
-            *pFormated++ = *pFormat;
-          break;
+          case ']':
+            optional = 0;
+            break;
+
+          default:
+
+            if (optional == 0 || longformat == 1)
+              *pFormated++ = *pFormat;
+
+            break;
         }
     }
 

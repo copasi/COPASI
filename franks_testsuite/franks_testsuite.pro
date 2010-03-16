@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/franks_testsuite.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/03/12 02:18:23 $ 
+#   $Date: 2010/03/16 18:59:03 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -12,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2008/03/12 02:18:23 $  
+# $Revision: 1.3 $ $Author: shoops $ $Date: 2010/03/16 18:59:03 $  
 ######################################################################
 
 TEMPLATE = app
@@ -25,7 +30,9 @@ DEPENDPATH += ../copasi/
 INCLUDEPATH += ../copasi/
 INCLUDEPATH += ..
 
-COPASI_LIBS += COPASISE
+include(../copasi/app.pri)
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 contains(BUILD_OS, WIN32) {
   LIBS += $$join(COPASI_LIBS, ".lib  ../copasi/lib/", ../copasi/lib/, .lib)

@@ -1,10 +1,15 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/xml.pro,v $
-#   $Revision: 1.12 $
+#   $Revision: 1.13 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/12/18 19:21:26 $
+#   $Date: 2010/03/16 18:59:03 $
 # End CVS Header
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -12,15 +17,11 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.12 $ $Author: shoops $ $Date: 2008/12/18 19:21:26 $
+# $Revision: 1.13 $ $Author: shoops $ $Date: 2010/03/16 18:59:03 $
 ######################################################################
 
-LIB = xml
-
-include(../lib.pri)
-include(../common.pri)
-
-TARGET = copasiXML
+LIB = copasiXML
+SRC_TARGET = xml
 
 # Input
 HEADERS += CCopasiXML.h \
@@ -38,7 +39,8 @@ SOURCES += CCopasiXML.cpp \
            CCopasiXMLParser.cpp
 
 
-DISTFILES += copasi.xsd \
-             copasiXML.vcproj
+include(../lib.pri)
+include(../common.pri)
+
 #The following line was inserted by qt3to4
 QT +=  qt3support 

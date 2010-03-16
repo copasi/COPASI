@@ -37,15 +37,21 @@ goto CONFIGURE
 :QTDIR_NotSet
 set QMAKE=qmake
 
+:CONFIGURE
+
 rem Clean
 del /S Makefile*
-del copasi\commandline\CConfigurationFile.obj
-del copasi\UI\copasiui3window.obj 
-del copasi\UI\CQSplashWidget.obj 
-del copasi\CopasiUI\main.obj 
-del copasi\CopasiSE\CopasiSE.obj
+del copasi\commandline\debug\CConfigurationFile.obj
+del copasi\commandline\release\CConfigurationFile.obj
+del copasi\UI\debug\copasiui3window.obj 
+del copasi\UI\release\copasiui3window.obj 
+del copasi\UI\debug\CQSplashWidget.obj 
+del copasi\UI\release\CQSplashWidget.obj 
+del copasi\CopasiUI\debug\main.obj 
+del copasi\CopasiUI\release\main.obj 
+del copasi\CopasiSE\debug\CopasiSE.obj
+del copasi\CopasiSE\release\CopasiSE.obj
 
-:CONFIGURE
 cd copasi
 echo Executing in copasi:
 

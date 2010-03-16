@@ -1,15 +1,22 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/CRegistration.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/18 20:51:53 $
+//   $Date: 2010/03/16 18:55:47 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <string.h>
+#include <stdlib.h>
 #include <sstream>
 
 #include "copasi.h"
@@ -94,148 +101,149 @@ void CRegistration::setRegisteredEmail(const std::string & registeredEmail)
 {*mpRegisteredEmail = registeredEmail;}
 
 const std::string & CRegistration::getRegisteredEmail() const
-  {return *mpRegisteredEmail;}
+{return *mpRegisteredEmail;}
 
 void CRegistration::setRegisteredUser(const std::string & registeredUser)
 {*mpRegisteredUser = registeredUser;}
 
 const std::string & CRegistration::getRegisteredUser() const
-  {return *mpRegisteredUser;}
+{return *mpRegisteredUser;}
 
 void CRegistration::setRegistrationCode(const std::string & registrationCode)
 {*mpRegistrationCode = registrationCode;}
 
 const std::string & CRegistration::getRegistrationCode() const
-  {return *mpRegistrationCode;}
+{return *mpRegistrationCode;}
 
 bool CRegistration::isValidRegistration() const
-  {
-    bool Trial = false;
+{
+  bool Trial = false;
 
-    // Check whether the registration code is correct.
-    if (!decodeGenericRegCode(config, mpRegistrationCode->c_str()))
-      {
-        // We have a valid registration code.
-        Trial = !strcmp("T", getConstant());
-        if (Trial)
-          {
-            unsigned C_INT32 Date = strtoul(getDate(), NULL, 10);
+  // Check whether the registration code is correct.
+  if (!decodeGenericRegCode(config, mpRegistrationCode->c_str()))
+    {
+      // We have a valid registration code.
+      Trial = !strcmp("T", getConstant());
 
-            // day and year license created
-            unsigned C_INT32 Day = Date / 10 - 1;   // 0 - 365
-            unsigned C_INT32 Year = Date % 10;  // 0 - 9
+      if (Trial)
+        {
+          unsigned C_INT32 Date = strtoul(getDate(), NULL, 10);
 
-            time_t CurrentTime = time(NULL);
-            tm * pLocalTime = localtime(&CurrentTime);
+          // day and year license created
+          unsigned C_INT32 Day = Date / 10 - 1;   // 0 - 365
+          unsigned C_INT32 Year = Date % 10;  // 0 - 9
 
-            // License creation year minus 1900
-            // Was the license created in the previous decade?
-            if (Year != 0 && (pLocalTime->tm_year % 10) == 0)
-              Year += pLocalTime->tm_year - 10;
-            else
-              Year += pLocalTime->tm_year - (pLocalTime->tm_year % 10);
+          time_t CurrentTime = time(NULL);
+          tm * pLocalTime = localtime(&CurrentTime);
 
-            // End of day
-            pLocalTime->tm_sec = 0;
-            pLocalTime->tm_min = 0;
-            pLocalTime->tm_hour = 24;
+          // License creation year minus 1900
+          // Was the license created in the previous decade?
+          if (Year != 0 && (pLocalTime->tm_year % 10) == 0)
+            Year += pLocalTime->tm_year - 10;
+          else
+            Year += pLocalTime->tm_year - (pLocalTime->tm_year % 10);
 
-            // License creation day + 31
-            pLocalTime->tm_year = Year;
-            pLocalTime->tm_mday += Day + 31 - pLocalTime->tm_yday;
+          // End of day
+          pLocalTime->tm_sec = 0;
+          pLocalTime->tm_min = 0;
+          pLocalTime->tm_hour = 24;
 
-            mExpirationDate = mktime(pLocalTime);
-          }
-        else
-          {
-            mExpirationDate = -1;
-          }
-      }
-    else
-      {
-        CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 1);
-        return false;
-      }
+          // License creation day + 31
+          pLocalTime->tm_year = Year;
+          pLocalTime->tm_mday += Day + 31 - pLocalTime->tm_yday;
 
-    // Check whether Email and User are correct.
-    setUserEmail(mpRegisteredEmail->c_str());
-    setUserName(mpRegisteredUser->c_str());
-    createUserSeed();
+          mExpirationDate = mktime(pLocalTime);
+        }
+      else
+        {
+          mExpirationDate = -1;
+        }
+    }
+  else
+    {
+      CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 1);
+      return false;
+    }
 
-    if (strcmp(getUserSeed(), getCreatedUserSeed()))
-      {
-        CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 2);
-        return false;
-      }
+  // Check whether Email and User are correct.
+  setUserEmail(mpRegisteredEmail->c_str());
+  setUserName(mpRegisteredUser->c_str());
+  createUserSeed();
 
-    // Check whether a trial license is expired.
-    if (Trial)
-      {
-        unsigned C_INT32 CurrentTime = time(NULL);
+  if (strcmp(getUserSeed(), getCreatedUserSeed()))
+    {
+      CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 2);
+      return false;
+    }
 
-        if (CurrentTime > mExpirationDate)
-          {
-            std::string ExpirationStr = ctime(&mExpirationDate);
-            // Remove the line break character '\n'
-            ExpirationStr.erase(ExpirationStr.length() - 1);
+  // Check whether a trial license is expired.
+  if (Trial)
+    {
+      unsigned C_INT32 CurrentTime = time(NULL);
 
-            CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 3, ExpirationStr.c_str());
-            return false;
-          }
-      }
+      if (CurrentTime > mExpirationDate)
+        {
+          std::string ExpirationStr = ctime(&mExpirationDate);
+          // Remove the line break character '\n'
+          ExpirationStr.erase(ExpirationStr.length() - 1);
 
-    std::stringstream Message;
-    Message << *mpRegistrationCode << * mpRegisteredEmail << *mpRegisteredUser;
+          CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 3, ExpirationStr.c_str());
+          return false;
+        }
+    }
 
-    // To prevent copying the configuration file
-    std::string ConfigFile;
-    COptions::getValue("ConfigFile", ConfigFile);
-    Message << ConfigFile;
+  std::stringstream Message;
+  Message << *mpRegistrationCode << * mpRegisteredEmail << *mpRegisteredUser;
 
-    *mpSignature = Cmd5::digest(Message);
+  // To prevent copying the configuration file
+  std::string ConfigFile;
+  COptions::getValue("ConfigFile", ConfigFile);
+  Message << ConfigFile;
 
-    return true;
-  }
+  *mpSignature = Cmd5::digest(Message);
+
+  return true;
+}
 
 bool CRegistration::isValidSignature() const
-  {
-    std::stringstream Message;
-    Message << *mpRegistrationCode << * mpRegisteredEmail << *mpRegisteredUser;
+{
+  std::stringstream Message;
+  Message << *mpRegistrationCode << * mpRegisteredEmail << *mpRegisteredUser;
 
-    // To prevent copying the configuration file
-    std::string ConfigFile;
-    COptions::getValue("ConfigFile", ConfigFile);
-    Message << ConfigFile;
+  // To prevent copying the configuration file
+  std::string ConfigFile;
+  COptions::getValue("ConfigFile", ConfigFile);
+  Message << ConfigFile;
 
-    if (*mpSignature == Cmd5::digest(Message))
-      return true;
+  if (*mpSignature == Cmd5::digest(Message))
+    return true;
 
-    // Detected tempering with the registration information
-    // therefore we reset it.
-    if (isValidRegistration())
-      {
-        *mpRegistrationCode = "";
-        *mpRegisteredEmail = "";
-        *mpRegisteredUser = "";
-      }
+  // Detected tempering with the registration information
+  // therefore we reset it.
+  if (isValidRegistration())
+    {
+      *mpRegistrationCode = "";
+      *mpRegisteredEmail = "";
+      *mpRegisteredUser = "";
+    }
 
-    return false;
-  }
+  return false;
+}
 
 std::string CRegistration::getExpirationDate() const
-  {
-    std::string ExpirationDate;
+{
+  std::string ExpirationDate;
 
-    if (mExpirationDate != -1)
-      {
-        ExpirationDate = ctime(&mExpirationDate);
-        // Remove the line break character '\n'
-        ExpirationDate.erase(ExpirationDate.length() - 1);
-      }
-    else
-      {
-        ExpirationDate = "unlimited";
-      }
+  if (mExpirationDate != -1)
+    {
+      ExpirationDate = ctime(&mExpirationDate);
+      // Remove the line break character '\n'
+      ExpirationDate.erase(ExpirationDate.length() - 1);
+    }
+  else
+    {
+      ExpirationDate = "unlimited";
+    }
 
-    return ExpirationDate;
-  }
+  return ExpirationDate;
+}

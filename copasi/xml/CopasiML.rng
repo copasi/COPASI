@@ -96,36 +96,34 @@
 
   <define name="parameter.datatype">
     <ref name="name.attribute"/>
-    <choice>
-      <group>
-        <attribute name="type">
-          <choice>
-            <value type="string">float</value>
-            <value type="string">unsignedFloat</value>
-            <value type="string">integer</value>
-            <value type="string">unsignedInteger</value>
-            <value type="string">bool</value>
-            <value type="string">string</value>
-            <value type="string">cn</value>
-            <value type="string">key</value>
-            <value type="string">file</value>
-          </choice>
-        </attribute>
-        <attribute name="value">
-          <data type="string"/>
-        </attribute>
-      </group>
-      <group>
-        <attribute name="type">
-          <choice>
-            <value type="string">expression</value>
-          </choice>
-        </attribute>
-        <ref name="expression.simpletype"/>
-      </group>
-    </choice>
+    <attribute name="type">
+      <choice>
+        <value type="string">float</value>
+        <value type="string">unsignedFloat</value>
+        <value type="string">integer</value>
+        <value type="string">unsignedInteger</value>
+        <value type="string">bool</value>
+        <value type="string">string</value>
+        <value type="string">cn</value>
+        <value type="string">key</value>
+        <value type="string">file</value>
+      </choice>
+    </attribute>
+    <attribute name="value">
+      <data type="string"/>
+    </attribute>
   </define>
 
+  <define name="parameterText.datatype">
+    <ref name="name.attribute"/>
+    <attribute name="type">
+      <choice>
+        <value type="string">expression</value>
+      </choice>
+    </attribute>
+    <text/>
+  </define>
+  
   <define name="parameterList.datatype">
     <zeroOrMore>
       <choice>
@@ -135,6 +133,9 @@
         </element>
         <element name="Parameter">
           <ref name="parameter.datatype"/>
+        </element>
+        <element name="ParameterText">
+          <ref name="parameterText.datatype"></ref>
         </element>
       </choice>
     </zeroOrMore>
@@ -184,15 +185,32 @@
 <!--
   <define name="rdf.datatype">
     <element>
-      <nsName ns="http://relaxng.org/ns/structure/1.0"/>
+      <nsName ns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
       <zeroOrMore>
         <attribute>
           <anyName/>
           <text/>
         </attribute>
       </zeroOrMore>
-      <ref name="rdf.datatype"/>
+      <ref name="rdfContent.datatype"/>
     </element>
+  </define>
+
+  <define name="rdfContent.datatype">
+    <mixed>
+      <zeroOrMore>
+        <element>
+          <anyName/>
+          <zeroOrMore>
+            <attribute>
+              <anyName/>
+              <text/>
+            </attribute>
+          </zeroOrMore>
+        <ref name="rdfContent.datatype"/>
+        </element>
+      </zeroOrMore>
+    </mixed>
   </define>
 -->
   
@@ -688,8 +706,8 @@
       </data>
     </attribute>
     <ref name="name.attribute"/>
-    <attribute name="delayAssignment">
-      <data type="boolean"/>
+    <attribute name="order">
+      <data type="nonNegativeInteger"/>
     </attribute>
     <optional>
       <ref name="miriamAnnotation.element"/>
@@ -699,8 +717,8 @@
     </element>
     <optional>
       <group>
-        <attribute name="order">
-          <data type="nonNegativeInteger"/>
+        <attribute name="delayAssignment">
+          <data type="boolean"/>
         </attribute>
         <element name="DelayExpression">
           <ref name="expression.simpletype"/>

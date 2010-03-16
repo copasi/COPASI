@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 19:53:48 $
+//   $Date: 2010/03/16 18:56:24 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -141,8 +146,6 @@ std::string COptItem::getObjectDisplayName() const
 
 bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
 {
-  const CCopasiObject * pObject;
-
   if (lowerBound[0] == '-' &&
       lowerBound[lowerBound.length() - 1] == '%' &&
       isNumber(lowerBound.substr(1, lowerBound.length() - 2)))
@@ -155,22 +158,12 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
 
       return true;
     }
-
-  const CCopasiDataModel * pDataModel = getObjectDataModel();
-
-  assert(pDataModel != NULL);
-
-  if (lowerBound != "-inf" &&
-      !isNumber(lowerBound) &&
-      ((pObject = pDataModel->getObject(lowerBound)) == NULL ||
-       !pObject->isValueDbl()))
+  else
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, lowerBound.c_str());
-      return false;
+      *mpParmLowerBound = lowerBound;
     }
 
-  *mpParmLowerBound = lowerBound;
-  return true;
+  return compileLowerBound(CCopasiContainer::EmptyList);
 }
 
 const std::string COptItem::getLowerBound() const
@@ -178,8 +171,6 @@ const std::string COptItem::getLowerBound() const
 
 bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
 {
-  const CCopasiObject * pObject;
-
   if (upperBound[0] == '+' &&
       upperBound[upperBound.length() - 1] == '%' &&
       isNumber(upperBound.substr(1, upperBound.length() - 2)))
@@ -192,22 +183,12 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
 
       return true;
     }
-
-  const CCopasiDataModel * pDataModel = getObjectDataModel();
-
-  assert(pDataModel != NULL);
-
-  if (upperBound != "inf" &&
-      !isNumber(upperBound) &&
-      ((pObject = pDataModel->getObject(upperBound)) == NULL ||
-       !pObject->isValueDbl()))
+  else
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, upperBound.c_str());
-      return false;
+      *mpParmUpperBound = upperBound;
     }
 
-  *mpParmUpperBound = upperBound;
-  return true;
+  return compileUpperBound(CCopasiContainer::EmptyList);
 }
 
 const std::string COptItem::getUpperBound() const
@@ -371,61 +352,29 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   addDirectDependency(mpObject);
   mpMethod = mpObject->getUpdateMethod();
 
-  mpLowerObject = NULL;
-  mpLowerBound = NULL;
-  Bound = getLowerBound();
-
-  if (Bound == "-inf")
+  if (compileLowerBound(listOfContainer))
     {
-      mLowerBound = - DBL_MAX;
-      mpLowerBound = &mLowerBound;
+      if (mpLowerObject != NULL)
+        {
+          addDirectDependency(mpLowerObject);
+        }
     }
-  else if (isNumber(Bound))
+  else
     {
-      mLowerBound = strToDouble(Bound.c_str(), NULL);
-      mpLowerBound = &mLowerBound;
-    }
-  else if ((mpLowerObject =
-              getObjectDataModel()->ObjectFromName(listOfContainer,
-                                                   Bound)) != NULL &&
-           mpLowerObject->isValueDbl())
-    {
-      mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
-      addDirectDependency(mpLowerObject);
-    }
-
-  if (!mpLowerBound)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, Bound.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, mpParmLowerBound->c_str());
       return false;
     }
 
-  mpUpperObject = NULL;
-  mpUpperBound = NULL;
-  Bound = getUpperBound();
-
-  if (Bound == "inf")
+  if (compileUpperBound(listOfContainer))
     {
-      mUpperBound = DBL_MAX;
-      mpUpperBound = &mUpperBound;
+      if (mpUpperObject != NULL)
+        {
+          addDirectDependency(mpUpperObject);
+        }
     }
-  else if (isNumber(Bound))
+  else
     {
-      mUpperBound = strToDouble(Bound.c_str(), NULL);
-      mpUpperBound = &mUpperBound;
-    }
-  else if ((mpUpperObject =
-              getObjectDataModel()->ObjectFromName(listOfContainer,
-                                                   Bound)) != NULL &&
-           mpUpperObject->isValueDbl())
-    {
-      mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();
-      addDirectDependency(mpUpperObject);
-    }
-
-  if (!mpUpperBound)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, Bound.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, mpParmUpperBound->c_str());
       return false;
     }
 
@@ -485,6 +434,67 @@ bool COptItem::checkUpperBound(const C_FLOAT64 & value) const
 
 const C_FLOAT64 * COptItem::getObjectValue() const
 {return mpObjectValue;}
+
+bool COptItem::compileLowerBound(const std::vector< CCopasiContainer * > & listOfContainer)
+{
+  const CCopasiDataModel * pDataModel = getObjectDataModel();
+
+  assert(pDataModel != NULL);
+
+  mpLowerObject = NULL;
+  mpLowerBound = NULL;
+
+  if (*mpParmLowerBound == "-inf")
+    {
+      mLowerBound = - DBL_MAX;
+      mpLowerBound = &mLowerBound;
+    }
+  else if (isNumber(*mpParmLowerBound))
+    {
+      mLowerBound = strToDouble(mpParmLowerBound->c_str(), NULL);
+      mpLowerBound = &mLowerBound;
+    }
+  else if ((mpLowerObject =
+              getObjectDataModel()->ObjectFromName(listOfContainer,
+                                                   *mpParmLowerBound)) != NULL &&
+           mpLowerObject->isValueDbl())
+    {
+      mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
+    }
+
+  return mpLowerBound != NULL;
+}
+
+bool COptItem::compileUpperBound(const std::vector< CCopasiContainer * > & listOfContainer)
+{
+  const CCopasiDataModel * pDataModel = getObjectDataModel();
+
+  assert(pDataModel != NULL);
+
+  mpUpperObject = NULL;
+  mpUpperBound = NULL;
+
+  if (*mpParmUpperBound == "inf")
+    {
+      mUpperBound = DBL_MAX;
+      mpUpperBound = &mUpperBound;
+    }
+  else if (isNumber(*mpParmUpperBound))
+    {
+      mUpperBound = strToDouble(mpParmUpperBound->c_str(), NULL);
+      mpUpperBound = &mUpperBound;
+    }
+  else if ((mpUpperObject =
+              getObjectDataModel()->ObjectFromName(listOfContainer,
+                                                   *mpParmUpperBound)) != NULL &&
+           mpUpperObject->isValueDbl())
+    {
+      mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();
+      addDirectDependency(mpUpperObject);
+    }
+
+  return mpUpperBound != NULL;
+}
 
 std::ostream &operator<<(std::ostream &os, const COptItem & o)
 {

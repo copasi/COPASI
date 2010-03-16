@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/10 20:13:10 $
+//   $Date: 2010/03/16 18:57:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,11 +46,12 @@
 #include <QtDebug>
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
-    : QSyntaxHighlighter(ew)
+    : QSyntaxHighlighter(ew),
+    COPASIObjectPattern("<[^<]*>")
 {
   // COPASI object format
   COPASIObjectFormat.setForeground(QColor(100, 0, 200));
-  COPASIObjectPattern = QRegExp("<[^<]*>");
+  //COPASIObjectPattern = QRegExp("<[^<]*>");
 }
 
 CQExpressionHighlighter::~CQExpressionHighlighter()
@@ -124,7 +125,9 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
     mOldPos(0),
     mObjectClasses(TransientExpression),
     mpCurrentObject(NULL),
-    mNewName("")
+    mNewName(""),
+    mMove(None),
+    mAction(NoAction)
 {
 #ifdef DEBUG_UI
   qDebug() << "in constructor CQEW";
@@ -173,7 +176,7 @@ void CQExpressionWidget::mousePressEvent(QMouseEvent * e)
   qDebug() << "Cursor position on mousePressEvent of tc = " << tc.position();
 #endif
 
-  eMove = CQExpressionWidget::Mouse;
+  mMove = CQExpressionWidget::Mouse;
 
   QTextEdit::mousePressEvent(e);
 
@@ -293,7 +296,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 #ifdef DEBUG_UI
       qDebug() << "SelectNextChar is just pressed";
 #endif
-      eAction = CQExpressionWidget::SelectToRight;
+      mAction = CQExpressionWidget::SelectToRight;
 
 #ifdef DEBUG_UI
       QTextCursor tc = textCursor();
@@ -315,7 +318,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 #ifdef DEBUG_UI
       qDebug() << "SelectPreviousChar is just pressed";
 #endif
-      eAction = CQExpressionWidget::SelectToLeft;
+      mAction = CQExpressionWidget::SelectToLeft;
     }
 
   else if (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right)
@@ -332,7 +335,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 #ifdef DEBUG_UI
           qDebug() << "L E F T is just typed";
 #endif
-          eMove = CQExpressionWidget::Left;
+          mMove = CQExpressionWidget::Left;
         }
 
       // in case of moving cursor one character to right
@@ -341,7 +344,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 #ifdef DEBUG_UI
           qDebug() << "R I G H T is just typed";
 #endif
-          eMove = CQExpressionWidget::Right;
+          mMove = CQExpressionWidget::Right;
         }
 
       setTextCursor(mCursor);
@@ -477,12 +480,12 @@ void CQExpressionWidget::slotSelectionChanged()
 #endif
     }
 
-  eMove = CQExpressionWidget::None;
+  mMove = CQExpressionWidget::None;
 #ifdef DEBUG_UI
   qDebug() << "Cursor position on end of slotSelectionChanged = " << mCursor.position();
 #endif
 
-  if (eMove == CQExpressionWidget::Mouse)
+  if (mMove == CQExpressionWidget::Mouse)
     mCursor.setPosition(mOldPos, QTextCursor::KeepAnchor);
 
   if (startPos == endPos) // no selection
@@ -560,7 +563,7 @@ void CQExpressionWidget::slotCursorPositionChanged()
 
 #endif
 
-  switch (eMove)
+  switch (mMove)
     {
       case CQExpressionWidget::Left:
 #ifdef DEBUG_UI
@@ -572,7 +575,7 @@ void CQExpressionWidget::slotCursorPositionChanged()
         else
           mCursor.setPosition(currentCursorPosition - 1);
 
-        eMove = CQExpressionWidget::None;
+        mMove = CQExpressionWidget::None;
         setTextCursor(mCursor);
         break;
       case CQExpressionWidget::Right:
@@ -585,7 +588,7 @@ void CQExpressionWidget::slotCursorPositionChanged()
         else
           mCursor.setPosition(currentCursorPosition + 1);
 
-        eMove = CQExpressionWidget::None;
+        mMove = CQExpressionWidget::None;
         setTextCursor(mCursor);
         break;
       case CQExpressionWidget::Mouse:
@@ -612,7 +615,7 @@ void CQExpressionWidget::slotCursorPositionChanged()
         break;
     }
 
-  switch (eAction)
+  switch (mAction)
     {
       case CQExpressionWidget::SelectToLeft:
 #ifdef DEBUG_UI
@@ -624,7 +627,7 @@ void CQExpressionWidget::slotCursorPositionChanged()
         else
           mCursor.setPosition(currentCursorPosition - 1, QTextCursor::KeepAnchor);
 
-        eAction = CQExpressionWidget::NoAction;
+        mAction = CQExpressionWidget::NoAction;
         setTextCursor(mCursor);
         break;
       case CQExpressionWidget::SelectToRight:
@@ -637,7 +640,7 @@ void CQExpressionWidget::slotCursorPositionChanged()
         else
           mCursor.setPosition(currentCursorPosition + 1, QTextCursor::KeepAnchor);
 
-        eAction = CQExpressionWidget::NoAction;
+        mAction = CQExpressionWidget::NoAction;
         setTextCursor(mCursor);
         break;
       default:

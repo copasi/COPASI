@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lib.pri,v $ 
-#   $Revision: 1.9 $ 
+#   $Revision: 1.10 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/01/28 03:56:28 $ 
+#   $Date: 2010/03/16 18:54:41 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -12,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2009/01/28 03:56:28 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2010/03/16 18:54:41 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -28,7 +33,11 @@ win32 {
   debug:   DESTDIR = ../tmp/debug
   release: DESTDIR = ../tmp/release
 } else {
-  DESTDIR = ../tmp
+  macx:debug {
+    DESTDIR = ../lib
+  } else {
+    DESTDIR = ../tmp
+  }
 }
    
 TARGET       = $$LIB
@@ -38,7 +47,10 @@ isEmpty(SRC_TARGET) {
 }
 
 !contains(BUILD_OS, WIN32) {
-  QMAKE_AR     = tar -czf
-  QMAKE_RANLIB = 
+  macx:debug {
+  } else {
+    QMAKE_AR     = tar -czf
+    QMAKE_RANLIB = 
+  }
 }
 
