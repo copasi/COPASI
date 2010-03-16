@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.5.30 (Debug) (http://www.copasi.org) at 2009-07-03 20:58:31 UTC -->
-<COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="1" versionMinor="0" versionDevel="30">
-  <Model key="Model_1" name="New Model" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic">
+<!-- generated with COPASI 4.5.31 (development) (http://www.copasi.org) at 2010-03-16 17:30:00 UTC -->
+<?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="1" versionMinor="0" versionDevel="31">
+  <Model key="Model_1" name="New Model" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:dcterms="http://purl.org/dc/terms/"
@@ -63,7 +64,7 @@
       </ModelValue>
     </ListOfModelValues>
     <ListOfEvents>
-      <Event key="Event_0" name="Event 1" order="1" delayAssignment="true">
+      <Event key="Event_0" name="Event 1" order="1">
         <TriggerExpression>
           &lt;CN=Root,Model=New Model,Reference=Time&gt; ge pi
         </TriggerExpression>
@@ -80,7 +81,7 @@
           </Assignment>
         </ListOfAssignments>
       </Event>
-      <Event key="Event_1" name="Event 2" order="2" delayAssignment="true">
+      <Event key="Event_1" name="Event 2" order="2">
         <TriggerExpression>
           &lt;CN=Root,Model=New Model,Reference=Time&gt; gt pi
         </TriggerExpression>
@@ -105,30 +106,30 @@
       <StateTemplateVariable objectReference="ModelValue_2"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 0 0 0
+      0 0 0 0 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_11" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+    <Task key="Task_15" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
       <Report reference="Report_8" target="" append="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
       </Problem>
       <Method name="Enhanced Newton" type="EnhancedNewton">
-        <Parameter name="Resolution" type="unsignedFloat" value="1e-009"/>
+        <Parameter name="Resolution" type="unsignedFloat" value="1e-09"/>
         <Parameter name="Derivation Factor" type="unsignedFloat" value="0.001"/>
         <Parameter name="Use Newton" type="bool" value="1"/>
         <Parameter name="Use Integration" type="bool" value="1"/>
         <Parameter name="Use Back Integration" type="bool" value="1"/>
         <Parameter name="Accept Negative Concentrations" type="bool" value="0"/>
         <Parameter name="Iteration Limit" type="unsignedInteger" value="50"/>
-        <Parameter name="Maximum duration for forward integration" type="unsignedFloat" value="1e+009"/>
-        <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1e+006"/>
+        <Parameter name="Maximum duration for forward integration" type="unsignedFloat" value="1e+09"/>
+        <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1e+06"/>
       </Method>
     </Task>
-    <Task key="Task_12" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_16" target="EventTest1.1.txt" append="0"/>
+    <Task key="Task_16" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
+      <Report reference="Report_6" target="EventTest1.1.txt" append="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.1"/>
@@ -138,12 +139,12 @@
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-012"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_17" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -154,25 +155,26 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_14" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+    <Task key="Task_18" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
       <Report reference="Report_9" target="" append="1"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_15" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+    <Task key="Task_19" name="Optimization" type="optimization" scheduled="false" updateModel="false">
       <Report reference="Report_10" target="" append="1"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
-        <Parameter name="ObjectiveFunction" type="key" value=""/>
+        <ParameterText name="ObjectiveExpression" type="expression">
+          
+        </ParameterText>
         <Parameter name="Maximize" type="bool" value="0"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
         </ParameterGroup>
-        <Parameter name="Steady-State" type="string" value=""/>
-        <Parameter name="Time-Course" type="string" value=""/>
+        <Parameter name="ObjectiveFunction" type="key" value=""/>
       </Problem>
       <Method name="Random Search" type="RandomSearch">
         <Parameter name="Number of Iterations" type="unsignedInteger" value="100000"/>
@@ -180,7 +182,7 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_16" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+    <Task key="Task_20" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
       <Report reference="Report_11" target="" append="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
@@ -200,16 +202,16 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_17" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+    <Task key="Task_21" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
       <Report reference="Report_12" target="" append="1"/>
       <Problem>
         <Parameter name="Steady-State" type="key" value="Task_11"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
-        <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-009"/>
+        <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+    <Task key="Task_12" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
       <Report reference="Report_13" target="" append="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
@@ -219,15 +221,14 @@
       <Method name="Wolf Method" type="WolfMethod">
         <Parameter name="Orthonormalization Interval" type="unsignedFloat" value="1"/>
         <Parameter name="Overall time" type="unsignedFloat" value="1000"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-012"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+    <Task key="Task_13" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
       <Report reference="Report_14" target="" append="1"/>
       <Problem>
-        <Parameter name="Deuflhard Tolerance" type="float" value="1e-006"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
         <Parameter name="Duration" type="float" value="1"/>
@@ -235,13 +236,10 @@
         <Parameter name="OutputStartTime" type="float" value="0"/>
       </Problem>
       <Method name="ILDM (LSODA,Deuflhard)" type="TimeScaleSeparation(ILDM,Deuflhard)">
-        <Parameter name="Integrate Reduced Model" type="bool" value="1"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-012"/>
-        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
       </Method>
     </Task>
-    <Task key="Task_20" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+    <Task key="Task_11" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
       <Report reference="Report_15" target="" append="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
@@ -258,10 +256,10 @@
       </Problem>
       <Method name="Sensitivities Method" type="SensitivitiesMethod">
         <Parameter name="Delta factor" type="unsignedFloat" value="0.001"/>
-        <Parameter name="Delta minimum" type="unsignedFloat" value="1e-012"/>
+        <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_22" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
@@ -397,7 +395,7 @@
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Event" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Event" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           
