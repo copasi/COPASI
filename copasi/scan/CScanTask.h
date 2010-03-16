@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:55:33 $
+//   $Author: shoops $
+//   $Date: 2010/03/16 14:02:53 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -35,102 +40,107 @@ class CScanMethod;
 class CReport;
 
 class CScanTask : public CCopasiTask
-  {
-    //Attributes
-  private:
+{
+  //Attributes
+private:
 
-    /**
-     * Pointer to the output stream for reporting
-     */
-    //std::ostream * mpOut;
+  /**
+   * Pointer to the output stream for reporting
+   */
+  //std::ostream * mpOut;
 
-    /**
-     * Unique Key
-     */
-    std::string mKey;
+  /**
+   * Unique Key
+   */
+  std::string mKey;
 
-    /**
-     * for progress bar
-     */
-    unsigned C_INT32 mProgress;
+  /**
+   * for progress bar
+   */
+  unsigned C_INT32 mProgress;
 
-    /**
-     * the subtask
-     */
-    CCopasiTask* mpSubtask;
+  /**
+   * Handle to process item
+   */
+  unsigned C_INT32 mhProgress;
 
-    bool mOutputInSubtask;
+  /**
+   * the subtask
+   */
+  CCopasiTask* mpSubtask;
 
-    bool mAdjustInitialConditions;
+  bool mOutputInSubtask;
 
-  public:
+  bool mAdjustInitialConditions;
 
-    /**
-     * default constructor
-     */
-    CScanTask(const CCopasiContainer * pParent = NULL);
+public:
 
-    /**
-     * Copy constructor
-     * @param const CScanTask & src
-     */
-    //-CScanTask(const CScanTask & src);
-    CScanTask(const CScanTask & src, const CCopasiContainer * pParent = NULL);
+  /**
+   * default constructor
+   */
+  CScanTask(const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Destructor
-     */
-    ~CScanTask();
+  /**
+   * Copy constructor
+   * @param const CScanTask & src
+   */
+  //-CScanTask(const CScanTask & src);
+  CScanTask(const CScanTask & src, const CCopasiContainer * pParent = NULL);
 
-    /**
-     * cleanup()
-     */
-    void cleanup();
+  /**
+   * Destructor
+   */
+  ~CScanTask();
 
-    /**
-     * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested
-     * tasks to share the same output device.
-     * @param const OutputFlag & of
-     * @param COutputHandler * pOutputHandler
-     * @param std::ostream * pOstream (default: NULL)
-     * @return bool success
-     */
-    virtual bool initialize(const OutputFlag & of,
-                            COutputHandler * pOutputHandler,
-                            std::ostream * pOstream);
+  /**
+   * cleanup()
+   */
+  void cleanup();
 
-    /**
-     * Process the task with or without initializing to the initial state.
-     * @param const bool & useInitialValues
-     * @return bool success
-     */
-    virtual bool process(const bool & useInitialValues);
+  /**
+   * Initialize the task. If an ostream is given this ostream is used
+   * instead of the target specified in the report. This allows nested
+   * tasks to share the same output device.
+   * @param const OutputFlag & of
+   * @param COutputHandler * pOutputHandler
+   * @param std::ostream * pOstream (default: NULL)
+   * @return bool success
+   */
+  virtual bool initialize(const OutputFlag & of,
+                          COutputHandler * pOutputHandler,
+                          std::ostream * pOstream);
 
-    /**
-     * Loads parameters for this solver with data coming from a
-     * CReadConfig object. (CReadConfig object reads an input stream)
-     * @param configbuffer reference to a CReadConfig object.
-     */
-    void load(CReadConfig & configBuffer);
+  /**
+   * Process the task with or without initializing to the initial state.
+   * @param const bool & useInitialValues
+   * @return bool success
+   */
+  virtual bool process(const bool & useInitialValues);
 
-    /**
-     * Do the subtask and the output
-     */
-    bool processCallback();
+  /**
+   * Loads parameters for this solver with data coming from a
+   * CReadConfig object. (CReadConfig object reads an input stream)
+   * @param configbuffer reference to a CReadConfig object.
+   */
+  void load(CReadConfig & configBuffer);
 
-    /**
-     * output separators
-     * if isLast==true this method has to decide if a spearator should
-     * be generated dependend on mOutputInSubtask.
-     */
-    bool outputSeparatorCallback(bool isLast = false);
+  /**
+   * Do the subtask and the output
+   */
+  bool processCallback();
 
-  protected:
+  /**
+   * output separators
+   * if isLast==true this method has to decide if a separator should
+   * be generated dependent on mOutputInSubtask.
+   */
+  bool outputSeparatorCallback(bool isLast = false);
 
-    /**
-     * Init the subtask
-     */
-    bool initSubtask(COutputHandler * pOutputHandler);
-  };
+protected:
+
+  /**
+   * Init the subtask
+   */
+  bool initSubtask(COutputHandler * pOutputHandler);
+};
 #endif // COPASI_CScanTask
