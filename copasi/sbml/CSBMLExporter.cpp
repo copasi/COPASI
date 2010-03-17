@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/17 12:31:28 $
+//   $Date: 2010/03/17 13:09:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -584,7 +584,14 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
 
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLCompartment));
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
-  pSBMLCompartment->setName(compartment.getObjectName().c_str());
+
+  // don't call setName on level 1 objects because this will also
+  // change the id
+  if (this->mpSBMLDocument->getLevel() > 1)
+    {
+      pSBMLCompartment->setName(compartment.getObjectName().c_str());
+    }
+
   pSBMLCompartment->setSpatialDimensions((unsigned int)compartment.getDimensionality());
   double value = compartment.getInitialValue();
 
@@ -763,7 +770,13 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
 
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLSpecies));
   this->mHandledSBMLObjects.insert(pSBMLSpecies);
-  pSBMLSpecies->setName(metab.getObjectName().c_str());
+
+  // don't call setName on level 1 objects because this will also
+  // change the id
+  if (this->mpSBMLDocument->getLevel() > 1)
+    {
+      pSBMLSpecies->setName(metab.getObjectName().c_str());
+    }
 
   //const Compartment* pSBMLCompartment = dynamic_cast<const Compartment*>(this->mCOPASI2SBMLMap[const_cast<CCompartment*>(metab.getCompartment())]);
   const Compartment* pSBMLCompartment = this->mpSBMLDocument->getModel()->getCompartment(metab.getCompartment()->getSBMLId());
@@ -917,7 +930,14 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
 
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pParameter));
   this->mHandledSBMLObjects.insert(pParameter);
-  pParameter->setName(modelValue.getObjectName());
+
+  // don't call setName on level 1 objects because this will also
+  // change the id
+  if (this->mpSBMLDocument->getLevel() > 1)
+    {
+      pParameter->setName(modelValue.getObjectName());
+    }
+
   double value = modelValue.getInitialValue();
 
   // if the value is NaN, unset the parameters value
@@ -1050,7 +1070,14 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLReaction));
   this->mHandledSBMLObjects.insert(pSBMLReaction);
-  pSBMLReaction->setName(reaction.getObjectName().c_str());
+
+  // don't call setName on level 1 objects because this will also
+  // change the id
+  if (this->mpSBMLDocument->getLevel() > 1)
+    {
+      pSBMLReaction->setName(reaction.getObjectName().c_str());
+    }
+
   pSBMLReaction->setReversible(reaction.isReversible());
   const CChemEq& chemicalEquation = reaction.getChemEq();
   /* Add all substrates */
@@ -3642,7 +3669,14 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
                   Parameter* pSBMLPara = pKLaw->createParameter();
 
                   pSBMLPara->setId(pPara->getObjectName().c_str());
-                  pSBMLPara->setName(pPara->getObjectName().c_str());
+
+                  // don't call setName on level 1 objects because this will also
+                  // change the id
+                  if (this->mpSBMLDocument->getLevel() > 1)
+                    {
+                      pSBMLPara->setName(pPara->getObjectName().c_str());
+                    }
+
                   double value = reaction.getParameterValue(pPara->getObjectName());
 
                   // if the value is NaN, leave the parameter value unset.
@@ -6105,7 +6139,14 @@ void CSBMLExporter::replace_local_parameters(ASTNode* pOrigNode, const CCopasiDa
                       std::string name = pParent->getObjectName() + "_" + pLocalParameter->getObjectName();
                       std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
                       Parameter* pParameter = this->mpSBMLDocument->getModel()->createParameter();
-                      pParameter->setName(name);
+
+                      // don't call setName on level 1 objects because this will also
+                      // change the id
+                      if (this->mpSBMLDocument->getLevel() > 1)
+                        {
+                          pParameter->setName(name);
+                        }
+
                       pParameter->setId(sbmlId);
                       this->mIdMap.insert(std::pair<std::string, SBase*>(sbmlId, pParameter));
                       pParameter->setValue(*pLocalParameter->getValue().pDOUBLE);
