@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/semantic-test-suite.pro,v $ 
-#   $Revision: 1.16 $ 
+#   $Revision: 1.17 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/07/28 13:51:19 $ 
+#   $Author: gauges $ 
+#   $Date: 2010/03/17 13:13:07 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.16 $ $Author: shoops $ $Date: 2009/07/28 13:51:19 $  
+# $Revision: 1.17 $ $Author: gauges $ $Date: 2010/03/17 13:13:07 $  
 ######################################################################
 
 TEMPLATE = app
@@ -24,12 +29,13 @@ TEMPLATE = app
 CONFIG -= qt
 
 include(../copasi/common.pri)
+include(../copasi/app.pri)
 
 DEPENDPATH += ../copasi/ 
 INCLUDEPATH += ..
 INCLUDEPATH += ../copasi
 
-COPASI_LIBS += COPASISE
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 contains(BUILD_OS, WIN32) {
   CONFIG += console
