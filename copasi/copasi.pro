@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.61 $
+#   $Revision: 1.62 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2010/03/16 18:54:41 $
+#   $Author: gauges $
+#   $Date: 2010/03/17 12:36:29 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.61 $ $Author: shoops $ $Date: 2010/03/16 18:54:41 $
+# $Revision: 1.62 $ $Author: gauges $ $Date: 2010/03/17 12:36:29 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -119,9 +119,12 @@ macx:debug {
 
   # unit tests
   !isEmpty(CPPUNIT_PATH) {
+    # the sbml unittests have to be compiled before the other unittests
+    # because the other unittests use some methods from the sbml unittests
+    # directory
+    SUBDIRS += sbml/unittests
     SUBDIRS += compareExpressions/unittests
     SUBDIRS += compareExpressions/stresstest
-    SUBDIRS += sbml/unittests
   }
 }
 
