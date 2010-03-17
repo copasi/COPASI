@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/27 09:56:11 $
+//   $Date: 2010/03/17 12:05:12 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -38,7 +43,6 @@ class Reaction;
 class Species;
 class Model;
 class Compartment;
-class SBMLDocument;
 class ConverterASTNode;
 class Parameter;
 class FunctionDefinition;
@@ -79,6 +83,7 @@ protected:
   unsigned C_INT32 mTotalSteps;
   std::map<Species*, Compartment*> mSubstanceOnlySpecies;
   std::set<std::string> mFastReactions;
+  std::set<std::string> mReactionsWithReplacedLocalParameters;
   std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
   std::vector<std::string> mIgnoredParameterUnits;
   std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> > mStoichiometricExpressionMap;
@@ -86,6 +91,11 @@ protected:
   std::set<const Parameter*> mPotentialAvogadroNumbers;
   bool mAvogadroCreated;
   bool mImportCOPASIMIRIAM;
+  // this map maps a delay expression to the global parameter id it has been
+  // replaced with
+  std::map<std::string, std::string> mDelayNodeMap;
+  std::set<std::string> mUsedSBMLIds;
+  bool mUsedSBMLIdsPopulated;
 
   /**
    * Creates and returns a COPASI CModel from the SBMLDocument given as argument.
@@ -195,7 +205,7 @@ protected:
    * Creates and returns a COPASI CReaction object from the given SBML
    * Reaction object.
    */
-  CReaction* createCReactionFromReaction(const Reaction* sbmlReaction,
+  CReaction* createCReactionFromReaction(Reaction* sbmlReaction,
                                          Model* sbmlModel,
                                          CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
                                          CFunctionDB* pTmpFunctionDB);
@@ -292,6 +302,51 @@ protected:
   void replaceCallNodeNames(ASTNode* pNode);
 
   /**
+   * This function replaces calls to the delay function in an ASTNode tree
+   * by a node that references a new global parameter which the function
+   * creates. The global parameter gets an expression which corresponds to the
+   * delay call.
+   * This is necessary because all knetic laws in COPASI are function calls and
+   * function definitions should not contain a call to delay.
+   */
+  void replace_delay_nodes(ConverterASTNode* pNode,
+                           Model* pModel,
+                           std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                           Reaction* pSBMLReaction,
+                           std::map<std::string, std::string>& localReplacementMap
+                          );
+
+  /**
+   * If we replace delay nodes within kineitc laws, we have to make sure that
+   * there is no reference to a local parameter within the replaced
+   * delay node because that would mean that we end up with a reference to a
+   * local parameter in the rule for the delay replacement which is not allowed
+   * in SBML.
+   * Therefore we have to convert all local parameters which occur within a
+   * delay call into global parameters.
+   * This method finds all local parameters that have to be converted to global
+   * parameters and it already creates the necessary global parameters.
+   * The localReplacementMap returns a mapping between the is of the original
+   * parameter and the id of the new parameter it will be replaced with.
+   * This map is used in a second step to actually replace the nodes in the
+   * expression.
+   */
+  void find_local_parameters_in_delay(ASTNode* pNode,
+                                      Reaction* pSBMLReaction,
+                                      Model* pModel,
+                                      std::map<std::string, std::string>& localReplacementMap,
+                                      const std::set<std::string>& localIds,
+                                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap
+                                     );
+
+  /**
+   * This method gets an ASTNode and a map between old node names and new node
+   * names. All AST_NAME nodes with an "old" name are replaced by a node with
+   * the "new" name.
+   */
+  void replace_name_nodes(ASTNode* pNode, const std::map<std::string, std::string>& replacementMap);
+
+  /**
    * The data for a CEvaluationNodeObject needs to have the common
    * name of the model it refers to as its data. Since this model is
    * only known via a pointer in the SBMLImporter at the time of
@@ -304,7 +359,7 @@ protected:
    * COPASI can not handle the delay function yet, so if it is used in some expression, we
    * have to abort reading the file.
    */
-  void isDelayFunctionUsed(ConverterASTNode* pNode);
+  bool isDelayFunctionUsed(ConverterASTNode* pNode);
 
   /**
    * In a preprocessing step each expression tree that is imported,
@@ -315,7 +370,7 @@ protected:
   void preprocessNode(ConverterASTNode* pNode,
                       Model* pSBMLModel,
                       std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
-                      bool isKineticLaw = false);
+                      Reaction* pSBMLReaction = NULL);
 
   CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
 
@@ -457,13 +512,6 @@ protected:
   static void normalizeSBMLUnit(Unit* pU);
 
   /**
-   * This method takes the id of a unit as it can appear in an SBML file, and
-   * returns a new UnitDefinition object for that id.
-   */
-  static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId,
-      const Model* pSBMLModel);
-
-  /**
    * Imports all initial assignments if there are any.
    */
   void importInitialAssignments(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlMap, const CModel* pCOPASIModel);
@@ -586,6 +634,13 @@ public:
    * given in cubic meters are identical.
    */
   static bool areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2);
+
+  /**
+   * This method takes the id of a unit as it can appear in an SBML file, and
+   * returns a new UnitDefinition object for that id.
+   */
+  static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId,
+      const Model* pSBMLModel);
 
   CProcessReport* getImportHandlerAddr();
 
