@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/13 07:54:07 $
+//   $Date: 2010/03/17 12:31:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,6 +79,7 @@ protected:
   bool mDocumentDisowned;
   bool mExportCOPASIMIRIAM;
   std::map<std::string, Parameter*> mParameterReplacementMap;
+  std::set<std::string> mSpatialSizeUnitsSpecies;
 
 public:
   /**
@@ -290,6 +291,18 @@ protected:
    * contain a number of messages that specify why it can't be exported.
    */
   static void isModelSBMLL2V3Compatible(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+
+  /**
+   * Go through all species in the model and check if the corresponding species
+   * in the SBML model has the spatialSizeUnits attribute set.
+   * This attribute is not supported in SBML L2V3 and above, so we have to get
+   * rid of this attribute when we export to a level equal to or higher than
+   * L2V3.
+   * If the attribute has the same value as the compartments units, we can just
+   * delete it without changing the model, otherwise we have to give a
+   * corresponding warning.
+   */
+  static void check_for_spatial_size_units(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
 
   /**
    * Checks wether the model contains a metabolite that is defined by an ODE
@@ -563,12 +576,6 @@ protected:
    * If index is greater than the number of children - 1, NULL is returned.
    */
   XMLNode* replaceChild(const XMLNode* pParent, const XMLNode* pNewChild, unsigned int index);
-
-  /**
-   * This method goes through the given SBML model and collects all ids and
-   * meta ids used in the model.
-   */
-  void collectIds(Model* pModel, std::map<std::string, const SBase*>& ids, std::map<std::string, const SBase*>& metaIds);
 
   /**
    * This method goes through the given datamodel and collects all SBML ids.
