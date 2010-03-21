@@ -37,6 +37,7 @@ elif [ "`basename $1`" != "`basename $1 .py`" ]; then
 fi
 
 if [ x$CommentStart != x"" ]; then
+
 $GAWK -- '
 BEGIN {
   CVSHeader = 0
@@ -51,10 +52,10 @@ BEGIN {
       if ($0 !~ ".*Begin CVS Header.*") {
         printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
         printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
-        printf "'$CommentStart'   $Revision: 1.12 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Revision: 1.13 $ '$CommentEnd'\n"
         printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
         printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
-        printf "'$CommentStart'   $Date: 2010/02/03 17:59:26 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Date: 2010/03/21 15:21:13 $ '$CommentEnd'\n"
         printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
         if ($0 !~ "^$") {
           printf "\n"
@@ -66,13 +67,11 @@ BEGIN {
         print $0
       }
     } else if (CVSHeader == 1) {
-      if ($0 ~ ".* End CVS Header.*") {
+      if ($0 ~ ".*End CVS Header.*") {
         CVSHeader = 2
       }
       print $0
-    } 
-
-    if (Copyright == 0 && CVSHeader == 2 && $0 !~ ".* End CVS Header.*") {
+    } else if (Copyright == 0 && CVSHeader == 2 && $0 !~ ".* End CVS Header.*") {
       if ($0 ~ "^$") {
         if (EmptyLine == 0) {
           EmptyLine = 1
