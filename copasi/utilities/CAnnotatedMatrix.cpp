@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:56:44 $
+//   $Author: pwilly $
+//   $Date: 2010/03/25 14:12:44 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -267,6 +272,13 @@ const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
   CCopasiAbstractArray::index_type index;
   index.push_back(u);
   index.push_back(v);
+  return addElementReference(index);
+}
+
+const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u) const
+{
+  CCopasiAbstractArray::index_type index;
+  index.push_back(u);
   return addElementReference(index);
 }
 

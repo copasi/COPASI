@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:56:43 $
+//   $Author: pwilly $
+//   $Date: 2010/03/25 14:12:44 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -293,7 +298,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
       // multi cell selection
 
       //if "All" is selected for both rows and columns, and an object with numerical value
-      //is not requested,, return the array annotation as such
+      //is not requested, return the array annotation as such
       if (pDialog->mpCBRow->currentItem() == 0 && pDialog->mpCBColumn->currentItem() == 0
           && !value)
         {
@@ -319,24 +324,35 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
           maxRows = pArrayAnnotation->size()[0];
         }
 
-      if (pDialog->mpCBColumn->currentItem())
+      if (index.size() == 2)
         {
-          // not ALL option
-          minCols = pDialog->mpCBColumn->currentItem() - 1;
-          maxCols = minCols + 1;
-        }
-      else
-        {
-          // ALL option
-          minCols = 0;
-          maxCols = pArrayAnnotation->size()[1];
+          if (pDialog->mpCBColumn->currentItem())
+            {
+              // not ALL option
+              minCols = pDialog->mpCBColumn->currentItem() - 1;
+              maxCols = minCols + 1;
+            }
+          else
+            {
+              // ALL option
+              minCols = 0;
+              maxCols = pArrayAnnotation->size()[1];
+            }
+
+          for (i = minRows; i < maxRows; ++i)
+            {
+              for (j = minCols; j < maxCols; ++j)
+                {
+                  returnVector.push_back(pArrayAnnotation->addElementReference(i, j));
+                }
+            }
         }
 
-      for (i = minRows; i < maxRows; ++i)
+      if (index.size() == 1)
         {
-          for (j = minCols; j < maxCols; ++j)
+          for (i = minRows; i < maxRows; ++i)
             {
-              returnVector.push_back(pArrayAnnotation->addElementReference(i, j));
+              returnVector.push_back(pArrayAnnotation->addElementReference(i));
             }
         }
 

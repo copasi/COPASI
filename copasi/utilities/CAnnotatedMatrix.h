@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:53 $
+//   $Author: pwilly $
+//   $Date: 2010/03/25 14:12:44 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -198,6 +203,11 @@ public:
   const CCopasiObject* addElementReference(C_INT32 u, C_INT32 v) const;
 
   /**
+   * a convenience function for 1-dimensional arrays.
+   */
+  const CCopasiObject* addElementReference(C_INT32 u) const;
+
+  /**
    * Appends all element references to the set of objects
    * @param std::set< const CCopasiObject * > & objects
    */
@@ -215,7 +225,7 @@ public:
    */
   bool isEmpty();
 
-private:
+//private:
   /**
    *  resize the internal vectors according to the dimensionality of the array
    */
