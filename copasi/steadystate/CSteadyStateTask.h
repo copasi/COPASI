@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2010/02/01 19:57:02 $
+//   $Date: 2010/03/25 13:58:41 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -27,6 +32,8 @@
 
 #ifndef COPASI_CSteadyStateTask
 #define COPASI_CSteadyStateTask
+
+#define DEBUG_UI
 
 #include <iostream>
 
@@ -75,9 +82,22 @@ private:
   CEigen mEigenValues;
 
   /**
-   * The Eigenvalues of the Jacobian the reduced system
+   * The Eigenvalues of the Jacobian of the reduced system
    */
   CEigen mEigenValuesX;
+
+  /**
+   * The Eigenvalues matrix of the Jacobian of the system
+   */
+  CMatrix<C_FLOAT64> mEigenvaluesMatrix;
+
+  /**
+   * The Eigenvalues matrix of the Jacobian of the reduced system
+   */
+  CMatrix<C_FLOAT64> mEigenvaluesXMatrix;
+
+  CArrayAnnotation * mpEigenvaluesJacobianAnn;
+  CArrayAnnotation * mpEigenvaluesJacobianXAnn;
 
   /**
    * The result of the steady state analysis.
@@ -183,16 +203,23 @@ public:
   const CArrayAnnotation * getJacobianXAnnotated() const;
 
   /**
-   * Retrieves a the eigen values of the steady state.
+   * Retrieves a the eigenvalues of the steady state.
    * @return const CEigen & eigenValues
    */
   const CEigen & getEigenValues() const;
 
   /**
-   * Retrieves a the eigen values of the steady state.
+   * Retrieves a the eigenvalues of the steady state.
    * @return const CEigen & eigenValues
    */
   const CEigen & getEigenValuesReduced() const;
+
+  /**
+   * Converts the eigenvalues vector to matrix
+   * @param CEigen &eigenvalues
+   * @return CMatrix<C_FLOAT64> &matrix
+   */
+//  CMatrix<C_FLOAT64> & createEigenvalueMatrix(CEigen &eigenvalues);
 
   const CSteadyStateMethod::ReturnCode & getResult() const {return mResult;}
 
