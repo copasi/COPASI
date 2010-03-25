@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2010/03/25 13:58:41 $
+//   $Date: 2010/03/25 14:27:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,8 +32,6 @@
 
 #ifndef COPASI_CSteadyStateTask
 #define COPASI_CSteadyStateTask
-
-#define DEBUG_UI
 
 #include <iostream>
 

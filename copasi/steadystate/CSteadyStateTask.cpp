@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2010/03/25 13:58:41 $
+//   $Date: 2010/03/25 14:27:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -372,10 +372,11 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 
   C_INT32 size = vectorEigen_R.size() + vectorEigen_I.size();
 
+#ifdef DEBUG_UI
   std::cout << "vectorEigen_R.size() = " << vectorEigen_R.size() << " + vectorEigen_I.size() = " << vectorEigen_I.size() << " == " << size << std::endl;
-  assert(vectorEigen_R.size() == vectorEigen_I.size());
-
   std::cout << "size = " << mEigenvaluesXMatrix.size() << std::endl;
+#endif
+  assert(vectorEigen_R.size() == vectorEigen_I.size());
 
   pTo = mEigenvaluesMatrix.array();
 
@@ -395,10 +396,12 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 
   C_INT32 sizeX = vectorEigenX_R.size() + vectorEigenX_I.size();
 
+#ifdef DEBUG_UI
   std::cout << "vectorEigenX_R.size() = " << vectorEigenX_R.size() << " + vectorEigenX_I.size() = " << vectorEigenX_I.size() << " == " << sizeX << std::endl;
-  assert(vectorEigenX_R.size() == vectorEigenX_I.size());
-
   std::cout << "size = " << mEigenvaluesXMatrix.size() << std::endl;
+#endif
+
+  assert(vectorEigenX_R.size() == vectorEigenX_I.size());
 
   pTo = mEigenvaluesXMatrix.array();
 
