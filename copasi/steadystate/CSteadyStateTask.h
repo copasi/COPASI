@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.35.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/02/01 19:57:02 $
+//   $Author: shoops $
+//   $Date: 2010/03/26 17:20:39 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -75,9 +80,22 @@ private:
   CEigen mEigenValues;
 
   /**
-   * The Eigenvalues of the Jacobian the reduced system
+   * The Eigenvalues of the Jacobian of the reduced system
    */
   CEigen mEigenValuesX;
+
+  /**
+   * The Eigenvalues matrix of the Jacobian of the system
+   */
+  CMatrix<C_FLOAT64> mEigenvaluesMatrix;
+
+  /**
+   * The Eigenvalues matrix of the Jacobian of the reduced system
+   */
+  CMatrix<C_FLOAT64> mEigenvaluesXMatrix;
+
+  CArrayAnnotation * mpEigenvaluesJacobianAnn;
+  CArrayAnnotation * mpEigenvaluesJacobianXAnn;
 
   /**
    * The result of the steady state analysis.

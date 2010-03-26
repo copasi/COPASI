@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMatrixDialog.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2010/03/26 17:20:40 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -35,8 +40,16 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
   if (!single)
     mpCBRow->insertItem("ALL");
 
-  for (i = 0; i < nRows; i++)
-    mpCBRow->insertItem(FROM_UTF8(tmp->getAnnotationsString(0, true)[i]));
+  if (FROM_UTF8(tmp->getObjectName()).contains("Eigenvalues"))
+    {
+      for (i = 0; i < nRows; i++)
+        mpCBRow->insertItem(QString::number(i + 1));
+    }
+  else
+    {
+      for (i = 0; i < nRows; i++)
+        mpCBRow->insertItem(FROM_UTF8(tmp->getAnnotationsString(0, true)[i]));
+    }
 
   mpLabelColumn->hide();
   mpCBColumn->hide();
@@ -55,8 +68,16 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
       if (!single)
         mpCBColumn->insertItem("ALL");
 
-      for (i = 0; i < nCols; i++)
-        mpCBColumn->insertItem(FROM_UTF8(tmp->getAnnotationsString(1, true)[i]));
+      if (FROM_UTF8(tmp->getObjectName()).contains("Eigenvalues"))
+        {
+          mpCBColumn->insertItem("Real part");
+          mpCBColumn->insertItem("Imaginary part");
+        }
+      else
+        {
+          for (i = 0; i < nCols; i++)
+            mpCBColumn->insertItem(FROM_UTF8(tmp->getAnnotationsString(1, true)[i]));
+        }
 
       if (tmp->dimensionality() == 3)
         {

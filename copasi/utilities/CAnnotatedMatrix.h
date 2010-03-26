@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:53 $
+//   $Date: 2010/03/26 17:20:40 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -196,6 +201,11 @@ public:
    * a convenience function for 2-dimensional arrays.
    */
   const CCopasiObject* addElementReference(C_INT32 u, C_INT32 v) const;
+
+  /**
+   * a convenience function for 1-dimensional arrays.
+   */
+  const CCopasiObject* addElementReference(C_INT32 u) const;
 
   /**
    * Appends all element references to the set of objects

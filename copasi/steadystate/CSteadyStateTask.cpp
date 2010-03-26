@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.81.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/11 19:42:49 $
+//   $Date: 2010/03/26 17:20:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,8 @@
 #include "model/CMetabNameInterface.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
+
+#include <sstream>
 
 #define XXXX_Reporting
 
@@ -106,6 +108,21 @@ void CSteadyStateTask::initObjects()
   mpJacobianXAnn->setDescription("");
   mpJacobianXAnn->setDimensionDescription(0, "Independent variables of the system");
   mpJacobianXAnn->setDimensionDescription(1, "Independent variables of the system");
+
+  mpEigenvaluesJacobianAnn = new CArrayAnnotation("Eigenvalues of Jacobian", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mEigenvaluesMatrix), true);
+  mpEigenvaluesJacobianAnn->setMode(CArrayAnnotation::VECTOR);
+  mpEigenvaluesJacobianAnn->setDescription("");
+  mpEigenvaluesJacobianAnn->setDimensionDescription(0, "n-th value");
+  mpEigenvaluesJacobianAnn->setDimensionDescription(1, "Real/Imaginary part");
+
+  mpEigenvaluesJacobianXAnn = new CArrayAnnotation("Eigenvalues of reduced system Jacobian", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mEigenvaluesXMatrix), true);
+//  mpEigenvaluesJacobianXAnn->setMode(CArrayAnnotation::VECTOR);
+  mpEigenvaluesJacobianXAnn->setMode(CArrayAnnotation::OBJECTS);
+  mpEigenvaluesJacobianXAnn->setDescription("");
+  mpEigenvaluesJacobianXAnn->setDimensionDescription(0, "n-th value");
+  mpEigenvaluesJacobianXAnn->setDimensionDescription(1, "Real/Imaginary part");
 }
 
 void CSteadyStateTask::print(std::ostream * ostream) const {(*ostream) << (*this);}
@@ -149,6 +166,8 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
 
 bool CSteadyStateTask::updateMatrices()
 {
+  if (!mpMethod->isValidProblem(mpProblem)) return false;
+
   if (!mpProblem->getModel()) return false;
 
   const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
@@ -159,7 +178,7 @@ bool CSteadyStateTask::updateMatrices()
   unsigned C_INT32 size = sizeX + stateTemplate.getNumDependent();
   mJacobian.resize(size, size);
 
-  //jacobian annotations
+  // Jacobian Annotations
 
   mpJacobianAnn->resize();
   CModelEntity *const* ppEntities = stateTemplate.getEntities();
@@ -194,6 +213,10 @@ bool CSteadyStateTask::updateMatrices()
       mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
       mpJacobianXAnn->setAnnotationCN(1 , i, (*ppEntities)->getCN());
     }
+
+  // initial dimension of Eigenvalues of Jacobian
+  mEigenvaluesMatrix.resize(size, 2);
+  mEigenvaluesXMatrix.resize(sizeX, 2);
 
   return true;
 }
@@ -338,6 +361,58 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 
   // Reset the time.
   mpSteadyState->setTime(InitialTime);
+
+  C_FLOAT64 * pTo;
+  C_INT32 i;
+
+  // construct Eigenvalues of Jacobian
+  CVector< C_FLOAT64 > vectorEigen_R = mEigenValues.getR();
+  CVector< C_FLOAT64 > vectorEigen_I = mEigenValues.getI();
+
+  C_INT32 size = vectorEigen_R.size() + vectorEigen_I.size();
+
+#ifdef DEBUG_UI
+  std::cout << "vectorEigen_R.size() = " << vectorEigen_R.size() << " + vectorEigen_I.size() = " << vectorEigen_I.size() << " == " << size << std::endl;
+  std::cout << "size = " << mEigenvaluesXMatrix.size() << std::endl;
+#endif
+  assert(vectorEigen_R.size() == vectorEigen_I.size());
+
+  pTo = mEigenvaluesMatrix.array();
+
+  for (i = 0; i < vectorEigen_R.size(); ++i)
+    {
+      *pTo = vectorEigen_R[i]; ++pTo;
+      *pTo = vectorEigen_I[i]; ++pTo;
+    }
+
+#ifdef DEBUG_UI
+  std::cout << mEigenvaluesMatrix << std::endl;
+#endif
+
+  // construct Eigenvalues of Jacobian of reduced system
+  CVector< C_FLOAT64 > vectorEigenX_R = mEigenValuesX.getR();
+  CVector< C_FLOAT64 > vectorEigenX_I = mEigenValuesX.getI();
+
+  C_INT32 sizeX = vectorEigenX_R.size() + vectorEigenX_I.size();
+
+#ifdef DEBUG_UI
+  std::cout << "vectorEigenX_R.size() = " << vectorEigenX_R.size() << " + vectorEigenX_I.size() = " << vectorEigenX_I.size() << " == " << sizeX << std::endl;
+  std::cout << "size = " << mEigenvaluesXMatrix.size() << std::endl;
+#endif
+
+  assert(vectorEigenX_R.size() == vectorEigenX_I.size());
+
+  pTo = mEigenvaluesXMatrix.array();
+
+  for (i = 0; i < vectorEigenX_R.size(); ++i)
+    {
+      *pTo = vectorEigenX_R[i]; ++pTo;
+      *pTo = vectorEigenX_I[i]; ++pTo;
+    }
+
+#ifdef DEBUG_UI
+  std::cout << mEigenvaluesXMatrix << std::endl;
+#endif
 
   output(COutputInterface::AFTER);
 
