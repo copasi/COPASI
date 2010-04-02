@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: pwilly $
+//   $Date: 2010/04/02 15:47:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,23 +23,13 @@
 #ifndef CQSENSRESULT_H
 #define CQSENSRESULT_H
 
-//#include <qvbox.h>
-#include "UI/copasiWidget.h"
+#include "ui_CQSensResultWidget.h"
+
 #include "CQArrayAnnotationsWidget.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "mathematics.h"
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <QLabel>
 
-class Q3GridLayout;
-//class QLineEdit;
-class QLabel;
-//class QTable;
-
-class QTabWidget;
-
-class CQSensResultWidget : public CopasiWidget
+class CQSensResultWidget : public CopasiWidget, public Ui::CQSensResultWidget
 {
   Q_OBJECT
 
@@ -48,25 +43,21 @@ public:
   virtual bool leave();
 
 protected slots:
+  virtual void languageChange();
+
+  void saveToFile();
 
 protected:
   virtual bool enterProtected();
   //bool loadFromBackend();
   void clearArrays();
 
-  Q3GridLayout* mWidgetLayout;
-
-  QLabel* mLabelTitle;
-
-  QTabWidget* mpTab;
-
-  CQArrayAnnotationsWidget* mArrayWidget;
-  CQArrayAnnotationsWidget* mArrayWidgetScaled;
-  CQArrayAnnotationsWidget* mArrayWidgetCollapsed;
-
   const CArrayAnnotation * mpResult;
   const CArrayAnnotation * mpScaledResult;
   const CArrayAnnotation * mpCollapsedResult;
+
+private:
+  void init();
 };
 
 #endif
