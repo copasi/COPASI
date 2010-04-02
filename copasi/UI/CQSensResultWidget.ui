@@ -13,6 +13,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <class>CQSensResultWidget</class>
  <widget class="CopasiWidget" name="CQSensResultWidget">
   <property name="geometry">
    <rect>
