@@ -11,6 +11,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include "CQTSSAResultSubWidget.h"
+
 #include <qvariant.h>
 #include <qmessagebox.h>
 #include <q3filedialog.h>
