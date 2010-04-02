@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.h,v $
- $Revision: 1.6 $
+ $Revision: 1.7 $
  $Name:  $
- $Author: shoops $
- $Date: 2009/07/16 15:47:26 $
+ $Author: pwilly $
+ $Date: 2010/04/02 16:23:11 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,18 +23,11 @@
 #ifndef CQLYAPRESULT_H
 #define CQLYAPRESULT_H
 
-#include "UI/copasiWidget.h"
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <QLabel>
-//#include "CopasiDataModel/CCopasiDataModel.h"
+#include "ui_CQLyapResultWidget.h"
 
-class Q3GridLayout;
-class QLineEdit;
-class QLabel;
-class Q3Table;
+#include "lyap/CLyapTask.h"
 
-class CQLyapResultWidget : public CopasiWidget
+class CQLyapResultWidget : public CopasiWidget, public Ui::CQLyapResultWidget
 {
   Q_OBJECT
 
@@ -41,21 +39,18 @@ public:
   virtual bool leave();
 
 protected slots:
+  virtual void languageChange();
+
+  void saveToFile();
 
 protected:
   virtual bool enterProtected();
   bool loadFromBackend();
 
-  Q3GridLayout* mWidgetLayout;
+private:
+  void init();
 
-  QLabel* mLabelExponents;
-  QLabel* mLabelSum;
-  QLabel* mLabelDivergence;
-  QLabel* mLabelComment;
-
-  Q3Table* mTableExponents;
-  QLineEdit* mLineEditSum;
-  QLineEdit* mLineEditDivergence;
+  CLyapTask * mpTask;
 };
 
 #endif

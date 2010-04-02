@@ -1,10 +1,15 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-$Revision: 1.7 $
+$Revision: 1.8 $
 $Name:  $
-$Author: shoops $
-$Date: 2009/07/16 15:47:26 $
+$Author: pwilly $
+$Date: 2010/04/02 16:23:11 $
 End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -14,7 +19,7 @@ End CVS Header */
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
+/*
 //#include <qpushbutton.h>
 #include <qlayout.h>
 #include <qlineedit.h>
@@ -22,20 +27,22 @@ End CVS Header */
 #include <q3table.h>
 //Added by qt3to4:
 #include <Q3GridLayout>
-
+*/
 #include "copasi.h"
 
 #include "CQLyapResultWidget.h"
-//#include "StateSubwidget.h"
-//#include "CTimeSeriesTable.h"
+
+#include <QMessageBox>
+
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "model/CModel.h"
-#include "lyap/CLyapTask.h"
 #include "lyap/CLyapProblem.h"
+
+#include "UI/CopasiFileDialog.h"
 
 /*
  *  Constructs a CQLyapResultWidget which is a child of 'parent', with the
@@ -44,63 +51,9 @@ End CVS Header */
 CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl)
 {
-  if (!name)
-    setName("CQLyapResultWidget");
+  setupUi(this);
 
-  setCaption("CQLyapResultWidget");
-
-  mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "LyapResultWidgetLayout");
-
-  // **********  Exponents **************
-  mLabelExponents = new QLabel(this, "ExponentsLabel");
-  mLabelExponents->setText(trUtf8("Lyapunov Exponents"));
-  mLabelExponents->setAlignment(int(Qt::AlignVCenter
-                                    | Qt::AlignRight));
-  mWidgetLayout->addWidget(mLabelExponents, 4, 0);
-
-  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  mWidgetLayout->addItem(spacer, 5, 0);
-
-  mTableExponents = new Q3Table(this, "mTableExponents");
-  mWidgetLayout->addMultiCellWidget(mTableExponents, 4, 5, 1, 2);
-  mTableExponents->setNumRows(0);
-  mTableExponents->setNumCols(1);
-  Q3Header *colHeader = mTableExponents->horizontalHeader();
-  colHeader->setLabel(0, tr("Exponent"));
-  mTableExponents->setColumnStretchable(0, true);
-  mTableExponents->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-  // ********** Sum *********************
-  mLabelSum = new QLabel(this, "SumLabel");
-  mLabelSum->setText(trUtf8("Sum of Lyapunov Exponents"));
-  mLabelSum->setAlignment(int(Qt::AlignVCenter
-                              | Qt::AlignRight));
-  mWidgetLayout->addWidget(mLabelSum, 6, 0);
-
-  mLineEditSum = new QLineEdit(this, "mLineEditSum");
-  mLineEditSum->setReadOnly(true);
-  mWidgetLayout->addWidget(mLineEditSum, 6, 1);
-
-  // ************* Divergence **************
-  mLabelDivergence = new QLabel(this, "mLabelDivergence");
-  mLabelDivergence->setText(trUtf8("Divergence"));
-  mLabelDivergence->setAlignment(int(Qt::AlignVCenter
-                                     | Qt::AlignRight));
-  mWidgetLayout->addWidget(mLabelDivergence, 7, 0);
-
-  mLineEditDivergence = new QLineEdit(this, "mLineEditDivergence");
-  mLineEditDivergence->setReadOnly(true);
-  mWidgetLayout->addWidget(mLineEditDivergence, 7, 1);
-
-  // ************* comment ******************
-  mLabelComment = new QLabel(this, "mLabelComment");
-  mLabelComment->setAlignment(int(Qt::WordBreak));
-  mLabelComment->setText("");
-
-  mWidgetLayout->addWidget(mLabelComment, 8, 1);
-
-  spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  mWidgetLayout->addItem(spacer, 9, 0);
+  init();
 }
 
 /*
@@ -108,6 +61,22 @@ CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, Qt::WF
  */
 CQLyapResultWidget::~CQLyapResultWidget()
 {}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void CQLyapResultWidget::languageChange()
+{
+  retranslateUi(this);
+}
+
+void CQLyapResultWidget::init()
+{
+  /*
+    mSaveButton->setEnabled(false);
+    mSaveButton->hide();
+  */}
 
 /* This function loads the optimization result widget when its name is
   clicked in the tree   */
@@ -117,18 +86,18 @@ bool CQLyapResultWidget::loadFromBackend()
   //std::ostringstream os;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CLyapTask * pTask = dynamic_cast<CLyapTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Lyapunov Exponents"]);
+  mpTask = dynamic_cast<CLyapTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Lyapunov Exponents"]);
 
-  if (!pTask) return false;
+  if (!mpTask) return false;
 
-  CLyapProblem * pProblem = dynamic_cast< CLyapProblem * >(pTask->getProblem());
+  CLyapProblem * pProblem = dynamic_cast< CLyapProblem * >(mpTask->getProblem());
 
   if (!pProblem) return false;
 
-  if (!pTask->resultAvailable())
+  if (!mpTask->resultAvailable())
     {
       mTableExponents->setEnabled(false);
-      mTableExponents->setNumRows(0);
+      mTableExponents->setRowCount(0);
       mLineEditSum->setEnabled(false);
       mLineEditSum->setText("");
       mLineEditDivergence->setEnabled(false);
@@ -143,17 +112,17 @@ bool CQLyapResultWidget::loadFromBackend()
 
   unsigned C_INT32 i, imax = pProblem->getExponentNumber();
 
-  mTableExponents->setNumRows(imax);
+  mTableExponents->setRowCount(imax);
 
   for (i = 0; i < imax; ++i)
-    mTableExponents->setText(i, 0, QString::number(pTask->exponents()[i]));
+    mTableExponents->item(i, 0)->setText(QString::number(mpTask->exponents()[i]));
 
-  mLineEditSum->setText(QString::number(pTask->sumOfExponents()));
+  mLineEditSum->setText(QString::number(mpTask->sumOfExponents()));
 
-  if (pTask->resultHasDivergence())
+  if (mpTask->resultHasDivergence())
     {
       mLineEditDivergence->setEnabled(true);
-      mLineEditDivergence->setText(QString::number(pTask->averageDivergence()));
+      mLineEditDivergence->setText(QString::number(mpTask->averageDivergence()));
     }
   else
     {
@@ -164,12 +133,12 @@ bool CQLyapResultWidget::loadFromBackend()
   //comment
   mLabelComment->setText("");
 
-  if (pTask->resultHasDivergence()
-      && (pTask->modelVariablesInResult() == pTask->numberOfExponentsCalculated()))
+  if (mpTask->resultHasDivergence()
+      && (mpTask->modelVariablesInResult() == mpTask->numberOfExponentsCalculated()))
     {
-      if ((pTask->sumOfExponents() < 0.0) && (pTask->averageDivergence() < 0.0))
+      if ((mpTask->sumOfExponents() < 0.0) && (mpTask->averageDivergence() < 0.0))
         {
-          C_FLOAT64 factor = pTask->averageDivergence() / pTask->sumOfExponents();
+          C_FLOAT64 factor = mpTask->averageDivergence() / mpTask->sumOfExponents();
 
           if (factor > 1.01)
             mLabelComment->setText("Warning: Divergence differs from sum of exponents. This may indicate that the strongly negative exponents are calculated inaccuratly.");
@@ -196,4 +165,34 @@ bool CQLyapResultWidget::leave()
 bool CQLyapResultWidget::enterProtected()
 {
   return loadFromBackend();
+}
+
+void CQLyapResultWidget::saveToFile()
+{
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
+
+      if (fileName.isEmpty()) return;
+
+      // Checks whether the file exists
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+
+  if (file.fail())
+    return;
+
+  if (mpTask != NULL)
+    mpTask->printResult(&file);
+
+  return;
 }
