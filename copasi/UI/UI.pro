@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.230 $
+#   $Revision: 1.231 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2010/03/16 18:57:43 $
+#   $Author: pwilly $
+#   $Date: 2010/04/02 16:04:12 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.230 $ $Author: shoops $ $Date: 2010/03/16 18:57:43 $
+# $Revision: 1.231 $ $Author: pwilly $ $Date: 2010/04/02 16:04:12 $
 ######################################################################
 
 LIB = UI
@@ -30,6 +30,7 @@ LIB = UI
 
 ### Headers that belong to widgets generated from uic4 forms
 HEADERS	+= \
+  CMCAResultSubwidget.h \
   CQCompartment.h \
   CQCompartmentsWidget.h \
   CQDifferentialEquations.h \
@@ -41,10 +42,12 @@ HEADERS	+= \
   CQExpressionMmlStackedWidget.h \
   CQExpressionMmlWidget.h \
   CQFittingItemWidget.h \
+  CQFittingResult.h \
   CQFittingWidget.h \
   CQFunctionsWidget.h \
   CQGlobalQuantitiesWidget.h \
   CQLyapWidget.h \
+  CQLyapResultWidget.h \
   CQMCAWidget.h \
   CQMergingData.h \
   CQModelValue.h \
@@ -58,10 +61,12 @@ HEADERS	+= \
   CQReactionsWidget.h \
   CQReportDefinition.h \
   CQReportsWidget.h \
+  CQSensResultWidget.h \
   CQSpeciesDetail.h \
   CQSpeciesWidget.h \
   CQTrajectoryWidget.h \
   CQTSSAWidget.h \
+  CQTSSAResultSubWidget.h \
   CScanWidgetRandom.h \
   CScanWidgetRepeat.h \
   CScanWidgetScan.h \
@@ -70,6 +75,7 @@ HEADERS	+= \
   SliderSettingsDialog.h \
   StateSubwidget.h \
   SteadyStateWidget.h \
+  TimeSeriesSubwidget.h \
   CQExpandModelData.h \
 #
 ### other headers (not belonging to generated widgets)
@@ -105,7 +111,6 @@ HEADERS	+= \
   CQGlobalQuantityDM.h \
   CQIcons.h \
   CQLayoutsWidget.h \
-  CQLyapResultWidget.h \
   CQMathMatrixWidget.h \
   CQMessageBox.h \
   CQMmlScrollView.h \
@@ -114,7 +119,6 @@ HEADERS	+= \
   CQReportDM.h \
   CQReportListItem.h \
   CQSBMLFileDialog.h \
-  CQSensResultWidget.h \
   CQSortFilterProxyModel.h \
   CQSpecieDM.h \
   CQSpinBoxDelegate.h \
@@ -150,6 +154,7 @@ HEADERS	+= \
 
 ### Source files that belong to widgets generated from uic4 forms
 SOURCES	+= \
+  CMCAResultSubwidget.cpp \
   CQCompartment.cpp \
   CQCompartmentsWidget.cpp \
   CQDifferentialEquations.cpp \
@@ -161,10 +166,12 @@ SOURCES	+= \
   CQExpressionMmlStackedWidget.cpp \
   CQExpressionMmlWidget.cpp \
   CQFittingItemWidget.cpp \
+  CQFittingResult.cpp \
   CQFittingWidget.cpp \
   CQFunctionsWidget.cpp \
   CQGlobalQuantitiesWidget.cpp \
   CQLyapWidget.cpp \
+  CQLyapResultWidget.cpp \
   CQMCAWidget.cpp \
   CQMergingData.cpp \
   CQModelValue.cpp \
@@ -178,10 +185,12 @@ SOURCES	+= \
   CQReactionsWidget.cpp \
   CQReportDefinition.cpp \
   CQReportsWidget.cpp \
+  CQSensResultWidget.cpp \
   CQSpeciesDetail.cpp \
   CQSpeciesWidget.cpp \
   CQTrajectoryWidget.cpp \
   CQTSSAWidget.cpp \
+  CQTSSAResultSubWidget.cpp \
   CScanWidgetRandom.cpp \
   CScanWidgetRepeat.cpp \
   CScanWidgetScan.cpp \
@@ -190,6 +199,7 @@ SOURCES	+= \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
   SteadyStateWidget.cpp \
+  TimeSeriesSubwidget.cpp \
   CQExpandModelData.cpp \
 #
 ### other sources (not belonging to generated widgets)
@@ -224,7 +234,6 @@ SOURCES	+= \
   CQGlobalQuantityDM.cpp \
   CQIcons.cpp \
   CQLayoutsWidget.cpp \
-  CQLyapResultWidget.cpp \
   CQMathMatrixWidget.cpp \
   CQMessageBox.cpp \
   CQMmlScrollView.cpp \
@@ -233,7 +242,6 @@ SOURCES	+= \
   CQReportDM.cpp \
   CQReportListItem.cpp \
   CQSBMLFileDialog.cpp \
-  CQSensResultWidget.cpp \
   CQSortFilterProxyModel.cpp \
   CQSpecieDM.cpp \
   CQSpinBoxDelegate.cpp \
@@ -274,12 +282,8 @@ SOURCES	+= \
 }
 
 ### uic3 forms
-FORMS3 += CMCAResultSubwidget.ui
-HEADERS += CMCAResultSubwidget.ui.h
 FORMS3 += CQExperimentSelection.ui
 HEADERS += CQExperimentSelection.ui.h 
-FORMS3 += CQFittingResult.ui
-HEADERS += CQFittingResult.ui.h
 FORMS3 += CQFittingResultTab1.ui
 HEADERS += CQFittingResultTab1.ui.h
 FORMS3 += CQMatrixDialog.ui
@@ -290,8 +294,6 @@ FORMS3 += CQSplashWidget.ui
 HEADERS += CQSplashWidget.ui.h
 FORMS3 += CQStartValueReset.ui
 HEADERS += CQStartValueReset.ui.h
-FORMS3 += CQTSSAResultSubWidget.ui
-HEADERS += CQTSSAResultSubWidget.ui.h
 FORMS3 += CQTaskBtnWidget.ui
 HEADERS += CQTaskBtnWidget.ui.h
 FORMS3 += CQTaskHeaderWidget.ui
@@ -300,8 +302,6 @@ FORMS3 += CUpDownSubwidget.ui
 HEADERS += CUpDownSubwidget.ui.h
 FORMS3 += DefaultplotDialog.ui
 HEADERS += DefaultplotDialog.ui.h
-FORMS3 += TimeSeriesSubwidget.ui
-HEADERS += TimeSeriesSubwidget.ui.h
 FORMS3 += objectdebug.ui
 HEADERS += objectdebug.ui.h
 
@@ -326,6 +326,7 @@ HEADERS += CQTextDialog.h
 HEADERS += CQTextDialog.ui.h
 SOURCES += CQTextDialog.cpp
 
+FORMS += CMCAResultSubwidget.ui
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQDifferentialEquations.ui
@@ -337,10 +338,12 @@ FORMS += CQEventWidget1.ui
 FORMS += CQExpressionMmlStackedWidget.ui
 FORMS += CQExpressionMmlWidget.ui
 FORMS += CQFittingItemWidget.ui
+FORMS += CQFittingResult.ui
 FORMS += CQFittingWidget.ui
 FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
 FORMS += CQLyapWidget.ui
+FORMS += CQLyapResultWidget.ui
 FORMS += CQMCAWidget.ui
 FORMS += CQMergingData.ui
 FORMS += CQModelValue.ui
@@ -354,10 +357,12 @@ FORMS += CQProgressItem.ui
 FORMS += CQReactionsWidget.ui
 FORMS += CQReportDefinition.ui
 FORMS += CQReportsWidget.ui
+FORMS += CQSensResultWidget.ui
 FORMS += CQSpeciesDetail.ui
 FORMS += CQSpeciesWidget.ui
 FORMS += CQTrajectoryWidget.ui
 FORMS += CQTSSAWidget.ui
+FORMS += CQTSSAResultSubWidget.ui
 FORMS += CScanWidgetRandom.ui
 FORMS += CScanWidgetRepeat.ui
 FORMS += CScanWidgetScan.ui
@@ -366,6 +371,7 @@ FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
+FORMS += TimeSeriesSubwidget.ui
 FORMS += CQExpandModelData.ui
 
 contains(COPASI_SRC_PACKAGE, true) {
