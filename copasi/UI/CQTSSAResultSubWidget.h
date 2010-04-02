@@ -11,6 +11,7 @@
 // of Manchester.
 // All rights reserved.
 
+#ifndef CQTSSARESULTSUBWIDGET_H
 #define CQTSSARESULTSUBWIDGET_H
 
 #include <qvariant.h>
