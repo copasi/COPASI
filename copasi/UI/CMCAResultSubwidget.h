@@ -11,6 +11,14 @@
 // of Manchester.
 // All rights reserved.
 
+*  CMCAResultSubwidget.h
+*
+*
+*  Created by Paul on 4 / 2 / 10.
+*
+* /
+
+#ifndef CMCARESULTSUBWIDGET_H
 #define CMCARESULTSUBWIDGET_H
 
 #include <qvariant.h>

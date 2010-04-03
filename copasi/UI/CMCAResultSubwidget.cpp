@@ -11,6 +11,15 @@
 // of Manchester.
 // All rights reserved.
 
+*  CMCAResultSubwidget.cpp
+*
+*
+*  Created by Paul on 4 / 2 / 10.
+*
+* /
+
+#include "CMCAResultSubwidget.h"
+
 #include <qfileinfo.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
