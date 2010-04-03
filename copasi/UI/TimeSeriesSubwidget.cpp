@@ -5,21 +5,12 @@
 //   $Author: shoops $
 //   $Date: 2010/03/21 15:21:13 $
 // End CVS Header
-
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <qvariant.h>
-#include <qregexp.h>
-#include "qmessagebox.h"
-#include "q3filedialog.h"
-
-#include <qpainter.h>
-#include <q3picture.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
+#include "TimeSeriesSubwidget.h"
 
 #include "CQMessageBox.h"
 #include "qtUtilities.h"

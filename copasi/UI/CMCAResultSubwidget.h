@@ -5,18 +5,18 @@
 //   $Author: shoops $
 //   $Date: 2010/03/21 15:21:13 $
 // End CVS Header
-
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-*  CMCAResultSubwidget.h
-*
-*
-*  Created by Paul on 4 / 2 / 10.
-*
-* /
+/*
+ *  CMCAResultSubwidget.h
+ *
+ *
+ *  Created by Paul on 4/2/10.
+ *
+ */
 
 #ifndef CMCARESULTSUBWIDGET_H
 #define CMCARESULTSUBWIDGET_H
