@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.278 $
+//   $Revision: 1.279 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:57:43 $
+//   $Author: pwilly $
+//   $Date: 2010/04/05 14:22:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ extern const char * CopasiLicense;
 #include "CQSBMLFileDialog.h"
 #include "copasi/UI/qtUtilities.h"
 #include "copasiWidget.h"
+#include "TaskWidget.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -1878,6 +1879,9 @@ void CopasiUI3Window::slotFontSelection()
 
       QString ApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
       CCopasiRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(ApplicationFont));
+
+      TaskWidget *tw = (TaskWidget *) listViews->getCurrentWidget();
+      tw->adjustTable();
     }
 
   return;
