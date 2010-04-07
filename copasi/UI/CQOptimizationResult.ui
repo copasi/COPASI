@@ -2,18 +2,17 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.5.2.1 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: gauges $ </comment>
-<comment>   $Date: 2010/02/02 15:25:23 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2010/04/07 16:51:58 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
+<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
- <comment> All rights reserved. </comment>
  <class>CQOptimizationResult</class>
  <widget class="CopasiWidget" name="CQOptimizationResult">
   <property name="geometry">
@@ -23,6 +22,9 @@
     <width>570</width>
     <height>559</height>
    </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Optimization Result Window</string>
   </property>
   <property name="caption" stdset="0">
    <string>Fitting Result</string>
@@ -39,7 +41,11 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;h2&gt;Optimization Result&lt;/h2&gt;</string>
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Optimization Result&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="wordWrap">
         <bool>false</bool>
@@ -56,7 +62,7 @@
      <item>
       <widget class="QPushButton" name="mpBtnSave">
        <property name="text">
-        <string>save data</string>
+        <string>Save to File</string>
        </property>
       </widget>
      </item>

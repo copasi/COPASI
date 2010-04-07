@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/01/21 10:49:19 $
+//   $Author: shoops $
+//   $Date: 2010/04/07 16:51:57 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,19 +20,12 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-//#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <q3table.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
-
 #include "copasi.h"
 
 #include "CQSensResultWidget.h"
-//#include "StateSubwidget.h"
-//#include "CTimeSeriesTable.h"
+
+#include <QMessageBox>
+
 #include "qtUtilities.h"
 #include "sensitivities/CSensTask.h"
 #include "sensitivities/CSensProblem.h"
@@ -36,7 +34,8 @@
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiVector.h"
 
-#include <qtabwidget.h>
+#include "UI/CopasiFileDialog.h"
+#include "sensitivities/CSensTask.h"
 
 /*
  *  Constructs a CQSensResultWidget which is a child of 'parent', with the
@@ -46,27 +45,83 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WF
     : CopasiWidget(parent, name, fl),
     mpResult(NULL)
 {
-  if (!name)
-    setName("CQSensResultWidget");
+  setupUi(this);
 
-  setCaption("CQSensResultWidget");
+  init();
+}
 
-  mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQSensResultWidgetLayout");
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+CQSensResultWidget::~CQSensResultWidget()
+{}
 
-  // **********  Label **************
-  mLabelTitle = new QLabel(this, "SensLabel");
-  mLabelTitle->setText("Sensitivities");
-  mLabelTitle->setAlignment(int(Qt::AlignVCenter
-                                | Qt::AlignLeft));
-  mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  mWidgetLayout->addWidget(mLabelTitle, 0, 0);
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void CQSensResultWidget::languageChange()
+{
+  retranslateUi(this);
+}
 
-  // tab widget
-  mpTab = new QTabWidget(this, "TabWidget");
-  mWidgetLayout->addMultiCellWidget(mpTab, 1, 2, 0, 2);
+void CQSensResultWidget::init()
+{
+  /*
+    if (!name)
+      setName("CQSensResultWidget");
 
+    setCaption("CQSensResultWidget");
+
+    mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQSensResultWidgetLayout");
+
+    // **********  Label **************
+    mLabelTitle = new QLabel(this, "SensLabel");
+    mLabelTitle->setText("Sensitivities");
+    mLabelTitle->setAlignment(int(Qt::AlignVCenter
+                                  | Qt::AlignLeft));
+    mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    mWidgetLayout->addWidget(mLabelTitle, 0, 0);
+
+    // tab widget
+    mpTab = new QTabWidget(this, "TabWidget");
+    mWidgetLayout->addMultiCellWidget(mpTab, 1, 2, 0, 2);
+
+    // unscaled array
+    mArrayWidget = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget");
+    //mArrayWidget->setColorCoding(new CColorScale1());
+    //CColorScaleAverage * tcs = new CColorScaleAverage();
+    CColorScaleBiLog * tcs = new CColorScaleBiLog();
+    mArrayWidget->setColorCoding(tcs);
+    //tcs->setMinMax(-1,1);
+    //tcs->setSymmetric(true);
+    //tcs->setFactor(3.0);
+    mArrayWidget->setColorScalingAutomatic(true);
+    mpTab->addTab(mArrayWidget, "unscaled");
+
+    //scaled array
+    mArrayWidgetScaled = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget2");
+    //mArrayWidgetScaled->setColorCoding(new CColorScale1());
+    CColorScaleAverage* tcs2 = new CColorScaleAverage();
+    mArrayWidgetScaled->setColorCoding(tcs2);
+    //tcs2->setMinMax(-1,1);
+    //tcs2->setSymmetric(true);
+    tcs2->setFactor(3.0);
+    mArrayWidgetScaled->setColorScalingAutomatic(true);
+    mpTab->addTab(mArrayWidgetScaled, "scaled");
+
+    //scaled array
+    mArrayWidgetCollapsed = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget3");
+    //mArrayWidgetScaled->setColorCoding(new CColorScale1());
+    CColorScaleAverage* tcs3 = new CColorScaleAverage();
+    mArrayWidgetCollapsed->setColorCoding(tcs3);
+    //tcs3->setMinMax(-1,1);
+    //tcs3->setSymmetric(true);
+    tcs3->setFactor(3.0);
+    mArrayWidgetCollapsed->setColorScalingAutomatic(true);
+    mpTab->addTab(mArrayWidgetCollapsed, "summarized");
+  */
   // unscaled array
-  mArrayWidget = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget");
   //mArrayWidget->setColorCoding(new CColorScale1());
   //CColorScaleAverage * tcs = new CColorScaleAverage();
   CColorScaleBiLog * tcs = new CColorScaleBiLog();
@@ -75,10 +130,8 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WF
   //tcs->setSymmetric(true);
   //tcs->setFactor(3.0);
   mArrayWidget->setColorScalingAutomatic(true);
-  mpTab->addTab(mArrayWidget, "unscaled");
 
   //scaled array
-  mArrayWidgetScaled = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget2");
   //mArrayWidgetScaled->setColorCoding(new CColorScale1());
   CColorScaleAverage* tcs2 = new CColorScaleAverage();
   mArrayWidgetScaled->setColorCoding(tcs2);
@@ -86,10 +139,8 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WF
   //tcs2->setSymmetric(true);
   tcs2->setFactor(3.0);
   mArrayWidgetScaled->setColorScalingAutomatic(true);
-  mpTab->addTab(mArrayWidgetScaled, "scaled");
 
   //scaled array
-  mArrayWidgetCollapsed = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget3");
   //mArrayWidgetScaled->setColorCoding(new CColorScale1());
   CColorScaleAverage* tcs3 = new CColorScaleAverage();
   mArrayWidgetCollapsed->setColorCoding(tcs3);
@@ -97,14 +148,7 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WF
   //tcs3->setSymmetric(true);
   tcs3->setFactor(3.0);
   mArrayWidgetCollapsed->setColorScalingAutomatic(true);
-  mpTab->addTab(mArrayWidgetCollapsed, "summarized");
 }
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-CQSensResultWidget::~CQSensResultWidget()
-{}
 
 void CQSensResultWidget::newResult()
 {
@@ -197,4 +241,40 @@ bool CQSensResultWidget::enterProtected()
     }
 
   return true;
+}
+
+void CQSensResultWidget::saveToFile()
+{
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
+
+      if (fileName.isEmpty()) return;
+
+      // Checks whether the file exists
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+
+  if (file.fail())
+    return;
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CSensTask * pTask =
+    dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Sensitivities"]);
+
+  if (pTask != NULL)
+    file << pTask->getResult();
+
+//    pTask->print(&file);
+
+  return;
 }

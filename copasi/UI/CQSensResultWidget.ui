@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskResult.ui,v $ </comment>
-<comment>   $Revision: 1.7.2.1 $ </comment>
+<comment>   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
+<comment>   $Revision: 1.13 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2010/04/07 16:51:57 $ </comment>
+<comment>   $Date: 2010/03/21 15:21:13 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -13,23 +13,20 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
- <class>CQMoietiesTaskResult</class>
- <widget class="CopasiWidget" name="CQMoietiesTaskResult">
+ <class>CQSensResultWidget</class>
+ <widget class="CopasiWidget" name="CQSensResultWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>414</width>
-    <height>316</height>
+    <width>571</width>
+    <height>276</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Mass Conservation Result Window</string>
+   <string>Sensitivities Result Window</string>
   </property>
-  <property name="caption" stdset="0">
-   <string>Mass Conservation Result</string>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="mWidgetLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -45,15 +42,18 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Mass Conservation Result&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Sensitivities Result&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnSave">
+      <widget class="QPushButton" name="mSaveButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Save to File</string>
        </property>
@@ -78,60 +78,54 @@ p, li { white-space: pre-wrap; }
     </spacer>
    </item>
    <item>
-    <widget class="QTabWidget" name="mpTabWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>210</width>
-       <height>180</height>
-      </size>
-     </property>
+    <widget class="QTabWidget" name="mpTab">
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="Q3Table" name="mpMoieties">
+     <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>Moieties</string>
+       <string>unscaled</string>
       </attribute>
+      <layout class="QHBoxLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="CQArrayAnnotationsWidget" name="mArrayWidget" native="true"/>
+       </item>
+      </layout>
      </widget>
-     <widget class="CQArrayAnnotationsWidget" name="mpStoichiometry">
+     <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>Stoichiometry</string>
+       <string>scaled</string>
       </attribute>
+      <layout class="QHBoxLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="CQArrayAnnotationsWidget" name="mArrayWidgetScaled" native="true"/>
+       </item>
+      </layout>
      </widget>
-     <widget class="CQArrayAnnotationsWidget" name="mpLinkMatrix">
+     <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string>Link Matrix</string>
+       <string>summarized</string>
       </attribute>
-     </widget>
-     <widget class="CQArrayAnnotationsWidget" name="mpReducedStoichiometry">
-      <attribute name="title">
-       <string>Reduced Stoichiometry</string>
-      </attribute>
+      <layout class="QHBoxLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="CQArrayAnnotationsWidget" name="mArrayWidgetCollapsed" native="true"/>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Table</class>
-   <extends>Q3Frame</extends>
-   <header>q3table.h</header>
-  </customwidget>
   <customwidget>
    <class>CQArrayAnnotationsWidget</class>
    <extends>QWidget</extends>
@@ -144,27 +138,26 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local">copasiWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
- </includes>
  <resources/>
  <connections>
   <connection>
-   <sender>mpBtnSave</sender>
+   <sender>mSaveButton</sender>
    <signal>clicked()</signal>
-   <receiver>CQMoietiesTaskResult</receiver>
-   <slot>slotSave()</slot>
+   <receiver>CQSensResultWidget</receiver>
+   <slot>saveToFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>499</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
+     <x>499</x>
+     <y>56</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>saveToFile()</slot>
+ </slots>
 </ui>

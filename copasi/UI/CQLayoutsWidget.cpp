@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/03 13:51:27 $
+//   $Author: shoops $
+//   $Date: 2010/04/07 16:51:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -31,7 +36,11 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+#ifdef USE_CRENDER_EXTENSION
+#include "copasi/layoutUI/CQNewMainWindow.h"
+#else
 #include "copasi/layoutUI/CQLayoutMainWindow.h"
+#endif // USE_CRENDER_EXTENSION
 
 #define COL_MARK         0
 #define COL_NAME         1
@@ -82,12 +91,19 @@ void CQLayoutsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
   pButton->setText("Show");
   table->setCellWidget(row, COL_SHOW, pButton);
   connect(pButton, SIGNAL(signal_show(int)), this, SLOT(slot_show(int)));
+#ifdef USE_CRENDER_EXTENSION
+  std::map<std::string, CQNewMainWindow*>::iterator pos = this->mLayoutWindowMap.find(obj->getKey());
+#else
   std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(obj->getKey());
-
+#endif  // USE_CRENDER_EXTENSION
   // if this layout does not have an entry in the layout window map, add one
   if (pos == this->mLayoutWindowMap.end())
     {
+#ifdef USE_CRENDER_EXTENSION
+      this->mLayoutWindowMap.insert(std::pair<std::string, CQNewMainWindow*>(obj->getKey(), NULL));
+#else
       this->mLayoutWindowMap.insert(std::pair<std::string, CQLayoutMainWindow*>(obj->getKey(), NULL));
+#endif // USE_CRENDER_EXTENSION
     }
 }
 
@@ -161,7 +177,11 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
         for (i = 0; i < imax; i++)
           {
             (*CCopasiRootContainer::getDatamodelList())[0]->removeLayout(keys[i]);
+#ifdef USE_CRENDER_EXTENSION
+            std::map<std::string, CQNewMainWindow*>::iterator pos = this->mLayoutWindowMap.find(keys[i]);
+#else
             std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(keys[i]);
+#endif // USE_CRENDER_EXTENSION
 
             if (pos != this->mLayoutWindowMap.end() && pos->second != NULL)
               {
@@ -254,7 +274,11 @@ void CQLayoutsWidget::slot_show(int row)
       // check if we already have a widget for the layout
       // if yes, open it, else create one and add it to the map
       bool createNew = false;
+#ifdef USE_CRENDER_EXTENSION
+      std::map<std::string, CQNewMainWindow*>::iterator pos = this->mLayoutWindowMap.find(key);
+#else
       std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(key);
+#endif // USE_CRENDER_EXTENSION
 
       if (pos != this->mLayoutWindowMap.end())
         {
@@ -276,7 +300,11 @@ void CQLayoutsWidget::slot_show(int row)
 
       if (createNew)
         {
+#ifdef USE_CRENDER_EXTENSION
+          CQNewMainWindow* pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+#else
           CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout);
+#endif // USE_CRENDER_EXTENSION
           pWin->setWindowTitle(pLayout->getObjectName().c_str());
           pWin->resize(900, 600);
           pWin->show();
@@ -303,7 +331,11 @@ CQShowLayoutButton::CQShowLayoutButton(unsigned int row, QWidget* pParent, const
 
 void CQLayoutsWidget::deleteLayoutWindows()
 {
+#ifdef USE_CRENDER_EXTENSION
+  std::map<std::string, CQNewMainWindow*>::iterator it = this->mLayoutWindowMap.begin(), endit = this->mLayoutWindowMap.end();
+#else
   std::map<std::string, CQLayoutMainWindow*>::iterator it = this->mLayoutWindowMap.begin(), endit = this->mLayoutWindowMap.end();
+#endif // USE_CRENDER_EXTENSION
 
   while (it != endit)
     {
