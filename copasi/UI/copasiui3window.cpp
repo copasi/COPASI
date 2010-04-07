@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.2 $
+//   $Revision: 1.277.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/12 18:02:38 $
+//   $Date: 2010/04/07 16:48:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1878,6 +1878,13 @@ void CopasiUI3Window::slotFontSelection()
 
       QString ApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
       CCopasiRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(ApplicationFont));
+
+      TaskWidget *tw = dynamic_cast< TaskWidget * >(listViews->getCurrentWidget());
+
+      if (tw != NULL)
+        {
+          tw->adjustTable();
+        }
     }
 
   return;

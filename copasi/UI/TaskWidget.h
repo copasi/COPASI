@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.20 $
+ $Revision: 1.20.2.1 $
  $Name:  $
- $Author: pwilly $
- $Date: 2009/10/30 12:52:41 $
+ $Author: shoops $
+ $Date: 2010/04/07 16:48:55 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -85,6 +90,8 @@ protected slots:
   void assistantBtnClicked();
 
   void changeMethod(int);
+
+public slots:
 
   void adjustTable();
 
