@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/12/02 16:14:02 $
+//   $Author: aekamal $
+//   $Date: 2010/04/08 15:45:14 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,7 +23,6 @@
 #include <q3progressdialog.h>
 #include <qapplication.h>
 #include <qlayout.h>
-#include <qapplication.h>
 #include <qwaitcondition.h>
 //Added by qt3to4:
 #include <QCloseEvent>
@@ -52,6 +56,16 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
       mpMainWidget->setEnabled(false);
       qApp->processEvents();
     }
+
+  connect(this, SIGNAL(processEvents()), this, SLOT(slotProcessEvents()), Qt::QueuedConnection);
+
+
+  connect(this, SIGNAL(addProgressItem(QString, const int,
+                                       const void *, const void *)), this, SLOT(slotAddItem(QString, const int,
+                                           const void *, const void *)), Qt::QueuedConnection);
+
+  connect(this, SIGNAL(setProgressBarName(QString)),
+          this, SLOT(slotSetName(QString)), Qt::QueuedConnection);
 }
 
 CProgressBar::~CProgressBar()
@@ -71,17 +85,27 @@ CProgressBar::~CProgressBar()
     pdelete(mProgressItemList[i]);
 }
 
+
 unsigned C_INT32 CProgressBar::addItem(const std::string & name,
                                        const CCopasiParameter::Type & type,
                                        const void * pValue,
                                        const void * pEndValue)
+
 {
-  unsigned C_INT32 hItem = CProcessReport::addItem(name,
-                           type,
+  emit addProgressItem(FROM_UTF8(name), type, pValue, pEndValue);
+  return 0;
+}
+
+
+void CProgressBar::slotAddItem(QString name, const int type,
+                               const void * pValue, const void * pEndValue)
+{
+  unsigned C_INT32 hItem = CProcessReport::addItem(TO_UTF8(name),
+                           static_cast<const CCopasiParameter::Type>(type),
                            pValue,
                            pEndValue);
 
-  if (hItem == C_INVALID_INDEX) return hItem;
+  if (hItem == C_INVALID_INDEX) return;
 
   if (hItem >= mProgressItemList.size()) // we need to resize
     {
@@ -106,7 +130,7 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
   mProgressItemList[hItem]->initFromProcessReportItem(mProcessReportItemList[hItem]);
   insertProgressItem(mProgressItemList[hItem]);
 
-  return hItem;
+  return;
 }
 
 bool CProgressBar::reset(const unsigned C_INT32 & handle)
@@ -125,7 +149,8 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
   if (mNextEventProcessing < QDateTime::currentDateTime())
     {
       mNextEventProcessing = QDateTime::currentDateTime().addSecs(1);
-      qApp->processEvents();
+      //qApp->processEvents();
+      emit processEvents();
     }
 
   while (mPause)
@@ -133,7 +158,8 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
       QMutex mutex;
       QWaitCondition Pause;
       Pause.wait(&mutex, 500);
-      qApp->processEvents();
+      //qApp->processEvents();
+      emit processEvents();
     }
 
   return Proceed;
@@ -183,8 +209,13 @@ bool CProgressBar::proceed()
 
 bool CProgressBar::setName(const std::string & name)
 {
-  setCaption(FROM_UTF8(name));
-  return (CProcessReport::setName(name) && mProceed);
+  emit setProgressBarName(FROM_UTF8(name));
+  return true;
+}
+void CProgressBar::slotSetName(QString name)
+{
+  setCaption(name);
+  CProcessReport::setName(TO_UTF8(name));
 }
 
 void CProgressBar::closeEvent(QCloseEvent *e)
@@ -193,4 +224,9 @@ void CProgressBar::closeEvent(QCloseEvent *e)
                             "Please stop them first before closing COPASI.");
 
   e->ignore();
+}
+
+void CProgressBar::slotProcessEvents()
+{
+  qApp->processEvents();
 }

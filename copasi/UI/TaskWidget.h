@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.21 $
+ $Revision: 1.22 $
  $Name:  $
- $Author: pwilly $
- $Date: 2010/04/05 14:22:29 $
+ $Author: aekamal $
+ $Date: 2010/04/08 15:45:14 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,10 +35,12 @@
  */
 #include <QGridLayout>
 #include <QTableWidget>
-
 #include <QLabel>
+
+#include "utilities/CCopasiMethod.h"
 #include "UI/copasiWidget.h"
 
+class CQTaskThread;
 //class Q3VBoxLayout;
 //class Q3HBoxLayout;
 //class Q3GridLayout;
@@ -55,10 +57,12 @@ class CQTaskHeaderWidget;
 class CQTaskBtnWidget;
 
 class CCopasiTask;
-#include "utilities/CCopasiMethod.h"
 
 //class CModel;
 class CProgressBar;
+
+class CopasiPlot;
+class CCopasiException;
 
 class TaskWidget : public CopasiWidget
 {
@@ -80,6 +84,8 @@ public:
 
   virtual bool runTask() = 0;
 
+  CCopasiTask* getTask();
+
 protected slots:
   void runBtnClicked();
 
@@ -94,6 +100,12 @@ protected slots:
 public slots:
 
   void adjustTable();
+
+  void slotExceptionOccured(CCopasiException* pException);
+
+  void slotFinishThread();
+
+  void slotReplotCopasiPlot(CopasiPlot *pCP);
 
 protected:
   virtual bool enterProtected();
@@ -129,6 +141,7 @@ protected:
   bool commonAfterRunTask();
 
   bool commonRunTask();
+  void finishTask();
 
   CQTaskHeaderWidget * mpHeaderWidget;
   CQTaskBtnWidget * mpBtnWidget;
@@ -148,6 +161,7 @@ protected:
   CCopasiMethod * mpMethod;
 
   bool mChanged;
+  CQTaskThread *mpTaskThread;
 };
 
 #endif

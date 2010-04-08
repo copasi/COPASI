@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:57:43 $
+//   $Author: aekamal $
+//   $Date: 2010/04/08 15:45:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,11 +21,11 @@
 // All rights reserved.
 
 #include <QtDebug>
-
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QComboBox>
+#include <qapplication.h>
 
 #include "TaskWidget.h"
 #include "qtUtilities.h"
@@ -42,11 +42,16 @@
 #include "CQTaskBtnWidget.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
+#include "utilities/CCopasiException.h"
+#include "utilities/COutputHandler.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
-#include "utilities/CCopasiException.h"
+#include "UI/CQTaskThread.h"
+#include "plotUI/CopasiPlot.h"
+#include "plotUI/plotWindow.h"
+
 
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
@@ -60,6 +65,7 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 
   setCaption(trUtf8("TaskWidget"));
 
+  mpTaskThread = new CQTaskThread(this);
   mpHeaderWidget = new CQTaskHeaderWidget(this);
   mpBtnWidget = new CQTaskBtnWidget(this);
 
@@ -70,6 +76,7 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   mpLblMethod = NULL;
   mpBoxMethod = NULL;
   mpSpacer2 = NULL;
+  mProgressBar = NULL;
 
   mpTask = NULL;
   mpMethod = NULL;;
@@ -78,10 +85,16 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   connect(mpBtnWidget->mpBtnRevert, SIGNAL(clicked()), this, SLOT(revertBtnClicked()));
   connect(mpBtnWidget->mpBtnReport, SIGNAL(clicked()), this, SLOT(reportBtnClicked()));
   connect(mpBtnWidget->mpBtnAssistant, SIGNAL(clicked()), this, SLOT(assistantBtnClicked()));
+
+  connect(mpTaskThread, SIGNAL(exceptionOccured(CCopasiException*)), this, SLOT(slotExceptionOccured(CCopasiException*)));
+  connect(mpTaskThread, SIGNAL(finished()), this, SLOT(slotFinishThread()));
+
 }
 
 TaskWidget::~TaskWidget()
-{}
+{
+  pdelete(mpTaskThread);
+}
 
 //************************************************************
 
@@ -467,7 +480,7 @@ bool TaskWidget::commonRunTask()
                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
 
           success = false;
-          goto finish;
+          finishTask();
         }
     }
 
@@ -479,7 +492,7 @@ bool TaskWidget::commonRunTask()
                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
 
       success = false;
-      goto finish;
+      finishTask();
     }
 
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
@@ -492,32 +505,67 @@ bool TaskWidget::commonRunTask()
       if (Result == QMessageBox::Abort)
         {
           success = false;
-          goto finish;
+          finishTask();
         }
     }
 
   CCopasiMessage::clearDeque();
 
-  // Execute the task
-  try
-    {
-      if (!mpTask->process(true))
-        throw CCopasiException(CCopasiMessage::peekLastMessage());
-    }
 
-  catch (CCopasiException Exception)
+
+
+  std::set<COutputInterface *> interfaces = mpTask->getOutputHandler()->getInterfaces();
+
+  std::set< COutputInterface *>::iterator it = interfaces.begin();
+  std::set< COutputInterface *>::iterator end = interfaces.end();
+  CopasiPlot *pCP = NULL;
+
+  for (; it != end; ++it)
     {
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+      COutputHandlerPlot * pOHP = dynamic_cast<COutputHandlerPlot *>(*it);
+
+      if (pOHP)
         {
-          mProgressBar->finish();
-          CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
-                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-        }
+          std::set<COutputInterface *> interfaces1 = pOHP->getInterfaces();
 
-      success = false;
-      goto finish;
+          std::set< COutputInterface *>::iterator it1 = interfaces1.begin();
+          std::set< COutputInterface *>::iterator end1 = interfaces1.end();
+
+          for (; it1 != end1; ++it1)
+            {
+              pCP = dynamic_cast<CopasiPlot *>(dynamic_cast<PlotWindow *>((*it1))->getPlot());
+
+              if (pCP)
+                connect(pCP, SIGNAL(replotCopasiPlot(CopasiPlot *)), this, SLOT(slotReplotCopasiPlot(CopasiPlot *)));
+            }
+        }
     }
 
+  connect(pCP, SIGNAL(replotCopasiPlot(CopasiPlot *)), this, SLOT(slotReplotCopasiPlot(CopasiPlot *)));
+
+  // Execute the task
+  mpTaskThread->start();
+
+  return success;
+}
+
+void TaskWidget::slotExceptionOccured(CCopasiException *C_UNUSED(pException))
+{
+  //bool success = true;
+  if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+    {
+      mProgressBar->finish();
+      CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+    }
+
+  //success = false;
+  finishTask();
+  //return success;
+}
+
+void TaskWidget::slotFinishThread()
+{
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
     {
       CQMessageBox::information(this, "Calculation Warning",
@@ -525,8 +573,13 @@ bool TaskWidget::commonRunTask()
                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
 
-finish:
+  finishTask();
 
+  commonAfterRunTask();
+}
+
+void TaskWidget::finishTask()
+{
   CCopasiMessage::clearDeque();
 
   try {mpTask->restore();}
@@ -552,10 +605,18 @@ finish:
     }
 
   CCopasiMessage::clearDeque();
-
-  return success;
 }
 
+void TaskWidget::slotReplotCopasiPlot(CopasiPlot *pCP)
+{
+  if (pCP)
+    pCP->replot();
+}
+
+CCopasiTask* TaskWidget::getTask()
+{
+  return mpTask;
+}
 //*********************************************************************
 
 bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))

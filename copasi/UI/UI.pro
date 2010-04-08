@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.231 $
+#   $Revision: 1.232 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2010/04/02 16:04:12 $
+#   $Author: aekamal $
+#   $Date: 2010/04/08 15:45:14 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.231 $ $Author: pwilly $ $Date: 2010/04/02 16:04:12 $
+# $Revision: 1.232 $ $Author: aekamal $ $Date: 2010/04/08 15:45:14 $
 ######################################################################
 
 LIB = UI
@@ -122,6 +122,7 @@ HEADERS	+= \
   CQSortFilterProxyModel.h \
   CQSpecieDM.h \
   CQSpinBoxDelegate.h \
+  CQTaskThread.h \
   CQTSSAResultWidget.h \
   CQTSSATimeScaleWidget.h \
   CQUpdatesWidget.h \
@@ -188,6 +189,7 @@ SOURCES	+= \
   CQSensResultWidget.cpp \
   CQSpeciesDetail.cpp \
   CQSpeciesWidget.cpp \
+  CQTaskThread.cpp \
   CQTrajectoryWidget.cpp \
   CQTSSAWidget.cpp \
   CQTSSAResultSubWidget.cpp \

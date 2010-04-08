@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/02 21:02:17 $
+//   $Author: aekamal $
+//   $Date: 2010/04/08 15:45:13 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -42,6 +47,12 @@ COutputHandler::COutputHandler(const COutputHandler & src):
 
 COutputHandler::~COutputHandler() {};
 
+std::set<COutputInterface *> COutputHandler::getInterfaces() const
+{
+  return mInterfaces;
+}
+
+
 bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel)
 {
   bool success = true;
@@ -59,10 +70,12 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, 
 
       // Assure that this is the only one master.
       COutputHandler * pHandler = dynamic_cast< COutputHandler * >(*it);
+
       if (pHandler != NULL) pHandler->setMaster(this);
 
       // Collect the list of objects
       const std::set< const CCopasiObject * > & Objects = (*it)->getObjects();
+
       for (itObj = Objects.begin(), endObj = Objects.end(); itObj != endObj; ++itObj)
         mObjects.insert(*itObj);
     }
@@ -132,6 +145,7 @@ void COutputHandler::addInterface(COutputInterface * pInterface)
 
   // Assure that this is the only one master.
   COutputHandler * pHandler = dynamic_cast< COutputHandler * >(pInterface);
+
   if (pHandler != NULL) pHandler->setMaster(this);
 }
 
@@ -141,6 +155,7 @@ void COutputHandler::removeInterface(COutputInterface * pInterface)
 
   // Assure that the removed handler is its own master.
   COutputHandler * pHandler = dynamic_cast< COutputHandler * >(pInterface);
+
   if (pHandler != NULL) pHandler->setMaster(NULL);
 }
 
@@ -148,14 +163,14 @@ void COutputHandler::setMaster(COutputHandler * pMaster)
 {mpMaster = pMaster;}
 
 bool COutputHandler::isMaster() const
-  {return (mpMaster == NULL);}
+{return (mpMaster == NULL);}
 
 void COutputHandler::refresh()
 {
   std::vector< Refresh * >::iterator it = mObjectRefreshes.begin();
   std::vector< Refresh * >::iterator end = mObjectRefreshes.end();
 
-  for (;it != end; ++it) (**it)();
+  for (; it != end; ++it)(**it)();
 }
 
 bool COutputHandler::compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel)

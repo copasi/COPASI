@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:48 $
+//   $Author: aekamal $
+//   $Date: 2010/04/08 15:45:13 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -330,4 +335,9 @@ void PlotWindow::slotDeselectAll()
 void PlotWindow::slotCloseWindow()
 {
   close();
+}
+
+CopasiPlot* PlotWindow::getPlot() const
+{
+  return mpPlot;
 }

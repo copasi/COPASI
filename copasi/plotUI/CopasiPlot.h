@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/18 20:01:58 $
+//   $Author: aekamal $
+//   $Date: 2010/04/08 15:45:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -316,6 +316,9 @@ public:
    * Pointer to the zooming engine for the plot.
    */
   QwtPlotZoomer * mpZoomer;
+
+signals:
+  void replotCopasiPlot(CopasiPlot *pCP);
 };
 
 #endif // COPASIPLOT_H

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:56:25 $
+//   $Author: aekamal $
+//   $Date: 2010/04/08 15:45:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -665,7 +665,7 @@ void CopasiPlot::updatePlot()
       CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
 
       updateCurves(C_INVALID_INDEX, true);
-      replot();
+      emit replotCopasiPlot(this);
 
       Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
       mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + Delta + Delta + Delta;

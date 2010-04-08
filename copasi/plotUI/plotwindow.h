@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/06/21 05:31:02 $
+//   $Author: aekamal $
+//   $Date: 2010/04/08 15:45:13 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -50,6 +55,8 @@ public:
   PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec);
 
   bool initFromSpec(const CPlotSpecification* ptrSpec);
+
+  CopasiPlot * getPlot() const;
 
   QToolButton * zoomButton;
   QToolButton * printButton;
