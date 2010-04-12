@@ -37,10 +37,10 @@ for X in range(2,len(SD)):
            v=(math.pow(SD_VALUE,2)/math.pow(REF_SD_VALUE,2)-1.0)*math.sqrt(REPEATS/2.0)
        else:
            if(SD_VALUE!=0.0):
-              print "ERROR: Reference SD is 0.0 at line %d column %d, but ours is %f."%(X,Y,SD_VALUE)   
+               print "ERROR at %s (%d, %d): Var: %f, RefVar: %f, Tol: %f."%(SD_FILE,X,Y+1,math.pow(SD_VALUE,2), math.pow(REF_SD_VALUE,2), 5.0*math.pow(REF_SD_VALUE,2)*math.sqrt(2.0/REPEATS)) 
        if(math.fabs(v)>=5.0):
-          print "ERROR: Value of %f to high at %s line %d."%(v,SD_FILE,X) 
-          EXIT_STATUS=1
+           print "ERROR at %s (%d, %d): Var: %f, RefVar: %f, Tol: %f."%(SD_FILE,X,Y+1,math.pow(SD_VALUE,2), math.pow(REF_SD_VALUE,2), 5.0*math.pow(REF_SD_VALUE,2)*math.sqrt(2.0/REPEATS)) 
+           EXIT_STATUS=1
        RESULT=string.join([RESULT,str(v)],",")
     RESULT=RESULT+"\n"
     OUT.write(RESULT)   
