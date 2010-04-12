@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:14 $
+//   $Date: 2010/04/12 17:52:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,15 +57,18 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
       qApp->processEvents();
     }
 
-  connect(this, SIGNAL(processEvents()), this, SLOT(slotProcessEvents()), Qt::QueuedConnection);
+  connect(this, SIGNAL(processEvents()), this, SLOT(slotProcessEvents()));
 
 
   connect(this, SIGNAL(addProgressItem(QString, const int,
                                        const void *, const void *)), this, SLOT(slotAddItem(QString, const int,
-                                           const void *, const void *)), Qt::QueuedConnection);
+                                           const void *, const void *)));
 
   connect(this, SIGNAL(setProgressBarName(QString)),
-          this, SLOT(slotSetName(QString)), Qt::QueuedConnection);
+          this, SLOT(slotSetName(QString)));
+
+  connect(this, SIGNAL(finishProgressBar(const unsigned int)),
+          this, SLOT(slotFinish(const unsigned int)));
 }
 
 CProgressBar::~CProgressBar()
@@ -92,8 +95,21 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
                                        const void * pEndValue)
 
 {
+  mMutex.lock();
+  mSlotFinished = false;
+  mMutex.unlock();
+
   emit addProgressItem(FROM_UTF8(name), type, pValue, pEndValue);
-  return 0;
+
+  mMutex.lock();
+
+  if (!mSlotFinished)
+    mWaitSlot.wait(&mMutex);
+
+  unsigned C_INT32 hItem = mLastHItem;
+  mMutex.unlock();
+
+  return hItem;
 }
 
 
@@ -130,7 +146,11 @@ void CProgressBar::slotAddItem(QString name, const int type,
   mProgressItemList[hItem]->initFromProcessReportItem(mProcessReportItemList[hItem]);
   insertProgressItem(mProgressItemList[hItem]);
 
-  return;
+  mMutex.lock();
+  mSlotFinished = true;
+  mLastHItem = hItem;
+  mWaitSlot.wakeAll();
+  mMutex.unlock();
 }
 
 bool CProgressBar::reset(const unsigned C_INT32 & handle)
@@ -182,10 +202,17 @@ bool CProgressBar::finish(const unsigned C_INT32 & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
-  removeProgressItem(mProgressItemList[handle]);
-  pdelete(mProgressItemList[handle]);
+  emit finishProgressBar(handle);
 
   return (CProcessReport::finish(handle) && mProceed);
+}
+
+void CProgressBar::slotFinish(const unsigned int handle)
+{
+  if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return;
+
+  removeProgressItem(mProgressItemList[handle]);
+  pdelete(mProgressItemList[handle]);
 }
 
 bool CProgressBar::proceed()

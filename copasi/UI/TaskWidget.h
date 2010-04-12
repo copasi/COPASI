@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.22 $
+ $Revision: 1.23 $
  $Name:  $
  $Author: aekamal $
- $Date: 2010/04/08 15:45:14 $
+ $Date: 2010/04/12 17:52:46 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -162,6 +162,9 @@ protected:
 
   bool mChanged;
   CQTaskThread *mpTaskThread;
+
+protected:
+  void connectReplot(bool connectOrDisconnect = true);
 };
 
 #endif

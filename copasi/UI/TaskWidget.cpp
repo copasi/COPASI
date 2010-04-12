@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/12 14:53:35 $
+//   $Author: aekamal $
+//   $Date: 2010/04/12 17:52:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -513,6 +513,16 @@ bool TaskWidget::commonRunTask()
 
 
 
+  connectReplot(true);
+
+  // Execute the task
+  mpTaskThread->start();
+
+  return success;
+}
+
+void TaskWidget::connectReplot(bool connectOrDisconnect)
+{
 
   std::set<COutputInterface *> interfaces = mpTask->getOutputHandler()->getInterfaces();
 
@@ -536,17 +546,18 @@ bool TaskWidget::commonRunTask()
               pCP = dynamic_cast<CopasiPlot *>(dynamic_cast<PlotWindow *>((*it1))->getPlot());
 
               if (pCP)
-                connect(pCP, SIGNAL(replotCopasiPlot(CopasiPlot *)), this, SLOT(slotReplotCopasiPlot(CopasiPlot *)));
+                {
+                  if (connectOrDisconnect)
+                    connect(pCP, SIGNAL(replotCopasiPlot(CopasiPlot *)),
+                            this, SLOT(slotReplotCopasiPlot(CopasiPlot *)));
+                  else
+                    disconnect(pCP, SIGNAL(replotCopasiPlot(CopasiPlot *)),
+                               this, SLOT(slotReplotCopasiPlot(CopasiPlot *)));
+                }
+
             }
         }
     }
-
-  connect(pCP, SIGNAL(replotCopasiPlot(CopasiPlot *)), this, SLOT(slotReplotCopasiPlot(CopasiPlot *)));
-
-  // Execute the task
-  mpTaskThread->start();
-
-  return success;
 }
 
 void TaskWidget::slotExceptionOccured(CCopasiException *C_UNUSED(pException))
@@ -581,6 +592,9 @@ void TaskWidget::slotFinishThread()
 void TaskWidget::finishTask()
 {
   CCopasiMessage::clearDeque();
+
+  //connectReplot(false);
+
 
   try {mpTask->restore();}
 

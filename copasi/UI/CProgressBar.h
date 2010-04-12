@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:14 $
+//   $Date: 2010/04/12 17:52:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,8 @@
 #include <qdatetime.h>
 //Added by qt3to4:
 #include <QCloseEvent>
+#include <QMutex>
+#include <QWaitCondition>
 
 #include "utilities/CProcessReport.h"
 #include "CQProgressDialog.h"
@@ -118,6 +120,12 @@ public:
 protected:
   virtual void closeEvent(QCloseEvent *e);
 
+  unsigned C_INT32 mLastHItem;
+
+  bool mSlotFinished;
+  QMutex mMutex;
+  QWaitCondition mWaitSlot;
+
 private:
   CVector< CQProgressItem * > mProgressItemList;
 
@@ -130,6 +138,7 @@ signals:
   void addProgressItem(QString name, const int type,
                        const void * pValue, const void * pEndValue);
   void setProgressBarName(QString name);
+  void finishProgressBar(const unsigned int handle);
 
 protected slots:
 
@@ -139,6 +148,8 @@ protected slots:
                            const void * pValue, const void * pEndValue);
 
   virtual void slotSetName(QString name);
+
+  virtual void slotFinish(const unsigned int handle);
 
 };
 
