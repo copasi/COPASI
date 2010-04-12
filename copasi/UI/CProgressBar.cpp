@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/12 17:52:46 $
+//   $Author: shoops $
+//   $Date: 2010/04/12 19:27:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,8 @@ extern QApplication *pApp;
 
 CProgressBar::CProgressBar(QWidget* parent, const char* name,
                            bool modal, Qt::WFlags fl):
-    CProcessReport(),
     CQProgressDialog(parent, name, modal, fl | Qt::WStyle_Minimize),
+    CProcessReport(),
     mProgressItemList(1),
     mNextEventProcessing(QDateTime::currentDateTime()),
     mpMainWidget(NULL)

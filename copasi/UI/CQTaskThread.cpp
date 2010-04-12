@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskThread.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/12 17:52:46 $
+//   $Author: shoops $
+//   $Date: 2010/04/12 19:26:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,12 +15,13 @@
 #include "utilities/CCopasiException.h"
 #include "TaskWidget.h"
 
+
 #include "CQTaskThread.h"
 
-CQTaskThread::CQTaskThread(TaskWidget *tw)
-{
-  mpTaskWidget = tw;
-}
+CQTaskThread::CQTaskThread(TaskWidget *tw):
+    QThread(),
+    mpTaskWidget(tw)
+{}
 
 CQTaskThread::~CQTaskThread()
 {
