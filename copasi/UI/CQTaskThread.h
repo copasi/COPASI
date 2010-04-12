@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskThread.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/04/12 11:23:42 $
+//   $Author: shoops $
+//   $Date: 2010/04/12 19:26:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@ public:
   CQTaskThread(TaskWidget *tw);
   ~CQTaskThread();
 
-  void run();
+  virtual void run();
 
 protected:
   TaskWidget *mpTaskWidget;
