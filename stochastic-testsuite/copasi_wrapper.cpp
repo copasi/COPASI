@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/11/20 13:13:46 $
+//   $Author: shoops $
+//   $Date: 2010/04/12 14:21:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -62,21 +67,23 @@ int main(int argc, char *argv[])
 
   if (argc < 5)
     {
-      std::cout << "Usage: stochastic-testsuite SBMLFILENAME ENDTIME STEPNUMBER REPEATS OUTFILENAME SPECIESID1 SPECIESID2 ..." << std::endl;
+      std::cout << "Usage: stochastic-testsuite METHOD SBMLFILENAME ENDTIME STEPNUMBER REPEATS OUTFILENAME SPECIESID1 SPECIESID2 ..." << std::endl;
       exit(1);
     }
 
-  const char* pSBMLFilename = argv[1];
+  const char* pMethodType = argv[1];
 
-  const char* pEndTime = argv[2];
+  const char* pSBMLFilename = argv[2];
 
-  const char* pStepNumber = argv[3];
+  const char* pEndTime = argv[3];
 
-  const char* pRepeats = argv[4];
+  const char* pStepNumber = argv[4];
 
-  const char* pOutputFilename = argv[5];
+  const char* pRepeats = argv[5];
 
-  unsigned int NUMARGS = 6;
+  const char* pOutputFilename = argv[6];
+
+  unsigned int NUMARGS = 7;
 
   /*
   std::cout << "Input : " << pSBMLFilename << std::endl;
@@ -103,6 +110,32 @@ int main(int argc, char *argv[])
 
   long int repeats = strtol(pRepeats, pTmpP , 10);
 
+  CCopasiMethod::SubType MethodType;
+
+  if (!strcmp(pMethodType, "stochastic"))
+    {
+      MethodType = CCopasiMethod::stochastic;
+    }
+  else if (!strcmp(pMethodType, "directMethod"))
+    {
+      MethodType = CCopasiMethod::directMethod;
+    }
+  else if (!strcmp(pMethodType, "tauLeap"))
+    {
+      MethodType = CCopasiMethod::tauLeap;
+    }
+  else if (!strcmp(pMethodType, "LSODA"))
+    {
+      MethodType = CCopasiMethod::deterministic;
+    }
+  else
+    {
+      std::cerr << "Invalid method type. Valid options are:" << std::endl;
+      std::cerr << "    stochastic" << std::endl;
+      std::cerr << "    directMethod" << std::endl;
+      std::cerr << "    tauLeap" << std::endl;
+    }
+
   if (endTime == 0.0)
     {
       std::cerr << "Invalid endtime " << pEndTime << std::endl;
@@ -120,6 +153,7 @@ int main(int argc, char *argv[])
       pSBMLSpeciesIds[i - NUMARGS] = argv[i];
       //std::cout << "Copying pointer to " <<  argv[i]  << "." << std::endl;
     }
+
 
   try
     {
@@ -147,6 +181,8 @@ int main(int argc, char *argv[])
         {
           unsigned int j, jMax = metabolites.size();
 
+          std::string SBMLId = unQuote(pSBMLSpeciesIds[i]);
+
           for (j = 0; j < jMax; ++j)
             {
               if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
@@ -166,10 +202,8 @@ int main(int argc, char *argv[])
 
       // create a trajectory task
       pTrajectoryTask = new CTrajectoryTask();
-      pTrajectoryTask->setMethodType(CCopasiMethod::stochastic);
-      //pTrajectoryTask->setMethodType(CCopasiMethod::directMethod);
+      pTrajectoryTask->setMethodType(MethodType);
       pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
-
       pTrajectoryTask->setScheduled(false);
 
       //pTrajectoryTask->getReport().setReportDefinition(pReport);
@@ -182,10 +216,6 @@ int main(int argc, char *argv[])
       pProblem->setDuration((const C_FLOAT64)endTime);
       pProblem->setTimeSeriesRequested(true);
       //pProblem->setInitialState(pDataModel->getModel()->getInitialState());
-
-      CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
-
-      pMethod->getParameter("Use Random Seed")->setValue(false);
 
       CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
