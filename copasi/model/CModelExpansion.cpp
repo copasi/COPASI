@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/02/12 12:15:16 $
+//   $Date: 2010/04/13 11:59:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,6 +83,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
 
       ci.keyMap[sourceModVal->getKey()] = "";
       nameInSet(sourceModVal->getObjectName());
+
     }
 
   imax = mpModel->getEvents().size();
@@ -132,15 +133,13 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
 
   if (diff)
     {
-      std::ostringstream k1, k2;
-      k1 << "k1{diffusion}";
-      k2 << "k2{diffusion}";
+      std::ostringstream k;
+      k << "k{diffusion}";
 
-      CModelValue* modval1 = mpModel->createModelValue(testName(k1.str()), 1.);
-      modval1->setStatus(CModelValue::FIXED);
+      std::string newparam = testName(k.str());
 
-      CModelValue* modval2 = mpModel->createModelValue(testName(k2.str()), 1.);
-      modval2->setStatus(CModelValue::FIXED);
+      CModelValue* modval = mpModel->createModelValue(newparam, 1.);
+      modval->setStatus(CModelValue::FIXED);
 
       for (m = 0; m < mult; ++m)
         {
@@ -148,7 +147,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
           for (i = 0; i < imax; ++i)
             {
               std::ostringstream reacname;
-              reacname <<  "diffusion_" << m << "_" << i;
+              reacname <<  "diffusion" << m << "_" << i;
 
               CReaction* reac = mpModel->createReaction(testName(reacname.str()));
 
@@ -162,8 +161,9 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
               reac->addParameterMapping("substrate", metabMap[i][m]);
               reac->addParameterMapping("product", metabMap[i][m+1]);
 
-              reac->setParameterMapping(0, modval1->getKey());
-              reac->setParameterMapping(2, modval2->getKey());
+              reac->setParameterMapping(0, modval->getKey());
+              reac->setParameterMapping(2, modval->getKey());
+
             }
         }
     }
