@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/12 19:27:08 $
+//   $Date: 2010/04/13 13:56:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,9 +60,8 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
   connect(this, SIGNAL(processEvents()), this, SLOT(slotProcessEvents()));
 
 
-  connect(this, SIGNAL(addProgressItem(QString, const int,
-                                       const void *, const void *)), this, SLOT(slotAddItem(QString, const int,
-                                           const void *, const void *)));
+  connect(this, SIGNAL(addProgressItem(const unsigned int)),
+          this, SLOT(slotAddItem(const unsigned int)));
 
   connect(this, SIGNAL(setProgressBarName(QString)),
           this, SLOT(slotSetName(QString)));
@@ -95,35 +94,30 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
                                        const void * pEndValue)
 
 {
+  unsigned C_INT32 hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
+
   mMutex.lock();
   mSlotFinished = false;
   mMutex.unlock();
 
-  emit addProgressItem(FROM_UTF8(name), type, pValue, pEndValue);
+  emit addProgressItem(hItem);
 
   mMutex.lock();
 
   if (!mSlotFinished)
     mWaitSlot.wait(&mMutex);
 
-  unsigned C_INT32 hItem = mLastHItem;
   mMutex.unlock();
 
   return hItem;
 }
 
 
-void CProgressBar::slotAddItem(QString name, const int type,
-                               const void * pValue, const void * pEndValue)
+void CProgressBar::slotAddItem(const unsigned int handle)
 {
-  unsigned C_INT32 hItem = CProcessReport::addItem(TO_UTF8(name),
-                           static_cast<const CCopasiParameter::Type>(type),
-                           pValue,
-                           pEndValue);
+  if (handle == C_INVALID_INDEX) return;
 
-  if (hItem == C_INVALID_INDEX) return;
-
-  if (hItem >= mProgressItemList.size()) // we need to resize
+  if (handle >= mProgressItemList.size()) // we need to resize
     {
       unsigned C_INT32 i, imax = mProgressItemList.size();
 
@@ -138,17 +132,16 @@ void CProgressBar::slotAddItem(QString name, const int type,
       while (i < imax) mProgressItemList[i++] = NULL;
     }
 
-  if (mProcessReportItemList[hItem]->hasEndValue())
-    mProgressItemList[hItem] = new CQProgressItemBar(static_cast<CQProgressDialog *>(this));
+  if (mProcessReportItemList[handle]->hasEndValue())
+    mProgressItemList[handle] = new CQProgressItemBar(static_cast<CQProgressDialog *>(this));
   else
-    mProgressItemList[hItem] = new CQProgressItemText(static_cast<CQProgressDialog *>(this));
+    mProgressItemList[handle] = new CQProgressItemText(static_cast<CQProgressDialog *>(this));
 
-  mProgressItemList[hItem]->initFromProcessReportItem(mProcessReportItemList[hItem]);
-  insertProgressItem(mProgressItemList[hItem]);
+  mProgressItemList[handle]->initFromProcessReportItem(mProcessReportItemList[handle]);
+  insertProgressItem(mProgressItemList[handle]);
 
   mMutex.lock();
   mSlotFinished = true;
-  mLastHItem = hItem;
   mWaitSlot.wakeAll();
   mMutex.unlock();
 }
@@ -178,7 +171,6 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
       QMutex mutex;
       QWaitCondition Pause;
       Pause.wait(&mutex, 500);
-      //qApp->processEvents();
       emit processEvents();
     }
 
