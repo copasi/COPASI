@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Author: nsimus $
+//   $Date: 2010/04/13 12:13:32 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -354,9 +359,8 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
             }
           else
             {
-              if (tmp < 0) info = 1;
-
-              break;
+              if (tmp < 0) // info = 1;
+                break;
             }
         }
       else
@@ -400,22 +404,27 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   C_INT i, j;
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
-
   for (j = 0; j < N; j++)
     {
-      y[j] = mY[j] * number2conc;
-      g[j] = mG[j] * number2conc;
-      mYerror[j] = mRerror * y[j] + mAerror;
+      y[j] = mY[j];
+      g[j] = mG[j];
+
+      CMetab* metab;
+      metab = mpModel->getMetabolitesX()[j];
+      const CCompartment* comp = metab->getCompartment();
+
+      mYerror[j] = mRerror * y[j] + mAerror * comp->getInitialValue();
     }
+
+
 
   J = mJacobian;
 
 #ifdef CSPDEBUG
-  std::cout << "concentration of metabolite  and  right hand side :" << std::endl;
+  std::cout << "particle number  and  right hand side :" << std::endl;
 
   for (j = 0; j < N; j++)
-    std::cout << mpModel->getMetabolitesX()[j]->getObjectName() << "  " << y[j] << "  " << g[j] << std::endl;
+    std::cout << mpModel->getMetabolitesX()[j]->getObjectName() << " y[j]  " << y[j] << " g[j]  " << g[j] << " mYerror " << mYerror[j] << std::endl;
 
 #endif
 
@@ -622,7 +631,6 @@ analyseMmodes:
   modesAmplitude(N, M, g, B, F);
 
 #ifdef CSPDEBUG
-  std::cout << "number2conc " << number2conc << std::endl;
 
   std::cout << " scaled amplitudes via  trial basis :  " << std::endl;
 
@@ -632,12 +640,6 @@ analyseMmodes:
       std::cout << F(i, 0) << std::endl;
     }
 
-  std::cout << "mYerror[j] = mRerror * y[j] + mAerror" << std::endl;
-
-  for (i = 0; i < N; i++)
-    {
-      std::cout << mYerror[i] << " = " << mRerror << " * " << y[i] << " + " << mAerror << std::endl;
-    }
 
 #endif
 
@@ -812,7 +814,6 @@ cspiteration:
             modesAmplitude(N, M, g, B1, F);
 //#ifdef  CSPDEBUG
 #if 0
-            std::cout << "number2conc " << number2conc << std::endl;
 
             std::cout << "scaled amplitudes via refined basis :  " << std::endl;
 
@@ -1147,6 +1148,8 @@ void CCSPMethod::start(const CState * initialState)
   mImportanceIndexNormedRow.resize(reacs_size, mData.dim);
   mFastReactionPointerNormed.resize(reacs_size, mData.dim);
 
+  mAerror /= mpModel->getNumber2QuantityFactor();
+
   mSetVectors = 0;
 
   return;
@@ -1359,7 +1362,8 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
   ampl.resize(N);
 
   for (r = 0; r < reacs_size; ++r)
-    flux[r] = reacs[r]->calculateFlux();
+    flux[r] = reacs[r]->calculateParticleFlux();
+
 
   for (i = 0; i < N; ++i)
     {
@@ -1379,10 +1383,14 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
       C_FLOAT64 tmp = 0.0;
 
       for (j = 0; j < N; ++j)
-        tmp += B0(i, j) * mYerror[j];
+        {
+          tmp += B0(i, j) * mYerror[j];
+
+        }
 
       estim[i] = fabs(tmp / tauM1);
     }
+
 
   for (i = 0; i < N; ++i)
     {
@@ -1394,6 +1402,7 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
           mParticipationIndex(r, i) = P(i, r);
         }
     }
+
 
   /* the Participation Index normed by column */
 
@@ -1461,7 +1470,7 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
   smmult(Q, S, S0, N, N, reacs_size);
 
   for (r = 0; r < reacs_size; ++r)
-    flux[r] = reacs[r]->calculateFlux();
+    flux[r] = reacs[r]->calculateParticleFlux();
 
   for (i = 0; i < N; ++i)
     {
@@ -1631,10 +1640,9 @@ void CCSPMethod::calculateJacobianX(C_INT & N, CVector<C_FLOAT64> & y, CMatrix <
   CVector<C_FLOAT64> tmp;
   tmp.resize(N);
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
 
   for (i = 0; i < N; i++)
-    tmp[i] = y[i] / number2conc;
+    tmp[i] = y[i];
 
   /* write new concentrations in the current state */
   for (i = 0; i < N; i++)
