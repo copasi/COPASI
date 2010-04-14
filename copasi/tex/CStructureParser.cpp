@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Author: pwilly $
+//   $Date: 2010/04/14 09:36:38 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -212,16 +217,6 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
       tex += " {";
     }
 
-  if (qName == "mi" || qName == "mn")
-    {
-      QString &last = mListOfUncompletedTags.last();  // must be not empty
-
-      if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
-        {
-          tex += ", \\, ";
-        }
-    }
-
   if (qName == "mi" || qName == "mo" || qName == "mn")
     {
       // increment index, if any
@@ -245,6 +240,11 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
               if (lastUncompletedTags.contains("msup") && idx == 2)
                 tex += "^";
+            }
+
+          if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
+            {
+              tex += ", \\, ";
             }
         }
     }
@@ -440,8 +440,15 @@ bool CStructureParser::skippedEntity(const QString& /* str */)
 
 QString CStructureParser::getTeX()
 {
+  QString texIntro;
+
+  texIntro = "\% Attention: \n";
+  texIntro += "\% Here is only TeX code of COPASI Differential Equations. \n";
+  texIntro += "\% Put it easily into your TeX document. \n";
+  texIntro += "\% May need adjustment for too long equations. \n\n";
+
   if (!texHead.isNull())
-    return "$$\n" + texHead + "\n" + tex + texTail + "\n$$";
+    return texIntro + "$$\n" + texHead + "\n" + tex + texTail + "\n$$";
   else
-    return "$$\n" + tex + "\n$$";
+    return texIntro + "$$\n" + tex + "\n$$";
 }
