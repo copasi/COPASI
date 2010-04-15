@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: pwilly $
+//   $Date: 2010/04/15 11:38:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -77,26 +82,31 @@ void CScanWidgetScan::slotChooseObject()
                                             mpObject);
 
   if (mpObject != pObject) // Object selection changed.
+    initFromObject(pObject);
+}
+
+void CScanWidgetScan::initFromObject(const CCopasiObject *obj)
+{
+  mpObject = obj;
+
+  if (obj)
     {
-      mpObject = pObject;
+      lineEditObject->setText(FROM_UTF8(obj->getObjectDisplayName()));
 
-      if (mpObject)
+      if (obj->isValueDbl())
         {
-          lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
-
-          if (mpObject->isValueDbl())
-            {
-              C_FLOAT64 value = *(C_FLOAT64*)mpObject->getValuePointer();
-              lineEditMin->setText(QString::number(value*0.5));
-              lineEditMax->setText(QString::number(value*2));
-            }
+          C_FLOAT64 value = *(C_FLOAT64*)obj->getValuePointer();
+          lineEditNumber->setText("10");
+          lineEditMin->setText(QString::number(value*0.5));
+          lineEditMax->setText(QString::number(value*2));
         }
-      else
-        {
-          lineEditObject->setText("");
-          lineEditMin->setText("");
-          lineEditMax->setText("");
-        }
+    }
+  else
+    {
+      lineEditObject->setText("");
+      lineEditNumber->setText("");
+      lineEditMin->setText("");
+      lineEditMax->setText("");
     }
 }
 

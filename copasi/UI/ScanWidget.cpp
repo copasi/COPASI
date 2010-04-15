@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.212 $
+//   $Revision: 1.213 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:14 $
+//   $Author: pwilly $
+//   $Date: 2010/04/15 11:38:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,8 @@
 
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskBtnWidget.h"
+#include "CCopasiSimpleSelectionTree.h"
+#include "CCopasiSelectionDialog.h"
 
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
@@ -263,26 +265,28 @@ bool ScanWidget::slotAddItem()
     {
         //+++
       case CScanProblem::SCAN_LINEAR:
-        bool ok;
-        totalItems = QInputDialog::getInteger(this, tr("Input Dialog"),
-                                              tr("Number of Parameters you will scan:"), totalItems, 0, 100, 1, &ok);
+      {
+        CCopasiSimpleSelectionTree::ObjectClasses Classes = CCopasiSimpleSelectionTree::InitialTime |
+            CCopasiSimpleSelectionTree::Parameters;
 
-        if (ok)
+        std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
+
+        // create scan widgets as many as the number of selected objects
+        std::vector< const CCopasiObject * >::iterator it = Selection.begin();
+        std::vector< const CCopasiObject * >::iterator end = Selection.end();
+
+        for (; it != end; ++it)
           {
-            int index = 0;
-
-            for (; index < totalItems; index++)
-              {
-                tmp1 = new CScanWidgetScan(scrollview);
-                tmp1->initFromScanItem(tmpItem, pDataModel->getModel());
-                scrollview->insertWidget(tmp1);
-                totalRows = scrollview->numRows();
-                scrollview->ensureCellVisible(totalRows - 1, 0);
-                tmp1->lineEditMin->setFocus();
-              }
+            tmp1 = new CScanWidgetScan(scrollview);
+            tmp1->initFromObject(*it);
+            scrollview->insertWidget(tmp1);
+            totalRows = scrollview->numRows();
+            scrollview->ensureCellVisible(totalRows - 1, 0);
+            tmp1->lineEditMin->setFocus();
           }
 
         break;
+      }
 
       case CScanProblem::SCAN_REPEAT:
         tmp2 = new CScanWidgetRepeat(scrollview);
