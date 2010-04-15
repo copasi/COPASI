@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.60.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2010/04/15 16:01:36 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -338,13 +343,21 @@ bool ModelWidget::saveToModel()
   if (mOldComment != mpEditComment->text())
     {
       std::string Richtext = TO_UTF8(mpEditComment->text());
+      std::string::size_type pos = 0;
 
-      // remove leading whitepsaces
-      std::string::size_type pos = Richtext.find_first_not_of("\x0a\x0d\t ");
+      // We do not need a html document we need only the xhtml element.
+      if (Richtext.find("<!DOCTYPE", 0) != std::string::npos)
+        {
+          pos = Richtext.find('>', 0);
+          Richtext.erase(0, pos + 1);
+        }
+
+      // remove leading white spaces
+      pos = Richtext.find_first_not_of("\x0a\x0d\t ");
 
       if (pos != 0) Richtext.erase(0, pos);
 
-      // remove trailing whitepsace
+      // remove trailing white space
       pos = Richtext.find_last_not_of("\x0a\x0d\t ");
 
       if (pos < Richtext.length())
