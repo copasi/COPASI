@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/27 16:33:59 $
+//   $Author: shoops $
+//   $Date: 2010/04/15 15:57:53 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -40,6 +45,7 @@ private:
   bool mChanged;
   std::string mKey;
   CReportDefinition * mpReportDefinition;
+  QString mOldComment;
 
   bool load();
   bool save();
