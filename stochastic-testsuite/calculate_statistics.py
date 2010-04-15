@@ -26,7 +26,7 @@ if(len(INPUT) != (NUM_REPEATS * (NUM_STEPS + 2) + 1)):
 
 DATA=[]
 LINENUMBER=1
-NUMCOLUMNS=len(string.split(INPUT[1]))
+NUMCOLUMNS=len(string.split(INPUT[1], ","))
 MEAN=[]
 
 HEADER=INPUT[0]
@@ -40,7 +40,7 @@ for X in range(0,NUM_REPEATS):
    SET=[]
    for Y in range(0, NUM_STEPS+1):
      LINE=INPUT[LINENUMBER]
-     COLUMNS=string.split(LINE)
+     COLUMNS=string.split(LINE, ",")
      if(len(COLUMNS)!=NUMCOLUMNS):
         print "Wrong number of elements on  line %d"%(LINENUMBER)
         sys.exit(1)

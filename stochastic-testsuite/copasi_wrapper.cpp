@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/12 14:21:43 $
+//   $Date: 2010/04/15 19:19:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,15 +170,24 @@ int main(int argc, char *argv[])
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for stochastic testsuite run");
       pReport->setTaskType(CCopasiTask::timeCourse);
-      pReport->setIsTable(true);
+      pReport->setIsTable(false);
+      CCopasiReportSeparator Separator(std::string(","));
 
-      std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
-      pTable->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
+      std::vector<CRegisteredObjectName> * pHeader = pReport->getHeaderAddr();
+      std::vector<CRegisteredObjectName> * pBody = pReport->getBodyAddr();
+
+      // Add time column
+      pHeader->push_back(CCopasiStaticString("time").getCN());
+      pBody->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
+
       iMax = iMax - NUMARGS;
       const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
 
       for (i = 0; i < iMax; ++i)
         {
+          pHeader->push_back(Separator.getCN());
+          pBody->push_back(Separator.getCN());
+
           unsigned int j, jMax = metabolites.size();
 
           std::string SBMLId = unQuote(pSBMLSpeciesIds[i]);
@@ -187,8 +196,6 @@ int main(int argc, char *argv[])
             {
               if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
                 {
-                  pTable->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=ParticleNumber"))->getCN());
-                  //std::cout << "adding metabolite " << metabolites[j]->getObjectName() << " to report." << std::endl;
                   break;
                 }
             }
@@ -198,6 +205,10 @@ int main(int argc, char *argv[])
               std::cerr << "Could not find a metabolite for the SBML id \"" << pSBMLSpeciesIds[i] << "\"" << std::endl;
               exit(1);
             }
+
+          pHeader->push_back(CCopasiStaticString(SBMLId).getCN());
+          pBody->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=ParticleNumber"))->getCN());
+
         }
 
       // create a trajectory task
