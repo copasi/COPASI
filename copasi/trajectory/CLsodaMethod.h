@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.25 $
+ $Revision: 1.25.2.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/07/24 21:08:45 $
+ $Date: 2010/04/16 19:29:37 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -43,6 +48,13 @@ public:
 
   // Attributes
 private:
+  enum RootMasking
+  {
+    NONE = 0,
+    ALL,
+    DISCRETE
+  };
+
   /**
    * A pointer to the value of "Integrate Reduced Model"
    */
@@ -163,6 +175,16 @@ private:
    * A mask which hides all roots being constant and zero.
    */
   CVector< bool > mRootMask;
+
+  /**
+   * A which indicates whether roots change only discretely.
+   */
+  CVector< bool > mDiscreteRoots;
+
+  /**
+   * A Boolean flag indicating whether we should try masking roots
+   */
+  RootMasking mRootMasking;
 
   // Operations
 private:

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.60.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 21:08:45 $
+//   $Date: 2010/04/16 19:29:37 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -159,6 +164,7 @@ void CLsodaMethod::stateChanged()
   mLsodaStatus = 1;
 
   destroyRootMask();
+  mRootMasking = NONE;
 }
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
@@ -205,20 +211,68 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
         {
           case -33:
 
-            if (mRootMask.size() == 0)
+            switch (mRootMasking)
               {
-                // Reset the integrator to the state before the failed integration.
-                *mpState = *mpCurrentState;
-                mTime = mpState->getTime();
-                mLsodaStatus = 1;
+                case NONE:
+                case DISCRETE:
+                  // Reset the integrator to the state before the failed integration.
+                  *mpState = *mpCurrentState;
+                  mTime = mpState->getTime();
+                  mLsodaStatus = 1;
 
-                // Create a mask which hides all roots being constant and zero.
-                createRootMask();
+                  // Create a mask which hides all roots being constant and zero.
+                  createRootMask();
+                  break;
+
+                case ALL:
+                  break;
               }
 
             break;
 
           default:
+
+            switch (mRootMasking)
+              {
+                case NONE:
+                case DISCRETE:
+                  break;
+
+                case ALL:
+                {
+                  const bool * pDiscrete = mDiscreteRoots.array();
+                  bool * pMask = mRootMask.array();
+                  bool * pMaskEnd = pMask + mNumRoots;
+                  bool Destroy = false;
+
+                  for (; pMask != pMaskEnd; ++pMask, ++pDiscrete)
+                    {
+                      if (*pMask)
+                        {
+                          if (*pDiscrete)
+                            {
+                              Destroy = false;
+                            }
+                          else
+                            {
+                              *pMask = false;
+                            }
+                        }
+                    }
+
+                  if (Destroy)
+                    {
+                      destroyRootMask();
+                    }
+                  else
+                    {
+                      mRootMasking = DISCRETE;
+                    }
+
+                  mLsodaStatus = 1;
+                }
+              }
+
             break;
         }
     }
@@ -291,6 +345,7 @@ void CLsodaMethod::start(const CState * initialState)
   mNumRoots = mpModel->getNumRoots();
   mRoots.resize(mNumRoots);
   destroyRootMask();
+  mRootMasking = NONE;
 
   if (*mpReducedModel)
     mData.dim = mpState->getNumIndependent();
@@ -331,6 +386,16 @@ void CLsodaMethod::start(const CState * initialState)
   if (mNumRoots > 0)
     {
       mLSODAR.setOstream(mErrorMsg);
+      mDiscreteRoots.resize(mNumRoots);
+
+      CMathTrigger::CRootFinder * const* ppRootFinder = mpModel->getRootFinders().array();
+      CMathTrigger::CRootFinder * const* ppRootFinderEnd = ppRootFinder + mNumRoots;
+      bool * pDiscrete = mDiscreteRoots.array();
+
+      for (; ppRootFinder != ppRootFinderEnd; ++ppRootFinder, ++pDiscrete)
+        {
+          *pDiscrete = (*ppRootFinder)->isDiscrete();
+        }
     }
   else
     {
@@ -385,7 +450,7 @@ void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  y,
 
   mpModel->evaluateRoots(RootValues, true);
 
-  if (mRootMask.size())
+  if (mRootMasking != NONE)
     {
       maskRoots(RootValues);
     }
@@ -424,9 +489,12 @@ void CLsodaMethod::createRootMask()
     {
       *pMask = (fabs(*pRootDerivative) < *mpAbsoluteTolerance) ? true : false;
     }
+
+  mRootMasking = ALL;
 }
 
 void CLsodaMethod::destroyRootMask()
 {
   mRootMask.resize(0);
+  mRootMasking = NONE;
 }

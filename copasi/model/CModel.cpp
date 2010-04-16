@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.388.2.1 $
+//   $Revision: 1.388.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/02 15:56:57 $
+//   $Date: 2010/04/16 19:29:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -4110,3 +4110,9 @@ void CModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
 {
   return mpMathModel->calculateRootDerivatives(rootDerivatives);
 }
+
+const CVector< CMathTrigger::CRootFinder * > & CModel::getRootFinders() const
+{
+  return mpMathModel->getRootFinders();
+}
+
