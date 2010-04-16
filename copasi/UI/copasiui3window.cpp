@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.280 $
+//   $Revision: 1.281 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2010/04/16 10:47:05 $
+//   $Date: 2010/04/16 10:49:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2345,8 +2345,6 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
 
   if (fileName.isEmpty())
     return;
-
-  qDebug() << "Name of dropped file = " << fileName;
 
   slotFileOpen(fileName);
 }
