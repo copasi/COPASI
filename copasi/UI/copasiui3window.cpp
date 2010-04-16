@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.279 $
+//   $Revision: 1.280 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2010/04/05 14:22:13 $
+//   $Date: 2010/04/16 10:47:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -314,6 +314,9 @@ CopasiUI3Window::CopasiUI3Window():
 #ifdef Linux
   setApplicationFont();
 #endif // Linux
+
+  // drop acceptance
+  setAcceptDrops(true);
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -2323,3 +2326,27 @@ void CopasiUI3Window::startSBWAnalyzer(int /* nId */) {}
 void CopasiUI3Window::customEvent(QCustomEvent * /* event */) {}
 
 #endif // COPASI_SBW_INTEGRATION
+
+#include <QUrl>
+void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
+{
+  if (event->mimeData()->hasFormat("text/uri-list"))
+    event->acceptProposedAction();
+}
+
+void CopasiUI3Window::dropEvent(QDropEvent *event)
+{
+  QList<QUrl> urls = event->mimeData()->urls();
+
+  if (urls.isEmpty())
+    return;
+
+  QString fileName = urls.first().toLocalFile();
+
+  if (fileName.isEmpty())
+    return;
+
+  qDebug() << "Name of dropped file = " << fileName;
+
+  slotFileOpen(fileName);
+}

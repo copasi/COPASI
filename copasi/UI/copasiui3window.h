@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/17 19:35:03 $
+//   $Author: pwilly $
+//   $Date: 2010/04/16 10:47:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,12 @@ public:
 
 protected:
   virtual void closeEvent(QCloseEvent* e);
+
+  /*
+   * This is used for doing drag-and-drop action (16.04.10)
+   */
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
 
 public slots:
   void slotShowSliders(bool flag);
