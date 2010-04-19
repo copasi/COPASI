@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.40.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/13 14:42:35 $
+//   $Date: 2010/04/19 17:38:26 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -24,10 +29,10 @@
 #include "copasi.h"
 #include "utilities/CCopasiMessage.h"
 
-template <typename CType> class CVector;
+template <typename CType> class CVectorCore;
 
 template <typename CType>
-std::ostream &operator<<(std::ostream &os, const CVector< CType > & A);
+std::ostream &operator<<(std::ostream &os, const CVectorCore< CType > & A);
 
 template <class CType> class CVectorCore
 {
@@ -124,6 +129,25 @@ public:
    * @return const CType * array
    */
   const CType * array() const {return mVector;}
+
+  /**
+   * Output stream operator
+   * @param ostream & os
+   * @param const CVector< CType > & A
+   * @return ostream & os
+   */
+#if defined SWIG
+  friend std::ostream &operator << (std::ostream &os,
+                                    const CVectorCore< CType > & A);
+#else
+#if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
+  friend std::ostream &operator << (std::ostream &os,
+                                    const CVectorCore< CType > & A);
+#else
+  friend std::ostream &operator << <> (std::ostream &os,
+                                       const CVectorCore< CType > & A);
+#endif // WIN32
+#endif // SWIG
 };
 
 /**
@@ -217,7 +241,7 @@ public:
   }
 
   /**
-   * Assignement operator
+   * Assignment operator
    * @param const CVector <CType> & rhs
    * @return CVector <CType> & lhs
    */
@@ -239,7 +263,7 @@ public:
   }
 
   /**
-   * Assignement operator
+   * Assignment operator
    * @param const CType & value
    * @return CVector <CType> & lhs
    */
@@ -300,39 +324,20 @@ public:
 
     return true;
   }
-
-  /**
-   * Output stream operator
-   * @param ostream & os
-   * @param const CVector< CType > & A
-   * @retrun ostream & os
-   */
-#if defined SWIG
-  friend std::ostream &operator << (std::ostream &os,
-                                    const CVector< CType > & A);
-#else
-#if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
-  friend std::ostream &operator << (std::ostream &os,
-                                    const CVector< CType > & A);
-#else
-  friend std::ostream &operator << <> (std::ostream &os,
-                                       const CVector< CType > & A);
-#endif // WIN32
-#endif // SWIG
 };
 
 template <class CType>
-std::ostream &operator<<(std::ostream &os, const CVector< CType > & A)
+std::ostream &operator<<(std::ostream &os, const CVectorCore< CType > & A)
 {
   os << "(\t";
 
-  if (A.CVectorCore< CType >::mSize)
+  if (A.mSize)
     {
       unsigned C_INT32 i;
-      CType * tmp = A.CVectorCore< CType >::mVector;
+      CType * tmp = A.mVector;
       os << *(tmp++);
 
-      for (i = 1; i < A.CVectorCore< CType >::mSize; i++)
+      for (i = 1; i < A.mSize; i++)
         os << "\t" << *(tmp++);
     }
 
