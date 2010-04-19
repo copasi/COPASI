@@ -18,13 +18,14 @@ WRAPPER=`pwd`/stochastic-testsuite.app/Contents/MacOS/stochastic-testsuite
 # go over all models in tests/model-list
 #MODELS=`cat tests/model-list`
 
-if [ $# != 2 ] ; then
-  echo -e "\nUsage: run.sh MODEL_LIST_FILE NUM_REPEATS\n";
+if [ $# != 3 ] ; then
+  echo -e "\nUsage: run.sh METHOD MODEL_LIST_FILE NUM_REPEATS\n";
   exit 1;
 fi  
 
-MODELFILE=$1
-NUM_REPEATS=$2
+METHOD=$1
+MODELFILE=$2
+NUM_REPEATS=$3
 
 MODELS=`cat $MODELFILE` 
 
@@ -50,10 +51,10 @@ for MODEL in $MODELS;do
   SD_REFERENCE_FILE=${TESTSDIR}/${MODEL}-sd.csv
   # run simulation 
   if [ -e $INFILE ] ; then
-    echo "$WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST"
+    echo "$WRAPPER $METHOD $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST"
     rm -f $OUTFILE
     exec 3>&1 4>&2
-    TIME=$( { time -p $WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST || RESULT="failed"  1>&3 2>&4; } 2>&1 )  # Captures time only.
+    TIME=$( { time -p $WRAPPER $METHOD $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST || RESULT="failed"  1>&3 2>&4; } 2>&1 )  # Captures time only.
     exec 3>&- 4>&-
     TIME=`echo $TIME |  /usr/bin/awk '{print $4}'` 
     echo "time: $TIME seconds"

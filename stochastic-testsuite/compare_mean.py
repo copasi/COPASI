@@ -28,7 +28,7 @@ for X in range(2,len(MEAN)):
     REF_SD_COLS=string.split(REFERENCE_SD[X],",")[1:]
     MEAN_COLS=string.split(MEAN[X],",")[1:]
     if(len(REF_MEAN_COLS)!=len(REF_SD_COLS) or len(MEAN_COLS) != len(REF_MEAN_COLS)):
-        print "ERROR: Number of columns differs between files at line",Y
+        print "ERROR: Number of columns differs between files at line"
         OUT.close()
         sys.exit(1)
     RESULT=str(X-1)
@@ -41,9 +41,9 @@ for X in range(2,len(MEAN)):
            v=((MEAN_VALUE - REF_MEAN_VALUE)/REF_SD_VALUE)*math.sqrt(REPEATS) 
        else:
            if((MEAN_VALUE - REF_MEAN_VALUE)!=0.0):
-               print "ERROR. Mean values not the same, although standard deviation is 0.0 at line %d column %d."%(X,Y)
+               print "ERROR at %s (%d, %d): Mean: %f, RefMean: %f, Tol: %f."%(MEAN_FILE,X,Y+1,MEAN_VALUE, REF_MEAN_VALUE, 3.0*REF_SD_VALUE/math.sqrt(REPEATS)) 
        if(math.fabs(v)>=3.0):
-          print "ERROR: Value of %f to high at %s line %d."%(v,MEAN_FILE,X) 
+          print "ERROR at %s (%d, %d): Mean: %f, RefMean: %f, Tol: %f."%(MEAN_FILE,X,Y+1,MEAN_VALUE, REF_MEAN_VALUE, 3.0*REF_SD_VALUE/math.sqrt(REPEATS)) 
           EXIT_STATUS=1
        RESULT=string.join([RESULT,str(v)],",")
     RESULT=RESULT+"\n"
