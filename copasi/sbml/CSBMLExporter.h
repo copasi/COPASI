@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/17 12:31:28 $
+//   $Date: 2010/04/19 12:53:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "copasi.h"
 
 #include "copasi/function/CEvaluationNodeFunction.h"
+#include <sbml/FunctionDefinition.h>
 
 class SBase;
 class SBMLDocument;
@@ -80,6 +81,8 @@ protected:
   bool mExportCOPASIMIRIAM;
   std::map<std::string, Parameter*> mParameterReplacementMap;
   std::set<std::string> mSpatialSizeUnitsSpecies;
+  ListOfFunctionDefinitions mExportedFunctions;
+  std::map<const FunctionDefinition*, const CCopasiObject*> mFunctionMap;
 
 public:
   /**
@@ -515,7 +518,7 @@ protected:
    * On error an exception is created.
    * The caller is responsible for freeing the memory of the returned object.
    */
-  static ASTNode* convertASTTreeToLevel1(const ASTNode* pNode, const Model* pModel, std::string& message);
+  static ASTNode* convertASTTreeToLevel1(const ASTNode* pNode, const ListOfFunctionDefinitions& functions, std::string& message);
 
   /**
    * This method goes through the ASTNode based tree rooted at pNode and

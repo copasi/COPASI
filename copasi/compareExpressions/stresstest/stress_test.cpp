@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/02 08:07:53 $
+//   $Date: 2010/04/19 12:53:50 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -423,7 +428,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
 
       if (pMath != NULL)
         {
-          pNewMath = create_expression(pMath, pModel);
+          pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
           assert(pNewMath != NULL);
 
           try
@@ -474,7 +479,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
 
       if (pMath != NULL)
         {
-          pNewMath = create_expression(pMath, pModel);
+          pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
           assert(pNewMath != NULL);
 
           try
@@ -530,7 +535,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
 
           if (pMath != NULL)
             {
-              pNewMath = create_expression(pMath, pModel);
+              pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
               assert(pNewMath != NULL);
 
               try
@@ -716,7 +721,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
 
               if (pMath != NULL)
                 {
-                  pNewMath = create_expression(pMath, pModel);
+                  pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
                   assert(pNewMath != NULL);
 
                   try
@@ -772,7 +777,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
 
               if (pMath != NULL)
                 {
-                  pNewMath = create_expression(pMath, pModel);
+                  pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
                   assert(pNewMath != NULL);
 
                   try
@@ -830,7 +835,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
 
       if (pMath != NULL)
         {
-          pNewMath = create_expression(pMath, pModel);
+          pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
           assert(pNewMath != NULL);
 
           try
@@ -877,7 +882,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
 
           if (pMath != NULL)
             {
-              pNewMath = create_expression(pMath, pModel);
+              pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
               assert(pNewMath != NULL);
 
               try
@@ -928,7 +933,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
 
           if (pMath != NULL)
             {
-              pNewMath = create_expression(pMath, pModel);
+              pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
               assert(pNewMath != NULL);
 
               try
@@ -991,7 +996,7 @@ void stress_test::normalizeAndSimplifyFunctionDefinitions(const Model* pModel)
           // function definitons have to be expanded
           const ASTNode* pMath = pRoot->getChild(pRoot->getNumChildren() - 1);
           assert(pMath != NULL);
-          pNewRoot = expand_function_calls(pMath, pModel);
+          pNewRoot = expand_function_calls(pMath, pModel->getListOfFunctionDefinitions());
           assert(pNewRoot != NULL);
 
           try

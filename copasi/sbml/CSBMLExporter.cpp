@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/17 13:09:14 $
+//   $Date: 2010/04/19 12:53:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2349,6 +2349,8 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
  */
 void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 {
+  this->mExportedFunctions.clear(true);
+  this->mFunctionMap.clear();
   // make sure the list of used functions is filled before this is
   // called
   // make sure the mCOPASI2SBMLMap is up to date
@@ -2459,10 +2461,27 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
     }
 
   // remove all existing function definitions from the list
-  while (pModel->getNumFunctionDefinitions() != 0)
+  // and remove their entries from the copasi2sbmlmap
+  iMax = pModel->getNumFunctionDefinitions();
+
+  for (unsigned int i = 0; i < iMax; ++i)
     {
-      pModel->getListOfFunctionDefinitions()->remove(0);
+      mapIt = this->mCOPASI2SBMLMap.begin();
+      mapEndit = this->mCOPASI2SBMLMap.end();
+
+      while (mapIt != mapEndit)
+        {
+          if (mapIt->second == pModel->getFunctionDefinition(i))
+            {
+              this->mCOPASI2SBMLMap.erase(mapIt->first);
+              break;
+            }
+
+          ++mapIt;
+        }
     }
+
+  pModel->getListOfFunctionDefinitions()->clear(true);
 
   std::vector<CFunction*>::iterator it = functionsVect.begin(), endit = functionsVect.end();
 
@@ -2494,7 +2513,17 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
     }
   else
     {
-      pFunDef = this->mpSBMLDocument->getModel()->createFunctionDefinition();
+      if (this->mpSBMLDocument->getLevel() == 1)
+        {
+          pFunDef = new FunctionDefinition(2, 4);
+        }
+      else
+        {
+          pFunDef = new FunctionDefinition(this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
+        }
+
+      this->mFunctionMap[pFunDef] = &function;
+      //pFunDef = this->mpSBMLDocument->getModel()->createFunctionDefinition();
       pFunDef->setName(function.getObjectName());
       std::string id = function.getSBMLId();
 
@@ -2552,6 +2581,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
 
           pLambda->addChild(pFunNode);
           pFunDef->setMath(pLambda);
+          this->mExportedFunctions.appendAndOwn(pFunDef);
           delete pLambda;
         }
       else
@@ -2770,7 +2800,47 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
           delete pSBMLModel->getListOfFunctionDefinitions()->remove(i);
         }
     }
+  else
+    {
+      // add all function definitions to the model
+      Model* pSBMLModel = this->mpSBMLDocument->getModel();
+      assert(pSBMLModel != NULL);
 
+      if (pSBMLModel != NULL)
+        {
+          unsigned int i = 0, iMax = this->mExportedFunctions.size();
+#if LIBSBML_VERSION > 30401
+          int result;
+#endif // LIBSBML_VERSION > 30401
+          FunctionDefinition* pFunDef = NULL;
+          std::map<const FunctionDefinition*, const CCopasiObject*>::const_iterator funPos;
+
+          while (i < iMax)
+            {
+              pFunDef = this->mExportedFunctions.get(i);
+              assert(pFunDef != NULL);
+// add methods only return a value starting with libsbml 4
+#if LIBSBML_VERSION > 30401
+              result = pSBMLModel->addFunctionDefinition(pFunDef);
+              assert(result == LIBSBML_OPERATION_SUCCESS);
+#else
+              pSBMLModel->addFunctionDefinition(pFunDef);
+              assert(pSBMLModel->getFunctionDefinition(pFunDef->getId()) != NULL);
+#endif // LIBSBML_VERSION > 30401
+              // now we need to add the newly created FunctionDefinition to the copasi2sbml map
+              funPos = this->mFunctionMap.find(pFunDef);
+              assert(funPos != this->mFunctionMap.end());
+              pFunDef = pSBMLModel->getFunctionDefinition(pFunDef->getId());
+              assert(pFunDef != NULL);
+              this->mCOPASI2SBMLMap[funPos->second] = pFunDef;
+              ++i;
+            }
+
+          assert(pSBMLModel->getNumFunctionDefinitions() == this->mExportedFunctions.size());
+        }
+    }
+
+  // In case the document is just a clone of an old model, we have to set the level and version
   this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
 
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
@@ -2803,6 +2873,11 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, "Model incompatible with chosen version and/or level of SBML.");
     }
+
+  // delete all temporary function definitions
+  // and the function map
+  this->mExportedFunctions.clear(true);
+  this->mFunctionMap.clear();
 }
 
 const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupportedFunctionTypeSet(unsigned int sbmlLevel)
@@ -4282,7 +4357,7 @@ void CSBMLExporter::convertToLevel1()
       std::string message = "rule for object with id \"";
       message += pRule->getVariable();
       message += "\"";
-      ASTNode* pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+      ASTNode* pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, this->mExportedFunctions, message);
       assert(pNewMath != NULL);
 
       if (pNewMath != NULL)
@@ -4308,7 +4383,7 @@ void CSBMLExporter::convertToLevel1()
           std::string message = "kinetic law in reaction with id \"";
           message += pReaction->getId();
           message += "\"";
-          ASTNode* pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+          ASTNode* pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, this->mExportedFunctions, message);
           assert(pNewMath != NULL);
 
           if (pNewMath != NULL)
@@ -4512,9 +4587,9 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
   return pResult;
 }
 
-ASTNode* CSBMLExporter::convertASTTreeToLevel1(const ASTNode* pNode, const Model* pModel, std::string& message)
+ASTNode* CSBMLExporter::convertASTTreeToLevel1(const ASTNode* pNode, const ListOfFunctionDefinitions& functions, std::string& message)
 {
-  ASTNode* pExpanded = create_expression(pNode, pModel);
+  ASTNode* pExpanded = create_expression(pNode, &functions);
 
   if (pExpanded != NULL)
     {

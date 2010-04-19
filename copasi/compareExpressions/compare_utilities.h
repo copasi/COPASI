@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/16 16:29:31 $
+//   $Date: 2010/04/19 12:53:49 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -23,14 +28,14 @@
 
 class ASTNode;
 class CNormalFraction;
-class Model;
+class ListOfFunctionDefinitions;
 class CNormalBase;
 class ConverterASTNode;
 class CEvaluationNode;
 class CEvaluationNodeCall;
 class CFunctionDB;
 
-ASTNode* create_expression(const ASTNode* pSource, const Model* pModel);
+ASTNode* create_expression(const ASTNode* pSource, const ListOfFunctionDefinitions* pFunctions);
 
 CNormalFraction* create_simplified_normalform(const ASTNode* pSource);
 
@@ -42,9 +47,9 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
 
 ASTNode* replace_variable_names(const ASTNode* pNode, const std::map<std::string, const ASTNode*>& argumentMap);
 
-ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel);
+ASTNode* expand_function_call(const ASTNode* pCall, const ListOfFunctionDefinitions* pFunctions);
 
-ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel);
+ASTNode* expand_function_calls(const ASTNode* pNode, const ListOfFunctionDefinitions* pFunctions);
 
 CEvaluationNode* expand_function_calls(const CEvaluationNode* pNode, CFunctionDB* pFunctionDB);
 

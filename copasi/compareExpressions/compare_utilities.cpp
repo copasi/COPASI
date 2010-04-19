@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/16 16:29:31 $
+//   $Date: 2010/04/19 12:53:49 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -59,10 +64,10 @@
  * On failure NULL is returned, otherwise an expanded copy of the original node
  * is returned.
  */
-ASTNode* create_expression(const ASTNode* pSource, const Model* pModel)
+ASTNode* create_expression(const ASTNode* pSource, const ListOfFunctionDefinitions* pFunctions)
 {
   // expand all function calls
-  ASTNode* pResult = expand_function_calls(pSource, pModel);
+  ASTNode* pResult = expand_function_calls(pSource, pFunctions);
   return pResult;
 }
 
@@ -71,22 +76,27 @@ ASTNode* create_expression(const ASTNode* pSource, const Model* pModel)
  * On failure NULL is returned, otherwise a copy of the original node
  * is returned where all function calls have been expanded.
  */
-ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel)
+ASTNode* expand_function_calls(const ASTNode* pNode, const ListOfFunctionDefinitions* pFunctions)
 {
   ASTNode* pResult = NULL;
+
   if (pNode->getType() == AST_FUNCTION)
     {
-      pResult = expand_function_call(pNode, pModel);
+      pResult = expand_function_call(pNode, pFunctions);
+
       if (pResult == NULL)
         {
           return NULL;
         }
-      ASTNode* pTmp = expand_function_calls(pResult, pModel);
+
+      ASTNode* pTmp = expand_function_calls(pResult, pFunctions);
+
       if (pTmp == NULL)
         {
           delete pResult;
           return NULL;
         }
+
       delete pResult;
       pResult = pTmp;
     }
@@ -98,21 +108,25 @@ ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel)
       unsigned int iMax = pNode->getNumChildren();
       ASTNode* pChild = NULL;
       ASTNode* pNewChild = NULL;
+
       while (i < iMax)
         {
           pChild = pNode->getChild(i);
           assert(pChild != NULL);
-          pNewChild = expand_function_calls(pChild, pModel);
+          pNewChild = expand_function_calls(pChild, pFunctions);
+
           if (pNewChild == NULL)
             {
               delete pResult;
               pResult = NULL;
               break;
             }
+
           pResult->addChild(pNewChild);
           ++i;
         }
     }
+
   return pResult;
 }
 
@@ -121,34 +135,29 @@ ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel)
  * On failure NULL is returned, otherwise on expression of the expanded
  * function call is returned.
  */
-ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel)
+ASTNode* expand_function_call(const ASTNode* pCall, const ListOfFunctionDefinitions* pFunctions)
 {
   // find the function that belongs to the call
-  const FunctionDefinition * pFunctionDefinition = NULL;
+  const FunctionDefinition * pFunctionDefinition = pFunctions->get(pCall->getName());
   ASTNode* pResult = NULL;
-  unsigned int i = 0, iMax = pModel->getNumFunctionDefinitions();
-  while (i < iMax)
-    {
-      if (pModel->getFunctionDefinition(i)->getId() == pCall->getName())
-        {
-          pFunctionDefinition = pModel->getFunctionDefinition(i);
-          break;
-        }
-      ++i;
-    }
+
   if (pFunctionDefinition == NULL) return NULL;
+
   // create the mapping
-  iMax = pFunctionDefinition->getNumArguments();
+  unsigned int iMax = pFunctionDefinition->getNumArguments();
+
   if (pFunctionDefinition != NULL && iMax == pCall->getNumChildren())
     {
       // map the first function argument to the first child in the call etc.
       std::map<std::string, const ASTNode*> argumentMap;
-      i = 0;
+      unsigned int i = 0;
+
       while (i < iMax)
         {
           argumentMap[pFunctionDefinition->getArgument(i)->getName()] = pCall->getChild(i);
           ++i;
         }
+
       // create the resulting tree
       pResult = pFunctionDefinition->getBody()->deepCopy();
       ASTNode* pTmpNode = replace_variable_names(pResult, argumentMap);
@@ -156,15 +165,18 @@ ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel)
       delete pResult;
       pResult = pTmpNode;
     }
+
   return pResult;
 }
 
 ASTNode* replace_variable_names(const ASTNode* pNode, const std::map<std::string, const ASTNode*>& argumentMap)
 {
   ASTNode* pResult = NULL;
+
   if (pNode->getType() == AST_NAME)
     {
       std::map<std::string, const ASTNode*>::const_iterator pos = argumentMap.find(pNode->getName());
+
       if (pos == argumentMap.end())
         {
           pResult = NULL;
@@ -182,6 +194,7 @@ ASTNode* replace_variable_names(const ASTNode* pNode, const std::map<std::string
       unsigned int iMax = pNode->getNumChildren();
       ASTNode* pChild = NULL;
       ASTNode* pNewChild = NULL;
+
       while (i < iMax)
         {
           pChild = pNode->getChild(i);
@@ -192,6 +205,7 @@ ASTNode* replace_variable_names(const ASTNode* pNode, const std::map<std::string
           ++i;
         }
     }
+
   return pResult;
 }
 
@@ -236,6 +250,7 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
   CNormalLogicalItem* pLogicalItem = NULL;
   CNormalProduct* pProduct = NULL;
   CNormalSum* pSum = NULL;
+
   if ((pChoice = dynamic_cast<CNormalChoice*>(pBase)) != NULL)
     {
       normalize_variable_names(&pChoice->getCondition(), variableMap);
@@ -251,6 +266,7 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
   else if ((pFraction = dynamic_cast<CNormalFraction*>(pBase)) != NULL)
     {
       normalize_variable_names(&pFraction->getNumerator(), variableMap);
+
       if (!pFraction->checkDenominatorOne())
         {
           normalize_variable_names(&pFraction->getDenominator(), variableMap);
@@ -268,27 +284,30 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
   else if ((pItem = dynamic_cast<CNormalItem*>(pBase)) != NULL)
     {
       std::map<std::string, std::string>::iterator pos;
+
       switch (pItem->getType())
         {
-        case CNormalItem::VARIABLE:
-          pos = variableMap.find(pItem->getName());
-          if (pos != variableMap.end())
-            {
-              pItem->setName(pos->second);
-            }
-          else
-            {
-              std::ostringstream ostrstr;
-              ostrstr << "variable";
-              ostrstr.width(7);
-              ostrstr.fill('0');
-              ostrstr << variableMap.size() + 1;
-              variableMap[pItem->getName()] = ostrstr.str();
-              pItem->setName(ostrstr.str());
-            }
-          break;
-        default:
-          break;
+          case CNormalItem::VARIABLE:
+            pos = variableMap.find(pItem->getName());
+
+            if (pos != variableMap.end())
+              {
+                pItem->setName(pos->second);
+              }
+            else
+              {
+                std::ostringstream ostrstr;
+                ostrstr << "variable";
+                ostrstr.width(7);
+                ostrstr.fill('0');
+                ostrstr << variableMap.size() + 1;
+                variableMap[pItem->getName()] = ostrstr.str();
+                pItem->setName(ostrstr.str());
+              }
+
+            break;
+          default:
+            break;
         }
     }
   else if ((pItemPower = dynamic_cast<CNormalItemPower*>(pBase)) != NULL)
@@ -299,10 +318,12 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
     {
       CNormalLogical::ChoiceSetOfSets tmpSet;
       CNormalLogical::ChoiceSetOfSets::const_iterator it = pLogical->getChoices().begin(), endit = pLogical->getChoices().end();
+
       while (it != endit)
         {
           CNormalLogical::ChoiceSet tmpChoiceSet;
           CNormalLogical::ChoiceSet::const_iterator innerit = (*it).first.begin(), innerendit = (*it).first.end();
+
           while (innerit != innerendit)
             {
               pLogicalChoice = new CNormalChoiceLogical(*(*innerit).first);
@@ -310,17 +331,21 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
               tmpChoiceSet.insert(std::make_pair(pLogicalChoice, (*innerit).second));
               ++innerit;
             }
+
           tmpSet.insert(std::make_pair(tmpChoiceSet, (*it).second));
           ++it;
         }
+
       pLogical->setChoices(tmpSet);
       CNormalLogical::cleanSetOfSets(tmpSet);
       CNormalLogical::ItemSetOfSets tmpSet2;
       CNormalLogical::ItemSetOfSets::const_iterator it2 = pLogical->getAndSets().begin(), endit2 = pLogical->getAndSets().end();
+
       while (it2 != endit2)
         {
           CNormalLogical::ItemSet tmpItemSet;
           CNormalLogical::ItemSet::const_iterator innerit = (*it2).first.begin(), innerendit = (*it2).first.end();
+
           while (innerit != innerendit)
             {
               pLogicalItem = new CNormalLogicalItem(*(*innerit).first);
@@ -328,9 +353,11 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
               tmpItemSet.insert(std::make_pair(pLogicalItem, (*innerit).second));
               ++innerit;
             }
+
           tmpSet2.insert(std::make_pair(tmpItemSet, (*it2).second));
           ++it2;
         }
+
       pLogical->setAndSets(tmpSet2);
       CNormalLogical::cleanSetOfSets(tmpSet2);
     }
@@ -343,6 +370,7 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
     {
       std::set<CNormalItemPower*, compareItemPowers> tmpSet;
       std::set<CNormalItemPower*, compareItemPowers>::const_iterator it = pProduct->getItemPowers().begin(), endit = pProduct->getItemPowers().end();
+
       while (it != endit)
         {
           CNormalItemPower* pItemPower = new CNormalItemPower(**it);
@@ -350,8 +378,10 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
           tmpSet.insert(pItemPower);
           ++it;
         }
+
       pProduct->setItemPowers(tmpSet);
       it = tmpSet.begin(), endit = tmpSet.end();
+
       while (it != endit)
         {
           delete *it;
@@ -362,6 +392,7 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
     {
       std::set<CNormalFraction*> tmpSet;
       std::set<CNormalFraction*>::const_iterator it = pSum->getFractions().begin(), endit = pSum->getFractions().end();
+
       while (it != endit)
         {
           pFraction = new CNormalFraction(**it);
@@ -369,15 +400,19 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
           tmpSet.insert(pFraction);
           ++it;
         }
+
       pSum->setFractions(tmpSet);
       it = tmpSet.begin(), endit = tmpSet.end();
+
       while (it != endit)
         {
           delete *it;
           ++it;
         }
+
       std::set<CNormalProduct*, compareProducts> tmpSet2;
       std::set<CNormalProduct*, compareProducts>::const_iterator it2 = pSum->getProducts().begin(), endit2 = pSum->getProducts().end();
+
       while (it2 != endit2)
         {
           pProduct = new CNormalProduct(**it2);
@@ -385,11 +420,13 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
           tmpSet2.insert(pProduct);
           ++it2;
         }
+
       pSum->setProducts(tmpSet2);
       it2 = tmpSet2.begin(), endit2 = tmpSet2.end();
+
       while (it2 != endit2)
         {
-          delete (*it2);
+          delete(*it2);
           ++it2;
         }
     }
@@ -408,6 +445,7 @@ CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
   // all variable nodes in this tree are objects nodes so we have to convert
   // them
   CCopasiTree<CEvaluationNode>::iterator treeIt = pEvaluationNode;
+
   // if the root node already is an object node, this has to be dealt with separately
   if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
     {
@@ -422,23 +460,28 @@ CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
             {
               CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+
               if ((*treeIt).getParent())
                 {
                   (*treeIt).getParent()->addChild(pVariableNode, &(*treeIt));
                   (*treeIt).getParent()->removeChild(&(*treeIt));
                 }
+
               delete &(*treeIt);
               treeIt = pVariableNode;
             }
+
           ++treeIt;
         }
     }
+
   if (pEvaluationNode != NULL)
     {
       // create the normalform from that
       pFraction = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(pEvaluationNode));
       delete pEvaluationNode;
     }
+
   return pFraction;
 }
 
@@ -454,6 +497,7 @@ CNormalFraction* create_normalform(const ASTNode* pSource)
   // all variable nodes in this tree are objects nodes so we have to convert
   // them
   CCopasiTree<CEvaluationNode>::iterator treeIt = pEvaluationNode;
+
   // if the root node already is an object node, this has to be dealt with separately
   if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
     {
@@ -468,23 +512,28 @@ CNormalFraction* create_normalform(const ASTNode* pSource)
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
             {
               CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+
               if ((*treeIt).getParent())
                 {
                   (*treeIt).getParent()->addChild(pVariableNode, &(*treeIt));
                   (*treeIt).getParent()->removeChild(&(*treeIt));
                 }
+
               delete &(*treeIt);
               treeIt = pVariableNode;
             }
+
           ++treeIt;
         }
     }
+
   if (pEvaluationNode != NULL)
     {
       // create the normalform from that
       pFraction = createNormalRepresentation(pEvaluationNode);
       delete pEvaluationNode;
     }
+
   return pFraction;
 }
 
@@ -494,6 +543,7 @@ CNormalFraction* create_normalform(const ASTNode* pSource)
 ASTNode* replace_SEC(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -504,6 +554,7 @@ ASTNode* replace_SEC(const ASTNode* pChild)
       pTmpNode->addChild(pChild->deepCopy());
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -513,6 +564,7 @@ ASTNode* replace_SEC(const ASTNode* pChild)
 ASTNode* replace_CSC(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -523,6 +575,7 @@ ASTNode* replace_CSC(const ASTNode* pChild)
       pTmpNode->addChild(pChild->deepCopy());
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -532,6 +585,7 @@ ASTNode* replace_CSC(const ASTNode* pChild)
 ASTNode* replace_COT(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -542,6 +596,7 @@ ASTNode* replace_COT(const ASTNode* pChild)
       pTmpNode->addChild(pChild->deepCopy());
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -551,6 +606,7 @@ ASTNode* replace_COT(const ASTNode* pChild)
 ASTNode* replace_SINH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -568,6 +624,7 @@ ASTNode* replace_SINH(const ASTNode* pChild)
       pTmpNode->setValue(2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -577,6 +634,7 @@ ASTNode* replace_SINH(const ASTNode* pChild)
 ASTNode* replace_COSH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -594,6 +652,7 @@ ASTNode* replace_COSH(const ASTNode* pChild)
       pTmpNode->setValue(2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -603,6 +662,7 @@ ASTNode* replace_COSH(const ASTNode* pChild)
 ASTNode* replace_TANH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -627,6 +687,7 @@ ASTNode* replace_TANH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -636,6 +697,7 @@ ASTNode* replace_TANH(const ASTNode* pChild)
 ASTNode* replace_SECH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -653,6 +715,7 @@ ASTNode* replace_SECH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -662,6 +725,7 @@ ASTNode* replace_SECH(const ASTNode* pChild)
 ASTNode* replace_CSCH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -679,6 +743,7 @@ ASTNode* replace_CSCH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -688,6 +753,7 @@ ASTNode* replace_CSCH(const ASTNode* pChild)
 ASTNode* replace_COTH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_DIVIDE);
@@ -712,6 +778,7 @@ ASTNode* replace_COTH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -721,6 +788,7 @@ ASTNode* replace_COTH(const ASTNode* pChild)
 ASTNode* replace_ARCSINH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_FUNCTION_LOG);
@@ -744,6 +812,7 @@ ASTNode* replace_ARCSINH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -753,6 +822,7 @@ ASTNode* replace_ARCSINH(const ASTNode* pChild)
 ASTNode* replace_ARCCOSH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_FUNCTION_LOG);
@@ -784,6 +854,7 @@ ASTNode* replace_ARCCOSH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -793,6 +864,7 @@ ASTNode* replace_ARCCOSH(const ASTNode* pChild)
 ASTNode* replace_ARCTANH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_TIMES);
@@ -818,6 +890,7 @@ ASTNode* replace_ARCTANH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -827,6 +900,7 @@ ASTNode* replace_ARCTANH(const ASTNode* pChild)
 ASTNode* replace_ARCSECH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_FUNCTION_LOG);
@@ -873,6 +947,7 @@ ASTNode* replace_ARCSECH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -882,6 +957,7 @@ ASTNode* replace_ARCSECH(const ASTNode* pChild)
 ASTNode* replace_ARCCSCH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
+
   if (pChild != NULL)
     {
       pResult = new ASTNode(AST_FUNCTION_LOG);
@@ -912,6 +988,7 @@ ASTNode* replace_ARCCSCH(const ASTNode* pChild)
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
     }
+
   return pResult;
 }
 
@@ -924,19 +1001,24 @@ CEvaluationNode* expand_function_calls(const CEvaluationNode* pNode, CFunctionDB
 {
   CEvaluationNode* pResult = NULL;
   const CEvaluationNodeCall* pCall = dynamic_cast<const CEvaluationNodeCall*>(pNode);
+
   if (pCall != NULL)
     {
       pResult = expand_function_call(pCall, pFunctionDB);
+
       if (pResult == NULL)
         {
           return NULL;
         }
+
       CEvaluationNode* pTmp = expand_function_calls(pResult, pFunctionDB);
+
       if (pTmp == NULL)
         {
           delete pResult;
           return NULL;
         }
+
       delete pResult;
       pResult = pTmp;
     }
@@ -947,19 +1029,23 @@ CEvaluationNode* expand_function_calls(const CEvaluationNode* pNode, CFunctionDB
       pResult = pNode->copyNode(v);
       const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
       CEvaluationNode* pNewChild = NULL;
+
       while (pChild != NULL)
         {
           pNewChild = expand_function_calls(pChild, pFunctionDB);
+
           if (pNewChild == NULL)
             {
               delete pResult;
               pResult = NULL;
               break;
             }
+
           pResult->addChild(pNewChild);
           pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
         }
     }
+
   return pResult;
 }
 
@@ -973,6 +1059,7 @@ CEvaluationNode* expand_function_call(const CEvaluationNodeCall* pCall, CFunctio
   // find the function that belongs to the call
   CEvaluationNode* pResult = NULL;
   const CEvaluationTree* pTree = pFunctionDB->findFunction(pCall->getData());
+
   if (pTree != NULL)
     {
       const CFunction* pFunctionDefinition = dynamic_cast<const CFunction*>(pTree);
@@ -984,6 +1071,7 @@ CEvaluationNode* expand_function_call(const CEvaluationNodeCall* pCall, CFunctio
       std::map<std::string, const CEvaluationNode*> argumentMap;
       i = 0;
       const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pCall->getChild());
+
       while (i < iMax)
         {
           assert(pChild != NULL);
@@ -991,6 +1079,7 @@ CEvaluationNode* expand_function_call(const CEvaluationNodeCall* pCall, CFunctio
           pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
           ++i;
         }
+
       // create the resulting tree
       pResult = pFunctionDefinition->getRoot()->copyBranch();
       CEvaluationNode* pTmpNode = replace_variable_names(pResult, argumentMap);
@@ -999,15 +1088,18 @@ CEvaluationNode* expand_function_call(const CEvaluationNodeCall* pCall, CFunctio
       assert(pChild == NULL);
       pResult = pTmpNode;
     }
+
   return pResult;
 }
 
 CEvaluationNode* replace_variable_names(const CEvaluationNode* pNode, const std::map<std::string, const CEvaluationNode*>& argumentMap)
 {
   CEvaluationNode* pResult = NULL;
+
   if (dynamic_cast<const CEvaluationNodeVariable*>(pNode) != NULL)
     {
       std::map<std::string, const CEvaluationNode*>::const_iterator pos = argumentMap.find(pNode->getData());
+
       if (pos != argumentMap.end())
         {
           pResult = pos->second->copyBranch();
@@ -1020,6 +1112,7 @@ CEvaluationNode* replace_variable_names(const CEvaluationNode* pNode, const std:
       pResult = pNode->copyNode(v);
       const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
       CEvaluationNode* pNewChild = NULL;
+
       while (pChild != NULL)
         {
           pNewChild = replace_variable_names(pChild, argumentMap);
@@ -1028,5 +1121,6 @@ CEvaluationNode* replace_variable_names(const CEvaluationNode* pNode, const std:
           pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
         }
     }
+
   return pResult;
 }
