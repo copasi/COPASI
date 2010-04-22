@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/22 10:44:14 $
+//   $Date: 2010/04/22 14:31:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -949,7 +949,7 @@ void test000092::test_miriam_export_7()
   CPPUNIT_ASSERT(pSBMLCompartment != NULL);
   CPPUNIT_ASSERT(pSBMLCompartment->isSetMetaId() == true);
   CRDFGraphConverter::SBML2Copasi(miriamString);
-  pModel->setMiriamAnnotation(miriamString, pSBMLModel->getMetaId());
+  pCompartment->setMiriamAnnotation(miriamString, pSBMLCompartment->getMetaId());
   //
   std::string content = pDataModel->exportSBMLToString(NULL, 2, 4);
   CPPUNIT_ASSERT(content.empty() == false);
@@ -1089,7 +1089,7 @@ void test000092::test_miriam_export_7()
   CPPUNIT_ASSERT(pMIRIAM1 != NULL);
   CPPUNIT_ASSERT(pMIRIAM2 != NULL);
   CPPUNIT_ASSERT(pOther != NULL);
-  // check if the top level element for the libsbml annotation
+  // check if the top level element for the COPASI annotation
   // has all necessary namespaces
   ns = &pMIRIAM2->getNamespaces();
   CPPUNIT_ASSERT(ns != NULL);
@@ -1104,15 +1104,9 @@ void test000092::test_miriam_export_7()
   CPPUNIT_ASSERT(pMIRIAM2->getPrefix() == "rdf");
   ns = &pMIRIAM2->getNamespaces();
   CPPUNIT_ASSERT(ns != NULL);
-  index = ns->getIndex("http://purl.org/dc/terms/");
-  CPPUNIT_ASSERT(index != -1);
-  CPPUNIT_ASSERT(ns->getPrefix(index) == "dcterms");
   index = ns->getIndex("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "rdf");
-  index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
-  CPPUNIT_ASSERT(index != -1);
-  CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
   // same checks for the libsbml MIRIAM annotation
   CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
   CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
@@ -1163,21 +1157,31 @@ void test000092::test_miriam_export_8()
   CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
   miriamInfo.load(pCompartment->getKey());
-  pModifications = &miriamInfo.getModifications();
-  CPPUNIT_ASSERT(pModifications != NULL);
-  CPPUNIT_ASSERT(pModifications->size() == 1);
-  pModification = (*pModifications)[0];
-  CPPUNIT_ASSERT(pModification != NULL);
-  dateTime = pModification->getDate();
-  CPPUNIT_ASSERT(dateTime == "2007-06-05T11:40:04Z");
-  dateTime = "2009-06-05T11:40:04Z";
-  pNewModification = miriamInfo.createModification(dateTime);
-  CPPUNIT_ASSERT(pNewModification != NULL);
-  CPPUNIT_ASSERT(pNewModification->getDate() == dateTime);
+  const CCopasiVector<CBiologicalDescription>* pDescriptions = &miriamInfo.getBiologicalDescriptions();
+  CPPUNIT_ASSERT(pDescriptions != NULL);
+  CPPUNIT_ASSERT(pDescriptions->size() == 1);
+  CBiologicalDescription* pDescription = (*pDescriptions)[0];
+  CPPUNIT_ASSERT(pDescription != NULL);
+  std::string predicate = pDescription->getPredicate();
+  CPPUNIT_ASSERT(predicate == "is version of");
+  std::string resource = pDescription->getResource();
+  CPPUNIT_ASSERT(resource == "Gene Ontology");
+  std::string id = pDescription->getId();
+  CPPUNIT_ASSERT(id == "GO:0005623");
+  id = "GO:0001111";
+  CBiologicalDescription* pNewDescription = miriamInfo.createBiologicalDescription();
+  pNewDescription->setPredicate(predicate);
+  pNewDescription->setResource(resource);
+  pNewDescription->setId(id);
+  CPPUNIT_ASSERT(pNewDescription != NULL);
+  CPPUNIT_ASSERT(pNewDescription->getPredicate() == "is version of");
+  CPPUNIT_ASSERT(pNewDescription->getResource() == "Gene Ontology");
+  CPPUNIT_ASSERT(pNewDescription->getId() == "GO:0001111");
   CPPUNIT_ASSERT(miriamInfo.save() == true);
 
   std::string content = pDataModel->exportSBMLToString(NULL, 2, 4);
   CPPUNIT_ASSERT(content.empty() == false);
+  std::cout << content << std::endl;
   // now we convert the content into an XMLNode and check if everything is there that needs to be there
   XMLInputStream inputstream(content.c_str(), false);
   XMLNode node(inputstream);
@@ -1242,29 +1246,67 @@ void test000092::test_miriam_export_8()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // make sure the there are two modification dates
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "Description");
+  iMax = pMIRIAM2->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (unsigned int i = 0; i < iMax; ++i)
+    {
+      if (pMIRIAM2->getChild(i).getName() == "modified")
+        {
+          pMIRIAM2 = &pMIRIAM2->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "modified");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "Bag");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 2);
 
   // same checks for the libsbml MIRIAM annotation
-  if (pMIRIAM2 != NULL)
-    {
-      CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
-      CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
-      ns = &pMIRIAM1->getNamespaces();
-      CPPUNIT_ASSERT(ns != NULL);
-      index = ns->getIndex("http://purl.org/dc/terms/");
-      CPPUNIT_ASSERT(index != -1);
-      CPPUNIT_ASSERT(ns->getPrefix(index) == "dcterms");
-      index = ns->getIndex("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-      CPPUNIT_ASSERT(index != -1);
-      CPPUNIT_ASSERT(ns->getPrefix(index) == "rdf");
-      index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
-      CPPUNIT_ASSERT(index != -1);
-      CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
-    }
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
+  CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
+  ns = &pMIRIAM1->getNamespaces();
+  CPPUNIT_ASSERT(ns != NULL);
+  index = ns->getIndex("http://purl.org/dc/terms/");
+  CPPUNIT_ASSERT(index != -1);
+  CPPUNIT_ASSERT(ns->getPrefix(index) == "dcterms");
+  index = ns->getIndex("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+  CPPUNIT_ASSERT(index != -1);
+  CPPUNIT_ASSERT(ns->getPrefix(index) == "rdf");
+  index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
+  CPPUNIT_ASSERT(index != -1);
+  CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
 
   // there are actually more namespace attributes in the libsbml annotation, but that is enough to make sure
   // that everything should be OK
-  //
-  // Right now, we don't care about the content of the annotations as long as they are there
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "Description");
+  iMax = pMIRIAM1->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (unsigned int i = 0; i < iMax; ++i)
+    {
+      if (pMIRIAM1->getChild(i).getName() == "modified")
+        {
+          pMIRIAM1 = &pMIRIAM1->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "modified");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "W3CDTF");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 0);
   //
   // Find the compartment node
   iMax = pModelNode->getNumChildren();
@@ -1320,7 +1362,7 @@ void test000092::test_miriam_export_8()
   CPPUNIT_ASSERT(pMIRIAM1 != NULL);
   CPPUNIT_ASSERT(pMIRIAM2 != NULL);
   CPPUNIT_ASSERT(pOther != NULL);
-  // check if the top level element for the libsbml annotation
+  // check if the top level element for the COPASI annotation
   // has all necessary namespaces
   ns = &pMIRIAM2->getNamespaces();
   CPPUNIT_ASSERT(ns != NULL);
@@ -1335,15 +1377,26 @@ void test000092::test_miriam_export_8()
   CPPUNIT_ASSERT(pMIRIAM2->getPrefix() == "rdf");
   ns = &pMIRIAM2->getNamespaces();
   CPPUNIT_ASSERT(ns != NULL);
-  index = ns->getIndex("http://purl.org/dc/terms/");
-  CPPUNIT_ASSERT(index != -1);
-  CPPUNIT_ASSERT(ns->getPrefix(index) == "dcterms");
   index = ns->getIndex("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "rdf");
-  index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
-  CPPUNIT_ASSERT(index != -1);
-  CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // check if there are two biological descriptions
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "Description");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "isVersionOf");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "Bag");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMIRIAM2->getChild(0).getName() == "li");
+  CPPUNIT_ASSERT(pMIRIAM2->getChild(1).getName() == "li");
+
   // same checks for the libsbml MIRIAM annotation
   CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
   CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
@@ -1358,8 +1411,23 @@ void test000092::test_miriam_export_8()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // check if there are two biological descriptions
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "Description");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "isVersionOf");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "Bag");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMIRIAM1->getChild(0).getName() == "li");
+  CPPUNIT_ASSERT(pMIRIAM1->getChild(1).getName() == "li");
 }
-
 void test000092::test_miriam_export_9()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
@@ -1394,21 +1462,31 @@ void test000092::test_miriam_export_9()
   CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
   miriamInfo.load(pCompartment->getKey());
-  pModifications = &miriamInfo.getModifications();
-  CPPUNIT_ASSERT(pModifications != NULL);
-  CPPUNIT_ASSERT(pModifications->size() == 1);
-  pModification = (*pModifications)[0];
-  CPPUNIT_ASSERT(pModification != NULL);
-  dateTime = pModification->getDate();
-  CPPUNIT_ASSERT(dateTime == "2007-06-05T11:40:04Z");
-  dateTime = "2009-06-05T11:40:04Z";
-  pNewModification = miriamInfo.createModification(dateTime);
-  CPPUNIT_ASSERT(pNewModification != NULL);
-  CPPUNIT_ASSERT(pNewModification->getDate() == dateTime);
+  const CCopasiVector<CBiologicalDescription>* pDescriptions = &miriamInfo.getBiologicalDescriptions();
+  CPPUNIT_ASSERT(pDescriptions != NULL);
+  CPPUNIT_ASSERT(pDescriptions->size() == 1);
+  CBiologicalDescription* pDescription = (*pDescriptions)[0];
+  CPPUNIT_ASSERT(pDescription != NULL);
+  std::string predicate = pDescription->getPredicate();
+  CPPUNIT_ASSERT(predicate == "is version of");
+  std::string resource = pDescription->getResource();
+  CPPUNIT_ASSERT(resource == "Gene Ontology");
+  std::string id = pDescription->getId();
+  CPPUNIT_ASSERT(id == "GO:0005623");
+  id = "GO:0001111";
+  CBiologicalDescription* pNewDescription = miriamInfo.createBiologicalDescription();
+  pNewDescription->setPredicate(predicate);
+  pNewDescription->setResource(resource);
+  pNewDescription->setId(id);
+  CPPUNIT_ASSERT(pNewDescription != NULL);
+  CPPUNIT_ASSERT(pNewDescription->getPredicate() == "is version of");
+  CPPUNIT_ASSERT(pNewDescription->getResource() == "Gene Ontology");
+  CPPUNIT_ASSERT(pNewDescription->getId() == "GO:0001111");
   CPPUNIT_ASSERT(miriamInfo.save() == true);
 
   std::string content = pDataModel->exportSBMLToString(NULL, 2, 4);
   CPPUNIT_ASSERT(content.empty() == false);
+  std::cout << content << std::endl;
   // now we convert the content into an XMLNode and check if everything is there that needs to be there
   XMLInputStream inputstream(content.c_str(), false);
   XMLNode node(inputstream);
@@ -1473,43 +1551,67 @@ void test000092::test_miriam_export_9()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
-  // now we need to actually look at the contents to see if the written
-  // COPASI annotation has two modification entries
+  // make sure the there are two modification dates
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "Description");
   iMax = pMIRIAM2->getNumChildren();
-  unsigned int numModified = 0;
+  CPPUNIT_ASSERT(iMax > 0);
 
   for (unsigned int i = 0; i < iMax; ++i)
     {
       if (pMIRIAM2->getChild(i).getName() == "modified")
         {
-          ++numModified;
+          pMIRIAM2 = &pMIRIAM2->getChild(i);
         }
     }
 
-  CPPUNIT_ASSERT(numModified == 2);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "modified");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "Bag");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 2);
 
   // same checks for the libsbml MIRIAM annotation
-  if (pMIRIAM2 != NULL)
-    {
-      CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
-      CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
-      ns = &pMIRIAM1->getNamespaces();
-      CPPUNIT_ASSERT(ns != NULL);
-      index = ns->getIndex("http://purl.org/dc/terms/");
-      CPPUNIT_ASSERT(index != -1);
-      CPPUNIT_ASSERT(ns->getPrefix(index) == "dcterms");
-      index = ns->getIndex("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-      CPPUNIT_ASSERT(index != -1);
-      CPPUNIT_ASSERT(ns->getPrefix(index) == "rdf");
-      index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
-      CPPUNIT_ASSERT(index != -1);
-      CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
-    }
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
+  CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
+  ns = &pMIRIAM1->getNamespaces();
+  CPPUNIT_ASSERT(ns != NULL);
+  index = ns->getIndex("http://purl.org/dc/terms/");
+  CPPUNIT_ASSERT(index != -1);
+  CPPUNIT_ASSERT(ns->getPrefix(index) == "dcterms");
+  index = ns->getIndex("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+  CPPUNIT_ASSERT(index != -1);
+  CPPUNIT_ASSERT(ns->getPrefix(index) == "rdf");
+  index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
+  CPPUNIT_ASSERT(index != -1);
+  CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
 
   // there are actually more namespace attributes in the libsbml annotation, but that is enough to make sure
   // that everything should be OK
-  //
-  // Right now, we don't care about the content of the annotations as long as they are there
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "Description");
+  iMax = pMIRIAM1->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (unsigned int i = 0; i < iMax; ++i)
+    {
+      if (pMIRIAM1->getChild(i).getName() == "modified")
+        {
+          pMIRIAM1 = &pMIRIAM1->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "modified");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "W3CDTF");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 0);
   //
   // Find the compartment node
   iMax = pModelNode->getNumChildren();
@@ -1565,7 +1667,7 @@ void test000092::test_miriam_export_9()
   CPPUNIT_ASSERT(pMIRIAM1 != NULL);
   CPPUNIT_ASSERT(pMIRIAM2 != NULL);
   CPPUNIT_ASSERT(pOther != NULL);
-  // check if the top level element for the libsbml annotation
+  // check if the top level element for the COPASI annotation
   // has all necessary namespaces
   ns = &pMIRIAM2->getNamespaces();
   CPPUNIT_ASSERT(ns != NULL);
@@ -1580,27 +1682,26 @@ void test000092::test_miriam_export_9()
   CPPUNIT_ASSERT(pMIRIAM2->getPrefix() == "rdf");
   ns = &pMIRIAM2->getNamespaces();
   CPPUNIT_ASSERT(ns != NULL);
-  index = ns->getIndex("http://purl.org/dc/terms/");
-  CPPUNIT_ASSERT(index != -1);
-  CPPUNIT_ASSERT(ns->getPrefix(index) == "dcterms");
   index = ns->getIndex("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "rdf");
-  index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
-  CPPUNIT_ASSERT(index != -1);
-  CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
-  iMax = pMIRIAM2->getNumChildren();
-  numModified = 0;
+  // check if there are two biological descriptions
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "Description");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "isVersionOf");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 1);
+  pMIRIAM2 = &pMIRIAM2->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM2 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM2->getName() == "Bag");
+  CPPUNIT_ASSERT(pMIRIAM2->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMIRIAM2->getChild(0).getName() == "li");
+  CPPUNIT_ASSERT(pMIRIAM2->getChild(1).getName() == "li");
 
-  for (unsigned int i = 0; i < iMax; ++i)
-    {
-      if (pMIRIAM2->getChild(i).getName() == "modified")
-        {
-          ++numModified;
-        }
-    }
-
-  CPPUNIT_ASSERT(numModified == 2);
   // same checks for the libsbml MIRIAM annotation
   CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
   CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
@@ -1615,7 +1716,27 @@ void test000092::test_miriam_export_9()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // check if there are two biological descriptions
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "Description");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "isVersionOf");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getName() == "Bag");
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMIRIAM1->getChild(0).getName() == "li");
+  CPPUNIT_ASSERT(pMIRIAM1->getChild(1).getName() == "li");
 }
+
+
+
+
 
 
 
@@ -2020,13 +2141,14 @@ const char* test000092::MODEL_STRING7 = \
                                         "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version4\" level=\"2\" version=\"4\">\n"
                                         "  <model metaid=\"COPASI1\" id=\"Model_1\" name=\"New Model\">\n"
                                         "    <annotation>\n"
-                                        "      <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\">\n"
-                                        "     <listOfCompartments>\n"
-                                        "      <compartment metaid=\"COPASI2\" id=\"compartment_1\" name=\"Compartment\" size=\"1\">\n"
-                                        "        <annotation>\n"
-                                        "          <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\">\n"
-                                        "        </annotation>\n"
-                                        "      </compartment>\n"
+                                        "      <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\" />\n"
+                                        "    </annotation>\n"
+                                        "    <listOfCompartments>\n"
+                                        "     <compartment metaid=\"COPASI2\" id=\"compartment_1\" name=\"Compartment\" size=\"1\">\n"
+                                        "       <annotation>\n"
+                                        "         <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\" />\n"
+                                        "       </annotation>\n"
+                                        "     </compartment>\n"
                                         "    </listOfCompartments>\n"
                                         "  </model>\n"
                                         "</sbml>\n";
@@ -2041,22 +2163,22 @@ const char* test000092::MODEL_STRING8 = \
                                         "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version4\" level=\"2\" version=\"4\">\n"
                                         "  <model metaid=\"COPASI1\" id=\"Model_1\" name=\"New Model\">\n"
                                         "    <annotation>\n"
-                                        "      <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\">\n"
+                                        "      <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\" />\n"
                                         "      <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:vCard=\"http://www.w3.org/2001/vcard-rdf/3.0#\" xmlns:bqbiol=\"http://biomodels.net/biology-qualifiers/\" xmlns:bqmodel=\"http://biomodels.net/model-qualifiers/\">\n"
                                         "        <rdf:Description rdf:about=\"#COPASI1\">\n"
-                                        "          <dc:creator>\n"
-                                        "           <rdf:Description>\n"
-                                        "             <vCard:N>\n"
-                                        "               <rdf:Description>\n"
-                                        "                 <vCard:Family>Gauges</vCard:Family>\n"
-                                        "                 <vCard:Given>Ralph</vCard:Given>\n"
-                                        "               </rdf:Description>\n"
-                                        "             </vCard:N>\n"
-                                        "           </rdf:Description>\n"
-                                        "          </dc:creator>\n"
                                         "          <dcterms:created rdf:parseType=\"Resource\">\n"
                                         "            <dcterms:W3CDTF>2002-04-21T15:55:08Z</dcterms:W3CDTF>\n"
                                         "          </dcterms:created>\n"
+                                        "          <dcterms:creator>\n"
+                                        "            <rdf:Description>\n"
+                                        "              <vCard:N>\n"
+                                        "                <rdf:Description>\n"
+                                        "                  <vCard:Family>Gauges</vCard:Family>\n"
+                                        "                  <vCard:Given>Ralph</vCard:Given>\n"
+                                        "                </rdf:Description>\n"
+                                        "              </vCard:N>\n"
+                                        "            </rdf:Description>\n"
+                                        "          </dcterms:creator>\n"
                                         "          <dcterms:modified rdf:parseType=\"Resource\">\n"
                                         "            <dcterms:W3CDTF>2007-06-05T11:40:04Z</dcterms:W3CDTF>\n"
                                         "          </dcterms:modified>\n"
@@ -2078,7 +2200,7 @@ const char* test000092::MODEL_STRING8 = \
                                         "    <listOfCompartments>\n"
                                         "      <compartment metaid=\"COPASI2\" id=\"compartment_1\" name=\"Compartment\" size=\"1\">\n"
                                         "        <annotation>\n"
-                                        "          <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\">\n"
+                                        "          <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\" />\n"
                                         "          <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:vCard=\"http://www.w3.org/2001/vcard-rdf/3.0#\" xmlns:bqbiol=\"http://biomodels.net/biology-qualifiers/\" xmlns:bqmodel=\"http://biomodels.net/model-qualifiers/\">\n"
                                         "            <rdf:Description rdf:about=\"#COPASI2\">\n"
                                         "              <bqbiol:isVersionOf>\n"
@@ -2105,7 +2227,7 @@ const char* test000092::MODEL_STRING9 = \
                                         "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version4\" level=\"2\" version=\"4\">\n"
                                         "  <model metaid=\"COPASI1\" id=\"Model_1\" name=\"New Model\">\n"
                                         "    <annotation>\n"
-                                        "      <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\">\n"
+                                        "      <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\" />\n"
                                         "      <COPASI xmlns=\"http://www.copasi.org/static/sbml\">\n"
                                         "        <rdf:RDF xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:vCard=\"http://www.w3.org/2001/vcard-rdf/3.0#\">\n"
                                         "          <rdf:Description rdf:about=\"#COPASI1\">\n"
@@ -2114,6 +2236,16 @@ const char* test000092::MODEL_STRING9 = \
                                         "                <dcterms:W3CDTF>2002-04-21T15:55:08Z</dcterms:W3CDTF>\n"
                                         "              </rdf:Description>\n"
                                         "            </dcterms:created>\n"
+                                        "            <dcterms:creator>\n"
+                                        "              <rdf:Description>\n"
+                                        "                <vCard:N>\n"
+                                        "                   <rdf:Description>\n"
+                                        "                    <vCard:Family>Gauges</vCard:Family>\n"
+                                        "                    <vCard:Given>Ralph</vCard:Given>\n"
+                                        "                  </rdf:Description>\n"
+                                        "                </vCard:N>\n"
+                                        "              </rdf:Description>\n"
+                                        "            </dcterms:creator>\n"
                                         "            <dcterms:modified rdf:parseType=\"Resource\">\n"
                                         "              <dcterms:W3CDTF>2007-06-05T11:40:04Z</dcterms:W3CDTF>\n"
                                         "            </dcterms:modified>\n"
@@ -2122,19 +2254,19 @@ const char* test000092::MODEL_STRING9 = \
                                         "      </COPASI>\n"
                                         "      <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:vCard=\"http://www.w3.org/2001/vcard-rdf/3.0#\" xmlns:bqbiol=\"http://biomodels.net/biology-qualifiers/\" xmlns:bqmodel=\"http://biomodels.net/model-qualifiers/\">\n"
                                         "        <rdf:Description rdf:about=\"#COPASI1\">\n"
-                                        "          <dc:creator>\n"
-                                        "           <rdf:Description>\n"
-                                        "             <vCard:N>\n"
-                                        "               <rdf:Description>\n"
-                                        "                 <vCard:Family>Gauges</vCard:Family>\n"
-                                        "                 <vCard:Given>Ralph</vCard:Given>\n"
-                                        "               </rdf:Description>\n"
-                                        "             </vCard:N>\n"
-                                        "           </rdf:Description>\n"
-                                        "          </dc:creator>\n"
                                         "          <dcterms:created rdf:parseType=\"Resource\">\n"
                                         "            <dcterms:W3CDTF>2002-04-21T15:55:08Z</dcterms:W3CDTF>\n"
                                         "          </dcterms:created>\n"
+                                        "          <dcterms:creator>\n"
+                                        "            <rdf:Description>\n"
+                                        "              <vCard:N>\n"
+                                        "                 <rdf:Description>\n"
+                                        "                  <vCard:Family>Gauges</vCard:Family>\n"
+                                        "                  <vCard:Given>Ralph</vCard:Given>\n"
+                                        "                </rdf:Description>\n"
+                                        "              </vCard:N>\n"
+                                        "            </rdf:Description>\n"
+                                        "          </dcterms:creator>\n"
                                         "          <dcterms:modified rdf:parseType=\"Resource\">\n"
                                         "            <dcterms:W3CDTF>2007-06-05T11:40:04Z</dcterms:W3CDTF>\n"
                                         "          </dcterms:modified>\n"
@@ -2144,7 +2276,7 @@ const char* test000092::MODEL_STRING9 = \
                                         "    <listOfCompartments>\n"
                                         "      <compartment metaid=\"COPASI2\" id=\"compartment_1\" name=\"Compartment\" size=\"1\">\n"
                                         "        <annotation>\n"
-                                        "          <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\">\n"
+                                        "          <SOMEANNOTATION xmlns=\"http://www.SOMEORGANISATION.org/\" />\n"
                                         "          <COPASI xmlns=\"http://www.copasi.org/static/sbml\">\n"
                                         "            <rdf:RDF xmlns:CopasiMT=\"http://www.copasi.org/RDF/MiriamTerms#\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:vCard=\"http://www.w3.org/2001/vcard-rdf/3.0#\">\n"
                                         "              <rdf:Description rdf:about=\"#COPASI2\">\n"
