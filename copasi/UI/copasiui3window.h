@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.88.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/17 19:35:03 $
+//   $Author: gauges $
+//   $Date: 2010/04/22 12:46:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ class ObjectBrowserDialog;
 class QComboBox;
 class CMIRIAMResources;
 class CMIRIAMResourceObject;
-class QCustomEvent;
+class QEvent;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -137,7 +137,7 @@ protected slots:
 #endif
 
   // SBW: handle the custom events
-  void customEvent(QCustomEvent *);
+  void customEvent(QEvent *);
   // SBW: start an analyzer when selected from the SBW menu
   void startSBWAnalyzer(int nId);
 
@@ -220,7 +220,7 @@ public:
   /**
    * This event is triggered by SBW asking COPASI to import an SBML document provided as a string
    */
-  class QSBWSBMLEvent : public QCustomEvent
+  class QSBWSBMLEvent : public QEvent
   {
   public:
     /**
@@ -245,7 +245,7 @@ public:
   /**
    * This event is triggered by SBW asking COPASI shut down.
    */
-  class QSBWShutdownEvent: public QCustomEvent
+  class QSBWShutdownEvent: public QEvent
   {
   public:
     QSBWShutdownEvent();

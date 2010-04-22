@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.4 $
+//   $Revision: 1.277.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/07 17:14:18 $
+//   $Author: gauges $
+//   $Date: 2010/04/22 12:46:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <QEvent>
 #include <QMenuBar>
 #include <QTimer>
 #include <QComboBox>
@@ -2027,7 +2028,7 @@ bool CopasiUI3Window::slotRegistration()
 // Create 2 custom events, one containing the filename to an SBML document to be loaded
 // into COPASI
 CopasiUI3Window::QSBWSBMLEvent::QSBWSBMLEvent(const std::string & SBMLModel):
-    QCustomEvent(65433),
+    QEvent((QEvent::Type)65433),
     mSBML(SBMLModel)
 {}
 
@@ -2035,7 +2036,7 @@ const std::string & CopasiUI3Window::QSBWSBMLEvent::getSBMLModel() const
 {return mSBML;}
 
 CopasiUI3Window::QSBWShutdownEvent::QSBWShutdownEvent():
-    QCustomEvent(65434)
+    QEvent((QEvent::Type)65434)
 {}
 
 // static
@@ -2058,7 +2059,7 @@ void CopasiUI3Window::onShutdown()
   QApplication::postEvent(this, new QSBWShutdownEvent());
 }
 
-void CopasiUI3Window::customEvent(QCustomEvent * event)
+void CopasiUI3Window::customEvent(QEvent * event)
 {
   // handle the file event, that is import the SBML file
   switch ((int) event->type())
@@ -2324,6 +2325,6 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::getSBML(SystemsBiology
 }
 #else
 void CopasiUI3Window::startSBWAnalyzer(int /* nId */) {}
-void CopasiUI3Window::customEvent(QCustomEvent * /* event */) {}
+void CopasiUI3Window::customEvent(QEvent * /* event */) {}
 
 #endif // COPASI_SBW_INTEGRATION
