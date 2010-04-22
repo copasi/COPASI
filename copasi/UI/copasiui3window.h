@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.88.2.1 $
+//   $Revision: 1.88.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/04/22 12:46:58 $
+//   $Author: shoops $
+//   $Date: 2010/04/22 18:16:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 #include <string>
 
 #include <QMainWindow>
+#include <QMap>
 
 #ifdef COPASI_SBW_INTEGRATION
 #include <QApplication>
@@ -52,6 +53,7 @@ class QComboBox;
 class CMIRIAMResources;
 class CMIRIAMResourceObject;
 class QEvent;
+class QActionGroup;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -115,8 +117,8 @@ protected slots:
   void slotPreferences();
   void slotConvertToIrreversible();
   void listViewsFolderChanged(Q3ListViewItem* item);
-  void slotOpenRecentFile(int index);
-  void slotOpenRecentSBMLFile(int index);
+  void slotOpenRecentFile(QAction * pAction);
+  void slotOpenRecentSBMLFile(QAction * pAction);
   bool slotRegistration();
   void slotCheckModel();
   void slotApplyInitialState();
@@ -137,9 +139,7 @@ protected slots:
 #endif
 
   // SBW: handle the custom events
-  void customEvent(QEvent *);
-  // SBW: start an analyzer when selected from the SBW menu
-  void startSBWAnalyzer(int nId);
+  virtual void customEvent(QEvent *);
 
   /**
    * This should only be called via signal by the corresponding QAction mpaObjectBrowser.
@@ -204,11 +204,15 @@ private:
   bool mSuspendAutoSave;
 
   //menus
-  QMenu * mpMenuRecentFiles;
   QMenu * mpMenuExamples;
+  QMenu * mpMenuRecentFiles;
+  QMap< QAction *, int > mRecentFilesActionMap;
+  QActionGroup * mpRecentFilesActionGroup;
   void refreshRecentFileMenu();
 
   QMenu * mpMenuRecentSBMLFiles;
+  QMap< QAction *, int > mRecentSBMLFilesActionMap;
+  QActionGroup * mpRecentSBMLFilesActionGroup;
   void refreshRecentSBMLFileMenu();
 
   QMenu * mpTools;
@@ -290,6 +294,10 @@ private:
   std::vector< SystemsBiologyWorkbench::DataBlockReader > findServices(const std::string & category,
       const bool & recursive);
 
+protected slots:
+  void slotSBWMenuTriggered(QAction * pAction);
+
+private:
   /**
    * The SBW module which handles the interaction with the SBW broker
    */
@@ -298,27 +306,37 @@ private:
   /**
    * A list of SBW analyzer modules
    */
-  QStringList mAnalyzerModules;
+  QStringList mSBWAnalyzerModules;
 
   /**
    * A list of the corresponding SBW services
    */
-  QStringList mAnalyzerServices;
+  QStringList mSBWAnalyzerServices;
+
+  /**
+   * Map between actions and the index of SBW modules and services
+   */
+  QMap< QAction *, int > mSBWActionMap;
+
+  /**
+   * A group containing all actions of the SBW menu
+   */
+  QActionGroup * mpSBWActionGroup;
 
   /**
    * The SBW menu
    */
-  QMenu * mpMenuSBW;
+  QMenu * mpSBWMenu;
 
   /**
-   * The id of the SBW menu
+   * The SBW Action
    */
-  int mIdMenuSBW;
+  QAction * mpSBWAction;
 
   /**
    * This variable indicates whether COPASI is to ignore SBW shutdown events
    */
-  bool mIgnoreSBWShutdownEvent;
+  bool mSBWIgnoreShutdownEvent;
 
 #endif // COPASI_SBW_INTEGRATION
 

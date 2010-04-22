@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.5 $
+//   $Revision: 1.277.2.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/04/22 12:46:58 $
+//   $Author: shoops $
+//   $Date: 2010/04/22 18:16:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,16 +218,23 @@ CopasiUI3Window::CopasiUI3Window():
     mSaveAsRequired(true),
     mpAutoSaveTimer(NULL),
     mSuspendAutoSave(false),
+    mpMenuExamples(NULL),
     mpMenuRecentFiles(NULL),
+    mRecentFilesActionMap(),
+    mpRecentFilesActionGroup(NULL),
     mpMenuRecentSBMLFiles(NULL),
+    mRecentSBMLFilesActionMap(),
+    mpRecentSBMLFilesActionGroup(NULL),
     mpMIRIAMResources(NULL)
 #ifdef COPASI_SBW_INTEGRATION
     , mpSBWModule(NULL)
-    , mAnalyzerModules()
-    , mAnalyzerServices()
-    , mpMenuSBW(NULL)
-    , mIdMenuSBW(-1)
-    , mIgnoreSBWShutdownEvent(false)
+    , mSBWAnalyzerModules()
+    , mSBWAnalyzerServices()
+    , mSBWActionMap()
+    , mpSBWActionGroup(NULL)
+    , mpSBWMenu(NULL)
+    , mpSBWAction(NULL)
+    , mSBWIgnoreShutdownEvent(false)
 #endif // COPASI_SBW_INTEGRATION
 {
   // set destructive close
@@ -493,26 +500,24 @@ void CopasiUI3Window::createMenuBar()
 #endif // COPASI_DEBUG
 
   mpTools->addAction(mpaCheckModel);
-  mpTools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
+  mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
 
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
-  mpMenuSBW = new QMenu(this);
-  mIdMenuSBW = mpTools->insertItem("&SBW", mpMenuSBW);
-  mpTools->setItemVisible(mIdMenuSBW, false);
-  connect(mpMenuSBW, SIGNAL(activated(int)) , this, SLOT(startSBWAnalyzer(int)));
+  mpSBWMenu = new QMenu("&SBW", this);
+  mpSBWAction = mpTools->addMenu(mpSBWMenu);
 #endif // COPASI_SBW_INTEGRATION
 
-  mpTools->insertSeparator();
-  mpaUpdateMIRIAM->addTo(mpTools);
-  mpTools->insertItem("&Preferences", this, SLOT(slotPreferences()), Qt::CTRL + Qt::Key_P, 3);
+  mpTools->addSeparator();
+  mpTools->addAction(mpaUpdateMIRIAM);
+  mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
 
 #ifdef Linux
   mpTools->addAction(mpaFontSelectionDialog);
 #endif // Linux
 
 #ifdef COPASI_LICENSE_COM
-  mpTools->insertItem("&Registration", this, SLOT(slotRegistration()));
+  mpTools->addAction("&Registration", this, SLOT(slotRegistration()));
 #endif // COPASI_LICENSE_COM
 
   //*******  help menu *****************
@@ -521,13 +526,13 @@ void CopasiUI3Window::createMenuBar()
 
   QMenu * help = menuBar()->addMenu("&Help");
 
-  help->insertItem("Simple &Wizard", this, SLOT(slotTutorialWizard()));
-  help->insertSeparator();
-  help->insertItem("&About", this, SLOT(about()), Qt::Key_F1);
-  help->insertItem("&License", this, SLOT(license()));
-  help->insertItem("About &Qt", this, SLOT(aboutQt()));
-  help->insertSeparator();
-  // help->insertItem("What's &This", this, SLOT(whatsThis()), Qt::SHIFT + Qt::Key_F1);
+  help->addAction("Simple &Wizard", this, SLOT(slotTutorialWizard()));
+  help->addSeparator();
+  help->addAction("&About", this, SLOT(about()), Qt::Key_F1);
+  help->addAction("&License", this, SLOT(license()));
+  help->addAction("About &Qt", this, SLOT(aboutQt()));
+  help->addSeparator();
+  // help->addAction("What's &This", this, SLOT(whatsThis()), Qt::SHIFT + Qt::Key_F1);
 }
 
 //***** Slots ***************************
@@ -1642,16 +1647,20 @@ void CopasiUI3Window::suspendAutoSave(const bool & suspend)
     mpAutoSaveTimer->changeInterval(AutoSaveInterval); // restart the timer
 }
 
-void CopasiUI3Window::slotOpenRecentFile(int index)
+void CopasiUI3Window::slotOpenRecentFile(QAction * pAction)
 {
+  int index = mRecentFilesActionMap[pAction];
+
   std::string FileName =
     *CCopasiRootContainer::getConfiguration()->getRecentFiles().getGroup("Recent Files")->getValue(index).pSTRING;
 
   slotFileOpen(FROM_UTF8(FileName));
 }
 
-void CopasiUI3Window::slotOpenRecentSBMLFile(int index)
+void CopasiUI3Window::slotOpenRecentSBMLFile(QAction * pAction)
 {
+  int index = mRecentSBMLFilesActionMap[pAction];
+
   std::string FileName =
     *CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().getGroup("Recent Files")->getValue(index).pSTRING;
 
@@ -1662,6 +1671,19 @@ void CopasiUI3Window::refreshRecentFileMenu()
 {
   mpMenuRecentFiles->clear();
 
+  mRecentFilesActionMap.clear();
+
+  if (mpRecentFilesActionGroup != NULL)
+    {
+      disconnect(mpRecentFilesActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenRecentFile(QAction *)));
+      pdelete(mpRecentFilesActionGroup);
+    }
+
+  mpRecentFilesActionGroup = new QActionGroup(this);
+  connect(mpRecentFilesActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenRecentFile(QAction *)));
+
+  QAction * pAction;
+
   CCopasiParameterGroup::index_iterator it =
     CCopasiRootContainer::getConfiguration()->getRecentFiles().getGroup("Recent Files")->beginIndex();
   CCopasiParameterGroup::index_iterator end =
@@ -1670,16 +1692,29 @@ void CopasiUI3Window::refreshRecentFileMenu()
   C_INT Index = 0;
 
   for (; it != end; ++it, ++Index)
-    mpMenuRecentFiles->insertItem(FROM_UTF8(*(*it)->getValue().pSTRING),
-                                  this,
-                                  SLOT(slotOpenRecentFile(int)),
-                                  0,
-                                  Index);
+    {
+      pAction = new QAction(FROM_UTF8(*(*it)->getValue().pSTRING), mpRecentFilesActionGroup);
+      mpMenuRecentFiles->addAction(pAction);
+      mRecentFilesActionMap[pAction] = Index;
+    }
 }
 
 void CopasiUI3Window::refreshRecentSBMLFileMenu()
 {
   mpMenuRecentSBMLFiles->clear();
+
+  mRecentSBMLFilesActionMap.clear();
+
+  if (mpRecentSBMLFilesActionGroup != NULL)
+    {
+      disconnect(mpRecentSBMLFilesActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenRecentSBMLFile(QAction *)));
+      pdelete(mpRecentSBMLFilesActionGroup);
+    }
+
+  mpRecentSBMLFilesActionGroup = new QActionGroup(this);
+  connect(mpRecentSBMLFilesActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenRecentSBMLFile(QAction *)));
+
+  QAction * pAction;
 
   CCopasiParameterGroup::index_iterator it =
     CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().getGroup("Recent Files")->beginIndex();
@@ -1689,11 +1724,11 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
   C_INT Index = 0;
 
   for (; it != end; ++it, ++Index)
-    mpMenuRecentSBMLFiles->insertItem(FROM_UTF8(*(*it)->getValue().pSTRING),
-                                      this,
-                                      SLOT(slotOpenRecentSBMLFile(int)),
-                                      0,
-                                      Index);
+    {
+      pAction = new QAction(FROM_UTF8(*(*it)->getValue().pSTRING), mpRecentSBMLFilesActionGroup);
+      mpMenuRecentSBMLFiles->addAction(pAction);
+      mRecentSBMLFilesActionMap[pAction] = Index;
+    }
 }
 
 std::string CopasiUI3Window::exportSBMLToString()
@@ -2078,40 +2113,11 @@ void CopasiUI3Window::customEvent(QEvent * event)
 
       case 65434:
 
-        if (!mIgnoreSBWShutdownEvent)
+        if (!mSBWIgnoreShutdownEvent)
           slotQuit();
 
-        mIgnoreSBWShutdownEvent = false;
+        mSBWIgnoreShutdownEvent = false;
         break;
-    }
-}
-
-// start the selected analyzer
-void CopasiUI3Window::startSBWAnalyzer(int nId)
-{
-  ListViews::commit();
-
-  if ((QStringList::size_type) nId == mAnalyzerModules.size())
-    {
-      registerSBW();
-    }
-  else
-    {
-      try
-        {
-          int nModule = SBWLowLevel::getModuleInstance(mAnalyzerModules[nId].ascii());
-          int nService = SBWLowLevel::moduleFindServiceByName(nModule, mAnalyzerServices[nId].ascii());
-          int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
-          DataBlockWriter args; args << exportSBMLToString();
-          SBWLowLevel::methodSend(nModule, nService, nMethod, args);
-        }
-      catch (SBWException * pE)
-        {
-          CQMessageBox::critical(this, "SBW Error",
-                                 FROM_UTF8(pE->getMessage()),
-                                 QMessageBox::Ok | QMessageBox::Default,
-                                 QMessageBox::NoButton);
-        }
     }
 }
 
@@ -2166,7 +2172,7 @@ void CopasiUI3Window::registerSBW()
           // Registration causes an SBW disconnect and triggers an SBWShutdownEvent
 
           // Ignore the shutdown event
-          mIgnoreSBWShutdownEvent = true;
+          mSBWIgnoreShutdownEvent = true;
 
           // Do the actual registration.
           mpSBWModule->run(2, Argv, true);
@@ -2189,8 +2195,21 @@ void CopasiUI3Window::refreshSBWMenu()
   bool success = true;
   bool IsSBWRegistered = false;
 
-  if (mpMenuSBW != NULL)
-    mpMenuSBW->clear();
+  if (mpSBWMenu != NULL)
+    mpSBWMenu->clear();
+
+  mSBWActionMap.clear();
+
+  if (mpSBWActionGroup != NULL)
+    {
+      disconnect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotSBWMenuTriggered(QAction *)));
+      pdelete(mpSBWActionGroup);
+    }
+
+  mpSBWActionGroup = new QActionGroup(this);
+  connect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotSBWMenuTriggered(QAction *)));
+
+  QAction * pAction;
 
   try
     {
@@ -2229,8 +2248,11 @@ void CopasiUI3Window::refreshSBWMenu()
       // Add the option to register in SBW
       if (!IsSBWRegistered)
         {
-          mpMenuSBW->insertItem("Register COPASI", oSortedNameList.size());
-          mpMenuSBW->insertSeparator();
+          pAction = new QAction("Register COPASI", mpSBWActionGroup);
+          mpSBWMenu->addAction(pAction);
+          mSBWActionMap[pAction] = oSortedNameList.size();
+
+          mpSBWMenu->addSeparator();
         }
 
       // TODO: this is backwards again, in QT4 sorting was easier
@@ -2241,11 +2263,13 @@ void CopasiUI3Window::refreshSBWMenu()
           oSortedModuleList.append(oModuleList[nIndex]);
           oSortedServiceList.append(oServiceList[nIndex]);
 
-          mpMenuSBW->insertItem(oSortedNameList[i], i);
+          pAction = new QAction(oSortedNameList[i], mpSBWActionGroup);
+          mpSBWMenu->addAction(pAction);
+          mSBWActionMap[pAction] = i;
         }
 
-      mAnalyzerModules = oSortedModuleList;
-      mAnalyzerServices = oSortedServiceList;
+      mSBWAnalyzerModules = oSortedModuleList;
+      mSBWAnalyzerServices = oSortedServiceList;
 
       if (oNameList.empty())
         success = false;
@@ -2256,9 +2280,39 @@ void CopasiUI3Window::refreshSBWMenu()
       success = false;
     }
 
-  mpTools->setItemVisible(mIdMenuSBW, success);
+  mpSBWAction->setVisible(success);
 
   return;
+}
+
+void CopasiUI3Window::slotSBWMenuTriggered(QAction * pAction)
+{
+  ListViews::commit();
+
+  QStringList::size_type nId = mSBWActionMap[pAction];
+
+  if (nId == mSBWAnalyzerModules.size())
+    {
+      registerSBW();
+    }
+  else
+    {
+      try
+        {
+          int nModule = SBWLowLevel::getModuleInstance(mSBWAnalyzerModules[nId].ascii());
+          int nService = SBWLowLevel::moduleFindServiceByName(nModule, mSBWAnalyzerServices[nId].ascii());
+          int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
+          DataBlockWriter args; args << exportSBMLToString();
+          SBWLowLevel::methodSend(nModule, nService, nMethod, args);
+        }
+      catch (SBWException * pE)
+        {
+          CQMessageBox::critical(this, "SBW Error",
+                                 FROM_UTF8(pE->getMessage()),
+                                 QMessageBox::Ok | QMessageBox::Default,
+                                 QMessageBox::NoButton);
+        }
+    }
 }
 
 std::vector< DataBlockReader > CopasiUI3Window::findServices(const std::string & category,
@@ -2324,7 +2378,7 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::getSBML(SystemsBiology
     }
 }
 #else
-void CopasiUI3Window::startSBWAnalyzer(int /* nId */) {}
+void CopasiUI3Window::slotSBWMenuTriggered(QAction * /* pAction */) {}
 void CopasiUI3Window::customEvent(QEvent * /* event */) {}
 
 #endif // COPASI_SBW_INTEGRATION
