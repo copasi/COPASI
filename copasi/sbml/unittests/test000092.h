@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/22 10:05:56 $
+//   $Date: 2010/04/22 10:44:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // of Manchester.
 // All rights reserved.
 
+#ifndef TEST_000092_H__
 #define TEST_000092_H__
 
 #include <cppunit/TestFixture.h>
