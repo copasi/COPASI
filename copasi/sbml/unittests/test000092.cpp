@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/22 14:31:34 $
+//   $Date: 2010/04/22 19:15:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,6 +224,9 @@ void test000092::test_miriam_export_1()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
 
 void test000092::test_miriam_export_2()
@@ -414,6 +417,9 @@ void test000092::test_miriam_export_2()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
 
 void test000092::test_miriam_export_3()
@@ -465,6 +471,9 @@ void test000092::test_miriam_export_3()
   iMax = pCompartment->getNumChildren();
   // there should be no annotation to the compartment
   CPPUNIT_ASSERT(iMax == 0);
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
 
 
@@ -649,6 +658,9 @@ void test000092::test_miriam_export_4()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
 
 void test000092::test_miriam_export_5()
@@ -841,6 +853,9 @@ void test000092::test_miriam_export_5()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
 
 void test000092::test_miriam_export_6()
@@ -892,6 +907,9 @@ void test000092::test_miriam_export_6()
   iMax = pCompartment->getNumChildren();
   // there should be no annotation to the compartment
   CPPUNIT_ASSERT(iMax == 0);
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
 
 void test000092::test_miriam_export_7()
@@ -1121,6 +1139,9 @@ void test000092::test_miriam_export_7()
   index = ns->getIndex("http://www.w3.org/2001/vcard-rdf/3.0#");
   CPPUNIT_ASSERT(index != -1);
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
 
 void test000092::test_miriam_export_8()
@@ -1181,7 +1202,6 @@ void test000092::test_miriam_export_8()
 
   std::string content = pDataModel->exportSBMLToString(NULL, 2, 4);
   CPPUNIT_ASSERT(content.empty() == false);
-  std::cout << content << std::endl;
   // now we convert the content into an XMLNode and check if everything is there that needs to be there
   XMLInputStream inputstream(content.c_str(), false);
   XMLNode node(inputstream);
@@ -1306,7 +1326,11 @@ void test000092::test_miriam_export_8()
   pMIRIAM1 = &pMIRIAM1->getChild(0);
   CPPUNIT_ASSERT(pMIRIAM1 != NULL);
   CPPUNIT_ASSERT(pMIRIAM1->getName() == "W3CDTF");
-  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 0);
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getCharacters() == "2008-06-05T11:40:04Z");
+
   //
   // Find the compartment node
   iMax = pModelNode->getNumChildren();
@@ -1427,7 +1451,12 @@ void test000092::test_miriam_export_8()
   CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 2);
   CPPUNIT_ASSERT(pMIRIAM1->getChild(0).getName() == "li");
   CPPUNIT_ASSERT(pMIRIAM1->getChild(1).getName() == "li");
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
+
+
 void test000092::test_miriam_export_9()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
@@ -1486,7 +1515,6 @@ void test000092::test_miriam_export_9()
 
   std::string content = pDataModel->exportSBMLToString(NULL, 2, 4);
   CPPUNIT_ASSERT(content.empty() == false);
-  std::cout << content << std::endl;
   // now we convert the content into an XMLNode and check if everything is there that needs to be there
   XMLInputStream inputstream(content.c_str(), false);
   XMLNode node(inputstream);
@@ -1611,7 +1639,10 @@ void test000092::test_miriam_export_9()
   pMIRIAM1 = &pMIRIAM1->getChild(0);
   CPPUNIT_ASSERT(pMIRIAM1 != NULL);
   CPPUNIT_ASSERT(pMIRIAM1->getName() == "W3CDTF");
-  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 0);
+  CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 1);
+  pMIRIAM1 = &pMIRIAM1->getChild(0);
+  CPPUNIT_ASSERT(pMIRIAM1 != NULL);
+  CPPUNIT_ASSERT(pMIRIAM1->getCharacters() == "2008-06-05T11:40:04Z");
   //
   // Find the compartment node
   iMax = pModelNode->getNumChildren();
@@ -1732,6 +1763,9 @@ void test000092::test_miriam_export_9()
   CPPUNIT_ASSERT(pMIRIAM1->getNumChildren() == 2);
   CPPUNIT_ASSERT(pMIRIAM1->getChild(0).getName() == "li");
   CPPUNIT_ASSERT(pMIRIAM1->getChild(1).getName() == "li");
+  // try to reimport the stuff to make sure it is valid SBML
+  result = pDataModel->importSBMLFromString(content);
+  CPPUNIT_ASSERT(result == true);
 }
 
 
@@ -2169,16 +2203,16 @@ const char* test000092::MODEL_STRING8 = \
                                         "          <dcterms:created rdf:parseType=\"Resource\">\n"
                                         "            <dcterms:W3CDTF>2002-04-21T15:55:08Z</dcterms:W3CDTF>\n"
                                         "          </dcterms:created>\n"
-                                        "          <dcterms:creator>\n"
-                                        "            <rdf:Description>\n"
-                                        "              <vCard:N>\n"
-                                        "                <rdf:Description>\n"
+                                        "          <dc:creator>\n"
+                                        "            <rdf:Bag>\n"
+                                        "              <rdf:li rdf:parseType=\"Resource\">\n"
+                                        "                <vCard:N rdf:parseType=\"Resource\">\n"
                                         "                  <vCard:Family>Gauges</vCard:Family>\n"
                                         "                  <vCard:Given>Ralph</vCard:Given>\n"
-                                        "                </rdf:Description>\n"
-                                        "              </vCard:N>\n"
-                                        "            </rdf:Description>\n"
-                                        "          </dcterms:creator>\n"
+                                        "                </vCard:N>\n"
+                                        "              </rdf:li>\n"
+                                        "            </rdf:Bag>\n"
+                                        "          </dc:creator>\n"
                                         "          <dcterms:modified rdf:parseType=\"Resource\">\n"
                                         "            <dcterms:W3CDTF>2007-06-05T11:40:04Z</dcterms:W3CDTF>\n"
                                         "          </dcterms:modified>\n"
@@ -2257,16 +2291,16 @@ const char* test000092::MODEL_STRING9 = \
                                         "          <dcterms:created rdf:parseType=\"Resource\">\n"
                                         "            <dcterms:W3CDTF>2002-04-21T15:55:08Z</dcterms:W3CDTF>\n"
                                         "          </dcterms:created>\n"
-                                        "          <dcterms:creator>\n"
-                                        "            <rdf:Description>\n"
-                                        "              <vCard:N>\n"
-                                        "                 <rdf:Description>\n"
+                                        "          <dc:creator>\n"
+                                        "            <rdf:Bag>\n"
+                                        "              <rdf:li rdf:parseType=\"Resource\">\n"
+                                        "                <vCard:N rdf:parseType=\"Resource\">\n"
                                         "                  <vCard:Family>Gauges</vCard:Family>\n"
                                         "                  <vCard:Given>Ralph</vCard:Given>\n"
-                                        "                </rdf:Description>\n"
-                                        "              </vCard:N>\n"
-                                        "            </rdf:Description>\n"
-                                        "          </dcterms:creator>\n"
+                                        "                </vCard:N>\n"
+                                        "              </rdf:li>\n"
+                                        "            </rdf:Bag>\n"
+                                        "          </dc:creator>\n"
                                         "          <dcterms:modified rdf:parseType=\"Resource\">\n"
                                         "            <dcterms:W3CDTF>2007-06-05T11:40:04Z</dcterms:W3CDTF>\n"
                                         "          </dcterms:modified>\n"
