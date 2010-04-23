@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/22 10:44:14 $
+//   $Date: 2010/04/23 06:40:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@ class test000092 : public CppUnit::TestFixture
   CPPUNIT_TEST(test_miriam_export_7);
   CPPUNIT_TEST(test_miriam_export_8);
   CPPUNIT_TEST(test_miriam_export_9);
+  CPPUNIT_TEST(test_miriam_import_1);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -45,6 +46,7 @@ protected:
   static const char* MODEL_STRING7;
   static const char* MODEL_STRING8;
   static const char* MODEL_STRING9;
+  static const char* MODEL_STRING10;
   static CCopasiDataModel* pCOPASIDATAMODEL;
 
 public:
@@ -61,6 +63,7 @@ public:
   void test_miriam_export_7();
   void test_miriam_export_8();
   void test_miriam_export_9();
+  void test_miriam_import_1();
 };
 
 #endif /* TEST000092_H__ */

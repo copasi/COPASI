@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/22 19:15:38 $
+//   $Date: 2010/04/23 06:40:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1769,8 +1769,38 @@ void test000092::test_miriam_export_9()
 }
 
 
-
-
+/**
+ * This test will most likely fail until we have a workaround for the SBML one modification limit.
+ */
+void test000092::test_miriam_import_1()
+{
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  bool result = pDataModel->importSBMLFromString(test000092::MODEL_STRING10);
+  CPPUNIT_ASSERT(result == true);
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // we need to modify the imported MIRIAM annotation,
+  // e.g. the add a modified date
+  std::string miriamString = pModel->getMiriamAnnotation();
+  CPPUNIT_ASSERT(!miriamString.empty());
+  CMIRIAMInfo miriamInfo;
+  miriamInfo.load(pModel->getKey());
+  // check the modified date
+  const CCopasiVector<CModification>* pModifications = &miriamInfo.getModifications();
+  CPPUNIT_ASSERT(pModifications != NULL);
+  // there should be only one modification date
+  CPPUNIT_ASSERT(pModifications->size() == 2);
+  const CModification* pModification = (*pModifications)[0];
+  CPPUNIT_ASSERT(pModification != NULL);
+  std::string dateTime = pModification->getDate();
+  CPPUNIT_ASSERT(dateTime == "2007-06-05T11:40:04Z" || dateTime == "2008-06-05T11:40:04Z");
+  const CModification* pModification2 = (*pModifications)[1];
+  CPPUNIT_ASSERT(pModification2 != NULL);
+  std::string dateTime2 = pModification2->getDate();
+  CPPUNIT_ASSERT(dateTime2 == "2007-06-05T11:40:04Z" || dateTime2 == "2008-06-05T11:40:04Z");
+  // make sure both dates are not the same
+  CPPUNIT_ASSERT(dateTime != dateTime2);
+}
 
 
 
@@ -2347,4 +2377,72 @@ const char* test000092::MODEL_STRING9 = \
                                         "    </listOfCompartments>\n"
                                         "  </model>\n"
                                         "</sbml>\n";
+
+
+const char* test000092::MODEL_STRING10 = \
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version4\" level=\"2\" version=\"4\">\n"
+    "  <model metaid=\"COPASI1\" id=\"Model_1\" name=\"New Model\">\n"
+    "    <annotation>\n"
+    "      <COPASI xmlns=\"http://www.copasi.org/static/sbml\">\n"
+    "        <rdf:RDF xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:vCard=\"http://www.w3.org/2001/vcard-rdf/3.0#\">\n"
+    "          <rdf:Description rdf:about=\"#COPASI1\">\n"
+    "            <dcterms:created>\n"
+    "              <rdf:Description>\n"
+    "                <dcterms:W3CDTF>2002-04-21T15:55:08Z</dcterms:W3CDTF>\n"
+    "              </rdf:Description>\n"
+    "            </dcterms:created>\n"
+    "            <dcterms:creator>\n"
+    "              <rdf:Description>\n"
+    "                <vCard:N>\n"
+    "                  <rdf:Description>\n"
+    "                    <vCard:Family>Gauges</vCard:Family>\n"
+    "                    <vCard:Given>Ralph</vCard:Given>\n"
+    "                  </rdf:Description>\n"
+    "                </vCard:N>\n"
+    "              </rdf:Description>\n"
+    "            </dcterms:creator>\n"
+    "            <dcterms:modified>\n"
+    "              <rdf:Bag>\n"
+    "                <rdf:li>\n"
+    "                  <rdf:Description>\n"
+    "                    <dcterms:W3CDTF>2007-06-05T11:40:04Z</dcterms:W3CDTF>\n"
+    "                  </rdf:Description>\n"
+    "                </rdf:li>\n"
+    "                <rdf:li>\n"
+    "                  <rdf:Description>\n"
+    "                    <dcterms:W3CDTF>2008-06-05T11:40:04Z</dcterms:W3CDTF>\n"
+    "                  </rdf:Description>\n"
+    "                </rdf:li>\n"
+    "              </rdf:Bag>\n"
+    "            </dcterms:modified>\n"
+    "          </rdf:Description>\n"
+    "        </rdf:RDF>\n"
+    "      </COPASI>\n"
+    "      <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:vCard=\"http://www.w3.org/2001/vcard-rdf/3.0#\" xmlns:bqbiol=\"http://biomodels.net/biology-qualifiers/\" xmlns:bqmodel=\"http://biomodels.net/model-qualifiers/\">\n"
+    "        <rdf:Description rdf:about=\"#COPASI1\">\n"
+    "          <dc:creator>\n"
+    "            <rdf:Bag>\n"
+    "              <rdf:li rdf:parseType=\"Resource\">\n"
+    "                <vCard:N rdf:parseType=\"Resource\">\n"
+    "                  <vCard:Family>Gauges</vCard:Family>\n"
+    "                  <vCard:Given>Ralph</vCard:Given>\n"
+    "                </vCard:N>\n"
+    "              </rdf:li>\n"
+    "            </rdf:Bag>\n"
+    "          </dc:creator>\n"
+    "          <dcterms:created rdf:parseType=\"Resource\">\n"
+    "            <dcterms:W3CDTF>2002-04-21T15:55:08Z</dcterms:W3CDTF>\n"
+    "          </dcterms:created>\n"
+    "          <dcterms:modified rdf:parseType=\"Resource\">\n"
+    "            <dcterms:W3CDTF>2008-06-05T11:40:04Z</dcterms:W3CDTF>\n"
+    "          </dcterms:modified>\n"
+    "        </rdf:Description>\n"
+    "      </rdf:RDF>\n"
+    "    </annotation>\n"
+    "    <listOfCompartments>\n"
+    "      <compartment metaid=\"COPASI2\" id=\"compartment_1\" name=\"Compartment\" size=\"1\" />\n"
+    "    </listOfCompartments>\n"
+    "  </model>\n"
+    "</sbml>\n";
 
