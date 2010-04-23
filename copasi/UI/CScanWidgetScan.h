@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/03/18 12:39:31 $
+//   $Author: shoops $
+//   $Date: 2010/04/23 16:06:03 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,6 +34,8 @@ public:
 
   virtual bool initFromScanItem(CCopasiParameterGroup * pg, const CModel * model);
   virtual bool saveToScanItem(CScanProblem * pg) const;
+
+  void initFromObject(const CCopasiObject *obj);
 
 protected:
   const CModel* mpModel;
