@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.68.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/03 21:15:17 $
+//   $Author: ssahle $
+//   $Date: 2010/04/23 15:12:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,7 +322,10 @@ void CCopasiTask::output(const COutputInterface::Activity & activity)
         case COutputInterface::DURING:
 
           if (mDoOutput != NO_OUTPUT)
-            mpOutputHandler->output(activity);
+            {
+              mpOutputHandler->output(activity);
+              ++mOutputCounter;
+            }
 
           break;
 
