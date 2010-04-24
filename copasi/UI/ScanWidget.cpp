@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.211.2.1 $
+//   $Revision: 1.211.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/23 16:06:04 $
+//   $Author: pwilly $
+//   $Date: 2010/04/24 01:46:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -298,19 +298,34 @@ bool ScanWidget::slotAddItem()
         break;
 
       case CScanProblem::SCAN_RANDOM:
-        tmp3 = new CScanWidgetRandom(scrollview);
-        tmp3->initFromScanItem(tmpItem, pDataModel->getModel());
-        scrollview->insertWidget(tmp3);
-        totalRows = scrollview->numRows();
-        scrollview->ensureCellVisible(totalRows - 1, 0);
-        tmp3->lineEditMin->setFocus();
-        break;
+      {
+        CCopasiSimpleSelectionTree::ObjectClasses Classes = CCopasiSimpleSelectionTree::InitialTime |
+            CCopasiSimpleSelectionTree::Parameters;
 
-        /*case CScanProblem::SCAN_BREAK:
-          tmp4 = new CScanWidgetBreak(scrollview);
-          tmp4->initFromScanItem(tmpItem);
-          scrollview->insertWidget(tmp4);
-          break;*/
+        std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
+
+        // create scan widgets as many as the number of selected objects
+        std::vector< const CCopasiObject * >::iterator it = Selection.begin();
+        std::vector< const CCopasiObject * >::iterator end = Selection.end();
+
+        for (; it != end; ++it)
+          {
+            tmp3 = new CScanWidgetRandom(scrollview);
+            tmp3->initFromObject(*it);
+            scrollview->insertWidget(tmp3);
+            totalRows = scrollview->numRows();
+            scrollview->ensureCellVisible(totalRows - 1, 0);
+            tmp3->lineEditMin->setFocus();
+          }
+
+        break;
+      }
+
+      /*case CScanProblem::SCAN_BREAK:
+        tmp4 = new CScanWidgetBreak(scrollview);
+        tmp4->initFromScanItem(tmpItem);
+        scrollview->insertWidget(tmp4);
+        break;*/
 
       default:
         ;
