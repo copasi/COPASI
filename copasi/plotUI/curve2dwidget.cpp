@@ -1,38 +1,57 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-//   $Revision: 1.28 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.cpp,v $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:48 $
+//   $Date: 2010/04/26 18:25:05 $
 // End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+#include "curve2dwidget.h"
 
-/****************************************************************************
- ** ui.h extension file, included from the uic-generated form implementation.
- **
- ** If you wish to add, delete or rename functions or slots use
- ** Qt Designer which will update this file, preserving your code. Create an
- ** init() function in place of a constructor, and a destroy() function in
- ** place of a destructor.
- *****************************************************************************/
-#include "copasi.h"
-
-#include "plot/CPlotItem.h"
-
-#include "report/CCopasiContainer.h"
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
-#include "report/CCopasiRootContainer.h"
 
-// mpBoxType lines|points|symbols
+#include "copasi.h"
+
+#include "report/CCopasiRootContainer.h"
+#include "plot/CPlotItem.h"
+
+/*
+ *  Constructs a Curve2DWidget as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ */
+Curve2DWidget::Curve2DWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
+    : QWidget(parent, fl)
+{
+  setupUi(this);
+
+
+  const QIcon icon = qt_get_icon(image0_ID);
+  mpBtnX->setIcon(icon);
+  mpBtnY->setIcon(icon);
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+Curve2DWidget::~Curve2DWidget()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void Curve2DWidget::languageChange()
+{
+  retranslateUi(this);
+}
 
 bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
@@ -66,7 +85,7 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   if (!(tmp = curve->getValue("Line type").pVOID)) return false;
 
-  mpBoxType->setCurrentItem(*(unsigned C_INT32*)tmp);
+  mpBoxType->setCurrentIndex(*(unsigned C_INT32*)tmp);
 
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
@@ -87,7 +106,7 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
   curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
   curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
 
-  curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentItem());
+  curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentIndex());
 
   C_INT32 Activity = 0;
 
