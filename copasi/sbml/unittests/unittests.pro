@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.29.2.5 $ 
+#   $Revision: 1.29.2.6 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2010/03/05 13:54:47 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/04/26 17:40:57 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -266,7 +266,3 @@ SOURCES += utilities.cpp \
            test000090.cpp \ 
            test000091.cpp \ 
            test.cpp
-
-
-#The following line was inserted by qt3to4
-QT += xml  opengl qt3support 
