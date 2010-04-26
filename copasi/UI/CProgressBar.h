@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/13 13:56:48 $
+//   $Author: aekamal $
+//   $Date: 2010/04/26 14:26:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,6 +124,12 @@ protected:
   QMutex mMutex;
   QWaitCondition mWaitSlot;
 
+  QWaitCondition mWaitPause;
+
+  unsigned C_INT32 mLastHItem;
+  bool mProceedReturn;
+  bool mFinishReturn;
+
 private:
   CVector< CQProgressItem * > mProgressItemList;
 
@@ -135,6 +141,7 @@ signals:
   void processEvents();
   void addProgressItem(const unsigned int handle);
   void setProgressBarName(QString name);
+  void progressProgressBar(const unsigned int handle);
   void finishProgressBar(const unsigned int handle);
 
 protected slots:
@@ -145,8 +152,11 @@ protected slots:
 
   virtual void slotSetName(QString name);
 
+  virtual void slotProgress(const unsigned int handle);
+
   virtual void slotFinish(const unsigned int handle);
 
+  virtual void btnContinuePressed();
 };
 
 #endif

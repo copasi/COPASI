@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/04/12 17:52:46 $
+//   $Date: 2010/04/26 14:26:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -511,53 +511,10 @@ bool TaskWidget::commonRunTask()
 
   CCopasiMessage::clearDeque();
 
-
-
-  connectReplot(true);
-
   // Execute the task
   mpTaskThread->start();
 
   return success;
-}
-
-void TaskWidget::connectReplot(bool connectOrDisconnect)
-{
-
-  std::set<COutputInterface *> interfaces = mpTask->getOutputHandler()->getInterfaces();
-
-  std::set< COutputInterface *>::iterator it = interfaces.begin();
-  std::set< COutputInterface *>::iterator end = interfaces.end();
-  CopasiPlot *pCP = NULL;
-
-  for (; it != end; ++it)
-    {
-      COutputHandlerPlot * pOHP = dynamic_cast<COutputHandlerPlot *>(*it);
-
-      if (pOHP)
-        {
-          std::set<COutputInterface *> interfaces1 = pOHP->getInterfaces();
-
-          std::set< COutputInterface *>::iterator it1 = interfaces1.begin();
-          std::set< COutputInterface *>::iterator end1 = interfaces1.end();
-
-          for (; it1 != end1; ++it1)
-            {
-              pCP = dynamic_cast<CopasiPlot *>(dynamic_cast<PlotWindow *>((*it1))->getPlot());
-
-              if (pCP)
-                {
-                  if (connectOrDisconnect)
-                    connect(pCP, SIGNAL(replotCopasiPlot(CopasiPlot *)),
-                            this, SLOT(slotReplotCopasiPlot(CopasiPlot *)));
-                  else
-                    disconnect(pCP, SIGNAL(replotCopasiPlot(CopasiPlot *)),
-                               this, SLOT(slotReplotCopasiPlot(CopasiPlot *)));
-                }
-
-            }
-        }
-    }
 }
 
 void TaskWidget::slotExceptionOccured(CCopasiException *C_UNUSED(pException))
@@ -593,9 +550,6 @@ void TaskWidget::finishTask()
 {
   CCopasiMessage::clearDeque();
 
-  //connectReplot(false);
-
-
   try {mpTask->restore();}
 
   catch (CCopasiException Exception)
@@ -619,12 +573,6 @@ void TaskWidget::finishTask()
     }
 
   CCopasiMessage::clearDeque();
-}
-
-void TaskWidget::slotReplotCopasiPlot(CopasiPlot *pCP)
-{
-  if (pCP)
-    pCP->replot();
 }
 
 CCopasiTask* TaskWidget::getTask()

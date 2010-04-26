@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:13 $
+//   $Date: 2010/04/26 14:26:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,8 @@
 #include <qwt_painter.h>
 #include <qwt_data.h>
 #include <qwt_plot_curve.h>
+#include <QMutex>
+#include <QWaitCondition>
 
 #include "plotUI/CHistogram.h"
 #include "plot/CPlotItem.h"
@@ -317,8 +319,16 @@ public:
    */
   QwtPlotZoomer * mpZoomer;
 
+protected:
+  bool mSlotFinished;
+  QMutex mMutex;
+  QWaitCondition mWaitSlot;
+
 signals:
-  void replotCopasiPlot(CopasiPlot *pCP);
+  void replotCopasiPlot();
+
+public slots:
+  void slotReplotCopasiPlot();
 };
 
 #endif // COPASIPLOT_H

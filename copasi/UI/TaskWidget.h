@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.23 $
+ $Revision: 1.24 $
  $Name:  $
  $Author: aekamal $
- $Date: 2010/04/12 17:52:46 $
+ $Date: 2010/04/26 14:26:13 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,8 +105,6 @@ public slots:
 
   void slotFinishThread();
 
-  void slotReplotCopasiPlot(CopasiPlot *pCP);
-
 protected:
   virtual bool enterProtected();
   CProgressBar * mProgressBar;
@@ -162,9 +160,6 @@ protected:
 
   bool mChanged;
   CQTaskThread *mpTaskThread;
-
-protected:
-  void connectReplot(bool connectOrDisconnect = true);
 };
 
 #endif

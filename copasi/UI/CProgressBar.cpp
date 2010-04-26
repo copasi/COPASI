@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/13 13:56:48 $
+//   $Author: aekamal $
+//   $Date: 2010/04/26 14:26:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,9 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
 
   connect(this, SIGNAL(setProgressBarName(QString)),
           this, SLOT(slotSetName(QString)));
+
+  connect(this, SIGNAL(progressProgressBar(const unsigned int)),
+          this, SLOT(slotProgress(const unsigned int)));
 
   connect(this, SIGNAL(finishProgressBar(const unsigned int)),
           this, SLOT(slotFinish(const unsigned int)));
@@ -157,24 +160,53 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
-  bool Proceed = mProgressItemList[handle]->process() && mProceed;
+  QDateTime currDateTime = QDateTime::currentDateTime();
 
-  if (mNextEventProcessing < QDateTime::currentDateTime())
+  if (mNextEventProcessing >= currDateTime && currDateTime.addSecs(1) > mNextEventProcessing)
+    return mProceed;
+
+  mNextEventProcessing = QDateTime::currentDateTime().addSecs(1);
+
+  mMutex.lock();
+  mSlotFinished = false;
+
+  if (mPause)
+    mWaitPause.wait(&mMutex);
+
+  mMutex.unlock();
+
+  emit progressProgressBar(handle);
+
+  mMutex.lock();
+
+  if (!mSlotFinished)
+    mWaitSlot.wait(&mMutex);
+
+  bool ret = mProceedReturn;
+  mMutex.unlock();
+
+  return ret;
+}
+
+void CProgressBar::slotProgress(const unsigned int C_UNUSED(handle))
+{
+  bool Proceed = mProceed;
+
+  unsigned C_INT32 hItem, hmax = mProgressItemList.size();
+
+  for (hItem = 0; hItem < hmax; hItem++)
     {
-      mNextEventProcessing = QDateTime::currentDateTime().addSecs(1);
-      //qApp->processEvents();
-      emit processEvents();
+      if (mProgressItemList[hItem])
+        Proceed = mProgressItemList[hItem]->process() && mProceed;
     }
 
-  while (mPause)
-    {
-      QMutex mutex;
-      QWaitCondition Pause;
-      Pause.wait(&mutex, 500);
-      emit processEvents();
-    }
+  emit processEvents();
 
-  return Proceed;
+  mMutex.lock();
+  mSlotFinished = true;
+  mProceedReturn = Proceed;
+  mWaitSlot.wakeAll();
+  mMutex.unlock();
 }
 
 bool CProgressBar::finish()
@@ -194,9 +226,21 @@ bool CProgressBar::finish(const unsigned C_INT32 & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
+  mMutex.lock();
+  mSlotFinished = false;
+  mMutex.unlock();
+
   emit finishProgressBar(handle);
 
-  return (CProcessReport::finish(handle) && mProceed);
+  mMutex.lock();
+
+  if (!mSlotFinished)
+    mWaitSlot.wait(&mMutex);
+
+  bool ret = mFinishReturn;
+  mMutex.unlock();
+
+  return ret;
 }
 
 void CProgressBar::slotFinish(const unsigned int handle)
@@ -205,24 +249,18 @@ void CProgressBar::slotFinish(const unsigned int handle)
 
   removeProgressItem(mProgressItemList[handle]);
   pdelete(mProgressItemList[handle]);
+
+  mMutex.lock();
+  mSlotFinished = true;
+  mFinishReturn = (CProcessReport::finish(handle) && mProceed);
+  mWaitSlot.wakeAll();
+  mMutex.unlock();
+
 }
 
 bool CProgressBar::proceed()
 {
-  if (mNextEventProcessing < QDateTime::currentDateTime())
-    {
-      mNextEventProcessing = QDateTime::currentDateTime().addSecs(1);
-      qApp->processEvents();
-    }
-
-  while (mPause)
-    {
-      QMutex mutex;
-      QWaitCondition Pause;
-      Pause.wait(&mutex, 500);
-      qApp->processEvents();
-    }
-
+  emit processEvents();
   return mProceed;
 }
 
@@ -248,4 +286,10 @@ void CProgressBar::closeEvent(QCloseEvent *e)
 void CProgressBar::slotProcessEvents()
 {
   qApp->processEvents();
+}
+
+void CProgressBar::btnContinuePressed()
+{
+  CQProgressDialog::btnContinuePressed();
+  mWaitPause.wakeAll();
 }

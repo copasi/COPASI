@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:13 $
+//   $Date: 2010/04/26 14:26:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,6 +242,8 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
 
   // Initialize from the plot specification
   initFromSpec(plotspec);
+  connect(this, SIGNAL(replotCopasiPlot()),
+          this, SLOT(slotReplotCopasiPlot()));
 }
 
 bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
@@ -664,12 +666,34 @@ void CopasiPlot::updatePlot()
     {
       CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
 
+      mMutex.lock();
       updateCurves(C_INVALID_INDEX, true);
-      emit replotCopasiPlot(this);
+      mSlotFinished = false;
+      mMutex.unlock();
+
+      emit replotCopasiPlot();
+
+      mMutex.lock();
+
+      if (!mSlotFinished)
+        mWaitSlot.wait(&mMutex);
+
+      mMutex.unlock();
+
 
       Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
       mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + Delta + Delta + Delta;
     }
+}
+
+void CopasiPlot::slotReplotCopasiPlot()
+{
+  replot();
+
+  mMutex.lock();
+  mSlotFinished = true;
+  mWaitSlot.wakeAll();
+  mMutex.unlock();
 }
 
 //-----------------------------------------------------------------------------
