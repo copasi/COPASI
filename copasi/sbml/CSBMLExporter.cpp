@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/19 12:53:50 $
+//   $Date: 2010/04/27 12:52:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2716,6 +2716,10 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   if (pModel != NULL && (!pModel->getComments().empty()) && !(pModel->getComments().find_first_not_of(" \n\t\r") == std::string::npos))
     {
       std::string comments = "<notes>" + pModel->getComments() + "</notes>";
+      // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
+      // in libsbml it creates a dummy node and in libsbml 4 it doesn't
+      // somehow this never did affect the notes because they were exported correctly with
+      // libsbml 3 already
       XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
 
       if (pNotes != NULL)
@@ -5723,6 +5727,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // the new annotation is not empty, so we have to convert it
           // the root of the returned tree is a dummy node, so the actual
           // RDF element is the first child of the returned value
+
+          // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
+          // in libsbml it creates a dummy node and in libsbml 4 it doesn't
           XMLNode* pMIRIAMNode = XMLNode::convertStringToXMLNode(miriamAnnotationString);
           assert(pMIRIAMNode != NULL);
 
@@ -5731,13 +5738,18 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               // create a new COPASI annotation
               // the root of the returned tree is a dummy node, so the actual
               // COPASI is the first child of the returned value
+
+              // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
+              // in libsbml it creates a dummy node and in libsbml 4 it doesn't
               pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<COPASI xmlns=\"http://www.copasi.org/static/sbml\"></COPASI>");
               // now we have to make an additional copy since otherwise we would
               // need a const_cast later on.
               // This is due to a limitation in the libsbml API.
+#if LIBSBML_VERSION < 40001
               XMLNode* pTmpNode = pCOPASIAnnotation->getChild(0).clone();
               delete pCOPASIAnnotation;
               pCOPASIAnnotation = pTmpNode;
+#endif // LIBSBML_VERSION < 40001
               // calling unsetEnd is necessary for libsbml 3.1.1 and 3.2.0,
               // otherwise libsbml will write the opening COPASI element as a
               // closing element and add another closing element later on which is
@@ -5748,7 +5760,11 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               // we add the first child of the MIRIAM node since it was created
               // with convertStrngToXMLNode which creates a dummy node as the
               // root node
+#if LIBSBML_VERSION < 40001
               pCOPASIAnnotation->addChild(pMIRIAMNode->getChild(0));
+#else
+              pCOPASIAnnotation->addChild(*pMIRIAMNode);
+#endif // LIBSBML_VERSION < 40001 
               // delete the MIRIAM node since addChild made a copy
               delete pMIRIAMNode;
             }
@@ -5782,6 +5798,8 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // This is just a safety net in cast the libsbml API changes
           if (pSBMLObject->getAnnotation() == NULL)
             {
+              // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
+              // in libsbml it creates a dummy node and in libsbml 4 it doesn't
               pAnnotation = XMLNode::convertStringToXMLNode("<annotation></annotation>");
               // the libsbml convertStringToXMLNode doesn't seem to work in the
               // same way when we create an annotation node as opposed to the
