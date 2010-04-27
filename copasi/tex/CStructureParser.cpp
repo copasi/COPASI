@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.11.2.1 $
+//   $Revision: 1.11.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/14 17:50:00 $
+//   $Date: 2010/04/27 17:56:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,11 +25,11 @@
 
 #include "CStructureParser.h"
 
-#include <qstring.h>
-#include <qregexp.h>
-#include <Q3ValueList>
+#include <QString>
+#include <QRegExp>
 
 #include <iostream>
+
 #include "UI/qtUtilities.h"
 
 CStructureParser::CStructureParser(int n)
@@ -58,7 +58,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 {
   tagName = qName;
 
-  Q3ValueList<QString>::iterator itL;
+  QLinkedList<QString>::iterator itL;
 
   if (qName == "mtable")
     texHead = "\\begin{array}";
@@ -324,7 +324,7 @@ bool CStructureParser::characters(const QString& str)
 
 bool CStructureParser::endElement(const QString&, const QString&, const QString& qName)
 {
-  Q3ValueList<QString>::iterator itL;
+  QLinkedList<QString>::iterator itL;
 
   indent.remove((uint)0, 4);
 

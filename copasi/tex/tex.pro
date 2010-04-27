@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/tex.pro,v $ 
-#   $Revision: 1.2.2.1 $ 
+#   $Revision: 1.2.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/03 18:09:58 $ 
+#   $Date: 2010/04/27 17:56:59 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,4 +31,4 @@ CONFIG += qt
 include(../common.pri)
 
 #The following line was inserted by qt3to4
-QT += xml  opengl qt3support 
+QT += xml
