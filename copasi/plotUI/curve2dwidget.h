@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/26 18:25:05 $
+//   $Date: 2010/04/27 14:46:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // of Manchester.
 // All rights reserved.
 
+#ifndef CURVE2DWIDGET_H
 #define CURVE2DWIDGET_H
 
 #include "copasi/plotUI/ui_curve2dwidget.h"
