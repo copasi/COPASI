@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/23 06:40:38 $
+//   $Date: 2010/04/27 12:51:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,6 +265,7 @@ void test000092::test_miriam_export_2()
   if (pMIRIAM1->getName() != "RDF")
     {
       pMIRIAM2 = pMIRIAM1;
+      pMIRIAM1 = NULL;
 
       if (iMax == 2)
         {
@@ -309,7 +310,7 @@ void test000092::test_miriam_export_2()
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
 
   // same checks for the libsbml MIRIAM annotation
-  if (pMIRIAM2 != NULL)
+  if (pMIRIAM1 != NULL)
     {
       CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
       CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
@@ -743,7 +744,7 @@ void test000092::test_miriam_export_5()
   CPPUNIT_ASSERT(ns->getPrefix(index) == "vCard");
 
   // same checks for the libsbml MIRIAM annotation
-  if (pMIRIAM2 != NULL)
+  if (pMIRIAM1 != NULL)
     {
       CPPUNIT_ASSERT(pMIRIAM1->getName() == "RDF");
       CPPUNIT_ASSERT(pMIRIAM1->getPrefix() == "rdf");
