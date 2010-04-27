@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/16 09:14:26 $
+//   $Author: shoops $
+//   $Date: 2010/04/27 17:40:54 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,18 +26,12 @@
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qslider.h>
-#include <q3frame.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <q3whatsthis.h>
 #include <qaction.h>
 #include <qmenubar.h>
-#include <q3popupmenu.h>
-#include <q3toolbar.h>
+
 //Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
 #include <iostream>
 
 #ifdef DEBUG_UI
@@ -44,29 +43,29 @@
  *  name 'name' and widget flags set to 'f'.
  *
  */
-BaseWidget::BaseWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : QWidget(parent, name, fl),
+BaseWidget::BaseWidget(QWidget* parent, const char*  name, Qt::WFlags fl)
+    : QWidget(parent, fl),
     mpSlider(false)
 {
   if (!name)
     setName("BaseWidget");
 
-  mpBaseWidgetLayout = new Q3GridLayout(this, 1, 1, 0, 0, "BaseWidgetLayout");
+  mpBaseWidgetLayout = new QGridLayout(this, 1, 1, 0, 0, "BaseWidgetLayout");
 
-  mpVBoxBig = new Q3VBoxLayout(0, "VBoxBig");
+  mpVBoxBig = new QVBoxLayout(0, "VBoxBig");
 
-  mpHBoxBig = new Q3HBoxLayout(0, "HBoxBig");
+  mpHBoxBig = new QHBoxLayout(0, "HBoxBig");
 
-  mpFrame = new Q3Frame(this, "Frame");
-  mpFrame->setFrameShape(Q3Frame::StyledPanel);
-  mpFrame->setFrameShadow(Q3Frame::Sunken);
+  mpFrame = new QFrame(this, "Frame");
+  mpFrame->setFrameShape(QFrame::StyledPanel);
+  mpFrame->setFrameShadow(QFrame::Sunken);
   mpHBoxBig->addWidget(mpFrame, 0, 0);
 
-  mpVBoxSmall = new Q3VBoxLayout(0, "VBoxSmall");
+  mpVBoxSmall = new QVBoxLayout(0, "VBoxSmall");
   mpHBoxBig->addLayout(mpVBoxSmall, 0);
 
   mpVBoxBig->addLayout(mpHBoxBig, 0);
-  mpHBoxSmall = new Q3HBoxLayout(0, "HBoxSmall");
+  mpHBoxSmall = new QHBoxLayout(0, "HBoxSmall");
 
   mpVBoxBig->addLayout(mpHBoxSmall, 0);
   mpBaseWidgetLayout->addLayout(mpVBoxBig, 0, 0);

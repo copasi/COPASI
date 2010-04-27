@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/16 09:03:36 $
+//   $Author: shoops $
+//   $Date: 2010/04/27 17:40:54 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,20 +23,14 @@
 #ifndef BASE_WIDGET_H
 #define BASE_WIDGET_H
 
-#include <q3mainwindow.h>
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3Frame>
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
-#include <QLabel>
-
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
+#include <QWidget>
+class QLabel;
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QLabel;
 class QSlider;
-class Q3Frame;
+class QFrame;
 
 class BaseWidget : public QWidget
 {
@@ -47,12 +46,12 @@ public:
   QLabel* mpLabelRow;
   QSlider* mpSliderColumn;
   QSlider* mpSliderRow;
-  Q3Frame* mpFrame;
+  QFrame* mpFrame;
 
-  Q3HBoxLayout* mpHBoxBig;
-  Q3VBoxLayout* mpVBoxBig;
-  Q3VBoxLayout* mpVBoxSmall;
-  Q3HBoxLayout* mpHBoxSmall;
+  QHBoxLayout* mpHBoxBig;
+  QVBoxLayout* mpVBoxBig;
+  QVBoxLayout* mpVBoxSmall;
+  QHBoxLayout* mpHBoxSmall;
 
   void activateSlider();
   virtual void sliderMoved(int column, int row) = 0;
@@ -60,7 +59,7 @@ public:
   int scaleFactor();
 
 protected:
-  Q3GridLayout* mpBaseWidgetLayout;
+  QGridLayout* mpBaseWidgetLayout;
 
   /*!
     Scale factor for scalarizing QSlider and Qwt3D
