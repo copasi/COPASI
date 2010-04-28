@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-//   $Revision: 1.12.2.2 $
+//   $Revision: 1.12.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/28 15:30:47 $
+//   $Date: 2010/04/28 16:39:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,7 @@ WizardDialog::WizardDialog(QWidget* parent, const char* /* name */, bool /* moda
   buttonGroup->button(0)->setChecked(true);
 
   connect(buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(buttonGroup2_clicked(int)));
+  connect(textBrowser, SIGNAL(anchorClicked(const QUrl &)), this, SLOT(textBrowser_anchorClicked(const QUrl &)));
 }
 
 /*
@@ -132,8 +133,10 @@ void WizardDialog::backButton_clicked()
   buttonGroup2_clicked(this->buttonGroup->checkedId());
 }
 
-void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString & C_UNUSED(link))
+void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
 {
+  QString name = url.toString();
+
   if (name == "Model Settings")
     {
       ListViews::switchAllListViewsToWidget(1, "");

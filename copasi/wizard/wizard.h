@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.h,v $
-//   $Revision: 1.11.2.2 $
+//   $Revision: 1.11.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/28 15:30:47 $
+//   $Date: 2010/04/28 16:39:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,8 @@
 #include <qvariant.h>
 
 #include "copasi/wizard/ui_wizard.h"
+
+class QUrl;
 
 class WizardDialog : public QDialog, public Ui::WizardDialog
 {
@@ -34,7 +36,7 @@ public slots:
   virtual void buttonGroup2_clicked(int);
   virtual void forwardButton_clicked();
   virtual void backButton_clicked();
-  virtual void textBrowser_anchorClicked(const QString & name, const QString & link);
+  virtual void textBrowser_anchorClicked(const QUrl & url);
 
 protected:
   static const char* Error;
