@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-//   $Revision: 1.12.2.3 $
+//   $Revision: 1.12.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/28 16:39:21 $
+//   $Date: 2010/04/28 17:13:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,8 @@
 #include "copasi.h"
 
 #include "commandline/COptions.h"
+
+#include <iostream>
 
 // #include <qvariant.h>
 // #include <iostream>
@@ -135,7 +137,9 @@ void WizardDialog::backButton_clicked()
 
 void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
 {
-  QString name = url.toString();
+  QString name = url.fragment();
+
+  std::cout << name.toUtf8().data() << std::endl;
 
   if (name == "Model Settings")
     {
