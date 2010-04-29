@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229.2.7 $
+#   $Revision: 1.229.2.8 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/04/07 16:51:58 $
+#   $Date: 2010/04/29 15:19:29 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229.2.7 $ $Author: shoops $ $Date: 2010/04/07 16:51:58 $
+# $Revision: 1.229.2.8 $ $Author: shoops $ $Date: 2010/04/29 15:19:29 $
 ######################################################################
 
 LIB = UI
@@ -295,7 +295,6 @@ HEADERS += CQSplashWidget.ui.h
 FORMS3 += CQStartValueReset.ui
 HEADERS += CQStartValueReset.ui.h
 FORMS3 += CQTaskBtnWidget.ui
-HEADERS += CQTaskBtnWidget.ui.h
 FORMS3 += CQTaskHeaderWidget.ui
 HEADERS += CQTaskHeaderWidget.ui.h
 FORMS3 += CUpDownSubwidget.ui
@@ -430,7 +429,7 @@ contains(USE_LICENSE, COM) {
 #endif // COPASI_LICENSE_COM
 
 #The following line was inserted by qt3to4
-QT += xml  opengl qt3support 
+QT += xml  opengl qt3support
 #The following line was inserted by qt3to4
 CONFIG += uic3
 
