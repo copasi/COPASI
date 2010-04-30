@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.14 $
+$Revision: 1.14.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/02/17 19:35:02 $
+$Date: 2010/04/30 18:01:59 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -364,6 +364,8 @@ bool CConfigurationFile::CXML::load(std::istream & is,
   if (success && Parser.getCurrentGroup() != NULL)
     {
       mConfiguration = * Parser.getCurrentGroup();
+      mConfiguration.setObjectName("Configuration");
+
       delete Parser.getCurrentGroup();
     }
   else
