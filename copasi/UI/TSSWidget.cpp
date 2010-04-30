@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-$Revision: 1.17 $
+$Revision: 1.17.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/09/25 21:02:46 $
+$Date: 2010/04/30 15:23:14 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,13 +93,14 @@ bool TSSWidget::saveTask()
     dynamic_cast<CTSSMethod *>(tssTask->getMethod());
   assert(method);
 
-  //...
-
-  // :TODO Bug 322: This should only be called when actual changes have been saved.
   if (mChanged)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      if (mpDataModel != NULL)
+        {
+          mpDataModel->changed();
+        }
+
+      mChanged = false;
     }
 
   return true;

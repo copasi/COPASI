@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.123.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/30 12:54:36 $
+//   $Author: shoops $
+//   $Date: 2010/04/30 15:23:15 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -145,6 +150,8 @@ bool SteadyStateWidget::loadTask()
       taskStability->setChecked(bStatistics);
     }
 
+  mChanged = false;
+
   return true;
 }
 
@@ -177,11 +184,16 @@ bool SteadyStateWidget::saveTask()
   steadystateproblem->setJacobianRequested(bJacobian);
   steadystateproblem->setStabilityAnalysisRequested(bStatistics);
 
-  //loadSteadyStateTask();
+  if (mChanged)
+    {
+      if (mpDataModel != NULL)
+        {
+          mpDataModel->changed();
+        }
 
-  // :TODO Bug 322: This should only be called when actual changes have been saved.
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      mChanged = false;
+    }
+
   return true;
 }
 

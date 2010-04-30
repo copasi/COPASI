@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.173 $
+//   $Revision: 1.173.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/17 19:32:58 $
+//   $Date: 2010/04/30 15:23:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -855,16 +855,17 @@ bool FunctionWidget1::saveToFunction()
       copyFunctionContentsToFunction(mpFunction, func);
 
       protectedNotify(ListViews::FUNCTION, ListViews::CHANGE, mKey);
+
+      if (mpDataModel != NULL)
+        {
+          mpDataModel->changed();
+        }
+
+      flagChanged = false;
     }
 
   func->compile();
-  // :TODO: Bug 404 Create a message that the function is not valid by itself.
 
-  // :TODO Bug 322: This should only be called when actual changes have been saved.
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
-
-  flagChanged = false;
   return true;
 }
 

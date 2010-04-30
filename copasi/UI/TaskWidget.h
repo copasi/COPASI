@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.20.2.1 $
+ $Revision: 1.20.2.2 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/04/07 16:48:55 $
+ $Date: 2010/04/30 15:23:15 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,7 +97,6 @@ public slots:
 
 protected:
   virtual bool enterProtected();
-  CProgressBar * mProgressBar;
 
   virtual bool loadTask() = 0;
 
@@ -130,14 +129,11 @@ protected:
 
   bool commonRunTask();
 
+  CProgressBar * mProgressBar;
   CQTaskHeaderWidget * mpHeaderWidget;
   CQTaskBtnWidget * mpBtnWidget;
-
-//    Q3GridLayout * mpMethodLayout;
   QGridLayout * mpMethodLayout;
-
   QLabel * mpLblParameter;
-//    Q3Table * mpTblParameter;
   QTableWidget * mpTblParameter;
   QSpacerItem * mpSpacer1;
   QLabel * mpLblMethod;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.211.2.2 $
+//   $Revision: 1.211.2.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/04/24 01:46:06 $
+//   $Author: shoops $
+//   $Date: 2010/04/30 15:23:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,7 +216,8 @@ bool ScanWidget::loadTask()
   tmpT->initFromScanProblem(scanProblem, pDataModel->getModel());
   scrollview->addWidget(tmpT, false); //false: no control buttons (up/down/del)
 
-  //scrollview->updateFromWidgetList();
+  mChanged = false;
+
   return true;
 }
 
@@ -387,8 +388,17 @@ bool ScanWidget::saveTask()
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  // However we do not check whether the scan item are changed we delete all
+  // and create them new.
+  if (true)
+    {
+      if (mpDataModel != NULL)
+        {
+          mpDataModel->changed();
+        }
+
+      mChanged = false;
+    }
 
   return true;
 }

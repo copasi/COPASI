@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.281 $
+//   $Revision: 1.281.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/11/23 13:33:46 $
+//   $Author: shoops $
+//   $Date: 2010/04/30 15:23:14 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -1187,7 +1192,9 @@ bool ListViews::detach()
 
 bool ListViews::notify(ObjectType objectType, Action action, const std::string & key) //static
 {
-  if (objectType != MODEL && action != ADD)
+  if (objectType != MODEL &&
+      objectType != STATE &&
+      action != ADD)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       (*CCopasiRootContainer::getDatamodelList())[0]->changed();
