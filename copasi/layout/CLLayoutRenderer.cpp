@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 11:39:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -686,6 +686,8 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
  */
 void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingBox* pBB)
 {
+  if (!pBB || !pCurve || pCurve->getNumElements() <= 0) return;
+
   this->save_current_attributes();
   CLLayoutRenderer::extract_1d_attributes(pCurve, &mCurrentAttributes);
   CLLayoutRenderer::extract_arrowhead_information(pCurve, &mCurrentAttributes);
@@ -717,7 +719,6 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
   const CLRenderPoint* pP = NULL;
   const CLRenderCubicBezier* pCB = NULL;
   // the first one has to be a point
-  assert(pCurve->getNumElements() > 1);
   const CLRenderPoint* pStart = pCurve->getCurveElement(0);
   p1 = convert_to_absolute(pStart, pBB);
   std::vector<simple_point> v;
