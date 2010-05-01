@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.33 $
+#   $Revision: 1.34 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2010/03/16 18:55:46 $
+#   $Author: gauges $
+#   $Date: 2010/05/01 14:35:52 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -43,15 +43,6 @@ HEADERS = CQGLNetworkPainter.h \
           RGTextureSpec.h \
           CLabel.h
 
-contains(DEFINES,USE_CRENDER_EXTENSION) {           
-HEADERS += CQFontRenderer.h \
-           CQGLLayoutPainter.h \
-	   CQGLLayoutViewer.h \
-	   CQNewMainWindow.h \
-           CQQtImageTexturizer.h \
-           CQScreenshotOptionsDialog.h
-}
-
 SOURCES = CQLayoutMainWindow.cpp \
           CArrow.cpp \
           CCompartmentGraphNode.cpp \
@@ -71,16 +62,6 @@ SOURCES = CQLayoutMainWindow.cpp \
           RGTextureSpec.cpp \
           CLabel.cpp
 
-contains(DEFINES,USE_CRENDER_EXTENSION) {           
-SOURCES += CQFontRenderer.cpp \
-           CQGLLayoutPainter.cpp \
-	   CQGLLayoutViewer.cpp \
-	   CQNewMainWindow.cpp \
-           CQQtImageTexturizer.cpp \
-           CQScreenshotOptionsDialog.cpp
-}
-
-
 
 FORMS = ParaPanel.ui \
         NodeSizePanel.ui \
@@ -95,13 +76,33 @@ DISTFILES += load_data.xpm \
              forward_single.xpm \
              backward_single.xpm
 
-contains(DEFINES,USE_CRENDER_EXTENSION) {           
-FORMS += CQScreenshotDialog.ui 
-}
-
 include(../lib.pri)
 
 CONFIG += qt
 
 include(../common.pri)
+
+contains(DEFINES,USE_CRENDER_EXTENSION) {           
+HEADERS += CQFontRenderer.h \
+           CQGLLayoutPainter.h \
+	   CQGLLayoutViewer.h \
+	   CQNewMainWindow.h \
+           CQQtImageTexturizer.h \
+           CQScreenshotOptionsDialog.h
+}
+
+contains(DEFINES,USE_CRENDER_EXTENSION) {           
+SOURCES += CQFontRenderer.cpp \
+           CQGLLayoutPainter.cpp \
+	   CQGLLayoutViewer.cpp \
+	   CQNewMainWindow.cpp \
+           CQQtImageTexturizer.cpp \
+           CQScreenshotOptionsDialog.cpp
+}
+
+
+contains(DEFINES,USE_CRENDER_EXTENSION) {           
+FORMS += CQScreenshotDialog.ui 
+}
+
 
