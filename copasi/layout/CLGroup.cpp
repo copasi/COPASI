@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGroup.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -772,9 +772,9 @@ const std::string& CLGroup::getKey() const
 /**
  * Converts this object to the corresponding SBML object.
  */
-Group* CLGroup::toSBML() const
+Group* CLGroup::toSBML(unsigned int level, unsigned int version) const
 {
-  Group* pGroup = new Group();
+  Group* pGroup = new Group(level, version);
   this->addSBMLAttributes(pGroup);
   pGroup->setStartHead(this->mStartHead);
   pGroup->setEndHead(this->mEndHead);
@@ -850,31 +850,31 @@ Group* CLGroup::toSBML() const
 
       if (dynamic_cast<const CLRectangle*>(pObject))
         {
-          pChild = static_cast<const CLRectangle*>(pObject)->toSBML();
+          pChild = static_cast<const CLRectangle*>(pObject)->toSBML(level, version);
         }
       else if (dynamic_cast<const CLEllipse*>(pObject))
         {
-          pChild = static_cast<const CLEllipse*>(pObject)->toSBML();
+          pChild = static_cast<const CLEllipse*>(pObject)->toSBML(level, version);
         }
       else if (dynamic_cast<const CLRenderCurve*>(pObject))
         {
-          pChild = static_cast<const CLRenderCurve*>(pObject)->toSBML();
+          pChild = static_cast<const CLRenderCurve*>(pObject)->toSBML(level, version);
         }
       else if (dynamic_cast<const CLPolygon*>(pObject))
         {
-          pChild = static_cast<const CLPolygon*>(pObject)->toSBML();
+          pChild = static_cast<const CLPolygon*>(pObject)->toSBML(level, version);
         }
       else if (dynamic_cast<const CLText*>(pObject))
         {
-          pChild = static_cast<const CLText*>(pObject)->toSBML();
+          pChild = static_cast<const CLText*>(pObject)->toSBML(level, version);
         }
       else if (dynamic_cast<const CLImage*>(pObject))
         {
-          pChild = static_cast<const CLImage*>(pObject)->toSBML();
+          pChild = static_cast<const CLImage*>(pObject)->toSBML(level, version);
         }
       else if (dynamic_cast<const CLGroup*>(pObject))
         {
-          pChild = static_cast<const CLGroup*>(pObject)->toSBML();
+          pChild = static_cast<const CLGroup*>(pObject)->toSBML(level, version);
         }
 
       pGroup->addChildElement(pChild);

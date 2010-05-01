@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderPoint.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,9 +43,9 @@ CLRenderPoint::CLRenderPoint(const CLRenderPoint& orig):
  */
 CLRenderPoint::CLRenderPoint(const RenderPoint& source):
     CLBase(),
-    mXOffset(source.getXOffset()),
-    mYOffset(source.getYOffset()),
-    mZOffset(source.getZOffset())
+    mXOffset(source.x()),
+    mYOffset(source.y()),
+    mZOffset(source.z())
 {
 }
 
@@ -272,9 +272,9 @@ bool CLRenderPoint::operator==(const CLRenderPoint& left)
 /**
  * Converts this object to the corresponding SBML object.
  */
-RenderPoint* CLRenderPoint::toSBML() const
+RenderPoint* CLRenderPoint::toSBML(unsigned int level, unsigned int version) const
 {
-  RenderPoint* pP = new RenderPoint();
+  RenderPoint* pP = new RenderPoint(level, version);
   this->addSBMLAttributes(pP);
   return pP;
 }
@@ -288,7 +288,7 @@ void CLRenderPoint::addSBMLAttributes(RenderPoint* pPoint) const
   RelAbsVector* pV1 = this->mXOffset.toSBML();
   RelAbsVector* pV2 = this->mYOffset.toSBML();
   RelAbsVector* pV3 = this->mZOffset.toSBML();
-  pPoint->setOffsets(*pV1, *pV2, *pV3);
+  pPoint->setCoordinates(*pV1, *pV2, *pV3);
   delete pV1;
   delete pV2;
   delete pV3;

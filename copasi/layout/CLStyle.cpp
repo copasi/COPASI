@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLStyle.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,7 +234,7 @@ const std::string& CLStyle::getKey() const
  */
 void CLStyle::addSBMLAttributes(Style* pStyle) const
 {
-  Group* pG = this->mpGroup->toSBML();
+  Group* pG = this->mpGroup->toSBML(pStyle->getLevel(), pStyle->getVersion());
   pStyle->setGroup(pG);
   delete pG;
   std::set<std::string> s;

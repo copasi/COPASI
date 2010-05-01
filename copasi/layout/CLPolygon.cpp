@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLPolygon.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,15 +198,15 @@ const std::string& CLPolygon::getKey() const
 /**
  * Converts this object to the corresponding SBML object.
  */
-Polygon* CLPolygon::toSBML() const
+Polygon* CLPolygon::toSBML(unsigned int level, unsigned int version) const
 {
-  Polygon* pPolygon = new Polygon();
+  Polygon* pPolygon = new Polygon(level, version);
   this->addSBMLAttributes(pPolygon);
   unsigned int i, iMax = this->mListOfElements.size();
 
   for (i = 0; i < iMax; ++i)
     {
-      const RenderPoint* pP = this->mListOfElements[i]->toSBML();
+      const RenderPoint* pP = this->mListOfElements[i]->toSBML(level, version);
       pPolygon->addElement(pP);
       delete pP;
     }

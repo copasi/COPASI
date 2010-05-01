@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLImage.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,9 +235,9 @@ const std::string& CLImage::getKey() const
 /**
  * Converts this object to the corresponding SBML object.
  */
-Image* CLImage::toSBML() const
+Image* CLImage::toSBML(unsigned int level, unsigned int version) const
 {
-  Image* pImg = new Image();
+  Image* pImg = new Image(level, version);
   this->addSBMLAttributes(pImg);
   RelAbsVector* pV = this->mX.toSBML();
   pImg->setX(*pV);

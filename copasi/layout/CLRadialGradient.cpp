@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRadialGradient.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -229,9 +229,9 @@ CLRelAbsVector& CLRadialGradient::getRadius()
 /**
  * Converts this object to the corresponding SBML object.
  */
-RadialGradient* CLRadialGradient::toSBML() const
+RadialGradient* CLRadialGradient::toSBML(unsigned int level, unsigned int version) const
 {
-  RadialGradient* pRG = new RadialGradient();
+  RadialGradient* pRG = new RadialGradient(level, version);
   this->addSBMLAttributes(pRG);
   RelAbsVector* pV1 = this->getCenterX().toSBML();
   RelAbsVector* pV2 = this->getCenterY().toSBML();

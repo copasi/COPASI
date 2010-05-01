@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLText.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -431,9 +431,9 @@ const std::string& CLText::getKey() const
 /**
  * Converts this object to the corresponding SBML object.
  */
-Text* CLText::toSBML() const
+Text* CLText::toSBML(unsigned int level, unsigned int version) const
 {
-  Text* pText = new Text();
+  Text* pText = new Text(level, version);
   this->addSBMLAttributes(pText);
   RelAbsVector* pV1 = this->mX.toSBML();
   RelAbsVector* pV2 = this->mY.toSBML();

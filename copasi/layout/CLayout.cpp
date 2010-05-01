@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -456,7 +456,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       //gradientKeyToIdMap.clear();
       //lineEndingKeyToIdMap.clear();
       //pLRI=this->mvLocalRenderInformationObjects[i]->toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
-      pLRI = this->mvLocalRenderInformationObjects[i]->toSBML();
+      pLRI = this->mvLocalRenderInformationObjects[i]->toSBML(layout->getLevel(), layout->getVersion());
       keyToIdMap.insert(std::pair<std::string, std::string>(this->mvLocalRenderInformationObjects[i]->getKey(), pLRI->getId()));
       //colorKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getId(),colorKeyToIdMap));
       //gradientKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getId(),gradientKeyToIdMap));

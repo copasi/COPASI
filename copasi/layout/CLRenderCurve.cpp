@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderCurve.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,13 +75,13 @@ CLRenderCurve::CLRenderCurve(const RenderCurve& source, CCopasiContainer* pParen
     {
       CLRenderPoint* pElement = NULL;
 
-      if (dynamic_cast<const RenderCubicBezier*>(source.getCurveElement(i)))
+      if (dynamic_cast<const RenderCubicBezier*>(source.getElement(i)))
         {
-          pElement = new CLRenderCubicBezier(*static_cast<const RenderCubicBezier*>(source.getCurveElement(i)));
+          pElement = new CLRenderCubicBezier(*static_cast<const RenderCubicBezier*>(source.getElement(i)));
         }
       else
         {
-          pElement = new CLRenderPoint(*source.getCurveElement(i));
+          pElement = new CLRenderPoint(*source.getElement(i));
         }
 
       this->mListOfElements.push_back(pElement);
@@ -253,9 +253,9 @@ const std::string& CLRenderCurve::getKey() const
 /**
  * Converts this object to the corresponding SBML object.
  */
-RenderCurve* CLRenderCurve::toSBML() const
+RenderCurve* CLRenderCurve::toSBML(unsigned int level, unsigned int version) const
 {
-  RenderCurve* pCurve = new RenderCurve();
+  RenderCurve* pCurve = new RenderCurve(level, version);
   this->addSBMLAttributes(pCurve);
   pCurve->setStartHead(this->mStartHead);
   pCurve->setEndHead(this->mEndHead);
@@ -263,8 +263,8 @@ RenderCurve* CLRenderCurve::toSBML() const
 
   for (i = 0; i < iMax; ++i)
     {
-      const RenderPoint* pP = this->mListOfElements[i]->toSBML();
-      pCurve->addCurveElement(pP);
+      const RenderPoint* pP = this->mListOfElements[i]->toSBML(level, version);
+      pCurve->addElement(pP);
       delete pP;
     }
 

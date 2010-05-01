@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLineEnding.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -167,18 +167,22 @@ void CLLineEnding::setId(const std::string& id)
 /**
  * Converts this object to the corresponding SBML object.
  */
-LineEnding* CLLineEnding::toSBML() const
+LineEnding* CLLineEnding::toSBML(unsigned int level, unsigned int version) const
 {
-  LineEnding* pLE = new LineEnding();
+  LineEnding* pLE = new LineEnding(level, version);
   this->addSBMLAttributes(pLE);
   pLE->setId(this->mId);
   pLE->setEnableRotationalMapping(this->mEnableRotationalMapping);
-  BoundingBox bb("bb", this->mBoundingBox.getPosition().getX(),
-                 this->mBoundingBox.getPosition().getY(),
-                 this->mBoundingBox.getDimensions().getWidth(),
-                 this->mBoundingBox.getDimensions().getHeight());
+  BoundingBox bb(level, version);
+  bb.setId("bb");
+  Point p(this->mBoundingBox.getPosition().getX(),
+          this->mBoundingBox.getPosition().getY());
+  bb.setPosition(&p);
+  Dimensions d(this->mBoundingBox.getDimensions().getWidth(),
+               this->mBoundingBox.getDimensions().getHeight());
+  bb.setDimensions(&d);
   pLE->setBoundingBox(&bb);
-  const Group* pG = this->mpGroup->toSBML();
+  const Group* pG = this->mpGroup->toSBML(level, version);
   pLE->setGroup(pG);
   delete pG;
   return pLE;

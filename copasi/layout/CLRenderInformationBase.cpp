@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderInformationBase.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -415,7 +415,7 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
 
   for (i = 0; i < iMax; ++i)
     {
-      ColorDefinition* pCD = this->getColorDefinition(i)->toSBML();
+      ColorDefinition* pCD = this->getColorDefinition(i)->toSBML(pBase->getLevel(), pBase->getVersion());
       pBase->addColorDefinition(pCD);
       //colorKeyToIdMap.insert(std::pair<std::string,std::string>(this->getColorDefinition(i)->getKey(),pCD->getId()));
       delete pCD;
@@ -431,11 +431,11 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
 
       if (dynamic_cast<const CLRadialGradient*>(pLGB))
         {
-          pGB = static_cast<const CLRadialGradient*>(pLGB)->toSBML();
+          pGB = static_cast<const CLRadialGradient*>(pLGB)->toSBML(pBase->getLevel(), pBase->getVersion());
         }
       else
         {
-          pGB = static_cast<const CLLinearGradient*>(pLGB)->toSBML();
+          pGB = static_cast<const CLLinearGradient*>(pLGB)->toSBML(pBase->getLevel(), pBase->getVersion());
         }
 
       pBase->addGradientDefinition(pGB);
@@ -447,7 +447,7 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
 
   for (i = 0; i < iMax; ++i)
     {
-      LineEnding* pLE = this->getLineEnding(i)->toSBML();
+      LineEnding* pLE = this->getLineEnding(i)->toSBML(pBase->getLevel(), pBase->getVersion());
       pBase->addLineEnding(pLE);
       //lineEndingKeyToIdMap.insert(std::pair<std::string,std::string>(this->getLineEnding(i)->getKey(),pLE->getId()));
       delete pLE;

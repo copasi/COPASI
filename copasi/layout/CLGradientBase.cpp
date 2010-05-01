@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientBase.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -210,6 +210,6 @@ void CLGradientBase::addSBMLAttributes(GradientBase* pBase) const
 
   for (i = 0; i < iMax; ++i)
     {
-      pBase->addGradientStop(this->mGradientStops[i]->toSBML());
+      pBase->addGradientStop(this->mGradientStops[i]->toSBML(pBase->getLevel(), pBase->getVersion()));
     }
 }

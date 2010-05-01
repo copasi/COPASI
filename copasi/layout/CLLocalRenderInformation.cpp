@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLocalRenderInformation.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,22 +116,16 @@ void CLLocalRenderInformation::addStyle(const CLLocalStyle* pStyle)
 /**
  * Converts this object to the corresponding SBML object.
  */
-LocalRenderInformation* CLLocalRenderInformation::toSBML(
-  /*
-  std::map<std::string,std::string>& colorKeyToIdMap,
-  std::map<std::string,std::string>& gradientKeyToIdMap,
-  std::map<std::string,std::string>& lineEndingKeyToIdMap
-  */
-) const
+LocalRenderInformation* CLLocalRenderInformation::toSBML(unsigned int level, unsigned int version) const
 {
-  LocalRenderInformation* pLRI = new LocalRenderInformation();
+  LocalRenderInformation* pLRI = new LocalRenderInformation(level, version);
   //this->addSBMLAttributes(pLRI,colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
   this->addSBMLAttributes(pLRI);
   unsigned int i, iMax = this->mListOfStyles.size();
 
   for (i = 0; i < iMax; ++i)
     {
-      LocalStyle* pStyle = this->getStyle(i)->toSBML();
+      LocalStyle* pStyle = this->getStyle(i)->toSBML(level, version);
       pLRI->addStyle(pStyle);
       delete pStyle;
     }

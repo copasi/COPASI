@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
       //gradientKeyToIdMap.clear();
       //lineEndingKeyToIdMap.clear();
       //pGRI=this->mvGlobalRenderInformationObjects[i]->toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
-      pGRI = this->mvGlobalRenderInformationObjects[i]->toSBML();
+      pGRI = this->mvGlobalRenderInformationObjects[i]->toSBML(pLoL->getLevel(), pLoL->getVersion());
       // add the id and key to the map
       keyToIdMap.insert(std::pair<std::string, std::string>(this->mvGlobalRenderInformationObjects[i]->getKey(), pGRI->getId()));
       //colorKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),colorKeyToIdMap));

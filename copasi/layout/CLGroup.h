@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGroup.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,7 +280,7 @@ public:
   /**
    * Converts this object to the corresponding SBML object.
    */
-  Group* toSBML() const;
+  Group* toSBML(unsigned int level, unsigned int version) const;
 };
 
 #endif /* CLGroup_H__ */

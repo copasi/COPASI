@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLEllipse.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -277,9 +277,9 @@ const std::string& CLEllipse::getKey() const
 /**
  * Converts this object to the corresponding SBML object.
  */
-Ellipse* CLEllipse::toSBML() const
+Ellipse* CLEllipse::toSBML(unsigned int level, unsigned int version) const
 {
-  Ellipse* pE = new Ellipse();
+  Ellipse* pE = new Ellipse(level, version);
   this->addSBMLAttributes(pE);
   RelAbsVector* pV = this->getCX().toSBML();
   pE->setCX(*pV);

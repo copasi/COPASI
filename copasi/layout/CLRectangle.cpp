@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRectangle.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/05/01 14:35:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -325,9 +325,9 @@ const std::string& CLRectangle::getKey() const
 /**
  * Converts this object to the corresponding SBML object.
  */
-Rectangle* CLRectangle::toSBML() const
+Rectangle* CLRectangle::toSBML(unsigned int level, unsigned int version) const
 {
-  Rectangle* pRectangle = new Rectangle();
+  Rectangle* pRectangle = new Rectangle(level, version);
   RelAbsVector* pV1 = this->mX.toSBML();
   RelAbsVector* pV2 = this->mY.toSBML();
   RelAbsVector* pV3 = this->mZ.toSBML();
