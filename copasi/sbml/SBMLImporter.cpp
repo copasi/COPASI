@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.251 $
+//   $Revision: 1.252 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/05/01 21:11:35 $
+//   $Date: 2010/05/03 12:36:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1040,11 +1040,16 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     }
 
   unsigned int dimensionality = 3;
+#if LIBSBML_VERSION > 30401
 
   if (sbmlCompartment->isSetSpatialDimensions())
     {
-      sbmlCompartment->getSpatialDimensions();
+#endif // LIBSBML_VERSION
+      dimensionality = sbmlCompartment->getSpatialDimensions();
+#if LIBSBML_VERSION > 30401
     }
+
+#endif // LIBSBML_VERSION
 
   if (dimensionality > 3)
     {
