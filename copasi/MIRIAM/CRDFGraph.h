@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.26.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:41 $
+//   $Date: 2010/05/03 15:19:51 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -168,9 +173,11 @@ public:
    * Retrieve all triplets with the specified predicate, this will collapse
    * predicate.rdf:li to predicate.
    * @param const CRDFPredicate & predicate
+   * @param const bool & expandBag (default: true)
    * @return std::set< CRDFTriplet > triplets
    */
-  std::set< CRDFTriplet > getTriplets(const CRDFPredicate & predicate) const;
+  std::set< CRDFTriplet > getTriplets(const CRDFPredicate & predicate,
+                                      const bool & expandBag = true) const;
 
   /**
    * Retrieve all triplets with the specified subject
