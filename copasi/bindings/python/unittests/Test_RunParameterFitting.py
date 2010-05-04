@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunParameterFitting.py,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.2.2.1 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/01/07 18:51:32 $ 
+#   $Author: gauges $ 
+#   $Date: 2010/05/04 15:56:16 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -249,7 +255,8 @@ class Test_RunParameterFitting(unittest.TestCase):
     self.model=Test_CreateSimpleModel.createModel()
 
    def test_runParameterFittingOnSimpleModel(self):
-        fitTask=COPASI.CCopasiDataModel.GLOBAL.addTask(COPASI.CCopasiTask.parameterFitting)
+        self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+        fitTask=COPASI.self.datamodel.addTask(COPASI.CCopasiTask.parameterFitting)
         self.assert_(fitTask!=None)
         self.assert_(fitTask.__class__==COPASI.CFitTask)
         fitMethod=fitTask.getMethod()
@@ -287,7 +294,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         result=objectMap.setRole(0,COPASI.CExperiment.time)
         self.assert_(result==True)
         self.assert_(objectMap.getRole(0)==COPASI.CExperiment.time)
-        model=COPASI.CCopasiDataModel.GLOBAL.getModel()
+        model=self.datamodel.getModel()
         self.assert_(model!=None)
         self.assert_(model.__class__==COPASI.CModel)
         timeReference=model.getObject(COPASI.CCopasiObjectName("Reference=Time"))

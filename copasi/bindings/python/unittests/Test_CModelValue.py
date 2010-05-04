@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CModelValue.py,v $ 
-#   $Revision: 1.13 $ 
+#   $Revision: 1.13.2.1 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/01/07 18:51:32 $ 
+#   $Author: gauges $ 
+#   $Date: 2010/05/04 15:56:16 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -18,8 +24,8 @@ from types import *
 
 class Test_CModelValue(unittest.TestCase):
   def setUp(self):
-    COPASI.CCopasiDataModel.GLOBAL.newModel()
-    self.model=COPASI.CCopasiDataModel.GLOBAL.getModel()
+    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.model=self.datamodel.getModel()
     self.mv=self.model.createModelValue("mv")
 
   def test_getKey(self):
@@ -85,18 +91,6 @@ class Test_CModelValue(unittest.TestCase):
     value=self.mv.isUsed()
     self.assert_(type(value)==BooleanType)
 
-  def test_setCalculatedOnce(self):
-    v=True
-    self.mv.setCalculatedOnce(v)
-    self.assert_(v==self.mv.isCalculatedOnce())
-    v=False
-    self.mv.setCalculatedOnce(v)
-    self.assert_(v==self.mv.isCalculatedOnce())
-
-  def test_isCalculatedOnce(self):
-    value=self.mv.isCalculatedOnce()
-    self.assert_(type(value)==BooleanType)
-
   def test_setExpression(self):
     self.mv.setStatus(COPASI.CModelEntity.ASSIGNMENT)
     expr="17"
@@ -127,8 +121,6 @@ def suite():
          ,'test_getInitialExpression'
          ,'test_isUsed'
          ,'test_setUsed'
-         ,'test_isCalculatedOnce'
-         ,'test_setCalculatedOnce'
          ,'test_setExpression'
          ,'test_setInitialExpression'
         ]

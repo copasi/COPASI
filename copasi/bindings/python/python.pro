@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.29.2.1 $ 
+#   $Revision: 1.29.2.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/05/03 14:17:00 $ 
+#   $Date: 2010/05/04 15:56:15 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -194,6 +194,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CVector.i \
                      ../swig/CFitMethod.i \
                      ../swig/CFitProblem.i \
+                     ../swig/CEvent.i \
                      ../swig/CFitTask.i \
                      ../swig/CExperimentFileInfo.i \
                      ../swig/CExperiment.i \
@@ -241,6 +242,7 @@ UNITTEST_FILES = unittests/Test_CChemEq.py \
                  unittests/Test_CTrajectoryProblem.py \
                  unittests/Test_CTrajectoryTask.py \
                  unittests/Test_CVersion.py \
+                 unittests/Test_CEvent.py \
                  unittests/Test_CreateSimpleModel.py \
                  unittests/Test_RunSimulations.py \
                  unittests/runTests.py 

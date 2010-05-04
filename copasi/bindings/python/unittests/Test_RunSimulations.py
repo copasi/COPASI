@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunSimulations.py,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.7.2.1 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/01/07 18:51:32 $ 
+#   $Author: gauges $ 
+#   $Date: 2010/05/04 15:56:16 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -17,11 +23,11 @@ from types import *
 import Test_CreateSimpleModel
 import math
 
-def runSimulation(methodType,problemParameters,methodParameters):
+def runSimulation(methodType,problemParameters,methodParameters,datamodel):
     task=None
-    for x in range(0,COPASI.CCopasiDataModel.GLOBAL.getTaskList().size()):
-        if(COPASI.CCopasiDataModel.GLOBAL.getTask(x).getType()==COPASI.CCopasiTask.timeCourse):
-            task=COPASI.CCopasiDataModel.GLOBAL.getTask(x)
+    for x in range(0,datamodel.getTaskList().size()):
+        if(datamodel.getTask(x).getType()==COPASI.CCopasiTask.timeCourse):
+            task=datamodel.getTask(x)
     if(task==None):
         return False
     task.setMethodType(methodType)
@@ -45,30 +51,31 @@ def runSimulation(methodType,problemParameters,methodParameters):
         return None
     return task
 
-def runDeterministicSimulation():
+def runDeterministicSimulation(datamodel):
    problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={"Absolute Tolerance":1.0e-20}
-   return runSimulation(COPASI.CCopasiMethod.deterministic,problemParameters,methodParameters)
+   return runSimulation(COPASI.CCopasiMethod.deterministic,problemParameters,methodParameters,datamodel)
 
-def runStochasticSimulation():
+def runStochasticSimulation(datamodel):
    problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={}
-   return runSimulation(COPASI.CCopasiMethod.stochastic,problemParameters,methodParameters)
+   return runSimulation(COPASI.CCopasiMethod.stochastic,problemParameters,methodParameters,datamodel)
 
-def runHybridSimulation():
+def runHybridSimulation(datamodel):
    problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={}
-   return runSimulation(COPASI.CCopasiMethod.hybrid,problemParameters,methodParameters)
+   return runSimulation(COPASI.CCopasiMethod.hybrid,problemParameters,methodParameters,datamodel)
 
 class Test_RunSimulations(unittest.TestCase):
-   def setUp(self):
-    self.model=Test_CreateSimpleModel.createModel()
+   def setUp(self):  
+    self.datamodel=Test_CreateSimpleModel.createModel()
+    self.model=self.datamodel.getModel()
     self.NUM_REPEATS=20
 
    def test_runStochasticSimulationOnSimpleModel(self):
     values=[]
     for x in range(0,self.NUM_REPEATS):
-      task=runStochasticSimulation()
+      task=runStochasticSimulation(self.datamodel)
       self.assert_(task!=None)
       self.assert_(task.__class__==COPASI.CTrajectoryTask)
       timeseries=task.getTimeSeries()
@@ -92,7 +99,7 @@ class Test_RunSimulations(unittest.TestCase):
    def test_runHybridSimulationOnSimpleModel(self):
     values=[]
     for x in range(0,self.NUM_REPEATS):
-      task=runHybridSimulation()
+      task=runHybridSimulation(self.datamodel)
       self.assert_(task!=None)
       self.assert_(task.__class__==COPASI.CTrajectoryTask)
       timeseries=task.getTimeSeries()
@@ -115,7 +122,7 @@ class Test_RunSimulations(unittest.TestCase):
 
 
    def test_runDeterministicSimulationOnSimpleModel(self):
-    task=runDeterministicSimulation()
+    task=runDeterministicSimulation(self.datamodel)
     self.assert_(task!=None)
     self.assert_(task.__class__==COPASI.CTrajectoryTask)
     timeseries=task.getTimeSeries()
@@ -132,10 +139,10 @@ class Test_RunSimulations(unittest.TestCase):
 
 
    def test_runStochasticSimulationOnExtendedModel(self):
-    Test_CreateSimpleModel.extendModel(self.model)
+    Test_CreateSimpleModel.extendModel(self.datamodel)
     values=[]
     for x in range(0,self.NUM_REPEATS):
-      task=runStochasticSimulation()
+      task=runStochasticSimulation(self.datamodel)
       self.assert_(task!=None)
       self.assert_(task.__class__==COPASI.CTrajectoryTask)
       timeseries=task.getTimeSeries()
@@ -157,10 +164,10 @@ class Test_RunSimulations(unittest.TestCase):
 
 
    def test_runHybridSimulationOnExtendedModel(self):
-    Test_CreateSimpleModel.extendModel(self.model)
+    Test_CreateSimpleModel.extendModel(self.datamodel)
     values=[]
     for x in range(0,self.NUM_REPEATS):
-      task=runHybridSimulation()
+      task=runHybridSimulation(self.datamodel)
       self.assert_(task!=None)
       self.assert_(task.__class__==COPASI.CTrajectoryTask)
       timeseries=task.getTimeSeries()
@@ -182,8 +189,8 @@ class Test_RunSimulations(unittest.TestCase):
 
 
    def test_runDeterministicSimulationOnExtendedModel(self):
-    Test_CreateSimpleModel.extendModel(self.model)
-    task=runDeterministicSimulation()
+    Test_CreateSimpleModel.extendModel(self.datamodel)
+    task=runDeterministicSimulation(self.datamodel)
     self.assert_(task!=None)
     self.assert_(task.__class__==COPASI.CTrajectoryTask)
     timeseries=task.getTimeSeries()

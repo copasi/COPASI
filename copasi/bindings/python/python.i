@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.26 $ 
+//   $Revision: 1.26.2.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/09/01 14:08:16 $ 
+//   $Date: 2010/05/04 15:56:15 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -161,7 +166,7 @@ import types
 // Taken from CopasiSE.cpp
 
 // Create the root container
-CCopasiRootContainer::init(false,0,NULL);
+CCopasiRootContainer::init(0,NULL,false);
 
 %}
 
@@ -171,15 +176,17 @@ TriUnspecified=-1
 TriFalse=0
 TriTrue=1
 
+CCopasiRootContainer.init=_COPASI.CCopasiRootContainer_init
 CCopasiRootContainer.destroy=_COPASI.CCopasiRootContainer_destroy
 CCopasiRootContainer.getRoot=_COPASI.CCopasiRootContainer_getRoot
 CCopasiRootContainer.getConfiguration=_COPASI.CCopasiRootContainer_getConfiguration
 CCopasiRootContainer.getFunctionList=_COPASI.CCopasiRootContainer_getFunctionList
 CCopasiRootContainer.getDatamodelList=_COPASI.CCopasiRootContainer_getDatamodelList
 CCopasiRootContainer.addDatamodel=_COPASI.CCopasiRootContainer_addDatamodel
-CCopasiRootContainer.getUnsupportedDelay=_COPASI.CCopasiRootContainer_getUnsupportedDelay
 CCopasiRootContainer.getUndefinedFunction=_COPASI.CCopasiRootContainer_getUndefinedFunction
 CCopasiRootContainer.getKeyFactory=_COPASI.CCopasiRootContainer_getKeyFactory
+CCopasiRootContainer.removeDatamodel=_COPASI.CCopasiRootContainer_removeDatamodel
+CCopasiRootContainer.removeDatamodelWithIndex=_COPASI.CCopasiRootContainer_removeDatamodelWithIndex
 
 CCopasiObjectName.escape=_COPASI.CCopasiObjectName_escape
 CCopasiObjectName.unescape=_COPASI.CCopasiObjectName_unescape

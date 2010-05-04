@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CVersion.py,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.7.12.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Date: 2010/05/04 15:56:16 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -40,7 +46,10 @@ class Test_CVersion(unittest.TestCase):
     self.assert_(self.cversion.getVersionMajor()==5)
     self.assert_(self.cversion.getVersionMinor()==12)
     self.assert_(self.cversion.getVersionDevel()==57)
-    
+
+  def test_VERSION(self):
+    V=COPASI.CVersion.VERSION
+    self.assert_(V.__class__ == COPASI.CVersion)
 
 def suite():
   tests=[

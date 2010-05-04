@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CChemEq.py,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.6.12.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Date: 2010/05/04 15:56:15 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -17,8 +23,8 @@ from types import *
 
 class Test_CChemEq(unittest.TestCase):
   def setUp(self):
-    COPASI.CCopasiDataModel.GLOBAL.newModel()
-    self.model=COPASI.CCopasiDataModel.GLOBAL.getModel()
+    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.model=self.datamodel.getModel()
     self.comp1=self.model.createCompartment("comp1",1.0)
     self.comp2=self.model.createCompartment("comp2",4.0)
     self.m1=self.model.createMetabolite("A","comp1")
@@ -32,6 +38,7 @@ class Test_CChemEq(unittest.TestCase):
     r.addProduct(self.m2.getKey())
     r.addModifier(self.m3.getKey())
     self.model.compileIfNecessary()
+    self.model.applyInitialValues()
     self.chemeq=r.getChemEq()
 
   def test_getReversibility(self):
@@ -81,7 +88,7 @@ class Test_CChemEq(unittest.TestCase):
   def test_getLargestCompartment(self):
     comp=self.chemeq.getLargestCompartment()
     self.assert_(comp!=None)
-    self.assert_(comp.__class__==COPASI.CCompartment)
+    self.assert_(comp.__class__== COPASI.CCompartment)
     self.assert_(comp.getKey()==self.comp2.getKey())
 
   def test_getSubstrate(self):

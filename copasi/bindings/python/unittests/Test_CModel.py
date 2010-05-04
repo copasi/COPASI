@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CModel.py,v $ 
-#   $Revision: 1.14 $ 
+#   $Revision: 1.14.2.1 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/04/21 15:45:04 $ 
+#   $Author: gauges $ 
+#   $Date: 2010/05/04 15:56:16 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -18,8 +24,8 @@ import math
 
 class Test_CModel(unittest.TestCase):
   def setUp(self):
-    COPASI.CCopasiDataModel.GLOBAL.newModel()
-    self.model=COPASI.CCopasiDataModel.GLOBAL.getModel()
+    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.model=self.datamodel.getModel()
     self.model.createCompartment("comp1",1.0)
     self.model.createCompartment("comp2",2.0)
     m1=self.model.createMetabolite("A","comp1")
@@ -179,19 +185,18 @@ class Test_CModel(unittest.TestCase):
     self.assert_(state.__class__==COPASI.CState)
 
   def test_setInitialState(self):
-    datamodel=COPASI.CCopasiDataModel.GLOBAL
-    datamodel.loadModel("calcium_juergen.cps")
-    initialTime=datamodel.getModel().getInitialState().getTime()
+    self.datamodel.loadModel("calcium_juergen.cps")
+    initialTime=self.datamodel.getModel().getInitialState().getTime()
     trajectoryTask=None
-    for x in range(0,datamodel.getTaskList().size()):
-      if(datamodel.getTask(x).__class__==COPASI.CTrajectoryTask):
-        trajectoryTask=datamodel.getTask(x)
+    for x in range(0,self.datamodel.getTaskList().size()):
+      if(self.datamodel.getTask(x).__class__==COPASI.CTrajectoryTask):
+        trajectoryTask=self.datamodel.getTask(x)
     self.assert_(trajectoryTask!=None)
     trajectoryTask.process(True)
-    newState=datamodel.getModel().getState()
-    self.assert_(newState.getIndependent(0)!=datamodel.getModel().getInitialState().getIndependent(0))
-    datamodel.getModel().setInitialState(newState)
-    self.assert_(newState.getIndependent(0)==datamodel.getModel().getInitialState().getIndependent(0))
+    newState=self.datamodel.getModel().getState()
+    self.assert_(newState.getIndependent(0)!=self.datamodel.getModel().getInitialState().getIndependent(0))
+    self.datamodel.getModel().setInitialState(newState)
+    self.assert_(newState.getIndependent(0)==self.datamodel.getModel().getInitialState().getIndependent(0))
 
 
 
@@ -261,15 +266,15 @@ class Test_CModel(unittest.TestCase):
     self.assert_(type(v)==FloatType)
 
   def test_getConcentrationUnits(self):
-    name=self.model.getConcentrationUnits()
+    name=self.model.getConcentrationUnitsDisplayString()
     self.assert_(type(name)==StringType)
 
   def test_getConcentrationRateUnits(self):
-    name=self.model.getConcentrationRateUnits()
+    name=self.model.getConcentrationRateUnitsDisplayString()
     self.assert_(type(name)==StringType)
 
   def test_getQuantityRateUnits(self):
-    name=self.model.getQuantityRateUnits()
+    name=self.model.getQuantityRateUnitsDisplayString()
     self.assert_(type(name)==StringType)
 
   def test_createMetabolite(self):
