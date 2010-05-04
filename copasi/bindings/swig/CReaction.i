@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReaction.i,v $ 
-//   $Revision: 1.13.2.1 $ 
+//   $Revision: 1.13.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/03 15:42:42 $ 
+//   $Date: 2010/05/04 15:56:42 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -36,6 +36,7 @@
 
 #endif // SWIGJAVA
 
+%catches(CCopasiException) CReaction::getLargestCompartment() const;
 
 %include "model/CReaction.h"
 

@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.26 $ 
+//   $Revision: 1.26.2.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/06 08:46:56 $ 
+//   $Date: 2010/05/04 15:56:42 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -88,6 +93,22 @@
       return (CCopasiObject*)((*self)[name]);
   }
 }
+
+%rename(removeObject) CCopasiVector<CEvent>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CEvent>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CEvent>::getIndex(const std::string& name) const;
+
+%template(EventStdVector) std::vector<CEvent*>;
+%template(EventVector) CCopasiVector<CEvent>;
+%template(EventVectorN) CCopasiVectorN<CEvent>;
+
+%rename(removeObject) CCopasiVector<CEventAssignment>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CEventAssignment>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CEventAssignment>::getIndex(const std::string& name) const;
+
+%template(EventAssignmentStdVector) std::vector<CEventAssignment*>;
+%template(EventAssignmentVector) CCopasiVector<CEventAssignment>;
+%template(EventAssignmentVectorN) CCopasiVectorN<CEventAssignment>;
 
 %rename(removeObject) CCopasiVector<CCopasiTask>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CCopasiTask>::remove(const std::string& name);
@@ -176,6 +197,10 @@
 %template(OptItemStdVector) std::vector<COptItem*>;
 
 %template(ContainerStdVector) std::vector<CCopasiContainer*>;
+
+typedef CCopasiVectorN<CEvent> EventVectorN;
+
+typedef CCopasiVectorN<CEventAssignment> EventAssignmentVectorN;
 
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
