@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CEvent.i,v $ 
-//   $Revision: 1.1.2.3 $ 
+//   $Revision: 1.1.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/04 19:51:59 $ 
+//   $Date: 2010/05/04 19:58:32 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -37,12 +37,11 @@
 %inline
 %{
 // some typedef so that we can have specific typemaps
-typedef CExpression* DisownedExpression;
+typedef CExpression DisownedExpression;
 %}
 
 
 %typemap(javain) DisownedExpression *pDisownedExpression "getCPtrAndAddReference($javainput)"
-#endif // SWIGJAVA
 
 %typemap(javacode) CEvent %{
   // Ensure that the GC doesn't collect any element set from Java
@@ -53,6 +52,17 @@ typedef CExpression* DisownedExpression;
     return CExpression.getCPtr(expression);
   }
 %}
+
+%typemap(javacode) CEventAssignment %{
+  // Ensure that the GC doesn't collect any element set from Java
+  // as the underlying C++ class stores a shallow copy
+  private CExpression expressionReference;
+  private long getCPtrAndAddReference(CExpression expression) {
+    expressionReference = expression;
+    return CExpression.getCPtr(expression);
+  }
+%}
+#endif // SWIGJAVA
 
 #ifdef SWIGPYTHON
 %feature("pythonappend") CEventAssignment::setExpressionPtr(CExpression*) %{
