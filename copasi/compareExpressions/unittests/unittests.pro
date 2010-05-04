@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.15 $ 
+#   $Revision: 1.15.2.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/01/16 16:29:00 $ 
+#   $Date: 2010/05/04 08:12:47 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -21,12 +26,14 @@ CONFIG -= qt
 
 include(../../common.pri)
 
-LIBS += -L../../lib/ -lCOPASISE  
+LIBS += -L../../lib/ 
 
 
-include(../../common.pri)
+include(../../app.pri)
 
 INCLUDEPATH += ../../..
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 contains(BUILD_OS, WIN32) {
 #  LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
@@ -39,12 +46,12 @@ contains(BUILD_OS, Linux) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit ../../sbml/unittests/utilities.o
   INCLUDEPATH += $${CPPUNIT_PATH}/include
 
-  LIBS = -L../lib \
-         $$join(COPASI_LIBS, " -l", -l) \
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
+   
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
-   PRE_TARGETDEPS += ../../sbml/unittests/utilities.o
+  TARGETDEPS += ../../sbml/unittests/utilities.o
 }
 
 }
@@ -59,8 +66,8 @@ contains(BUILD_OS, SunOS) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
-   PRE_TARGETDEPS += ../../sbml/unittests/utilities.o
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += ../../sbml/unittests/utilities.o
    }
 }  
 
@@ -74,8 +81,8 @@ contains(BUILD_OS, Darwin){
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
-   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
-   PRE_TARGETDEPS += ../../sbml/unittests/utilities.o
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += ../../sbml/unittests/utilities.o
 
 }
 
