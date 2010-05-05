@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMListWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/06 14:48:49 $
+//   $Date: 2010/05/05 15:31:45 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -37,7 +42,7 @@ CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setDynamicSortFilter(true);
-  mpProxyModel->setFilterKeyColumn(COL_REACTION_EQUATION);
+  mpProxyModel->setFilterKeyColumn(-1);
 
   mpProxyModel->setSourceModel(mpFluxModeDM);
 

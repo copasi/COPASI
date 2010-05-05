@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Author: shoops $
+//   $Date: 2010/05/05 15:31:45 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -41,7 +46,7 @@ CQPlotsWidget::CQPlotsWidget(QWidget* parent, const char* name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setDynamicSortFilter(true);
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModel->setFilterKeyColumn(COL_NAME_PLOTS);
+  mpProxyModel->setFilterKeyColumn(-1);
 
   mpTblPlots->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblPlots->verticalHeader()->hide();

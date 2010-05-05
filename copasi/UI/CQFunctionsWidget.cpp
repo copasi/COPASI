@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Author: shoops $
+//   $Date: 2010/05/05 15:31:45 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -39,7 +45,7 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget* parent, const char* name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setDynamicSortFilter(true);
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModel->setFilterKeyColumn(COL_NAME_FUNCTIONS);
+  mpProxyModel->setFilterKeyColumn(-1);
 
   mpTblFunctions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblFunctions->verticalHeader()->hide();
