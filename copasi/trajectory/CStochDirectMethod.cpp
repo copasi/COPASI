@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.14.2.6 $
+//   $Revision: 1.14.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/12 16:02:19 $
+//   $Date: 2010/05/05 15:32:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -498,6 +498,9 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
     {
       (**itCalcualtion++)();
     }
+
+  // We do not need to update the the method state since the only independent state
+  // values are species of type reaction which are all controlled by the method.
 
   // calculate the propensities which depend on the firing reaction
   size_t * pDependentReaction = Dependencies.mDependentReactions.array();
