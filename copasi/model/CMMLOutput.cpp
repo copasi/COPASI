@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:52:47 $
+//   $Author: ssahle $
+//   $Date: 2010/05/09 22:53:19 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -507,7 +512,7 @@ std::set<std::string> CMMLOutput::listReactionsForMetab(const CModel* model,
       C_INT32 i, imax = Balances.size();
 
       for (i = 0; i < imax; i++)
-        if (key == Balances[i]->getMetaboliteKey())
+        if (key == Balances[i]->getMetaboliteKey() && Balances[i]->getMultiplicity() != 0)
           {
             Keys.insert(Reactions[j]->getKey());
             break;
