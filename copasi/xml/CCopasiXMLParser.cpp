@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.3 $
+//   $Revision: 1.215.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/26 16:47:42 $
+//   $Author: ssahle $
+//   $Date: 2010/05/10 14:11:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5972,7 +5972,7 @@ void CCopasiXMLParser::CurveElement::end(const XML_Char *pszName)
             break;
 
           case CurveSegment:
-            mCommon.pCurve->addCurveSegment(*mCommon.pLineSegment);
+            mCommon.pCurve->addCurveSegment(mCommon.pLineSegment);
             //tell the handler where to continue
             mCurrentElement = ListOfCurveSegments;
             break;
