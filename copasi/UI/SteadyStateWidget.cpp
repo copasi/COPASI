@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.124 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/30 12:54:36 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:15 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -95,13 +100,18 @@ CCopasiMethod * SteadyStateWidget::createMethod(const CCopasiMethod::SubType & /
 
 bool SteadyStateWidget::runTask()
 {
-  if (!commonBeforeRunTask()) return false;
-
   bool success = true;
+
+  if (!commonBeforeRunTask()) return false;
 
   if (!commonRunTask()) success = false;
 
-  if (!commonAfterRunTask()) success = false;
+  return success;
+}
+
+bool SteadyStateWidget::taskFinishedEvent()
+{
+  bool success = true;
 
   StateWidget *pResult = dynamic_cast< StateWidget * >(mpListView->findWidgetFromId(211));
 

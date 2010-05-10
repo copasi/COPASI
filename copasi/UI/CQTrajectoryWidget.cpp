@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:57:43 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -331,8 +331,12 @@ bool CQTrajectoryWidget::runTask()
 
   if (!commonRunTask()) success = false;
 
-  if (!commonAfterRunTask()) success = false;
+  return success;
+}
 
+bool CQTrajectoryWidget::taskFinishedEvent()
+{
+  bool success = true;
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   TimeSeriesWidget * pResult =

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.213 $
+//   $Revision: 1.214 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/04/15 11:38:43 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,8 +136,6 @@ bool ScanWidget::runTask()
   bool success = true;
 
   if (!commonRunTask()) success = false;
-
-  //if (!commonAfterRunTask()) success = false;
 
   return success;
 }

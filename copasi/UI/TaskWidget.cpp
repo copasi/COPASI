@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/04/26 14:26:13 $
+//   $Date: 2010/05/10 16:12:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -459,8 +459,6 @@ bool TaskWidget::commonAfterRunTask()
 
 bool TaskWidget::commonRunTask()
 {
-  bool success = true;
-
   // Initialize the task
   try
     {
@@ -479,8 +477,8 @@ bool TaskWidget::commonRunTask()
                                  CCopasiMessage::getAllMessageText().c_str(),
                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
 
-          success = false;
           finishTask();
+          return false;
         }
     }
 
@@ -491,8 +489,8 @@ bool TaskWidget::commonRunTask()
                              CCopasiMessage::getAllMessageText().c_str(),
                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
 
-      success = false;
       finishTask();
+      return false;
     }
 
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
@@ -504,8 +502,8 @@ bool TaskWidget::commonRunTask()
 
       if (Result == QMessageBox::Abort)
         {
-          success = false;
           finishTask();
+          return false;
         }
     }
 
@@ -514,12 +512,11 @@ bool TaskWidget::commonRunTask()
   // Execute the task
   mpTaskThread->start();
 
-  return success;
+  return true;
 }
 
 void TaskWidget::slotExceptionOccured(CCopasiException *C_UNUSED(pException))
 {
-  //bool success = true;
   if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
     {
       mProgressBar->finish();
@@ -527,9 +524,7 @@ void TaskWidget::slotExceptionOccured(CCopasiException *C_UNUSED(pException))
                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
 
-  //success = false;
   finishTask();
-  //return success;
 }
 
 void TaskWidget::slotFinishThread()
@@ -542,8 +537,6 @@ void TaskWidget::slotFinishThread()
     }
 
   finishTask();
-
-  commonAfterRunTask();
 }
 
 void TaskWidget::finishTask()
@@ -573,6 +566,15 @@ void TaskWidget::finishTask()
     }
 
   CCopasiMessage::clearDeque();
+
+  commonAfterRunTask();
+
+  taskFinishedEvent();
+}
+
+bool TaskWidget::taskFinishedEvent()
+{
+  return true;
 }
 
 CCopasiTask* TaskWidget::getTask()

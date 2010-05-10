@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/02 16:25:42 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:14 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -30,6 +35,8 @@ public:
   virtual bool runTask();
   virtual bool saveTask();
   virtual bool loadTask();
+  virtual bool taskFinishedEvent();
+
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
 protected slots:

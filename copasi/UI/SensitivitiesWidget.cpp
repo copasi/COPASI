@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/01/21 10:52:04 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:15 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -269,8 +274,12 @@ bool SensitivitiesWidget::runTask()
 
   if (!commonRunTask()) success = false;
 
-  if (!commonAfterRunTask()) success = false;
+  return success;
+}
 
+bool SensitivitiesWidget::taskFinishedEvent()
+{
+  bool success = true;
   //setup the result widget
   CQSensResultWidget *pResult =
     dynamic_cast<CQSensResultWidget*>(mpListView->findWidgetFromId(341));

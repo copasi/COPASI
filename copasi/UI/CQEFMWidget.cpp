@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/02 16:25:42 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:14 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -64,25 +70,25 @@ bool CQEFMWidget::runTask()
 
   if (!commonBeforeRunTask()) return false;
 
-  bool success = commonRunTask();
+  return commonRunTask();
+}
 
-  commonAfterRunTask();
+bool CQEFMWidget::taskFinishedEvent()
+{
+  bool success = true;
 
-  if (success)
-    {
-      // We need to load the result here as this is the only place where
-      // we know that it is correct.
-      CQEFMResultWidget * pResult =
-        dynamic_cast< CQEFMResultWidget * >(CopasiWidget::mpListView->findWidgetFromId(2211));
+  // We need to load the result here as this is the only place where
+  // we know that it is correct.
+  CQEFMResultWidget * pResult =
+    dynamic_cast< CQEFMResultWidget * >(CopasiWidget::mpListView->findWidgetFromId(2211));
 
-      if (pResult == NULL)
-        return false;
+  if (pResult == NULL)
+    return false;
 
-      success &= pResult->loadResult(mpTask);
+  success &= pResult->loadResult(mpTask);
 
-      if (success && isShown())
-        CopasiWidget::mpListView->switchToOtherWidget(2211, ""); //change to the results window
-    }
+  if (success && isShown())
+    CopasiWidget::mpListView->switchToOtherWidget(2211, ""); //change to the results window
 
   return success;
 }

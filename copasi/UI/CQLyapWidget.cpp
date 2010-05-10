@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/25 21:02:46 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:14 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -64,14 +69,13 @@ bool CQLyapWidget::runTask()
 
   if (!commonBeforeRunTask()) return false;
 
-  bool success = commonRunTask();
+  return commonRunTask();
+}
 
-  commonAfterRunTask();
-
-  if (success)
-    mpListView->switchToOtherWidget(261, ""); //change to the results window
-
-  return success;
+bool CQLyapWidget::taskFinishedEvent()
+{
+  mpListView->switchToOtherWidget(261, ""); //change to the results window
+  return true;
 }
 
 CCopasiMethod * CQLyapWidget::createMethod(const CCopasiMethod::SubType & type)

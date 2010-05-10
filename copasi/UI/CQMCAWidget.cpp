@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/31 11:59:08 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:15 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -78,8 +83,12 @@ bool CQMCAWidget::runTask()
 
   bool success = commonRunTask();
 
-  commonAfterRunTask();
+  return success;
+}
 
+bool CQMCAWidget::taskFinishedEvent()
+{
+  bool success = true;
   CMCAResultWidget *pResult = dynamic_cast< CMCAResultWidget * >(mpListView->findWidgetFromId(241));
 
   if (pResult) pResult->loadFromBackend();

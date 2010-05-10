@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.24 $
+ $Revision: 1.25 $
  $Name:  $
  $Author: aekamal $
- $Date: 2010/04/26 14:26:13 $
+ $Date: 2010/05/10 16:12:15 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,6 +132,8 @@ protected:
 
   bool loadMethod();
   bool saveMethod();
+  virtual bool taskFinishedEvent();
+
 
   //this method should be called at the beginning or the end of the runTask() method
   //of the derived classes, respectively

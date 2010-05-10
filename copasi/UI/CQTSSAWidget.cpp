@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/25 21:02:46 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:15 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -268,8 +273,12 @@ bool CQTSSAWidget::runTask()
 
   if (!commonRunTask()) success = false;
 
-  if (!commonAfterRunTask()) success = false;
+  return success;
+}
 
+bool CQTSSAWidget::taskFinishedEvent()
+{
+  bool success = true;
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTSSAResultWidget * pResult =

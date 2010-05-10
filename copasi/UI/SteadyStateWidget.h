@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 20:02:36 $
+//   $Author: aekamal $
+//   $Date: 2010/05/10 16:12:15 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -66,6 +71,8 @@ protected slots:
 protected:
   virtual bool loadTask();
   virtual bool saveTask();
+  virtual bool taskFinishedEvent();
+
 
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
   /*
