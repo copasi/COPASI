@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.388.2.2 $
+//   $Revision: 1.388.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/16 19:29:36 $
+//   $Date: 2010/05/10 14:01:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1638,7 +1638,8 @@ void CModel::setInitialState(const CState & state)
 {
   mInitialState = state;
 
-  if (mIsAutonomous)
+  if (mIsAutonomous &&
+      !mCompileIsNecessary)
     mInitialState.setTime(0.0);
 
   return;
