@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.7 $
+//   $Revision: 1.277.2.8 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/04/23 18:58:38 $
+//   $Author: shoops $
+//   $Date: 2010/05/10 15:43:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,7 +244,10 @@ CopasiUI3Window::CopasiUI3Window():
   QImage img;
   img.loadFromData(image0_data, sizeof(image0_data), "PNG");
   QPixmap image0 = QPixmap::fromImage(img);
+
+#ifndef Darwin
   setWindowIcon(image0);
+#endif // not Darwin
 
   // Set the window caption/title
   FixedTitle = "COPASI ";
