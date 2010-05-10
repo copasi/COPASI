@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.147 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:57:44 $
+//   $Author: gauges $
+//   $Date: 2010/05/10 13:34:20 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,7 +165,7 @@ const MESSAGES Messages[] =
   {MCOptimization + 9, "Optimization (9): '%d' Constraint Checks out of '%d' failed."},
 
   // SBML
-  {MCSBML + 1, "SBML (1): SBML Level 2 Version 1 does not support initial times different from 0. This information will be lost in the exported file."},
+  {MCSBML + 1, "SBML (1): SBML currently does not support initial times different from 0. This information will be lost in the exported file."},
   {MCSBML + 2, "SBML (2): The SBML document contains no model."},
   {MCSBML + 3, "SBML (3): The SBML document contains algebraic rules that were ignored. Entities determined by those rules are probably undetermined now."},
   {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
