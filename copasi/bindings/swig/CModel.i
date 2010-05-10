@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.16 $ 
+//   $Revision: 1.16.2.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/09/01 14:08:16 $ 
+//   $Date: 2010/05/10 15:33:43 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -26,7 +31,6 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 
 %ignore CModel::compileIfNecessary(CProcessReport* pProcessReport);
 %ignore CModel::forceCompile(CProcessReport* pProcessReport);
-%ignore _cpp_min;
 %ignore CModel::VolumeUnitNames;
 %ignore CModel::AreaUnitNames;
 %ignore CModel::LengthUnitNames;
@@ -34,10 +38,9 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::QuantityUnitOldXMLNames;
 %ignore CModel::QuantityUnitNames;
 %ignore CModel::ModelTypeNames;
-
-#ifdef SWIGJAVA
-
-// ignore some methods for the Java wrappers to get rid of the warnings
+// according to Stefan, the method to calculate the elasticities is no longer used
+// and might actually not work at all
+%ignore CModel::calculateElasticityMatrix(const C_FLOAT64&,const C_FLOAT64&);
 %ignore CModel::getMetabolites() const;
 %ignore CModel::getMetabolitesX() const;
 %ignore CModel::getModelValues() const;
@@ -45,8 +48,6 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::getEvents() const;
 %ignore CModel::getCompartments() const;
 %ignore CModel::getStateTemplate() const;
-
-#endif // SWIGJAVA
 
 %include "model/CModel.h"
 
