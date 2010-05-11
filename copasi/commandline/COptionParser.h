@@ -1,19 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:54:40 $
+//   $Date: 2010/05/11 16:46:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
 // All rights reserved.
 
 /*
@@ -74,26 +69,26 @@ struct options
       Validate(false),
       Verbose(false)
   {}
-  std::string ConfigDir;
-  std::string ConfigFile;
-  std::string CopasiDir;
-  std::string ExportBerkeleyMadonna;
-  std::string ExportC;
-  std::string ExportSBML;
-  std::string ExportXPPAUT;
-  std::string Home;
-  std::string ImportSBML;
-  bool License;
-  bool NoLogo;
-  std::string RegisteredEmail;
-  std::string RegisteredUser;
-  std::string RegistrationCode;
-  SBMLSchema_enum SBMLSchema;
-  std::string Save;
-  std::string Tmp;
-  bool Validate;
-  bool Verbose;
-}  ; // end options struct
+  std::string     ConfigDir;
+  std::string     ConfigFile;
+  std::string     CopasiDir;
+  std::string     ExportBerkeleyMadonna;
+  std::string     ExportC;
+  std::string     ExportSBML;
+  std::string     ExportXPPAUT;
+  std::string     Home;
+  std::string     ImportSBML;
+  bool     License;
+  bool     NoLogo;
+  std::string     RegisteredEmail;
+  std::string     RegisteredUser;
+  std::string     RegistrationCode;
+  SBMLSchema_enum     SBMLSchema;
+  std::string     Save;
+  std::string     Tmp;
+  bool     Validate;
+  bool     Verbose;
+}; // end options struct
 
 /**
  * the following struct is used to record the location
@@ -121,7 +116,7 @@ struct option_locations
   size_type Tmp;
   size_type Validate;
   size_type Verbose;
-}  ; // end option location struct
+}; // end option location struct
 
 /**
  * if there are any errors while parsing the command
@@ -228,6 +223,6 @@ private:
   void parse_short_option(char option, int position, opsource source);
   void parse_long_option(const char *option, int position, opsource source);
   void parse_value(const char *value);
-}  ; // end copasi::COptionParser class
+}; // end copasi::COptionParser class
 } // end copasi namespace
 #endif // COPASI_COptionParser

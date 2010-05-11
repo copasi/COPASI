@@ -1,19 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:54:40 $
+//   $Date: 2010/05/11 16:46:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
 // All rights reserved.
 
 /*
@@ -745,14 +740,7 @@ void copasi::COptionParser::parse_value(const char *value)
       {
         SBMLSchema_enum evalue;
 
-        if (strcmp(value, "L1V1") == 0)
-          {
-            std::string error("export to SBML '");
-            error += value;
-            error += "' is not supported in COPASI";
-            throw option_error(error);
-          }
-        else if (strcmp(value, "L1V2") == 0)
+        if (strcmp(value, "L1V2") == 0)
           {
             evalue = SBMLSchema_L1V2;
           }

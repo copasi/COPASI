@@ -3,11 +3,16 @@
 -->
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.xml,v $ -->
-<!--   $Revision: 1.16 $ -->
+<!--   $Revision: 1.17 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/13 17:23:44 $ -->
+<!--   $Date: 2010/05/11 16:46:02 $ -->
 <!-- End CVS Header -->
+
+<!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
@@ -220,11 +225,11 @@
            hidden="no"
            argname="schema"
            default="L2V3">
-     <enum id="L1V1" name="L1V1" />
      <enum id="L1V2" name="L1V2" />
      <enum id="L2V1" name="L2V1" />
      <enum id="L2V2" name="L2V2" />
      <enum id="L2V3" name="L2V3" />
+     <enum id="L2V4" name="L2V4" />
      <name>SBMLSchema</name>
      <comment>The Schema of the SBML file to export.</comment>
    </option>
