@@ -1,11 +1,11 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.37.2.3 $ 
+#   $Revision: 1.37.2.4 $ 
 #   $Name:  $ 
-#   $Revision: 1.37.2.3 $ 
+#   $Revision: 1.37.2.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/05/04 19:51:58 $ 
+#   $Date: 2010/05/12 17:13:50 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -194,7 +194,14 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CFitItem.i \
                      ../swig/compare_utilities.i \
                      ../swig/copasi.i \
-                     ../swig/CCopasiArray.i
+                     ../swig/CCopasiArray.i \
+                     ../swig/CLBase.i \
+                     ../swig/CLCurve.i \
+                     ../swig/CLGlyphs.i \
+                     ../swig/CLGraphicalObject.i \
+                     ../swig/CLReactionGlyph.i \
+                     ../swig/CLayout.i \
+                     ../swig/CListOfLayouts.i
 
 
 #DISTFILE   = $$SWIG_INTERFACE_FILES
