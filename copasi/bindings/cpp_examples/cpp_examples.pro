@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/cpp_examples.pro,v $ 
-#   $Revision: 1.3.2.1 $ 
+#   $Revision: 1.3.2.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/05/12 12:21:43 $ 
+#   $Date: 2010/05/12 13:35:05 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -30,3 +30,4 @@ SUBDIRS += example5
 SUBDIRS += example6
 SUBDIRS += example7
 SUBDIRS += example8
+SUBDIRS += example9
