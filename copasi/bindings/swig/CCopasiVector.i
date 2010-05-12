@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.26.2.1 $ 
+//   $Revision: 1.26.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/04 15:56:42 $ 
+//   $Date: 2010/05/12 17:12:40 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -188,6 +188,7 @@
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
+%template(UIntStdVector) std::vector<unsigned int>;
 
 %template(StringStdVector) std::vector<std::string>;
 %template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
@@ -227,6 +228,7 @@ typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
 typedef std::vector<C_INT32> IntStdVector;
+typedef std::vector<unsigned int> UIntStdVector;
 
 typedef std::vector<C_FLOAT64> FloatStdVector;
 

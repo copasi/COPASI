@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiArray.i,v $ 
-//   $Revision: 1.2.2.1 $ 
+//   $Revision: 1.2.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/10 15:33:43 $ 
+//   $Date: 2010/05/12 17:12:40 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -37,27 +37,14 @@
 %include "report/CCopasiArray.h"
 
 
-%extend CCopasiArray {
+%extend CCopasiAbstractArray {
    /* convert the operator[] to get methods */
-   virtual CCopasiAbstractArray::data_type& get(const CCopasiAbstractArray::index_type & index)
+   virtual CCopasiAbstractArray::data_type get(const CCopasiAbstractArray::index_type & index)
    {
       return (*($self))[index];
    }
 };
 
-%extend CCopasiMatrixInterface {
-   /* convert the operator[] to get methods */
-   virtual CCopasiAbstractArray::data_type& get(const CCopasiAbstractArray::index_type & index)
-   {
-      return (*($self))[index];
-   }
-};
-
-%extend CCopasiVectorInterface {
-   /* convert the operator[] to get methods */
-   virtual CCopasiAbstractArray::data_type& get(const CCopasiAbstractArray::index_type & index)
-   {
-      return (*($self))[index];
-   }
-};
+%template(AnnotatedFloatMatrix) CCopasiMatrixInterface<CMatrix<C_FLOAT64> >;
+typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 

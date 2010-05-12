@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CState.i,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.7.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Author: gauges $ 
+//   $Date: 2010/05/12 17:12:41 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -34,6 +39,13 @@
 %ignore CStateTemplate::endDependent() const;
 %ignore CStateTemplate::beginFixed() const;
 %ignore CStateTemplate::endFixed() const;
+%ignore CStateTemplate::getEntities();
+%ignore CStateTemplate::beginIndependent();
+%ignore CStateTemplate::endIndependent();
+%ignore CStateTemplate::beginDependent();
+%ignore CStateTemplate::endDependent();
+%ignore CStateTemplate::beginFixed();
+%ignore CStateTemplate::endFixed();
 %ignore CState::getEntities() const;
 %ignore CState::beginIndependent() const;
 %ignore CState::endIndependent() const;
@@ -41,6 +53,13 @@
 %ignore CState::endDependent() const;
 %ignore CState::beginFixed() const;
 %ignore CState::endFixed() const;
+%ignore CState::getEntities();
+%ignore CState::beginIndependent();
+%ignore CState::endIndependent();
+%ignore CState::beginDependent();
+%ignore CState::endDependent();
+%ignore CState::beginFixed();
+%ignore CState::endFixed();
      
 %ignore CState::check; // not implemented
 
