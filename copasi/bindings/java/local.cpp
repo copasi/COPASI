@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
-//   $Revision: 1.15.2.1 $
+//   $Revision: 1.15.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/05/04 15:49:06 $
+//   $Date: 2010/05/12 17:13:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -405,7 +405,7 @@ jobject DownCast_CCopasiAbstractArray(JNIEnv* jenv, CCopasiAbstractArray* pPoint
   else if (dynamic_cast<CCopasiMatrixInterface<CMatrix<C_FLOAT64> >*>(pPointer))
     {
       // return a CCopasiArray
-      jclass clazz = jenv->FindClass("org/COPASI/AnnotatedFloatArray");
+      jclass clazz = jenv->FindClass("org/COPASI/AnnotatedFloatMatrix");
 
       if (clazz)
         {
