@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example8/example8.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/05/12 12:21:43 $
+//   $Date: 2010/05/12 12:34:12 $
 // End CVS Header
 
 
@@ -199,6 +199,7 @@ int main()
       // now we print the matrix, for this we assume that no
       // entity name is longer then 5 character which is a save bet since
       // we know the model
+      std::cout << "Jacobian Matrix:" << std::endl << std::endl;
       std::cout << std::setw(5) << " ";
 
       for (unsigned int i = 0; i < nameVector.size(); ++i)
@@ -219,6 +220,39 @@ int main()
 
           std::cout << std::endl;
         }
+
+      // we can also calculate the jacobian of the reduced system
+      // in a similar way
+      pModel->calculateJacobianX(jacobian, 1e-12, 1.0);
+      // this time generating the output is actually simpler because the rows
+      // and columns are ordered in the same way as the independent variables of the state temple
+      std::cout << std::endl << std::endl << "Reduced Jacobian Matrix:" << std::endl << std::endl;
+      std::cout << std::setw(5) << " ";
+      CModelEntity* const* beginIndependent = stateTemplate.beginIndependent();
+      const CModelEntity* const* endIndependent = stateTemplate.endIndependent();
+
+      while (beginIndependent < endIndependent)
+        {
+          std::cout << std::setw(5) << (*beginIndependent)->getObjectName();
+          ++beginIndependent;
+        }
+
+      std::cout << std::endl;
+      beginIndependent = stateTemplate.beginIndependent();
+      unsigned int iMax = stateTemplate.getNumIndependent();
+
+      for (unsigned int i = 0; i < iMax; ++i)
+        {
+          std::cout << std::setw(5) << (*(beginIndependent + i))->getObjectName();
+
+          for (unsigned int j = 0; j < iMax; ++j)
+            {
+              std::cout << std::setw(5) << std::setprecision(3) << jacobian[i][j];
+            }
+
+          std::cout << std::endl;
+        }
+
     }
 
   return 0;
