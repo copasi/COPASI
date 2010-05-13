@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.4 $
+//   $Revision: 1.215.2.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/10 14:11:50 $
+//   $Author: shoops $
+//   $Date: 2010/05/13 16:43:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -8401,6 +8401,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
   std::string name;
   std::string sValue("");
+  bool UnmappedKey = false;
 
   void * pValue = NULL;
   CCopasiParameter::Type type;
@@ -8466,11 +8467,27 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
               break;
 
             case CCopasiParameter::STRING:
-            case CCopasiParameter::KEY:
             case CCopasiParameter::FILE:
             case CCopasiParameter::CN:
               pValue = &sValue;
               break;
+
+            case CCopasiParameter::KEY:
+            {
+              CCopasiObject * pObject = mCommon.KeyMap.get(sValue);
+
+              if (pObject)
+                {
+                  sValue = pObject->getKey();
+                }
+              else
+                {
+                  UnmappedKey = true;
+                }
+
+              pValue = &sValue;
+            }
+            break;
 
             default:
               CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mParser.getCurrentLineNumber());
@@ -8479,6 +8496,11 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
           }
 
         mCommon.pCurrentParameter = new CCopasiParameter(name, type, pValue);
+
+        if (UnmappedKey)
+          {
+            mCommon.UnmappedKeyParameters.push_back(mCommon.pCurrentParameter);
+          }
 
         break;
 
