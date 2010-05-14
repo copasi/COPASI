@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/03 21:15:17 $
+//   $Author: ssahle $
+//   $Date: 2010/05/14 22:18:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,8 @@ public:
 #endif // COPASI_SSA
     EFMAlgorithm,
     EFMBitPatternTreeAlgorithm,
-    Householder
+    Householder,
+    crossSectionMethod
   };
 
   /**

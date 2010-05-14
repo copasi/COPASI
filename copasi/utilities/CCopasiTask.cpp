@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:13 $
+//   $Author: ssahle $
+//   $Date: 2010/05/14 22:18:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,7 @@ const std::string CCopasiTask::TypeName[] =
 #endif // COPASI_TSS
   "Sensitivities",
   "Moieties",
+  "Cross Section",
   ""
 };
 
@@ -78,6 +79,7 @@ const char* CCopasiTask::XMLType[] =
 #endif // COPASI_TSS
   "sensitivities",
   "moieties",
+  "crosssection",
   NULL
 };
 
