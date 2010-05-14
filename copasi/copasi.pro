@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.62 $
+#   $Revision: 1.63 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/03/17 12:36:29 $
+#   $Author: ssahle $
+#   $Date: 2010/05/14 22:23:04 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.62 $ $Author: gauges $ $Date: 2010/03/17 12:36:29 $
+# $Revision: 1.63 $ $Author: ssahle $ $Date: 2010/05/14 22:23:04 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -40,6 +40,7 @@ contains(USE_LICENSE, COM) {
 
 COPASISE_DIRS += CopasiDataModel
 COPASISE_DIRS += compareExpressions
+COPASISE_DIRS += crosssection
 COPASISE_DIRS += elementaryFluxModes
 COPASISE_DIRS += function
 COPASISE_DIRS += layout

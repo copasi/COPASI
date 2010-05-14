@@ -1,10 +1,15 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $
-#   $Revision: 1.30 $
+#   $Revision: 1.31 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/07/30 21:04:31 $
+#   $Author: ssahle $
+#   $Date: 2010/05/14 22:23:04 $
 # End CVS Header
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -34,6 +39,7 @@ contains(USE_LICENSE, COM) {
 COPASI_LIBS += compareExpressions
 COPASI_LIBS += copasiDM
 COPASI_LIBS += copasiXML
+COPASI_LIBS += crosssection
 COPASI_LIBS += elementaryFluxModes
 COPASI_LIBS += fitting
 COPASI_LIBS += function
