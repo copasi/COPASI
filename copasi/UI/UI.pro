@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.232 $
+#   $Revision: 1.233 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2010/04/08 15:45:14 $
+#   $Date: 2010/05/17 15:58:01 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.232 $ $Author: aekamal $ $Date: 2010/04/08 15:45:14 $
+# $Revision: 1.233 $ $Author: aekamal $ $Date: 2010/05/17 15:58:01 $
 ######################################################################
 
 LIB = UI
@@ -51,6 +51,7 @@ HEADERS	+= \
   CQMCAWidget.h \
   CQMergingData.h \
   CQModelValue.h \
+  CQMoietiesTaskWidget.h \
   CQMoietiesTaskResult.h \
   CQOptimizationWidget.h \
   CQOptimizationResult.h \
@@ -176,6 +177,7 @@ SOURCES	+= \
   CQMCAWidget.cpp \
   CQMergingData.cpp \
   CQModelValue.cpp \
+  CQMoietiesTaskWidget.cpp \
   CQMoietiesTaskResult.cpp \
   CQOptimizationWidget.cpp \
   CQOptimizationResult.cpp \
@@ -290,8 +292,6 @@ FORMS3 += CQFittingResultTab1.ui
 HEADERS += CQFittingResultTab1.ui.h
 FORMS3 += CQMatrixDialog.ui
 HEADERS += CQMatrixDialog.ui.h
-FORMS3 += CQMoietiesTaskWidget.ui
-HEADERS += CQMoietiesTaskWidget.ui.h
 FORMS3 += CQSplashWidget.ui
 HEADERS += CQSplashWidget.ui.h
 FORMS3 += CQStartValueReset.ui
@@ -349,6 +349,7 @@ FORMS += CQLyapResultWidget.ui
 FORMS += CQMCAWidget.ui
 FORMS += CQMergingData.ui
 FORMS += CQModelValue.ui
+FORMS += CQMoietiesTaskWidget.ui
 FORMS += CQMoietiesTaskResult.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQOptimizationResult.ui

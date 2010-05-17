@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:15 $
+//   $Date: 2010/05/17 15:58:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -523,8 +523,6 @@ void TaskWidget::slotExceptionOccured(CCopasiException *C_UNUSED(pException))
       CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
-
-  finishTask();
 }
 
 void TaskWidget::slotFinishThread()
