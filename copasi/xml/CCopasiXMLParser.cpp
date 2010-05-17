@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.5 $
+//   $Revision: 1.215.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/13 16:43:37 $
+//   $Date: 2010/05/17 17:43:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -8352,14 +8352,30 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
 
         if (pParameter != NULL)
           {
+            CCopasiParameter::Type OriginalType = pParameter->getType();
             *pParameter = *mCommon.pCurrentParameter;
+
+            if (mCommon.UnmappedKeyParameters.size() > 0 &&
+                mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] == mCommon.pCurrentParameter)
+              {
+                if (OriginalType == CCopasiParameter::KEY)
+                  {
+                    mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] = pParameter;
+                  }
+                else
+                  {
+                    mCommon.UnmappedKeyParameters.erase(mCommon.UnmappedKeyParameters.begin() + mCommon.UnmappedKeyParameters.size() - 1);
+                  }
+              }
+
+            pdelete(mCommon.pCurrentParameter);
           }
         else
           {
-            mCommon.ParameterGroupStack.top()->addParameter(*mCommon.pCurrentParameter);
+            mCommon.ParameterGroupStack.top()->addParameter(mCommon.pCurrentParameter);
+            mCommon.pCurrentParameter = NULL;
           }
 
-        pdelete(mCommon.pCurrentParameter);
 
         mCurrentElement = ParameterGroup;
         break;
@@ -8499,6 +8515,8 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
         if (UnmappedKey)
           {
+            std::cout << "Unmapped: " << mCommon.pCurrentParameter << std::endl;
+
             mCommon.UnmappedKeyParameters.push_back(mCommon.pCurrentParameter);
           }
 
