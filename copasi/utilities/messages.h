@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144.2.10 $
+//   $Revision: 1.144.2.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/05/10 13:32:29 $
+//   $Date: 2010/05/17 12:17:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,6 +252,7 @@ const MESSAGES Messages[] =
   {MCSBML + 85, "SBML (85): Call to delay function used in function definition \"%s\". COPASI can't import this model."},
   {MCSBML + 86, "SBML (86): COPASI found calls to the delay function in one or more reaction kinetics. These calls have been replaced by a reference to a global parameter which has an expression that corresponds to the original delay call."},
   {MCSBML + 87, "SBML (87): Reactions with references to local kinetic parameters found in delay calls.\nLocal parameters in the following reactions have been converted to global variables:\n%s"},
+  {MCSBML + 88, "SBML (88): Reaction with id \"%s\" referenced in kinetic law for reaction with id \"%s\".\nCOPASI can not handle references to reaction fluxes in kinetic laws.\nPlease modify your model to use global parameters which reference the reaction id instead of referencing the reaction id directly."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.189.2.3 $
+//   $Revision: 1.189.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/12 17:44:36 $
+//   $Author: gauges $
+//   $Date: 2010/05/17 12:17:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1095,6 +1095,11 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
+              else if (dynamic_cast<CReaction*>(object))
+                {
+                  const CReaction* pReaction = static_cast<const CReaction*>(object);
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 88, pReaction->getSBMLId().c_str(), this->getSBMLId().c_str());
+                }
               else
                 {
                   // error
@@ -1156,15 +1161,35 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
         break;
       case CEvaluationNode::OPERATOR:
         pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-        // convert the two children as well
-        pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
 
-        if (pChildNode)
+        // convert the two children as well
+        try
+          {
+            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+          }
+        catch (...)
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+            throw;
+          }
+
+        if (pTmpNode && pChildNode)
           {
             pTmpNode->addChild(pChildNode);
-            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
 
-            if (pChildNode)
+            try
+              {
+                pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
+              }
+            catch (...)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+                throw;
+              }
+
+            if (pTmpNode && pChildNode)
               {
                 pTmpNode->addChild(pChildNode);
               }
@@ -1176,8 +1201,11 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
           }
         else
           {
-            delete pTmpNode;
-            pTmpNode = NULL;
+            if (pTmpNode)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
           }
 
         break;
@@ -1187,17 +1215,30 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
         break;
       case CEvaluationNode::FUNCTION:
         pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-        // convert the only child as well
-        pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
 
-        if (pChildNode)
+        // convert the only child as well
+        try
+          {
+            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+          }
+        catch (...)
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+            throw;
+          }
+
+        if (pTmpNode && pChildNode)
           {
             pTmpNode->addChild(pChildNode);
           }
         else
           {
-            delete pTmpNode;
-            pTmpNode = NULL;
+            if (pTmpNode)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
           }
 
         break;
@@ -1206,13 +1247,30 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
         // convert all children
         pOldChildNode = static_cast<CEvaluationNode*>(expression->getChild());
 
-        while (pOldChildNode)
+        while (pTmpNode && pOldChildNode)
           {
-            pChildNode = this->objects2variables(pOldChildNode, replacementMap, copasi2sbmlmap);
+            try
+              {
+                pChildNode = this->objects2variables(pOldChildNode, replacementMap, copasi2sbmlmap);
+              }
+            catch (...)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+                throw;
+              }
 
-            if (pChildNode)
+            if (pTmpNode && pChildNode)
               {
                 pTmpNode->addChild(pChildNode);
+              }
+            else
+              {
+                if (pTmpNode)
+                  {
+                    delete pTmpNode;
+                    pTmpNode = NULL;
+                  }
               }
 
             pOldChildNode = static_cast<CEvaluationNode*>(pOldChildNode->getSibling());
@@ -1226,11 +1284,28 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
 
         while (pOldChildNode)
           {
-            pChildNode = this->objects2variables(pOldChildNode, replacementMap, copasi2sbmlmap);
+            try
+              {
+                pChildNode = this->objects2variables(pOldChildNode, replacementMap, copasi2sbmlmap);
+              }
+            catch (...)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+                throw;
+              }
 
-            if (pChildNode)
+            if (pTmpNode && pChildNode)
               {
                 pTmpNode->addChild(pChildNode);
+              }
+            else
+              {
+                if (pTmpNode)
+                  {
+                    delete pTmpNode;
+                    pTmpNode = NULL;
+                  }
               }
 
             pOldChildNode = static_cast<CEvaluationNode*>(pOldChildNode->getSibling());
@@ -1244,39 +1319,78 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
         break;
       case CEvaluationNode::CHOICE:
         pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-        // convert the three children as well
-        pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
 
-        if (pChildNode)
+        // convert the three children as well
+        try
+          {
+            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+          }
+        catch (...)
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+            throw;
+          }
+
+        if (pTmpNode && pChildNode)
           {
             pTmpNode->addChild(pChildNode);
-            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
 
-            if (pChildNode)
+            try
+              {
+                pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
+              }
+            catch (...)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+                throw;
+              }
+
+            if (pTmpNode && pChildNode)
               {
                 pTmpNode->addChild(pChildNode);
-                pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()->getSibling()), replacementMap, copasi2sbmlmap);
 
-                if (pChildNode)
+                try
+                  {
+                    pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()->getSibling()), replacementMap, copasi2sbmlmap);
+                  }
+                catch (...)
+                  {
+                    delete pTmpNode;
+                    pTmpNode = NULL;
+                    throw;
+                  }
+
+                if (pTmpNode && pChildNode)
                   {
                     pTmpNode->addChild(pChildNode);
                   }
                 else
                   {
-                    delete pTmpNode;
-                    pTmpNode = NULL;
+                    if (pTmpNode)
+                      {
+                        delete pTmpNode;
+                        pTmpNode = NULL;
+                      }
                   }
               }
             else
               {
-                delete pTmpNode;
-                pTmpNode = NULL;
+                if (pTmpNode)
+                  {
+                    delete pTmpNode;
+                    pTmpNode = NULL;
+                  }
               }
           }
         else
           {
-            delete pTmpNode;
-            pTmpNode = NULL;
+            if (pTmpNode)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
           }
 
         break;
@@ -1289,28 +1403,54 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
         break;
       case CEvaluationNode::LOGICAL:
         pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-        // convert the two children as well
-        pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
 
-        if (pChildNode)
+        // convert the two children as well
+        try
+          {
+            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+          }
+        catch (...)
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+            throw;
+          }
+
+        if (pTmpNode && pChildNode)
           {
             pTmpNode->addChild(pChildNode);
-            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
 
-            if (pChildNode)
+            try
+              {
+                pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
+              }
+            catch (...)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+                throw;
+              }
+
+            if (pTmpNode && pChildNode)
               {
                 pTmpNode->addChild(pChildNode);
               }
             else
               {
-                delete pTmpNode;
-                pTmpNode = NULL;
+                if (pTmpNode)
+                  {
+                    delete pTmpNode;
+                    pTmpNode = NULL;
+                  }
               }
           }
         else
           {
-            delete pTmpNode;
-            pTmpNode = NULL;
+            if (pTmpNode)
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
           }
 
         break;
