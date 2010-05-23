@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.21.2.1 $
+//   $Revision: 1.21.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/15 13:07:17 $
+//   $Author: pwilly $
+//   $Date: 2010/05/23 19:28:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -212,13 +212,15 @@ protected slots:
    */
   void slotSelectionChanged();
 
+public slots:
   /**
    * Slot for being activated whenever the text on Expression Widget is changed
    */
   void slotTextChanged();
 
-public slots:
-
+  /**
+   * Slot for selecting an object
+   */
   void slotSelectObject();
 
 signals:
