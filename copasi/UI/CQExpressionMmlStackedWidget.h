@@ -5,6 +5,12 @@
 //   $Author: shoops $
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -41,6 +47,9 @@ class CQExpressionMmlStackedWidget : public QStackedWidget, public Ui::CQExpress
 public:
   CQExpressionMmlStackedWidget(QWidget* parent = 0);
   ~CQExpressionMmlStackedWidget();
+
+  void updateWidget(std::ostringstream &mml, bool COPASIdefined = true);
+  QString getText();
 
 public slots:
   void updateWidget();

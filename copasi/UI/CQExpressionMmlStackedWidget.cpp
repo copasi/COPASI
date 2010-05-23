@@ -6,6 +6,11 @@
 //   $Date: 2009/10/01 12:58:00 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -108,8 +113,7 @@ void CQExpressionMmlStackedWidget::updateWidget()
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
 #endif
 
-  if (mpExpressionWidget->text().isEmpty() ||
-      !mpExpressionWidget->isValid())
+  if (mpExpressionWidget->text().isEmpty() || !mpExpressionWidget->isValid())
     setCurrentWidget(mpExpressionPage);
   else
     {
@@ -121,7 +125,6 @@ void CQExpressionMmlStackedWidget::updateWidget()
 
       setCurrentWidget(mpMmlPage);
       mpMmlScrollView->updateWidget(mml);
-      MMLStr = FROM_UTF8(mml.str());
     }
 
 #endif /* HAVE_MML */
@@ -129,6 +132,27 @@ void CQExpressionMmlStackedWidget::updateWidget()
 #ifdef DEBUG_UI
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget = " << currentIndex();
 #endif
+}
+
+void CQExpressionMmlStackedWidget::updateWidget(std::ostringstream &mml, bool COPASIdefined)
+{
+  if (mml.str() == "")
+    setCurrentWidget(mpExpressionPage);
+  else
+    {
+      setCurrentWidget(mpMmlPage);
+      mpMmlScrollView->updateWidget(mml);
+
+      if (COPASIdefined)
+        mpBtnEditExpression->hide();
+      else
+        mpBtnEditExpression->show();
+    }
+}
+
+QString CQExpressionMmlStackedWidget::getText()
+{
+  return mpExpressionWidget->text();
 }
 
 void CQExpressionMmlStackedWidget::init()
