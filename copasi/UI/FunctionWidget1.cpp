@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.173.2.1 $
+//   $Revision: 1.173.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/30 15:23:14 $
+//   $Author: pwilly $
+//   $Date: 2010/05/23 19:31:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,55 +20,13 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/**********************************************************************
- **  $ CopasiUI/FunctionWidget1.cpp
- **  $ Author  : Mrinmayee Kulkarni
- ** This file creates the GUI for the  information about an individual
- ** function obtained from the functions database.It is the second level
- ** widget for functions.
- ***********************************************************************/
-
-#include <QApplication>
-
-#include <qvariant.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qradiobutton.h>
-#include <q3table.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include <q3buttongroup.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <q3toolbar.h>
-#include <qwidget.h>
-#include <q3frame.h>
-#include <q3textbrowser.h>
-#include <q3widgetstack.h>
-#include <q3vbox.h>
-#include <qtoolbutton.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
-#include <Q3VBoxLayout>
-
-#ifdef HAVE_MML
-# include "mml/qtmmlwidget.h"
-#endif // HAVE_MML
-
-#include <sstream>
-#include <stdlib.h>
-#include <algorithm>
+#include "FunctionWidget1.h"
 
 #include "copasi.h"
 #include "listviews.h"
 #include "CQMessageBox.h"
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
-#include "parametertable.h" // just for the table item widgets
 
 #include "tex/CMathMLToTeX.h"
 
@@ -84,272 +42,24 @@
 #include "utilities/CDimension.h"
 
 #include "CopasiFileDialog.h"
-#include "./icons/saveIcon.xpm"
-#include "./icons/edit_Icon.xpm"
 
-//#include "./icons/product.xpm"
-//#include "./icons/substrate.xpm"
-//#include "./icons/modifier.xpm"
+#include <QComboBox>
+#include <QToolTip>
 
 #define COL_NAME 0
 #define COL_USAGE 1
 #define COL_UNIT 2
 
-/*!
-   Constructor
-
-   Constructs a FunctionWidget1 which is a child of 'parent', with the
-   name 'name' and widget flags set to 'f'.
+/*
+ *  Constructs a CScanWidgetScan as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
  */
-FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags fl):
-    CopasiWidget(parent, name, fl),
-    mpFunction(NULL)
+FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WindowFlags fl)
+    : CopasiWidget(parent, name, fl)
 {
-  if (!name)
-    setName("FunctionWidget1");
+  setupUi(this);
 
-  setCaption(trUtf8("FunctionWidget1"));
-  FunctionWidget1Layout = new Q3GridLayout(this, 1, 1, 6, 6, "FunctionWidget1Layout");
-
-  //******** name *************
-
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Function Name"));
-  TextLabel1->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
-
-  LineEdit1 = new QLineEdit(this, "LineEdit1");
-  FunctionWidget1Layout->addWidget(LineEdit1, 0, 1);
-
-  //******** description *************
-
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Formula"));
-  TextLabel2->setAlignment(int(Qt::AlignTop
-                               | Qt::AlignRight));
-  FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
-
-  //the stack
-  mStack = new Q3WidgetStack(this, "Stack");
-  mStack->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-  textBrowser = new Q3TextEdit(mStack, "Text Browser");
-  textBrowser->setTabChangesFocus(true);
-  textBrowser->setTextFormat(Qt::PlainText);
-  mStack->addWidget(textBrowser, 0);
-  mStack->raiseWidget(0);
-
-  // A box which contains the MathML ScrollView with the Formula,
-  //  and - if not ReadOnly -
-  //   a button to switch to (editable) plain text view.
-  mMmlViewBox = new Q3VBox(mStack, "Formula View");
-  mMmlViewBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-  mScrollView = new Q3ScrollView(mMmlViewBox, "mmlScrollView");
-  mScrollView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-  mStack->addWidget(mMmlViewBox, 1);
-
-#ifdef HAVE_MML
-  mMmlWidget = new QtMmlWidget(mScrollView->viewport());
-
-  mScrollView->addChild(mMmlWidget);
-#endif // HAVE_MML
-
-  mScrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
-  //mScrollView->show();
-
-  // raise mScrollView with mMmmlWidget:
-  mStack->raiseWidget(1);
-
-  mpFormulaHBL = new Q3HBoxLayout(0, 0, 6, "mpFormulaHBL");
-  mpFormulaHBL->addWidget(mStack);
-
-  mpFormulaVBL = new Q3VBoxLayout(0, 0, 6, "mpFormulaVBL");
-
-  //mMmlViewBox->insertChild(mFormulaEditToggleButton);
-
-  //  FunctionWidget1Layout->addWidget(mStack, 1, 1);
-
-  // add 21.07.08
-  //********************
-  mpSaveBtn = new QToolButton(this, "mpSaveBtn");
-  mpSaveBtn->setMaximumSize(QSize(20, 20));
-  //  mpSaveBtn->setText(trUtf8("Save Formula to Disk"));
-  //  mpSaveBtn->setTextLabel(trUtf8("Save Formula to Disk"));
-  mpSaveBtn->setIconSet(QIcon(saveIcon));
-  mpFormulaVBL->addWidget(mpSaveBtn);
-
-  //  mFormulaEditToggleButton = new QPushButton("Edit", mMmlViewBox, "Formula Edit Toggle Button");
-  mFormulaEditToggleButton = new QToolButton(this, "mFormulaEditToggleButton");
-  mFormulaEditToggleButton->setMaximumSize(QSize(20, 20));
-  mFormulaEditToggleButton->setIconSet(QIcon(editIcon));
-  mpFormulaVBL->addWidget(mFormulaEditToggleButton);
-
-  mpFormulaSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  mpFormulaVBL->addItem(mpFormulaSpacer);
-
-  mpFormulaHBL->addLayout(mpFormulaVBL);
-
-  //  FunctionWidget1Layout->addWidget(mpSaveBtn, 2, 1);
-  FunctionWidget1Layout->addLayout(mpFormulaHBL, 1, 1);
-
-  //********************
-
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Function Type"));
-  TextLabel3->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  FunctionWidget1Layout->addWidget(TextLabel3, 4, 0);
-
-  ButtonGroup1 = new Q3HButtonGroup(this, "ButtonGroup1");
-  ButtonGroup1->setFlat(true);
-  ButtonGroup1->setInsideMargin(0);
-  ButtonGroup1->setLineWidth(0);
-  ButtonGroup1->setTitle(trUtf8(""));
-  ButtonGroup1->setExclusive(true);
-  ButtonGroup1->setRadioButtonExclusive(true);
-
-  RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
-  RadioButton1->setText(trUtf8("reversible"));
-
-  RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
-  RadioButton2->setText(trUtf8("irreversible"));
-
-  RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
-  RadioButton3->setText(trUtf8("General"));
-
-  FunctionWidget1Layout->addWidget(ButtonGroup1, 4, 1);
-
-  //***************************************
-
-  // Line2 = new QFrame(this, "Line2");
-  // Line2->setFrameShape(QFrame::HLine);
-  // FunctionWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 1);
-
-  //******* parameters table ********************************
-
-  TextLabel4 = new QLabel(this, "TextLabel4");
-  TextLabel4->setText(trUtf8("Parameters"));
-  TextLabel4->setAlignment(int(Qt::AlignTop
-                               | Qt::AlignRight));
-  FunctionWidget1Layout->addWidget(TextLabel4, 5, 0);
-
-  Table1 = new Q3Table(this, "Table1");
-  Table1->setNumCols(3);
-  Table1->horizontalHeader()->setLabel(COL_NAME, trUtf8("Name"));
-  Table1->horizontalHeader()->setLabel(COL_USAGE, trUtf8("Description"));
-  Table1->horizontalHeader()->setLabel(COL_UNIT, trUtf8("Unit"));
-  Table1->setNumRows(3);
-  Table1->setColumnReadOnly(COL_NAME, true);
-  Table1->setColumnReadOnly(COL_UNIT, true);
-  Table1->verticalHeader()->hide();
-  Table1->setLeftMargin(0);
-  Table1->setColumnStretchable(COL_NAME, true);
-  Table1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-  FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 5, 1, 1);
-
-  //******** applications table *******************************
-
-  TextLabel5 = new QLabel(this, "TextLabel5");
-  TextLabel5->setText(trUtf8("Application\nrestrictions"));
-  TextLabel5->setAlignment(int(Qt::AlignTop
-                               | Qt::AlignRight));
-  FunctionWidget1Layout->addWidget(TextLabel5, 7, 0);
-
-  Table2 = new Q3Table(this, "Table2");
-  Table2->setNumCols(2);
-  Table2->horizontalHeader()->setLabel(0, trUtf8("Description"));
-  Table2->horizontalHeader()->setLabel(1, trUtf8("Min"));
-  Table2->setNumRows(1);
-  Table2->setColumnReadOnly(0, true);
-  Table2->setColumnReadOnly(1, true);
-  Table2->verticalHeader()->hide();
-  Table2->setLeftMargin(0);
-  Table2->horizontalHeader()->hide();
-  Table2->setTopMargin(0);
-  Table2->setShowGrid(false);
-  //Table2->setColumnStretchable(1, true);
-  Table2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-  FunctionWidget1Layout->addMultiCellWidget(Table2, 7, 7, 1, 1);
-
-  //***************************************
-
-  Line3 = new Q3Frame(this, "Line3");
-  Line3->setFrameShape(Q3Frame::HLine);
-  //Line3->setFrameShadow(QFrame::Sunken);
-  //Line3->setFrameShape(QFrame::HLine);
-  FunctionWidget1Layout->addMultiCellWidget(Line3, 11, 11, 0, 1);
-
-  //****** buttons *********************************
-
-  Layout1 = new Q3HBoxLayout(0, 0, 6, "Layout1");
-
-  commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit"));
-  Layout1->addWidget(commitChanges);
-
-  cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Revert"));
-  Layout1->addWidget(cancelChanges);
-
-  newFcn = new QPushButton(this, "newFcn");
-  newFcn->setText(trUtf8("New"));
-  Layout1->addWidget(newFcn);
-
-  deleteFcn = new QPushButton(this, "deleteFcn");
-  deleteFcn->setText(trUtf8("Delete"));
-  Layout1->addWidget(deleteFcn);
-
-  FunctionWidget1Layout->addMultiCellLayout(Layout1, 12, 12, 0, 1);
-
-  //*******************************************
-
-  //Line4 = new QFrame(this, "Line4");
-  //Line4->setFrameShape(QFrame::HLine);
-  //Line4->setFrameShadow(QFrame::Sunken);
-  //Line4->setFrameShape(QFrame::HLine);
-  //FunctionWidget1Layout->addMultiCellWidget(Line4, 7, 7, 0, 1);
-
-  //Line1 = new QFrame(this, "Line1");
-  //Line1->setFrameShape(QFrame::HLine);
-  //Line1->setFrameShadow(QFrame::Sunken);
-  //Line1->setFrameShape(QFrame::HLine);
-  //FunctionWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 1);
-
-  //***************+
-
-  setTabOrder(LineEdit1, textBrowser);
-  setTabOrder(textBrowser, RadioButton1);
-  setTabOrder(RadioButton1, RadioButton2);
-  setTabOrder(RadioButton2, RadioButton3);
-  setTabOrder(RadioButton3, Table1);
-  setTabOrder(Table1, Table2);
-  setTabOrder(Table2, commitChanges);
-  setTabOrder(commitChanges, cancelChanges);
-  setTabOrder(cancelChanges, newFcn);
-  setTabOrder(newFcn, deleteFcn);
-
-  // signals and slots connections
-  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
-  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
-  connect(newFcn, SIGNAL(clicked()), this, SLOT(slotNewButtonClicked()));
-  connect(deleteFcn, SIGNAL(clicked()), this, SLOT(slotDeleteButtonClicked()));
-  connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
-
-  connect(RadioButton1, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
-  connect(RadioButton2, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
-  connect(RadioButton3, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
-
-  connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
-
-  QToolTip::add(mpSaveBtn, tr("save formula"));
-  connect(mpSaveBtn, SIGNAL(clicked()), this, SLOT(slotSave()));
-
-  connect(mFormulaEditToggleButton, SIGNAL(clicked()), this,
-          SLOT(slotToggleFcnDescriptionEdit()));
-  QToolTip::add(mFormulaEditToggleButton, tr("edit formula"));
+  init();
 }
 
 //! Destructor
@@ -358,6 +68,24 @@ FunctionWidget1::~FunctionWidget1()
   //pdelete(mMmlWidget);
   //pdelete(mScrollView);
   pdelete(mpFunction);
+}
+
+void FunctionWidget1::init()
+{
+  // change the default signal-slot connection
+  disconnect(mpExpressionEMSW->mpExpressionWidget,
+             SIGNAL(textChanged()),
+             mpExpressionEMSW->mpExpressionWidget,
+             SLOT(slotTextChanged()));
+  connect(mpExpressionEMSW->mpExpressionWidget, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
+
+  // hide all unnecessary buttons
+  mpExpressionEMSW->mpBtnExpressionObject->hide();
+  mpExpressionEMSW->mpBtnViewExpression->hide();
+
+  // overwrite the tip
+  QToolTip::add(mpExpressionEMSW->mpBtnSaveExpression, tr("save formula"));
+  QToolTip::add(mpExpressionEMSW->mpBtnEditExpression, tr("edit formula"));
 }
 
 bool FunctionWidget1::loadParameterTable()
@@ -411,7 +139,7 @@ bool FunctionWidget1::loadParameterTable()
   QString qUsage;
 
   //C_INT32 noOffunctParams = functParam.size();
-  Table1->setNumRows(params.size());
+  Table1->setRowCount(params.size());
 
   for (j = 0; j < params.size(); j++)
     {
@@ -454,32 +182,61 @@ bool FunctionWidget1::loadParameterTable()
             color = QColor(255, 20, 20);
         }
 
-      // col. 0
+      // col. 0 (name)
       QString Name = FROM_UTF8(params[j]->getObjectName());
 
       if (!params[j]->isUsed())
         Name += " (unused)";
 
-      Table1->setItem(j, COL_NAME, new ColorTableItem(Table1, Q3TableItem::WhenCurrent, color,
-                      Name));
+      if (Table1->item(j, COL_NAME) == NULL)
+        {
+          QTableWidgetItem *newItem = new QTableWidgetItem(Name);
+          newItem->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+          Table1->setItem(j, COL_NAME, newItem);
+        }
+      else
+        Table1->item(j, COL_NAME)->setText(Name);
 
-      // col. 1
-      //QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[params[j]->getType()]);
-      //ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
-      //Table1->setItem(j, 1, item);
-      //item->setText(temp);
+      Table1->item(j, COL_NAME)->setBackground(QBrush(color));
 
-      // col. 1
-      Q3ComboTableItem * item2 = new Q3ComboTableItem(Table1, Usages);
-      item2->setCurrentItem(qUsage);
-      Table1->setItem(j, COL_USAGE, item2);
+      // col. 1 (description)
+      QTableWidgetItem *newItem2 = new QTableWidgetItem();
+      newItem2->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+      Table1->setItem(j, COL_USAGE, newItem2);
+      Table1->item(j, COL_USAGE)->setBackground(QBrush(color));
+
+      QComboBox *comboItem = new QComboBox(Table1);
+      comboItem->addItems(Usages);
+      comboItem->setCurrentIndex(comboItem->findText(qUsage));
+      comboItem->setDisabled(mbCOPASIFunction);
+
+      Table1->setCellWidget(j, COL_USAGE, comboItem);
+
+      // connection between comboItem and its parent, Table1
+      connect(comboItem, SIGNAL(activated(const QString &)), this, SLOT(slotTableValueChanged(const QString &)));
+      comboItem->setObjectName(QString::number(j));  // just need to save the row index
 
       //col. 2 (units)
-      Table1->setItem(j, COL_UNIT, new ColorTableItem(Table1, Q3TableItem::WhenCurrent, color,
-                      FROM_UTF8(units[j])));
+      QString strUnit = FROM_UTF8(units[j]);
+
+      if (Table1->item(j, COL_UNIT) == NULL)
+        {
+          QTableWidgetItem *newItem = new QTableWidgetItem(strUnit);
+          newItem->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+          Table1->setItem(j, COL_UNIT, newItem);
+        }
+      else
+        Table1->item(j, COL_UNIT)->setText(strUnit);
+
+      Table1->item(j, COL_UNIT)->setBackground(QBrush(color));
     }
 
-  Table1->adjustColumn(COL_UNIT);
+  Table1->horizontalHeader()->setStretchLastSection(true);
+  Table1->resizeColumnsToContents();
+  Table1->resizeRowsToContents();
+
+  Table1->setFixedSize(Table1->horizontalHeader()->length() + 10,
+                       Table1->verticalHeader()->length() + 30);
 
   return true;
 }
@@ -566,16 +323,25 @@ bool FunctionWidget1::loadUsageTable()
   if (stringlist.size() == 0)
     stringlist.push_back("None");
 
-  Table2->setNumRows(stringlist.size());
+  Table2->setRowCount(stringlist.size());
   unsigned C_INT32 row;
 
   for (row = 0; row < stringlist.size(); ++row)
     {
-      Table2->setText(row, 0, FROM_UTF8(stringlist[row]));
+      if (Table2->item(row, 0) == NULL)
+        Table2->setItem(row, 0, new QTableWidgetItem(FROM_UTF8(stringlist[row])));
+      else
+        Table2->item(row, 0)->setText(FROM_UTF8(stringlist[row]));
     }
 
-  Table2->adjustColumn(0);
+  Table2->resizeRowsToContents();
+  Table2->resizeColumnToContents(0);
 
+  Table2->setStyleSheet("selection-color: black;"
+                        "selection-background-color: white;");
+
+  Table2->setFixedSize(Table2->horizontalHeader()->length() + 10,
+                       Table2->verticalHeader()->length() + 30);
   return true;
 }
 
@@ -643,21 +409,6 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       desc.insert(l, 1, '\n');
     }
 
-  disconnect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
-  textBrowser->setText(FROM_UTF8(desc));
-  connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
-
-  //radio buttons
-  loadReversibility(mpFunction->isReversible());
-
-  //parameter table
-  loadParameterTable();
-
-  // application table
-  loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
-
-  isValid = mpFunction->isUsable();
-
   // make dialogue read only for predefined functions
   if (mpFunction->getType() == CFunction::MassAction ||
       mpFunction->getType() == CFunction::PreDefined)
@@ -670,9 +421,8 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       cancelChanges->setEnabled(false);
       deleteFcn->setEnabled(false);
       LineEdit1->setReadOnly(true);
-      textBrowser->setReadOnly(true);
-      Table1->setReadOnly(true);
-      Table2->setReadOnly(true);
+
+      mbCOPASIFunction = true;
     }
   else   /*** if function is user-defined *****/
     {
@@ -681,16 +431,27 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       RadioButton2->setEnabled(true);
       RadioButton3->setEnabled(true);
       LineEdit1->setReadOnly(false);
-      textBrowser->setReadOnly(false);
-      Table1->setReadOnly(false);
-      Table2->setReadOnly(false);
+
+      mbCOPASIFunction = false;
+
       commitChanges->setEnabled(isValid);
       cancelChanges->setEnabled(true);
       deleteFcn->setEnabled(true);
     }
 
-  //MathML widget
+  // formula expression
   updateMmlWidget();
+
+  //radio buttons
+  loadReversibility(mpFunction->isReversible());
+
+  //parameter table
+  loadParameterTable();
+
+  // application table
+  loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
+
+  isValid = mpFunction->isUsable();
 
   flagChanged = false;
 
@@ -878,13 +639,15 @@ bool FunctionWidget1::saveToFunction()
  */
 void FunctionWidget1::slotFcnDescriptionChanged()
 {
+  if (mpFunction == NULL) return;
+
   if (flagRO) return;
 
   flagChanged = true;
 
   try
     {
-      if (mpFunction->setInfix(TO_UTF8(textBrowser->text())) &&
+      if (mpFunction->setInfix(TO_UTF8(mpExpressionEMSW->getText())) &&
           mpFunction->compile())
         isValid = true;
       else
@@ -919,27 +682,22 @@ void FunctionWidget1::slotFcnDescriptionChanged()
   // application table
   //updateApplication();
   loadUsageTable();
-
-  textBrowser->setFocus();
 }
 
 //! Slot for changing the table value
-void FunctionWidget1::slotTableValueChanged(int row, int col)
+void FunctionWidget1::slotTableValueChanged(const QString &string)
 {
+  int curRow = sender()->objectName().toInt();
+
+  QComboBox *comboItem = (QComboBox *) sender();
+
   flagChanged = true;
 
   CFunctionParameters &functParam = mpFunction->getVariables();
 
-  if (col == COL_USAGE) //Usage
-    {
-      Q3ComboTableItem * tmpItem = dynamic_cast<Q3ComboTableItem *>(Table1->item(row, col));
-
-      if (!tmpItem) fatalError();
-
-      CFunctionParameter::Role usage = (CFunctionParameter::Role)tmpItem->currentItem();
-
-      functParam[row]->setUsage(usage);
-    }
+  // surely, we are in COL_USAGE... thus we don't need to check it anymore
+  CFunctionParameter::Role usage = (CFunctionParameter::Role)(comboItem->findText(string));
+  functParam[curRow]->setUsage(usage);
 
   //update tables
   loadParameterTable();
@@ -1148,12 +906,6 @@ void FunctionWidget1::slotNewButtonClicked()
 
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
   enter(pFunc->getKey());
-
-  mFormulaEditToggleButton->hide();
-
-#ifdef HAVE_MML
-  mpSaveBtn->setEnabled(false);
-#endif // HAVE_MML
 }
 
 //! Slot for being activated whenever Delete button is clicked
@@ -1210,18 +962,6 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
 //***********  slot for editing requests on the function formula (mMmlWidget) *****
 
-//! Slot for being activated whenever Edit button under Functions display is clicked
-void FunctionWidget1::slotToggleFcnDescriptionEdit()
-{
-  mStack->raiseWidget(textBrowser);
-
-  mFormulaEditToggleButton->hide();
-
-#ifdef HAVE_MML
-  mpSaveBtn->setEnabled(false);
-#endif // HAVE_MML
-}
-
 //! Function to update the function formula
 void FunctionWidget1::updateMmlWidget()
 {
@@ -1229,38 +969,9 @@ void FunctionWidget1::updateMmlWidget()
   std::ostringstream mml;
   std::vector<std::vector<std::string> > params;
 
-  if (textBrowser->isReadOnly())
-    mFormulaEditToggleButton->hide();
-  else
-    mFormulaEditToggleButton->show();
-
-  mStack->raiseWidget(mMmlViewBox);
-
-  mpSaveBtn->setEnabled(true);
-
   mpFunction->createListOfParametersForMathML(params);
-
-  if (textBrowser->text().isEmpty())
-    {
-      mStack->raiseWidget(textBrowser);
-
-      mpSaveBtn->setEnabled(false);
-    }
-  else
-    mpFunction->writeMathML(mml, params, true, false, 0);
-
-  MMLStr = FROM_UTF8(mml.str());
-
-  //  mMmlWidget->setContent(FROM_UTF8(mml.str()));
-  mMmlWidget->setContent(MMLStr);
-  mMmlWidget->setBaseFontPointSize(qApp->font().pointSize());
-  mMmlWidget->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
-
-  mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
-  mScrollView->setMinimumHeight(mMmlWidget->sizeHint().height() + 30);
-#else
-  mStack->raiseWidget(textBrowser);
-  mFormulaEditToggleButton->hide();
+  mpFunction->writeMathML(mml, params, true, false, 0);
+  mpExpressionEMSW->updateWidget(mml, mbCOPASIFunction);
 #endif // HAVE_MML
 }
 
@@ -1302,75 +1013,4 @@ bool FunctionWidget1::enterProtected()
 
   mpListView->switchToOtherWidget(5, "");
   return false;
-}
-
-// add 21.07.08
-void FunctionWidget1::slotSave()
-{
-  QString filter;
-  QString outfilename, extName;
-
-  C_INT32 Answer = QMessageBox::No;
-
-  while (Answer == QMessageBox::No)
-    {
-      outfilename =
-        CopasiFileDialog::getSaveFileName(this,
-                                          "Save File Dialog",
-                                          "untitled.mml",
-                                          "MathML (*.mml);;TeX (*.tex)",
-                                          "Save Formula to Disk", new QString);
-
-      if (outfilename.isNull()) return;
-
-      // Checks whether the file exists
-      Answer = checkSelection(outfilename);
-
-      if (Answer == QMessageBox::Cancel)
-        return;
-    }
-
-  if (outfilename.endsWith(".tex"))
-    saveTeX(outfilename);
-  else
-    saveMML(outfilename);
-}
-
-// add 21.07.08
-void FunctionWidget1::saveMML(const QString outfilename)
-{
-  std::ofstream ofile;
-  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
-
-  ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
-  ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
-  ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
-
-  std::vector<std::vector<std::string> > params;
-  mpFunction->createListOfParametersForMathML(params);
-  mpFunction->writeMathML(ofile, params, true, false, 0);
-
-  ofile << "</math>" << std::endl;
-
-  ofile.close();
-}
-
-// add 21.07.08
-void FunctionWidget1::saveTeX(const QString outfilename)
-{
-  std::ostringstream mml;
-  std::vector<std::vector<std::string> > params;
-  mpFunction->createListOfParametersForMathML(params);
-  mpFunction->writeMathML(mml, params, true, false, 0);
-
-  QString latexStr(FROM_UTF8(mml.str()));
-
-  CMathMLToTeX::convert(latexStr);
-
-  std::ofstream ofile;
-  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
-
-  ofile << TO_UTF8(latexStr);
-
-  ofile.close();
 }

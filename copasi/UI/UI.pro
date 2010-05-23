@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229.2.8 $
+#   $Revision: 1.229.2.9 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2010/04/29 15:19:29 $
+#   $Author: pwilly $
+#   $Date: 2010/05/23 19:31:56 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229.2.8 $ $Author: shoops $ $Date: 2010/04/29 15:19:29 $
+# $Revision: 1.229.2.9 $ $Author: pwilly $ $Date: 2010/05/23 19:31:56 $
 ######################################################################
 
 LIB = UI
@@ -71,6 +71,7 @@ HEADERS	+= \
   CScanWidgetRepeat.h \
   CScanWidgetScan.h \
   CScanWidgetTask.h \
+  FunctionWidget1.h \
   SensitivitiesWidget.h \
   SliderSettingsDialog.h \
   StateSubwidget.h \
@@ -132,7 +133,7 @@ HEADERS	+= \
   DataModelGUI.h \
   DataModel.txt.h \
   FunctionItemWidget.h \
-  FunctionWidget1.h \
+#  FunctionWidget1.h \
   listviews.h \
   ModelWidget.h \
   MyLineEdit.h \
@@ -195,6 +196,7 @@ SOURCES	+= \
   CScanWidgetRepeat.cpp \
   CScanWidgetScan.cpp \
   CScanWidgetTask.cpp \
+  FunctionWidget1.cpp \
   SensitivitiesWidget.cpp \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
@@ -254,7 +256,7 @@ SOURCES	+= \
   CTimeSeriesTable.cpp \
   DataModelGUI.cpp \
   FunctionItemWidget.cpp \
-  FunctionWidget1.cpp \
+#  FunctionWidget1.cpp \
   listviews.cpp \
   ModelWidget.cpp \
   MyLineEdit.cpp \
@@ -366,6 +368,7 @@ FORMS += CScanWidgetRandom.ui
 FORMS += CScanWidgetRepeat.ui
 FORMS += CScanWidgetScan.ui
 FORMS += CScanWidgetTask.ui
+FORMS += FunctionWidget1.ui
 FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
