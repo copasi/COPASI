@@ -22,6 +22,7 @@ macx:debug {
     COPASI_LIBS_SE += compareExpressions
     COPASI_LIBS_SE += copasiDM
     COPASI_LIBS_SE += copasiXML
+    COPASI_LIBS_SE += crosssection
     COPASI_LIBS_SE += elementaryFluxModes
     COPASI_LIBS_SE += fitting
     COPASI_LIBS_SE += function

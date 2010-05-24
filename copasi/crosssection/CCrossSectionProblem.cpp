@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionProblem.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2010/05/14 22:20:54 $
+//   $Date: 2010/05/24 12:45:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,3 +75,17 @@ void CCrossSectionProblem::initObjects()
  */
 CCrossSectionProblem::~CCrossSectionProblem()
 {DESTRUCTOR_TRACE;}
+
+std::ostream &operator<<(std::ostream &os, const CCrossSectionProblem & o)
+{
+  os << "Cross Section Problem description: Not implemented yet." << std::endl;
+  const CCopasiDataModel* pDataModel = o.getObjectDataModel();
+  assert(pDataModel != NULL);
+
+  return os;
+}
+
+
+void CCrossSectionProblem::print(std::ostream * ostream) const
+{*ostream << *this;}
+

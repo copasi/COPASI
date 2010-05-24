@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionMethod.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2010/05/14 22:20:54 $
+//   $Date: 2010/05/24 12:45:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ public:
 
   /**
    * Copy constructor.
-   * @param "const CTSSMethod &" src
+   * @param "const CCrossSectionMethod &" src
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCrossSectionMethod(const CCrossSectionMethod & src,
@@ -62,7 +62,7 @@ public:
   bool process(CProcessReport * handler);
 
   /**
-   * initializes the subtask, creates the internal data structures of the method,
+   * initializes the subtask, creates the internal data structures of the method
    * resizes the result arrays and creates the array annotations
    */
   bool initialize(CCrossSectionProblem* problem);

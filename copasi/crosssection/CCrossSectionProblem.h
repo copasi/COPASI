@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionProblem.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2010/05/14 22:20:54 $
+//   $Date: 2010/05/24 12:45:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ public:
    * default behaviour one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const;
+  //virtual void printResult(std::ostream * ostream) const;
 
   /**
    * Output stream operator. Prints description of the problem

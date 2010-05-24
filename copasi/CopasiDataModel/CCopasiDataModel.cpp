@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.149 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:55:48 $
+//   $Author: ssahle $
+//   $Date: 2010/05/24 12:45:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@
 #endif
 #include "sensitivities/CSensTask.h"
 #include "tssanalysis/CTSSATask.h"
+#include "crosssection/CCrossSectionTask.h"
 #include "lyap/CLyapTask.h"
 #include "tss/CODEExporter.h"
 #include "tss/CODEExporterC.h"
@@ -971,6 +972,12 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       case CCopasiTask::moieties:
         pTask = new CMoietiesTask(taskType, mpTaskList);
         break;
+
+#ifdef COPASI_NONLIN_DYN
+      case CCopasiTask::crosssection:
+        pTask = new CCrossSectionTask(mpTaskList);
+        break;
+#endif
 
       default:
         return pTask;

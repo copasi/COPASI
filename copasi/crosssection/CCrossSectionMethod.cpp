@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionMethod.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2010/05/14 22:20:54 $
+//   $Date: 2010/05/24 12:45:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,8 @@
 // All rights reserved.
 
 #include "CCrossSectionMethod.h"
+
+#include "CCrossSectionProblem.h"
 
 CCrossSectionMethod *
 CCrossSectionMethod::createCrossSectionMethod(CCopasiMethod::SubType subType)
@@ -59,3 +61,30 @@ CCrossSectionMethod::CCrossSectionMethod(const CCrossSectionMethod & src,
  */
 CCrossSectionMethod::~CCrossSectionMethod()
 {DESTRUCTOR_TRACE;}
+
+
+bool CCrossSectionMethod::process(CProcessReport * handler)
+{
+  return false;
+}
+
+bool CCrossSectionMethod::initialize(CCrossSectionProblem* problem)
+{
+  return false;
+}
+
+bool CCrossSectionMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  if (!CCopasiMethod::isValidProblem(pProblem)) return false;
+
+  const CCrossSectionProblem * pP = dynamic_cast<const CCrossSectionProblem *>(pProblem);
+
+  if (!pP)
+    {
+      //not a correct Problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a Cross section problem.");
+      return false;
+    }
+
+  return true;
+}
