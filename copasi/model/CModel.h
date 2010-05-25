@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.184.2.1 $
+//   $Revision: 1.184.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/16 19:29:36 $
+//   $Date: 2010/05/25 15:46:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,7 +81,7 @@ public:
   /**
    *  Enum of valid time units
    */
-  enum TimeUnit {dimensionlessTime = 0, d, h, min, s, ms, micros, ns, ps, fs};
+  enum TimeUnit {dimensionlessTime = 0, d, h, min, s, ms, micros, ns, ps, fs, OldMinute};
 
   /**
    * String representation of valid time units

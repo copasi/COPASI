@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.388.2.3 $
+//   $Revision: 1.388.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/10 14:01:43 $
+//   $Date: 2010/05/25 15:46:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -894,7 +894,7 @@ void CModel::initializeMetabolites()
 
   // Update mMetabolitesX to reflect the reordering.
   // We need to to this to allow the use of the full model for simulation.
-  mMetabolitesX.resizeWithoutAllocation(mMetabolites.size());
+  mMetabolitesX.resize(mMetabolites.size());
 
   mNumMetabolitesODE = ODEMetabs.size();
   itMetab = mMetabolitesX.begin();
