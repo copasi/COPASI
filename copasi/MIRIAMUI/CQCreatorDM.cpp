@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/09/28 14:53:30 $
+//   $Author: shoops $
+//   $Date: 2010/05/25 21:26:30 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,6 +20,8 @@
 
 #include "UI/qtUtilities.h"
 #include "CQCreatorDM.h"
+
+#include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQCreatorDM::CQCreatorDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
     : CQBaseDataModel(parent)
