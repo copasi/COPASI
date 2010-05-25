@@ -35,6 +35,7 @@ COPASISE_OPTIONS=${COPASISE_OPTIONS:="--nologo --verbose"}
 
 # parameters for import test
 BIOMODELS_DIR=${BIOMODELS_DIR:=${HOME}/workspace/release_21August2008_sbmls}
+MODEL_DIR=${MODEL_DIR:=${BIOMODELS_DIR}/curated/}
 
 # parameters for export test
 CPS_DIR=${CPS_DIR:=""}
@@ -222,6 +223,19 @@ function run_franks_testsuite
   echo -e "\n\n"
 }
 
+function simulate_sbmlfiles
+{
+  # not written yet.
+  echo "Running simulation ..."
+  ${MKDIR} ${RESULT_DIR}/simulate
+  if [ ! -d ${MODEL_DIR} ];then
+    echo "Error. \"${MODEL_DIR}\" does not exist or is not a directory."
+    exit 1;
+  fi
+  USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/simulate/ ./run_franks_test.sh ${MODEL_DIR}/*.xml
+  echo -e "\n\n"
+}
+
 function run_all_tests
 {
     run_import_tests
@@ -338,6 +352,10 @@ else
             ;;
           franks )
             run_franks_testsuite;
+            shift;
+            ;;
+          simulate )
+            simulate_sbmlfiles;
             shift;
             ;;
           * )
