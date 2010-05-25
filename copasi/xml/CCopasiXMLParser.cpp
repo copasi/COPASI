@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.8 $
+//   $Revision: 1.215.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 21:30:05 $
+//   $Date: 2010/05/25 21:43:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -7896,7 +7896,7 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
 
         if (mCommon.pCurrentTask != NULL)
           {
-            mCommon.pTaskList->add(mCommon.pCurrentTask);
+            mCommon.pTaskList->add(mCommon.pCurrentTask, true);
             mCommon.pCurrentTask = NULL;
           }
 
