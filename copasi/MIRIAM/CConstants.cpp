@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:41 $
+//   $Date: 2010/05/25 16:31:18 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -42,7 +47,7 @@ void CMIRIAMResourceObject::unescapeId(std::string & id)
       {
         char ascii[2];
         ascii[0] = (unsigned char) strtol(id.substr(pos + 1 , 2).c_str(), NULL, 16);
-        ascii[1] = NULL;
+        ascii[1] = 0x0;
         id.replace(pos, 3, CCopasiXMLInterface::utf8(ascii));
       }
 }

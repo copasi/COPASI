@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.53.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/19 18:17:41 $
+//   $Date: 2010/05/25 16:31:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -782,7 +782,7 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
 // virtual
 bool CEvaluationNodeFunction::isBoolean() const
 {
-  switch (CEvaluationNode::subType(mType))
+  switch ((SubType) CEvaluationNode::subType(mType))
     {
       case NOT:
         return true;

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/11/09 20:56:57 $
+//   $Author: shoops $
+//   $Date: 2010/05/25 16:31:06 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -429,7 +434,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
       child2 = children[1];
     }
 
-  switch (CEvaluationNode::subType(mType))
+  switch ((SubType) CEvaluationNode::subType(mType))
     {
       case POWER:
       {

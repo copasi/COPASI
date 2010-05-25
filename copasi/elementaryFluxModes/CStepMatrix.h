@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.h,v $
-//   $Revision: 1.6.2.1 $
+//   $Revision: 1.6.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/08 18:19:51 $
+//   $Date: 2010/05/25 16:30:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,7 +97,7 @@ private:
             mInsert = array() + OldSize;
             mBeyond = array() + size();
 
-            memset(mInsert, NULL, OldSize * sizeof(CStepMatrixColumn *));
+            memset(mInsert, 0x0, OldSize * sizeof(CStepMatrixColumn *));
 
             //We need to update the iterators.
             iterator it = array();

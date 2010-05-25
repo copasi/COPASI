@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:41 $
+//   $Date: 2010/05/25 16:31:18 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -88,7 +93,7 @@ public:
   struct sAllowedLocation
   {
 public:
-    unsigned int MaxOccurance;
+    unsigned C_INT32 MaxOccurance;
     bool ReadOnly;
     CRDFObject::eObjectType Type;
     Path Location;
@@ -207,9 +212,9 @@ public:
    * If the current path is not part of the full path C_INVALID_INDEX is returned
    * @param const Path & fullPath
    * @param const Path & currentPath
-   * @return unsigned int index
+   * @return size_t index
    */
-  static unsigned int getSubPathIndex(const Path & fullPath, const Path & currentPath);
+  static size_t getSubPathIndex(const Path & fullPath, const Path & currentPath);
 
   /**
    * Checks whether the element pointed to by the current path is read-only

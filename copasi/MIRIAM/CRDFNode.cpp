@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.16.2.1 $
+//   $Revision: 1.16.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/03 15:19:51 $
+//   $Date: 2010/05/25 16:31:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,8 +254,8 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
 
   // Determine the path leading to the field
   const CRDFPredicate::AllowedLocationList & Locations = CRDFPredicate::getAllowedLocationList(predicate);
-  unsigned int i, imax = Locations.size();
-  unsigned int SubPathIndex = C_INVALID_INDEX;
+  size_t i, imax = Locations.size();
+  unsigned C_INT32 SubPathIndex = C_INVALID_INDEX;
 
   for (i = 0; i < imax; i++)
     {
@@ -283,11 +283,11 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
 }
 
 CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicatePath,
-    const unsigned int & level)
+    const size_t & level)
 {
   CRDFNode * pNode = this;
 
-  unsigned int i, imax = predicatePath.size() - 1; // We only create the ancestors
+  size_t i, imax = predicatePath.size() - 1; // We only create the ancestors
 
   for (i = level; i < imax; i++)
     {
