@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.7 $
+//   $Revision: 1.215.2.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 15:47:12 $
+//   $Date: 2010/05/25 21:30:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -7894,7 +7894,7 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Task", mParser.getCurrentLineNumber());
 
-        if (mCommon.pCurrentTask)
+        if (mCommon.pCurrentTask != NULL)
           {
             mCommon.pTaskList->add(mCommon.pCurrentTask);
             mCommon.pCurrentTask = NULL;
@@ -8010,17 +8010,18 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
               break;
           }
 
-        if (mCommon.pCurrentTask)
+        if (mCommon.pCurrentTask != NULL)
           {
             mCommon.pCurrentTask->setScheduled(Scheduled);
             mCommon.pCurrentTask->setUpdateModel(UpdateModel);
             mCommon.pCurrentTask->getProblem()->setModel(mCommon.pModel);
+
+            if (Key != NULL)
+              {
+                mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
+              }
           }
 
-        if (Key && mCommon.pCurrentTask)
-          {
-            mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
-          }
 
         return;
         break;
@@ -8093,7 +8094,7 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Task", mParser.getCurrentLineNumber());
 
-        if (!mCommon.pCurrentTask)
+        if (mCommon.pCurrentTask == NULL)
           CCopasiMessage::getLastMessage();
 
         mParser.popElementHandler();
@@ -8335,7 +8336,8 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
 
         // We need to fix the "Key" parameter of each "Experiment" of the the "Parameter Estimation" problem,
         // since they are handled by the elevation of the problem to CFitProblem.
-        if (mCommon.pCurrentTask->getType() == CCopasiTask::parameterFitting &&
+        if (mCommon.pCurrentTask != NULL &&
+            mCommon.pCurrentTask->getType() == CCopasiTask::parameterFitting &&
             (mCommon.pCurrentParameter->getObjectName() == "Key" ||
              mCommon.pCurrentParameter->getObjectName() == "Experiment Key"))
           {
