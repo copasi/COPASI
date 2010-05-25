@@ -21,6 +21,7 @@ USE_VALGRIND=${USE_VALGRIND:="no"}
 DO_LEACKCHECK=${DO_LEAKCHECK:="no"}
 
 DO_NONCURATED=${DO_NONCURATED:="yes"}
+TARGET_SBML_VERSION=${TARGET_SBML_VERSION:=""} # use the defaul export version
 
 if [ -z $COPASISE ];then
   if [ "$SYSTEM" == "Darwin" ];then
