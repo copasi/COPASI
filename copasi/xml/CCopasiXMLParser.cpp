@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.6 $
+//   $Revision: 1.215.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/17 17:43:30 $
+//   $Date: 2010/05/25 15:47:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1400,45 +1400,35 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         Name = mParser.getAttributeValue("name", papszAttrs);
 
         timeUnit = mParser.getAttributeValue("timeUnit", papszAttrs);
-        TimeUnit = toEnum(timeUnit, CModel::TimeUnitNames, CModel::s);
+        TimeUnit = toEnum(timeUnit, CModel::TimeUnitNames, CModel::OldMinute);
 
-        if (TimeUnit == -1)
+        if (TimeUnit == CModel::OldMinute)
           {
             if (strcmp(timeUnit, "m"))
-              fatalError();
-
-            TimeUnit = CModel::min;
+              TimeUnit = CModel::s;
+            else
+              TimeUnit = CModel::min;
           }
 
         volumeUnit = mParser.getAttributeValue("volumeUnit", papszAttrs);
         VolumeUnit = toEnum(volumeUnit, CModel::VolumeUnitNames, CModel::ml);
-
-        if (VolumeUnit == -1) fatalError();
 
         //the next 2 attributes are introduced in Build 31, they have a default for
         //reading older cps files
         areaUnit = mParser.getAttributeValue("areaUnit", papszAttrs, "m\xc2\xb2");
         AreaUnit = toEnum(areaUnit, CModel::AreaUnitNames, CModel::m2);
 
-        if (AreaUnit == -1) AreaUnit = CModel::m2; //TODO warning
-
         lengthUnit = mParser.getAttributeValue("lengthUnit", papszAttrs, "m");
         LengthUnit = toEnum(lengthUnit, CModel::LengthUnitNames, CModel::m);
 
-        if (LengthUnit == -1) LengthUnit = CModel::m; //TODO warning
-
         quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
-        QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitNames, CModel::mMol);
+        QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitNames, CModel::OldXML);
 
-        if (QuantityUnit == -1)
+        if (QuantityUnit == CModel::OldXML)
           QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitOldXMLNames, CModel::mMol);
-
-        if (QuantityUnit == -1) fatalError();
 
         ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
                            CModel::ModelTypeNames, CModel::deterministic);
-
-        if (ModelType == -1) fatalError();
 
         StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
@@ -8343,6 +8333,17 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Parameter", mParser.getCurrentLineNumber());
 
+        // We need to fix the "Key" parameter of each "Experiment" of the the "Parameter Estimation" problem,
+        // since they are handled by the elevation of the problem to CFitProblem.
+        if (mCommon.pCurrentTask->getType() == CCopasiTask::parameterFitting &&
+            (mCommon.pCurrentParameter->getObjectName() == "Key" ||
+             mCommon.pCurrentParameter->getObjectName() == "Experiment Key"))
+          {
+            if (mCommon.UnmappedKeyParameters.size() > 0 &&
+                mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] == mCommon.pCurrentParameter)
+              mCommon.UnmappedKeyParameters.erase(mCommon.UnmappedKeyParameters.begin() + mCommon.UnmappedKeyParameters.size() - 1);
+          }
+
         // Derived elements like methods and problems have already parameters:
         if (mDerivedElement)
           {
@@ -8515,8 +8516,6 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
         if (UnmappedKey)
           {
-            std::cout << "Unmapped: " << mCommon.pCurrentParameter << std::endl;
-
             mCommon.UnmappedKeyParameters.push_back(mCommon.pCurrentParameter);
           }
 
