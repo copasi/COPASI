@@ -8,6 +8,7 @@ fi
 
 SYSTEM=`${UNAME} -s`
 
+TARGET_SBML_VERSION=${TARGET_SBML_VERSION:=""}
 
 VALGRIND_NUMCALLERS=30
 if [ "${SYSTEM}" == "Darwin" ];then
@@ -66,7 +67,12 @@ function test_export_single_file
     ERROR_FILE=${NAME}.export.err
     VALGRIND_LOG=${NAME}.export.log
     COMMAND_FILE=${NAME}.export.sh
-    COMMAND="${COPASISE} ${COPASISE_OPTIONS} --exportSBML ${OUTPUT_DIR}/${SBML_FILE} ${CPS_FILE}"
+    if [ -z "$TARGET_SBML_VERSION" ];then
+      COMMAND="${COPASISE} ${COPASISE_OPTIONS} --exportSBML ${OUTPUT_DIR}/${SBML_FILE} ${CPS_FILE}"
+    else  
+      SBML_FILE=${NAME}.${TARGET_SBML_VERSION}.xml
+      COMMAND="${COPASISE} ${COPASISE_OPTIONS} --SBMLSchema ${TARGET_SBML_VERSION} --exportSBML ${OUTPUT_DIR}/${SBML_FILE} ${CPS_FILE}"
+    fi
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
