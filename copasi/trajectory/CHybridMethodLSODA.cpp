@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.25.2.2 $
+//   $Revision: 1.25.2.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/02/24 14:02:46 $
+//   $Author: shoops $
+//   $Date: 2010/05/25 17:18:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -403,10 +403,9 @@ void CHybridMethodLSODA::cleanup()
 void CHybridMethodLSODA::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CHybridMethodLSODA::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CHybridMethodLSODA::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
   unsigned C_INT32 i;
-  assert(y == mY);
 
   CModel * pModel = mpProblem->getModel();
 

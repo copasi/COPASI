@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.60.2.1 $
+//   $Revision: 1.60.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/16 19:29:37 $
+//   $Date: 2010/05/25 17:18:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,7 +408,7 @@ void CLsodaMethod::start(const CState * initialState)
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
   // If we have no ODEs add a constant one.
   if (mNoODE)
@@ -416,8 +416,6 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * y
       *ydot = 1.0;
       return;
     }
-
-  assert(y == mY);
 
   mpState->setTime(*t);
 
@@ -436,10 +434,9 @@ void CLsodaMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
                          const C_INT * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
-void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  y,
+void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  /* y */,
                          const C_INT *  nr, C_FLOAT64 * r)
 {
-  assert(y == mY);
   assert(*nr == (C_INT) mRoots.size());
 
   mpState->setTime(*t);
