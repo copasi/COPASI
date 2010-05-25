@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.28.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/02/12 20:57:40 $
+//   $Author: shoops $
+//   $Date: 2010/05/25 16:50:53 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,27 +30,27 @@
  */
 template <typename RandomAccessIterator>
 class FCompareBase
+{
+public:
+  /**
+   * Virtual desctructor
+   */
+  virtual ~FCompareBase() {};
+  /**
+   * Operator wrapping the comparison operator <
+   * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs
+   * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs
+   * @return bool lessThan
+   */
+  virtual bool operator()(const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
+                          const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
   {
-  public:
-    /**
-     * Virtual desctructor
-     */
-    virtual ~FCompareBase(){};
-    /**
-     * Operator wrapping the comparison operator <
-     * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs
-     * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs
-     * @return bool lessThan
-     */
-    virtual bool operator() (const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
-                             const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
-    {
-      return
+    return
       isnan(*lhs.first) ?
       (isnan(*rhs.first) ? lhs.first < rhs.first : false) :
           (isnan(*rhs.first) ? true : *lhs.first < *rhs.first);
-    }
-  };
+  }
+};
 
 /**
  * This functor provids the means to specify a compare method
@@ -53,43 +58,43 @@ class FCompareBase
  */
 template <typename RandomAccessIterator , typename LessThanCompare>
 class FCompare : FCompareBase<RandomAccessIterator>
-  {
-  protected:
-    /**
-     * Default constructor
-     */
-    FCompare() {};
+{
+protected:
+  /**
+   * Default constructor
+   */
+  FCompare() {};
 
-  public:
-    /**
-     * Virtual desctructor
-     */
-    virtual ~FCompare(){};
+public:
+  /**
+   * Virtual desctructor
+   */
+  virtual ~FCompare() {};
 
-    /**
-     * Specific constructor
-     * @param LessThanCompare method
-     */
-    FCompare(LessThanCompare method):
-    mpCompare(method)
-    {}
+  /**
+   * Specific constructor
+   * @param LessThanCompare method
+   */
+  FCompare(LessThanCompare method):
+      mpCompare(method)
+  {}
 
-    /**
-     * Operator wrapping the coparison method
-     * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs
-     * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs
-     * @return bool lessThan
-     */
-    virtual bool operator() (const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
-                             const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
-    {return (*mpCompare)(*lhs.first, *rhs.first);}
+  /**
+   * Operator wrapping the coparison method
+   * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs
+   * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs
+   * @return bool lessThan
+   */
+  virtual bool operator()(const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
+                          const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
+  {return (*mpCompare)(*lhs.first, *rhs.first);}
 
-  private:
-    /**
-     * A pointer to the wrapped compare method.
-     */
-    LessThanCompare mpCompare;
-  };
+private:
+  /**
+   * A pointer to the wrapped compare method.
+   */
+  LessThanCompare mpCompare;
+};
 
 /**
  * Sorting method returning a pivot vector instead of performing the sort.
@@ -285,45 +290,47 @@ void __partialSortWithPivot(RandomAccessIterator first,
  */
 template <typename IndexType, typename ReturnType>
 class FSwapBase
+{
+protected:
+  /**
+   * Default constructor
+   */
+  FSwapBase():
+      mpSwap(NULL)
+  {}
+
+public:
+  /**
+   * Specific constructor
+   * @param ReturnType (*swap) (IndexType, IndexType)
+   */
+  FSwapBase(ReturnType(*swap)(IndexType, IndexType)):
+      mpSwap(swap)
+  {}
+
+  /**
+   * Virtual destructor
+   */
+  virtual ~FSwapBase() {};
+
+  /**
+   * Operator wrapping the provided swap method
+   * @param IndexType to
+   * @param IndexType from
+   * @return ReturnType
+   */
+  virtual void operator()(IndexType to, IndexType from)
   {
-  protected:
-    /**
-     * Default constructor
-     */
-    FSwapBase() {}
+    (*mpSwap)(to, from);
+    return;
+  }
 
-  public:
-    /**
-     * Specific constructor
-     * @param ReturnType (*swap) (IndexType, IndexType)
-     */
-    FSwapBase(ReturnType (*swap) (IndexType, IndexType)):
-        mpSwap(swap)
-    {}
-
-    /**
-     * Virtual destructor
-     */
-    virtual ~FSwapBase(){};
-
-    /**
-     * Operator wrapping the provided swap method
-     * @param IndexType to
-     * @param IndexType from
-     * @return ReturnType
-     */
-    virtual void operator() (IndexType to, IndexType from)
-    {
-      (*mpSwap)(to, from);
-      return;
-    }
-
-  private:
-    /**
-     * A pointer to the swap method
-     */
-    ReturnType (*mpSwap)(IndexType, IndexType);
-  };
+private:
+  /**
+   * A pointer to the swap method
+   */
+  ReturnType(*mpSwap)(IndexType, IndexType);
+};
 
 /**
  * A derived functor providing means to use a class member as the swap method
@@ -331,53 +338,53 @@ class FSwapBase
  */
 template <typename ClassType, typename IndexType, typename ReturnType>
 class FSwapClass : public FSwapBase<IndexType, ReturnType>
+{
+protected:
+  /**
+   * Default constructor
+   */
+  FSwapClass() {}
+
+public:
+  /**
+   * Specific constructor
+   * @param ClassType * pType
+   * @param ReturnType (ClassType::*swap) (IndexType, IndexType)
+   */
+  FSwapClass(ClassType * pType, ReturnType(ClassType::*swap)(IndexType, IndexType)):
+      FSwapBase<IndexType, ReturnType>(),
+      mpType(pType),
+      mpSwap(swap)
+  {}
+
+  /**
+   * Virtual destructor
+   */
+  virtual ~FSwapClass() {};
+
+  /**
+   * Operator wrapping the provided class member swap method
+   * @param IndexType to
+   * @param IndexType from
+   * @return ReturnType
+   */
+  virtual void operator()(IndexType to, IndexType from)
   {
-  protected:
-    /**
-     * Default constructor
-     */
-    FSwapClass() {}
+    (*mpType.*mpSwap)(to, from);
+    return;
+  }
 
-  public:
-    /**
-     * Specific constructor
-     * @param ClassType * pType
-     * @param ReturnType (ClassType::*swap) (IndexType, IndexType)
-     */
-    FSwapClass(ClassType * pType, ReturnType (ClassType::*swap) (IndexType, IndexType)):
-        FSwapBase<IndexType, ReturnType>(),
-        mpType(pType),
-        mpSwap(swap)
-    {}
+private:
+  /**
+   * A pointer to the class.
+   */
+  ClassType * mpType;
 
-    /**
-     * Virtual destructor
-     */
-    virtual ~FSwapClass(){};
-
-    /**
-     * Operator wrapping the provided class member swap method
-     * @param IndexType to
-     * @param IndexType from
-     * @return ReturnType
-     */
-    virtual void operator() (IndexType to, IndexType from)
-    {
-      (*mpType.*mpSwap)(to, from);
-      return;
-    }
-
-  private:
-    /**
-     * A pointer to the class.
-     */
-    ClassType * mpType;
-
-    /**
-     * A pointer to the class member swap method.
-     */
-    ReturnType (ClassType::*mpSwap)(IndexType, IndexType);
-  };
+  /**
+   * A pointer to the class member swap method.
+   */
+  ReturnType(ClassType::*mpSwap)(IndexType, IndexType);
+};
 
 /**
  * Reorder the elements according to the provided pivots
