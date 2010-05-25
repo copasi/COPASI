@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.8.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/09 10:57:43 $
+//   $Author: shoops $
+//   $Date: 2010/05/25 17:13:10 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -52,7 +57,7 @@ CMCATask::CMCATask(const CMCATask & src,
     CCopasiTask(src, pParent)
 {
   mpProblem =
-    new CMCAProblem(* (CMCAProblem *) src.mpProblem, this);
+    new CMCAProblem(*(CMCAProblem *) src.mpProblem, this);
   mpMethod = new CMCAMethod(this);
 }
 
@@ -74,16 +79,16 @@ void CMCATask::load(CReadConfig & configBuffer)
 
 bool CMCATask::updateMatrices()
 {
-  assert(mpProblem && mpMethod);
+  assert(mpProblem != NULL && mpMethod != NULL);
 
-  CMCAProblem* pProblem =
-    dynamic_cast<CMCAProblem *>(mpProblem);
-  assert(pProblem);
+  assert(dynamic_cast<CMCAProblem *>(mpProblem) != NULL);
 
   if (!mpMethod->isValidProblem(mpProblem)) return false;
 
   CMCAMethod * pMethod = dynamic_cast<CMCAMethod*>(mpMethod);
+
   if (!pMethod) return false;
+
   pMethod->setModel(mpProblem->getModel());
   pMethod->resizeAllMatrices();
 
@@ -109,12 +114,14 @@ bool CMCATask::initialize(const OutputFlag & of,
 
   //initialize reporting
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+
   if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
 
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
 
   if (pSubTask)
     success = pSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, mReport.getStream());
+
   //success = pSubTask->initialize(of, mReport.getStream());
 
   return success;
@@ -132,6 +139,7 @@ bool CMCATask::process(const bool & useInitialValues)
 
   CSteadyStateTask *pSubTask =
     dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
+
   if (pSubTask)
     {
       pSubTask->setCallBack(mpCallBack);
@@ -187,75 +195,75 @@ std::ostream &operator<<(std::ostream &os, const CMCATask & C_UNUSED(A))
 }
 
 void CMCATask::printResult(std::ostream * ostream) const
-  {
-    assert(mpProblem && mpMethod);
+{
+  assert(mpProblem && mpMethod);
 
-    CMCAProblem* pProblem =
-      dynamic_cast<CMCAProblem *>(mpProblem);
-    assert(pProblem);
+  CMCAProblem* pProblem =
+    dynamic_cast<CMCAProblem *>(mpProblem);
+  assert(pProblem);
 
-    CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(mpMethod);
-    assert(pMethod);
-    pMethod->setModel(mpProblem->getModel());
+  CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(mpMethod);
+  assert(pMethod);
+  pMethod->setModel(mpProblem->getModel());
 
-    std::ostream & os = *ostream;
+  std::ostream & os = *ostream;
 
-    bool showCCs = false; //show CCs?
-    bool showSS = false; //show Steady State result?
+  bool showCCs = false; //show CCs?
+  bool showSS = false; //show Steady State result?
 
-    if (pProblem->isSteadyStateRequested())
-      {
-        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
-          {
-            os << "A steady state was found. All coefficients are shown." << std::endl;
-            showCCs = true;
-            showSS = true;
-          }
+  if (pProblem->isSteadyStateRequested())
+    {
+      if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
+        {
+          os << "A steady state was found. All coefficients are shown." << std::endl;
+          showCCs = true;
+          showSS = true;
+        }
 
-        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium)
-          {
-            os << "Found equilibrium steady state. Only elasticities available." << std::endl;
-            showSS = true;
-          }
+      if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium)
+        {
+          os << "Found equilibrium steady state. Only elasticities available." << std::endl;
+          showSS = true;
+        }
 
-        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundNegative)
-          {
-            os << "Invalid steady state found (negative concentrations)." << std::endl;
-            showSS = true;
-          }
+      if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundNegative)
+        {
+          os << "Invalid steady state found (negative concentrations)." << std::endl;
+          showSS = true;
+        }
 
-        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::notFound)
-          {
-            os << "No steady state found. Only elasticities available." << std::endl;
-          }
-      }
-    else
-      {
-        os << "Since no steady state calculation was requested only elasticities are shown." << std::endl;
-      }
+      if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::notFound)
+        {
+          os << "No steady state found. Only elasticities available." << std::endl;
+        }
+    }
+  else
+    {
+      os << "Since no steady state calculation was requested only elasticities are shown." << std::endl;
+    }
 
-    os << std::endl;
-    os << *pMethod->getUnscaledElasticitiesAnn() << std::endl;
-    os << *pMethod->getScaledElasticitiesAnn() << std::endl;
+  os << std::endl;
+  os << *pMethod->getUnscaledElasticitiesAnn() << std::endl;
+  os << *pMethod->getScaledElasticitiesAnn() << std::endl;
 
-    if (showCCs)
-      {
-        os << *pMethod->getUnscaledConcentrationCCAnn() << std::endl;
-        os << *pMethod->getScaledConcentrationCCAnn() << std::endl;
+  if (showCCs)
+    {
+      os << *pMethod->getUnscaledConcentrationCCAnn() << std::endl;
+      os << *pMethod->getScaledConcentrationCCAnn() << std::endl;
 
-        os << *pMethod->getUnscaledFluxCCAnn() << std::endl;
-        os << *pMethod->getScaledFluxCCAnn() << std::endl;
-      }
+      os << *pMethod->getUnscaledFluxCCAnn() << std::endl;
+      os << *pMethod->getScaledFluxCCAnn() << std::endl;
+    }
 
-    if (showSS)
-      {
-        if (!pProblem->getSubTask())
-          {
-            os << "Problem with steady state calculation. Please report as bug!" << std::endl;
-            return;
-          }
+  if (showSS)
+    {
+      if (!pProblem->getSubTask())
+        {
+          os << "Problem with steady state calculation. Please report as bug!" << std::endl;
+          return;
+        }
 
-        os << "Results of the steady state subtask (the state for which the MCA was performed):" << std::endl;
-        os << *pProblem->getSubTask();
-      }
-  }
+      os << "Results of the steady state subtask (the state for which the MCA was performed):" << std::endl;
+      os << *pProblem->getSubTask();
+    }
+}

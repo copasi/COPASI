@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.12.2.1 $
+//   $Revision: 1.12.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 17:03:35 $
+//   $Date: 2010/05/25 17:05:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1847,8 +1847,8 @@ L4:
   return 0;
 } /* vcprnt_ */
 
-/* Subroutine */ int CPraxis::print_(C_INT *n, C_FLOAT64 *x, C_INT *prin,
-                                     C_FLOAT64 *fmin)
+/* Subroutine */ int CPraxis::print_(C_INT * /* n */ , C_FLOAT64 * /* x */ , C_INT * /* prin */,
+                                     C_FLOAT64 * /* fmin */)
 {
 #ifdef XXXX
   /* System generated locals */
@@ -1908,8 +1908,8 @@ L2:
   return 0;
 } /* print_ */
 
-/* Subroutine */ int maprnt_(C_INT *option, C_FLOAT64 *v, C_INT *m,
-                             C_INT *n)
+/* Subroutine */ int maprnt_(C_INT * /* option */ , C_FLOAT64 * /* v */, C_INT * /* m */,
+                             C_INT * /* n */)
 {
 #ifdef XXXX
   /* System generated locals */

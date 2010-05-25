@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.81.2.1 $
+//   $Revision: 1.81.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/26 17:20:39 $
+//   $Date: 2010/05/25 17:13:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -363,15 +363,15 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   mpSteadyState->setTime(InitialTime);
 
   C_FLOAT64 * pTo;
-  C_INT32 i;
+  size_t i;
 
   // construct Eigenvalues of Jacobian
   CVector< C_FLOAT64 > vectorEigen_R = mEigenValues.getR();
   CVector< C_FLOAT64 > vectorEigen_I = mEigenValues.getI();
 
+#ifdef DEBUG_UI
   C_INT32 size = vectorEigen_R.size() + vectorEigen_I.size();
 
-#ifdef DEBUG_UI
   std::cout << "vectorEigen_R.size() = " << vectorEigen_R.size() << " + vectorEigen_I.size() = " << vectorEigen_I.size() << " == " << size << std::endl;
   std::cout << "size = " << mEigenvaluesXMatrix.size() << std::endl;
 #endif
@@ -393,9 +393,9 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   CVector< C_FLOAT64 > vectorEigenX_R = mEigenValuesX.getR();
   CVector< C_FLOAT64 > vectorEigenX_I = mEigenValuesX.getI();
 
+#ifdef DEBUG_UI
   C_INT32 sizeX = vectorEigenX_R.size() + vectorEigenX_I.size();
 
-#ifdef DEBUG_UI
   std::cout << "vectorEigenX_R.size() = " << vectorEigenX_R.size() << " + vectorEigenX_I.size() = " << vectorEigenX_I.size() << " == " << sizeX << std::endl;
   std::cout << "size = " << mEigenvaluesXMatrix.size() << std::endl;
 #endif

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:31 $
+//   $Date: 2010/05/25 17:03:35 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -94,10 +99,12 @@ int FminBrent(double a,                 /* Left border      */
         }
 
       if (fabs(new_step) < tol_act)   /* Adjust the step to be not less */
-        if (new_step > (double)0)     /* than tolerance     */
-          new_step = tol_act;
-        else
-          new_step = -tol_act;
+        {
+          if (new_step > (double)0)     /* than tolerance     */
+            new_step = tol_act;
+          else
+            new_step = -tol_act;
+        }
 
       /* Obtain the next approximation to */
       {/* min & reduce the enveloping range*/
