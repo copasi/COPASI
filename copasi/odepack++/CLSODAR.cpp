@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.5.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/07/24 21:08:45 $
+   $Date: 2010/05/25 16:39:23 $
    End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -152,11 +157,11 @@ C_INT CLSODAR::operator()(evalF f, C_INT *neq, double *y, double
   C_INT len1, len2;
   double hmax;
   C_INT irfp;
-  bool ihit;
+  bool ihit = false;
   double ewti, size;
   C_INT len1c, len1n, len1s, iflag;
   double atoli;
-  C_INT leniw, lenwm, lenyh, imxer;
+  C_INT leniw, lenwm = 0, lenyh, imxer;
   double tcrit;
   C_INT lenrw;
   double rtoli, tdist, tolsf, tnext;
