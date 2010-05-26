@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.233 $
+#   $Revision: 1.234 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2010/05/17 15:58:01 $
+#   $Author: pwilly $
+#   $Date: 2010/05/26 11:51:59 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.233 $ $Author: aekamal $ $Date: 2010/05/17 15:58:01 $
+# $Revision: 1.234 $ $Author: pwilly $ $Date: 2010/05/26 11:51:59 $
 ######################################################################
 
 LIB = UI
@@ -33,6 +33,7 @@ HEADERS	+= \
   CMCAResultSubwidget.h \
   CQCompartment.h \
   CQCompartmentsWidget.h \
+  CQCrossSectionTaskWidget.h \
   CQDifferentialEquations.h \
   CQEFMListWidget.h \
   CQEFMResultWidget.h \
@@ -159,6 +160,7 @@ SOURCES	+= \
   CMCAResultSubwidget.cpp \
   CQCompartment.cpp \
   CQCompartmentsWidget.cpp \
+  CQCrossSectionTaskWidget.cpp \
   CQDifferentialEquations.cpp \
   CQEFMListWidget.cpp \
   CQEFMResultWidget.cpp \
@@ -278,8 +280,6 @@ SOURCES	+= \
   Tree.cpp \
   TSSWidget.cpp
 
-
-
 !contains(DEFINES, COPASI_TSS) {
   HEADERS -= TSSWidget.h
   SOURCES -= TSSWidget.cpp
@@ -306,6 +306,8 @@ FORMS3 += DefaultplotDialog.ui
 HEADERS += DefaultplotDialog.ui.h
 FORMS3 += objectdebug.ui
 HEADERS += objectdebug.ui.h
+#FORMS3 += CQTSSAResultSubWidget.ui
+#HEADERS += CQTSSAResultSubWidget.ui.h
 
 ### uic3 forms that do not work at the moment
 #FORMS3 += CQExperimentData.ui
@@ -331,6 +333,7 @@ SOURCES += CQTextDialog.cpp
 FORMS += CMCAResultSubwidget.ui
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
+FORMS += CQCrossSectionTaskWidget.ui
 FORMS += CQDifferentialEquations.ui
 FORMS += CQEFMListWidget.ui
 FORMS += CQEFMResultWidget.ui

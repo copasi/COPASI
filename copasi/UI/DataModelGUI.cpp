@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/30 16:26:54 $
+//   $Author: pwilly $
+//   $Date: 2010/05/26 11:51:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -86,6 +91,10 @@ void DataModelGUI::linkDataModelToGUI()
 
   mTree.findNodeFromId(27)->setObjectKey((*pDataModel->getTaskList())["Time Scale Separation Analysis"]->getKey());
   mTree.findNodeFromId(26)->setObjectKey((*pDataModel->getTaskList())["Lyapunov Exponents"]->getKey());
+
+#ifdef COPASI_NONLIN_DYN
+  mTree.findNodeFromId(28)->setObjectKey((*pDataModel->getTaskList())["Cross Section"]->getKey());
+#endif
 
   mTree.findNodeFromId(31)->setObjectKey((*pDataModel->getTaskList())["Scan"]->getKey());
   mTree.findNodeFromId(32)->setObjectKey((*pDataModel->getTaskList())["Optimization"]->getKey());

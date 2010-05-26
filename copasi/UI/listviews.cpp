@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.281 $
+//   $Revision: 1.282 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/11/23 13:33:46 $
+//   $Author: pwilly $
+//   $Date: 2010/05/26 11:51:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -98,6 +103,10 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plotUI/PlotSubwidget.h"
 #include "model/CModel.h"
+
+#ifdef COPASI_NONLIN_DYN
+#include "CQCrossSectionTaskWidget.h"
+#endif
 
 /**------FolderListItem::FolderListItem(QListView *parent, Folder *f)---->
  **
@@ -256,6 +265,9 @@ ListViews::ListViews(QWidget *parent, const char *name):
     trajectoryWidget(NULL),
     tssaWidget(NULL),
     tssaResultWidget(NULL),
+#ifdef COPASI_NONLIN_DYN
+    crossSectionTaskWidget(NULL),
+#endif
 #ifdef COPASI_DEBUG
     mpUpdatesWidget(NULL),
 #endif
@@ -522,6 +534,13 @@ void ListViews::ConstructNodeWidgets()
 
   tssaResultWidget->hide();
 
+#ifdef COPASI_NONLIN_DYN
+
+  if (!crossSectionTaskWidget) crossSectionTaskWidget = new CQCrossSectionTaskWidget(this);
+
+  crossSectionTaskWidget->hide();
+#endif
+
 #ifdef COPASI_DEBUG
 
   if (!mpUpdatesWidget) mpUpdatesWidget = new CQUpdatesWidget(this);
@@ -685,6 +704,11 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 271:
         return tssaResultWidget;
         break;
+#ifdef COPASI_NONLIN_DYN
+      case 28:
+        return crossSectionTaskWidget;
+        break;
+#endif
       case 31:
         return scanWidget;
         break;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.149 $
+//   $Revision: 1.150 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/24 12:45:49 $
+//   $Author: pwilly $
+//   $Date: 2010/05/26 11:51:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,10 @@
 #include "layout/CListOfLayouts.h"
 #include "layout/CLayoutInitializer.h"
 #include "report/CCopasiRootContainer.h"
+
+#ifdef COPASI_NONLIN_DYN
+#include "crosssection/CCrossSectionTask.h"
+#endif
 
 CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
     : mpDataModel(dm)

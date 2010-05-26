@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.163 $
+//   $Revision: 1.164 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/11/23 13:33:46 $
+//   $Author: pwilly $
+//   $Date: 2010/05/26 11:51:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -68,6 +73,10 @@ class TSSWidget;
 class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
+
+#ifdef COPASI_NONLIN_DYN
+class CQCrossSectionTaskWidget;
+#endif
 
 #ifdef COPASI_DEBUG
 class CQUpdatesWidget;
@@ -267,6 +276,10 @@ private:
   CQTrajectoryWidget *trajectoryWidget;
   CQTSSAWidget *tssaWidget;
   CQTSSAResultWidget *tssaResultWidget;
+
+#ifdef COPASI_NONLIN_DYN
+  CQCrossSectionTaskWidget *crossSectionTaskWidget;
+#endif
 
 #ifdef COPASI_DEBUG
   CQUpdatesWidget *mpUpdatesWidget;

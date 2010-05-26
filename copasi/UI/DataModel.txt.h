@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/11/23 10:54:26 $
+//   $Author: pwilly $
+//   $Date: 2010/05/26 11:51:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -53,6 +58,9 @@ static char DataModeltxt[] =
   "26:261:Result\n"
   "2:27:Time Scale Separation Analysis\n"
   "27:271:Result\n"
+#ifdef COPASI_NONLIN_DYN
+  "2:28:Cross Section\n"
+#endif
   //  "0:3:Multiple Task\n"
   "2:31:Parameter Scan\n"
   "2:32:Optimization\n"
