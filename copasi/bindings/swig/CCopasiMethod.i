@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiMethod.i,v $ 
-//   $Revision: 1.8.2.2 $ 
+//   $Revision: 1.8.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/04 15:56:42 $ 
+//   $Date: 2010/05/26 16:15:00 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,6 +28,8 @@
 
 %ignore CCopasiMethod::XMLSubType;
 %ignore CCopasiMethod::SubTypeName;
+%ignore CCopasiMethod::setCallBack;
+%ignore CCopasiMethod::load;
 
 %include "utilities/CCopasiMethod.h"
 

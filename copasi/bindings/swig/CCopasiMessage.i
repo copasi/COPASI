@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiMessage.i,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.1.24.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/13 08:42:27 $ 
+//   $Date: 2010/05/26 16:15:00 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -22,6 +27,7 @@
 
 %ignore CCopasiMessage::operator=(const CCopasiMessage&);
 %ignore MESSAGES;
+%ignore Message;
 
 %include "utilities/CCopasiMessage.h"
 

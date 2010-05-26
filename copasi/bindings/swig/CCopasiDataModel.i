@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.21 $ 
+//   $Revision: 1.21.2.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/05 21:36:22 $ 
+//   $Date: 2010/05/26 16:15:00 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -36,7 +41,7 @@
 %ignore CCopasiDataModel::autoSave();
 %ignore CCopasiDataModel::loadModel(const std::string& fileName,CProcessReport* pProcessReport);
 %ignore CCopasiDataModel::saveModel(const std::string& fileName,CProcessReport* pProcessReport, bool overwriteFile=false , const bool& autoSave=false);
-%ignore CCopasiDataModel::newModel(CModel* pModel,CProcessReport* pProcessReport);
+%ignore CCopasiDataModel::newModel;
 %ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler);
 %ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler);
 %ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete ,bool exportCOPASIMIRIAM=false,CProcessReport* pExportHandler = NULL );
@@ -82,6 +87,8 @@
 
 %include "CopasiDataModel/CCopasiDataModel.h"
 
+%rename(newModel) CCopasiDataModel::newModel;
+
 %extend CCopasiDataModel
 {
     bool loadModel(const std::string& fileName)
@@ -107,7 +114,7 @@
 
     bool newModel()
     {
-        return $self->newModel(NULL,NULL);
+        return $self->newModel(NULL,NULL,NULL);
     };
 
     CReportDefinition* getReportDefinition(unsigned C_INT32 index)

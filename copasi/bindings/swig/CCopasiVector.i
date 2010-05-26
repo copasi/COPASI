@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.26.2.2 $ 
+//   $Revision: 1.26.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/12 17:12:40 $ 
+//   $Date: 2010/05/26 16:15:01 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,7 +23,8 @@
 %{
 
 #include "utilities/CCopasiVector.h"
-
+#include <layout/CLBase.h>
+#include <layout/CLCurve.h>
 %}
 
 %ignore operator<< ;
@@ -199,6 +200,12 @@
 
 %template(ContainerStdVector) std::vector<CCopasiContainer*>;
 
+%template(PointStdVector) std::vector<CLPoint>;
+
+%template(LineSegmentStdVector) std::vector<CLLineSegment>;
+
+%template(FittingPointVector) CCopasiVector<CFittingPoint>;
+
 typedef CCopasiVectorN<CEvent> EventVectorN;
 
 typedef CCopasiVectorN<CEventAssignment> EventAssignmentVectorN;
@@ -238,4 +245,10 @@ typedef std::vector<std::string> StringStdVector;
 typedef std::vector<std::vector<std::string> > VectorOfStringVectors;
 
 typedef std::vector<CCopasiContainer*> ContainerStdVector;
+
+typedef std::vector<CLPoint> PointStdVector;
+
+typedef std::vector<CLLineSegment> LineSegmentStdVector;
+
+typedef CCopasiVector<CFittingPoint> FittingPointVector;
 
