@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionProblem.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/24 12:45:49 $
+//   $Author: pwilly $
+//   $Date: 2010/05/26 18:51:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,4 +88,34 @@ std::ostream &operator<<(std::ostream &os, const CCrossSectionProblem & o)
 
 void CCrossSectionProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
+
+bool CCrossSectionProblem::getFlagLimitCrossings() const
+{ return *mpFlagLimitCrossings; }
+
+const unsigned C_INT32 & CCrossSectionProblem::getCrossingsLimit() const
+{ return *mpCrossingsLimit; }
+
+bool CCrossSectionProblem::getFlagLimitTime() const
+{ return *mpFlagLimitTime; }
+
+const C_FLOAT64 & CCrossSectionProblem::getTimeLimit() const
+{ return *mpTimeLimit; }
+
+const C_FLOAT64 & CCrossSectionProblem::getOutputStartTime() const
+{ return *mpOutputStartTime; }
+
+void CCrossSectionProblem::setFlagLimitCrossings(bool flagLimitCrossing)
+{ *mpFlagLimitCrossings = flagLimitCrossing; }
+
+void CCrossSectionProblem::setCrossingsLimit(const unsigned C_INT32 &crossingLimit)
+{ *mpCrossingsLimit = crossingLimit; }
+
+void CCrossSectionProblem::setFlagLimitTime(bool flagLimitTime)
+{ *mpFlagLimitTime = flagLimitTime; }
+
+void CCrossSectionProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
+{ *mpTimeLimit = timeLimit; }
+
+void CCrossSectionProblem::setOutputStartTime(const C_FLOAT64 &outputStartTime)
+{ *mpOutputStartTime = outputStartTime; }
 

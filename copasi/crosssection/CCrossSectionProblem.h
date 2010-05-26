@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionProblem.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/24 12:45:49 $
+//   $Author: pwilly $
+//   $Date: 2010/05/26 18:51:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,8 +38,55 @@ public:
    */
   virtual ~CCrossSectionProblem();
 
-  //TODO: add get/set methods for the parameters defined below
+  /**
+   * Function to get mpFlagLimitCrossings
+   */
+  bool getFlagLimitCrossings() const;
 
+  /**
+   * Function to get mpCrossingsLimit
+   */
+  const unsigned C_INT32 &getCrossingsLimit() const;
+
+  /**
+   * Function to get mpFlagLimitTime
+   */
+  bool getFlagLimitTime() const;
+
+  /**
+   * Function to get mpTimeLimit
+   */
+  const C_FLOAT64 &getTimeLimit() const;
+
+  /**
+   * Function to get mpOutputStartTime
+   */
+  const C_FLOAT64 &getOutputStartTime() const;
+
+  /**
+   * Function to set mpFlagLimitCrossings
+   */
+  void setFlagLimitCrossings(bool flagLimitCrossing);
+
+  /**
+   * Function to set mpCrossingsLimit
+   */
+  void setCrossingsLimit(const unsigned C_INT32 &crossingLimit);
+
+  /**
+   * Function to set mpFlagLimitTime
+   */
+  void setFlagLimitTime(bool flagLimitTime);
+
+  /**
+   * Function to set mpTimeLimit
+   */
+  void setTimeLimit(const C_FLOAT64 &timeLimit);
+
+  /**
+   * Function to set mpOutputStartTime
+   */
+  void setOutputStartTime(const C_FLOAT64 &outputStartTime);
 
   /**
    * This is the output method for any result of a problem. The default implementation
