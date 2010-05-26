@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunction.i,v $ 
-//   $Revision: 1.4.2.1 $ 
+//   $Revision: 1.4.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/26 17:45:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,10 +28,7 @@
 
 %ignore CFunction::load;
 %ignore CFunction::dependsOn;
-
-%template(FunctionCallParameters) CCallParameters<C_FLOAT64>;
-typedef CCallParameters<C_FLOAT64> FunctionCallParameters;
-
+%ignore CFunction::splitFunction;
 
 #ifdef SWIGJAVA
 // remove some const methods to get rid of warnings

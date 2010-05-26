@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CVector.i,v $ 
-//   $Revision: 1.7.2.2 $ 
+//   $Revision: 1.7.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/26 17:45:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -26,8 +26,7 @@
 
 %}
 
-//%ignore operator<< <> (std::ostream& os,const CVector< CType >&);
-%ignore operator<< (std::ostream& os,const CVector< CType >&);
+%ignore operator<<;
 %ignore operator[](const unsigned C_INT32 & );
 %ignore operator[](const unsigned C_INT32 & ) const;
 %ignore operator()(const unsigned C_INT32 & );
@@ -72,10 +71,18 @@ typedef CVectorCore<C_FLOAT64> FloatVectorCore;
 typedef CVector<C_FLOAT64> FloatVector;
 typedef CVectorCore<unsigned long> ULongVectorCore;
 typedef CVector<unsigned long> ULongVector;
+typedef CVectorCore<CCopasiObject*> ObjectVectorCore;
+typedef CVector<CCopasiObject*> ObjectVector;
+typedef CVectorCore<CMathTrigger::CRootFinder*> RootFinderVectorCore;
+typedef CVector<CMathTrigger::CRootFinder*> RootFinderVector;
 
 %template(FloatVectorCore) CVectorCore<C_FLOAT64>;
 %template(FloatVector) CVector<C_FLOAT64>;
 %template(ULongVectorCore) CVectorCore<unsigned long>;
 %template(ULongVector) CVector<unsigned long>;
+%template(ObjectVectorCore) CVectorCore<CCopasiObject*>;
+%template(ObjectVector) CVector<CCopasiObject*>;
+%template(RootFinderVectorCore) CVectorCore<CMathTrigger::CRootFinder*>;
+%template(RootFinderVector) CVector<CMathTrigger::CRootFinder*>;
 
 

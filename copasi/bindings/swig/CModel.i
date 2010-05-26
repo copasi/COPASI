@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.16.2.2 $ 
+//   $Revision: 1.16.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/26 17:45:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,6 +50,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::getCompartments() const;
 %ignore CModel::getStateTemplate() const;
 %ignore CModel::processQueue;
+%ignore CModel::processRoots;
 
 
 %include "model/CModel.h"

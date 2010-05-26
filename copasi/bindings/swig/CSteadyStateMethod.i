@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CSteadyStateMethod.i,v $ 
-//   $Revision: 1.1.24.1 $ 
+//   $Revision: 1.1.24.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/26 17:45:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,7 +31,7 @@
 
 %include "steadystate/CSteadyStateMethod.h"
 
-%extend CSteadyStateMatrix
+%extend CSteadyStateMethod
 {
     CSteadyStateMethod::ReturnCode process(CState* pState, CMatrix<C_FLOAT64>& jacobianX)
     {

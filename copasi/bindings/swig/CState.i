@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CState.i,v $ 
-//   $Revision: 1.7.2.1 $ 
+//   $Revision: 1.7.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/12 17:12:41 $ 
+//   $Date: 2010/05/26 17:45:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -46,6 +46,8 @@
 %ignore CStateTemplate::endDependent();
 %ignore CStateTemplate::beginFixed();
 %ignore CStateTemplate::endFixed();
+%ignore CStateTemplate::reorder;
+%ignore CStateTemplate::setUserOrder;
 %ignore CState::getEntities() const;
 %ignore CState::beginIndependent() const;
 %ignore CState::endIndependent() const;

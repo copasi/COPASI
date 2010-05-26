@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiObjectName.i,v $ 
-//   $Revision: 1.10.2.1 $ 
+//   $Revision: 1.10.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:00 $ 
+//   $Date: 2010/05/26 17:45:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -27,6 +27,7 @@
 %}
 
 %ignore CCopasiObjectName::findEx;
+%ignore CRegisteredObjectName::getSet;
 
 %include "report/CCopasiObjectName.h"
 

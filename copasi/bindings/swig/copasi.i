@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.31.2.3 $ 
+//   $Revision: 1.31.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/10 15:33:43 $ 
+//   $Date: 2010/05/26 17:45:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -58,6 +58,7 @@
 %include "CEigen.i"
 %include "CFunctionParameter.i"
 %include "CFunctionParameters.i"
+%include "CCallParameters.i"
 %include "CEvaluationTree.i"
 %include "CExpression.i"
 %include "CFunction.i"
