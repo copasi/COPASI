@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.9.2.1 $
+//   $Revision: 1.9.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 21:26:30 $
+//   $Date: 2010/05/26 15:17:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,7 +183,7 @@ bool CQModifiedDM::removeRows(QModelIndexList rows, const QModelIndex&)
     }
 
   bool retVal = false, askEveryItem = true;
-  QMessageBox::StandardButton choice;
+  QMessageBox::StandardButton choice = QMessageBox::NoToAll;
   QList <CModification *>::const_iterator j;
 
   for (j = pModifieds.begin(); j != pModifieds.end(); ++j)

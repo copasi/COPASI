@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CDerive.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.20.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 13:48:54 $
+//   $Date: 2010/05/26 15:17:19 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -19,19 +24,24 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, unsigned C_I
   CEvaluationNode * newNode = NULL;
 
   const CEvaluationNodeOperator * pENO = dynamic_cast<const CEvaluationNodeOperator*>(node);
+
   if (pENO)
     {
       if (!pENO->getLeft() || !pENO->getRight()) return NULL;
+
       CEvaluationNode * pLeftDeriv = deriveBranch(pENO->getLeft(), variableIndex, pObject);
+
       if (!pLeftDeriv) return NULL;
+
       CEvaluationNode * pRightDeriv = deriveBranch(pENO->getRight(), variableIndex, pObject);
-    if (!pRightDeriv) {delete pLeftDeriv; return NULL;}
+
+      if (!pRightDeriv) {delete pLeftDeriv; return NULL;}
 
       // we now know that derivations of the left and right branch exist
 
-      switch (CEvaluationNode::subType(pENO->getType()))
+      switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(pENO->getType()))
         {
-        case CEvaluationNodeOperator::MULTIPLY:
+          case CEvaluationNodeOperator::MULTIPLY:
           {
             CEvaluationNode * pLeftCopy = pENO->getLeft()->copyBranch();
             CEvaluationNode * pRightCopy = pENO->getRight()->copyBranch();
@@ -56,7 +66,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, unsigned C_I
           }
           break;
 
-        case CEvaluationNodeOperator::DIVIDE:
+          case CEvaluationNodeOperator::DIVIDE:
           {
             CEvaluationNode * pLeftCopy = pENO->getLeft()->copyBranch();
             CEvaluationNode * pRightCopy = pENO->getRight()->copyBranch();
@@ -94,27 +104,27 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, unsigned C_I
           }
           break;
 
-        case CEvaluationNodeOperator::PLUS:
-          newNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-          newNode->addChild(pLeftDeriv);
-          newNode->addChild(pRightDeriv);
-          //TODO check for zeros
+          case CEvaluationNodeOperator::PLUS:
+            newNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
+            newNode->addChild(pLeftDeriv);
+            newNode->addChild(pRightDeriv);
+            //TODO check for zeros
 
-          //if (newNode) newNode->compile(NULL);
-          return newNode;
-          break;
+            //if (newNode) newNode->compile(NULL);
+            return newNode;
+            break;
 
-        case CEvaluationNodeOperator::MINUS:
-          newNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-          newNode->addChild(pLeftDeriv);
-          newNode->addChild(pRightDeriv);
-          //TODO check for zeros
+          case CEvaluationNodeOperator::MINUS:
+            newNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+            newNode->addChild(pLeftDeriv);
+            newNode->addChild(pRightDeriv);
+            //TODO check for zeros
 
-          //if (newNode) newNode->compile(NULL);
-          return newNode;
-          break;
+            //if (newNode) newNode->compile(NULL);
+            return newNode;
+            break;
 
-        case CEvaluationNodeOperator::POWER:
+          case CEvaluationNodeOperator::POWER:
           {
             CEvaluationNode * pLeftCopy = pENO->getLeft()->copyBranch();
             CEvaluationNode * pRightCopy = pENO->getRight()->copyBranch();
@@ -160,12 +170,13 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, unsigned C_I
           }
           break;
 
-        default:
-          break;
+          default:
+            break;
         }
     }
 
   const CEvaluationNodeVariable * pENV = dynamic_cast<const CEvaluationNodeVariable*>(node);
+
   if (pENV)
     {
       if (pObject) return NULL; // if a variable node occurs, we are differentiating a function
@@ -179,6 +190,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, unsigned C_I
     }
 
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
+
   if (pENN)
     {
       newNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
@@ -192,9 +204,11 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, unsigned C_I
 void CDerive::compileTree(CEvaluationNode* node, const CEvaluationTree * pTree)
 {
   if (!node) return;
+
   node->compile(pTree);
 
   CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(node->getChild());
+
   while (child != NULL)
     {
       compileTree(child, pTree);

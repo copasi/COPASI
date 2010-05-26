@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.53.2.1 $
+//   $Revision: 1.53.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 16:31:06 $
+//   $Date: 2010/05/26 15:17:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -952,7 +952,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
           {
             case CEvaluationNode::OPERATOR:
             {
-              switch (CEvaluationNode::subType(child1->getType()))
+              switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(child1->getType()))
                 {
                   case CEvaluationNodeOperator::DIVIDE:
                   {// -(a/b) -> (-a)/b
