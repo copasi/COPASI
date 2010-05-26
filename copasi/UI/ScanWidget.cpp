@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.211.2.3 $
+//   $Revision: 1.211.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/30 15:23:15 $
+//   $Date: 2010/05/26 13:54:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -223,9 +223,6 @@ bool ScanWidget::loadTask()
 
 bool ScanWidget::slotAddItem()
 {
-  // number of items will be added -> default = 1
-  int totalItems = 1;
-
   int totalRows = -1;
   //+++
   CScanWidgetScan* tmp1;

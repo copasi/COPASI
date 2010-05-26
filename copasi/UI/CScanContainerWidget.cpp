@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-$Revision: 1.10 $
+$Revision: 1.10.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/10/27 16:56:43 $
+$Date: 2010/05/26 13:54:23 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,7 +228,7 @@ void CScanContainerWidget::updateTable()
 {
   qApp->processEvents();
 
-  unsigned C_INT32 i;
+  int i;
 
   for (i = 0; i < numRows(); i++)
     adjustRow(i);
@@ -247,7 +247,7 @@ void CScanContainerWidget::resizeEvent(QResizeEvent *e)
 {
   Q3Table::resizeEvent(e);
 
-  unsigned C_INT32 i;
+  int i;
 
   for (i = 0; i < numRows(); i++)
     adjustRow(i);

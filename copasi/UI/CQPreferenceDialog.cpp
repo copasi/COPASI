@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/09 16:41:49 $
+//   $Date: 2010/05/26 13:54:23 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -70,7 +75,7 @@ void CQPreferenceDialog::init()
       Values.append("Max Last Visited Files");
       Values.append(QString::number(maxFiles));
 
-      QTreeWidgetItem * mpItem = new QTreeWidgetItem(mpTreeWidget, Values);
+      new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
   par = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
@@ -82,8 +87,7 @@ void CQPreferenceDialog::init()
       Values.append("Max Last Visited SBML Files");
       Values.append(QString::number(maxFiles));
 
-      QTreeWidgetItem * mpItem = new QTreeWidgetItem(mpTreeWidget, Values);
-      // mpItem->setFlags(mpItem->flags() | Qt::ItemIsEditable);
+      new QTreeWidgetItem(mpTreeWidget, Values);
     }
 }
 
