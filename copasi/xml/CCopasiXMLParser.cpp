@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.9 $
+//   $Revision: 1.215.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 21:43:54 $
+//   $Date: 2010/05/26 13:54:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -10356,3 +10356,47 @@ void CCopasiXMLParser::setDatamodel(CCopasiDataModel* pDataModel)
 {
   this->mCommon.pDataModel = pDataModel;
 }
+
+SCopasiXMLParserCommon::SCopasiXMLParserCommon():
+    pVersion(NULL),
+    pModel(NULL),
+    CharacterData(),
+    mAssignments(),
+    pFunctionList(NULL),
+    pFunction(NULL),
+    pFunctionVariable(NULL),
+    FunctionDescription(),
+    mExistingFunction(),
+    pReaction(NULL),
+    pEvent(NULL),
+    pEventAssignment(NULL),
+    SourceParameterKeys(),
+    KeyMap(),
+    StateVariableList(),
+    pTaskList(NULL),
+    pReportList(NULL),
+    pPlotList(NULL),
+    pReport(NULL),
+    pCurrentTask(NULL),
+    pCurrentParameter(NULL),
+    ParameterGroupStack(),
+    pCurrentPlot(NULL),
+    pCurrentPlotItem(NULL),
+    pCurrentChannelSpec(NULL),
+    UnmappedKeyParameters(),
+    pLayoutList(NULL),
+    pCurrentLayout(NULL),
+    pCompartmentGlyph(NULL),
+    pMetaboliteGlyph(NULL),
+    pReactionGlyph(NULL),
+    pTextGlyph(NULL),
+    pAdditionalGO(NULL),
+    pCurve(NULL),
+    pLineSegment(NULL),
+    pMetaboliteReferenceGlyph(NULL),
+    mParameterGroupLevel(0),
+    taskReferenceMap(),
+    reportReferenceMap(),
+    pGUI(NULL),
+    pDataModel(NULL)
+{}

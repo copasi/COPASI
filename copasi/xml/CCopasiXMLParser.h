@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.70.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/09 22:20:29 $
+//   $Date: 2010/05/26 13:54:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,8 +76,16 @@ class CLLineSegment;
 class CLMetabReferenceGlyph;
 class CCopasiDataModel;
 
-struct SCopasiXMLParserCommon
+class SCopasiXMLParserCommon
 {
+public:
+  // Operations
+  /**
+   * Default Constructor
+   */
+  SCopasiXMLParserCommon();
+
+  // Attributes
   /**
    * The version of the parsed file
    */
@@ -97,7 +105,6 @@ struct SCopasiXMLParserCommon
    * Storage for assignments.
    */
   std::vector<std::pair<std::string, std::string> > mAssignments;
-  // std::pair<std::string, std::string> mAssignmentPair;
 
   /**
    * Pointer to a vector of functions which has been loaded or is to be saved.
