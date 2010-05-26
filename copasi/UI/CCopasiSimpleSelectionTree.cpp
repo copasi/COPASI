@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.34.2.1 $
+//   $Revision: 1.34.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/12 03:45:36 $
+//   $Date: 2010/05/26 15:57:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -835,11 +835,11 @@ bool CCopasiSimpleSelectionTree::filter(const ObjectClasses & classes, const CCo
            //            || pCheckedObject->isArray())) ||
            (Status == CModelEntity::ASSIGNMENT &&
             ObjectName.compare(0, 7, "Initial") == 0) ||
-           (Status == CModelEntity::ODE ||
-            Status == CModelEntity::REACTIONS ||
-            Status == CModelEntity::FIXED) &&
-           ObjectName.compare(0, 7, "Initial") == 0 &&
-           pEntity->getInitialExpression() != ""))
+           ((Status == CModelEntity::ODE ||
+             Status == CModelEntity::REACTIONS ||
+             Status == CModelEntity::FIXED) &&
+            ObjectName.compare(0, 7, "Initial") == 0 &&
+            pEntity->getInitialExpression() != "")))
         return true;
 
       if ((classes & Time) &&

@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.cpp,v $
- $Revision: 1.11 $
+ $Revision: 1.11.2.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2008/12/18 19:57:33 $
+ $Date: 2010/05/26 15:57:40 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -27,13 +32,13 @@ CQValidatorNotEmpty::CQValidatorNotEmpty(QLineEdit * parent, const char * name):
 {}
 
 QValidator::State CQValidatorNotEmpty::validate(QString & input, int & pos) const
-  {
-    if (input != "")
-      return CQValidator< QLineEdit >::validate(input, pos);
+{
+  if (input != "")
+    return CQValidator< QLineEdit >::validate(input, pos);
 
-    setColor(Invalid);
-    return Intermediate;
-  }
+  setColor(Invalid);
+  return Intermediate;
+}
 
 CQValidatorBound::CQValidatorBound(QLineEdit * parent, const QString & sign):
     CQValidator< QLineEdit >(parent, NULL),
@@ -42,30 +47,30 @@ CQValidatorBound::CQValidatorBound(QLineEdit * parent, const QString & sign):
     mValidBound("\t") // It is not possible to insert a tab.
 {}
 
-QValidator::State CQValidatorBound::validate (QString & input, int & pos) const
-  {
-    QString Input;
+QValidator::State CQValidatorBound::validate(QString & input, int & pos) const
+{
+  QString Input;
 
-    if (input == mValidBound ||
-        mpDoubleValidator->validate(input, pos) == Acceptable ||
-        (input.startsWith(mSign) &&
-         input.endsWith("%") &&
-         mpDoubleValidator->validate(Input = input.mid(1, input.length() - 2), pos)))
-      {
-        force(input);
-        return Acceptable;
-      }
+  if (input == mValidBound ||
+      mpDoubleValidator->validate(input, pos) == Acceptable ||
+      (input.startsWith(mSign) &&
+       input.endsWith("%") &&
+       mpDoubleValidator->validate(Input = input.mid(1, input.length() - 2), pos)))
+    {
+      force(input);
+      return Acceptable;
+    }
 
-    setColor(Invalid);
-    return Intermediate;
-  }
+  setColor(Invalid);
+  return Intermediate;
+}
 
 void CQValidatorBound::force(const QString & input) const
-  {
-    const_cast<CQValidatorBound *>(this)->mValidBound = input;
+{
+  const_cast<CQValidatorBound *>(this)->mValidBound = input;
 
-    CQValidator< QLineEdit >::force(input);
-  }
+  CQValidator< QLineEdit >::force(input);
+}
 
 CQValidatorDouble::CQValidatorDouble(QLineEdit * parent, const char * name):
     CQValidator< QLineEdit >(parent, name),
@@ -73,30 +78,31 @@ CQValidatorDouble::CQValidatorDouble(QLineEdit * parent, const char * name):
 {}
 
 QValidator::State CQValidatorDouble::validate(QString & input, int & pos) const
-  {
-    if (mpDoubleValidator->validate(input, pos) == Acceptable)
-      return CQValidator< QLineEdit >::validate(input, pos);
+{
+  if (mpDoubleValidator->validate(input, pos) == Acceptable)
+    return CQValidator< QLineEdit >::validate(input, pos);
 
-    setColor(Invalid);
-    return Intermediate;
-  }
+  setColor(Invalid);
+  return Intermediate;
+}
 
 void CQValidatorDouble::setRange(const C_FLOAT64 & lowerBound, const C_FLOAT64 & upperBound)
 {mpDoubleValidator->setRange(lowerBound, upperBound, DBL_DIG);}
 
 CQValidatorInt::CQValidatorInt(QLineEdit * parent, const char * name):
     CQValidator< QLineEdit >(parent, name),
-    mpIntValidator(new QIntValidator(-LONG_MAX, LONG_MAX, this))
+    mpIntValidator(new QIntValidator(std::numeric_limits< int >::min(),
+                                     std::numeric_limits< int >::max(), this))
 {}
 
 QValidator::State CQValidatorInt::validate(QString & input, int & pos) const
-  {
-    if (mpIntValidator->validate(input, pos) == Acceptable)
-      return CQValidator< QLineEdit >::validate(input, pos);
+{
+  if (mpIntValidator->validate(input, pos) == Acceptable)
+    return CQValidator< QLineEdit >::validate(input, pos);
 
-    setColor(Invalid);
-    return Intermediate;
-  }
+  setColor(Invalid);
+  return Intermediate;
+}
 
 void CQValidatorInt::setRange(const C_INT32 & lowerBound, const C_INT32 & upperBound)
 {mpIntValidator->setRange(lowerBound, upperBound);}

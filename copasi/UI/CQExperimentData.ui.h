@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.44.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 18:17:12 $
+//   $Date: 2010/05/26 15:57:40 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -126,14 +131,14 @@ public:
                             CQExperimentData * pContext,
                             const Type & type):
       CQValidatorNotEmpty(parent, name),
-      mpIntValidator(new QIntValidator(1, LONG_MAX, parent)),
+      mpIntValidator(new QIntValidator(1, std::numeric_limits< int >::max(), parent)),
       mpContext(pContext),
       mType(type)
   {}
 
   virtual State validate(QString & input, int & pos) const
   {
-    if (mpContext->mShown == C_INVALID_INDEX) return Acceptable;
+    if (mpContext->mShown == (unsigned int) - 1) return Acceptable;
 
     if (mType == Name)
       {
@@ -413,7 +418,7 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
   else
     {
       mpExperiment = NULL;
-      mShown = C_INVALID_INDEX;
+      mShown = (unsigned int) - 1;
     }
 
   loadExperiment(mpExperiment);
@@ -680,7 +685,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
   if (!pExperimentSet) return false;
 
   mpExperiment = NULL;
-  mShown = C_INVALID_INDEX;
+  mShown = (unsigned int) - 1;
 
   mpExperimentSet = pExperimentSet;
 
@@ -773,7 +778,7 @@ void CQExperimentData::init()
   mpValidatorHeader = new CQExperimentDataValidator(mpEditHeader, 0, this, CQExperimentDataValidator::HeaderRow);
   mpEditHeader->setValidator(mpValidatorHeader);
 
-  mShown = C_INVALID_INDEX;
+  mShown = (unsigned int) - 1;
   mCrossValidation = false;
 }
 
@@ -966,7 +971,7 @@ void CQExperimentData::syncExperiments()
   std::string Current = TO_UTF8(mpBoxExperiment->currentText());
   std::string Shown;
 
-  if (mShown != C_INVALID_INDEX)
+  if (mShown != (unsigned int) - 1)
     Shown = TO_UTF8(mpBoxExperiment->item(mShown)->text());
 
   mpFileInfo->sync();
@@ -1152,7 +1157,8 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
           QString WeightText;
 
-          if (isnan(DefaultWeight) && isnan(Weight) ||
+          if ((isnan(DefaultWeight) &&
+               isnan(Weight)) ||
               DefaultWeight == Weight)
             WeightText = "(" + QString::number(DefaultWeight) + ")";
           else

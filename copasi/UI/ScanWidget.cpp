@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.211.2.4 $
+//   $Revision: 1.211.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/26 13:54:23 $
+//   $Date: 2010/05/26 15:57:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,9 +255,6 @@ bool ScanWidget::slotAddItem()
   //create item to get the default values
   CScanProblem* tmpProblem = new CScanProblem();
   CCopasiParameterGroup* tmpItem = tmpProblem->createScanItem(type, 10);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
 
   switch (type)
     {
