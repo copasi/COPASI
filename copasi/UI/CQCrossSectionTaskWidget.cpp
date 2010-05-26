@@ -24,6 +24,7 @@
 
 #include "crosssection/CCrossSectionTask.h"
 #include "crosssection/CCrossSectionProblem.h"
+#include "crosssection/CCrossSectionMethod.h"
 
 /*
  *  Constructs a CQCrossSectionWidget which is a child of 'parent', with the
@@ -79,7 +80,7 @@ bool CQCrossSectionTaskWidget::update(ListViews::ObjectType objectType, ListView
  */
 bool CQCrossSectionTaskWidget::saveTask()
 {
-  // check the existence of task
+  // check the existence of Task
   CCrossSectionTask * pTask =
     dynamic_cast< CCrossSectionTask * >(mpTask);
 
@@ -89,12 +90,21 @@ bool CQCrossSectionTaskWidget::saveTask()
   saveCommon();
   saveMethod();
 
-  // check the existence of problem
+  // check the existence of Problem
   CCrossSectionProblem* pProblem =
     dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
   assert(pProblem);
 
   // save the actual changes
+
+  if (mpCheckLC->isChecked())
+    pProblem->setCrossingsLimit(mpLineEditLC->text().toDouble());
+
+  if (mpCheckLT->isChecked())
+    pProblem->setTimeLimit(mpLineEditLT->text().toDouble());
+
+  if (mpCheck->isChecked())
+    pProblem->setOutputStartTime(mpLineEdit->text().toDouble());
 
   return true;
 }
@@ -104,15 +114,55 @@ bool CQCrossSectionTaskWidget::saveTask()
  */
 bool CQCrossSectionTaskWidget::loadTask()
 {
-  /*
-    CCrossSectionTask * pTask =
-      dynamic_cast< CCrossSectionTask * >(mpTask);
+  // load Task
+  CCrossSectionTask * pTask =
+    dynamic_cast< CCrossSectionTask * >(mpTask);
 
-    if (!pTask) return false;
-  */
+  if (!pTask) return false;
+
   // load functions from the Parent, TaskWidget
   loadCommon();
   loadMethod();
+
+  // load Problem
+  CCrossSectionProblem* pProblem =
+    dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
+  assert(pProblem);
+
+  CCrossSectionMethod* pMethod =
+    dynamic_cast<CCrossSectionMethod *>(pTask->getMethod());
+  assert(pMethod);
+
+  // load the saved values
+
+  mpCheckLC->setChecked(pProblem->getFlagLimitCrossings());
+  mpLineEditLC->setEnabled(pProblem->getFlagLimitCrossings());
+
+  if (pProblem->getFlagLimitCrossings())
+    mpLineEditLC->setText(QString::number(pProblem->getCrossingsLimit()));
+  else
+    mpLineEditLC->setText("");
+
+  mpCheckLT->setChecked(pProblem->getFlagLimitTime());
+  mpLineEditLT->setEnabled(pProblem->getFlagLimitTime());
+
+  if (pProblem->getFlagLimitTime())
+    mpLineEditLT->setText(QString::number(pProblem->getTimeLimit()));
+  else
+    mpLineEditLT->setText("");
+
+  if (pProblem->getOutputStartTime() > 0.0)
+    {
+      mpCheck->setChecked(true);
+      mpLineEdit->setEnabled(true);
+      mpLineEdit->setText(QString::number(pProblem->getOutputStartTime()));
+    }
+  else
+    {
+      mpCheck->setChecked(false);
+      mpLineEdit->setEnabled(false);
+      mpLineEdit->setText("");
+    }
 
   return true;
 }
