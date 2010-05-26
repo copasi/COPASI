@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.13.10.1 $
+//   $Revision: 1.13.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 16:31:18 $
+//   $Date: 2010/05/26 14:13:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,8 @@
 #include <map>
 #include <vector>
 #include <set>
+
+#include "copasi/MIRIAM/CRDFPredicate.h"
 
 class CRDFGraph;
 class CRDFSubject;

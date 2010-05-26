@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.73.2.4 $
+//   $Revision: 1.73.2.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/05 20:51:15 $
+//   $Author: shoops $
+//   $Date: 2010/05/26 14:13:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,7 @@
 #include "MIRIAM/CConstants.h"
 #include "MIRIAM/CCreator.h"
 #include "MIRIAM/CModified.h"
+#include "MIRIAM/CRDFPredicate.h"
 #include "layout/CListOfLayouts.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "utilities/CVersion.h"
