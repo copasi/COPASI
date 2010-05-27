@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-  $Revision: 1.12 $
+  $Revision: 1.12.2.1 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/02/03 21:53:35 $
+  $Date: 2010/05/27 16:20:01 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
 #endif
 
       default:
-        pMethod = new CBitPatternTreeMethod();
+        pMethod = new CEFMAlgorithm();
         break;
     }
 
