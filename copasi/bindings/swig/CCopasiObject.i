@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiObject.i,v $ 
-//   $Revision: 1.7.2.1 $ 
+//   $Revision: 1.7.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:00 $ 
+//   $Date: 2010/05/27 18:59:22 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -32,13 +32,12 @@
 %ignore UpdateMethod;
 %ignore SpecificUpdateMethod;
 %ignore Refresh;
-%ignore operator<<(std::ostream& os,const CCopasiObject& o);
+%ignore operator<<;
 %ignore CCopasiObject::getObjectDataModel() const;
 %ignore CCopasiObject::setRenameHandler;
 %ignore CCopasiObject::getValuePointer;
+%ignore CCopasiObject::print;
 
-
-%rename (output) print(std::ostream*) const;
 
 %include "report/CCopasiObject.h"
 

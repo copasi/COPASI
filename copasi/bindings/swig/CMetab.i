@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CMetab.i,v $ 
-//   $Revision: 1.6.2.1 $ 
+//   $Revision: 1.6.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/27 18:59:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -29,6 +29,13 @@
 %ignore CMetab::load;
 %ignore CMetabOld::load;
 %ignore CMetab::getValuePointer;
+
+//ignore the constructors for the CConcentrationReference because we
+//don't need to create instances of it
+%ignore CConcentrationReference::CConcentrationReference;
+%ignore CParticleReference::CParticleReference;
+
+
 
 #ifdef SWIGJAVA
 // remove some const methods to get rid of warnings

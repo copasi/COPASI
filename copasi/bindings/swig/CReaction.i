@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReaction.i,v $ 
-//   $Revision: 1.13.2.4 $ 
+//   $Revision: 1.13.2.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/27 18:59:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -30,6 +30,7 @@
 %ignore CReaction::getSmallestCompartment() const; // not implemented
 %ignore CReaction::getParameterMappings() const; 
 %ignore CReaction::setFunctionFromExpressionTree(CEvaluationTree* , std::map<CCopasiObject*, SBase*> & , CFunctionDB* );
+%ignore CReaction::calculatePartialDerivative;
 
 
 #ifdef SWIGJAVA

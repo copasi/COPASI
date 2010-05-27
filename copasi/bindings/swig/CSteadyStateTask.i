@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CSteadyStateTask.i,v $ 
-//   $Revision: 1.5.2.1 $ 
+//   $Revision: 1.5.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/27 18:59:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,10 +31,12 @@
 
 %}
 
-%ignore operator<<(std::ostream &os, const CSteadyStateTask &A);
+%ignore operator<<;
+
 %ignore CSteadyStateTask::process(const bool& useInitialValues);
-%ignore CSteadyStateTask::initialize(const OutputFlag & of, std::ostream * pOstream);
+%ignore CSteadyStateTask::initialize;
 %ignore CSteadyStateTask::load;
+%ignore CSteadyStateTask::print;
 
 %rename (getResult) CSteadyStateTask::getResult() const; // unignore %getResult()
 

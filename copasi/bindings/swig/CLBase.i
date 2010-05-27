@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CLBase.i,v $ 
-//   $Revision: 1.1.2.2 $ 
+//   $Revision: 1.1.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/10 15:33:43 $ 
+//   $Date: 2010/05/27 18:59:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -19,14 +19,14 @@
 
 %ignore CLBase::CLBase(const SBase&);
 
-%ignore CLPoint::getX() const;
-%ignore CLPoint::getY() const;
+%ignore CLPoint::getX;
+%ignore CLPoint::getY;
 %ignore CLPoint::CLPoint(const Point&);
 %ignore CLPoint::getSBMLPoint() const;
 %ignore CLPoint::operator<(const CLPoint&) const;
 
-%ignore CLDimensions::getHeight() const;
-%ignore CLDimensions::getWidth() const;
+%ignore CLDimensions::getHeight;
+%ignore CLDimensions::getWidth;
 %ignore CLDimensions::CLDimensions(const Dimensions&);
 %ignore CLDimensions::getSBMLDimensions() const;
 
@@ -38,4 +38,40 @@
 
 %include "layout/CLBase.h"
 
+// unignore getX and getY for CLPoint
+%rename(getX) CLPoint::getX;
+%rename(getY) CLPoint::getY;
 
+// unignore getHeight and getWidth for CLDimensions
+%rename(getHeight) CLDimensions::getHeight;
+%rename(getWidth) CLDimensions::getWidth;
+
+%extend CLPoint
+{
+    double getX() const
+    {
+        double v=$self->getX();
+        return v;
+    }
+
+    double getY() const
+    {
+        double v=$self->getY();
+        return v;
+    }
+}
+
+%extend CLDimensions
+{
+    double getHeight() const
+    {
+        double v=$self->getHeight();
+        return v;
+    }
+
+    double getWidth() const
+    {
+        double v=$self->getWidth();
+        return v;
+    }
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CRandom.i,v $ 
-//   $Revision: 1.3.2.1 $ 
+//   $Revision: 1.3.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/12 17:12:41 $ 
+//   $Date: 2010/05/27 18:59:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -35,6 +35,7 @@
 %ignore CRandom::varp;
 %ignore CRandom::vare;
 %ignore CRandom::XMLType;
+%ignore CRandom::TypeName;
 
 
 %include "randomGenerator/CRandom.h"

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionParameter.i,v $ 
-//   $Revision: 1.3.2.1 $ 
+//   $Revision: 1.3.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/27 18:59:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,6 +28,9 @@
 
 %ignore operator<<;
 %ignore CFunctionParameter::load;
+%ignore CFunctionParameter::DataTypeName;
+%ignore CFunctionParameter::RoleNameXML;
+%ignore CFunctionParameter::RoleNameDisplay;
 
 %include "function/CFunctionParameter.h"
 

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CEvaluationTree.i,v $ 
-//   $Revision: 1.6.2.1 $ 
+//   $Revision: 1.6.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/10 15:33:43 $ 
+//   $Date: 2010/05/27 18:59:22 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,6 +28,7 @@
 %newobject CEvaluationTree::copy(const CEvaluationTree& src);
 
 %ignore CEvaluationTree::XMLType;
+%ignore CEvaluationTree::TypeName;
 %ignore CEvaluationTree::getErrorPosition() const;
 %ignore CEvaluationTree::setTree(const ASTNode&);
 %ignore CEvaluationTree::convertASTNode(const ASTNode&);

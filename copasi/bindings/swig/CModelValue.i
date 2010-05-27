@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModelValue.i,v $ 
-//   $Revision: 1.9.2.2 $ 
+//   $Revision: 1.9.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/27 18:59:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -30,12 +30,15 @@
 %nodefaultdtor CModelEntity;
 
 %ignore CModelEntity::XMLStatus;
+%ignore CModelEntity::StatusName;
 %ignore CModelEntity::getValuePointer;
 
 // remove some const methods to get rid of warnings
 %ignore CModelEntity::getExpressionPtr() const;
 %ignore CModelEntity::getInitialExpressionPtr() const;
 
+%ignore CModelEntity::setInitialValuePtr;
+%ignore CModelEntity::setValuePtr;
 
 // some special code for java
 #ifdef SWIGJAVA

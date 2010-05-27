@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CAnnotatedMatrix.i,v $ 
-//   $Revision: 1.3.20.1 $ 
+//   $Revision: 1.3.20.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/10 15:33:43 $ 
+//   $Date: 2010/05/27 18:59:22 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,12 +25,16 @@
 
 %}
 
+%ignore operator<<;
+
 %ignore CCopasiMatrixInterface::operator[] (const index_type & index); 
 %ignore CCopasiMatrixInterface::operator[] (const index_type & index) const;
 %ignore CCopasiVectorInterface::operator[] (const index_type & index) ;
 %ignore CCopasiVectorInterface::operator[] (const index_type & index) const;
 %ignore CArrayAnnotation::operator=(const CArrayAnnotation&);
 %ignore CArrayAnnotation::array() const;
+%ignore CArrayAnnotation::printRecursively;
+%ignore CArrayAnnotation::print;
 %ignore operator<<(std::ostream &os, const CArrayAnnotation & o);
 
 %include "utilities/CAnnotatedMatrix.h"
