@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.10 $
+//   $Revision: 1.277.2.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/27 16:00:37 $
+//   $Date: 2010/05/27 18:05:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2153,15 +2153,16 @@ void CopasiUI3Window::sbwConnect()
 
       // here we start the SBW services and give over to QT's main loop
       mpSBWModule->enableModuleServices();
-
-      // Update the SBW Menu
-      sbwRefreshMenu();
     }
 
   catch (...)
     {
       pdelete(mpSBWModule);
     }
+
+
+  // Update the SBW Menu
+  sbwRefreshMenu();
 }
 
 void CopasiUI3Window::sbwRegister()
