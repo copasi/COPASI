@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.7.2.4 $
+#   $Revision: 1.7.2.5 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/04/26 18:25:05 $
+#   $Date: 2010/05/27 13:29:26 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.7.2.4 $ $Author: shoops $ $Date: 2010/04/26 18:25:05 $
+# $Revision: 1.7.2.5 $ $Author: shoops $ $Date: 2010/05/27 13:29:26 $
 ######################################################################
 
 LIB = plotUI
@@ -45,8 +45,6 @@ SOURCES += CHistogram.cpp \
 FORMS += PlotSubwidget.ui
 FORMS +=  HistoWidget.ui
 FORMS +=  curve2dwidget.ui
-
-HEADERS += curve2dwidget.ui.h
 
 DISTFILES += QwtLicense
 
