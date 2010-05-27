@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.11 $
+//   $Revision: 1.277.2.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/27 18:05:02 $
+//   $Date: 2010/05/27 23:32:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2218,7 +2218,8 @@ void CopasiUI3Window::sbwRefreshMenu()
   if (mpSBWActionGroup != NULL)
     {
       disconnect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(sbwSlotMenuTriggered(QAction *)));
-      pdelete(mpSBWActionGroup);
+      mpSBWActionGroup->deleteLater();
+      mpSBWActionGroup = NULL;
     }
 
   mpSBWActionGroup = new QActionGroup(this);
