@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.173.2.2 $
+//   $Revision: 1.173.2.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/23 19:31:56 $
+//   $Author: shoops $
+//   $Date: 2010/05/27 23:26:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,8 @@ void FunctionWidget1::init()
   // overwrite the tip
   QToolTip::add(mpExpressionEMSW->mpBtnSaveExpression, tr("save formula"));
   QToolTip::add(mpExpressionEMSW->mpBtnEditExpression, tr("edit formula"));
+
+  mpFunction = NULL;
 }
 
 bool FunctionWidget1::loadParameterTable()
@@ -370,13 +372,14 @@ bool FunctionWidget1::loadReversibility(TriLogic rev)
 
 bool FunctionWidget1::loadFromFunction(const CFunction* func)
 {
-  if (func)
+  if (func != NULL)
     {
       pdelete(mpFunction);
       mpFunction = dynamic_cast<CFunction *>(CEvaluationTree::copy(*func));
       flagChanged = false;
     }
-  else if (!mpFunction)
+
+  if (mpFunction == NULL)
     return false;
 
   // function name
