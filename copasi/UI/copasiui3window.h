@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.88.2.2 $
+//   $Revision: 1.88.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/22 18:16:45 $
+//   $Date: 2010/05/27 12:57:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,12 @@ public:
 
 protected:
   virtual void closeEvent(QCloseEvent* e);
+
+  /*
+   * This is used for doing drag-and-drop action (16.04.10)
+   */
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
 
 public slots:
   void slotShowSliders(bool flag);
@@ -256,15 +262,15 @@ public:
   };
 
   // We expose 2 methods to SBW, one to load an SBML file
-  SystemsBiologyWorkbench::DataBlockWriter doAnalysis(SystemsBiologyWorkbench::Module from,
+  SystemsBiologyWorkbench::DataBlockWriter sbwAnalysis(SystemsBiologyWorkbench::Module from,
       SystemsBiologyWorkbench::DataBlockReader reader);
 
   // and another to return the SBML file COAPSI is currently working with
-  SystemsBiologyWorkbench::DataBlockWriter getSBML(SystemsBiologyWorkbench::Module from,
+  SystemsBiologyWorkbench::DataBlockWriter sbwGetSBML(SystemsBiologyWorkbench::Module from,
       SystemsBiologyWorkbench::DataBlockReader reader);
 
-  // those methods are registered here
-  static void registerMethods(SystemsBiologyWorkbench::MethodTable<CopasiUI3Window> & table);
+  // This method must not be renamed as SBW calls it by name
+  void registerMethods(SystemsBiologyWorkbench::MethodTable<CopasiUI3Window> & table);
 
   // as part of the SBWListener we tell SBW here, that we want to react on the shutdown event
   virtual void onShutdown();
@@ -273,17 +279,23 @@ private:
   /**
    * Connect to SBW
    */
-  void connectSBW();
+  void sbwConnect();
 
   /**
    * Register COPASI as a module ins SBW
    */
-  void registerSBW();
+  void sbwRegister();
+
+  /**
+   * Unregister a module in SBW
+   * @param const std::string & moduleName
+   */
+  void sbwUnregister(const std::string & moduleName) const;
 
   /**
    * Refresh the SBW menu.
    */
-  void refreshSBWMenu();
+  void sbwRefreshMenu();
 
   /**
    * Retrieve the list of all services from the SBW broker
@@ -291,11 +303,11 @@ private:
    * @param const bool & recursive
    * @return std::vector< SystemsBiologyWorkbench::DataBlockReader > services
    */
-  std::vector< SystemsBiologyWorkbench::DataBlockReader > findServices(const std::string & category,
+  std::vector< SystemsBiologyWorkbench::DataBlockReader > sbwFindServices(const std::string & category,
       const bool & recursive);
 
 protected slots:
-  void slotSBWMenuTriggered(QAction * pAction);
+  void sbwSlotMenuTriggered(QAction * pAction);
 
 private:
   /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.8 $
+//   $Revision: 1.277.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/10 15:43:19 $
+//   $Date: 2010/05/27 12:57:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,10 +186,10 @@ CopasiUI3Window * CopasiUI3Window::create()
 #endif // COPASI_LICENSE_COM
 
 #ifdef COPASI_SBW_INTEGRATION
-  pWindow->connectSBW();
+  pWindow->sbwConnect();
 
   if (COptions::compareValue("SBWRegister", true))
-    pWindow->registerSBW();
+    pWindow->sbwRegister();
 
 #endif // COPASI_SBW_INTEGRATION
 
@@ -325,6 +325,9 @@ CopasiUI3Window::CopasiUI3Window():
 #ifdef Linux
   setApplicationFont();
 #endif // Linux
+
+  // drop acceptance
+  setAcceptDrops(true);
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -2077,18 +2080,17 @@ CopasiUI3Window::QSBWShutdownEvent::QSBWShutdownEvent():
     QEvent((QEvent::Type)65434)
 {}
 
-// static
 void CopasiUI3Window::registerMethods(SystemsBiologyWorkbench::MethodTable< CopasiUI3Window > & table)
 {
-  table.addMethod(&CopasiUI3Window::doAnalysis,
+  table.addMethod(&CopasiUI3Window::sbwAnalysis,
                   "void doAnalysis(string)",
                   false,
-                  "Starts up the CopasiUI and loads the given Model.");
+                  "Imports a given SBML Model into CopasiUI.");
 
-  table.addMethod(&CopasiUI3Window::getSBML,
+  table.addMethod(&CopasiUI3Window::sbwGetSBML,
                   "string getSBML()",
                   false,
-                  "returns the currently loaded COPASI model.");
+                  "Retrieves the currently in CopasiUI loaded model in SBML format.");
 }
 
 //virtual
@@ -2124,32 +2126,36 @@ void CopasiUI3Window::customEvent(QEvent * event)
     }
 }
 
-void CopasiUI3Window::connectSBW()
+void CopasiUI3Window::sbwConnect()
 {
-  // Let us define how COPASI will look to the rest of SBW
-  static const std::string Name("COPASI");
-  static const std::string ServiceName("COPASI");
-  static const std::string DisplayName("COPASI " + CVersion::VERSION.getVersion());
-
-  // By belonging to the Analysis category, we tell all other modules that
-  // COPASI can take SBML files and do *something* with them
-  static const std::string Category("Analysis");
-  static const std::string Description("COPASI Analyzer - Loads an SBML model into COPASI");
-
   pdelete(mpSBWModule);
 
   try
     {
+      // Let us define how COPASI will look to the rest of SBW
+      std::string FullName("COPASI " + CVersion::VERSION.getVersion());
+
+      // By belonging to the Analysis category, we tell all other modules that
+      // COPASI can take SBML files and do *something* with them
+      std::string Category("Analysis");
+      std::string Description("COPASI Analyzer - Imports an SBML model into CopasiUI");
+
       mpSBWModule =
-        new SystemsBiologyWorkbench::ModuleImpl(Name, DisplayName,
+        new SystemsBiologyWorkbench::ModuleImpl(FullName, FullName,
                                                 SystemsBiologyWorkbench::UniqueModule,
                                                 Description);
-      mpSBWModule->addServiceObject(ServiceName, DisplayName, Category, this, Description);
 
-      SBW::addListener(this);  // this lets SBW ask COPASI to shut down
-      mpSBWModule->enableModuleServices(); // here we start the SBW services and give over to QT's main loop
 
-      refreshSBWMenu();
+      mpSBWModule->addServiceObject(FullName, FullName, Category, this, Description);
+
+      // this lets SBW ask COPASI to shut down
+      SBW::addListener(this);
+
+      // here we start the SBW services and give over to QT's main loop
+      mpSBWModule->enableModuleServices();
+
+      // Update the SBW Menu
+      sbwRefreshMenu();
     }
 
   catch (...)
@@ -2158,45 +2164,51 @@ void CopasiUI3Window::connectSBW()
     }
 }
 
-void CopasiUI3Window::registerSBW()
+void CopasiUI3Window::sbwRegister()
 {
-  std::string Self;
-  COptions::getValue("Self", Self);
-  char * Command = strdup(Self.c_str());
-  char Argument[] = "-sbwregister";
-  char * Argv[2];
-  Argv[0] = Command;
-  Argv[1] = Argument;
-
   if (mpSBWModule != NULL)
     {
       try
         {
-          // Registration causes an SBW disconnect and triggers an SBWShutdownEvent
+          // Set the commandline so that SBW knows how to call us.
+          std::string Self;
+          COptions::getValue("Self", Self);
 
-          // Ignore the shutdown event
-          mSBWIgnoreShutdownEvent = true;
+          mpSBWModule->setCommandLine(Self);
+          mpSBWModule->registerModule();
 
-          // Do the actual registration.
-          mpSBWModule->run(2, Argv, true);
-
-          // reconnect
-          connectSBW();
+          sbwRefreshMenu();
         }
 
       catch (...)
         {}
     }
+}
 
-  // Release memory allocate in strdup
-  free(Command);
+void CopasiUI3Window::sbwUnregister(const std::string & moduleName) const
+{
+  try
+    {
+      SystemsBiologyWorkbench::Module Module = SBW::getModuleInstance("BROKER");
+      SystemsBiologyWorkbench::Service Service = Module.findServiceByName("BROKER");
+
+      DataBlockWriter Arguments;
+      Arguments.add(moduleName);
+      Service.getMethod("void unregisterModule(string)").call(Arguments);
+    }
+
+  catch (...)
+    {}
 }
 
 // get a list of all SBW analyzers and stick them into a menu
-void CopasiUI3Window::refreshSBWMenu()
+void CopasiUI3Window::sbwRefreshMenu()
 {
-  bool success = true;
+  bool Visible = true;
   bool IsSBWRegistered = false;
+
+  mSBWAnalyzerModules.clear();
+  mSBWAnalyzerServices.clear();
 
   if (mpSBWMenu != NULL)
     mpSBWMenu->clear();
@@ -2205,90 +2217,125 @@ void CopasiUI3Window::refreshSBWMenu()
 
   if (mpSBWActionGroup != NULL)
     {
-      disconnect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotSBWMenuTriggered(QAction *)));
+      disconnect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(sbwSlotMenuTriggered(QAction *)));
       pdelete(mpSBWActionGroup);
     }
 
   mpSBWActionGroup = new QActionGroup(this);
-  connect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotSBWMenuTriggered(QAction *)));
+  connect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(sbwSlotMenuTriggered(QAction *)));
 
   QAction * pAction;
 
   try
     {
-      std::vector<DataBlockReader> oModules = findServices("Analysis", true);
-      QStringList oNameList;
-      QStringList oModuleList;
-      QStringList oServiceList;
+      std::vector<DataBlockReader> Services = sbwFindServices("Analysis", true);
+      std::vector<DataBlockReader>::const_iterator it = Services.begin();
+      std::vector<DataBlockReader>::const_iterator end = Services.end();
 
-      QStringList oSortedNameList;
-      QStringList oSortedModuleList;
-      QStringList oSortedServiceList;
-      size_t i;
+      QStringList NameList;
+      QStringList ModuleList;
+      QStringList ServiceList;
 
-      for (i = 0; i < oModules.size(); i++)
+      QStringList SortedNameList;
+
+      for (; it != end; ++it)
         {
-          std::string sModuleName;
-          std::string sServiceName;
-          std::string sMenuName;
-          DataBlockReader oTemp = oModules[i];
-          oTemp >> sModuleName >> sServiceName >> sMenuName;
+          SystemsBiologyWorkbench::ServiceDescriptor Service(*it);
+          SystemsBiologyWorkbench::ModuleDescriptor Module = Service.getModuleDescriptor();
 
-          if (sServiceName == "COPASI")
+          std::string ModuleName = Module.getName();
+          std::string ServiceName = Service.getName();
+          std::string MenuName = Service.getDisplayName();
+
+          // Check whether the registered service is provided by COPASI
+          if (ServiceName.compare(0, 6, "COPASI") == 0)
             {
-              IsSBWRegistered = true;
-              continue;
+              std::string Self;
+              COptions::getValue("Self", Self);
+
+              std::string CommandLine = Module.getCommandLine();
+
+              // Check whether the registered module points to current CopasiUI
+              if (CommandLine.compare(0, Self.length(), Self) == 0)
+                {
+                  // Check whether the versions match
+                  if (ServiceName != "COPASI " + CVersion::VERSION.getVersion())
+                    {
+                      // We transparently update the registration information
+                      sbwUnregister(ModuleName);
+                      return sbwRegister();
+                    }
+
+                  IsSBWRegistered = true;
+                  continue;
+                }
+              else
+                {
+                  // Check whether the CommandLine is still valid
+                  std::string::size_type Length = CommandLine.find(" -sbwmodule");
+
+                  if (Length != std::string::npos)
+                    {
+                      CommandLine = CommandLine.substr(0, Length);
+                    }
+
+                  if (!CDirEntry::exist(CommandLine))
+                    {
+                      sbwUnregister(ModuleName);
+                      continue;
+                    }
+                }
             }
 
-          oNameList.append(sMenuName.c_str());
-          oSortedNameList.append(sMenuName.c_str());
-          oModuleList.append(sModuleName.c_str());
-          oServiceList.append(sServiceName.c_str());
+          SortedNameList.append(FROM_UTF8(MenuName));
+
+          NameList.append(FROM_UTF8(MenuName));
+          ModuleList.append(FROM_UTF8(ModuleName));
+          ServiceList.append(FROM_UTF8(ServiceName));
         }
 
-      oSortedNameList.sort();
+      SortedNameList.sort();
 
       // Add the option to register in SBW
       if (!IsSBWRegistered)
         {
-          pAction = new QAction("Register COPASI", mpSBWActionGroup);
+          pAction = new QAction("Register", mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
-          mSBWActionMap[pAction] = oSortedNameList.size();
+          mSBWActionMap[pAction] = SortedNameList.size();
 
           mpSBWMenu->addSeparator();
         }
 
       // TODO: this is backwards again, in QT4 sorting was easier
-      for (i = 0; i < (size_t) oSortedNameList.size(); i++)
+      int i;
+
+      for (i = 0; i < SortedNameList.size(); i++)
         {
           // find old index
-          int nIndex = oNameList.findIndex(oSortedNameList[i]);
-          oSortedModuleList.append(oModuleList[nIndex]);
-          oSortedServiceList.append(oServiceList[nIndex]);
+          int nIndex = NameList.findIndex(SortedNameList[i]);
+          mSBWAnalyzerModules.append(ModuleList[nIndex]);
+          mSBWAnalyzerServices.append(ServiceList[nIndex]);
 
-          pAction = new QAction(oSortedNameList[i], mpSBWActionGroup);
+          pAction = new QAction(SortedNameList[i], mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
           mSBWActionMap[pAction] = i;
         }
 
-      mSBWAnalyzerModules = oSortedModuleList;
-      mSBWAnalyzerServices = oSortedServiceList;
-
-      if (oNameList.empty())
-        success = false;
+      if (NameList.empty())
+        Visible = false;
     }
 
   catch (...)
     {
-      success = false;
+      Visible = false;
     }
 
-  mpSBWAction->setVisible(success);
+  mpSBWAction->setVisible(Visible);
 
   return;
 }
 
-void CopasiUI3Window::slotSBWMenuTriggered(QAction * pAction)
+void CopasiUI3Window::sbwSlotMenuTriggered(QAction * pAction)
 {
   ListViews::commit();
 
@@ -2296,7 +2343,7 @@ void CopasiUI3Window::slotSBWMenuTriggered(QAction * pAction)
 
   if (nId == mSBWAnalyzerModules.size())
     {
-      registerSBW();
+      sbwRegister();
     }
   else
     {
@@ -2305,7 +2352,10 @@ void CopasiUI3Window::slotSBWMenuTriggered(QAction * pAction)
           int nModule = SBWLowLevel::getModuleInstance(mSBWAnalyzerModules[nId].ascii());
           int nService = SBWLowLevel::moduleFindServiceByName(nModule, mSBWAnalyzerServices[nId].ascii());
           int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
-          DataBlockWriter args; args << exportSBMLToString();
+
+          DataBlockWriter args;
+          args << exportSBMLToString();
+
           SBWLowLevel::methodSend(nModule, nService, nMethod, args);
         }
       catch (SBWException * pE)
@@ -2318,7 +2368,7 @@ void CopasiUI3Window::slotSBWMenuTriggered(QAction * pAction)
     }
 }
 
-std::vector< DataBlockReader > CopasiUI3Window::findServices(const std::string & category,
+std::vector< DataBlockReader > CopasiUI3Window::sbwFindServices(const std::string & category,
     const bool & recursive)
 {
   std::vector< DataBlockReader > result;
@@ -2343,7 +2393,7 @@ std::vector< DataBlockReader > CopasiUI3Window::findServices(const std::string &
 }
 
 // Here we get an SBML document
-SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::doAnalysis(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader reader)
+SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwAnalysis(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader reader)
 {
   try
     {
@@ -2364,7 +2414,7 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::doAnalysis(SystemsBiol
     }
 }
 
-SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::getSBML(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader /*reader*/)
+SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwGetSBML(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader /*reader*/)
 {
   try
     {
@@ -2385,3 +2435,24 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::getSBML(SystemsBiology
 void CopasiUI3Window::customEvent(QEvent * /* event */) {}
 
 #endif // COPASI_SBW_INTEGRATION
+#include <QUrl>
+void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
+{
+  if (event->mimeData()->hasFormat("text/uri-list"))
+    event->acceptProposedAction();
+}
+
+void CopasiUI3Window::dropEvent(QDropEvent *event)
+{
+  QList<QUrl> urls = event->mimeData()->urls();
+
+  if (urls.isEmpty())
+    return;
+
+  QString fileName = urls.first().toLocalFile();
+
+  if (fileName.isEmpty())
+    return;
+
+  slotFileOpen(fileName);
+}
