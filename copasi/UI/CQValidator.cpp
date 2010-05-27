@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.cpp,v $
- $Revision: 1.11.2.1 $
+ $Revision: 1.11.2.2 $
  $Name:  $
- $Author: shoops $
- $Date: 2010/05/26 15:57:40 $
+ $Author: gauges $
+ $Date: 2010/05/27 08:36:41 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 #include <qlineedit.h>
 
 #include <float.h>
-#include <limits.h>
+#include <limits>
 
 #include "CQValidator.h"
 
