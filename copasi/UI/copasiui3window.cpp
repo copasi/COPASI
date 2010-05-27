@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.9 $
+//   $Revision: 1.277.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/27 12:57:18 $
+//   $Date: 2010/05/27 16:00:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2204,15 +2204,14 @@ void CopasiUI3Window::sbwUnregister(const std::string & moduleName) const
 // get a list of all SBW analyzers and stick them into a menu
 void CopasiUI3Window::sbwRefreshMenu()
 {
+  if (mpSBWMenu == NULL) return;
+
   bool Visible = true;
   bool IsSBWRegistered = false;
 
   mSBWAnalyzerModules.clear();
   mSBWAnalyzerServices.clear();
-
-  if (mpSBWMenu != NULL)
-    mpSBWMenu->clear();
-
+  mpSBWMenu->clear();
   mSBWActionMap.clear();
 
   if (mpSBWActionGroup != NULL)
@@ -2232,11 +2231,14 @@ void CopasiUI3Window::sbwRefreshMenu()
       std::vector<DataBlockReader>::const_iterator it = Services.begin();
       std::vector<DataBlockReader>::const_iterator end = Services.end();
 
-      QStringList NameList;
+      QMap< QString, int > SortedNames;
       QStringList ModuleList;
       QStringList ServiceList;
 
-      QStringList SortedNameList;
+      std::string Self;
+      COptions::getValue("Self", Self);
+
+      int i = 0;
 
       for (; it != end; ++it)
         {
@@ -2250,9 +2252,6 @@ void CopasiUI3Window::sbwRefreshMenu()
           // Check whether the registered service is provided by COPASI
           if (ServiceName.compare(0, 6, "COPASI") == 0)
             {
-              std::string Self;
-              COptions::getValue("Self", Self);
-
               std::string CommandLine = Module.getCommandLine();
 
               // Check whether the registered module points to current CopasiUI
@@ -2287,41 +2286,35 @@ void CopasiUI3Window::sbwRefreshMenu()
                 }
             }
 
-          SortedNameList.append(FROM_UTF8(MenuName));
-
-          NameList.append(FROM_UTF8(MenuName));
+          SortedNames[FROM_UTF8(MenuName)] = i++;
           ModuleList.append(FROM_UTF8(ModuleName));
           ServiceList.append(FROM_UTF8(ServiceName));
         }
-
-      SortedNameList.sort();
 
       // Add the option to register in SBW
       if (!IsSBWRegistered)
         {
           pAction = new QAction("Register", mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
-          mSBWActionMap[pAction] = SortedNameList.size();
+          mSBWActionMap[pAction] = SortedNames.size();
 
           mpSBWMenu->addSeparator();
         }
 
-      // TODO: this is backwards again, in QT4 sorting was easier
-      int i;
+      QMap< QString, int >::const_iterator itMap = SortedNames.begin();
+      QMap< QString, int >::const_iterator endMap = SortedNames.end();
 
-      for (i = 0; i < SortedNameList.size(); i++)
+      for (i = 0; itMap != endMap; ++itMap, i++)
         {
-          // find old index
-          int nIndex = NameList.findIndex(SortedNameList[i]);
-          mSBWAnalyzerModules.append(ModuleList[nIndex]);
-          mSBWAnalyzerServices.append(ServiceList[nIndex]);
+          mSBWAnalyzerModules.append(ModuleList[itMap.value()]);
+          mSBWAnalyzerServices.append(ServiceList[itMap.value()]);
 
-          pAction = new QAction(SortedNameList[i], mpSBWActionGroup);
+          pAction = new QAction(itMap.key(), mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
           mSBWActionMap[pAction] = i;
         }
 
-      if (NameList.empty())
+      if (mSBWAnalyzerModules.empty())
         Visible = false;
     }
 
@@ -2330,7 +2323,8 @@ void CopasiUI3Window::sbwRefreshMenu()
       Visible = false;
     }
 
-  mpSBWAction->setVisible(Visible);
+  if (!Visible)
+    mpTools->removeAction(mpSBWAction);
 
   return;
 }
