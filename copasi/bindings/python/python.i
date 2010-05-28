@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.26.2.1 $ 
+//   $Revision: 1.26.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/04 15:56:15 $ 
+//   $Date: 2010/05/28 14:47:25 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -179,7 +179,6 @@ TriTrue=1
 CCopasiRootContainer.init=_COPASI.CCopasiRootContainer_init
 CCopasiRootContainer.destroy=_COPASI.CCopasiRootContainer_destroy
 CCopasiRootContainer.getRoot=_COPASI.CCopasiRootContainer_getRoot
-CCopasiRootContainer.getConfiguration=_COPASI.CCopasiRootContainer_getConfiguration
 CCopasiRootContainer.getFunctionList=_COPASI.CCopasiRootContainer_getFunctionList
 CCopasiRootContainer.getDatamodelList=_COPASI.CCopasiRootContainer_getDatamodelList
 CCopasiRootContainer.addDatamodel=_COPASI.CCopasiRootContainer_addDatamodel

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CVector.i,v $ 
-//   $Revision: 1.7.2.4 $ 
+//   $Revision: 1.7.2.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/28 13:38:45 $ 
+//   $Date: 2010/05/28 14:47:25 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -33,8 +33,8 @@
 %ignore operator()(const unsigned C_INT32 & ) const;
 %ignore operator = (const CType &);
 %ignore operator = (const CVector <CType> &);
-%ignore array() const;
-%ignore array();
+%ignore CVectorCore::array() const;
+%ignore CVectorCore::array();
 %ignore CVector::resize;
 %ignore CVector::applyPivot;
 %ignore CVectorCore::CVectorCore(const unsigned C_INT32&, CType*);
