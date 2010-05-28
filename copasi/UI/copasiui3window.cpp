@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.14 $
+//   $Revision: 1.277.2.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/28 16:44:28 $
+//   $Date: 2010/05/28 16:56:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,7 +234,7 @@ CopasiUI3Window::CopasiUI3Window():
     , mpSBWActionGroup(NULL)
     , mpSBWMenu(NULL)
     , mpSBWAction(NULL)
-    , mSBWIgnoreShutdownEvent(false)
+    , mSBWIgnoreShutdownEvent(true)
 #endif // COPASI_SBW_INTEGRATION
 {
   // set destructive close
@@ -2121,7 +2121,7 @@ void CopasiUI3Window::customEvent(QEvent * event)
         if (!mSBWIgnoreShutdownEvent)
           slotQuit();
 
-        mSBWIgnoreShutdownEvent = false;
+        mSBWIgnoreShutdownEvent = true;
         break;
     }
 }
