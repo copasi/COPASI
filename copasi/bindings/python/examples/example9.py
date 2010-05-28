@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example9.py,v $ 
-#   $Revision: 1.1.2.1 $ 
+#   $Revision: 1.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/05/13 15:45:54 $ 
+#   $Date: 2010/05/28 14:36:11 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -42,13 +42,13 @@ def main():
   # clear the message queue so that we only have error messages from the import in the queue
   CCopasiMessage.clearDeque()
   result=True
-  try
+  try:
     result = dataModel.importSBMLFromString(MODEL_STRING)
   except:
      print >> sys.stderr, "An exception has occured during the import of the SBML model"
      return
   # check if the import was successful
-  int mostSevere = CCopasiMessage.getHighestSeverity()
+  mostSevere = CCopasiMessage.getHighestSeverity()
   # if it was a filtered error, we convert it to an unfiltered type
   # the filtered error messages have the same value as the unfiltered, but they
   # have the 7th bit set which basically adds 128 to the value
@@ -56,12 +56,12 @@ def main():
 
   # we assume that the import succeeded if the return value is True and
   # the most severe error message is not an error or an exception
-  if (result != True &&  mostSevere < CCopasiMessage.ERROR)
+  if (result != True and  mostSevere < CCopasiMessage.ERROR):
       print >> sys.stderr, "Sorry. Model could not be imported."
       return
 
   # get the trajectory task object
-  CSteadyStateTask task = (CSteadyStateTask)dataModel.getTask("Steady-State")
+  task = dataModel.getTask("Steady-State")
 
   # if there isn't one
   if task == None:
@@ -72,7 +72,7 @@ def main():
 
   CCopasiMessage.clearDeque()
 
-  try
+  try:
       # now we run the actual trajectory
       task.process(True)
   except:
@@ -103,26 +103,27 @@ def main():
       # object is a vector with two unsigned int elements
       # First element is the index for the outer dimension and the second element is the index
       # for the inner dimension
-      index=new UIntStdVector(2)
+      index=UIntStdVector(2)
       # since the rows and columns have the same annotation for the jacobian, it doesn't matter
       # for which dimension we get the annotations
       annotations = aj.getAnnotationsString(1)
       print "Jacobian Matrix: "
       print ""
-      print "%7s" % (" ")
+      print "%7s" % (" "),
 
       for i in range(0, annotations.size()):
-          print "%7s" % (annotations.get(i))
+          print "%7s" % (annotations[i]),
 
       print ""
 
       for i in range(0,annotations.size()):
-          print "%7s" % ( annotations.get(i))
-          index.set(0,i)
+          print "%7s" % ( annotations[i]),
+          index[0]=i
 
           for j in range(0,annotations.size()):
-              index.set(1,j)
-              print "%7.3f" % (aj.array().get(index))
+              index[1]=j
+              array=aj.array();
+              print "%7.3f" % (array[index]),
           print ""
   return
 
