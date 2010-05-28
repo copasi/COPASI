@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example9.py,v $ 
-#   $Revision: 1.1.2.2 $ 
+#   $Revision: 1.1.2.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/05/28 14:36:11 $ 
+#   $Date: 2010/05/28 14:55:11 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -123,7 +123,7 @@ def main():
           for j in range(0,annotations.size()):
               index[1]=j
               array=aj.array();
-              print "%7.3f" % (array[index]),
+              print "%7.3f" % (array.get(index)),
           print ""
   return
 
