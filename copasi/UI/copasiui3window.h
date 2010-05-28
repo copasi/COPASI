@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.88.2.3 $
+//   $Revision: 1.88.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/27 12:57:18 $
+//   $Date: 2010/05/28 13:50:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,6 +280,11 @@ private:
    * Connect to SBW
    */
   void sbwConnect();
+
+  /**
+   * Disconnect to SBW
+   */
+  void sbwDisconnect();
 
   /**
    * Register COPASI as a module ins SBW
