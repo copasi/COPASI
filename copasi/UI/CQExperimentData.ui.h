@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.44.2.1 $
+//   $Revision: 1.44.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/26 15:57:40 $
+//   $Date: 2010/05/28 16:19:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -398,12 +398,16 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
 {
   std::string Name;
 
-  if (pItem)
+  if (pItem != NULL)
     Name = TO_UTF8(pItem->text());
+
+  CCopasiMessage::clearDeque();
+
+  bool success = true;
 
   saveExperiment(mpExperiment, true);
 
-  if (pItem)
+  if (pItem != NULL)
     {
       mpExperiment = mpFileInfo->getExperiment(Name);
       mShown = mpBoxExperiment->currentItem();
@@ -412,8 +416,10 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
       File.open(utf8ToLocale(mpExperiment->getFileName()).c_str());
 
       unsigned C_INT32 CurrentLine = 1;
-      mpExperiment->read(File, CurrentLine);
-      mpExperiment->compile();
+      success &= mpExperiment->read(File, CurrentLine);
+
+      if (success)
+        success &= mpExperiment->compile();
     }
   else
     {
@@ -422,6 +428,13 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
     }
 
   loadExperiment(mpExperiment);
+
+  if (!success && CCopasiMessage::size() > 0)
+    {
+      CQMessageBox::information(this, "Specification Error", FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok, QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+    }
 
   enableEdit(!mpCheckFrom->isChecked());
 }
