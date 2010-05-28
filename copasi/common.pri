@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.114.2.3 $ 
+#   $Revision: 1.114.2.4 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/04 16:27:48 $ 
+#   $Date: 2010/05/28 16:10:03 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.114.2.3 $ $Author: shoops $ $Date: 2010/03/04 16:27:48 $  
+# $Revision: 1.114.2.4 $ $Author: shoops $ $Date: 2010/05/28 16:10:03 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -332,7 +332,9 @@ contains(BUILD_OS, WIN32) {
        LIBS+=  -L"$${QWT_PATH}"/lib
        INCLUDEPATH += "$${QWT_PATH}"/include
     }
-    LIBS += -lqwt
+
+    release: LIBS += -lqwt
+    debug: LIBS += -lqwtD
     
     !isEmpty(QWT3D_PATH){
       LIBS += -L"$${QWT3D_PATH}"/lib/
