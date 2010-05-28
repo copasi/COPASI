@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFitItem.i,v $ 
-//   $Revision: 1.2.2.2 $ 
+//   $Revision: 1.2.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/27 18:59:23 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -24,6 +24,7 @@
 
 %ignore CFitItem::updateBounds;
 %ignore CFitItem::getObjectValue;
+%ignore CFitItem::getUpdateMethod;
 
 %include "parameterFitting/CFitItem.h"
 

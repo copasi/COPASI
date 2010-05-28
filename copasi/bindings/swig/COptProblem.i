@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/COptProblem.i,v $ 
-//   $Revision: 1.2.20.1 $ 
+//   $Revision: 1.2.20.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -27,6 +27,7 @@ typedef std::vector<COptItem*> OptItemStdVector;
 
 %ignore COptProblem::getVariableSize() const;
 %ignore COptProblem::setCallBack;
+%ignore COptProblem::getCalculateVariableUpdateMethods;
 
 %template(FloatCVector) CVector<C_FLOAT64>;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CExperiment.i,v $ 
-//   $Revision: 1.2.2.1 $ 
+//   $Revision: 1.2.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/27 18:59:22 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,6 +31,7 @@
 %ignore CExperiment::sumOfSquares;
 %ignore CExperiment::sumOfSquaresStore;
 %ignore CExperiment::printResult;
+%ignore CExperiment::getDependentObjects;
 
 
 // read is rather useless since it takes an istream as its first argument

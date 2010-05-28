@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiObject.i,v $ 
-//   $Revision: 1.7.2.2 $ 
+//   $Revision: 1.7.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/27 18:59:22 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -37,6 +37,16 @@
 %ignore CCopasiObject::setRenameHandler;
 %ignore CCopasiObject::getValuePointer;
 %ignore CCopasiObject::print;
+%ignore CCopasiObject::setUpdateMethod;
+%ignore CCopasiObject::getUpdateMethod;
+%ignore CCopasiObject::setRefresh;
+%ignore CCopasiObject::getRefresh;
+%ignore CCopasiObject::buildUpdateSequence;
+%ignore CCopasiObject::getDirectDependencies;
+%ignore CCopasiObject::setDirectDependencies;
+%ignore CCopasiObject::getAllDependencies;
+%ignore CCopasiObject::dependsOn;
+%ignore CCopasiObject::hasCircularDependencies;
 
 
 %include "report/CCopasiObject.h"

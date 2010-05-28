@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.26.2.3 $ 
+//   $Revision: 1.26.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,6 +25,7 @@
 #include "utilities/CCopasiVector.h"
 #include <layout/CLBase.h>
 #include <layout/CLCurve.h>
+
 %}
 
 %ignore operator<< ;
@@ -251,4 +252,5 @@ typedef std::vector<CLPoint> PointStdVector;
 typedef std::vector<CLLineSegment> LineSegmentStdVector;
 
 typedef CCopasiVector<CFittingPoint> FittingPointVector;
+
 

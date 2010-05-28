@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/compare_utilities.i,v $ 
-//   $Revision: 1.1.22.2 $ 
+//   $Revision: 1.1.22.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 17:45:12 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -29,8 +29,8 @@
 %ignore are_equal(const CNormalFraction* , const CNormalFraction* );
 %ignore normalize_variable_names(CNormalBase*, std::map<std::string, std::string>&);
 %ignore replace_variable_names;
-%ignore expand_function_call(const ASTNode* , const Model* );
-%ignore expand_function_calls(const ASTNode* , const Model* );
+%ignore expand_function_call;
+%ignore expand_function_calls;
 %ignore create_expression(const ASTNode* , const Model* );
 %ignore replace_SEC(const ASTNode* );
 %ignore replace_CSC(const ASTNode* );

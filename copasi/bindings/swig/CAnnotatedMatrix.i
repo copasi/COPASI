@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CAnnotatedMatrix.i,v $ 
-//   $Revision: 1.3.20.2 $ 
+//   $Revision: 1.3.20.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/27 18:59:22 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -35,6 +35,7 @@
 %ignore CArrayAnnotation::array() const;
 %ignore CArrayAnnotation::printRecursively;
 %ignore CArrayAnnotation::print;
+%ignore CArrayAnnotation::appendElementReferences;
 %ignore operator<<(std::ostream &os, const CArrayAnnotation & o);
 
 %include "utilities/CAnnotatedMatrix.h"

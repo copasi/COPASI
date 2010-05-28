@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/COptItem.i,v $ 
-//   $Revision: 1.2.20.1 $ 
+//   $Revision: 1.2.20.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/27 18:59:23 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,6 +25,7 @@
 %ignore COptItem::getObjectValue;
 %ignore COptItem::getLowerBoundValue;
 %ignore COptItem::getUpperBoundValue;
+%ignore COptItem::getUpdateMethod;
 
 %include "optimization/COptItem.h"
 

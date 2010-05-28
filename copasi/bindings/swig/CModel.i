@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.16.2.4 $ 
+//   $Revision: 1.16.2.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/27 18:59:23 $ 
+//   $Date: 2010/05/28 13:38:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -39,6 +39,15 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::QuantityUnitOldXMLNames;
 %ignore CModel::QuantityUnitNames;
 %ignore CModel::ModelTypeNames;
+%ignore CModel::appendDependentModelObjects;
+%ignore CModel::appendDependentReactions;
+%ignore CModel::appendDependentMetabolites;
+%ignore CModel::appendDependentCompartments;
+%ignore CModel::appendDependentModelValues;
+%ignore CModel::appendDependentEvents;
+%ignore CModel::removeDependentModelObjects;
+%ignore CModel::getUptoDateObjects;
+
 // according to Stefan, the method to calculate the elasticities is no longer used
 // and might actually not work at all
 %ignore CModel::calculateElasticityMatrix(const C_FLOAT64&,const C_FLOAT64&);
@@ -53,6 +62,13 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::processRoots;
 %ignore CModel::calculateDerivatives;
 %ignore CModel::calculateDerivativesX;
+%ignore CModel::getListOfInitialRefreshes;
+%ignore CModel::getListOfSimulatedRefreshes;
+%ignore CModel::getListOfNonSimulatedRefreshes;
+%ignore CModel::getListOfConstantRefreshes;
+%ignore CModel::buildInitialRefreshSequence;
+%ignore CModel::getRootFinders;
+%ignore CModel::getL;
 
 
 %include "model/CModel.h"
