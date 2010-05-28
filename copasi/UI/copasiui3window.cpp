@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.13 $
+//   $Revision: 1.277.2.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/28 13:50:40 $
+//   $Date: 2010/05/28 16:44:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2167,8 +2167,19 @@ void CopasiUI3Window::sbwConnect()
 
 void CopasiUI3Window::sbwDisconnect()
 {
-  SBWLowLevel::disconnect();
-  pdelete(mpSBWModule);
+  if (mpSBWModule != NULL)
+    {
+      try
+        {
+          SBWLowLevel::disconnect();
+          delete mpSBWModule;
+        }
+
+      catch (...)
+        {}
+
+      mpSBWModule = NULL;
+    }
 }
 
 void CopasiUI3Window::sbwRegister()
