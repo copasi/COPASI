@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiRootContainer.i,v $ 
-//   $Revision: 1.2.2.2 $ 
+//   $Revision: 1.2.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/05/26 16:15:01 $ 
+//   $Date: 2010/05/28 14:36:33 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -42,6 +42,8 @@
 
 %include "report/CCopasiRootContainer.h"
 
+// unignore init
+%rename(init) CCopasiRootContainer::init;
 
 %extend CCopasiRootContainer
 {
@@ -49,5 +51,10 @@
     {
       return (*$self->getDatamodelList())[index];
     };
+
+    static void init()
+    {
+        CCopasiRootContainer::init(0,NULL,false);
+    }
 
 }; 
