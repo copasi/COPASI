@@ -6,6 +6,11 @@
 //   $Date: 2009/10/01 12:58:00 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -20,6 +25,8 @@
 #include "CopasiFileDialog.h"
 #include "tex/CMathMLToTeX.h"
 
+#include "CQIcons.h"
+
 #include <QtDebug>
 
 /*
@@ -31,17 +38,10 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
 {
   setupUi(this);
 
-  const QIcon icon = qt_get_icon(image0_ID);
-  mpBtnExpressionObject->setIcon(icon);
-
-  const QIcon icon1 = qt_get_icon(image1_ID);
-  mpBtnViewExpression->setIcon(icon1);
-
-  const QIcon icon2 = qt_get_icon(image2_ID);
-  mpBtnEditExpression->setIcon(icon2);
-
-  const QIcon icon3 = qt_get_icon(image3_ID);
-  mpBtnSaveExpression->setIcon(icon3);
+  mpBtnExpressionObject->setIcon(CQIcons::getIcon(CQIcons::SelectObject));
+  mpBtnViewExpression->setIcon(CQIcons::getIcon(CQIcons::View));
+  mpBtnEditExpression->setIcon(CQIcons::getIcon(CQIcons::Edit));
+  mpBtnSaveExpression->setIcon(CQIcons::getIcon(CQIcons::Save));
 
   init();
 }
