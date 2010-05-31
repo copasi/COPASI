@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.41.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Date: 2010/05/31 15:58:44 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -40,48 +45,48 @@ CChemEqInterface::~CChemEqInterface()
 {}
 
 std::string CChemEqInterface::getChemEqString(bool expanded) const
-  {
-    std::string ChemicalEquation;
-    unsigned C_INT32 j;
+{
+  std::string ChemicalEquation;
+  unsigned C_INT32 j;
 
-    if ((mSubstrateNames.size() == 0) && (mProductNames.size() == 0) && (mModifierNames.size() == 0))
-      return "";
+  if ((mSubstrateNames.size() == 0) && (mProductNames.size() == 0) && (mModifierNames.size() == 0))
+    return "";
 
-    for (j = 0; j < mSubstrateNames.size(); j++)
-      {
-        if (j)
-          ChemicalEquation += " + ";
+  for (j = 0; j < mSubstrateNames.size(); j++)
+    {
+      if (j)
+        ChemicalEquation += " + ";
 
-        ChemicalEquation += writeElement(mSubstrateDisplayNames[j], mSubstrateMult[j], expanded);
-      }
+      ChemicalEquation += writeElement(mSubstrateDisplayNames[j], mSubstrateMult[j], expanded);
+    }
 
-    if (mReversibility)
-      ChemicalEquation += " = ";
-    else
-      ChemicalEquation += " -> ";
+  if (mReversibility)
+    ChemicalEquation += " = ";
+  else
+    ChemicalEquation += " -> ";
 
-    for (j = 0; j < mProductNames.size(); j++)
-      {
-        if (j)
-          ChemicalEquation += " + ";
+  for (j = 0; j < mProductNames.size(); j++)
+    {
+      if (j)
+        ChemicalEquation += " + ";
 
-        ChemicalEquation += writeElement(mProductDisplayNames[j], mProductMult[j], expanded);
-      }
+      ChemicalEquation += writeElement(mProductDisplayNames[j], mProductMult[j], expanded);
+    }
 
-    if (mModifierNames.size())
-      {
-        ChemicalEquation += "; ";
+  if (mModifierNames.size())
+    {
+      ChemicalEquation += "; ";
 
-        for (j = 0; j < mModifierNames.size(); j++)
-          {
-            ChemicalEquation += " ";
+      for (j = 0; j < mModifierNames.size(); j++)
+        {
+          ChemicalEquation += " ";
 
-            ChemicalEquation += mModifierDisplayNames[j];
-          }
-      }
+          ChemicalEquation += mModifierDisplayNames[j];
+        }
+    }
 
-    return ChemicalEquation;
-  }
+  return ChemicalEquation;
+}
 
 bool CChemEqInterface::setChemEqString(const std::string & ces)
 {
@@ -118,6 +123,7 @@ bool CChemEqInterface::setChemEqString(const std::string & ces)
 void CChemEqInterface::completeCompartments()
 {
   std::string DefaultCompartment;
+
   if (mpModel->getCompartments().size() == 0)
     DefaultCompartment = "compartment";
   else
@@ -133,6 +139,7 @@ void CChemEqInterface::completeCompartments()
 
   itCompartment = mSubstrateCompartments.begin();
   endCompartment = mSubstrateCompartments.end();
+
   for (; itCompartment != endCompartment && HaveReactionCompartment; ++itCompartment)
     {
       if (*itCompartment == "") continue;
@@ -148,6 +155,7 @@ void CChemEqInterface::completeCompartments()
 
   itCompartment = mProductCompartments.begin();
   endCompartment = mProductCompartments.end();
+
   for (; itCompartment != endCompartment && HaveReactionCompartment; ++itCompartment)
     {
       if (*itCompartment == "") continue;
@@ -163,6 +171,7 @@ void CChemEqInterface::completeCompartments()
 
   itCompartment = mModifierCompartments.begin();
   endCompartment = mModifierCompartments.end();
+
   for (; itCompartment != endCompartment && HaveReactionCompartment; ++itCompartment)
     {
       if (*itCompartment == "") continue;
@@ -186,6 +195,7 @@ void CChemEqInterface::completeCompartments()
   itMetab = mSubstrateNames.begin();
   itCompartment = mSubstrateCompartments.begin();
   endCompartment = mSubstrateCompartments.end();
+
   for (; itCompartment != endCompartment; ++itCompartment, ++itMetab)
     if (*itCompartment == "")
       {
@@ -215,6 +225,7 @@ void CChemEqInterface::completeCompartments()
   itMetab = mProductNames.begin();
   itCompartment = mProductCompartments.begin();
   endCompartment = mProductCompartments.end();
+
   for (; itCompartment != endCompartment; ++itCompartment, ++itMetab)
     if (*itCompartment == "")
       {
@@ -244,6 +255,7 @@ void CChemEqInterface::completeCompartments()
   itMetab = mModifierNames.begin();
   itCompartment = mModifierCompartments.begin();
   endCompartment = mModifierCompartments.end();
+
   for (; itCompartment != endCompartment; ++itCompartment, ++itMetab)
     if (*itCompartment == "")
       {
@@ -282,6 +294,7 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
   mSubstrateNames.resize(imax);
   mSubstrateMult.resize(imax);
   mSubstrateCompartments.resize(imax);
+
   for (i = 0; i < imax; ++i)
     {
       mSubstrateNames[i] = (*elements)[i]->getMetabolite()->getObjectName();
@@ -294,6 +307,7 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
   mProductNames.resize(imax);
   mProductMult.resize(imax);
   mProductCompartments.resize(imax);
+
   for (i = 0; i < imax; ++i)
     {
       mProductNames[i] = (*elements)[i]->getMetabolite()->getObjectName();
@@ -306,6 +320,7 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
   mModifierNames.resize(imax);
   mModifierMult.resize(imax);
   mModifierCompartments.resize(imax);
+
   for (i = 0; i < imax; ++i)
     {
       mModifierNames[i] = (*elements)[i]->getMetabolite()->getObjectName();
@@ -327,6 +342,7 @@ void CChemEqInterface::buildDisplayNames()
 
   // We need to build the list of display names for the substrates;
   mSubstrateDisplayNames.resize(mSubstrateNames.size());
+
   for (itName = mSubstrateNames.begin(),
        itCompartment = mSubstrateCompartments.begin(),
        it = mSubstrateDisplayNames.begin(),
@@ -337,6 +353,7 @@ void CChemEqInterface::buildDisplayNames()
 
   // We need to build the list of display names for the products;
   mProductDisplayNames.resize(mProductNames.size());
+
   for (itName = mProductNames.begin(),
        itCompartment = mProductCompartments.begin(),
        it = mProductDisplayNames.begin(),
@@ -347,6 +364,7 @@ void CChemEqInterface::buildDisplayNames()
 
   // We need to build the list of display names for the modifiers;
   mModifierDisplayNames.resize(mModifierNames.size());
+
   for (itName = mModifierNames.begin(),
        itCompartment = mModifierCompartments.begin(),
        it = mModifierDisplayNames.begin(),
@@ -359,67 +377,73 @@ void CChemEqInterface::buildDisplayNames()
 }
 
 bool CChemEqInterface::writeToChemEq(CChemEq & ce) const
-  {
-    bool ret = true;
-    std::string metabkey;
-    C_INT32 i, imax;
+{
+  bool ret = true;
+  std::string metabkey;
+  C_INT32 i, imax;
 
-    ce.cleanup();
+  ce.cleanup();
 
-    imax = mSubstrateNames.size();
-    for (i = 0; i < imax; ++i)
-      {
-        metabkey = CMetabNameInterface::getMetaboliteKey(mpModel, mSubstrateNames[i], mSubstrateCompartments[i]);
-        if (metabkey.empty())
-          ret = false;
-        else
-          ce.addMetabolite(metabkey, mSubstrateMult[i], CChemEq::SUBSTRATE);
-      }
+  imax = mSubstrateNames.size();
 
-    imax = mProductNames.size();
-    for (i = 0; i < imax; ++i)
-      {
-        metabkey = CMetabNameInterface::getMetaboliteKey(mpModel, mProductNames[i], mProductCompartments[i]);
-        if (metabkey.empty())
-          ret = false;
-        else
-          ce.addMetabolite(metabkey, mProductMult[i], CChemEq::PRODUCT);
-      }
+  for (i = 0; i < imax; ++i)
+    {
+      metabkey = CMetabNameInterface::getMetaboliteKey(mpModel, mSubstrateNames[i], mSubstrateCompartments[i]);
 
-    imax = mModifierNames.size();
-    for (i = 0; i < imax; ++i)
-      {
-        metabkey = CMetabNameInterface::getMetaboliteKey(mpModel, mModifierNames[i], mModifierCompartments[i]);
-        if (metabkey.empty())
-          ret = false;
-        else
-          ce.addMetabolite(metabkey, mModifierMult[i], CChemEq::MODIFIER);
-      }
+      if (metabkey.empty())
+        ret = false;
+      else
+        ce.addMetabolite(metabkey, mSubstrateMult[i], CChemEq::SUBSTRATE);
+    }
 
-    ce.setReversibility(mReversibility);
+  imax = mProductNames.size();
 
-    return ret; //TODO: really check
-  }
+  for (i = 0; i < imax; ++i)
+    {
+      metabkey = CMetabNameInterface::getMetaboliteKey(mpModel, mProductNames[i], mProductCompartments[i]);
+
+      if (metabkey.empty())
+        ret = false;
+      else
+        ce.addMetabolite(metabkey, mProductMult[i], CChemEq::PRODUCT);
+    }
+
+  imax = mModifierNames.size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      metabkey = CMetabNameInterface::getMetaboliteKey(mpModel, mModifierNames[i], mModifierCompartments[i]);
+
+      if (metabkey.empty())
+        ret = false;
+      else
+        ce.addMetabolite(metabkey, mModifierMult[i], CChemEq::MODIFIER);
+    }
+
+  ce.setReversibility(mReversibility);
+
+  return ret; //TODO: really check
+}
 
 const std::vector<C_FLOAT64> & CChemEqInterface::getListOfMultiplicities(CFunctionParameter::Role role) const
-  {
-    if (role == CFunctionParameter::SUBSTRATE) return mSubstrateMult;
-    else if (role == CFunctionParameter::PRODUCT) return mProductMult;
-    else if (role == CFunctionParameter::MODIFIER) return mModifierMult;
-    else fatalError();
+{
+  if (role == CFunctionParameter::SUBSTRATE) return mSubstrateMult;
+  else if (role == CFunctionParameter::PRODUCT) return mProductMult;
+  else if (role == CFunctionParameter::MODIFIER) return mModifierMult;
+  else fatalError();
 
-    return mSubstrateMult; //never reached
-  }
+  return mSubstrateMult; //never reached
+}
 
 const std::vector<std::string> & CChemEqInterface::getListOfDisplayNames(CFunctionParameter::Role role) const
-  {
-    if (role == CFunctionParameter::SUBSTRATE) return mSubstrateDisplayNames;
-    else if (role == CFunctionParameter::PRODUCT) return mProductDisplayNames;
-    else if (role == CFunctionParameter::MODIFIER) return mModifierDisplayNames;
-    else fatalError();
+{
+  if (role == CFunctionParameter::SUBSTRATE) return mSubstrateDisplayNames;
+  else if (role == CFunctionParameter::PRODUCT) return mProductDisplayNames;
+  else if (role == CFunctionParameter::MODIFIER) return mModifierDisplayNames;
+  else fatalError();
 
-    return mSubstrateDisplayNames; //never reached
-  }
+  return mSubstrateDisplayNames; //never reached
+}
 
 void CChemEqInterface::addModifier(const std::string & name)
 {
@@ -429,6 +453,7 @@ void CChemEqInterface::addModifier(const std::string & name)
   //is the name already in the list
   std::vector< std::string >::const_iterator it, itEnd = mModifierNames.end();
   std::vector< std::string >::const_iterator itComp = mModifierCompartments.begin();
+
   for (it = mModifierNames.begin(); it != itEnd; ++it, ++itComp)
     if (Modifier.first == *it &&
         Modifier.second == *itComp) break;
@@ -465,11 +490,14 @@ std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 m
     {
       std::string ces;
       C_INT32 i, imax = (C_INT32) mult;
+
       for (i = 0; i < imax; ++i)
         {
           if (i) ces += " + ";
+
           ces += Metabolite;
         }
+
       return ces;
     }
   else
@@ -482,29 +510,30 @@ std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 m
 }
 
 unsigned C_INT32 CChemEqInterface::getMolecularity(CFunctionParameter::Role role) const
-  {
-    const std::vector<C_FLOAT64> * tmpVector = NULL;
+{
+  const std::vector<C_FLOAT64> * tmpVector = NULL;
 
-    if (role == CFunctionParameter::SUBSTRATE)
-      tmpVector = &mSubstrateMult;
-    else if (role == CFunctionParameter::PRODUCT)
-      tmpVector = &mProductMult;
-    else if (role == CFunctionParameter::MODIFIER)
-      tmpVector = &mModifierMult;
-    else fatalError();
+  if (role == CFunctionParameter::SUBSTRATE)
+    tmpVector = &mSubstrateMult;
+  else if (role == CFunctionParameter::PRODUCT)
+    tmpVector = &mProductMult;
+  else if (role == CFunctionParameter::MODIFIER)
+    tmpVector = &mModifierMult;
+  else fatalError();
 
-    C_INT32 ccc, i, imax = tmpVector->size();
-    ccc = 0;
-    for (i = 0; i < imax; ++i)
-      {
-        if ((*tmpVector)[i] != (C_FLOAT64) (C_INT32) (*tmpVector)[i])
-          return C_INVALID_INDEX;
+  C_INT32 ccc, i, imax = tmpVector->size();
+  ccc = 0;
 
-        ccc += (C_INT32)floor((*tmpVector)[i]);
-      }
+  for (i = 0; i < imax; ++i)
+    {
+      if ((*tmpVector)[i] != (C_FLOAT64)(C_INT32)(*tmpVector)[i])
+        return C_INVALID_INDEX;
 
-    return ccc;
-  }
+      ccc += (C_INT32)floor((*tmpVector)[i]);
+    }
+
+  return ccc;
+}
 
 void CChemEqInterface::reverse()
 {
@@ -526,65 +555,71 @@ void CChemEqInterface::reverse()
 }
 
 std::set<std::string> CChemEqInterface::listOfNonUniqueMetabNames() const
-  {
-    std::set<std::string> ret;
+{
+  std::set<std::string> ret;
 
-    std::vector<std::string>::const_iterator it, itEnd;
+  std::vector<std::string>::const_iterator it, itEnd;
 
-    itEnd = mSubstrateNames.end();
-    for (it = mSubstrateNames.begin(); it != itEnd; ++it)
-      if (!CMetabNameInterface::isUnique(mpModel, *it))
-        ret.insert(*it);
+  itEnd = mSubstrateNames.end();
 
-    itEnd = mProductNames.end();
-    for (it = mProductNames.begin(); it != itEnd; ++it)
-      if (!CMetabNameInterface::isUnique(mpModel, *it))
-        ret.insert(*it);
+  for (it = mSubstrateNames.begin(); it != itEnd; ++it)
+    if (!CMetabNameInterface::isUnique(mpModel, *it))
+      ret.insert(*it);
 
-    itEnd = mModifierNames.end();
-    for (it = mModifierNames.begin(); it != itEnd; ++it)
-      if (!CMetabNameInterface::isUnique(mpModel, *it))
-        ret.insert(*it);
+  itEnd = mProductNames.end();
 
-    return ret;
-  }
+  for (it = mProductNames.begin(); it != itEnd; ++it)
+    if (!CMetabNameInterface::isUnique(mpModel, *it))
+      ret.insert(*it);
+
+  itEnd = mModifierNames.end();
+
+  for (it = mModifierNames.begin(); it != itEnd; ++it)
+    if (!CMetabNameInterface::isUnique(mpModel, *it))
+      ret.insert(*it);
+
+  return ret;
+}
 
 std::set< std::pair< std::string, std::string > > CChemEqInterface::listOfNonExistingMetabNames() const
-  {
-    std::set< std::pair< std::string, std::string > > ret;
-    std::pair< std::string, std::string > Insert;
+{
+  std::set< std::pair< std::string, std::string > > ret;
+  std::pair< std::string, std::string > Insert;
 
-    std::vector<std::string>::const_iterator it, itComp, itEnd;
+  std::vector<std::string>::const_iterator it, itComp, itEnd;
 
-    itEnd = mSubstrateNames.end();
-    for (it = mSubstrateNames.begin(), itComp = mSubstrateCompartments.begin(); it != itEnd; ++it, ++itComp)
-      if (!CMetabNameInterface::doesExist(mpModel, *it, *itComp))
-        {
-          Insert.first = *it;
-          Insert.second = *itComp;
-          ret.insert(Insert);
-        }
+  itEnd = mSubstrateNames.end();
 
-    itEnd = mProductNames.end();
-    for (it = mProductNames.begin(), itComp = mProductCompartments.begin(); it != itEnd; ++it, ++itComp)
-      if (!CMetabNameInterface::doesExist(mpModel, *it, *itComp))
-        {
-          Insert.first = *it;
-          Insert.second = *itComp;
-          ret.insert(Insert);
-        }
+  for (it = mSubstrateNames.begin(), itComp = mSubstrateCompartments.begin(); it != itEnd; ++it, ++itComp)
+    if (!CMetabNameInterface::doesExist(mpModel, *it, *itComp))
+      {
+        Insert.first = *it;
+        Insert.second = *itComp;
+        ret.insert(Insert);
+      }
 
-    itEnd = mModifierNames.end();
-    for (it = mModifierNames.begin(), itComp = mModifierCompartments.begin(); it != itEnd; ++it, ++itComp)
-      if (!CMetabNameInterface::doesExist(mpModel, *it, *itComp))
-        {
-          Insert.first = *it;
-          Insert.second = *itComp;
-          ret.insert(Insert);
-        }
+  itEnd = mProductNames.end();
 
-    return ret;
-  }
+  for (it = mProductNames.begin(), itComp = mProductCompartments.begin(); it != itEnd; ++it, ++itComp)
+    if (!CMetabNameInterface::doesExist(mpModel, *it, *itComp))
+      {
+        Insert.first = *it;
+        Insert.second = *itComp;
+        ret.insert(Insert);
+      }
+
+  itEnd = mModifierNames.end();
+
+  for (it = mModifierNames.begin(), itComp = mModifierCompartments.begin(); it != itEnd; ++it, ++itComp)
+    if (!CMetabNameInterface::doesExist(mpModel, *it, *itComp))
+      {
+        Insert.first = *it;
+        Insert.second = *itComp;
+        ret.insert(Insert);
+      }
+
+  return ret;
+}
 
 bool CChemEqInterface::createNonExistingMetabs()
 {
@@ -603,7 +638,7 @@ bool CChemEqInterface::createNonExistingMetabs()
 
       mpModel->createMetabolite(it->first,
                                 it->second,
-                                0.1, CModelEntity::REACTIONS);
+                                1.0, CModelEntity::REACTIONS);
     }
 
   // Due to the creation of metabolites the display names may have changed.
@@ -613,66 +648,68 @@ bool CChemEqInterface::createNonExistingMetabs()
 }
 
 bool CChemEqInterface::isMulticompartment() const
-  {
-    bool Initialize = true;
-    std::string Compartment = "";
+{
+  bool Initialize = true;
+  std::string Compartment = "";
 
-    std::vector< std::string >::const_iterator it;
-    std::vector< std::string >::const_iterator end;
+  std::vector< std::string >::const_iterator it;
+  std::vector< std::string >::const_iterator end;
 
-    for (it = mSubstrateCompartments.begin(), end = mSubstrateCompartments.end();
-         it != end; ++it)
-      if (Initialize)
-        {
-          Compartment = *it;
-          Initialize = false;
-        }
-      else if (Compartment != *it)
-        return true;
+  for (it = mSubstrateCompartments.begin(), end = mSubstrateCompartments.end();
+       it != end; ++it)
+    if (Initialize)
+      {
+        Compartment = *it;
+        Initialize = false;
+      }
+    else if (Compartment != *it)
+      return true;
 
-    for (it = mProductCompartments.begin(), end = mProductCompartments.end();
-         it != end; ++it)
-      if (Initialize)
-        {
-          Compartment = *it;
-          Initialize = false;
-        }
-      else if (Compartment != *it)
-        return true;
+  for (it = mProductCompartments.begin(), end = mProductCompartments.end();
+       it != end; ++it)
+    if (Initialize)
+      {
+        Compartment = *it;
+        Initialize = false;
+      }
+    else if (Compartment != *it)
+      return true;
 
-    for (it = mModifierCompartments.begin(), end = mModifierCompartments.end();
-         it != end; ++it)
-      if (Initialize)
-        {
-          Compartment = *it;
-          Initialize = false;
-        }
-      else if (Compartment != *it)
-        return true;
+  for (it = mModifierCompartments.begin(), end = mModifierCompartments.end();
+       it != end; ++it)
+    if (Initialize)
+      {
+        Compartment = *it;
+        Initialize = false;
+      }
+    else if (Compartment != *it)
+      return true;
 
-    return false;
-  }
+  return false;
+}
 
 const CCompartment * CChemEqInterface::getCompartment() const
-  {
-    CChemEq ce;
-    writeToChemEq(ce);
-    if (ce.getCompartmentNumber() > 1)
-      return NULL;
-    else
-      {
-        const CMetab * metab = NULL;
-        if (ce.getSubstrates().size())
-          metab = ce.getSubstrates()[0]->getMetabolite();
-        else if (ce.getProducts().size())
-          metab = ce.getProducts()[0]->getMetabolite();
+{
+  CChemEq ce;
+  writeToChemEq(ce);
 
-        if (metab)
-          return metab->getCompartment();
-        else
-          return NULL;
-      }
-  }
+  if (ce.getCompartmentNumber() > 1)
+    return NULL;
+  else
+    {
+      const CMetab * metab = NULL;
+
+      if (ce.getSubstrates().size())
+        metab = ce.getSubstrates()[0]->getMetabolite();
+      else if (ce.getProducts().size())
+        metab = ce.getProducts()[0]->getMetabolite();
+
+      if (metab)
+        return metab->getCompartment();
+      else
+        return NULL;
+    }
+}
 
 /*static*/
 std::string CChemEqInterface::getChemEqString(CModel * model, const CReaction & rea, bool expanded)
