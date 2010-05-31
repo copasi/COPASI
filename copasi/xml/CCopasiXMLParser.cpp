@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.215.2.10 $
+//   $Revision: 1.215.2.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/26 13:54:01 $
+//   $Date: 2010/05/31 18:43:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -513,18 +513,25 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
       mCurrentElement = START_ELEMENT;
 
       // We need to handle the unmapped parameters of type key.
-      std::vector< CCopasiParameter * >::iterator it = mCommon.UnmappedKeyParameters.begin();
-      std::vector< CCopasiParameter * >::iterator end = mCommon.UnmappedKeyParameters.end();
+      std::vector< std::string >::iterator it = mCommon.UnmappedKeyParameters.begin();
+      std::vector< std::string >::iterator end = mCommon.UnmappedKeyParameters.end();
 
       for (; it != end; ++it)
         {
-          CCopasiObject * pObject =
-            mCommon.KeyMap.get(*(*it)->getValue().pKEY);
+          CCopasiParameter * pParameter =
+            dynamic_cast< CCopasiParameter * >(CCopasiRootContainer::getKeyFactory()->get(*it));
 
-          if (pObject != NULL)
-            (*it)->setValue(pObject->getKey());
-          else
-            (*it)->setValue(std::string(""));
+          if (pParameter != NULL &&
+              pParameter->getType() == CCopasiParameter::KEY)
+            {
+              CCopasiObject * pObject =
+                mCommon.KeyMap.get(*pParameter->getValue().pKEY);
+
+              if (pObject != NULL)
+                pParameter->setValue(pObject->getKey());
+              else
+                pParameter->setValue(std::string(""));
+            }
         }
 
       // We need to remove the no longer needed expression "Objective Function" from the function list.
@@ -5444,7 +5451,7 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                       else
                         {
                           p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
-                          mCommon.UnmappedKeyParameters.push_back(p);
+                          mCommon.UnmappedKeyParameters.push_back(p->getKey());
                         }
                     }
                     break;
@@ -5674,7 +5681,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
                       else
                         {
                           p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
-                          mCommon.UnmappedKeyParameters.push_back(p);
+                          mCommon.UnmappedKeyParameters.push_back(p->getKey());
                         }
                     }
                     break;
@@ -8342,7 +8349,7 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
              mCommon.pCurrentParameter->getObjectName() == "Experiment Key"))
           {
             if (mCommon.UnmappedKeyParameters.size() > 0 &&
-                mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] == mCommon.pCurrentParameter)
+                mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] == mCommon.pCurrentParameter->getKey())
               mCommon.UnmappedKeyParameters.erase(mCommon.UnmappedKeyParameters.begin() + mCommon.UnmappedKeyParameters.size() - 1);
           }
 
@@ -8359,11 +8366,11 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
             *pParameter = *mCommon.pCurrentParameter;
 
             if (mCommon.UnmappedKeyParameters.size() > 0 &&
-                mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] == mCommon.pCurrentParameter)
+                mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] == mCommon.pCurrentParameter->getKey())
               {
                 if (OriginalType == CCopasiParameter::KEY)
                   {
-                    mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] = pParameter;
+                    mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] = pParameter->getKey();
                   }
                 else
                   {
@@ -8493,15 +8500,19 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
             case CCopasiParameter::KEY:
             {
-              CCopasiObject * pObject = mCommon.KeyMap.get(sValue);
+              if (sValue != "" &&
+                  CKeyFactory::isValidKey(sValue))
+                {
+                  CCopasiObject * pObject = mCommon.KeyMap.get(sValue);
 
-              if (pObject)
-                {
-                  sValue = pObject->getKey();
-                }
-              else
-                {
-                  UnmappedKey = true;
+                  if (pObject)
+                    {
+                      sValue = pObject->getKey();
+                    }
+                  else
+                    {
+                      UnmappedKey = true;
+                    }
                 }
 
               pValue = &sValue;
@@ -8518,7 +8529,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
         if (UnmappedKey)
           {
-            mCommon.UnmappedKeyParameters.push_back(mCommon.pCurrentParameter);
+            mCommon.UnmappedKeyParameters.push_back(mCommon.pCurrentParameter->getKey());
           }
 
         break;

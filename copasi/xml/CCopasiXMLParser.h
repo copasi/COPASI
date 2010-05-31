@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.70.2.1 $
+//   $Revision: 1.70.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/26 13:54:00 $
+//   $Date: 2010/05/31 18:43:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,7 +222,7 @@ public:
    * Vector of parameters of type key which could not be updated due to missing target objects
    * at time of read.
    */
-  std::vector< CCopasiParameter * > UnmappedKeyParameters;
+  std::vector< std::string > UnmappedKeyParameters;
 
   /**
    * Pointer to a list of Layouts which has been loaded or is to be saved.
