@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.15 $
+//   $Revision: 1.277.2.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/28 16:56:06 $
+//   $Date: 2010/05/31 15:48:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1682,7 +1682,8 @@ void CopasiUI3Window::refreshRecentFileMenu()
   if (mpRecentFilesActionGroup != NULL)
     {
       disconnect(mpRecentFilesActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenRecentFile(QAction *)));
-      pdelete(mpRecentFilesActionGroup);
+      mpRecentFilesActionGroup->deleteLater();
+      mpRecentFilesActionGroup = NULL;
     }
 
   mpRecentFilesActionGroup = new QActionGroup(this);
@@ -1714,7 +1715,8 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
   if (mpRecentSBMLFilesActionGroup != NULL)
     {
       disconnect(mpRecentSBMLFilesActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenRecentSBMLFile(QAction *)));
-      pdelete(mpRecentSBMLFilesActionGroup);
+      mpRecentSBMLFilesActionGroup->deleteLater();
+      mpRecentSBMLFilesActionGroup = NULL;
     }
 
   mpRecentSBMLFilesActionGroup = new QActionGroup(this);
