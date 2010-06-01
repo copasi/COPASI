@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.281.2.1 $
+//   $Revision: 1.281.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/30 15:23:14 $
+//   $Date: 2010/06/01 17:43:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1393,7 +1393,8 @@ void ListViews::buildChangedObjects()
         {
           // The concentration is assumed to be fix accept when this would lead to circular dependencies,
           // for the parent's compartment's initial volume.
-          if (pMetab->isInitialConcentrationChangeAllowed())
+          if (pMetab->isInitialConcentrationChangeAllowed() &&
+              !isnan(pMetab->getInitialConcentration()))
             mChangedObjects.insert(pMetab->getInitialConcentrationReference());
           else
             mChangedObjects.insert(pMetab->getInitialValueReference());
