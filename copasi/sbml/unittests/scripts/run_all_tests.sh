@@ -61,6 +61,7 @@ SBML_SEMANTIC_TESTSUITE_LIST=${SBML_SEMANTIC_TESTSUITE_LIST:="../../../../semant
 
 # 10000 iterations is the recommended number by the testsuite authors
 NUM_ITERATIONS=${NUM_ITERATIONS:=10000}
+STOCH_METHOD=${STOCH_METHOD:=stochastic}
 
 if [ -z $STOCHASTIC_TESTSUITE_WRAPPER ];then
   if [ "$SYSTEM" == "Darwin" ];then
@@ -193,7 +194,14 @@ function run_stochastic_testsuite
   # run the stochastic testsuite
   echo "Running stochastic testsuite ..."
   ${MKDIR} ${RESULT_DIR}/stochastic-testsuite
-  ANALYSIS_SCRIPTS_DIR=${ANALYSIS_SCRIPTS_DIR} STOCHASTIC_TESTSUITE_WRAPPER=${STOCHASTIC_TESTSUITE_WRAPPER} STOCHASTIC_TESTSUITE_DIR=${STOCHASTIC_TESTSUITE_DIR} STOCHASTIC_TESTSUITE_LIST=${STOCHASTIC_TESTSUITE_LIST} USE_VALGRIND="no" DO_LEAKCHECK="no" TMP_DIR=${RESULT_DIR}/stochastic-testsuite ./run_stochastic_testsuite.sh
+  ANALYSIS_SCRIPTS_DIR=${ANALYSIS_SCRIPTS_DIR} \
+  STOCHASTIC_TESTSUITE_WRAPPER=${STOCHASTIC_TESTSUITE_WRAPPER} \
+  STOCHASTIC_TESTSUITE_DIR=${STOCHASTIC_TESTSUITE_DIR} \
+  STOCHASTIC_TESTSUITE_LIST=${STOCHASTIC_TESTSUITE_LIST}\
+  USE_VALGRIND=${USE_VALGRIND}\
+  DO_LEAKCHECK="no"\
+  TMP_DIR=${RESULT_DIR}/stochastic-testsuite\
+  ./run_stochastic_testsuite.sh
   echo -e "\n\n"
 }
 
