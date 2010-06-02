@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.248.2.5 $
+//   $Revision: 1.248.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/05 11:46:29 $
+//   $Date: 2010/06/02 09:40:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,7 +155,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                       os << text.substr(text.find("\n"));
                     }
 
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                 }
 
               if (qUnit.second == false)
@@ -192,7 +192,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                       os << text.substr(text.find("\n"));
                     }
 
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                 }
 
               if (tUnit.second == false)
@@ -229,7 +229,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                       os << text.substr(text.find("\n"));
                     }
 
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                 }
 
               if (vUnit.second == false)
@@ -266,7 +266,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                       os << text.substr(text.find("\n"));
                     }
 
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                 }
 
               if (vUnit.second == false)
@@ -303,7 +303,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                       os << text.substr(text.find("\n"));
                     }
 
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                 }
 
               if (vUnit.second == false)
@@ -445,7 +445,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               os << text.substr(text.find("\n"));
             }
 
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
       std::string key = sbmlCompartment->getId();
@@ -513,7 +513,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                   os << text.substr(text.find("\n"));
                 }
 
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
             }
 
           std::string key;
@@ -585,7 +585,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               os << text.substr(text.find("\n"));
             }
 
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
       ++step;
@@ -651,7 +651,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               os << text.substr(text.find("\n"));
             }
 
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
       ++step;
@@ -769,7 +769,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               os << text.substr(text.find("\n"));
             }
 
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
       ++step;
@@ -842,7 +842,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // create a warning if the delay function is used in the model
   if (this->mDelayFound)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 36);
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 36);
     }
 
   return this->mpCopasiModel;
@@ -3305,7 +3305,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
                 }
 
               this->mUsedSBMLIdsPopulated = true;
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 86);
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 86);
             }
 
           // we need a map to store the replacements for local parameters
@@ -5232,7 +5232,7 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
 
           if (!id.empty())
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 81, id.c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 81, id.c_str());
             }
         }
     }
@@ -5702,7 +5702,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   if (result.second == false)
                     {
                       // we did not recognize the unit
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "volume", "the 3 dimensional  compartment", pCompartment->getId().c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "volume", "the 3 dimensional  compartment", pCompartment->getId().c_str());
                       delete pUdef1;
                       continue;
                     }
@@ -5777,7 +5777,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   if (result.second == false)
                     {
                       // we did not recognize the unit
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "area", "the 2 dimensional compartment", pCompartment->getId().c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "area", "the 2 dimensional compartment", pCompartment->getId().c_str());
                       continue;
                     }
                 }
@@ -5851,7 +5851,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   if (result.second == false)
                     {
                       // we did not recognize the unit
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "length", "the 1 dimensional compartment", pCompartment->getId().c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "length", "the 1 dimensional compartment", pCompartment->getId().c_str());
                       continue;
                     }
                 }
@@ -5921,7 +5921,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               if (unitId != "dimensionless" && !areSBMLUnitDefinitionsIdentical(pDimensionlessUnits, pUdef1))
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "dimensionless", "the 0 dimensional compartment", pCompartment->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "dimensionless", "the 0 dimensional compartment", pCompartment->getId().c_str());
                   continue;
                 }
 
@@ -6223,7 +6223,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (result.second == false)
                 {
                   // we did not recognize the unit
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "substance", "species", pSpecies->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "substance", "species", pSpecies->getId().c_str());
                   continue;
                 }
             }
@@ -6290,7 +6290,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   if (result.second == false)
                     {
                       // we did not recognize the unit
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "substance", "the kinetic law in reaction", pReaction->getId().c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "substance", "the kinetic law in reaction", pReaction->getId().c_str());
 
                       continue;
                     }
@@ -6343,7 +6343,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   if (result.second == false)
                     {
                       // we did not recognize the unit
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "time", "the kinetic law in reaction", pReaction->getId().c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "time", "the kinetic law in reaction", pReaction->getId().c_str());
 
                       continue;
                     }
@@ -6499,7 +6499,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (result.second == false)
                 {
                   // we did not recognize the unit
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "time", "the event", pEvent->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "time", "the event", pEvent->getId().c_str());
 
                   continue;
                 }
@@ -7075,7 +7075,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                           os << "\n" << text.substr(text.find("\n") + 1);
                         }
 
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                     }
                 }
             }
@@ -7596,7 +7596,7 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
               os << "\n" << text.substr(text.find("\n") + 1);
             }
 
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
     }
 }
@@ -7854,7 +7854,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
               os << "\n" << text.substr(text.find("\n") + 1);
             }
 
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
       assert(pAssignment != NULL);
@@ -7910,7 +7910,7 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
                   os << "\n" << text.substr(text.find("\n") + 1);
                 }
 
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
             }
 
           assert(pFun != NULL);
@@ -8055,7 +8055,7 @@ void SBMLImporter::replace_delay_nodes(ConverterASTNode* pNode, Model* pModel, s
             }
           catch (...)
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occured while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
+              CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occured while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
             }
 
           // now we create the rule
@@ -8112,7 +8112,7 @@ void SBMLImporter::replace_delay_nodes(ConverterASTNode* pNode, Model* pModel, s
             }
           catch (...)
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occured while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
+              CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occured while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
             }
 
           // and we add the formula id pair to the map so that we can reuse it if
@@ -8235,7 +8235,7 @@ void SBMLImporter::find_local_parameters_in_delay(ASTNode* pNode, Reaction* pSBM
                 }
               catch (...)
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occured while converting a local reaction parameter to a global parameter. Please report this to the authors of COPASI.");
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occured while converting a local reaction parameter to a global parameter. Please report this to the authors of COPASI.");
                 }
             }
         }

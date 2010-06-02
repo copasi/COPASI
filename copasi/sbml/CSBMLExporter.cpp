@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.73.2.5 $
+//   $Revision: 1.73.2.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/05/26 14:13:29 $
+//   $Author: gauges $
+//   $Date: 2010/06/02 09:40:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -625,7 +625,7 @@ void CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
           ++sit;
         }
 
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 84, os.str().substr(0, os.str().size() - 2).c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 84, os.str().substr(0, os.str().size() - 2).c_str());
     }
 }
 
@@ -1960,7 +1960,7 @@ void CSBMLExporter::check_for_spatial_size_units(const CCopasiDataModel& dataMod
                                       case 0:
                                         // the species is not allowed to have a
                                         // spatialDimensionsUnit attribute
-                                        CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 83 , pSBMLSpecies->getId().c_str());
+                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 83 , pSBMLSpecies->getId().c_str());
                                         break;
                                       case 1:
                                         pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("length", pSBMLDocument->getModel());
@@ -1972,7 +1972,7 @@ void CSBMLExporter::check_for_spatial_size_units(const CCopasiDataModel& dataMod
                                         pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("volume", pSBMLDocument->getModel());
                                         break;
                                       default:
-                                        CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 82 , pCompartment->getId().c_str());
+                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 82 , pCompartment->getId().c_str());
                                         break;
                                     }
                                 }
