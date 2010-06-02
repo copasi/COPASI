@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.16.2.2 $
+//   $Revision: 1.16.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/05/17 13:18:23 $
+//   $Author: gauges $
+//   $Date: 2010/06/02 11:43:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 
   long int repeats = strtol(pRepeats, pTmpP , 10);
 
-  CCopasiMethod::SubType MethodType;
+  CCopasiMethod::SubType MethodType = CCopasiMethod::stochastic;
 
   if (!strcmp(pMethodType, "stochastic"))
     {
