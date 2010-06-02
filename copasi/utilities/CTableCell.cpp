@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-$Revision: 1.18 $
+$Revision: 1.18.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/07/28 19:02:58 $
+$Date: 2010/06/02 16:28:42 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,7 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
   cell.mIsEmpty = false;
 
   /* Try to convert the string into a number */
-  const char * Tail;
+  const char * Tail = NULL;
   cell.mValue = strToDouble(cell.mName.c_str(), & Tail);
 
   if (!*Tail)
