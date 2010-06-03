@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.44.2.2 $
+//   $Revision: 1.44.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/28 16:19:37 $
+//   $Date: 2010/06/03 16:43:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -374,6 +374,8 @@ void CQExperimentData::slotCheckHeader(bool checked)
 
 void CQExperimentData::slotExperimentAdd()
 {
+  mShowError = false;
+
   CExperiment Experiment(mpDataModel);
   CExperiment * pExperiment = mpExperimentSetCopy->addExperiment(Experiment);
 
@@ -392,6 +394,8 @@ void CQExperimentData::slotExperimentAdd()
 
   syncExperiments();
   mpBtnExperimentAdd->setEnabled(mpFileInfo->getFirstUnusedSection(First, Last));
+
+  mShowError = true;
 }
 
 void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
@@ -429,7 +433,7 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
 
   loadExperiment(mpExperiment);
 
-  if (!success && CCopasiMessage::size() > 0)
+  if (!success && CCopasiMessage::size() > 0 && mShowError)
     {
       CQMessageBox::information(this, "Specification Error", FROM_UTF8(CCopasiMessage::getAllMessageText()),
                                 QMessageBox::Ok, QMessageBox::Ok);
@@ -793,6 +797,9 @@ void CQExperimentData::init()
 
   mShown = (unsigned int) - 1;
   mCrossValidation = false;
+  mShowError = true;
+
+  mpDataModel = NULL;
 }
 
 void CQExperimentData::destroy()

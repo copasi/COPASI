@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.229.2.9 $
+#   $Revision: 1.229.2.10 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2010/05/23 19:31:56 $
+#   $Author: shoops $
+#   $Date: 2010/06/03 16:43:27 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.229.2.9 $ $Author: pwilly $ $Date: 2010/05/23 19:31:56 $
+# $Revision: 1.229.2.10 $ $Author: shoops $ $Date: 2010/06/03 16:43:27 $
 ######################################################################
 
 LIB = UI
@@ -284,6 +284,8 @@ SOURCES	+= \
 }
 
 ### uic3 forms
+FORMS3 += CQExperimentData.ui
+HEADERS += CQExperimentData.ui.h
 FORMS3 += CQExperimentSelection.ui
 HEADERS += CQExperimentSelection.ui.h 
 FORMS3 += CQFittingResultTab1.ui
@@ -307,11 +309,6 @@ FORMS3 += objectdebug.ui
 HEADERS += objectdebug.ui.h
 
 ### uic3 forms that do not work at the moment
-#FORMS3 += CQExperimentData.ui
-HEADERS += CQExperimentData.h
-HEADERS += CQExperimentData.ui.h
-SOURCES += CQExperimentData.cpp
-
 #FORMS3 += CQProgressItemBar.ui
 HEADERS += CQProgressItemBar.h
 HEADERS += CQProgressItemBar.ui.h

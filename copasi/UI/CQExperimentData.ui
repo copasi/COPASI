@@ -796,6 +796,7 @@
     <forward>class CQExperimentDataValidator</forward>
     <forward>class QSignalMapper</forward>
     <forward>class CCrossValidationSet</forward>
+    <forward>class CCopasiDataModel</forward>
 </forwards>
 <variables>
     <variable>unsigned int mOldWeightMethod;</variable>
@@ -815,6 +816,8 @@
     <variable>CQExperimentDataValidator * mpValidatorName;</variable>
     <variable>QSignalMapper * mpComboMap;</variable>
     <variable>bool mCrossValidation;</variable>
+    <variable>bool mShowError;</variable>
+    <variable>CCopasiDataModel * mpDataModel;</variable>
 </variables>
 <signals>
     <signal>experimentChanged()</signal>
@@ -845,7 +848,7 @@
     <slot access="private" specifier="non virtual">slotWeightMethod( int weightMethod )</slot>
 </slots>
 <functions>
-    <function returnType="bool">load( CExperimentSet * pExperimentSet )</function>
+    <function returnType="bool">load( CExperimentSet * pExperimentSet , CCopasiDataModel * pDataModel )</function>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function access="protected" returnType="bool">loadExperiment( CExperiment * pExperiment )</function>
