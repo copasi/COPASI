@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-$Revision: 1.18.2.1 $
+$Revision: 1.18.2.2 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/06/02 16:28:42 $
+$Date: 2010/06/04 14:24:16 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,7 +102,7 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
   const char * Tail = NULL;
   cell.mValue = strToDouble(cell.mName.c_str(), & Tail);
 
-  if (!*Tail)
+  if (Tail != NULL && *Tail == 0x0)
     {
       cell.mIsValue = true;
     }

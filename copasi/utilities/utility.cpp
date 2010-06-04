@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.36 $
+$Revision: 1.36.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/02/19 14:54:37 $
+$Date: 2010/06/04 14:24:16 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -928,22 +928,17 @@ std::string localeToUtf8(const std::string & locale)
   return locale;
 }
 
-/**
- * Convert a character sequence to a double
- * @param const char * str
- * @return double
- */
 double strToDouble(const char * str,
-                   char const ** tail)
+                   char const ** pTail)
 {
   double Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  if (tail != NULL)
+  if (pTail != NULL)
     {
-      *tail = str;
+      *pTail = str;
     }
 
-  if (str == NULL || *str == 0)
+  if (str == NULL || *str == 0x0)
     {
       return Value;
     }
@@ -955,9 +950,9 @@ double strToDouble(const char * str,
 
   in >> Value;
 
-  if (tail != NULL && !isnan(Value))
+  if (pTail != NULL && !isnan(Value))
     {
-      *tail = str + in.tellg();
+      *pTail = str + std::min< size_t >(in.tellg(), strlen(str));
     }
 
   return Value;
