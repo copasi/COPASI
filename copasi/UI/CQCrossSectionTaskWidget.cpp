@@ -69,10 +69,12 @@ void CQCrossSectionTaskWidget::init()
 
 bool CQCrossSectionTaskWidget::runTask()
 {
+  return true;
 }
 
 bool CQCrossSectionTaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+  return true;
 }
 
 /*
@@ -169,4 +171,5 @@ bool CQCrossSectionTaskWidget::loadTask()
 
 CCopasiMethod * CQCrossSectionTaskWidget::createMethod(const CCopasiMethod::SubType & type)
 {
+  return NULL;
 }
