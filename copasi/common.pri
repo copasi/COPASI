@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.116 $ 
+#   $Revision: 1.117 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/03/16 18:54:41 $ 
+#   $Author: heilmand $ 
+#   $Date: 2010/06/07 17:21:00 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.116 $ $Author: shoops $ $Date: 2010/03/16 18:54:41 $  
+# $Revision: 1.117 $ $Author: heilmand $ $Date: 2010/06/07 17:21:00 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -333,22 +333,22 @@ contains(BUILD_OS, WIN32) {
     LIBS    += SBW$${RUNTIME}.lib ws2_32.lib
 
     !isEmpty(SBW_PATH){
-      QMAKE_CXXFLAGS += -I""$${SBW_PATH}"\include"
-      QMAKE_LFLAGS   += /LIBPATH:""$${SBW_PATH}"\lib"
+      QMAKE_CXXFLAGS += -I\""$${SBW_PATH}"\include\"
+      QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}"\lib\"
       
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES *= WIN32
     }
      
     !isEmpty(QWT_PATH){
-       LIBS+=  -L"$${QWT_PATH}"/lib
-       INCLUDEPATH += "$${QWT_PATH}"/include
+       LIBS+=  -L\""$${QWT_PATH}"/lib\"
+       INCLUDEPATH += \""$${QWT_PATH}"/include\"
     }
     LIBS += -lqwt
     
     !isEmpty(QWT3D_PATH){
-      LIBS += -L"$${QWT3D_PATH}"/lib/
-      INCLUDEPATH += "$${QWT3D_PATH}"/include
+      LIBS += -L\""$${QWT3D_PATH}"/lib/\"
+      INCLUDEPATH += \""$${QWT3D_PATH}"/include\"
     } 
 
 #    DEFINES        += QWT3D_NODLL
