@@ -1,22 +1,18 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentSelection.ui.h,v $
- $Revision: 1.8 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/12/18 19:56:21 $
- End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentSelection.cpp,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: aekamal $
+//   $Date: 2010/06/07 14:01:52 $
+// End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-#include <qcombobox.h>
-#include <qcheckbox.h>
+#include <qcombobox>
+#include <qcheckbox>
 
 #include "copasi.h"
 
@@ -24,6 +20,40 @@
 
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
+#include "CQExperimentSelection.h"
+
+/*
+ *  Constructs a CQExperimentSelection as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  true to construct a modal dialog.
+ */
+CQExperimentSelection::CQExperimentSelection(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+    : QDialog(parent, name, modal, fl)
+{
+  setupUi(this);
+
+  init();
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+CQExperimentSelection::~CQExperimentSelection()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void CQExperimentSelection::languageChange()
+{
+  retranslateUi(this);
+}
+
 
 void CQExperimentSelection::slotBtnOK()
 {
@@ -37,6 +67,7 @@ void CQExperimentSelection::slotBtnOK()
   for (i = 0; i < imax; i++)
     {
       pCheckBox = static_cast<QCheckBox *>(mpTable->cellWidget(i, 0));
+
       if (pCheckBox->isChecked())
         {
           mpBox->insertItem(pCheckBox->text());

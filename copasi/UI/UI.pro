@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.234 $
+#   $Revision: 1.235 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2010/05/26 11:51:59 $
+#   $Author: aekamal $
+#   $Date: 2010/06/07 14:01:53 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.234 $ $Author: pwilly $ $Date: 2010/05/26 11:51:59 $
+# $Revision: 1.235 $ $Author: aekamal $ $Date: 2010/06/07 14:01:53 $
 ######################################################################
 
 LIB = UI
@@ -33,7 +33,6 @@ HEADERS	+= \
   CMCAResultSubwidget.h \
   CQCompartment.h \
   CQCompartmentsWidget.h \
-  CQCrossSectionTaskWidget.h \
   CQDifferentialEquations.h \
   CQEFMListWidget.h \
   CQEFMResultWidget.h \
@@ -44,6 +43,7 @@ HEADERS	+= \
   CQExpressionMmlWidget.h \
   CQFittingItemWidget.h \
   CQFittingResult.h \
+  CQFittingResultTab1.h \
   CQFittingWidget.h \
   CQFunctionsWidget.h \
   CQGlobalQuantitiesWidget.h \
@@ -107,6 +107,7 @@ HEADERS	+= \
   CQEFMReactionDM.h \
   CQEFMSpeciesDM.h  \
   CQEventDM.h \
+  CQExperimentSelection.h \
   CQExpressionWidget.h \
   CQFluxModeDM.h \
   CQFunctionDM.h \
@@ -160,17 +161,18 @@ SOURCES	+= \
   CMCAResultSubwidget.cpp \
   CQCompartment.cpp \
   CQCompartmentsWidget.cpp \
-  CQCrossSectionTaskWidget.cpp \
   CQDifferentialEquations.cpp \
   CQEFMListWidget.cpp \
   CQEFMResultWidget.cpp \
   CQEFMWidget.cpp \
   CQEventsWidget.cpp \
   CQEventWidget1.cpp \
+  CQExperimentSelection.cpp \
   CQExpressionMmlStackedWidget.cpp \
   CQExpressionMmlWidget.cpp \
   CQFittingItemWidget.cpp \
   CQFittingResult.cpp \
+  CQFittingResultTab1.cpp \
   CQFittingWidget.cpp \
   CQFunctionsWidget.cpp \
   CQGlobalQuantitiesWidget.cpp \
@@ -280,16 +282,14 @@ SOURCES	+= \
   Tree.cpp \
   TSSWidget.cpp
 
+
+
 !contains(DEFINES, COPASI_TSS) {
   HEADERS -= TSSWidget.h
   SOURCES -= TSSWidget.cpp
 }
 
 ### uic3 forms
-FORMS3 += CQExperimentSelection.ui
-HEADERS += CQExperimentSelection.ui.h 
-FORMS3 += CQFittingResultTab1.ui
-HEADERS += CQFittingResultTab1.ui.h
 FORMS3 += CQMatrixDialog.ui
 HEADERS += CQMatrixDialog.ui.h
 FORMS3 += CQSplashWidget.ui
@@ -306,8 +306,6 @@ FORMS3 += DefaultplotDialog.ui
 HEADERS += DefaultplotDialog.ui.h
 FORMS3 += objectdebug.ui
 HEADERS += objectdebug.ui.h
-#FORMS3 += CQTSSAResultSubWidget.ui
-#HEADERS += CQTSSAResultSubWidget.ui.h
 
 ### uic3 forms that do not work at the moment
 #FORMS3 += CQExperimentData.ui
@@ -333,17 +331,18 @@ SOURCES += CQTextDialog.cpp
 FORMS += CMCAResultSubwidget.ui
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
-FORMS += CQCrossSectionTaskWidget.ui
 FORMS += CQDifferentialEquations.ui
 FORMS += CQEFMListWidget.ui
 FORMS += CQEFMResultWidget.ui
 FORMS += CQEFMWidget.ui
 FORMS += CQEventsWidget.ui
 FORMS += CQEventWidget1.ui
+FORMS += CQExperimentSelection.ui
 FORMS += CQExpressionMmlStackedWidget.ui
 FORMS += CQExpressionMmlWidget.ui
 FORMS += CQFittingItemWidget.ui
 FORMS += CQFittingResult.ui
+FORMS += CQFittingResultTab1.ui
 FORMS += CQFittingWidget.ui
 FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
