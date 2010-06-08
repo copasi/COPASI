@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.173.2.3 $
+//   $Revision: 1.173.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/27 23:26:59 $
+//   $Date: 2010/06/08 14:11:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,8 +54,12 @@
  *  Constructs a CScanWidgetScan as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : CopasiWidget(parent, name, fl)
+FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WindowFlags fl):
+    CopasiWidget(parent, name, fl),
+    flagChanged(false),
+    isValid(false),
+    mIgnoreFcnDescriptionChange(false),
+    mpFunction(NULL)
 {
   setupUi(this);
 
@@ -73,15 +77,16 @@ FunctionWidget1::~FunctionWidget1()
 void FunctionWidget1::init()
 {
   // change the default signal-slot connection
-  disconnect(mpExpressionEMSW->mpExpressionWidget,
-             SIGNAL(textChanged()),
-             mpExpressionEMSW->mpExpressionWidget,
-             SLOT(slotTextChanged()));
-  connect(mpExpressionEMSW->mpExpressionWidget, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
+  // disconnect(mpExpressionEMSW->mpExpressionWidget,
+  //            SIGNAL(textChanged()),
+  //            mpExpressionEMSW->mpExpressionWidget,
+  //            SLOT(slotTextChanged()));
+  mpExpressionEMSW->mpExpressionWidget->setFunction("");
+  connect(mpExpressionEMSW->mpExpressionWidget->getValidator(), SIGNAL(stateChanged(bool)), this, SLOT(slotFcnDescriptionChanged(bool)));
 
   // hide all unnecessary buttons
   mpExpressionEMSW->mpBtnExpressionObject->hide();
-  mpExpressionEMSW->mpBtnViewExpression->hide();
+  // mpExpressionEMSW->mpBtnViewExpression->hide();
 
   // overwrite the tip
   QToolTip::add(mpExpressionEMSW->mpBtnSaveExpression, tr("save formula"));
@@ -210,7 +215,7 @@ bool FunctionWidget1::loadParameterTable()
       QComboBox *comboItem = new QComboBox(Table1);
       comboItem->addItems(Usages);
       comboItem->setCurrentIndex(comboItem->findText(qUsage));
-      comboItem->setDisabled(mbCOPASIFunction);
+      comboItem->setDisabled(mReadOnly);
 
       Table1->setCellWidget(j, COL_USAGE, comboItem);
 
@@ -412,38 +417,29 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       desc.insert(l, 1, '\n');
     }
 
-  // make dialogue read only for predefined functions
-  if (mpFunction->getType() == CFunction::MassAction ||
-      mpFunction->getType() == CFunction::PreDefined)
-    {
-      flagRO = true;
-      RadioButton1->setEnabled(false);
-      RadioButton2->setEnabled(false);
-      RadioButton3->setEnabled(false);
-      commitChanges->setEnabled(false);
-      cancelChanges->setEnabled(false);
-      deleteFcn->setEnabled(false);
-      LineEdit1->setReadOnly(true);
+  mReadOnly = (mpFunction->getType() == CFunction::PreDefined ||
+               mpFunction->getType() == CFunction::MassAction);
 
-      mbCOPASIFunction = true;
-    }
-  else   /*** if function is user-defined *****/
-    {
-      flagRO = false;
-      RadioButton1->setEnabled(true);
-      RadioButton2->setEnabled(true);
-      RadioButton3->setEnabled(true);
-      LineEdit1->setReadOnly(false);
 
-      mbCOPASIFunction = false;
+  RadioButton1->setEnabled(!mReadOnly);
+  RadioButton2->setEnabled(!mReadOnly);
+  RadioButton3->setEnabled(!mReadOnly);
 
-      commitChanges->setEnabled(isValid);
-      cancelChanges->setEnabled(true);
-      deleteFcn->setEnabled(true);
-    }
+  LineEdit1->setReadOnly(mReadOnly);
+
+  mpExpressionEMSW->setReadOnly(mReadOnly);
+
+  cancelChanges->setEnabled(!mReadOnly);
+  deleteFcn->setEnabled(!mReadOnly);
+  commitChanges->setEnabled(isValid && !mReadOnly);
 
   // formula expression
-  updateMmlWidget();
+  mIgnoreFcnDescriptionChange = true;
+  mpExpressionEMSW->mpExpressionWidget->setFunction(mpFunction->getInfix());
+  mIgnoreFcnDescriptionChange = false;
+
+  mpExpressionEMSW->updateWidget();
+
 
   //radio buttons
   loadReversibility(mpFunction->isReversible());
@@ -516,7 +512,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
               functParam.remove(functParam[j]->getObjectName());
             }
         }
-    } //TODO: this is propably much too complicated
+    } //TODO: this is probably much too complicated
 
   return true;
 }
@@ -640,29 +636,40 @@ bool FunctionWidget1::saveToFunction()
 /*!
    This slot function is called whenever the function description is changed.
  */
-void FunctionWidget1::slotFcnDescriptionChanged()
+void FunctionWidget1::slotFcnDescriptionChanged(bool valid)
 {
-  if (mpFunction == NULL) return;
 
-  if (flagRO) return;
+  if (mIgnoreFcnDescriptionChange ||
+      (mpFunction == NULL))
+    return;
 
-  flagChanged = true;
+  isValid = valid;
 
-  try
+  if (isValid)
     {
-      if (mpFunction->setInfix(TO_UTF8(mpExpressionEMSW->getText())) &&
-          mpFunction->compile())
-        isValid = true;
-      else
-        isValid = false;
-    }
-  catch (CCopasiException Exception)
-    {
-      isValid = false;
+      try
+        {
+          if (!mpFunction->setInfix(TO_UTF8(mpExpressionEMSW->getText())) ||
+              !mpFunction->compile())
+            {
+              isValid = true;
+            }
+        }
+      catch (...)
+        {
+          isValid = false;
+        }
     }
 
   if (isValid)
     {
+      flagChanged = true;
+      //parameter table
+      loadParameterTable();
+
+      // application table
+      loadUsageTable();
+
       commitChanges->setEnabled(true);
     }
   else
@@ -678,13 +685,6 @@ void FunctionWidget1::slotFcnDescriptionChanged()
 
       commitChanges->setEnabled(false);
     }
-
-  //parameter table
-  loadParameterTable();
-
-  // application table
-  //updateApplication();
-  loadUsageTable();
 }
 
 //! Slot for changing the table value
@@ -869,7 +869,7 @@ void FunctionWidget1::slotCommitButtonClicked()
   if (isValid)
     {
       saveToFunction();
-      updateMmlWidget();
+      mpExpressionEMSW->updateWidget();
     }
 
   //update pFunction values
@@ -965,18 +965,6 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
 //***********  slot for editing requests on the function formula (mMmlWidget) *****
 
-//! Function to update the function formula
-void FunctionWidget1::updateMmlWidget()
-{
-#ifdef HAVE_MML
-  std::ostringstream mml;
-  std::vector<std::vector<std::string> > params;
-
-  mpFunction->createListOfParametersForMathML(params);
-  mpFunction->writeMathML(mml, params, true, false, 0);
-  mpExpressionEMSW->updateWidget(mml, mbCOPASIFunction);
-#endif // HAVE_MML
-}
 
 //************************  standard interface to COPASI widgets ******************
 

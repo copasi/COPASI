@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.52.2.2 $
+//   $Revision: 1.52.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/15 13:07:17 $
+//   $Date: 2010/06/08 14:11:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,11 +116,70 @@ CExpression *CQValidatorExpression::getExpression()
   return &mExpression;
 }
 
+void CQValidatorExpression::setBooleanRequired(bool booleanRequired)
+{
+  mExpression.setBooleanRequired(booleanRequired);
+}
+
 //***********************************************************************
 
-CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool isBoolean)
+CQValidatorFunction::CQValidatorFunction(QTextEdit * parent, const char * name):
+    CQValidator< QTextEdit >(parent, name),
+    mFunction()
+{
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  mFunction.setObjectParent(pDataModel);
+}
+
+/**
+  *  This function ensures that any characters on Expression Widget are validated
+  *  to go to further processes.
+  */
+QValidator::State CQValidatorFunction::validate(QString & input, int & pos) const
+{
+  // The input is the display version of the infix string.
+  // We must first convert the display string to infix.
+
+  State CurrentState = Invalid;
+
+  CQExpressionWidget * pExpressionWidget =
+    static_cast< CQExpressionWidget * >(parent());
+
+  if (pExpressionWidget != NULL)
+    {
+      if (const_cast< CFunction * >(&mFunction)->setInfix(pExpressionWidget->getExpression()) &&
+          const_cast< CFunction * >(&mFunction)->compile())
+        {
+          QString Input = mpLineEdit->text();
+          CurrentState = CQValidator< QTextEdit >::validate(input, pos);
+        }
+    }
+
+  if (CurrentState != Acceptable)
+    {
+      setColor(Invalid);
+      CurrentState = Intermediate;
+    }
+
+  emit stateChanged(CurrentState == Acceptable);
+
+  return CurrentState;
+}
+
+CFunction * CQValidatorFunction::getFunction()
+{
+  return &mFunction;
+}
+
+
+//***********************************************************************
+
+CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
     : QTextEdit(parent, name),
-    mpValidator(NULL),
+    mpValidatorExpression(NULL),
+    mpValidatorFunction(NULL),
     mOldPar(0),
     mOldPos(0),
     mObjectClasses(TransientExpression),
@@ -146,9 +205,6 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
 
   mChangedColor.setHsv(240, s, v);
 
-  mpValidator = new CQValidatorExpression(this, "", isBoolean);
-  mpValidator->revalidate();
-
   mAnchorPos = -1;
   mOldPos = -1;
 
@@ -162,6 +218,30 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
 
 CQExpressionWidget::~CQExpressionWidget()
 {}
+
+CQValidator< QTextEdit > * CQExpressionWidget::getValidator()
+{
+  if (mpValidatorExpression != NULL)
+    {
+      return mpValidatorExpression;
+    }
+
+  return mpValidatorFunction;
+}
+
+void CQExpressionWidget::writeMathML(std::ostream & out) const
+{
+  if (mpValidatorExpression != NULL)
+    mpValidatorExpression->getExpression()->writeMathML(out, false, 0);
+  else if (mpValidatorFunction != NULL)
+    {
+      std::vector<std::vector<std::string> > params;
+      mpValidatorFunction->getFunction()->createListOfParametersForMathML(params);
+      mpValidatorFunction->getFunction()->writeMathML(out, params, true, false, 0);
+    }
+
+  return;
+}
 
 void CQExpressionWidget::mousePressEvent(QMouseEvent * e)
 {
@@ -501,6 +581,15 @@ void CQExpressionWidget::slotSelectionChanged()
   */
 void CQExpressionWidget::slotTextChanged()
 {
+  CQValidator< QTextEdit > * pValidator = NULL;
+
+  if (mpValidatorExpression != NULL)
+    pValidator = mpValidatorExpression;
+  else if (mpValidatorFunction != NULL)
+    pValidator = mpValidatorFunction;
+  else
+    return;
+
 #ifdef DEBUG_UI
   qDebug() << "L" << __LINE__ << " on CQEW slotTextChanged => " << toPlainText();
 
@@ -512,9 +601,9 @@ void CQExpressionWidget::slotTextChanged()
   QString Input = text();
   setPaletteBackgroundColor(QColor(255, 0, 0));
 #ifdef DEBUG_UI
-  qDebug() << "bool = " << (mpValidator->validate(Input, pos) == QValidator::Acceptable);
+  qDebug() << "bool = " << (mpValidatorExpression->validate(Input, pos) == QValidator::Acceptable);
 #endif
-  emit valid(mpValidator->validate(Input, pos) == QValidator::Acceptable);
+  emit valid(pValidator->validate(Input, pos) == QValidator::Acceptable);
 }
 
 //void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)
@@ -682,8 +771,40 @@ bool CQExpressionWidget::isInObject(int curPos)
   return true;
 }
 
+void CQExpressionWidget::setFunction(const std::string & function)
+{
+  if (mpValidatorFunction == NULL)
+    {
+      mpValidatorFunction = new CQValidatorFunction(this, "");
+      mpValidatorFunction->revalidate();
+    }
+
+  // clear the text edit
+  clear();
+
+  mCursor = textCursor();
+
+  QTextCharFormat f1;
+  f1.setForeground(QColor(0, 0, 0));
+
+  setCurrentCharFormat(f1);
+  insertPlainText(FROM_UTF8(function));
+}
+
+std::string CQExpressionWidget::getFunction() const
+{
+  return TO_UTF8(text());
+}
+
+
 void CQExpressionWidget::setExpression(const std::string & expression)
 {
+  if (mpValidatorExpression == NULL)
+    {
+      mpValidatorExpression = new CQValidatorExpression(this, "");
+      mpValidatorExpression->revalidate();
+    }
+
   // Reset the parse list.
   mParseList.clear();
 
@@ -771,7 +892,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
   setCurrentCharFormat(f);
 
-  mpValidator->saved();
+  mpValidatorExpression->saved();
 
 #ifdef DEBUG_UI
   qDebug() << "L" << __LINE__ << " on CQEW text() = " << text();
@@ -830,12 +951,23 @@ void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionT
 
 void CQExpressionWidget::setBoolean(bool isBoolean)
 {
-  mpValidator->setBooleanRequired(isBoolean);
+  if (mpValidatorExpression == NULL)
+    {
+      mpValidatorExpression = new CQValidatorExpression(this, "");
+      mpValidatorExpression->revalidate();
+    }
+
+  mpValidatorExpression->setBooleanRequired(isBoolean);
 };
 
 bool CQExpressionWidget::isValid()
 {
-  return mpValidator->revalidate() == QValidator::Acceptable;
+  if (mpValidatorExpression != NULL)
+    return mpValidatorExpression->revalidate() == QValidator::Acceptable;
+  else if (mpValidatorFunction != NULL)
+    return mpValidatorFunction->revalidate() == QValidator::Acceptable;
+
+  return true;
 }
 
 void CQExpressionWidget::slotSelectObject()

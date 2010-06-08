@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-$Revision: 1.57.2.1 $
+$Revision: 1.57.2.2 $
 $Name:  $
-$Author: pwilly $
-$Date: 2010/05/23 19:31:56 $
+$Author: shoops $
+$Date: 2010/06/08 14:11:58 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ protected slots:
   virtual void slotNewButtonClicked();
   virtual void slotDeleteButtonClicked();
 
-  virtual void slotFcnDescriptionChanged();
+  virtual void slotFcnDescriptionChanged(bool);
   virtual void slotReversibilityChanged();
 
   void slotTableValueChanged(const QString &);
@@ -62,18 +62,17 @@ protected:
   bool copyFunctionContentsToFunction(const CFunction* src, CFunction* target);
 
   bool functionParametersChanged();
-  void updateMmlWidget();
 
-  bool flagRO;
   bool flagChanged;
   bool isValid;
+  bool mIgnoreFcnDescriptionChange;
 
   CFunction * mpFunction;
 
 private:
   void init();
 
-  bool mbCOPASIFunction;
+  bool mReadOnly;
 };
 
 #endif // FunctionWidget1

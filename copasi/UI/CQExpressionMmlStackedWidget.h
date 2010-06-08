@@ -48,7 +48,8 @@ public:
   CQExpressionMmlStackedWidget(QWidget* parent = 0);
   ~CQExpressionMmlStackedWidget();
 
-  void updateWidget(std::ostringstream &mml, bool COPASIdefined = true);
+  void setReadOnly(const bool & readOnly);
+
   QString getText();
 
 public slots:

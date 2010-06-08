@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.21.2.2 $
+//   $Revision: 1.21.2.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/23 19:28:46 $
+//   $Author: shoops $
+//   $Date: 2010/06/08 14:11:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "UI/CCopasiSimpleSelectionTree.h"
 
 #include "function/CExpression.h"
+#include "function/CFunction.h"
 
 class CQExpressionWidget;
 class CCopasiObject;
@@ -56,8 +57,8 @@ public:
   QRegExp COPASIObjectPattern;
 };
 
-/*!
-    \brief The class for checking the validity of a given mathematical expression
+/**
+ *  The class for checking the validity of a given mathematical expression
  */
 class CQValidatorExpression: public CQValidator< QTextEdit >
 {
@@ -77,24 +78,69 @@ public:
   /**
    * Function to set whether boolean is required
    */
-  void setBooleanRequired(bool booleanRequired) {mExpression.setBooleanRequired(booleanRequired);};
+  void setBooleanRequired(bool booleanRequired);
 
 protected:
   CExpression mExpression;
 };
 
-/*!
-    \brief The class for writing/editing a mathematical expression
+/**
+ *  The class for checking the validity of a given mathematical function
+ */
+class CQValidatorFunction: public CQValidator< QTextEdit >
+{
+  Q_OBJECT
+public:
+  /**
+   * Specific constructor
+   * @param QTextEdit * parent
+   * @param const char * name (Default: NULL)
+   */
+  CQValidatorFunction(QTextEdit * parent, const char * name = 0);
+
+  /**
+   * Function to validate a string input
+   * @param QString & input
+   * @param int & pos
+   * @return State
+   */
+  virtual State validate(QString & input, int & pos) const;
+
+  /**
+   * Retrieve a pointer to the function object
+   * @return CFunction * pFunction
+   */
+  virtual CFunction * getFunction();
+
+protected:
+  CFunction mFunction;
+
+signals:
+  void stateChanged(bool) const;
+};
+
+/**
+ * The class for writing/editing a mathematical expression
  */
 class CQExpressionWidget: public QTextEdit
 {
   Q_OBJECT
 public:
-  CQExpressionWidget(QWidget * parent = 0, const char * name = 0, bool isBoolean = false);
+  CQExpressionWidget(QWidget * parent = 0, const char * name = 0);
 
   ~CQExpressionWidget();
 
-  CQValidatorExpression * mpValidator;
+  /**
+   * Write display mathml of the expression into the ostream "out"
+   */
+  void writeMathML(std::ostream & out) const;
+
+  CQValidator< QTextEdit > * getValidator();
+
+private:
+  CQValidatorExpression * mpValidatorExpression;
+
+  CQValidatorFunction * mpValidatorFunction;
 
 protected:
   int mOldPar;
@@ -170,6 +216,18 @@ public:
     CCopasiSimpleSelectionTree::ObservedValues |
     CCopasiSimpleSelectionTree::Results
   };
+
+  /**
+   * Set the function for the widget
+   * @param const std::string & function
+   */
+  void setFunction(const std::string & function);
+
+  /**
+   * Retrieve the function from the widget in string format
+   * @return std::string function
+   */
+  std::string getFunction() const;
 
   /**
    * Set the expression for the widget

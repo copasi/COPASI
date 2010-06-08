@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidgetStack.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/17 19:32:58 $
+//   $Date: 2010/06/08 14:11:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,7 @@ void CQExpressionMmlWidgetStack::updateExpressionWidget()
   if (mpEditExpression->text().isEmpty())
     raiseWidget(mpEditExpression);
   else
-    ((CQExpressionWidget *)widget(0))->mpValidator->getExpression()->writeMathML(mml, false, 0);
+    ((CQExpressionWidget *)widget(0))->mpValidatorExpression->getExpression()->writeMathML(mml, false, 0);
 
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
   mMmlWidget->setBaseFontPointSize(qApp->font().pointSize());
