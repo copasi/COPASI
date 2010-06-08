@@ -3,17 +3,25 @@
   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
     <element name="COPASI">
-      <attribute name="versionDevel">
+      <documentation xmlns="http://relaxng.org/ns/compatibility/annotations/1.0">
+        This is the only top element of a CopasiML file. It contains the models as well as
+        the task information.
+      </documentation>
+      <attribute name="versionMajor">
         <data type="integer"/>
       </attribute>
       <attribute name="versionMinor">
         <data type="integer"/>
       </attribute>
-      <attribute name="versionMajor">
+      <attribute name="versionDevel">
         <data type="integer"/>
       </attribute>
       <zeroOrMore>
         <attribute>
+          <documentation xmlns="http://relaxng.org/ns/compatibility/annotations/1.0">
+            We explicitedly allow the addition of attributes which are not in the CopasiML name
+            space so that this may be expandend by other user to suit their needs.
+          </documentation>
           <anyName>
             <except>
               <nsName ns=""/>
@@ -74,6 +82,32 @@
           </oneOrMore>
         </element>
       </optional>
+      <zeroOrMore>
+        <element>
+          <documentation xmlns="http://relaxng.org/ns/compatibility/annotations/1.0">
+            We explicitedly allow the addition of elements which are not in the CopasiML name
+            space so that this may be expandend by other user to suit their needs.
+          </documentation>
+          <anyName>
+            <except>
+              <nsName ns=""/>
+              <nsName ns="http://www.copasi.org/static/schema"/>
+            </except>
+          </anyName>
+          <zeroOrMore>
+            <attribute>
+              <anyName>
+                <except>
+                  <nsName ns=""/>
+                  <nsName ns="http://www.copasi.org/static/schema"/>
+                </except>
+              </anyName>
+              <text/>
+            </attribute>
+          </zeroOrMore>
+          <text/>
+        </element>
+      </zeroOrMore>
     </element>
   </start>
 
@@ -217,11 +251,7 @@
   <define name="reportSection.datatype">
     <oneOrMore>
       <choice>
-        <element name="Object">
-          <attribute name="cn">
-            <data type="string"/>
-          </attribute>
-        </element>
+        <ref name="object.element"/>
         <element name="html">
           <ref name="xhtml.datatype"/>
         </element>
@@ -270,9 +300,7 @@
       <optional>
         <ref name="miriamAnnotation.element"/>
       </optional>
-      <element name="Expression">
-        <ref name="expression.simpletype"/>
-      </element>
+      <ref name="expression.element"/>
       <optional>
         <element name="ListOfParameterDescriptions">
           <ref name="listOfParameterDescriptions.datatype"/>
@@ -394,9 +422,7 @@
       <ref name="comment.element"/>
     </optional>
     <optional>
-      <element name="InitialExpression">
-        <ref name="expression.simpletype"/>
-      </element>
+      <ref name="initialExpression.element"/>
     </optional>
     <optional>
       <element name="ListOfCompartments">
@@ -482,14 +508,10 @@
       <ref name="miriamAnnotation.element"/>
     </optional>
     <optional>
-      <element name="Expression">
-        <ref name="expression.simpletype"/>
-      </element>
+      <ref name="expression.element"/>
     </optional>
     <optional>
-      <element name="InitialExpression">
-        <ref name="expression.simpletype"/>
-      </element>
+      <ref name="initialExpression.element"/>
     </optional>
   </define>
 
@@ -525,14 +547,10 @@
       <ref name="miriamAnnotation.element"/>
     </optional>
     <optional>
-      <element name="Expression">
-        <ref name="expression.simpletype"/>
-      </element>
+      <ref name="expression.element"/>
     </optional>
     <optional>
-      <element name="InitialExpression">
-        <ref name="expression.simpletype"/>
-      </element>
+      <ref name="initialExpression.element"/>
     </optional>
   </define>
 
@@ -562,14 +580,10 @@
       <ref name="miriamAnnotation.element"/>
     </optional>
     <optional>
-      <element name="Expression">
-        <ref name="expression.simpletype"/>
-      </element>
+      <ref name="expression.element"/>
     </optional>
     <optional>
-      <element name="InitialExpression">
-        <ref name="expression.simpletype"/>
-      </element>
+      <ref name="initialExpression.element"/>
     </optional>
   </define>
 
@@ -740,9 +754,7 @@
             <param name="pattern">(Metabolite|Compartment|ModelValue)_\d+</param>
           </data>
         </attribute>
-        <element name="Expression">
-          <ref name="expression.simpletype"/>
-        </element>
+        <ref name="expression.element"/>
       </element>
     </oneOrMore>
   </define>
@@ -861,11 +873,7 @@
           <data type="boolean"/>
         </attribute>
         <zeroOrMore>
-          <element name="Object">
-            <attribute name="cn">
-              <data type="string"/>
-            </attribute>
-          </element>
+          <ref name="object.element"/>
         </zeroOrMore>
       </element>
       <group>
@@ -1021,4 +1029,23 @@
     </attribute>
   </define>
 
+  <define name="expression.element">
+    <element name="Expression">
+      <ref name="expression.simpletype"/>
+    </element>
+  </define>
+  
+  <define name="initialExpression.element">
+    <element name="InitialExpression">
+      <ref name="expression.simpletype"/>
+    </element>
+  </define>
+
+  <define name="object.element">
+    <element name="Object">
+      <attribute name="cn">
+        <data type="string"/>
+      </attribute>
+    </element>
+  </define>
 </grammar>
