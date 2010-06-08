@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/17 19:32:58 $
+//   $Date: 2010/06/08 14:12:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,7 @@ void CQDifferentialEquations::saveMML(const QString outfilename)
   ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
-  ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
+  ofile << "<!DOCTYPE math PUBLIC \"-//W3C//DTD MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\">" << std::endl;
   ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
 
   ofile << mml.str();
