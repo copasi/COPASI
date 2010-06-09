@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-//   $Revision: 1.32.2.1 $
+//   $Revision: 1.32.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 14:02:53 $
+//   $Date: 2010/06/09 17:02:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,7 +140,12 @@ protected:
 
   /**
    * Init the subtask
+   * @param const OutputFlag & of
+   * @param COutputHandler * pOutputHandler
+   * @return success
    */
-  bool initSubtask(COutputHandler * pOutputHandler);
+  bool initSubtask(const OutputFlag & of,
+                   COutputHandler * pOutputHandler,
+                   std::ostream * pOstream);
 };
 #endif // COPASI_CScanTask

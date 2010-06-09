@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.78.2.1 $
+//   $Revision: 1.78.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 14:02:53 $
+//   $Date: 2010/06/09 17:02:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,8 +82,16 @@ bool CScanTask::initialize(const OutputFlag & of,
 
   bool success = true;
 
-  success &= initSubtask(pOutputHandler);
-  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
+  if (mDoOutput & REPORT)
+    {
+      if (mReport.open(getObjectDataModel(), pOstream))
+        mpOutputHandler->addInterface(&mReport);
+      else
+        CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5, getObjectName().c_str());
+    }
+
+  success &= initSubtask(of, pOutputHandler, mReport.getStream());
+  success &= CCopasiTask::initialize(of, pOutputHandler, mReport.getStream());
 
   return success;
 }
@@ -181,7 +189,9 @@ bool CScanTask::outputSeparatorCallback(bool isLast)
   return true;
 }
 
-bool CScanTask::initSubtask(COutputHandler * pOutputHandler)
+bool CScanTask::initSubtask(const OutputFlag & /* of */,
+                            COutputHandler * pOutputHandler,
+                            std::ostream * pOstream)
 {
   if (!mpProblem) fatalError();
 
@@ -247,9 +257,9 @@ bool CScanTask::initSubtask(COutputHandler * pOutputHandler)
   mpSubtask->setCallBack(NULL);
 
   if (mOutputInSubtask)
-    return mpSubtask->initialize(OUTPUT, pOutputHandler, NULL);
+    return mpSubtask->initialize(OUTPUT, pOutputHandler, pOstream);
   else
-    return mpSubtask->initialize(NO_OUTPUT, pOutputHandler, NULL);
+    return mpSubtask->initialize(NO_OUTPUT, pOutputHandler, pOstream);
 
   return true;
 }
