@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144.2.11 $
+//   $Revision: 1.144.2.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/17 12:17:15 $
+//   $Author: shoops $
+//   $Date: 2010/06/09 13:48:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -282,7 +282,7 @@ const MESSAGES Messages[] =
   {MCCopasiTask + 2, "CCopasiTask (2): No model associated for task '%s'."},
   {MCCopasiTask + 3, "CCopasiTask (3): No method defined for task '%s'."},
   {MCCopasiTask + 4, "CCopasiTask (4): Error compiling model '%s'."},
-  {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report."},
+  {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report of task '%s'."},
   {MCCopasiTask + 6, "CCopasiTask (6): Requested output object:\n '%s'\n not found. It will be ignored."},
   {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
 
