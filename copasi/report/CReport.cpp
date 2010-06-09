@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.61.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:15 $
+//   $Date: 2010/06/09 16:59:54 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -86,13 +91,13 @@ void CReport::setReportDefinition(CReportDefinition* reportDef)
 {mpReportDef = reportDef;}
 
 const std::string& CReport::getTarget() const
-  {return mTarget;}
+{return mTarget;}
 
 void CReport::setTarget(std::string target)
 {mTarget = target;}
 
 bool CReport::append() const
-  {return mAppend;}
+{return mAppend;}
 
 void CReport::setAppend(bool append)
 {mAppend = append;}
@@ -101,23 +106,24 @@ void CReport::output(const Activity & activity)
 {
   switch (activity)
     {
-    case COutputInterface::BEFORE:
-      printHeader();
-      break;
+      case COutputInterface::BEFORE:
+        printHeader();
+        break;
 
-    case COutputInterface::DURING:
-      printBody();
-      break;
+      case COutputInterface::DURING:
+        printBody();
+        break;
 
-    case COutputInterface::AFTER:
-      printFooter();
-      break;
+      case COutputInterface::AFTER:
+        printFooter();
+        break;
     }
 }
 
 void CReport::separate(const Activity & /* activity */)
 {
   if (!mpOstream) return;
+
   (*mpOstream) << std::endl;
 }
 
@@ -146,29 +152,30 @@ void CReport::printHeader()
   if (mpHeader)
     switch (mState)
       {
-      case Compiled:
-        mpHeader->printHeader();
-        mState = HeaderHeader;
-        return;
+        case Compiled:
+          mpHeader->printHeader();
+          mState = HeaderHeader;
+          return;
 
-      case HeaderHeader:
-        mpHeader->printBody();
-        mState = HeaderBody;
-        return;
+        case HeaderHeader:
+          mpHeader->printBody();
+          mState = HeaderBody;
+          return;
 
-      case HeaderBody:
-        mpHeader->printBody();
-        return;
+        case HeaderBody:
+          mpHeader->printBody();
+          return;
 
-      case HeaderFooter:
-        mpHeader->printFooter();
-        return;
+        case HeaderFooter:
+          mpHeader->printFooter();
+          return;
 
-      default:
-        return;
+        default:
+          return;
       }
 
   if (mState == HeaderFooter) return;
+
   mState = HeaderFooter;
 
   std::vector< CCopasiObject * >::iterator it = mHeaderObjectList.begin();
@@ -176,7 +183,7 @@ void CReport::printHeader()
 
   if (it == end) return;
 
-  for (; it != end; ++it) (*it)->print(mpOstream);
+  for (; it != end; ++it)(*it)->print(mpOstream);
 
   (*mpOstream) << std::endl;
 }
@@ -189,32 +196,33 @@ void CReport::printBody()
   if (mState < HeaderFooter)
     {
       mState = HeaderFooter;
+
       if (mpHeader) mpHeader->printFooter();
     }
 
   if (mpBody)
     switch (mState)
       {
-      case HeaderFooter:
-        mpBody->printHeader();
-        mState = BodyHeader;
-        return;
+        case HeaderFooter:
+          mpBody->printHeader();
+          mState = BodyHeader;
+          return;
 
-      case BodyHeader:
-        mpBody->printBody();
-        mState = BodyBody;
-        return;
+        case BodyHeader:
+          mpBody->printBody();
+          mState = BodyBody;
+          return;
 
-      case BodyBody:
-        mpBody->printBody();
-        return;
+        case BodyBody:
+          mpBody->printBody();
+          return;
 
-      case BodyFooter:
-        mpBody->printFooter();
-        return;
+        case BodyFooter:
+          mpBody->printFooter();
+          return;
 
-      default:
-        return;
+        default:
+          return;
       }
 
   if (mState == BodyFooter) return;
@@ -226,7 +234,7 @@ void CReport::printBody()
 
   if (it == end) return;
 
-  for (; it != end; ++it) (*it)->print(mpOstream);
+  for (; it != end; ++it)(*it)->print(mpOstream);
 
   (*mpOstream) << std::endl;
 }
@@ -239,32 +247,33 @@ void CReport::printFooter()
   if (mState < BodyFooter)
     {
       mState = BodyFooter;
+
       if (mpBody) mpBody->printFooter();
     }
 
   if (mpFooter)
     switch (mState)
       {
-      case BodyFooter:
-        mpFooter->printHeader();
-        mState = FooterHeader;
-        return;
+        case BodyFooter:
+          mpFooter->printHeader();
+          mState = FooterHeader;
+          return;
 
-      case FooterHeader:
-        mpFooter->printBody();
-        mState = FooterBody;
-        return;
+        case FooterHeader:
+          mpFooter->printBody();
+          mState = FooterBody;
+          return;
 
-      case FooterBody:
-        mpFooter->printBody();
-        return;
+        case FooterBody:
+          mpFooter->printBody();
+          return;
 
-      case FooterFooter:
-        mpFooter->printFooter();
-        return;
+        case FooterFooter:
+          mpFooter->printFooter();
+          return;
 
-      default:
-        return;
+        default:
+          return;
       }
 
   if (mState != FooterFooter) return;
@@ -274,7 +283,7 @@ void CReport::printFooter()
 
   if (it == end) return;
 
-  for (; it != end; ++it) (*it)->print(mpOstream);
+  for (; it != end; ++it)(*it)->print(mpOstream);
 
   (*mpOstream) << std::endl;
 }
@@ -298,16 +307,19 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer,
 
   generateObjectsFromName(&listOfContainer, mHeaderObjectList, mpHeader,
                           mpReportDef->getHeaderAddr());
+
   if (mpHeader)
     success &= compileChildReport(mpHeader, listOfContainer);
 
   generateObjectsFromName(&listOfContainer, mBodyObjectList, mpBody,
                           mpReportDef->getBodyAddr());
+
   if (mpBody)
     success &= compileChildReport(mpBody, listOfContainer);
 
   generateObjectsFromName(&listOfContainer, mFooterObjectList, mpFooter,
                           mpReportDef->getFooterAddr());
+
   if (mpFooter)
     success &= compileChildReport(mpFooter, listOfContainer);
 
@@ -322,7 +334,14 @@ std::ostream * CReport::open(const CCopasiDataModel * pDataModel,
   mpDataModel = pDataModel;
   assert(mpDataModel != NULL);
 
-  if (mStreamOwner) pdelete(mpOstream);
+  // If an ostream is given and it is the currently assigned one
+  // we do nothing.
+  if (pOstream != NULL &&
+      pOstream == mpOstream)
+    return mpOstream;
+
+  if (mStreamOwner)
+    pdelete(mpOstream);
 
   mpOstream = pOstream;
 
@@ -340,15 +359,26 @@ std::ostream * CReport::open(const CCopasiDataModel * pDataModel,
       mStreamOwner = true;
 
       if (mAppend)
-        ((std::ofstream *) mpOstream)->
-        open(utf8ToLocale(mTarget).c_str(), std::ios_base::out | std::ios_base::app);
+        {
+          ((std::ofstream *) mpOstream)->
+          open(utf8ToLocale(mTarget).c_str(), std::ios_base::out | std::ios_base::app);
+        }
       else
-        ((std::ofstream *) mpOstream)->
-        open(utf8ToLocale(mTarget).c_str(), std::ios_base::out);
+        {
+          ((std::ofstream *) mpOstream)->
+          open(utf8ToLocale(mTarget).c_str(), std::ios_base::out);
+        }
 
-      if (!((std::ofstream *) mpOstream)->is_open()) pdelete(mpOstream);
+      if (!((std::ofstream *) mpOstream)->is_open())
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 3, mTarget.c_str());
+          pdelete(mpOstream);
+        }
 
-      if (mpOstream) mpOstream->precision(mpReportDef->getPrecision());
+      if (mpOstream)
+        {
+          mpOstream->precision(mpReportDef->getPrecision());
+        }
     }
 
   return mpOstream;
