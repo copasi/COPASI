@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.173.2.4 $
+//   $Revision: 1.173.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/06/08 14:11:58 $
+//   $Date: 2010/06/09 22:13:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,8 +242,10 @@ bool FunctionWidget1::loadParameterTable()
   Table1->resizeColumnsToContents();
   Table1->resizeRowsToContents();
 
+  /*
   Table1->setFixedSize(Table1->horizontalHeader()->length() + 10,
                        Table1->verticalHeader()->length() + 30);
+  */
 
   return true;
 }
@@ -330,25 +332,19 @@ bool FunctionWidget1::loadUsageTable()
   if (stringlist.size() == 0)
     stringlist.push_back("None");
 
-  Table2->setRowCount(stringlist.size());
   unsigned C_INT32 row;
+
+  QString Restrictions("");
+  QString Separator("");
 
   for (row = 0; row < stringlist.size(); ++row)
     {
-      if (Table2->item(row, 0) == NULL)
-        Table2->setItem(row, 0, new QTableWidgetItem(FROM_UTF8(stringlist[row])));
-      else
-        Table2->item(row, 0)->setText(FROM_UTF8(stringlist[row]));
+      Restrictions += Separator + FROM_UTF8(stringlist[row]);
+      Separator = ", ";
     }
 
-  Table2->resizeRowsToContents();
-  Table2->resizeColumnToContents(0);
+  mpEditApplicationRestrictions->setText(Restrictions);
 
-  Table2->setStyleSheet("selection-color: black;"
-                        "selection-background-color: white;");
-
-  Table2->setFixedSize(Table2->horizontalHeader()->length() + 10,
-                       Table2->verticalHeader()->length() + 30);
   return true;
 }
 
