@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144.2.12 $
+//   $Revision: 1.144.2.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/06/09 13:48:31 $
+//   $Date: 2010/06/09 17:00:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,6 +263,7 @@ const MESSAGES Messages[] =
   // Directory Entries
   {MCDirEntry + 1, "DirEntry (1): Directory entry '%s' already exists."},
   {MCDirEntry + 2, "DirEntry (2): Directory entry '%s' is read-only."},
+  {MCDirEntry + 3, "DirEntry (3): Opening file '%s' for writing failed."},
 
   // MathML
   {MCMathML + 1, "MathML (1): Unsupported element '%s'."},
