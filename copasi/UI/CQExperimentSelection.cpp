@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentSelection.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/06/07 14:01:52 $
+//   $Author: shoops $
+//   $Date: 2010/06/09 16:04:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,8 +11,8 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qcombobox>
-#include <qcheckbox>
+#include <QComboBox>
+#include <QCheckBox>
 
 #include "copasi.h"
 

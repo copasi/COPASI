@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentSelection.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/06/07 14:01:52 $
+//   $Author: shoops $
+//   $Date: 2010/06/09 16:04:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 #ifndef CQEXPERIMENTSELECTION_H
 #define CQEXPERIMENTSELECTION_H
 
-#include <qvariant.h>
-#include <qdialog>
+#include <QVariant>
+#include <QDialog>
 
 #include "ui_CQExperimentSelection.h"
 
