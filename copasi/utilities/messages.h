@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.144.2.13 $
+//   $Revision: 1.144.2.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/06/09 17:00:50 $
+//   $Date: 2010/06/10 19:20:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -302,7 +302,7 @@ const MESSAGES Messages[] =
   {MCFitting + 8, "CFitting (8): Failure reading file '%s'."},
   {MCFitting + 9, "CFitting (9): Experiment '%s' has no data rows."},
   {MCFitting + 10, "CFitting (10): Experiment '%s' has no dependent data."},
-  {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d'."},
+  {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d', column '%d'."},
   {MCFitting + 12, "CFitting (12): The Fisher information matrix is singular. Therefore, the "
    "correlation matrix can not be calculated."},
   {MCFitting + 13, "CFitting (13): Not enough memory available to calculate the Fisher Information Matrix."},
