@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
 <grammar ns="http://www.copasi.org/static/schema" xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
     <element name="COPASI">
-      <documentation xmlns="http://relaxng.org/ns/compatibility/annotations/1.0">
-        This is the only top element of a CopasiML file. It contains the models as well as
-        the task information.
-      </documentation>
+      <a:documentation> This is the only top element of a CopasiML file. It contains the models as
+        well as the task information. </a:documentation>
       <attribute name="versionMajor">
         <data type="integer"/>
       </attribute>
@@ -18,10 +17,8 @@
       </attribute>
       <zeroOrMore>
         <attribute>
-          <documentation xmlns="http://relaxng.org/ns/compatibility/annotations/1.0">
-            We explicitedly allow the addition of attributes which are not in the CopasiML name
-            space so that this may be expandend by other user to suit their needs.
-          </documentation>
+          <a:documentation> We explicitedly allow the addition of attributes which are not in the
+            CopasiML name space so that this may be expandend by other user to suit their needs. </a:documentation>
           <anyName>
             <except>
               <nsName ns=""/>
@@ -62,6 +59,234 @@
         </element>
       </optional>
       <optional>
+        <element name="ListOfLayouts">
+          <zeroOrMore>
+            <element name="Layout">
+              <element name="Dimensions">
+                <attribute name="width">
+                  <data type="double"/>
+                </attribute>
+                <attribute name="height">
+                  <data type="double"/>
+                </attribute>
+              </element>
+              <optional>
+                <element name="ListOfCompartmentGlyphs">
+                  <zeroOrMore>
+                    <element name="CompartmentGlyph">
+                      <element name="BoundingBox">
+                        <ref name="boundingBox.datatype"/>
+                      </element>
+                      <attribute name="key">
+                        <data type="ID">
+                          <param name="pattern">Layout_\d+</param>
+                        </data>
+                      </attribute>
+                      <optional>
+                        <attribute name="name">
+                          <data type="string"/>
+                        </attribute>
+                      </optional>
+                      <optional>
+                        <attribute name="compartment">
+                          <data type="IDREF">
+                            <param name="pattern">Compartment_\d+</param>
+                          </data>
+                        </attribute>
+                      </optional>
+                    </element>
+                  </zeroOrMore>
+                </element>
+              </optional>
+              <optional>
+                <element name="ListOfMetabGlyphs">
+                  <zeroOrMore>
+                    <element name="MetaboliteGlyph">
+                      <element name="BoundingBox">
+                        <ref name="boundingBox.datatype"/>
+                      </element>
+                      <attribute name="key">
+                        <data type="ID">
+                          <param name="pattern">Layout_\d+</param>
+                        </data>
+                      </attribute>
+                      <optional>
+                        <attribute name="name">
+                          <data type="string"/>
+                        </attribute>
+                      </optional>
+                      <optional>
+                        <attribute name="metabolite">
+                          <data type="IDREF">
+                            <param name="pattern">Metabolite_\d+</param>
+                          </data>
+                        </attribute>
+                      </optional>
+                    </element>
+                  </zeroOrMore>
+                </element>
+              </optional>
+              <optional>
+                <element name="ListOfReactionGlyphs">
+                  <zeroOrMore>
+                    <element name="ReactionGlyph">
+                      <optional>
+                        <element name="BoundingBox">
+                          <ref name="boundingBox.datatype"/>
+                        </element>
+                      </optional>
+                      <optional>
+                        <element name="Curve">
+                          <ref name="layoutCurve.datatype"/>
+                        </element>
+                      </optional>
+                      <optional>
+                        <element name="ListOfMetaboliteReferenceGlyphs">
+                          <oneOrMore>
+                            <element name="MetaboliteReferenceGlyph">
+                              <optional>
+                                <element name="BoundingBox">
+                                  <ref name="boundingBox.datatype"/>
+                                </element>
+                              </optional>
+                              <optional>
+                                <element name="Curve">
+                                  <ref name="layoutCurve.datatype"/>
+                                </element>
+                              </optional>
+                              <attribute name="key">
+                                <data type="ID">
+                                  <param name="pattern">Layout_\d+</param>
+                                </data>
+                              </attribute>
+                              <optional>
+                                <attribute name="name">
+                                  <data type="string"/>
+                                </attribute>
+                              </optional>
+                              <optional>
+                                <attribute name="metaboliteGlyph">
+                                  <data type="IDREF">
+                                    <param name="pattern">Layout_\d+</param>
+                                  </data>
+                                </attribute>
+                              </optional>
+                              <optional>
+                                <attribute name="role">
+                                  <data type="string"/>
+                                </attribute>
+                              </optional>
+                            </element>
+                          </oneOrMore>
+                        </element>
+                      </optional>
+                      <attribute name="key">
+                        <data type="ID">
+                          <param name="pattern">Layout_\d+</param>
+                        </data>
+                      </attribute>
+                      <optional>
+                        <attribute name="name">
+                          <data type="string"/>
+                        </attribute>
+                      </optional>
+                      <optional>
+                        <attribute name="reaction">
+                          <data type="IDREF">
+                            <param name="pattern">Reaction_\d+</param>
+                          </data>
+                        </attribute>
+                      </optional>
+                    </element>
+                  </zeroOrMore>
+                </element>
+              </optional>
+              <optional>
+                <element name="ListOfTextGlyphs">
+                  <oneOrMore>
+                    <element name="TextGlyph">
+                      <element name="BoundingBox">
+                        <ref name="boundingBox.datatype"/>
+                      </element>
+                      <attribute name="key">
+                        <data type="ID">
+                          <param name="pattern">Layout_\d+</param>
+                        </data>
+                      </attribute>
+                      <optional>
+                        <attribute name="name">
+                          <data type="string"/>
+                        </attribute>
+                      </optional>
+                      <optional>
+                        <attribute name="graphicalObject">
+                          <data type="IDREF">
+                            <param name="pattern">[_a-zA-Z]+_\d+</param>
+                          </data>
+                        </attribute>
+                      </optional>
+                      <optional>
+                        <attribute name="originOfText">
+                          <data type="IDREF">
+                            <param name="pattern">[_a-zA-Z]+_\d+</param>
+                          </data>
+                        </attribute>
+                      </optional>
+                      <optional>
+                        <attribute name="text">
+                          <data type="string"/>
+                        </attribute>
+                      </optional>
+                    </element>
+                  </oneOrMore>
+                </element>
+              </optional>
+              <optional>
+                <element name="ListOfAdditionalGraphicalObjects">
+                  <oneOrMore>
+                    <element name="AdditionalGraphicalObject">
+                      <element name="BoundingBox">
+                        <ref name="boundingBox.datatype"/>
+                      </element>
+                      <attribute name="key">
+                        <data type="ID">
+                          <param name="pattern">Layout_\d+</param>
+                        </data>
+                      </attribute>
+                      <optional>
+                        <attribute name="name">
+                          <data type="string"/>
+                        </attribute>
+                      </optional>
+                    </element>
+                  </oneOrMore>
+                </element>
+              </optional>
+              <optional>
+                <element name="ListOfRenderInformation">
+                  <ref name="listOfLocalRenderInformation.datatype"/>
+                </element>
+              </optional>
+              <attribute name="key">
+                <data type="ID">
+                  <param name="pattern">Layout_\d+</param>
+                </data>
+              </attribute>
+              <optional>
+                <attribute name="name">
+                  <data type="string"/>
+                </attribute>
+              </optional>
+            </element>
+          </zeroOrMore>
+          <optional>
+            <element name="ListOfGLobalRenderInformation">
+              <ref name="listOfGlobalRenderInformation.datatype"/>
+            </element>
+          </optional>
+        </element>
+      </optional>
+      <optional>
         <element name="SBMLReference">
           <attribute name="file">
             <data type="string"/>
@@ -84,10 +309,8 @@
       </optional>
       <zeroOrMore>
         <element>
-          <documentation xmlns="http://relaxng.org/ns/compatibility/annotations/1.0">
-            We explicitedly allow the addition of elements which are not in the CopasiML name
-            space so that this may be expandend by other user to suit their needs.
-          </documentation>
+          <a:documentation> We explicitedly allow the addition of elements which are not in the
+            CopasiML name space so that this may be expandend by other user to suit their needs. </a:documentation>
           <anyName>
             <except>
               <nsName ns=""/>
@@ -157,7 +380,7 @@
     </attribute>
     <text/>
   </define>
-  
+
   <define name="parameterList.datatype">
     <zeroOrMore>
       <choice>
@@ -169,7 +392,7 @@
           <ref name="parameter.datatype"/>
         </element>
         <element name="ParameterText">
-          <ref name="parameterText.datatype"></ref>
+          <ref name="parameterText.datatype"/>
         </element>
       </choice>
     </zeroOrMore>
@@ -216,7 +439,7 @@
     </grammar>
   </define>
 
-<!--
+  <!--
   <define name="rdf.datatype">
     <element>
       <nsName ns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
@@ -247,7 +470,7 @@
     </mixed>
   </define>
 -->
-  
+
   <define name="reportSection.datatype">
     <oneOrMore>
       <choice>
@@ -1034,7 +1257,7 @@
       <ref name="expression.simpletype"/>
     </element>
   </define>
-  
+
   <define name="initialExpression.element">
     <element name="InitialExpression">
       <ref name="expression.simpletype"/>
@@ -1048,4 +1271,949 @@
       </attribute>
     </element>
   </define>
+
+  <!-- I need two simple data types for the render extension that -->
+  <!-- look like SBML ids, but that are not derived from ID. -->
+  <define name="layoutId.datatype">
+    <data type="string">
+      <param name="pattern">[_a-zA-Z][_a-zA-Z0-9]*</param>
+    </data>
+  </define>
+
+  <define name="layoutIdRef.datatype">
+    <data type="string">
+      <param name="pattern">[_a-zA-Z][_a-zA-Z0-9]*</param>
+    </data>
+  </define>
+
+  <define name="boundingBox.datatype">
+    <element name="Position">
+      <attribute name="x">
+        <data type="double"/>
+      </attribute>
+      <attribute name="y">
+        <data type="double"/>
+      </attribute>
+      <attribute name="z">
+        <data type="double"/>
+      </attribute>
+    </element>
+    <element name="Dimensions">
+      <attribute name="width">
+        <data type="double"/>
+      </attribute>
+      <attribute name="height">
+        <data type="double"/>
+      </attribute>
+    </element>
+  </define>
+
+  <define name="layoutPoint.datatype">
+    <attribute name="x">
+      <data type="double"/>
+    </attribute>
+    <attribute name="y">
+      <data type="double"/>
+    </attribute>
+    <attribute name="z">
+      <data type="double"/>
+    </attribute>
+  </define>
+
+  <define name="lineSegment.datatype">
+    <element name="Start">
+      <ref name="layoutPoint.datatype"/>
+    </element>
+    <element name="End">
+      <ref name="layoutPoint.datatype"/>
+    </element>
+  </define>
+
+  <define name="cubicBezier.datatype">
+    <ref name="lineSegment.datatype"/>
+    <optional>
+      <element name="BasePoint1">
+        <ref name="layoutPoint.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="BasePoint2">
+        <ref name="layoutPoint.datatype"/>
+      </element>
+    </optional>
+  </define>
+
+  <define name="curveSegment.element" combine="choice">
+    <a:documentation>
+      This is only added to be backwards compatible by supporting the xsi:type mechanism, which is not needed for RelaxNG.
+    </a:documentation>
+    <element name="CurveSegment">
+      <choice>
+        <group>
+          <attribute name="type" ns="http://www.w3.org/2001/XMLSchema-instance">
+            <value type="string">LineSegment</value>
+          </attribute>
+          <ref name="lineSegment.datatype"/>
+        </group>
+        <group>
+          <attribute name="type" ns="http://www.w3.org/2001/XMLSchema-instance">
+            <value type="string">CubicBezier</value>
+          </attribute>
+          <ref name="cubicBezier.datatype"/>
+        </group>
+      </choice>
+    </element>
+  </define>
+
+  <define name="curveSegment.element" combine="choice">
+    <element name="LineSegment">
+      <ref name="lineSegment.datatype"/>
+    </element>
+  </define>
+
+  <define name="curveSegment.element" combine="choice">
+    <element name="CubicBezier">
+      <ref name="cubicBezier.datatype"/>
+    </element>
+  </define>
+
+  <define name="layoutCurve.datatype">
+    <element name="ListOfCurveSegments">
+      <oneOrMore>
+        <ref name="curveSegment.element"/>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="transformation.datatype">
+    <optional>
+      <attribute name="transform">
+        <data type="string">
+          <!-- pattern for 6 or 12 comma separated floating point values -->
+          <param name="pattern"
+            >((\s*[+\-]?[0-9]*(\.[0-9]*)?([eE][+\-]?[0-9]+)?\s*,){5}|(\s*[+\-]?[0-9]*(\.[0-9]*)?([eE][+\-]?[0-9]+)?\s*,){11})(\s*[+\-]?[0-9]*(\.[0-9]*)?([eE][+\-]?[0-9]+)?\s*)</param>
+        </data>
+      </attribute>
+    </optional>
+  </define>
+
+  <!-- data type for key, role and type lists -->
+  <define name="commaSeparatedStringList.datatype">
+    <data type="string">
+      <!-- pattern for a komma separated list of string. -->
+      <!-- the list may also be empty -->
+      <param name="pattern">^(\s*\S+\s*,)*(\s*\S+\s*)?</param>
+    </data>
+  </define>
+
+  <define name="graphicalPrimitive1D.datatype">
+    <ref name="transformation.datatype"/>
+    <optional>
+      <attribute name="stroke">
+        <ref name="colorValueOrId.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="stroke-width">
+        <data type="double"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="stroke-dasharray">
+        <list>
+          <data type="integer"/>
+        </list>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="graphicalPrimitive2D.datatype">
+    <ref name="graphicalPrimitive1D.datatype"/>
+    <optional>
+      <attribute name="fill">
+        <ref name="colorValueOrId.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="fill-rule">
+        <choice>
+          <value>nonzero</value>
+          <value>evenodd</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="relAbsValue.datatype">
+    <data type="string">
+      <param name="pattern"
+        >\s*((([+\-]?[0-9]*(\.[0-9]*)?([eE][+\-]?[0-9]+)?)([+\-][0-9]*(\.[0-9]*)?([eE][+\-]?[0-9]+)?%))|([+\-]?[0-9]*(\.[0-9]*)?([eE][+\-]?[0-9]+)?%?))\s*</param>
+    </data>
+  </define>
+
+  <define name="fontStyle.datatype">
+    <choice>
+      <value>normal</value>
+      <value>italic</value>
+    </choice>
+  </define>
+
+  <define name="fontWeight.datatype">
+    <choice>
+      <value>normal</value>
+      <value>bold</value>
+    </choice>
+  </define>
+
+  <define name="textAnchor.datatype">
+    <choice>
+      <value>start</value>
+      <value>middle</value>
+      <value>end</value>
+    </choice>
+  </define>
+
+  <define name="vtextAnchor.datatype">
+    <choice>
+      <value>top</value>
+      <value>middle</value>
+      <value>bottom</value>
+    </choice>
+  </define>
+
+  <define name="image.dataype">
+    <ref name="transformation.datatype"/>
+    <attribute name="x">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="y">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="z">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="width">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="height">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="href">
+      <data type="string"/>
+    </attribute>
+  </define>
+
+  <define name="text.datatype">
+    <ref name="graphicalPrimitive1D.datatype"/>
+    <attribute name="x">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="y">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="z">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <optional>
+      <attribute name="font-family">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="font-size">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="font-style">
+        <ref name="fontStyle.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="font-weight">
+        <ref name="fontWeight.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="text-anchor">
+        <ref name="textAnchor.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="vtext-anchor">
+        <ref name="vtextAnchor.datatype"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="groupElements.datatype">
+    <choice>
+      <element name="Group">
+        <ref name="group.datatype"/>
+      </element>
+      <element name="Text">
+        <ref name="text.datatype"/>
+      </element>
+      <element name="Rectangle">
+        <ref name="rectangle.datatype"/>
+      </element>
+      <element name="Ellipse">
+        <ref name="ellipse.datatype"/>
+      </element>
+      <element name="Polygon">
+        <ref name="polygon.datatype"/>
+      </element>
+      <element name="Image">
+        <ref name="image.dataype"/>
+      </element>
+      <element name="Curve">
+        <ref name="renderCurve.datatype"/>
+      </element>
+    </choice>
+  </define>
+
+  <define name="group.datatype">
+    <ref name="graphicalPrimitive2D.datatype"/>
+    <zeroOrMore>
+      <ref name="groupElements.datatype"/>
+    </zeroOrMore>
+    <optional>
+      <attribute name="font-family">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="font-size">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="font-style">
+        <ref name="fontStyle.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="font-weight">
+        <ref name="fontWeight.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="text-anchor">
+        <ref name="textAnchor.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="vtext-anchor">
+        <ref name="vtextAnchor.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="startHead">
+        <ref name="layoutIdRef.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="endHead">
+        <ref name="layoutIdRef.datatype"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="rectangle.datatype">
+    <ref name="graphicalPrimitive2D.datatype"/>
+    <attribute name="x">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="y">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="z">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="width">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="height">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="rx">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="ry">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+  </define>
+
+  <define name="ellipse.datatype">
+    <ref name="graphicalPrimitive2D.datatype"/>
+    <attribute name="cx">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="cy">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="cz">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="rx">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="ry">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+  </define>
+
+  <define name="renderCurve.datatype">
+    <ref name="graphicalPrimitive1D.datatype"/>
+    <element name="ListOfElements">
+      <ref name="renderCurveElements.datatype"/>
+    </element>
+    <optional>
+      <attribute name="startHead">
+        <ref name="layoutIdRef.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="endHead">
+        <ref name="layoutIdRef.datatype"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="polygon.datatype">
+    <ref name="graphicalPrimitive2D.datatype"/>
+    <element name="ListOfElements">
+      <ref name="renderCurveElements.datatype"/>
+    </element>
+  </define>
+
+  <define name="colorValue.datatype">
+    <data type="string">
+      <param name="pattern">#([0-9a-f]|[0-9A-F]){8}|#([0-9a-f]|[0-9A-F]){6}</param>
+    </data>
+  </define>
+
+  <define name="colorValueOrId.datatype">
+    <choice>
+      <ref name="layoutIdRef.datatype"/>
+      <ref name="colorValue.datatype"/>
+    </choice>
+  </define>
+
+  <define name="gradientStop.datatype">
+    <attribute name="offset">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="stop-color">
+      <ref name="colorValue.datatype"/>
+    </attribute>
+  </define>
+
+  <define name="gradientBase.datatype">
+    <oneOrMore>
+      <element name="Stop">
+        <ref name="gradientStop.datatype"/>
+      </element>
+    </oneOrMore>
+    <attribute name="id">
+      <ref name="layoutId.datatype"/>
+    </attribute>
+  </define>
+
+  <define name="radialGradient.datatype">
+    <ref name="gradientBase.datatype"/>
+    <attribute name="cx">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="cy">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="cz">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="r">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <optional>
+      <attribute name="fx">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="fy">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="fz">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="linearGradient.datatype">
+    <ref name="gradientBase.datatype"/>
+    <attribute name="x1">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="y1">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="z1">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="x2">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="y2">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="z2">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+  </define>
+
+  <define name="gradientGroup.datatype">
+    <choice>
+      <element name="RadialGradient">
+        <ref name="radialGradient.datatype"/>
+      </element>
+      <element name="LinearGradient">
+        <ref name="linearGradient.datatype"/>
+      </element>
+    </choice>
+  </define>
+
+  <define name="colorDefinition.datatype">
+    <attribute name="id">
+      <ref name="layoutId.datatype"/>
+    </attribute>
+    <attribute name="value">
+      <ref name="colorValue.datatype"/>
+    </attribute>
+  </define>
+
+  <define name="lineEnding.datatype">
+    <element name="BoundingBox">
+      <ref name="boundingBox.datatype"/>
+    </element>
+    <element name="Group">
+      <ref name="group.datatype"/>
+    </element>
+    <attribute name="id">
+      <ref name="layoutId.datatype"/>
+    </attribute>
+  </define>
+
+  <define name="renderInformationBase.datatype">
+    <optional>
+      <element name="ListOfColorDefinitions">
+        <oneOrMore>
+          <element name="ColorDefinition">
+            <ref name="colorDefinition.datatype"/>
+          </element>
+        </oneOrMore>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfGradientDefinitions">
+        <oneOrMore>
+          <ref name="gradientGroup.datatype"/>
+        </oneOrMore>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfLineEndings">
+        <oneOrMore>
+          <element name="LineEnding">
+            <ref name="lineEnding.datatype"/>
+          </element>
+        </oneOrMore>
+      </element>
+    </optional>
+    <optional>
+      <attribute xmlns:ns_1="http://relaxng.org/ns/compatibility/annotations/1.0"
+        name="backgroundColor" ns_1:defaultValue="#FFFFFFFF">
+        <ref name="colorValue.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="referenceRenderInformation">
+        <data type="IDREF">
+          <param name="pattern">[_a-zA-Z]+_\d+</param>
+        </data>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="name">
+        <data type="string"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="style.datatype">
+    <element name="Group">
+      <ref name="group.datatype"/>
+    </element>
+    <optional>
+      <attribute name="roleList">
+        <ref name="commaSeparatedStringList.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="typeList">
+        <ref name="commaSeparatedStringList.datatype"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="globalStyle.dataType">
+    <ref name="style.datatype"/>
+  </define>
+
+  <define name="localStyle.datatype">
+    <ref name="style.datatype"/>
+    <!-- actually we could be more specific here since we know that the strings are keys -->
+    <!-- but I am not sure if this is woth the trouble. -->
+    <optional>
+      <attribute name="keyList">
+        <ref name="commaSeparatedStringList.datatype"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="localRenderInformation.datatype">
+    <ref name="renderInformationBase.datatype"/>
+    <optional>
+      <element name="ListOfStyles">
+        <oneOrMore>
+          <element name="Style">
+            <ref name="localStyle.datatype"/>
+          </element>
+        </oneOrMore>
+      </element>
+    </optional>
+  </define>
+
+  <define name="globalRenderInformation.datatype">
+    <ref name="renderInformationBase.datatype"/>
+    <optional>
+      <element name="ListOfStyles">
+        <oneOrMore>
+          <element name="Style">
+            <ref name="globalStyle.dataType"/>
+          </element>
+        </oneOrMore>
+      </element>
+    </optional>
+  </define>
+
+  <define name="listOfGlobalRenderInformation.datatype">
+    <element name="RenderInformation">
+      <ref name="globalRenderInformation.datatype"/>
+    </element>
+  </define>
+
+  <define name="listOfLocalRenderInformation.datatype">
+    <element name="RenderInformation">
+      <ref name="localRenderInformation.datatype"/>
+    </element>
+  </define>
+
+  <define name="renderPoint.datatytpe">
+    <attribute name="x">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="y">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="z">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+  </define>
+
+  <define name="renderCubicBezier.datatype">
+    <ref name="renderPoint.datatytpe"/>
+    <attribute name="basePoint1_x">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="basePoint1_y">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="basePoint1_z">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="basePoint2_x">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="basePoint2_y">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+    <attribute name="basePoint2_z">
+      <ref name="relAbsValue.datatype"/>
+    </attribute>
+  </define>  
+  
+  <define name="renderCurve.element" combine="choice">
+    <a:documentation>
+      This is only added to be backwards compatible by supporting the xsi:type mechanism, which is not needed for RelaxNG.
+    </a:documentation>
+    <element name="Element">
+      <choice>
+        <group>
+          <attribute name="type" ns="http://www.w3.org/2001/XMLSchema-instance">
+            <value type="string">RenderPoint</value>
+          </attribute>
+          <ref name="renderPoint.datatytpe"/>
+        </group>
+        <group>
+          <attribute name="type" ns="http://www.w3.org/2001/XMLSchema-instance">
+            <value type="string">RenderCubicBezier</value>
+          </attribute>
+          <ref name="renderCubicBezier.datatype"/>
+        </group>
+      </choice>
+    </element>
+  </define>
+  
+  <define name="renderCurve.element" combine="choice">
+    <element name="RenderPoint">
+      <ref name="renderPoint.datatytpe"/>
+    </element>
+  </define>
+  
+  <define name="renderCurve.element" combine="choice">
+    <element name="RenderCubicBezier">
+      <ref name="renderCubicBezier.datatype"/>
+    </element>
+  </define>
+  
+  <define name="renderCurveElements.datatype">
+    <oneOrMore>
+      <ref name="renderCurve.element"/>
+    </oneOrMore>
+  </define>
+  
+  <define name="listOfLayouts.datatype">
+    <zeroOrMore>
+      <element name="Layout">
+        <element name="Dimensions">
+          <attribute name="width">
+            <data type="double"/>
+          </attribute>
+          <attribute name="height">
+            <data type="double"/>
+          </attribute>
+        </element>
+        <optional>
+          <element name="ListOfCompartmentGlyphs">
+            <zeroOrMore>
+              <element name="CompartmentGlyph">
+                <element name="BoundingBox">
+                  <ref name="boundingBox.datatype"/>
+                </element>
+                <attribute name="key">
+                  <data type="ID">
+                    <param name="pattern">Layout_\d+</param>
+                  </data>
+                </attribute>
+                <optional>
+                  <attribute name="name">
+                    <data type="string"/>
+                  </attribute>
+                </optional>
+                <optional>
+                  <attribute name="compartment">
+                    <data type="IDREF">
+                      <param name="pattern">Compartment_\d+</param>
+                    </data>
+                  </attribute>
+                </optional>
+              </element>
+            </zeroOrMore>
+          </element>
+        </optional>
+        <optional>
+          <element name="ListOfMetabGlyphs">
+            <zeroOrMore>
+              <element name="MetaboliteGlyph">
+                <element name="BoundingBox">
+                  <ref name="boundingBox.datatype"/>
+                </element>
+                <attribute name="key">
+                  <data type="ID">
+                    <param name="pattern">Layout_\d+</param>
+                  </data>
+                </attribute>
+                <optional>
+                  <attribute name="name">
+                    <data type="string"/>
+                  </attribute>
+                </optional>
+                <optional>
+                  <attribute name="metabolite">
+                    <data type="IDREF">
+                      <param name="pattern">Metabolite_\d+</param>
+                    </data>
+                  </attribute>
+                </optional>
+              </element>
+            </zeroOrMore>
+          </element>
+        </optional>
+        <optional>
+          <element name="ListOfReactionGlyphs">
+            <zeroOrMore>
+              <element name="ReactionGlyph">
+                <optional>
+                  <element name="BoundingBox">
+                    <ref name="boundingBox.datatype"/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="Curve">
+                    <ref name="layoutCurve.datatype"/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="ListOfMetaboliteReferenceGlyphs">
+                    <oneOrMore>
+                      <element name="MetaboliteReferenceGlyph">
+                        <optional>
+                          <element name="BoundingBox">
+                            <ref name="boundingBox.datatype"/>
+                          </element>
+                        </optional>
+                        <optional>
+                          <element name="Curve">
+                            <ref name="layoutCurve.datatype"/>
+                          </element>
+                        </optional>
+                        <attribute name="key">
+                          <data type="ID">
+                            <param name="pattern">Layout_\d+</param>
+                          </data>
+                        </attribute>
+                        <optional>
+                          <attribute name="name">
+                            <data type="string"/>
+                          </attribute>
+                        </optional>
+                        <optional>
+                          <attribute name="metaboliteGlyph">
+                            <data type="IDREF">
+                              <param name="pattern">Layout_\d+</param>
+                            </data>
+                          </attribute>
+                        </optional>
+                        <optional>
+                          <attribute name="role">
+                            <data type="string"/>
+                          </attribute>
+                        </optional>
+                      </element>
+                    </oneOrMore>
+                  </element>
+                </optional>
+                <attribute name="key">
+                  <data type="ID">
+                    <param name="pattern">Layout_\d+</param>
+                  </data>
+                </attribute>
+                <optional>
+                  <attribute name="name">
+                    <data type="string"/>
+                  </attribute>
+                </optional>
+                <optional>
+                  <attribute name="reaction">
+                    <data type="IDREF">
+                      <param name="pattern">Reaction_\d+</param>
+                    </data>
+                  </attribute>
+                </optional>
+              </element>
+            </zeroOrMore>
+          </element>
+        </optional>
+        <optional>
+          <element name="ListOfTextGlyphs">
+            <oneOrMore>
+              <element name="TextGlyph">
+                <element name="BoundingBox">
+                  <ref name="boundingBox.datatype"/>
+                </element>
+                <attribute name="key">
+                  <data type="ID">
+                    <param name="pattern">Layout_\d+</param>
+                  </data>
+                </attribute>
+                <optional>
+                  <attribute name="name">
+                    <data type="string"/>
+                  </attribute>
+                </optional>
+                <optional>
+                  <attribute name="graphicalObject">
+                    <data type="IDREF">
+                      <param name="pattern">[_a-zA-Z]+_\d+</param>
+                    </data>
+                  </attribute>
+                </optional>
+                <optional>
+                  <attribute name="originOfText">
+                    <data type="IDREF">
+                      <param name="pattern">[_a-zA-Z]+_\d+</param>
+                    </data>
+                  </attribute>
+                </optional>
+                <optional>
+                  <attribute name="text">
+                    <data type="string"/>
+                  </attribute>
+                </optional>
+              </element>
+            </oneOrMore>
+          </element>
+        </optional>
+        <optional>
+          <element name="ListOfAdditionalGraphicalObjects">
+            <oneOrMore>
+              <element name="AdditionalGraphicalObject">
+                <element name="BoundingBox">
+                  <ref name="boundingBox.datatype"/>
+                </element>
+                <attribute name="key">
+                  <data type="ID">
+                    <param name="pattern">Layout_\d+</param>
+                  </data>
+                </attribute>
+                <optional>
+                  <attribute name="name">
+                    <data type="string"/>
+                  </attribute>
+                </optional>
+              </element>
+            </oneOrMore>
+          </element>
+        </optional>
+        <optional>
+          <element name="ListOfRenderInformation">
+            <ref name="listOfLocalRenderInformation.datatype"/>
+          </element>
+        </optional>
+        <attribute name="key">
+          <data type="ID">
+            <param name="pattern">Layout_\d+</param>
+          </data>
+        </attribute>
+        <optional>
+          <attribute name="name">
+            <data type="string"/>
+          </attribute>
+        </optional>
+      </element>
+    </zeroOrMore>
+  </define>
+  
 </grammar>
