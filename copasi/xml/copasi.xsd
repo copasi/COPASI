@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.61 $ -->
+<!--   $Revision: 1.62 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2010/06/15 06:59:27 $ -->
+<!--   $Date: 2010/06/15 14:48:44 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -1460,7 +1460,7 @@
   
   <xs:complexType name="cRENDER_CURVE_ELEMENTS">
   	<xs:sequence>
-  	  <xs:element name="element" type="RenderPoint" minOccurs="2" maxOccurs="unbounded" />
+  	  <xs:element name="Element" type="RenderPoint" minOccurs="2" maxOccurs="unbounded" />
   	</xs:sequence>
   </xs:complexType>
   
