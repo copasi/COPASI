@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.60 $ -->
+<!--   $Revision: 1.61 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2010/03/10 12:49:44 $ -->
+<!--   $Date: 2010/06/15 06:59:27 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -1439,21 +1439,28 @@
     </xs:complexContent>
   </xs:complexType>
   
-  <xs:complexType name="cRENDER_CURVE_ELEMENT">
+  <xs:complexType name="RenderPoint">
     <xs:attribute name="x" type="cREL_ABS_VALUE" use="required" />
     <xs:attribute name="y" type="cREL_ABS_VALUE" use="required" />
     <xs:attribute name="z" type="cREL_ABS_VALUE" use="optional" default="0.0" />
-    <xs:attribute name="basePoint1_x" type="cREL_ABS_VALUE" use="optional" />
-    <xs:attribute name="basePoint1_y" type="cREL_ABS_VALUE" use="optional" />
-    <xs:attribute name="basePoint1_z" type="cREL_ABS_VALUE" use="optional" />
-    <xs:attribute name="basePoint2_x" type="cREL_ABS_VALUE" use="optional" />
-    <xs:attribute name="basePoint2_y" type="cREL_ABS_VALUE" use="optional" />
-    <xs:attribute name="basePoint2_z" type="cREL_ABS_VALUE" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="RenderCubicBezier">
+    <xs:complexContent>
+      <xs:extension base="RenderPoint" >
+        <xs:attribute name="basePoint1_x" type="cREL_ABS_VALUE"/>
+        <xs:attribute name="basePoint1_y" type="cREL_ABS_VALUE"/>
+        <xs:attribute name="basePoint1_z" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+        <xs:attribute name="basePoint2_x" type="cREL_ABS_VALUE"/>
+        <xs:attribute name="basePoint2_y" type="cREL_ABS_VALUE"/>
+        <xs:attribute name="basePoint2_z" type="cREL_ABS_VALUE" use="optional" default="0.0" />
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   
   <xs:complexType name="cRENDER_CURVE_ELEMENTS">
   	<xs:sequence>
-  	  <xs:element name="cRENDER_CURVE_ELEMENT" minOccurs="1" maxOccurs="unbounded" />
+  	  <xs:element name="element" type="RenderPoint" minOccurs="2" maxOccurs="unbounded" />
   	</xs:sequence>
   </xs:complexType>
   
