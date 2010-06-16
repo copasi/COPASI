@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.78.2.2 $
+//   $Revision: 1.78.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/06/09 17:02:11 $
+//   $Date: 2010/06/16 16:50:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,10 +82,11 @@ bool CScanTask::initialize(const OutputFlag & of,
 
   bool success = true;
 
-  if (mDoOutput & REPORT)
+  if ((mDoOutput & REPORT) &&
+      pOutputHandler != NULL)
     {
       if (mReport.open(getObjectDataModel(), pOstream))
-        mpOutputHandler->addInterface(&mReport);
+        pOutputHandler->addInterface(&mReport);
       else
         CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5, getObjectName().c_str());
     }
