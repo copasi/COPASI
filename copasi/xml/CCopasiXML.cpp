@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.125 $
+//   $Revision: 1.125.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/19 14:53:25 $
+//   $Date: 2010/06/16 22:43:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1298,8 +1298,8 @@ bool CCopasiXML::saveLayoutList()
 
   CXMLAttributeList Attributes;
   CLayout * pLayout = NULL;
-
-  startSaveElement("ListOfLayouts");
+  Attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+  startSaveElement("ListOfLayouts", Attributes);
 
   for (i = 0; i < imax; i++)
     {
