@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.9.2.1 $
+//   $Revision: 1.9.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/05 15:31:45 $
+//   $Date: 2010/06/17 16:27:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,7 +129,11 @@ void CQSpeciesWidget::slotBtnClearClicked()
 
 bool CQSpeciesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  enterProtected();
+  if (!mIgnoreUpdates)
+    {
+      enterProtected();
+    }
+
   return true;
 }
 
