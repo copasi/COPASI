@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.73.2.7 $
+//   $Revision: 1.73.2.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/06/22 12:26:52 $
+//   $Date: 2010/06/23 13:01:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2577,70 +2577,25 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       std::string comments = pModel->getComments();
       // insert a title
-      std::string::size_type pos, pos2;
+      std::string::size_type pos;
+
+      pos = comments.find("<head>");
+      pos += 6;
 
       if (comments.find("<title>") == std::string::npos)
         {
-          std::ostringstream xhtml;
-          pos = comments.find("<head>");
 
           if (pos != std::string::npos)
             {
-              pos += 6;
+              std::ostringstream xhtml;
               xhtml << "<title>" << pModel->getObjectName() << "</title>";
               // insert the title string right after head
               comments.insert(pos, xhtml.str());
             }
         }
 
-      // remove the style attribute on the body element
-      pos = comments.find("<body ");
-
-      if (pos != std::string::npos)
-        {
-          pos2 = comments.find(">", pos);
-          pos = comments.find("style=", pos);
-
-          if (pos != std::string::npos && pos < pos2)
-            {
-              pos2 = comments.find("\"", pos);
-
-              if (pos2 != std::string::npos)
-                {
-                  pos2 = comments.find("\"", pos2 + 1);
-
-                  if (pos2 != std::string::npos)
-                    {
-                      comments.erase(pos, pos2 - pos + 1);
-                    }
-                }
-            }
-        }
-
-      // remove the meta attribute on the head tag
-      pos = comments.find("<head");
-
-      if (pos != std::string::npos)
-        {
-          pos2 = comments.find("</head>", pos);
-
-          if (pos2 != std::string::npos)
-            {
-              pos = comments.find("<meta ", pos);
-
-              if (pos < pos2)
-                {
-                  // find the end for the meta tag
-                  pos2 = comments.find("/>", pos);
-
-                  if (pos2 != std::string::npos)
-                    {
-                      comments.erase(pos, pos2 - pos + 2);
-                    }
-                }
-            }
-        }
-
+      // add the correct meta tag to the head tag
+      comments.insert(pos, "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\"/>");
 
       comments = "<notes>" + comments + "</notes>";
       XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
