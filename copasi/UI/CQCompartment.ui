@@ -1,420 +1,420 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.ui,v $ </comment>
-<comment>   $Revision: 1.14 $ </comment>
+<comment>   $Revision: 1.14.2.1 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/09/23 11:45:51 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2010/06/24 15:32:13 $ </comment>
 <comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
 <comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
  <comment> All rights reserved. </comment>
  <class>CQCompartment</class>
- <widget class="CopasiWidget" name="CQCompartment">
-  <property name="geometry">
+ <widget class="CopasiWidget" name="CQCompartment" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
     <width>511</width>
-    <height>457</height>
+    <height>448</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="caption" stdset="0">
+  <property name="caption" stdset="0" >
    <string>Compartment</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mpLblName">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+    <layout class="QGridLayout" name="gridLayout" >
+     <item row="0" column="0" >
+      <widget class="QLabel" name="mpLblName" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Compartment Name</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="3">
-      <widget class="QLineEdit" name="mpEditName">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+     <item row="0" column="1" colspan="2" >
+      <widget class="QLineEdit" name="mpEditName" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="mpLblDim">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <item row="1" column="0" >
+      <widget class="QLabel" name="mpLblDim" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Dimensionality</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="mpComboBoxDim">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+     <item row="1" column="1" >
+      <widget class="QComboBox" name="mpComboBoxDim" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <item>
-        <property name="text">
+        <property name="text" >
          <string>0 - dimensionless</string>
         </property>
        </item>
        <item>
-        <property name="text">
+        <property name="text" >
          <string>1D - Length</string>
         </property>
        </item>
        <item>
-        <property name="text">
+        <property name="text" >
          <string>2D - Area</string>
         </property>
        </item>
        <item>
-        <property name="text">
+        <property name="text" >
          <string>3D - Volume</string>
         </property>
        </item>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="mpLblType">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <item row="2" column="0" >
+      <widget class="QLabel" name="mpLblType" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Simulation Type</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="1" colspan="2">
-      <widget class="QComboBox" name="mpComboBoxType">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+     <item row="2" column="1" >
+      <widget class="QComboBox" name="mpComboBoxType" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="mpLblExpression">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <item row="3" column="0" >
+      <widget class="QLabel" name="mpLblExpression" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Expression</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="3">
-      <widget class="CQExpressionMmlStackedWidget" name="mpExpressionEMW">
-       <property name="minimumSize">
+     <item row="3" column="1" colspan="2" >
+      <widget class="CQExpressionMmlStackedWidget" name="mpExpressionEMW" >
+       <property name="minimumSize" >
         <size>
          <width>300</width>
          <height>30</height>
         </size>
        </property>
-       <property name="currentIndex">
+       <property name="currentIndex" >
         <number>1</number>
        </property>
-       <widget class="QWidget" name="page"/>
-       <widget class="QWidget" name="page_2"/>
+       <widget class="QWidget" name="page" />
+       <widget class="QWidget" name="page_2" />
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="mpLblInitialValue">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <item row="4" column="0" >
+      <widget class="QLabel" name="mpLblInitialValue" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Initial Volume</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="4" column="1" colspan="2">
-      <widget class="QLineEdit" name="mpEditInitialVolume">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+     <item row="4" column="1" >
+      <widget class="QLineEdit" name="mpEditInitialVolume" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
       </widget>
      </item>
-     <item row="4" column="3">
-      <widget class="QCheckBox" name="mpBoxUseInitialExpression">
-       <property name="text">
+     <item row="4" column="2" >
+      <widget class="QCheckBox" name="mpBoxUseInitialExpression" >
+       <property name="text" >
         <string>Use Initial Expression</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="mpLblInitialExpression">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <item row="5" column="0" >
+      <widget class="QLabel" name="mpLblInitialExpression" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Initial Expression</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="5" column="1" colspan="3">
-      <widget class="CQExpressionMmlStackedWidget" name="mpInitialExpressionEMW">
-       <property name="minimumSize">
+     <item row="5" column="1" colspan="2" >
+      <widget class="CQExpressionMmlStackedWidget" name="mpInitialExpressionEMW" >
+       <property name="minimumSize" >
         <size>
          <width>300</width>
          <height>30</height>
         </size>
        </property>
-       <property name="currentIndex">
+       <property name="currentIndex" >
         <number>1</number>
        </property>
-       <widget class="QWidget" name="page_3"/>
-       <widget class="QWidget" name="page_4"/>
+       <widget class="QWidget" name="page_3" />
+       <widget class="QWidget" name="page_4" />
       </widget>
      </item>
-     <item row="6" column="0" colspan="4">
-      <widget class="Line" name="mpLine1">
-       <property name="frameShape">
+     <item row="6" column="0" colspan="3" >
+      <widget class="Line" name="mpLine1" >
+       <property name="frameShape" >
         <enum>QFrame::HLine</enum>
        </property>
-       <property name="frameShadow">
+       <property name="frameShadow" >
         <enum>QFrame::Sunken</enum>
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="mpLblVolume">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <item row="7" column="0" >
+      <widget class="QLabel" name="mpLblVolume" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Volume</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="7" column="1" colspan="2">
-      <widget class="QLineEdit" name="mpEditCurrentVolume">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+     <item row="7" column="1" >
+      <widget class="QLineEdit" name="mpEditCurrentVolume" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="readOnly">
+       <property name="readOnly" >
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="mpLblRate">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <item row="8" column="0" >
+      <widget class="QLabel" name="mpLblRate" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Rate</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="8" column="1" colspan="2">
-      <widget class="QLineEdit" name="mpEditRate">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+     <item row="8" column="1" >
+      <widget class="QLineEdit" name="mpEditRate" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="readOnly">
+       <property name="readOnly" >
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="mpLblMetabolites">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <item row="9" column="0" >
+      <widget class="QLabel" name="mpLblMetabolites" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
+       <property name="text" >
         <string>Contained Metabolites</string>
        </property>
-       <property name="alignment">
+       <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
        </property>
-       <property name="wordWrap">
+       <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="9" column="1" colspan="3">
-      <widget class="Q3ListView" name="mpMetaboliteTable">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <item row="9" column="1" colspan="2" >
+      <widget class="Q3ListView" name="mpMetaboliteTable" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <column>
-        <property name="text">
+        <property name="text" >
          <string>Name</string>
         </property>
-        <property name="clickable">
+        <property name="clickable" >
          <bool>true</bool>
         </property>
-        <property name="resizable">
+        <property name="resizable" >
          <bool>true</bool>
         </property>
        </column>
       </widget>
      </item>
-     <item row="10" column="0" rowspan="2" colspan="4">
-      <widget class="Line" name="mpLine2">
-       <property name="frameShape">
-        <enum>QFrame::HLine</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
-    <spacer name="mpSpacer">
-     <property name="orientation">
+    <spacer name="mpVerticalSpacer" >
+     <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
+     <property name="sizeHint" stdset="0" >
       <size>
-       <width>147</width>
-       <height>13</height>
+       <width>20</width>
+       <height>3</height>
       </size>
      </property>
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout">
+    <widget class="Line" name="mpLine2" >
+     <property name="frameShape" >
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
      <item>
-      <widget class="QPushButton" name="mpBtnCommit">
-       <property name="text">
+      <widget class="QPushButton" name="mpBtnCommit" >
+       <property name="text" >
         <string>Commit</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnRevert">
-       <property name="text">
+      <widget class="QPushButton" name="mpBtnRevert" >
+       <property name="text" >
         <string>Revert</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnNew">
-       <property name="text">
+      <widget class="QPushButton" name="mpBtnNew" >
+       <property name="text" >
         <string>New</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnDelete">
-       <property name="text">
+      <widget class="QPushButton" name="mpBtnDelete" >
+       <property name="text" >
         <string>Delete</string>
        </property>
       </widget>
@@ -422,39 +422,9 @@
     </layout>
    </item>
   </layout>
-  <zorder>mpComboBoxType</zorder>
-  <zorder>mpEditName</zorder>
-  <zorder>mpLblDim</zorder>
-  <zorder>mpComboBoxDim</zorder>
-  <zorder>mpLblType</zorder>
-  <zorder>mpLblName</zorder>
-  <zorder>mpEditRate</zorder>
-  <zorder>mpLblVolume</zorder>
-  <zorder>mpEditCurrentVolume</zorder>
-  <zorder>mpLblExpression</zorder>
-  <zorder>mpLine1</zorder>
-  <zorder>mpLblInitialValue</zorder>
-  <zorder>mpEditInitialVolume</zorder>
-  <zorder>mpBoxUseInitialExpression</zorder>
-  <zorder>mpLblInitialExpression</zorder>
-  <zorder>mpLine2</zorder>
-  <zorder>mpMetaboliteTable</zorder>
-  <zorder>mpExpressionEMW</zorder>
-  <zorder>mpInitialExpressionEMW</zorder>
-  <zorder>mpLblMetabolites</zorder>
-  <zorder></zorder>
-  <zorder></zorder>
-  <zorder>mpBtnNew</zorder>
-  <zorder>mpSpacer</zorder>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
+ <layoutdefault spacing="6" margin="11" />
  <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>Q3ListView</class>
    <extends>Q3Frame</extends>
@@ -474,8 +444,14 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mpEditName</tabstop>
+  <tabstop>mpComboBoxDim</tabstop>
   <tabstop>mpComboBoxType</tabstop>
+  <tabstop>mpExpressionEMW</tabstop>
   <tabstop>mpEditInitialVolume</tabstop>
+  <tabstop>mpBoxUseInitialExpression</tabstop>
+  <tabstop>mpInitialExpressionEMW</tabstop>
+  <tabstop>mpEditCurrentVolume</tabstop>
   <tabstop>mpEditRate</tabstop>
   <tabstop>mpMetaboliteTable</tabstop>
   <tabstop>mpBtnCommit</tabstop>
@@ -484,8 +460,8 @@
   <tabstop>mpBtnDelete</tabstop>
  </tabstops>
  <includes>
-  <include location="global">string</include>
-  <include location="local">copasiWidget.h</include>
+  <include location="global" >string</include>
+  <include location="local" >copasiWidget.h</include>
  </includes>
  <resources/>
  <connections>
@@ -495,11 +471,11 @@
    <receiver>CQCompartment</receiver>
    <slot>slotBtnCommit()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -511,11 +487,11 @@
    <receiver>CQCompartment</receiver>
    <slot>slotBtnDelete()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -527,11 +503,11 @@
    <receiver>CQCompartment</receiver>
    <slot>slotBtnNew()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -543,11 +519,11 @@
    <receiver>CQCompartment</receiver>
    <slot>slotBtnRevert()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -559,11 +535,11 @@
    <receiver>CQCompartment</receiver>
    <slot>slotTypeChanged(int)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -575,11 +551,11 @@
    <receiver>CQCompartment</receiver>
    <slot>slotMetaboliteTableCurrentChanged(Q3ListViewItem*)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -591,11 +567,11 @@
    <receiver>CQCompartment</receiver>
    <slot>slotNameLostFocus()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -607,11 +583,11 @@
    <receiver>CQCompartment</receiver>
    <slot>slotInitialTypeChanged(bool)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
