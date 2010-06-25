@@ -52,14 +52,20 @@ del copasi\CopasiUI\release\main.obj
 del copasi\CopasiSE\debug\CopasiSE.obj
 del copasi\CopasiSE\release\CopasiSE.obj
 
+rem Rmemeber the user setting
+set MY_QMAKESPEC=%QMAKESPEC%
+
 cd copasi
 echo Executing in copasi:
 
 copy copasi.pro tmp_win32.pro
 echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
+
+set QMAKESPEC=win32-msvc2005
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
 del tmp_win32*
 
+set QMAKESPEC=%MY_QMAKESPEC%
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
@@ -76,21 +82,26 @@ cd semantic-test-suite
 echo Executing in semantic-test-suite:
 
 echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+set QMAKESPEC=win32-msvc2005
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
+set QMAKESPEC=%MY_QMAKESPEC%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
+
 
 rem Build the stochastic test suite wrapper
 cd stochastic-testsuite
 echo executing in stochastic-testsuite:
 
 echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+set QMAKESPEC=win32-msvc2005
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
+set QMAKESPEC=%MY_QMAKESPEC%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
@@ -100,9 +111,11 @@ cd sbml-testsuite
 echo executing in sbml-testsuite:
 
 echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
+set QMAKESPEC=win32-msvc2005
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
+set QMAKESPEC=%MY_QMAKESPEC%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
