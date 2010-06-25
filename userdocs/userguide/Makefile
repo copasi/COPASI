@@ -3,11 +3,12 @@
 
 # The dblatex installation directory
 # DBLATEX_PATH=/home/usr
- DBLATEX_PATH=/sw
-DBLATEX_PATH=/usr/
+DBLATEX_PATH=/sw
+# DBLATEX_PATH=/usr/
 
 # directory where the profiling/profile.xsl file is located
 PROFILE_DIR=/usr/share/xml/docbook/stylesheet/nwalsh/
+PROFILE_XSL=/sw/share/xml/xsl/docbook-xsl/profiling/profile.xsl
 
 # These should be correct after DBLATEX_PATH
 DBLATEX=$(DBLATEX_PATH)/bin/dblatex
