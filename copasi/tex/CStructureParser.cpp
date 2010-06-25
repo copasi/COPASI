@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.11.2.3 $
+//   $Revision: 1.11.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/27 18:07:40 $
+//   $Date: 2010/06/25 15:09:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,10 +442,10 @@ QString CStructureParser::getTeX()
 {
   QString texIntro;
 
-  texIntro = "\% Attention: \n";
-  texIntro += "\% We provide only the LaTeX code of the Differential Equations. \n";
-  texIntro += "\% You need to include it in your TeX document. \n";
-  texIntro += "\% Some manual adjustments may be needed for too wide equations. \n\n";
+  texIntro = "%%% Attention: \n";
+  texIntro += "%%% We provide only the LaTeX code of the Differential Equations. \n";
+  texIntro += "%%% You need to include it in your TeX document. \n";
+  texIntro += "%%% Some manual adjustments may be needed for too wide equations. \n\n";
 
   if (!texHead.isNull())
     return texIntro + "$$\n" + texHead + "\n" + tex + texTail + "\n$$";
