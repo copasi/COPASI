@@ -105,14 +105,14 @@ if [ x"$#" = x1 ]; then
 
 #   replace defaults with COPASI bitmaps
     mv -- \
-      "$AdvancedInstallerPath/resources/default-banner.bmp" \
-      "$AdvancedInstallerPath/resources/default-dialog.bmp" .
+      "$AdvancedInstallerPath/themes/classic/resources/default-banner.bmp" \
+      "$AdvancedInstallerPath/themes/classic/resources/default-dialog.bmp" .
     cp -- \
        ../copasi/CopasiUI/icons/install_banner.bmp \
-       "$AdvancedInstallerPath/resources/default-banner.bmp"
+       "$AdvancedInstallerPath/themes/classic/resources/default-banner.bmp"
     cp -- \
        ../copasi/CopasiUI/icons/install_dialog.bmp \
-       "$AdvancedInstallerPath/resources/default-dialog.bmp"
+       "$AdvancedInstallerPath/themes/classic/resources/default-dialog.bmp"
 
 #   modify product code, product version, and package name
     sed -e '/ProductCode/s/[0-9A-F]*}/'$productcode'}/' \
@@ -122,13 +122,13 @@ if [ x"$#" = x1 ]; then
         copasi.aip > tmp.aip
 
 #   run Advanced Installer to create msi package
-    "$AdvancedInstallerPath/AdvancedInstaller" /build tmp.aip
+    "$AdvancedInstallerPath/bin/x86/AdvancedInstaller" /build tmp.aip
     rm tmp.aip
 
 #   restore defaults
     mv -- \
       default-banner.bmp default-dialog.bmp \
-      "$AdvancedInstallerPath/resources"
+      "$AdvancedInstallerPath/themes/classic/resources"
 
 #   assure proper access rights
     chmod 644 ../Copasi-$build-$1.msi
