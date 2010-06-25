@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.11.2.2 $
+//   $Revision: 1.11.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/06/17 16:27:03 $
+//   $Date: 2010/06/25 19:00:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,16 +96,21 @@ void CQCompartmentsWidget::slotBtnDeleteClicked()
 
 void CQCompartmentsWidget::deleteSelectedCompartments()
 {
-  QModelIndexList selRows = mpTblCompartments->selectionModel()->selectedRows(0);
-
-  if (selRows.empty())
-    {return;}
+  const QItemSelectionModel * pSelectionModel = mpTblCompartments->selectionModel();
 
   QModelIndexList mappedSelRows;
-  QModelIndexList::const_iterator i;
+  size_t i, imax = mpCompartmentDM->rowCount();
 
-  for (i = selRows.begin(); i != selRows.end(); ++i)
-    {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
+  for (i = 0; i < imax; i++)
+    {
+      if (pSelectionModel->isRowSelected(i, QModelIndex()))
+        {
+          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index(i, 0)));
+        }
+    }
+
+  if (mappedSelRows.empty())
+    {return;}
 
   mpCompartmentDM->removeRows(mappedSelRows);
 }
