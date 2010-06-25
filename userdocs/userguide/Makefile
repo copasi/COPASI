@@ -143,16 +143,13 @@ copasi.html: copasi.tex $(IMAGES) copasi_bindings_cpp.xml copasi_bindings_java.x
 		   -mkdir -dir $@ $<
 
 copasi_bindings_cpp.xml: copasi_bindings.xml $(CPP_EXAMPLES)
-	xsltproc --output tmp.out --stringparam profile.condition "CPP" $(PROFILE_XSL) $< 
-	sed -e '1d' tmp.out > $@
+	xsltproc --stringparam profile.condition "CPP" $(PROFILE_XSL) $< | sed -e '1d' > $@
 
 copasi_bindings_java.xml: copasi_bindings.xml $(JAVA_EXAMPLES)
-	xsltproc --output tmp.out --stringparam profile.condition "JAVA" $(PROFILE_XSL) $< 
-	sed -e '1d' tmp.out > $@
+	xsltproc --stringparam profile.condition "JAVA" $(PROFILE_XSL) $< | sed -e '1d' > $@
 
 copasi_bindings_python.xml: copasi_bindings.xml $(PYTHON_EXAMPLES)
-	xsltproc --output tmp.out --stringparam profile.condition "PYTHON" $(PROFILE_XSL) $< 
-	sed -e '1d' tmp.out > $@
+	xsltproc --stringparam profile.condition "PYTHON" $(PROFILE_XSL) $< | sed -e '1d' > $@
 
 UserManual.xhtml: UserManual.html
 	./html2xhtml $<
