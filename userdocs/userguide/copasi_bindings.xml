@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.8.2.2 $ -->
+<!--   $Revision: 1.8.2.3 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: gauges $ -->
-<!--   $Date: 2010/05/12 13:00:35 $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2010/06/25 15:39:38 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -586,7 +586,7 @@ calculateJacobianX(jacobianX,
  */
 applyInitialValues()
 </programlisting>
-</java>
+</para>
 
 <sect3 id="modelEntity" xreflabel="modelEntity">
 <title>CModelEntity</title>
@@ -943,7 +943,7 @@ Metabolites can have the status FIXED, ASSIGNMENT, ODE or REACTIONS. And you can
 </para>
 </sect3>
 
-<sect3 id="" xreflabel="">
+<sect3 id="modelValues" xreflabel="modelvalues">
 <title>model values (global parameters)</title>
 
 <para>
@@ -1485,7 +1485,7 @@ The class for events is called <emphasis>CEvent</emphasis>. It contains informat
 </para>
 
 <para>
-<programlisting condition="CPP
+<programlisting condition="CPP">
 /**
  * Set the order in which the event is executed for simultaneous events.
  * @param const unsigned C_INT32 &amp; order
@@ -1954,7 +1954,7 @@ expressionString=getExpression()
 #  
 expressionObject=getExpressionPtr()
 </programlisting>
-
+</para>
 </sect3>
 </sect2>
 
@@ -2317,7 +2317,7 @@ Lets make this a little more clear by looking at the task class for running time
 </para>
 
 <para>
-All tasks are stored in <emphasis>CCopasiDataModel</emphasis>. <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>getTaskList()</emphasis> to get the list of tasks. The returned object is of the type <emphasis>TaskVectorN</emphasis> and provides a method called <emphasis>size()</emphasis> to find out how many tasks it contains and a method <emphasis CONDITION="JAVA">get(long index)</emphasis><emphasis CONDITION="CPP">get(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">get(INDEX)</emphasis> to retrieve the task with the given index. The object that is returned is of type <emphasis>CCopasiObject</emphasis>. Alternatively, <emphasis>CCopasiDataModel</emphasis> has a method called <emphasis CONDITION="JAVA">getTask(long index)</emphasis><emphasis CONDITION="CPP">getTask(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">getTask(INDEX)</emphasis> which returns the <emphasis>CCopasiTask</emphasis> object with the given index. 
+All tasks are stored in <emphasis>CCopasiDataModel</emphasis>. <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>getTaskList()</emphasis> to get the list of tasks. The returned object is of the type <emphasis>TaskVectorN</emphasis> and provides a method called <emphasis>size()</emphasis> to find out how many tasks it contains and a method <emphasis condition="JAVA">get(long index)</emphasis><emphasis condition="CPP">get(C_INT32 index)</emphasis><emphasis condition="PYTHON">get(INDEX)</emphasis> to retrieve the task with the given index. The object that is returned is of type <emphasis>CCopasiObject</emphasis>. Alternatively, <emphasis>CCopasiDataModel</emphasis> has a method called <emphasis condition="JAVA">getTask(long index)</emphasis><emphasis condition="CPP">getTask(C_INT32 index)</emphasis><emphasis condition="PYTHON">getTask(INDEX)</emphasis> which returns the <emphasis>CCopasiTask</emphasis> object with the given index. 
 </para>
 
 <para>
@@ -4865,7 +4865,9 @@ NUMBER=getNumber()
 </sect1>
  <sect1 id="programmingExamples" xreflabel="programmingExamples">
 <title>Programming Examples</title>
+<para>
 This section contains some programming examples that might be helpful. We hope that eventually these examples will cover most of the backend.
+</para>
 <sect2 id="modelCreation" xreflabel="modelCreation">
 <title>Creating and saving a model</title>
 <para>
