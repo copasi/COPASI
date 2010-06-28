@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Author: nsimus $
+//   $Date: 2010/06/28 12:04:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -923,6 +928,7 @@ void CILDMModifiedMethod::emptyVectors()
   mVec_mVslowMetab.erase(mVec_mVslowMetab.begin(), mVec_mVslowMetab.end());
   mVec_mVslowSpace.erase(mVec_mVslowSpace.begin(), mVec_mVslowSpace.end());
   mVec_SlowModes.erase(mVec_SlowModes.begin(), mVec_SlowModes.end());
+
 }
 
 /**
@@ -966,6 +972,15 @@ void CILDMModifiedMethod::setVectors(int slowMode)
  **/
 void CILDMModifiedMethod::createAnnotationsM()
 {
+
+  tableNames.erase(tableNames.begin(), tableNames.end());
+
+  std::string name;
+
+  name = "Contribution of species to modes";
+  tableNames.push_back(name);
+
+
   CArrayAnnotation *
   pTmp1 = new CArrayAnnotation("Contribution of species to modes", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
@@ -975,6 +990,12 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp1->setDimensionDescription(0, "Contribution to  mode (TS - corresponding timescale)");
   pTmp1->setDimensionDescription(1, "Species");
   pVslowPrintAnn = pTmp1;
+
+  mapTableToName[name] = pVslowPrintAnn;
+
+  name = "Modes distribution for species";
+  tableNames.push_back(name);
+
 
   CArrayAnnotation *
   pTmp2 = new CArrayAnnotation("Modes distribution for species", this,
@@ -986,6 +1007,13 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp2->setDimensionDescription(1, "modes (TS - corresponding  timescale)");
   pVslowMetabPrintAnn = pTmp2;
 
+
+  mapTableToName[name] = pVslowMetabPrintAnn;
+
+  name = "Slow space";
+  tableNames.push_back(name);
+
+
   CArrayAnnotation *
   pTmp3 = new CArrayAnnotation("Slow space", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
@@ -995,6 +1023,11 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp3->setDimensionDescription(0, "Species");
   pTmp3->setDimensionDescription(1, "Contribution to slow space");
   pVslowSpacePrintAnn = pTmp3;
+
+  mapTableToName[name] = pVslowSpacePrintAnn;
+
+  name = "Fast space";
+  tableNames.push_back(name);
 
   CArrayAnnotation *
   pTmp4 = new CArrayAnnotation("Fast space", this,

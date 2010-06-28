@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Author: nsimus $
+//   $Date: 2010/06/28 12:05:13 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -76,6 +81,7 @@ void CILDMMethod::initializeParameter()
 
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
 
+
   createAnnotationsM();
   emptyVectors();
 }
@@ -121,8 +127,8 @@ void CILDMMethod::step(const double & deltaT)
 
   /* the vector mY is the current state of the system*/
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = 1.;  //= mpModel->getNumber2QuantityFactor()
+  // / mpModel->getCompartments()[0]->getInitialValue();
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -614,8 +620,7 @@ integration:
   return;
 }
 
-/**
-NEWTON: Looking for consistent initial value for DAE system
+/** Newton: Looking for consistent initial value for DAE system
 Output:  mCfast, info
  */
 
@@ -662,8 +667,11 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
   C_FLOAT64 g1, g2 = 0;
 
   nrhs = 1;
-  tol = 1e-9;
-  err = 10.0;
+  //tol = 1e-9;
+  tol = 1e-9 / mpModel->getNumber2QuantityFactor();
+
+
+  err = 10.0 / mpModel->getNumber2QuantityFactor();
   iter = 0;
 
   itermax = 100;
@@ -691,6 +699,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
       if (iter > itermax)
         {
+
           info = 1;
           return;
         }
@@ -724,8 +733,14 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
             g_newton[i] = g_newton[i] + mTdInverse(i, j) * dxdt_newton[j];
         }
 
+      // for (i = 0; i < fast; i++)
+      //  gf_newton[i] = -1. * g_newton[i + slow];
+
       for (i = 0; i < fast; i++)
-        gf_newton[i] = -1. * g_newton[i + slow];
+        {
+          gf_newton[i] = -1. * g_newton[i + slow];
+
+        }
 
       /*       int dgesv_(integer *n, integer *nrhs, doublereal *a, integer
        * *lda, integer *ipiv, doublereal *b, integer *ldb, integer *info)
@@ -793,6 +808,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
       if (ok != 0)
         {
+
           info = 2;
           break;
         }
@@ -802,6 +818,17 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
       err = -10.;
 
+      /*      for (i = 0; i < fast; i++)
+              {
+                gf_newton[i] = fabs(gf_newton[i]);
+
+                if (err < gf_newton[i])
+                  err = gf_newton[i];
+              }
+
+      */
+
+
       for (i = 0; i < fast; i++)
         {
           gf_newton[i] = fabs(gf_newton[i]);
@@ -809,6 +836,9 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
           if (err < gf_newton[i])
             err = gf_newton[i];
         }
+
+
+
 
       iterations = iterations + 1;
 
@@ -825,8 +855,10 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
       g2 = err;
 
+
       if (g2 / g1 > 1.0)
         {
+
           info = 1;
           break;
         }
@@ -872,6 +904,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   C_INT fast = dim - slow;
   C_INT flag_deufl;
 
+
   flag_deufl = 1;  // set flag_deufl = 0 to print the results of calculations
 
   /* calculations before relaxing yf to slow manifold */
@@ -884,8 +917,8 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   /* the vector mY is the current state of the system*/
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc =  1.; // mpModel->getNumber2QuantityFactor()
+  // / mpModel->getCompartments()[0]->getInitialValue();
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -954,12 +987,14 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   Output:  mCfast, info */
   newton(c_slow.array(), slow, info);
 
+
   if (info)
     {
       /* TODO */
 
       return;
     }
+
 
   /* calculation of g_relax at point x_relax (after relaxing yf to slow manifold)*/
 
@@ -1008,6 +1043,9 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
     {
       re[i] = fabs(g_relax[i] - g_slow[i]);
       re[i] = re[i] * mEPS;
+
+
+
     }
 
   C_FLOAT64 max = 0.;
@@ -1024,7 +1062,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   max1 = norm * mEPS;
 
-  if (max >= mDtol)
+  if (max >= mDtol / mpModel->getNumber2QuantityFactor())
     info = 1;
   else
     info = 0;
@@ -1050,6 +1088,8 @@ void CILDMMethod::emptyVectors()
   mVec_mTMP1.erase(mVec_mTMP1.begin(), mVec_mTMP1.end());
   mVec_mTMP2.erase(mVec_mTMP2.begin(), mVec_mTMP2.end());
   mVec_mTMP3.erase(mVec_mTMP3.begin(), mVec_mTMP3.end());
+
+
 }
 
 /**
@@ -1118,6 +1158,13 @@ void CILDMMethod::setVectors(int slowMode)
  **/
 void CILDMMethod::createAnnotationsM()
 {
+  tableNames.erase(tableNames.begin(), tableNames.end());
+
+  std::string name;
+
+  name = "Contribution of species to modes";
+  tableNames.push_back(name);
+
   CArrayAnnotation *
   pTmp1 = new CArrayAnnotation("Contribution of species to modes", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
@@ -1127,6 +1174,11 @@ void CILDMMethod::createAnnotationsM()
   pTmp1->setDimensionDescription(0, "Contribution to  mode (TS - corresponding timescale)");
   pTmp1->setDimensionDescription(1, "Species");
   pVslowPrintAnn = pTmp1;
+
+  mapTableToName[name] = pVslowPrintAnn;
+
+  name = "Modes distribution for species";
+  tableNames.push_back(name);
 
   CArrayAnnotation *
   pTmp2 = new CArrayAnnotation("Modes distribution for species", this,
@@ -1138,6 +1190,11 @@ void CILDMMethod::createAnnotationsM()
   pTmp2->setDimensionDescription(1, "Modes (TS - corresponding  timescale)");
   pVslowMetabPrintAnn = pTmp2;
 
+  mapTableToName[name] = pVslowMetabPrintAnn;
+
+  name = "Slow space";
+  tableNames.push_back(name);
+
   CArrayAnnotation *
   pTmp3 = new CArrayAnnotation("Slow space", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
@@ -1147,6 +1204,11 @@ void CILDMMethod::createAnnotationsM()
   pTmp3->setDimensionDescription(0, "Species");
   pTmp3->setDimensionDescription(1, "Contribution to slow space");
   pVslowSpacePrintAnn = pTmp3;
+
+  mapTableToName[name] = pVslowSpacePrintAnn;
+
+  name = "Fast space";
+  tableNames.push_back(name);
 
   CArrayAnnotation *
   pTmp4 = new CArrayAnnotation("Fast space", this,
@@ -1158,7 +1220,12 @@ void CILDMMethod::createAnnotationsM()
   pTmp4->setDimensionDescription(1, "Contribution to fast space");
   pVfastSpacePrintAnn = pTmp4;
 
+  mapTableToName[name] = pVfastSpacePrintAnn;
+
   // NEW TAB
+
+  name = "Reactions slow space";
+  tableNames.push_back(name);
 
   CArrayAnnotation *
   pTmp5 = new CArrayAnnotation("Reactions slow space", this,
@@ -1170,7 +1237,12 @@ void CILDMMethod::createAnnotationsM()
   pTmp5->setDimensionDescription(1, "Contribution to slow space");
   pReacSlowSpacePrintAnn = pTmp5;
 
+  mapTableToName[name] = pReacSlowSpacePrintAnn;
+
   /* tamporary tabs */
+
+  name = "Reactions contribution to the mode";
+  tableNames.push_back(name);
 
   CArrayAnnotation *
   pTMP1 = new CArrayAnnotation("", this,
@@ -1182,6 +1254,11 @@ void CILDMMethod::createAnnotationsM()
   pTMP1->setDimensionDescription(1, "Modes (TS - corresponding  timescale)");
   pTMP1PrintAnn = pTMP1;
 
+  mapTableToName[name] = pTMP1PrintAnn;
+
+  name = "Reactions distribution between modes ";
+  tableNames.push_back(name);
+
   CArrayAnnotation *
   pTMP2 = new CArrayAnnotation("", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP2Print), true);
@@ -1192,6 +1269,11 @@ void CILDMMethod::createAnnotationsM()
   pTMP2->setDimensionDescription(1, "Modes (TS - corresponding  timescale)");
   pTMP2PrintAnn = pTMP2;
 
+  mapTableToName[name] = pTMP2PrintAnn;
+
+  name = "Reactions fast space";
+  tableNames.push_back(name);
+
   CArrayAnnotation *
   pTMP3 = new CArrayAnnotation("", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP3Print), true);
@@ -1201,6 +1283,8 @@ void CILDMMethod::createAnnotationsM()
   pTMP3->setDimensionDescription(0, "Reactions");
   pTMP3->setDimensionDescription(1, "");
   pTMP3PrintAnn = pTMP3;
+
+  mapTableToName[name] = pTMP3PrintAnn;
 }
 /**
  * Set the every CArrayAnnotation for the requested step.

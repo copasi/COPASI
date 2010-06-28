@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Author: nsimus $
+//   $Date: 2010/06/28 12:04:46 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -102,6 +107,12 @@ public:
   /**
    *CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
    **/
+
+  /*
+   std::map< std::string, CArrayAnnotation* > mapTableToName;
+   std::vector<std::string>  tableNames;
+  */
+
   CArrayAnnotation* pVslowPrintAnn;
   CArrayAnnotation* pVslowMetabPrintAnn;
   CArrayAnnotation* pVslowSpacePrintAnn;
@@ -128,6 +139,16 @@ public:
   * return CArrayAnnotation for visualization in ILDM-tab
   * in the CQTSSAResultSubWidget
   **/
+
+  /*
+   const std::vector<std::string> getTableName() const
+    {return tableNames;}
+
+    const CArrayAnnotation* getTable(std::string name)
+    {return mapTableToName[name];}
+  */
+
+
   const CArrayAnnotation* getVslowPrintAnn() const
   {return pVslowPrintAnn;}
   const CArrayAnnotation* getVslowSpacePrintAnn() const

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/04/13 12:13:32 $
+//   $Date: 2010/06/28 12:04:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,7 @@ CCSPMethod::CCSPMethod(const CCopasiContainer * pParent):
 
   mData.pMethod = this;
   initializeParameter();
+  //tableNames.erase(tableNames.begin(), tableNames.end());
 }
 
 CCSPMethod::CCSPMethod(const CCSPMethod & src,
@@ -62,6 +63,7 @@ CCSPMethod::CCSPMethod(const CCSPMethod & src,
 
   mData.pMethod = this;
   initializeParameter();
+  //tableNames.erase(tableNames.begin(), tableNames.end());
 }
 
 CCSPMethod::~CCSPMethod()
@@ -1700,6 +1702,12 @@ bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLO
  **/
 void CCSPMethod::createAnnotationsM()
 {
+  tableNames.erase(tableNames.begin(), tableNames.end());
+
+  std::string name;
+
+  /* this table is not visible  more */
+
   CArrayAnnotation *
   pTmp1 = new CArrayAnnotation("Amplitude", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mAmplitudeTab), true);
@@ -1709,6 +1717,10 @@ void CCSPMethod::createAnnotationsM()
   pTmp1->setDimensionDescription(0, "Fast Reaction Modes");
   pTmp1->setDimensionDescription(1, "Amplitudes ");
   pAmplitudeAnn = pTmp1;
+
+
+  name = "Radical Pointer";
+  tableNames.push_back(name);
 
   CArrayAnnotation *
   pTmp2 = new CArrayAnnotation("Radical Pointer", this,
@@ -1720,6 +1732,12 @@ void CCSPMethod::createAnnotationsM()
   pTmp2->setDimensionDescription(1, "Fast Reaction Modes");
   pRadicalPointerAnn = pTmp2;
 
+  mapTableToName[name] = pRadicalPointerAnn;
+
+  name = "Fast Reaction Pointer";
+  tableNames.push_back(name);
+
+
   CArrayAnnotation *
   pTmp3 = new CArrayAnnotation("Fast Reaction Pointer", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerTab), true);
@@ -1729,6 +1747,11 @@ void CCSPMethod::createAnnotationsM()
   pTmp3->setDimensionDescription(0, "Reactions");
   pTmp3->setDimensionDescription(1, "Fast Reaction Modes");
   pFastReactionPointerAnn = pTmp3;
+
+  mapTableToName[name] = pFastReactionPointerAnn;
+
+  name = "Normed Fast Reaction Pointer";
+  tableNames.push_back(name);
 
   CArrayAnnotation *
   pTmp3Normed = new CArrayAnnotation("Normed Fast Reaction Pointer", this,
@@ -1740,6 +1763,11 @@ void CCSPMethod::createAnnotationsM()
   pTmp3Normed->setDimensionDescription(1, "Fast Reaction Modes");
   pFastReactionPointerNormedAnn = pTmp3Normed;
 
+  mapTableToName[name] = pFastReactionPointerNormedAnn;
+
+  name = "Participation Index";
+  tableNames.push_back(name);
+
   CArrayAnnotation *
   pTmp4 = new CArrayAnnotation("Participation Index", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexTab), true);
@@ -1749,6 +1777,12 @@ void CCSPMethod::createAnnotationsM()
   pTmp4->setDimensionDescription(0, "Reactions");
   pTmp4->setDimensionDescription(1, "Reaction Modes");
   pParticipationIndexAnn = pTmp4;
+
+  mapTableToName[name] = pParticipationIndexAnn;
+
+  name = "Normed Participation Index (by column)";
+  tableNames.push_back(name);
+
 
   CArrayAnnotation *
   pTmp4NormedColumn = new CArrayAnnotation("Normed Participation Index (by column)", this,
@@ -1760,6 +1794,12 @@ void CCSPMethod::createAnnotationsM()
   pTmp4NormedColumn->setDimensionDescription(1, "Reaction Modes");
   pParticipationIndexNormedColumnAnn = pTmp4NormedColumn;
 
+
+  mapTableToName[name] = pParticipationIndexNormedColumnAnn ;
+
+  name = "Normed Participation Index (by row)";
+  tableNames.push_back(name);
+
   CArrayAnnotation *
   pTmp4NormedRow = new CArrayAnnotation("Normed Participation Index (by row)", this,
                                         new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedRowTab), true);
@@ -1769,6 +1809,12 @@ void CCSPMethod::createAnnotationsM()
   pTmp4NormedRow->setDimensionDescription(0, "Reactions");
   pTmp4NormedRow->setDimensionDescription(1, "Reaction Modes");
   pParticipationIndexNormedRowAnn = pTmp4NormedRow;
+
+
+  mapTableToName[name] = pParticipationIndexNormedRowAnn;
+
+  name = "Importance Index";
+  tableNames.push_back(name);
 
   CArrayAnnotation *
   pTmp5 = new CArrayAnnotation("Importance Index", this,
@@ -1780,6 +1826,12 @@ void CCSPMethod::createAnnotationsM()
   pTmp5->setDimensionDescription(1, "Species");
   pImportanceIndexAnn = pTmp5;
 
+
+  mapTableToName[name] =  pImportanceIndexAnn;
+
+  name = "Normed Importance Index (by row)" ;
+  tableNames.push_back(name);
+
   CArrayAnnotation *
   pTmp5NormedRow = new CArrayAnnotation("Normed Importance Index (by row)", this,
                                         new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexNormedRowTab), true);
@@ -1789,6 +1841,10 @@ void CCSPMethod::createAnnotationsM()
   pTmp5NormedRow->setDimensionDescription(0, "Reactions");
   pTmp5NormedRow->setDimensionDescription(1, "Species");
   pImportanceIndexNormedRowAnn = pTmp5NormedRow;
+
+  mapTableToName[name] = pImportanceIndexNormedRowAnn;
+
+
 }
 /**
  * Set the every CArrayAnnotation for the requested step.
@@ -2097,6 +2153,8 @@ void CCSPMethod::emptyVectors()
   mVec_mParticipationIndex.erase(mVec_mParticipationIndex.begin(), mVec_mParticipationIndex.end());
   mVec_mImportanceIndex.erase(mVec_mImportanceIndex.begin(), mVec_mImportanceIndex.end());
   mVec_mImportanceIndexNormedRow.erase(mVec_mImportanceIndexNormedRow.begin(), mVec_mImportanceIndexNormedRow.end());
+
+
 }
 /* TODO : Normed vectors are not included */
 void CCSPMethod::printResult(std::ostream * ostream) const
@@ -2145,6 +2203,7 @@ void CCSPMethod::printResult(std::ostream * ostream) const
 
       os << std::endl;
 
+      /* not visible more :
       os << "Amplitude " << std::endl;
 
       //for (i = 0; i < mData.dim; i++)
@@ -2157,6 +2216,7 @@ void CCSPMethod::printResult(std::ostream * ostream) const
         }
 
       os << std::endl;
+      */
 
       os << "Radical Pointer:  " << std::endl;
 

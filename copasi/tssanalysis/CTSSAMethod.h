@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Author: nsimus $
+//   $Date: 2010/06/28 12:05:34 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -97,6 +102,17 @@ public:
    *  Destructor.
    */
   ~CTSSAMethod();
+
+  std::map< std::string, CArrayAnnotation* > mapTableToName;
+  std::vector<std::string>  tableNames;
+
+  const std::vector<std::string> getTableName() const
+  {return tableNames;}
+
+  const CArrayAnnotation* getTable(std::string name)
+  {return mapTableToName[name];}
+
+  virtual void setAnnotationM(int s) = 0;
 
   /**
    *  Set a pointer to the current state.
@@ -475,11 +491,6 @@ public:
    **/
   void createAnnotationsM();
 
-  /**
-  * set the every CArrayAnnotation for the requested step
-  * set the desription of CArayAnnotation for both dimensions
-  **/
-  void setAnnotationM(int step);
 };
 
 #endif // COPASI_CTSSAMethod

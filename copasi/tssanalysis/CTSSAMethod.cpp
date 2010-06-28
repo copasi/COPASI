@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/15 18:18:35 $
+//   $Author: nsimus $
+//   $Date: 2010/06/28 12:05:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,14 +161,50 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (pModel->getCompartments().size() != 1)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, "TSSA is not applicable for a system with more than one volume.");
-      return false;
+      CCopasiMethod::SubType subType;
+
+      subType = mData.pMethod->getSubType();
+
+      switch (subType)
+        {
+          case tssILDM:
+          case tssILDMModified:
+
+            CCopasiMessage(CCopasiMessage::ERROR, "This method is not applicable for a system with more than one compartment.");
+            return false;
+
+          case tssCSP:
+          {
+            unsigned C_INT32 i, imax;
+
+            imax = pModel->getCompartments().size();
+
+            const CCompartment* comp = pModel->getCompartments()[0];
+
+            for (i = 0; i < imax; ++i)
+              {
+                const CCompartment* compi = pModel->getCompartments()[i];
+
+                if (comp->getInitialValue() != compi->getInitialValue())
+                  {
+                    CCopasiMessage(CCopasiMessage::ERROR, "In this version of Copasi the CSP Method only supports  compartments with equal size.");
+                    return false;
+
+                  }
+
+              }
+
+            break;
+          }
+          default:
+            fatalError();
+        }
     }
 
 // Check if the model has a species with an assigments or an ODE
   if (pModel->getNumODEMetabs() != 0 || pModel->getNumAssignmentMetabs() != 0)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, "TSSA is not applicable for a system with species determined by assigments or ODE.");
+      CCopasiMessage(CCopasiMessage::ERROR, "TSSA can not be applyed for systems with species determined by assigments or ODE.");
       return false;
     }
 
@@ -177,9 +213,10 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
   CCopasiVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
 
   for (; it != end; ++it)
-    if ((*it)->getStatus() == CModelEntity::ODE)
+    if ((*it)->getStatus() == CModelEntity::ODE || (*it)->getStatus() ==  CModelEntity::ASSIGNMENT)
+
       {
-        CCopasiMessage(CCopasiMessage::ERROR, "TSSA is not applicable for a system with a volume defined by ODE.");
+        CCopasiMessage(CCopasiMessage::ERROR, " TSSA can not be applyed for systems with non-constant  volumes");
         return false;
       }
 
@@ -191,7 +228,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
     {
       if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ODE)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, "TSSA is not applicable for a system with parameters defined by ODE.");
+          CCopasiMessage(CCopasiMessage::ERROR, "TSSA can not be applyed for systems with parameters defined by ODE.");
           return false;
         }
     }
@@ -199,7 +236,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 // Check if the model contains events
   if (pModel->getEvents().size() != 0)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, "TSSA is not applicable for a system with events");
+      CCopasiMessage(CCopasiMessage::ERROR, "TSSA can not be applyed  for systems with events");
       return false;
     }
 
@@ -1720,8 +1757,8 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   for (i = 0, imax = indep; i < imax; i++)
     tmp[i] = mpModel->getMetabolitesX()[i]->getValue();
 
-  C_FLOAT64 conc2number = mpModel->getQuantity2NumberFactor()
-                          * mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 conc2number = 1.; // mpModel->getQuantity2NumberFactor()
+  // * mpModel->getCompartments()[0]->getInitialValue();
 
   /* write new concentrations in the current state */
   for (i = 0, imax = indep; i < imax; i++)
@@ -1732,8 +1769,8 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   // TO REMOVE:  mpModel->applyAssignments();
   mpModel->calculateDerivativesX(Y1);
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = 1.; // mpModel->getNumber2QuantityFactor()
+  // / mpModel->getCompartments()[0]->getInitialValue();
 
   for (i = 0; i < imax; ++i)
     Y1[i] *= number2conc;
@@ -2035,13 +2072,4 @@ void CTSSAMethod::setVectors(int /* slowMode */)
  * Input for each CArraAnnotations is a separate CMatrix.
  **/
 void CTSSAMethod::createAnnotationsM()
-{}
-/**
- * Set the every CArrayAnnotation for the requested step.
- * Set also the description of CArayAnnotation for both dimensions:
- *    - dimension description could consists of some std::strings
- *      some strings contain the Time Scale values for requested step
- *    - dimension description could consists of arrays of CommonNames
- **/
-void CTSSAMethod::setAnnotationM(int /* step */)
 {}
