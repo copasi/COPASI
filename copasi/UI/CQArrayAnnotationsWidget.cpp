@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/12/21 19:07:09 $
+//   $Author: nsimus $
+//   $Date: 2010/06/28 11:58:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -643,8 +648,8 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
 //      setFocusOnBars();
 
-      if (!mBarChartFilled)
-        fillBarChart();
+      //if (!mBarChartFilled)
+      fillBarChart();
 
 //      setFocusOnBars();
       setFocusOnBars();

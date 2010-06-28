@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:15 $
+//   $Author: nsimus $
+//   $Date: 2010/06/28 11:59:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -296,30 +296,11 @@ bool CQTSSAWidget::taskFinishedEvent()
 
   pTSSResultSubWidget->discardOldResults();
 
-  pILDM_Method = dynamic_cast<CILDMMethod*>(pCTSSATask->getMethod());
-
-  if (pILDM_Method)
-    {
-      pTSSResultSubWidget->changeToILDM();
-    }
-  else
-    {
-      pILDMModiMethod = dynamic_cast<CILDMModifiedMethod*>(pCTSSATask->getMethod());
-
-      if (pILDMModiMethod)
-        {
-          pTSSResultSubWidget->changeToILDMModified();
-        }
-      else
-        {
-          pTSSResultSubWidget->changeToCSP();
-        }
-    }
 
   if (success)
     {
 
-      pTSSResultSubWidget->setStepNumber();
+      pTSSResultSubWidget->displayResult();
 
       mpListView->switchToOtherWidget(271, ""); //change to the results window
     }

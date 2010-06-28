@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: nsimus $
+//   $Date: 2010/06/28 11:59:11 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,7 +23,8 @@
 #include <qcolor.h>
 #include <qtooltip.h>
 //Added by qt3to4:
-#include <Q3VBoxLayout>
+//#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 #include <QPaintEvent>
 
 /*
@@ -31,8 +37,10 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
   if (!name)
     setName("CQTSSATimeScaleWidget");
 
-  mpVLayout = new Q3VBoxLayout(this);
+  mpVLayout = new QVBoxLayout(this);
+  //mpVLayout = new Q3VBoxLayout(this);
   mpPaintWidget = new PaintWidget(this, "PaintWidget");
+  mpPaintWidget->setMinimumHeight(200);
   mpSlider = new QSlider(Qt::Horizontal, this);
   mpSlider->setDisabled(true);
 
@@ -40,7 +48,8 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
   mpVLayout->addWidget(mpSlider);
 
   mpPaintWidget->setBackgroundColor(Qt::white);
-  mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  //mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   mpSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
   QToolTip::add(mpSlider, "move Slider to set focus on prefered time scale"); // <- helpful
@@ -57,25 +66,30 @@ CQTSSATimeScaleWidget::~CQTSSATimeScaleWidget()
 
 void CQTSSATimeScaleWidget::paintTimeScale(CVector< C_FLOAT64> vector)
 {
+
   if (vector.size() > 0)
     {
       mpPaintWidget->mClear = false;
       mpSlider->setDisabled(false);
+
       if (vector.size() != mpPaintWidget->mVector.size())
         {
           mpSlider->setRange(0, (vector.size() - 1));
           mpSlider->setValue(mpSlider->minValue());
         }
+
       mpPaintWidget->mVector = vector;
       mpPaintWidget->paintTimeScale(mpSlider->value());
       mpPaintWidget->repaint();
     }
+
 }
 
 void CQTSSATimeScaleWidget::changedInterval()
 {
   if (mpPaintWidget->mVector.size() == 0)
     return;
+
   mpPaintWidget->paintTimeScale(mpSlider->value());
 }
 
@@ -98,6 +112,9 @@ PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   if (!name)
     setName("PaintWidget");
+
+  std::cout << "Constructor for Paint Widget " << std::endl;
+
 }
 
 /*
@@ -116,6 +133,7 @@ void PaintWidget::paintTimeScale(int select)
 
 void PaintWidget::paintEvent(QPaintEvent *)
 {
+
   if (mVector.size() == 0) return;
 
   if (mClear) return;
@@ -126,13 +144,17 @@ void PaintWidget::paintEvent(QPaintEvent *)
   int maxScaleValue = -1000;
   int minScaleValue = 1000;
   unsigned C_INT32 j;
+
   for (j = 0; j < mVector.size(); ++j)
     {
+
       if ((int)(log10(fabs(mVector[j])) + 1) > maxScaleValue)
         maxScaleValue = (int)(log10(fabs(mVector[j])) + 1);
+
       if ((int)(log10(fabs(mVector[j])) - 1) < minScaleValue)
         minScaleValue = (int)(log10(fabs(mVector[j])) - 1);
     }
+
   int scaleValueRange = maxScaleValue - minScaleValue;
 
   QPainter paint(this);
@@ -147,12 +169,12 @@ void PaintWidget::paintEvent(QPaintEvent *)
   paint.setPen(QPen(QColor(180, 0, 0), 5));
   paint.drawLine(space, space, space, space + 10);
   paint.setPen(QPen(QColor(0, 0, 0), 1));
-  paint.drawText (space + 5, space + 10, " - negative time scale values");
+  paint.drawText(space + 5, space + 10, " - negative time scale values");
 
   paint.setPen(QPen(QColor(0, 180, 0), 5));
   paint.drawLine(space, space + 20, space, space + 30);
   paint.setPen(QPen(QColor(0, 0, 0), 1));
-  paint.drawText (space + 5, space + 30, " - positive time scale values");
+  paint.drawText(space + 5, space + 30, " - positive time scale values");
 
   //axis
   paint.setPen(QPen(QColor(100, 100, 100), 1));
@@ -164,6 +186,7 @@ void PaintWidget::paintEvent(QPaintEvent *)
 
   //tics
   C_INT32 i;
+
   for (i = 0; i <= scaleValueRange; i++)
     {
       position = scaleBegin + (int)(i * axisLength / scaleValueRange);
@@ -177,26 +200,31 @@ void PaintWidget::paintEvent(QPaintEvent *)
   int yTop = yCentre - 50;
   int xText = v.right() - space - 230;
   int yText = space + 30;
+
   for (j = 0; j < mVector.size(); j++)
     {
       position = scaleBegin + (int)((log10(fabs(mVector[j])) - minScaleValue) * axisLength / scaleValueRange);
+
       if ((uint)mSelection == (uint)(mVector.size() - 1 - j))
         {
           if (mVector[j] < 0)
             paint.setPen(QPen(QColor(180, 20, 20), 4));
           else
             paint.setPen(QPen(QColor(20, 180, 20), 4));
+
           paint.drawLine(position, yCentre - 1, position, yTop);
           paint.setPen(QPen(QColor(200, 200, 200), 1));
           //          paint.setFont(QFont("Courier", 20));
           paint.drawLine(xText, yText, position + 1, yTop - 1);
           paint.drawLine(xText, yText, scaleEnd, yText);
           paint.setPen(QPen(QColor(0, 0, 0), 1));
+
           if (mVector[j] < 0)
-            paint.drawText (xText + 1, yText - 15, " log10 (|" + QString::number(mVector[j]) + "|) = " + QString::number(log10(fabs(mVector[j]))));
+            paint.drawText(xText + 1, yText - 15, " log10 (|" + QString::number(mVector[j]) + "|) = " + QString::number(log10(fabs(mVector[j]))));
           else
-            paint.drawText (xText + 1, yText - 15, " log10 (" + QString::number(fabs(mVector[j])) + ") = " + QString::number(log10(fabs(mVector[j]))));
-          paint.drawText (scaleBegin + scaleEnd / 2 - 50, yCentre + 50, " log timescale");
+            paint.drawText(xText + 1, yText - 15, " log10 (" + QString::number(fabs(mVector[j])) + ") = " + QString::number(log10(fabs(mVector[j]))));
+
+          paint.drawText(scaleBegin + scaleEnd / 2 - 50, yCentre + 50, " log timescale");
         }
       else
         {
@@ -204,8 +232,10 @@ void PaintWidget::paintEvent(QPaintEvent *)
             paint.setPen(QPen(QColor(180, 20, 20), 2));
           else
             paint.setPen(QPen(QColor(20, 180, 20), 2));
+
           paint.drawLine(position, yCentre - 1, position, yTop);
         }
     }
+
   paint.restore();
 }

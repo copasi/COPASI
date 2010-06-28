@@ -16,10 +16,38 @@
 
 #include <qvariant.h>
 
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3GridLayout>
+#include <QPixmap>
+#include <Q3VBoxLayout>
+
+class QSignalMapper;
+
+#include <QtGui/QDialog>
+#include <QtCore/QVariant>
+#include <QtGui/QAction>
+#include <QtGui/QApplication>
+#include <Qt3Support/Q3ButtonGroup>
+#include <Qt3Support/Q3GridLayout>
+#include <QtGui/QPushButton>
+#include <QtGui/QSpacerItem>
+#include <QtGui/QTabWidget>
+#include <Qt3Support/Q3VBoxLayout>
+#include <QtGui/QWidget>
+#include <QToolButton>
+#include <QSignalMapper>
+
+
 #include "ui_CQTSSAResultSubWidget.h"
 
 #include "CQArrayAnnotationsWidget.h"
+#include "CQTSSATimeScaleWidget.h"
+
 #include "CTimeSeriesTable.h"
+#include "tssanalysis/CTSSATask.h"
+#include "tssanalysis/CTSSAProblem.h"
+#include "model/CModel.h"
 
 class CQTSSAResultSubWidget : public CopasiWidget, public Ui::CQTSSAResultSubWidget
 {
@@ -29,28 +57,33 @@ public:
   CQTSSAResultSubWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~CQTSSAResultSubWidget();
 
-  void displayOptimizationTab(bool displayOptTab);
-  void setStepNumber();
+  CTSSATask* pTSSATask;
+  CTSSAProblem* pProblem;
+  CTSSAMethod* pMethod;
+
+  CModel* pModel;
+  C_INT mpIndex;
+
+  void displayResult();
   void discardOldResults();
-  void setStepSelectionDisabled(bool set);
-  void activateTab(int tab);
-  void changeToCSP();
-  void changeToILDM();
-  virtual void changeToILDMModified();
-  void displayCSPDevelopment(bool displayCSPTab);
 
 public slots:
-  virtual CTimeSeriesTable * table();
-  void changeILDMInterval();
-  void changeCSPInterval();
-  void hideButtons();
-  virtual void changeILDMModifiedInterval();
+  void changeInterval();
+
+protected :
+  QSignalMapper * mpComboMap;
+  QSignalMapper * mpComboMap1;
+  QSignalMapper * mpComboMap2;
 
 protected slots:
   virtual void languageChange();
+  void slotTableChanged();
+  void slotTimeOrStepChanged();
+  void changeLabelToTime();
+  void changeLabelToStep();
+  void changeContents();
 
   void saveDataToFile();
-  void toggleView();
   virtual void init();
 
 
