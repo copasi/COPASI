@@ -213,14 +213,7 @@ void CQTSSAResultSubWidget::init()
 
   mpLabel->setNum(0);
 
-  mpBox1->setEditable(false);
-
-  mpComboMap1 = NULL;
-  pdelete(mpComboMap1);
-
-  mpComboMap1 = new QSignalMapper(this);
-  connect(mpComboMap1, SIGNAL(mapped(int)), this, SLOT(slotTableChanged(/* int */)));
-
+  connect(mpBox1, SIGNAL(currentIndexChanged(int)), this, SLOT(slotTableChanged(/* int */)));
 
   //set colorsettings for ArrayAnnotationWidgets
 
@@ -235,6 +228,8 @@ void CQTSSAResultSubWidget::init()
   connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
   connect(mpButton1, SIGNAL(clicked()), this, SLOT(changeLabelToTime()));
   connect(mpButton2, SIGNAL(clicked()), this, SLOT(changeLabelToStep()));
+
+  mpBox1->setEditable(false);
 
   mpIndex = 0;
   mpTimeScaleWidget->hide();
@@ -273,12 +268,7 @@ void CQTSSAResultSubWidget::displayResult()
 
   for (i = 0; i <  pMethod->getTableName().size(); i++)
     {
-      mpComboMap1->setMapping(mpBox1, i);
-      connect(mpBox1, SIGNAL(activated(int)), mpComboMap1, SLOT(map()));
-
       mpBox1->insertItem(FROM_UTF8(pMethod->getTableName()[i]));
-
-
     }
 
   changeInterval();
@@ -291,7 +281,7 @@ void CQTSSAResultSubWidget::discardOldResults()
 {
   mpArrayWidget->setArrayAnnotation(NULL);
   mpLabel->setNum(0);
-  //mpTimeScaleWidget->clearWidget();
+  mpTimeScaleWidget->clearWidget();
 }
 
 /**
@@ -315,6 +305,5 @@ void CQTSSAResultSubWidget::changeInterval()
 
   CVector< C_FLOAT64> vec = pMethod->getVec_TimeScale(s);
   mpTimeScaleWidget->paintTimeScale(vec);
-
 }
 

@@ -22,7 +22,6 @@
 #include <QPixmap>
 #include <Q3VBoxLayout>
 
-class QSignalMapper;
 
 #include <QtGui/QDialog>
 #include <QtCore/QVariant>
@@ -36,7 +35,6 @@ class QSignalMapper;
 #include <Qt3Support/Q3VBoxLayout>
 #include <QtGui/QWidget>
 #include <QToolButton>
-#include <QSignalMapper>
 
 
 #include "ui_CQTSSAResultSubWidget.h"
@@ -71,9 +69,6 @@ public slots:
   void changeInterval();
 
 protected :
-  QSignalMapper * mpComboMap;
-  QSignalMapper * mpComboMap1;
-  QSignalMapper * mpComboMap2;
 
 protected slots:
   virtual void languageChange();
