@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.277.2.16 $
+//   $Revision: 1.277.2.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/31 15:48:47 $
+//   $Date: 2010/06/30 22:14:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,20 +176,29 @@ static const unsigned char image0_data[] =
 
 CopasiUI3Window * CopasiUI3Window::create()
 {
-  CopasiUI3Window * pWindow = new CopasiUI3Window;
+  CopasiUI3Window * pWindow = NULL;
+
+  pWindow = new CopasiUI3Window;
 
 #ifdef COPASI_LICENSE_COM
 
-  if (!pWindow->checkRegistration())
-    pdelete(pWindow);
+  if (pWindow != NULL &&
+      !pWindow->checkRegistration())
+    {
+      pdelete(pWindow);
+    }
 
 #endif // COPASI_LICENSE_COM
 
 #ifdef COPASI_SBW_INTEGRATION
-  pWindow->sbwConnect();
 
-  if (COptions::compareValue("SBWRegister", true))
-    pWindow->sbwRegister();
+  if (pWindow != NULL)
+    {
+      pWindow->sbwConnect();
+
+      if (COptions::compareValue("SBWRegister", true))
+        pWindow->sbwRegister();
+    }
 
 #endif // COPASI_SBW_INTEGRATION
 
