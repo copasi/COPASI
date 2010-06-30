@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/08 14:07:46 $
+//   $Author: nsimus $
+//   $Date: 2010/06/30 11:47:22 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -85,6 +90,8 @@ public:
 
   void setFocusOnBars();
 
+  void switchToTable();
+
 protected slots:
 
   void selectionTableChanged(int row, int col);
@@ -152,7 +159,7 @@ protected:
   double** data;
   std::vector< QColor > mColors;
   void enableBarChart(bool enable);
-  void switchToTable();
+  //void switchToTable();
   void switchToBarChart();
 
   Q3Table* mpSelectionTable;
