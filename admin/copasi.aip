@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT type="Advanced Installer" CreateVersion="3.9" version="7.3" modules="freeware" RootPath="." Language="en">
+<DOCUMENT Type="Advanced Installer" CreateVersion="3.9" version="7.7" Modules="freeware" RootPath="." Language="en">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_UPGRADE" Value="No"/>
     <ROW Property="ALLUSERS" Value="2"/>
@@ -56,13 +56,14 @@
     <ROW Component="brusselator.cps" ComponentId="{D7ED136C-BB0F-4739-9B7B-89F12B8627EE}" Directory_="examples_DIR" Attributes="0" KeyPath="brusselator.cps" Type="0"/>
     <ROW Component="command" ComponentId="{5A07C51A-1D21-4DF6-A6DA-050E5C32BAB2}" Directory_="APPDIR" Attributes="4" KeyPath="__4"/>
     <ROW Component="cps" ComponentId="{E62377FB-AC3C-4FBC-ACD8-FA8B1813731D}" Directory_="APPDIR" Attributes="4" KeyPath="_"/>
+    <ROW Component="libmmd.dll" ComponentId="{C20DDD9D-00AF-4DEF-A138-A9F92FE53C11}" Directory_="bin_DIR" Attributes="0" KeyPath="libmmd.dll"/>
     <ROW Component="msvcp80.dll" ComponentId="{9D6DBE44-5457-4173-9816-84ED83C0AC49}" Directory_="bin_DIR" Attributes="0" KeyPath="msvcp80.dll"/>
     <ROW Component="msvcr80.dll" ComponentId="{14F20661-B16F-4594-87A9-4B18F85AFFB0}" Directory_="bin_DIR" Attributes="0" KeyPath="msvcr80.dll"/>
     <ROW Component="open" ComponentId="{102D3063-DEA3-4E69-AF32-24D6ED680EF2}" Directory_="APPDIR" Attributes="4" KeyPath="__3"/>
     <ROW Component="shell" ComponentId="{204FCDFD-1F05-46E3-88C4-931D75005CDC}" Directory_="APPDIR" Attributes="4" KeyPath="__2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon MIRIAMResources.xml QtXml4.dll msvcp80.dll msvcr80.dll Qt3Support4.dll QtCore4.dll QtGui4.dll QtNetwork4.dll QtOpenGL4.dll QtSql4.dll QtSvg4.dll"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon MIRIAMResources.xml QtXml4.dll msvcp80.dll msvcr80.dll Qt3Support4.dll QtCore4.dll QtGui4.dll QtNetwork4.dll QtOpenGL4.dll QtSql4.dll QtSvg4.dll libmmd.dll"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -109,11 +110,12 @@
     <ROW File="TutWiz_Step6.html" Component_="TutWiz_Step1.html" FileName="TutWiz~6.htm|TutWiz-Step6.html" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\TutWiz-Step6.html" SelfReg="false" Sequence="9"/>
     <ROW File="YeastGlycolysis.gps" Component_="brusselator.cps" FileName="YeastG~1.gps|YeastGlycolysis.gps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\YeastGlycolysis.gps" SelfReg="false" Sequence="14"/>
     <ROW File="brusselator.cps" Component_="brusselator.cps" FileName="brusse~1.cps|brusselator.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\brusselator.cps" SelfReg="false" Sequence="10"/>
+    <ROW File="libmmd.dll" Component_="libmmd.dll" FileName="libmmd.dll" Attributes="0" SourcePath="..\..\..\distribution\libmmd.dll" SelfReg="false" Sequence="46"/>
     <ROW File="msvcp80.dll" Component_="msvcp80.dll" FileName="msvcp80.dll" Attributes="0" SourcePath="..\..\..\distribution\msvcp80.dll" SelfReg="false" Sequence="37"/>
     <ROW File="msvcr80.dll" Component_="msvcr80.dll" FileName="msvcr80.dll" Attributes="0" SourcePath="..\..\..\distribution\msvcr80.dll" SelfReg="false" Sequence="38"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageName="..\Copasi-26-WIN32" Languages="en" InstallationType="4"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder=".." PackageFileName="Copasi-26-WIN32" Languages="en" InstallationType="4"/>
     <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
@@ -123,6 +125,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
     <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
     <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
+    <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
     <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
     <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
     <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
@@ -149,6 +152,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="AI_CUSTACTS_aicustact.dll" Target="PrepareUpgrade"/>
     <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="AI_CUSTACTS_aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_ResolveKnownFolders" Type="1" Source="AI_CUSTACTS_aicustact.dll" Target="AI_ResolveKnownFolders"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
@@ -168,9 +172,11 @@
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="740"/>
     <ROW Action="AI_STORE_LOCATION" Condition="Not Installed" Sequence="1545"/>
     <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1300"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="51"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="740"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="51"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="Content_Type_1" Root="0" Key=".cps" Name="Content Type" Value="text/xml" Component_="Content_Type_1"/>
@@ -189,7 +195,6 @@
     <ROW Shortcut="Uninstall" Directory_="SHORTCUTDIR" Name="Uninst~1|Uninstall" Component_="CopasiSE.exe" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFolder_msiexec.exe" IconIndex="0" ShowCmd="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
-    <ROW ThemeName="classic" ThemeManifestFilePath="&lt;AI_THEMES&gt;classic\classic.ini"/>
     <ATTRIBUTE name="UsedTheme" value="classic"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
