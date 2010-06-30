@@ -271,6 +271,8 @@ void CQTSSAResultSubWidget::displayResult()
       mpBox1->insertItem(FROM_UTF8(pMethod->getTableName()[i]));
     }
 
+  mpArrayWidget->switchToTable();
+
   changeInterval();
 }
 
@@ -280,6 +282,7 @@ void CQTSSAResultSubWidget::displayResult()
 void CQTSSAResultSubWidget::discardOldResults()
 {
   mpArrayWidget->setArrayAnnotation(NULL);
+
   mpLabel->setNum(0);
   mpTimeScaleWidget->clearWidget();
 }
