@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 11:58:09 $
+//   $Date: 2010/06/30 09:39:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,6 +159,7 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
     {
       mpSelectionTable->setReadOnly(true);
       mpSelectionTable->setNumRows(0);
+
       fillTable();
     }
   else if (mpArray->dimensionality() == 1)
@@ -648,8 +649,8 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
 //      setFocusOnBars();
 
-      //if (!mBarChartFilled)
-      fillBarChart();
+      if (!mBarChartFilled)
+        fillBarChart();
 
 //      setFocusOnBars();
       setFocusOnBars();
@@ -870,9 +871,11 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mpPlot3d)
     createBarChart();
 
-  mBarChartFilled = true;
+//  mBarChartFilled = true;
 
   if (!mpArray) return;
+
+  mBarChartFilled = true;
 
 #ifdef DEBUG_UI
   qDebug() << "mRowIndex = " << mRowIndex << " - mIndex.size() = " << mIndex.size();
@@ -989,8 +992,9 @@ void CQArrayAnnotationsWidget::fillBarChart()
       //deliver plot3D contents, colors and annotations
       if ((maxValue == 0) && (minValue == 0))
         {
-          // enableBarChart(false);
-          // mpPlot3d->emptyPlot();
+          mpPlot3d->emptyPlot();
+          mBarChartFilled = false;
+          return;
         }
       else
         {
@@ -1008,6 +1012,12 @@ void CQArrayAnnotationsWidget::fillBarChart()
           mpPlot3d->setData(data, columns, rows, holeSection);
           enableBarChart(true);
         }
+    }
+  else
+    {
+      mpPlot3d->emptyPlot();
+      mBarChartFilled = false;
+      return;
     }
 }
 
