@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: nsimus $
+//   $Date: 2010/06/30 12:20:11 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -76,9 +81,13 @@ CQTSSAResultWidget::~CQTSSAResultWidget()
 
 bool CQTSSAResultWidget::loadFromBackend()
 {
+
+#if 0
   mCentralWidget->displayOptimizationTab(false);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"])->getTimeSeries());
+#endif
+
   return true;
 }
 
@@ -101,9 +110,14 @@ bool CQTSSAResultWidget::update(ListViews::ObjectType objectType,
                                 ListViews::Action action,
                                 const std::string & /* key */)
 {
+
+#if 0
+
   if (objectType == ListViews::MODEL &&
       action == ListViews::ADD)
     mCentralWidget->table()->setTimeSeries(CTimeSeries());
+
+#endif
 
   return true;
 }
@@ -122,11 +136,17 @@ bool CQTSSAResultWidget::enterProtected()
 
   if (!pTSSILDM->mCurrentStep)
     {
+#if 0
       mCentralWidget->setStepSelectionDisabled(true);
+#endif
       mCentralWidget->discardOldResults();
     }
+
+#if 0
   else
     mCentralWidget->setStepSelectionDisabled(false);
+
+#endif
 
   return loadFromBackend();
   /*objKey = key;

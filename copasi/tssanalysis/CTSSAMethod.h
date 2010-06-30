@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 12:05:34 $
+//   $Date: 2010/06/30 12:19:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,7 @@ public:
 
   std::map< std::string, CArrayAnnotation* > mapTableToName;
   std::vector<std::string>  tableNames;
+
 
   const std::vector<std::string> getTableName() const
   {return tableNames;}

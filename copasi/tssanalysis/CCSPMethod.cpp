@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 12:04:23 $
+//   $Date: 2010/06/30 12:19:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,8 @@ void CCSPMethod::initializeParameter()
 
   createAnnotationsM();
   emptyVectors();
+
+
 }
 
 /* multiply submatrix */
@@ -799,7 +801,6 @@ cspiteration:
               {
 
                 /* No any fast exhausted modes was found on this time step */
-
                 CCopasiMessage(CCopasiMessage::WARNING,
                                MCTSSAMethod + 12, mTime);
                 return;
@@ -860,7 +861,6 @@ cspiteration:
                   {
 
                     /* No any fast exhausted modes was found on this time step */
-
                     CCopasiMessage(CCopasiMessage::WARNING,
                                    MCTSSAMethod + 12, mTime);
                     return;
