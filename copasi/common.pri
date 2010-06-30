@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.114.2.4 $ 
+#   $Revision: 1.114.2.5 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/05/28 16:10:03 $ 
+#   $Date: 2010/06/30 19:47:49 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.114.2.4 $ $Author: shoops $ $Date: 2010/05/28 16:10:03 $  
+# $Revision: 1.114.2.5 $ $Author: shoops $ $Date: 2010/06/30 19:47:49 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -280,12 +280,7 @@ contains(BUILD_OS, WIN32) {
 
 
 #expat library
-  contains(RUNTIME, MT) | contains (RUNTIME, MTd) {
-    LIBS += libexpatMT.lib
-  } else {
-    DEFINES -= XML_STATIC
-    LIBS += libexpat.lib
-  }
+  LIBS += libexpat$${RUNTIME}.lib
 
   !isEmpty(EXPAT_PATH) {
     QMAKE_CXXFLAGS += -I\""$${EXPAT_PATH}"\Source\lib\"
