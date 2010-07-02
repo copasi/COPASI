@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 12:05:25 $
+//   $Date: 2010/07/02 10:26:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,7 +170,8 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
           case tssILDM:
           case tssILDMModified:
 
-            CCopasiMessage(CCopasiMessage::ERROR, "This method is not applicable for a system with more than one compartment.");
+            //CCopasiMessage(CCopasiMessage::ERROR, "This method is not applicable for a system with more than one compartment.");
+            CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 16);
             return false;
 
           case tssCSP:
@@ -187,7 +188,8 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
                 if (comp->getInitialValue() != compi->getInitialValue())
                   {
-                    CCopasiMessage(CCopasiMessage::ERROR, "In this version of Copasi the CSP Method only supports  compartments with equal size.");
+                    //      CCopasiMessage(CCopasiMessage::ERROR, "In this version of Copasi the CSP Method only supports  compartments with equal size.");
+                    CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 17);
                     return false;
 
                   }
