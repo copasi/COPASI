@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.147 $
+//   $Revision: 1.148 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/10 13:34:20 $
+//   $Author: nsimus $
+//   $Date: 2010/07/02 10:24:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -341,6 +341,8 @@ const MESSAGES Messages[] =
   {MCTSSAMethod + 13, "CTSSAMethod (13): Number of compartments has to be exactly one. "},
   {MCTSSAMethod + 14, "CTSSAMethod (14): The problem is not valid for this method: the metabolites determined by assigments or ODE are presenting. "},
   {MCTSSAMethod + 15, "CTSSAMethod (15): At time t='%f' the fastest of slow modes has positive eigen value. "},
+  {MCTSSAMethod + 16, "CTSSAMethod (16): This method is not applicable for a system with more than one compartment. "},
+  {MCTSSAMethod + 17, "CTSSAMethod (17): In this version of Copasi the CSP Method only supports  compartments with equal size  "},
 
   // CTSSAProblem
   {MCTSSAProblem + 1, "CTSSAProblem (1): Invalid step size = '%f'."},
