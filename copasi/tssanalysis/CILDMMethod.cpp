@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 12:05:13 $
+//   $Date: 2010/07/02 14:47:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1293,9 +1293,12 @@ void CILDMMethod::createAnnotationsM()
  *      some strings contain the Time Scale values for requested step
  *    - dimension description could consists of arrays of CommonNames
  **/
-void CILDMMethod::setAnnotationM(int step)
+//void CILDMMethod::setAnnotationM(int step)
+bool CILDMMethod::setAnnotationM(int step)
 {
-  if (!step) return;
+  if (step == 0) return false;
+
+  if (mVec_mVslow.size() == 0) return false;
 
   step -= 1;
   double timeScale;
@@ -1448,6 +1451,8 @@ void CILDMMethod::setAnnotationM(int step)
   pTMP3PrintAnn->resize();
   pTMP3PrintAnn->setCopasiVector(0, &mpModel->getReactions());
   pTMP3PrintAnn->setAnnotationString(1, 0, str);
+
+  return true;
 }
 
 void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs are not included in Report !!!

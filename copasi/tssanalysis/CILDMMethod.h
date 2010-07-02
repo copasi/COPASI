@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 12:04:37 $
+//   $Date: 2010/07/02 14:47:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,7 +231,8 @@ public:
   * set the every CArrayAnnotation for the requested step
   * set the desription of CArayAnnotation for both dimensions
   **/
-  void setAnnotationM(int step);
+  //void setAnnotationM(int step);
+  bool setAnnotationM(int step);
 
   /**
    *  print of the standart report sequence for ILDM Method

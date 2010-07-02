@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/30 12:19:28 $
+//   $Date: 2010/07/02 14:47:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1853,7 +1853,8 @@ void CCSPMethod::createAnnotationsM()
  *      some strings contain the Time Scale values for requested step
  *    - dimension description could consists of arrays of CommonNames
  **/
-void CCSPMethod::setAnnotationM(int step)
+//void CCSPMethod::setAnnotationM(int step)
+bool CCSPMethod::setAnnotationM(int step)
 {
   std::string str;
   std::stringstream sstr;
@@ -1863,7 +1864,9 @@ void CCSPMethod::setAnnotationM(int step)
   double timeScale;
   unsigned C_INT32 M;
 
-  if (!step) return;
+  if (step == 0) return false;
+
+  if (mVec_SlowModes.size() == 0) return false;
 
   step -= 1;
   M = mVec_SlowModes[step];
@@ -2055,6 +2058,9 @@ void CCSPMethod::setAnnotationM(int step)
   pImportanceIndexNormedRowAnn->resize(); // fixed
   pImportanceIndexNormedRowAnn->setCopasiVector(0, &mpModel->getReactions());
   pImportanceIndexNormedRowAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+
+  return true;
+
 }
 
 /**

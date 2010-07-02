@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 12:04:29 $
+//   $Date: 2010/07/02 14:47:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -413,7 +413,8 @@ public:
   * set the every CArrayAnnotation for the requested step
   * set the desription of CArayAnnotation for both dimensions
   **/
-  void setAnnotationM(int step);
+  //void setAnnotationM(int step);
+  bool setAnnotationM(int step);
 
   /**
    *  print of the standart report sequence for ILDM Method

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/30 12:19:10 $
+//   $Date: 2010/07/02 14:47:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,7 +113,8 @@ public:
   const CArrayAnnotation* getTable(std::string name)
   {return mapTableToName[name];}
 
-  virtual void setAnnotationM(int s) = 0;
+  //virtual void setAnnotationM(int s) = 0;
+  virtual bool setAnnotationM(int s) = 0;
 
   /**
    *  Set a pointer to the current state.

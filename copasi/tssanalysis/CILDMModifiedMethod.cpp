@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 12:04:59 $
+//   $Date: 2010/07/02 14:48:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1046,9 +1046,12 @@ void CILDMModifiedMethod::createAnnotationsM()
  *      some strings contain the Time Scale values for requested step
  *    - dimension description could consists of arrays of CommonNames
  **/
-void CILDMModifiedMethod::setAnnotationM(int step)
+//void CILDMModifiedMethod::setAnnotationM(int step)
+bool CILDMModifiedMethod::setAnnotationM(int step)
 {
-  if (!step) return;
+  if (step == 0) return false;
+
+  if (mVec_mVslow.size() == 0) return false;
 
   step -= 1;
   double timeScale;
@@ -1129,6 +1132,9 @@ void CILDMModifiedMethod::setAnnotationM(int step)
   pVfastSpacePrintAnn->resize();
   pVfastSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
   pVfastSpacePrintAnn->setAnnotationString(1, 0, str);
+
+  return true;
+
 }
 
 void CILDMModifiedMethod::printResult(std::ostream * ostream) const

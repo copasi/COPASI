@@ -298,15 +298,26 @@ void CQTSSAResultSubWidget::changeInterval()
   slotTimeOrStepChanged();
   int s = mpSlider->value();
 
-  pMethod->setAnnotationM(s);
+  //pMethod->setAnnotationM(s);
 
-  std::string name  =  static_cast<std::string >(mpBox1->currentText().toUtf8());
+  if (pMethod->setAnnotationM(s))
+    {
+      std::string name  =  static_cast<std::string >(mpBox1->currentText().toUtf8());
+      pResult = pMethod->getTable(name);
 
-  pResult = pMethod->getTable(name);
+      mpArrayWidget->setArrayAnnotation(pResult);
 
-  mpArrayWidget->setArrayAnnotation(pResult);
+      CVector< C_FLOAT64> vec = pMethod->getVec_TimeScale(s);
+      mpTimeScaleWidget->paintTimeScale(vec);
+    }
+  else
+    {
+      mpArrayWidget->setArrayAnnotation(NULL);
 
-  CVector< C_FLOAT64> vec = pMethod->getVec_TimeScale(s);
-  mpTimeScaleWidget->paintTimeScale(vec);
+      mpLabel->setNum(0);
+      mpTimeScaleWidget->clearWidget();
+
+    }
 }
+
 
