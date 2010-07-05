@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/28 11:59:44 $
+//   $Date: 2010/07/05 13:25:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,7 +285,9 @@ bool CQTSSAWidget::taskFinishedEvent()
     dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(271));
 
   if (pResult == NULL)
-    return false;
+    {
+      return false;
+    }
 
   success &= pResult->loadFromBackend();
 
@@ -295,6 +297,7 @@ bool CQTSSAWidget::taskFinishedEvent()
     return false;
 
   pTSSResultSubWidget->discardOldResults();
+
 
 
   if (success)
