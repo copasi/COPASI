@@ -61,7 +61,7 @@ public:
 
   CModel* pModel;
   C_INT mpIndex;
-
+  bool mAnnot;
   void displayResult();
   void discardOldResults();
 

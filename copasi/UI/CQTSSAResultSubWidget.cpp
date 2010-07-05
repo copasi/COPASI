@@ -136,13 +136,11 @@ void CQTSSAResultSubWidget::changeLabelToTime()
 
   int s = mpSlider->value();
 
-  if (s == 1)
-    mpLabel->setNum(0);
-  else
-    {
+  mpLabel->setNum(0);
 
-      mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
-    }
+  if (s > 1)
+    mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
+
 
 }
 
@@ -162,17 +160,13 @@ void CQTSSAResultSubWidget::slotTimeOrStepChanged()
   int s = mpSlider->value();
 
   if (mpButton1->isChecked())
-    if (s == 1)
-      mpLabel->setNum(0);
+    if (s > 1)
+      mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
     else
-      {
-
-        mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
-      }
+      mpLabel->setNum(0);
 
   if (mpButton2->isChecked())
     mpLabel->setNum(s);
-
 }
 
 void CQTSSAResultSubWidget::changeContents()
@@ -272,6 +266,7 @@ void CQTSSAResultSubWidget::displayResult()
     }
 
   mpArrayWidget->switchToTable();
+  mpSlider->setDisabled(false);
 
   changeInterval();
 }
@@ -282,8 +277,7 @@ void CQTSSAResultSubWidget::displayResult()
 void CQTSSAResultSubWidget::discardOldResults()
 {
   mpArrayWidget->setArrayAnnotation(NULL);
-
-  mpLabel->setNum(0);
+  mpArrayWidget->clearWidget();
   mpTimeScaleWidget->clearWidget();
 }
 
@@ -296,9 +290,8 @@ void CQTSSAResultSubWidget::changeInterval()
 {
 
   slotTimeOrStepChanged();
-  int s = mpSlider->value();
 
-  //pMethod->setAnnotationM(s);
+  int s = mpSlider->value();
 
   if (pMethod->setAnnotationM(s))
     {
@@ -312,9 +305,9 @@ void CQTSSAResultSubWidget::changeInterval()
     }
   else
     {
-      mpArrayWidget->setArrayAnnotation(NULL);
 
-      mpLabel->setNum(0);
+      mpSlider->setDisabled(true);
+      mpArrayWidget->setArrayAnnotation(NULL);
       mpTimeScaleWidget->clearWidget();
 
     }
