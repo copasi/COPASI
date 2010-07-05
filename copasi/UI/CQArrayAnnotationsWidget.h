@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2010/06/30 11:47:22 $
+//   $Date: 2010/07/05 13:22:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,6 +92,8 @@ public:
 
   void switchToTable();
 
+  void clearWidget();
+
 protected slots:
 
   void selectionTableChanged(int row, int col);
@@ -136,7 +138,7 @@ protected:
    */
   void storeCurrentCombos();
 
-  void clearWidget();
+  //void clearWidget();
 
   CQBarChart* mpPlot3d;
 
