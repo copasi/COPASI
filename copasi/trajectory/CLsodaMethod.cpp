@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.60.2.2 $
+//   $Revision: 1.60.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 17:18:36 $
+//   $Date: 2010/07/06 23:54:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -243,7 +243,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                   const bool * pDiscrete = mDiscreteRoots.array();
                   bool * pMask = mRootMask.array();
                   bool * pMaskEnd = pMask + mNumRoots;
-                  bool Destroy = false;
+                  bool Destroy = true;
 
                   for (; pMask != pMaskEnd; ++pMask, ++pDiscrete)
                     {
@@ -442,6 +442,11 @@ void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  /* y */,
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
+
+  if (*mpReducedModel)
+    {
+      mpModel->updateSimulatedValues(*mpReducedModel);
+    }
 
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
 
