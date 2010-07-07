@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.61.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/15 22:50:06 $
+//   $Date: 2010/07/07 15:58:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,12 +191,6 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (pProblem->getModel()->getEvents().size())
     {
-      if (mType == CCopasiTask::mca)
-        {
-          CCopasiMessage(CCopasiMessage::WARNING, MCCopasiMethod + 4, "Metabolic Control Analysis");
-          return false;
-        }
-
       if (mType == CCopasiTask::lyap)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Lyapunov Exponents");
