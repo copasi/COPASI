@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.81.2.2 $
+//   $Revision: 1.81.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/05/25 17:13:10 $
+//   $Date: 2010/07/07 15:56:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,8 +166,6 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
 
 bool CSteadyStateTask::updateMatrices()
 {
-  if (!mpMethod->isValidProblem(mpProblem)) return false;
-
   if (!mpProblem->getModel()) return false;
 
   const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
