@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.16.2.3 $
+//   $Revision: 1.16.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/06/02 11:43:53 $
+//   $Author: shoops $
+//   $Date: 2010/07/07 15:18:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,7 +170,9 @@ int main(int argc, char *argv[])
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for stochastic testsuite run");
       pReport->setTaskType(CCopasiTask::timeCourse);
       pReport->setIsTable(false);
+
       CCopasiReportSeparator Separator(std::string(","));
+      pReport->setSeparator(Separator);
 
       std::vector<CRegisteredObjectName> * pHeader = pReport->getHeaderAddr();
       std::vector<CRegisteredObjectName> * pBody = pReport->getBodyAddr();
