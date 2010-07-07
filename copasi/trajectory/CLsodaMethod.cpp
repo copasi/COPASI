@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.60.2.3 $
+//   $Revision: 1.60.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/06 23:54:09 $
+//   $Date: 2010/07/07 01:14:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,9 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::deterministic, pParent),
     mpState(NULL),
     mY(NULL),
-    mRootMask()
+    mRootMask(),
+    mTargetTime(0.0),
+    mRootCounter(0)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -179,6 +181,22 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
     }
 
   C_FLOAT64 EndTime = mTime + deltaT;
+
+  if (mTargetTime != EndTime)
+    {
+      mTargetTime = EndTime;
+      mRootCounter = 0;
+    }
+  else
+    {
+      mRootCounter++;
+
+      if (mRootCounter > *mpMaxInternalSteps)
+        {
+          return FAILURE;
+        }
+    }
+
   C_INT ITOL = 2; // mRtol scalar, mAtol vector
   C_INT one = 1;
   C_INT DSize = mDWork.size();
@@ -341,6 +359,8 @@ void CLsodaMethod::start(const CState * initialState)
   pdelete(mpState);
   mpState = new CState(*initialState);
   mTime = mpState->getTime();
+  mTargetTime = mTime;
+  mRootCounter = 0;
 
   mNumRoots = mpModel->getNumRoots();
   mRoots.resize(mNumRoots);
