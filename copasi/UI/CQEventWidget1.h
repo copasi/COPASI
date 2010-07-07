@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.11.2.1 $
+//   $Revision: 1.11.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/11 20:29:56 $
+//   $Date: 2010/07/07 21:07:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,11 +23,12 @@
 
 #include "ui_CQEventWidget1.h"
 
+#include "copasi/model/CEvent.h"
+#include "copasi/utilities/CCopasiVector.h"
+
 class CQExpressionWidget;
 class CCompartment;
 class CExpression;
-class CEvent;
-class CEventAssignment;
 
 class CQEventWidget1 : public CopasiWidget, public Ui::CQEventWidget1
 {
@@ -55,7 +56,7 @@ private:
   CEvent *mpEvent;
   std::string mAssignmentKey;
   unsigned C_INT32 mCurrentTarget;
-  std::vector< CEventAssignment > mAssignments;
+  CCopasiVector< CEventAssignment > mAssignments;
 
   void init();
   bool loadFromEvent();

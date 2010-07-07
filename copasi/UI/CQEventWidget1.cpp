@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.22.2.1 $
+//   $Revision: 1.22.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/11 20:29:56 $
+//   $Date: 2010/07/07 21:07:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,7 @@ void CQEventWidget1::slotAddTarget()
 
   if (pME == NULL) return;
 
-  mAssignments.push_back(CEventAssignment(pME->getKey()));
+  mAssignments.add(new CEventAssignment(pME->getKey()), true);
   mpLBTarget->addItem(FROM_UTF8(pME->getObjectDisplayName()));
 
   mpLBTarget->setCurrentRow(mAssignments.size() - 1);
@@ -199,12 +199,15 @@ void CQEventWidget1::slotDeleteTarget()
   if (mCurrentTarget > mAssignments.size() - 1 ||
       mAssignments.size() == 0) return;
 
-  mAssignments.erase(mAssignments.begin() + mCurrentTarget);
-  delete mpLBTarget->takeItem(mCurrentTarget);
+  unsigned C_INT32 ToBeDeleted = mCurrentTarget;
 
-  mCurrentTarget = C_INVALID_INDEX;
+  QListWidgetItem * pItem = mpLBTarget->takeItem(ToBeDeleted);
+  pdelete(pItem);
 
-  mpLBTarget->setCurrentRow(std::max<unsigned C_INT32>(mCurrentTarget, mAssignments.size() - 1));
+  mAssignments.remove(ToBeDeleted);
+
+  mCurrentTarget = mpLBTarget->currentIndex().row();
+
 }
 
 /*! Load all values with respect to a chosen saved event */
@@ -252,8 +255,8 @@ bool CQEventWidget1::loadFromEvent()
   CCopasiVectorN< CEventAssignment >::const_iterator end = mpEvent->getAssignments().end();
 
   mAssignments.clear();
-  QStringList Targets;
 
+  QStringList Targets;
   int ijk = 0;
 
   for (; it != end; ++it, ijk++)
@@ -264,7 +267,7 @@ bool CQEventWidget1::loadFromEvent()
       if (pEntity != NULL)
         {
           Targets.append(FROM_UTF8(pEntity->getObjectDisplayName()));
-          mAssignments.push_back(**it);
+          mAssignments.add(**it);
 
 #ifdef XXXX // Add type dependent information
 
@@ -374,11 +377,11 @@ void CQEventWidget1::saveToEvent()
   // First we make sure that the current assignment is saved
   if (mCurrentTarget != C_INVALID_INDEX)
     {
-      mAssignments[mCurrentTarget].setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
+      mAssignments[mCurrentTarget]->setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
     }
 
-  std::vector< CEventAssignment >::const_iterator it = mAssignments.begin();
-  std::vector< CEventAssignment >::const_iterator end = mAssignments.end();
+  CCopasiVector< CEventAssignment >::const_iterator it = mAssignments.begin();
+  CCopasiVector< CEventAssignment >::const_iterator end = mAssignments.end();
 
   CCopasiVectorN< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
   unsigned C_INT32 Found;
@@ -386,16 +389,16 @@ void CQEventWidget1::saveToEvent()
   // We first update all assignments.
   for (; it != end; ++it)
     {
-      Found = OldAssignments.getIndex(it->getTargetKey());
+      Found = OldAssignments.getIndex((*it)->getTargetKey());
 
       if (Found == C_INVALID_INDEX)
         {
-          OldAssignments.add(*it);
+          OldAssignments.add(**it);
           mChanged = true;
         }
-      else if (OldAssignments[Found]->getExpression() != it->getExpression())
+      else if (OldAssignments[Found]->getExpression() != (*it)->getExpression())
         {
-          OldAssignments[Found]->setExpression(it->getExpression());
+          OldAssignments[Found]->setExpression((*it)->getExpression());
           mChanged = true;
         }
     }
@@ -413,7 +416,7 @@ void CQEventWidget1::saveToEvent()
 
       for (it = mAssignments.begin(); it != end; ++it)
         {
-          if (key == it->getTargetKey()) break;
+          if (key == (*it)->getTargetKey()) break;
         }
 
       if (it == end)
@@ -490,7 +493,7 @@ void CQEventWidget1::slotSelectObject()
 
   if (pME == NULL) return;
 
-  if (mAssignments[mCurrentTarget].setTargetKey(pME->getKey()))
+  if (mAssignments[mCurrentTarget]->setTargetKey(pME->getKey()))
     {
       // If the target key change was successfull we need to update the label.
       mpLBTarget->item(mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
@@ -512,7 +515,7 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
   if (NewTarget != mCurrentTarget &&
       mCurrentTarget < mAssignments.size())
     {
-      mAssignments[mCurrentTarget].setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
+      mAssignments[mCurrentTarget]->setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
     }
 
   mCurrentTarget = NewTarget;
@@ -531,7 +534,7 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
       mpLabelEA->show();
       mpExpressionEA->show();
 
-      mpExpressionEA->mpExpressionWidget->setExpression(mAssignments[mCurrentTarget].getExpression());
+      mpExpressionEA->mpExpressionWidget->setExpression(mAssignments[mCurrentTarget]->getExpression());
       mpExpressionEA->updateWidget();
     }
 }
