@@ -76,7 +76,7 @@ cd ../InnoSetup
 sed -e '/#define MyAppVersion/s/".*"/"'${major}.${minor}.${build}'"/' \
     -e '/#define MyBuild/s/".*"/"'${build}'"/' \
     -e '/#define MyAppId/s/".*"/"{{'${productcode}'}"/' \
-    -e '/#define MyWorkDir/s/"."/"'`cygpath -wa .`'"/' \
+    -e '/#define MyWorkDir/s/".*"/"'`cygpath -wa .`'"/' \
     copasi.iss > tmp.iss
 
 # Run Inno Setup to create package
