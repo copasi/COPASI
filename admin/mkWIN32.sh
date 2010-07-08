@@ -84,7 +84,7 @@ sed -e '/#define MyAppVersion/s/".*"/"'${major}.${minor}.${build}'"/' \
 
 # Run Inno Setup to create package
 "$InnoSetup" tmp.iss
-# rm tmp.iss
+rm tmp.iss
 
 # Move the package to its final location
 mv Copasi-$build-$1.exe ..
