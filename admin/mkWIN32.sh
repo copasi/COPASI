@@ -72,16 +72,19 @@ chmod 644 copasi/share/copasi/doc/html/figures/*.png
 # 
 cd ../InnoSetup
 
+workdir=`cygpath -wa .`
+workdir=${workdir//\\/\\\\}
+
 #   modify product code, product version, and package name
 sed -e '/#define MyAppVersion/s/".*"/"'${major}.${minor}.${build}'"/' \
     -e '/#define MyBuild/s/".*"/"'${build}'"/' \
     -e '/#define MyAppId/s/".*"/"{{'${productcode}'}"/' \
-    -e '/#define MyWorkDir/s/".*"/"'`cygpath -wa .`'"/' \
+    -e '/#define MyWorkDir/s/".*"/"'${workdir}'"/' \
     copasi.iss > tmp.iss
 
 # Run Inno Setup to create package
 "$InnoSetup" tmp.iss
-rm tmp.iss
+# rm tmp.iss
 
 # Move the package to its final location
 mv Copasi-$build-$1.exe ..
