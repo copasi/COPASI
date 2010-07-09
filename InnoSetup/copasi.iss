@@ -2,13 +2,13 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "COPASI"
-#define MyAppVersion "X.Y.Z"
+#define MyAppVersion "0.0.0"
 #define MyAppPublisher "copasi.org"
 #define MyAppURL "http://www.copasi.org/"
 #define MyAppExeName "bin\CopasiUI.exe"
-#define MyBuild "Z"
+#define MyBuild "0"
 #define MyAppId "{{00000000-0000-0000-0000-000000000000}"
-#define MyWorkDir "K:\cygwin\home\shoops\copasi_dev\HEAD\InnoSetup"
+#define MyWorkDir "C:\cygwin\home\shoops\environment\qt4\copasi_dev\development\InnoSetup"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -152,9 +152,16 @@ function InstallRuntime(): Boolean;
 begin
   Result := True;
 
-  if RegKeyExists(HKLM,
+  if RegKeyExists(HKEY_LOCAL_MACHINE,
     'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A49F249F-0C91-497F-86DF-B2585E8E76B7}') then
   begin
     Result := False;
   end;
+end;
+
+function InitializeSetup(): Boolean;
+begin
+  Result := True;
+
+  RegDeleteValue(HKEY_CURRENT_USER, 'Environment', 'COPASIDIR');
 end;
