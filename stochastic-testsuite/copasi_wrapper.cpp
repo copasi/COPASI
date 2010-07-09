@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.16.2.4 $
+//   $Revision: 1.16.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/07 15:18:15 $
+//   $Date: 2010/07/09 21:17:20 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
 
           for (j = 0; j < jMax; ++j)
             {
-              if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
+              if (metabolites[j]->getSBMLId() == SBMLId)
                 {
                   break;
                 }
