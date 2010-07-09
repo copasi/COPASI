@@ -122,7 +122,7 @@ Root: HKCR; SubKey: .cps; ValueType: string; ValueData: COPASI.document; Flags: 
 Root: HKCR; SubKey: COPASI.document; ValueType: string; ValueData: COPASI File; Flags: uninsdeletekey
 Root: HKCR; SubKey: COPASI.document\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: COPASI.document\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue
-Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}; Flags: uninsdeletevalue
+Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}
 Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdatePath
 
 [Code]
