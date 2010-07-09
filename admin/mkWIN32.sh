@@ -1,6 +1,7 @@
 InnoSetup="/cygdrive/c/Program Files/Inno Setup 5/ISCC.exe"
+VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 
-# Create the unique product code based 
+# Create the unique product code based on version and application name
 GUID=`md5sum << EOF
 #define MyAppName "COPASI"
 #define MyAppVersion "${major}.${minor}.${build}"
@@ -36,9 +37,14 @@ chmod 644 copasi/README.txt
 cp ../COPASI_License_${license}.txt copasi/LICENSE.txt
 chmod 644 copasi/LICENSE.txt
 
-# Copy executables
+# Copy executables and manifests 
 cp ../copasi/CopasiUI/release/CopasiUI.exe*  copasi/bin
 cp ../copasi/CopasiSE/release/CopasiSE.exe  copasi/bin
+
+# Include the manifest in CopasiUI.exe
+"$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
+    -manifest copasi\\bin\\CopasiUI.exe.manifest \
+    -outputresource:copasi\\bin\\CopasiUI.exe\;1
 
 # Copy dependencies
 cp ~/environment/distribution/* copasi/bin
