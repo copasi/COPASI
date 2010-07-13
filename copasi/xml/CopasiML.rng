@@ -60,230 +60,7 @@
       </optional>
       <optional>
         <element name="ListOfLayouts">
-          <zeroOrMore>
-            <element name="Layout">
-              <element name="Dimensions">
-                <attribute name="width">
-                  <data type="double"/>
-                </attribute>
-                <attribute name="height">
-                  <data type="double"/>
-                </attribute>
-              </element>
-              <optional>
-                <element name="ListOfCompartmentGlyphs">
-                  <zeroOrMore>
-                    <element name="CompartmentGlyph">
-                      <element name="BoundingBox">
-                        <ref name="boundingBox.datatype"/>
-                      </element>
-                      <attribute name="key">
-                        <data type="ID">
-                          <param name="pattern">Layout_\d+</param>
-                        </data>
-                      </attribute>
-                      <optional>
-                        <attribute name="name">
-                          <data type="string"/>
-                        </attribute>
-                      </optional>
-                      <optional>
-                        <attribute name="compartment">
-                          <data type="IDREF">
-                            <param name="pattern">Compartment_\d+</param>
-                          </data>
-                        </attribute>
-                      </optional>
-                    </element>
-                  </zeroOrMore>
-                </element>
-              </optional>
-              <optional>
-                <element name="ListOfMetabGlyphs">
-                  <zeroOrMore>
-                    <element name="MetaboliteGlyph">
-                      <element name="BoundingBox">
-                        <ref name="boundingBox.datatype"/>
-                      </element>
-                      <attribute name="key">
-                        <data type="ID">
-                          <param name="pattern">Layout_\d+</param>
-                        </data>
-                      </attribute>
-                      <optional>
-                        <attribute name="name">
-                          <data type="string"/>
-                        </attribute>
-                      </optional>
-                      <optional>
-                        <attribute name="metabolite">
-                          <data type="IDREF">
-                            <param name="pattern">Metabolite_\d+</param>
-                          </data>
-                        </attribute>
-                      </optional>
-                    </element>
-                  </zeroOrMore>
-                </element>
-              </optional>
-              <optional>
-                <element name="ListOfReactionGlyphs">
-                  <zeroOrMore>
-                    <element name="ReactionGlyph">
-                      <optional>
-                        <element name="BoundingBox">
-                          <ref name="boundingBox.datatype"/>
-                        </element>
-                      </optional>
-                      <optional>
-                        <element name="Curve">
-                          <ref name="layoutCurve.datatype"/>
-                        </element>
-                      </optional>
-                      <optional>
-                        <element name="ListOfMetaboliteReferenceGlyphs">
-                          <oneOrMore>
-                            <element name="MetaboliteReferenceGlyph">
-                              <optional>
-                                <element name="BoundingBox">
-                                  <ref name="boundingBox.datatype"/>
-                                </element>
-                              </optional>
-                              <optional>
-                                <element name="Curve">
-                                  <ref name="layoutCurve.datatype"/>
-                                </element>
-                              </optional>
-                              <attribute name="key">
-                                <data type="ID">
-                                  <param name="pattern">Layout_\d+</param>
-                                </data>
-                              </attribute>
-                              <optional>
-                                <attribute name="name">
-                                  <data type="string"/>
-                                </attribute>
-                              </optional>
-                              <optional>
-                                <attribute name="metaboliteGlyph">
-                                  <data type="IDREF">
-                                    <param name="pattern">Layout_\d+</param>
-                                  </data>
-                                </attribute>
-                              </optional>
-                              <optional>
-                                <attribute name="role">
-                                  <data type="string"/>
-                                </attribute>
-                              </optional>
-                            </element>
-                          </oneOrMore>
-                        </element>
-                      </optional>
-                      <attribute name="key">
-                        <data type="ID">
-                          <param name="pattern">Layout_\d+</param>
-                        </data>
-                      </attribute>
-                      <optional>
-                        <attribute name="name">
-                          <data type="string"/>
-                        </attribute>
-                      </optional>
-                      <optional>
-                        <attribute name="reaction">
-                          <data type="IDREF">
-                            <param name="pattern">Reaction_\d+</param>
-                          </data>
-                        </attribute>
-                      </optional>
-                    </element>
-                  </zeroOrMore>
-                </element>
-              </optional>
-              <optional>
-                <element name="ListOfTextGlyphs">
-                  <oneOrMore>
-                    <element name="TextGlyph">
-                      <element name="BoundingBox">
-                        <ref name="boundingBox.datatype"/>
-                      </element>
-                      <attribute name="key">
-                        <data type="ID">
-                          <param name="pattern">Layout_\d+</param>
-                        </data>
-                      </attribute>
-                      <optional>
-                        <attribute name="name">
-                          <data type="string"/>
-                        </attribute>
-                      </optional>
-                      <optional>
-                        <attribute name="graphicalObject">
-                          <data type="IDREF">
-                            <param name="pattern">[_a-zA-Z]+_\d+</param>
-                          </data>
-                        </attribute>
-                      </optional>
-                      <optional>
-                        <attribute name="originOfText">
-                          <data type="IDREF">
-                            <param name="pattern">[_a-zA-Z]+_\d+</param>
-                          </data>
-                        </attribute>
-                      </optional>
-                      <optional>
-                        <attribute name="text">
-                          <data type="string"/>
-                        </attribute>
-                      </optional>
-                    </element>
-                  </oneOrMore>
-                </element>
-              </optional>
-              <optional>
-                <element name="ListOfAdditionalGraphicalObjects">
-                  <oneOrMore>
-                    <element name="AdditionalGraphicalObject">
-                      <element name="BoundingBox">
-                        <ref name="boundingBox.datatype"/>
-                      </element>
-                      <attribute name="key">
-                        <data type="ID">
-                          <param name="pattern">Layout_\d+</param>
-                        </data>
-                      </attribute>
-                      <optional>
-                        <attribute name="name">
-                          <data type="string"/>
-                        </attribute>
-                      </optional>
-                    </element>
-                  </oneOrMore>
-                </element>
-              </optional>
-              <optional>
-                <element name="ListOfRenderInformation">
-                  <ref name="listOfLocalRenderInformation.datatype"/>
-                </element>
-              </optional>
-              <attribute name="key">
-                <data type="ID">
-                  <param name="pattern">Layout_\d+</param>
-                </data>
-              </attribute>
-              <optional>
-                <attribute name="name">
-                  <data type="string"/>
-                </attribute>
-              </optional>
-            </element>
-          </zeroOrMore>
-          <optional>
-            <element name="ListOfGLobalRenderInformation">
-              <ref name="listOfGlobalRenderInformation.datatype"/>
-            </element>
-          </optional>
+          <ref name="listOfLayouts.datatype"/>
         </element>
       </optional>
       <optional>
@@ -1294,9 +1071,6 @@
       <attribute name="y">
         <data type="double"/>
       </attribute>
-      <attribute name="z">
-        <data type="double"/>
-      </attribute>
     </element>
     <element name="Dimensions">
       <attribute name="width">
@@ -1313,9 +1087,6 @@
       <data type="double"/>
     </attribute>
     <attribute name="y">
-      <data type="double"/>
-    </attribute>
-    <attribute name="z">
       <data type="double"/>
     </attribute>
   </define>
@@ -1489,9 +1260,6 @@
     <attribute name="y">
       <ref name="relAbsValue.datatype"/>
     </attribute>
-    <attribute name="z">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
     <attribute name="width">
       <ref name="relAbsValue.datatype"/>
     </attribute>
@@ -1509,9 +1277,6 @@
       <ref name="relAbsValue.datatype"/>
     </attribute>
     <attribute name="y">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
-    <attribute name="z">
       <ref name="relAbsValue.datatype"/>
     </attribute>
     <optional>
@@ -1627,9 +1392,6 @@
     <attribute name="y">
       <ref name="relAbsValue.datatype"/>
     </attribute>
-    <attribute name="z">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
     <attribute name="width">
       <ref name="relAbsValue.datatype"/>
     </attribute>
@@ -1650,9 +1412,6 @@
       <ref name="relAbsValue.datatype"/>
     </attribute>
     <attribute name="cy">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
-    <attribute name="cz">
       <ref name="relAbsValue.datatype"/>
     </attribute>
     <attribute name="rx">
@@ -1728,9 +1487,6 @@
     <attribute name="cy">
       <ref name="relAbsValue.datatype"/>
     </attribute>
-    <attribute name="cz">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
     <attribute name="r">
       <ref name="relAbsValue.datatype"/>
     </attribute>
@@ -1741,11 +1497,6 @@
     </optional>
     <optional>
       <attribute name="fy">
-        <ref name="relAbsValue.datatype"/>
-      </attribute>
-    </optional>
-    <optional>
-      <attribute name="fz">
         <ref name="relAbsValue.datatype"/>
       </attribute>
     </optional>
@@ -1927,9 +1678,6 @@
     <attribute name="y">
       <ref name="relAbsValue.datatype"/>
     </attribute>
-    <attribute name="z">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
   </define>
 
   <define name="renderCubicBezier.datatype">
@@ -1940,16 +1688,10 @@
     <attribute name="basePoint1_y">
       <ref name="relAbsValue.datatype"/>
     </attribute>
-    <attribute name="basePoint1_z">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
     <attribute name="basePoint2_x">
       <ref name="relAbsValue.datatype"/>
     </attribute>
     <attribute name="basePoint2_y">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
-    <attribute name="basePoint2_z">
       <ref name="relAbsValue.datatype"/>
     </attribute>
   </define>  
@@ -1994,212 +1736,116 @@
     </oneOrMore>
   </define>
   
-  <define name="listOfLayouts.datatype">
+  <define name="dimension.datatype">
+    <attribute name="width">
+      <data type="double"/>
+    </attribute>
+    <attribute name="height">
+      <data type="double"/>
+    </attribute>
+  </define>
+
+  <define name="glyph.datatype">
+    <element name="BoundingBox">
+      <ref name="boundingBox.datatype"/>
+    </element>
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Layout_\d+</param>
+      </data>
+    </attribute>
+    <optional>
+      <attribute name="name">
+        <data type="string"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="listOfCompartmentGlyphs.datatype">
     <zeroOrMore>
-      <element name="Layout">
-        <element name="Dimensions">
-          <attribute name="width">
-            <data type="double"/>
+      <element name="CompartmentGlyph">
+        <ref name="glyph.datatype"/>
+        <optional>
+          <attribute name="compartment">
+            <data type="IDREF">
+              <param name="pattern">Compartment_\d+</param>
+            </data>
           </attribute>
-          <attribute name="height">
-            <data type="double"/>
+        </optional>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="listOfMetabGlyphs.datatype">
+    <zeroOrMore>
+      <element name="MetaboliteGlyph">
+        <ref name="glyph.datatype"/>
+        <optional>
+          <attribute name="metabolite">
+            <data type="IDREF">
+              <param name="pattern">Metabolite_\d+</param>
+            </data>
           </attribute>
-        </element>
+        </optional>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="metaboliteReferenceGlyp.datatype">
+    <optional>
+      <element name="BoundingBox">
+        <ref name="boundingBox.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="Curve">
+        <ref name="layoutCurve.datatype"/>
+      </element>
+    </optional>
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Layout_\d+</param>
+      </data>
+    </attribute>
+    <optional>
+      <attribute name="name">
+        <data type="string"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="metaboliteGlyph">
+        <data type="IDREF">
+          <param name="pattern">Layout_\d+</param>
+        </data>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="role">
+        <data type="string"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="listOfReactionGlyphs.datatype">
+    <zeroOrMore>
+      <element name="ReactionGlyph">
         <optional>
-          <element name="ListOfCompartmentGlyphs">
-            <zeroOrMore>
-              <element name="CompartmentGlyph">
-                <element name="BoundingBox">
-                  <ref name="boundingBox.datatype"/>
-                </element>
-                <attribute name="key">
-                  <data type="ID">
-                    <param name="pattern">Layout_\d+</param>
-                  </data>
-                </attribute>
-                <optional>
-                  <attribute name="name">
-                    <data type="string"/>
-                  </attribute>
-                </optional>
-                <optional>
-                  <attribute name="compartment">
-                    <data type="IDREF">
-                      <param name="pattern">Compartment_\d+</param>
-                    </data>
-                  </attribute>
-                </optional>
-              </element>
-            </zeroOrMore>
+          <element name="BoundingBox">
+            <ref name="boundingBox.datatype"/>
           </element>
         </optional>
         <optional>
-          <element name="ListOfMetabGlyphs">
-            <zeroOrMore>
-              <element name="MetaboliteGlyph">
-                <element name="BoundingBox">
-                  <ref name="boundingBox.datatype"/>
-                </element>
-                <attribute name="key">
-                  <data type="ID">
-                    <param name="pattern">Layout_\d+</param>
-                  </data>
-                </attribute>
-                <optional>
-                  <attribute name="name">
-                    <data type="string"/>
-                  </attribute>
-                </optional>
-                <optional>
-                  <attribute name="metabolite">
-                    <data type="IDREF">
-                      <param name="pattern">Metabolite_\d+</param>
-                    </data>
-                  </attribute>
-                </optional>
-              </element>
-            </zeroOrMore>
+          <element name="Curve">
+            <ref name="layoutCurve.datatype"/>
           </element>
         </optional>
         <optional>
-          <element name="ListOfReactionGlyphs">
-            <zeroOrMore>
-              <element name="ReactionGlyph">
-                <optional>
-                  <element name="BoundingBox">
-                    <ref name="boundingBox.datatype"/>
-                  </element>
-                </optional>
-                <optional>
-                  <element name="Curve">
-                    <ref name="layoutCurve.datatype"/>
-                  </element>
-                </optional>
-                <optional>
-                  <element name="ListOfMetaboliteReferenceGlyphs">
-                    <oneOrMore>
-                      <element name="MetaboliteReferenceGlyph">
-                        <optional>
-                          <element name="BoundingBox">
-                            <ref name="boundingBox.datatype"/>
-                          </element>
-                        </optional>
-                        <optional>
-                          <element name="Curve">
-                            <ref name="layoutCurve.datatype"/>
-                          </element>
-                        </optional>
-                        <attribute name="key">
-                          <data type="ID">
-                            <param name="pattern">Layout_\d+</param>
-                          </data>
-                        </attribute>
-                        <optional>
-                          <attribute name="name">
-                            <data type="string"/>
-                          </attribute>
-                        </optional>
-                        <optional>
-                          <attribute name="metaboliteGlyph">
-                            <data type="IDREF">
-                              <param name="pattern">Layout_\d+</param>
-                            </data>
-                          </attribute>
-                        </optional>
-                        <optional>
-                          <attribute name="role">
-                            <data type="string"/>
-                          </attribute>
-                        </optional>
-                      </element>
-                    </oneOrMore>
-                  </element>
-                </optional>
-                <attribute name="key">
-                  <data type="ID">
-                    <param name="pattern">Layout_\d+</param>
-                  </data>
-                </attribute>
-                <optional>
-                  <attribute name="name">
-                    <data type="string"/>
-                  </attribute>
-                </optional>
-                <optional>
-                  <attribute name="reaction">
-                    <data type="IDREF">
-                      <param name="pattern">Reaction_\d+</param>
-                    </data>
-                  </attribute>
-                </optional>
-              </element>
-            </zeroOrMore>
-          </element>
-        </optional>
-        <optional>
-          <element name="ListOfTextGlyphs">
+          <element name="ListOfMetaboliteReferenceGlyphs">
             <oneOrMore>
-              <element name="TextGlyph">
-                <element name="BoundingBox">
-                  <ref name="boundingBox.datatype"/>
-                </element>
-                <attribute name="key">
-                  <data type="ID">
-                    <param name="pattern">Layout_\d+</param>
-                  </data>
-                </attribute>
-                <optional>
-                  <attribute name="name">
-                    <data type="string"/>
-                  </attribute>
-                </optional>
-                <optional>
-                  <attribute name="graphicalObject">
-                    <data type="IDREF">
-                      <param name="pattern">[_a-zA-Z]+_\d+</param>
-                    </data>
-                  </attribute>
-                </optional>
-                <optional>
-                  <attribute name="originOfText">
-                    <data type="IDREF">
-                      <param name="pattern">[_a-zA-Z]+_\d+</param>
-                    </data>
-                  </attribute>
-                </optional>
-                <optional>
-                  <attribute name="text">
-                    <data type="string"/>
-                  </attribute>
-                </optional>
+              <element name="MetaboliteReferenceGlyph">
+                <ref name="metaboliteReferenceGlyp.datatype"/>
               </element>
             </oneOrMore>
-          </element>
-        </optional>
-        <optional>
-          <element name="ListOfAdditionalGraphicalObjects">
-            <oneOrMore>
-              <element name="AdditionalGraphicalObject">
-                <element name="BoundingBox">
-                  <ref name="boundingBox.datatype"/>
-                </element>
-                <attribute name="key">
-                  <data type="ID">
-                    <param name="pattern">Layout_\d+</param>
-                  </data>
-                </attribute>
-                <optional>
-                  <attribute name="name">
-                    <data type="string"/>
-                  </attribute>
-                </optional>
-              </element>
-            </oneOrMore>
-          </element>
-        </optional>
-        <optional>
-          <element name="ListOfRenderInformation">
-            <ref name="listOfLocalRenderInformation.datatype"/>
           </element>
         </optional>
         <attribute name="key">
@@ -2212,6 +1858,97 @@
             <data type="string"/>
           </attribute>
         </optional>
+        <optional>
+          <attribute name="reaction">
+            <data type="IDREF">
+              <param name="pattern">Reaction_\d+</param>
+            </data>
+          </attribute>
+        </optional>
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="listOfTextGlyphs.datatype">
+    <oneOrMore>
+      <element name="TextGlyph">
+        <ref name="glyph.datatype"/>
+        <optional>
+          <attribute name="graphicalObject">
+            <data type="IDREF">
+              <param name="pattern">[_a-zA-Z]+_\d+</param>
+            </data>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="originOfText">
+            <data type="IDREF">
+              <param name="pattern">[_a-zA-Z]+_\d+</param>
+            </data>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="text">
+            <data type="string"/>
+          </attribute>
+        </optional>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="listOfAdditionalGraphicalObjects.datatype">
+    <oneOrMore>
+      <element name="AdditionalGraphicalObject">
+        <ref name="glyph.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="layout.datatype">
+    <element name="Dimensions">
+      <ref name="dimension.datatype"/>
+    </element>
+    <optional>
+      <element name="ListOfCompartmentGlyphs">
+        <ref name="listOfCompartmentGlyphs.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfMetabGlyphs">
+        <ref name="listOfMetabGlyphs.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfReactionGlyphs">
+        <ref name="listOfReactionGlyphs.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfTextGlyphs">
+        <ref name="listOfTextGlyphs.datatype"/>
+      </element>
+    </optional>
+    <optional>
+      <element name="ListOfAdditionalGraphicalObjects">
+        <ref name="listOfAdditionalGraphicalObjects.datatype"/>
+      </element>
+    </optional>
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Layout_\d+</param>
+      </data>
+    </attribute>
+    <optional>
+      <attribute name="name">
+        <data type="string"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="listOfLayouts.datatype">
+    <zeroOrMore>
+      <element name="Layout">
+        <ref name="layout.datatype"/>
       </element>
     </zeroOrMore>
   </define>
