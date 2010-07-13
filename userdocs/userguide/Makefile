@@ -15,6 +15,8 @@ DBLATEX=$(DBLATEX_PATH)/bin/dblatex
 DBLATEX_TEXINPUTS=$(DBLATEX_PATH)/share/dblatex/latex//:$(TEXINPUTS)
 DBLATEX_SGML_CATALOG_FILES=$(SGML_CATALOG_FILES):/etc/xml/catalog
 
+PDFLATEX = /sw/bin/pdflatex
+
 SOURCES = copasi.xml \
 	copasi_GUI.xml \
 	copasi_commandLine.xml \
@@ -115,9 +117,9 @@ copasi.tex: $(SOURCES) copasi_bindings_cpp.xml copasi_bindings_java.xml copasi_b
 	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi.xml
 
 copasi.pdf: copasi.tex $(IMAGES) 
-	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $< 
-	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
-	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $< 
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
 
 copasi.xhtml: $(SOURCES) $(IMAGES) copasi_xhtml.xsl copasi_bindings_cpp.xml copasi_bindings_java.xml copasi_bindings_python.xml
 	@[ -d $@ ] || mkdir $@
@@ -162,9 +164,9 @@ UserManual.bib: UserManual.xhtml
 	xsltproc --novalid -o $@ xh2bib.xsl $<
 
 UserManual.pdf: UserManual.tex
-	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $< 
-	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
-	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $< 
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
 
 clean:
 	-rm -f copasi.tex UserManual.tex
