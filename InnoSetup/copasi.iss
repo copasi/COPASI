@@ -22,7 +22,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppPublisher}\{#MyAppName} {#MyAppVersion}
+DefaultDirName={code:DefDirRoot}\{#MyAppPublisher}\{#MyAppName} {#MyAppVersion}
 DefaultGroupName={#MyAppName} {#MyAppVersion}
 OutputDir={#MyWorkDir}
 OutputBaseFilename=Copasi-{#MyBuild}-WIN32
@@ -37,6 +37,7 @@ VersionInfoVersion={#MyAppVersion}.0
 ShowLanguageDialog=no
 UninstallDisplayIcon={app}\share\copasi\icons\Copasi.ico
 UninstallDisplayName={#MyAppName} {#MyAppVersion}
+PrivilegesRequired=none
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -103,7 +104,6 @@ Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desk
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: quicklaunchicon; WorkingDir: {userdocs}
 
 [Run]
-Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent; WorkingDir: {userdocs}
 Filename: {app}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2005 Runtime Libraries; Parameters: /q:a; Check: InstallRuntime
 
 [Dirs]
@@ -118,21 +118,37 @@ Name: {app}\share\copasi\examples
 Name: {app}\share\copasi\icons
 
 [Registry]
-Root: HKCR; SubKey: .cps; ValueType: string; ValueData: COPASI.document; Flags: uninsdeletekey
-Root: HKCR; SubKey: COPASI.document; ValueType: string; ValueData: COPASI File; Flags: uninsdeletekey
-Root: HKCR; SubKey: COPASI.document\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: COPASI.document\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue
-Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}
-Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdatePath
+Root: HKCR; SubKey: .cps; ValueType: string; ValueData: COPASI.document; Flags: uninsdeletekey; Check: IsAdminUser
+Root: HKCR; SubKey: COPASI.document; ValueType: string; ValueData: COPASI File; Flags: uninsdeletekey; Check: IsAdminUser
+Root: HKCR; SubKey: COPASI.document\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminUser
+Root: HKCR; Subkey: COPASI.document\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue; Check: IsAdminUser
+Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}; Check: IsAdminUser
+Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdateSystemPath
+Root: HKCU; SubKey: Software\Classes\.cps; ValueType: string; ValueData: COPASI.document; Flags: uninsdeletekey; Check: IsRegularUser
+Root: HKCU; SubKey: Software\Classes\COPASI.document; ValueType: string; ValueData: COPASI File; Flags: uninsdeletekey; Check: IsRegularUser
+Root: HKCU; SubKey: Software\Classes\COPASI.document\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsRegularUser
+Root: HKCU; Subkey: Software\Classes\COPASI.document\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue; Check: IsRegularUser
+Root: HKCU; Subkey: Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}; Check: IsRegularUser
+Root: HKCU; Subkey: Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdateUserPath
 
 [Code]
-function UpdatePath(): Boolean;
+function IsAdminUser(): Boolean;
+begin
+  Result := (IsAdminLoggedOn or IsPowerUserLoggedOn);
+end;
+
+function IsRegularUser(): Boolean;
+begin
+  Result := not (IsAdminLoggedOn or IsPowerUserLoggedOn);
+end;
+
+function IsCopasiInSystemPath(): Boolean;
 var
   CurrentPath: String;
   Position: Integer;
 
 begin
-  Result := True;
+  Result := False;
 
   if RegQueryStringValue(HKLM,
     'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
@@ -143,17 +159,49 @@ begin
       if (Position <> 0) then
         // Found an entry to the COPASI binaries in the Path
         begin
-          Result := False;
+          Result := True;
         end;
     end;
 end;
 
+function IsCopasiInUserPath(): Boolean;
+var
+  CurrentPath: String;
+  Position: Integer;
+
+begin
+  Result := IsCopasiInSystemPath();
+
+  if RegQueryStringValue(HKCU,
+    'Environment',
+    'Path', CurrentPath) then
+    // Successfully read the value
+    begin
+      Position := Pos('%COPASIDIR%\bin', CurrentPath);
+      if (Position <> 0) then
+        // Found an entry to the COPASI binaries in the Path
+        begin
+          Result := True;
+        end;
+    end;
+end;
+
+function UpdateSystemPath(): Boolean;
+begin
+  Result := (IsAdminUser() and not IsCopasiInSystemPath());
+end;
+
+function UpdateUserPath(): Boolean;
+begin
+  Result := (IsRegularUser() and not IsCopasiInUserPath());
+end;
+
 function InstallRuntime(): Boolean;
 begin
-  Result := True;
+  Result := IsAdminUser();
 
   if RegKeyExists(HKEY_LOCAL_MACHINE,
-    'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A49F249F-0C91-497F-86DF-B2585E8E76B7}') then
+      'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A49F249F-0C91-497F-86DF-B2585E8E76B7}') then
   begin
     Result := False;
   end;
@@ -165,3 +213,12 @@ begin
 
   RegDeleteValue(HKEY_CURRENT_USER, 'Environment', 'COPASIDIR');
 end;
+
+function DefDirRoot(Param: String): String;
+begin
+  if IsRegularUser then
+    Result := ExpandConstant('{localappdata}')
+  else
+    Result := ExpandConstant('{pf}')
+end;
+
