@@ -204,6 +204,8 @@ var
   DirPattern : String;
 
 begin
+  Result := False;
+
   if RegKeyExists(HKEY_LOCAL_MACHINE,
       'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A49F249F-0C91-497F-86DF-B2585E8E76B7}') then
     begin
