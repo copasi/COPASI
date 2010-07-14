@@ -59,6 +59,8 @@ Source: ..\setup\copasi\bin\QtNetwork4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtOpenGL4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtSql4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtSvg4.dll; DestDir: {app}\bin
+Source: ..\setup\copasi\bin\msvcr80.dll; DestDir: {app}\bin; Check: InstallUserRuntime()
+Source: ..\setup\copasi\bin\msvcp80.dll; DestDir: {app}\bin; Check: InstallUserRuntime()
 Source: ..\setup\copasi\README.txt; DestDir: {app}
 Source: ..\setup\copasi\LICENSE.txt; DestDir: {app}
 Source: ..\setup\copasi\share\copasi\config\MIRIAMResources.xml; DestDir: {app}\share\copasi\config
@@ -104,7 +106,7 @@ Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desk
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: quicklaunchicon; WorkingDir: {userdocs}
 
 [Run]
-Filename: {app}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2005 Runtime Libraries; Parameters: /q:a; Check: InstallRuntime
+Filename: {app}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2005 Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime()
 
 [Dirs]
 Name: {app}\bin
@@ -196,15 +198,48 @@ begin
   Result := (IsRegularUser() and not IsCopasiInUserPath());
 end;
 
-function InstallRuntime(): Boolean;
-begin
-  Result := IsAdminUser();
+function HaveRuntime(): Boolean;
+var
+  FindRec: TFindRec;
+  DirPattern : String;
 
+begin
   if RegKeyExists(HKEY_LOCAL_MACHINE,
       'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A49F249F-0C91-497F-86DF-B2585E8E76B7}') then
-  begin
-    Result := False;
-  end;
+    begin
+      Result := True;
+    end
+  else
+    begin
+      if FindFirst(ExpandConstant('{win}\WinSxS\x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.*'), FindRec) then
+        begin
+          try
+            repeat
+              if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY <> 0 then
+                begin
+                  if (FileExists(ExpandConstant('{win}\winsxs\') + FindRec.Name + '\MSVCP80.DLL') and
+                    FileExists(ExpandConstant('{win}\winsxs\') + FindRec.Name + '\MSVCR80.DLL')) then
+                    begin
+                      Result := True;
+                    end;
+                end;
+            until not FindNext(FindRec);
+
+          finally
+            FindClose(FindRec);
+          end;
+        end;
+    end;
+end;
+
+function InstallSystemRuntime(): Boolean;
+begin
+  Result := (IsAdminUser() and not HaveRuntime());
+end;
+
+function InstallUserRuntime(): Boolean;
+begin
+  Result := (IsRegularUser() and not HaveRuntime());
 end;
 
 function InitializeSetup(): Boolean;
@@ -221,4 +256,3 @@ begin
   else
     Result := ExpandConstant('{pf}')
 end;
-
