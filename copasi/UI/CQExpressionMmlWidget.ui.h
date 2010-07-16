@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:56:43 $
+//   $Date: 2010/07/16 19:05:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -57,7 +62,7 @@ void CQExpressionMmlWidget::updateWidget()
     mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
   else
     {
-      mpExpressionWidget->mpValidator->getExpression()->writeMathML(mml, false, 0);
+      mpExpressionWidget->mpValidatorExpression->getExpression()->writeMathML(mml, false, 0);
       mpWidgetStackExpressionMml->raiseWidget(mpMmlPage);
     }
 
@@ -119,11 +124,11 @@ void CQExpressionMmlWidget::saveMML(const QString outfilename)
   ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
-  ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
+  ofile << "<!DOCTYPE math PUBLIC \"-//W3C//DTD MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\">" << std::endl;
   ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
 
   //  ofile << mml.str();
-  mpExpressionWidget->mpValidator->getExpression()->writeMathML(ofile, false, 0);
+  mpExpressionWidget->mpValidatorExpression->getExpression()->writeMathML(ofile, false, 0);
 
   ofile << "</math>" << std::endl;
 
@@ -133,7 +138,7 @@ void CQExpressionMmlWidget::saveMML(const QString outfilename)
 void CQExpressionMmlWidget::saveTeX(const QString outfilename)
 {
   std::ostringstream mml;
-  mpExpressionWidget->mpValidator->getExpression()->writeMathML(mml, false, 0);
+  mpExpressionWidget->mpValidatorExpression->getExpression()->writeMathML(mml, false, 0);
 
   QString latexStr(FROM_UTF8(mml.str()));
 

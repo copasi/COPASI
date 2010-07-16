@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.16 $ 
+#   $Revision: 1.17 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2010/03/17 12:35:35 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/07/16 18:57:32 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,11 +25,15 @@ TEMPLATE = app
 CONFIG -= qt
 
 include(../../common.pri)
+
+LIBS += -L../../lib/ 
+
+
 include(../../app.pri)
 
-COPASI_LIBS += $${COPASI_LIBS_SE}
-
 INCLUDEPATH += ../../..
+
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
 contains(BUILD_OS, WIN32) {
 #  LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
@@ -38,23 +42,22 @@ contains(BUILD_OS, WIN32) {
 }
 
 contains(BUILD_OS, Linux) {
-  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
 !isEmpty(CPPUNIT_PATH) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit ../../sbml/unittests/utilities.o
   INCLUDEPATH += $${CPPUNIT_PATH}/include
 
-  LIBS = -L../lib \
-         $$join(COPASI_LIBS, " -l", -l) \
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
+   
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
+  TARGETDEPS += ../../sbml/unittests/utilities.o
 }
 
 }
 
 contains(BUILD_OS, SunOS) {
   QMAKE_LFLAGS += -z rescan
-  LIBS += -lsocket
-  LIBS += -lnsl
 
 !isEmpty(CPPUNIT_PATH) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit ../../sbml/unittests/utilities.o
@@ -62,23 +65,24 @@ contains(BUILD_OS, SunOS) {
 
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
-}
-
+   
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += ../../sbml/unittests/utilities.o
+   }
 }  
 
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
-
-  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
-         $${LIBS}
-
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
-   
+  
 !isEmpty(CPPUNIT_PATH) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit ../../sbml/unittests/utilities.o
   INCLUDEPATH += $${CPPUNIT_PATH}/include
 
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
+         $${LIBS}
    
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += ../../sbml/unittests/utilities.o
 
 }
 

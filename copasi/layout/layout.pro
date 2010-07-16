@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $
-#   $Revision: 1.10 $
+#   $Revision: 1.11 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/05/01 14:35:04 $
+#   $Author: shoops $
+#   $Date: 2010/07/16 18:59:38 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,10 +21,6 @@
 # All rights reserved. 
 
 LIB = layout
-
-include(../lib.pri)
-include(../common.pri)
-
 
 # Input
 HEADERS += CLayout.h \
@@ -127,5 +123,5 @@ SOURCES += CLColorDefinition.cpp \
            utility_classes.cpp
 }
 
-#The following line was inserted by qt3to4
-QT +=  qt3support 
+include(../lib.pri)
+include(../common.pri)

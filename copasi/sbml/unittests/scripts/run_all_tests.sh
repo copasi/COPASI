@@ -21,6 +21,7 @@ USE_VALGRIND=${USE_VALGRIND:="no"}
 DO_LEACKCHECK=${DO_LEAKCHECK:="no"}
 
 DO_NONCURATED=${DO_NONCURATED:="yes"}
+TARGET_SBML_VERSION=${TARGET_SBML_VERSION:=""} # use the defaul export version
 
 if [ -z $COPASISE ];then
   if [ "$SYSTEM" == "Darwin" ];then
@@ -34,6 +35,7 @@ COPASISE_OPTIONS=${COPASISE_OPTIONS:="--nologo --verbose"}
 
 # parameters for import test
 BIOMODELS_DIR=${BIOMODELS_DIR:=${HOME}/workspace/release_21August2008_sbmls}
+MODEL_DIR=${MODEL_DIR:=${BIOMODELS_DIR}/curated/}
 
 # parameters for export test
 CPS_DIR=${CPS_DIR:=""}
@@ -59,6 +61,7 @@ SBML_SEMANTIC_TESTSUITE_LIST=${SBML_SEMANTIC_TESTSUITE_LIST:="../../../../semant
 
 # 10000 iterations is the recommended number by the testsuite authors
 NUM_ITERATIONS=${NUM_ITERATIONS:=10000}
+STOCH_METHOD=${STOCH_METHOD:=stochastic}
 
 if [ -z $STOCHASTIC_TESTSUITE_WRAPPER ];then
   if [ "$SYSTEM" == "Darwin" ];then
@@ -191,7 +194,14 @@ function run_stochastic_testsuite
   # run the stochastic testsuite
   echo "Running stochastic testsuite ..."
   ${MKDIR} ${RESULT_DIR}/stochastic-testsuite
-  ANALYSIS_SCRIPTS_DIR=${ANALYSIS_SCRIPTS_DIR} STOCHASTIC_TESTSUITE_WRAPPER=${STOCHASTIC_TESTSUITE_WRAPPER} STOCHASTIC_TESTSUITE_DIR=${STOCHASTIC_TESTSUITE_DIR} STOCHASTIC_TESTSUITE_LIST=${STOCHASTIC_TESTSUITE_LIST} USE_VALGRIND="no" DO_LEAKCHECK="no" TMP_DIR=${RESULT_DIR}/stochastic-testsuite ./run_stochastic_testsuite.sh
+  ANALYSIS_SCRIPTS_DIR=${ANALYSIS_SCRIPTS_DIR} \
+  STOCHASTIC_TESTSUITE_WRAPPER=${STOCHASTIC_TESTSUITE_WRAPPER} \
+  STOCHASTIC_TESTSUITE_DIR=${STOCHASTIC_TESTSUITE_DIR} \
+  STOCHASTIC_TESTSUITE_LIST=${STOCHASTIC_TESTSUITE_LIST}\
+  USE_VALGRIND=${USE_VALGRIND}\
+  DO_LEAKCHECK="no"\
+  TMP_DIR=${RESULT_DIR}/stochastic-testsuite\
+  ./run_stochastic_testsuite.sh
   echo -e "\n\n"
 }
 
@@ -218,6 +228,19 @@ function run_franks_testsuite
     ${MKDIR} ${RESULT_DIR}/franks/noncurated
     USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/franks/noncurated ./run_franks_test.sh ${BIOMODELS_DIR}/noncurated/*.xml
   fi
+  echo -e "\n\n"
+}
+
+function simulate_sbmlfiles
+{
+  # not written yet.
+  echo "Running simulation ..."
+  ${MKDIR} ${RESULT_DIR}/simulate
+  if [ ! -d ${MODEL_DIR} ];then
+    echo "Error. \"${MODEL_DIR}\" does not exist or is not a directory."
+    exit 1;
+  fi
+  USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/simulate/ ./run_franks_test.sh ${MODEL_DIR}/*.xml
   echo -e "\n\n"
 }
 
@@ -337,6 +360,10 @@ else
             ;;
           franks )
             run_franks_testsuite;
+            shift;
+            ;;
+          simulate )
+            simulate_sbmlfiles;
             shift;
             ;;
           * )

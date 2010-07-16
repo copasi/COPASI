@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/22 16:51:09 $
+//   $Date: 2010/07/16 19:01:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -1842,9 +1847,10 @@ L4:
   return 0;
 } /* vcprnt_ */
 
-/* Subroutine */ int CPraxis::print_(C_INT *n, C_FLOAT64 *x, C_INT *prin,
-                                     C_FLOAT64 *fmin)
+/* Subroutine */ int CPraxis::print_(C_INT * /* n */ , C_FLOAT64 * /* x */ , C_INT * /* prin */,
+                                     C_FLOAT64 * /* fmin */)
 {
+#ifdef XXXX
   /* System generated locals */
   C_INT i__1;
   C_FLOAT64 d__1;
@@ -1897,12 +1903,15 @@ L2:
       printf("%g\n", x[i]);
     }
 
+#endif // XXXX
+
   return 0;
 } /* print_ */
 
-/* Subroutine */ int maprnt_(C_INT *option, C_FLOAT64 *v, C_INT *m,
-                             C_INT *n)
+/* Subroutine */ int maprnt_(C_INT * /* option */ , C_FLOAT64 * /* v */, C_INT * /* m */,
+                             C_INT * /* n */)
 {
+#ifdef XXXX
   /* System generated locals */
   C_INT v_dim1, v_offset, i__1, i__2;
 
@@ -1964,4 +1973,8 @@ L3:
 
   upp += 5;
   goto L3;
+
+#endif // XXXX
+
+  return 0;
 } /* maprnt_ */

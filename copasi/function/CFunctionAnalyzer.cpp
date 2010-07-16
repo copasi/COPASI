@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:55:48 $
+//   $Date: 2010/07/16 18:59:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1073,7 +1073,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
   if (pENO)
     {
-      switch (CEvaluationNode::subType(pENO->getType()))
+      switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(pENO->getType()))
         {
           case CEvaluationNodeOperator::MULTIPLY:
             return evaluateNode(pENO->getLeft(), callParameters, mode) * evaluateNode(pENO->getRight(), callParameters, mode);

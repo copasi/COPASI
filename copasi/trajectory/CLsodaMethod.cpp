@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 21:08:45 $
+//   $Date: 2010/07/16 19:03:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,7 +34,9 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::deterministic, pParent),
     mpState(NULL),
     mY(NULL),
-    mRootMask()
+    mRootMask(),
+    mTargetTime(0.0),
+    mRootCounter(0)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -159,6 +166,7 @@ void CLsodaMethod::stateChanged()
   mLsodaStatus = 1;
 
   destroyRootMask();
+  mRootMasking = NONE;
 }
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
@@ -173,6 +181,22 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
     }
 
   C_FLOAT64 EndTime = mTime + deltaT;
+
+  if (mTargetTime != EndTime)
+    {
+      mTargetTime = EndTime;
+      mRootCounter = 0;
+    }
+  else
+    {
+      mRootCounter++;
+
+      if (mRootCounter > *mpMaxInternalSteps)
+        {
+          return FAILURE;
+        }
+    }
+
   C_INT ITOL = 2; // mRtol scalar, mAtol vector
   C_INT one = 1;
   C_INT DSize = mDWork.size();
@@ -205,20 +229,68 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
         {
           case -33:
 
-            if (mRootMask.size() == 0)
+            switch (mRootMasking)
               {
-                // Reset the integrator to the state before the failed integration.
-                *mpState = *mpCurrentState;
-                mTime = mpState->getTime();
-                mLsodaStatus = 1;
+                case NONE:
+                case DISCRETE:
+                  // Reset the integrator to the state before the failed integration.
+                  *mpState = *mpCurrentState;
+                  mTime = mpState->getTime();
+                  mLsodaStatus = 1;
 
-                // Create a mask which hides all roots being constant and zero.
-                createRootMask();
+                  // Create a mask which hides all roots being constant and zero.
+                  createRootMask();
+                  break;
+
+                case ALL:
+                  break;
               }
 
             break;
 
           default:
+
+            switch (mRootMasking)
+              {
+                case NONE:
+                case DISCRETE:
+                  break;
+
+                case ALL:
+                {
+                  const bool * pDiscrete = mDiscreteRoots.array();
+                  bool * pMask = mRootMask.array();
+                  bool * pMaskEnd = pMask + mNumRoots;
+                  bool Destroy = true;
+
+                  for (; pMask != pMaskEnd; ++pMask, ++pDiscrete)
+                    {
+                      if (*pMask)
+                        {
+                          if (*pDiscrete)
+                            {
+                              Destroy = false;
+                            }
+                          else
+                            {
+                              *pMask = false;
+                            }
+                        }
+                    }
+
+                  if (Destroy)
+                    {
+                      destroyRootMask();
+                    }
+                  else
+                    {
+                      mRootMasking = DISCRETE;
+                    }
+
+                  mLsodaStatus = 1;
+                }
+              }
+
             break;
         }
     }
@@ -287,10 +359,13 @@ void CLsodaMethod::start(const CState * initialState)
   pdelete(mpState);
   mpState = new CState(*initialState);
   mTime = mpState->getTime();
+  mTargetTime = mTime;
+  mRootCounter = 0;
 
   mNumRoots = mpModel->getNumRoots();
   mRoots.resize(mNumRoots);
   destroyRootMask();
+  mRootMasking = NONE;
 
   if (*mpReducedModel)
     mData.dim = mpState->getNumIndependent();
@@ -331,6 +406,16 @@ void CLsodaMethod::start(const CState * initialState)
   if (mNumRoots > 0)
     {
       mLSODAR.setOstream(mErrorMsg);
+      mDiscreteRoots.resize(mNumRoots);
+
+      CMathTrigger::CRootFinder * const* ppRootFinder = mpModel->getRootFinders().array();
+      CMathTrigger::CRootFinder * const* ppRootFinderEnd = ppRootFinder + mNumRoots;
+      bool * pDiscrete = mDiscreteRoots.array();
+
+      for (; ppRootFinder != ppRootFinderEnd; ++ppRootFinder, ++pDiscrete)
+        {
+          *pDiscrete = (*ppRootFinder)->isDiscrete();
+        }
     }
   else
     {
@@ -343,7 +428,7 @@ void CLsodaMethod::start(const CState * initialState)
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
   // If we have no ODEs add a constant one.
   if (mNoODE)
@@ -351,8 +436,6 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * y
       *ydot = 1.0;
       return;
     }
-
-  assert(y == mY);
 
   mpState->setTime(*t);
 
@@ -371,21 +454,25 @@ void CLsodaMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
                          const C_INT * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
-void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  y,
+void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  /* y */,
                          const C_INT *  nr, C_FLOAT64 * r)
 {
-  assert(y == mY);
   assert(*nr == (C_INT) mRoots.size());
 
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
 
+  if (*mpReducedModel)
+    {
+      mpModel->updateSimulatedValues(*mpReducedModel);
+    }
+
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
 
   mpModel->evaluateRoots(RootValues, true);
 
-  if (mRootMask.size())
+  if (mRootMasking != NONE)
     {
       maskRoots(RootValues);
     }
@@ -424,9 +511,12 @@ void CLsodaMethod::createRootMask()
     {
       *pMask = (fabs(*pRootDerivative) < *mpAbsoluteTolerance) ? true : false;
     }
+
+  mRootMasking = ALL;
 }
 
 void CLsodaMethod::destroyRootMask()
 {
   mRootMask.resize(0);
+  mRootMasking = NONE;
 }

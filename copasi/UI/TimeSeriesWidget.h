@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2010/07/16 19:05:16 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,15 +24,8 @@
 #define TSWIDGET_H
 
 #include "UI/copasiWidget.h"
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
-//class QPushButton;
+class QGridLayout;
 
 class TimeSeriesSubWidget;
 
@@ -53,7 +51,7 @@ public:
 
 protected:
   virtual bool enterProtected();
-  Q3GridLayout* mWidgetLayout;
+  QGridLayout* mWidgetLayout;
   TimeSeriesSubWidget* mCentralWidget;
 };
 

@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CEvaluationTree.py,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.8 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/01/07 18:51:32 $ 
+#   $Date: 2010/07/16 18:55:59 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -33,10 +39,6 @@ class Test_CEvaluationTree(unittest.TestCase):
     t=self.tree.getType()
     self.assert_(type(t)==IntType)
     self.assert_(t==COPASI.CEvaluationTree.Function)
-
-  def test_setType(self):
-    self.tree.setType(COPASI.CEvaluationTree.UserDefined)
-    self.assert_(self.tree.getType()==COPASI.CEvaluationTree.UserDefined)
 
   def test_getKey(self):
     key=self.tree.getKey()
@@ -95,7 +97,6 @@ def suite():
           "test_create"
          ,"test_copy"
          ,"test_getType"
-         ,"test_setType"
          ,"test_getInfix"
          ,"test_getKey"
          ,"test_setInfix"

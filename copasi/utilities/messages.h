@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.149 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 10:24:04 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:06:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,6 +252,7 @@ const MESSAGES Messages[] =
   {MCSBML + 85, "SBML (85): Call to delay function used in function definition \"%s\". COPASI can't import this model."},
   {MCSBML + 86, "SBML (86): COPASI found calls to the delay function in one or more reaction kinetics. These calls have been replaced by a reference to a global parameter which has an expression that corresponds to the original delay call."},
   {MCSBML + 87, "SBML (87): Reactions with references to local kinetic parameters found in delay calls.\nLocal parameters in the following reactions have been converted to global variables:\n%s"},
+  {MCSBML + 88, "SBML (88): Reaction with id \"%s\" referenced in kinetic law for reaction with id \"%s\".\nCOPASI can not handle references to reaction fluxes in kinetic laws.\nPlease modify your model to use global parameters which reference the reaction id instead of referencing the reaction id directly."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
@@ -262,6 +263,7 @@ const MESSAGES Messages[] =
   // Directory Entries
   {MCDirEntry + 1, "DirEntry (1): Directory entry '%s' already exists."},
   {MCDirEntry + 2, "DirEntry (2): Directory entry '%s' is read-only."},
+  {MCDirEntry + 3, "DirEntry (3): Opening file '%s' for writing failed."},
 
   // MathML
   {MCMathML + 1, "MathML (1): Unsupported element '%s'."},
@@ -281,7 +283,7 @@ const MESSAGES Messages[] =
   {MCCopasiTask + 2, "CCopasiTask (2): No model associated for task '%s'."},
   {MCCopasiTask + 3, "CCopasiTask (3): No method defined for task '%s'."},
   {MCCopasiTask + 4, "CCopasiTask (4): Error compiling model '%s'."},
-  {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report."},
+  {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report of task '%s'."},
   {MCCopasiTask + 6, "CCopasiTask (6): Requested output object:\n '%s'\n not found. It will be ignored."},
   {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
 
@@ -300,7 +302,7 @@ const MESSAGES Messages[] =
   {MCFitting + 8, "CFitting (8): Failure reading file '%s'."},
   {MCFitting + 9, "CFitting (9): Experiment '%s' has no data rows."},
   {MCFitting + 10, "CFitting (10): Experiment '%s' has no dependent data."},
-  {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d'."},
+  {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d', column '%d'."},
   {MCFitting + 12, "CFitting (12): The Fisher information matrix is singular. Therefore, the "
    "correlation matrix can not be calculated."},
   {MCFitting + 13, "CFitting (13): Not enough memory available to calculate the Fisher Information Matrix."},

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.117 $ 
+#   $Revision: 1.118 $ 
 #   $Name:  $ 
-#   $Author: heilmand $ 
-#   $Date: 2010/06/07 17:21:00 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/07/16 18:54:06 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.117 $ $Author: heilmand $ $Date: 2010/06/07 17:21:00 $  
+# $Revision: 1.118 $ $Author: shoops $ $Date: 2010/07/16 18:54:06 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -73,10 +73,13 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 
 DEFINES += WITH_CSPMETHOD
 
+# enable this to build support for the render extension
+# DEFINES += USE_CRENDER_EXTENSION
+
 debug {
   DEFINES += COPASI_DEBUG
   DEFINES += COPASI_EXTUNIT
-  #DEFINES += WITH_MERGEMODEL
+  # DEFINES += WITH_MERGEMODEL
   }
 
 !contains(COPASI_SRC_PACKAGE, true)  {
@@ -133,8 +136,6 @@ contains(BUILD_OS, Darwin) {
   # on Mac OS X 10.6 x86 has to be added to config to make sure COPASI is build
   # as a 32 bit version, gcc on 10.6 builds 64 bit binaries by default
   #CONFIG += x86
-  # enable this to build support for the render extension
-  #DEFINES += USE_CRENDER_EXTENSION
  
   INCLUDEPATH += /System/Library/Frameworks/Accelerate.framework/Headers
   INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
@@ -292,12 +293,7 @@ contains(BUILD_OS, WIN32) {
 
 
 #expat library
-  contains(RUNTIME, MT) | contains (RUNTIME, MTd) {
-    LIBS += libexpatMT.lib
-  } else {
-    DEFINES -= XML_STATIC
-    LIBS += libexpat.lib
-  }
+  LIBS += libexpat$${RUNTIME}.lib
 
   !isEmpty(EXPAT_PATH) {
     QMAKE_CXXFLAGS += -I\""$${EXPAT_PATH}"\Source\lib\"
@@ -344,7 +340,9 @@ contains(BUILD_OS, WIN32) {
        LIBS+=  -L\""$${QWT_PATH}"/lib\"
        INCLUDEPATH += \""$${QWT_PATH}"/include\"
     }
-    LIBS += -lqwt
+    
+    release: LIBS += -lqwt
+    debug: LIBS += -lqwtD
     
     !isEmpty(QWT3D_PATH){
       LIBS += -L\""$${QWT3D_PATH}"/lib/\"
@@ -444,8 +442,6 @@ contains(BUILD_OS, Linux) {
       QMAKE_POST_LINK = strip $(TARGET)
     }
   }
-  # enable this to build support for the render extension
-  #DEFINES += USE_CRENDER_EXTENSION
 
   contains(PACKAGE, yes) {
     QMAKE_LFLAGS -= -static

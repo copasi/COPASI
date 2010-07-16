@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CFunction.py,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.8 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/07/16 18:55:59 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -19,7 +25,7 @@ import string
 
 class Test_CFunction(unittest.TestCase):
   def setUp(self):
-    self.functions=COPASI.CCopasiDataModel.GLOBAL.getFunctionList()
+    self.functions=COPASI.CCopasiRootContainer.getFunctionList()
     self.function=self.functions.findFunction("Iso Uni Uni")
 
   def test_setUp(self):

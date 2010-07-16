@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.24 $ 
+//   $Revision: 1.25 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/04 19:22:40 $ 
+//   $Author: shoops $ 
+//   $Date: 2010/07/16 18:56:26 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -28,8 +33,13 @@
 %ignore CCopasiTask::getDescription() const;
 %ignore CCopasiTask::getResult() const;
 %ignore CCopasiTask::XMLType;
+%ignore CCopasiTask::TypeName;
 %ignore CCopasiTask::ValidMethods;
 %ignore CCopasiTask::process(bool const &);
+%ignore CCopasiTask::getCallBack;
+%ignore CCopasiTask::setCallBack;
+%ignore CCopasiTask::isValidMethod;
+%ignore CCopasiTask::initialize;
 
 #ifdef SWIGJAVA
 // remove some const methods to get rid of warnings

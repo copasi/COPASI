@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CEvaluationTree.i,v $ 
-//   $Revision: 1.6 $ 
+//   $Revision: 1.7 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Date: 2010/07/16 18:56:26 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -23,14 +28,23 @@
 %newobject CEvaluationTree::copy(const CEvaluationTree& src);
 
 %ignore CEvaluationTree::XMLType;
+%ignore CEvaluationTree::TypeName;
 %ignore CEvaluationTree::getErrorPosition() const;
+%ignore CEvaluationTree::setTree(const ASTNode&);
+%ignore CEvaluationTree::convertASTNode(const ASTNode&);
+%ignore CEvaluationTree::toAST(const CCopasiDataModel*) const;
+%ignore CEvaluationTree::getNodeList;
+%ignore CEvaluationTree::calls;
+%ignore CEvaluationTree::setRoot;
+%ignore CEvaluationTree::getRoot;
+%ignore CEvaluationTree::getDeletedObjects;
+
 
 #ifdef SWIGJAVA
 // remove some const methods to get rid of warnings
 %ignore CEvaluationTree::getRoot() const;
 
 #endif // SWIGJAVA
-
 
 %include "function/CEvaluationTree.h"
 

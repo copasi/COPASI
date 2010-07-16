@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:55:45 $
+//   $Date: 2010/07/16 18:59:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,7 +135,7 @@ bool CBitPatternTreeMethod::initialize()
   CMatrix< C_INT64 > KernelMatrix;
   buildKernelMatrix(KernelMatrix);
 
-  mMinimumSetSize = KernelMatrix.numRows() - KernelMatrix.numCols() - 2;
+  mMinimumSetSize = KernelMatrix.numCols() - 2;
 
   // Now we create the initial step matrix
   mpStepMatrix = new CStepMatrix(KernelMatrix);

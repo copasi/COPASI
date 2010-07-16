@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:25 $
+//   $Date: 2010/07/16 19:03:26 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -597,7 +602,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!pP)
     {
       //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not an MCA problem.");
+      CCopasiMessage(CCopasiMessage::ERROR, "Problem is not an MCA problem.");
       return false;
     }
 
@@ -612,7 +617,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (pModel->getNumIndependentReactionMetabs() < NumODE)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "MCA is not applicable for a system with explicit ODEs.");
+      CCopasiMessage(CCopasiMessage::ERROR, "MCA is not applicable for a system with explicit ODEs.");
       return false;
     }
 
@@ -623,7 +628,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ASSIGNMENT)
       {
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "MCA is not applicable for a system with changing volumes.");
+        CCopasiMessage(CCopasiMessage::ERROR, "MCA is not applicable for a system with changing volumes.");
         return false;
       }
 

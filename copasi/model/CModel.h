@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.184 $
+//   $Revision: 1.185 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 21:15:17 $
+//   $Date: 2010/07/16 19:00:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "copasi/model/CMoiety.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/model/CProcessQueue.h"
+#include "copasi/model/CMathTrigger.h"
 
 #include "copasi/utilities/CVector.h"
 #include "copasi/utilities/CMatrix.h"
@@ -80,7 +81,7 @@ public:
   /**
    *  Enum of valid time units
    */
-  enum TimeUnit {dimensionlessTime = 0, d, h, min, s, ms, micros, ns, ps, fs};
+  enum TimeUnit {dimensionlessTime = 0, d, h, min, s, ms, micros, ns, ps, fs, OldMinute};
 
   /**
    * String representation of valid time units
@@ -1539,6 +1540,12 @@ public:
    * @param CVector< C_FLOAT64 > & rootDerivatives
    */
   void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
+
+  /**
+   * Retrieve a vector of root finders
+   * @return const CVector< CMathTrigger::CRootFinder * > & rootFinders
+   */
+  const CVector< CMathTrigger::CRootFinder * > & getRootFinders() const;
 };
 
 #endif // CModel

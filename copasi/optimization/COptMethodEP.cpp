@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/10/19 15:51:46 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:01:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -82,7 +87,7 @@ bool COptMethodEP::optimise()
 
   bool Continue = true;
 
-  // initialise the population
+  // Initialize the population
   Continue = creation();
 
   // get the index of the fittest
@@ -195,9 +200,12 @@ bool COptMethodEP::initialize()
     }
 
   mValue.resize(2*mPopulationSize);
-  mLosses.resize(2*mPopulationSize);
+  mValue = std::numeric_limits< C_FLOAT64 >::infinity();
 
-  // initialise the parameters to update the variances
+  mLosses.resize(2*mPopulationSize);
+  mLosses = 0;
+
+  // Initialize the parameters to update the variances
   tau1 = 1.0 / sqrt(2 * double(mVariableSize));
   tau2 = 1.0 / sqrt(2 * sqrt(double(mVariableSize)));
 
@@ -215,7 +223,7 @@ bool COptMethodEP::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // evaluate the fitness
   Continue = mpOptProblem->calculate();
 
-  // check wheter the functional constraints are fulfilled
+  // check whether the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
@@ -310,7 +318,7 @@ bool COptMethodEP::creation()
 
           try
             {
-              // First determine the location of the intervall
+              // First determine the location of the interval
               // Secondly determine whether to distribute the parameter linearly or not
               // depending on the location and act uppon it.
               if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
@@ -525,7 +533,7 @@ bool COptMethodEP::mutate(unsigned C_INT32 i)
           Variance[j] =
             std::max(Variance[j] * exp(tau1 * v1 + tau2 * mpRandom->getRandomNormal01()), 1e-8);
 
-          // calculate the mutatated parameter
+          // calculate the mutated parameter
           mut += Variance[j] * mpRandom->getRandomNormal01();
         }
 

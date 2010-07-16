@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/commandline.pro,v $
-#   $Revision: 1.15 $
+#   $Revision: 1.16 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/16 18:54:40 $
+#   $Date: 2010/07/16 18:57:32 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.15 $ $Author: shoops $ $Date: 2010/03/16 18:54:40 $
+# $Revision: 1.16 $ $Author: shoops $ $Date: 2010/07/16 18:57:32 $
 ######################################################################
 
 LIB = commandline
@@ -49,6 +49,3 @@ contains(BUILD_PARSER, yes) {
 
 DISTFILES += \
              COptionParser.xml
-
-#The following line was inserted by qt3to4
-QT +=  qt3support 

@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiDataModel.py,v $ 
-#   $Revision: 1.15 $ 
+#   $Revision: 1.16 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/01/07 18:51:32 $ 
+#   $Date: 2010/07/16 18:56:00 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -21,7 +27,7 @@ SBML_FILE="calcium_juergen.xml"
 
 class Test_CCopasiDataModel(unittest.TestCase):
   def setUp(self):
-    self.datamodel=COPASI.CCopasiDataModel.GLOBAL
+    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
 
   def test_loadModel(self):
     self.assert_(self.datamodel.loadModel(CPS_FILE),"Error. Could not load model.")
@@ -64,10 +70,6 @@ class Test_CCopasiDataModel(unittest.TestCase):
     model=self.datamodel.getModel()
     self.assert_(model.__class__==COPASI.CModel)
 
-  def test_getVersion(self):
-    version=self.datamodel.getVersion()
-    self.assert_(version.__class__==COPASI.CVersion)
-
   def test_getTaskList(self):
     taskList=self.datamodel.getTaskList()
     self.assert_(taskList.__class__==COPASI.TaskVectorN)
@@ -103,16 +105,9 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(type(fileName)==StringType)
     self.assert_(fileName.endswith(SBML_FILE))
 
-  def test_getFunctionList(self):
-    functions=self.datamodel.getFunctionList()
-    self.assert_(functions!=None)
-    self.assert_(functions.__class__==COPASI.CFunctionDB)
-
   def CHECK_CALCIUM_JUERGEN(self):
     # check the model
     self.CHECK_CALCIUM_JUERGEN_MODEL()
-    # test getVersion
-    version=self.datamodel.getVersion()
     # test getTaskList
     taskList=self.datamodel.getTaskList()
     # test getReportDefinitionList
@@ -135,14 +130,12 @@ def suite():
          ,'test_exportSBMLToString'
          ,'test_exportSBML'
          ,'test_getModel'
-         ,'test_getVersion'
          ,'test_getTaskList'
          ,'test_addDefaultTasks'
          ,'test_getReportDefinitionList'
          ,'test_addDefaultReports'
          ,'test_getFileName'
          ,'test_getSBMLFileName'
-         ,'test_getFunctionList'
         ]
   return unittest.TestSuite(map(Test_CCopasiDataModel,tests))
 

@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameter.i,v $ 
-//   $Revision: 1.8 $ 
+//   $Revision: 1.9 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Date: 2010/07/16 18:56:26 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -21,10 +26,19 @@
 
 %}
 
+%ignore operator<<;
+
 %ignore CCopasiParameter::getValue() const;
 %ignore CCopasiParameter::getValue();
 %ignore CCopasiParameter::XMLType;
+%ignore CCopasiParameter::TypeName;
+%ignore CCopasiParameter::print;
 %ignore operator==;
+%ignore CCopasiParameter::getValuePointer;
+%ignore CCopasiParameter::CCopasiParameter(const std::string & , const Type & , const void * , const CCopasiContainer * , const std::string & );
+%ignore CCopasiParameter::CCopasiParameter(const std::string & , const Type & , const void * , const CCopasiContainer * );
+%ignore CCopasiParameter::CCopasiParameter(const std::string & , const Type & , const void *);
+
 
 #ifdef SWIGJAVA
 // remove some const methods to get rid of warnings
@@ -37,6 +51,7 @@
 
 %extend CCopasiParameter
 {
+    
   C_FLOAT64 getDblValue()
   {
     return *self->getValue().pDOUBLE;
@@ -87,10 +102,14 @@
     return *self->getValue().pFILE;
   }
 
+  /**
+   * Returning a pointer to void in the bindings doesn't make sense I
+   * think. 
   void* getVoidValue()
   {
     return self->getValue().pVOID;
   }
+  */
 
   bool setDblValue(const C_FLOAT64& v)
   {

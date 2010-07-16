@@ -6,6 +6,11 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -54,7 +59,7 @@ void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const 
   else
     color = "#d0d0e0";
 
-  CUnitInformation* unitInformation2;
+  CUnitInformation * unitInformation2 = NULL;
 
   if (mpUnitInterface2)
     unitInformation2 = mpUnitInterface2->getMappedUnitFromIdentifier(node->getName(),
@@ -63,7 +68,7 @@ void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const 
   std::ostringstream oss;
   Expression2PresentationMML::writeMathMLName(oss, node, l + 2);
 
-  if (unitInformation2)
+  if (unitInformation2 != NULL)
     {
       if (CUnitInformation::isEqual(*unitInformation, *unitInformation2))
         writeMathMLBox(out, oss.str(), getMathML(*unitInformation), "", color, l);

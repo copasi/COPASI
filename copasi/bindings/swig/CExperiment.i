@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CExperiment.i,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Date: 2010/07/16 18:56:26 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -19,8 +24,15 @@
 %}
 
 %ignore CExperiment::XMLType;
+%ignore CExperiment::TypeName;
+%ignore CExperiment::WeightMethodName;
 %ignore CExperiment::WeightMethodType;
 %ignore CExperiment::operator=;
+%ignore CExperiment::sumOfSquares;
+%ignore CExperiment::sumOfSquaresStore;
+%ignore CExperiment::printResult;
+%ignore CExperiment::getDependentObjects;
+
 
 // read is rather useless since it takes an istream as its first argument
 %ignore CExperiment::read(std::istream&,unsigned C_INT32&);

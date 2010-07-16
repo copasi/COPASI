@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/18 16:21:53 $
+//   $Date: 2010/07/16 18:57:33 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
@@ -72,8 +77,7 @@ int main(int argc, char **argv)
 #endif // Darwin
 
   // Create the global data model.
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(pDataModel != NULL);
+  CCopasiRootContainer::addDatamodel();
 
   // Create the main application window.
   CopasiUI3Window *pWindow = CopasiUI3Window::create();

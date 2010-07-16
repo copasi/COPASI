@@ -464,7 +464,18 @@ bool PlotSubwidget::saveToPlotSpec()
         }
     }
 
-  //TODO: CopasiParameters
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  // However we do not check whether the scan item are changed we delete all
+  // and create them new.
+  if (true)
+    {
+      if (mpDataModel != NULL)
+        {
+          mpDataModel->changed();
+        }
+
+      // mChanged = false;
+    }
 
   return true;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:57:53 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:06:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,6 +92,14 @@ class CLRenderPoint;
 
 struct SCopasiXMLParserCommon
 {
+public:
+  // Operations
+  /**
+   * Default Constructor
+   */
+  SCopasiXMLParserCommon();
+
+  // Attributes
   /**
    * The version of the parsed file
    */
@@ -111,7 +119,6 @@ struct SCopasiXMLParserCommon
    * Storage for assignments.
    */
   std::vector<std::pair<std::string, std::string> > mAssignments;
-  // std::pair<std::string, std::string> mAssignmentPair;
 
   /**
    * Pointer to a vector of functions which has been loaded or is to be saved.
@@ -229,7 +236,7 @@ struct SCopasiXMLParserCommon
    * Vector of parameters of type key which could not be updated due to missing target objects
    * at time of read.
    */
-  std::vector< CCopasiParameter * > UnmappedKeyParameters;
+  std::vector< std::string > UnmappedKeyParameters;
 
   /**
    * Pointer to a list of Layouts which has been loaded or is to be saved.

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/elementaryFluxModes.pro,v $
-#   $Revision: 1.14 $
+#   $Revision: 1.15 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/16 18:55:45 $
+#   $Date: 2010/07/16 18:59:37 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -72,6 +72,3 @@ SOURCES += CZeroSet.cpp
 
 include(../lib.pri)
 include(../common.pri)
-
-#The following line was inserted by qt3to4
-QT +=  qt3support 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.282 $
+//   $Revision: 1.283 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/26 11:51:59 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:05:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1211,7 +1211,9 @@ bool ListViews::detach()
 
 bool ListViews::notify(ObjectType objectType, Action action, const std::string & key) //static
 {
-  if (objectType != MODEL && action != ADD)
+  if (objectType != MODEL &&
+      objectType != STATE &&
+      action != ADD)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       (*CCopasiRootContainer::getDatamodelList())[0]->changed();
@@ -1410,7 +1412,8 @@ void ListViews::buildChangedObjects()
         {
           // The concentration is assumed to be fix accept when this would lead to circular dependencies,
           // for the parent's compartment's initial volume.
-          if (pMetab->isInitialConcentrationChangeAllowed())
+          if (pMetab->isInitialConcentrationChangeAllowed() &&
+              !isnan(pMetab->getInitialConcentration()))
             mChangedObjects.insert(pMetab->getInitialConcentrationReference());
           else
             mChangedObjects.insert(pMetab->getInitialValueReference());

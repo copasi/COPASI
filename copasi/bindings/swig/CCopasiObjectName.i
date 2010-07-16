@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiObjectName.i,v $ 
-//   $Revision: 1.10 $ 
+//   $Revision: 1.11 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Date: 2010/07/16 18:56:26 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -21,6 +26,8 @@
 
 %}
 
+%ignore CCopasiObjectName::findEx;
+%ignore CRegisteredObjectName::getSet;
 
 %include "report/CCopasiObjectName.h"
 

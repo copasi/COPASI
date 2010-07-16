@@ -25,6 +25,10 @@ else
   SED=/bin/sed
 fi
 
+if [ -z ${STOCH_METHOD} ];then
+  STOCH_METHOD="stochastic"
+fi
+
 if [ -z ${NUM_ITERATIONS} ];then
   NUM_ITERATIONS=10000
 fi
@@ -156,7 +160,7 @@ function run-single-stochastic-test
       return 1;
     fi
     # run the test
-    COMMAND="${STOCHASTIC_TESTSUITE_WRAPPER} ${INFILE} ${ENDTIME} ${STEPNUMBER} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${RESULT_FILE} ${SPECIESLIST}" || return 1;
+    COMMAND="${STOCHASTIC_TESTSUITE_WRAPPER} ${STOCH_METHOD} ${INFILE} ${ENDTIME} ${STEPNUMBER} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${RESULT_FILE} ${SPECIESLIST}" || return 1;
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi

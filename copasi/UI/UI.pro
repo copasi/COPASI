@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.235 $
+#   $Revision: 1.236 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2010/06/07 14:01:53 $
+#   $Author: shoops $
+#   $Date: 2010/07/16 19:05:19 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.235 $ $Author: aekamal $ $Date: 2010/06/07 14:01:53 $
+# $Revision: 1.236 $ $Author: shoops $ $Date: 2010/07/16 19:05:19 $
 ######################################################################
 
 LIB = UI
@@ -73,6 +73,7 @@ HEADERS	+= \
   CScanWidgetRepeat.h \
   CScanWidgetScan.h \
   CScanWidgetTask.h \
+  FunctionWidget1.h \
   SensitivitiesWidget.h \
   SliderSettingsDialog.h \
   StateSubwidget.h \
@@ -136,7 +137,7 @@ HEADERS	+= \
   DataModelGUI.h \
   DataModel.txt.h \
   FunctionItemWidget.h \
-  FunctionWidget1.h \
+#  FunctionWidget1.h \
   listviews.h \
   ModelWidget.h \
   MyLineEdit.h \
@@ -203,6 +204,7 @@ SOURCES	+= \
   CScanWidgetRepeat.cpp \
   CScanWidgetScan.cpp \
   CScanWidgetTask.cpp \
+  FunctionWidget1.cpp \
   SensitivitiesWidget.cpp \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
@@ -262,7 +264,7 @@ SOURCES	+= \
   CTimeSeriesTable.cpp \
   DataModelGUI.cpp \
   FunctionItemWidget.cpp \
-  FunctionWidget1.cpp \
+#  FunctionWidget1.cpp \
   listviews.cpp \
   ModelWidget.cpp \
   MyLineEdit.cpp \
@@ -290,6 +292,8 @@ SOURCES	+= \
 }
 
 ### uic3 forms
+FORMS3 += CQExperimentData.ui
+HEADERS += CQExperimentData.ui.h
 FORMS3 += CQMatrixDialog.ui
 HEADERS += CQMatrixDialog.ui.h
 FORMS3 += CQSplashWidget.ui
@@ -297,7 +301,6 @@ HEADERS += CQSplashWidget.ui.h
 FORMS3 += CQStartValueReset.ui
 HEADERS += CQStartValueReset.ui.h
 FORMS3 += CQTaskBtnWidget.ui
-HEADERS += CQTaskBtnWidget.ui.h
 FORMS3 += CQTaskHeaderWidget.ui
 HEADERS += CQTaskHeaderWidget.ui.h
 FORMS3 += CUpDownSubwidget.ui
@@ -308,11 +311,6 @@ FORMS3 += objectdebug.ui
 HEADERS += objectdebug.ui.h
 
 ### uic3 forms that do not work at the moment
-#FORMS3 += CQExperimentData.ui
-HEADERS += CQExperimentData.h
-HEADERS += CQExperimentData.ui.h
-SOURCES += CQExperimentData.cpp
-
 #FORMS3 += CQProgressItemBar.ui
 HEADERS += CQProgressItemBar.h
 HEADERS += CQProgressItemBar.ui.h
@@ -372,6 +370,7 @@ FORMS += CScanWidgetRandom.ui
 FORMS += CScanWidgetRepeat.ui
 FORMS += CScanWidgetScan.ui
 FORMS += CScanWidgetTask.ui
+FORMS += FunctionWidget1.ui
 FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui

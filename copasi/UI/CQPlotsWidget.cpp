@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:05:18 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -41,7 +46,7 @@ CQPlotsWidget::CQPlotsWidget(QWidget* parent, const char* name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setDynamicSortFilter(true);
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModel->setFilterKeyColumn(COL_NAME_PLOTS);
+  mpProxyModel->setFilterKeyColumn(-1);
 
   mpTblPlots->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblPlots->verticalHeader()->hide();
@@ -90,16 +95,21 @@ void CQPlotsWidget::slotBtnDeleteClicked()
 
 void CQPlotsWidget::deleteSelectedPlots()
 {
-  QModelIndexList selRows = mpTblPlots->selectionModel()->selectedRows(0);
-
-  if (selRows.empty())
-    {return;}
+  const QItemSelectionModel * pSelectionModel = mpTblPlots->selectionModel();
 
   QModelIndexList mappedSelRows;
-  QModelIndexList::const_iterator i;
+  size_t i, imax = mpPlotDM->rowCount();
 
-  for (i = selRows.begin(); i != selRows.end(); ++i)
-    {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
+  for (i = 0; i < imax; i++)
+    {
+      if (pSelectionModel->isRowSelected(i, QModelIndex()))
+        {
+          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index(i, 0)));
+        }
+    }
+
+  if (mappedSelRows.empty())
+    {return;}
 
   mpPlotDM->removeRows(mappedSelRows);
 }
@@ -118,7 +128,11 @@ void CQPlotsWidget::slotBtnClearClicked()
 
 bool CQPlotsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  enterProtected();
+  if (!mIgnoreUpdates)
+    {
+      enterProtected();
+    }
+
   return true;
 }
 

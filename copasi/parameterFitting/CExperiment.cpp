@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:32 $
+//   $Date: 2010/07/16 19:01:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -792,7 +797,7 @@ bool CExperiment::read(std::istream & in,
                 if (!Cells[i].isValue())
                   {
                     CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
-                                   getObjectName().c_str(), currentLine);
+                                   getObjectName().c_str(), currentLine, i + 1);
                     return false;
                   }
 
@@ -810,7 +815,7 @@ bool CExperiment::read(std::istream & in,
                 if (!Cells[i].isValue())
                   {
                     CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
-                                   getObjectName().c_str(), currentLine);
+                                   getObjectName().c_str(), currentLine, i + 1);
                     return false;
                   }
 

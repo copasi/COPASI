@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/MIRIAMResources.xml,v $ -->
-<!--   $Revision: 1.3 $ -->
+<!--   $Revision: 1.4 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2009/04/21 16:16:41 $ -->
+<!--   $Date: 2010/07/16 19:00:07 $ -->
 <!-- End CVS Header -->
+
+<!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
 <!-- and The University of Manchester. -->
 <!-- All rights reserved. -->
 
-<!-- generated with COPASI 4.5 (Build 30) (http://www.copasi.org) at 2009-03-30 15:59:55 UTC -->
+<!-- generated with COPASI 4.6.32 (Debug) (http://www.copasi.org) at 2010-04-30 17:59:12 UTC -->
 <ParameterGroup name="Configuration">
   <ParameterGroup name="MIRIAM Resources">
     <Parameter name="Frequency" type="unsignedInteger" value="604800"/>
-    <Parameter name="LastUpdateDate" type="unsignedInteger" value="1238428710"/>
+    <Parameter name="LastUpdateDate" type="unsignedInteger" value="1272649484"/>
     <ParameterGroup name="Resources">
       <ParameterGroup name="3DMET">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -31,8 +36,16 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="Aclame"/>
-        <Parameter name="Pattern" type="string" value="^mge\:\d+$"/>
+        <Parameter name="Pattern" type="string" value="^mge:\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:aclame"/>
+      </ParameterGroup>
+      <ParameterGroup name="Anatomical Therapeutic Chemical">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Anatomical Therapeutic Chemical"/>
+        <Parameter name="Pattern" type="string" value="^(\w+(\-\w+)?(\.\w+)?/)?\d{4,7}(\.\d{4}(v\d+)?)?$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:atc"/>
       </ParameterGroup>
       <ParameterGroup name="ArrayExpress">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -52,12 +65,20 @@
         <Parameter name="Pattern" type="string" value="^\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:bind"/>
       </ParameterGroup>
+      <ParameterGroup name="BRENDA">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="BRENDA"/>
+        <Parameter name="Pattern" type="string" value="^((\d+\.-\.-\.-)|(\d+\.\d+\.-\.-)|(\d+\.\d+\.\d+\.-)|(\d+\.\d+\.\d+\.\d+))$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:brenda"/>
+      </ParameterGroup>
       <ParameterGroup name="BioGRID">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="BioGRID"/>
-        <Parameter name="Pattern" type="string" value="^/d+$"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:biogrid"/>
       </ParameterGroup>
       <ParameterGroup name="BioModels Database">
@@ -66,8 +87,64 @@
           <Parameter name="URL" type="string" value="http://www.ebi.ac.uk/biomodels/"/>
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="BioModels Database"/>
-        <Parameter name="Pattern" type="string" value="^BIOMD\d{10}$"/>
+        <Parameter name="Pattern" type="string" value="^(BIOMD|MODEL)\d{10}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:biomodels.db"/>
+      </ParameterGroup>
+      <ParameterGroup name="BioNumbers">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="BioNumbers"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:bionumbers"/>
+      </ParameterGroup>
+      <ParameterGroup name="BioSystems">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="BioSystems"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:biosystems"/>
+      </ParameterGroup>
+      <ParameterGroup name="Brenda Tissue Ontology">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Brenda Tissue Ontology"/>
+        <Parameter name="Pattern" type="string" value="^BTO:\d{7}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obo.bto"/>
+      </ParameterGroup>
+      <ParameterGroup name="CTD Chemical">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="CTD Chemical"/>
+        <Parameter name="Pattern" type="string" value="^D\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:ctd.chemical"/>
+      </ParameterGroup>
+      <ParameterGroup name="CTD Disease">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="CTD Disease"/>
+        <Parameter name="Pattern" type="string" value="^D\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:ctd.disease"/>
+      </ParameterGroup>
+      <ParameterGroup name="CTD Gene">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="CTD Gene"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:ctd.gene"/>
+      </ParameterGroup>
+      <ParameterGroup name="Cell Ontology">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Cell Ontology"/>
+        <Parameter name="Pattern" type="string" value="^CL:\d{7}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obo.clo"/>
       </ParameterGroup>
       <ParameterGroup name="ChEBI">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -78,6 +155,38 @@
         <Parameter name="Pattern" type="string" value="^CHEBI:\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:obo.chebi"/>
       </ParameterGroup>
+      <ParameterGroup name="ChEMBL compound">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="ChEMBL compound"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:chembl.compound"/>
+      </ParameterGroup>
+      <ParameterGroup name="ChEMBL target">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="ChEMBL target"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:chembl.target"/>
+      </ParameterGroup>
+      <ParameterGroup name="ChemIDplus">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="ChemIDplus"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:chemidplus"/>
+      </ParameterGroup>
+      <ParameterGroup name="Chemical Component Dictionary">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Chemical Component Dictionary"/>
+        <Parameter name="Pattern" type="string" value="^\w{3}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:pdb-ccd"/>
+      </ParameterGroup>
       <ParameterGroup name="CluSTr">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
@@ -87,13 +196,21 @@
         <Parameter name="Pattern" type="string" value="^[0-9A-Za-z]+:\d+:\d{1,5}(\.\d)?$"/>
         <Parameter name="URI" type="string" value="urn:miriam:clustr"/>
       </ParameterGroup>
+      <ParameterGroup name="Conserved Domain Database">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Conserved Domain Database"/>
+        <Parameter name="Pattern" type="string" value="^cd\d{5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:cdd"/>
+      </ParameterGroup>
       <ParameterGroup name="DOI">
         <Parameter name="Citation" type="bool" value="1"/>
         <ParameterGroup name="Deprecated">
           <Parameter name="URL" type="string" value="http://www.doi.org/"/>
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="DOI"/>
-        <Parameter name="Pattern" type="string" value="^\d{2}\.\d{4}/.*$"/>
+        <Parameter name="Pattern" type="string" value="^(doi\:)?\d{2}\.\d{4}/.*$"/>
         <Parameter name="URI" type="string" value="urn:miriam:doi"/>
       </ParameterGroup>
       <ParameterGroup name="Database of Interacting Proteins">
@@ -101,8 +218,16 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="Database of Interacting Proteins"/>
-        <Parameter name="Pattern" type="string" value="^DIP\[:-]\d{3}[EN]$"/>
+        <Parameter name="Pattern" type="string" value="^DIP[\:\-]\d{3}[EN]$"/>
         <Parameter name="URI" type="string" value="urn:miriam:dip"/>
+      </ParameterGroup>
+      <ParameterGroup name="DrugBank">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="DrugBank"/>
+        <Parameter name="Pattern" type="string" value="^DB\d{5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:drugbank"/>
       </ParameterGroup>
       <ParameterGroup name="Ensembl">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -113,6 +238,14 @@
         <Parameter name="Pattern" type="string" value="^ENS[A-Z]*[FPTG]\d{11}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:ensembl"/>
       </ParameterGroup>
+      <ParameterGroup name="Entrez Gene">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Entrez Gene"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:entrez.gene"/>
+      </ParameterGroup>
       <ParameterGroup name="Enzyme Nomenclature">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
@@ -121,7 +254,7 @@
           <Parameter name="URL" type="string" value="http://www.ebi.ac.uk/IntEnz/"/>
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="Enzyme Nomenclature"/>
-        <Parameter name="Pattern" type="string" value="^\d+|\d+\.(-|\d+)|\d+\.\d+\.(-|\d+)|\d+\.\d+\.\d+\.(-|\d+)$"/>
+        <Parameter name="Pattern" type="string" value="^\d+\.-\.-\.-|\d+\.\d+\.-\.-|\d+\.\d+\.\d+\.-|\d+\.\d+\.\d+\.\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:ec-code"/>
       </ParameterGroup>
       <ParameterGroup name="Evidence Code">
@@ -154,7 +287,7 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="GEO"/>
-        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="Pattern" type="string" value="^GDS\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:geo"/>
       </ParameterGroup>
       <ParameterGroup name="Gene Ontology">
@@ -166,6 +299,30 @@
         <Parameter name="Pattern" type="string" value="^GO:\d{7}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:obo.go"/>
       </ParameterGroup>
+      <ParameterGroup name="GeneDB">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="GeneDB"/>
+        <Parameter name="Pattern" type="string" value="^[\w\d\.-]*$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:genedb"/>
+      </ParameterGroup>
+      <ParameterGroup name="GlycomeDB">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="GlycomeDB"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:glycomedb"/>
+      </ParameterGroup>
+      <ParameterGroup name="HGNC">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="HGNC"/>
+        <Parameter name="Pattern" type="string" value="HGNC:\d{1,5}"/>
+        <Parameter name="URI" type="string" value="urn:miriam:hgnc"/>
+      </ParameterGroup>
       <ParameterGroup name="HMDB">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
@@ -175,6 +332,14 @@
         <Parameter name="Pattern" type="string" value="^HMDB\d{5}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:hmdb"/>
       </ParameterGroup>
+      <ParameterGroup name="HOVERGEN">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="HOVERGEN"/>
+        <Parameter name="Pattern" type="string" value="^P\d{5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:hovergen"/>
+      </ParameterGroup>
       <ParameterGroup name="ICD">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
@@ -183,6 +348,14 @@
         <Parameter name="DisplayName" type="string" value="ICD"/>
         <Parameter name="Pattern" type="string" value="^[A-Z]\d+(\.[-\d+])?$"/>
         <Parameter name="URI" type="string" value="urn:miriam:icd"/>
+      </ParameterGroup>
+      <ParameterGroup name="IMEx">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="IMEx"/>
+        <Parameter name="Pattern" type="string" value="^IM-\d+(-?)(\d+?)$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:imex"/>
       </ParameterGroup>
       <ParameterGroup name="IPI">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -197,7 +370,7 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="ISBN"/>
-        <Parameter name="Pattern" type="string" value="ISBN(?:-13)?:?\x20*(?=.{17}$)97(?:8|9)([ -])\d{1,5}\1\d{1,7}\1\d{1,6}\1\d$"/>
+        <Parameter name="Pattern" type="string" value="^(ISBN)?(-13|-10)?[:]?[ ]?(\d{2,3}[ -]?)?\d{1,5}[ -]?\d{1,7}[ -]?\d{1,6}[ -]?(\d|X)$"/>
         <Parameter name="URI" type="string" value="urn:miriam:isbn"/>
       </ParameterGroup>
       <ParameterGroup name="IntAct">
@@ -236,6 +409,15 @@
         <Parameter name="Pattern" type="string" value="^D\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:kegg.drug"/>
       </ParameterGroup>
+      <ParameterGroup name="KEGG Genes">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+          <Parameter name="URL" type="string" value="http://www.genome.jp/kegg/genes/"/>
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="KEGG Genes"/>
+        <Parameter name="Pattern" type="string" value="^\w+:[\w\d\.-]*$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:kegg.genes"/>
+      </ParameterGroup>
       <ParameterGroup name="KEGG Glycan">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
@@ -244,6 +426,14 @@
         <Parameter name="DisplayName" type="string" value="KEGG Glycan"/>
         <Parameter name="Pattern" type="string" value="^G\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:kegg.glycan"/>
+      </ParameterGroup>
+      <ParameterGroup name="KEGG Orthology">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="KEGG Orthology"/>
+        <Parameter name="Pattern" type="string" value="^K\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:kegg.orthology"/>
       </ParameterGroup>
       <ParameterGroup name="KEGG Pathway">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -263,12 +453,20 @@
         <Parameter name="Pattern" type="string" value="^R\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:kegg.reaction"/>
       </ParameterGroup>
+      <ParameterGroup name="KISAO">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="KISAO"/>
+        <Parameter name="Pattern" type="string" value="^KISAO:\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:biomodels.kisao"/>
+      </ParameterGroup>
       <ParameterGroup name="LIPID MAPS">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="LIPID MAPS"/>
-        <Parameter name="Pattern" type="string" value="^LM(FA|GL|GP|SP|ST|PR|SL|PK)[0-9]{6}[0-9a-zA-Z]{4}$"/>
+        <Parameter name="Pattern" type="string" value="^LM(FA|GL|GP|SP|ST|PR|SL|PK)[0-9]{4}([0-9a-zA-Z]{4})?$"/>
         <Parameter name="URI" type="string" value="urn:miriam:lipidmaps"/>
       </ParameterGroup>
       <ParameterGroup name="Ligand Expo">
@@ -276,8 +474,32 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="Ligand Expo"/>
-        <Parameter name="Pattern" type="string" value="^(A-Z, 0-9){3}$"/>
+        <Parameter name="Pattern" type="string" value="^(\w){3}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:ligandexpo"/>
+      </ParameterGroup>
+      <ParameterGroup name="Ligand-Gated Ion Channel database">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Ligand-Gated Ion Channel database"/>
+        <Parameter name="Pattern" type="string" value="^/w+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:lgic"/>
+      </ParameterGroup>
+      <ParameterGroup name="LipidBank">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="LipidBank"/>
+        <Parameter name="Pattern" type="string" value="^\w+\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:lipidbank"/>
+      </ParameterGroup>
+      <ParameterGroup name="MACiE">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="MACiE"/>
+        <Parameter name="Pattern" type="string" value="^M\d{4}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:macie"/>
       </ParameterGroup>
       <ParameterGroup name="MEROPS">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -305,6 +527,46 @@
         <Parameter name="Pattern" type="string" value="^MIR:\d{8}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:miriam"/>
       </ParameterGroup>
+      <ParameterGroup name="MatrixDB">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="MatrixDB"/>
+        <Parameter name="Pattern" type="string" value="^([A-N,R-Z][0-9][A-Z][A-Z, 0-9][A-Z, 0-9][0-9])_.*|([O,P,Q][0-9][A-Z, 0-9][A-Z, 0-9][A-Z, 0-9][0-9]_.*)|(GAG_.*)|(MULT_.*)|(PFRAG_.*)|(LIP_.*)|(CAT_.*)$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:matrixdb.association"/>
+      </ParameterGroup>
+      <ParameterGroup name="Melanoma Molecular Map Project Biomaps">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Melanoma Molecular Map Project Biomaps"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:mmmp:biomaps"/>
+      </ParameterGroup>
+      <ParameterGroup name="Microbial Protein Interaction Database">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Microbial Protein Interaction Database"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:mpid"/>
+      </ParameterGroup>
+      <ParameterGroup name="Molecular Interactions Ontology">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Molecular Interactions Ontology"/>
+        <Parameter name="Pattern" type="string" value="^MI:\d{4}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obo.mi"/>
+      </ParameterGroup>
+      <ParameterGroup name="Molecular Modeling Database">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Molecular Modeling Database"/>
+        <Parameter name="Pattern" type="string" value="^\d{1,5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:mmdb"/>
+      </ParameterGroup>
       <ParameterGroup name="Mouse Genome Database">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
@@ -314,13 +576,29 @@
         <Parameter name="Pattern" type="string" value="^MGI:\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:mgd"/>
       </ParameterGroup>
+      <ParameterGroup name="NeuroMorpho">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="NeuroMorpho"/>
+        <Parameter name="Pattern" type="string" value="^\w+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:neuromorpho"/>
+      </ParameterGroup>
+      <ParameterGroup name="NeuronDB">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="NeuronDB"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:neurondb"/>
+      </ParameterGroup>
       <ParameterGroup name="Nucleotide Sequence Database">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
           <Parameter name="URL" type="string" value="http://www.insdc.org/"/>
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="Nucleotide Sequence Database"/>
-        <Parameter name="Pattern" type="string" value="^[a..zA..Z]+(\_)?\d+(\.\d+)?$"/>
+        <Parameter name="Pattern" type="string" value="^\w+(\_)?\d+(\.\d+)?$"/>
         <Parameter name="URI" type="string" value="urn:miriam:insdc"/>
       </ParameterGroup>
       <ParameterGroup name="OMIM">
@@ -340,6 +618,14 @@
         <Parameter name="Pattern" type="string" value="^PTHR\d{5}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:panther"/>
       </ParameterGroup>
+      <ParameterGroup name="PATO">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="PATO"/>
+        <Parameter name="Pattern" type="string" value="^PATO:\d{7}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obo.pato"/>
+      </ParameterGroup>
       <ParameterGroup name="PIRSF">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
@@ -354,7 +640,7 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="PRIDE"/>
-        <Parameter name="Pattern" type="string" value="^/d+$"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:pride"/>
       </ParameterGroup>
       <ParameterGroup name="PROSITE">
@@ -366,20 +652,20 @@
         <Parameter name="Pattern" type="string" value="^PS\d{5}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:prosite"/>
       </ParameterGroup>
-      <ParameterGroup name="PSI-MOD">
+      <ParameterGroup name="Pathway Commons">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
-        <Parameter name="DisplayName" type="string" value="PSI-MOD"/>
-        <Parameter name="Pattern" type="string" value="^MOD/:/d{5}"/>
-        <Parameter name="URI" type="string" value="urn:miriam:obo.psi-mod"/>
+        <Parameter name="DisplayName" type="string" value="Pathway Commons"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:pathwaycommons"/>
       </ParameterGroup>
       <ParameterGroup name="PeptideAtlas">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="PeptideAtlas"/>
-        <Parameter name="Pattern" type="string" value="^PAp[0-9]{7}$"/>
+        <Parameter name="Pattern" type="string" value="^PAp[0-9]{8}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:peptideatlas"/>
       </ParameterGroup>
       <ParameterGroup name="Pfam">
@@ -391,14 +677,70 @@
         <Parameter name="Pattern" type="string" value="^PF\d{5}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:pfam"/>
       </ParameterGroup>
+      <ParameterGroup name="PharmGKB Disease">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="PharmGKB Disease"/>
+        <Parameter name="Pattern" type="string" value="^PA\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:pharmgkb.disease"/>
+      </ParameterGroup>
+      <ParameterGroup name="PharmGKB Drug">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="PharmGKB Drug"/>
+        <Parameter name="Pattern" type="string" value="^PA\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:pharmgkb.drug"/>
+      </ParameterGroup>
+      <ParameterGroup name="PharmGKB Pathways">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="PharmGKB Pathways"/>
+        <Parameter name="Pattern" type="string" value="^PA\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:pharmgkb.pathways"/>
+      </ParameterGroup>
+      <ParameterGroup name="PhosphoSite">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="PhosphoSite"/>
+        <Parameter name="Pattern" type="string" value="^/d{5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:phosphosite"/>
+      </ParameterGroup>
+      <ParameterGroup name="ProDom">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="ProDom"/>
+        <Parameter name="Pattern" type="string" value="^PD\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:prodom"/>
+      </ParameterGroup>
       <ParameterGroup name="Protein Data Bank">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
           <Parameter name="URL" type="string" value="http://www.pdb.org/"/>
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="Protein Data Bank"/>
-        <Parameter name="Pattern" type="string" value="^\d[0..9a..zA..Z]{3}$"/>
+        <Parameter name="Pattern" type="string" value="^\w{4}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:pdb"/>
+      </ParameterGroup>
+      <ParameterGroup name="Protein Modification Ontology">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Protein Modification Ontology"/>
+        <Parameter name="Pattern" type="string" value="^MOD:\d{5}"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obo.psi-mod"/>
+      </ParameterGroup>
+      <ParameterGroup name="PubChem-bioassay">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="PubChem-bioassay"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:pubchem.bioassay"/>
       </ParameterGroup>
       <ParameterGroup name="PubChem-compound">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -458,8 +800,32 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="RefSeq"/>
-        <Parameter name="Pattern" type="string" value="^[NC|AC|NG|NT|NW|NZ|NM|NR|XM|XR|NP|AP|XP|ZP]_\d+$"/>
+        <Parameter name="Pattern" type="string" value="^(NC|AC|NG|NT|NW|NZ|NM|NR|XM|XR|NP|AP|XP|ZP)_\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:refseq"/>
+      </ParameterGroup>
+      <ParameterGroup name="Relation Ontology">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Relation Ontology"/>
+        <Parameter name="Pattern" type="string" value="^OBO_REL:\w+\_\w+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obo.ro"/>
+      </ParameterGroup>
+      <ParameterGroup name="Rhea">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Rhea"/>
+        <Parameter name="Pattern" type="string" value="^\d{5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:rhea"/>
+      </ParameterGroup>
+      <ParameterGroup name="SABIO-RK Kinetic Record">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="SABIO-RK Kinetic Record"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:sabiork.kineticrecord"/>
       </ParameterGroup>
       <ParameterGroup name="SABIO-RK Reaction">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -470,29 +836,37 @@
         <Parameter name="Pattern" type="string" value="^\d+$"/>
         <Parameter name="URI" type="string" value="urn:miriam:sabiork.reaction"/>
       </ParameterGroup>
+      <ParameterGroup name="SGD">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+          <Parameter name="URL" type="string" value="http://www.yeastgenome.org/"/>
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="SGD"/>
+        <Parameter name="Pattern" type="string" value="^S\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:sgd"/>
+      </ParameterGroup>
+      <ParameterGroup name="SMART">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="SMART"/>
+        <Parameter name="Pattern" type="string" value="^SM\d{5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:smart"/>
+      </ParameterGroup>
       <ParameterGroup name="SPRINT">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="SPRINT"/>
-        <Parameter name="Pattern" type="string" value="^PR/d{5}$"/>
+        <Parameter name="Pattern" type="string" value="^PR\d{5}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:sprint"/>
-      </ParameterGroup>
-      <ParameterGroup name="Saccharomyces genome database">
-        <Parameter name="Citation" type="bool" value="0"/>
-        <ParameterGroup name="Deprecated">
-          <Parameter name="URL" type="string" value="http://www.yeastgenome.org/"/>
-        </ParameterGroup>
-        <Parameter name="DisplayName" type="string" value="Saccharomyces genome database"/>
-        <Parameter name="Pattern" type="string" value="^S\d+$"/>
-        <Parameter name="URI" type="string" value="urn:miriam:sgd"/>
       </ParameterGroup>
       <ParameterGroup name="Saccharomyces genome database pathways">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="Saccharomyces genome database pathways"/>
-        <Parameter name="Pattern" type="string" value="^PWY\d{2}\-\d{3}$"/>
+        <Parameter name="Pattern" type="string" value="^PWY\w{2}\-\d{3}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:sgd.pathways"/>
       </ParameterGroup>
       <ParameterGroup name="Signaling Gateway">
@@ -500,8 +874,16 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="Signaling Gateway"/>
-        <Parameter name="Pattern" type="string" value="A0/d+"/>
+        <Parameter name="Pattern" type="string" value="A0\d+"/>
         <Parameter name="URI" type="string" value="urn:miriam:signaling-gateway"/>
+      </ParameterGroup>
+      <ParameterGroup name="Small Molecule Pathway Database">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Small Molecule Pathway Database"/>
+        <Parameter name="Pattern" type="string" value="^SMP\d{5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:smpdb"/>
       </ParameterGroup>
       <ParameterGroup name="Systems Biology Ontology">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -513,12 +895,20 @@
         <Parameter name="Pattern" type="string" value="^SBO:\d{7}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:obo.sbo"/>
       </ParameterGroup>
+      <ParameterGroup name="T3DB">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="T3DB"/>
+        <Parameter name="Pattern" type="string" value="^T3D\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:t3db"/>
+      </ParameterGroup>
       <ParameterGroup name="TAIR Gene">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="TAIR Gene"/>
-        <Parameter name="Pattern" type="string" value="^Gene\:\d{7}$"/>
+        <Parameter name="Pattern" type="string" value="^Gene:\d{7}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:tair.gene"/>
       </ParameterGroup>
       <ParameterGroup name="TAIR Locus">
@@ -526,7 +916,7 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="TAIR Locus"/>
-        <Parameter name="Pattern" type="string" value="^AT\d[1-5]G\d{5}$"/>
+        <Parameter name="Pattern" type="string" value="^AT[1-5]G\d{5}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:tair.locus"/>
       </ParameterGroup>
       <ParameterGroup name="TAIR Protein">
@@ -534,8 +924,33 @@
         <ParameterGroup name="Deprecated">
         </ParameterGroup>
         <Parameter name="DisplayName" type="string" value="TAIR Protein"/>
-        <Parameter name="Pattern" type="string" value="^AASequence\:\d{10}$"/>
+        <Parameter name="Pattern" type="string" value="^AASequence:\d{10}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:tair.protein"/>
+      </ParameterGroup>
+      <ParameterGroup name="TEDDY">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+          <Parameter name="URL" type="string" value="urn:miriam:teddy"/>
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="TEDDY"/>
+        <Parameter name="Pattern" type="string" value="^TEDDY_\d{7}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:biomodels.teddy"/>
+      </ParameterGroup>
+      <ParameterGroup name="TTD Drug">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="TTD Drug"/>
+        <Parameter name="Pattern" type="string" value="^DAP\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:ttd.drug"/>
+      </ParameterGroup>
+      <ParameterGroup name="TTD Target">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="TTD Target"/>
+        <Parameter name="Pattern" type="string" value="^TTDS\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:ttd.target"/>
       </ParameterGroup>
       <ParameterGroup name="Taxonomy">
         <Parameter name="Citation" type="bool" value="0"/>
@@ -574,6 +989,22 @@
         <Parameter name="Pattern" type="string" value="^([A-N,R-Z][0-9][A-Z][A-Z, 0-9][A-Z, 0-9][0-9])|([O,P,Q][0-9][A-Z, 0-9][A-Z, 0-9][A-Z, 0-9][0-9])$"/>
         <Parameter name="URI" type="string" value="urn:miriam:uniprot"/>
       </ParameterGroup>
+      <ParameterGroup name="Unipathway">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="Unipathway"/>
+        <Parameter name="Pattern" type="string" value="^UPA\d{5}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:unipathway"/>
+      </ParameterGroup>
+      <ParameterGroup name="WikiPathways">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="WikiPathways"/>
+        <Parameter name="Pattern" type="string" value="WP\d{1,5}"/>
+        <Parameter name="URI" type="string" value="urn:miriam:wikipathways"/>
+      </ParameterGroup>
       <ParameterGroup name="WormBase">
         <Parameter name="Citation" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">
@@ -592,6 +1023,14 @@
         <Parameter name="Pattern" type="string" value="^CE\d{5}$"/>
         <Parameter name="URI" type="string" value="urn:miriam:wormpep"/>
       </ParameterGroup>
+      <ParameterGroup name="ZFIN Gene">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="ZFIN Gene"/>
+        <Parameter name="Pattern" type="string" value="ZDB\-GENE\-\d+\-\d+"/>
+        <Parameter name="URI" type="string" value="urn:miriam:zfin"/>
+      </ParameterGroup>
       <ParameterGroup name="arXiv">
         <Parameter name="Citation" type="bool" value="1"/>
         <ParameterGroup name="Deprecated">
@@ -601,6 +1040,30 @@
         <Parameter name="DisplayName" type="string" value="arXiv"/>
         <Parameter name="Pattern" type="string" value="^(\w+(\-\w+)?(\.\w+)?/)?\d{4,7}(\.\d{4}(v\d+)?)?$"/>
         <Parameter name="URI" type="string" value="urn:miriam:arxiv"/>
+      </ParameterGroup>
+      <ParameterGroup name="iRefWeb">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="iRefWeb"/>
+        <Parameter name="Pattern" type="string" value="^\d+$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:irefweb"/>
+      </ParameterGroup>
+      <ParameterGroup name="miRBase Sequence">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="miRBase Sequence"/>
+        <Parameter name="Pattern" type="string" value="MI\d{7}"/>
+        <Parameter name="URI" type="string" value="urn:miriam:mirbase"/>
+      </ParameterGroup>
+      <ParameterGroup name="sequence ontology">
+        <Parameter name="Citation" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+        <Parameter name="DisplayName" type="string" value="sequence ontology"/>
+        <Parameter name="Pattern" type="string" value="^SO:\d{7}$"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obo.so"/>
       </ParameterGroup>
     </ParameterGroup>
   </ParameterGroup>

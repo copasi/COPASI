@@ -1,12 +1,17 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.37 $ 
+#   $Revision: 1.38 $ 
 #   $Name:  $ 
-#   $Revision: 1.37 $ 
+#   $Revision: 1.38 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/09/01 14:08:16 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/07/16 18:56:02 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -21,6 +26,7 @@ TEMPLATE = lib
 CONFIG -= qt
 
 include(../../common.pri)
+include(../../app.pri)
 
 TARGET = CopasiJava
 
@@ -33,14 +39,17 @@ QMAKE_CXXFLAGS_RELEASE -= -O3
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -O1
 
-COPASI_LIBS += -L../../lib
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
-COPASI_LIBS += -lCOPASISE 
-
-LIBS = $$COPASI_LIBS $$LIBS
 
 INCLUDEPATH += ../../..
 contains(BUILD_OS,Linux){
+  LIBS = -L../../lib \
+         $$join(COPASI_LIBS, " -l", -l) \
+         $${LIBS}
+
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
      INCLUDEPATH += $$JAVA_HOME/include/
@@ -56,6 +65,13 @@ contains(BUILD_OS,Linux){
 
 
 contains(BUILD_OS, Darwin) {
+  QMAKE_LFLAGS += -Wl,-search_paths_first
+  
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
+         $${LIBS}
+  
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+
     LIBS += -framework JavaVM
     LIBS += -framework QuickTime
     LIBS += -framework Carbon
@@ -82,6 +98,10 @@ contains(BUILD_OS, Darwin) {
 }
 
 contains(BUILD_OS, WIN32) { 
+  LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+
+  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
@@ -124,7 +144,9 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CCopasiTask.i \
                      ../swig/CCopasiVector.i \
                      ../swig/CEvaluationTree.i \
+                     ../swig/CExpression.i \
                      ../swig/CFunction.i \
+                     ../swig/CCallParameters.i \
                      ../swig/CFunctionDB.i \
                      ../swig/CFunctionParameter.i \
                      ../swig/CFunctionParameters.i \
@@ -165,6 +187,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CFitMethod.i \
                      ../swig/CFitProblem.i \
                      ../swig/CFitTask.i \
+                     ../swig/CEvent.i \
                      ../swig/CExperimentFileInfo.i \
                      ../swig/CExperiment.i \
                      ../swig/CExperimentSet.i \
@@ -172,7 +195,14 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CFitItem.i \
                      ../swig/compare_utilities.i \
                      ../swig/copasi.i \
-                     ../swig/CCopasiArray.i
+                     ../swig/CCopasiArray.i \
+                     ../swig/CLBase.i \
+                     ../swig/CLCurve.i \
+                     ../swig/CLGlyphs.i \
+                     ../swig/CLGraphicalObject.i \
+                     ../swig/CLReactionGlyph.i \
+                     ../swig/CLayout.i \
+                     ../swig/CListOfLayouts.i
 
 
 #DISTFILE   = $$SWIG_INTERFACE_FILES
@@ -215,7 +245,7 @@ isEmpty(SWIG_PATH){
       wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
       wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) java_files\org\COPASI\*.java && $(DEL_FILE) java_files\org\COPASI\*.class && $(DEL_FILE) gui\org\COPASI\gui\*.class && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files\org\COPASI\  java.i && cd java_files && $$JAVA_HOME\bin\javac.exe -classpath . -d . org\COPASI\*.java  && cd .. && $$JAVA_HOME\bin\jar.exe cvf copasi.jar -C java_files .\org && cd gui && $$JAVA_HOME\bin\javac.exe -classpath .;..\copasi.jar -d . org\COPASI\gui\*.java && $$JAVA_HOME\bin\jar.exe cvf ..\copasi_gui.jar -C . org\COPASI\gui\*.class org\COPASI\gui\*.java
       QMAKE_EXTRA_WIN_TARGETS += wrapper_source
-      PRE_TARGETDEPS += ..\..\lib\COPASISE.lib
+      #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
 
     }
     !contains(BUILD_OS, WIN32){
@@ -224,7 +254,7 @@ isEmpty(SWIG_PATH){
       wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $$JAVA_HOME/bin/javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$$JAVA_HOME/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $$JAVA_HOME/bin/javac -classpath ../copasi.jar:. -d . org/COPASI/gui/*.java ; $$JAVA_HOME/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
       QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
-      PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+      #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
     }
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
@@ -238,5 +268,3 @@ QMAKE_CLEAN += java_files/org/COPASI/*.class
 SOURCES += copasi_wrapper.cpp
 # under windows qmake seems to ignore the last line of progject files
 
-#The following line was inserted by qt3to4
-QT += xml  opengl qt3support 

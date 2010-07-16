@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:27:55 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 18:57:32 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1859,7 +1859,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
 
           // if it is not the neutral element or it is the last element to be
           // inserted into an otherwise empty vector, insert the element
-          if (pNode != NULL && *pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && cInnerIt == cInnerEndit))
+          if (pNode != NULL && (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && cInnerIt == cInnerEndit)))
             {
               andElements.push_back(pNode);
             }
@@ -1891,7 +1891,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
 
       // if it is not the neutral element or it is the last element to be
       // inserted into an otherwise empty vector, insert the element
-      if (pNode != NULL && *pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && cIt == cEndit))
+      if (pNode != NULL && (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && cIt == cEndit)))
         {
           orElements.push_back(pNode);
         }
@@ -1940,7 +1940,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
 
           // if it is not the neutral element or it is the last element to be
           // inserted into an otherwise empty vector, insert the element
-          if (pNode != NULL && *pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && iInnerIt == iInnerEndit))
+          if (pNode != NULL && (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && iInnerIt == iInnerEndit)))
             {
               andElements.push_back(pNode);
             }
@@ -1973,7 +1973,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
 
       // if it is not the neutral element or it is the last element to be
       // inserted into an otherwise empty vector, insert the element
-      if (pNode != NULL && *pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && iIt == iEndit))
+      if (pNode != NULL && (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && iIt == iEndit)))
         {
           orElements.push_back(pNode);
         }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:15 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:05:20 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,10 +251,15 @@ bool SensitivitiesWidget::saveTask()
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  if (mChanged)
+  // However we do not track the changes for the variables we just delete them and add them again.
+  if (true)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      if (mpDataModel != NULL)
+        {
+          mpDataModel->changed();
+        }
+
+      mChanged = false;
     }
 
   return true;

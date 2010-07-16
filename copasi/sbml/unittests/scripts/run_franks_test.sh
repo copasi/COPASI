@@ -63,7 +63,7 @@ function test_run_single_file
     OUTPUT_DIR=$2
     NAME=${SBML_FILE##*/};
     NAME=${NAME%%.xml};
-    RESULT_FILE=${NAME}.CSV
+    RESULT_FILE=${OUTPUT_DIR}/${NAME}.CSV
     OUTPUT_FILE=${NAME}.franks.out
     ERROR_FILE=${NAME}.franks.err
     VALGRIND_LOG=${NAME}.franks.log
@@ -77,8 +77,6 @@ function test_run_single_file
     # check if the CPS file has been generated and has a size different from 0
     if [ ! -s ${RESULT_FILE} ];then
         return 1;
-    else
-        mv ${RESULT_FILE} ${OUTPUT_DIR}
     fi
     # check if filtering of warnings has been enabled and if yes,
     # do the filtering

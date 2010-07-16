@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:41 $
+//   $Date: 2010/07/16 19:00:07 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -186,7 +191,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::s
         NewPath.push_back(*pNewPath++);
 
       // Each change may break the triplets, i.e. we need to refresh every time
-      while ((Triplets = pGraph->getTriplets(pChange->Source)).size() > Failed.size())
+      while ((Triplets = pGraph->getTriplets(pChange->Source, false)).size() > Failed.size())
         {
           // Skip all failed triplets
           for (it = Triplets.begin(), end = Triplets.end(); it != end; ++it)

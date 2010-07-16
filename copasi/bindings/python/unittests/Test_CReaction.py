@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CReaction.py,v $ 
-#   $Revision: 1.13 $ 
+#   $Revision: 1.14 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/07/16 18:55:59 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -18,14 +24,15 @@ from types import *
 
 class Test_CReaction(unittest.TestCase):
   def setUp(self):
-    COPASI.CCopasiDataModel.GLOBAL.newModel()
-    self.model=COPASI.CCopasiDataModel.GLOBAL.getModel()
+    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.model=self.datamodel.getModel()
     self.comp1=self.model.createCompartment("comp1",1.0)
     self.comp2=self.model.createCompartment("comp2",2.0)
     self.substrate=self.model.createMetabolite("A","comp1")
     self.product=self.model.createMetabolite("B","comp2")
     self.reac=self.model.createReaction("testReaction");
     self.model.compileIfNecessary()
+    self.model.applyInitialValues()
 
   def test_getKey(self):
     key=self.reac.getKey()
@@ -96,7 +103,7 @@ class Test_CReaction(unittest.TestCase):
     self.assert_(f.__class__==COPASI.CFunction)
 
   def test_setFunction(self):
-    functionList=COPASI.CCopasiDataModel.GLOBAL.getFunctionList()
+    functionList=COPASI.CCopasiRootContainer.getFunctionList()
     functions=functionList.suitableFunctions(self.reac.getChemEq().getSubstrates().size(),self.reac.getChemEq().getProducts().size(),self.reac.isReversible())              
     self.assert_(len(functions)!=0)
     function=functions[0]
@@ -110,7 +117,7 @@ class Test_CReaction(unittest.TestCase):
     self.reac.addSubstrate(self.substrate.getKey())
     self.reac.addProduct(self.product.getKey())
     self.reac.setReversible(True)
-    function=COPASI.CCopasiDataModel.GLOBAL.getFunctionList().findFunction("Iso Uni Uni")
+    function=COPASI.CCopasiRootContainer.getFunctionList().findFunction("Iso Uni Uni")
     self.assert_(function!=None)
     self.assert_(self.reac.setFunction(function.getObjectName()))
     parameters=self.reac.getParameters()
@@ -125,7 +132,7 @@ class Test_CReaction(unittest.TestCase):
     self.reac.addSubstrate(self.substrate.getKey())
     self.reac.addProduct(self.product.getKey())
     self.reac.setReversible(True)
-    function=COPASI.CCopasiDataModel.GLOBAL.getFunctionList().findFunction("Iso Uni Uni")
+    function=COPASI.CCopasiRootContainer.getFunctionList().findFunction("Iso Uni Uni")
     self.assert_(function!=None)
     self.assert_(self.reac.setFunction(function.getObjectName()))
     parameters=self.reac.getParameters()
@@ -153,7 +160,6 @@ def suite():
          ,'test_addModifier'
          ,'test_setReversible'
          ,'test_getCompartmentNumber'
-         ,'test_getLargestCompartment'
          ,'test_getSBMLId'
          ,'test_setSBMLId'
          ,'test_getChemEq'
@@ -162,6 +168,7 @@ def suite():
          ,'test_getParameterValue'
          ,'test_setParameterValue'
          ,'test_getFunctionParameters'
+         ,'test_getLargestCompartment'
         ]
   return unittest.TestSuite(map(Test_CReaction,tests))
 

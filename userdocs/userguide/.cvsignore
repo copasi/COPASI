@@ -10,3 +10,6 @@ copasi.toc
 copasi.pdf
 copasi1.bbl
 UserManual*
+copasi_bindings_python.xml
+copasi_bindings_java.xml
+copasi_bindings_cpp.xml

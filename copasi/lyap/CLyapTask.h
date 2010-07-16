@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:11 $
+//   $Date: 2010/07/16 18:59:37 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -154,12 +159,6 @@ public:
    * @return bool success
    */
   virtual bool setMethodType(const int & type);
-
-  /**
-   * Perform an output event for the current activity
-   * @param const Activity & activity
-   */
-  virtual void output(const COutputInterface::Activity & activity);
 
   /**
    * This is called by the method to generate the output and update the progress

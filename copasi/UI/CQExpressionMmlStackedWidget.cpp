@@ -108,12 +108,11 @@ void CQExpressionMmlStackedWidget::updateWidget()
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
 #endif
 
-  if (mpExpressionWidget->text().isEmpty() ||
-      !mpExpressionWidget->isValid())
+  if (mpExpressionWidget->text().isEmpty() || !mpExpressionWidget->isValid())
     setCurrentWidget(mpExpressionPage);
   else
     {
-      mpExpressionWidget->mpValidator->getExpression()->writeMathML(mml, false, 0);
+      mpExpressionWidget->writeMathML(mml);
 
 #ifdef DEBUG_UI
       qDebug() << "mml.str() = " << FROM_UTF8(mml.str());
@@ -121,7 +120,6 @@ void CQExpressionMmlStackedWidget::updateWidget()
 
       setCurrentWidget(mpMmlPage);
       mpMmlScrollView->updateWidget(mml);
-      MMLStr = FROM_UTF8(mml.str());
     }
 
 #endif /* HAVE_MML */
@@ -129,6 +127,19 @@ void CQExpressionMmlStackedWidget::updateWidget()
 #ifdef DEBUG_UI
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget = " << currentIndex();
 #endif
+}
+
+void CQExpressionMmlStackedWidget::setReadOnly(const bool & readOnly)
+{
+  if (readOnly)
+    mpBtnEditExpression->hide();
+  else
+    mpBtnEditExpression->show();
+}
+
+QString CQExpressionMmlStackedWidget::getText()
+{
+  return mpExpressionWidget->text();
 }
 
 void CQExpressionMmlStackedWidget::init()
@@ -185,10 +196,10 @@ void CQExpressionMmlStackedWidget::saveMML(const QString outfilename)
   ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
-  ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
+  ofile << "<!DOCTYPE math PUBLIC \"-//W3C//DTD MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\">" << std::endl;
   ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
 
-  mpExpressionWidget->mpValidator->getExpression()->writeMathML(ofile, false, 0);
+  mpExpressionWidget->writeMathML(ofile);
 
   ofile << "</math>" << std::endl;
 
@@ -198,7 +209,7 @@ void CQExpressionMmlStackedWidget::saveMML(const QString outfilename)
 void CQExpressionMmlStackedWidget::saveTeX(const QString outfilename)
 {
   std::ostringstream mml;
-  mpExpressionWidget->mpValidator->getExpression()->writeMathML(mml, false, 0);
+  mpExpressionWidget->writeMathML(mml);
 
   QString latexStr(FROM_UTF8(mml.str()));
 

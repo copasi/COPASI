@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:25 $
+//   $Date: 2010/07/16 19:03:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -774,7 +779,9 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
                           }
 
                         if (fabs(L(i - ode_size, j)) != 1.0)
-                          tmp << fabs(L(i - ode_size, j)) << "*";
+                          {
+                            tmp << fabs(L(i - ode_size, j)) << "*";
+                          }
 
                         std::ostringstream jsmKey;
                         jsmKey << "sm_" << metabs[ode_size + j]->getKey();

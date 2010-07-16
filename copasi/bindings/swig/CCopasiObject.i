@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiObject.i,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/04 19:22:40 $ 
+//   $Author: shoops $ 
+//   $Date: 2010/07/16 18:56:26 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -27,10 +32,22 @@
 %ignore UpdateMethod;
 %ignore SpecificUpdateMethod;
 %ignore Refresh;
-%ignore operator<<(std::ostream& os,const CCopasiObject& o);
+%ignore operator<<;
 %ignore CCopasiObject::getObjectDataModel() const;
+%ignore CCopasiObject::setRenameHandler;
+%ignore CCopasiObject::getValuePointer;
+%ignore CCopasiObject::print;
+%ignore CCopasiObject::setUpdateMethod;
+%ignore CCopasiObject::getUpdateMethod;
+%ignore CCopasiObject::setRefresh;
+%ignore CCopasiObject::getRefresh;
+%ignore CCopasiObject::buildUpdateSequence;
+%ignore CCopasiObject::getDirectDependencies;
+%ignore CCopasiObject::setDirectDependencies;
+%ignore CCopasiObject::getAllDependencies;
+%ignore CCopasiObject::dependsOn;
+%ignore CCopasiObject::hasCircularDependencies;
 
-%rename (output) print(std::ostream*) const;
 
 %include "report/CCopasiObject.h"
 

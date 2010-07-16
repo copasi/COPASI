@@ -1,10 +1,16 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunParameterFitting.java,v $ 
-//   $Revision: 1.3 $ 
+//   $Revision: 1.4 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 08:21:44 $ 
+//   $Author: shoops $ 
+//   $Date: 2010/07/16 18:56:01 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
@@ -29,7 +35,7 @@ public class Test_RunParameterFitting extends TestCase
     public void setUp()
     {
         mDataModel=CCopasiRootContainer.addDatamodel();
-        Test_CreateSimpleModel.createModel();
+        Test_CreateSimpleModel.createModel(mDataModel);
     }
 
 
@@ -53,7 +59,7 @@ public class Test_RunParameterFitting extends TestCase
         assertTrue(experimentSet.getClass() == CExperimentSet.class);
         assertTrue(experimentSet.getExperimentCount() == 0);
         // first experiment
-        CExperiment experiment=new CExperiment();
+        CExperiment experiment=new CExperiment(mDataModel);
         assertTrue(experiment!=null);
         assertTrue(experiment.getClass()==CExperiment.class);
         experiment.setFileName("parameter_fitting_data_simple.txt");
@@ -142,7 +148,7 @@ public class Test_RunParameterFitting extends TestCase
         CCopasiObject parameterReference=parameter.getObject(new CCopasiObjectName("Reference=Value"));
         assertTrue(parameterReference!=null);
         assertTrue(parameterReference.getClass()==CCopasiObject.class);
-        CFitItem fitItem=new CFitItem();
+        CFitItem fitItem=new CFitItem(mDataModel);
         assertTrue(fitItem!=null);
         assertTrue(fitItem.getClass()==CFitItem.class);
         fitItem.setObjectCN(parameterReference.getCN());

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:03 $
+//   $Date: 2010/07/16 19:03:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -378,7 +378,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
 
   calculateJacobianX(currentValue);
 
-  if (!solveJacobianXeqB(mH, mdxdt))
+  if (solveJacobianXeqB(mH, mdxdt) != 0.0)
     {
       // We need to check that mH != 0
       C_FLOAT64 * pH = mH.array();
@@ -606,10 +606,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 
   CVector< C_FLOAT64 > Distance;
 
-  if (!solveJacobianXeqB(Distance, particlefluxes))
-    {
-      return std::numeric_limits< C_FLOAT64 >::infinity();
-    }
+  C_FLOAT64 Error = solveJacobianXeqB(Distance, particlefluxes);
 
   // We look at all ODE determined entity and dependent species rates.
   C_FLOAT64 * pDistance = Distance.array();
@@ -650,7 +647,12 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
   AbsoluteDistance =
     isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance);
 
-  return std::max(RelativeDistance, AbsoluteDistance);
+  C_FLOAT64 TargetValue = std::max(RelativeDistance, AbsoluteDistance);
+
+  if (Error < TargetValue)
+    return TargetValue *(1.0 + Error);
+  else
+    return Error;
 }
 
 //virtual
@@ -776,7 +778,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   return true;
 }
 
-bool CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C_FLOAT64 > & B) const
+C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C_FLOAT64 > & B) const
 {
   X = B;
 
@@ -785,10 +787,8 @@ bool CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C
 
   if (M == 0 || N == 0 || M != N)
     {
-      return false;
+      return std::numeric_limits< C_FLOAT64 >::infinity();
     }
-
-  bool success = true;
 
   C_INT LDA = std::max< C_INT >(1, M);
   C_INT NRHS = 1;
@@ -978,6 +978,8 @@ bool CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C
       fatalError();
     }
 
+  C_FLOAT64 Error = 0;
+
   if (RANK != M)
     {
       // We need to check whether the || Ax - b || is sufficiently small.
@@ -987,14 +989,14 @@ bool CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C
       C_FLOAT64 Alpha = 1.0;
       C_FLOAT64 Beta = 0.0;
 
-      CVector< C_FLOAT64 > Solution = B;
+      CVector< C_FLOAT64 > Ax = B;
 
       dgemm_(&T, &T, &M, &N, &N, &Alpha, X.array(), &M,
-             mpJacobianX->array(), &N, &Beta, Solution.array(), &M);
+             mpJacobianX->array(), &N, &Beta, Ax.array(), &M);
 
       // Calculate absolute and relative error
-      C_FLOAT64 *pSolution = Solution.array();
-      C_FLOAT64 *pSolutionEnd = pSolution + Solution.size();
+      C_FLOAT64 *pAx = Ax.array();
+      C_FLOAT64 *pAxEnd = pAx + Ax.size();
       const C_FLOAT64 *pB = B.array();
       C_FLOAT64 * pCurrentState = mpSteadyState->beginIndependent();
       const C_FLOAT64 * pAtol = mAtol.array();
@@ -1011,13 +1013,13 @@ bool CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C
 
       C_FLOAT64 tmp;
 
-      for (; pSolution != pSolutionEnd; ++pSolution, ++pB, ++pCurrentState, ++pAtol, ++ppEntity)
+      for (; pAx != pAxEnd; ++pAx, ++pB, ++pCurrentState, ++pAtol, ++ppEntity)
         {
           // Prevent division by 0
-          tmp = fabs(*pSolution - *pB) / std::max(fabs(*pCurrentState), *pAtol);
+          tmp = fabs(*pAx - *pB) / std::max(fabs(*pCurrentState), *pAtol);
           RelativeDistance += tmp * tmp;
 
-          tmp = fabs(*pSolution - *pB);
+          tmp = fabs(*pAx - *pB);
 
           if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
             {
@@ -1027,15 +1029,13 @@ bool CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C
           AbsoluteDistance += tmp * tmp;
         }
 
-      RelativeDistance = sqrt(RelativeDistance);
-      AbsoluteDistance = sqrt(AbsoluteDistance);
+      RelativeDistance =
+        isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance);
+      AbsoluteDistance =
+        isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance);
 
-      if (RelativeDistance > *mpSSResolution ||
-          AbsoluteDistance > *mpSSResolution)
-        {
-          success = false;
-        }
+      Error = std::max(RelativeDistance, AbsoluteDistance);
     }
 
-  return success;
+  return Error;
 }

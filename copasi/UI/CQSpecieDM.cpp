@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/01/30 16:20:36 $
+//   $Date: 2010/07/16 19:05:18 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -406,10 +411,11 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 
           if (pSpe && pCompartment)
             {
-              const C_FLOAT64 & initialConcentration = CMetab::convertToNumber(this->index(index.row(), COL_ICONCENTRATION).data().toDouble(),
-                  *pCompartment,
-                  *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-              pSpe->setInitialValue(initialConcentration);
+              const C_FLOAT64 initialValue =
+                CMetab::convertToNumber(this->index(index.row(), COL_ICONCENTRATION).data().toDouble(),
+                                        *pCompartment,
+                                        *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+              pSpe->setInitialValue(initialValue);
             }
         }
       else if (index.column() == COL_INUMBER)

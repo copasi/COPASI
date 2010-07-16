@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:11 $
+//   $Date: 2010/07/16 18:59:37 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -248,16 +253,6 @@ bool CLyapTask::setMethodType(const int & type)
 
 //const CTimeSeries & CLyapTask::getTimeSeries() const
 //{return mTimeSeries;}
-
-void CLyapTask::output(const COutputInterface::Activity & activity)
-{
-  if (mDoOutput != NO_OUTPUT)
-    {
-      CCopasiDataModel* pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
-      pDataModel->output(activity);
-    }
-}
 
 bool CLyapTask::methodCallback(const C_FLOAT64 & percentage, bool onlyProgress)
 {

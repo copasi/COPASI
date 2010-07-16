@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/09/01 14:08:16 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 18:56:01 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -31,6 +36,7 @@
 #include "model/CChemEqElement.h"
 #include "model/CReaction.h"
 #include "model/CMoiety.h"
+#include "model/CEvent.h"
 #include "report/CCopasiStaticString.h"
 #include "report/CReportDefinition.h"
 #include "utilities/CAnnotatedMatrix.h"
@@ -62,6 +68,12 @@
 #include "parameterFitting/CFitTask.h"
 
 //#include <iostream>
+
+typedef CCopasiVector<CEvent> EventVector;
+typedef CCopasiVectorN<CEvent> EventVectorN;
+
+typedef CCopasiVector<CEventAssignment> EventAssignmentVector;
+typedef CCopasiVectorN<CEventAssignment> EventAssignmentVectorN;
 
 typedef CCopasiVector<CCopasiTask> TaskVector;
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
@@ -448,6 +460,14 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
     {
       pInfo = GetDowncastSwigTypeForCCopasiParameter(static_cast<CCopasiParameter*>(container));
     }
+  else if (dynamic_cast<CEvent*>(container))
+    {
+      pInfo = SWIGTYPE_p_CEvent;
+    }
+  else if (dynamic_cast<CEventAssignment*>(container))
+    {
+      pInfo = SWIGTYPE_p_CEventAssignment;
+    }
   else if (container->isNameVector())
     {
       if (dynamic_cast<CCopasiDataModelVectorN*>(container))
@@ -477,6 +497,14 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
       else if (dynamic_cast<CEvaluationTreeVectorN*>(container))
         {
           pInfo = SWIGTYPE_p_CCopasiVectorNT_CEvaluationTree_t;
+        }
+      else if (dynamic_cast<EventVectorN*>(container))
+        {
+          pInfo = SWIGTYPE_p_CCopasiVectorNT_CEvent_t;
+        }
+      else if (dynamic_cast<EventAssignmentVectorN*>(container))
+        {
+          pInfo = SWIGTYPE_p_CCopasiVectorNT_CEventAssignment_t;
         }
     }
   else if (container->isVector())

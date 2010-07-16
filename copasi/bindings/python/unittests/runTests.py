@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/runTests.py,v $ 
-#   $Revision: 1.10 $ 
+#   $Revision: 1.11 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/01/07 18:51:32 $ 
+#   $Date: 2010/07/16 18:55:59 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -50,9 +56,12 @@ import Test_CTrajectoryMethod
 import Test_CTrajectoryProblem
 import Test_CTrajectoryTask
 import Test_CVersion
+import Test_CEvent
+import Test_CCopasiRootContainer
 
 suites=[
           Test_CVersion.suite()
+         ,Test_CCopasiRootContainer.suite()
          ,Test_CCopasiMessage.suite()
          ,Test_CState.suite()
          ,Test_CTimeSeries.suite()
@@ -86,6 +95,7 @@ suites=[
 	 ,Test_CFunctionParameters.suite()
 	 ,Test_CFunctionParameter.suite()
          ,Test_CReport.suite()
+         ,Test_CEvent.suite()
          ,Test_COutputAssistant.suite()
          ,Test_CreateSimpleModel.suite()
          ,Test_RunSimulations.suite()

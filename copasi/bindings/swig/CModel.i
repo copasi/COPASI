@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.16 $ 
+//   $Revision: 1.17 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/09/01 14:08:16 $ 
+//   $Author: shoops $ 
+//   $Date: 2010/07/16 18:56:27 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -24,9 +29,9 @@
 %template(ObjectStdVector) std::vector<CCopasiObject*>;
 typedef std::vector<CCopasiObject*> ObjectStdVector;
 
+%ignore CModel::load;
 %ignore CModel::compileIfNecessary(CProcessReport* pProcessReport);
 %ignore CModel::forceCompile(CProcessReport* pProcessReport);
-%ignore _cpp_min;
 %ignore CModel::VolumeUnitNames;
 %ignore CModel::AreaUnitNames;
 %ignore CModel::LengthUnitNames;
@@ -34,10 +39,18 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::QuantityUnitOldXMLNames;
 %ignore CModel::QuantityUnitNames;
 %ignore CModel::ModelTypeNames;
+%ignore CModel::appendDependentModelObjects;
+%ignore CModel::appendDependentReactions;
+%ignore CModel::appendDependentMetabolites;
+%ignore CModel::appendDependentCompartments;
+%ignore CModel::appendDependentModelValues;
+%ignore CModel::appendDependentEvents;
+%ignore CModel::removeDependentModelObjects;
+%ignore CModel::getUptoDateObjects;
 
-#ifdef SWIGJAVA
-
-// ignore some methods for the Java wrappers to get rid of the warnings
+// according to Stefan, the method to calculate the elasticities is no longer used
+// and might actually not work at all
+%ignore CModel::calculateElasticityMatrix(const C_FLOAT64&,const C_FLOAT64&);
 %ignore CModel::getMetabolites() const;
 %ignore CModel::getMetabolitesX() const;
 %ignore CModel::getModelValues() const;
@@ -45,8 +58,18 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::getEvents() const;
 %ignore CModel::getCompartments() const;
 %ignore CModel::getStateTemplate() const;
+%ignore CModel::processQueue;
+%ignore CModel::processRoots;
+%ignore CModel::calculateDerivatives;
+%ignore CModel::calculateDerivativesX;
+%ignore CModel::getListOfInitialRefreshes;
+%ignore CModel::getListOfSimulatedRefreshes;
+%ignore CModel::getListOfNonSimulatedRefreshes;
+%ignore CModel::getListOfConstantRefreshes;
+%ignore CModel::buildInitialRefreshSequence;
+%ignore CModel::getRootFinders;
+%ignore CModel::getL;
 
-#endif // SWIGJAVA
 
 %include "model/CModel.h"
 

@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunOptimization.java,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 08:21:44 $ 
+//   $Author: shoops $ 
+//   $Date: 2010/07/16 18:56:01 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -150,8 +155,8 @@ public class Test_RunOptimization extends TestCase
         optProblem.setObjectiveFunction(objectiveFunction);
         COptItem optItem2=optProblem.addOptItem(optItem.getObjectCN());
         optItem2.setStartValue(optItem.getStartValue());
-        optItem2.setLowerBound(new CCopasiObjectName(optItem.getLowerBound()),dataModel);
-        optItem2.setUpperBound(new CCopasiObjectName(optItem.getUpperBound()),dataModel);
+        optItem2.setLowerBound(new CCopasiObjectName(optItem.getLowerBound()));
+        optItem2.setUpperBound(new CCopasiObjectName(optItem.getUpperBound()));
         boolean result=false;
         try
         {
@@ -182,11 +187,11 @@ public class Test_RunOptimization extends TestCase
         assertFalse(timeCourseKey=="");
         HashMap<String,Object> problemParameters=new HashMap<String,Object>();
         // opt_items 
-        COptItem optItem=new COptItem();
-        optItem.setObjectCN(new CCopasiObjectName(this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN()),mDataModel);
+        COptItem optItem=new COptItem(mDataModel);
+        optItem.setObjectCN(new CCopasiObjectName(this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN()));
         optItem.setStartValue(4.0);
-        optItem.setLowerBound(new CCopasiObjectName("-100"),mDataModel);
-        optItem.setUpperBound(new CCopasiObjectName("100"),mDataModel);
+        optItem.setLowerBound(new CCopasiObjectName("-100"));
+        optItem.setUpperBound(new CCopasiObjectName("100"));
         HashMap<String,Object> methodParameters=new HashMap<String,Object>();
         // iteration limit
         // tolerance

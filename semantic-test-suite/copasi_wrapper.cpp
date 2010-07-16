@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/28 13:53:23 $
+//   $Date: 2010/07/16 19:07:40 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -49,7 +54,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(false, 0, NULL);
+      CCopasiRootContainer::init(0, NULL, false);
     }
 
   catch (copasi::autoexcept &e)

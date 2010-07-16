@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/14 17:28:44 $
+//   $Date: 2010/07/16 19:03:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,9 +25,8 @@
 
 #include "CStructureParser.h"
 
-#include <qstring.h>
-#include <qregexp.h>
-#include <Q3ValueList>
+#include <QString>
+#include <QRegExp>
 
 #include <iostream>
 #include "UI/qtUtilities.h"
@@ -58,7 +57,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 {
   tagName = qName;
 
-  Q3ValueList<QString>::iterator itL;
+  QLinkedList<QString>::iterator itL;
 
   if (qName == "mtable")
     texHead = "\\begin{array}";
@@ -108,7 +107,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
           // <mfrac> direct after <mfrac>
           if (last.contains("mfrac"))
             {
-              QStringList strList = QStringList::split("_", last);
+              QStringList strList = last.split("_");
               QString &lastUncompletedTags = strList.first();
               QString &idxStr = strList.last();
               int idx = idxStr.toInt();
@@ -138,7 +137,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
       // <msub> direct after <mfrac>
       if (last.contains("mfrac"))
         {
-          QStringList strList = QStringList::split("_", last);
+          QStringList strList = last.split("_");
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
@@ -166,7 +165,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
       // <msup> direct after <mfrac>
       if (last.contains("mfrac"))
         {
-          QStringList strList = QStringList::split("_", last);
+          QStringList strList = last.split("_");
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
@@ -196,7 +195,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
           if (last.contains("mfrac") || last.contains("msub") || last.contains("msup"))
             {
-              QStringList strList = QStringList::split("_", last);
+              QStringList strList = last.split("_");
               QString &lastUncompletedTags = strList.first();
               QString &idxStr = strList.last();
               int idx = idxStr.toInt();
@@ -226,7 +225,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
           if (last.contains("mfrac") || last.contains("msub") || last.contains("msup"))
             {
-              QStringList strList = QStringList::split("_", last);
+              QStringList strList = last.split("_");
               QString &lastUncompletedTags = strList.first();
               QString &idxStr = strList.last();
               int idx = idxStr.toInt();
@@ -257,8 +256,8 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 bool CStructureParser::characters(const QString& str)
 {
   QRegExp rx("\\w");
-  QString strAux = str.stripWhiteSpace();
-  int pos = rx.search(strAux);
+  QString strAux = str.trimmed();
+  int pos = rx.indexIn(strAux);
 
   if (pos != -1)
     {
@@ -324,7 +323,7 @@ bool CStructureParser::characters(const QString& str)
 
 bool CStructureParser::endElement(const QString&, const QString&, const QString& qName)
 {
-  Q3ValueList<QString>::iterator itL;
+  QLinkedList<QString>::iterator itL;
 
   indent.remove((uint)0, 4);
 
@@ -375,7 +374,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
       // </msub> direct after </mfenced>
       if (last.contains("msub"))
         {
-          QStringList strList = QStringList::split("_", last);
+          QStringList strList = last.split("_");
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
@@ -391,7 +390,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
       // </msup> direct after </mfenced>
       if (last.contains("msup"))
         {
-          QStringList strList = QStringList::split("_", last);
+          QStringList strList = last.split("_");
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
@@ -442,10 +441,10 @@ QString CStructureParser::getTeX()
 {
   QString texIntro;
 
-  texIntro = "\% Attention: \n";
-  texIntro += "\% We provide only the LaTeX code of the Differential Equations. \n";
-  texIntro += "\% You need to include it in your TeX document. \n";
-  texIntro += "\% Some manual adjustments may be needed for too wide equations. \n\n";
+  texIntro = "%%% Attention: \n";
+  texIntro += "%%% We provide only the LaTeX code of the Differential Equations. \n";
+  texIntro += "%%% You need to include it in your TeX document. \n";
+  texIntro += "%%% Some manual adjustments may be needed for too wide equations. \n\n";
 
   if (!texHead.isNull())
     return texIntro + "$$\n" + texHead + "\n" + tex + texTail + "\n$$";

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/10/19 15:51:46 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:01:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -156,13 +161,14 @@ bool COptMethodLevenbergMarquardt::optimise()
       //         Work.array(), &LWork, &info);
 
       // SUBROUTINE DPOTRF(UPLO, N, A, LDA, INFO)
-      dpotrf_("L", &dim, mHessianLM.array(), &dim, &info);
+      char UPLO = 'L';
+      dpotrf_(&UPLO, &dim, mHessianLM.array(), &dim, &info);
 
       // if Hessian is positive definite solve Hess * h = -grad
       if (info == 0)
         {
           // SUBROUTINE DPOTRS(UPLO, N, NRHS, A, LDA, B, LDB, INFO)
-          dpotrs_("L", &dim, &one, mHessianLM.array(), &dim, mStep.array(), &dim, &info);
+          dpotrs_(&UPLO, &dim, &one, mHessianLM.array(), &dim, mStep.array(), &dim, &info);
 
           // SUBROUTINE DSYTRS(UPLO, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
           // dsytrs_("L", &dim, &one, mHessianLM.array(), &dim, Pivot.array(), mStep.array(),

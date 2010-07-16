@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-$Revision: 1.8 $
+$Revision: 1.9 $
 $Name:  $
-$Author: pwilly $
-$Date: 2010/04/02 16:23:11 $
+$Author: shoops $
+$Date: 2010/07/16 19:05:16 $
 End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,15 +19,7 @@ End CVS Header */
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-/*
-//#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <q3table.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
-*/
+
 #include "copasi.h"
 
 #include "CQLyapResultWidget.h"
@@ -115,7 +107,20 @@ bool CQLyapResultWidget::loadFromBackend()
   mTableExponents->setRowCount(imax);
 
   for (i = 0; i < imax; ++i)
-    mTableExponents->item(i, 0)->setText(QString::number(mpTask->exponents()[i]));
+    {
+      QTableWidgetItem *pItem = mTableExponents->item(i, 0);
+
+      if (pItem == NULL)
+        {
+          pItem = new QTableWidgetItem(QString::number(mpTask->exponents()[i]));
+          pItem->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+          mTableExponents->setItem(i, 0, pItem);
+        }
+      else
+        {
+          pItem->setText(QString::number(mpTask->exponents()[i]));
+        }
+    }
 
   mLineEditSum->setText(QString::number(mpTask->sumOfExponents()));
 

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/odepack++.pro,v $ 
-#   $Revision: 1.8 $ 
+#   $Revision: 1.9 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/16 18:56:26 $ 
+#   $Date: 2010/07/16 19:01:58 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -63,6 +63,3 @@ SOURCES += Cxerrwd.cpp
 
 include(../lib.pri)
 include(../common.pri)
-
-#The following line was inserted by qt3to4
-QT +=  qt3support 

@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModelValue.i,v $ 
-//   $Revision: 1.9 $ 
+//   $Revision: 1.10 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Date: 2010/07/16 18:56:27 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -25,15 +30,75 @@
 %nodefaultdtor CModelEntity;
 
 %ignore CModelEntity::XMLStatus;
+%ignore CModelEntity::StatusName;
+%ignore CModelEntity::getValuePointer;
+%ignore CModelEntity::getDeletedObjects;
 
-#ifdef SWIGJAVA
 // remove some const methods to get rid of warnings
 %ignore CModelEntity::getExpressionPtr() const;
 %ignore CModelEntity::getInitialExpressionPtr() const;
 
+%ignore CModelEntity::setInitialValuePtr;
+%ignore CModelEntity::setValuePtr;
+
+// some special code for java
+#ifdef SWIGJAVA
+// we ignore some of the methods and add them back as an extension 
+// with the hopefully correct typemaps
+%ignore CModelEntity::setExpressionPtr(CExpression*); 
+%ignore CModelEntity::setInitialExpressionPtr(CExpression*); 
+
+%inline
+%{
+// some typedef so that we can have specific typemaps
+typedef CExpression DisownedExpression;
+%}
+
+
+%typemap(javain) DisownedExpression *pDisownedExpression "getCPtrAndAddReference($javainput)"
+
+%typemap(javacode) CModelEntity %{
+  // Ensure that the GC doesn't collect any element set from Java
+  // as the underlying C++ class stores a shallow copy
+  private CExpression expressionReference;
+  private long getCPtrAndAddReference(CExpression expression) {
+    expressionReference = expression;
+    return CExpression.getCPtr(expression);
+  }
+%}
+
 #endif // SWIGJAVA
+
+#ifdef SWIGPYTHON
+
+%feature("pythonappend") CModelEntity::setInitialExpressionPtr(CExpression*) %{
+   if(len(args) > 0 and args[0] != None and isinstance(args[0], COPASI.CExpression)):
+     args[0].__disown__()
+%}
+
+%feature("pythonappend") CModelEntity::setExpressionPtr(CExpression*) %{
+   if(len(args) > 0 and args[0] != None and isinstance(args[0], COPASI.CExpression)):
+     args[0].__disown__()
+%}
+#endif // SWIGPYTHON
 
 
 %include "model/CModelValue.h"
+
+#ifdef SWIGJAVA
+%extend CModelEntity
+{
+  void setInitialExpressionPtr(DisownedExpression* pDisownedExpression)
+  {
+     $self->CModelEntity::setInitialExpressionPtr(pDisownedExpression);
+  }
+
+  void setExpressionPtr(DisownedExpression* pDisownedExpression)
+  {
+     $self->CModelEntity::setExpressionPtr(pDisownedExpression);
+  }
+
+}
+#endif // SWIGJAVA
 
 

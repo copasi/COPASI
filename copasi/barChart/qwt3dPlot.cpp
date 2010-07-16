@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/01/21 10:55:37 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 18:54:05 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,17 +20,25 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "qwt3dPlot.h"
-//Added by qt3to4:
 #include <QContextMenuEvent>
-#include <Q3GridLayout>
-#include <Q3PopupMenu>
+#include <QGridLayout>
+#include <QSlider>
+#include <QMenu>
+#include <QFrame>
 
 #ifdef DEBUG_UI
 #include <QtDebug>
 #endif
 
+#include "qwt3dPlot.h"
+#include "qwt3dScale.h"
+#include "qwt3dColor.h"
+
 #include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/CopasiFileDialog.h"
+#include "copasi/UI/qtUtilities.h"
+
+#include "copasi.h"
 
 Plot3d::Plot3d(QWidget* parent, const char* name)
     : BaseWidget(parent, name),
@@ -33,7 +46,7 @@ Plot3d::Plot3d(QWidget* parent, const char* name)
     mpRowScale(NULL)
 
 {
-  mpGrid = new Q3GridLayout(mpFrame, 0, 0);
+  mpGrid = new QGridLayout(mpFrame);
   mpPlot = new Qwt3D::SurfacePlot(mpFrame);
   mpGrid->addWidget(mpPlot, 0, 0);
   mpPlot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -370,19 +383,19 @@ void Plot3d::setSlider()
   if (mpSlider)
     if (mData.valueZone != 0)
       {
-        mpSliderColumn->setMinValue(0);
+        mpSliderColumn->setMinimum(0);
 
         if (mData.columns == 1)
-          mpSliderColumn->setMaxValue((mData.columns - 1) * 1000);
+          mpSliderColumn->setMaximum((mData.columns - 1) * 1000);
         else
-          mpSliderColumn->setMaxValue(mData.columns * 1000);
+          mpSliderColumn->setMaximum(mData.columns * 1000);
 
-        mpSliderRow->setMinValue(0);
+        mpSliderRow->setMinimum(0);
 
         if (mData.rows == 1)
-          mpSliderRow->setMaxValue((mData.rows - 1) * 1000);
+          mpSliderRow->setMaximum((mData.rows - 1) * 1000);
         else
-          mpSliderRow->setMaxValue(mData.rows * 1000);
+          mpSliderRow->setMaximum(mData.rows * 1000);
 
         sliderMoved(mpSliderColumn->value() / 1000, mpSliderRow->value() / 1000);
       }
@@ -516,20 +529,16 @@ void Plot3d::contextMenuEvent(QContextMenuEvent *)
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::contextMenuEvent --";
 #endif
-  Q3PopupMenu* mpContextMenu = new Q3PopupMenu(this);
+  QMenu* mpContextMenu = new QMenu(this);
   Q_CHECK_PTR(mpContextMenu);
-  mpContextMenu->insertItem("handling information", this, SLOT(hotKeysMessage()));
+  mpContextMenu->addAction("handling information", this, SLOT(hotKeysMessage()));
 
   if (mColorLegend)
-    mpContextMenu->insertItem("hide legend", this, SLOT(showLegend()));
+    mpContextMenu->addAction("hide legend", this, SLOT(showLegend()));
   else
-    mpContextMenu->insertItem("show legend", this, SLOT(showLegend()));
+    mpContextMenu->addAction("show legend", this, SLOT(showLegend()));
 
-  Q3PopupMenu* mpSubmenu = new Q3PopupMenu(this);
-  Q_CHECK_PTR(mpSubmenu);
-  //mpSubmenu->insertItem("&Print to printer", this, SLOT(saveDataToFile()));
-  mpSubmenu->insertItem("Print to &file", this, SLOT(saveDataToFile()));
-  mpContextMenu->insertItem("&Print", mpSubmenu);
+  mpContextMenu->addAction("Print to &file", this, SLOT(saveDataToFile()));
 
   mpContextMenu->exec(QCursor::pos());
   delete mpContextMenu;
@@ -576,7 +585,7 @@ void Plot3d::saveDataToFile()
   int failed = 0;
   QCursor oldCursor = cursor();
   setCursor(Qt::WaitCursor);
-  failed = !Qwt3D::IO::save(mpPlot, fileName.lower(), filetype_);
+  failed = !Qwt3D::IO::save(mpPlot, fileName, filetype_);
   setCursor(oldCursor);
 
   if (failed)

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $
-#   $Revision: 1.22 $
+#   $Revision: 1.23 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/16 18:57:03 $
+#   $Date: 2010/07/16 19:02:49 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -51,6 +51,3 @@ include(../common.pri)
 contains(BUILD_OS, WIN32) {
   DEFINES += LIBSBML_STATIC
 }
-
-#The following line was inserted by qt3to4
-QT +=  qt3support 

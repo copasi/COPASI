@@ -23,9 +23,6 @@ fi
 
 pushd ../..
 
-AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
-VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
-
 if [ x"$#" = x1 ]; then
   major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
   minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
@@ -37,103 +34,7 @@ if [ x"$#" = x1 ]; then
 
   case x"$1" in 
   xWIN32)
-    productcode=${build}${minor}${major}32DDC6BEE41C
-    productcode=${productcode:0:12}
-
-    productversion=${major}.${minor}.${build}
-
-    [ -e setup ] && rm -rf setup
-    mkdir setup
-    cd setup
-
-    mkdir copasi
-    mkdir copasi/bin
-    mkdir copasi/share
-    mkdir copasi/share/copasi
-    mkdir copasi/share/copasi/doc
-    mkdir copasi/share/copasi/doc/html
-    mkdir copasi/share/copasi/doc/html/figures
-    mkdir copasi/share/copasi/examples
-    mkdir copasi/share/copasi/icons
-    mkdir copasi/share/copasi/config
-    chmod -R 755 copasi
-
-    cp ../README.$1 copasi/README.txt
-    chmod 644 copasi/README.txt
-
-    cp ../COPASI_License_${license}.txt copasi/LICENSE.txt
-    chmod 644 copasi/LICENSE.txt
-
-    cp ../copasi/CopasiUI/release/CopasiUI.exe*  copasi/bin
-    "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
-      -manifest copasi\\bin\\CopasiUI.exe.manifest \
-      -outputresource:copasi\\bin\\CopasiUI.exe\;1
-
-    cp ../copasi/CopasiSE/release/CopasiSE.exe  copasi/bin
-    # "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
-    #   -manifest copasi\\bin\\CopasiSE.exe.manifest \
-    #   -outputresource:copasi\\bin\\CopasiSE.exe\;1
-
-    cp ~/environment/distribution/* copasi/bin
-
-    if [ x"$license" = xUS ]; then
-      UPLOAD copasi/bin/CopasiSE.exe \
-        $license/Copasi-AllSE/$1/CopasiSE-$build.exe
-
-      # This is a hack to circumvent a time out in ssh
-      sleep 10
-    fi
-    
-    cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
-    chmod 444 copasi/share/copasi/config/*
-
-    cp ../TestSuite/distribution/* copasi/share/copasi/examples
-    chmod 444 copasi/share/copasi/examples/*
-
-    cp ../copasi/CopasiUI/icons/Copasi.ico copasi/share/copasi/icons
-    cp ../copasi/CopasiUI/icons/CopasiDoc.ico copasi/share/copasi/icons
-    chmod 644 copasi/share/copasi/icons/*
-
-    cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
-    chmod 644 copasi/share/copasi/doc/html/*.html
-
-    cp ../copasi/wizard/help_html/figures/*.png \
-       copasi/share/copasi/doc/html/figures
-    chmod 644 copasi/share/copasi/doc/html/figures/*.png
-
-    cd ../admin
-
-#   replace defaults with COPASI bitmaps
-    mv -- \
-      "$AdvancedInstallerPath/resources/default-banner.bmp" \
-      "$AdvancedInstallerPath/resources/default-dialog.bmp" .
-    cp -- \
-       ../copasi/CopasiUI/icons/install_banner.bmp \
-       "$AdvancedInstallerPath/resources/default-banner.bmp"
-    cp -- \
-       ../copasi/CopasiUI/icons/install_dialog.bmp \
-       "$AdvancedInstallerPath/resources/default-dialog.bmp"
-
-#   modify product code, product version, and package name
-    sed -e '/ProductCode/s/[0-9A-F]*}/'$productcode'}/' \
-        -e '/ProductVersion/s/Value=".*"/Value="'$productversion'"/' \
-        -e '/PackageName/s/Copasi-.*-WIN32/Copasi-'$build'-'$1'/' \
-        -e '/ProductName/s/COPASI/COPASI '$productversion'/' \
-        copasi.aip > tmp.aip
-
-#   run Advanced Installer to create msi package
-    "$AdvancedInstallerPath/AdvancedInstaller" /build tmp.aip
-    rm tmp.aip
-
-#   restore defaults
-    mv -- \
-      default-banner.bmp default-dialog.bmp \
-      "$AdvancedInstallerPath/resources"
-
-#   assure proper access rights
-    chmod 644 ../Copasi-$build-$1.msi
-
-    cd ..
+    . admin/mkWIN32.sh
     ;;
 
   xDarwin)

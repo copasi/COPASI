@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CVector.i,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/09/01 13:52:22 $ 
+//   $Author: shoops $ 
+//   $Date: 2010/07/16 18:56:27 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -21,36 +26,59 @@
 
 %}
 
-//%ignore operator<< <> (std::ostream& os,const CVector< CType >& A);
-%ignore operator<< (std::ostream& os,const CVector< CType >& A);
-%ignore operator[](const unsigned C_INT32 & row);
-%ignore operator[](const unsigned C_INT32 & row) const;
-%ignore operator()(const unsigned C_INT32 & row);
-%ignore operator()(const unsigned C_INT32 & row) const;
-%ignore operator = (const CType & value);
-%ignore operator = (const CVector <CType> & rhs);
-%ignore array() const;
+%ignore operator<<;
+%ignore operator[](const unsigned C_INT32 & );
+%ignore operator[](const unsigned C_INT32 & ) const;
+%ignore operator()(const unsigned C_INT32 & );
+%ignore operator()(const unsigned C_INT32 & ) const;
+%ignore operator = (const CType &);
+%ignore operator = (const CVector <CType> &);
+%ignore CVectorCore::array() const;
+%ignore CVectorCore::array();
 %ignore CVector::resize;
 %ignore CVector::applyPivot;
-
+%ignore CVectorCore::CVectorCore(const unsigned C_INT32&, CType*);
 
 %warnfilter(362) operator=;
 %warnfilter(389) operator[];
+%warnfilter(302) operator<<;
 
 
 %include "utilities/CVector.h"
 
-typedef CVectorCore<C_FLOAT64> FloatVectorCore;
-typedef CVector<C_FLOAT64> FloatVector;
-
-%template(FloatVectorCore) CVectorCore<C_FLOAT64>;
-%template(FloatVector) CVector<C_FLOAT64>;
-
-%extend CVectorCore<C_FLOAT64>
+%extend CVectorCore
 {
-  virtual C_FLOAT64 get(unsigned C_INT32 index)
+  virtual CType get(unsigned C_INT32 index)
   {
       return (*self)[index];
   }
 }
+
+//%extend CVector
+//{
+//  virtual CType get(unsigned C_INT32 index)
+//  {
+//      return (*self)[index];
+//  }
+//
+//  virtual unsigned C_INT32 size() const
+//  {
+//    return self->size();
+//  }
+//}
+
+typedef CVectorCore<C_FLOAT64> FloatVectorCore;
+typedef CVector<C_FLOAT64> FloatVector;
+typedef CVectorCore<unsigned long> ULongVectorCore;
+typedef CVector<unsigned long> ULongVector;
+typedef CVectorCore<CCopasiObject*> ObjectVectorCore;
+typedef CVector<CCopasiObject*> ObjectVector;
+
+%template(FloatVectorCore) CVectorCore<C_FLOAT64>;
+%template(FloatVector) CVector<C_FLOAT64>;
+%template(ULongVectorCore) CVectorCore<unsigned long>;
+%template(ULongVector) CVector<unsigned long>;
+%template(ObjectVectorCore) CVectorCore<CCopasiObject*>;
+%template(ObjectVector) CVector<CCopasiObject*>;
+
 

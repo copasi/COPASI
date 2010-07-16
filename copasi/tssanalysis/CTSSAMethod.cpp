@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 10:26:44 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:03:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2016,10 +2016,8 @@ void CTSSAMethod::initializeAtol()
 void CTSSAMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CTSSAMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CTSSAMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
-  assert(y == mY);
-
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);

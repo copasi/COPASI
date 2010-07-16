@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/05 14:31:15 $
+//   $Date: 2010/07/16 19:03:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -595,6 +595,9 @@ bool CTauLeapMethod::updateSystem()
 
   mpModel->setState(mMethodState);
   mpModel->updateSimulatedValues(false);
+
+  // We do not need to update the the method state since the only independent state
+  // values are species of type reaction which are all controlled by the method.
 
   return true;
 }

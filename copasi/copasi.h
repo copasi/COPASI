@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/11 12:59:30 $
+//   $Date: 2010/07/16 18:54:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,5 +224,5 @@ extern std::ofstream DebugFile;
 // suppress unused parameter warnings
 #define C_UNUSED(p)
 #define COPASI_DEPRECATED
-#define C_INVALID_INDEX ((unsigned C_INT32) -1)
+#define C_INVALID_INDEX (std::numeric_limits< unsigned C_INT32 >::max())
 #endif // COPASI_copasi

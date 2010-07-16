@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CMathMLToTeX.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Date: 2010/07/16 19:03:27 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -192,8 +197,8 @@ void CMathMLToTeX::mtableNode(QString &text)
 
   if (text.contains("<mtr>"))
     {
-      int posA = text.find("<mtr>");
-      int posB = text.find("</mtr>");
+      int posA = text.indexOf("<mtr>");
+      int posB = text.indexOf("</mtr>");
       QString mtrText = text.mid(posA, posB - posA + 6);
 
       sumCols = mtrText.count("<mtd");

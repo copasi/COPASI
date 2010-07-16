@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2010/07/16 19:05:19 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,13 +27,14 @@
 
 #include "AboutDialog.h"
 
-#include "qpushbutton.h"
-#include "qpixmap.h"
-#include "q3textedit.h"
-#include "qlayout.h"
-#include "qsizepolicy.h"
-//Added by qt3to4:
-#include <Q3VBoxLayout>
+#include <QPushButton>
+#include <QPixmap>
+#include <QTextEdit>
+#include <QLayout>
+#include <QSizePolicy>
+#include <QVBoxLayout>
+#include <QBrush>
+
 #include "icons/copasi_beta_background.xpm"
 
 #include "copasi.h"
@@ -38,7 +44,7 @@ const char* AboutDialog::text =
   "<p>"
   "COPASI is a simulator for biochemical networks. It is a joint project "
   "by the Mendes group (VBI and University of Manchester) and the Kummer group "
-  "(University of Heidelberg and EML Research)"
+  "(University of Heidelberg)"
   "</p><p>"
   "Please check for new release at http://www.copasi.org, where new releases "
   "will be made available for download."
@@ -59,11 +65,12 @@ const char* AboutDialog::text =
   "The following software and algorithms are being used by COPASI: "
   "<ul>"
   "<li>Qt4 GUI framework</li>"
-  "<li>QWT 5.0.2</li>"
+  "<li>Qwt 5.2.0</li>"
+  "<li>QwtPlot3D 0.2.7</li>"
   "<li>Expat 2.0.1 XML parser</li>"
-  "<li>libsbml 3.1.1</li>"
-  "<li>raptor 1.4.18</li>"
-  "<li>Systems Biology Workbench 2.7.8</li>"
+  "<li>libsbml 3.4.1</li>"
+  "<li>raptor 1.4.19</li>"
+  "<li>Systems Biology Workbench 2.7.10</li>"
   "<li>CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library</li>"
   "<li>LSODA from ODEPACK</li>"
   "<li>Mersenne Twister random number generator, "
@@ -79,19 +86,19 @@ AboutDialog::AboutDialog(QWidget* parent,
     QDialog(parent),
     closeButton(NULL),
     textEdit(NULL),
-    backgroundPixmap(NULL),
     mainLayout(NULL)
 {
-  Qt::WindowFlags f = this->windowFlags();
-  f = (f | Qt::WDestructiveClose);
-  this->setWindowFlags(f);
   this->setModal(true);
-  this->mainLayout = new Q3VBoxLayout(this);
-  this->mainLayout->setResizeMode(QLayout::Fixed);
-  this->mainLayout->setAutoAdd(false);
-  this->backgroundPixmap = new QPixmap((const char**)copasi_beta_background_xpm);
-  this->textEdit = new Q3TextEdit(this);
-  this->textEdit->setPaletteBackgroundPixmap(*this->backgroundPixmap);
+  this->mainLayout = new QVBoxLayout(this);
+  this->mainLayout->setSizeConstraint(QLayout::SetFixedSize);
+  this->textEdit = new QTextEdit(this);
+
+  QPalette Palette;
+  Palette.setBrush(QPalette::Base, QBrush(QPixmap((const char**)copasi_beta_background_xpm)));
+
+  textEdit->setPalette(Palette);
+
+
   QFontMetrics FontMetrics = this->fontMetrics();
   int w = width * (FontMetrics.width('W') + FontMetrics.width('I')) / 2;
   int h = heigth * FontMetrics.lineSpacing();
@@ -111,7 +118,6 @@ AboutDialog::~AboutDialog()
 {
   pdelete(this->textEdit);
   pdelete(this->closeButton);
-  pdelete(this->backgroundPixmap);
   pdelete(this->mainLayout);
 }
 

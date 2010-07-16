@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.217 $
+//   $Revision: 1.218 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:59:03 $
+//   $Date: 2010/07/16 19:06:32 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -549,18 +549,25 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
       mCurrentElement = START_ELEMENT;
 
       // We need to handle the unmapped parameters of type key.
-      std::vector< CCopasiParameter * >::iterator it = mCommon.UnmappedKeyParameters.begin();
-      std::vector< CCopasiParameter * >::iterator end = mCommon.UnmappedKeyParameters.end();
+      std::vector< std::string >::iterator it = mCommon.UnmappedKeyParameters.begin();
+      std::vector< std::string >::iterator end = mCommon.UnmappedKeyParameters.end();
 
       for (; it != end; ++it)
         {
-          CCopasiObject * pObject =
-            mCommon.KeyMap.get(*(*it)->getValue().pKEY);
+          CCopasiParameter * pParameter =
+            dynamic_cast< CCopasiParameter * >(CCopasiRootContainer::getKeyFactory()->get(*it));
 
-          if (pObject != NULL)
-            (*it)->setValue(pObject->getKey());
-          else
-            (*it)->setValue(std::string(""));
+          if (pParameter != NULL &&
+              pParameter->getType() == CCopasiParameter::KEY)
+            {
+              CCopasiObject * pObject =
+                mCommon.KeyMap.get(*pParameter->getValue().pKEY);
+
+              if (pObject != NULL)
+                pParameter->setValue(pObject->getKey());
+              else
+                pParameter->setValue(std::string(""));
+            }
         }
 
       // We need to remove the no longer needed expression "Objective Function" from the function list.
@@ -1436,45 +1443,35 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         Name = mParser.getAttributeValue("name", papszAttrs);
 
         timeUnit = mParser.getAttributeValue("timeUnit", papszAttrs);
-        TimeUnit = toEnum(timeUnit, CModel::TimeUnitNames, CModel::s);
+        TimeUnit = toEnum(timeUnit, CModel::TimeUnitNames, CModel::OldMinute);
 
-        if (TimeUnit == -1)
+        if (TimeUnit == CModel::OldMinute)
           {
             if (strcmp(timeUnit, "m"))
-              fatalError();
-
-            TimeUnit = CModel::min;
+              TimeUnit = CModel::s;
+            else
+              TimeUnit = CModel::min;
           }
 
         volumeUnit = mParser.getAttributeValue("volumeUnit", papszAttrs);
         VolumeUnit = toEnum(volumeUnit, CModel::VolumeUnitNames, CModel::ml);
-
-        if (VolumeUnit == -1) fatalError();
 
         //the next 2 attributes are introduced in Build 31, they have a default for
         //reading older cps files
         areaUnit = mParser.getAttributeValue("areaUnit", papszAttrs, "m\xc2\xb2");
         AreaUnit = toEnum(areaUnit, CModel::AreaUnitNames, CModel::m2);
 
-        if (AreaUnit == -1) AreaUnit = CModel::m2; //TODO warning
-
         lengthUnit = mParser.getAttributeValue("lengthUnit", papszAttrs, "m");
         LengthUnit = toEnum(lengthUnit, CModel::LengthUnitNames, CModel::m);
 
-        if (LengthUnit == -1) LengthUnit = CModel::m; //TODO warning
-
         quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
-        QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitNames, CModel::mMol);
+        QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitNames, CModel::OldXML);
 
-        if (QuantityUnit == -1)
+        if (QuantityUnit == CModel::OldXML)
           QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitOldXMLNames, CModel::mMol);
-
-        if (QuantityUnit == -1) fatalError();
 
         ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
                            CModel::ModelTypeNames, CModel::deterministic);
-
-        if (ModelType == -1) fatalError();
 
         StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
@@ -5490,7 +5487,7 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                       else
                         {
                           p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
-                          mCommon.UnmappedKeyParameters.push_back(p);
+                          mCommon.UnmappedKeyParameters.push_back(p->getKey());
                         }
                     }
                     break;
@@ -5720,7 +5717,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
                       else
                         {
                           p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
-                          mCommon.UnmappedKeyParameters.push_back(p);
+                          mCommon.UnmappedKeyParameters.push_back(p->getKey());
                         }
                     }
                     break;
@@ -6008,7 +6005,7 @@ void CCopasiXMLParser::CurveElement::end(const XML_Char *pszName)
             break;
 
           case CurveSegment:
-            mCommon.pCurve->addCurveSegment(*mCommon.pLineSegment);
+            mCommon.pCurve->addCurveSegment(mCommon.pLineSegment);
             //tell the handler where to continue
             mCurrentElement = ListOfCurveSegments;
             break;
@@ -8044,9 +8041,9 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Task", mParser.getCurrentLineNumber());
 
-        if (mCommon.pCurrentTask)
+        if (mCommon.pCurrentTask != NULL)
           {
-            mCommon.pTaskList->add(mCommon.pCurrentTask);
+            mCommon.pTaskList->add(mCommon.pCurrentTask, true);
             mCommon.pCurrentTask = NULL;
           }
 
@@ -8160,16 +8157,16 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
               break;
           }
 
-        if (mCommon.pCurrentTask)
+        if (mCommon.pCurrentTask != NULL)
           {
             mCommon.pCurrentTask->setScheduled(Scheduled);
             mCommon.pCurrentTask->setUpdateModel(UpdateModel);
             mCommon.pCurrentTask->getProblem()->setModel(mCommon.pModel);
-          }
 
-        if (Key && mCommon.pCurrentTask)
-          {
-            mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
+            if (Key != NULL)
+              {
+                mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
+              }
           }
 
         return;
@@ -8243,7 +8240,7 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Task", mParser.getCurrentLineNumber());
 
-        if (!mCommon.pCurrentTask)
+        if (mCommon.pCurrentTask == NULL)
           CCopasiMessage::getLastMessage();
 
         mParser.popElementHandler();
@@ -8483,6 +8480,18 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Parameter", mParser.getCurrentLineNumber());
 
+        // We need to fix the "Key" parameter of each "Experiment" of the the "Parameter Estimation" problem,
+        // since they are handled by the elevation of the problem to CFitProblem.
+        if (mCommon.pCurrentTask != NULL &&
+            mCommon.pCurrentTask->getType() == CCopasiTask::parameterFitting &&
+            (mCommon.pCurrentParameter->getObjectName() == "Key" ||
+             mCommon.pCurrentParameter->getObjectName() == "Experiment Key"))
+          {
+            if (mCommon.UnmappedKeyParameters.size() > 0 &&
+                mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] == mCommon.pCurrentParameter->getKey())
+              mCommon.UnmappedKeyParameters.erase(mCommon.UnmappedKeyParameters.begin() + mCommon.UnmappedKeyParameters.size() - 1);
+          }
+
         // Derived elements like methods and problems have already parameters:
         if (mDerivedElement)
           {
@@ -8492,14 +8501,29 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
 
         if (pParameter != NULL)
           {
+            CCopasiParameter::Type OriginalType = pParameter->getType();
             *pParameter = *mCommon.pCurrentParameter;
+
+            if (mCommon.UnmappedKeyParameters.size() > 0 &&
+                mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] == mCommon.pCurrentParameter->getKey())
+              {
+                if (OriginalType == CCopasiParameter::KEY)
+                  {
+                    mCommon.UnmappedKeyParameters[mCommon.UnmappedKeyParameters.size() - 1] = pParameter->getKey();
+                  }
+                else
+                  {
+                    mCommon.UnmappedKeyParameters.erase(mCommon.UnmappedKeyParameters.begin() + mCommon.UnmappedKeyParameters.size() - 1);
+                  }
+              }
+
+            pdelete(mCommon.pCurrentParameter);
           }
         else
           {
-            mCommon.ParameterGroupStack.top()->addParameter(*mCommon.pCurrentParameter);
+            mCommon.ParameterGroupStack.top()->addParameter(mCommon.pCurrentParameter);
+            mCommon.pCurrentParameter = NULL;
           }
-
-        pdelete(mCommon.pCurrentParameter);
 
         mCurrentElement = ParameterGroup;
         break;
@@ -8541,6 +8565,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
   std::string name;
   std::string sValue("");
+  bool UnmappedKey = false;
 
   void * pValue = NULL;
   CCopasiParameter::Type type;
@@ -8606,11 +8631,31 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
               break;
 
             case CCopasiParameter::STRING:
-            case CCopasiParameter::KEY:
             case CCopasiParameter::FILE:
             case CCopasiParameter::CN:
               pValue = &sValue;
               break;
+
+            case CCopasiParameter::KEY:
+            {
+              if (sValue != "" &&
+                  CKeyFactory::isValidKey(sValue))
+                {
+                  CCopasiObject * pObject = mCommon.KeyMap.get(sValue);
+
+                  if (pObject)
+                    {
+                      sValue = pObject->getKey();
+                    }
+                  else
+                    {
+                      UnmappedKey = true;
+                    }
+                }
+
+              pValue = &sValue;
+            }
+            break;
 
             default:
               CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mParser.getCurrentLineNumber());
@@ -8619,6 +8664,11 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
           }
 
         mCommon.pCurrentParameter = new CCopasiParameter(name, type, pValue);
+
+        if (UnmappedKey)
+          {
+            mCommon.UnmappedKeyParameters.push_back(mCommon.pCurrentParameter->getKey());
+          }
 
         break;
 
@@ -14072,3 +14122,47 @@ void CCopasiXMLParser::BoundingBoxElement::end(const XML_Char * pszName)
 }
 
 #endif /* USE_CRENDER_EXTENSION */
+
+SCopasiXMLParserCommon::SCopasiXMLParserCommon():
+    pVersion(NULL),
+    pModel(NULL),
+    CharacterData(),
+    mAssignments(),
+    pFunctionList(NULL),
+    pFunction(NULL),
+    pFunctionVariable(NULL),
+    FunctionDescription(),
+    mExistingFunction(),
+    pReaction(NULL),
+    pEvent(NULL),
+    pEventAssignment(NULL),
+    SourceParameterKeys(),
+    KeyMap(),
+    StateVariableList(),
+    pTaskList(NULL),
+    pReportList(NULL),
+    pPlotList(NULL),
+    pReport(NULL),
+    pCurrentTask(NULL),
+    pCurrentParameter(NULL),
+    ParameterGroupStack(),
+    pCurrentPlot(NULL),
+    pCurrentPlotItem(NULL),
+    pCurrentChannelSpec(NULL),
+    UnmappedKeyParameters(),
+    pLayoutList(NULL),
+    pCurrentLayout(NULL),
+    pCompartmentGlyph(NULL),
+    pMetaboliteGlyph(NULL),
+    pReactionGlyph(NULL),
+    pTextGlyph(NULL),
+    pAdditionalGO(NULL),
+    pCurve(NULL),
+    pLineSegment(NULL),
+    pMetaboliteReferenceGlyph(NULL),
+    mParameterGroupLevel(0),
+    taskReferenceMap(),
+    reportReferenceMap(),
+    pGUI(NULL),
+    pDataModel(NULL)
+{}

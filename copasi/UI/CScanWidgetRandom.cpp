@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 14:04:26 $
+//   $Date: 2010/07/16 19:05:16 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -96,43 +101,46 @@ void CScanWidgetRandom::slotChooseObject()
                                             mpObject);
 
   if (mpObject != pObject) // Object selection changed.
+    initFromObject(pObject);
+}
+
+void CScanWidgetRandom::initFromObject(const CCopasiObject *obj)
+{
+  mpObject = obj;
+
+  if (obj)
     {
-      mpObject = pObject;
+      lineEditObject->setText(FROM_UTF8(obj->getObjectDisplayName()));
 
-      if (mpObject)
+      if (obj->isValueDbl())
         {
-          lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
+          C_FLOAT64 value = *(C_FLOAT64*)obj->getValuePointer();
+          C_INT32 type = comboBoxType->currentItem();
 
-          if (mpObject->isValueDbl())
+          if (type == 0) //uniform
             {
-              C_FLOAT64 value = *(C_FLOAT64*)mpObject->getValuePointer();
-              C_INT32 type = comboBoxType->currentItem();
+              lineEditMin->setText(QString::number(value*0.5));
+              lineEditMax->setText(QString::number(value*2));
+            }
 
-              if (type == 0) //uniform
-                {
-                  lineEditMin->setText(QString::number(value*0.5));
-                  lineEditMax->setText(QString::number(value*2));
-                }
+          if (type == 1) //normal
+            {
+              lineEditMin->setText(QString::number(value));
+              lineEditMax->setText(QString::number(value*0.1));
+            }
 
-              if (type == 1) //normal
-                {
-                  lineEditMin->setText(QString::number(value));
-                  lineEditMax->setText(QString::number(value*0.1));
-                }
-
-              if (type == 2) //poisson
-                {
-                  lineEditMin->setText(QString::number(value));
-                  lineEditMax->setText("");
-                }
+          if (type == 2) //poisson
+            {
+              lineEditMin->setText(QString::number(value));
+              lineEditMax->setText("");
             }
         }
-      else
-        {
-          lineEditObject->setText("");
-          lineEditMin->setText("");
-          lineEditMax->setText("");
-        }
+    }
+  else
+    {
+      lineEditObject->setText("");
+      lineEditMin->setText("");
+      lineEditMax->setText("");
     }
 }
 

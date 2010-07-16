@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Date: 2010/07/16 19:00:07 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,7 +21,6 @@
 
 #include <string>
 
-#include "copasi/MIRIAM/CRDFGraph.h"
 #include "copasi/MIRIAM/CRDFPredicate.h"
 #include "copasi/MIRIAM/CConstants.h"
 
@@ -26,125 +30,125 @@
  *  CReferences: Stores publication details such as PubMed Id and DOI.
  */
 class CReference : public CCopasiContainer
-  {
-    // Attributes
-  private:
-    /**
-     * Triplet in the RDF graph representing the reference.
-     */
-    CRDFTriplet mTriplet;
+{
+  // Attributes
+private:
+  /**
+   * Triplet in the RDF graph representing the reference.
+   */
+  CRDFTriplet mTriplet;
 
-    /**
-     * The predicate path to the node.
-     */
-    CRDFPredicate::Path mNodePath;
+  /**
+   * The predicate path to the node.
+   */
+  CRDFPredicate::Path mNodePath;
 
-    /**
-     * The key of the object needed for the COPASI tables.
-     */
-    std::string mKey;
+  /**
+   * The key of the object needed for the COPASI tables.
+   */
+  std::string mKey;
 
-    /**
-     * Triplet in the RDF graph representing the reference.
-     */
-    CRDFTriplet mIdTriplet;
+  /**
+   * Triplet in the RDF graph representing the reference.
+   */
+  CRDFTriplet mIdTriplet;
 
-    /**
-     * MIRIAM resource for holding database and Id.
-     */
-    CMIRIAMResourceObject mResource;
+  /**
+   * MIRIAM resource for holding database and Id.
+   */
+  CMIRIAMResourceObject mResource;
 
-  public:
-    // Operations
-    /**
-     * Default constructor
-     * @param const std::string & objectName
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CReference(const std::string & objectName,
-               const CCopasiContainer * pParent = NULL);
+public:
+  // Operations
+  /**
+   * Default constructor
+   * @param const std::string & objectName
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CReference(const std::string & objectName,
+             const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Specific constructor
-     * @param const CRDFTriplet & triplet
-     * @param const std::string & objectName (default: "")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CReference(const CRDFTriplet & triplet,
-               const std::string & objectName = "",
-               const CCopasiContainer * pParent = NULL);
+  /**
+   * Specific constructor
+   * @param const CRDFTriplet & triplet
+   * @param const std::string & objectName (default: "")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CReference(const CRDFTriplet & triplet,
+             const std::string & objectName = "",
+             const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Copy constructor
-     * @param "const CReference &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CReference(const CReference & src,
-               const CCopasiContainer * pParent = NULL);
+  /**
+   * Copy constructor
+   * @param "const CReference &" src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CReference(const CReference & src,
+             const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Destructor
-     */
-    ~CReference();
+  /**
+   * Destructor
+   */
+  ~CReference();
 
-    /**
-     * Retrieve the RDF triplet holding the information for this reference.
-     * @return const CRDFTriplet & triplet
-     */
-    const CRDFTriplet & getTriplet() const;
+  /**
+   * Retrieve the RDF triplet holding the information for this reference.
+   * @return const CRDFTriplet & triplet
+   */
+  const CRDFTriplet & getTriplet() const;
 
-    /**
-     * Retrieve the key for the object
-     * @return const std::string & key
-     */
-    virtual const std::string & getKey() const;
+  /**
+   * Retrieve the key for the object
+   * @return const std::string & key
+   */
+  virtual const std::string & getKey() const;
 
-    /**
-     * Retrieve the MIRIAM resource for the reference.
-     * @return std::string resource
-     */
-    std::string getResource() const;
+  /**
+   * Retrieve the MIRIAM resource for the reference.
+   * @return std::string resource
+   */
+  std::string getResource() const;
 
-    /**
-     * Retrieve the id of the reference in the MIRIAM resource.
-     * @return const std::string & id
-     */
-    const std::string & getId() const;
+  /**
+   * Retrieve the id of the reference in the MIRIAM resource.
+   * @return const std::string & id
+   */
+  const std::string & getId() const;
 
-    /**
-     * Retrieve the description for the reference.
-     * @return std::string description
-     */
-    const std::string & getDescription() const;
+  /**
+   * Retrieve the description for the reference.
+   * @return std::string description
+   */
+  const std::string & getDescription() const;
 
-    /**
-     * Retrieve the URI (comprised of resource an id) specifying this reference.
-     * @return std::string uri
-     */
-    std::string getURI() const;
+  /**
+   * Retrieve the URI (comprised of resource an id) specifying this reference.
+   * @return std::string uri
+   */
+  std::string getURI() const;
 
-    /**
-     * Set the MIRIAM resource for the reference
-     * @param const std::string & resource
-     */
-    void setResource(const std::string & resource);
+  /**
+   * Set the MIRIAM resource for the reference
+   * @param const std::string & resource
+   */
+  void setResource(const std::string & resource);
 
-    /**
-     * Set the id of the reference in the MIRIAM resource.
-     * @param const std::string & id
-     */
-    void setId(const std::string & id);
+  /**
+   * Set the id of the reference in the MIRIAM resource.
+   * @param const std::string & id
+   */
+  void setId(const std::string & id);
 
-    /**
-     * Set the description for the reference.
-     * @param std::string description
-     */
-    void setDescription(const std::string & description);
+  /**
+   * Set the description for the reference.
+   * @param std::string description
+   */
+  void setDescription(const std::string & description);
 
-    /**
-     * Remove invalid combinations of resource and id
-     */
-    void clearInvalidEntries();
-  };
+  /**
+   * Remove invalid combinations of resource and id
+   */
+  void clearInvalidEntries();
+};
 
 #endif //COPASI_CReference

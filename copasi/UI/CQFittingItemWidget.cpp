@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/12 18:58:17 $
+//   $Date: 2010/07/16 19:05:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,7 +109,7 @@ void CQFittingItemWidget::init()
   mppCrossValidationSet = NULL;
 
   mpItemsCopy = new std::vector<COptItem *>;
-  mCurrentRow = C_INVALID_INDEX;
+  mCurrentRow = (unsigned int) - 1;
 
   setItemType(OPT_ITEM);
 
@@ -543,7 +543,7 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
   disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
   mpTable->setRowCount(mpItems->size());
   connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
-  mCurrentRow = C_INVALID_INDEX;
+  mCurrentRow = (unsigned int) - 1;
 
   mpItemsCopy->resize(mpItems->size());
 
@@ -610,7 +610,7 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
   if (mpItemsCopy->size())
     selectRow(0);
   else
-    selectRow(C_INVALID_INDEX);
+    selectRow((unsigned int) - 1);
 
   mpTable->resizeColumnsToContents();
 
@@ -1254,7 +1254,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
 unsigned int CQFittingItemWidget::currentRow()
 {
   if (mSelection.size() != 1)
-    return C_INVALID_INDEX;
+    return (unsigned int) - 1;
 
   return *mSelection.begin();
 }
@@ -1562,7 +1562,7 @@ void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & sele
   if (it != end)
     mpTable->setCurrentCell(*it, 0);
   else
-    mpTable->setCurrentCell(C_INVALID_INDEX, 0);
+    mpTable->setCurrentCell(-1, 0);
 
   // Update selection
   for (; it != end; ++it)

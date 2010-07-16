@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 14:47:52 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:03:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,7 @@ void CILDMMethod::initializeParameter()
 
 void CILDMMethod::step(const double & deltaT)
 {
+  C_INT failed_while = 0;
 
   C_INT dim = mData.dim;
   C_INT fast = 0;
@@ -275,8 +276,6 @@ void CILDMMethod::step(const double & deltaT)
     }
 
   // C_INT number, k;
-  C_INT failed_while;
-
   /** Classical ILDM iterations. The number of slow variables is decreased until the Deuflhard criterium holds */
   /*  do START slow iterations */
 

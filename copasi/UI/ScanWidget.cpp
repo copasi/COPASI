@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.214 $
+//   $Revision: 1.215 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:15 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:05:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,15 +214,13 @@ bool ScanWidget::loadTask()
   tmpT->initFromScanProblem(scanProblem, pDataModel->getModel());
   scrollview->addWidget(tmpT, false); //false: no control buttons (up/down/del)
 
-  //scrollview->updateFromWidgetList();
+  mChanged = false;
+
   return true;
 }
 
 bool ScanWidget::slotAddItem()
 {
-  // number of items will be added -> default = 1
-  int totalItems = 1;
-
   int totalRows = -1;
   //+++
   CScanWidgetScan* tmp1;
@@ -255,9 +253,6 @@ bool ScanWidget::slotAddItem()
   //create item to get the default values
   CScanProblem* tmpProblem = new CScanProblem();
   CCopasiParameterGroup* tmpItem = tmpProblem->createScanItem(type, 10);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
 
   switch (type)
     {
@@ -296,19 +291,34 @@ bool ScanWidget::slotAddItem()
         break;
 
       case CScanProblem::SCAN_RANDOM:
-        tmp3 = new CScanWidgetRandom(scrollview);
-        tmp3->initFromScanItem(tmpItem, pDataModel->getModel());
-        scrollview->insertWidget(tmp3);
-        totalRows = scrollview->numRows();
-        scrollview->ensureCellVisible(totalRows - 1, 0);
-        tmp3->lineEditMin->setFocus();
-        break;
+      {
+        CCopasiSimpleSelectionTree::ObjectClasses Classes = CCopasiSimpleSelectionTree::InitialTime |
+            CCopasiSimpleSelectionTree::Parameters;
 
-        /*case CScanProblem::SCAN_BREAK:
-          tmp4 = new CScanWidgetBreak(scrollview);
-          tmp4->initFromScanItem(tmpItem);
-          scrollview->insertWidget(tmp4);
-          break;*/
+        std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
+
+        // create scan widgets as many as the number of selected objects
+        std::vector< const CCopasiObject * >::iterator it = Selection.begin();
+        std::vector< const CCopasiObject * >::iterator end = Selection.end();
+
+        for (; it != end; ++it)
+          {
+            tmp3 = new CScanWidgetRandom(scrollview);
+            tmp3->initFromObject(*it);
+            scrollview->insertWidget(tmp3);
+            totalRows = scrollview->numRows();
+            scrollview->ensureCellVisible(totalRows - 1, 0);
+            tmp3->lineEditMin->setFocus();
+          }
+
+        break;
+      }
+
+      /*case CScanProblem::SCAN_BREAK:
+        tmp4 = new CScanWidgetBreak(scrollview);
+        tmp4->initFromScanItem(tmpItem);
+        scrollview->insertWidget(tmp4);
+        break;*/
 
       default:
         ;
@@ -370,8 +380,17 @@ bool ScanWidget::saveTask()
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  // However we do not check whether the scan item are changed we delete all
+  // and create them new.
+  if (true)
+    {
+      if (mpDataModel != NULL)
+        {
+          mpDataModel->changed();
+        }
+
+      mChanged = false;
+    }
 
   return true;
 }

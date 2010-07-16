@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:42:15 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:00:07 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -437,14 +442,16 @@ CRDFNode * CRDFGraph::createAboutNode(const std::string & key)
 const std::set< CRDFTriplet > & CRDFGraph::getTriplets() const
 {return mTriplets;}
 
-std::set< CRDFTriplet > CRDFGraph::getTriplets(const CRDFPredicate & predicate) const
+std::set< CRDFTriplet > CRDFGraph::getTriplets(const CRDFPredicate & predicate,
+    const bool & expandBag) const
 {
   std::set< CRDFTriplet > Triplets;
 
   Predicate2TripletConstRange Range = mPredicate2Triplet.equal_range(predicate);
 
   for (; Range.first != Range.second; ++Range.first)
-    if (Range.first->second.pObject->isBagNode())
+    if (expandBag &&
+        Range.first->second.pObject->isBagNode())
       {
         std::set< CRDFTriplet > LiTriplets = getTriplets(Range.first->second.pObject, CRDFPredicate::rdf_li);
         std::set< CRDFTriplet >::const_iterator it = LiTriplets.begin();

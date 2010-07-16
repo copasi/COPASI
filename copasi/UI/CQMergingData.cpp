@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/11/09 13:12:00 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:05:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -308,7 +313,7 @@ void CQMergingData::slotModelObject(int row)
 
       for (i = 0; i < imax; ++i)
         {
-          CMetab * metab =  pModel->getMetabolites()[i];
+          // CMetab * metab =  pModel->getMetabolites()[i];
 
           if (key == mObjectKey[i])
             {

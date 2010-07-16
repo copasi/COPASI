@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.29 $ 
+#   $Revision: 1.30 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/09/01 14:08:16 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/07/16 18:56:02 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,6 +24,7 @@ TEMPLATE = lib
 CONFIG -= qt
 
 include(../../common.pri)
+include(../../app.pri)
 
 contains(BUILD_OS,WIN32){
    TARGET = _COPASI
@@ -35,19 +41,20 @@ QMAKE_CXXFLAGS_RELEASE -= -O3
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -O1
 
+COPASI_LIBS += $${COPASI_LIBS_SE}
 
-COPASI_LIBS += -L../../lib
-
-COPASI_LIBS += -lCOPASISE 
-
-LIBS = $$COPASI_LIBS $$LIBS
 
 INCLUDEPATH += ../../..
 contains(BUILD_OS,Linux){
+  LIBS = -L../../lib \
+         $$join(COPASI_LIBS, " -l", -l) \
+         $${LIBS}
+
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   !isEmpty(PYTHON_LIB_PATH){
     LIBS += -L$$PYTHON_LIB_PATH
-    LIBS += -lpython2.5
+    LIBS += -lpython2.6
   } else {
     LIBS += `python-config --libs`
   }
@@ -61,13 +68,18 @@ contains(BUILD_OS,Linux){
     QMAKE_CXXFLAGS_DEBUG += `python-config --includes` 
   }
 
-
-
  QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
 
 }
 
 contains(BUILD_OS, Darwin) {
+  QMAKE_LFLAGS += -Wl,-search_paths_first
+  
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
+         $${LIBS}
+  
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+
     LIBS += -framework Python
     LIBS += -framework QuickTime
     LIBS += -framework Carbon
@@ -79,7 +91,7 @@ contains(BUILD_OS, Darwin) {
 
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH += $$PYTHON_INCLUDE_PATH
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH/python2.5
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH/python2.6
   }
   #QMAKE_CXXFLAGS += `python-config --includes` 
 
@@ -87,6 +99,10 @@ contains(BUILD_OS, Darwin) {
 }
 
 contains(BUILD_OS, WIN32) { 
+  LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+
+  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
@@ -137,8 +153,10 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CCopasiStaticString.i \
                      ../swig/CCopasiTask.i \
                      ../swig/CCopasiVector.i \
+                     ../swig/CExpression.i \
                      ../swig/CEvaluationTree.i \
                      ../swig/CFunction.i \
+                     ../swig/CCallParameters.i \
                      ../swig/CFunctionDB.i \
                      ../swig/CFunctionParameter.i \
                      ../swig/CFunctionParameters.i \
@@ -167,6 +185,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CTrajectoryMethod.i \
                      ../swig/CTrajectoryProblem.i \
                      ../swig/CTrajectoryTask.i \
+                     ../swig/CVersion.i \
                      ../swig/CLyapMethod.i \
                      ../swig/CLyapProblem.i \
                      ../swig/CLyapTask.i \
@@ -174,19 +193,26 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/COptMethod.i \
                      ../swig/COptProblem.i \
                      ../swig/COptTask.i \
-                     ../swig/CVersion.i \
                      ../swig/CVector.i \
-                     ../swig/compare_utilities.i \
                      ../swig/CFitMethod.i \
                      ../swig/CFitProblem.i \
+                     ../swig/CEvent.i \
                      ../swig/CFitTask.i \
                      ../swig/CExperimentFileInfo.i \
                      ../swig/CExperiment.i \
                      ../swig/CExperimentSet.i \
                      ../swig/CExperimentObjectMap.i \
                      ../swig/CFitItem.i \
+                     ../swig/compare_utilities.i \
                      ../swig/copasi.i \
-                     ../swig/CCopasiArray.i
+                     ../swig/CCopasiArray.i \
+                     ../swig/CLBase.i \
+                     ../swig/CLCurve.i \
+                     ../swig/CLGlyphs.i \
+                     ../swig/CLGraphicalObject.i \
+                     ../swig/CLReactionGlyph.i \
+                     ../swig/CLayout.i \
+                     ../swig/CListOfLayouts.i
 
 
 
@@ -225,6 +251,7 @@ UNITTEST_FILES = unittests/Test_CChemEq.py \
                  unittests/Test_CTrajectoryProblem.py \
                  unittests/Test_CTrajectoryTask.py \
                  unittests/Test_CVersion.py \
+                 unittests/Test_CEvent.py \
                  unittests/Test_CreateSimpleModel.py \
                  unittests/Test_RunSimulations.py \
                  unittests/runTests.py 
@@ -263,7 +290,6 @@ isEmpty(SWIG_PATH){
       wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -python -o $$wrapper_source.target python.i
       QMAKE_EXTRA_WIN_TARGETS += wrapper_source
-      PRE_TARGETDEPS += ..\..\lib\COPASISE.lib
     }
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
@@ -271,7 +297,6 @@ isEmpty(SWIG_PATH){
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
   
       QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
-      PRE_TARGETDEPS += ../../lib/libCOPASISE.a
     }
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
@@ -282,6 +307,3 @@ QMAKE_CLEAN += COPASI.py
 SOURCES += copasi_wrapper.cpp
 # under windows qmake seems to ignore the last line of progject files
 
-
-#The following line was inserted by qt3to4
-QT += xml  opengl qt3support 

@@ -1,5 +1,4 @@
 auto
 moc_*.cpp
 Makefile
-wizard.h
-wizard.cpp
+ui_*.h

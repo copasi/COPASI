@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_COutputAssistant.py,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/07/16 18:55:59 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -18,7 +24,7 @@ from types import *
 
 class Test_COutputAssistant(unittest.TestCase):
   def setUp(self):
-    self.datamodel=COPASI.CCopasiDataModel.GLOBAL
+    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
     self.task=self.datamodel.getTask(0)
     self.problem=self.task.getProblem()
 
@@ -55,7 +61,7 @@ class Test_COutputAssistant(unittest.TestCase):
   def test_createDefaultOutput(self):
     self.assert_(self.problem!=None)
     index=COPASI.COutputAssistant.getDefaultReportIndex(self.problem)
-    object=COPASI.COutputAssistant.createDefaultOutput(index,self.task,True)
+    object=COPASI.COutputAssistant.createDefaultOutput(index,self.task,self.datamodel,True)
     self.assert_(object!=None)
     self.assert_(object.__class__==COPASI.CReportDefinition) 
 

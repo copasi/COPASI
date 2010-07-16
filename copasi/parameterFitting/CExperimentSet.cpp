@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-$Revision: 1.32 $
+$Revision: 1.33 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/02/11 19:42:49 $
+$Date: 2010/07/16 19:01:59 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,15 +254,15 @@ bool CExperimentSet::calculateStatistics()
   for (it = mpExperiments->begin() + mNonExperiments, imax = 0; it != end; ++it)
     imax = std::max(imax, (*it)->getDependentData().numRows());
 
-  CCopasiDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
+  CCopasiTask * pParentTask = dynamic_cast< CCopasiTask *>(getObjectAncestor("Task"));
+  assert(pParentTask != NULL);
 
   for (i = 0; i < imax; i++)
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
         (*it)->updateFittedPointValues(i);
 
-      pDataModel->output(COutputInterface::AFTER);
+      pParentTask->output(COutputInterface::AFTER);
     }
 
   return true;

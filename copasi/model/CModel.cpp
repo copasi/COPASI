@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.389 $
+//   $Revision: 1.390 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2010/07/16 19:00:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -894,7 +894,7 @@ void CModel::initializeMetabolites()
 
   // Update mMetabolitesX to reflect the reordering.
   // We need to to this to allow the use of the full model for simulation.
-  mMetabolitesX.resizeWithoutAllocation(mMetabolites.size());
+  mMetabolitesX.resize(mMetabolites.size());
 
   mNumMetabolitesODE = ODEMetabs.size();
   itMetab = mMetabolitesX.begin();
@@ -1638,7 +1638,8 @@ void CModel::setInitialState(const CState & state)
 {
   mInitialState = state;
 
-  if (mIsAutonomous)
+  if (mIsAutonomous &&
+      !mCompileIsNecessary)
     mInitialState.setTime(0.0);
 
   return;
@@ -4110,3 +4111,9 @@ void CModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
 {
   return mpMathModel->calculateRootDerivatives(rootDerivatives);
 }
+
+const CVector< CMathTrigger::CRootFinder * > & CModel::getRootFinders() const
+{
+  return mpMathModel->getRootFinders();
+}
+

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2010/02/16 09:32:53 $
+   $Author: shoops $
+   $Date: 2010/07/16 19:06:33 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,10 +140,10 @@ std::string localeToUtf8(const std::string & locale);
 /**
  * Convert a character sequence to a double
  * @param const char * str
- * @param char const ** tail (default: NULL)
+ * @param char const ** pTail (default: NULL)
  * @return double
  */
 double strToDouble(const char * str,
-                   char const ** tail = NULL);
+                   char const ** pTail = NULL);
 
 #endif // COPASI_utilities

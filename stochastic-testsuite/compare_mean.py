@@ -28,7 +28,7 @@ for X in range(2,len(MEAN)):
     REF_SD_COLS=string.split(REFERENCE_SD[X],",")[1:]
     MEAN_COLS=string.split(MEAN[X],",")[1:]
     if(len(REF_MEAN_COLS)!=len(REF_SD_COLS) or len(MEAN_COLS) != len(REF_MEAN_COLS)):
-        print "ERROR: Number of columns differs between files at line",Y
+        print "ERROR: Number of columns differs between files at line"
         OUT.close()
         sys.exit(1)
     RESULT=str(X-1)

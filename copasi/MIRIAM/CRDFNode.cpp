@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:41 $
+//   $Date: 2010/07/16 19:00:07 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -249,8 +254,8 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
 
   // Determine the path leading to the field
   const CRDFPredicate::AllowedLocationList & Locations = CRDFPredicate::getAllowedLocationList(predicate);
-  unsigned int i, imax = Locations.size();
-  unsigned int SubPathIndex = C_INVALID_INDEX;
+  size_t i, imax = Locations.size();
+  unsigned C_INT32 SubPathIndex = C_INVALID_INDEX;
 
   for (i = 0; i < imax; i++)
     {
@@ -278,11 +283,11 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
 }
 
 CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicatePath,
-    const unsigned int & level)
+    const size_t & level)
 {
   CRDFNode * pNode = this;
 
-  unsigned int i, imax = predicatePath.size() - 1; // We only create the ancestors
+  size_t i, imax = predicatePath.size() - 1; // We only create the ancestors
 
   for (i = level; i < imax; i++)
     {
@@ -347,49 +352,6 @@ CRDFTriplet CRDFNode::addEdge(const CRDFPredicate & predicate, CRDFNode * pObjec
       return Triplet;
     }
 
-  // Check whether the predicate exists
-  std::set< CRDFTriplet > Triplets = mGraph.getTriplets(this, predicate);
-
-  if (Triplets.size() > 0)
-    {
-      // We have at most 1 triplet with the same predicate since rdf_li is
-      // already dealt with.
-      const CRDFTriplet & ExistingTriplet = *Triplets.begin();
-
-      // Check whether the predicate points to a bag node
-      CRDFNode * pBagNode = ExistingTriplet.pObject;
-
-      if (!pBagNode->isBagNode())
-        {
-          // We need to create a bag node, i.e., a blank node of type bag.
-          CRDFSubject Subject;
-          Subject.setType(CRDFSubject::BLANK_NODE);
-          Subject.setBlankNodeId(mGraph.generatedNodeId());
-
-          // We add the existing object to the bag node with predicate rdf_li.
-          // This automatically bagifies the node.
-          CRDFTriplet Bag =
-            mGraph.addTriplet(Subject, CRDFPredicate::rdf_li, ExistingTriplet.pObject->getObject());
-
-          if (!Bag)
-            return Failed;
-
-          // We now have the bag node.
-          pBagNode = Bag.pSubject;
-
-          // We remove the existing triplet
-          removeTripletFromGraph(ExistingTriplet);
-
-          // Add the bag node
-          addEdge(predicate, pBagNode);
-        }
-
-      if (!addTripletToGraph(CRDFTriplet(pBagNode, CRDFPredicate::rdf_li, pObject)))
-        return Failed;
-
-      return Triplet;
-    }
-
   if (!addTripletToGraph(Triplet))
     return Failed;
 
@@ -419,25 +381,6 @@ void CRDFNode::removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
             // Note, this will destroy pTarget, i.e., no need to unbag
             removeEdge(predicate, pTarget);
             break;
-
-          case 1:
-            // If we have only one rdf_li element we unbag the target
-          {
-            CRDFNode * pNode = Triplets.begin()->pObject;
-
-            // We can not use the real predicate as this would fail.
-            // Removing the edge first does not work either as this
-            // would destroy the object.
-            addEdge(CRDFPredicate::any, pNode);
-
-            // Note, this will destroy pTarget, i.e., no need to unbag
-            removeEdge(predicate, pTarget);
-
-            // Fix the predicate
-            addEdge(predicate, pNode);
-            removeEdge(CRDFPredicate::any, pNode);
-          }
-          break;
 
           default:
             // We have more than 1 rdf_li element left.

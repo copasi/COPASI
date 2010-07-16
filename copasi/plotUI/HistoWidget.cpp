@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/HistoWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:25 $
+//   $Date: 2010/07/16 19:01:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,8 @@
 #include "plot/CPlotItem.h"
 #include "report/CCopasiRootContainer.h"
 
-HistoWidget::HistoWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, name, fl)
+HistoWidget::HistoWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
+    : QWidget(parent, fl)
 {
   setupUi(this);
 

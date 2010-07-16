@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $
-#   $Revision: 1.20 $
+#   $Revision: 1.21 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/16 18:55:48 $
+#   $Date: 2010/07/16 19:01:00 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -44,7 +44,4 @@ CONFIG += qt
 
 include(../common.pri)
 
-#The following line was inserted by qt3to4
-QT +=  opengl qt3support 
-
-
+QT += qt3support

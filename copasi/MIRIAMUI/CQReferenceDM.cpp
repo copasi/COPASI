@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/09/28 14:53:30 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:01:00 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,6 +20,8 @@
 
 #include "UI/qtUtilities.h"
 #include "CQReferenceDM.h"
+
+#include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQReferenceDM::CQReferenceDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
     : CQBaseDataModel(parent)
@@ -180,7 +187,7 @@ bool CQReferenceDM::removeRows(QModelIndexList rows, const QModelIndex&)
     }
 
   bool retVal = false, askEveryItem = true;
-  QMessageBox::StandardButton choice;
+  QMessageBox::StandardButton choice = QMessageBox::NoToAll;
   QList <CReference *>::const_iterator j;
 
   for (j = pReferences.begin(); j != pReferences.end(); ++j)

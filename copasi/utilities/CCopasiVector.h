@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/04 19:51:42 $
+//   $Date: 2010/07/16 19:06:32 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -151,7 +156,7 @@ public:
   void deepCopy(const CCopasiVector< CType > & source)
   {
     cleanup();
-    std::vector< CType * >::resize(source.size());
+    resize(source.size());
 
     unsigned C_INT32 i, imax = size();
     iterator Target = begin();
@@ -381,7 +386,7 @@ public:
    *  Resizes the vector but does not create new member objects
    *  @param const unsigned C_INT32 & newSize
    */
-  virtual void resizeWithoutAllocation(const unsigned C_INT32 & newSize)
+  virtual void resize(const unsigned C_INT32 & newSize)
   {
     unsigned C_INT32 OldSize = size();
 
@@ -517,14 +522,14 @@ public:
    * Loads an object with data coming from a CReadConfig object.
    * (CReadConfig object reads an input stream)
    * @param CReadConfig & configbuffer
-   * @param const unsigend C_INT32 & size
+   * @param const unsigned C_INT32 & size
    */
   virtual void load(CReadConfig & configbuffer, unsigned C_INT32 size)
   {
     unsigned C_INT32 i;
 
     CCopasiVector< CType >::cleanup();
-    CCopasiVector< CType >::resize(size, false);
+    CCopasiVector< CType >::resize(size);
 
     iterator Target = CCopasiVector< CType >::begin();
 
@@ -825,7 +830,7 @@ public:
     unsigned C_INT32 i;
 
     CCopasiVector< CType >::cleanup();
-    CCopasiVector< CType >::resize(size, false);
+    CCopasiVector< CType >::resize(size);
 
     iterator Target = CCopasiVector< CType >::begin();
 

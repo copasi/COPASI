@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Date: 2010/07/16 18:59:37 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -139,7 +144,7 @@ std::string CEvaluationNodeConstant::getDisplay_XPP_String(const CEvaluationTree
   std::ostringstream DisplayString;
   std::string data = "";
 
-  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  SubType subType = (SubType) CEvaluationNode::subType(this->getType());
 
   switch (subType)
     {
@@ -197,7 +202,7 @@ CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode& n
 // virtual
 bool CEvaluationNodeConstant::isBoolean() const
 {
-  switch (CEvaluationNode::subType(mType))
+  switch ((SubType) CEvaluationNode::subType(mType))
     {
       case TRUE:
       case FALSE:

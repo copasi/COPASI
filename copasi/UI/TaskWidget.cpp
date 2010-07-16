@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/17 15:58:01 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:05:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,8 +57,21 @@
  *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : CopasiWidget(parent, name, fl)
+TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl):
+    CopasiWidget(parent, name, fl),
+    mProgressBar(NULL),
+    mpHeaderWidget(NULL),
+    mpBtnWidget(NULL),
+    mpMethodLayout(NULL),
+    mpLblParameter(NULL),
+    mpTblParameter(NULL),
+    mpSpacer1(NULL),
+    mpLblMethod(NULL),
+    mpBoxMethod(NULL),
+    mpSpacer2(NULL),
+    mpTask(NULL),
+    mpMethod(NULL),
+    mChanged(false)
 {
   if (!name)
     setName("TaskWidget");
@@ -68,18 +81,6 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   mpTaskThread = new CQTaskThread(this);
   mpHeaderWidget = new CQTaskHeaderWidget(this);
   mpBtnWidget = new CQTaskBtnWidget(this);
-
-  mpMethodLayout = NULL;
-  mpLblParameter = NULL;
-  mpTblParameter = NULL;
-  mpSpacer1 = NULL;
-  mpLblMethod = NULL;
-  mpBoxMethod = NULL;
-  mpSpacer2 = NULL;
-  mProgressBar = NULL;
-
-  mpTask = NULL;
-  mpMethod = NULL;;
 
   connect(mpBtnWidget->mpBtnRun, SIGNAL(clicked()), this, SLOT(runBtnClicked()));
   connect(mpBtnWidget->mpBtnRevert, SIGNAL(clicked()), this, SLOT(revertBtnClicked()));

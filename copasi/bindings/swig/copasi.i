@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.31 $ 
+//   $Revision: 1.32 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/09/01 14:08:16 $ 
+//   $Author: shoops $ 
+//   $Date: 2010/07/16 18:56:28 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -53,7 +58,9 @@
 %include "CEigen.i"
 %include "CFunctionParameter.i"
 %include "CFunctionParameters.i"
+%include "CCallParameters.i"
 %include "CEvaluationTree.i"
+%include "CExpression.i"
 %include "CFunction.i"
 %include "CFunctionDB.i"
 %include "CCopasiParameter.i"
@@ -107,5 +114,12 @@
 %include "CFitTask.i"
 %include "compare_utilities.i"
 %include "CCopasiRootContainer.i"
-
+%include "CEvent.i"
+%include "CLBase.i"
+%include "CLGraphicalObject.i"
+%include "CLGlyphs.i"
+%include "CLCurve.i"
+%include "CLReactionGlyph.i"
+%include "CLayout.i"
+%include "CListOfLayouts.i"
 

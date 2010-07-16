@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQRDFTreeView.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 13:00:09 $
+//   $Date: 2010/07/16 19:01:00 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -129,7 +134,10 @@ bool CQRDFTreeView::enterProtected()
       CQRDFTreeViewItem * pObjectItem = NULL;
 
       if (it->Predicate.getURI() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject")
-        pObjectItem = new CQRDFTreeViewItem(pSubjectItem, NULL);
+        {
+          pObjectItem = new CQRDFTreeViewItem(pSubjectItem, NULL);
+          insert(it->pObject, pObjectItem);
+        }
       else
         pObjectItem = find(it->pObject);
 
@@ -156,6 +164,8 @@ bool CQRDFTreeView::enterProtected()
 
       pObjectItem->setTriplet(*it);
     }
+
+  mpTreeWidget->setFocus();
 
   return true;
 }

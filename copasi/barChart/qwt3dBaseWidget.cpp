@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/16 09:14:26 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 18:54:05 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,18 +26,12 @@
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qslider.h>
-#include <q3frame.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <q3whatsthis.h>
 #include <qaction.h>
 #include <qmenubar.h>
-#include <q3popupmenu.h>
-#include <q3toolbar.h>
+
 //Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
 #include <iostream>
 
 #ifdef DEBUG_UI
@@ -44,29 +43,26 @@
  *  name 'name' and widget flags set to 'f'.
  *
  */
-BaseWidget::BaseWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : QWidget(parent, name, fl),
+BaseWidget::BaseWidget(QWidget* parent, const char* /* name */, Qt::WFlags fl)
+    : QWidget(parent, fl),
     mpSlider(false)
 {
-  if (!name)
-    setName("BaseWidget");
+  mpBaseWidgetLayout = new QGridLayout(this);
 
-  mpBaseWidgetLayout = new Q3GridLayout(this, 1, 1, 0, 0, "BaseWidgetLayout");
+  mpVBoxBig = new QVBoxLayout(0);
 
-  mpVBoxBig = new Q3VBoxLayout(0, "VBoxBig");
+  mpHBoxBig = new QHBoxLayout(0);
 
-  mpHBoxBig = new Q3HBoxLayout(0, "HBoxBig");
-
-  mpFrame = new Q3Frame(this, "Frame");
-  mpFrame->setFrameShape(Q3Frame::StyledPanel);
-  mpFrame->setFrameShadow(Q3Frame::Sunken);
+  mpFrame = new QFrame(this);
+  mpFrame->setFrameShape(QFrame::StyledPanel);
+  mpFrame->setFrameShadow(QFrame::Sunken);
   mpHBoxBig->addWidget(mpFrame, 0, 0);
 
-  mpVBoxSmall = new Q3VBoxLayout(0, "VBoxSmall");
+  mpVBoxSmall = new QVBoxLayout(0);
   mpHBoxBig->addLayout(mpVBoxSmall, 0);
 
   mpVBoxBig->addLayout(mpHBoxBig, 0);
-  mpHBoxSmall = new Q3HBoxLayout(0, "HBoxSmall");
+  mpHBoxSmall = new QHBoxLayout(0);
 
   mpVBoxBig->addLayout(mpHBoxSmall, 0);
   mpBaseWidgetLayout->addLayout(mpVBoxBig, 0, 0);
@@ -83,10 +79,10 @@ BaseWidget::~BaseWidget()
 void BaseWidget::activateSlider()
 {
   mpSlider = true;
-  mpLabelRow = new QLabel(this, "LabelRow");
+  mpLabelRow = new QLabel(this);
   mpLabelRow->setText("Row");
   mpVBoxSmall->addWidget(mpLabelRow, 0, 0);
-  mpSliderRow = new QSlider(this, "SliderRow");
+  mpSliderRow = new QSlider(this);
 
   mpSliderRow->setMinimum(0);
   mpSliderRow->setMaximum(0);
@@ -95,10 +91,10 @@ void BaseWidget::activateSlider()
   mpSliderRow->setOrientation(Qt::Vertical);
   mpVBoxSmall->addWidget(mpSliderRow, 0, 0);
 
-  mpLabelColumn = new QLabel(this, "LabelColumn");
+  mpLabelColumn = new QLabel(this);
   mpLabelColumn->setText("Column ");
   mpHBoxSmall->addWidget(mpLabelColumn, 0, 0);
-  mpSliderColumn = new QSlider(this, "SliderColumn");
+  mpSliderColumn = new QSlider(this);
 
   mpSliderColumn->setMinimum(0);
   mpSliderColumn->setMaximum(0);
@@ -108,8 +104,8 @@ void BaseWidget::activateSlider()
   mpHBoxSmall->addWidget(mpSliderColumn, 0, 0);
   mpHBoxSmall->addSpacing(24);
 
-  QToolTip::add(mpSliderRow, "move slider to view requested row-description");
-  QToolTip::add(mpSliderColumn, "move slider to view requested column-description");
+  mpSliderRow->setToolTip("move slider to view requested row-description");
+  mpSliderColumn->setToolTip("move slider to view requested column-description");
 
   connect(mpSliderColumn, SIGNAL(valueChanged(int)), this, SLOT(setSlider()));
   connect(mpSliderRow, SIGNAL(valueChanged(int)), this, SLOT(setSlider()));

@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CreateSimpleModel.py,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/07/16 18:56:00 $ 
 # End CVS Header 
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -16,8 +22,8 @@ import unittest
 from types import *
 
 def createModel():
-    COPASI.CCopasiDataModel.GLOBAL.newModel()
-    model=COPASI.CCopasiDataModel.GLOBAL.getModel()
+    datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    model=datamodel.getModel()
     model.setVolumeUnit(COPASI.CModel.fl)
     model.setTimeUnit(COPASI.CModel.s)
     model.setQuantityUnit(COPASI.CModel.fMol)
@@ -42,9 +48,10 @@ def createModel():
     changedObjects.push_back(B.getObject(COPASI.CCopasiObjectName("Reference=InitialConcentration")))
     changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCopasiObjectName("Reference=Value")))
     model.updateInitialValues(changedObjects)
-    return model
+    return datamodel
 
-def extendModel(model):
+def extendModel(datamodel):
+    model=datamodel.getModel()
     metab=model.createMetabolite("C",model.getCompartment(0).getObjectName())
     metab.setInitialConcentration(0.0)
     react=model.createReaction("Decay_2")
@@ -65,7 +72,8 @@ def extendModel(model):
 
 class Test_CreateSimpleModel(unittest.TestCase):
    def setUp(self):
-    self.model=createModel()
+    self.datamodel=createModel()
+    self.model=self.datamodel.getModel()
 
    def test_createModel(self):
      self.assert_(self.model!=None)
@@ -94,7 +102,7 @@ class Test_CreateSimpleModel(unittest.TestCase):
      self.assert_(self.model.getReaction(0).getParameters().getParameter(0).getValue()==0.5)
 
    def test_extendModel(self):
-     extendModel(self.model) 
+     extendModel(self.datamodel) 
      self.assert_(self.model.getMetabolites().size()==3)
      self.assert_(self.model.getMetabolite(2).getObjectName()=="C")
      self.assert_(self.model.getMetabolite(2).getInitialValue()==0.0)

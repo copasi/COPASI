@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/07 14:18:07 $
+//   $Date: 2010/07/16 19:05:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,13 +23,14 @@
 #ifndef CTABWIDGET_H
 #define CTABWIDGET_H
 
-#include <qtabwidget.h>
+#include "copasi/UI/listviews.h"
 
-#include "UI/listviews.h"
+#include "copasi/UI/copasiWidget.h"
 
-#include "copasiWidget.h"
+class QTabWidget;
 
-/**This class is the container for two or more widgets.
+/**
+ * This class is the container for two or more widgets.
  */
 class CTabWidget : public CopasiWidget
 {

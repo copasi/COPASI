@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:23 $
+//   $Date: 2010/07/16 19:02:49 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -100,7 +105,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
   if (mpSubTask)
     {
       if (mpProblem->getSubTaskType() == CSensProblem::SteadyState)
-        mpSubTask->process(first);
+        mpSubTask->process(/*first*/true);
       else
         mpSubTask->process(true);
 

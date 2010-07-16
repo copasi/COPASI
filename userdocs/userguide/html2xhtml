@@ -2,8 +2,8 @@
 
 base_name=`basename $1 .html`
 
-sed -e 's/<h0/<h1/g' \
-    -e 's/<\\h0/<\\h1/g' \
+sed -e 's/<[Hh]0/<h1/g' \
+    -e 's/<\\[Hh]0/<\\h1/g' \
     -e 's/<!--.*-->//g' \
     -e 's?</*x>??g' \
     $1 > $$.html

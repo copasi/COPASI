@@ -1,11 +1,16 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.8 $ -->
+<!--   $Revision: 1.9 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: gauges $ -->
-<!--   $Date: 2009/09/01 17:53:01 $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2010/07/16 19:08:10 $ -->
 <!-- End CVS Header -->
+
+<!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
@@ -139,11 +144,11 @@ The class in COPASI that contains the actual model data is <emphasis>CModel</emp
 </para>
 
 <para>
-Once the model has been obtained, it can be manipulated in many ways. New model elements like compartments, metabolites, reactions and/or global parameters can be created, modified or removed. The model also has some methods to manipulate the time-, volume- and substance units of the model. Unlike SBML, models in COPASI only have global units and the units of all elements of the model are made up of these global units. Units on individual elements are not supported.
+Once the model has been obtained, it can be manipulated in many ways. New model elements like compartments, metabolites, reactions, events and/or global parameters can be created, modified or removed. The model also has some methods to manipulate the time-, volume- and substance units of the model. Unlike SBML, models in COPASI only have global units and the units of all elements of the model are made up of these global units. Units on individual elements are not supported.
 </para>
 
 <para>
-To find out how many compartments, metabolites, reactions or global parameters (model values) a model has, <emphasis>CModel</emphasis> has the following methods.
+To find out how many compartments, metabolites, reactions, events or global parameters (model values) a model has, <emphasis>CModel</emphasis> has the following methods.
 </para>
 
 <para>
@@ -156,22 +161,32 @@ long getNumMetabs();
 long getNumModelValues();
 // return the number of reactions in the model
 long getNumReactions(); 
+// return the number of events in the model
+long getNumEvents(); 
 </programlisting>
 <programlisting condition="CPP">
+// return the number of compartments in the model
 C_INT32 getCompartments().size();
+// return the number of metabolites in the model
 C_INT32 getMetabolites().size();
+// return the number of global parameters in the model
 C_INT32 getModelValues().size();
+// return the number of reactions in the model
 C_INT32 getReactions().size();
+// return the number of events in the model
+C_INT32 getEvents().size();
 </programlisting>
 <programlisting condition="PYTHON">
-// return the number of compartments in the model
+# return the number of compartments in the model
 getNumCompartments()
-// return the number of metabolites in the model
+# return the number of metabolites in the model
 getNumMetabs()
-// return the number of global parameters in the model
+# return the number of global parameters in the model
 getNumModelValues()
-// return the number of reactions in the model
+# return the number of reactions in the model
 getNumReactions()
+# return the number of events in the model
+getNumEvetns()
 </programlisting>
 </para>
 
@@ -185,18 +200,21 @@ CCompartment getCompartment(long index);
 CMetab getMetabolite(long index);
 CModelValue getModelValue(long index);
 CReaction getReaction(long index);
+CEvent getEvent(long index);
 </programlisting>
 <programlisting condition="CPP">
 CCompartment* getCompartments()[const unsigned C_INT32&amp; index];
 CMetab* getMetabolites()[const unsigned C_INT32&amp; index];
 CModelValue* getModelValues()[const unsigned C_INT32&amp; index];
 CReaction* getReactions()[const unsigned C_INT32&amp; index];
+CEvent* getEvents()[const unsigned C_INT32&amp; index];
 </programlisting>
 <programlisting condition="PYTHON">
 getCompartment(INDEX)
 getMetabolite(INDEX)
 getModelValue(INDEX)
 getReaction(INDEX)
+getEvent(INDEX)
 </programlisting>
 </para>
 
@@ -270,6 +288,13 @@ CModelValue createModelValue(String name, double value);
  * the method also returns the reaction instance.
  */
 CReaction createReaction(String name);
+
+/**
+ * Creates a new event with the given name.
+ * The newly created event is added to the model and 
+ * the method also returns the event instance.
+ */
+CEvent createEvent(String name);
 </programlisting>
 <programlisting condition="CPP">
 /**
@@ -316,6 +341,14 @@ CModelValue* createModelValue(const std::string name, const C_FLOAT64&amp; value
  * If the method fails, NULL is returned.
  */
 CReaction* createReaction(const std::string&amp; name);
+
+/**
+ * Creates a new event with the given name.
+ * The newly created event is added to the model and 
+ * the method also returns the event instance.
+ * If the method fails, NULL is returned.
+ */
+CEvent* createEvent(const std::string&amp; name);
 </programlisting>
 <programlisting condition="PYTHON">
 # 
@@ -382,6 +415,13 @@ MODEL_VALUE=createModelValue(NAME_STRING, VALUE)
 # the method also returns the reaction instance.
 # 
 REACTION=createReaction(NAME_STRING)
+
+# 
+# Creates a new event with the given name.
+# The newly created event is added to the model and 
+# the method also returns the event instance.
+# 
+EVENT=createEvent(NAME_STRING)
 </programlisting>
 </para>
 
@@ -400,12 +440,14 @@ boolean removeCompartment(String key);
 boolean removeMetabolite(String key);
 boolean removeModelValue(String key);
 boolean removeReaction(String key);
+boolean removeEvent(String key);
 </programlisting>
 <programlisting condition="CPP">
 bool removeCompartment(const std::string&amp; key);
 bool removeMetabolite(const std::string&amp; key);
 bool removeModelValue(const std::string&amp; key);
 bool removeReaction(const std::string&amp; key);
+bool removeEvent(const std::string&amp; key);
 </programlisting>
 <programlisting condition="PYTHON">
 # each function get the key of the object that is to be removed
@@ -415,6 +457,7 @@ SUCCESS=removeCompartment(KEY_STRING)
 SUCCESS=removeMetabolite(KEY_STRING)
 SUCCESS=removeModelValue(KEY_STRING)
 SUCCESS=removeReaction(KEY_STRING)
+SUCCESS=removeEvent(KEY_STRING)
 </programlisting>
 </para>
 
@@ -444,6 +487,104 @@ model=datamodel.getModel()
 metab=model.getMetabolite(3)
 key=metab.getKey()
 model.removeMetabolite(key)
+</programlisting>
+</para>
+
+<para>
+Other methods that might be of interest in the CModel class are e.g. the methods to calculate 
+the jacobian matrix and the reduced jacobian matrix of the model (see example 8).
+</para>
+
+<para>
+<programlisting condition="JAVA">
+/**
+ * Calculates the jacobian of the full model for the current state
+ * and stores it in the provided matrix. applyInitialValues()
+ * needs to be called before.
+ * @param FloatMatrix jacobian
+ * @param double derivationFactor,
+ * @param double resolution
+ */
+void calculateJacobian(FloatMatrix jacobian,
+                       double derivationFactor,
+                       double resolution);
+
+/**
+ * Calculates the Jacobian of the reduced model for the current
+ * state and stores it in the provided matrix. applyInitialValues()
+ * needs to be called before.
+ * @param double derivationFactor,
+ * @param double resolution
+ * @param FloatMatrix jacobianX
+ */
+void calculateJacobianX(FloatMatrix jacobianX,
+                        double derivationFactor,
+                        double resolution);
+
+/**
+ * initialize all values of the model with their initial values
+ */
+void applyInitialValues();
+</programlisting>
+<programlisting condition="CPP">
+/**
+ * Calculates the jacobian of the full model for the current state
+ * and stores it in the provided matrix. applyInitialValues()
+ * needs to be called before.
+ * @param CMatrix&lt; C_FLOAT64 &gt; &amp; jacobian
+ * @param const C_FLOAT64 &amp; derivationFactor,
+ * @param const C_FLOAT64 &amp; resolution
+ */
+void calculateJacobian(CMatrix&lt; C_FLOAT64 &gt; &amp; jacobian,
+                       const C_FLOAT64 &amp; derivationFactor,
+                       const C_FLOAT64 &amp; resolution);
+
+/**
+ * Calculates the Jacobian of the reduced model for the current
+ * state and stores it in the provided matrix. applyInitialValues()
+ * needs to be called before.
+ * @param const C_FLOAT64 &amp; derivationFactor,
+ * @param const C_FLOAT64 &amp; resolution
+ * @param CMatrix&lt; C_FLOAT64 &gt; &amp; jacobianX
+ */
+void calculateJacobianX(CMatrix&lt; C_FLOAT64 &gt; &amp; jacobianX,
+                        const C_FLOAT64 &amp; derivationFactor,
+                        const C_FLOAT64 &amp; resolution);
+
+/**
+ * initialize all values of the model with their initial values
+ */
+void applyInitialValues();
+</programlisting>
+<programlisting condition="PYTHON">
+/**
+ * Calculates the jacobian of the full model for the current state
+ * and stores it in the provided matrix. applyInitialValues()
+ * needs to be called before.
+ * @param FloatMatrix jacobian
+ * @param double derivationFactor,
+ * @param double resolution
+ */
+calculateJacobian(jacobian,
+                  derivationFactor,
+                  resolution)
+
+/**
+ * Calculates the Jacobian of the reduced model for the current
+ * state and stores it in the provided matrix. applyInitialValues()
+ * needs to be called before.
+ * @param double derivationFactor,
+ * @param double resolution
+ * @param FloatMatrix jacobianX
+ */
+calculateJacobianX(jacobianX,
+                   derivationFactor,
+                   resolution)
+
+/**
+ * initialize all values of the model with their initial values
+ */
+applyInitialValues()
 </programlisting>
 </para>
 
@@ -802,7 +943,7 @@ Metabolites can have the status FIXED, ASSIGNMENT, ODE or REACTIONS. And you can
 </para>
 </sect3>
 
-<sect3 id="" xreflabel="">
+<sect3 id="modelValues" xreflabel="modelvalues">
 <title>model values (global parameters)</title>
 
 <para>
@@ -1072,6 +1213,9 @@ public long getCompartmentNumber();
 
 /**
  * Returns the largest compartment involved in the reaction.
+ * This method should only be called after all transient values have been set,
+ * otherwise an exception can occur. 
+ * Maybe call applyInitialValues on the model before using this method.
  */
 public CCompartment getLargestCompartment();
 
@@ -1154,6 +1298,9 @@ unsigned C_INT32 getCompartmentNumber() const;
 
 /**
  * Returns the largest compartment involved in the reaction.
+ * This method should only be called after all transient values have been set,
+ * otherwise an exception can occur. 
+ * Maybe call applyInitialValues on the model before using this method.
  */
 const CCompartment* getLargestCompartment() const;
 </programlisting>
@@ -1218,6 +1365,9 @@ COMPARTMENT_NUMBER=getCompartmentNumber()
 
 # 
 # Returns the largest compartment involved in the reaction.
+# This method should only be called after all transient values have been set,
+# otherwise an exception can occur. 
+# Maybe call applyInitialValues on the model before using this method.
 # 
 COMPARTMENT=getLargestCompartment()
 
@@ -1324,6 +1474,485 @@ METABOLITE_KEY_STRING=getMetaboliteKey()
 # Sets the associated CMetab instance via its key.
 # 
 setMetabolite(METABOLITE_KEY_STRING)
+</programlisting>
+</para>
+</sect3>
+<sect3 id="events" xreflabel="events">
+<title>events</title>
+
+<para>
+The class for events is called <emphasis>CEvent</emphasis>. It contains information on the condition that determines when an event is triggered, the assignments that are executed when the event is triggered and an optional delay expression that determines how long after the actual triggering of the event, the assignments are applied. 
+</para>
+
+<para>
+<programlisting condition="CPP">
+/**
+ * Set the order in which the event is executed for simultaneous events.
+ * @param const unsigned C_INT32 &amp; order
+ * const bool &amp; correctOther = true
+ */
+void setOrder(const unsigned C_INT32 &amp; order, const bool &amp; correctOther = true);
+
+/**
+ * Retrieve the order in which the event is executed for simultaneous events
+ */
+const unsigned C_INT32 &amp; getOrder() const;
+
+/**
+ * Sets the SBMLId of the event.
+ * @param const std::string &amp; id
+ */
+void setSBMLId(const std::string &amp; id);
+
+/**
+ * Returns a reference to the SBML Id of the event.
+ */
+const std::string&amp; getSBMLId() const;
+
+/**
+ * Set whether the calculation or the assignments shall be delayed
+ */
+void setDelayAssignment(const bool &amp; delayCalculation);
+
+/**
+ * Retrieve whether to delay the calculation of the assignments.
+ * @return const bool &amp; delayCalculation
+ */
+const bool &amp; getDelayAssignment() const;
+
+/**
+ * Set the expression of trigger from a string. The return value indicates if
+ * parsing the expression was successful.
+ * @param const std::string &amp; expression
+ * @return bool success
+ */
+bool setTriggerExpression(const std::string &amp; expression);
+
+/**
+ * Set the expression of trigger from a CExpression instance.
+ * The pointer is owned by the event after it has been set.
+ * @param CExpression* pExpression
+ */
+void setTriggerExpressionPtr(CExpression * pExpression);
+
+/**
+ * Retrieve the expression of trigger as a string.
+ * @return std::string expression
+ */
+std::string getTriggerExpression() const;
+
+/**
+ * Retrieve the const pointer to the trigger expression.
+ * @return const CExpression* pExpression
+ */
+const CExpression * getTriggerExpressionPtr() const;
+
+/**
+ * Retrieve the pointer to the trigger expression.
+ * @return CExpression* pExpression
+ */
+CExpression * getTriggerExpressionPtr();
+
+/**
+ * Set the expression of delay from a string. The return value indicates if
+ * parsing the expression was successful.
+ * @param const std::string &amp; expression
+ * @return bool success
+ */
+bool setDelayExpression(const std::string &amp; expression);
+
+/**
+ * Set the expression of delay from a CExpression instance pointer.
+ * The pointer is owned by the event after it has been set.
+ * @param CExpression* pExpression
+ */
+void setDelayExpressionPtr(CExpression* pExpression);
+
+/**
+ * Retrieve the expression of the delay expression as a string.
+ * @return std::string expression
+ */
+std::string getDelayExpression() const;
+
+/**
+ * Retrieve the pointer to the expression of the delay.
+ * @return CExpression* pExpression
+ */
+CExpression* getDelayExpressionPtr();
+
+/**
+ * Retrieve the const pointer to the expression of the delay.
+ * @return const CExpression* pExpression
+ */
+const CExpression* getDelayExpressionPtr() const;
+
+/**
+ * Retrieve the assignments. This will return a const reference to the CCopasiVectorN which holds the assignments for the event.
+ * @return const CCopasiVectorN&lt; CEventAssignment &gt; &amp; assignments
+ */
+const CCopasiVectorN&lt; CEventAssignment &gt; &amp; getAssignments() const;
+
+/**
+ * Retrieve the assignments. This will return the reference to the CCopasiVectorN which holds all the assignments.
+ * @return CCopasiVectorN&lt; CEventAssignment &gt; &amp; assignments
+ */
+CCopasiVectorN&lt; CEventAssignment &gt; &amp; getAssignments();
+
+/**
+ * Delete assignment with the given key. Please note this is not the target key.
+ * @param const std::string &amp; key
+ */
+void deleteAssignment(const std::string &amp; key);
+</programlisting>
+<programlisting condition="JAVA">
+/**
+ * Set the order in which the event is executed for simultaneous events.
+ * @param long order
+ * @param boolean correctOther
+ */
+void setOrder(long order, boolean correctOther);
+
+/**
+ * Retrieve the order in which the event is executed for simultaneous events
+ */
+long getOrder() const;
+
+/**
+ * Sets the SBMLId of the event.
+ * @param const String id
+ */
+void setSBMLId(const String id);
+
+/**
+ * Returns a the SBML Id of the event.
+ */
+const String getSBMLId() const;
+
+/**
+ * Set whether the calculation or the assignments shall be delayed
+ */
+void setDelayAssignment(boolean delayCalculation);
+
+/**
+ * Retrieve whether to delay the calculation of the assignments.
+ * @return boolean delayCalculation
+ */
+boolean getDelayAssignment() const;
+
+/**
+ * Set the expression of trigger from a string. The return value indicates if
+ * parsing the expression was successful.
+ * @param const String expression
+ * @return boolean success
+ */
+boolean setTriggerExpression(const String expression);
+
+/**
+ * Set the expression of trigger from a CExpression instance.
+ * The expression is owned by the event after it has been set.
+ * @param CExpression expression
+ */
+void setTriggerExpressionPtr(CExpression expression);
+
+/**
+ * Retrieve the expression of trigger as a string.
+ * @return String expression
+ */
+String getTriggerExpression() const;
+
+/**
+ * Retrieve the trigger expression object.
+ * @return CExpression expression
+ */
+CExpression getTriggerExpressionPtr();
+
+/**
+ * Set the expression of delay from a string. The return value indicates if
+ * parsing the expression was successful.
+ * @param const String expression
+ * @return boolean success
+ */
+boolean setDelayExpression(const String expression);
+
+/**
+ * Set the expression of delay from a CExpression instance.
+ * The expression is owned by the event after it has been set.
+ * @param CExpression expression
+ */
+void setDelayExpressionPtr(CExpression expression);
+
+/**
+ * Retrieve the expression of the delay expression as a string.
+ * @return String expression
+ */
+String getDelayExpression() const;
+
+/**
+ * Retrieve the expression of the delay.
+ * @return CExpression expression
+ */
+CExpression getDelayExpressionPtr();
+
+/**
+ * Retrieve the assignments. This will return the EventAssignmentVectorN which holds the assignments for the event.
+ * @return EventAssignmentVectorN assignments
+ */
+EventAssignmentVectorN getAssignments();
+
+/**
+ * Delete assignment with the given key. Please note this is not the target key.
+ * @param const String key
+ */
+void deleteAssignment(const String key);
+</programlisting>
+<programlisting condition="Python">
+#  
+#  Set the order in which the event is executed for simultaneous events.
+#  @param integer order
+#  @param boolean correctOther
+#  
+setOrder(order, correctOther)
+
+#  
+#  Retrieve the order in which the event is executed for simultaneous events
+#  
+order=getOrder()
+
+#  
+#  Sets the SBMLId of the event.
+#  @param id string
+#  
+setSBMLId(id)
+
+#  
+#  Returns a the SBML Id of the event.
+#  
+id=getSBMLId()
+
+#  
+#  Set whether the calculation or the assignments shall be delayed
+#  
+setDelayAssignment(delayCalculationFlag)
+
+#  
+#  Retrieve whether to delay the calculation of the assignments.
+#  @return boolean delayCalculation
+#  
+delayAssignmentFlag=getDelayAssignment()
+
+#  
+#  Set the expression of trigger from a string. The return value indicates if
+#  parsing the expression was successful.
+#  @param const String expression
+#  @return boolean success
+#  
+result=setTriggerExpression(expressionString)
+
+#  
+#  Set the expression of trigger from a CExpression instance.
+#  The expression is owned by the event after it has been set.
+#  @param CExpression expression
+#  
+setTriggerExpressionPtr(expressionObject)
+
+#  
+#  Retrieve the expression of trigger as a string.
+#  @return String expression
+#  
+expressionString=getTriggerExpression()
+
+#  
+#  Retrieve the trigger expression object.
+#  @return CExpression expression
+#  
+expressionObject=getTriggerExpressionPtr()
+
+#  
+#  Set the expression of delay from a string. The return value indicates if
+#  parsing the expression was successful.
+#  @param const String expression
+#  @return boolean success
+#  
+result=setDelayExpression(expressionString)
+
+#  
+#  Set the expression of delay from a CExpression instance.
+#  The expression is owned by the event after it has been set.
+#  @param CExpression expression
+#  
+setDelayExpressionPtr(expressionObject)
+
+#  
+#  Retrieve the expression of the delay expression as a string.
+#  @return String expression
+#  
+delayExpressionString=getDelayExpression()
+
+#  
+#  Retrieve the expression of the delay.
+#  @return CExpression expression
+#  
+expression=getDelayExpressionPtr()
+
+#  
+#  Retrieve the assignments. This will return the EventAssignmentVectorN which holds the assignments for the event.
+#  @return EventAssignmentVectorN assignments
+#  
+eventassignments=getAssignments()
+
+#  
+#  Delete assignment with the given key. Please note this is not the target key.
+#  @param String key
+#  
+deleteAssignment(keyString)
+</programlisting>
+
+The individual assignments that have to be executed when an event fires are represented by the CEventAssignment class in COPASI.
+Each event assignment has a target which is the object that is changed and an expression that determines the value to which the target is set.
+
+<programlisting condition="CPP">
+/**
+ * Set the key of the target
+ * @param const std::string &amp; targetKey
+ * @return bool success;
+ */
+bool setTargetKey(const std::string &amp; targetKey);
+
+/**
+ * Retrieve the target key
+ * @return const std::string &amp; targetKey
+ */
+const std::string &amp; getTargetKey() const;
+
+/**
+ * Retrieve a pointer to the target object.
+ * @return const CCopasiObject * targetObject
+ */
+const CCopasiObject * getTargetObject() const;
+
+/**
+ * Set the expression from an infix string. The return value indicates if
+ * parsing the expression was successful.
+ * @param const std::string &amp; expression
+ * @return bool success
+ */
+bool setExpression(const std::string &amp; expression);
+
+/**
+ * Set the expression from an expression pointer. CEventAssignment takes ownership.
+ * @param CExpression* pExpression
+ */
+void setExpressionPtr(CExpression * pExpression);
+
+/**
+ * Retrieve the expression as a string.
+ * @return std::string expression
+ */
+std::string getExpression() const;
+
+/**
+ * Retrieve the pointer to the expression.
+ * @return CExpression * pExpression
+ */
+const CExpression * getExpressionPtr() const;
+
+/**
+ * Retrieve the pointer to the expression.
+ * @return CExpression * pExpression
+ */
+CExpression * getExpressionPtr();
+</programlisting>
+<programlisting condition="Java">
+/**
+ * Set the key of the target
+ * @param const String targetKey
+ * @return boolean success;
+ */
+boolean setTargetKey(const String targetKey);
+
+/**
+ * Retrieve the target key
+ * @return const String targetKey
+ */
+const String getTargetKey() const;
+
+/**
+ * Retrieve the target object.
+ * @return const CCopasiObject targetObject
+ */
+const CCopasiObject getTargetObject() const;
+
+/**
+ * Set the expression from an infix string. The return value indicates if
+ * parsing the expression was successful.
+ * @param const String expression
+ * @return boolean success
+ */
+boolean setExpression(const String expression);
+
+/**
+ * Set the expression from an expression object. CEventAssignment takes ownership.
+ * @param CExpression expression
+ */
+void setExpressionPtr(CExpression expression);
+
+/**
+ * Retrieve the expression as a string.
+ * @return String expression
+ */
+String getExpression() const;
+
+/**
+ * Retrieve the expression object.
+ * @return CExpression expression
+ */
+CExpression getExpressionPtr();
+</programlisting>
+<programlisting condition="Python">
+#  
+#  Set the key of the target
+#  @param targetKey string
+#  @return boolean success;
+#  
+result=setTargetKey(targetKeyString)
+
+#  
+#  Retrieve the target key
+#  @return targetKey
+#  
+targetKeyString=getTargetKey()
+
+#  
+#  Retrieve the target object.
+#  @return const CCopasiObject targetObject
+#  
+targetObject=getTargetObject()
+
+#  
+#  Set the expression from an infix string. The return value indicates if
+#  parsing the expression was successful.
+#  @param expressionString
+#  @return boolean success
+#  
+result=setExpression(expressionString)
+
+#  
+#  Set the expression from an expression object. CEventAssignment takes ownership.
+#  @param CExpression expressionObject
+#  
+setExpressionPtr(expressionObject)
+
+#  
+#  Retrieve the expression as a string.
+#  @return expressionString
+#  
+expressionString=getExpression()
+
+#  
+#  Retrieve the expression object
+#  @return CExpression expressionObject
+#  
+expressionObject=getExpressionPtr()
 </programlisting>
 </para>
 </sect3>
@@ -1688,7 +2317,7 @@ Lets make this a little more clear by looking at the task class for running time
 </para>
 
 <para>
-All tasks are stored in <emphasis>CCopasiDataModel</emphasis>. <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>getTaskList()</emphasis> to get the list of tasks. The returned object is of the type <emphasis>TaskVectorN</emphasis> and provides a method called <emphasis>size()</emphasis> to find out how many tasks it contains and a method <emphasis CONDITION="JAVA">get(long index)</emphasis><emphasis CONDITION="CPP">get(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">get(INDEX)</emphasis> to retrieve the task with the given index. The object that is returned is of type <emphasis>CCopasiObject</emphasis>. Alternatively, <emphasis>CCopasiDataModel</emphasis> has a method called <emphasis CONDITION="JAVA">getTask(long index)</emphasis><emphasis CONDITION="CPP">getTask(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">getTask(INDEX)</emphasis> which returns the <emphasis>CCopasiTask</emphasis> object with the given index. 
+All tasks are stored in <emphasis>CCopasiDataModel</emphasis>. <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>getTaskList()</emphasis> to get the list of tasks. The returned object is of the type <emphasis>TaskVectorN</emphasis> and provides a method called <emphasis>size()</emphasis> to find out how many tasks it contains and a method <emphasis condition="JAVA">get(long index)</emphasis><emphasis condition="CPP">get(C_INT32 index)</emphasis><emphasis condition="PYTHON">get(INDEX)</emphasis> to retrieve the task with the given index. The object that is returned is of type <emphasis>CCopasiObject</emphasis>. Alternatively, <emphasis>CCopasiDataModel</emphasis> has a method called <emphasis condition="JAVA">getTask(long index)</emphasis><emphasis condition="CPP">getTask(C_INT32 index)</emphasis><emphasis condition="PYTHON">getTask(INDEX)</emphasis> which returns the <emphasis>CCopasiTask</emphasis> object with the given index. 
 </para>
 
 <para>
@@ -3538,7 +4167,7 @@ COptMethod fitMethod=(COptMethod)fitTask.getMethod();
 CFitProblem fitProblem=(CFitProblem)fitTask.getProblem();
 CExperimentSet experimentSet=(CExperimentSet)fitProblem.getParameter("Experiment Set");
 // first experiment
-CExperiment experiment=new CExperiment();
+CExperiment experiment=new CExperiment(datamodel);
 experiment.setFileName("parameter_fitting_data_simple.txt");
 experiment.setFirstRow(1);
 experiment.setLastRow(22);
@@ -3587,7 +4216,7 @@ CCopasiParameter parameter=reaction.getParameters().getParameter(0);
 // define CFitItems
 CCopasiObject parameterReference=
     parameter.getObject(new CCopasiObjectName("Reference=Value"));
-CFitItem fitItem=new CFitItem();
+CFitItem fitItem=new CFitItem(datamodel);
 fitItem.setObjectCN(parameterReference.getCN());
 fitItem.setStartValue(4.0);
 fitItem.setLowerBound(new CCopasiObjectName("0.0001"),datamodel);
@@ -3622,7 +4251,7 @@ COptMethod pFitMethod=(COptMethod*)pFitTask->getMethod();
 CFitProblem* pFitProblem=(CFitProblem*)pFitTask->getProblem();
 CExperimentSet* pExperimentSet=&amp;(CExperimentSet*)pFitProblem->getParameter("Experiment Set");
 // first experiment
-CExperiment* pExperiment=new CExperiment();
+CExperiment* pExperiment=new CExperiment(pDataModel);
 pExperiment->setFileName("parameter_fitting_data_simple.txt");
 pExperiment->setFirstRow(1);
 pExperiment->setLastRow(22);
@@ -3670,7 +4299,7 @@ CCopasiParameter* pParameter=pReaction->getParameters()->getParameter(0);
 
 // define CFitItems
 CCopasiObject* pParameterReference=pParameter->getObject(CCopasiObjectName("Reference=Value"));
-CFitItem* pFitItem=new CFitItem();
+CFitItem* pFitItem=new CFitItem(pDataModel);
 pFitItem->setObjectCN(pParameterReference->getCN());
 pFitItem->setStartValue(4.0);
 pFitItem->setLowerBound(CCopasiObjectName("0.0001"),datamodel);
@@ -3705,7 +4334,7 @@ fitMethod=fitTask.getMethod()
 fitProblem=fitTask.getProblem()
 experimentSet=fitProblem.getParameter("Experiment Set")
 # first experiment
-experiment=CExperiment()
+experiment=CExperiment(datamodel)
 experiment.setFileName("parameter_fitting_data_simple.txt")
 experiment.setFirstRow(1)
 experiment.setLastRow(22)
@@ -3748,7 +4377,7 @@ parameter=reaction.getParameters().getParameter(0)
 
 # define CFitItems
 parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"))
-fitItem=CFitItem()
+fitItem=CFitItem(datamodel)
 fitItem.setObjectCN(parameterReference.getCN())
 fitItem.setStartValue(4.0)
 fitItem.setLowerBound(new CCopasiObjectName("0.0001"),datamodel)
@@ -4236,7 +4865,9 @@ NUMBER=getNumber()
 </sect1>
  <sect1 id="programmingExamples" xreflabel="programmingExamples">
 <title>Programming Examples</title>
+<para>
 This section contains some programming examples that might be helpful. We hope that eventually these examples will cover most of the backend.
+</para>
 <sect2 id="modelCreation" xreflabel="modelCreation">
 <title>Creating and saving a model</title>
 <para>
@@ -4453,6 +5084,65 @@ This example shows how to create a function definition with the COPASI API and h
 </para>
 </sect2>
 
+<sect2 id="jacobian" xreflabel="jacobian">
+<title>Calculating the jacobian matrix of a model</title>
+<para>
+This example shows how to calculate the jacobian matrix of a model at an arbitrary state.
+</para>
+<para>
+<programlisting condition="CPP">
+<xi:include  href="../../copasi/bindings/cpp_examples/example8/example8.cpp" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="JAVA">
+<xi:include  href="../../copasi/bindings/java/examples/example8.java" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="PYTHON">
+<xi:include  href="../../copasi/bindings/python/examples/example8.py" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+</para>
+</sect2>
+
+<sect2 id="steadystate_jacobian" xreflabel="steadystate_jacobian">
+<title>Calculating the jacobian of a model at the steady state</title>
+<para>
+This example shows how to calculate the jacobian matrix of a model at the steady state state.
+</para>
+<para>
+<programlisting condition="CPP">
+<xi:include  href="../../copasi/bindings/cpp_examples/example8/example9.cpp" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="JAVA">
+<xi:include  href="../../copasi/bindings/java/examples/example9.java" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="PYTHON">
+<xi:include  href="../../copasi/bindings/python/examples/example9.py" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+</para>
+</sect2>
 
 </sect1>
 

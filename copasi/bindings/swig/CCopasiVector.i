@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.26 $ 
+//   $Revision: 1.27 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 08:46:56 $ 
+//   $Author: shoops $ 
+//   $Date: 2010/07/16 18:56:27 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -18,6 +23,8 @@
 %{
 
 #include "utilities/CCopasiVector.h"
+#include <layout/CLBase.h>
+#include <layout/CLCurve.h>
 
 %}
 
@@ -88,6 +95,22 @@
       return (CCopasiObject*)((*self)[name]);
   }
 }
+
+%rename(removeObject) CCopasiVector<CEvent>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CEvent>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CEvent>::getIndex(const std::string& name) const;
+
+%template(EventStdVector) std::vector<CEvent*>;
+%template(EventVector) CCopasiVector<CEvent>;
+%template(EventVectorN) CCopasiVectorN<CEvent>;
+
+%rename(removeObject) CCopasiVector<CEventAssignment>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CEventAssignment>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CEventAssignment>::getIndex(const std::string& name) const;
+
+%template(EventAssignmentStdVector) std::vector<CEventAssignment*>;
+%template(EventAssignmentVector) CCopasiVector<CEventAssignment>;
+%template(EventAssignmentVectorN) CCopasiVectorN<CEventAssignment>;
 
 %rename(removeObject) CCopasiVector<CCopasiTask>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CCopasiTask>::remove(const std::string& name);
@@ -167,6 +190,7 @@
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
+%template(UIntStdVector) std::vector<unsigned int>;
 
 %template(StringStdVector) std::vector<std::string>;
 %template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
@@ -176,6 +200,16 @@
 %template(OptItemStdVector) std::vector<COptItem*>;
 
 %template(ContainerStdVector) std::vector<CCopasiContainer*>;
+
+%template(PointStdVector) std::vector<CLPoint>;
+
+%template(LineSegmentStdVector) std::vector<CLLineSegment>;
+
+%template(FittingPointVector) CCopasiVector<CFittingPoint>;
+
+typedef CCopasiVectorN<CEvent> EventVectorN;
+
+typedef CCopasiVectorN<CEventAssignment> EventAssignmentVectorN;
 
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
@@ -202,6 +236,7 @@ typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
 typedef std::vector<C_INT32> IntStdVector;
+typedef std::vector<unsigned int> UIntStdVector;
 
 typedef std::vector<C_FLOAT64> FloatStdVector;
 
@@ -211,4 +246,11 @@ typedef std::vector<std::string> StringStdVector;
 typedef std::vector<std::vector<std::string> > VectorOfStringVectors;
 
 typedef std::vector<CCopasiContainer*> ContainerStdVector;
+
+typedef std::vector<CLPoint> PointStdVector;
+
+typedef std::vector<CLLineSegment> LineSegmentStdVector;
+
+typedef CCopasiVector<CFittingPoint> FittingPointVector;
+
 

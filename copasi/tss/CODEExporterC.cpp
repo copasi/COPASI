@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:07 $
+//   $Date: 2010/07/16 19:03:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -105,35 +110,38 @@ std::string CODEExporterC::translateTimeVariableName()
 std::string CODEExporterC::setExportName(const CModelEntity::Status & status, unsigned C_INT32 n[], unsigned C_INT32 dependent)
 {
   std::ostringstream name;
+
   switch (status)
     {
-    case CModelEntity::FIXED:
-      name << "p[" << n[0] << "]";
-      n[0] ++;
-      break;
-    case CModelEntity::REACTIONS:
-      if (!dependent)
-        {
-          name << "x[" << n[1] << "]";
-          n[1] ++;
-        }
-      else
-        {
-          name << "y[" << n[2] << "]";
-          n[2] ++;
-        }
-      break;
-    case CModelEntity::ODE:
-      name << "x[" << n[1] << "]";
-      n[1] ++;
-      break;
-    case CModelEntity::ASSIGNMENT:
-      name << "y[" << n[2] << "]";
-      n[2] ++;
-      break;
-    default:
-      return " ";
-      break;
+      case CModelEntity::FIXED:
+        name << "p[" << n[0] << "]";
+        n[0] ++;
+        break;
+      case CModelEntity::REACTIONS:
+
+        if (!dependent)
+          {
+            name << "x[" << n[1] << "]";
+            n[1] ++;
+          }
+        else
+          {
+            name << "y[" << n[2] << "]";
+            n[2] ++;
+          }
+
+        break;
+      case CModelEntity::ODE:
+        name << "x[" << n[1] << "]";
+        n[1] ++;
+        break;
+      case CModelEntity::ASSIGNMENT:
+        name << "y[" << n[2] << "]";
+        n[2] ++;
+        break;
+      default:
+        return " ";
+        break;
     }
 
   return name.str();
@@ -142,35 +150,38 @@ std::string CODEExporterC::setExportName(const CModelEntity::Status & status, un
 std::string CODEExporterC::setConcentrationName(const CModelEntity::Status & status, unsigned C_INT32 n[], unsigned C_INT32 dependent)
 {
   std::ostringstream name;
+
   switch (status)
     {
-    case CModelEntity::FIXED:
-      name << "p_c[" << n[0] << "]";
-      n[0] ++;
-      break;
-    case CModelEntity::REACTIONS:
-      if (!dependent)
-        {
-          name << "x_c[" << n[1] << "]";
-          n[1] ++;
-        }
-      else
-        {
-          name << "y_c[" << n[2] << "]";
-          n[2] ++;
-        }
-      break;
-    case CModelEntity::ODE:
-      name << "x_c[" << n[1] << "]";
-      n[1] ++;
-      break;
-    case CModelEntity::ASSIGNMENT:
-      name << "y_c[" << n[2] << "]";
-      n[2] ++;
-      break;
-    default:
-      return " ";
-      break;
+      case CModelEntity::FIXED:
+        name << "p_c[" << n[0] << "]";
+        n[0] ++;
+        break;
+      case CModelEntity::REACTIONS:
+
+        if (!dependent)
+          {
+            name << "x_c[" << n[1] << "]";
+            n[1] ++;
+          }
+        else
+          {
+            name << "y_c[" << n[2] << "]";
+            n[2] ++;
+          }
+
+        break;
+      case CModelEntity::ODE:
+        name << "x_c[" << n[1] << "]";
+        n[1] ++;
+        break;
+      case CModelEntity::ASSIGNMENT:
+        name << "y_c[" << n[2] << "]";
+        n[2] ++;
+        break;
+      default:
+        return " ";
+        break;
     }
 
   return name.str();
@@ -196,6 +207,7 @@ std::string CODEExporterC::translateObjectName(const std::string & realName)
   if (!std::isalpha(ch, C))
     {
       tmpName << "_";
+
       if (std::isdigit(ch, C)) tmpName << ch;
     }
   else tmpName << ch;
@@ -213,23 +225,24 @@ std::string CODEExporterC::translateObjectName(const std::string & realName)
         }
 
       if (std::isdigit(ch, C)) tmpName << ch;
+
       if (std::ispunct(ch, C))
         switch (ch)
           {
-          case '_':
-            tmpName << ch;
-            break;
-          case '-':
-          case '{':
-          case '}':
-          case '(':
-          case ')':
-          case '[':
-          case ']':
-            tmpName << "_";
-            break;
-          default:
-            break;
+            case '_':
+              tmpName << ch;
+              break;
+            case '-':
+            case '{':
+            case '}':
+            case '(':
+            case ')':
+            case '[':
+            case ']':
+              tmpName << "_";
+              break;
+            default:
+              break;
           }
     }
 
@@ -256,6 +269,7 @@ std::string CODEExporterC::testName(const std::string & name)
   for (i = 0; i < name_size; i++)
     {
       ch = name[i];
+
       if (std::isalpha(ch, C) && std::islower(ch, C))
         tmp << (char) toupper(ch);
       else
@@ -366,6 +380,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
           NameMap[odeKey.str()] = setODEName(name);
         }
     }
+
   unsigned C_INT32 reacs_size = copasiModel->getReactions().size();
 
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
@@ -389,6 +404,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
         }
 
       const CFunction* func = reacs[i]->getFunction();
+
       std::string name = func->getObjectName();
 
       if (func->getRoot())
@@ -417,7 +433,7 @@ void CODEExporterC::setExportNameOfFunction(const CEvaluationNode* pNode, std::s
           if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
             {
               const CFunction* ifunc;
-              ifunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
+              ifunc = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
 
               setExportNameOfFunction(ifunc->getRoot(), tmpset);
 
@@ -454,12 +470,14 @@ bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & ex
   switch (metab->getStatus())
     {
 
-    case CModelEntity::FIXED:
-      if (!exportSingleObject(fixed, name, expression, comments))
-        return false;
-      break;
-    case CModelEntity::REACTIONS:
-    case CModelEntity::ODE:
+      case CModelEntity::FIXED:
+
+        if (!exportSingleObject(fixed, name, expression, comments))
+          return false;
+
+        break;
+      case CModelEntity::REACTIONS:
+      case CModelEntity::ODE:
       {
         if (metab->isDependent())
           {
@@ -471,17 +489,19 @@ bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & ex
             if (!exportSingleObject(initial, name, expression, comments))
               return false;
           }
+
         break;
       }
-    case CModelEntity::ASSIGNMENT:
+      case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
+
         break;
       }
-    default:
-      return false;
-      break;
+      default:
+        return false;
+        break;
     }
 
   return true;
@@ -491,27 +511,30 @@ bool CODEExporterC::exportSingleCompartment(const CCompartment* comp, std::strin
 {
   switch (comp->getStatus())
     {
-    case CModelEntity::FIXED:
+      case CModelEntity::FIXED:
       {
         if (!exportSingleObject(fixed, NameMap[comp->getKey()], expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ODE:
+      case CModelEntity::ODE:
       {
         if (!exportSingleObject(initial, NameMap[comp->getKey()], expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ASSIGNMENT:
+      case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
           return false;
+
         break;
       }
-    default:
-      return false;
-      break;
+      default:
+        return false;
+        break;
     }
 
   return true;
@@ -521,27 +544,30 @@ bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & 
 {
   switch (modval->getStatus())
     {
-    case CModelEntity::FIXED:
+      case CModelEntity::FIXED:
       {
         if (!exportSingleObject(fixed, NameMap[modval->getKey()], expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ODE:
+      case CModelEntity::ODE:
       {
         if (!exportSingleObject(initial, NameMap[modval->getKey()], expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ASSIGNMENT:
+      case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
           return false;
+
         break;
       }
-    default:
-      return false;
-      break;
+      default:
+        return false;
+        break;
     }
 
   return true;
@@ -554,6 +580,7 @@ bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string
 
   const CMetab* metab;
   metab = dynamic_cast< const CMetab * >(tmp);
+
   if (metab)
     {
       std::ostringstream smKey;
@@ -565,27 +592,30 @@ bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string
 
   switch (tmp->getStatus())
     {
-    case CModelEntity::FIXED:
+      case CModelEntity::FIXED:
       {
         if (!exportSingleObject(fixed, name, expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ODE:
+      case CModelEntity::ODE:
       {
         if (!exportSingleObject(initial, name, expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ASSIGNMENT:
+      case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
+
         break;
       }
-    default:
-      return false;
-      break;
+      default:
+        return false;
+        break;
     }
 
   return true;
@@ -601,7 +631,7 @@ bool CODEExporterC::exportSingleParameter(const CCopasiParameter* param, std::st
 bool CODEExporterC::exportKineticFunction(CReaction* /* reac */)
 {return true;}
 
-bool CODEExporterC::exportKineticFunctionGroup (const CModel* copasiModel)
+bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
 {
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
   unsigned C_INT32 reacs_size = reacs.size();
@@ -610,6 +640,7 @@ bool CODEExporterC::exportKineticFunctionGroup (const CModel* copasiModel)
   std::set<std::string> isExported;
 
   unsigned C_INT32 i;
+
   for (i = 0; i < reacs_size; ++i)
     {
       reac = reacs[i];
@@ -639,7 +670,7 @@ void CODEExporterC::findFunctionsCalls(const CEvaluationNode* pNode, std::set<st
           if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
             {
               const CFunction* ifunc;
-              ifunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
+              ifunc = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
 
               findFunctionsCalls(ifunc->getRoot(), isExported);
 
@@ -690,7 +721,7 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
               CFunctionParameter::Role role = tmpfunc->getVariables()[j]->getUsage();
 
               tmpName << constName[role] << tmpIndex[role];
-              parameterNameMap[ tmpfunc->getVariables()[j]->getObjectName() ] = tmpName.str();
+              parameterNameMap[ tmpfunc->getVariables()[j]->getObjectName()] = tmpName.str();
               parameterNameSet.insert(tmpfunc->getVariables()[j]->getObjectName());
               tmpIndex[role]++;
             }
@@ -702,13 +733,14 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
         {
           if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
             {
-              newIt->setData(parameterNameMap[ tmpfunc->getVariables()[newIt->getData()]->getObjectName() ]);
+              newIt->setData(parameterNameMap[ tmpfunc->getVariables()[newIt->getData()]->getObjectName()]);
             }
 
           if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::CALL)
             {
               const CFunction* callfunc;
-              callfunc = static_cast<CFunction*> (pFunctionDB->findFunction((*newIt).getData()));
+              callfunc = static_cast<CFunction*>(pFunctionDB->findFunction((*newIt).getData()));
+
               if (callfunc->getType() != CEvaluationTree::MassAction)
                 newIt->setData(NameMap[callfunc->getKey()]);
             }
@@ -727,10 +759,12 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
 
           for (j = 0; j < varbs_size; ++j)
             {
-              functions << "double " << parameterNameMap[ tmpfunc->getVariables()[j]->getObjectName().c_str() ];
+              functions << "double " << parameterNameMap[ tmpfunc->getVariables()[j]->getObjectName().c_str()];
+
               if (j != varbs_size - 1) functions << ", ";
 
-              headers << "double " << parameterNameMap[ tmpfunc->getVariables()[j]->getObjectName().c_str() ];
+              headers << "double " << parameterNameMap[ tmpfunc->getVariables()[j]->getObjectName().c_str()];
+
               if (j != varbs_size - 1) headers << ", ";
             }
 
@@ -743,6 +777,7 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
           isExported.insert(name);
         }
     }
+
   return true;
 }
 
@@ -772,25 +807,30 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
               metab = dynamic_cast< CMetab * >(obj);
               equation << NameMap[metab->getKey()];
             }
+
           if (role == CFunctionParameter::PARAMETER)
-            if (!(reac->isLocalParameter(k)))
-              {
-                CModelValue* modval;
-                modval = dynamic_cast< CModelValue * >(obj);
-                equation << NameMap[modval->getKey()];
-              }
-            else
-              {
-                CCopasiParameter* param;
-                param = dynamic_cast< CCopasiParameter * >(obj);
-                equation << NameMap[param->getKey()];
-              }
+            {
+              if (!(reac->isLocalParameter(k)))
+                {
+                  CModelValue* modval;
+                  modval = dynamic_cast< CModelValue * >(obj);
+                  equation << NameMap[modval->getKey()];
+                }
+              else
+                {
+                  CCopasiParameter* param;
+                  param = dynamic_cast< CCopasiParameter * >(obj);
+                  equation << NameMap[param->getKey()];
+                }
+            }
+
           if (role == CFunctionParameter::VOLUME)
             {
               CCompartment* comp;
               comp = dynamic_cast< CCompartment * >(obj);
               equation << NameMap[comp->getKey()];
             }
+
           if (role == CFunctionParameter::TIME)
             {
               equation << "T";
@@ -895,6 +935,7 @@ bool CODEExporterC::exportSingleODE(const CModelEntity* mentity, std::string & e
   odeKey << "ode_" << mentity->getKey();
 
   if (!exportSingleObject(ode, NameMap[odeKey.str()], equation, comments)) return false;
+
   return true;
 }
 
@@ -902,20 +943,20 @@ std::string CODEExporterC::exportTitleString(const unsigned C_INT32 tmp)
 {
   switch (tmp)
     {
-    case INITIAL:
-      return "#ifdef INITIAL";
-    case FIXED:
-      return "#ifdef FIXED";
-    case ASSIGNMENT:
-      return "#ifdef ASSIGNMENT";
-    case HEADERS:
-      return "#ifdef  FUNCTIONS_HEADERS";
-    case FUNCTIONS:
-      return "#ifdef  FUNCTIONS";
-    case ODEs:
-      return "#ifdef ODEs";
-    default:
-      return " ";
+      case INITIAL:
+        return "#ifdef INITIAL";
+      case FIXED:
+        return "#ifdef FIXED";
+      case ASSIGNMENT:
+        return "#ifdef ASSIGNMENT";
+      case HEADERS:
+        return "#ifdef  FUNCTIONS_HEADERS";
+      case FUNCTIONS:
+        return "#ifdef  FUNCTIONS";
+      case ODEs:
+        return "#ifdef ODEs";
+      default:
+        return " ";
     }
 }
 
@@ -932,19 +973,19 @@ std::string CODEExporterC::exportClosingString(const unsigned C_INT32 tmp)
 {
   switch (tmp)
     {
-    case INITIAL:
-      return "#endif INITIAL\n";
-    case FIXED:
-      return "#endif FIXED\n";
-    case ASSIGNMENT:
-      return "#endif ASSIGNMENT\n";
-    case HEADERS:
-      return "#endif FUNCTIONS_HEADERS\n";
-    case FUNCTIONS:
-      return "#endif FUNCTIONS\n";
-    case ODEs:
-      return "#endif ODEs\n";
-    default:
-      return " ";
+      case INITIAL:
+        return "#endif INITIAL\n";
+      case FIXED:
+        return "#endif FIXED\n";
+      case ASSIGNMENT:
+        return "#endif ASSIGNMENT\n";
+      case HEADERS:
+        return "#endif FUNCTIONS_HEADERS\n";
+      case FUNCTIONS:
+        return "#endif FUNCTIONS\n";
+      case ODEs:
+        return "#endif ODEs\n";
+      default:
+        return " ";
     }
 }

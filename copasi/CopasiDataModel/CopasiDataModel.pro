@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CopasiDataModel.pro,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.8 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/16 18:55:48 $ 
+#   $Date: 2010/07/16 18:57:33 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2010/03/16 18:55:48 $
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2010/07/16 18:57:33 $
 ######################################################################
 
 LIB = copasiDM
@@ -30,6 +30,3 @@ SOURCES += CCopasiDataModel.cpp
 
 include(../lib.pri)
 include(../common.pri)
-
-#The following line was inserted by qt3to4
-QT +=  qt3support 

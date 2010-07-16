@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 18:59:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,9 +26,8 @@
 #include <vector>
 #include <map>
 
-#include <copasi/report/CCopasiObject.h>
-
-#include <copasi/layout/CLBase.h>
+#include "copasi/layout/CLBase.h"
+#include "copasi/report/CCopasiObject.h"
 
 class CCopasiObject;
 class LineSegment;
@@ -178,7 +177,14 @@ public:
 
   void clear();
 
+  /**
+   * add a copy of the line segment to the curve
+   */
   void addCurveSegment(const CLLineSegment & ls);
+
+  /**
+   * add a copy of the line segment to the curve
+   */
   void addCurveSegment(const CLLineSegment * pLs);
 
   /**

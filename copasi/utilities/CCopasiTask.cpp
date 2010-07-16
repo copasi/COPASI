@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/14 22:18:57 $
+//   $Author: shoops $
+//   $Date: 2010/07/16 19:06:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,7 +255,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       if (mReport.open(getObjectDataModel(), pOstream))
         mpOutputHandler->addInterface(&mReport);
       else
-        CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5);
+        CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5, getObjectName().c_str());
     }
 
   std::vector< CCopasiContainer * > ListOfContainer;
@@ -330,7 +330,10 @@ void CCopasiTask::output(const COutputInterface::Activity & activity)
         case COutputInterface::DURING:
 
           if (mDoOutput != NO_OUTPUT)
-            mpOutputHandler->output(activity);
+            {
+              mpOutputHandler->output(activity);
+              ++mOutputCounter;
+            }
 
           break;
 

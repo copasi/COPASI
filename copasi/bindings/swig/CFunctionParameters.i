@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionParameters.i,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.6 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Date: 2010/07/16 18:56:28 $ 
 // End CVS Header 
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -31,9 +36,14 @@
 %ignore operator<<(std::ostream&, const CFunctionParameters&);
 
 %rename(addCopy) CFunctionParameters::add(const CFunctionParameter&);
+%ignore CFunctionParameters::getParameterByUsage;
+%ignore CFunctionParameters::findParameterByName;
 
 %include "function/CFunctionParameters.h"
 
+// unignore some methods so that we can use them in the extension
+%rename(getParameterByUsage) CFunctionParameters::getParameterByUsage;
+%rename(findParameterByName) CFunctionParameters::findParameterByName;
 
 %extend CFunctionParameters
 {
@@ -56,9 +66,10 @@
     /**
      * find a parameter by its name and return its index
      */
-    unsigned C_INT32 findParameterByName(const std::string & name, CFunctionParameter::DataType  dataType) const
+    unsigned C_INT32 findParameterByName(const std::string & name, int dataType) const
     {
-        return self->findParameterByName(name,dataType);
+        CFunctionParameter::DataType type=(CFunctionParameter::DataType)dataType;
+        return $self->findParameterByName(name,type);
     }
 
     CFunctionParameter* getParameter(unsigned C_INT32 index)
