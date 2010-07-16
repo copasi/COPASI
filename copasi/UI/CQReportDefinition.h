@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.h,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/15 16:01:36 $
+//   $Date: 2010/07/16 14:57:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,6 @@ protected slots:
 private:
   bool mAdvanced;
   bool mChanged;
-  std::string mKey;
   CReportDefinition * mpReportDefinition;
   QString mOldComment;
 
