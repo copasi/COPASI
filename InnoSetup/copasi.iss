@@ -134,6 +134,9 @@ Root: HKCU; Subkey: Environment; ValueType: string; ValueName: COPASIDIR; ValueD
 Root: HKCU; Subkey: Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdateUserPath
 
 [Code]
+type
+  RunTimeVersion = array [0..3] of Integer;
+
 function IsAdminUser(): Boolean;
 begin
   Result := (IsAdminLoggedOn or IsPowerUserLoggedOn);
@@ -198,40 +201,307 @@ begin
   Result := (IsRegularUser() and not IsCopasiInUserPath());
 end;
 
-function HaveRuntime(): Boolean;
+function StrToVersion(str: String): RunTimeVersion;
 var
-  FindRec: TFindRec;
-  DirPattern : String;
+  Version: RunTimeVersion;
+  Position: Integer;
+
+begin
+  try
+    begin
+      Position := Pos('.', str);
+      Version[0] := StrToInt(Copy(str, 1, Position - 1));
+      Delete(str, 1, Position);
+
+      Position := Pos('.', str);
+      Version[1] := StrToInt(Copy(str, 1, Position - 1));
+      Delete(str, 1, Position);
+
+      Position := Pos('.', str);
+      Version[2] := StrToInt(Copy(str, 1, Position - 1));
+      Delete(str, 1, Position);
+
+      Version[3] := StrToInt(str);
+    end;
+
+  except
+    begin
+      Version[0] := 0;
+      Version[1] := 0;
+      Version[2] := 0;
+      Version[3] := 0;
+    end;
+  end;
+
+  Result := Version;
+end;
+
+function VersionToStr(Version: RunTimeVersion): String;
+begin
+  Result := IntToStr(Version[0]) + '.' +
+            IntToStr(Version[1]) + '.' +
+            IntToStr(Version[2]) + '.' +
+            IntToStr(Version[3]);
+end;
+
+function CompareVersion(Version1: RunTimeVersion;
+                        Version2: RunTimeVersion): Integer;
+begin
+  if Version1[0] <> Version2[0] then
+    Result := Version1[0] - Version2[0]
+  else if Version1[1] <> Version2[1] then
+    Result := Version1[1] - Version2[1]
+  else if Version1[2] <> Version2[2] then
+    Result := Version1[2] - Version2[2]
+  else
+    Result := Version1[3] - Version2[3];
+end;
+
+function IsInVersionRange(OldVersionRange: String;
+                          Version: RunTimeVersion): Boolean;
+var
+  LowerBound: RunTimeVersion;
+  UpperBound: RunTimeVersion;
+  Position: Integer;
+
+begin
+  Result := False;
+  Position := Pos('-', OldVersionRange);
+
+  if Position <> 0 then
+    begin
+      LowerBound := StrToVersion(Copy(OldVersionRange, 1, Position - 1));
+      UpperBound := StrToVersion(Copy(OldVersionRange, Position + 1, 100));
+    end
+  else
+    begin
+      LowerBound := StrToVersion(OldVersionRange);
+      UpperBound := LowerBound;
+    end;
+
+  if (CompareVersion(LowerBound, Version) <= 0) and
+     (CompareVersion(Version, UpperBound) <= 0) then
+    begin
+      Result := True;
+    end;
+end;
+
+function IsSuitableSxSInstallation(Policy: AnsiString;
+                                   Version: RunTimeVersion;
+                                   Var SxSVersion: RunTimeVersion): Boolean;
+var
+  Position: Integer;
+  Position2: Integer;
+  OldVersionRange: String;
+  SxSVersionStr: String;
+
+begin
+  Result := False;
+  SxSVersion := Version;
+
+  Position := Pos('oldVersion=', Policy);
+
+  while Position <> 0 do
+    begin
+      Delete(Policy, 1, Position + 10);
+      Position := Pos(' ', Policy);
+
+      OldVersionRange := Copy(Policy, 1, Position - 1);
+      OldVersionRange := RemoveQuotes(OldVersionRange);
+      Delete(Policy, 1, Position);
+
+      if IsInVersionRange(OldVersionRange, Version) then
+        begin
+          Position := Pos('newVersion=', Policy);
+          Position2 := Pos('oldVersion=', Policy);
+
+          if ((Position <> 0) and
+              ((Position < Position2) or (Position2 = 0))) then
+             begin
+               Delete(Policy, 1, Position + 10);
+               Position := Pos('/', Policy);
+
+               SxSVersionStr := Copy(Policy, 1, Position - 1);
+               SxSVersionStr := RemoveQuotes(SxSVersionStr);
+               SxSVersion := StrToVersion(SxSVersionStr);
+
+               Result := True;
+             end;
+        end;
+
+      Position := Pos('oldVersion=', Policy);
+    end;
+end;
+
+function HaveRuntimeDLLs(Architecture: String;
+                         Name: String;
+                         Key: String;
+                         Version: RunTimeVersion;
+                         DLLs: TStrings): Boolean;
+
+var
+  FindDir: TFindRec;
+  Index: Integer;
 
 begin
   Result := False;
 
-  if RegKeyExists(HKEY_LOCAL_MACHINE,
-      'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A49F249F-0C91-497F-86DF-B2585E8E76B7}') then
+  if FindFirst(ExpandConstant('{win}\WinSxS\') +
+               Architecture + '_' +
+               Name + '_' +
+               Key + '_' +
+               VersionToStr(Version) + '_*',
+               FindDir) then
     begin
-      Result := True;
-    end
-  else
-    begin
-      if FindFirst(ExpandConstant('{win}\WinSxS\x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.*'), FindRec) then
-        begin
-          try
-            repeat
-              if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY <> 0 then
-                begin
-                  if (FileExists(ExpandConstant('{win}\winsxs\') + FindRec.Name + '\MSVCP80.DLL') and
-                    FileExists(ExpandConstant('{win}\winsxs\') + FindRec.Name + '\MSVCR80.DLL')) then
-                    begin
-                      Result := True;
-                    end;
-                end;
-            until not FindNext(FindRec);
+      try
+        repeat
+          if (FindDir.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+            begin
+              Result := True;
 
-          finally
-            FindClose(FindRec);
-          end;
-        end;
+              // Loop through all DLLs
+              for Index := 0 to DLLs.Count - 1 do
+                if (not FileExists(ExpandConstant('{win}\winsxs\') +
+                                   FindDir.Name + '\' + DLLs[Index])) then
+                  Result := False;
+
+            end;
+        until not FindNext(FindDir);
+
+      finally
+        FindClose(FindDir);
+      end;
     end;
+end;
+
+function HaveSxSInstallation(Architecture: String;
+                             Name: String;
+                             Key: String;
+                             Version: RunTimeVersion;
+                             DLLs: TStrings): Boolean;
+var
+  VersionStr: String;
+  Position: Integer;
+  VersionFound: RunTimeVersion;
+  FindDir: TFindRec;
+
+begin
+  Result := False;
+
+  VersionStr := IntToStr(Version[0]) + '.' +
+                IntToStr(Version[1]) + '.' +
+                IntToStr(Version[2]) + '.*';
+
+  if FindFirst(ExpandConstant('{win}\WinSxS\') +
+               Architecture + '_' +
+               Name + '_' +
+               Key + '_' +
+               VersionStr + '_*',
+               FindDir) then
+    begin
+      try
+        repeat
+          if (FindDir.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+            begin
+              VersionStr := FindDir.Name;
+              Delete(VersionStr, 1, Length(Architecture + '_' + Name + '_' + Key + '_'));
+              Position := Pos('_', VersionStr);
+              VersionStr := Copy(VersionStr, 1, Position - 1);
+              VersionFound := StrToVersion(VersionStr);
+
+              if CompareVersion(Version, VersionFound) <= 0 then
+                Result := HaveRuntimeDLLs(Architecture, Name, Key, VersionFound, DLLs);
+            end;
+        until Result or not FindNext(FindDir);
+
+      finally
+        FindClose(FindDir);
+      end;
+    end;
+
+end;
+
+function HaveSxSInstallationXP(Architecture: String;
+                               Name: String;
+                               Key: String;
+                               Version: RunTimeVersion;
+                               DLLs: TStrings): Boolean;
+var
+  FindDir: TFindRec;
+  FindFile: TFindRec;
+  Policy: AnsiString;
+  SxSVersion: RunTimeVersion;
+
+begin
+  Result := False;
+
+  if FindFirst(ExpandConstant('{win}\WinSxS\Policies\') +
+               Architecture + '_policy.' +
+               IntToStr(Version[0]) + '.' +
+               IntToStr(Version[1]) + '.' +
+               Name + '_' +
+               Key + '_*',
+               FindDir) then
+    begin
+      try
+        repeat
+          if (FindDir.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+            begin
+              if FindFirst(ExpandConstant('{win}\WinSxS\Policies\') +
+                           FindDir.Name + '\' +
+                           IntToStr(Version[0]) + '.' +
+                           IntToStr(Version[1]) + '.' +
+                           IntToStr(Version[2]) + '.*.policy',
+                           FindFile) then
+                begin
+                  try
+                    repeat
+                      if (FindFile.Attributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
+                        begin
+                          LoadStringFromFile(ExpandConstant('{win}\WinSxS\Policies\') +
+						                     FindDir.Name + '\' +
+                                             FindFile.Name,
+                                             Policy);
+                          if IsSuitableSxSInstallation(Policy, Version, SxSVersion) then
+                            begin
+                              if HaveRuntimeDLLs(Architecture, Name, Key, SxSVersion, DLLs) then
+                                Result := True;
+                            end;
+                        end;
+                    until not FindNext(FindFile);
+
+                  finally
+                    FindClose(FindFile);
+                  end;
+                end;
+            end;
+        until not FindNext(FindDir);
+
+      finally
+        FindClose(FindDir);
+      end;
+    end;
+end;
+
+function HaveRuntime(): Boolean;
+var
+  Architecture: String;
+  Name: String;
+  Key: String;
+  Version: RunTimeVersion;
+  DLLs: TStringList;
+
+begin
+  Architecture := 'x86'
+  Name := 'Microsoft.VC80.CRT'
+  Key := '1fc8b3b9a1e18e3b'
+  Version := StrToVersion('8.0.50727.762');
+
+  DLLs := TStringList.Create;
+  DLLs.Add('MSVCP80.DLL');
+  DLLs.Add('MSVCR80.DLL');
+
+  Result := HaveSxSInstallation(Architecture, Name, Key, Version, DLLs);
 end;
 
 function InstallSystemRuntime(): Boolean;
