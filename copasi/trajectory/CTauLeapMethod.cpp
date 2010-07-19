@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:28 $
+//   $Date: 2010/07/19 19:09:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,7 +163,7 @@ void CTauLeapMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Epsilon", CCopasiParameter::DOUBLE, (C_FLOAT64) EPS);
+  assertParameter("Epsilon", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.001);
   assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
   assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
   assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
