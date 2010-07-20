@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.253 $
+//   $Revision: 1.254 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:02:49 $
+//   $Date: 2010/07/20 13:53:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5650,11 +5650,18 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
     }
 
   pModel->compileIfNecessary(mpImportHandler);
-  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
-  std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
 
-  while (refreshIt != refreshEndit)
-    (**refreshIt++)();
+  try
+    {
+      std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
+      std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
+      while (refreshIt != refreshEndit)
+        (**refreshIt++)();
+    }
+
+  catch (...)
+    {}
 
   return true;
 }
