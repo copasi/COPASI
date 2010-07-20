@@ -3,11 +3,13 @@
 import sys
 import string
 import math
+import array
 
 if(len(sys.argv)!=6):
     print "Wrong number of arguments."
     sys.exit(1)
 
+# The separator for the input file.
 SEPARATOR=","
 
 INPUTFILE=sys.argv[1]
@@ -28,13 +30,8 @@ if(len(INPUT) != (NUM_REPEATS * (NUM_STEPS + 3) + 1)):
     print "Expecting: %d"%(NUM_REPEATS * (NUM_STEPS + 3) + 1)
     sys.exit(1)
 
-DATA=[]
-LINENUMBER=1
 NUMCOLUMNS=len(string.split(INPUT[1], SEPARATOR))
-MEAN=[]
-SD=[]
-
-HEADER=INPUT[0]
+HEADER=string.join(string.split(INPUT[0], SEPARATOR), ",")
 
 MEANOUT=file(MEAN_OUTFILE,"w")
 MEANOUT.write(HEADER)
@@ -42,10 +39,9 @@ MEANOUT.write(HEADER)
 SDOUT=file(SD_OUTFILE,"w")   
 SDOUT.write(HEADER)
 
-# Allocate the memory
-for Y in range(0,NUMCOLUMNS - 1):
-    MEAN.append(0)
-    SD.append(0)
+# Allocate the memory mean and sd just for 1 row
+MEAN=[0.0] * NUMCOLUMNS
+SD=[0.0] * NUMCOLUMNS
 
 # To save memory we process the data by rows
 for X in range(0,NUM_STEPS+1):
@@ -60,7 +56,7 @@ for X in range(0,NUM_STEPS+1):
 
         COLUMNS=string.split(LINE, SEPARATOR)
         if(len(COLUMNS)!=NUMCOLUMNS):
-            print "Wrong number of elements on  line %d"%(LINENUMBER)
+            print "Wrong number of elements on  line %d"%(X + 1 + Z * (NUM_STEPS + 3))
             sys.exit(1)
 
         for Y in range(0,len(COLUMNS)-1):
@@ -71,18 +67,16 @@ for X in range(0,NUM_STEPS+1):
             # This uses the new mean, i.e., not DELTA * DELTA
             SD[Y]=SD[Y]+DELTA*(v-MEAN[Y]);
     
-    line=COLUMNS[0]
     for Y in range(0,NUMCOLUMNS-1):
-        line=string.join([line,str(MEAN[Y])],",")
-    line=line+"\n"
+        COLUMNS[Y+1] = str(MEAN[Y])
 
+    line = string.join(COLUMNS, ",") + "\n"
     MEANOUT.write(line)
 
-    line=COLUMNS[0]
     for Y in range(0,NUMCOLUMNS-1):
-        line=string.join([line,str(math.sqrt(SD[Y]/NUM_REPEATS))],",")
-    line=line+"\n"
+        COLUMNS[Y+1] = str(math.sqrt(SD[Y]/NUM_REPEATS))
 
+    line = string.join(COLUMNS, ",") + "\n"
     SDOUT.write(line)
 
 MEANOUT.close()    
