@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 18:54:06 $
+//   $Author: jpahle $
+//   $Date: 2010/07/26 13:47:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@
 
 #include <assert.h>
 #include <fstream>
+#include <limits>
 
 //YH: new defined parameters used by more than one classes
 #define SS_FOUND 1             //steady state found
