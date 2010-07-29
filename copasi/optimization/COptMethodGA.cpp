@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/10/28 14:11:51 $
+//   $Author: shoops $
+//   $Date: 2010/07/29 12:47:17 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -442,9 +447,6 @@ bool COptMethodGA::initialize()
 
   // Initialize the variance for mutations
   mMutationVarians = 0.1;
-
-  if (mpCallBack)
-    mpCallBack->finish(mhGenerations);
 
   return true;
 }
