@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/elementaryFluxModes.pro,v $
-#   $Revision: 1.15 $
+#   $Revision: 1.16 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2010/07/16 18:59:37 $
+#   $Author: heilmand $
+#   $Date: 2010/08/02 15:12:41 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,6 +23,9 @@
 LIB = elementaryFluxModes
 
 # Input
+HEADERS += CBitPatternMethod.h
+SOURCES += CBitPatternMethod.cpp
+
 HEADERS += CBitPatternTreeMethod.h
 SOURCES += CBitPatternTreeMethod.cpp
 

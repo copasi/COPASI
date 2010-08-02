@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:55:45 $
+//   $Author: heilmand $
+//   $Date: 2010/08/02 15:12:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,20 @@ CStepMatrix::CStepMatrix():
     mPivot(0),
     mFirstUnconvertedRow(0)
 {}
+
+CStepMatrix::CStepMatrix(size_t rows):
+    CVector< CStepMatrixColumn * >(0),
+    mRows(rows),
+    mPivot(rows),
+    mFirstUnconvertedRow(0)
+{
+  size_t * pPivot = mPivot.array();
+
+  for (size_t i = 0; i < mRows; ++i, ++pPivot)
+    {
+      *pPivot = i;
+    }
+}
 
 CStepMatrix::CStepMatrix(CMatrix< C_INT64 > & nullspaceMatrix):
     CVector< CStepMatrixColumn * >(0),
@@ -148,6 +162,12 @@ void CStepMatrix::convertRow()
   mFirstUnconvertedRow++;
 }
 
+/*
+void CStepMatrix::convertMatrix() {
+
+}
+*/
+
 size_t CStepMatrix::getFirstUnconvertedRow() const
 {
   return mFirstUnconvertedRow;
@@ -224,6 +244,21 @@ void CStepMatrix::removeInvalidColumns(std::vector< CStepMatrixColumn * > & inva
     {
       removeColumn(*it);
     }
+}
+
+void CStepMatrix::getAllUnsetBitIndexes(const CStepMatrixColumn * pColumn,
+                                        CVector<size_t> & indexes) const
+{
+  pColumn->getAllUnsetBitIndexes(indexes);
+
+  // Apply the QR pivot
+  size_t * pIndex = indexes.array();
+  size_t * pIndexEnd = pIndex + indexes.size();
+
+  for (; pIndex != pIndexEnd; ++pIndex)
+    *pIndex = mPivot[*pIndex];
+
+  //DebugFile << "@CSM: " << indexes << std::endl;
 }
 
 void CStepMatrix::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,

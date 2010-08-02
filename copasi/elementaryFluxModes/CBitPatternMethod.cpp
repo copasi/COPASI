@@ -1,6 +1,6 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.23 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternMethod.cpp,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: heilmand $
 //   $Date: 2010/08/02 15:12:41 $
@@ -20,7 +20,7 @@
 
 #include "copasi.h"
 
-#include "CBitPatternTreeMethod.h"
+#include "CBitPatternMethod.h"
 #include "CEFMProblem.h"
 #include "CEFMTask.h"
 #include "CStepMatrix.h"
@@ -36,8 +36,8 @@
 
 #define DEBUG_MATRIX
 
-CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent):
-    CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternTreeAlgorithm, pParent),
+CBitPatternMethod::CBitPatternMethod(const CCopasiContainer * pParent):
+    CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternAlgorithm, pParent),
     mpModel(NULL),
     mProgressCounter(0),
     mProgressCounterMax(0),
@@ -49,7 +49,6 @@ CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent):
     mReactionPivot(0),
     mExpandedStoiTranspose(0, 0),
     mpStepMatrix(NULL),
-    mpNullTree(NULL),
     mMinimumSetSize(0),
     mStep(0),
     mContinueCombination(true)
@@ -57,8 +56,8 @@ CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent):
   initObjects();
 }
 
-CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiMethod::SubType subType,
-    const CCopasiContainer * pParent):
+CBitPatternMethod::CBitPatternMethod(const CCopasiMethod::SubType subType,
+                                     const CCopasiContainer * pParent):
     CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
     mpModel(NULL),
     mProgressCounter(0),
@@ -71,7 +70,6 @@ CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiMethod::SubType subTyp
     mReactionPivot(0),
     mExpandedStoiTranspose(0, 0),
     mpStepMatrix(NULL),
-    mpNullTree(NULL),
     mMinimumSetSize(0),
     mStep(0),
     mContinueCombination(true)
@@ -79,8 +77,8 @@ CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiMethod::SubType subTyp
   initObjects();
 }
 
-CBitPatternTreeMethod::CBitPatternTreeMethod(const CBitPatternTreeMethod & src,
-    const CCopasiContainer * pParent):
+CBitPatternMethod::CBitPatternMethod(const CBitPatternMethod & src,
+                                     const CCopasiContainer * pParent):
     CEFMMethod(src, pParent),
     mpModel(src.mpModel),
     mProgressCounter(src.mProgressCounter),
@@ -93,7 +91,6 @@ CBitPatternTreeMethod::CBitPatternTreeMethod(const CBitPatternTreeMethod & src,
     mReactionPivot(src.mReactionPivot),
     mExpandedStoiTranspose(src.mExpandedStoiTranspose),
     mpStepMatrix(src.mpStepMatrix),
-    mpNullTree(src.mpNullTree),
     mMinimumSetSize(src.mMinimumSetSize),
     mStep(src.mStep),
     mContinueCombination(src.mContinueCombination)
@@ -101,17 +98,17 @@ CBitPatternTreeMethod::CBitPatternTreeMethod(const CBitPatternTreeMethod & src,
   initObjects();
 }
 
-CBitPatternTreeMethod::~CBitPatternTreeMethod()
+CBitPatternMethod::~CBitPatternMethod()
 {
-  pdelete(mpNullTree);
+
 }
 
-void CBitPatternTreeMethod::initObjects()
+void CBitPatternMethod::initObjects()
 {
   addObjectReference("Current Step", mProgressCounter, CCopasiObject::ValueInt);
 }
 
-bool CBitPatternTreeMethod::initialize()
+bool CBitPatternMethod::initialize()
 {
   if (!CEFMMethod::initialize())
     {
@@ -135,15 +132,36 @@ bool CBitPatternTreeMethod::initialize()
   CMatrix< C_INT64 > KernelMatrix;
   buildKernelMatrix(KernelMatrix);
 
-  DebugFile << "Original Kernel Matrix:" << std::endl;
-  DebugFile << KernelMatrix << std::endl;
-
   mMinimumSetSize = KernelMatrix.numCols() - 2;
 
-  DebugFile << "MinSetSize = " << mMinimumSetSize << std::endl;
+  std::stack< CStepMatrixColumn * > KernelStack;
+  CStepMatrixColumn * KernelCol;
+
+  for (unsigned int col = 0; col < KernelMatrix.numCols(); col++)
+    {
+      KernelCol = new CStepMatrixColumn(KernelMatrix.numRows());
+
+      for (unsigned int row = 0; row < KernelMatrix.numRows(); row++)
+        {
+          KernelCol->push_front(KernelMatrix(row, col));
+        }
+
+      KernelStack.push(KernelCol);
+    }
 
   // Now we create the initial step matrix
   mpStepMatrix = new CStepMatrix(KernelMatrix);
+  /*mpStepMatrix = new CStepMatrix(KernelMatrix.numRows());
+  buildFluxModeMatrix(mpStepMatrix, KernelStack);
+
+  DebugFile << *mpStepMatrix << std::endl;*/
+
+  /*
+  mpStepMatrix = FluxModeMatrix;
+  mpStepMatrix.convertMatrix();
+  */
+
+  //mpStepMatrix = new CStepMatrix(KernelMatrix);
 
   mProgressCounter = 0;
   mProgressCounterMax = mpStepMatrix->getNumUnconvertedRows();
@@ -158,7 +176,7 @@ bool CBitPatternTreeMethod::initialize()
   return true;
 }
 
-bool CBitPatternTreeMethod::calculate()
+bool CBitPatternMethod::calculate()
 {
   bool Continue = true;
 
@@ -173,9 +191,6 @@ bool CBitPatternTreeMethod::calculate()
   while (mpStepMatrix->getNumUnconvertedRows() > 0 &&
          Continue)
     {
-      DebugFile << "Step Matrix:" << std::endl;
-      DebugFile << *mpStepMatrix << std::endl;
-
       mStep = mpStepMatrix->getFirstUnconvertedRow();
 
       std::vector< CStepMatrixColumn * > PositiveColumns;
@@ -187,19 +202,9 @@ bool CBitPatternTreeMethod::calculate()
                                      NullColumns))
         {
           // Process each step.
-          // We need to update the bit pattern tree.
-          pdelete(mpNullTree);
-          mpNullTree = new CBitPatternTree(NullColumns);
-
-          // Bit pattern tree containing the positive columns
-          CBitPatternTree PositiveTree(PositiveColumns);
-
-          // Convert the negative columns into a bit pattern tree
-          CBitPatternTree NegativeTree(NegativeColumns);
-
           // Iterate over all combinations and add/remove columns to the step matrix
           mProgressCounter2 = 0;
-          mProgressCounter2Max = PositiveTree.size() * NegativeTree.size();
+          mProgressCounter2Max = PositiveColumns.size() * NegativeColumns.size();
 
           if (mpCallBack)
             mhProgressCounter2 =
@@ -208,7 +213,9 @@ bool CBitPatternTreeMethod::calculate()
                                   & mProgressCounter2,
                                   & mProgressCounter2Max);
 
-          combine(PositiveTree.getRoot(), NegativeTree.getRoot());
+          for (unsigned int i = 0; i < NegativeColumns.size(); i++)
+            for (unsigned int j = 0; j < PositiveColumns.size(); j++)
+              combine(PositiveColumns[j], NegativeColumns[i], NullColumns);
 
           if (mpCallBack)
             mpCallBack->finish(mhProgressCounter2);
@@ -249,8 +256,10 @@ bool CBitPatternTreeMethod::calculate()
   return true;
 }
 
-void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
-                                    const CBitPatternTreeNode * pNegative)
+//TODO: Change combine method to accept columns instead of trees.
+void CBitPatternMethod::combine(const CStepMatrixColumn * pPositive,
+                                const CStepMatrixColumn * pNegative,
+                                const std::vector< CStepMatrixColumn * > NullColumns)
 {
   if (mContinueCombination && mpCallBack)
     {
@@ -265,24 +274,27 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
   CZeroSet Intersection = CZeroSet::intersection(pPositive->getZeroSet(),
                           pNegative->getZeroSet());
 
-  DebugFile << "Intersection: " << Intersection << std::endl;
-
   // Adjacency test
   if (Intersection.getNumberOfSetBits() < mMinimumSetSize)
     {
-      DebugFile << "Intersection fails adjacency test." << std::endl;
       return;
     }
 
-  const CStepMatrixColumn * pPositiveColumn = pPositive->getStepMatrixColumn();
+  //INSERT RANK TEST HERE
 
-  const CStepMatrixColumn * pNegativeColumn = pNegative->getStepMatrixColumn();
+  CStepMatrixColumn * RankTestColumn = new CStepMatrixColumn(Intersection, pPositive, pNegative);
+  CMatrix<C_INT64> rtKernel = performRankTest(RankTestColumn);
 
-  // Both are leave nodes
-  if (pPositiveColumn != NULL && pNegativeColumn != NULL)
+  if (rtKernel.numCols() > 1)
+    {
+      return;
+    }
+
+  // Assert columns are not null
+  if (pPositive != NULL && pNegative != NULL)
     {
       // We need to check whether the existing matrix contains already a leaf which is a superset
-      if (mpNullTree->isExtremeRay(Intersection))
+      if (Intersection.isExtremeRay(NullColumns))
         {
           // We are sure that the previous Null Tree did not contain any
           // super sets, however the new columns may.
@@ -290,9 +302,7 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
           // We check whether the new columns do not already contain a superset
           if (Intersection.isExtremeRay(mNewColumns))
             {
-              CStepMatrixColumn * pColumn = mpStepMatrix->addColumn(Intersection, pPositiveColumn, pNegativeColumn);
-
-              DebugFile << "New Column: " << *pColumn << std::endl;
+              CStepMatrixColumn * pColumn = mpStepMatrix->addColumn(Intersection, pPositive, pNegative);
 
               // Remove all new column which are no longer extreme rays
               std::vector< CStepMatrixColumn * >::iterator it = mNewColumns.begin();
@@ -311,58 +321,33 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
 
               mNewColumns.push_back(pColumn);
             }
-          else DebugFile << "Intersection fails - new columns already contain superset." << std::endl;
         }
-      else DebugFile << "Intersection fails - null tree already contains superset." << std::endl;
 
       mProgressCounter2++;
 
       if (mpCallBack)
         mContinueCombination = mpCallBack->progress(mhProgressCounter2);
     }
-  else if (pPositiveColumn != NULL)
-    {
-      DebugFile << "Intersection has null negative column." << std::endl;
-      combine(pPositive, pNegative->getUnsetChild());
-      combine(pPositive, pNegative->getSetChild());
-    }
-  else if (pNegativeColumn != NULL)
-    {
-      DebugFile << "Intersection has null positive column." << std::endl;
-      combine(pPositive->getUnsetChild(), pNegative);
-      combine(pPositive->getSetChild(), pNegative);
-    }
-  else
-    {
-      DebugFile << "Intersection has null positive and negative columns." << std::endl;
-      combine(pPositive->getUnsetChild(), pNegative->getUnsetChild());
-      combine(pPositive->getUnsetChild(), pNegative->getSetChild());
-      combine(pPositive->getSetChild(), pNegative->getUnsetChild());
-      combine(pPositive->getSetChild(), pNegative->getSetChild());
-    }
 }
 
-void CBitPatternTreeMethod::findRemoveInvalidColumns(const std::vector< CStepMatrixColumn * > & nullColumns)
+void CBitPatternMethod::findRemoveInvalidColumns(const std::vector< CStepMatrixColumn * > & nullColumns)
 {
   if (mNewColumns.empty())
     {
       return;
     }
 
-  // Convert the new columns into a bit pattern tree
-  CBitPatternTree NewTree(mNewColumns);
-
   // Determine the columns which became invalid.
   std::vector< CStepMatrixColumn * > InvalidColumns;
 
-  std::vector< CStepMatrixColumn * >::const_iterator it = nullColumns.begin();
-  std::vector< CStepMatrixColumn * >::const_iterator end = nullColumns.end();
+  std::vector< CStepMatrixColumn * >::const_iterator NullIt = nullColumns.begin();
+  std::vector< CStepMatrixColumn * >::const_iterator NullEnd = nullColumns.end();
 
-  for (; it != end; ++it)
+  for (; NullIt != NullEnd; ++NullIt)
     {
-      if (!NewTree.isExtremeRay((*it)->getZeroSet()))
+      if (!((*NullIt)->getZeroSet()).isExtremeRay(mNewColumns))
         {
-          InvalidColumns.push_back(*it);
+          InvalidColumns.push_back(*NullIt);
         }
     }
 
@@ -370,7 +355,7 @@ void CBitPatternTreeMethod::findRemoveInvalidColumns(const std::vector< CStepMat
   mNewColumns.clear();
 }
 
-void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
+void CBitPatternMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
 {
   // Calculate the kernel matrix
   // of the reduced stoichiometry matrix to get the kernel matrix for the:
@@ -450,7 +435,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
   return;
 }
 
-void CBitPatternTreeMethod::buildFluxModes()
+void CBitPatternMethod::buildFluxModes()
 {
   CStepMatrix::const_iterator it = mpStepMatrix->begin();
   CStepMatrix::const_iterator end = mpStepMatrix->end();
@@ -540,7 +525,7 @@ void CBitPatternTreeMethod::buildFluxModes()
 }
 
 #ifdef XXXX
-void CBitPatternTreeMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
+void CBitPatternMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
 {
   bool Problems = false;
 
@@ -646,7 +631,22 @@ void CBitPatternTreeMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
 }
 #endif //
 
-void CBitPatternTreeMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
+void CBitPatternMethod::getAllUnsetBitIndexes(const CStepMatrixColumn * pColumn,
+    CVector<size_t> & indexes) const
+{
+  mpStepMatrix->getAllUnsetBitIndexes(pColumn, indexes);
+
+  // Apply the QR pivot
+  size_t * pIndex = indexes.array();
+  size_t * pIndexEnd = pIndex + indexes.size();
+
+  for (; pIndex != pIndexEnd; ++pIndex)
+    *pIndex = mReactionPivot[*pIndex];
+
+  //DebugFile << "@CBPM: " << indexes << std::endl;
+}
+
+void CBitPatternMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
     CVector< size_t > & indexes) const
 {
   mpStepMatrix->getUnsetBitIndexes(pColumn, indexes);
@@ -662,7 +662,7 @@ void CBitPatternTreeMethod::getUnsetBitIndexes(const CStepMatrixColumn * pColumn
 }
 
 // private
-void CBitPatternTreeMethod::addMode(const CFluxMode & mode)
+void CBitPatternMethod::addMode(const CFluxMode & mode)
 {
   std::vector< CFluxMode >::iterator itMode = mpFluxModes->begin();
   std::vector< CFluxMode >::iterator endMode = mpFluxModes->end();
@@ -680,12 +680,10 @@ void CBitPatternTreeMethod::addMode(const CFluxMode & mode)
 }
 
 // static
-bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
-    CMatrix< C_INT64 > & kernel,
-    CVector< size_t > & rowPivot)
+bool CBitPatternMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
+                                        CMatrix< C_INT64 > & kernel,
+                                        CVector< size_t > & rowPivot)
 {
-  // std::cout << matrix << std::endl;
-
   // Gaussian elimination
   size_t NumRows = matrix.numRows();
   size_t NumCols = matrix.numCols();
@@ -845,6 +843,9 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
       pActiveRowStart += NumCols;
       pActiveRowEnd += NumCols;
       CurrentRowIndex++;
+
+      // DebugFile << matrix << std::endl;
+      // DebugFile << Identity << std::endl;
     }
 
   assert(CurrentColumnIndex == CurrentRowIndex + IgnoredColumnCount);
@@ -921,9 +922,6 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
       *pKernelInt = *pIdentity;
     }
 
-  // std::cout << Kernel << std::endl;
-  // std::cout << RowPivot << std::endl << std::endl;
-
   // Undo the reordering introduced by Gaussian elimination to the kernel matrix.
   pPivot = RowPivot.array();
   pRow = Kernel.array();
@@ -934,8 +932,90 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
       memcpy(kernel[*pPivot], pRow, KernelCols * sizeof(C_INT64));
     }
 
-  // std::cout << kernel << std::endl << std::endl;
-  // std::cout << rowPivot << std::endl << std::endl;
-
   return true;
 }
+
+CMatrix<C_INT64> CBitPatternMethod::performRankTest(CStepMatrixColumn * pIntersectColumn)
+{
+  CVector<size_t> Indexes;
+
+  getAllUnsetBitIndexes(pIntersectColumn, Indexes);
+
+  C_INT NumReactions = Indexes.size();
+  C_INT NumSpecies = mExpandedStoiTranspose.numCols();
+
+  // Build the stoichiometry matrix reduced to the reactions participating in the current mode.
+  CMatrix< C_INT64 > A(NumReactions, NumSpecies);
+
+  size_t * pIndex = Indexes.array();
+  size_t * pIndexEnd = pIndex + NumReactions;
+  C_INT64 * pARow = A.array();
+
+  for (; pIndex != pIndexEnd; ++pIndex, pARow += NumSpecies)
+    {
+      memcpy(pARow, &mExpandedStoiTranspose(*pIndex, 0), NumSpecies * sizeof(C_INT64));
+    }
+
+  // Calculate the kernel of the matrix
+  CMatrix< C_INT64 > ExpandedStoiTranspose(A);
+  CMatrix< C_INT64 > Kernel;
+  CVector< size_t > Pivot;
+
+  //DebugFile << ExpandedStoiTranspose << std::endl;
+  CalculateKernel(ExpandedStoiTranspose, Kernel, Pivot);
+
+  return Kernel;
+}
+
+void CBitPatternMethod::buildFluxModeMatrix(CStepMatrix * fluxModeMatrix,
+    std::stack<CStepMatrixColumn *> kernelStack)
+{
+  CStepMatrixColumn * KernelCol;
+  unsigned int col, row;
+
+  while (!kernelStack.empty())
+    {
+      KernelCol = kernelStack.top();
+      DebugFile << "Current Column: " << *KernelCol << std::endl;
+      CMatrix<C_INT64> RankKernel = performRankTest(KernelCol);
+      DebugFile << "New Rank Kernel " << RankKernel << std::endl;
+
+      if (RankKernel.numCols() == 1)
+        {
+          fluxModeMatrix->add(KernelCol);
+        }
+      else if (RankKernel.numCols() > 1)
+        {
+          for (col = 0; col < RankKernel.numCols(); col++)
+            {
+              KernelCol = new CStepMatrixColumn(RankKernel.numRows());
+
+              for (row = 0; row < RankKernel.numRows(); row++)
+                {
+                  KernelCol->push_front(RankKernel(row, col));
+                }
+
+              kernelStack.push(KernelCol);
+            }
+        }
+
+      kernelStack.pop();
+    }
+}
+
+/*
+Future Implementation:
+After building left kernel of the stoichiometric matrix 'SP', parse through each vector column 'vi' in SP.
+  SP contains "pre-flux modes" which must be checked based on rank test.
+Build the stoichiometric transpose submatrix NTvi based on involved reactions in vi.
+Calculate the left kernel of NTvi, 'K'.
+If #cols in K = 1:
+  Move vi from SP into new step matrix 'SF'.
+Else if #cols in K > 1:
+  Add each unique nontrivial kernel vector into SP.
+
+The end result is that SF will contain only flux modes, but not all possible flux modes.
+Through this method we never have to remove any elements from the matrix.
+
+After this we then build the initial step matrix from SF.
+*/

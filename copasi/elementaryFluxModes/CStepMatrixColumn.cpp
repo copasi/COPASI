@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/03 19:34:09 $
+//   $Author: heilmand $
+//   $Date: 2010/08/02 15:12:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,6 +108,43 @@ const CZeroSet & CStepMatrixColumn::getZeroSet() const
 std::vector< C_INT64 > & CStepMatrixColumn::getReaction()
 {
   return mReaction;
+}
+
+void CStepMatrixColumn::getAllUnsetBitIndexes(CVector<size_t> & indexes) const
+{
+  size_t Size = mZeroSet.getNumberOfBits();
+  indexes.resize(Size);
+  size_t * pIndex = indexes.array();
+
+  CZeroSet::CIndex Index;
+  size_t i = 0;
+  size_t imax = Size - mReaction.size();
+
+  for (; i < imax; ++i, ++Index)
+    {
+      if (!mZeroSet.isSet(Index))
+        {
+          *pIndex = i;
+          pIndex++;
+        }
+    }
+
+  for (i = mReaction.size(); i > 0;)
+    {
+      --i;
+
+      if (mReaction[i] != 0)
+        {
+          *pIndex = (mReaction.size() - i - 1) + imax;
+          pIndex++;
+        }
+    }
+
+  Size = pIndex - indexes.array();
+  indexes.resize(Size, true);
+
+  //DebugFile << *this << std::endl;
+  //DebugFile << "@CSMC: " << indexes << std::endl;
 }
 
 void CStepMatrixColumn::push_front(const C_INT64 & value)

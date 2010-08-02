@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 18:59:37 $
+//   $Author: heilmand $
+//   $Date: 2010/08/02 15:12:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,8 @@ private:
   CStepMatrix();
 
 public:
+  CStepMatrix(size_t rows);
+
   CStepMatrix(CMatrix< C_INT64 > & nullspaceMatrix);
 
   ~CStepMatrix();
@@ -52,38 +54,6 @@ public:
 
   const_iterator end() const;
 
-  void convertRow();
-
-  size_t getFirstUnconvertedRow() const;
-
-  size_t getNumUnconvertedRows() const;
-
-  /**
-   * Add the linear combination of the two columns to the step matrix if
-   * appropriate and remove columns if necessary.
-   * @param const CZeroSet & set
-   * @param const CStepMatrixColumn * pPositive
-   * @param const CStepMatrixColumn * pNegative
-   * @return CStepMatrixColumn * pColumn
-   */
-  CStepMatrixColumn * addColumn(const CZeroSet & set,
-                                const CStepMatrixColumn * pPositive,
-                                const CStepMatrixColumn * pNegative);
-
-  void removeColumn(CStepMatrixColumn * pColumn);
-
-  bool splitColumns(std::vector< CStepMatrixColumn * > & PositiveColumns,
-                    std::vector< CStepMatrixColumn * > & NegativeColumns,
-                    std::vector< CStepMatrixColumn * > & NullColumns);
-
-  void removeInvalidColumns(std::vector< CStepMatrixColumn * > & invalidColumns);
-
-  void compact();
-
-  void getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
-                          CVector< size_t > & indexes) const;
-
-private:
   void add(CStepMatrixColumn * pColumn)
   {
     if (pColumn != NULL)
@@ -120,6 +90,44 @@ private:
 
     return;
   }
+
+  void convertRow();
+
+  //void convertMatrix();
+
+  size_t getFirstUnconvertedRow() const;
+
+  size_t getNumUnconvertedRows() const;
+
+  /**
+   * Add the linear combination of the two columns to the step matrix if
+   * appropriate and remove columns if necessary.
+   * @param const CZeroSet & set
+   * @param const CStepMatrixColumn * pPositive
+   * @param const CStepMatrixColumn * pNegative
+   * @return CStepMatrixColumn * pColumn
+   */
+  CStepMatrixColumn * addColumn(const CZeroSet & set,
+                                const CStepMatrixColumn * pPositive,
+                                const CStepMatrixColumn * pNegative);
+
+  void removeColumn(CStepMatrixColumn * pColumn);
+
+  bool splitColumns(std::vector< CStepMatrixColumn * > & PositiveColumns,
+                    std::vector< CStepMatrixColumn * > & NegativeColumns,
+                    std::vector< CStepMatrixColumn * > & NullColumns);
+
+  void removeInvalidColumns(std::vector< CStepMatrixColumn * > & invalidColumns);
+
+  void compact();
+
+  void getAllUnsetBitIndexes(const CStepMatrixColumn * pColumn,
+                             CVector<size_t> & indexes) const;
+
+  void getUnsetBitIndexes(const CStepMatrixColumn * pColumn,
+                          CVector< size_t > & indexes) const;
+
+private:
 
   void convertRow(const size_t & index,
                   CMatrix< C_INT64 > & nullspaceMatrix);

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/02/02 18:09:36 $
+//   $Author: heilmand $
+//   $Date: 2010/08/02 15:12:41 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -48,6 +53,8 @@ public:
   }
 
   std::vector< C_INT64 > & getReaction();
+
+  void getAllUnsetBitIndexes(CVector<size_t> & indexes) const;
 
   void push_front(const C_INT64 & value);
 

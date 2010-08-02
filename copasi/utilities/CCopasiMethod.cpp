@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:06:33 $
+//   $Author: heilmand $
+//   $Date: 2010/08/02 15:12:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,7 @@ const char * CCopasiMethod::SubTypeName[] =
 #endif // COPASI_SSA
   "EFM Algorithm",
   "Bit Pattern Tree Algorithm",
+  "Bit Pattern Algorithm",
   "Householder Reduction",
   "Cross Section Finder",
   ""
@@ -124,6 +125,7 @@ const char * CCopasiMethod::XMLSubType[] =
 #endif // COPASI_SSA
   "EFMAlgorithm",
   "EFMBitPatternTreeMethod",
+  "EFMBitPatternMethod",
   "Householder",
   "crossSectionMethod",
   NULL
