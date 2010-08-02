@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:53:09 $
+//   $Date: 2010/08/02 16:46:19 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -74,6 +79,7 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("SBWModule", false);
 
   C_INT i;
+
   for (i = 0; i < argc; i++)
     {
       if (strcmp(argv[i], "-sbwregister") == 0)
@@ -94,30 +100,36 @@ void COptions::init(C_INT argc, char *argv[])
   const copasi::options &PreOptions = pPreParser->get_options();
 
   setValue("CopasiDir", localeToUtf8(PreOptions.CopasiDir));
+
   if (compareValue("CopasiDir", (std::string) ""))
     {
       setValue("CopasiDir", getCopasiDir());
     }
 
   setValue("Home", localeToUtf8(PreOptions.Home));
+
   if (compareValue("Home", (std::string) ""))
     setValue("Home", getHome());
 
   setValue("Tmp", localeToUtf8(PreOptions.Tmp));
+
   if (compareValue("Tmp", (std::string) ""))
     setValue("Tmp", getTemp());
 
   setValue("ConfigDir", localeToUtf8(PreOptions.ConfigDir));
+
   if (compareValue("ConfigDir", (std::string) ""))
     setValue("ConfigDir", getConfigDir());
 
   setValue("ConfigFile", localeToUtf8(PreOptions.ConfigFile));
+
   if (compareValue("ConfigFile", (std::string) ""))
     setValue("ConfigFile", getConfigFile());
 
   mNonOptions.clear();
   std::vector< std::string >::const_iterator it = pPreParser->get_non_options().begin();
   std::vector< std::string >::const_iterator end = pPreParser->get_non_options().end();
+
   for (; it != end; ++it)
     mNonOptions.push_back(localeToUtf8(*it));
 
@@ -150,6 +162,7 @@ void COptions::init(C_INT argc, char *argv[])
      setValue("OptionId", Options.OptionID); */
 
   if (Options.Tmp != "") setValue("Tmp", Options.Tmp);
+
   setValue("NoLogo", Options.NoLogo);
   setValue("Validate", Options.Validate);
   setValue("Verbose", Options.Verbose);
@@ -197,6 +210,7 @@ std::string COptions::getCopasiDir(void)
   CopasiDir = getEnvironmentVariable("COPASIDIR");
 
 #ifdef WIN32
+
   if (CopasiDir == "")
     {
       size_t PrgNameSize = 256;
@@ -224,11 +238,13 @@ std::string COptions::getCopasiDir(void)
       CopasiDir = CDirEntry::dirName(CopasiDir);
 
       /* Get rid of bin or sbin */
-      CopasiDir = CDirEntry::dirName(CopasiDir);
+      CopasiDir = localeToUtf8(CDirEntry::dirName(CopasiDir));
     }
+
 #endif // WIN32
 
 #ifdef Darwin
+
   if (CopasiDir == "")
     {
       CFBundleRef MainBundleRef = NULL;
@@ -249,12 +265,13 @@ std::string COptions::getCopasiDir(void)
                   CFIndex size = CFStringGetLength(macPath);
                   char* cString = new char[size + 1];
                   CFStringGetCString(macPath, cString, size + 1, kCFStringEncodingUTF8);
-                  CopasiDir = cString;
+                  CopasiDir = localeToUtf8(cString);
                   delete[] cString;
                 }
             }
         }
     }
+
 #endif // Darwin
 
   if (CopasiDir == "")
@@ -271,10 +288,12 @@ std::string COptions::getPWD(void)
   while (!(PWD = getcwd(NULL, PWDSize)))
     {
       if (errno != ERANGE) break;
+
       PWDSize *= 2;
     }
 
   std::string pwd;
+
   if (PWD)
     {
       pwd = PWD;
@@ -293,9 +312,11 @@ std::string COptions::getHome(void)
   Home = getEnvironmentVariable("HOME");
 
 #ifdef WIN32
+
   if (Home == "")
     Home = getEnvironmentVariable("HOMEDRIVE")
            + getEnvironmentVariable("HOMEPATH");
+
 #endif // WIN32
 
   if (Home == "")
@@ -317,15 +338,19 @@ std::string COptions::getTemp(void)
   std::string Temp, User, CreateCopasiDir, CreateUserDir;
 
   Temp = getEnvironmentVariable("TEMP");
+
   if (Temp == "") Temp = getEnvironmentVariable("TMP");
 
   User = getEnvironmentVariable("USER");
+
   if (User == "") User = getEnvironmentVariable("USERNAME");
+
   if (User == "") User = "CopasiUser";
 
   if (Temp == "") // OS specific fallback.
 #ifdef WIN32
     Temp = getEnvironmentVariable("windir") + CDirEntry::Separator + "Temp";
+
 #else
     Temp = "/tmp";
 #endif // WIN32
@@ -342,6 +367,7 @@ std::string COptions::getTemp(void)
     return Temp;
 
   Temp = CreateCopasiDir;
+
   //Assure that CreateUserDir exists and is a writable directory.
   if (!CDirEntry::createDir(User, Temp))
     return Temp;
@@ -355,6 +381,7 @@ std::string COptions::getConfigDir(void)
   std::string Home;
 
   getValue("Home", Home);
+
   if (!CDirEntry::createDir(".copasi", Home))
     return Home;
 
