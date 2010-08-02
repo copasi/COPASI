@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Date: 2010/08/02 16:44:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,8 @@
 
 CQSpecieDM::CQSpecieDM(QObject *parent):
     CQBaseDataModel(parent),
-    mFlagConc(true)
+    mFlagConc(true),
+    mpSpecies(NULL)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -85,7 +86,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
   else if (index.column() == COL_ICONCENTRATION)
     {
-      CMetab *pSpe = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
+      mpSpecies = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
       this->index(index.row(), COL_TYPE_SPECIES).data().toString().toAscii().data();
 
       if (this->index(index.row(), COL_TYPE_SPECIES).data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]))
@@ -93,7 +94,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
       else
         {
-          if (const_cast< CMetab * >(pSpe)->isInitialConcentrationChangeAllowed())
+          if (mpSpecies->isInitialConcentrationChangeAllowed())
             return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
           else
             return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
@@ -165,7 +166,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CMetab *pSpe = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
+          mpSpecies = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
 
           switch (index.column())
             {
@@ -173,48 +174,48 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_NAME_SPECIES:
-                return QVariant(QString(FROM_UTF8(pSpe->getObjectName())));
+                return QVariant(QString(FROM_UTF8(mpSpecies->getObjectName())));
 
               case COL_COMPARTMENT:
-                return QVariant(QString(FROM_UTF8(pSpe->getCompartment()->getObjectName())));
+                return QVariant(QString(FROM_UTF8(mpSpecies->getCompartment()->getObjectName())));
 
               case COL_TYPE_SPECIES:
-                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pSpe->getStatus()])));
+                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mpSpecies->getStatus()])));
 
               case COL_ICONCENTRATION:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(pSpe->getInitialConcentration()));
+                  return QVariant(QString::number(mpSpecies->getInitialConcentration()));
                 else
-                  return QVariant(pSpe->getInitialConcentration());
+                  return QVariant(mpSpecies->getInitialConcentration());
               }
 
               case COL_INUMBER:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(pSpe->getInitialValue()));
+                  return QVariant(QString::number(mpSpecies->getInitialValue()));
                 else
-                  return QVariant(pSpe->getInitialValue());
+                  return QVariant(mpSpecies->getInitialValue());
               }
               case COL_CONCENTRATION:
-                return QVariant(pSpe->getConcentration());
+                return QVariant(mpSpecies->getConcentration());
 
               case COL_NUMBER:
-                return QVariant(pSpe->getValue());
+                return QVariant(mpSpecies->getValue());
 
               case COL_CRATE:
-                return QVariant(pSpe->getConcentrationRate());
+                return QVariant(mpSpecies->getConcentrationRate());
 
               case COL_NRATE:
-                return QVariant(pSpe->getRate());
+                return QVariant(mpSpecies->getRate());
 
               case COL_IEXPRESSION_SPECIES:
               {
                 const CExpression * pExpression = NULL;
 
-                if (pSpe->getInitialExpression() != "")
+                if (mpSpecies->getInitialExpression() != "")
                   {
-                    pExpression = pSpe->getInitialExpressionPtr();
+                    pExpression = mpSpecies->getInitialExpressionPtr();
 
                     if (pExpression != NULL)
                       return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
@@ -224,7 +225,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               }
               case COL_EXPRESSION_SPECIES:
               {
-                const CExpression * pExpression = pSpe->getExpressionPtr();
+                const CExpression * pExpression = mpSpecies->getExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
@@ -338,42 +339,43 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
           else
             return false;
         }
-
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CMetab *pSpe = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
+      else
+        {
+          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+          mpSpecies = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
+        }
 
       const CCompartment * pCompartment = NULL;
 
-      if (index.column() == COL_COMPARTMENT || index.column() == COL_ICONCENTRATION
-          || index.column() == COL_INUMBER)
+      if (index.column() == COL_COMPARTMENT ||
+          index.column() == COL_ICONCENTRATION ||
+          index.column() == COL_INUMBER)
         {
           try
             {
-              assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-              pCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(this->index(index.row(), COL_COMPARTMENT).data().toString())];
+              pCompartment = mpSpecies->getCompartment();
             }
           catch (...) {}
         }
 
       if (index.column() == COL_NAME_SPECIES)
-        pSpe->setObjectName(TO_UTF8(value.toString()));
+        mpSpecies->setObjectName(TO_UTF8(value.toString()));
       else if (index.column() == COL_COMPARTMENT)
         {
           // This must be set first for setInitialConcentration and
           // setInitialNumber to work correctly.
-          QString Compartment(value.toString());
+          std::string Compartment(TO_UTF8(value.toString()));
 
-          if ((TO_UTF8(Compartment) != pSpe->getCompartment()->getObjectName()) //has changed
-              && (Compartment != ""))
+          if (Compartment != pCompartment->getObjectName())
             {
-              std::string CompartmentToRemove = pSpe->getCompartment()->getObjectName();
+              std::string CompartmentToRemove = mpSpecies->getCompartment()->getObjectName();
               assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-              if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(Compartment)]->addMetabolite(pSpe))
+              if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[Compartment]->addMetabolite(mpSpecies))
                 {
                   QString msg;
-                  msg = "Unable to move species '" + FROM_UTF8(pSpe->getObjectName()) + "'\n"
-                        + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
+                  msg = "Unable to move species '" + FROM_UTF8(mpSpecies->getObjectName()) + "'\n"
+                        + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + FROM_UTF8(Compartment) + "'\n"
                         + "since a species with that name already exist in the target compartment.";
 
                   CQMessageBox::information(NULL,
@@ -384,17 +386,17 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
                 }
               else
                 {
-                  (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pSpe->getObjectName());
+                  (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(mpSpecies->getObjectName());
                   (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->setCompileFlag();
                   (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->initializeMetabolites();
 
-                  if (pSpe && pCompartment)
+                  if (mpSpecies && pCompartment)
                     {
                       C_FLOAT64 Factor = 1.0 / pCompartment->getInitialValue();
                       Factor *= pCompartment->getInitialValue();
 
-                      pSpe->setInitialValue(Factor * this->index(index.row(), COL_INUMBER).data().toDouble());
-                      pSpe->setValue(Factor * this->index(index.row(), COL_NUMBER).data().toDouble());
+                      mpSpecies->setInitialValue(Factor * this->index(index.row(), COL_INUMBER).data().toDouble());
+                      mpSpecies->setValue(Factor * this->index(index.row(), COL_NUMBER).data().toDouble());
                     }
 
                   emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");
@@ -403,30 +405,29 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
             }
         }
       else if (index.column() == COL_TYPE_SPECIES)
-        pSpe->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
+        mpSpecies->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
       else if (index.column() == COL_ICONCENTRATION)
         {
           if (mFlagConc)
-            pSpe->setInitialConcentration(value.toDouble());
+            mpSpecies->setInitialConcentration(value.toDouble());
 
-          if (pSpe && pCompartment)
+          if (mpSpecies && pCompartment)
             {
               const C_FLOAT64 initialValue =
                 CMetab::convertToNumber(this->index(index.row(), COL_ICONCENTRATION).data().toDouble(),
                                         *pCompartment,
                                         *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-              pSpe->setInitialValue(initialValue);
+              mpSpecies->setInitialValue(initialValue);
             }
         }
       else if (index.column() == COL_INUMBER)
         {
           if (!mFlagConc)
-            pSpe->setInitialValue(value.toDouble());
+            mpSpecies->setInitialValue(value.toDouble());
 
-          if (pSpe && pCompartment)
+          if (mpSpecies && pCompartment)
             {
-
-              pSpe->setInitialConcentration(
+              mpSpecies->setInitialConcentration(
                 CMetab::convertToConcentration(this->index(index.row(), COL_INUMBER).data().toDouble(),
                                                *pCompartment,
                                                *(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
@@ -435,7 +436,7 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       if (defaultRow && this->index(index.row(), COL_NAME_SPECIES).data().toString() == "species")
-        pSpe->setObjectName(TO_UTF8(createNewName("species", COL_NAME_SPECIES)));
+        mpSpecies->setObjectName(TO_UTF8(createNewName("species", COL_NAME_SPECIES)));
 
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");
@@ -455,7 +456,8 @@ bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createMetabolite(TO_UTF8(createNewName("species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
+      mpSpecies =
+        (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createMetabolite(TO_UTF8(createNewName("species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
     }
 
   endInsertRows();

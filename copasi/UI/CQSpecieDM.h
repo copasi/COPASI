@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/26 22:51:20 $
+//   $Author: shoops $
+//   $Date: 2010/08/02 16:44:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -53,10 +58,17 @@ public:
 protected:
   bool mFlagConc;
   QStringList mTypes;
+
   /**
-    * A vector mapping the item index to a model valu type
-    */
+   * A vector mapping the item index to a model value type
+   */
   std::vector< unsigned C_INT32 > mItemToType;
+
+  /**
+   * A pointer to the selected species
+   */
+  mutable CMetab * mpSpecies;
+
   bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
   bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
 
