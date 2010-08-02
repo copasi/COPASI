@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/26 14:26:13 $
+//   $Author: heilmand $
+//   $Date: 2010/08/02 15:10:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,7 +285,14 @@ void CProgressBar::closeEvent(QCloseEvent *e)
 
 void CProgressBar::slotProcessEvents()
 {
-  qApp->processEvents();
+  static bool ProcessEvents = true;
+
+  if (ProcessEvents)
+    {
+      ProcessEvents = false;
+      qApp->processEvents();
+      ProcessEvents = true;
+    }
 }
 
 void CProgressBar::btnContinuePressed()
