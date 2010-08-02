@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.185 $
+//   $Revision: 1.186 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:00:59 $
+//   $Date: 2010/08/02 19:41:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1478,6 +1478,12 @@ private:
    * A flag indicating whether the model is autonomous.
    */
   bool mIsAutonomous;
+
+  /**
+   * A Boolean vakue indicationg whether we need to rebuild the initial
+   * value refresh sequence
+   */
+  bool mBuildInitialSequence;
 
   /****** Below will be removed when the math model completed ******/
 

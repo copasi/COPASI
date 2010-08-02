@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.390 $
+//   $Revision: 1.391 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:00:59 $
+//   $Date: 2010/08/02 19:41:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,6 +139,7 @@ CModel::CModel(CCopasiContainer* pParent):
     mNonSimulatedRefreshes(),
     mReorderNeeded(false),
     mIsAutonomous(true),
+    mBuildInitialSequence(true),
     mpMathModel(NULL)
 {
   initObjects();
@@ -486,6 +487,8 @@ void CModel::compileDefaultMetabInitialValueDependencies()
   for (; it != end; ++it)
     (*it)->compileInitialValueDependencies(true);
 
+  mBuildInitialSequence = true;
+
   return;
 }
 
@@ -498,7 +501,8 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
 {
   if (!mCompileIsNecessary)
     {
-      this->compileDefaultMetabInitialValueDependencies();
+      compileDefaultMetabInitialValueDependencies();
+
       return true;
     }
 
@@ -1325,14 +1329,22 @@ bool CModel::buildInitialSequence()
       success = false;
     }
 
+  mBuildInitialSequence = false;
+
   return success;
 }
 
 bool CModel::updateInitialValues()
 {
-  // :TODO: We should have a separate flag to handle this but the impact on the performance is minor.
   if (mCompileIsNecessary)
-    buildInitialSequence();
+    {
+      compileIfNecessary(NULL);
+    }
+
+  if (mBuildInitialSequence)
+    {
+      buildInitialSequence();
+    }
 
   // Update all initial values.
   std::vector< Refresh * >::const_iterator itRefresh = mInitialRefreshes.begin();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.152 $
+//   $Revision: 1.153 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/10 20:34:00 $
+//   $Date: 2010/08/02 19:41:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -520,7 +520,7 @@ bool CMetab::compile()
     }
 
   // The initial values
-  success &= compileInitialValueDependencies();
+  success &= compileInitialValueDependencies(true);
 
   return success;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/10 19:08:53 $
+//   $Date: 2010/08/02 19:41:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,10 +192,10 @@ public:
 
   /**
    * Compile the initial particle number and initial concentration dependencies.
-   * @param const bool & updateConcentration (default: true)
+   * @param const bool & updateConcentration
    * @return bool success
    */
-  bool compileInitialValueDependencies(const bool & updateConcentration = true);
+  bool compileInitialValueDependencies(const bool & updateConcentration);
 
   /**
    * Check whether changing the initial concentration is allowed
