@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauLine.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2009/12/14 17:47:14 $
+   $Author: heilmand $
+   $Date: 2010/08/02 15:12:05 $
    End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -87,7 +92,7 @@ const CFluxScore & CTableauLine::getScore() const
 }
 
 const C_FLOAT64 & CTableauLine::getMultiplier(const size_t & index) const
-{return mReaction[index];}
+{return mReaction[mReaction.size() - index - 1];}
 
 const std::vector < C_FLOAT64 > & CTableauLine::getFluxMode() const
 {
@@ -105,29 +110,28 @@ void CTableauLine::truncate()
   mReaction.pop_back();
 }
  */
-#ifdef XXXX
-void CTableauLine::print(void) const
+std::ostream & operator << (std::ostream & os, const CTableauLine & l)
 {
-  unsigned C_INT32 i, imax = mReaction.size();
-  unsigned C_INT32 j, jmax = mFluxMode.size();
+  unsigned C_INT32 i, imax = l.mReaction.size();
+  unsigned C_INT32 j, jmax = l.mFluxMode.size();
 
-  if (isReversible())
-    cout << "reversible:  ";
+  if (l.isReversible())
+    os << "reversible:  ";
   else
-    cout << "irreversible:";
+    os << "irreversible:";
 
   for (i = 0; i < imax; i++)
-    cout << "  " << mReaction[i];
+    os << "  " << l.mReaction[i];
 
-  cout << "\t";
+  os << "\t";
 
   for (j = 0; j < jmax; j++)
-    cout << "  " << mFluxMode[j];
+    os << "  " << l.mFluxMode[j];
 
-  cout << endl;
+  os << std::endl;
+
+  return os;
 }
-
-#endif // XXXX
 
 // static
 void CTableauLine::reduce(C_FLOAT64 & r1, C_FLOAT64 & r2)

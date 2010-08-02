@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.h,v $
-$Revision: 1.17 $
+$Revision: 1.18 $
 $Name:  $
-$Author: shoops $
-$Date: 2010/02/03 17:18:42 $
+$Author: heilmand $
+$Date: 2010/08/02 15:12:05 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,16 @@ private:
    */
   void buildFluxModes();
 
+  /**
+   * Find index containing smallest number of combinations
+   */
+  bool findMinimalCombinationIndex();
+
+  /**
+   * Calculate number of combinations for an index
+   */
+  double calculateCombinations(unsigned C_INT32 index);
+
   // Attributes
 protected:
   /**
@@ -157,6 +167,12 @@ protected:
    * Handle to the process report item "Current Step"
    */
   unsigned C_INT32 mhSteps;
+
+  /**
+   * Vector set containing all step indexes for iteration when calculating flux modes.
+   */
+  std::vector<unsigned C_INT32> mIndexSet;
+
 };
 
 #endif // COPASI_CEFMAlgorithm

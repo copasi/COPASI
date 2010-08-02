@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-$Revision: 1.25 $
+$Revision: 1.26 $
 $Name:  $
-$Author: shoops $
-$Date: 2010/02/03 17:18:42 $
+$Author: heilmand $
+$Date: 2010/08/02 15:12:05 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,7 +79,8 @@ CEFMAlgorithm::CEFMAlgorithm(const CCopasiContainer * pParent):
     mStoi(),
     mReversible(0),
     mpCurrentTableau(NULL),
-    mpNextTableau(NULL)
+    mpNextTableau(NULL),
+    mIndexSet()
 {initObjects();}
 
 CEFMAlgorithm::CEFMAlgorithm(const CCopasiMethod::SubType subType, const CCopasiContainer * pParent):
@@ -88,7 +89,8 @@ CEFMAlgorithm::CEFMAlgorithm(const CCopasiMethod::SubType subType, const CCopasi
     mStoi(),
     mReversible(0),
     mpCurrentTableau(NULL),
-    mpNextTableau(NULL)
+    mpNextTableau(NULL),
+    mIndexSet()
 {initObjects();}
 
 CEFMAlgorithm::CEFMAlgorithm(const CEFMAlgorithm & src,
@@ -98,7 +100,8 @@ CEFMAlgorithm::CEFMAlgorithm(const CEFMAlgorithm & src,
     mStoi(),
     mReversible(0),
     mpCurrentTableau(NULL),
-    mpNextTableau(NULL)
+    mpNextTableau(NULL),
+    mIndexSet()
 {initObjects();}
 
 CEFMAlgorithm::~CEFMAlgorithm()
@@ -217,8 +220,12 @@ void CEFMAlgorithm::calculateFluxModes()
       mpCurrentTableau = new CTableauMatrix(mStoi, mReversible);
 
       /* Do the iteration */
+      mIndexSet.resize(mMaxStep);
 
-      for (mStep = 0; mStep < mMaxStep && Continue; mStep++)
+      for (mStep = 0; mStep < mMaxStep; mStep++)
+        mIndexSet[mStep] = mStep;
+
+      while (findMinimalCombinationIndex() && Continue)
         {
           calculateNextTableau();
 
@@ -245,6 +252,8 @@ void CEFMAlgorithm::calculateNextTableau()
   std::list< const CTableauLine * >::iterator a;
   std::list< const CTableauLine * >::iterator b;
   C_FLOAT64 ma, mb;
+
+  DebugFile << *mpCurrentTableau << std::endl;
 
   mpNextTableau = new CTableauMatrix();
 
@@ -302,6 +311,8 @@ void CEFMAlgorithm::calculateNextTableau()
   /* current tableau */
   a = mpCurrentTableau->begin();
 
+  //std::cout << "Tableau Marker A" << std::endl << std::endl;
+
   while (a != mpCurrentTableau->end() && Continue)
     {
       b = a;
@@ -318,6 +329,8 @@ void CEFMAlgorithm::calculateNextTableau()
       else
         Sign = -1.0;
 
+      //std::cout << "Tableau Marker B" << std::endl << std::endl;
+
       while (b != mpCurrentTableau->end() && Continue)
         {
           ma = Sign * (*b)->getMultiplier(mStep);
@@ -325,6 +338,13 @@ void CEFMAlgorithm::calculateNextTableau()
           /* The multiplier "ma" for irreversible reactions must be positive */
           if (ma > 0.0 || (*a)->isReversible())
             mpNextTableau->addLine(new CTableauLine(ma, **a, mb, **b));
+
+          /*CTableauLine * debugLine = new CTableauLine(ma, **a, mb, **b);
+          if(debugLine->isReversible())
+            std::cout << "Reversible Rxn" << std::endl;
+          else std::cout << "Irreversible Rxn" << std::endl;
+          std::cout << "Flux Score: " << debugLine->getScore() << "Flux Mode Vector: "
+            << debugLine->getFluxMode() << std::endl;*/
 
           b++;
 
@@ -365,4 +385,70 @@ void CEFMAlgorithm::buildFluxModes()
       mpFluxModes->push_back(CFluxMode(*a));
       a++;
     }
+}
+
+bool CEFMAlgorithm::findMinimalCombinationIndex()
+{
+  double minCombine = std::numeric_limits<double>::infinity();
+  double combine = 0;
+  unsigned C_INT32 minIndex = 0;
+  unsigned C_INT32 counter;
+
+  if (mIndexSet.size() == 0)
+    return false;
+  else if (mIndexSet.size() == 1)
+    {
+      mStep = mIndexSet[0];
+      mIndexSet.pop_back();
+      return true;
+    }
+
+  for (counter = 0; counter < mIndexSet.size(); counter++)
+    {
+      combine = calculateCombinations(mIndexSet[counter]);
+
+      if (combine < minCombine)
+        {
+          minCombine = combine;
+          minIndex = counter;
+        }
+
+      if (combine == 0)
+        break;
+    }
+
+  mStep = mIndexSet[minIndex];
+  mIndexSet.erase(mIndexSet.begin() + minIndex);
+
+  return true;
+}
+
+double CEFMAlgorithm::calculateCombinations(unsigned C_INT32 index)
+{
+  double posIrr = 0;
+  double negIrr = 0;
+  double rev = 0;
+  unsigned int row;
+
+  //Reversible reactions
+  std::list< const CTableauLine * >::const_iterator it = mpCurrentTableau->begin();
+  std::list< const CTableauLine * >::const_iterator end = mpCurrentTableau->end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->isReversible() && (*it)->getMultiplier(index) != 0.0)
+        {
+          rev++;
+        }
+      else if ((*it)->getMultiplier(index) < 0.0)
+        {
+          negIrr++;
+        }
+      else if ((*it)->getMultiplier(index) > 0.0)
+        {
+          posIrr++;
+        }
+    }
+
+  return (posIrr + rev) *(negIrr + rev);
 }

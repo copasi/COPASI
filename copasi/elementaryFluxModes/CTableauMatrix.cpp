@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/14 13:41:37 $
+//   $Author: heilmand $
+//   $Date: 2010/08/02 15:12:05 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -169,13 +174,15 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
   return true;
 }
 
-#ifdef XXXX
-void CTableauMatrix::print(void)
+std::ostream & operator << (std::ostream & os, const CTableauMatrix & m)
 {
-  cout << "Tableau Matrix: Number of Lines = " << mLine.size() << endl;
-  std::list< const CTableauLine * >::iterator i;
+  os << "Tableau Matrix: Number of Lines = " << m.mLine.size() << std::endl;
+  std::list< const CTableauLine * >::const_iterator i;
 
-  for (i = mLine.begin(); i != mLine.end(); i++)
-    (*i)->print();
+  for (i = m.mLine.begin(); i != m.mLine.end(); i++)
+    {
+      os << (**i);
+    }
+
+  return os;
 }
-#endif // XXXX
