@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.pro,v $ 
-#   $Revision: 1.9 $ 
+#   $Revision: 1.10 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/03/16 18:57:06 $ 
+#   $Author: jpahle $ 
+#   $Date: 2010/08/05 16:17:18 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -12,7 +12,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2010/03/16 18:57:06 $  
+# $Revision: 1.10 $ $Author: jpahle $ $Date: 2010/08/05 16:17:18 $  
 ######################################################################
 
 TEMPLATE = app
@@ -33,7 +33,7 @@ contains(BUILD_OS, WIN32) {
   TARGETDEPS += $$COPASI_LIBS
 } else {
   # The order of objects is important 
-  LIBS += -L ../lib -lCAPASISE
+  LIBS += -L ../lib -lCOPASISE
   
   TARGETDEPS += $$COPASI_LIBS
 }
