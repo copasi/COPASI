@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.105 $
+//   $Revision: 1.106 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/05 14:30:55 $
+//   $Date: 2010/08/10 14:54:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,9 @@ const unsigned C_INT32 CTrajectoryTask::ValidMethods[] =
   CCopasiMethod::tauLeap,
   CCopasiMethod::hybrid,
   CCopasiMethod::hybridLSODA,
+#ifdef COPASI_DEBUG
+  CCopasiMethod::DsaLsodar,
+#endif // COPASI_DEBUG
   CCopasiMethod::unset
 };
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: heilmand $
-//   $Date: 2010/08/02 15:12:41 $
+//   $Author: shoops $
+//   $Date: 2010/08/10 14:54:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,7 @@ const char * CCopasiMethod::SubTypeName[] =
   "Stochastic (Gibson + Bruck)",
   "Hybrid (Runge-Kutta)",
   "Hybrid (LSODA)",
+  "Hybrid (DSA-LSODAR)",
   "ILDM (LSODA,Deuflhard)",
   "ILDM (LSODA,Modified)",
   "CSP (LSODA)",
@@ -109,6 +110,7 @@ const char * CCopasiMethod::XMLSubType[] =
   "DirectMethod",
   "Hybrid",
   "Hybrid (LSODA)",
+  "Hybrid (DSA-LSODAR)",
   "TimeScaleSeparation(ILDM,Deuflhard)",
   "TimeScaleSeparation(ILDM,Modified)",
   "TimeScaleSeparation(CSP)",
