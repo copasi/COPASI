@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/19 19:09:31 $
+//   $Date: 2010/08/10 14:51:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -352,7 +352,7 @@ void CTauLeapMethod::start(const CState * initialState)
           const CMetab * pMetab = (*itSubstrate)->getMetabolite();
 
           itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + StateTemplate.getIndex(pMetab);
           itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
         }
 
