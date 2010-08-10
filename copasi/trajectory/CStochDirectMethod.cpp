@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:28 $
+//   $Date: 2010/08/10 14:54:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -172,6 +172,7 @@ CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
   *mpCurrentState = mpProblem->getModel()->getState();
   mpCurrentState->setTime(EndTime);
 
+  // TODO CRITICAL This must be an error and the integration must be aborted.
   if (Steps >=  mMaxSteps && !mMaxStepsReached)
     {
       mMaxStepsReached = true; //only report this message once
@@ -233,7 +234,7 @@ void CStochDirectMethod::start(const CState * initialState)
   mpModel->setState(mMethodState);
   mpModel->updateSimulatedValues(false); //for assignments
 
-  // TODO handle species of type ASSIGNMENT.
+  // TODO CRITICAL Handle species of type ASSIGNMENT.
   // These need to be checked whether they are sufficiently close to an integer
 
   C_FLOAT64 * pMethodStateValue = mMethodState.beginIndependent() - 1;
@@ -304,7 +305,7 @@ void CStochDirectMethod::start(const CState * initialState)
           const CMetab * pMetab = (*itSubstrate)->getMetabolite();
 
           itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + (StateTemplate.getIndex(pMetab) - 1);
+          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + StateTemplate.getIndex(pMetab);
           itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
         }
 
@@ -339,8 +340,6 @@ void CStochDirectMethod::start(const CState * initialState)
 
   mReactionDependencies.resize(mNumReactions);
   mAmu.resize(mNumReactions, true);
-
-  mpModel->updateSimulatedValues(false); //for assignments
 
   unsigned C_INT32 i;
 
