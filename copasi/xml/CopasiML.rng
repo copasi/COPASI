@@ -212,7 +212,7 @@
 
   <define name="rdf.datatype">
     <grammar>
-      <include href="rdfxml.rng" ns="http://relaxng.org/ns/structure/1.0"/>
+      <include href="http://www.copasi.org/static/schema/rdfxml.rng" ns="http://relaxng.org/ns/structure/1.0"/>
     </grammar>
   </define>
 
