@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:28 $
+//   $Date: 2010/08/10 14:50:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,9 +30,10 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
-CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::deterministic, pParent),
-    mpState(NULL),
+CLsodaMethod::CLsodaMethod(const CCopasiMethod::SubType & subType,
+                           const CCopasiContainer * pParent):
+    CTrajectoryMethod(subType, pParent),
+    mMethodState(),
     mY(NULL),
     mRootMask(),
     mTargetTime(0.0),
@@ -47,7 +48,7 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
 CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
                            const CCopasiContainer * pParent):
     CTrajectoryMethod(src, pParent),
-    mpState(NULL),
+    mMethodState(),
     mY(NULL),
     mRootMask(src.mRootMask)
 {
@@ -58,9 +59,7 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
 }
 
 CLsodaMethod::~CLsodaMethod()
-{
-  pdelete(mpState);
-}
+{}
 
 void CLsodaMethod::initializeParameter()
 {
@@ -161,8 +160,8 @@ bool CLsodaMethod::elevateChildren()
 // virtual
 void CLsodaMethod::stateChanged()
 {
-  *mpState = *mpCurrentState;
-  mTime = mpState->getTime();
+  mMethodState = *mpCurrentState;
+  mTime = mMethodState.getTime();
   mLsodaStatus = 1;
 
   destroyRootMask();
@@ -174,8 +173,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
   if (mData.dim == 0 && mNumRoots == 0) //just do nothing if there are no variables
     {
       mTime = mTime + deltaT;
-      mpState->setTime(mTime);
-      *mpCurrentState = *mpState;
+      mMethodState.setTime(mTime);
+      *mpCurrentState = mMethodState;
 
       return NORMAL;
     }
@@ -234,8 +233,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                 case NONE:
                 case DISCRETE:
                   // Reset the integrator to the state before the failed integration.
-                  *mpState = *mpCurrentState;
-                  mTime = mpState->getTime();
+                  mMethodState = *mpCurrentState;
+                  mTime = mMethodState.getTime();
                   mLsodaStatus = 1;
 
                   // Create a mask which hides all roots being constant and zero.
@@ -338,8 +337,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
       Status = ROOT;
     }
 
-  mpState->setTime(mTime);
-  *mpCurrentState = *mpState;
+  mMethodState.setTime(mTime);
+  *mpCurrentState = mMethodState;
 
   return Status;
 }
@@ -356,9 +355,8 @@ void CLsodaMethod::start(const CState * initialState)
   mErrorMsg.str("");
 
   /* Release previous state and make the initialState the current */
-  pdelete(mpState);
-  mpState = new CState(*initialState);
-  mTime = mpState->getTime();
+  mMethodState = *initialState;
+  mTime = mMethodState.getTime();
   mTargetTime = mTime;
   mRootCounter = 0;
 
@@ -368,9 +366,9 @@ void CLsodaMethod::start(const CState * initialState)
   mRootMasking = NONE;
 
   if (*mpReducedModel)
-    mData.dim = mpState->getNumIndependent();
+    mData.dim = mMethodState.getNumIndependent();
   else
-    mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
+    mData.dim = mMethodState.getNumIndependent() + mpModel->getNumDependentReactionMetabs();
 
   // When we have roots we need to add an artificial ODE dDummy/dt = 1
   if (mData.dim == 0 && mNumRoots != 0)
@@ -386,7 +384,7 @@ void CLsodaMethod::start(const CState * initialState)
     {
       mNoODE = false;
       mAtol = mpModel->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
-      mY = mpState->beginIndependent();
+      mY = mMethodState.beginIndependent();
     }
 
   mYdot.resize(mData.dim);
@@ -437,9 +435,9 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT
       return;
     }
 
-  mpState->setTime(*t);
+  mMethodState.setTime(*t);
 
-  mpModel->setState(*mpState);
+  mpModel->setState(mMethodState);
   mpModel->updateSimulatedValues(*mpReducedModel);
 
   if (*mpReducedModel)
@@ -459,9 +457,9 @@ void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  /* y */,
 {
   assert(*nr == (C_INT) mRoots.size());
 
-  mpState->setTime(*t);
+  mMethodState.setTime(*t);
 
-  mpModel->setState(*mpState);
+  mpModel->setState(mMethodState);
 
   if (*mpReducedModel)
     {
@@ -500,7 +498,7 @@ void CLsodaMethod::createRootMask()
   CVector< C_FLOAT64 > RootDerivatives;
   RootDerivatives.resize(NumRoots);
 
-  mpModel->setState(*mpState);
+  mpModel->setState(mMethodState);
   mpModel->calculateRootDerivatives(RootDerivatives);
 
   bool *pMask = mRootMask.array();

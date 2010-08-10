@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.26 $
+ $Revision: 1.27 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/07/16 19:03:28 $
+ $Date: 2010/08/10 14:50:39 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,9 +29,9 @@
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/odepack++/CLSODA.h"
 #include "copasi/odepack++/CLSODAR.h"
+#include "copasi/model/CState.h"
 
 class CModel;
-class CState;
 
 class CLsodaMethod : public CTrajectoryMethod
 {
@@ -47,7 +47,7 @@ public:
   };
 
   // Attributes
-private:
+protected:
   enum RootMasking
   {
     NONE = 0,
@@ -60,6 +60,7 @@ private:
    */
   bool * mpReducedModel;
 
+private:
   /**
    * A pointer to the value of "Relative Tolerance"
    */
@@ -75,11 +76,13 @@ private:
    */
   unsigned C_INT32 * mpMaxInternalSteps;
 
+protected:
   /**
    *  A pointer to the current state in complete model view.
    */
-  CState * mpState;
+  CState mMethodState;
 
+private:
   /**
    * mData.dim is the dimension of the ODE system.
    * mData.pMethod contains CLsodaMethod * this to be used in the static method EvalF
@@ -106,11 +109,13 @@ private:
    */
   C_FLOAT64 mTime;
 
+protected:
   /**
    *  LSODA state.
    */
   C_INT mLsodaStatus;
 
+private:
   /**
    * Relative tolerance.
    */
@@ -156,6 +161,7 @@ private:
    */
   C_INT mJType;
 
+protected:
   /**
    * A pointer to the model
    */
@@ -166,6 +172,7 @@ private:
    */
   bool mNoODE;
 
+private:
   /**
    * A dummy variable if we do not have any ODEs
    */
@@ -181,30 +188,34 @@ private:
    */
   CVector< bool > mDiscreteRoots;
 
+protected:
   /**
    * A Boolean flag indicating whether we should try masking roots
    */
   RootMasking mRootMasking;
 
+private:
   /**
    * Store the targeted end time to determine whether the internal
-   * step limit is execded.
+   * step limit is exceeded.
    */
   C_FLOAT64 mTargetTime;
 
   /**
    * Root counter to determine whether the internal
-   * step limit is execded.
+   * step limit is exceeded.
    */
   unsigned C_INT32 mRootCounter;
 
   // Operations
-private:
+protected:
   /**
    * Default constructor.
+   * @param const CCopasiMethod::SubType & subType (default: deterministic)
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CLsodaMethod(const CCopasiContainer * pParent = NULL);
+  CLsodaMethod(const CCopasiMethod::SubType & subType = deterministic,
+               const CCopasiContainer * pParent = NULL);
 
 public:
   /**
@@ -251,24 +262,20 @@ public:
    */
   virtual void start(const CState * initialState);
 
-  /**
-   * Calculate the individual absolute tolerance
-   */
-  //    void initializeAtol();
 
   static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
   /**
    *  This evaluates the derivatives
    */
-  void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+  virtual void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
   static void EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
                     const C_INT * nr, C_FLOAT64 * r);
   /**
    *  This evaluates the roots
    */
-  void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, C_FLOAT64 * r);
+  virtual void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, C_FLOAT64 * r);
 
 private:
   /**
@@ -287,6 +294,7 @@ private:
    */
   void createRootMask();
 
+protected:
   /**
    * Destroy the mask which hides all roots being constant and zero.
    */
