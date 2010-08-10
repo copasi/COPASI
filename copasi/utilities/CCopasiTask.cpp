@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:06:33 $
+//   $Date: 2010/08/10 14:52:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,9 +252,10 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 
   if (mDoOutput & REPORT)
     {
-      if (mReport.open(getObjectDataModel(), pOstream))
+      if (mReport.open(getObjectDataModel(), pOstream) &&
+          mReport.getTarget() != "")
         mpOutputHandler->addInterface(&mReport);
-      else
+      else if (pOstream == NULL)
         CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5, getObjectName().c_str());
     }
 
