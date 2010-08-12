@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.256 $
+//   $Revision: 1.257 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/08/12 16:00:52 $
+//   $Author: shoops $
+//   $Date: 2010/08/12 17:46:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -7470,7 +7470,10 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
               case SBML_SPECIES:
               case SBML_PARAMETER:
               {
-                assert(dynamic_cast< const CModelEntity * >(pSBMLObject) != NULL);
+                assert(dynamic_cast< const Model * >(pSBMLObject) != NULL ||
+                       dynamic_cast< const Compartment * >(pSBMLObject) != NULL ||
+                       dynamic_cast< const Species * >(pSBMLObject) != NULL ||
+                       dynamic_cast< const Parameter * >(pSBMLObject) != NULL);
                 assert(dynamic_cast< CModelEntity * >(pCOPASIObject) != NULL);
 
                 CModelEntity * pEntity = static_cast< CModelEntity * >(pCOPASIObject);
@@ -7522,7 +7525,10 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
               case SBML_SPECIES:
               case SBML_PARAMETER:
               {
-                assert(dynamic_cast< const CModelEntity * >(pSBMLObject) != NULL);
+                assert(dynamic_cast< const Model * >(pSBMLObject) != NULL ||
+                       dynamic_cast< const Compartment * >(pSBMLObject) != NULL ||
+                       dynamic_cast< const Species * >(pSBMLObject) != NULL ||
+                       dynamic_cast< const Parameter * >(pSBMLObject) != NULL);
                 assert(dynamic_cast< CModelEntity * >(pCOPASIObject) != NULL);
 
                 CModelEntity * pEntity = static_cast< CModelEntity * >(pCOPASIObject);
@@ -7531,6 +7537,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
                                              metaid);
               }
               break;
+
               case SBML_REACTION:
               {
                 assert(dynamic_cast<const Reaction*>(pSBMLObject) != NULL);
