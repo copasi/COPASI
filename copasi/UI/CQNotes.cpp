@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:37:52 $
+//   $Date: 2010/08/12 20:07:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,9 +19,11 @@
  */
 
 #include <QWebFrame>
+#include <QProcess>
 
 #include "CQNotes.h"
 #include "CQIcons.h"
+#include "CQMessageBox.h"
 #include "qtUtilities.h"
 
 #include "model/CModelValue.h"
@@ -29,6 +31,7 @@
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
+#include "commandline/CConfigurationFile.h"
 
 CQNotes::CQNotes(QWidget* parent, const char* name) :
     CopasiWidget(parent, name)
@@ -39,6 +42,8 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mpEdit->hide();
   mpWebView->show();
   mpBtnToggleEdit->setIcon(CQIcons::getIcon(CQIcons::Edit));
+
+  mpWebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 }
 
 CQNotes::~CQNotes()
@@ -103,15 +108,12 @@ void CQNotes::load()
       if (dynamic_cast< CModelEntity * >(mpObject))
         pNotes =
           &dynamic_cast< CModelEntity * >(mpObject)->getNotes();
-
-      /*
       else if (dynamic_cast< CReaction * >(mpObject))
         pNotes =
           &dynamic_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
         pNotes =
           &dynamic_cast< CFunction * >(mpObject)->getNotes();
-      */
 
       if (pNotes && *pNotes != "")
         {
@@ -129,6 +131,10 @@ void CQNotes::load()
 
 void CQNotes::save()
 {
+  // TODO CRITICAL We need to validate that we have proper XML.
+  // We can use QXmlSimpleReader for doing this as we are only interested the fact that
+  // we have valid XML.
+
   if (mpObject != NULL)
     {
       const std::string * pNotes = NULL;
@@ -136,15 +142,12 @@ void CQNotes::save()
       if (dynamic_cast< CModelEntity * >(mpObject))
         pNotes =
           &static_cast< CModelEntity * >(mpObject)->getNotes();
-
-      /*
       else if (dynamic_cast< CReaction * >(mpObject))
         pNotes =
           &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
         pNotes =
           &static_cast< CFunction * >(mpObject)->getNotes();
-      */
 
       if (pNotes &&
           mpEdit->toPlainText() != FROM_UTF8(*pNotes))
@@ -175,4 +178,32 @@ void CQNotes::save()
 
   mChanged = false;
   return;
+}
+
+void CQNotes::slotOpenUrl(const QUrl & url)
+{
+  QString Program = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWebBrowser());
+
+  if (Program == "")
+    {
+#ifdef Q_WS_MAC
+      Program = "open";
+#else
+# if Q_WS_WIN
+      Program = "start";
+#else
+      CQMessageBox::critical(this, "Unable to open link",
+                             "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application.");
+
+      return;
+# endif
+#endif
+
+      CCopasiRootContainer::getConfiguration()->setWebBrowser(TO_UTF8(Program));
+    }
+
+  QStringList Arguments;
+  Arguments.push_back(url.toString());
+
+  QProcess::execute(Program, Arguments);
 }

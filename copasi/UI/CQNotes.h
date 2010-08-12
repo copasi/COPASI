@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:37:53 $
+//   $Date: 2010/08/12 20:07:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@ public:
 
 protected slots:
   void slotToggleMode();
+  void slotOpenUrl(const QUrl & url);
 
 protected:
   virtual bool enterProtected();
@@ -39,6 +40,7 @@ protected:
 private:
   void load();
   void save();
+
 
   bool mEditMode;
   bool mChanged;
