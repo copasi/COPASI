@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/07 22:04:57 $
+//   $Date: 2010/08/12 15:36:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,6 +34,8 @@
 
 #include <string>
 #include <set>
+
+#include "copasi/model/CAnnotation.h"
 
 class CExpression;
 class CModel;
@@ -152,7 +159,7 @@ private:
   CExpression * mpExpression;
 };
 
-class CEvent : public CCopasiContainer
+class CEvent : public CCopasiContainer, public CAnnotation
 {
 public:
   /**
@@ -329,20 +336,6 @@ public:
   void deleteAssignment(const std::string & key);
 
   /**
-   * Set the RDF/XML representation of the MIRIAM annotation
-   * @param const std::string & miriamAnnotation
-   * @param const std::string & oldId
-   */
-  void setMiriamAnnotation(const std::string & miriamAnnotation,
-                           const std::string & oldId);
-
-  /**
-   * Retrieve the RDF/XML representation of the MIRIAM annotation
-   * @return const std::string & miriamAnnotation
-   */
-  const std::string & getMiriamAnnotation() const;
-
-  /**
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CEvent & d);
@@ -392,11 +385,6 @@ private:
    * or when the object is first exported to an SBML file.
    */
   std::string mSBMLId;
-
-  /**
-   * The RDF/XML representation of the MIRIAM annotation
-   */
-  std::string mMiriamAnnotation;
 
 private:
 

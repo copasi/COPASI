@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.219 $
+//   $Revision: 1.220 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:53 $
+//   $Date: 2010/08/12 15:36:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2952,7 +2952,7 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-        mCommon.pEvent->setMiriamAnnotation(mCommon.CharacterData, mKey);
+        mCommon.pEvent->setMiriamAnnotation(mCommon.CharacterData, mCommon.pEvent->getKey(), mKey);
         mCommon.CharacterData = "";
         break;
 

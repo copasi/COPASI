@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/07 22:04:57 $
+//   $Date: 2010/08/12 15:36:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -209,14 +214,14 @@ CExpression* CEventAssignment::getExpressionPtr()
 CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Event"),
+    CAnnotation(),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
     mOrder(C_INVALID_INDEX),
     mAssignments("ListOfAssignments", this),
     mDelayAssignment(true),
     mpTriggerExpression(NULL),
-    mpDelayExpression(NULL),
-    mMiriamAnnotation("")
+    mpDelayExpression(NULL)
 {
   initObjects();
 }
@@ -224,18 +229,18 @@ CEvent::CEvent(const std::string & name,
 CEvent::CEvent(const CEvent & src,
                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    CAnnotation(src),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
     mOrder(src.mOrder),
     mAssignments(src.mAssignments, this),
     mDelayAssignment(src.mDelayAssignment),
     mpTriggerExpression(src.mpTriggerExpression == NULL ? NULL : new CExpression(*src.mpTriggerExpression)),
-    mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression)),
-    mMiriamAnnotation("")
+    mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression))
 {
   initObjects();
 
-  setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 }
 
 CEvent::~CEvent()
@@ -514,13 +519,3 @@ void CEvent::deleteAssignment(const std::string & key)
       mAssignments.CCopasiVector< CEventAssignment >::remove(pAssignment);
     }
 }
-
-void CEvent::setMiriamAnnotation(const std::string & miriamAnnotation,
-                                 const std::string & oldId)
-{
-  mMiriamAnnotation = miriamAnnotation;
-  CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, mKey, oldId);
-}
-
-const std::string & CEvent::getMiriamAnnotation() const
-{return mMiriamAnnotation;}
