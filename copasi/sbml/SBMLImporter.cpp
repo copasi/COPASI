@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.255 $
+//   $Revision: 1.256 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/12 15:25:53 $
+//   $Author: gauges $
+//   $Date: 2010/08/12 16:00:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -7469,6 +7469,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
               case SBML_COMPARTMENT:
               case SBML_SPECIES:
               case SBML_PARAMETER:
+              {
                 assert(dynamic_cast< const CModelEntity * >(pSBMLObject) != NULL);
                 assert(dynamic_cast< CModelEntity * >(pCOPASIObject) != NULL);
 
@@ -7476,23 +7477,27 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
                 pEntity->setMiriamAnnotation(miriamString,
                                              pEntity->getKey(),
                                              metaid);
-                break;
-
+              }
+              break;
               case SBML_REACTION:
+              {
                 assert(dynamic_cast<const Reaction*>(pSBMLObject) != NULL);
                 assert(dynamic_cast<CReaction*>(pCOPASIObject) != NULL);
 
                 CReaction * pReaction = static_cast<CReaction*>(pCOPASIObject);
                 pReaction->setMiriamAnnotation(miriamString, pReaction->getKey(), metaid);
-                break;
+              }
+              break;
 
               case SBML_FUNCTION_DEFINITION:
+              {
                 assert(dynamic_cast<const FunctionDefinition*>(pSBMLObject) != NULL);
                 assert(dynamic_cast<CFunction*>(pCOPASIObject) != NULL);
 
                 CFunction * pFunction = static_cast<CFunction*>(pCOPASIObject);
                 pFunction->setMiriamAnnotation(miriamString, pFunction->getKey(), metaid);
-                break;
+              }
+              break;
 
               default:
                 result = false;
@@ -7516,6 +7521,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
               case SBML_COMPARTMENT:
               case SBML_SPECIES:
               case SBML_PARAMETER:
+              {
                 assert(dynamic_cast< const CModelEntity * >(pSBMLObject) != NULL);
                 assert(dynamic_cast< CModelEntity * >(pCOPASIObject) != NULL);
 
@@ -7523,22 +7529,27 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
                 pEntity->setMiriamAnnotation(miriamString,
                                              pEntity->getKey(),
                                              metaid);
-
+              }
+              break;
               case SBML_REACTION:
+              {
                 assert(dynamic_cast<const Reaction*>(pSBMLObject) != NULL);
                 assert(dynamic_cast<CReaction*>(pCOPASIObject) != NULL);
 
                 CReaction * pReaction = static_cast<CReaction*>(pCOPASIObject);
                 pReaction->setMiriamAnnotation(miriamString, pReaction->getKey(), metaid);
-                break;
+              }
+              break;
 
               case SBML_FUNCTION_DEFINITION:
+              {
                 assert(dynamic_cast<const FunctionDefinition*>(pSBMLObject) != NULL);
                 assert(dynamic_cast<CFunction*>(pCOPASIObject) != NULL);
 
                 CFunction * pFunction = static_cast<CFunction*>(pCOPASIObject);
                 pFunction->setMiriamAnnotation(miriamString, pFunction->getKey(), metaid);
-                break;
+              }
+              break;
 
               default:
                 result = false;
