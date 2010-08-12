@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 21:01:33 $
+//   $Date: 2010/08/12 22:16:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,28 +182,35 @@ void CQNotes::save()
 
 void CQNotes::slotOpenUrl(const QUrl & url)
 {
-  QString Program = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWebBrowser());
+  QString Commandline = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWebBrowser());
 
-  if (Program == "")
+  if (Commandline == "")
     {
 #ifdef Q_WS_MAC
-      Program = "open";
+      Commandline = "open %1";
 #else
 # ifdef Q_WS_WIN
-      Program = "start";
+      // This unfortunately flashes a cmd window
+      Commandline = "cmd /c start %1";
 #else
       CQMessageBox::critical(this, "Unable to open link",
-                             "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application.");
+                             "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  command [options] %1.");
 
       return;
 # endif
 #endif
 
-      CCopasiRootContainer::getConfiguration()->setWebBrowser(TO_UTF8(Program));
+      CCopasiRootContainer::getConfiguration()->setWebBrowser(TO_UTF8(Commandline));
     }
 
   QStringList Arguments;
   Arguments.push_back(url.toString());
 
-  QProcess::execute(Program, Arguments);
+  if (!QProcess::startDetached(Commandline.arg(url.toString())))
+    {
+      CQMessageBox::critical(this, "Unable to open link",
+                             "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  application [options] %1");
+    }
+
+  return;
 }
