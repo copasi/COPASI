@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:51:18 $
+//   $Date: 2010/08/12 20:17:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,8 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod()
  *   Default constructor.
  */
 CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::tauLeap, pParent)
+    CTrajectoryMethod(CCopasiMethod::tauLeap, pParent),
+    mReactionDependencies()
 {
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
@@ -144,7 +145,8 @@ CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
 
 CTauLeapMethod::CTauLeapMethod(const CTauLeapMethod & src,
                                const CCopasiContainer * pParent):
-    CTrajectoryMethod(src, pParent)
+    CTrajectoryMethod(src, pParent),
+    mReactionDependencies()
 {
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
