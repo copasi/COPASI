@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 22:28:04 $
+//   $Date: 2010/08/12 23:19:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,18 +190,32 @@ void CQNotes::slotOpenUrl(const QUrl & url)
       Commandline = "open %1";
 #else
 # ifdef Q_WS_WIN
-      // This unfortunately flashes a cmd window
       Commandline = "cmd /c start %1";
-#else
+# else
       CQMessageBox::critical(this, "Unable to open link",
                              "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  command [options] %1.");
 
       return;
-# endif
-#endif
+# endif  // Q_WS_WIN
+#endif // Q_WS_MAC
 
       CCopasiRootContainer::getConfiguration()->setWebBrowser(TO_UTF8(Commandline));
     }
+
+#ifdef Q_WS_WIN
+
+  if (Commandline == "cmd /c start %1")
+    {
+      if (QProcess::execute(Commandline.arg(url.toString())))
+        {
+          CQMessageBox::critical(this, "Unable to open link",
+                                 "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  application [options] %1");
+        }
+
+      return;
+    }
+
+#endif // Q_WS_WIN
 
   if (!QProcess::startDetached(Commandline.arg(url.toString())))
     {
