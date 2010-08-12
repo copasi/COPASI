@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-  $Revision: 1.6 $
+  $Revision: 1.7 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/08/12 16:10:26 $
+  $Date: 2010/08/12 20:06:32 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,6 +175,18 @@ public:
    */
   void setApplicationFont(const std::string & applicationFont);
 
+  /**
+   * Retrieve the application font.
+   * @return const std::string & webBrowser
+   */
+  const std::string getWebBrowser() const;
+
+  /**
+   * Set the applications font.
+   * @param const std::string & webBrowser
+   */
+  void setWebBrowser(const std::string & webBrowser);
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -259,6 +271,11 @@ private:
    * A pointer to the application font
    */
   std::string * mpApplicationFont;
+
+  /**
+   * A pointer to the application which handles opening URLs
+   */
+  std::string * mpWebBrowser;
 
 #ifdef COPASI_LICENSE_COM
   /**

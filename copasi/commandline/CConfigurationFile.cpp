@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.16 $
+$Revision: 1.17 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/08/12 16:10:26 $
+$Date: 2010/08/12 20:06:32 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,8 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL),
-    mpApplicationFont(NULL)
+    mpApplicationFont(NULL),
+    mpWebBrowser(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -124,7 +125,8 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL),
-    mpApplicationFont(NULL)
+    mpApplicationFont(NULL),
+    mpWebBrowser(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -136,7 +138,8 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL),
-    mpApplicationFont(NULL)
+    mpApplicationFont(NULL),
+    mpWebBrowser(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -181,9 +184,13 @@ void CConfigurationFile::initializeParameter()
   mpApplicationFont =
     assertParameter("Application Font", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
+  mpWebBrowser =
+    assertParameter("Application for opening URLs", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
+
 #ifdef COPASI_LICENSE_COM
   assertGroup("Registration");
 #endif // COPASI_LICENSE_COM
+
   assertGroup("MIRIAM Resources");
 
   elevateChildren();
@@ -261,6 +268,16 @@ const std::string CConfigurationFile::getApplicationFont() const
 void CConfigurationFile::setApplicationFont(const std::string & applicationFont)
 {
   *mpApplicationFont = applicationFont;
+}
+
+const std::string CConfigurationFile::getWebBrowser() const
+{
+  return *mpWebBrowser;
+}
+
+void CConfigurationFile::setWebBrowser(const std::string & webBrowser)
+{
+  *mpWebBrowser = webBrowser;
 }
 
 CConfigurationFile::CXML::CXML():

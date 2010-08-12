@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:19 $
+//   $Date: 2010/08/12 20:06:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,8 +17,8 @@
 // All rights reserved.
 
 #include "CQPreferenceDialog.h"
-
 #include "CQMessageBox.h"
+#include "qtUtilities.h"
 
 #include "commandline/CConfigurationFile.h"
 #include "report/CCopasiRootContainer.h"
@@ -62,30 +62,38 @@ void CQPreferenceDialog::init()
 {
   mpTreeWidget->setColumnWidth(COL_NAME, 150);
   mpTreeWidget->setColumnWidth(COL_VALUE, 100);
-  unsigned C_INT32 maxFiles = 0;
 
   CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
 
-  CCopasiParameter * par = configFile->getRecentFiles().getParameter("MaxFiles");
-  maxFiles = *par->getValue().pUINT;
+  CCopasiParameter * pParameter = configFile->getRecentFiles().getParameter("MaxFiles");
 
-  if (maxFiles > 0)
+  if (pParameter != NULL)
     {
       QStringList Values;
       Values.append("Max Last Visited Files");
-      Values.append(QString::number(maxFiles));
+      Values.append(QString::number(*pParameter->getValue().pUINT));
 
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
-  par = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
-  maxFiles = *par->getValue().pUINT;
+  pParameter = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
 
-  if (maxFiles > 0)
+  if (pParameter != NULL)
     {
       QStringList Values;
       Values.append("Max Last Visited SBML Files");
-      Values.append(QString::number(maxFiles));
+      Values.append(QString::number(*pParameter->getValue().pUINT));
+
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
+  pParameter = configFile->getParameter("Application for opening URLs");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Application for opening URLs");
+      Values.append(FROM_UTF8(*pParameter->getValue().pSTRING));
 
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
@@ -93,22 +101,23 @@ void CQPreferenceDialog::init()
 
 void CQPreferenceDialog::slotBtnOk()
 {
-  unsigned C_INT32 newMaxFiles = 0;
-  CCopasiParameter * par;
+  // We need to commit the changes
+  mpBtnOk->setFocus();
 
+  unsigned C_INT32 newMaxFiles = 0;
   CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
 
-  QString parName = "Max Last Visited Files";
-  QList< QTreeWidgetItem *> Items = mpTreeWidget->findItems(parName, 0, 0);
+  QList< QTreeWidgetItem *> Items = mpTreeWidget->findItems("Max Last Visited Files", 0, 0);
+  CCopasiParameter * pParameter = configFile->getRecentFiles().getParameter("MaxFiles");
 
-  if (Items.size() > 0)
+  if (Items.size() > 0 &&
+      pParameter != NULL)
     {
       newMaxFiles = Items[0]->text(COL_VALUE).toUInt();
-      par = configFile->getRecentFiles().getParameter("MaxFiles");
-      unsigned C_INT32 maxFiles = *par->getValue().pUINT;
+      unsigned C_INT32 maxFiles = *pParameter->getValue().pUINT;
 
       if (newMaxFiles > 0 && newMaxFiles <= 20)
-        par->setValue(newMaxFiles);
+        pParameter->setValue(newMaxFiles);
       else
         {
           CQMessageBox::critical(this, "Incorrect Setting",
@@ -120,17 +129,17 @@ void CQPreferenceDialog::slotBtnOk()
         }
     }
 
-  parName = "Max Last Visited SBML Files";
-  Items = mpTreeWidget->findItems(parName, 0, 0);
+  Items = mpTreeWidget->findItems("Max Last Visited SBML Files", 0, 0);
+  pParameter = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
 
-  if (Items.size() > 0)
+  if (Items.size() > 0 &&
+      pParameter != NULL)
     {
       newMaxFiles = Items[0]->text(COL_VALUE).toUInt();
-      par = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
-      unsigned C_INT32 maxFiles = *par->getValue().pUINT;
+      unsigned C_INT32 maxFiles = *pParameter->getValue().pUINT;
 
       if (newMaxFiles > 0 && newMaxFiles <= 20)
-        par->setValue(newMaxFiles);
+        pParameter->setValue(newMaxFiles);
       else
         {
           CQMessageBox::critical(this, "Incorrect Setting", "Max Last Visited SBML Files should be a number between 1 and 20.",
@@ -140,6 +149,17 @@ void CQPreferenceDialog::slotBtnOk()
 
           return;
         }
+    }
+
+  Items = mpTreeWidget->findItems("Application for opening URLs", 0, 0);
+  pParameter = configFile->getParameter("Application for opening URLs");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(*pParameter->getValue().pSTRING))
+        pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
   done(1);
