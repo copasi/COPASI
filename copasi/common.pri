@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.119 $ 
+#   $Revision: 1.120 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/08/12 15:22:37 $ 
+#   $Date: 2010/08/12 20:48:52 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.119 $ $Author: shoops $ $Date: 2010/08/12 15:22:37 $  
+# $Revision: 1.120 $ $Author: shoops $ $Date: 2010/08/12 20:48:52 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -57,6 +57,10 @@ TARGETDEPS += Makefile
 CONFIG += exceptions
 CONFIG += rtti
 CONFIG += thread
+
+contains(CONFIG, qt) {
+    QT += webkit
+}
 
 #ifdef COPASI_LICENSE_COM
 # COPASI License to use
@@ -162,8 +166,6 @@ contains(BUILD_OS, Darwin) {
   }
 
   contains(CONFIG, qt) {
-    QT += webkit
-  
     !isEmpty(SBW_PATH){
       LIBS+=  $${SBW_PATH}/lib/libSBW.a
       INCLUDEPATH += $${SBW_PATH}/include
