@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:00:06 $
+//   $Author: gauges $
+//   $Date: 2010/08/12 16:23:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,9 @@
 #define COPASI_CMODIFIED
 
 #include <string>
+
+#include "copasi/MIRIAM/CRDFTriplet.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
 
 class CModification : public CCopasiContainer
 {
