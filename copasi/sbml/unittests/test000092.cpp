@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/27 12:51:27 $
+//   $Date: 2010/08/12 16:40:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -948,7 +948,7 @@ void test000092::test_miriam_export_7()
   CPPUNIT_ASSERT(pSBMLModel != NULL);
   CPPUNIT_ASSERT(pSBMLModel->isSetMetaId() == true);
   CRDFGraphConverter::SBML2Copasi(miriamString);
-  pModel->setMiriamAnnotation(miriamString, pSBMLModel->getMetaId());
+  pModel->setMiriamAnnotation(miriamString, pModel->getKey(), pSBMLModel->getMetaId());
   // set some MIRIAM annotation on the compartment as well
   miriamString = \
                  "        <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:vCard=\"http://www.w3.org/2001/vcard-rdf/3.0#\" xmlns:bqbiol=\"http://biomodels.net/biology-qualifiers/\" xmlns:bqmodel=\"http://biomodels.net/model-qualifiers/\">\n"
@@ -968,7 +968,7 @@ void test000092::test_miriam_export_7()
   CPPUNIT_ASSERT(pSBMLCompartment != NULL);
   CPPUNIT_ASSERT(pSBMLCompartment->isSetMetaId() == true);
   CRDFGraphConverter::SBML2Copasi(miriamString);
-  pCompartment->setMiriamAnnotation(miriamString, pSBMLCompartment->getMetaId());
+  pCompartment->setMiriamAnnotation(miriamString, pCompartment->getKey(), pSBMLCompartment->getMetaId());
   //
   std::string content = pDataModel->exportSBMLToString(NULL, 2, 4);
   CPPUNIT_ASSERT(content.empty() == false);
