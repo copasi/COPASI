@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 23:19:13 $
+//   $Date: 2010/08/12 23:28:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -193,7 +193,7 @@ void CQNotes::slotOpenUrl(const QUrl & url)
       Commandline = "cmd /c start %1";
 # else
       CQMessageBox::critical(this, "Unable to open link",
-                             "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  command [options] %1.");
+                             "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  command [options] %1");
 
       return;
 # endif  // Q_WS_WIN
