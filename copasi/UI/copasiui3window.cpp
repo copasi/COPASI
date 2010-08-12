@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.283 $
+//   $Revision: 1.284 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Date: 2010/08/12 16:10:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,9 +27,7 @@
 #include <QToolBar>
 #include <QTextEdit>
 
-#ifdef Linux
 #include <QFontDialog>
-#endif // Linux
 
 #include <vector>
 #include <sstream>
@@ -331,9 +329,7 @@ CopasiUI3Window::CopasiUI3Window():
   connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
   // ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
 
-#ifdef Linux
   setApplicationFont();
-#endif // Linux
 
   // drop acceptance
   setAcceptDrops(true);
@@ -410,10 +406,8 @@ void CopasiUI3Window::createActions()
   mpaExpandModel = new QAction("Create array of compartments (debug version)", 0, this, "expandmodel");
   connect(mpaExpandModel, SIGNAL(activated()), this, SLOT(slotExpandModel()));
 
-#ifdef Linux
   mpaFontSelectionDialog = new QAction("Select the Application Font", 0, this, "Select Font");
   connect(mpaFontSelectionDialog, SIGNAL(activated()), this, SLOT(slotFontSelection()));
-#endif // Linux
 
   //     QAction* mpaObjectBrowser;
 
@@ -526,10 +520,7 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addSeparator();
   mpTools->addAction(mpaUpdateMIRIAM);
   mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
-
-#ifdef Linux
   mpTools->addAction(mpaFontSelectionDialog);
-#endif // Linux
 
 #ifdef COPASI_LICENSE_COM
   mpTools->addAction("&Registration", this, SLOT(slotRegistration()));
@@ -1919,7 +1910,6 @@ void CopasiUI3Window::slotCapture()
   pixmap.save(fileName, "PNG");
 }
 
-#ifdef Linux
 void CopasiUI3Window::slotFontSelection()
 {
   bool ok;
@@ -1970,7 +1960,6 @@ void CopasiUI3Window::setApplicationFont()
 
   qApp->setFont(QFont(FontFamily, FontSize));
 }
-#endif // Linux
 
 #include "UI/CQExpandModelData.h"
 void CopasiUI3Window::slotExpandModel()

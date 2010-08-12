@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-  $Revision: 1.5 $
+  $Revision: 1.6 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/02/17 19:35:02 $
+  $Date: 2010/08/12 16:10:26 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,7 +163,6 @@ public:
 
   void setRecentMIRIAMResources(const CMIRIAMResources & miriamResources);
 
-#ifdef Linux
   /**
    * Retrieve the application font.
    * @return const std::string & applicationFont
@@ -175,7 +174,6 @@ public:
    * @param const std::string & applicationFont
    */
   void setApplicationFont(const std::string & applicationFont);
-#endif // Linux
 
 private:
   /**
@@ -257,12 +255,10 @@ private:
    */
   CMIRIAMResources * mpRecentMIRIAMResources;
 
-#ifdef Linux
   /**
    * A pointer to the application font
    */
   std::string * mpApplicationFont;
-#endif // Linux
 
 #ifdef COPASI_LICENSE_COM
   /**

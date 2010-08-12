@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.15 $
+$Revision: 1.16 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/07/16 18:57:32 $
+$Date: 2010/08/12 16:10:26 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,10 +111,8 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
     CCopasiParameterGroup(name, pParent),
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
-    mpRecentMIRIAMResources(NULL)
-#ifdef Linux
-    , mpApplicationFont(NULL)
-#endif
+    mpRecentMIRIAMResources(NULL),
+    mpApplicationFont(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -125,10 +123,8 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
     CCopasiParameterGroup(src, pParent),
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
-    mpRecentMIRIAMResources(NULL)
-#ifdef Linux
-    , mpApplicationFont(NULL)
-#endif
+    mpRecentMIRIAMResources(NULL),
+    mpApplicationFont(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -139,10 +135,8 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
     CCopasiParameterGroup(group, pParent),
     mpRecentFiles(NULL),
     mpRecentSBMLFiles(NULL),
-    mpRecentMIRIAMResources(NULL)
-#ifdef Linux
-    , mpApplicationFont(NULL)
-#endif
+    mpRecentMIRIAMResources(NULL),
+    mpApplicationFont(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -184,10 +178,8 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
 
-#ifdef Linux
   mpApplicationFont =
     assertParameter("Application Font", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
-#endif // Linux
 
 #ifdef COPASI_LICENSE_COM
   assertGroup("Registration");
@@ -261,7 +253,6 @@ CMIRIAMResources & CConfigurationFile::getRecentMIRIAMResources()
 void CConfigurationFile::setRecentMIRIAMResources(const CMIRIAMResources & miriamResources)
 {* mpRecentMIRIAMResources = miriamResources;}
 
-#ifdef Linux
 const std::string CConfigurationFile::getApplicationFont() const
 {
   return *mpApplicationFont;
@@ -271,7 +262,6 @@ void CConfigurationFile::setApplicationFont(const std::string & applicationFont)
 {
   *mpApplicationFont = applicationFont;
 }
-#endif // Linux
 
 CConfigurationFile::CXML::CXML():
     CCopasiXMLInterface(),
