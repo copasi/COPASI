@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.236 $
+#   $Revision: 1.237 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/07/16 19:05:19 $
+#   $Date: 2010/08/12 15:37:53 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.236 $ $Author: shoops $ $Date: 2010/07/16 19:05:19 $
+# $Revision: 1.237 $ $Author: shoops $ $Date: 2010/08/12 15:37:53 $
 ######################################################################
 
 LIB = UI
@@ -54,6 +54,7 @@ HEADERS	+= \
   CQModelValue.h \
   CQMoietiesTaskWidget.h \
   CQMoietiesTaskResult.h \
+  CQNotes.h \
   CQOptimizationWidget.h \
   CQOptimizationResult.h \
   CQPlotsWidget.h \
@@ -184,6 +185,7 @@ SOURCES	+= \
   CQModelValue.cpp \
   CQMoietiesTaskWidget.cpp \
   CQMoietiesTaskResult.cpp \
+  CQNotes.cpp \
   CQOptimizationWidget.cpp \
   CQOptimizationResult.cpp \
   CQPlotsWidget.cpp \
@@ -351,6 +353,7 @@ FORMS += CQMergingData.ui
 FORMS += CQModelValue.ui
 FORMS += CQMoietiesTaskWidget.ui
 FORMS += CQMoietiesTaskResult.ui
+FORMS += CQNotes.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQOptimizationResult.ui
 FORMS += CQPlotsWidget.ui
