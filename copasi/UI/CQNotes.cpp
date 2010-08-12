@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 22:16:31 $
+//   $Date: 2010/08/12 22:28:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,9 +202,6 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 
       CCopasiRootContainer::getConfiguration()->setWebBrowser(TO_UTF8(Commandline));
     }
-
-  QStringList Arguments;
-  Arguments.push_back(url.toString());
 
   if (!QProcess::startDetached(Commandline.arg(url.toString())))
     {
