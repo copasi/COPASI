@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 20:07:25 $
+//   $Date: 2010/08/12 21:01:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,7 +189,7 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 #ifdef Q_WS_MAC
       Program = "open";
 #else
-# if Q_WS_WIN
+# ifdef Q_WS_WIN
       Program = "start";
 #else
       CQMessageBox::critical(this, "Unable to open link",
