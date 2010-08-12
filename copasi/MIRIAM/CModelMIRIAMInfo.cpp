@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:41 $
+//   $Date: 2010/08/12 15:25:54 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -463,11 +468,11 @@ bool CMIRIAMInfo::save()
       CFunction * pFunction = NULL;
 
       if ((pEntity = dynamic_cast< CModelEntity * >(pCopasiObject)) != NULL)
-        pEntity->setMiriamAnnotation(XML, pEntity->getKey());
+        pEntity->setMiriamAnnotation(XML, pEntity->getKey(), pEntity->getKey());
       else if ((pReaction = dynamic_cast< CReaction * >(pCopasiObject)) != NULL)
-        pReaction->setMiriamAnnotation(XML, pReaction->getKey());
+        pReaction->setMiriamAnnotation(XML, pReaction->getKey(), pReaction->getKey());
       else if ((pFunction = dynamic_cast< CFunction * >(pCopasiObject)) != NULL)
-        pFunction->setMiriamAnnotation(XML, pFunction->getKey());
+        pFunction->setMiriamAnnotation(XML, pFunction->getKey(), pFunction->getKey());
       else
         return false;
 

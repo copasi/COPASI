@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:02:49 $
+//   $Date: 2010/08/12 15:25:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2714,9 +2714,9 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   assert(pModel != NULL);
   this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
 
-  if (pModel != NULL && (!pModel->getComments().empty()) && !(pModel->getComments().find_first_not_of(" \n\t\r") == std::string::npos))
+  if (pModel != NULL && (!pModel->getNotes().empty()) && !(pModel->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
     {
-      std::string comments = "<notes>" + pModel->getComments() + "</notes>";
+      std::string comments = "<notes>" + pModel->getNotes() + "</notes>";
       // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
       // in libsbml it creates a dummy node and in libsbml 4 it doesn't
       // somehow this never did affect the notes because they were exported correctly with

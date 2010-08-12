@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/03 17:43:27 $
+//   $Date: 2010/08/12 15:25:51 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -26,7 +31,8 @@
 #include <string>
 #include <iostream>
 
-#include "report/CCopasiContainer.h"
+#include "copasi/model/CAnnotation.h"
+#include "copasi/report/CCopasiContainer.h"
 
 class CModel;
 class CExpression;
@@ -38,7 +44,7 @@ class CExpression;
  * (subject to ODEs), constant, or subject to algebraic assignments.
  * In addition, the CMetab objects can also be subject to reactions, and conservation rules.
  */
-class CModelEntity : public CCopasiContainer
+class CModelEntity : public CCopasiContainer, public CAnnotation
 {
 protected:
   /**
@@ -313,20 +319,6 @@ public:
    */
   CCopasiObject * getRateReference() const;
 
-  /**
-   * Set the RDF/XML representation of the MIRIAM annotation
-   * @param const std::string & miriamAnnotation
-   * @param const std::string & oldId
-   */
-  void setMiriamAnnotation(const std::string & miriamAnnotation,
-                           const std::string & oldId);
-
-  /**
-   * Retrieve the RDF/XML representation of the MIRIAM annotation
-   * @return const std::string & miriamAnnotation
-   */
-  const std::string & getMiriamAnnotation() const;
-
 protected:
   /**
    * Pointer to the value of the model entity.
@@ -364,11 +356,6 @@ private:
    * calculated during the simulation
    */
   bool mUsed;
-
-  /**
-   * The RDF/XML representation of the MIRIAM annotation
-   */
-  std::string mMiriamAnnotation;
 
 protected:
   CCopasiObjectReference<C_FLOAT64> *mpIValueReference;

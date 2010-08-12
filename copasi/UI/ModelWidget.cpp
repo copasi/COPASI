@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/15 15:57:53 $
+//   $Date: 2010/08/12 15:25:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -239,7 +239,7 @@ bool ModelWidget::loadModel(CModel *model)
   if (mpToggleMarkup->text() != "Show Markup")
     toggleEditorBox();
 
-  mpEditComment->setText(FROM_UTF8(model->getComments()));
+  mpEditComment->setText(FROM_UTF8(model->getNotes()));
   // We save the current comment so that we can see whether
   // it has changed.
   mOldComment = mpEditComment->text();
@@ -395,7 +395,7 @@ bool ModelWidget::saveToModel()
           xhtml << "</body>";
         }
 
-      model->setComments(xhtml.str());
+      model->setNotes(xhtml.str());
 
       changed = true;
     }

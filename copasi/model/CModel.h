@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.186 $
+//   $Revision: 1.187 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/02 19:41:21 $
+//   $Date: 2010/08/12 15:25:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -417,12 +417,6 @@ public:
   //******************************************+
 
   /**
-   * Return the comments of this model Wei Sun
-   * @return string
-   */
-  const std::string & getComments() const;
-
-  /**
    * Return the key of this model
    * @return string key
    */
@@ -438,12 +432,6 @@ public:
    * @param "const string &" title title for this model
    */
   bool setTitle(const std::string &title);
-
-  /**
-   * Set the title of this model
-   * @param "const string &" comments comments for this model
-   */
-  void setComments(const std::string &comments);
 
   //************** time *********************
 
@@ -1265,11 +1253,6 @@ private:
    * are up to date after a call to updateSimulatedValues
    */
   std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
-
-  /**
-   *  Comments
-   */
-  std::string mComments;
 
   /**
    * The volume unit used in the Model

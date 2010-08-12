@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:47 $
+//   $Date: 2010/08/12 15:25:51 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -30,7 +35,6 @@
 #include "CModel.h"
 #include "CModelValue.h"
 
-#include "MIRIAM/CRDFUtilities.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
 #include "report/CCopasiObjectReference.h"
@@ -68,6 +72,7 @@ CModelEntity::CModelEntity(const std::string & name,
                            const std::string & type,
                            const unsigned C_INT32 & flag):
     CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
+    CAnnotation(),
     mKey(""),
     mpValue(NULL),
     mpIValue(NULL),
@@ -76,7 +81,6 @@ CModelEntity::CModelEntity(const std::string & name,
     mpInitialExpression(NULL),
     mStatus(FIXED),
     mUsed(false),
-    mMiriamAnnotation(""),
     mpModel(NULL)
 {
   initObjects();
@@ -90,6 +94,7 @@ CModelEntity::CModelEntity(const std::string & name,
 CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    CAnnotation(src),
     mKey(""),
     mpValue(NULL),
     mpIValue(NULL),
@@ -98,7 +103,6 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mpInitialExpression(new CExpression(*src.mpInitialExpression)),
     mStatus(FIXED),
     mUsed(false),
-    mMiriamAnnotation(""),
     mpModel(NULL)
 {
   initObjects();
@@ -112,7 +116,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   *mpValue = *src.mpValue;
   *mpIValue = *src.mpIValue;
 
-  setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 }
 
 CModelEntity::~CModelEntity()
@@ -584,16 +588,6 @@ void CModelEntity::setUsed(const bool & used)
 
 const bool & CModelEntity::isUsed() const
 {return mUsed;}
-
-void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation,
-                                       const std::string & oldId)
-{
-  mMiriamAnnotation = miriamAnnotation;
-  CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, mKey, oldId);
-}
-
-const std::string & CModelEntity::getMiriamAnnotation() const
-{return mMiriamAnnotation;}
 
 //********************************************************************+
 

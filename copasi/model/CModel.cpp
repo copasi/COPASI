@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.391 $
+//   $Revision: 1.392 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/02 19:41:21 $
+//   $Date: 2010/08/12 15:25:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,7 +102,6 @@ CModel::CModel(CCopasiContainer* pParent):
     mInitialState(),
     mCurrentState(),
     mStateTemplate(*this, this->mInitialState, this->mCurrentState),
-    mComments(),
     mVolumeUnit(ml),
     mAreaUnit(m2),
     mLengthUnit(m),
@@ -283,19 +282,23 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   setObjectName(tmp);
 
+  std::string Notes;
+
   try
     {
-      Fail = configBuffer.getVariable("Comments", "multiline", &mComments,
+      Fail = configBuffer.getVariable("Comments", "multiline", &Notes,
                                       CReadConfig::SEARCH);
     }
 
   catch (CCopasiException Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
-        mComments = "";
+        Notes = "";
       else
         throw Exception;
     }
+
+  setNotes(Notes);
 
   try
     {
@@ -991,9 +994,6 @@ unsigned C_INT32 CModel::getTotSteps() const
 unsigned C_INT32 CModel::getNumModelValues() const
 {return mValues.size();}
 
-const std::string & CModel::getComments() const
-{return mComments;}
-
 const std::string & CModel::getKey() const
 {return mKey;}
 
@@ -1046,9 +1046,6 @@ bool CModel::setTitle(const std::string &title)
 
   return setObjectName(title);
 }
-
-void CModel::setComments(const std::string &comments)
-{mComments = comments;}
 
 void CModel::setInitialTime(const C_FLOAT64 & time)
 {*mpIValue = time;}
@@ -3136,7 +3133,7 @@ void CModel::initObjects()
 
   mRate = 1.0;
 
-  addObjectReference("Comments", mComments);
+  addObjectReference("Comments", *const_cast<std::string *>(&getNotes()));
 
   // These are broken since they contain pointers to values :(
   //  addVectorReference("Fluxes", mFluxes, CCopasiObject::ValueDbl);
@@ -3145,7 +3142,7 @@ void CModel::initObjects()
   addMatrixReference("Stoichiometry", mStoi, CCopasiObject::ValueDbl);
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CCopasiObject::ValueDbl);
 
-  addMatrixReference("Link Matrix", mLView, CCopasiObject::ValueDbl);
+  addMatrixReference("Link Matrix"   , mLView, CCopasiObject::ValueDbl);
   addObjectReference("Quantity Unit", mQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
 

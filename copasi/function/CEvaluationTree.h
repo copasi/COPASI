@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Date: 2010/08/12 15:25:52 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -20,14 +25,15 @@
 
 #include <vector>
 
-#include "function/CEvaluationNode.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/model/CAnnotation.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/report/CCopasiContainer.h"
 
 class ASTNode;
 template <class CType> class CCopasiVectorN;
 
 class CEvaluationTree:
-    public CCopasiContainer
+    public CCopasiContainer, public CAnnotation
 {
 public:
   /**
@@ -268,20 +274,6 @@ public:
    */
   bool calls(std::set< std::string > & list) const;
 
-  /**
-   * Set the RDF/XML representation of the MIRIAM annotation
-   * @param const std::string & miriamAnnotation
-   * @param const std::string & oldId
-   */
-  void setMiriamAnnotation(const std::string & miriamAnnotation,
-                           const std::string & oldId);
-
-  /**
-   * Retrieve the RDF/XML representation of the MIRIAM annotation
-   * @return const std::string & miriamAnnotation
-   */
-  const std::string & getMiriamAnnotation() const;
-
 protected:
   /**
    * Parse the description
@@ -331,11 +323,6 @@ private:
    * std::string::npos indicates no error.
    */
   std::string::size_type mErrorPosition;
-
-  /**
-   * The RDF/XML representation of the MIRIAM annotation
-   */
-  std::string mMiriamAnnotation;
 
 protected:
   /**

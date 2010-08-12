@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/07/17 16:08:22 $
+//   $Author: shoops $
+//   $Date: 2010/08/12 15:25:51 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -28,21 +33,23 @@
 #include <string>
 #include <vector>
 
-#include "utilities/CCopasiVector.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "function/CFunction.h"
-#include "function/CCallParameters.h"
-#include "function/CFunctionParameters.h"
-#include "model/CMetab.h"
-#include "model/CChemEq.h"
-#include "model/CChemEqElement.h"
-#include "model/CCompartment.h"
+#include "copasi/model/CAnnotation.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CChemEq.h"
+#include "copasi/model/CChemEqElement.h"
+#include "copasi/model/CCompartment.h"
+
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CCallParameters.h"
+#include "copasi/function/CFunctionParameters.h"
 
 class CReadConfig;
 class SBase;
 class CFunctionDB;
 
-class CReaction : public CCopasiContainer
+class CReaction : public CCopasiContainer, public CAnnotation
 {
 public:
   /**
@@ -389,20 +396,6 @@ public:
   const std::string& getSBMLId() const;
 
   /**
-   * Set the RDF/XML representation of the MIRIAM annotation
-   * @param const std::string & miriamAnnotation
-   * @param const std::string & oldId
-   */
-  void setMiriamAnnotation(const std::string & miriamAnnotation,
-                           const std::string & oldId);
-
-  /**
-   * Retrieve the RDF/XML representation of the MIRIAM annotation
-   * @return const std::string & miriamAnnotation
-   */
-  const std::string & getMiriamAnnotation() const;
-
-  /**
    * Friend declaration for ostream operator
    * @param std::ostream & os
    * @param const CReaction & d
@@ -551,11 +544,6 @@ private:
    * or when the object is first exported to an SBML file.
    */
   std::string mSBMLId;
-
-  /**
-   * The RDF/XML representation of the MIRIAM annotation
-   */
-  std::string mMiriamAnnotation;
 };
 
 #endif // COPASI_CReaction

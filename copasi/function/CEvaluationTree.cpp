@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:15:28 $
+//   $Author: shoops $
+//   $Date: 2010/08/12 15:25:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,6 @@
 #include "CEvaluationLexer.h"
 #include "CFunctionDB.h"
 
-#include "MIRIAM/CRDFUtilities.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
 #include "sbml/math/ASTNode.h"
@@ -117,13 +116,13 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
                                  const CCopasiContainer * pParent,
                                  const CEvaluationTree::Type & type):
     CCopasiContainer(name, pParent, "Function"),
+    CAnnotation(),
     mSBMLId(""),
     mType(type),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
-    mMiriamAnnotation(""),
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
@@ -136,19 +135,19 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
 CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
                                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    CAnnotation(src),
     mSBMLId(src.mSBMLId),
     mType(src.mType),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
-    mMiriamAnnotation(""),
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(src.mValue),
     mBooleanRequired(src.mBooleanRequired)
 {
-  setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
   initObjects();
   setInfix(src.mInfix);
 }
@@ -598,13 +597,3 @@ bool CEvaluationTree::calls(std::set< std::string > & list) const
 
   return Calls;
 }
-
-void CEvaluationTree::setMiriamAnnotation(const std::string & miriamAnnotation,
-    const std::string & oldId)
-{
-  mMiriamAnnotation = miriamAnnotation;
-  CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, mKey, oldId);
-}
-
-const std::string & CEvaluationTree::getMiriamAnnotation() const
-{return mMiriamAnnotation;}

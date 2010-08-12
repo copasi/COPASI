@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.127 $
+//   $Revision: 1.128 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:06:32 $
+//   $Date: 2010/08/12 15:25:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -435,7 +435,7 @@ bool CCopasiXML::saveModel()
     }
 
   startSaveElement("Comment");
-  saveXhtml(mpModel->getComments());
+  saveXhtml(mpModel->getNotes());
   endSaveElement("Comment");
 
   unsigned C_INT32 i, imax;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.191 $
+//   $Revision: 1.192 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:00:59 $
+//   $Date: 2010/08/12 15:25:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,6 @@
 #include "CReaction.h"
 #include "CCompartment.h"
 #include "CModel.h"
-#include "MIRIAM/CRDFUtilities.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
@@ -58,6 +57,7 @@ C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Reaction"),
+    CAnnotation(),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
     mChemEq("Chemical Equation", this),
     mpFunction(NULL),
@@ -68,8 +68,7 @@ CReaction::CReaction(const std::string & name,
     mScalingFactor(&mDefaultScalingFactor),
     mUnitScalingFactor(&mDefaultScalingFactor),
     mMetabKeyMap(),
-    mParameters("Parameters", this),
-    mMiriamAnnotation("")
+    mParameters("Parameters", this)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -79,6 +78,7 @@ CReaction::CReaction(const std::string & name,
 CReaction::CReaction(const CReaction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    CAnnotation(src),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
     mChemEq(src.mChemEq, this),
     mpFunction(src.mpFunction),
@@ -90,8 +90,7 @@ CReaction::CReaction(const CReaction & src,
     mUnitScalingFactor(src.mUnitScalingFactor),
     mMap(src.mMap),
     mMetabKeyMap(src.mMetabKeyMap),
-    mParameters(src.mParameters, this),
-    mMiriamAnnotation("")
+    mParameters(src.mParameters, this)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -101,7 +100,7 @@ CReaction::CReaction(const CReaction & src,
       //compileParameters();
     }
 
-  setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 }
 
 CReaction::~CReaction()
@@ -1747,16 +1746,6 @@ const std::string& CReaction::getSBMLId() const
 {
   return this->mSBMLId;
 }
-
-void CReaction::setMiriamAnnotation(const std::string & miriamAnnotation,
-                                    const std::string & oldId)
-{
-  mMiriamAnnotation = miriamAnnotation;
-  CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, mKey, oldId);
-}
-
-const std::string & CReaction::getMiriamAnnotation() const
-{return mMiriamAnnotation;}
 
 std::string CReaction::escapeId(const std::string& id)
 {

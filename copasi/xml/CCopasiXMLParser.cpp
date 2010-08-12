@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.218 $
+//   $Revision: 1.219 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:06:32 $
+//   $Date: 2010/08/12 15:25:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -920,7 +920,7 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-        mCommon.pFunction->setMiriamAnnotation(mCommon.CharacterData, mKey);
+        mCommon.pFunction->setMiriamAnnotation(mCommon.CharacterData, mCommon.pFunction->getKey(), mKey);
         mCommon.CharacterData = "";
         break;
 
@@ -1625,7 +1625,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-        mCommon.pModel->setMiriamAnnotation(mCommon.CharacterData, mKey);
+        mCommon.pModel->setMiriamAnnotation(mCommon.CharacterData, mCommon.pModel->getKey(), mKey);
         mCommon.CharacterData = "";
         break;
 
@@ -1635,7 +1635,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Comment", mParser.getCurrentLineNumber());
 
-        mCommon.pModel->setComments(mCommon.CharacterData);
+        mCommon.pModel->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
         break;
 
@@ -2088,7 +2088,7 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-        mpCompartment->setMiriamAnnotation(mCommon.CharacterData, mKey);
+        mpCompartment->setMiriamAnnotation(mCommon.CharacterData, mpCompartment->getKey(), mKey);
         mCommon.CharacterData = "";
         break;
 
@@ -2364,7 +2364,7 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-        mpMetabolite->setMiriamAnnotation(mCommon.CharacterData, mKey);
+        mpMetabolite->setMiriamAnnotation(mCommon.CharacterData, mpMetabolite->getKey(), mKey);
         mCommon.CharacterData = "";
         break;
 
@@ -2644,7 +2644,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-        mpMV->setMiriamAnnotation(mCommon.CharacterData, mKey);
+        mpMV->setMiriamAnnotation(mCommon.CharacterData, mpMV->getKey(), mKey);
         mCommon.CharacterData = "";
 
         //      mCurrentElement = ModelValue;
@@ -3509,7 +3509,7 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-        mCommon.pReaction->setMiriamAnnotation(mCommon.CharacterData, mKey);
+        mCommon.pReaction->setMiriamAnnotation(mCommon.CharacterData, mCommon.pReaction->getKey(), mKey);
         mCommon.CharacterData = "";
         break;
 
