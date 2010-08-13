@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/13 13:58:56 $
+//   $Date: 2010/08/13 20:06:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,16 +106,13 @@ void CQNotes::load()
       const std::string * pNotes = NULL;
 
       if (dynamic_cast< CModelEntity * >(mpObject))
-        pNotes =
-          &dynamic_cast< CModelEntity * >(mpObject)->getNotes();
+        pNotes = &static_cast< CModelEntity * >(mpObject)->getNotes();
       else if (dynamic_cast< CReaction * >(mpObject))
-        pNotes =
-          &dynamic_cast< CReaction * >(mpObject)->getNotes();
+        pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
-        pNotes =
-          &dynamic_cast< CFunction * >(mpObject)->getNotes();
+        pNotes = &static_cast< CFunction * >(mpObject)->getNotes();
 
-      if (pNotes && *pNotes != "")
+      if (pNotes != NULL)
         {
           // The notes are UTF8 encoded however the html does not specify an encoding
           // thus Qt uses locale settings.
@@ -140,27 +137,21 @@ void CQNotes::save()
       const std::string * pNotes = NULL;
 
       if (dynamic_cast< CModelEntity * >(mpObject))
-        pNotes =
-          &static_cast< CModelEntity * >(mpObject)->getNotes();
+        pNotes = &static_cast< CModelEntity * >(mpObject)->getNotes();
       else if (dynamic_cast< CReaction * >(mpObject))
-        pNotes =
-          &static_cast< CReaction * >(mpObject)->getNotes();
+        pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
-        pNotes =
-          &static_cast< CFunction * >(mpObject)->getNotes();
+        pNotes = &static_cast< CFunction * >(mpObject)->getNotes();
 
       if (pNotes &&
           mpEdit->toPlainText() != FROM_UTF8(*pNotes))
         {
           if (dynamic_cast< CModelEntity * >(mpObject))
             static_cast< CModelEntity * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
-
-          /*
           else if (dynamic_cast< CReaction * >(mpObject))
             static_cast< CReaction * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
           else if (dynamic_cast< CFunction * >(mpObject))
             static_cast< CFunction * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
-          */
 
           mChanged = true;
         }
