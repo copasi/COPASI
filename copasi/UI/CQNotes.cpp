@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 23:28:25 $
+//   $Date: 2010/08/13 13:58:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,10 +206,11 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 
   if (Commandline == "cmd /c start %1")
     {
-      if (QProcess::execute(Commandline.arg(url.toString())))
+      if (QProcess::execute(Commandline.arg(url.toString())) != 0)
         {
           CQMessageBox::critical(this, "Unable to open link",
-                                 "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  application [options] %1");
+                                 "COPASI requires you to specify an application for opening links. The currently provided command:\n  " +
+                                 Commandline + "\nis not working properly.\n\nPlease go to the preferences and set an appropriate application in the format:\n  application [options] %1");
         }
 
       return;
@@ -220,7 +221,8 @@ void CQNotes::slotOpenUrl(const QUrl & url)
   if (!QProcess::startDetached(Commandline.arg(url.toString())))
     {
       CQMessageBox::critical(this, "Unable to open link",
-                             "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  application [options] %1");
+                             "COPASI requires you to specify an application for opening links. The currently provided command:\n  " +
+                             Commandline + "\nis not working properly.\n\nPlease go to the preferences and set an appropriate application in the format:\n  application [options] %1");
     }
 
   return;
