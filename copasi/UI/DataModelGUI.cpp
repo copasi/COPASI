@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/26 11:51:59 $
+//   $Author: aekamal $
+//   $Date: 2010/08/13 21:19:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,8 @@
 
 //*****************************************************************************
 
-DataModelGUI::DataModelGUI():
+DataModelGUI::DataModelGUI(QObject* parent):
+    QAbstractItemModel(parent),
     mOutputHandlerPlot()
 {
   this->populateData();
@@ -112,6 +113,7 @@ void DataModelGUI::linkDataModelToGUI()
 
 void DataModelGUI::populateData()
 {
+  mTree.add(-1, 0, "Copasi", "");
   std::stringstream in;
   in.str(DataModeltxt);
 
@@ -319,7 +321,7 @@ void DataModelGUI::updatePlots()
 const IndexedNode * DataModelGUI::getRootNode() const
 {return mTree.getRoot();}
 
-const IndexedNode * DataModelGUI::getNode(const int & id) const
+const IndexedNode * DataModelGUI::getNode(int id)
 {return mTree.findNodeFromId(id);}
 //  {return const_cast<IndexedTree *>(&mTree)->findNodeFromId(id);}
 
@@ -561,3 +563,127 @@ void DataModelGUI::setQApp(QApplication* app)
 
 QApplication* DataModelGUI::getQApp() const
 {return mpApp;}
+
+//************Model-View Architecture*****************************************
+
+int DataModelGUI::rowCount(const QModelIndex &parent) const
+{
+  const IndexedNode *parentItem;
+
+  if (parent.column() > 0)
+    return 0;
+
+  if (!parent.isValid())
+    parentItem = getRootNode();
+  else
+    parentItem = static_cast<IndexedNode*>(parent.internalPointer());
+
+  return parentItem->childCount();
+}
+
+int DataModelGUI::columnCount(const QModelIndex &parent) const
+{
+  if (parent.isValid())
+    return static_cast<IndexedNode*>(parent.internalPointer())->columnCount();
+  else
+    return getRootNode()->columnCount();
+}
+
+QVariant DataModelGUI::data(const QModelIndex &index, int role) const
+{
+  if (!index.isValid())
+    return QVariant();
+
+  if (role != Qt::DisplayRole)
+    return QVariant();
+
+  IndexedNode *item = static_cast<IndexedNode*>(index.internalPointer());
+
+  return QVariant(item->getName());
+}
+
+Qt::ItemFlags DataModelGUI::flags(const QModelIndex &index) const
+{
+  if (!index.isValid())
+    return 0;
+
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+QVariant DataModelGUI::headerData(int C_UNUSED(section), Qt::Orientation orientation,
+                                  int role) const
+{
+  if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+    return QVariant(getRootNode()->getName());
+
+  return QVariant();
+}
+
+QModelIndex DataModelGUI::index(int row, int column, const QModelIndex &parent)
+const
+{
+  if (!hasIndex(row, column, parent))
+    return QModelIndex();
+
+  IndexedNode *parentItem;
+
+  if (!parent.isValid())
+    parentItem = const_cast<IndexedNode*>(getRootNode());
+  else
+    parentItem = static_cast<IndexedNode*>(parent.internalPointer());
+
+  IndexedNode *childItem = parentItem->child(row);
+
+  if (childItem)
+    return createIndex(row, column, childItem);
+  else
+    return QModelIndex();
+}
+
+QModelIndex DataModelGUI::parent(const QModelIndex &index) const
+{
+  if (!index.isValid())
+    return QModelIndex();
+
+  IndexedNode *childItem = static_cast<IndexedNode*>(index.internalPointer());
+  IndexedNode *parentItem = childItem->parent();
+
+  if (parentItem == getRootNode())
+    return QModelIndex();
+
+  return createIndex(parentItem->row(), parentItem->column(), parentItem);
+}
+
+QModelIndex DataModelGUI::findIndexFromId(int id)
+{
+  QModelIndex index;
+  IndexedNode * pNode = mTree.findNodeFromId(id);
+
+  if (pNode == getRootNode())
+    return index;
+
+  if (pNode)
+    index = createIndex(pNode->row(), pNode->column(), pNode);
+
+  return index;
+}
+
+QModelIndex DataModelGUI::findIndexFromKey(const std::string& key)
+{
+  QModelIndex index;
+  IndexedNode * pNode = mTree.findNodeFromKey(key);
+
+  if (pNode == getRootNode())
+    return index;
+
+  if (pNode)
+    index = createIndex(pNode->row(), pNode->column(), pNode);
+
+  return index;
+}
+
+void DataModelGUI::emitDataChanged()
+{
+  const QModelIndex index = findIndexFromId(1);
+  emit dataChanged(index, index);
+}

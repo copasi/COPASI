@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.284 $
+//   $Revision: 1.285 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/12 16:10:25 $
+//   $Author: aekamal $
+//   $Date: 2010/08/13 21:19:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -278,12 +278,12 @@ CopasiUI3Window::CopasiUI3Window():
   if (!dataModel)
     {
       // create the data model
-      dataModel = new DataModelGUI();
+      dataModel = new DataModelGUI(this);
     }
 
   listViews = new ListViews(this);
 
-  connect(listViews->folders, SIGNAL(currentChanged(Q3ListViewItem*)), this, SLOT(listViewsFolderChanged(Q3ListViewItem*)));
+  connect(listViews->mpTreeView, SIGNAL(pressed(const QModelIndex &)), this, SLOT(listViewsFolderChanged(const QModelIndex &)));
 
   ListViews::setDataModel(dataModel);
   listViews->show();
@@ -292,7 +292,7 @@ CopasiUI3Window::CopasiUI3Window():
   //create sliders window
   this->mpSliders = new SliderDialog(NULL);
   this->mpSliders->setParentWindow(this);
-  C_INT32 id = ((FolderListItem*)listViews->folders->currentItem())->getFolder()->getId();
+  C_INT32 id = listViews->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
   this->mpSliders->resize(320, 350);
 
@@ -646,7 +646,7 @@ void CopasiUI3Window::newDoc()
   ListViews::switchAllListViewsToWidget(0, "");
 
   if (!dataModel)
-    dataModel = new DataModelGUI(); // create the data model
+    dataModel = new DataModelGUI(this); // create the data model
 
   dataModel->createModel();
   ListViews::notify(ListViews::MODEL, ListViews::ADD, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
@@ -713,7 +713,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
       ListViews::switchAllListViewsToWidget(0, "");
 
       if (!dataModel)
-        dataModel = new DataModelGUI; // create a new data model
+        dataModel = new DataModelGUI(this); // create a new data model
 
       QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
@@ -838,7 +838,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
       ListViews::switchAllListViewsToWidget(0, "");
 
       if (!dataModel)
-        dataModel = new DataModelGUI; // create a new data model
+        dataModel = new DataModelGUI(this); // create a new data model
 
       QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
@@ -1196,7 +1196,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 
       if (!dataModel)
         {
-          dataModel = new DataModelGUI(); // create a new data model
+          dataModel = new DataModelGUI(this); // create a new data model
         }
 
       QCursor oldCursor = cursor();
@@ -1300,7 +1300,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
       if (!dataModel)
         {
-          dataModel = new DataModelGUI; // create a new data model
+          dataModel = new DataModelGUI(this); // create a new data model
         }
 
       QCursor oldCursor = cursor();
@@ -1542,9 +1542,9 @@ void CopasiUI3Window::slotShowSliders(bool flag)
 DataModelGUI* CopasiUI3Window::getDataModel()
 {return dataModel;}
 
-void CopasiUI3Window::listViewsFolderChanged(Q3ListViewItem* item)
+void CopasiUI3Window::listViewsFolderChanged(const QModelIndex &)
 {
-  C_INT32 id = ((FolderListItem*)item)->getFolder()->getId();
+  C_INT32 id = listViews->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
 }
 
@@ -1806,7 +1806,7 @@ void CopasiUI3Window::slotUpdateMIRIAM()
   CCopasiMessage::clearDeque();
 
   if (!dataModel)
-    dataModel = new DataModelGUI; // create a new data model
+    dataModel = new DataModelGUI(this); // create a new data model
 
   try
     {

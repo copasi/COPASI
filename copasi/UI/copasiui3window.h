@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/12 16:10:26 $
+//   $Author: aekamal $
+//   $Date: 2010/08/13 21:19:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 #include <string>
 
 #include <QMainWindow>
+#include <QModelIndex>
 #include <QMap>
 
 #ifdef COPASI_SBW_INTEGRATION
@@ -122,7 +123,7 @@ protected slots:
   void slotQuit();
   void slotPreferences();
   void slotConvertToIrreversible();
-  void listViewsFolderChanged(Q3ListViewItem* item);
+  void listViewsFolderChanged(const QModelIndex & index);
   void slotOpenRecentFile(QAction * pAction);
   void slotOpenRecentSBMLFile(QAction * pAction);
   bool slotRegistration();

@@ -1,10 +1,15 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.6 $
+  $Revision: 1.7 $
   $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/10 20:40:09 $
+  $Author: aekamal $
+  $Date: 2010/08/13 21:19:01 $
   End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,7 +26,8 @@
 
 #include "Tree.h"
 
-IndexedNode::IndexedNode(int id, const QString & name, const std::string & key)
+IndexedNode::IndexedNode(int id, const QString & name, const std::string & key,
+                         const IndexedNode* pParentNode)
     : mId(id),
     mSortKey(),
     mChildren(),
@@ -32,6 +38,8 @@ IndexedNode::IndexedNode(int id, const QString & name, const std::string & key)
   mSortKey.setNum(id);
   mSortKey += "_" + name;
 
+  mpParentNode = pParentNode;
+
   CONSTRUCTOR_TRACE;
 };
 
@@ -40,10 +48,12 @@ IndexedNode::IndexedNode(const IndexedNode & src):
     mSortKey(src.mSortKey),
     //mChildren(src.mChildren),
     mName(src.mName),
-    mObjectKey(src.mObjectKey)
+    mObjectKey(src.mObjectKey),
+    mpParentNode(src.mpParentNode)
 {
   mChildren.clear();
   std::vector<IndexedNode*>::const_iterator it, itEnd = src.mChildren.end();
+
   for (it = src.mChildren.begin(); it != itEnd; ++it)
     mChildren.push_back(new IndexedNode(**it));
 
@@ -62,13 +72,15 @@ IndexedNode::~IndexedNode()
 void IndexedNode::removeChildren()
 {
   std::vector<IndexedNode*>::iterator it, itEnd = mChildren.end();
+
   for (it = mChildren.begin(); it != itEnd; ++it)
     delete *it;
+
   mChildren.clear();
 }
 
 void IndexedNode::addChild(int id, const QString & name, const std::string & key)
-{mChildren.push_back(new IndexedNode(id, name, key));};
+{mChildren.push_back(new IndexedNode(id, name, key, this));};
 
 int IndexedNode::getId() const {return mId;};
 
@@ -87,14 +99,19 @@ const std::string & IndexedNode::getObjectKey() const {return mObjectKey;};
 void IndexedNode::setObjectKey(const std::string & key) {mObjectKey = key;};
 
 const QString & IndexedNode::getSortKey() const
-  {
-    return mSortKey;
-  };
+{
+  return mSortKey;
+};
 
 const std::vector<IndexedNode*> & IndexedNode::children() const
-  {return mChildren;};
+{return mChildren;};
 
 //*************  Tree *******************
+
+IndexedTree::IndexedTree()
+{
+  root.mId = -1;
+}
 
 void IndexedTree::add(int parentId, int newId, const QString & name, const std::string & key)
 {
@@ -104,34 +121,103 @@ void IndexedTree::add(int parentId, int newId, const QString & name, const std::
 
 IndexedNode * IndexedTree::findNodeFromId(int id)
 {
-  IndexedNode * tmp = const_cast<IndexedNode*>(findNodeFromId(root, id));
+  IndexedNode * tmp = findNodeFromId(root, id);
+  //assert(tmp != NULL);
+
+  return tmp;
+}
+
+IndexedNode * IndexedTree::findNodeFromId(IndexedNode & node, int id) const
+{
+  if (node.getId() == id)
+    return &node;
+
+  const std::vector<IndexedNode*> & children = node.children();
+  std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
+
+  IndexedNode * tmp;
+
+  for (it = children.begin(); it != itEnd; ++it)
+    {
+      tmp = findNodeFromId(**it, id);
+
+      if (tmp) return tmp;
+    }
+
+  return NULL;
+}
+
+IndexedNode * IndexedTree::findNodeFromKey(const std::string& key)
+{
+  IndexedNode * tmp = findNodeFromKey(root, key);
   assert(tmp != NULL);
 
   return tmp;
 }
 
-const IndexedNode * IndexedTree::findNodeFromId(int id) const
-  {
-    const IndexedNode * tmp = findNodeFromId(root, id);
-    assert(tmp != NULL);
-
-    return tmp;
-  }
-
-const IndexedNode * IndexedTree::findNodeFromId(const IndexedNode & node, int id) const
-  {
-    if (node.getId() == id)
-      return &node;
-
-    const std::vector<IndexedNode*> & children = node.children();
-    std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
-
-    const IndexedNode * tmp;
-    for (it = children.begin(); it != itEnd; ++it)
-      {
-        tmp = findNodeFromId(**it, id);
-        if (tmp) return tmp;
-      }
-
+IndexedNode * IndexedTree::findNodeFromKey(IndexedNode & node, const std::string& key) const
+{
+  if (key == "")
     return NULL;
-  }
+
+  if (node.getObjectKey() == key)
+    return &node;
+
+  const std::vector<IndexedNode*> & children = node.children();
+  std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
+
+  IndexedNode * tmp;
+
+  for (it = children.begin(); it != itEnd; ++it)
+    {
+      tmp = findNodeFromKey(**it, key);
+
+      if (tmp) return tmp;
+    }
+
+  return NULL;
+}
+
+IndexedNode* IndexedNode::child(int row)
+{
+  return mChildren[row];
+}
+
+int IndexedNode::childCount() const
+{
+  return mChildren.size();
+}
+
+int IndexedNode::columnCount() const
+{
+  return 1;
+}
+
+IndexedNode *IndexedNode::parent()
+{
+  return const_cast<IndexedNode*>(mpParentNode);
+}
+
+int IndexedNode::row() const
+{
+  if (mpParentNode)
+    {
+      const std::vector<IndexedNode*> & children = mpParentNode->children();
+      std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
+
+      int i = 0;
+
+      for (it = children.begin(); it != itEnd; ++it, i++)
+        {
+          if (*it  == this)
+            return i;
+        }
+    }
+
+  return -1;
+}
+
+int IndexedNode::column() const
+{
+  return (columnCount() - 1);
+}

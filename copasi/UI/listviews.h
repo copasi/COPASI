@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.164 $
+//   $Revision: 1.165 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/26 11:51:59 $
+//   $Author: aekamal $
+//   $Date: 2010/08/13 21:19:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@
 
 #include <set>
 #include <qsplitter.h>
-#include <q3listview.h>
+#include <QTreeView>
 
 #include "copasi.h"
 #include "UI/Tree.h"
@@ -100,25 +100,6 @@ class CQModelValue;
 class CQMathMatrixWidget;
 class CQLayoutsWidget;
 
-//*********************************************************************************
-
-class FolderListItem : public Q3ListViewItem
-{
-public:
-  FolderListItem(Q3ListView *parent, const IndexedNode *f, bool recurs = true);
-  FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs = true);
-  void createSubFolders();
-  void deleteSubFolders();
-
-  bool setFolder(const IndexedNode * folder);
-  const IndexedNode * getFolder() const;
-  QString key(int, bool) const;
-
-protected:
-  const IndexedNode *mpFolder;
-  QString mSortKey;
-};
-
 //********************************************************************************
 
 class ListViews : public QSplitter
@@ -151,7 +132,7 @@ public:
                   };
 
   static void setDataModel(DataModelGUI* dm);
-  static DataModelGUI* getDataModel() {return dataModel;};
+  static DataModelGUI* getDataModel() {return mpDataModelGUI;};
   static bool notify(ObjectType objectType, Action action, const std::string & key = "");
   static bool commit();
   void switchToOtherWidget(C_INT32 id, const std::string & key);
@@ -159,6 +140,7 @@ public:
 
   void storeCurrentItem();
   void restoreCurrentItem();
+  int getCurrentItemId();
   static void storeCurrentItemInAllListViews();
   static void restoreCurrentItemInAllListViews();
   CopasiWidget* findWidgetFromId(const C_INT32 & id) const;
@@ -176,25 +158,20 @@ public:
 private:
   CMathModel *mpMathModel;
 
-  CopasiWidget* findWidgetFromItem(FolderListItem* item) const;
+  CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;
 
   void ConstructNodeWidgets();
   void setupFolders();
 
-  void setTheRightPixmap(Q3ListViewItem* lvi);
-
-  FolderListItem* findListViewItem(C_INT32 id, std::string key); //should always return a valid item
-
 private slots:
-  void slotFolderChanged(Q3ListViewItem*);
+  void slotFolderChanged(const QModelIndex & index);
 
 private:
-  static DataModelGUI* dataModel;
+  static DataModelGUI* mpDataModelGUI;
   static std::vector< Refresh * > mUpdateVector;
   static std::set< const CCopasiObject * > mChangedObjects;
   static int mFramework;
 
-  Q3ListViewItem* lastSelection;
   CopasiWidget* currentWidget;
   std::string lastKey;
 
@@ -207,7 +184,7 @@ private:
 
   bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
   static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
-  static bool updateAllListviews(C_INT32 id);
+  static bool updateAllListviews();
 
   void notifyChildWidgets(ObjectType objectType,
                           Action action,
@@ -228,7 +205,7 @@ private:
   static void updateMIRIAMResourceContents();
 
   //the widgets
-  Q3ListView *folders;
+  QTreeView *mpTreeView;
 
   CMCAResultWidget* mpCMCAResultWidget;
   CQMCAWidget* mpCQMCAWidget;

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/06/29 10:50:49 $
+//   $Author: aekamal $
+//   $Date: 2010/08/13 21:19:01 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,6 +23,10 @@
 #ifndef DATAMODELGUI_H
 #define DATAMODELGUI_H
 
+#include <QAbstractItemModel>
+#include <QModelIndex>
+#include <QVariant>
+
 #include <qobject.h>
 #include <qapplication.h>
 
@@ -28,8 +37,9 @@
 class QTimer;
 class CMIRIAMResources;
 
-class DataModelGUI
+class DataModelGUI : public QAbstractItemModel
 {
+  Q_OBJECT
 private:
   IndexedTree mTree; // create the  object of the tree
 
@@ -43,7 +53,7 @@ private:
   COutputHandlerPlot mOutputHandlerPlot;
 
 public:
-  DataModelGUI();
+  DataModelGUI(QObject* parent);
 
   void populateData();
 
@@ -57,7 +67,7 @@ public:
   void updatePlots();
 
   const IndexedNode * getRootNode() const;
-  const IndexedNode * getNode(const int & id) const;
+  const IndexedNode * getNode(int id);
 
   bool loadModel(const std::string & fileName);
   bool createModel();
@@ -82,6 +92,19 @@ public:
 
   void setQApp(QApplication* app);
   QApplication* getQApp() const;
+
+  QVariant data(const QModelIndex &index, int role) const;
+  Qt::ItemFlags flags(const QModelIndex &index) const;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                      int role = Qt::DisplayRole) const;
+  QModelIndex index(int row, int column,
+                    const QModelIndex &parent = QModelIndex()) const;
+  QModelIndex parent(const QModelIndex &index) const;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  QModelIndex findIndexFromId(int id);
+  QModelIndex findIndexFromKey(const std::string& key);
+  void emitDataChanged();
 };
 
 #endif

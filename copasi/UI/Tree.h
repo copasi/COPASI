@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Author: aekamal $
+   $Date: 2010/08/13 21:19:01 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,71 +44,81 @@
 class IndexedTree;
 
 class IndexedNode
-  {
-  public:
-    IndexedNode(int id = 0, const QString & name = "", const std::string & key = "");
+{
+public:
+  IndexedNode(int id = 0, const QString & name = "",
+              const std::string & key = "", const IndexedNode* pParentNode = NULL);
 
-    IndexedNode(const IndexedNode & src);
+  IndexedNode(const IndexedNode & src);
 
-  private:
-    IndexedNode & operator=(const IndexedNode&);
+private:
+  IndexedNode & operator=(const IndexedNode&);
 
-  public:
-    ~IndexedNode(); // destructor
+public:
+  ~IndexedNode(); // destructor
 
-    const std::vector<IndexedNode*>& children() const;
+  const std::vector<IndexedNode*>& children() const;
 
-    void removeChildren();
+  void removeChildren();
 
-    void addChild(int id, const QString & name, const std::string & key);
+  void addChild(int id, const QString & name, const std::string & key);
 
-    int getId() const;
+  int getId() const;
 
-    //contents methods
-    const QString & getName() const;
-    void setName(const QString & name);
-    const std::string & getObjectKey() const;
-    void setObjectKey(const std::string & key);
+  //contents methods
+  const QString & getName() const;
+  void setName(const QString & name);
+  const std::string & getObjectKey() const;
+  void setObjectKey(const std::string & key);
 
-    const QString & getSortKey() const;
+  const QString & getSortKey() const;
 
-    //const std::vector<IndexedNode> & children();
+  IndexedNode *child(int row);
+  int childCount() const;
+  int columnCount() const;
+  int row() const;
+  int column() const;
+  IndexedNode *parent();
 
-  private:
-    int mId;
+private:
+  int mId;
+  const IndexedNode * mpParentNode;
+  QString mSortKey;
 
-    QString mSortKey;
+  std::vector<IndexedNode*> mChildren;
 
-    std::vector<IndexedNode*> mChildren;
+  //contents
+  QString mName;
+  std::string mObjectKey;
 
-    //contents
-    QString mName;
-    std::string mObjectKey;
-
-    friend class IndexedTree;
-  };
+  friend class IndexedTree;
+};
 
 //template <class T>
 class IndexedTree
-  {
-  private:
-    IndexedNode root; // declares the head of the tree
+{
+private:
+  IndexedNode root; // declares the head of the tree
 
-    const IndexedNode * findNodeFromId(const IndexedNode & node, int id) const;
+  IndexedNode * findNodeFromId(IndexedNode & node, int id) const;
 
-  public :
+  IndexedNode * findNodeFromKey(IndexedNode & node, const std::string& key) const;
 
-    IndexedTree() {};
 
-    ~IndexedTree() {};
+public :
 
-    void add(int parentId, int newId, const QString & name, const std::string & key);
+  IndexedTree();
 
-    IndexedNode * findNodeFromId(int id);
-    const IndexedNode * findNodeFromId(int id) const;
+  ~IndexedTree() {};
 
-    IndexedNode * getRoot() {return &root;};
-    const IndexedNode * getRoot() const {return &root;};
-  };
+  void add(int parentId, int newId, const QString & name, const std::string & key);
+
+  IndexedNode * findNodeFromId(int id);
+
+  IndexedNode * findNodeFromKey(const std::string& key);
+
+  IndexedNode * getRoot() {return &root;};
+  const IndexedNode * getRoot() const {return &root;};
+};
 
 #endif

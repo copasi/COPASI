@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.283 $
+//   $Revision: 1.284 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Author: aekamal $
+//   $Date: 2010/08/13 21:19:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,101 +108,6 @@
 #include "CQCrossSectionTaskWidget.h"
 #endif
 
-/**------FolderListItem::FolderListItem(QListView *parent, Folder *f)---->
- **
- ** Parameters:- 1. QListView* :- The parameter for the root of the tree
- **              2. Folder* :- The folder that needs to be created
- **
- ** Returns  :- This is constructor so it does not return any thing
- ** Description:This is a 2 argument constructor with one argument for the base class
- **             This method creates a QListViewItem which the graphical display of the
- **             node of the tree with the name as specified in the name of the Folder
- **             and icon as per req..i.e whether its closed /locked..depending on
- **             whether the node has any children or not..
- *******************************************************************************************/
-FolderListItem::FolderListItem(Q3ListView *parent, const IndexedNode *f, bool recurs):
-    Q3ListViewItem(parent),
-    mpFolder(f),
-    mSortKey(f->getSortKey())
-{
-  setText(0, f->getName());
-
-  if (recurs)
-    createSubFolders();
-}
-
-/**--------FolderListItem::FolderListItem(FolderListItem *parent, Folder *f)----->
- **
- ** Parameters:- 1. FolderListItem* :- The parameter for one of the node of the tree
- **              2. Folder* :- The folder that needs to be created
- **
- ** Returns  :- This is constructor so it does not return any thing
- ** Description:This is a 2 argument constructor with one argument for the base class
- **             This method creates a QListViewItem which the graphical display of the
- **             node of the tree with the name as specified in the name of the Folder
- **             and icon as per req..i.e whether its closed /locked..depending on
- **             whether the node has any children or not..
- *******************************************************************************************/
-FolderListItem::FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs):
-    Q3ListViewItem(parent),
-    mpFolder(f),
-    mSortKey(f->getSortKey())
-{
-  setText(0, f->getName());
-
-  if (recurs)
-    createSubFolders();
-}
-
-/** **************FolderListItem::insertSubFolders(const QObjectList *lst)******
- **
- ** Parameters:- 1. QObjectList* :- The list of the object as my children
- **
- ** Returns  :- void
- ** Description: This method is used to insert the sub folders of the folders. i.e. if the node
- **              has any children then this method is used to create those child nodes
- *******************************************************************************************/
-void FolderListItem::createSubFolders()
-{
-  const std::vector<IndexedNode*> & children = mpFolder->children();
-
-  std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
-
-  for (it = children.begin(); it != itEnd; ++it)
-    {
-      new FolderListItem(this, *it, true);
-    }
-}
-
-void FolderListItem::deleteSubFolders()
-{
-  Q3ListViewItem * tmp;
-
-  for (tmp = firstChild(); tmp; tmp = firstChild())
-    {
-      delete tmp;
-    }
-}
-
-bool FolderListItem::setFolder(const IndexedNode * folder)
-{
-  mpFolder = folder;
-  mSortKey = mpFolder->getSortKey();
-  return true;
-}
-
-const IndexedNode * FolderListItem::getFolder() const
-{return mpFolder;}
-
-QString FolderListItem::key(int, bool) const
-{
-  /*    if (mpFolder)
-        return mpFolder->getSortKey();
-      else
-        return "";*/
-  return mSortKey;
-}
-
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
 // Definitions of the ListViews class as declared in listviews.h
@@ -279,33 +184,29 @@ ListViews::ListViews(QWidget *parent, const char *name):
   setChildrenCollapsible(false);
 
   // create a new QListview to be displayed on the screen..and set its property
-  folders = new Q3ListView(this);
-  //folders->header()->setClickEnabled(false);
-  folders->header()->hide();
-  //folders->setRootIsDecorated(true);
-  folders->addColumn("Select");
-  //  folders->setMinimumWidth(160);
+  mpTreeView = new QTreeView(this);
+  mpTreeView->header()->hide();
+  mpTreeView->setRootIsDecorated(false);
 
   defaultWidget = new CQSplashWidget(this);
 
-  addWidget(folders);
+  addWidget(mpTreeView);
   addWidget(defaultWidget);
-  setResizeMode(folders, QSplitter::KeepSize);
+  setResizeMode(mpTreeView, QSplitter::KeepSize);
 
   if (!opaqueResize())
     setOpaqueResize();
 
-  lastSelection = NULL;          // keeps track of the node that was selected last..to change the icon type
   currentWidget = defaultWidget; // keeps track of the currentWidget in use
   lastKey = "";
 
-  // establishes the communication between the folders clicked and the routine called....
-  connect(folders, SIGNAL(pressed(Q3ListViewItem*)),
-          this, SLOT(slotFolderChanged(Q3ListViewItem*)));
+  // establishes the communication between the mpTreeView clicked and the routine called....
+  connect(mpTreeView, SIGNAL(pressed(const QModelIndex &)),
+          this, SLOT(slotFolderChanged(const QModelIndex &)));
 
-  // Need to somehow signal folders to change when navigating using up and down arrows
-  connect(folders, SIGNAL(returnPressed(Q3ListViewItem*)),
-          this, SLOT(slotFolderChanged(Q3ListViewItem*)));
+  // Need to somehow signal mpTreeView to change when navigating using up and down arrows
+  connect(mpTreeView, SIGNAL(activated(const QModelIndex &)),
+          this, SLOT(slotFolderChanged(const QModelIndex &)));
 
   attach();
 }
@@ -325,7 +226,7 @@ ListViews::~ListViews()
  ************************************************************************************/
 void ListViews::setDataModel(DataModelGUI* dm)
 {
-  dataModel = dm;
+  mpDataModelGUI = dm;
 
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
@@ -342,12 +243,9 @@ void ListViews::setDataModel(DataModelGUI* dm)
  */
 void ListViews::setupFolders()
 {
-  // first clear up any thing that was present earlier
-  folders->clear();
-
-  FolderListItem* tmp = new FolderListItem(folders, dataModel->getRootNode(), true);
-  tmp->setText(0, "Copasi");
-  tmp->setOpen(true);
+  mpTreeView->setModel(NULL);
+  mpTreeView->setModel(mpDataModelGUI);
+  mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
 }
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
@@ -560,21 +458,23 @@ void ListViews::ConstructNodeWidgets()
 /**
  * tries to find the right hand side widget that belongs to an item of the tree view
  */
-CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
+CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
 {
+  if (!index.isValid())
+    return NULL;
+
+  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
   // first try ID
-  C_INT32 id = item->getFolder()->getId();
+  C_INT32 id = pNode->getId();
   CopasiWidget* pWidget = findWidgetFromId(id);
 
   if (pWidget != NULL)
     return pWidget;
 
   // then try parent id:
-  FolderListItem* parent = (FolderListItem*)item->parent();
+  if (!pNode->parent()) return NULL;
 
-  if (!parent) return NULL;
-
-  id = parent->getFolder()->getId();
+  id = pNode->parent()->getId();
 
   switch (id)
     {
@@ -744,74 +644,30 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
   return NULL;
 }
 
-FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //should always return a valid item
-{
-  FolderListItem * item = NULL;
-
-  Q3ListViewItemIterator it(folders);
-
-  for (; *it; ++it)
-    {
-      item = (FolderListItem*) * it;
-
-      if (item->getFolder()->getId() == id)
-        break;
-    }
-
-  //try finding the key in the whole tree
-  if (!(*it)) return findListViewItem(0, key);
-
-  if (key == "") return item;
-
-  if (key == item->getFolder()->getObjectKey()) return item; //found right key already
-
-  //now look for the right key
-  FolderListItem * item2;
-  Q3ListViewItemIterator it2(item->firstChild());
-  Q3ListViewItem * itemEnd = item->nextSibling();
-
-  for (; *it2 && (*it2 != itemEnd); ++it2)
-    {
-      item2 = (FolderListItem*) * it2;
-
-      if (item2->getFolder()->getObjectKey() == key)
-        break;
-
-      //if (item2 == itemEnd) //not found
-      //  break;
-    }
-
-  if (*it2 && (*it2 != itemEnd)) return (FolderListItem*)*it2; //key was found
-
-  return item; //id was found, but key was not found
-}
-
 /************************ListViews::slotFolderChanged(QListViewItem *i)----------->
  **
- ** Parameters:- QListViewItem* :- pointer to the node that was selected by the user
+ ** Parameters:- index :- pointer to the node that was selected by the user
  **
  ** Returns  :-  void(Nothing)
  ** Description:-This method is called whenever the user clicks on one of the
  ** tree view items...
  *************************************************************************************/
-void ListViews::slotFolderChanged(Q3ListViewItem *i)
+void ListViews::slotFolderChanged(const QModelIndex & index)
 {
+  //if (!mpTreeView->isExpanded(mpDataModelGUI->findIndexFromId(0)))
+  //mpTreeView->setExpanded(mpDataModelGUI->findIndexFromId(0), true);
   bool changeWidget = true;
 
-  if (!i) return;
-
-  folders->setCurrentItem(i);
-  folders->ensureItemVisible(i);
-
-  // get the listview item in form of folderlistitem...
-  FolderListItem *item = static_cast< FolderListItem * >(i); //TODO dynamic cast?
+  if (!index.isValid()) return;
 
   // find the widget
-  CopasiWidget* newWidget = findWidgetFromItem(item);
+  CopasiWidget* newWidget = findWidgetFromIndex(index);
 
   if (!newWidget) return; //do nothing
 
-  std::string itemKey = item->getFolder()->getObjectKey();
+  const IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
+
+  std::string itemKey = pNode->getObjectKey();
 
   if (newWidget == currentWidget)
     if (itemKey == lastKey) return; //do nothing
@@ -824,15 +680,13 @@ void ListViews::slotFolderChanged(Q3ListViewItem *i)
       if (!changeWidget) return;
 
       //item may point to an invalid ListViewItem now
-      item = (FolderListItem*)folders->currentItem();
+      //QModelIndex newIndex = mpTreeView->currentIndex();
+
+      // find the widget again (it may have changed)
+      //newWidget = findWidgetFromIndex(newIndex);
     }
 
-  // find the widget again (it may have changed)
-  newWidget = findWidgetFromItem(item);
-
   if (!newWidget) newWidget = defaultWidget; //should never happen
-
-  itemKey = item->getFolder()->getObjectKey();
 
   // enter new widget
   if (newWidget)
@@ -855,31 +709,31 @@ void ListViews::slotFolderChanged(Q3ListViewItem *i)
 
 void ListViews::switchToOtherWidget(C_INT32 id, const std::string & key)
 {
-  slotFolderChanged(findListViewItem(id, key));
+  if (!mpDataModelGUI) return;
+
+  QModelIndex index;
+
+  if (key == "")
+    index = mpDataModelGUI->findIndexFromId(id);
+  else
+    index = mpDataModelGUI->findIndexFromKey(key);
+
+  slotFolderChanged(index);
 }
 
 //**********************************************************************
 
 // this reconstructs the children of the listViewItems in all listviews
-bool ListViews::updateAllListviews(C_INT32 id) //static
+bool ListViews::updateAllListviews() //static
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
 
-  FolderListItem* item;
-
   for (; it != ende; ++it)
     {
-      (*it)->folders->blockSignals(true);
-
-      item = (*it)->findListViewItem(id, "");
-
-      item->deleteSubFolders();
-      item->setFolder(dataModel->getNode(id));
-
-      item->createSubFolders();
-
-      (*it)->folders->blockSignals(false);
+      (*it)->mpTreeView->setModel(NULL);
+      (*it)->mpTreeView->setModel(mpDataModelGUI);
+      (*it)->mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
     }
 
   return true;
@@ -890,23 +744,43 @@ bool ListViews::updateAllListviews(C_INT32 id) //static
 void ListViews::storeCurrentItem()
 {
   //save the id and object key of the current ListViewItem
-  FolderListItem* item = (FolderListItem*)folders->currentItem();
-  mSaveObjectKey = item->getFolder()->getObjectKey();
-  mSaveFolderID = item->getFolder()->getId();
+  QModelIndex index = mpTreeView->currentIndex();
+
+  if (!index.isValid())
+    return;
+
+  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
+
+  mSaveObjectKey = pNode->getObjectKey();
+  mSaveFolderID = pNode->getId();
 
   while (mSaveFolderID == -1)
     {
-      item = (FolderListItem*)item->parent();
-      mSaveFolderID = item->getFolder()->getId();
+      pNode = pNode->parent();
+      mSaveFolderID = pNode->getId();
     }
 }
 
 void ListViews::restoreCurrentItem()
 {
   //reset the item from the saved values
-  FolderListItem* item = (FolderListItem*)findListViewItem(mSaveFolderID, mSaveObjectKey);
-  folders->setCurrentItem(item);
-  folders->setSelected(item, true);
+  if (!mpDataModelGUI) return;
+
+  QModelIndex index = mpDataModelGUI->findIndexFromId(mSaveFolderID);
+
+  if (index.isValid())
+    mpTreeView->setCurrentIndex(index);
+}
+
+int ListViews::getCurrentItemId()
+{
+  QModelIndex index = mpTreeView->currentIndex();
+
+  if (!index.isValid())
+    return -1;
+
+  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
+  return pNode->getId();
 }
 
 //static
@@ -956,7 +830,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
               // check if it was the last metabolite, if yes,
               // make the metabolite table the current widget
-              if (dataModel)
+              if (mpDataModelGUI)
                 {
                   unsigned int numMetabolites = pDataModel->getModel()->getMetabolites().size();
 
@@ -986,7 +860,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
               // check if it was the last compartment, if yes,
               // make the compartment table the current widget
-              if (dataModel)
+              if (mpDataModelGUI)
                 {
                   unsigned int numCompartments = pDataModel->getModel()->getCompartments().size();
 
@@ -1016,7 +890,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
               // check if it was the last reaction, if yes,
               // make the reaction table the current widget
-              if (dataModel)
+              if (mpDataModelGUI)
                 {
                   unsigned int numReactions = pDataModel->getModel()->getReactions().size();
 
@@ -1047,7 +921,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
               // check if it was the last value, if yes,
               // make the model value table the current widget
-              if (dataModel)
+              if (mpDataModelGUI)
                 {
                   unsigned int numValues = pDataModel->getModel()->getNumModelValues();
 
@@ -1071,7 +945,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           {
             case DELETE:
 
-              if (dataModel)
+              if (mpDataModelGUI)
                 {
                   unsigned int numPlots = (pDataModel->getPlotDefinitionList())->size();
 
@@ -1088,7 +962,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
               break;
           }
 
-        if (dataModel) pDataModel->changed();
+        if (mpDataModelGUI) pDataModel->changed();
 
         break;
 
@@ -1098,7 +972,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           {
             case DELETE:
 
-              if (dataModel)
+              if (mpDataModelGUI)
 
                 {
                   unsigned int numReports = ((pDataModel)->getReportDefinitionList())->size();
@@ -1125,13 +999,13 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
             case CHANGE:
             case RENAME:
 
-              if (dataModel) pDataModel->changed();
+              if (mpDataModelGUI) pDataModel->changed();
 
               break;
             case ADD:
             case DELETE:
 
-              if (dataModel) setDataModel(dataModel);
+              if (mpDataModelGUI) setDataModel(mpDataModelGUI);
 
               break;
             default:
@@ -1147,35 +1021,27 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   storeCurrentItemInAllListViews();
 
   //just do everything.  Later we can decide from parameters what really needs to be done
-  dataModel->updateCompartments();
-  updateAllListviews(111);
+  mpDataModelGUI->updateCompartments();
 
-  dataModel->updateMetabolites();
-  updateAllListviews(112);
+  mpDataModelGUI->updateMetabolites();
 
-  dataModel->updateReactions();
-  updateAllListviews(114);
+  mpDataModelGUI->updateReactions();
 
-  dataModel->updateModelValues();
-  updateAllListviews(115);
+  mpDataModelGUI->updateModelValues();
 
-  dataModel->updateEvents();
-  updateAllListviews(116);
+  mpDataModelGUI->updateEvents();
 
-  dataModel->updateFunctions();
-  updateAllListviews(5);
+  mpDataModelGUI->updateFunctions();
 
-  //  FolderListItem* item=(*(mListOfListViews.begin()))->findListViewItem(5,"");
-  //  item->firstChild();
+  mpDataModelGUI->updateReportDefinitions();
 
-  dataModel->updateReportDefinitions();
-  updateAllListviews(43);
+  mpDataModelGUI->updatePlots();
 
-  dataModel->updatePlots();
-  updateAllListviews(42);
+  //updateAllListviews();
+  mpDataModelGUI->emitDataChanged();
 
   //item may point to an invalid ListViewItem now
-  restoreCurrentItemInAllListViews();
+  //restoreCurrentItemInAllListViews();
 
   return success;
 }
@@ -1188,7 +1054,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 std::set<ListViews *> ListViews::mListOfListViews;
 
 // static
-DataModelGUI* ListViews::dataModel;
+DataModelGUI* ListViews::mpDataModelGUI;
 
 // static
 std::set< const CCopasiObject * > ListViews::mChangedObjects;
