@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:06:31 $
+//   $Date: 2010/08/13 16:15:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,9 +22,9 @@
 
 /**
  * CCopasiXMLParser class.
- * This class is the parses a Copasi XML file.
+ * This class is the parses a COPASI XML file.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
 
@@ -1106,6 +1106,7 @@ private:
     {
       Reaction = 0,
       MiriamAnnotation,
+      Comment,
       ListOfSubstrates,
       ListOfProducts,
       ListOfModifiers,
@@ -1225,6 +1226,7 @@ private:
     {
       Metabolite = 0,
       MiriamAnnotation,
+      Comment,
       Expression,
       InitialExpression
     };
@@ -1322,6 +1324,7 @@ private:
     {
       Compartment = 0,
       MiriamAnnotation,
+      Comment,
       Expression,
       InitialExpression
     };
@@ -1421,6 +1424,7 @@ private:
     {
       ModelValue = 0,
       MiriamAnnotation,
+      Comment,
       Expression,
       InitialExpression,
       MathML
@@ -1516,6 +1520,7 @@ private:
     {
       Event = 0,
       MiriamAnnotation,
+      Comment,
       TriggerExpression,
       DelayExpression,
       ListOfAssignments
@@ -1770,8 +1775,8 @@ private:
     {
       Model = 0,
       MiriamAnnotation,
-      InitialExpression,
       Comment,
+      InitialExpression,
       ListOfCompartments,
       ListOfMetabolites,
       ListOfModelValues,
@@ -2999,6 +3004,7 @@ private:
     {
       Function = 0,
       MiriamAnnotation,
+      Comment,
       Expression,
       ListOfParameterDescriptions,
       MathML

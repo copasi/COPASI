@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.220 $
+//   $Revision: 1.221 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:36:58 $
+//   $Date: 2010/08/13 16:15:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -839,6 +839,16 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
         break;
 
+      case Comment:
+
+        if (!strcmp(pszName, "Comment"))
+          {
+            mpCurrentHandler = &mParser.mCommentElement;
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       case Expression:
 
         if (!strcmp(pszName, "Expression"))
@@ -921,6 +931,16 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
         mCommon.pFunction->setMiriamAnnotation(mCommon.CharacterData, mCommon.pFunction->getKey(), mKey);
+        mCommon.CharacterData = "";
+        break;
+
+      case Comment:
+
+        if (strcmp(pszName, "Comment"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Comment", mParser.getCurrentLineNumber());
+
+        mCommon.pFunction->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
         break;
 
@@ -1655,6 +1675,10 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
           while (CCopasiMessage::size() > Size)
             CCopasiMessage::getLastMessage();
         }
+
+        // Old CopasiML files have the incorrect order and the comment may appear after
+        // the initial expression. Therefore, we reset to MiriamAnnotation.
+        mCurrentElement = MiriamAnnotation;
         break;
 
       case ListOfCompartments:
@@ -2027,6 +2051,16 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 
         break;
 
+      case Comment:
+
+        if (!strcmp(pszName, "Comment"))
+          {
+            mpCurrentHandler = &mParser.mCommentElement;
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       case Expression:
 
         if (!strcmp(pszName, "Expression"))
@@ -2089,6 +2123,16 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
         mpCompartment->setMiriamAnnotation(mCommon.CharacterData, mpCompartment->getKey(), mKey);
+        mCommon.CharacterData = "";
+        break;
+
+      case Comment:
+
+        if (strcmp(pszName, "Comment"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Comment", mParser.getCurrentLineNumber());
+
+        mpCompartment->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
         break;
 
@@ -2303,6 +2347,16 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
 
         break;
 
+      case Comment:
+
+        if (!strcmp(pszName, "Comment"))
+          {
+            mpCurrentHandler = &mParser.mCommentElement;
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       case Expression:
 
         if (!strcmp(pszName, "Expression"))
@@ -2365,6 +2419,16 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
         mpMetabolite->setMiriamAnnotation(mCommon.CharacterData, mpMetabolite->getKey(), mKey);
+        mCommon.CharacterData = "";
+        break;
+
+      case Comment:
+
+        if (strcmp(pszName, "Comment"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Comment", mParser.getCurrentLineNumber());
+
+        mpMetabolite->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
         break;
 
@@ -2570,6 +2634,16 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
 
         break;
 
+      case Comment:
+
+        if (!strcmp(pszName, "Comment"))
+          {
+            mpCurrentHandler = &mParser.mCommentElement;
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       case Expression:
 
         if (!strcmp(pszName, "Expression"))
@@ -2648,6 +2722,16 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
         mCommon.CharacterData = "";
 
         //      mCurrentElement = ModelValue;
+        break;
+
+      case Comment:
+
+        if (strcmp(pszName, "Comment"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Comment", mParser.getCurrentLineNumber());
+
+        mpMV->setNotes(mCommon.CharacterData);
+        mCommon.CharacterData = "";
         break;
 
       case Expression:
@@ -2885,6 +2969,16 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
 
         break;
 
+      case Comment:
+
+        if (!strcmp(pszName, "Comment"))
+          {
+            mpCurrentHandler = &mParser.mCommentElement;
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       case TriggerExpression:
 
         if (!strcmp(pszName, "TriggerExpression"))
@@ -2953,6 +3047,16 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
         mCommon.pEvent->setMiriamAnnotation(mCommon.CharacterData, mCommon.pEvent->getKey(), mKey);
+        mCommon.CharacterData = "";
+        break;
+
+      case Comment:
+
+        if (strcmp(pszName, "Comment"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Comment", mParser.getCurrentLineNumber());
+
+        mCommon.pEvent->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
         break;
 
@@ -3403,6 +3507,16 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
         break;
 
+      case Comment:
+
+        if (!strcmp(pszName, "Comment"))
+          {
+            mpCurrentHandler = &mParser.mCommentElement;
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       case ListOfSubstrates:
 
         if (!strcmp(pszName, "ListOfSubstrates"))
@@ -3510,6 +3624,16 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
                          pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
         mCommon.pReaction->setMiriamAnnotation(mCommon.CharacterData, mCommon.pReaction->getKey(), mKey);
+        mCommon.CharacterData = "";
+        break;
+
+      case Comment:
+
+        if (strcmp(pszName, "Comment"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Comment", mParser.getCurrentLineNumber());
+
+        mCommon.pReaction->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
         break;
 

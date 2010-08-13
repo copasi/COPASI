@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.128 $
+//   $Revision: 1.129 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:53 $
+//   $Date: 2010/08/13 16:15:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -427,16 +427,19 @@ bool CCopasiXML::saveModel()
       endSaveElement("MiriamAnnotation");
     }
 
+  if (mpModel->getNotes() != "")
+    {
+      startSaveElement("Comment");
+      saveXhtml(mpModel->getNotes());
+      endSaveElement("Comment");
+    }
+
   if (mpModel->getInitialExpression() != "")
     {
       startSaveElement("InitialExpression");
       saveData(mpModel->getInitialExpression());
       endSaveElement("InitialExpression");
     }
-
-  startSaveElement("Comment");
-  saveXhtml(mpModel->getNotes());
-  endSaveElement("Comment");
 
   unsigned C_INT32 i, imax;
 
@@ -470,6 +473,13 @@ bool CCopasiXML::saveModel()
               startSaveElement("MiriamAnnotation");
               *mpOstream << pComp->getMiriamAnnotation() << std::endl;
               endSaveElement("MiriamAnnotation");
+            }
+
+          if (pComp->getNotes() != "")
+            {
+              startSaveElement("Comment");
+              saveXhtml(pComp->getNotes());
+              endSaveElement("Comment");
             }
 
           if (SimulationType != CModelEntity::FIXED &&
@@ -526,6 +536,13 @@ bool CCopasiXML::saveModel()
               endSaveElement("MiriamAnnotation");
             }
 
+          if (pMetab->getNotes() != "")
+            {
+              startSaveElement("Comment");
+              saveXhtml(pMetab->getNotes());
+              endSaveElement("Comment");
+            }
+
           if (SimulationType != CModelEntity::FIXED &&
               SimulationType != CModelEntity::REACTIONS &&
               pMetab->getExpression() != "")
@@ -577,6 +594,13 @@ bool CCopasiXML::saveModel()
               startSaveElement("MiriamAnnotation");
               *mpOstream << pMV->getMiriamAnnotation() << std::endl;
               endSaveElement("MiriamAnnotation");
+            }
+
+          if (pMV->getNotes() != "")
+            {
+              startSaveElement("Comment");
+              saveXhtml(pMV->getNotes());
+              endSaveElement("Comment");
             }
 
           if (SimulationType != CModelEntity::FIXED &&
@@ -638,6 +662,13 @@ bool CCopasiXML::saveModel()
               startSaveElement("MiriamAnnotation");
               *mpOstream << pReaction->getMiriamAnnotation() << std::endl;
               endSaveElement("MiriamAnnotation");
+            }
+
+          if (pReaction->getNotes() != "")
+            {
+              startSaveElement("Comment");
+              saveXhtml(pReaction->getNotes());
+              endSaveElement("Comment");
             }
 
           Attr.erase();
@@ -805,6 +836,13 @@ bool CCopasiXML::saveModel()
               endSaveElement("MiriamAnnotation");
             }
 
+          if (pEvent->getNotes() != "")
+            {
+              startSaveElement("Comment");
+              saveXhtml(pEvent->getNotes());
+              endSaveElement("Comment");
+            }
+
           if (pEvent->getTriggerExpression() != "")
             {
               startSaveElement("TriggerExpression");
@@ -950,6 +988,13 @@ bool CCopasiXML::saveFunctionList()
           startSaveElement("MiriamAnnotation");
           *mpOstream << pEvaluationTree->getMiriamAnnotation() << std::endl;
           endSaveElement("MiriamAnnotation");
+        }
+
+      if (pEvaluationTree->getNotes() != "")
+        {
+          startSaveElement("Comment");
+          saveXhtml(pEvaluationTree->getNotes());
+          endSaveElement("Comment");
         }
 
       startSaveElement("Expression");

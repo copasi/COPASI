@@ -300,6 +300,9 @@
       <optional>
         <ref name="miriamAnnotation.element"/>
       </optional>
+      <optional>
+        <ref name="comment.element"/>
+      </optional>
       <ref name="expression.element"/>
       <optional>
         <element name="ListOfParameterDescriptions">
@@ -508,6 +511,9 @@
       <ref name="miriamAnnotation.element"/>
     </optional>
     <optional>
+      <ref name="comment.element"/>
+    </optional>
+    <optional>
       <ref name="expression.element"/>
     </optional>
     <optional>
@@ -547,6 +553,9 @@
       <ref name="miriamAnnotation.element"/>
     </optional>
     <optional>
+      <ref name="comment.element"/>
+    </optional>
+    <optional>
       <ref name="expression.element"/>
     </optional>
     <optional>
@@ -580,6 +589,9 @@
       <ref name="miriamAnnotation.element"/>
     </optional>
     <optional>
+      <ref name="comment.element"/>
+    </optional>
+    <optional>
       <ref name="expression.element"/>
     </optional>
     <optional>
@@ -607,6 +619,9 @@
     </attribute>
     <optional>
       <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <ref name="comment.element"/>
     </optional>
     <optional>
       <element name="ListOfSubstrates">
@@ -725,6 +740,9 @@
     </attribute>
     <optional>
       <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <ref name="comment.element"/>
     </optional>
     <element name="TriggerExpression">
       <ref name="expression.simpletype"/>
