@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.237 $
+#   $Revision: 1.238 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/08/12 15:37:53 $
+#   $Date: 2010/08/16 18:43:07 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.237 $ $Author: shoops $ $Date: 2010/08/12 15:37:53 $
+# $Revision: 1.238 $ $Author: shoops $ $Date: 2010/08/16 18:43:07 $
 ######################################################################
 
 LIB = UI
@@ -52,6 +52,7 @@ HEADERS	+= \
   CQMCAWidget.h \
   CQMergingData.h \
   CQModelValue.h \
+  CQModelWidget.h \
   CQMoietiesTaskWidget.h \
   CQMoietiesTaskResult.h \
   CQNotes.h \
@@ -138,9 +139,7 @@ HEADERS	+= \
   DataModelGUI.h \
   DataModel.txt.h \
   FunctionItemWidget.h \
-#  FunctionWidget1.h \
   listviews.h \
-  ModelWidget.h \
   MyLineEdit.h \
   ObjectBrowserDialog.h \
   ObjectBrowserItem.h \
@@ -183,6 +182,7 @@ SOURCES	+= \
   CQMCAWidget.cpp \
   CQMergingData.cpp \
   CQModelValue.cpp \
+  CQModelWidget.cpp \
   CQMoietiesTaskWidget.cpp \
   CQMoietiesTaskResult.cpp \
   CQNotes.cpp \
@@ -266,9 +266,7 @@ SOURCES	+= \
   CTimeSeriesTable.cpp \
   DataModelGUI.cpp \
   FunctionItemWidget.cpp \
-#  FunctionWidget1.cpp \
   listviews.cpp \
-  ModelWidget.cpp \
   MyLineEdit.cpp \
   ObjectBrowserDialog.cpp \
   ObjectBrowserItem.cpp \
@@ -285,8 +283,6 @@ SOURCES	+= \
   TimeSeriesWidget.cpp \
   Tree.cpp \
   TSSWidget.cpp
-
-
 
 !contains(DEFINES, COPASI_TSS) {
   HEADERS -= TSSWidget.h
@@ -351,6 +347,7 @@ FORMS += CQLyapResultWidget.ui
 FORMS += CQMCAWidget.ui
 FORMS += CQMergingData.ui
 FORMS += CQModelValue.ui
+FORMS += CQModelWidget.ui
 FORMS += CQMoietiesTaskWidget.ui
 FORMS += CQMoietiesTaskResult.ui
 FORMS += CQNotes.ui
