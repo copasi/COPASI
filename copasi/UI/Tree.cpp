@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.7 $
+  $Revision: 1.8 $
   $Name:  $
-  $Author: aekamal $
-  $Date: 2010/08/13 21:19:01 $
+  $Author: shoops $
+  $Date: 2010/08/16 18:42:42 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,43 +27,43 @@
 #include "Tree.h"
 
 IndexedNode::IndexedNode(int id, const QString & name, const std::string & key,
-                         const IndexedNode* pParentNode)
-    : mId(id),
+                         const IndexedNode* pParentNode):
+    mId(id),
+    mpParentNode(pParentNode),
     mSortKey(),
     mChildren(),
     mName(name),
     mObjectKey(key)
 {
-  mChildren.clear();
-  mSortKey.setNum(id);
-  mSortKey += "_" + name;
-
-  mpParentNode = pParentNode;
-
-  CONSTRUCTOR_TRACE;
+  if (mId != -1)
+    {
+      mSortKey.setNum(id);
+      mSortKey += "_" + mName;
+    }
+  else
+    {
+      mSortKey = mName;
+    }
 };
 
 IndexedNode::IndexedNode(const IndexedNode & src):
     mId(src.mId),
+    mpParentNode(src.mpParentNode),
     mSortKey(src.mSortKey),
-    //mChildren(src.mChildren),
+    mChildren(),
     mName(src.mName),
-    mObjectKey(src.mObjectKey),
-    mpParentNode(src.mpParentNode)
+    mObjectKey(src.mObjectKey)
 {
-  mChildren.clear();
   std::vector<IndexedNode*>::const_iterator it, itEnd = src.mChildren.end();
 
   for (it = src.mChildren.begin(); it != itEnd; ++it)
     mChildren.push_back(new IndexedNode(**it));
 
-  CONSTRUCTOR_TRACE;
 };
 
 IndexedNode::~IndexedNode()
 {
   removeChildren();
-  DESTRUCTOR_TRACE;
 }; // destructor
 
 //const std::vector<IndexedNode>& IndexedNode::children() const
