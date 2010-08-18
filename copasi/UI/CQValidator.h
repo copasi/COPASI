@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: pwilly $
-   $Date: 2009/10/12 11:47:49 $
+   $Author: shoops $
+   $Date: 2010/08/18 17:33:03 $
    End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -30,14 +35,15 @@ template <typename Type> class CQValidator : public QValidator
 {
   // Operations
 public:
-  CQValidator(Type * parent, const char * name = 0):
+  CQValidator(Type * parent, QString(Type::*retrieve)(void) const, const char * name = 0):
       QValidator(parent, name),
-      mpLineEdit(parent),
+      mpContainer(parent),
+      mRetrieve(retrieve),
       mLastAccepted("")
   {
     int h, s, v;
 
-    QPalette palette = mpLineEdit->palette();
+    QPalette palette = mpContainer->palette();
     QBrush brush = palette.brush(QPalette::Active, QPalette::Base);
     mSavedColor = brush.color();
 //    mSavedColor = mpLineEdit->paletteBackgroundColor();
@@ -58,7 +64,7 @@ public:
         brush.setStyle(Qt::SolidPattern);
         brush.setColor(mSavedColor);
         palette.setBrush(QPalette::Active, QPalette::Base, brush);
-        mpLineEdit->setPalette(palette);
+        mpContainer->setPalette(palette);
       }
     else
       setColor(Acceptable);
@@ -74,7 +80,7 @@ public:
 
   virtual State revalidate()
   {
-    QString Input = mpLineEdit->text();
+    QString Input = (*mpContainer.*mRetrieve)();
     int Pos = Input.length();
 
     return validate(Input, Pos);
@@ -82,7 +88,7 @@ public:
 
   virtual void saved() const
   {
-    const_cast<CQValidator *>(this)->mLastAccepted = mpLineEdit->text();
+    const_cast<CQValidator *>(this)->mLastAccepted = (*mpContainer.*mRetrieve)();
     const_cast<CQValidator *>(this)->revalidate();
   }
 
@@ -132,13 +138,18 @@ protected:
       }
 
     palette.setBrush(QPalette::Active, QPalette::Base, brush);
-    mpLineEdit->setPalette(palette);
+    mpContainer->setPalette(palette);
 
     return state;
   }
 
   //Attributes
-  Type * mpLineEdit;
+  Type * mpContainer;
+
+  /**
+   * Method to retrieve the content of the container as a QString
+   */
+  QString(Type::*mRetrieve)(void) const;
 
   QString mLastAccepted;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.cpp,v $
- $Revision: 1.12 $
+ $Revision: 1.13 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/07/16 19:05:19 $
+ $Date: 2010/08/18 17:33:03 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@
 #include "CQValidator.h"
 
 CQValidatorNotEmpty::CQValidatorNotEmpty(QLineEdit * parent, const char * name):
-    CQValidator< QLineEdit >(parent, name)
+    CQValidator< QLineEdit >(parent, &QLineEdit::text, name)
 {}
 
 QValidator::State CQValidatorNotEmpty::validate(QString & input, int & pos) const
@@ -41,7 +41,7 @@ QValidator::State CQValidatorNotEmpty::validate(QString & input, int & pos) cons
 }
 
 CQValidatorBound::CQValidatorBound(QLineEdit * parent, const QString & sign):
-    CQValidator< QLineEdit >(parent, NULL),
+    CQValidator< QLineEdit >(parent, &QLineEdit::text, NULL),
     mpDoubleValidator(new QDoubleValidator(-DBL_MAX, DBL_MAX, DBL_DIG, this)),
     mSign(sign),
     mValidBound("\t") // It is not possible to insert a tab.
@@ -73,7 +73,7 @@ void CQValidatorBound::force(const QString & input) const
 }
 
 CQValidatorDouble::CQValidatorDouble(QLineEdit * parent, const char * name):
-    CQValidator< QLineEdit >(parent, name),
+    CQValidator< QLineEdit >(parent, &QLineEdit::text, name),
     mpDoubleValidator(new QDoubleValidator(-DBL_MAX, DBL_MAX, DBL_DIG, this))
 {}
 
@@ -90,7 +90,7 @@ void CQValidatorDouble::setRange(const C_FLOAT64 & lowerBound, const C_FLOAT64 &
 {mpDoubleValidator->setRange(lowerBound, upperBound, DBL_DIG);}
 
 CQValidatorInt::CQValidatorInt(QLineEdit * parent, const char * name):
-    CQValidator< QLineEdit >(parent, name),
+    CQValidator< QLineEdit >(parent, &QLineEdit::text, name),
     mpIntValidator(new QIntValidator(std::numeric_limits< int >::min(),
                                      std::numeric_limits< int >::max(), this))
 {}

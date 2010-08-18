@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:16 $
+//   $Date: 2010/08/18 17:33:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ void CQExpressionHighlighter::highlightBlock(const QString &text)
 //***********************************************************************
 
 CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name, bool isBoolean):
-    CQValidator< QTextEdit >(parent, name),
+    CQValidator< QTextEdit >(parent, &QTextEdit::text, name),
     mExpression()
 {
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -99,7 +99,7 @@ QValidator::State CQValidatorExpression::validate(QString & input, int & pos) co
       if (const_cast< CExpression * >(&mExpression)->setInfix(pExpressionWidget->getExpression()) &&
           const_cast< CExpression * >(&mExpression)->compile())
         {
-          QString Input = mpLineEdit->text();
+          QString Input = (*mpContainer.*mRetrieve)();
           return CQValidator< QTextEdit >::validate(input, pos);
         }
     }
@@ -124,7 +124,7 @@ void CQValidatorExpression::setBooleanRequired(bool booleanRequired)
 //***********************************************************************
 
 CQValidatorFunction::CQValidatorFunction(QTextEdit * parent, const char * name):
-    CQValidator< QTextEdit >(parent, name),
+    CQValidator< QTextEdit >(parent, &QTextEdit::text, name),
     mFunction()
 {
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -152,7 +152,7 @@ QValidator::State CQValidatorFunction::validate(QString & input, int & pos) cons
       if (const_cast< CFunction * >(&mFunction)->setInfix(pExpressionWidget->getExpression()) &&
           const_cast< CFunction * >(&mFunction)->compile())
         {
-          QString Input = mpLineEdit->text();
+          QString Input = (*mpContainer.*mRetrieve)();
           CurrentState = CQValidator< QTextEdit >::validate(input, pos);
         }
     }

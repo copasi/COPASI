@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/16 18:43:07 $
+//   $Date: 2010/08/18 17:33:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,6 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
 {
   setupUi(this);
 
-  // TODO CRITICAL Implement me!
   QStringList ComboEntries;
   const char ** pComboEntries;
 

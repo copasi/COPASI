@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/13 20:06:23 $
+//   $Date: 2010/08/18 17:33:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,8 @@
 
 #include <QWebFrame>
 #include <QProcess>
+#include <QXmlInputSource>
+#include <QXmlSimpleReader>
 
 #include "CQNotes.h"
 #include "CQIcons.h"
@@ -33,10 +35,37 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
+CQValidatorXML::CQValidatorXML(QPlainTextEdit * parent, const char * name):
+    CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name)
+{}
+
+// virtual
+QValidator::State CQValidatorXML::validate(QString & input, int & pos) const
+{
+  QXmlSimpleReader Validator;
+  QXmlInputSource Input;
+
+  // We like to allow free text and therefore wrap the text to create valid XML.
+  Input.setData("<ValidateXML>" + input + "</ValidateXML>");
+
+  if (Validator.parse(Input))
+    return CQValidator< QPlainTextEdit >::validate(input, pos);
+
+  setColor(Invalid);
+  return Intermediate;
+}
+
 CQNotes::CQNotes(QWidget* parent, const char* name) :
-    CopasiWidget(parent, name)
+    CopasiWidget(parent, name),
+    mEditMode(false),
+    mChanged(false),
+    mpValidatorXML(NULL),
+    mValidity(QValidator::Acceptable)
+
 {
   setupUi(this);
+
+  mpValidatorXML = new CQValidatorXML(mpEdit);
 
   mEditMode = false;
   mpEdit->hide();
@@ -99,6 +128,14 @@ void CQNotes::slotToggleMode()
     }
 }
 
+void CQNotes::slotValidateXML()
+{
+  QString Input = mpEdit->toPlainText();
+  int pos = 0;
+
+  mValidity = mpValidatorXML->validate(Input, pos);
+}
+
 void CQNotes::load()
 {
   if (mpObject != NULL)
@@ -118,6 +155,9 @@ void CQNotes::load()
           // thus Qt uses locale settings.
           mpWebView->setHtml(FROM_UTF8(*pNotes));
           mpEdit->setPlainText(FROM_UTF8(*pNotes));
+          mpValidatorXML->saved();
+
+          mValidity = QValidator::Acceptable;
         }
     }
 
@@ -132,7 +172,8 @@ void CQNotes::save()
   // We can use QXmlSimpleReader for doing this as we are only interested the fact that
   // we have valid XML.
 
-  if (mpObject != NULL)
+  if (mpObject != NULL &&
+      mValidity == QValidator::Acceptable)
     {
       const std::string * pNotes = NULL;
 
@@ -165,9 +206,9 @@ void CQNotes::save()
         }
 
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
+      mChanged = false;
     }
 
-  mChanged = false;
   return;
 }
 
@@ -218,3 +259,4 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 
   return;
 }
+
