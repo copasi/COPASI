@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.165 $
+//   $Revision: 1.166 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/08/13 21:19:01 $
+//   $Author: shoops $
+//   $Date: 2010/08/18 18:08:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,7 +214,7 @@ private:
   CQSplashWidget *defaultWidget;
   CQDifferentialEquations *differentialEquations;
   CQEventsWidget *eventsWidget;
-  CQEventWidget1 *eventWidget1;
+  CTabWidget *eventWidget1;
   CQFunctionsWidget *mpFunctionsWidget;
   CTabWidget *functionWidget1;
   CQLyapWidget *lyapWidget;

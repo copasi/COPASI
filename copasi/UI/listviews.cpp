@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.285 $
+//   $Revision: 1.286 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/16 18:43:03 $
+//   $Date: 2010/08/18 18:08:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -274,7 +274,7 @@ void ListViews::ConstructNodeWidgets()
 
   eventsWidget->hide();
 
-  if (!eventWidget1) eventWidget1 = new CQEventWidget1(this);
+  if (!eventWidget1) eventWidget1 = new CTabWidget(QString("Event"), new CQEventWidget1(this), this);
 
   eventWidget1->hide();
 

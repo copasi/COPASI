@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQRDFTreeView.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:01:00 $
+//   $Date: 2010/08/18 18:08:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 // #include "report/CKeyFactory.h"
 // #include "model/CModel.h"
 #include "model/CModelValue.h"
+#include "model/CEvent.h"
 #include "model/CReaction.h"
 #include "function/CFunction.h"
 // #include "utilities/CCopasiMessage.h"
@@ -73,12 +74,15 @@ bool CQRDFTreeView::enterProtected()
   if (pObject != NULL)
     {
       CModelEntity * pEntity = NULL;
+      CEvent * pEvent = NULL;
       CReaction * pReaction = NULL;
       CFunction * pFunction = NULL;
       const std::string * pMiriamAnnotation = NULL;
 
       if ((pEntity = dynamic_cast< CModelEntity * >(pObject)) != NULL)
         pMiriamAnnotation = &pEntity->getMiriamAnnotation();
+      else if ((pEvent = dynamic_cast< CEvent * >(pObject)) != NULL)
+        pMiriamAnnotation = &pEvent->getMiriamAnnotation();
       else if ((pReaction = dynamic_cast< CReaction * >(pObject)) != NULL)
         pMiriamAnnotation = &pReaction->getMiriamAnnotation();
       else if ((pFunction = dynamic_cast< CFunction * >(pObject)) != NULL)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 17:33:03 $
+//   $Date: 2010/08/18 18:08:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 
 #include "model/CModelValue.h"
 #include "model/CReaction.h"
+#include "model/CEvent.h"
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
@@ -144,6 +145,8 @@ void CQNotes::load()
 
       if (dynamic_cast< CModelEntity * >(mpObject))
         pNotes = &static_cast< CModelEntity * >(mpObject)->getNotes();
+      else if (dynamic_cast< CEvent * >(mpObject))
+        pNotes = &static_cast< CEvent * >(mpObject)->getNotes();
       else if (dynamic_cast< CReaction * >(mpObject))
         pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
@@ -179,6 +182,8 @@ void CQNotes::save()
 
       if (dynamic_cast< CModelEntity * >(mpObject))
         pNotes = &static_cast< CModelEntity * >(mpObject)->getNotes();
+      else if (dynamic_cast< CEvent * >(mpObject))
+        pNotes = &static_cast< CEvent * >(mpObject)->getNotes();
       else if (dynamic_cast< CReaction * >(mpObject))
         pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
@@ -189,6 +194,8 @@ void CQNotes::save()
         {
           if (dynamic_cast< CModelEntity * >(mpObject))
             static_cast< CModelEntity * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
+          else if (dynamic_cast< CEvent * >(mpObject))
+            static_cast< CEvent * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
           else if (dynamic_cast< CReaction * >(mpObject))
             static_cast< CReaction * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
           else if (dynamic_cast< CFunction * >(mpObject))

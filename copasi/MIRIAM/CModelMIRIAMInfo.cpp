@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:54 $
+//   $Date: 2010/08/18 18:08:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 #include "CRDFGraph.h"
 
 #include "model/CModelValue.h"
+#include "model/CEvent.h"
 #include "model/CReaction.h"
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
@@ -415,14 +416,13 @@ void CMIRIAMInfo::load(const std::string& key)
       const std::string * pMiriamAnnotation = NULL;
 
       if (dynamic_cast< CModelEntity * >(pCopasiObject))
-        pMiriamAnnotation =
-          &dynamic_cast< CModelEntity * >(pCopasiObject)->getMiriamAnnotation();
+        pMiriamAnnotation = &static_cast< CModelEntity * >(pCopasiObject)->getMiriamAnnotation();
+      else if (dynamic_cast< CEvent * >(pCopasiObject))
+        pMiriamAnnotation = &static_cast< CEvent * >(pCopasiObject)->getMiriamAnnotation();
       else if (dynamic_cast< CReaction * >(pCopasiObject))
-        pMiriamAnnotation =
-          &dynamic_cast< CReaction * >(pCopasiObject)->getMiriamAnnotation();
+        pMiriamAnnotation = &static_cast< CReaction * >(pCopasiObject)->getMiriamAnnotation();
       else if (dynamic_cast< CFunction * >(pCopasiObject))
-        pMiriamAnnotation =
-          &dynamic_cast< CFunction * >(pCopasiObject)->getMiriamAnnotation();
+        pMiriamAnnotation = &static_cast< CFunction * >(pCopasiObject)->getMiriamAnnotation();
 
       if (pMiriamAnnotation && *pMiriamAnnotation != "")
         mpRDFGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
@@ -464,11 +464,14 @@ bool CMIRIAMInfo::save()
       std::string XML = CRDFWriter::xmlFromGraph(mpRDFGraph);
 
       CModelEntity * pEntity = NULL;
+      CEvent * pEvent = NULL;
       CReaction * pReaction = NULL;
       CFunction * pFunction = NULL;
 
       if ((pEntity = dynamic_cast< CModelEntity * >(pCopasiObject)) != NULL)
         pEntity->setMiriamAnnotation(XML, pEntity->getKey(), pEntity->getKey());
+      else if ((pEvent = dynamic_cast< CEvent * >(pCopasiObject)) != NULL)
+        pEvent->setMiriamAnnotation(XML, pEvent->getKey(), pEvent->getKey());
       else if ((pReaction = dynamic_cast< CReaction * >(pCopasiObject)) != NULL)
         pReaction->setMiriamAnnotation(XML, pReaction->getKey(), pReaction->getKey());
       else if ((pFunction = dynamic_cast< CFunction * >(pCopasiObject)) != NULL)

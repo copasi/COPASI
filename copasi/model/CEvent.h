@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:36:58 $
+//   $Date: 2010/08/18 18:08:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 #include <set>
 
 #include "copasi/model/CAnnotation.h"
+#include "copasi/utilities/CCopasiVector.h"
 
 class CExpression;
 class CModel;
