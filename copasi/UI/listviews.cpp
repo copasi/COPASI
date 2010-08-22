@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.286 $
+//   $Revision: 1.287 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/18 18:08:01 $
+//   $Author: aekamal $
+//   $Date: 2010/08/22 18:30:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1041,7 +1041,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   mpDataModelGUI->emitDataChanged();
 
   //item may point to an invalid ListViewItem now
-  //restoreCurrentItemInAllListViews();
+  restoreCurrentItemInAllListViews();
 
   return success;
 }

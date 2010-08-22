@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/13 21:19:01 $
+//   $Date: 2010/08/22 18:30:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,9 +48,12 @@ private:
 
   QApplication *mpApp;
 
+  COutputHandlerPlot mOutputHandlerPlot;
+
   void linkDataModelToGUI();
 
-  COutputHandlerPlot mOutputHandlerPlot;
+  void setObjectNumber(IndexedNode *node, unsigned int noOfObjects);
+
 
 public:
   DataModelGUI(QObject* parent);

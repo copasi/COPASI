@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/13 21:19:00 $
+//   $Date: 2010/08/22 18:30:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,6 +148,14 @@ void DataModelGUI::populateData()
     }
 }
 
+void DataModelGUI::setObjectNumber(IndexedNode *node, unsigned int noOfObjects)
+{
+  QString oldNodeName = node->getName();
+  QString newNodeName = oldNodeName.left(oldNodeName.lastIndexOf('(')).trimmed();
+  newNodeName += " (" + QString::number(noOfObjects) + ")";
+  node->setName(newNodeName);
+}
+
 void DataModelGUI::updateCompartments()
 {
   IndexedNode * parent = mTree.findNodeFromId(111);
@@ -169,6 +177,8 @@ void DataModelGUI::updateCompartments()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
+
+  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateMetabolites()
@@ -189,6 +199,8 @@ void DataModelGUI::updateMetabolites()
                        FROM_UTF8(CMetabNameInterface::getDisplayName((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *metab)),
                        metab->getKey());
     }
+
+  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateReactions()
@@ -210,6 +222,8 @@ void DataModelGUI::updateReactions()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
+
+  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateModelValues()
@@ -230,6 +244,8 @@ void DataModelGUI::updateModelValues()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
+
+  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateFunctions()
@@ -250,6 +266,8 @@ void DataModelGUI::updateFunctions()
                          FROM_UTF8(obj->getObjectName()),
                          obj->getKey());
     }
+
+  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateEvents()
@@ -272,6 +290,8 @@ void DataModelGUI::updateEvents()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
+
+  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateReportDefinitions()
@@ -292,6 +312,8 @@ void DataModelGUI::updateReportDefinitions()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
+
+  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updatePlots()
@@ -314,6 +336,8 @@ void DataModelGUI::updatePlots()
                        FROM_UTF8(obj->getObjectName()),
                        obj->CCopasiParameter::getKey());
     }
+
+  setObjectNumber(parent, jmax);
 }
 
 //*****************************************************************
