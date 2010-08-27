@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/22 18:30:54 $
+//   $Date: 2010/08/27 21:08:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,9 @@
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
 
+#include "./modeltest/modeltest.h"
+
+
 //*****************************************************************************
 
 DataModelGUI::DataModelGUI(QObject* parent):
@@ -60,6 +63,8 @@ DataModelGUI::DataModelGUI(QObject* parent):
   this->populateData();
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   (*CCopasiRootContainer::getDatamodelList())[0]->addInterface(&mOutputHandlerPlot);
+
+  new ModelTest(this, this);
 
   //mpMathModel = NULL;
   //mMathModelUpdateScheduled = false;
@@ -107,8 +112,6 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(43)->setObjectKey(pDataModel->getReportDefinitionList()->getKey());
   //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
   mTree.findNodeFromId(42)->setObjectKey(pDataModel->getPlotDefinitionList()->getKey());
-
-  ListViews::setDataModel(this);
 }
 
 void DataModelGUI::populateData()
@@ -710,4 +713,28 @@ void DataModelGUI::emitDataChanged()
 {
   const QModelIndex index = findIndexFromId(1);
   emit dataChanged(index, index);
+}
+
+bool DataModelGUI::notify(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+{
+  //just do everything.  Later we can decide from parameters what really needs to be done
+  updateCompartments();
+
+  updateMetabolites();
+
+  updateReactions();
+
+  updateModelValues();
+
+  updateEvents();
+
+  updateFunctions();
+
+  updateReportDefinitions();
+
+  updatePlots();
+
+  emitDataChanged();
+
+  return true;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/13 21:19:00 $
+//   $Date: 2010/08/27 21:08:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,7 +165,7 @@ private:
   void setApplicationFont();
 
   DataModelGUI* dataModel; // to keep track of the data model..
-  ListViews *listViews;
+  ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;
 
   int newFlag;

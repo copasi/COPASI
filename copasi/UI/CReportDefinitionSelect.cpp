@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:23:32 $
+//   $Author: aekamal $
+//   $Date: 2010/08/27 21:08:53 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -171,7 +176,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setReportDefinition((*(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList())[0]); //first one report definition
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(TO_UTF8(targetEdit->text()));
-      ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
+      pListView->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
 
       if (CQMessageBox::question(NULL, "No Report Definition Defined",
                                  "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",

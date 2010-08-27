@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/13 20:24:04 $
+//   $Author: aekamal $
+//   $Date: 2010/08/27 21:08:53 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -70,11 +75,18 @@ void CopasiWidget::setFramework(int framework)
 
 bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  mIgnoreUpdates = true;
-  ListViews::notify(objectType, action, key);
+  bool notifyRun = false;
+
+  if (!mIgnoreUpdates)
+    {
+      mIgnoreUpdates = true;
+      mpListView->notify(objectType, action, key);
+      notifyRun = true;
+    }
+
   mIgnoreUpdates = false;
 
-  return true;
+  return notifyRun;
 }
 
 bool CopasiWidget::getIgnoreUpdates()

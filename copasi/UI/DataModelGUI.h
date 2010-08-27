@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/22 18:30:54 $
+//   $Date: 2010/08/27 21:08:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,8 @@
 
 #include "UI/Tree.h"
 #include "plotUI/COutputHandlerPlot.h"
+#include "listviews.h"
+
 
 //class CMathModel;
 class QTimer;
@@ -108,6 +110,7 @@ public:
   QModelIndex findIndexFromId(int id);
   QModelIndex findIndexFromKey(const std::string& key);
   void emitDataChanged();
+  bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 };
 
 #endif

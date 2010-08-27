@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/11/30 17:45:57 $
+//   $Author: aekamal $
+//   $Date: 2010/08/27 21:08:53 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -108,7 +113,7 @@ void CQCompartment::slotBtnNew()
     }
 
   enter(mpCompartment->getKey());
-  protectedNotify(ListViews::METABOLITE, ListViews::ADD);
+  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD);
 }
 
 void CQCompartment::slotBtnDelete()

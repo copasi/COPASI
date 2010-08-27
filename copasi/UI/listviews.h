@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.166 $
+//   $Revision: 1.167 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/18 18:08:01 $
+//   $Author: aekamal $
+//   $Date: 2010/08/27 21:08:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,18 +131,16 @@ public:
                    , LAYOUT
                   };
 
-  static void setDataModel(DataModelGUI* dm);
+  void setDataModel(DataModelGUI* dm);
   static DataModelGUI* getDataModel() {return mpDataModelGUI;};
-  static bool notify(ObjectType objectType, Action action, const std::string & key = "");
-  static bool commit();
+  bool notify(ObjectType objectType, Action action, const std::string & key = "");
+  bool commit();
   void switchToOtherWidget(C_INT32 id, const std::string & key);
   static void switchAllListViewsToWidget(C_INT32 id, const std::string & key);
 
   void storeCurrentItem();
   void restoreCurrentItem();
   int getCurrentItemId();
-  static void storeCurrentItemInAllListViews();
-  static void restoreCurrentItemInAllListViews();
   CopasiWidget* findWidgetFromId(const C_INT32 & id) const;
 
   // return current widget - added 02.07.08
@@ -161,7 +159,7 @@ private:
   CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;
 
   void ConstructNodeWidgets();
-  void setupFolders();
+  void buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNode *startNode);
 
 private slots:
   void slotFolderChanged(const QModelIndex & index);
@@ -178,31 +176,22 @@ private:
   std::string mSaveObjectKey;
   C_INT32 mSaveFolderID;
 
-  static std::set<ListViews *> mListOfListViews;
-  bool attach();
-  bool detach();
-
   bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
-  static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
-  static bool updateAllListviews();
+  bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
 
   void notifyChildWidgets(ObjectType objectType,
                           Action action,
                           const std::string & key);
 
-  static void notifyAllChildWidgets(ObjectType objectType,
-                                    Action action,
-                                    const std::string & key);
 
   static void refreshInitialValues();
   static void buildChangedObjects();
 
   void setChildWidgetsFramework(int framework);
 
-  static void setFramework(int framework);
+  void setFramework(int framework);
 
-  void updateBiologicalDescriptionContents();
-  static void updateMIRIAMResourceContents();
+  void updateMIRIAMResourceContents();
 
   //the widgets
   QTreeView *mpTreeView;

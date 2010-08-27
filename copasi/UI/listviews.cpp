@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.287 $
+//   $Revision: 1.288 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/22 18:30:54 $
+//   $Date: 2010/08/27 21:08:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
  **********************************************************************/
 #include <qobject.h>
 #include <qimage.h>
+#include <QMap>
 
 #include "DataModelGUI.h"
 #include "CQMessageBox.h"
@@ -208,12 +209,11 @@ ListViews::ListViews(QWidget *parent, const char *name):
   connect(mpTreeView, SIGNAL(activated(const QModelIndex &)),
           this, SLOT(slotFolderChanged(const QModelIndex &)));
 
-  attach();
 }
 
 ListViews::~ListViews()
 {
-  detach(); //TODO clean up
+  //TODO clean up
 }
 
 /************************ListViews::setDataModel(DataModel<Folder>* dm)----------->
@@ -228,25 +228,13 @@ void ListViews::setDataModel(DataModelGUI* dm)
 {
   mpDataModelGUI = dm;
 
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator ende = mListOfListViews.end();
-
-  for (; it != ende; ++it)
-    {
-      (*it)->setupFolders();
-      (*it)->ConstructNodeWidgets();
-    }
-}
-
-/**
- *  duplicates the dataModel tree structure
- */
-void ListViews::setupFolders()
-{
   mpTreeView->setModel(NULL);
   mpTreeView->setModel(mpDataModelGUI);
   mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
+
+  ConstructNodeWidgets();
 }
+
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
  ** Description:-This method is used to construct all the node widgets
@@ -654,11 +642,11 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
  *************************************************************************************/
 void ListViews::slotFolderChanged(const QModelIndex & index)
 {
-  //if (!mpTreeView->isExpanded(mpDataModelGUI->findIndexFromId(0)))
-  //mpTreeView->setExpanded(mpDataModelGUI->findIndexFromId(0), true);
   bool changeWidget = true;
 
   if (!index.isValid()) return;
+
+  mpTreeView->setCurrentIndex(index);
 
   // find the widget
   CopasiWidget* newWidget = findWidgetFromIndex(index);
@@ -680,10 +668,10 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
       if (!changeWidget) return;
 
       //item may point to an invalid ListViewItem now
-      //QModelIndex newIndex = mpTreeView->currentIndex();
+      QModelIndex newIndex = mpTreeView->currentIndex();
 
       // find the widget again (it may have changed)
-      //newWidget = findWidgetFromIndex(newIndex);
+      newWidget = findWidgetFromIndex(newIndex);
     }
 
   if (!newWidget) newWidget = defaultWidget; //should never happen
@@ -721,24 +709,6 @@ void ListViews::switchToOtherWidget(C_INT32 id, const std::string & key)
   slotFolderChanged(index);
 }
 
-//**********************************************************************
-
-// this reconstructs the children of the listViewItems in all listviews
-bool ListViews::updateAllListviews() //static
-{
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator ende = mListOfListViews.end();
-
-  for (; it != ende; ++it)
-    {
-      (*it)->mpTreeView->setModel(NULL);
-      (*it)->mpTreeView->setModel(mpDataModelGUI);
-      (*it)->mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
-    }
-
-  return true;
-}
-
 //********** some methods to store and restore the state of the listview ****
 
 void ListViews::storeCurrentItem()
@@ -766,10 +736,57 @@ void ListViews::restoreCurrentItem()
   //reset the item from the saved values
   if (!mpDataModelGUI) return;
 
-  QModelIndex index = mpDataModelGUI->findIndexFromId(mSaveFolderID);
+  QModelIndex index;
+
+  //First try restoring with the key.
+  if (mSaveObjectKey.length() > 0)
+    index = mpDataModelGUI->findIndexFromKey(mSaveObjectKey);
+
+  //if not successfull then try the ID.
+  if (!index.isValid())
+    index = mpDataModelGUI->findIndexFromId(mSaveFolderID);
 
   if (index.isValid())
-    mpTreeView->setCurrentIndex(index);
+    {
+      //Build Map with expanded values of all nodes without children.
+      QMap<int, bool> isExpandedMap;
+      buildExpandedMap(isExpandedMap, mpDataModelGUI->getNode(0));
+
+      //Refresh View
+      mpTreeView->setModel(NULL);
+      mpTreeView->setModel(mpDataModelGUI);
+
+      //Set Nodes to original expanded value
+      QMap<int, bool>::iterator it, itEnd = isExpandedMap.end();
+
+      for (it = isExpandedMap.begin(); it != itEnd; ++it)
+        {
+          QModelIndex i = mpDataModelGUI->findIndexFromId(it.key());
+          mpTreeView->setExpanded(i, it.value());
+        }
+
+      mpTreeView->setCurrentIndex(index);
+      slotFolderChanged(index);
+    }
+}
+
+void ListViews::buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNode *startNode)
+{
+  if (startNode->childCount() == 0 || startNode->getId() == -1)
+    return;
+
+  QModelIndex index = mpDataModelGUI->findIndexFromId(startNode->getId());
+
+  if (index.isValid())
+    isExpandedMap[startNode->getId()] = mpTreeView->isExpanded(index);
+
+  const std::vector<IndexedNode*> & children = startNode->children();
+  std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
+
+  for (it = children.begin(); it != itEnd; ++it)
+    {
+      buildExpandedMap(isExpandedMap, *it);
+    }
 }
 
 int ListViews::getCurrentItemId()
@@ -783,30 +800,11 @@ int ListViews::getCurrentItemId()
   return pNode->getId();
 }
 
-//static
-void ListViews::storeCurrentItemInAllListViews()
-{
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator ende = mListOfListViews.end();
-
-  for (; it != ende; ++it)
-    {(*it)->storeCurrentItem();}
-}
-
-//static
-void ListViews::restoreCurrentItemInAllListViews()
-{
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator ende = mListOfListViews.end();
-
-  for (; it != ende; ++it)
-    {(*it)->restoreCurrentItem();}
-}
 
 //*******************************************************************************
 
 bool ListViews::updateDataModelAndListviews(ObjectType objectType,
-    Action action, const std::string & C_UNUSED(key)) //static
+    Action action, const std::string & key) //static
 {
   bool success = true;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -836,7 +834,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
                   if (numMetabolites == 0)
                     {
-                      ListViews::switchAllListViewsToWidget(112, "");
+                      switchToOtherWidget(112, "");
                     }
                 }
 
@@ -866,7 +864,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
                   if (numCompartments == 0)
                     {
-                      ListViews::switchAllListViewsToWidget(111, "");
+                      switchToOtherWidget(111, "");
                     }
                 }
 
@@ -896,7 +894,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
                   if (numReactions == 0)
                     {
-                      ListViews::switchAllListViewsToWidget(114, "");
+                      switchToOtherWidget(114, "");
                     }
                 }
 
@@ -927,7 +925,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
                   if (numValues == 0)
                     {
-                      ListViews::switchAllListViewsToWidget(115, "");
+                      switchToOtherWidget(115, "");
                     }
                 }
 
@@ -951,7 +949,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
                   if (numPlots == 0)
                     {
-                      ListViews::switchAllListViewsToWidget(42, "");
+                      switchToOtherWidget(42, "");
                     }
                 }
 
@@ -979,7 +977,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
                   if (numReports == 0)
                     {
-                      ListViews::switchAllListViewsToWidget(43, "");
+                      switchToOtherWidget(43, "");
                     }
                 }
 
@@ -1018,30 +1016,10 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         break;
     }
 
-  storeCurrentItemInAllListViews();
-
-  //just do everything.  Later we can decide from parameters what really needs to be done
-  mpDataModelGUI->updateCompartments();
-
-  mpDataModelGUI->updateMetabolites();
-
-  mpDataModelGUI->updateReactions();
-
-  mpDataModelGUI->updateModelValues();
-
-  mpDataModelGUI->updateEvents();
-
-  mpDataModelGUI->updateFunctions();
-
-  mpDataModelGUI->updateReportDefinitions();
-
-  mpDataModelGUI->updatePlots();
-
-  //updateAllListviews();
-  mpDataModelGUI->emitDataChanged();
-
+  storeCurrentItem();
+  mpDataModelGUI->notify(objectType, action, key);
   //item may point to an invalid ListViewItem now
-  restoreCurrentItemInAllListViews();
+  restoreCurrentItem();
 
   return success;
 }
@@ -1049,9 +1027,6 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 //**************************************************************************************+***
 
 //static members **************************
-
-// static
-std::set<ListViews *> ListViews::mListOfListViews;
 
 // static
 DataModelGUI* ListViews::mpDataModelGUI;
@@ -1065,17 +1040,7 @@ std::vector< Refresh * > ListViews::mUpdateVector;
 // static
 int ListViews::mFramework;
 
-bool ListViews::attach()
-{
-  return mListOfListViews.insert(this).second;
-}
-
-bool ListViews::detach()
-{
-  return (mListOfListViews.erase(this) > 0);
-}
-
-bool ListViews::notify(ObjectType objectType, Action action, const std::string & key) //static
+bool ListViews::notify(ObjectType objectType, Action action, const std::string & key)
 {
   if (objectType != MODEL &&
       objectType != STATE &&
@@ -1093,13 +1058,7 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   // model had been changed.
   if (objectType == MODEL && action == DELETE)
     {
-      std::set<ListViews *>::iterator it = mListOfListViews.begin();
-      std::set<ListViews *>::iterator ende = mListOfListViews.end();
-
-      for (; it != ende; ++it)
-        {
-          (*it)->mpLayoutsWidget->deleteLayoutWindows();
-        }
+      mpLayoutsWidget->deleteLayoutWindows();
     }
 
   // update all initial value
@@ -1109,16 +1068,9 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   //update the datamodel and the listviews trees
   if (!updateDataModelAndListviews(objectType, action, key)) success = false;
 
-  //tell the listviews to notify the other widgets
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+  if (!updateCurrentWidget(objectType, action, key)) success = false;
 
-  for (; it != ende; ++it)
-    {
-      if (!(*it)->updateCurrentWidget(objectType, action, key)) success = false;
-    }
-
-  notifyAllChildWidgets(objectType, action, key);
+  notifyChildWidgets(objectType, action, key);
 
   return success;
 }
@@ -1136,32 +1088,13 @@ bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const 
 CopasiWidget* ListViews::getCurrentWidget()
 {return this->currentWidget;}
 
-//static
 bool ListViews::commit()
 {
   bool success = true;
-  CopasiWidget * tmp;
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator ende = mListOfListViews.end();
 
-  for (; it != ende; ++it)
-    {
-      tmp = (*it)->currentWidget;
-
-      if (tmp && !tmp->leave()) success = false;
-    }
+  if (currentWidget && !currentWidget->leave()) success = false;
 
   return success;
-}
-
-//static
-void ListViews::switchAllListViewsToWidget(C_INT32 id, const std::string & key)
-{
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator ende = mListOfListViews.end();
-
-  for (; it != ende; ++it)
-    {(*it)->switchToOtherWidget(id, key);}
 }
 
 void ListViews::notifyChildWidgets(ObjectType objectType,
@@ -1181,18 +1114,6 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
     }
 }
 
-// static
-void ListViews::notifyAllChildWidgets(ObjectType objectType,
-                                      Action action,
-                                      const std::string & key)
-{
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator end = mListOfListViews.end();
-
-  for (; it != end; ++it)
-    (*it)->notifyChildWidgets(objectType, action, key);
-}
-
 void ListViews::setChildWidgetsFramework(int framework)
 {
   QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
@@ -1206,17 +1127,7 @@ void ListViews::setChildWidgetsFramework(int framework)
     }
 }
 
-// static
 void ListViews::updateMIRIAMResourceContents()
-{
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator end = mListOfListViews.end();
-
-  for (; it != end; ++it)
-    (*it)->updateBiologicalDescriptionContents();
-}
-
-void ListViews::updateBiologicalDescriptionContents()
 {
   QList <CQMiriamWidget *> widgets = findChildren<CQMiriamWidget *>();
   QListIterator<CQMiriamWidget *> it(widgets); // iterate over the CQMiriamWidgets
@@ -1231,16 +1142,10 @@ void ListViews::updateBiologicalDescriptionContents()
     }
 }
 
-// static
 void ListViews::setFramework(int framework)
 {
   mFramework = framework;
-
-  std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator end = mListOfListViews.end();
-
-  for (; it != end; ++it)
-    (*it)->setChildWidgetsFramework(framework);
+  setChildWidgetsFramework(framework);
 }
 
 // static
