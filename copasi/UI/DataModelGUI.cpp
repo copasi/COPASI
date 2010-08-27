@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Date: 2010/08/27 22:22:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,8 +50,6 @@
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
-
-#include "./modeltest/modeltest.h"
 
 
 //*****************************************************************************

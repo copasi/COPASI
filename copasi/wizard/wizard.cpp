@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:06:33 $
+//   $Author: aekamal $
+//   $Date: 2010/08/27 22:22:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,8 @@
 #include "wizard.h"
 #include "UI/CQMessageBox.h"
 #include "UI/listviews.h"
+#include "UI/copasiui3window.h"
+
 
 #include "copasi.h"
 
@@ -141,17 +143,22 @@ void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
 
   std::cout << name.toUtf8().data() << std::endl;
 
+  CopasiUI3Window * pMainWindow = dynamic_cast<CopasiUI3Window *>(copasiMainWindow);
+
   if (name == "Model Settings")
     {
-      ListViews::switchAllListViewsToWidget(1, "");
+      if (pMainWindow)
+        pMainWindow->getMainWidget()->switchToOtherWidget(1, "");
     }
   else if (name == "Reaction Overview")
     {
-      ListViews::switchAllListViewsToWidget(114, "");
+      if (pMainWindow)
+        pMainWindow->getMainWidget()->switchToOtherWidget(114, "");
     }
   else if (name == "Report Definition")
     {
-      ListViews::switchAllListViewsToWidget(43, "");
+      if (pMainWindow)
+        pMainWindow->getMainWidget()->switchToOtherWidget(43, "");
     }
   else if (name == "Step 1")
     {
@@ -160,11 +167,13 @@ void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
     }
   else if (name == "Time Course")
     {
-      ListViews::switchAllListViewsToWidget(23, "");
+      if (pMainWindow)
+        pMainWindow->getMainWidget()->switchToOtherWidget(23, "");
     }
   else if (name == "Plot Definition Overview")
     {
-      ListViews::switchAllListViewsToWidget(42, "");
+      if (pMainWindow)
+        pMainWindow->getMainWidget()->switchToOtherWidget(42, "");
     }
   else
     {
