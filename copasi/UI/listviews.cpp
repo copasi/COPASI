@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.288 $
+//   $Revision: 1.289 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Date: 2010/08/29 16:06:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -777,7 +777,7 @@ void ListViews::buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNo
 
   QModelIndex index = mpDataModelGUI->findIndexFromId(startNode->getId());
 
-  if (index.isValid())
+  if (index.isValid() && mpTreeView->isExpanded(index))
     isExpandedMap[startNode->getId()] = mpTreeView->isExpanded(index);
 
   const std::vector<IndexedNode*> & children = startNode->children();

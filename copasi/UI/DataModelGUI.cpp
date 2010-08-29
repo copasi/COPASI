@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/27 22:22:27 $
+//   $Date: 2010/08/29 16:06:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,8 +61,6 @@ DataModelGUI::DataModelGUI(QObject* parent):
   this->populateData();
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   (*CCopasiRootContainer::getDatamodelList())[0]->addInterface(&mOutputHandlerPlot);
-
-  new ModelTest(this, this);
 
   //mpMathModel = NULL;
   //mMathModelUpdateScheduled = false;
