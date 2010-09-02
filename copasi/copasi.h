@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2010/07/26 13:47:34 $
+//   $Author: shoops $
+//   $Date: 2010/09/02 14:29:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,6 +152,9 @@ enum TriLogic
 #ifdef COPASI_MAIN
 class CCopasiRootContainer;
 CCopasiRootContainer * pRootContainer = NULL;
+
+class QMutex;
+QMutex * pCopasiGuiMutex = NULL;
 #endif
 
 /* Define Constructor/Destructor Trace */
