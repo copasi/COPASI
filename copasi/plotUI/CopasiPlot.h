@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/26 14:26:13 $
+//   $Author: shoops $
+//   $Date: 2010/09/02 14:31:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@
 #include "utilities/CVector.h"
 
 // class CCopasiObjectName;
+extern QMutex * pCopasiGuiMutex;
 
 // NaN are ignored bounding rectangle
 class MyQwtCPointerData : public QwtCPointerData
@@ -65,9 +66,12 @@ public:
 class MyQwtPlotCurve : public QwtPlotCurve
 {
 public:
-  MyQwtPlotCurve(const QString &title = QString::null)
-      : QwtPlotCurve(title)
-  {}
+  MyQwtPlotCurve(QMutex * pMutex, const QString & title):
+      QwtPlotCurve(title),
+      mpMutex(pMutex)
+  {
+    assert(mpMutex != NULL);
+  }
 
 protected:
   void myDrawLines(QPainter *painter,
@@ -78,6 +82,9 @@ protected:
   virtual void drawCurve(QPainter *painter, int style,
                          const QwtScaleMap &xMap, const QwtScaleMap &yMap,
                          int from, int to) const;
+
+private:
+  QMutex * mpMutex;
 };
 
 //*******************************************************
@@ -153,12 +160,20 @@ public:
    */
   void setCurvesVisibility(const bool & visibility);
 
+public slots:
+  virtual void replot();
+
 private:
   /**
    * Tell the curves where the data is located. It must be called
    * after reallocating the memory for the curve data.
    */
   void updateCurves(const unsigned C_INT32 & activity, const bool & doHisto);
+
+  /**
+   * Resize the curve data
+   */
+  void resizeCurves(const unsigned C_INT32 & activity, const bool & doHisto);
 
   /**
    * Redraw the plot
@@ -320,15 +335,11 @@ public:
   QwtPlotZoomer * mpZoomer;
 
 protected:
-  bool mSlotFinished;
-  QMutex mMutex;
+  bool mReplotFinished;
   QWaitCondition mWaitSlot;
 
 signals:
-  void replotCopasiPlot();
-
-public slots:
-  void slotReplotCopasiPlot();
+  void replotSignal();
 };
 
 #endif // COPASIPLOT_H

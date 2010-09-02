@@ -1,9 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/26 14:26:13 $
+//   $Author: shoops $
+//   $Date: 2010/09/02 14:31:49 $
+// End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
+//   $Revision: 1.67 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2010/09/02 14:31:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +35,7 @@
 #include <qstring.h>
 #include <qcolor.h>   //might need to go to the header file
 #include <qcursor.h>
+#include <QMutexLocker>
 
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
@@ -176,10 +189,16 @@ void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
                                const QwtScaleMap &xMap, const QwtScaleMap &yMap,
                                int from, int to) const
 {
+  QMutexLocker Locker(mpMutex);
+
   if (style == Lines)
-    myDrawLines(painter, xMap, yMap, from, to);
+    {
+      myDrawLines(painter, xMap, yMap, from, to);
+    }
   else
-    QwtPlotCurve::drawCurve(painter, style, xMap, yMap, from, to);
+    {
+      QwtPlotCurve::drawCurve(painter, style, xMap, yMap, from, to);
+    }
 }
 
 //************************************
@@ -202,6 +221,10 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
     mIgnoreUpdate(false),
     mpZoomer(NULL)
 {
+
+  if (pCopasiGuiMutex == NULL)
+    pCopasiGuiMutex = new QMutex();
+
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
 
@@ -242,8 +265,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
 
   // Initialize from the plot specification
   initFromSpec(plotspec);
-  connect(this, SIGNAL(replotCopasiPlot()),
-          this, SLOT(slotReplotCopasiPlot()));
+  connect(this, SIGNAL(replotSignal()), this, SLOT(replot()));
 }
 
 bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
@@ -294,7 +316,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
         }
 
       // set up the curve
-      pCurve = new MyQwtPlotCurve(FROM_UTF8(pItem->getTitle()));
+      pCurve = new MyQwtPlotCurve(pCopasiGuiMutex, FROM_UTF8(pItem->getTitle()));
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
@@ -517,14 +539,7 @@ void CopasiPlot::output(const Activity & activity)
           {
             if (ndata >= data[0]->size())
               {
-                unsigned C_INT32 newSize = data[0]->size() + 1000;
-
-                for (i = 0; i < imax; i++)
-                  data[i]->resize(newSize, true); // :TODO: check for allocation problems
-
-                //tell the curves that the location of the data has changed
-                //otherwise repaint events could crash
-                updateCurves(ItemActivity, false);
+                resizeCurves(ItemActivity, false);
               }
 
             //the data that needs to be stored internally:
@@ -575,14 +590,7 @@ void CopasiPlot::separate(const Activity & activity)
           {
             if (ndata >= data[0]->size())
               {
-                unsigned C_INT32 newSize = data[0]->size() + 1000;
-
-                for (i = 0; i < data.size(); i++)
-                  data[i]->resize(newSize); // :TODO: check for allocation problems
-
-                //tell the curves that the location of the data has changed
-                //otherwise repaint events could crash
-                updateCurves(ItemActivity, false);
+                resizeCurves(ItemActivity, false);
               }
 
             //the data that needs to be stored internally:
@@ -606,7 +614,9 @@ void CopasiPlot::separate(const Activity & activity)
 
 void CopasiPlot::finish()
 {
+  QMutexLocker Locker(pCopasiGuiMutex);
   updateCurves(C_INVALID_INDEX, true);
+  Locker.unlock();
 
   replot();
 
@@ -660,40 +670,46 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
       }
 }
 
+void CopasiPlot::resizeCurves(const unsigned C_INT32 & activity, const bool & doHisto)
+{
+  QMutexLocker Locker(pCopasiGuiMutex);
+
+  std::vector< CVector< double > * > & data = mData[activity];
+  std::vector< CVector< double > * >::iterator it = data.begin();
+  std::vector< CVector< double > * >::iterator end = data.end();
+
+  unsigned C_INT32 newSize = (*it)->size() + 1000;
+
+
+  for (; it != end; ++it)
+    (*it)->resize(newSize, true);
+
+  // Tell the curves that the location of the data has changed
+  // otherwise repaint events could crash
+  updateCurves(activity, doHisto);
+}
+
 void CopasiPlot::updatePlot()
 {
   if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
     {
       CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
 
-      mMutex.lock();
+      QMutexLocker Locker(pCopasiGuiMutex);
+
       updateCurves(C_INVALID_INDEX, true);
-      mSlotFinished = false;
-      mMutex.unlock();
+      mReplotFinished = false;
 
-      emit replotCopasiPlot();
+      emit replotSignal();
 
-      mMutex.lock();
-
-      if (!mSlotFinished)
-        mWaitSlot.wait(&mMutex);
-
-      mMutex.unlock();
-
+      if (!mReplotFinished)
+        {
+          mWaitSlot.wait(pCopasiGuiMutex);
+        }
 
       Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
       mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + Delta + Delta + Delta;
     }
-}
-
-void CopasiPlot::slotReplotCopasiPlot()
-{
-  replot();
-
-  mMutex.lock();
-  mSlotFinished = true;
-  mWaitSlot.wakeAll();
-  mMutex.unlock();
 }
 
 //-----------------------------------------------------------------------------
@@ -1035,4 +1051,15 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
     setAxisTitle(index, FROM_UTF8(Units));
 
   return;
+}
+
+// virtual
+void CopasiPlot::replot()
+{
+  QMutexLocker Locker(pCopasiGuiMutex);
+
+  QwtPlot::replot();
+
+  mReplotFinished = true;
+  mWaitSlot.wakeAll();
 }
