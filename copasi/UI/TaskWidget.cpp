@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Date: 2010/09/02 14:30:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -436,7 +436,8 @@ bool TaskWidget::commonAfterRunTask()
   if (mProgressBar)
     {
       mProgressBar->finish();
-      pdelete(mProgressBar);
+      mProgressBar->deleteLater();
+      mProgressBar = NULL;
     }
 
   mpTask->setCallBack(NULL);

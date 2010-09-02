@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/17 19:56:49 $
+//   $Date: 2010/09/02 14:30:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -117,7 +122,7 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
       hUpdateStep = pProcessReport->addItem("Update Process",
                                             CCopasiParameter::UINT, &processStep, &processSteps);
 
-      if (pProcessReport && !pProcessReport->progress(hUpdateStep))
+      if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
         return false;
 
       for (itNames = 0; itNames < sizeNames; itNames++)
@@ -161,13 +166,13 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 
           processStep++;
 
-          if (pProcessReport && !pProcessReport->progress(hUpdateStep))
+          if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
             return false;
         }
 
       processStep++;
 
-      if (pProcessReport && !pProcessReport->progress(hUpdateStep))
+      if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
         return false;
     }
   else
@@ -193,9 +198,9 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 
   processStep++;
 
-  if (pProcessReport && !pProcessReport->progress(hUpdateStep)) return false;
+  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep)) return false;
 
-  if (pProcessReport) pProcessReport->finish(hUpdateStep);
+  if (pProcessReport) pProcessReport->finishItem(hUpdateStep);
 
   pdelete(pProxy);
 

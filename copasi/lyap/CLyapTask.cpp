@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:59:37 $
+//   $Date: 2010/09/02 14:31:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -197,14 +197,14 @@ bool CLyapTask::process(const bool & useInitialValues)
       calculationsBeforeOutput();
       output(COutputInterface::DURING);
 
-      if (mpCallBack) mpCallBack->finish(mhProcess);
+      if (mpCallBack) mpCallBack->finishItem(mhProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack) mpCallBack->finish(mhProcess);
+  if (mpCallBack) mpCallBack->finishItem(mhProcess);
 
   calculationsBeforeOutput();
   output(COutputInterface::AFTER);
@@ -266,7 +266,7 @@ bool CLyapTask::methodCallback(const C_FLOAT64 & percentage, bool onlyProgress)
 
   if (mpCallBack)
     {
-      return mpCallBack->progress(mhProcess);
+      return mpCallBack->progressItem(mhProcess);
     }
 
   return true;

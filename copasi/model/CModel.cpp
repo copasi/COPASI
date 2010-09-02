@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.392 $
+//   $Revision: 1.393 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:51 $
+//   $Date: 2010/09/02 14:30:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -413,32 +413,32 @@ bool CModel::compile()
 
   CompileStep = 0;
 
-  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
 
   buildStoi();
   CompileStep = 1;
 
-  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
 
   buildLinkZero();
   CompileStep = 2;
 
-  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
 
   buildRedStoi();
   CompileStep = 3;
 
-  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
 
   buildMoieties();
   CompileStep = 4;
 
-  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
 
   buildStateTemplate();
   CompileStep = 5;
 
-  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
 
   bool success = true;
 
@@ -456,11 +456,11 @@ bool CModel::compile()
 
   CompileStep = 6;
 
-  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
 
   buildUserOrder();
 
-  if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
+  if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
 
   //update annotations
   updateMatrixAnnotations();
@@ -567,7 +567,7 @@ void CModel::buildStoi()
 
   for (; pCol < pColEnd; ++pCol, ++itStep, ++i)
     {
-      if (mpCompileHandler && !mpCompileHandler->progress(hProcess)) return;
+      if (mpCompileHandler && !mpCompileHandler->progressItem(hProcess)) return;
 
       // Since we are stepping through the reactions we can check whether
       // the kinetic functions are usable.
@@ -607,7 +607,7 @@ void CModel::buildStoi()
 #endif
 
   if (mpCompileHandler)
-    mpCompileHandler->finish(hProcess);
+    mpCompileHandler->finishItem(hProcess);
 
   return;
 }

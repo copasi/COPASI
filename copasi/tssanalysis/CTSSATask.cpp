@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:32 $
+//   $Date: 2010/09/02 14:31:00 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -227,7 +232,7 @@ bool CTSSATask::process(const bool & useInitialValues)
           if (mpCallBack)
             {
               Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
-              flagProceed &= mpCallBack->progress(hProcess);
+              flagProceed &= mpCallBack->progressItem(hProcess);
             }
 
           if ((*LE)(outputStartTime, *mpCurrentTime))
@@ -248,7 +253,7 @@ bool CTSSATask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack) mpCallBack->finish(hProcess);
+      if (mpCallBack) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
@@ -265,14 +270,14 @@ bool CTSSATask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack) mpCallBack->finish(hProcess);
+      if (mpCallBack) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack) mpCallBack->finish(hProcess);
+  if (mpCallBack) mpCallBack->finishItem(hProcess);
 
   output(COutputInterface::AFTER);
 

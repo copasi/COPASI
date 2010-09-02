@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/09/25 17:26:02 $
+   $Date: 2010/09/02 14:31:13 $
    End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -73,7 +78,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
     {
       Completion += Dim - i;
 
-      if (cb && !cb->progress(hProcess)) return false;
+      if (cb && !cb->progressItem(hProcess)) return false;
 
       // find pivot in column j and  test for singularity.
       while (true)
@@ -117,7 +122,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
 
               if (i >= colP)
                 {
-                  if (cb) cb->finish(hProcess);
+                  if (cb) cb->finishItem(hProcess);
 
                   return true;
                 }
@@ -196,7 +201,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
 #endif
     }
 
-  if (cb) cb->finish(hProcess);
+  if (cb) cb->finishItem(hProcess);
 
   return true;
 }

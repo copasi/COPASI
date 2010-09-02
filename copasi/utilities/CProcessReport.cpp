@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2010/09/02 14:31:13 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -54,7 +59,7 @@ CProcessReportItem::~CProcessReportItem()
 const bool & CProcessReportItem::hasEndValue() const {return mHasEndValue;}
 
 const CCopasiParameter::Value & CProcessReportItem::getEndValue() const
-  {return mEndValue;}
+{return mEndValue;}
 
 CCopasiParameter::Value & CProcessReportItem::getEndValue()
 {return mEndValue;}
@@ -92,6 +97,7 @@ unsigned C_INT32 CProcessReport::addItem(const std::string & name,
         mProcessReportItemList[i] = tmp[i];
 
       imax *= 2;
+
       while (i < imax) mProcessReportItemList[i++] = NULL;
     }
 
@@ -105,12 +111,12 @@ bool CProcessReport::progress()
   unsigned C_INT32 i, imax = mProcessReportItemList.size();
 
   for (i = 0; i < imax; i++)
-    if (mProcessReportItemList[i] && !progress(i)) success = false;
+    if (mProcessReportItemList[i] && !progressItem(i)) success = false;
 
   return success;
 }
 
-bool CProcessReport::progress(const unsigned C_INT32 & handle)
+bool CProcessReport::progressItem(const unsigned C_INT32 & handle)
 {return isValidHandle(handle);}
 
 bool CProcessReport::proceed()
@@ -122,12 +128,12 @@ bool CProcessReport::reset()
   unsigned C_INT32 i, imax = mProcessReportItemList.size();
 
   for (i = 0; i < imax; i++)
-    if (mProcessReportItemList[i] && !reset(i)) success = false;
+    if (mProcessReportItemList[i] && !resetItem(i)) success = false;
 
   return success;
 }
 
-bool CProcessReport::reset(const unsigned C_INT32 & handle)
+bool CProcessReport::resetItem(const unsigned C_INT32 & handle)
 {return isValidHandle(handle);}
 
 bool CProcessReport::finish()
@@ -136,12 +142,12 @@ bool CProcessReport::finish()
   unsigned C_INT32 i, imax = mProcessReportItemList.size();
 
   for (i = 0; i < imax; i++)
-    if (mProcessReportItemList[i] && !finish(i)) success = false;
+    if (mProcessReportItemList[i] && !finishItem(i)) success = false;
 
   return success;
 }
 
-bool CProcessReport::finish(const unsigned C_INT32 & handle)
+bool CProcessReport::finishItem(const unsigned C_INT32 & handle)
 {
   if (!isValidHandle(handle)) return false;
 
@@ -150,10 +156,10 @@ bool CProcessReport::finish(const unsigned C_INT32 & handle)
 }
 
 bool CProcessReport::isValidHandle(const unsigned C_INT32 handle) const
-  {
-    return (handle < mProcessReportItemList.size() &&
-            mProcessReportItemList[handle] != NULL);
-  }
+{
+  return (handle < mProcessReportItemList.size() &&
+          mProcessReportItemList[handle] != NULL);
+}
 
 bool CProcessReport::setName(const std::string & name)
 {

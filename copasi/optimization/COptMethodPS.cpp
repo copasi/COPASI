@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/10/19 15:51:46 $
+//   $Author: shoops $
+//   $Date: 2010/09/02 14:30:57 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -508,7 +513,7 @@ bool COptMethodPS::optimise()
   if (!initialize())
     {
       if (mpCallBack)
-        mpCallBack->finish(mhIteration);
+        mpCallBack->finishItem(mhIteration);
 
       return false;
     }
@@ -581,11 +586,11 @@ bool COptMethodPS::optimise()
         break;
 
       if (mpCallBack)
-        mContinue &= mpCallBack->progress(mhIteration);
+        mContinue &= mpCallBack->progressItem(mhIteration);
     }
 
   if (mpCallBack)
-    mpCallBack->finish(mhIteration);
+    mpCallBack->finishItem(mhIteration);
 
   cleanup();
 

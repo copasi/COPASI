@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:27 $
+//   $Date: 2010/09/02 14:30:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,7 +226,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
   for (duration = minDuration; fabs(duration) <= fabs(maxDuration); duration *= iterationFactor, Step++)
     {
-      if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+      if (mpProgressHandler && !mpProgressHandler->progressItem(hProcess)) break;
 
       pTrajectoryProblem->setDuration(duration);
 
@@ -270,7 +270,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
       if (isSteadyState(value))
         {
-          if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+          if (mpProgressHandler) mpProgressHandler->finishItem(hProcess);
 
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
@@ -297,7 +297,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
           if (returnCode == CNewtonMethod::found)
             {
-              if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+              if (mpProgressHandler) mpProgressHandler->finishItem(hProcess);
 
               return CNewtonMethod::found;
             }
@@ -313,7 +313,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         }
     }
 
-  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+  if (mpProgressHandler) mpProgressHandler->finishItem(hProcess);
 
   return CNewtonMethod::notFound;
 }
@@ -495,7 +495,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 
     for (k = 0; k < mIterationLimit && !isSteadyState(targetValue); k++)
       {
-        if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+        if (mpProgressHandler && !mpProgressHandler->progressItem(hProcess)) break;
 
         result = doNewtonStep(targetValue);
 
@@ -527,7 +527,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
     {
       bool tmp = true;
 
-      ++k; if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) tmp = false;
+      ++k; if (mpProgressHandler && !mpProgressHandler->progressItem(hProcess)) tmp = false;
 
       if (tmp)
         {
@@ -562,7 +562,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
     }
 
   //end progress bar
-  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+  if (mpProgressHandler) mpProgressHandler->finishItem(hProcess);
 
   return result;
 }

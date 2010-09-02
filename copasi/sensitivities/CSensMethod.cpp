@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:02:49 $
+//   $Date: 2010/09/02 14:30:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,7 +147,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
 
   if (mpProgressBar)
     {
-      bool tmp = mpProgressBar->progress(mProgressHandler);
+      bool tmp = mpProgressBar->progressItem(mProgressHandler);
       return tmp;
     }
 
@@ -662,7 +662,7 @@ bool CSensMethod::process(CProcessReport * handler)
 
   do_collapsing();
 
-  if (mpProgressBar) mpProgressBar->finish(mProgressHandler);
+  if (mpProgressBar) mpProgressBar->finishItem(mProgressHandler);
 
   return true;
 }

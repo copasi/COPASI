@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-$Revision: 1.18 $
+$Revision: 1.19 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/07/16 19:05:16 $
+$Date: 2010/09/02 14:30:56 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,50 +112,6 @@ CCopasiMethod * TSSWidget::createMethod(const CCopasiMethod::SubType & type)
 bool TSSWidget::runTask()
 {
   if (!commonBeforeRunTask()) return false;
-
-  /*
-  CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
-  assert(mSteadyStateTask);
-
-  mSteadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-
-  try
-    {
-      if (!mSteadyStateTask->process(true))
-        {
-          mProgressBar->finish();
-          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-            {
-              mProgressBar->finish();
-              CQMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-              CCopasiMessage::clearDeque();
-            }
-        }
-      else if (setInitialState->isChecked())
-        {
-          const CState *currentState = mSteadyStateTask->getState();
-          if (currentState)
-          {
-            assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-            ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())->setInitialState(currentState);
-          }
-        }
-    }
-
-  catch (CCopasiException Exception)
-    {
-      mProgressBar->finish();
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        {
-          mProgressBar->finish();
-          CQMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
-        }
-    }
-
-  mSteadyStateTask->restore();
-  */
 
   commonAfterRunTask();
 

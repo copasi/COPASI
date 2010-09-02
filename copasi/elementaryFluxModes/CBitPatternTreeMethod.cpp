@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: heilmand $
-//   $Date: 2010/08/02 15:12:41 $
+//   $Author: shoops $
+//   $Date: 2010/09/02 14:30:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,7 +165,7 @@ bool CBitPatternTreeMethod::calculate()
   if (!initialize())
     {
       if (mpCallBack)
-        mpCallBack->finish(mhProgressCounter);
+        mpCallBack->finishItem(mhProgressCounter);
 
       return false;
     }
@@ -211,7 +211,7 @@ bool CBitPatternTreeMethod::calculate()
           combine(PositiveTree.getRoot(), NegativeTree.getRoot());
 
           if (mpCallBack)
-            mpCallBack->finish(mhProgressCounter2);
+            mpCallBack->finishItem(mhProgressCounter2);
 
           Continue &= mContinueCombination;
 
@@ -235,7 +235,7 @@ bool CBitPatternTreeMethod::calculate()
       mProgressCounter = mProgressCounterMax - mpStepMatrix->getNumUnconvertedRows();
 
       if (mpCallBack)
-        Continue &= mpCallBack->progress(mhProgressCounter);
+        Continue &= mpCallBack->progressItem(mhProgressCounter);
     }
 
   if (Continue)
@@ -244,7 +244,7 @@ bool CBitPatternTreeMethod::calculate()
     }
 
   if (mpCallBack)
-    Continue &= mpCallBack->finish(mhProgressCounter);
+    Continue &= mpCallBack->finishItem(mhProgressCounter);
 
   return true;
 }
@@ -318,7 +318,7 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
       mProgressCounter2++;
 
       if (mpCallBack)
-        mContinueCombination = mpCallBack->progress(mhProgressCounter2);
+        mContinueCombination = mpCallBack->progressItem(mhProgressCounter2);
     }
   else if (pPositiveColumn != NULL)
     {

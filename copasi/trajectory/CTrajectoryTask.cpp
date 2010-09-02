@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:54:39 $
+//   $Date: 2010/09/02 14:30:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -293,7 +293,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           if (mpCallBack)
             {
               Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
-              flagProceed &= mpCallBack->progress(hProcess);
+              flagProceed &= mpCallBack->progressItem(hProcess);
             }
 
           if ((*LE)(outputStartTime, *mpCurrentTime))
@@ -314,7 +314,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack) mpCallBack->finish(hProcess);
+      if (mpCallBack) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
@@ -331,14 +331,14 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack) mpCallBack->finish(hProcess);
+      if (mpCallBack) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack) mpCallBack->finish(hProcess);
+  if (mpCallBack) mpCallBack->finishItem(hProcess);
 
   output(COutputInterface::AFTER);
 

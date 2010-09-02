@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/04 19:19:27 $
+//   $Date: 2010/09/02 14:30:56 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -58,7 +63,6 @@ bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)
   vboxLayout->addItem(mpSpacer);
 
   pItem->show();
-  qApp->processEvents();
 
   mItemCount++;
   return true;
@@ -72,7 +76,6 @@ bool CQProgressDialog::removeProgressItem(CQProgressItem * pItem)
 
   if (mItemCount == 0) mpLine->hide();
 
-  qApp->processEvents();
   return true;
 }
 

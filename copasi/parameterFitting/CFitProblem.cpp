@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:26 $
+//   $Date: 2010/09/02 14:30:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -834,7 +834,7 @@ bool CFitProblem::calculate()
   if (isnan(mCalculateValue))
     mCalculateValue = mInfinity;
 
-  if (mpCallBack) return mpCallBack->progress(mhCounter);
+  if (mpCallBack) return mpCallBack->progressItem(mhCounter);
 
   return true;
 }
@@ -1851,7 +1851,7 @@ bool CFitProblem::calculateCrossValidation()
     CalculateValue = mInfinity;
 
   if (mpCallBack)
-    Continue &= mpCallBack->progress(mhCounter);
+    Continue &= mpCallBack->progressItem(mhCounter);
 
   C_FLOAT64 CurrentObjective =
     (1.0 - mpCrossValidationSet->getWeight()) * mSolutionValue

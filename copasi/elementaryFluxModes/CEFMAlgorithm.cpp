@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-$Revision: 1.26 $
+$Revision: 1.27 $
 $Name:  $
-$Author: heilmand $
-$Date: 2010/08/02 15:12:05 $
+$Author: shoops $
+$Date: 2010/09/02 14:30:57 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,7 +200,7 @@ bool CEFMAlgorithm::calculate()
   if (!initialize())
     {
       if (mpCallBack)
-        mpCallBack->finish(mhSteps);
+        mpCallBack->finishItem(mhSteps);
 
       return false;
     }
@@ -230,7 +230,7 @@ void CEFMAlgorithm::calculateFluxModes()
           calculateNextTableau();
 
           if (mpCallBack)
-            Continue &= mpCallBack->progress(mhSteps);
+            Continue &= mpCallBack->progressItem(mhSteps);
 
           static_cast<CCopasiTask *>(getObjectParent())->output(COutputInterface::DURING);
         }
@@ -244,7 +244,7 @@ void CEFMAlgorithm::calculateFluxModes()
     }
 
   if (mpCallBack)
-    Continue &= mpCallBack->finish(mhSteps);
+    Continue &= mpCallBack->finishItem(mhSteps);
 }
 
 void CEFMAlgorithm::calculateNextTableau()
@@ -300,7 +300,7 @@ void CEFMAlgorithm::calculateNextTableau()
         Counter++;
 
         if (mpCallBack)
-          Continue &= mpCallBack->progress(hCounter);
+          Continue &= mpCallBack->progressItem(hCounter);
       }
     else
       a++;
@@ -359,11 +359,11 @@ void CEFMAlgorithm::calculateNextTableau()
       Counter++;
 
       if (mpCallBack)
-        Continue &= mpCallBack->progress(hCounter);
+        Continue &= mpCallBack->progressItem(hCounter);
     }
 
   if (mpCallBack)
-    Continue &= mpCallBack->finish(hCounter);
+    Continue &= mpCallBack->finishItem(hCounter);
 
   /* Assign the next tableau to the current tableau and cleanup */
   pdelete(mpCurrentTableau);

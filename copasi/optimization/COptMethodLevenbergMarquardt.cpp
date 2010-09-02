@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:01:58 $
+//   $Date: 2010/09/02 14:30:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ bool COptMethodLevenbergMarquardt::optimise()
   if (!initialize())
     {
       if (mpCallBack)
-        mpCallBack->finish(mhIteration);
+        mpCallBack->finishItem(mhIteration);
 
       return false;
     }
@@ -313,11 +313,11 @@ bool COptMethodLevenbergMarquardt::optimise()
         }
 
       if (mpCallBack)
-        mContinue &= mpCallBack->progress(mhIteration);
+        mContinue &= mpCallBack->progressItem(mhIteration);
     }
 
   if (mpCallBack)
-    mpCallBack->finish(mhIteration);
+    mpCallBack->finishItem(mhIteration);
 
   return true;
 }

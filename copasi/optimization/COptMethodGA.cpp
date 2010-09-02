@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/29 12:47:17 $
+//   $Date: 2010/09/02 14:30:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -401,7 +401,7 @@ bool COptMethodGA::initialize()
   if (!COptMethod::initialize())
     {
       if (mpCallBack)
-        mpCallBack->finish(mhGenerations);
+        mpCallBack->finishItem(mhGenerations);
 
       return false;
     }
@@ -470,7 +470,7 @@ bool COptMethodGA::optimise()
   if (!initialize())
     {
       if (mpCallBack)
-        mpCallBack->finish(mhGenerations);
+        mpCallBack->finishItem(mhGenerations);
 
       return false;
     }
@@ -541,7 +541,7 @@ bool COptMethodGA::optimise()
   if (!Continue)
     {
       if (mpCallBack)
-        mpCallBack->finish(mhGenerations);
+        mpCallBack->finishItem(mhGenerations);
 
       cleanup();
       return false;
@@ -595,11 +595,11 @@ bool COptMethodGA::optimise()
         }
 
       if (mpCallBack)
-        Continue &= mpCallBack->progress(mhGenerations);
+        Continue &= mpCallBack->progressItem(mhGenerations);
     }
 
   if (mpCallBack)
-    mpCallBack->finish(mhGenerations);
+    mpCallBack->finishItem(mhGenerations);
 
   cleanup();
 

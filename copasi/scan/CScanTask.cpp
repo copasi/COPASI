@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:02:49 $
+//   $Date: 2010/09/02 14:30:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,7 +177,7 @@ bool CScanTask::processCallback()
   //do progress bar
   ++mProgress;
 
-  if (mpCallBack) return mpCallBack->progress(mhProgress);
+  if (mpCallBack) return mpCallBack->progressItem(mhProgress);
 
   return true;
 }

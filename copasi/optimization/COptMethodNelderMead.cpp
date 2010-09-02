@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/10/19 15:51:46 $
+//   $Author: shoops $
+//   $Date: 2010/09/02 14:30:57 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -174,7 +179,7 @@ bool COptMethodNelderMead::optimise()
   if (!initialize())
     {
       if (mpCallBack)
-        mpCallBack->finish(mhIteration);
+        mpCallBack->finishItem(mhIteration);
 
       return false;
     }
@@ -512,7 +517,7 @@ First:
 
       // signal another iteration
       if (mpCallBack)
-        mContinue &= mpCallBack->progress(mhIteration);
+        mContinue &= mpCallBack->progressItem(mhIteration);
 
       quit = (mIteration >= mIterationLimit);
 
@@ -593,7 +598,7 @@ First:
 Finish:  /* end of procedure */
 
   if (mpCallBack)
-    mpCallBack->finish(mhIteration);
+    mpCallBack->finishItem(mhIteration);
 
   return 0;
 }

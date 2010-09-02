@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.257 $
+//   $Revision: 1.258 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 17:46:31 $
+//   $Date: 2010/09/02 14:30:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -369,7 +369,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       mImportStep = 1;
 
-      if (!mpImportHandler->progress(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       totalSteps = num;
       hStep = mpImportHandler->addItem("Importing function definitions",
@@ -402,10 +402,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (mpImportHandler)
     {
-      mpImportHandler->finish(hStep);
+      mpImportHandler->finishItem(hStep);
       mImportStep = 3;
 
-      if (!mpImportHandler->progress(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
       totalSteps = num;
@@ -458,7 +458,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       compartmentMap[key] = pCopasiCompartment;
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
     }
 
   /* Create all species */
@@ -466,10 +466,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (mpImportHandler)
     {
-      mpImportHandler->finish(hStep);
+      mpImportHandler->finishItem(hStep);
       mImportStep = 4;
 
-      if (!mpImportHandler->progress(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
       totalSteps = num;
@@ -536,7 +536,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
     }
 
   /* Create the global Parameters */
@@ -544,10 +544,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (mpImportHandler)
     {
-      mpImportHandler->finish(hStep);
+      mpImportHandler->finishItem(hStep);
       mImportStep = 5;
 
-      if (!mpImportHandler->progress(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
       totalSteps = num;
@@ -590,7 +590,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
     }
 
   if (!this->mIgnoredParameterUnits.empty())
@@ -613,10 +613,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (mpImportHandler)
     {
-      mpImportHandler->finish(hStep);
+      mpImportHandler->finishItem(hStep);
       mImportStep = 7;
 
-      if (!mpImportHandler->progress(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
       totalSteps = num;
@@ -656,7 +656,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
     }
 
   if (!this->mDivisionByCompartmentReactions.empty())
@@ -727,10 +727,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (mpImportHandler)
     {
-      mpImportHandler->finish(hStep);
+      mpImportHandler->finishItem(hStep);
       mImportStep = 6;
 
-      if (!mpImportHandler->progress(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
       totalSteps = num;
@@ -774,7 +774,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
     }
 
   if (sbmlModel->getNumConstraints() > 0)
@@ -799,10 +799,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (mpImportHandler)
     {
-      mpImportHandler->finish(hStep);
+      mpImportHandler->finishItem(hStep);
       mImportStep = 8;
 
-      if (!mpImportHandler->progress(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
     }
 
   // unset the hasOnlySubstanceUnits flag on all such species
@@ -2151,7 +2151,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                                      pSBMLError->getColumn(),
                                      pSBMLError->getMessage().c_str());
 
-              if (mpImportHandler) mpImportHandler->finish(mhImportStep);
+              if (mpImportHandler) mpImportHandler->finishItem(mhImportStep);
 
               return NULL;
             }
@@ -2161,7 +2161,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
         {
           CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 2);
 
-          if (mpImportHandler) mpImportHandler->finish(mhImportStep);
+          if (mpImportHandler) mpImportHandler->finishItem(mhImportStep);
 
           return NULL;
         }
@@ -2202,12 +2202,12 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
     }
   else
     {
-      if (mpImportHandler) mpImportHandler->finish(mhImportStep);
+      if (mpImportHandler) mpImportHandler->finishItem(mhImportStep);
 
       fatalError();
     }
 
-  if (mpImportHandler) mpImportHandler->finish(mhImportStep);
+  if (mpImportHandler) mpImportHandler->finishItem(mhImportStep);
 
   return this->mpCopasiModel;
 }
@@ -4579,7 +4579,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 
           ++step;
 
-          if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+          if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
         }
 
       iMax = this->mpCopasiModel->getCompartments().size();
@@ -4719,7 +4719,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 
       if (mpImportHandler)
         {
-          mpImportHandler->finish(hStep);
+          mpImportHandler->finishItem(hStep);
           step = 0;
           totalSteps = pTmpFunctionDB->loadedFunctions().size();
           hStep = mpImportHandler->addItem("Removing unused functions...",
@@ -4747,12 +4747,12 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 
           ++step;
 
-          if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+          if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
         }
 
       if (mpImportHandler)
         {
-          mpImportHandler->finish(hStep);
+          mpImportHandler->finishItem(hStep);
         }
     }
 
