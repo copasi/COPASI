@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/03 16:36:30 $
+//   $Date: 2010/09/03 17:00:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/03 16:36:30 $
+//   $Date: 2010/09/03 17:00:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -595,8 +595,6 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
     }
 
   // We need to set the curve data here!
-  updateCurves(C_INVALID_INDEX, false);
-
   unsigned C_INT32 k, kmax = mCurves.size();
 
   for (k = 0; k < kmax; k++)
