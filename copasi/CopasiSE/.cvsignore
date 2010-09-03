@@ -1,3 +1,4 @@
 Makefile
 CopasiSE
 CopasiSE.app
+*.xcodeproj

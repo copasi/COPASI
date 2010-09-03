@@ -1,3 +1,4 @@
 Makefile
 example2.app
 example2
+*.xcodeproj

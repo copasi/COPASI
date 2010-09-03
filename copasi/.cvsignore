@@ -1,3 +1,5 @@
 tmp
 Makefile
 lib
+build
+*.xcodeproj

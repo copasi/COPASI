@@ -1,3 +1,4 @@
 moc_qwt3dPlot.cpp
 Makefile
 moc_qwt3dBaseWidget.cpp
+*.xcodeproj
