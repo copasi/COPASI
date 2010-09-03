@@ -1,3 +1,4 @@
 Makefile
 franks_testsuite
 franks_testsuite.app
+*.xcodeproj

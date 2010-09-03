@@ -1,2 +1,3 @@
 semantic-test-suite
 Makefile
+*.xcodeproj

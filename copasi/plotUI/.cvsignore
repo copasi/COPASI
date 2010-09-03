@@ -2,3 +2,4 @@ auto
 moc_*.cpp
 ui_*.h
 Makefile
+*.xcodeproj

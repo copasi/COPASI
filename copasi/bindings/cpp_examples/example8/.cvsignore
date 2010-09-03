@@ -2,3 +2,4 @@ Makefile
 example8.app
 example8
 *.xcodeproj
+Info.plist

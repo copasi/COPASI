@@ -6,3 +6,4 @@ dmsts-24
 *models
 *.result
 trace
+*.xcodeproj
