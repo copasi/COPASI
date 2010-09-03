@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/03 16:36:30 $
+//   $Date: 2010/09/03 18:58:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,6 +235,11 @@ private:
    * The value for missing objects
    */
   static C_FLOAT64 MissingValue;
+
+  /**
+   * Mutex preventing access to data during reallocation.
+   */
+  QMutex mMutex;
 
   /**
    * Vector that contains pointers to vectors of data in the selected columns.

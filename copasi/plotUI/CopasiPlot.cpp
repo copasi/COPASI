@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/03 17:00:47 $
+//   $Date: 2010/09/03 18:58:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/03 17:00:47 $
+//   $Date: 2010/09/03 18:58:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -397,7 +397,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
         }
 
       // set up the curve
-      pCurve = new MyQwtPlotCurve(pCopasiGuiMutex, FROM_UTF8(pItem->getTitle()));
+      pCurve = new MyQwtPlotCurve(&mMutex, FROM_UTF8(pItem->getTitle()));
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
@@ -469,7 +469,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   setAxisAutoScale(yLeft);
 
-  replot();
   mIgnoreUpdate = false;
 
   return true; //TODO really check!
@@ -557,11 +556,11 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
 
               if (ItemActivity & COutputInterface::AFTER) mHaveAfter = true;
 
-              // The insert was succesful
+              // The insert was successful
               DataIndex.second = ActivityObjects[ItemActivity].size() - 1;
 
               // Allocate the data buffer
-              mData[ItemActivity].push_back(new CVector<double>(500));
+              mData[ItemActivity].push_back(new CVector<double>(1000));
 
               // Store the pointer to the current object value. (Only if it has a double or integer value
               // and the value pointer actually exists. If not, use a dummy value.)
@@ -610,6 +609,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
     }
 
   mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime();
+  mReplotFinished = true;
 
   return true;
 }
@@ -708,10 +708,6 @@ void CopasiPlot::separate(const Activity & activity)
 
 void CopasiPlot::finish()
 {
-  QMutexLocker Locker(pCopasiGuiMutex);
-  updateCurves(C_INVALID_INDEX, true);
-  Locker.unlock();
-
   replot();
 
   if (mpZoomer)
@@ -761,14 +757,13 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
 
 void CopasiPlot::resizeCurveData(const unsigned C_INT32 & activity)
 {
-  QMutexLocker Locker(pCopasiGuiMutex);
+  QMutexLocker Locker(&mMutex);
 
   std::vector< CVector< double > * > & data = mData[activity];
   std::vector< CVector< double > * >::iterator it = data.begin();
   std::vector< CVector< double > * >::iterator end = data.end();
 
-  unsigned C_INT32 newSize = (*it)->size() + 1000;
-
+  unsigned C_INT32 newSize = 2 * (*it)->size();
 
   for (; it != end; ++it)
     (*it)->resize(newSize, true);
@@ -792,24 +787,10 @@ void CopasiPlot::resizeCurveData(const unsigned C_INT32 & activity)
 
 void CopasiPlot::updatePlot()
 {
-  if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
+  if (mReplotFinished)
     {
-      CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
-
-      QMutexLocker Locker(pCopasiGuiMutex);
-
-      updateCurves(C_INVALID_INDEX, true);
       mReplotFinished = false;
-
       emit replotSignal();
-
-      if (!mReplotFinished)
-        {
-          mWaitSlot.wait(pCopasiGuiMutex);
-        }
-
-      Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
-      mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
     }
 }
 
@@ -1157,10 +1138,20 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
 // virtual
 void CopasiPlot::replot()
 {
-  QwtPlot::replot();
+  if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
+    {
+      CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
 
-  QMutexLocker Locker(pCopasiGuiMutex);
+      {
+        QMutexLocker Locker(&mMutex);
+        updateCurves(C_INVALID_INDEX, true);
+      }
+
+      QwtPlot::replot();
+
+      Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
+      mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
+    }
 
   mReplotFinished = true;
-  mWaitSlot.wakeAll();
 }
