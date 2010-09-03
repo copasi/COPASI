@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Author: aekamal $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,12 +85,15 @@ void CQEventsWidget::languageChange()
 void CQEventsWidget::slotBtnNewClicked()
 {
   mpEventDM->insertRow();
+  updateDeleteBtns();
 }
 
 void CQEventsWidget::slotBtnDeleteClicked()
 {
   if (mpTblEvents->hasFocus())
     {deleteSelectedEvents();}
+
+  updateDeleteBtns();
 }
 
 void CQEventsWidget::deleteSelectedEvents()
@@ -125,6 +128,8 @@ void CQEventsWidget::slotBtnClearClicked()
     {
       mpEventDM->clear();
     }
+
+  updateDeleteBtns();
 }
 
 bool CQEventsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -144,19 +149,61 @@ bool CQEventsWidget::leave()
 
 bool CQEventsWidget::enterProtected()
 {
+  disconnect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
   mpProxyModel->setSourceModel(mpEventDM);
   //Set Model for the TableView
   mpTblEvents->setModel(NULL);
   mpTblEvents->setModel(mpProxyModel);
+  connect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  updateDeleteBtns();
   mpTblEvents->resizeColumnsToContents();
 
   return true;
+}
+
+void CQEventsWidget::updateDeleteBtns()
+{
+  bool selected = false;
+
+  QModelIndexList selRows = mpTblEvents->selectionModel()->selectedRows();
+
+  if (selRows.size() == 0)
+    selected = false;
+  else
+    {
+      if (selRows.size() == 1)
+        {
+          if (mpEventDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+            selected = false;
+          else
+            selected = true;
+        }
+      else
+        selected = true;
+    }
+
+  mpBtnDelete->setEnabled(selected);
+
+  if (mpProxyModel->rowCount() - 1)
+    mpBtnClear->setEnabled(true);
+  else
+    mpBtnClear->setEnabled(false);
+}
+
+void CQEventsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
+    const QItemSelection& C_UNUSED(deselected))
+{
+  updateDeleteBtns();
 }
 
 void CQEventsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
                                  const QModelIndex& C_UNUSED(bottomRight))
 {
   mpTblEvents->resizeColumnsToContents();
+  updateDeleteBtns();
 }
 
 void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -216,6 +263,6 @@ void CQEventsWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQEventsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|New Event", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }

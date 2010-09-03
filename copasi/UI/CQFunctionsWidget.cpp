@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Author: aekamal $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,12 +82,15 @@ void CQFunctionsWidget::languageChange()
 void CQFunctionsWidget::slotBtnNewClicked()
 {
   mpFunctionDM->insertRow();
+  updateDeleteBtns();
 }
 
 void CQFunctionsWidget::slotBtnDeleteClicked()
 {
   if (mpTblFunctions->hasFocus())
     {deleteSelectedFunctions();}
+
+  updateDeleteBtns();
 }
 
 void CQFunctionsWidget::deleteSelectedFunctions()
@@ -122,6 +125,8 @@ void CQFunctionsWidget::slotBtnClearClicked()
     {
       mpFunctionDM->clear();
     }
+
+  updateDeleteBtns();
 }
 
 bool CQFunctionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -141,19 +146,61 @@ bool CQFunctionsWidget::leave()
 
 bool CQFunctionsWidget::enterProtected()
 {
+  disconnect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
   mpProxyModel->setSourceModel(mpFunctionDM);
   //Set Model for the TableView
   mpTblFunctions->setModel(NULL);
   mpTblFunctions->setModel(mpProxyModel);
+  connect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  updateDeleteBtns();
   mpTblFunctions->resizeColumnsToContents();
 
   return true;
+}
+
+void CQFunctionsWidget::updateDeleteBtns()
+{
+  bool selected = false;
+
+  QModelIndexList selRows = mpTblFunctions->selectionModel()->selectedRows();
+
+  if (selRows.size() == 0)
+    selected = false;
+  else
+    {
+      if (selRows.size() == 1)
+        {
+          if (mpFunctionDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+            selected = false;
+          else
+            selected = true;
+        }
+      else
+        selected = true;
+    }
+
+  mpBtnDelete->setEnabled(selected);
+
+  if (mpProxyModel->rowCount() - 1)
+    mpBtnClear->setEnabled(true);
+  else
+    mpBtnClear->setEnabled(false);
+}
+
+void CQFunctionsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
+    const QItemSelection& C_UNUSED(deselected))
+{
+  updateDeleteBtns();
 }
 
 void CQFunctionsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
                                     const QModelIndex& C_UNUSED(bottomRight))
 {
   mpTblFunctions->resizeColumnsToContents();
+  updateDeleteBtns();
 }
 
 void CQFunctionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -205,6 +252,6 @@ void CQFunctionsWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQFunctionsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|New Function", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }

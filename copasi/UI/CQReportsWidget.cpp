@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:16 $
+//   $Author: aekamal $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,12 +84,15 @@ void CQReportsWidget::languageChange()
 void CQReportsWidget::slotBtnNewClicked()
 {
   mpReportDM->insertRow();
+  updateDeleteBtns();
 }
 
 void CQReportsWidget::slotBtnDeleteClicked()
 {
   if (mpTblReports->hasFocus())
     {deleteSelectedReports();}
+
+  updateDeleteBtns();
 }
 
 void CQReportsWidget::deleteSelectedReports()
@@ -123,6 +126,8 @@ void CQReportsWidget::slotBtnClearClicked()
     {
       mpReportDM->clear();
     }
+
+  updateDeleteBtns();
 }
 
 bool CQReportsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -142,14 +147,55 @@ bool CQReportsWidget::leave()
 
 bool CQReportsWidget::enterProtected()
 {
+  disconnect(mpTblReports->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
   mpProxyModel->setSourceModel(mpReportDM);
   //Set Model for the TableView
   mpTblReports->setModel(NULL);
   mpTblReports->setModel(mpProxyModel);
+  connect(mpTblReports->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  updateDeleteBtns();
   mpTblReports->resizeColumnsToContents();
   setFramework(mFramework);
 
   return true;
+}
+
+void CQReportsWidget::updateDeleteBtns()
+{
+  bool selected = false;
+
+  QModelIndexList selRows = mpTblReports->selectionModel()->selectedRows();
+
+  if (selRows.size() == 0)
+    selected = false;
+  else
+    {
+      if (selRows.size() == 1)
+        {
+          if (mpReportDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+            selected = false;
+          else
+            selected = true;
+        }
+      else
+        selected = true;
+    }
+
+  mpBtnDelete->setEnabled(selected);
+
+  if (mpProxyModel->rowCount() - 1)
+    mpBtnClear->setEnabled(true);
+  else
+    mpBtnClear->setEnabled(false);
+}
+
+void CQReportsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
+    const QItemSelection& C_UNUSED(deselected))
+{
+  updateDeleteBtns();
 }
 
 void CQReportsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
@@ -157,6 +203,7 @@ void CQReportsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
 {
   mpTblReports->resizeColumnsToContents();
   setFramework(mFramework);
+  updateDeleteBtns();
 }
 
 void CQReportsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -215,7 +262,7 @@ void CQReportsWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQReportsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|New Report", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
 

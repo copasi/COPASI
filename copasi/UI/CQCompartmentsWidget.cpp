@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:19 $
+//   $Author: aekamal $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,12 +86,15 @@ void CQCompartmentsWidget::languageChange()
 void CQCompartmentsWidget::slotBtnNewClicked()
 {
   mpCompartmentDM->insertRow();
+  updateDeleteBtns();
 }
 
 void CQCompartmentsWidget::slotBtnDeleteClicked()
 {
   if (mpTblCompartments->hasFocus())
     {deleteSelectedCompartments();}
+
+  updateDeleteBtns();
 }
 
 void CQCompartmentsWidget::deleteSelectedCompartments()
@@ -125,6 +128,8 @@ void CQCompartmentsWidget::slotBtnClearClicked()
     {
       mpCompartmentDM->clear();
     }
+
+  updateDeleteBtns();
 }
 
 bool CQCompartmentsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -144,19 +149,61 @@ bool CQCompartmentsWidget::leave()
 
 bool CQCompartmentsWidget::enterProtected()
 {
+  disconnect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
   mpProxyModel->setSourceModel(mpCompartmentDM);
   //Set Model for the TableView
   mpTblCompartments->setModel(NULL);
   mpTblCompartments->setModel(mpProxyModel);
+  connect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  updateDeleteBtns();
   mpTblCompartments->resizeColumnsToContents();
 
   return true;
+}
+
+void CQCompartmentsWidget::updateDeleteBtns()
+{
+  bool selected = false;
+
+  QModelIndexList selRows = mpTblCompartments->selectionModel()->selectedRows();
+
+  if (selRows.size() == 0)
+    selected = false;
+  else
+    {
+      if (selRows.size() == 1)
+        {
+          if (mpCompartmentDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+            selected = false;
+          else
+            selected = true;
+        }
+      else
+        selected = true;
+    }
+
+  mpBtnDelete->setEnabled(selected);
+
+  if (mpProxyModel->rowCount() - 1)
+    mpBtnClear->setEnabled(true);
+  else
+    mpBtnClear->setEnabled(false);
+}
+
+void CQCompartmentsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
+    const QItemSelection& C_UNUSED(deselected))
+{
+  updateDeleteBtns();
 }
 
 void CQCompartmentsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
                                        const QModelIndex& C_UNUSED(bottomRight))
 {
   mpTblCompartments->resizeColumnsToContents();
+  updateDeleteBtns();
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
@@ -217,6 +264,6 @@ void CQCompartmentsWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQCompartmentsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|New Compartment", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/11 15:30:51 $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -34,6 +39,7 @@ private:
   CQReactionDM* mpReactionDM;
   CQSortFilterProxyModel *mpProxyModel;
   void deleteSelectedReactions();
+  void updateDeleteBtns();
 
 protected:
   virtual bool enterProtected();
@@ -44,6 +50,8 @@ protected slots:
   virtual void slotBtnNewClicked();
   virtual void slotBtnDeleteClicked();
   virtual void slotBtnClearClicked();
+  virtual void slotSelectionChanged(const QItemSelection& selected,
+                                    const QItemSelection& deselected);
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);

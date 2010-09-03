@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Author: aekamal $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,12 +91,15 @@ void CQSpeciesWidget::languageChange()
 void CQSpeciesWidget::slotBtnNewClicked()
 {
   mpSpecieDM->insertRow();
+  updateDeleteBtns();
 }
 
 void CQSpeciesWidget::slotBtnDeleteClicked()
 {
   if (mpTblSpecies->hasFocus())
     {deleteSelectedSpecies();}
+
+  updateDeleteBtns();
 }
 
 void CQSpeciesWidget::deleteSelectedSpecies()
@@ -130,6 +133,8 @@ void CQSpeciesWidget::slotBtnClearClicked()
     {
       mpSpecieDM->clear();
     }
+
+  updateDeleteBtns();
 }
 
 bool CQSpeciesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -149,15 +154,56 @@ bool CQSpeciesWidget::leave()
 
 bool CQSpeciesWidget::enterProtected()
 {
+  disconnect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
   mpProxyModel->setSourceModel(mpSpecieDM);
   //Set Model for the TableView
   mpTblSpecies->setModel(NULL);
   mpTblSpecies->setModel(mpProxyModel);
+  connect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  updateDeleteBtns();
   mpTblSpecies->resizeColumnsToContents();
   setFramework(mFramework);
   refreshCompartments();
 
   return true;
+}
+
+void CQSpeciesWidget::updateDeleteBtns()
+{
+  bool selected = false;
+
+  QModelIndexList selRows = mpTblSpecies->selectionModel()->selectedRows();
+
+  if (selRows.size() == 0)
+    selected = false;
+  else
+    {
+      if (selRows.size() == 1)
+        {
+          if (mpSpecieDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+            selected = false;
+          else
+            selected = true;
+        }
+      else
+        selected = true;
+    }
+
+  mpBtnDelete->setEnabled(selected);
+
+  if (mpProxyModel->rowCount() - 1)
+    mpBtnClear->setEnabled(true);
+  else
+    mpBtnClear->setEnabled(false);
+}
+
+void CQSpeciesWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
+    const QItemSelection& C_UNUSED(deselected))
+{
+  updateDeleteBtns();
 }
 
 void CQSpeciesWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
@@ -166,6 +212,7 @@ void CQSpeciesWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
   mpTblSpecies->resizeColumnsToContents();
   setFramework(mFramework);
   refreshCompartments();
+  updateDeleteBtns();
 }
 
 void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -225,7 +272,7 @@ void CQSpeciesWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQSpeciesWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|New Species", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
 

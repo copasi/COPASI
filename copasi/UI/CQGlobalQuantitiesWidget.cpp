@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantitiesWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:20 $
+//   $Author: aekamal $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,12 +86,15 @@ void CQGlobalQuantitiesWidget::languageChange()
 void CQGlobalQuantitiesWidget::slotBtnNewClicked()
 {
   mpGlobalQuantityDM->insertRow();
+  updateDeleteBtns();
 }
 
 void CQGlobalQuantitiesWidget::slotBtnDeleteClicked()
 {
   if (mpTblGlobalQuantities->hasFocus())
     {deleteSelectedGlobalQuantities();}
+
+  updateDeleteBtns();
 }
 
 void CQGlobalQuantitiesWidget::deleteSelectedGlobalQuantities()
@@ -125,6 +128,8 @@ void CQGlobalQuantitiesWidget::slotBtnClearClicked()
     {
       mpGlobalQuantityDM->clear();
     }
+
+  updateDeleteBtns();
 }
 
 bool CQGlobalQuantitiesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -144,19 +149,60 @@ bool CQGlobalQuantitiesWidget::leave()
 
 bool CQGlobalQuantitiesWidget::enterProtected()
 {
+  disconnect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
   mpProxyModel->setSourceModel(mpGlobalQuantityDM);
   //Set Model for the TableView
   mpTblGlobalQuantities->setModel(NULL);
   mpTblGlobalQuantities->setModel(mpProxyModel);
+  connect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  updateDeleteBtns();
   mpTblGlobalQuantities->resizeColumnsToContents();
 
   return true;
+}
+
+void CQGlobalQuantitiesWidget::updateDeleteBtns()
+{
+  bool selected = false;
+
+  QModelIndexList selRows = mpTblGlobalQuantities->selectionModel()->selectedRows();
+
+  if (selRows.size() == 0)
+    selected = false;
+  else
+    {
+      if (selRows.size() == 1)
+        {
+          if (mpGlobalQuantityDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+            selected = false;
+          else
+            selected = true;
+        }
+      else
+        selected = true;
+    }
+
+  mpBtnDelete->setEnabled(selected);
+
+  if (mpProxyModel->rowCount() - 1)
+    mpBtnClear->setEnabled(true);
+  else
+    mpBtnClear->setEnabled(false);
+}
+
+void CQGlobalQuantitiesWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
+    const QItemSelection& C_UNUSED(deselected))
+{
+  updateDeleteBtns();
 }
 
 void CQGlobalQuantitiesWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
     const QModelIndex& C_UNUSED(bottomRight))
 {
   mpTblGlobalQuantities->resizeColumnsToContents();
+  updateDeleteBtns();
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
@@ -217,6 +263,6 @@ void CQGlobalQuantitiesWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQGlobalQuantitiesWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|New Quantity", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }

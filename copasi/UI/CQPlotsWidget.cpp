@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Author: aekamal $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,12 +85,15 @@ void CQPlotsWidget::languageChange()
 void CQPlotsWidget::slotBtnNewClicked()
 {
   mpPlotDM->insertRow();
+  updateDeleteBtns();
 }
 
 void CQPlotsWidget::slotBtnDeleteClicked()
 {
   if (mpTblPlots->hasFocus())
     {deleteSelectedPlots();}
+
+  updateDeleteBtns();
 }
 
 void CQPlotsWidget::deleteSelectedPlots()
@@ -124,6 +127,8 @@ void CQPlotsWidget::slotBtnClearClicked()
     {
       mpPlotDM->clear();
     }
+
+  updateDeleteBtns();
 }
 
 bool CQPlotsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -143,14 +148,55 @@ bool CQPlotsWidget::leave()
 
 bool CQPlotsWidget::enterProtected()
 {
+  disconnect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
   mpProxyModel->setSourceModel(mpPlotDM);
   //Set Model for the TableView
   mpTblPlots->setModel(NULL);
   mpTblPlots->setModel(mpProxyModel);
+  connect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  updateDeleteBtns();
   mpTblPlots->resizeColumnsToContents();
   setFramework(mFramework);
 
   return true;
+}
+
+void CQPlotsWidget::updateDeleteBtns()
+{
+  bool selected = false;
+
+  QModelIndexList selRows = mpTblPlots->selectionModel()->selectedRows();
+
+  if (selRows.size() == 0)
+    selected = false;
+  else
+    {
+      if (selRows.size() == 1)
+        {
+          if (mpPlotDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+            selected = false;
+          else
+            selected = true;
+        }
+      else
+        selected = true;
+    }
+
+  mpBtnDelete->setEnabled(selected);
+
+  if (mpProxyModel->rowCount() - 1)
+    mpBtnClear->setEnabled(true);
+  else
+    mpBtnClear->setEnabled(false);
+}
+
+void CQPlotsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
+    const QItemSelection& C_UNUSED(deselected))
+{
+  updateDeleteBtns();
 }
 
 void CQPlotsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
@@ -158,6 +204,7 @@ void CQPlotsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
 {
   mpTblPlots->resizeColumnsToContents();
   setFramework(mFramework);
+  updateDeleteBtns();
 }
 
 void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -217,7 +264,7 @@ void CQPlotsWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQPlotsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|New Plot", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
 

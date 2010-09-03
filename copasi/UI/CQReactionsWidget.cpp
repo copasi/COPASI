@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Author: aekamal $
+//   $Date: 2010/09/03 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,12 +83,15 @@ void CQReactionsWidget::languageChange()
 void CQReactionsWidget::slotBtnNewClicked()
 {
   mpReactionDM->insertRow();
+  updateDeleteBtns();
 }
 
 void CQReactionsWidget::slotBtnDeleteClicked()
 {
   if (mpTblReactions->hasFocus())
     {deleteSelectedReactions();}
+
+  updateDeleteBtns();
 }
 
 void CQReactionsWidget::deleteSelectedReactions()
@@ -122,6 +125,8 @@ void CQReactionsWidget::slotBtnClearClicked()
     {
       mpReactionDM->clear();
     }
+
+  updateDeleteBtns();
 }
 
 bool CQReactionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -141,14 +146,55 @@ bool CQReactionsWidget::leave()
 
 bool CQReactionsWidget::enterProtected()
 {
+  disconnect(mpTblReactions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
   mpProxyModel->setSourceModel(mpReactionDM);
   //Set Model for the TableView
   mpTblReactions->setModel(NULL);
   mpTblReactions->setModel(mpProxyModel);
+  connect(mpTblReactions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  updateDeleteBtns();
   mpTblReactions->resizeColumnsToContents();
   setFramework(mFramework);
 
   return true;
+}
+
+void CQReactionsWidget::updateDeleteBtns()
+{
+  bool selected = false;
+
+  QModelIndexList selRows = mpTblReactions->selectionModel()->selectedRows();
+
+  if (selRows.size() == 0)
+    selected = false;
+  else
+    {
+      if (selRows.size() == 1)
+        {
+          if (mpReactionDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+            selected = false;
+          else
+            selected = true;
+        }
+      else
+        selected = true;
+    }
+
+  mpBtnDelete->setEnabled(selected);
+
+  if (mpProxyModel->rowCount() - 1)
+    mpBtnClear->setEnabled(true);
+  else
+    mpBtnClear->setEnabled(false);
+}
+
+void CQReactionsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
+    const QItemSelection& C_UNUSED(deselected))
+{
+  updateDeleteBtns();
 }
 
 void CQReactionsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
@@ -156,6 +202,7 @@ void CQReactionsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
 {
   mpTblReactions->resizeColumnsToContents();
   setFramework(mFramework);
+  updateDeleteBtns();
 }
 
 void CQReactionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -215,7 +262,7 @@ void CQReactionsWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQReactionsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|New Reaction", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
 
