@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:31:49 $
+//   $Date: 2010/09/03 16:36:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:31:49 $
+//   $Date: 2010/09/03 16:36:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,41 +57,81 @@
 #define ActivitySize 8
 
 //********************  data  *********************************************
-MyQwtCPointerData::MyQwtCPointerData(const double *x, const double *y, size_t size):
-    QwtCPointerData(x, y, size)
+MyQwtData::MyQwtData():
+    QwtData(),
+    mpX(NULL),
+    mpY(NULL),
+    mSize(0),
+    mMaxSize(0),
+    mLastRectangle(0),
+    mMinX(std::numeric_limits<double>::quiet_NaN()),
+    mMaxX(std::numeric_limits<double>::quiet_NaN()),
+    mMinY(std::numeric_limits<double>::quiet_NaN()),
+    mMaxY(std::numeric_limits<double>::quiet_NaN())
 {}
 
-MyQwtCPointerData & MyQwtCPointerData::operator=(const MyQwtCPointerData & rhs)
+MyQwtData::MyQwtData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOAT64 > & y, size_t size):
+    QwtData(),
+    mpX(x.array()),
+    mpY(y.array()),
+    mSize(size),
+    mMaxSize(x.size()),
+    mLastRectangle(0),
+    mMinX(std::numeric_limits<double>::quiet_NaN()),
+    mMaxX(std::numeric_limits<double>::quiet_NaN()),
+    mMinY(std::numeric_limits<double>::quiet_NaN()),
+    mMaxY(std::numeric_limits<double>::quiet_NaN())
 {
-  *static_cast<QwtCPointerData *>(this) = *static_cast<const QwtCPointerData *>(&rhs);
-  return * this;
+  assert(x.size() == y.size());
+  assert(mSize <= mMaxSize);
 }
 
-QwtData * MyQwtCPointerData::copy() const
-{return new MyQwtCPointerData(xData(), yData(), size());}
+MyQwtData::~MyQwtData()
+{}
 
-QwtDoubleRect MyQwtCPointerData::boundingRect() const
+QwtData * MyQwtData::copy() const
 {
-  const size_t sz = size();
+  MyQwtData * pCopy = new MyQwtData();
 
-  if (sz <= 0)
+  *pCopy = *this;
+
+  return pCopy;
+}
+
+size_t MyQwtData::size() const
+{
+  return mSize;
+}
+
+double MyQwtData::x(size_t i) const
+{
+  return *(mpX + i);
+}
+
+double MyQwtData::y(size_t i) const
+{
+  return *(mpY + i);
+}
+
+QwtDoubleRect MyQwtData::boundingRect() const
+{
+  if (mSize <= 0)
     return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
-  double minX, maxX, minY, maxY;
+  if (mLastRectangle == mSize)
+    return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
 
-  const double *xIt = xData();
-  const double *yIt = yData();
-  const double *end = xIt + sz;
+  const double *xIt = mpX + mLastRectangle;
+  const double *yIt = mpY + mLastRectangle;
+  const double *end = mpX + mSize;
 
-  // Unfortunately this may be NaN
-  minX = maxX = *xIt++;
-  minY = maxY = *yIt++;
+  mLastRectangle = mSize;
 
   // We have to remember whether we have an initial NaN
-  bool isNaNminX = isnan(minX);
-  bool isNaNmaxX = isnan(maxX);
-  bool isNaNminY = isnan(minY);
-  bool isNaNmaxY = isnan(maxY);
+  bool MinXisNaN = isnan(mMinX);
+  bool MaxXisNaN = isnan(mMaxX);
+  bool MinYisNaN = isnan(mMinY);
+  bool MaxYisNaN = isnan(mMaxY);
 
   while (xIt < end)
     {
@@ -99,16 +139,16 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
 
       if (!isnan(xv))
         {
-          if (xv < minX || isNaNminX)
+          if (xv < mMinX || MinXisNaN)
             {
-              minX = xv;
-              isNaNminX = false;
+              mMinX = xv;
+              MinXisNaN = false;
             }
 
-          if (xv > maxX || isNaNmaxX)
+          if (xv > mMaxX || MaxXisNaN)
             {
-              maxX = xv;
-              isNaNmaxX = false;
+              mMaxX = xv;
+              MaxXisNaN = false;
             }
         }
 
@@ -116,43 +156,84 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
 
       if (!isnan(yv))
         {
-          if (yv < minY || isNaNminY)
+          if (yv < mMinY || MinYisNaN)
             {
-              minY = yv;
-              isNaNminY = false;
+              mMinY = yv;
+              MinYisNaN = false;
             }
 
-          if (yv > maxY || isNaNmaxY)
+          if (yv > mMaxY || MaxYisNaN)
             {
-              maxY = yv;
-              isNaNmaxY = false;
+              mMaxY = yv;
+              MaxYisNaN = false;
             }
         }
     }
 
-  if (isnan(minX + maxX + minY + maxY))
+  if (isnan(mMinX + mMaxX + mMinY + mMaxY))
     return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
   // We need to avoid very small data ranges (absolute and relative)
-  C_FLOAT64 minRange = fabs(minX + maxX) * 5.e-5 + DBL_MIN * 100.0;
+  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + DBL_MIN * 100.0;
 
-  if (maxX - minX < minRange)
+  if (mMaxX - mMinX < minRange)
     {
-      minX = minX - minRange * 0.5;
-      maxX = maxX + minRange * 0.5;
+      mMinX = mMinX - minRange * 0.5;
+      mMaxX = mMaxX + minRange * 0.5;
     }
 
-  minRange = fabs(minY + maxY) * 5e-5 + DBL_MIN * 100.0;
+  minRange = fabs(mMinY + mMaxY) * 5e-5 + DBL_MIN * 100.0;
 
-  if (maxY - minY < minRange)
+  if (mMaxY - mMinY < minRange)
     {
-      minY = minY - minRange * 0.5;
-      maxY = maxY + minRange * 0.5;
+      mMinY = mMinY - minRange * 0.5;
+      mMaxY = mMaxY + minRange * 0.5;
     }
 
-  return QwtDoubleRect(minX, minY, maxX - minX, maxY - minY);
+  return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
 }
+
+void MyQwtData::setSize(const size_t & size)
+{
+  mSize = size;
+  assert(mSize <= mMaxSize);
+}
+
+void MyQwtData::reallocated(const CVector< double > & x, const CVector< double > & y)
+{
+  mpX = x.array();
+  mpY = y.array();
+  mMaxSize = x.size();
+
+  assert(mSize <= mMaxSize);
+}
+
+MyQwtData & MyQwtData::operator = (const MyQwtData & rhs)
+{
+  mpX = rhs.mpX;
+  mpY = rhs.mpY;
+  mSize = rhs.mSize;
+  mMaxSize = rhs.mMaxSize;
+  mLastRectangle = rhs.mLastRectangle;
+  mMinX = rhs.mMinX;
+  mMaxX = rhs.mMaxX;
+  mMinY = rhs.mMinY;
+  mMaxY = rhs.mMaxY;
+
+  return * this;
+}
+
 //********************  curve  ********************************************
+
+void MyQwtPlotCurve::setDataSize(const size_t & size)
+{
+  static_cast< MyQwtData * >(&data())->setSize(size);
+}
+
+void MyQwtPlotCurve::reallocatedData(const CVector< double > & x, const CVector< double > & y)
+{
+  static_cast< MyQwtData * >(&data())->reallocated(x, y);
+}
 
 //draw the several curves, separated by NaNs.
 void MyQwtPlotCurve::myDrawLines(QPainter *painter,
@@ -513,7 +594,22 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
         }
     }
 
+  // We need to set the curve data here!
   updateCurves(C_INVALID_INDEX, false);
+
+  unsigned C_INT32 k, kmax = mCurves.size();
+
+  for (k = 0; k < kmax; k++)
+    {
+      if (mCurveTypes[k] == CPlotItem::curve2d)
+        {
+          std::vector< CVector< double > * > & data = mData[mCurveActivities[k]];
+
+          mCurves[k]->setData(MyQwtData(*data[mDataIndex[k][0].second],
+                                        *data[mDataIndex[k][1].second],
+                                        0));
+        }
+    }
 
   mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime();
 
@@ -539,7 +635,7 @@ void CopasiPlot::output(const Activity & activity)
           {
             if (ndata >= data[0]->size())
               {
-                resizeCurves(ItemActivity, false);
+                resizeCurveData(ItemActivity);
               }
 
             //the data that needs to be stored internally:
@@ -590,7 +686,7 @@ void CopasiPlot::separate(const Activity & activity)
           {
             if (ndata >= data[0]->size())
               {
-                resizeCurves(ItemActivity, false);
+                resizeCurveData(ItemActivity);
               }
 
             //the data that needs to be stored internally:
@@ -644,15 +740,10 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
   for (k = 0; k < kmax; k++)
     if ((unsigned C_INT32) mCurveActivities[k] == activity)
       {
-        std::vector< CVector< double > * > & data = mData[activity];
-        unsigned C_INT32 & ndata = mDataSize[activity];
-
         switch (mCurveTypes[k])
           {
             case CPlotItem::curve2d:
-              mCurves[k]->setData(MyQwtCPointerData(data[mDataIndex[k][0].second]->array(),
-                                                    data[mDataIndex[k][1].second]->array(),
-                                                    ndata));
+              static_cast< MyQwtPlotCurve * >(mCurves[k])->setDataSize(mDataSize[activity]);
               break;
 
             case CPlotItem::histoItem1d:
@@ -670,7 +761,7 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
       }
 }
 
-void CopasiPlot::resizeCurves(const unsigned C_INT32 & activity, const bool & doHisto)
+void CopasiPlot::resizeCurveData(const unsigned C_INT32 & activity)
 {
   QMutexLocker Locker(pCopasiGuiMutex);
 
@@ -686,7 +777,19 @@ void CopasiPlot::resizeCurves(const unsigned C_INT32 & activity, const bool & do
 
   // Tell the curves that the location of the data has changed
   // otherwise repaint events could crash
-  updateCurves(activity, doHisto);
+  unsigned C_INT32 k, kmax = mCurves.size();
+
+  for (k = 0; k < kmax; k++)
+    {
+      if ((unsigned C_INT32) mCurveActivities[k] == activity &&
+          mCurveTypes[k] == CPlotItem::curve2d)
+        {
+          std::vector< CVector< double > * > & data = mData[activity];
+
+          static_cast< MyQwtPlotCurve * >(mCurves[k])->reallocatedData(*data[mDataIndex[k][0].second],
+              *data[mDataIndex[k][1].second]);
+        }
+    }
 }
 
 void CopasiPlot::updatePlot()
@@ -708,7 +811,7 @@ void CopasiPlot::updatePlot()
         }
 
       Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
-      mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + Delta + Delta + Delta;
+      mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
     }
 }
 
@@ -1056,9 +1159,9 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
 // virtual
 void CopasiPlot::replot()
 {
-  QMutexLocker Locker(pCopasiGuiMutex);
-
   QwtPlot::replot();
+
+  QMutexLocker Locker(pCopasiGuiMutex);
 
   mReplotFinished = true;
   mWaitSlot.wakeAll();

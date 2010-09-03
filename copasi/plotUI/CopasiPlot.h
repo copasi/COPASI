@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:31:49 $
+//   $Date: 2010/09/03 16:36:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,16 +50,40 @@
 extern QMutex * pCopasiGuiMutex;
 
 // NaN are ignored bounding rectangle
-class MyQwtCPointerData : public QwtCPointerData
+class MyQwtData : public QwtData
 {
 public:
-  MyQwtCPointerData(const double *x, const double *y, size_t size);
-
-  MyQwtCPointerData &operator=(const MyQwtCPointerData & rhs);
+  MyQwtData();
+  MyQwtData(const CVector< double > & x, const CVector< double > & y, size_t size);
+  virtual ~MyQwtData();
 
   virtual QwtData *copy() const;
 
+  virtual size_t size() const;
+
+  virtual double x(size_t i) const;
+  virtual double y(size_t i) const;
+
   virtual QwtDoubleRect boundingRect() const;
+
+  void setSize(const size_t & size);
+
+  void reallocated(const CVector< double > & x, const CVector< double > & y);
+
+protected:
+  MyQwtData &operator = (const MyQwtData & rhs);
+
+private:
+  const double * mpX;
+  const double * mpY;
+  size_t mSize;
+  size_t mMaxSize;
+
+  mutable size_t mLastRectangle;
+  mutable double mMinX;
+  mutable double mMaxX;
+  mutable double mMinY;
+  mutable double mMaxY;
 };
 
 // NaN in data splits curve
@@ -72,6 +96,10 @@ public:
   {
     assert(mpMutex != NULL);
   }
+
+  void setDataSize(const size_t & size);
+
+  void reallocatedData(const CVector< double > & x, const CVector< double > & y);
 
 protected:
   void myDrawLines(QPainter *painter,
@@ -173,7 +201,7 @@ private:
   /**
    * Resize the curve data
    */
-  void resizeCurves(const unsigned C_INT32 & activity, const bool & doHisto);
+  void resizeCurveData(const unsigned C_INT32 & activity);
 
   /**
    * Redraw the plot
@@ -253,7 +281,7 @@ private:
   /**
    * The list of curves
    */
-  std::vector<QwtPlotCurve*> mCurves;
+  std::vector< QwtPlotCurve * > mCurves;
 
   /**
    * A map between a specification identified by its key and a curve
