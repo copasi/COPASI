@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Author: gauges $
+//   $Date: 2010/09/07 09:16:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -976,9 +976,13 @@ void CBitPatternMethod::buildFluxModeMatrix(CStepMatrix * fluxModeMatrix,
   while (!kernelStack.empty())
     {
       KernelCol = kernelStack.top();
+#ifdef COPASI_DEBUG
       DebugFile << "Current Column: " << *KernelCol << std::endl;
+#endif // COPASI_DEBUG      
       CMatrix<C_INT64> RankKernel = performRankTest(KernelCol);
+#ifdef COPASI_DEBUG
       DebugFile << "New Rank Kernel " << RankKernel << std::endl;
+#endif // COPASI_DEBUG      
 
       if (RankKernel.numCols() == 1)
         {

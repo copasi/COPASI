@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-$Revision: 1.27 $
+$Revision: 1.28 $
 $Name:  $
-$Author: shoops $
-$Date: 2010/09/02 14:30:57 $
+$Author: gauges $
+$Date: 2010/09/07 09:16:21 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,8 +252,9 @@ void CEFMAlgorithm::calculateNextTableau()
   std::list< const CTableauLine * >::iterator a;
   std::list< const CTableauLine * >::iterator b;
   C_FLOAT64 ma, mb;
-
+#ifdef COPASI_DEBUG
   DebugFile << *mpCurrentTableau << std::endl;
+#endif //COPASI_DEBUG
 
   mpNextTableau = new CTableauMatrix();
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Author: gauges $
+//   $Date: 2010/09/07 09:16:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,13 +134,14 @@ bool CBitPatternTreeMethod::initialize()
   // We first build the kernel matrix
   CMatrix< C_INT64 > KernelMatrix;
   buildKernelMatrix(KernelMatrix);
-
+#ifdef COPASI_DEBUG
   DebugFile << "Original Kernel Matrix:" << std::endl;
   DebugFile << KernelMatrix << std::endl;
-
+#endif // COPASI_DEBUG
   mMinimumSetSize = KernelMatrix.numCols() - 2;
-
+#ifdef COPASI_DEBUG
   DebugFile << "MinSetSize = " << mMinimumSetSize << std::endl;
+#endif // COPASI_DEBUG
 
   // Now we create the initial step matrix
   mpStepMatrix = new CStepMatrix(KernelMatrix);
@@ -173,9 +174,10 @@ bool CBitPatternTreeMethod::calculate()
   while (mpStepMatrix->getNumUnconvertedRows() > 0 &&
          Continue)
     {
+#ifdef COPASI_DEBUG
       DebugFile << "Step Matrix:" << std::endl;
       DebugFile << *mpStepMatrix << std::endl;
-
+#endif // COPASI_DEBUG
       mStep = mpStepMatrix->getFirstUnconvertedRow();
 
       std::vector< CStepMatrixColumn * > PositiveColumns;
@@ -264,7 +266,7 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
 
   CZeroSet Intersection = CZeroSet::intersection(pPositive->getZeroSet(),
                           pNegative->getZeroSet());
-
+#ifdef COPASI_DEBUG
   DebugFile << "Intersection: " << Intersection << std::endl;
 
   // Adjacency test
@@ -273,6 +275,8 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
       DebugFile << "Intersection fails adjacency test." << std::endl;
       return;
     }
+
+#endif //COPASI_DEBUG
 
   const CStepMatrixColumn * pPositiveColumn = pPositive->getStepMatrixColumn();
 
@@ -291,9 +295,9 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
           if (Intersection.isExtremeRay(mNewColumns))
             {
               CStepMatrixColumn * pColumn = mpStepMatrix->addColumn(Intersection, pPositiveColumn, pNegativeColumn);
-
+#ifdef COPASI_DEBUG
               DebugFile << "New Column: " << *pColumn << std::endl;
-
+#endif //COPASI_DEBUG
               // Remove all new column which are no longer extreme rays
               std::vector< CStepMatrixColumn * >::iterator it = mNewColumns.begin();
               std::vector< CStepMatrixColumn * >::iterator end = mNewColumns.end();
@@ -311,9 +315,17 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
 
               mNewColumns.push_back(pColumn);
             }
+
+#ifdef COPASI_DEBUG
           else DebugFile << "Intersection fails - new columns already contain superset." << std::endl;
+
+#endif //COPASI_DEBUG
         }
+
+#ifdef COPASI_DEBUG
       else DebugFile << "Intersection fails - null tree already contains superset." << std::endl;
+
+#endif //COPASI_DEBUG
 
       mProgressCounter2++;
 
@@ -322,19 +334,25 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
     }
   else if (pPositiveColumn != NULL)
     {
+#ifdef COPASI_DEBUG
       DebugFile << "Intersection has null negative column." << std::endl;
+#endif //COPASI_DEBUG
       combine(pPositive, pNegative->getUnsetChild());
       combine(pPositive, pNegative->getSetChild());
     }
   else if (pNegativeColumn != NULL)
     {
+#ifdef COPASI_DEBUG
       DebugFile << "Intersection has null positive column." << std::endl;
+#endif //COPASI_DEBUG
       combine(pPositive->getUnsetChild(), pNegative);
       combine(pPositive->getSetChild(), pNegative);
     }
   else
     {
+#ifdef COPASI_DEBUG
       DebugFile << "Intersection has null positive and negative columns." << std::endl;
+#endif //COPASI_DEBUG
       combine(pPositive->getUnsetChild(), pNegative->getUnsetChild());
       combine(pPositive->getUnsetChild(), pNegative->getSetChild());
       combine(pPositive->getSetChild(), pNegative->getUnsetChild());
