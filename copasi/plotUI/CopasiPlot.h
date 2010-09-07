@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/03 18:58:25 $
+//   $Date: 2010/09/07 16:33:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,6 @@
 #include <QMutex>
 #include <QWaitCondition>
 
-#include "plotUI/CHistogram.h"
 #include "plot/CPlotItem.h"
 
 #include "report/CCopasiObject.h"
@@ -46,16 +45,13 @@
 #include "utilities/CopasiTime.h"
 #include "utilities/CVector.h"
 
-// class CCopasiObjectName;
-extern QMutex * pCopasiGuiMutex;
-
 // NaN are ignored bounding rectangle
-class MyQwtData : public QwtData
+class C2DCurveData : public QwtData
 {
 public:
-  MyQwtData();
-  MyQwtData(const CVector< double > & x, const CVector< double > & y, size_t size);
-  virtual ~MyQwtData();
+  C2DCurveData();
+  C2DCurveData(const CVector< double > & x, const CVector< double > & y, size_t size);
+  virtual ~C2DCurveData();
 
   virtual QwtData *copy() const;
 
@@ -68,10 +64,10 @@ public:
 
   void setSize(const size_t & size);
 
-  void reallocated(const CVector< double > & x, const CVector< double > & y);
+  void reallocated(const CVector< double > * pX, const CVector< double > * pY);
 
 protected:
-  MyQwtData &operator = (const MyQwtData & rhs);
+  C2DCurveData &operator = (const C2DCurveData & rhs);
 
 private:
   const double * mpX;
@@ -86,20 +82,70 @@ private:
   mutable double mMaxY;
 };
 
-// NaN in data splits curve
-class MyQwtPlotCurve : public QwtPlotCurve
+class CHistoCurveData : public QwtData
 {
 public:
-  MyQwtPlotCurve(QMutex * pMutex, const QString & title):
+  CHistoCurveData();
+  CHistoCurveData(const CVector< double > & x, size_t size,
+                  const C_FLOAT64 & increment);
+  virtual ~CHistoCurveData();
+
+  virtual QwtData *copy() const;
+
+  virtual size_t size() const;
+
+  virtual double x(size_t i) const;
+  virtual double y(size_t i) const;
+
+  virtual QwtDoubleRect boundingRect() const;
+
+  void setSize(const size_t & size);
+
+  void reallocated(const CVector< double > * pX);
+
+protected:
+  CHistoCurveData &operator = (const CHistoCurveData & rhs);
+
+private:
+  const double * mpX;
+  size_t mSize;
+  size_t mMaxSize;
+
+  mutable size_t mLastRectangle;
+  mutable double mMinX;
+  mutable double mMaxX;
+  mutable double mMinY;
+  mutable double mMaxY;
+
+  double mIncrement;
+
+  mutable std::map<C_INT32, C_INT32> mMap;
+  mutable CVector< double > mHistoX;
+  mutable CVector< double > mHistoY;
+};
+
+// NaN in data splits curve
+class C2DPlotCurve : public QwtPlotCurve
+{
+public:
+  C2DPlotCurve(QMutex * pMutex, const CPlotItem::Type & type, const QString & title):
       QwtPlotCurve(title),
-      mpMutex(pMutex)
+      mpMutex(pMutex),
+      mCurveType(type),
+      mIncrement(1.0)
   {
     assert(mpMutex != NULL);
   }
 
   void setDataSize(const size_t & size);
 
-  void reallocatedData(const CVector< double > & x, const CVector< double > & y);
+  void reallocatedData(const CVector< double > * pX, const CVector< double > * pY);
+
+  void setIncrement(const C_FLOAT64 & increment);
+
+  const C_FLOAT64 & getIncrement() const;
+
+  const CPlotItem::Type & getType() const;
 
 protected:
   void myDrawLines(QPainter *painter,
@@ -113,6 +159,10 @@ protected:
 
 private:
   QMutex * mpMutex;
+
+  CPlotItem::Type mCurveType;
+
+  C_FLOAT64 mIncrement;
 };
 
 //*******************************************************
@@ -196,7 +246,7 @@ private:
    * Tell the curves where the data is located. It must be called
    * after reallocating the memory for the curve data.
    */
-  void updateCurves(const unsigned C_INT32 & activity, const bool & doHisto);
+  void updateCurves(const unsigned C_INT32 & activity);
 
   /**
    * Resize the curve data
@@ -286,12 +336,12 @@ private:
   /**
    * The list of curves
    */
-  std::vector< QwtPlotCurve * > mCurves;
+  std::vector< C2DPlotCurve * > mCurves;
 
   /**
    * A map between a specification identified by its key and a curve
    */
-  std::map< std::string, QwtPlotCurve * > mCurveMap;
+  std::map< std::string, C2DPlotCurve * > mCurveMap;
 
   /**
    * Vector of type of each item (curve)
@@ -306,7 +356,7 @@ private:
   /**
    * List of the histograms (if there are some)
    */
-  std::vector<CHistogram> mHistograms;
+  // std::vector<CHistogram> mHistograms;
 
   /**
    * Map of curve to the index to the corresponding histogram.
@@ -314,17 +364,17 @@ private:
   std::vector<C_INT32> mHistoIndices;
 
   /**
-   * Count af data lines recorded during activity BEFORE.
+   * Count of data lines recorded during activity BEFORE.
    */
   unsigned C_INT32 mDataBefore;
 
   /**
-   * Count af data lines recorded during activity DURING.
+   * Count of data lines recorded during activity DURING.
    */
   unsigned C_INT32 mDataDuring;
 
   /**
-   * Count af data lines recorded during activity AFTER.
+   * Count of data lines recorded during activity AFTER.
    */
   unsigned C_INT32 mDataAfter;
 
@@ -369,7 +419,6 @@ public:
 
 protected:
   bool mReplotFinished;
-  QWaitCondition mWaitSlot;
 
 signals:
   void replotSignal();

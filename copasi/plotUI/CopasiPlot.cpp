@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/03 18:58:25 $
+//   $Date: 2010/09/07 16:33:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/03 18:58:25 $
+//   $Date: 2010/09/07 16:33:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@
 #define ActivitySize 8
 
 //********************  data  *********************************************
-MyQwtData::MyQwtData():
+C2DCurveData::C2DCurveData():
     QwtData(),
     mpX(NULL),
     mpY(NULL),
@@ -70,7 +70,7 @@ MyQwtData::MyQwtData():
     mMaxY(std::numeric_limits<double>::quiet_NaN())
 {}
 
-MyQwtData::MyQwtData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOAT64 > & y, size_t size):
+C2DCurveData::C2DCurveData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOAT64 > & y, size_t size):
     QwtData(),
     mpX(x.array()),
     mpY(y.array()),
@@ -86,34 +86,34 @@ MyQwtData::MyQwtData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOAT64 > 
   assert(mSize <= mMaxSize);
 }
 
-MyQwtData::~MyQwtData()
+C2DCurveData::~C2DCurveData()
 {}
 
-QwtData * MyQwtData::copy() const
+QwtData * C2DCurveData::copy() const
 {
-  MyQwtData * pCopy = new MyQwtData();
+  C2DCurveData * pCopy = new C2DCurveData();
 
   *pCopy = *this;
 
   return pCopy;
 }
 
-size_t MyQwtData::size() const
+size_t C2DCurveData::size() const
 {
   return mSize;
 }
 
-double MyQwtData::x(size_t i) const
+double C2DCurveData::x(size_t i) const
 {
   return *(mpX + i);
 }
 
-double MyQwtData::y(size_t i) const
+double C2DCurveData::y(size_t i) const
 {
   return *(mpY + i);
 }
 
-QwtDoubleRect MyQwtData::boundingRect() const
+QwtDoubleRect C2DCurveData::boundingRect() const
 {
   if (mSize <= 0)
     return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
@@ -193,22 +193,22 @@ QwtDoubleRect MyQwtData::boundingRect() const
   return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
 }
 
-void MyQwtData::setSize(const size_t & size)
+void C2DCurveData::setSize(const size_t & size)
 {
   mSize = size;
   assert(mSize <= mMaxSize);
 }
 
-void MyQwtData::reallocated(const CVector< double > & x, const CVector< double > & y)
+void C2DCurveData::reallocated(const CVector< double > * pX, const CVector< double > *pY)
 {
-  mpX = x.array();
-  mpY = y.array();
-  mMaxSize = x.size();
+  mpX = pX->array();
+  mpY = pY->array();
+  mMaxSize = pX->size();
 
   assert(mSize <= mMaxSize);
 }
 
-MyQwtData & MyQwtData::operator = (const MyQwtData & rhs)
+C2DCurveData & C2DCurveData::operator = (const C2DCurveData & rhs)
 {
   mpX = rhs.mpX;
   mpY = rhs.mpY;
@@ -223,22 +223,241 @@ MyQwtData & MyQwtData::operator = (const MyQwtData & rhs)
   return * this;
 }
 
+//********************  data  *********************************************
+CHistoCurveData::CHistoCurveData():
+    QwtData(),
+    mpX(NULL),
+    mSize(0),
+    mMaxSize(0),
+    mLastRectangle(0),
+    mMinX(std::numeric_limits<double>::quiet_NaN()),
+    mMaxX(std::numeric_limits<double>::quiet_NaN()),
+    mMinY(std::numeric_limits<double>::quiet_NaN()),
+    mMaxY(std::numeric_limits<double>::quiet_NaN()),
+    mIncrement(1.0),
+    mMap(),
+    mHistoX(0),
+    mHistoY(0)
+{}
+
+CHistoCurveData::CHistoCurveData(const CVector< C_FLOAT64 > & x,
+                                 size_t size,
+                                 const C_FLOAT64 & increment):
+    QwtData(),
+    mpX(x.array()),
+    mSize(size),
+    mMaxSize(x.size()),
+    mLastRectangle(0),
+    mMinX(std::numeric_limits<double>::quiet_NaN()),
+    mMaxX(std::numeric_limits<double>::quiet_NaN()),
+    mMinY(std::numeric_limits<double>::quiet_NaN()),
+    mMaxY(std::numeric_limits<double>::quiet_NaN()),
+    mIncrement(increment),
+    mMap(),
+    mHistoX(0),
+    mHistoY(0)
+{
+  assert(mSize <= mMaxSize);
+}
+
+CHistoCurveData::~CHistoCurveData()
+{}
+
+QwtData * CHistoCurveData::copy() const
+{
+  CHistoCurveData * pCopy = new CHistoCurveData();
+
+  *pCopy = *this;
+
+  return pCopy;
+}
+
+size_t CHistoCurveData::size() const
+{
+  return mHistoX.size();
+}
+
+double CHistoCurveData::x(size_t i) const
+{
+  return mHistoX[i];
+}
+
+double CHistoCurveData::y(size_t i) const
+{
+  return mHistoY[i];
+}
+
+QwtDoubleRect CHistoCurveData::boundingRect() const
+{
+  if (mSize <= 0)
+    return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
+
+  if (mLastRectangle == mSize)
+    return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
+
+  const double *xIt = mpX + mLastRectangle;
+  const double *end = mpX + mSize;
+
+  mLastRectangle = mSize;
+
+  double InvIncrement = 1.0 / mIncrement;
+
+  for (; xIt != end; ++xIt)
+    {
+      //just ignore breaks. Later we perhaps want to start a new histogram...
+      if (isnan(*xIt)) //NaN
+        continue;
+
+      if (-std::numeric_limits< C_FLOAT64 >::infinity() < *xIt &&
+          *xIt < std::numeric_limits< C_FLOAT64 >::infinity())
+        {
+          mMap[(C_INT32) floor(*xIt * InvIncrement)]++;
+          mMap[(C_INT32) floor(*xIt * InvIncrement) + 1];
+        }
+    }
+
+  //construct arrays
+  mHistoX.resize(mMap.size() + 1);
+  mHistoY.resize(mMap.size() + 1);
+
+  double *pX = mHistoX.array();
+  double *pY = mHistoY.array();
+
+  //add one bin to the left
+  if (mMap.size() > 0)
+    {
+      *pX = (mMap.begin()->first - 1) * mIncrement;
+    }
+  else
+    {
+      *pX = 0.0;
+    }
+
+  *pY = 0.0;
+
+  mMinX = mMaxX = *pX++;
+  mMinY = mMaxY = *pY++;
+
+  C_FLOAT64 tmpFactor = 1.0 / (mSize * mIncrement);
+  std::map<C_INT32, C_INT32>::const_iterator it = mMap.begin();
+  std::map<C_INT32, C_INT32>::const_iterator itEnd = mMap.end();
+
+  for (; it != itEnd; ++it, ++pX, ++pY)
+    {
+      //TODO use pointer increments instead of [...]
+      *pX = it->first * mIncrement;
+      *pY = (double)it->second * tmpFactor;
+
+      if (*pX < mMinX)
+        mMinX = *pX;
+
+      if (*pX > mMaxX)
+        mMaxX = *pX;
+
+      if (*pY < mMinY)
+        mMinY = *pY;
+
+      if (*pY > mMaxY)
+        mMaxY = *pY;
+    }
+
+  std::cout << mHistoY << std::endl;
+
+  return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
+}
+
+void CHistoCurveData::setSize(const size_t & size)
+{
+  mSize = size;
+  assert(mSize <= mMaxSize);
+}
+
+void CHistoCurveData::reallocated(const CVector< double > * pX)
+{
+  mpX = pX->array();
+  mMaxSize = pX->size();
+
+  assert(mSize <= mMaxSize);
+}
+
+CHistoCurveData & CHistoCurveData::operator = (const CHistoCurveData & rhs)
+{
+  mpX = rhs.mpX;
+  mSize = rhs.mSize;
+  mMaxSize = rhs.mMaxSize;
+
+  mLastRectangle = rhs.mLastRectangle;
+  mMinX = rhs.mMinX;
+  mMaxX = rhs.mMaxX;
+  mMinY = rhs.mMinY;
+  mMaxY = rhs.mMaxY;
+
+  mIncrement = rhs.mIncrement;
+  mMap = rhs.mMap;
+  mHistoX = rhs.mHistoX;
+  mHistoY = rhs.mHistoY;
+
+  return * this;
+}
+
 //********************  curve  ********************************************
 
-void MyQwtPlotCurve::setDataSize(const size_t & size)
+void C2DPlotCurve::setDataSize(const size_t & size)
 {
-  static_cast< MyQwtData * >(&data())->setSize(size);
+  switch (mCurveType)
+    {
+      case CPlotItem::curve2d:
+        static_cast< C2DCurveData * >(&data())->setSize(size);
+        break;
+
+      case CPlotItem::histoItem1d:
+        static_cast< CHistoCurveData * >(&data())->setSize(size);
+        break;
+
+      default:
+        fatalError();
+        break;
+    }
 }
 
-void MyQwtPlotCurve::reallocatedData(const CVector< double > & x, const CVector< double > & y)
+void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< double > * pY)
 {
-  static_cast< MyQwtData * >(&data())->reallocated(x, y);
+  switch (mCurveType)
+    {
+      case CPlotItem::curve2d:
+        static_cast< C2DCurveData * >(&data())->reallocated(pX, pY);
+        break;
+
+      case CPlotItem::histoItem1d:
+        static_cast< CHistoCurveData * >(&data())->reallocated(pX);
+        break;
+
+      default:
+        fatalError();
+        break;
+    }
 }
+
+void C2DPlotCurve::setIncrement(const C_FLOAT64 & increment)
+{
+  mIncrement = increment;
+}
+
+const C_FLOAT64 & C2DPlotCurve::getIncrement() const
+{
+  return mIncrement;
+}
+
+const CPlotItem::Type & C2DPlotCurve::getType() const
+{
+  return mCurveType;
+}
+
 
 //draw the several curves, separated by NaNs.
-void MyQwtPlotCurve::myDrawLines(QPainter *painter,
-                                 const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-                                 int from, int to) const
+void C2DPlotCurve::myDrawLines(QPainter *painter,
+                               const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                               int from, int to) const
 {
   int to2;
 
@@ -266,9 +485,9 @@ void MyQwtPlotCurve::myDrawLines(QPainter *painter,
 }
 
 //virtual
-void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
-                               const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-                               int from, int to) const
+void C2DPlotCurve::drawCurve(QPainter *painter, int style,
+                             const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                             int from, int to) const
 {
   QMutexLocker Locker(mpMutex);
 
@@ -302,10 +521,6 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
     mIgnoreUpdate(false),
     mpZoomer(NULL)
 {
-
-  if (pCopasiGuiMutex == NULL)
-    pCopasiGuiMutex = new QMutex();
-
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
 
@@ -342,8 +557,6 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   mDataSize.resize(ActivitySize);
   mDataIndex.clear();
 
-  //setCursor(Qt::CrossCursor);
-
   // Initialize from the plot specification
   initFromSpec(plotspec);
   connect(this, SIGNAL(replotSignal()), this, SLOT(replot()));
@@ -355,12 +568,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   mpPlotSpecification = plotspec;
 
   if (mpZoomer) mpZoomer->setEnabled(false);
-
-  //removeCurves();
-  //detachItems();
-  mHistograms.clear();
-
-  // createIndices(plotspec);
 
   unsigned C_INT32 k, kmax = mpPlotSpecification->getItems().size();
 
@@ -374,16 +581,18 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   mCurveActivities.resize(kmax);
   mHistoIndices.resize(kmax);
 
-  std::map< std::string, QwtPlotCurve * >::iterator found;
+  std::map< std::string, C2DPlotCurve * >::iterator found;
 
-  std::map< std::string, QwtPlotCurve * > CurveMap = mCurveMap;
+  std::map< std::string, C2DPlotCurve * > CurveMap = mCurveMap;
   mCurveMap.clear();
+
+  size_t HistogramIndex = 0;
 
   for (k = 0; k < kmax; k++)
     {
       pItem = mpPlotSpecification->getItems()[k];
 
-      QwtPlotCurve * pCurve;
+      C2DPlotCurve * pCurve;
       bool Visible = true;
 
       // Qwt does not like it to reuse the curve as this may lead to access
@@ -397,7 +606,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
         }
 
       // set up the curve
-      pCurve = new MyQwtPlotCurve(&mMutex, FROM_UTF8(pItem->getTitle()));
+      pCurve = new C2DPlotCurve(&mMutex, mCurveTypes[k], FROM_UTF8(pItem->getTitle()));
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
@@ -433,8 +642,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           case CPlotItem::histoItem1d:
             // Store the index of the histogram to be created
-            mHistoIndices[k] = mHistograms.size();
-            mHistograms.push_back(CHistogram(*pItem->getValue("increment").pDOUBLE));
+            mHistoIndices[k] = HistogramIndex++;
+            pCurve->setIncrement(*pItem->getValue("increment").pDOUBLE);
 
             pCurve->setStyle(QwtPlotCurve::Steps);
             pCurve->setYAxis(QwtPlot::yRight);
@@ -449,8 +658,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
     }
 
   // Remove unused curves if definition has changed
-  std::map< std::string, QwtPlotCurve * >::iterator it = CurveMap.begin();
-  std::map< std::string, QwtPlotCurve * >::iterator end = CurveMap.end();
+  std::map< std::string, C2DPlotCurve * >::iterator it = CurveMap.begin();
+  std::map< std::string, C2DPlotCurve * >::iterator end = CurveMap.end();
 
   for (; it != end; ++it)
     pdelete(it->second);
@@ -598,13 +807,26 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
 
   for (k = 0; k < kmax; k++)
     {
-      if (mCurveTypes[k] == CPlotItem::curve2d)
-        {
-          std::vector< CVector< double > * > & data = mData[mCurveActivities[k]];
+      std::vector< CVector< double > * > & data = mData[mCurveActivities[k]];
 
-          mCurves[k]->setData(MyQwtData(*data[mDataIndex[k][0].second],
-                                        *data[mDataIndex[k][1].second],
-                                        0));
+      switch (mCurveTypes[k])
+        {
+          case CPlotItem::curve2d:
+            mCurves[k]->setData(C2DCurveData(*data[mDataIndex[k][0].second],
+                                             *data[mDataIndex[k][1].second],
+                                             0));
+            break;
+
+          case CPlotItem::histoItem1d:
+            mCurves[k]->setData(CHistoCurveData(*data[mDataIndex[k][0].second],
+                                                0,
+                                                mCurves[k]->getIncrement()));
+
+            break;
+
+          default:
+            fatalError();
+            break;
         }
     }
 
@@ -647,19 +869,6 @@ void CopasiPlot::output(const Activity & activity)
           }
       }
 
-  // Deal with the histograms.
-  for (i = 0, imax = mCurves.size(); i < imax; ++i)
-    if (mCurveTypes[i] == CPlotItem::histoItem1d &&
-        mCurveActivities[i] & activity)
-      {
-        std::pair< Activity, unsigned C_INT32 > * pDataIndex = &mDataIndex[i][0];
-
-        if (mObjectInteger[pDataIndex->first][pDataIndex->second])
-          mHistograms[mHistoIndices[i]].addValue(*(C_INT32 *)mObjectValues[pDataIndex->first][pDataIndex->second]);
-        else
-          mHistograms[mHistoIndices[i]].addValue(*mObjectValues[pDataIndex->first][pDataIndex->second]);
-      }
-
   updatePlot();
 }
 
@@ -695,12 +904,6 @@ void CopasiPlot::separate(const Activity & activity)
           }
       }
 
-  // Deal with the histograms.
-  for (i = 0, imax = mCurves.size(); i < imax; ++i)
-    if (mCurveTypes[i] == CPlotItem::histoItem1d &&
-        mCurveActivities[i] & activity)
-      mHistograms[mHistoIndices[i]].addValue(MissingValue);
-
   updatePlot();
 
   return;
@@ -708,6 +911,8 @@ void CopasiPlot::separate(const Activity & activity)
 
 void CopasiPlot::finish()
 {
+  // We need to force a replot, i.e., the next mNextPlotTime should be in the past.
+  mNextPlotTime = 0;
   replot();
 
   if (mpZoomer)
@@ -717,14 +922,14 @@ void CopasiPlot::finish()
     }
 }
 
-void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & doHisto)
+void CopasiPlot::updateCurves(const unsigned C_INT32 & activity)
 {
   if (activity == C_INVALID_INDEX)
     {
       C_INT32 ItemActivity;
 
       for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
-        updateCurves(ItemActivity, doHisto);
+        updateCurves(ItemActivity);
 
       return;
     }
@@ -734,24 +939,7 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
   for (k = 0; k < kmax; k++)
     if ((unsigned C_INT32) mCurveActivities[k] == activity)
       {
-        switch (mCurveTypes[k])
-          {
-            case CPlotItem::curve2d:
-              static_cast< MyQwtPlotCurve * >(mCurves[k])->setDataSize(mDataSize[activity]);
-              break;
-
-            case CPlotItem::histoItem1d:
-
-              if (doHisto)
-                mCurves[k]->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
-                                       mHistograms[mHistoIndices[k]].getYArray(),
-                                       mHistograms[mHistoIndices[k]].size());
-
-              break;
-
-            default :
-              fatalError();
-          }
+        static_cast< C2DPlotCurve * >(mCurves[k])->setDataSize(mDataSize[activity]);
       }
 }
 
@@ -774,13 +962,26 @@ void CopasiPlot::resizeCurveData(const unsigned C_INT32 & activity)
 
   for (k = 0; k < kmax; k++)
     {
-      if ((unsigned C_INT32) mCurveActivities[k] == activity &&
-          mCurveTypes[k] == CPlotItem::curve2d)
+      if ((unsigned C_INT32) mCurveActivities[k] == activity)
         {
           std::vector< CVector< double > * > & data = mData[activity];
 
-          static_cast< MyQwtPlotCurve * >(mCurves[k])->reallocatedData(*data[mDataIndex[k][0].second],
-              *data[mDataIndex[k][1].second]);
+          switch (mCurveTypes[k])
+            {
+              case CPlotItem::curve2d:
+                static_cast< C2DPlotCurve * >(mCurves[k])->reallocatedData(data[mDataIndex[k][0].second],
+                    data[mDataIndex[k][1].second]);
+                break;
+
+              case CPlotItem::histoItem1d:
+                static_cast< C2DPlotCurve * >(mCurves[k])->reallocatedData(data[mDataIndex[k][0].second],
+                    NULL);
+                break;
+
+              default:
+                fatalError();
+                break;
+            }
         }
     }
 }
@@ -1018,30 +1219,35 @@ bool CopasiPlot::saveData(const std::string & filename)
         }
     }
 
-  if (mHistograms.size())
+  bool FirstHistogram = true;
+  size_t HistogramIndex = 0;
+
+  std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
+  std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
+
+  for (; itCurves != endCurves; ++itCurves)
     {
-      fs << "\n# The histograms: \n";
-
-      C_INT32 i, imax;
-
-      C_INT32 j, jmax = mHistograms.size();
-
-      for (j = 0; j < jmax; ++j)
+      if ((*itCurves)->getType() == CPlotItem::histoItem1d)
         {
-          if (mSaveHistogramObjects[j] != NULL)
-            fs << mSaveHistogramObjects[j]->getObjectDisplayName();
+          if (FirstHistogram)
+            {
+              fs << "\n# The histograms: \n";
+              FirstHistogram = false;
+            }
+
+          if (mSaveHistogramObjects[HistogramIndex] != NULL)
+            fs << mSaveHistogramObjects[HistogramIndex]->getObjectDisplayName();
           else
             fs << "Not found";
 
           fs << std::endl;
 
-          imax = mHistograms[j].size();
-          const double* x = mHistograms[j].getXArray();
-          const double* y = mHistograms[j].getYArray();
+          CHistoCurveData * pData = static_cast< CHistoCurveData * >(&(*itCurves)->data());
+          size_t i, imax = pData->size();
 
           for (i = 0; i < imax; ++i)
             {
-              fs << *x++ << "\t" << *y++ << "\n";
+              fs << pData->x(i) << "\t" << pData->y(i) << "\n";
             }
         }
     }
@@ -1068,8 +1274,8 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
 
 void CopasiPlot::setCurvesVisibility(const bool & visibility)
 {
-  std::map< std::string, QwtPlotCurve * >::iterator it = mCurveMap.begin();
-  std::map< std::string, QwtPlotCurve * >::iterator end = mCurveMap.end();
+  std::map< std::string, C2DPlotCurve * >::iterator it = mCurveMap.begin();
+  std::map< std::string, C2DPlotCurve * >::iterator end = mCurveMap.end();
 
   for (; it != end; ++it)
     {
@@ -1144,7 +1350,7 @@ void CopasiPlot::replot()
 
       {
         QMutexLocker Locker(&mMutex);
-        updateCurves(C_INVALID_INDEX, true);
+        updateCurves(C_INVALID_INDEX);
       }
 
       QwtPlot::replot();
