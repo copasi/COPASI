@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 16:33:27 $
+//   $Date: 2010/09/07 16:50:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 16:33:27 $
+//   $Date: 2010/09/07 16:50:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -361,8 +361,6 @@ QwtDoubleRect CHistoCurveData::boundingRect() const
         mMaxY = *pY;
     }
 
-  std::cout << mHistoY << std::endl;
-
   return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
 }
 
@@ -606,7 +604,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
         }
 
       // set up the curve
-      pCurve = new C2DPlotCurve(&mMutex, mCurveTypes[k], FROM_UTF8(pItem->getTitle()));
+      pCurve = new C2DPlotCurve(&mMutex, pItem->getType(), FROM_UTF8(pItem->getTitle()));
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
