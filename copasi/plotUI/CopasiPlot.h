@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 16:33:27 $
+//   $Date: 2010/09/07 17:40:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,11 +128,13 @@ private:
 class C2DPlotCurve : public QwtPlotCurve
 {
 public:
-  C2DPlotCurve(QMutex * pMutex, const CPlotItem::Type & type, const QString & title):
+  C2DPlotCurve(QMutex * pMutex, const CPlotItem::Type & type,
+               const COutputInterface::Activity & activity, const QString & title):
       QwtPlotCurve(title),
       mpMutex(pMutex),
       mCurveType(type),
-      mIncrement(1.0)
+      mIncrement(1.0),
+      mActivity(activity)
   {
     assert(mpMutex != NULL);
   }
@@ -146,6 +148,8 @@ public:
   const C_FLOAT64 & getIncrement() const;
 
   const CPlotItem::Type & getType() const;
+
+  const COutputInterface::Activity & getActivity() const;
 
 protected:
   void myDrawLines(QPainter *painter,
@@ -163,6 +167,8 @@ private:
   CPlotItem::Type mCurveType;
 
   C_FLOAT64 mIncrement;
+
+  COutputInterface::Activity mActivity;
 };
 
 //*******************************************************
@@ -344,19 +350,9 @@ private:
   std::map< std::string, C2DPlotCurve * > mCurveMap;
 
   /**
-   * Vector of type of each item (curve)
-   */
-  std::vector<CPlotItem::Type> mCurveTypes;
-
-  /**
    * Vector of the activity of each item (curve)
    */
-  std::vector<Activity> mCurveActivities;
-
-  /**
-   * List of the histograms (if there are some)
-   */
-  // std::vector<CHistogram> mHistograms;
+  // std::vector<Activity> mCurveActivities;
 
   /**
    * Map of curve to the index to the corresponding histogram.

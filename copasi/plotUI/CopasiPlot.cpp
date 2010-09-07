@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 16:50:23 $
+//   $Date: 2010/09/07 17:40:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 16:50:23 $
+//   $Date: 2010/09/07 17:40:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -451,6 +451,10 @@ const CPlotItem::Type & C2DPlotCurve::getType() const
   return mCurveType;
 }
 
+const COutputInterface::Activity & C2DPlotCurve::getActivity() const
+{
+  return mActivity;
+}
 
 //draw the several curves, separated by NaNs.
 void C2DPlotCurve::myDrawLines(QPainter *painter,
@@ -575,8 +579,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   QColor curveColours[6] = {QColor(255, 0, 0), QColor(0, 0, 255), QColor(0, 230, 0), QColor(0, 190, 240), QColor(240, 0, 255), QColor(240, 200, 0)} ; //TODO
 
   mCurves.resize(kmax);
-  mCurveTypes.resize(kmax);
-  mCurveActivities.resize(kmax);
   mHistoIndices.resize(kmax);
 
   std::map< std::string, C2DPlotCurve * >::iterator found;
@@ -604,7 +606,10 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
         }
 
       // set up the curve
-      pCurve = new C2DPlotCurve(&mMutex, pItem->getType(), FROM_UTF8(pItem->getTitle()));
+      pCurve = new C2DPlotCurve(&mMutex,
+                                pItem->getType(),
+                                pItem->getActivity(),
+                                FROM_UTF8(pItem->getTitle()));
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
@@ -613,10 +618,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       showCurve(pCurve, Visible);
 
-      mCurveTypes[k] = pItem->getType();
-      mCurveActivities[k] = pItem->getActivity();
-
-      switch (mCurveTypes[k])
+      switch (pCurve->getType())
         {
           case CPlotItem::curve2d:
 
@@ -744,7 +746,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
                   setAxisUnits(xBottom, pObj);
                 }
 
-              if (mCurveTypes[i] == CPlotItem::histoItem1d)
+              if (pItem->getType() == CPlotItem::histoItem1d)
                 mSaveHistogramObjects.push_back(pObj);
             }
           else
@@ -801,24 +803,26 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
     }
 
   // We need to set the curve data here!
-  unsigned C_INT32 k, kmax = mCurves.size();
+  unsigned C_INT32 k = 0;
+  std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
+  std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
 
-  for (k = 0; k < kmax; k++)
+  for (; itCurves != endCurves; ++itCurves, ++k)
     {
-      std::vector< CVector< double > * > & data = mData[mCurveActivities[k]];
+      std::vector< CVector< double > * > & data = mData[(*itCurves)->getActivity()];
 
-      switch (mCurveTypes[k])
+      switch ((*itCurves)->getType())
         {
           case CPlotItem::curve2d:
-            mCurves[k]->setData(C2DCurveData(*data[mDataIndex[k][0].second],
-                                             *data[mDataIndex[k][1].second],
-                                             0));
+            (*itCurves)->setData(C2DCurveData(*data[mDataIndex[k][0].second],
+                                              *data[mDataIndex[k][1].second],
+                                              0));
             break;
 
           case CPlotItem::histoItem1d:
-            mCurves[k]->setData(CHistoCurveData(*data[mDataIndex[k][0].second],
-                                                0,
-                                                mCurves[k]->getIncrement()));
+            (*itCurves)->setData(CHistoCurveData(*data[mDataIndex[k][0].second],
+                                                 0,
+                                                 mCurves[k]->getIncrement()));
 
             break;
 
@@ -932,12 +936,14 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity)
       return;
     }
 
-  unsigned C_INT32 k, kmax = mCurves.size();
+  unsigned C_INT32 k = 0;
+  std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
+  std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
 
-  for (k = 0; k < kmax; k++)
-    if ((unsigned C_INT32) mCurveActivities[k] == activity)
+  for (; itCurves != endCurves; ++itCurves, ++k)
+    if ((unsigned C_INT32)(*itCurves)->getActivity() == activity)
       {
-        static_cast< C2DPlotCurve * >(mCurves[k])->setDataSize(mDataSize[activity]);
+        (*itCurves)->setDataSize(mDataSize[activity]);
       }
 }
 
@@ -956,24 +962,26 @@ void CopasiPlot::resizeCurveData(const unsigned C_INT32 & activity)
 
   // Tell the curves that the location of the data has changed
   // otherwise repaint events could crash
-  unsigned C_INT32 k, kmax = mCurves.size();
+  unsigned C_INT32 k = 0;
+  std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
+  std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
 
-  for (k = 0; k < kmax; k++)
+  for (; itCurves != endCurves; ++itCurves, ++k)
     {
-      if ((unsigned C_INT32) mCurveActivities[k] == activity)
+      if ((unsigned C_INT32)(*itCurves)->getActivity() == activity)
         {
           std::vector< CVector< double > * > & data = mData[activity];
 
-          switch (mCurveTypes[k])
+          switch ((*itCurves)->getType())
             {
               case CPlotItem::curve2d:
-                static_cast< C2DPlotCurve * >(mCurves[k])->reallocatedData(data[mDataIndex[k][0].second],
-                    data[mDataIndex[k][1].second]);
+                (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+                                             data[mDataIndex[k][1].second]);
                 break;
 
               case CPlotItem::histoItem1d:
-                static_cast< C2DPlotCurve * >(mCurves[k])->reallocatedData(data[mDataIndex[k][0].second],
-                    NULL);
+                (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+                                             NULL);
                 break;
 
               default:
