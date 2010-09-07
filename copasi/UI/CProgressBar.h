@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:56 $
+//   $Date: 2010/09/07 16:32:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,6 @@
 
 template < typename > class CVector;
 class CQProgressItem;
-
-extern QMutex * pCopasiGuiMutex;
 
 /**
  *  This is used to call the progress bar code
@@ -123,8 +121,9 @@ protected:
   virtual void closeEvent(QCloseEvent *e);
 
   bool mSlotFinished;
-  QWaitCondition mWaitSlot;
 
+  QMutex mMutex;
+  QWaitCondition mWaitSlot;
   QWaitCondition mWaitPause;
 
   unsigned C_INT32 mLastHItem;
