@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/31 14:34:39 $
+//   $Author: shoops $
+//   $Date: 2010/09/08 14:54:20 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -76,7 +81,6 @@ protected:
 
 protected slots:
   virtual void languageChange();
-  virtual void slotSave();
 };
 
 #endif // STATESUBWIDGET_H
