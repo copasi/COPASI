@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/03 21:06:11 $
+//   $Author: shoops $
+//   $Date: 2010/09/08 17:35:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,8 +146,11 @@ bool CQReactionsWidget::leave()
 
 bool CQReactionsWidget::enterProtected()
 {
-  disconnect(mpTblReactions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  if (mpTblReactions->selectionModel() != NULL)
+    {
+      disconnect(mpTblReactions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+    }
 
   mpProxyModel->setSourceModel(mpReactionDM);
   //Set Model for the TableView

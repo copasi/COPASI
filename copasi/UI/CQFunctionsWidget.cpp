@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/03 21:06:11 $
+//   $Author: shoops $
+//   $Date: 2010/09/08 17:35:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,8 +146,11 @@ bool CQFunctionsWidget::leave()
 
 bool CQFunctionsWidget::enterProtected()
 {
-  disconnect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  if (mpTblFunctions->selectionModel() != NULL)
+    {
+      disconnect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+    }
 
   mpProxyModel->setSourceModel(mpFunctionDM);
   //Set Model for the TableView

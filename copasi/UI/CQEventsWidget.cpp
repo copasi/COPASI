@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/03 21:06:11 $
+//   $Author: shoops $
+//   $Date: 2010/09/08 17:35:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,8 +149,11 @@ bool CQEventsWidget::leave()
 
 bool CQEventsWidget::enterProtected()
 {
-  disconnect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-             this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  if (mpTblEvents->selectionModel() != NULL)
+    {
+      disconnect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+    }
 
   mpProxyModel->setSourceModel(mpEventDM);
   //Set Model for the TableView
