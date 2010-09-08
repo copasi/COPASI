@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.289 $
+//   $Revision: 1.290 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/08/29 16:06:03 $
+//   $Author: shoops $
+//   $Date: 2010/09/08 13:39:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@
 #include "CQReactionsWidget.h"
 #include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
-#include "StateWidget.h"
+#include "CQSteadyStateResult.h"
 #include "ScanWidget.h"
 #include "SensitivitiesWidget.h"
 #include "CQSensResultWidget.h"
@@ -373,7 +373,7 @@ void ListViews::ConstructNodeWidgets()
 
   scanWidget->hide();
 
-  if (!stateWidget) stateWidget = new StateWidget(this);
+  if (!stateWidget) stateWidget = new CQSteadyStateResult(this);
 
   stateWidget->hide();
 

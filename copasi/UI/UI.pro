@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.238 $
+#   $Revision: 1.239 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/08/16 18:43:07 $
+#   $Date: 2010/09/08 13:39:38 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.238 $ $Author: shoops $ $Date: 2010/08/16 18:43:07 $
+# $Revision: 1.239 $ $Author: shoops $ $Date: 2010/09/08 13:39:38 $
 ######################################################################
 
 LIB = UI
@@ -68,6 +68,7 @@ HEADERS	+= \
   CQSensResultWidget.h \
   CQSpeciesDetail.h \
   CQSpeciesWidget.h \
+  CQSteadyStateResult.h \
   CQTrajectoryWidget.h \
   CQTSSAWidget.h \
   CQTSSAResultSubWidget.h \
@@ -151,7 +152,6 @@ HEADERS	+= \
   ScanWidget.h \
   SensWidgetComboBox.h \
   SliderDialog.h \
-  StateWidget.h \
   TaskWidget.h \
   TimeSeriesWidget.h \
   Tree.h \
@@ -198,6 +198,7 @@ SOURCES	+= \
   CQSensResultWidget.cpp \
   CQSpeciesDetail.cpp \
   CQSpeciesWidget.cpp \
+  CQSteadyStateResult.cpp \
   CQTaskThread.cpp \
   CQTrajectoryWidget.cpp \
   CQTSSAWidget.cpp \
@@ -278,7 +279,6 @@ SOURCES	+= \
   ScanWidget.cpp \
   SensWidgetComboBox.cpp \
   SliderDialog.cpp \
-  StateWidget.cpp \
   TaskWidget.cpp \
   TimeSeriesWidget.cpp \
   Tree.cpp \
@@ -363,6 +363,7 @@ FORMS += CQReportsWidget.ui
 FORMS += CQSensResultWidget.ui
 FORMS += CQSpeciesDetail.ui
 FORMS += CQSpeciesWidget.ui
+FORMS += CQSteadyStateResult.ui
 FORMS += CQTrajectoryWidget.ui
 FORMS += CQTSSAWidget.ui
 FORMS += CQTSSAResultSubWidget.ui

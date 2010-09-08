@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.125 $
+//   $Revision: 1.126 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Date: 2010/09/08 13:39:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
 #include "CProgressBar.h"
-#include "StateWidget.h"
+#include "CQSteadyStateResult.h"
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -113,9 +113,9 @@ bool SteadyStateWidget::taskFinishedEvent()
 {
   bool success = true;
 
-  StateWidget *pResult = dynamic_cast< StateWidget * >(mpListView->findWidgetFromId(211));
+  CQSteadyStateResult *pResult = dynamic_cast< CQSteadyStateResult * >(mpListView->findWidgetFromId(211));
 
-  if (pResult) pResult->loadFromBackend();
+  if (pResult) pResult->loadResult();
 
   if (success && isShown()) mpListView->switchToOtherWidget(211, ""); //change to the results window
 
