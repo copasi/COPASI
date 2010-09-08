@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.286 $
+//   $Revision: 1.287 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Author: shoops $
+//   $Date: 2010/09/08 14:19:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 #include <QComboBox>
 #include <QToolBar>
 #include <QTextEdit>
-
+#include <QThread>
 #include <QFontDialog>
 
 #include <vector>
@@ -232,7 +232,8 @@ CopasiUI3Window::CopasiUI3Window():
     mpMenuRecentSBMLFiles(NULL),
     mRecentSBMLFilesActionMap(),
     mpRecentSBMLFilesActionGroup(NULL),
-    mpMIRIAMResources(NULL)
+    mpMIRIAMResources(NULL),
+    mpMainThread(QThread::currentThread())
 #ifdef COPASI_SBW_INTEGRATION
     , mpSBWModule(NULL)
     , mSBWAnalyzerModules()
@@ -1782,6 +1783,11 @@ std::string CopasiUI3Window::exportSBMLToString()
     }
 
   return ret;
+}
+
+QThread * CopasiUI3Window::getMainThread() const
+{
+  return mpMainThread;
 }
 
 #include "model/CModelAnalyzer.h"

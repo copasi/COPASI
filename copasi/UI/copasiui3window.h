@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Author: shoops $
+//   $Date: 2010/09/08 14:19:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,7 @@ class CMIRIAMResources;
 class CMIRIAMResourceObject;
 class QEvent;
 class QActionGroup;
+class QThread;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -84,6 +85,8 @@ public:
   void importSBMLFromString(const std::string & sbmlDocumentText);
 
   std::string exportSBMLToString();
+
+  QThread * getMainThread() const;
 
 protected:
   virtual void closeEvent(QCloseEvent* e);
@@ -217,6 +220,8 @@ private:
   QMenu * mpTools;
 
   CMIRIAMResources * mpMIRIAMResources;
+
+  QThread * mpMainThread;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 16:32:41 $
+//   $Date: 2010/09/08 14:19:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,6 +134,8 @@ private:
   QDateTime mNextEventProcessing;
 
   QWidget * mpMainWidget;
+
+  QThread * mpMainThread;
 
 signals:
   void addProgressItem(const unsigned int handle);

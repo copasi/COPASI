@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 16:32:41 $
+//   $Date: 2010/09/08 14:19:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 #include <QCloseEvent>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QThread>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -37,6 +38,7 @@
 #include "CQProgressItemText.h"
 #include "CQProgressItemBar.h"
 #include "CQMessageBox.h"
+#include "copasiui3window.h"
 
 extern QApplication *pApp;
 
@@ -46,7 +48,8 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
     CProcessReport(),
     mProgressItemList(1),
     mNextEventProcessing(QDateTime::currentDateTime()),
-    mpMainWidget(NULL)
+    mpMainWidget(NULL),
+    mpMainThread(NULL)
 {
   mProgressItemList[0] = NULL;
 
@@ -54,6 +57,7 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
   // intervention.
   if ((mpMainWidget = qApp->mainWidget()) != NULL)
     {
+      mpMainThread = static_cast< CopasiUI3Window * >(mpMainWidget)->getMainThread();
       mpMainWidget->setEnabled(false);
       qApp->processEvents();
     }
@@ -95,17 +99,23 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
                                        const void * pEndValue)
 
 {
-  QMutexLocker Locker(&mMutex);
-
   unsigned C_INT32 hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
 
-  mSlotFinished = false;
-
-  emit addProgressItem(hItem);
-
-  if (!mSlotFinished)
+  if (QThread::currentThread() != mpMainThread)
     {
-      mWaitSlot.wait(&mMutex);
+      QMutexLocker Locker(&mMutex);
+      mSlotFinished = false;
+
+      emit addProgressItem(hItem);
+
+      if (!mSlotFinished)
+        {
+          mWaitSlot.wait(&mMutex);
+        }
+    }
+  else
+    {
+      slotAddItem(hItem);
     }
 
   return hItem;
@@ -160,19 +170,26 @@ bool CProgressBar::progressItem(const unsigned C_INT32 & handle)
 
   mNextEventProcessing = currDateTime.addSecs(1);
 
-  QMutexLocker Locker(&mMutex);
-
   if (mPause)
     {
       mWaitPause.wait(&mMutex);
     }
 
-  mSlotFinished = false;
-  emit progressProgressBar(handle);
-
-  if (!mSlotFinished)
+  if (QThread::currentThread() != mpMainThread)
     {
-      mWaitSlot.wait(&mMutex);
+      QMutexLocker Locker(&mMutex);
+      mSlotFinished = false;
+
+      emit progressProgressBar(handle);
+
+      if (!mSlotFinished)
+        {
+          mWaitSlot.wait(&mMutex);
+        }
+    }
+  else
+    {
+      slotProgress(handle);
     }
 
   return mProceed;
@@ -220,15 +237,21 @@ bool CProgressBar::finishItem(const unsigned C_INT32 & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
-  QMutexLocker Locker(&mMutex);
-
-  mSlotFinished = false;
-
-  emit finishProgressBar(handle);
-
-  if (!mSlotFinished)
+  if (QThread::currentThread() != mpMainThread)
     {
-      mWaitSlot.wait(&mMutex);
+      QMutexLocker Locker(&mMutex);
+      mSlotFinished = false;
+
+      emit finishProgressBar(handle);
+
+      if (!mSlotFinished)
+        {
+          mWaitSlot.wait(&mMutex);
+        }
+    }
+  else
+    {
+      slotFinish(handle);
     }
 
   return (CProcessReport::finishItem(handle) && mProceed);
@@ -258,15 +281,21 @@ bool CProgressBar::proceed()
 // virtual
 bool CProgressBar::setName(const std::string & name)
 {
-  QMutexLocker Locker(&mMutex);
-
-  mSlotFinished = false;
-
-  emit setProgressBarName(FROM_UTF8(name));
-
-  if (!mSlotFinished)
+  if (QThread::currentThread() != mpMainThread)
     {
-      mWaitSlot.wait(&mMutex);
+      QMutexLocker Locker(&mMutex);
+      mSlotFinished = false;
+
+      emit setProgressBarName(FROM_UTF8(name));
+
+      if (!mSlotFinished)
+        {
+          mWaitSlot.wait(&mMutex);
+        }
+    }
+  else
+    {
+      slotSetName(FROM_UTF8(name));
     }
 
   return true;
