@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:01:59 $
+//   $Date: 2010/09/08 18:22:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -735,7 +735,7 @@ bool CExperiment::read(std::istream & in,
 
   if (!TimeCount && *mpTaskType == CCopasiTask::timeCourse)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 3);
+      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 3, getObjectName().c_str());
       return false;
     }
 

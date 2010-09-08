@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Date: 2010/09/08 18:22:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -331,11 +331,27 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
   if (!mpExperiment) return;
 
   if (isSteadyState)
-    mpBtnSteadystate->setFocus();
+    {
+      mpBtnSteadystate->setFocus();
+      mpExperiment->setExperimentType(CCopasiTask::steadyState);
+    }
   else
-    mpBtnTimeCourse->setFocus();
+    {
+      mpBtnTimeCourse->setFocus();
+      mpExperiment->setExperimentType(CCopasiTask::timeCourse);
+    }
 
   saveTable(mpExperiment);
+
+  // Undo the changes so that copy from and to work.
+  if (isSteadyState)
+    {
+      mpExperiment->setExperimentType(CCopasiTask::timeCourse);
+    }
+  else
+    {
+      mpExperiment->setExperimentType(CCopasiTask::steadyState);
+    }
 
   unsigned C_INT32 i, imax = mpTable->numRows();
 
@@ -1378,9 +1394,10 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
   pExperiment->updateFittedPoints();
 
   if (!FoundTime &&
-      pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+      pExperiment->getExperimentType() == CCopasiTask::timeCourse &&
+      pExperiment == mpExperiment)
     {
-      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 3);
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 3, mpExperiment->getObjectName().c_str());
 
       CQMessageBox::information(this, "Specification Error", FROM_UTF8(CCopasiMessage::getAllMessageText()),
                                 QMessageBox::Ok, QMessageBox::Ok);
