@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 18:08:01 $
+//   $Date: 2010/09/08 13:38:20 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,10 +171,6 @@ void CQNotes::load()
 
 void CQNotes::save()
 {
-  // TODO CRITICAL We need to validate that we have proper XML.
-  // We can use QXmlSimpleReader for doing this as we are only interested the fact that
-  // we have valid XML.
-
   if (mpObject != NULL &&
       mValidity == QValidator::Acceptable)
     {
