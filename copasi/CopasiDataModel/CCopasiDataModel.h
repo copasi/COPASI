@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:27:43 $
+//   $Author: shoops $
+//   $Date: 2010/09/09 12:02:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,6 +98,7 @@ public:
   CModel * getModel();
   const CModel * getModel() const;
   CCopasiVectorN< CCopasiTask > * getTaskList();
+  const CCopasiVectorN< CCopasiTask > * getTaskList() const;
   CCopasiTask * addTask(const CCopasiTask::Type & taskType);
   bool addDefaultTasks();
   std::set<std::string> listTaskDependentOnReport(const std::string & key);

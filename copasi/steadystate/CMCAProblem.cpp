@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-$Revision: 1.16 $
+$Revision: 1.17 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/23 16:20:17 $
+$Date: 2010/09/09 12:02:06 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,7 +117,7 @@ void CMCAProblem::setInitialState(const CStateX & initialState)
  * @return "const CState &" pInitialState
  */
 const CState & CMCAProblem::getInitialState() const
-  {return mInitialState;}
+{return mInitialState;}
 #endif // XXXX
 
 /**
@@ -129,6 +129,7 @@ void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
   CSteadyStateTask * pSubTask = NULL;
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
+
   if (pDataModel && pDataModel->getTaskList())
     pSubTask = dynamic_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
 
@@ -146,23 +147,39 @@ bool CMCAProblem::isSteadyStateRequested() const
 {return (* getValue("Steady-State").pKEY != "");}
 
 CSteadyStateTask * CMCAProblem::getSubTask() const
-  {
-    if (isSteadyStateRequested())
-      return dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(* getValue("Steady-State").pKEY));
-    else
-      return NULL;
-  }
+{
+  CSteadyStateTask * pSubTask = NULL;
+
+  if (isSteadyStateRequested())
+    {
+      pSubTask = dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(* getValue("Steady-State").pKEY));
+
+      if (pSubTask == NULL)
+        {
+          const CCopasiDataModel * pDataModel = getObjectDataModel();
+          assert(pDataModel != NULL);
+
+          if (pDataModel && pDataModel->getTaskList())
+            {
+              pSubTask = dynamic_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
+            }
+        }
+    }
+
+  return pSubTask;
+}
 
 void CMCAProblem::printResult(std::ostream * ostream) const
-  {
-    //this functionality is expected from the problem. However it is implemented in
-    //the task.
+{
+  //this functionality is expected from the problem. However it is implemented in
+  //the task.
 
-    CMCATask* parent = dynamic_cast<CMCATask*>(getObjectParent());
-    if (!parent) return;
+  CMCATask* parent = dynamic_cast<CMCATask*>(getObjectParent());
 
-    parent->printResult(ostream);
-  }
+  if (!parent) return;
+
+  parent->printResult(ostream);
+}
 
 //print the description
 std::ostream &operator<<(std::ostream &os, const CMCAProblem & o)
@@ -174,6 +191,7 @@ std::ostream &operator<<(std::ostream &os, const CMCAProblem & o)
   if (o.isSteadyStateRequested())
     {
       os << "Calculation of a steady state is requested before the MCA." << std::endl << std::endl;
+
       if (o.getSubTask())
         {
           //os << "" << std::endl;
@@ -188,10 +206,11 @@ std::ostream &operator<<(std::ostream &os, const CMCAProblem & o)
     {
       os << "MCA is performed on the current state (which is not necessarily a steady state)." << std::endl;
     }
+
   os << std::endl;
 
   return os;
 }
 
 void CMCAProblem::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
