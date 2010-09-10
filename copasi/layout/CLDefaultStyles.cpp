@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLDefaultStyles.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/09/10 11:50:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -547,7 +547,8 @@ CCopasiVector<CLGlobalRenderInformation>* loadDefaultStyles()
     }
 
   XMLInputStream stream(DEFAULT_STYLES_STRING, false);
-  ListOfGlobalRenderInformation* pRI = new ListOfGlobalRenderInformation(XMLNode(stream));
+  ListOfGlobalRenderInformation* pRI = new ListOfGlobalRenderInformation();
+  pRI->parseXML(XMLNode(stream));
   // convert the SBML objects to COPASI objects
   unsigned int i, iMax = pRI->size();
   CCopasiVector<CLGlobalRenderInformation>* pResult = new CCopasiVector<CLGlobalRenderInformation>;
