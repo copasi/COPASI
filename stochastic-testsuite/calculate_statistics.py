@@ -24,10 +24,10 @@ NUM_REPEATS=int(sys.argv[5])
 
 INPUT=file(INPUTFILE,"r").readlines()
 
-if(len(INPUT) != (NUM_REPEATS * (NUM_STEPS + 3) + 1)):
+if(len(INPUT) != (NUM_REPEATS * (NUM_STEPS + 2) + 1)):
     print "Wrong number of data points."
     print "Found:     %d"%len(INPUT)
-    print "Expecting: %d"%(NUM_REPEATS * (NUM_STEPS + 3) + 1)
+    print "Expecting: %d"%(NUM_REPEATS * (NUM_STEPS + 2) + 1)
     sys.exit(1)
 
 NUMCOLUMNS=len(string.split(INPUT[1], SEPARATOR))
@@ -52,7 +52,7 @@ for X in range(0,NUM_STEPS+1):
         SD[Y]=0
 
     for Z in range(0,NUM_REPEATS - 1):
-        LINE=INPUT[X + 1 + Z * (NUM_STEPS + 3)]
+        LINE=INPUT[X + 1 + Z * (NUM_STEPS + 2)]
 
         COLUMNS=string.split(LINE, SEPARATOR)
         if(len(COLUMNS)!=NUMCOLUMNS):
@@ -80,6 +80,4 @@ for X in range(0,NUM_STEPS+1):
     SDOUT.write(line)
 
 MEANOUT.close()    
-SDOUT.close()    
-
-    
+SDOUT.close()
