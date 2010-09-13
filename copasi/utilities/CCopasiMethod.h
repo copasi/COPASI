@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:54:39 $
+//   $Date: 2010/09/13 15:02:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,13 +69,14 @@ public:
     LSODAR,
     directMethod,
     stochastic,
+    tauLeap,
+    adaptiveSA,
     hybrid,
     hybridLSODA,
     DsaLsodar,
     tssILDM,
     tssILDMModified,
     tssCSP,
-    tauLeap,
     mcaMethodReder,
     scanMethod,
     lyapWolf,

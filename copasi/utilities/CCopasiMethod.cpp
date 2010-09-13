@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:54:39 $
+//   $Date: 2010/09/13 15:02:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,13 +59,14 @@ const char * CCopasiMethod::SubTypeName[] =
   "Deterministic (LSODAR)",
   "Stochastic (Direct method)",
   "Stochastic (Gibson + Bruck)",
+  "Stochastic (\xcf\x84-Leap)",
+  "Stochastic (Adaptive SSA/\xcf\x84-Leap)",
   "Hybrid (Runge-Kutta)",
   "Hybrid (LSODA)",
   "Hybrid (DSA-LSODAR)",
   "ILDM (LSODA,Deuflhard)",
   "ILDM (LSODA,Modified)",
   "CSP (LSODA)",
-  "Stochastic (\xcf\x84-Leap)",
   "MCA Method (Reder)",
   "Scan Framework",
   "Wolf Method",
@@ -108,13 +109,14 @@ const char * CCopasiMethod::XMLSubType[] =
   "Deterministic(LSODAR)",
   "Stochastic",
   "DirectMethod",
+  "TauLeap",
+  "AdaptiveSA",
   "Hybrid",
   "Hybrid (LSODA)",
   "Hybrid (DSA-LSODAR)",
   "TimeScaleSeparation(ILDM,Deuflhard)",
   "TimeScaleSeparation(ILDM,Modified)",
   "TimeScaleSeparation(CSP)",
-  "TauLeap",
   "MCAMethod(Reder)",
   "ScanFramework",
   "WolfMethod",
