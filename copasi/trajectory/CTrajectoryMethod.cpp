@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:54:39 $
+//   $Date: 2010/09/13 15:06:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,8 @@
 #include "CTrajectoryMethod.h"
 #include "CLsodaMethod.h"
 #include "CStochDirectMethod.h"
-#include "CStochMethod.h"
+#include "CStochNextReactionMethod.h"
+#include "CTrajAdaptiveSA.h"
 #include "CHybridMethod.h"
 #include "CHybridMethodLSODA.h"
 #include "CTauLeapMethod.h"
@@ -57,12 +58,20 @@ CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
         pMethod = new CLsodaMethod();
         break;
 
-      case directMethod:
-        pMethod = CStochDirectMethod::createStochDirectMethod();
+      case stochastic:
+        pMethod = new CStochNextReactionMethod();
         break;
 
-      case stochastic:
-        pMethod = CStochMethod::createStochMethod();
+      case directMethod:
+        pMethod = new CStochDirectMethod();
+        break;
+
+      case tauLeap:
+        pMethod = new CTauLeapMethod();
+        break;
+
+      case adaptiveSA:
+        pMethod = new CTrajAdaptiveSA();
         break;
 
       case hybrid:
@@ -71,10 +80,6 @@ CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
 
       case hybridLSODA:
         pMethod = CHybridMethodLSODA::createHybridMethodLSODA();
-        break;
-
-      case tauLeap:
-        pMethod = CTauLeapMethod::createTauLeapMethod();
         break;
 
       case DsaLsodar:
