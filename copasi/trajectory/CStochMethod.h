@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/20 18:24:25 $
+//   $Date: 2010/09/13 15:06:14 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -200,19 +205,14 @@ public:
   virtual bool elevateChildren();
 
   /**
-   *  Chooses a stochastic method adequate for the problem
-   */
-  static CStochMethod * createStochMethod();
-
-  /**
-   *  This instructs the method to calculate a time step of deltaT
-   *  starting with the current state, i.e., the result of the previous
-   *  step.
-   *  The new state (after deltaT) is expected in the current state.
-   *  The return value is the actual timestep taken.
-   *  @param "const double &" deltaT
-   *  @return Status status
-   */
+    *  This instructs the method to calculate a time step of deltaT
+    *  starting with the current state, i.e., the result of the previous
+    *  step.
+    *  The new state (after deltaT) is expected in the current state.
+    *  The return value is the actual timestep taken.
+    *  @param "const double &" deltaT
+    *  @return Status status
+    */
   virtual Status step(const double & deltaT);
 
   /**

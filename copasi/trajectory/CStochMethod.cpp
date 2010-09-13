@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:04 $
+//   $Date: 2010/09/13 15:06:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,33 +52,6 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 {
   // Here several checks will be performed to validate the model
   return 2; // suggest next reaction method
-}
-
-CStochMethod *
-CStochMethod::createStochMethod()
-{
-  C_INT32 result = 2; // next reaction method as default
-
-  CStochMethod * method = NULL;
-
-  if (result < 0)
-    {
-      //error. stochastic simulation not possible
-    }
-  else if (result == 1)
-    {
-//      method = new CStochDirectMethod();
-    }
-  else if (result == 2)
-    {
-      method = new CStochNextReactionMethod();
-    }
-  else
-    {
-      //should not happen
-    }
-
-  return method;
 }
 
 CStochMethod::CStochMethod(const CCopasiContainer * pParent):

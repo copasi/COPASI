@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:04 $
+//   $Date: 2010/09/13 15:05:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,11 +159,6 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
-
-  /**
-   *  Chooses a stochastic method adequate for the problem
-   */
-  static CStochDirectMethod * createStochDirectMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.14 $
+ $Revision: 1.15 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/03/16 18:57:04 $
+ $Date: 2010/09/13 15:03:20 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,11 +142,6 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
-
-  /**
-   *   Creates a CTauLeapMethod adequate for the problem.
-   */
-  static CTauLeapMethod * createTauLeapMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

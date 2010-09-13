@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:54:02 $
+//   $Date: 2010/09/13 15:05:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,16 +91,6 @@ CStochDirectMethod::CReactionDependencies & CStochDirectMethod::CReactionDepende
   return * this;
 }
 
-// static
-CStochDirectMethod * CStochDirectMethod::createStochDirectMethod()
-{
-  CStochDirectMethod * pMethod = NULL;
-
-  pMethod = new CStochDirectMethod();
-
-  return pMethod;
-}
-
 CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::directMethod, pParent),
     mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
@@ -158,26 +148,24 @@ bool CStochDirectMethod::elevateChildren()
 
 CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
 {
-  // do several steps:
+  // do several steps
   C_FLOAT64 Time = mpCurrentState->getTime();
   C_FLOAT64 EndTime = Time + deltaT;
 
-  unsigned C_INT32 Steps;
+  size_t Steps = 0;
 
-  for (Steps = 0; (Steps <  mMaxSteps) && (Time < EndTime); Steps++)
+  while (Time < EndTime)
     {
       Time += doSingleStep(Time, EndTime);
+
+      if (++Steps > mMaxSteps)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
+        }
     }
 
   *mpCurrentState = mpProblem->getModel()->getState();
-  mpCurrentState->setTime(EndTime);
-
-  // TODO CRITICAL This must be an error and the integration must be aborted.
-  if (Steps >=  mMaxSteps && !mMaxStepsReached)
-    {
-      mMaxStepsReached = true; //only report this message once
-      CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
-    }
+  mpCurrentState->setTime(Time);
 
   return NORMAL;
 }
@@ -305,7 +293,7 @@ void CStochDirectMethod::start(const CState * initialState)
           const CMetab * pMetab = (*itSubstrate)->getMetabolite();
 
           itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + StateTemplate.getIndex(pMetab);
+          itDependencies->mMethodSubstrates[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
           itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
         }
 

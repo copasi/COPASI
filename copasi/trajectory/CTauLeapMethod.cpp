@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 20:17:56 $
+//   $Date: 2010/09/13 15:03:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,38 +101,6 @@ CTauLeapMethod::CReactionDependencies & CTauLeapMethod::CReactionDependencies::o
 /* PUBLIC METHODS ************************************************************/
 
 /**
- *   Creates a TauLeapMethod adequate for the problem.
- *   (only regular TauLeapMethod so far)
- */
-CTauLeapMethod *CTauLeapMethod::createTauLeapMethod()
-{
-  C_INT32 result = 1; // regular TauLeap method as default
-
-  CTauLeapMethod * method = NULL;
-
-  switch (result)
-    {
-        // Error: TauLeap simulation impossible
-        /*    case - 3:      // non-integer stoichiometry
-        CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
-        break;
-        case - 2:      // reversible reaction exists
-        CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
-        break;
-        case - 1:      // more than one compartment involved
-        CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
-        break;*/
-        // Everything all right: Hybrid simulation possible
-      case 1:
-      default:
-        method = new CTauLeapMethod();
-        break;
-    }
-
-  return method;
-}
-
-/**
  *   Default constructor.
  */
 CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
@@ -197,16 +165,15 @@ bool CTauLeapMethod::elevateChildren()
 
 CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
 {
-
   // do several steps
-  C_FLOAT64 time = mpCurrentState->getTime();
-  C_FLOAT64 endTime = time + deltaT;
+  C_FLOAT64 Time = mpCurrentState->getTime();
+  C_FLOAT64 EndTime = Time + deltaT;
 
-  unsigned C_INT32 Steps = 0;
+  size_t Steps = 0;
 
-  while (time < endTime)
+  while (Time < EndTime)
     {
-      time += doSingleStep(endTime - time);
+      Time += doSingleStep(EndTime - Time);
 
       if (++Steps > mMaxSteps)
         {
@@ -215,7 +182,7 @@ CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
     }
 
   *mpCurrentState = mpProblem->getModel()->getState();
-  mpCurrentState->setTime(time);
+  mpCurrentState->setTime(Time);
 
   return NORMAL;
 }
@@ -354,7 +321,7 @@ void CTauLeapMethod::start(const CState * initialState)
           const CMetab * pMetab = (*itSubstrate)->getMetabolite();
 
           itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + StateTemplate.getIndex(pMetab);
+          itDependencies->mMethodSubstrates[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
           itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
         }
 
@@ -513,14 +480,14 @@ const C_FLOAT64 &  CTauLeapMethod::calculateAmu(const size_t & index)
 
   bool ApplyCorrection = false;
 
-  const C_FLOAT64 * pMultiplier = Dependencies.mSubstrateMultiplier.array();
-  const C_FLOAT64 * endMultiplier = pMultiplier + Dependencies.mSubstrateMultiplier.size();
+  const C_FLOAT64 * pMultiplicity = Dependencies.mSubstrateMultiplier.array();
+  const C_FLOAT64 * pEndMultiplicity = pMultiplicity + Dependencies.mSubstrateMultiplier.size();
   C_FLOAT64 *const* ppLocalSubstrate = Dependencies.mMethodSubstrates.array();
   C_FLOAT64 *const* ppModelSubstrate = Dependencies.mModelSubstrates.array();
 
-  for (; pMultiplier != endMultiplier; ++pMultiplier, ++ppLocalSubstrate, ++ppModelSubstrate)
+  for (; pMultiplicity != pEndMultiplicity; ++pMultiplicity, ++ppLocalSubstrate, ++ppModelSubstrate)
     {
-      Multiplicity = *pMultiplier;
+      Multiplicity = *pMultiplicity;
 
       // TODO We should check the error introduced through rounding.
       **ppLocalSubstrate = floor(**ppModelSubstrate + 0.5);
