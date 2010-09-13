@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:07:39 $
+//   $Date: 2010/09/13 17:16:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,6 +124,10 @@ int main(int argc, char *argv[])
     {
       MethodType = CCopasiMethod::tauLeap;
     }
+  else if (!strcmp(pMethodType, "adaptiveSA"))
+    {
+      MethodType = CCopasiMethod::adaptiveSA;
+    }
   else if (!strcmp(pMethodType, "LSODA"))
     {
       MethodType = CCopasiMethod::deterministic;
@@ -196,7 +200,7 @@ int main(int argc, char *argv[])
 
           for (j = 0; j < jMax; ++j)
             {
-              if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
+              if (metabolites[j]->getSBMLId() == SBMLId)
                 {
                   break;
                 }
