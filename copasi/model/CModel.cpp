@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.393 $
+//   $Revision: 1.394 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/02 14:30:58 $
+//   $Author: gauges $
+//   $Date: 2010/09/15 16:38:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2517,6 +2517,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
 
   pMetab->setStatus(status);
   pMetab->setInitialConcentration(iconc);
+  pMetab->refreshInitialValue();
 
   if (!mMetabolites.add(pMetab))
     return NULL;
