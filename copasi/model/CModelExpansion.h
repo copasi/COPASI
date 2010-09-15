@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/02/12 12:15:30 $
+//   $Author: gauges $
+//   $Date: 2010/09/15 16:38:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,6 @@ public:
   //just a simple method to call during development
   void simpleCall(const CCompartment* source, std::vector< std::string  > listOfMetabolites, int mult, bool diff);
 
-protected:
 
   class CompartmentInfo
   {
@@ -57,6 +56,8 @@ protected:
   };
 
   CompartmentInfo copyCompartment(const CCompartment* source);
+protected:
+
 
   CompartmentInfo ci;
 
