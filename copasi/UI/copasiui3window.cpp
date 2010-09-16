@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.287 $
+//   $Revision: 1.288 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 14:19:27 $
+//   $Date: 2010/09/16 18:27:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <sbml/SBMLDocument.h>
 
 #include <QEvent>
 #include <QMenuBar>
@@ -87,8 +89,6 @@ extern const char * CopasiLicense;
 #ifdef WITH_MERGEMODEL
 #include "./icons/fileadd.xpm"
 #endif
-
-#include <sbml/SBMLDocument.h>
 
 #define AutoSaveInterval 10*60*1000
 
