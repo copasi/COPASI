@@ -1,10 +1,15 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.h,v $
-  $Revision: 1.13 $
+  $Revision: 1.14 $
   $Name:  $
   $Author: shoops $
-  $Date: 2009/07/30 21:08:33 $
+  $Date: 2010/09/16 18:26:16 $
   End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,8 +24,6 @@
 #define COPASI_CEvaluationNodeLogical
 
 #include "mathematics.h"
-
-#include "utilities/CCopasiMessage.h"
 
 class ASTNode;
 class CCopasiDataModel;

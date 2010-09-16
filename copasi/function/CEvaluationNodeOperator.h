@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:59:37 $
+//   $Date: 2010/09/16 18:26:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,8 +24,6 @@
 #define COPASI_CEvaluationNodeOperator
 
 #include "mathematics.h"
-
-#include "utilities/CCopasiMessage.h"
 
 class ASTNode;
 class CCopasiDataModel;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/19 18:17:41 $
+//   $Date: 2010/09/16 18:26:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,6 @@
 #include <float.h>
 
 #include "copasi/mathematics.h"
-#include "copasi/utilities/CCopasiMessage.h"
 
 #include "copasi/function/CEvaluationNode.h"
 
