@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiException.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:12 $
+   $Author: shoops $
+   $Date: 2010/09/16 18:26:45 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -20,35 +25,35 @@
 #ifndef COPASI_CCopasiException
 #define COPASI_CCopasiException
 
-#include "utilities/CCopasiMessage.h"
+#include "CCopasiMessage.h"
 
 class CCopasiException
-  {
-  private:
-    /**
-     * Default consructor.
-     */
-    CCopasiException();
+{
+private:
+  /**
+   * Default consructor.
+   */
+  CCopasiException();
 
-  public:
-    /**
-     * Specific consructor. Creates a exception with a message.
-     * @param const CCopasiMessage & message
-     */
-    CCopasiException(const CCopasiMessage & message);
+public:
+  /**
+   * Specific consructor. Creates a exception with a message.
+   * @param const CCopasiMessage & message
+   */
+  CCopasiException(const CCopasiMessage & message);
 
-    /**
-     * Destructor.
-     */
-    ~CCopasiException();
+  /**
+   * Destructor.
+   */
+  ~CCopasiException();
 
-    /**
-     * Retrieves the Message associated with the exception
-     * @return const CCopasiMessage & message
-     */
-    const CCopasiMessage & getMessage() const;
+  /**
+   * Retrieves the Message associated with the exception
+   * @return const CCopasiMessage & message
+   */
+  const CCopasiMessage & getMessage() const;
 
-  private:
-    const CCopasiMessage mMessage;
-  };
+private:
+  const CCopasiMessage mMessage;
+};
 #endif // COPASI_CCopasiException
