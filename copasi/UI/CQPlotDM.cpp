@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:57:43 $
+//   $Author: pwilly $
+//   $Date: 2010/09/16 07:05:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,7 +119,7 @@ QVariant CQPlotDM::headerData(int section, Qt::Orientation orientation,
           case COL_NAME_PLOTS:
             return QVariant(QString("Name"));
           case COL_CURVES_PLOTS:
-            return QVariant(QString("Curves"));
+            return QVariant(QString("Nr. of Curves"));
           case COL_ACTIVE_PLOTS:
             return QVariant(QString("Active"));
           default:
