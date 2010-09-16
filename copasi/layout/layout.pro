@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $
-#   $Revision: 1.12 $
+#   $Revision: 1.13 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/09/10 11:51:02 $
+#   $Author: shoops $
+#   $Date: 2010/09/16 18:28:06 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -37,7 +37,7 @@ HEADERS += CLayout.h \
            SBMLDocumentLoader.h 
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {           
-HEADER += CLColorDefinition.h \
+HEADERS += CLColorDefinition.h \
            CLDefaultStyles.h \
            CLEllipse.h \
            CLFontRendererBase.h \

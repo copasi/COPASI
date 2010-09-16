@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderCurve.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:04 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,16 +14,15 @@
 #ifndef CLRenderCurve_H__
 #define CLRenderCurve_H__
 
-#include <copasi/layout/CLGraphicalPrimitive1D.h>
-#include <copasi/report/CCopasiObject.h>
-
 #include <string>
 #include <vector>
 
-#include <sbml/layout/render/RenderCurve.h>
+#include <copasi/layout/CLGraphicalPrimitive1D.h>
+#include <copasi/report/CCopasiObject.h>
 
 class CLRenderCubicBezier;
 class CLRenderPoint;
+class RenderCurve;
 
 class CLRenderCurve : public CLGraphicalPrimitive1D, public CCopasiObject
 {

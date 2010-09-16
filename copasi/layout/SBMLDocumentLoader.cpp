@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:04 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,6 @@
 
 #define USE_LAYOUT 1
 
-#include "SBMLDocumentLoader.h"
-
 #include <assert.h>
 
 #include <sbml/layout/Layout.h>
@@ -32,18 +30,24 @@
 #include <sbml/layout/SpeciesReferenceGlyph.h>
 #include <sbml/layout/TextGlyph.h>
 #include <sbml/ListOf.h>
+#ifdef USE_CRENDER_EXTENSION
+#include <sbml/layout/render/Text.h>
+#endif // USE_CRENDER_EXTENSION
 
-#include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi.h"
 
+#include "SBMLDocumentLoader.h"
 #include "CListOfLayouts.h"
 #include "CLayout.h"
 #include "CLReactionGlyph.h"
 #include "CLGlyphs.h"
+
 #ifdef USE_CRENDER_EXTENSION
 #include "CLRenderCurve.h"
 #endif // USE_CRENDER_EXTENSION
 
+#include "report/CKeyFactory.h"
+#include "copasi/report/CCopasiRootContainer.h"
 #include "sbml/SBMLUtils.h" //from the copasi sbml dir
 
 //static

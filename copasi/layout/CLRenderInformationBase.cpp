@@ -1,15 +1,22 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderInformationBase.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:04 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+#include <sbml/layout/render/RenderInformationBase.h>
+#include <sbml/layout/render/ColorDefinition.h>
+#include <sbml/layout/render/GradientBase.h>
+#include <sbml/layout/render/LinearGradient.h>
+#include <sbml/layout/render/RadialGradient.h>
+#include <sbml/layout/render/LineEnding.h>
 
 #include "CLRenderInformationBase.h"
 #include "CLGradientBase.h"
@@ -19,11 +26,6 @@
 #include <copasi/report/CCopasiRootContainer.h>
 #include <copasi/report/CKeyFactory.h>
 
-#include <sbml/layout/render/ColorDefinition.h>
-#include <sbml/layout/render/GradientBase.h>
-#include <sbml/layout/render/LinearGradient.h>
-#include <sbml/layout/render/RadialGradient.h>
-#include <sbml/layout/render/LineEnding.h>
 
 /**
  * Constructor.

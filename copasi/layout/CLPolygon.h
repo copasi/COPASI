@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLPolygon.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:04 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,16 +14,15 @@
 #ifndef CLPolygon_H__
 #define CLPolygon_H__
 
-#include <copasi/layout/CLGraphicalPrimitive2D.h>
-#include <copasi/report/CCopasiObject.h>
-
 #include <string>
 
-#include <sbml/layout/render/Polygon.h>
+#include <copasi/layout/CLGraphicalPrimitive2D.h>
+#include <copasi/report/CCopasiObject.h>
 
 class CLRenderPoint;
 class CLRenderCubicBezier;
 class CCopasiContainer;
+class Polygon;
 
 class CLPolygon : public CLGraphicalPrimitive2D, public CCopasiObject
 {

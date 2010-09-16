@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRadialGradient.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:04 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,17 +11,16 @@
 // of Manchester.
 // All rights reserved.
 
+#include <string>
+
 #ifndef CLRadialGradient_H__
 #define CLRadialGradient_H__
 
 #include <copasi/layout/CLGradientBase.h>
 #include <copasi/layout/CLRelAbsVector.h>
 
-#include <string>
-
-#include <sbml/layout/render/RadialGradient.h>
-
 class CCopasiContainer;
+class RadialGradient;
 
 class CLRadialGradient : public CLGradientBase
 {

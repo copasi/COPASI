@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:04 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,22 +26,17 @@
 #include <string>
 #include <map>
 
-#include <copasi.h>
-
 #include <copasi/utilities/CCopasiVector.h>
 #ifdef USE_CRENDER_EXTENSION
 #include "CLLocalStyle.h"
 #include "CLGradientBase.h"
-
-#include <sbml/layout/render/LocalStyle.h>
-#include <sbml/layout/render/GradientBase.h>
-#include <sbml/ListOf.h>
 #endif // USE_CRENDER_EXTENSION
 
 class CCopasiObject;
 class CCopasiContainer;
 class CListOfLayouts;
 class CLayout;
+
 #ifdef USE_CRENDER_EXTENSION
 class CLTransformation2D;
 class CLRenderInformationBase;
@@ -52,6 +47,7 @@ class Layout;
 class ListOf;
 class SBase;
 class TextGlyph;
+
 #ifdef USE_CRENDER_EXTENSION
 class Transformation2D;
 class RenderInformationBase;

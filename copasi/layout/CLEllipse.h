@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLEllipse.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:03 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,15 +14,14 @@
 #ifndef CLEllipse_H__
 #define CLEllipse_H__
 
+#include <string>
+
 #include <copasi/layout/CLGraphicalPrimitive2D.h>
 #include <copasi/layout/CLRelAbsVector.h>
 #include <copasi/report/CCopasiObject.h>
 
-#include <string>
-
-#include <sbml/layout/render/Ellipse.h>
-
 class CCopasiContainer;
+class Ellipse;
 
 class CLEllipse : public CLGraphicalPrimitive2D, public CCopasiObject
 {

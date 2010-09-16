@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLineEnding.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:03 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,14 +14,14 @@
 #ifndef CLLineEnding_H__
 #define CLLineEnding_H__
 
+#include <string>
+
 #include <copasi/layout/CLGraphicalPrimitive2D.h>
 #include <copasi/layout/CLGroup.h>
 #include <copasi/layout/CLBase.h>
 #include <copasi/report/CCopasiContainer.h>
 
-#include <string>
-
-#include <sbml/layout/render/LineEnding.h>
+class LineEnding;
 
 class CLLineEnding : public CLGraphicalPrimitive2D, public CCopasiContainer
 {

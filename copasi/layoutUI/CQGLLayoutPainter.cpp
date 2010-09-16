@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/14 18:52:38 $
+//   $Date: 2010/09/16 18:28:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,8 @@
 
 // opengl includes
 #ifdef _WIN32
-#include <windows.h>
+# define WIN32_LEAN_AND_MEAN 1
+# include <windows.h>
 #endif // WIN32
 
 #ifdef __APPLE__

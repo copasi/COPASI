@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderInformationBase.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 #ifndef CLRenderInformationBase_H__
 #define CLRenderInformationBase_H__
 
+#include <string>
+
 #include <copasi/layout/CLBase.h>
 #include <copasi/layout/CLColorDefinition.h>
 #include <copasi/layout/CLGradientBase.h>
@@ -23,9 +25,7 @@
 
 #include <copasi/report/CCopasiContainer.h>
 
-#include <string>
-
-#include <sbml/layout/render/RenderInformationBase.h>
+class RenderInformationBase;
 
 class CLRenderInformationBase: public CLBase, public CCopasiContainer
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalPrimitive1D.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,12 +14,12 @@
 #ifndef CLGraphicalPrimitive1D_H__
 #define CLGraphicalPrimitive1D_H__
 
-#include <copasi/layout/CLTransformation2D.h>
-
 #include <string>
 #include <vector>
 
-#include <sbml/layout/render/GraphicalPrimitive1D.h>
+#include <copasi/layout/CLTransformation2D.h>
+
+class GraphicalPrimitive1D;
 
 class CLGraphicalPrimitive1D : public CLTransformation2D
 {

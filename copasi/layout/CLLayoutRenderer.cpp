@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 11:39:21 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,7 +11,13 @@
 // of Manchester.
 // All rights reserved.
 
-#include "CLLayoutRenderer.h"
+#ifndef __APPLE__
+# include "GL/glext.h"
+# ifndef _WIN32
+#  define GLX_GLXEXT_PROTOTYPES
+#  include "GL/glx.h"
+# endif // _WIN32
+#endif // __APPLE
 
 #include <limits>
 #include <math.h>
@@ -19,6 +25,9 @@
 #include <cctype>
 #include <algorithm>
 
+#include <sbml/layout/render/Transformation.h>
+
+#include "CLLayoutRenderer.h"
 #include <copasi/layout/CLBase.h>
 #include <copasi/layout/CLGradientStops.h>
 #include <copasi/layout/CLDefaultStyles.h>
@@ -56,14 +65,6 @@
 // disable warning about unsafe fopen
 #pragma warning(disable : 4996)
 #endif // _WIN32
-
-#ifndef __APPLE__
-#include "GL/glext.h"
-#ifndef _WIN32
-#define GLX_GLXEXT_PROTOTYPES
-#include "GL/glx.h"
-#endif // _WIN32
-#endif // __APPLE
 
 // specifies how many segments are used to approximate the rounded
 // corners of a rectangle

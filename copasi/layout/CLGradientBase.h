@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientBase.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,14 +14,14 @@
 #ifndef CLGradientBase_H__
 #define CLGradientBase_H__
 
+#include <string>
+
 #include <copasi/layout/CLBase.h>
 #include <copasi/report/CCopasiContainer.h>
 #include <copasi/layout/CLGradientStop.h>
 #include <copasi/utilities/CCopasiVector.h>
 
-#include <string>
-
-#include <sbml/layout/render/GradientBase.h>
+class GradientBase;
 
 class CLGradientBase : public CLBase, public CCopasiContainer
 {

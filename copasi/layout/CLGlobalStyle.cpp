@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalStyle.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:03 $
+//   $Author: shoops $
+//   $Date: 2010/09/16 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,12 +11,14 @@
 // of Manchester.
 // All rights reserved.
 
-#include "CLGlobalStyle.h"
-
 #include <assert.h>
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/report/CKeyFactory.h>
+#include <sbml/layout/render/GlobalStyle.h>
+
+#include "CLGlobalStyle.h"
+
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/report/CKeyFactory.h"
 
 CLGlobalStyle::CLGlobalStyle(CCopasiContainer* pParent): CLStyle("GlobalStyle", pParent)
 {
