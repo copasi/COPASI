@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:06 $
+//   $Date: 2010/09/17 11:56:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,16 +20,16 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#define USE_LAYOUT 1
-
 #include <assert.h>
 
+#define USE_LAYOUT 1
+
+#include <sbml/ListOf.h>
 #include <sbml/layout/Layout.h>
 #include <sbml/layout/SpeciesGlyph.h>
 #include <sbml/layout/ReactionGlyph.h>
 #include <sbml/layout/SpeciesReferenceGlyph.h>
 #include <sbml/layout/TextGlyph.h>
-#include <sbml/ListOf.h>
 #ifdef USE_CRENDER_EXTENSION
 #include <sbml/layout/render/Text.h>
 #endif // USE_CRENDER_EXTENSION

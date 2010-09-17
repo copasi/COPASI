@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:04 $
+//   $Author: shoops $
+//   $Date: 2010/09/17 11:56:37 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,16 +20,18 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
 #include "copasi.h"
 
 #define USE_LAYOUT 1
+
+#include <sbml/ListOf.h>
+#include <sbml/layout/Layout.h>
 
 #include "CListOfLayouts.h"
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "SBMLDocumentLoader.h"
-
-#include "sbml/layout/Layout.h"
 
 CListOfLayouts::CListOfLayouts(const std::string & name,
                                const CCopasiContainer * pParent):
