@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 12:08:16 $
+//   $Date: 2010/09/17 14:00:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,7 +313,7 @@ void CQGLLayoutPainter::update(const CCopasiDataModel* pDatamodel, CLayout* pLay
   if (this->mpRenderer)
     {
       this->mpRenderer->set_font_renderer(new CQFontRenderer());
-      this->mpRenderer->setImageTexturizer(new CQQtImageTexturizer);
+      this->mpRenderer->setImageTexturizer(new CQQtImageTexturizer());
     }
 
   // update minX, minY, maxX and maxY
