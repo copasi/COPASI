@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQQtImageTexturizer.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Author: shoops $
+//   $Date: 2010/09/17 14:01:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,10 +15,24 @@
 #include <QImage>
 #include <algorithm>
 
+#ifdef __APPLE__
+# include "OpenGL/gl.h"
+# include "OpenGL/glu.h"
+#else
+# include "GL/gl.h"
+# include "GL/glu.h"
+# include "GL/glext.h"
+# ifndef _WIN32
+#  define GLX_GLXEXT_PROTOTYPES
+#  include "GL/glx.h"
+# endif // _WIN32
+#endif // __APPLE__
+
 #include "CQQtImageTexturizer.h"
 #include <copasi/layout/utility_classes.h>
 #include <copasi/utilities/CCopasiMessage.h>
 
+// virtual
 CLTextureSpec* CQQtImageTexturizer::operator()(const std::string& filename, const std::string& basedir)
 {
   std::string reference = to_absolute_path(filename, basedir);
@@ -31,7 +45,7 @@ CLTextureSpec* CQQtImageTexturizer::operator()(const std::string& filename, cons
     {
       ++pos;
       ending = reference.substr(pos);
-      std::transform(ending.begin(), ending.end(), ending.begin(), (int(*)(int))std::tolower);
+      std::transform(ending.begin(), ending.end(), ending.begin(), &tolower);
     }
 
   if (!ending.empty())
