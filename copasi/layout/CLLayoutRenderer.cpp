@@ -1,23 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2010/09/17 14:00:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-#ifndef __APPLE__
-# include "GL/glext.h"
-# ifndef _WIN32
-#  define GLX_GLXEXT_PROTOTYPES
-#  include "GL/glx.h"
-# endif // _WIN32
-#endif // __APPLE
 
 #include <limits>
 #include <math.h>

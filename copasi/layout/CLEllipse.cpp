@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLEllipse.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2010/09/17 14:00:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 
 #include <sbml/layout/render/Ellipse.h>
 
+#define sbmlEllipse Ellipse
 #include "CLEllipse.h"
 
 #include <copasi/report/CCopasiRootContainer.h>

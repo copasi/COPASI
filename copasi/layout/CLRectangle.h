@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRectangle.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2010/09/17 14:00:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #include <copasi/report/CCopasiObject.h>
 
 class CCopasiContainer;
-class Rectangle;
+class sbmlRectangle;
 
 class CLRectangle : public CLGraphicalPrimitive2D, public CCopasiObject
 {
@@ -67,7 +67,7 @@ public:
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLRectangle(const Rectangle& source, CCopasiContainer* pParent = NULL);
+  CLRectangle(const sbmlRectangle& source, CCopasiContainer* pParent = NULL);
 
   /**
    * Destructor.
@@ -207,7 +207,7 @@ public:
   /**
    * Converts this object to the corresponding SBML object.
    */
-  Rectangle* toSBML(unsigned int level, unsigned int version) const;
+  sbmlRectangle* toSBML(unsigned int level, unsigned int version) const;
 };
 
 #endif /* CLRectangle_H__ */
