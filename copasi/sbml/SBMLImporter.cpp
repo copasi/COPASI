@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.258 $
+//   $Revision: 1.259 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/02 14:30:59 $
+//   $Author: gauges $
+//   $Date: 2010/09/20 14:47:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1047,6 +1047,32 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
 #endif // LIBSBML_VERSION
       dimensionality = sbmlCompartment->getSpatialDimensions();
 #if LIBSBML_VERSION > 30401
+      // starting with SBML Level 3, the spatial dimensions of a compartment can be
+      // any rational number
+      double dDimensionality = sbmlCompartment->getSpatialDimensions();
+
+      if (this->mLevel > 2)
+        {
+          dDimensionality = sbmlCompartment->getSpatialDimensionsAsDouble();
+        }
+
+      // check if the unsigned int dimensionality corresponds to the double
+      // dimensionality, otherwise give an error message
+      // Actually if we wanted to be correct, we would have to check if the
+      // part before the komma also matches and maybe have a separate error message if not
+      dDimensionality -= dimensionality;
+
+      if (fabs(dDimenionality) > 1e-9)
+        {
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 89, sbmlCompartment->getId().c_str());
+          dimensionality = 3;
+
+        }
+    }
+  else
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 90, sbmlCompartment->getId().c_str());
+      dimensionality = 3;
     }
 
 #endif // LIBSBML_VERSION

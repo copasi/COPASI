@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.151 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/08 18:22:48 $
+//   $Author: gauges $
+//   $Date: 2010/09/20 14:47:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -253,6 +253,8 @@ const MESSAGES Messages[] =
   {MCSBML + 86, "SBML (86): COPASI found calls to the delay function in one or more reaction kinetics. These calls have been replaced by a reference to a global parameter which has an expression that corresponds to the original delay call."},
   {MCSBML + 87, "SBML (87): Reactions with references to local kinetic parameters found in delay calls.\nLocal parameters in the following reactions have been converted to global variables:\n%s"},
   {MCSBML + 88, "SBML (88): Reaction with id \"%s\" referenced in kinetic law for reaction with id \"%s\".\nCOPASI can not handle references to reaction fluxes in kinetic laws.\nPlease modify your model to use global parameters which reference the reaction id instead of referencing the reaction id directly."},
+  {MCSBML + 89, "SBML (89): Reaction with id \"%s\" has non-integer dimensionality. This is currently not supported by COPASI. COPASI will assume that the compatment is three dimenional."},
+  {MCSBML + 90, "SBML (90): Reaction with id \"%s\" has no spatial dimensions set. COPASI will assume that the compatment is three dimenional."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
