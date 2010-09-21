@@ -418,6 +418,9 @@
         <value type="string">deterministic</value>
       </choice>
     </attribute>
+    <attribute name="avogadroConstant">
+      <data type="double"/>
+    </attribute>
     <optional>
       <ref name="miriamAnnotation.element"/>
     </optional>

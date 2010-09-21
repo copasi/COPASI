@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:16 $
+//   $Date: 2010/09/21 16:48:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -376,6 +376,14 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   removeEmptySubTree(&mpCompartmentInitialVolumeSubtree);
   removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
   removeEmptySubTree(&mpCompartmentSubtree);
+
+  pObject = pModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"));
+
+  if (filter(classes, pObject))
+    {
+      pItem = new Q3ListViewItem(this, "Avogadro Constant");
+      treeItems[pItem] = pObject;
+    }
 
   pObject = pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
 
@@ -830,7 +838,8 @@ bool CCopasiSimpleSelectionTree::filter(const ObjectClasses & classes, const CCo
 
       if ((classes & ObservedConstants) &&
           ((Status == CModelEntity::TIME &&
-            (ObjectName == "Quantity Conversion Factor")) ||
+            (ObjectName == "Avogadro Constant" ||
+             ObjectName == "Quantity Conversion Factor")) ||
            // TODO Until we have not changed to named array elements we do not support matrix elements
            //            || pCheckedObject->isArray())) ||
            (Status == CModelEntity::ASSIGNMENT &&

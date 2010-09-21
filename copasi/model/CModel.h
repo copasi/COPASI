@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.187 $
+//   $Revision: 1.188 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:51 $
+//   $Date: 2010/09/21 16:48:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -798,6 +798,17 @@ public:
   const ModelType & getModelType() const;
 
   /**
+   * Set the Avogadro number used for the model.
+   * @param const C_FLOAT64 & avogadro
+   */
+  void setAvogadro(const C_FLOAT64 & avogadro);
+
+  /**
+   * Retrieve the Avogadro number.
+   */
+  const C_FLOAT64 & getAvogadro() const;
+
+  /**
    *  Get the conversion factor quantity -> number
    */
   const C_FLOAT64 & getQuantity2NumberFactor() const;
@@ -1405,6 +1416,11 @@ private:
    *   This is used to return a view to L
    */
   CLinkMatrixView mLView;
+
+  /**
+   *  The Avogadro number used for this model.
+   */
+  C_FLOAT64 mAvogadro;
 
   /**
    *  Factor to convert from quantity to particle number

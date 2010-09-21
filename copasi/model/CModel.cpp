@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.394 $
+//   $Revision: 1.395 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/15 16:38:22 $
+//   $Author: shoops $
+//   $Date: 2010/09/21 16:48:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,6 +129,7 @@ CModel::CModel(CCopasiContainer* pParent):
     mL(),
     mpLinkMatrixAnnotation(NULL),
     mLView(mL, mNumMetabolitesReactionIndependent),
+    mAvogadro(6.02214179e23),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
     mpCompileHandler(NULL),
@@ -2077,27 +2078,27 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
   switch (unit)
     {
       case Mol:
-        mQuantity2NumberFactor = AVOGADRO;
+        mQuantity2NumberFactor = mAvogadro;
         break;
 
       case mMol:
-        mQuantity2NumberFactor = AVOGADRO * 1E-3;
+        mQuantity2NumberFactor = mAvogadro * 1E-3;
         break;
 
       case microMol:
-        mQuantity2NumberFactor = AVOGADRO * 1E-6;
+        mQuantity2NumberFactor = mAvogadro * 1E-6;
         break;
 
       case nMol:
-        mQuantity2NumberFactor = AVOGADRO * 1E-9;
+        mQuantity2NumberFactor = mAvogadro * 1E-9;
         break;
 
       case pMol:
-        mQuantity2NumberFactor = AVOGADRO * 1E-12;
+        mQuantity2NumberFactor = mAvogadro * 1E-12;
         break;
 
       case fMol:
-        mQuantity2NumberFactor = AVOGADRO * 1E-15;
+        mQuantity2NumberFactor = mAvogadro * 1E-15;
         break;
 
       case number:
@@ -2149,6 +2150,16 @@ void CModel::setModelType(const CModel::ModelType & modelType)
 
 const CModel::ModelType & CModel::getModelType() const
 {return mType;}
+
+void CModel::setAvogadro(const C_FLOAT64 & avogadro)
+{
+  mAvogadro = avogadro;
+}
+
+const C_FLOAT64 & CModel::getAvogadro() const
+{
+  return mAvogadro;
+}
 
 const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
 {return mQuantity2NumberFactor;}
@@ -3146,6 +3157,7 @@ void CModel::initObjects()
   addMatrixReference("Link Matrix"   , mLView, CCopasiObject::ValueDbl);
   addObjectReference("Quantity Unit", mQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
+  addObjectReference("Avogadro Constant", mAvogadro, CCopasiObject::ValueDbl);
 
   mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");

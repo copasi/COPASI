@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.129 $
+//   $Revision: 1.130 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/13 16:15:33 $
+//   $Date: 2010/09/21 16:48:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -413,6 +413,7 @@ bool CCopasiXML::saveModel()
   Attributes.add("lengthUnit", mpModel->getLengthUnitName());
   Attributes.add("quantityUnit", mpModel->getQuantityUnitName());
   Attributes.add("type", CModel::ModelTypeNames[mpModel->getModelType()]);
+  Attributes.add("avogadroConstant", mpModel->getAvogadro());
 
   // This is now optional
   // Attributes.add("stateVariable",
