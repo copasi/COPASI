@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/12 15:25:52 $
+//   $Author: gauges $
+//   $Date: 2010/09/21 12:56:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,9 @@
 #include "utilities/CCopasiException.h"
 #include "sbml/SBMLDocument.h"
 #include "sbml/Compartment.h"
+#if LIBSBML_VERSION >= 40100
+#include "sbml/LocalParameter.h"
+#endif // LIBSBML_VERSION
 #include "sbml/Model.h"
 #include "sbml/Species.h"
 #include "sbml/Parameter.h"
@@ -188,12 +191,24 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
   else
     {
       // only add it if it is not the default unit definition anyway
-      if (unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
+      // from SBML Level 3 on, there are no default units
+      // so we have to write it
+      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
         }
     }
+
+// if we write an SBML L3 document, we have to explicitely set the units on the model
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mSBMLLevel > 2)
+    {
+      pSBMLModel->setTimeUnits(uDef.getId());
+    }
+
+#endif // LIBSBML_VERSION 
 }
 
 /**
@@ -271,12 +286,22 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
   else
     {
       // only add it if it is not the default unit definition anyway
-      if (unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
+      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
         }
     }
+
+// if we write an SBML L3 document, we have to explicitely set the units on the model
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mSBMLLevel > 2)
+    {
+      pSBMLModel->setVolumeUnits(uDef.getId());
+    }
+
+#endif // LIBSBML_VERSION 
 }
 
 /**
@@ -354,12 +379,26 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
   else
     {
       // only add it if it is not the default unit definition anyway
-      if (unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
+      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
         }
     }
+
+// if we write an SBML L3 document, we have to explicitely set the units on the model
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mSBMLLevel > 2)
+    {
+      pSBMLModel->setSubstanceUnits(uDef.getId());
+      // here we also set the extends unit to the same unit as the substance unit
+      // because COPASI does not know about different extend units
+      pSBMLModel->setExtentUnits(uDef.getId());
+
+    }
+
+#endif // LIBSBML_VERSION 
 }
 
 /**
@@ -442,12 +481,22 @@ void CSBMLExporter::createLengthUnit(const CCopasiDataModel& dataModel)
   else
     {
       // only add it if it is not the default unit definition anyway
-      if (unit.getKind() != UNIT_KIND_METRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
+      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_METRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
         }
     }
+
+// if we write an SBML L3 document, we have to explicitely set the units on the model
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mSBMLLevel > 2)
+    {
+      pSBMLModel->setLengthUnits(uDef.getId());
+    }
+
+#endif // LIBSBML_VERSION 
 }
 
 /**
@@ -530,12 +579,26 @@ void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
   else
     {
       // only add it if it is not the default unit definition anyway
-      if (unit.getKind() != UNIT_KIND_METRE || unit.getScale() != 0 || unit.getExponent() != 2 || unit.getMultiplier() != 1.0)
+      if (this->mSBMLLevel > 2 ||
+          unit.getKind() != UNIT_KIND_METRE ||
+          unit.getScale() != 0 ||
+          unit.getExponent() != 2 ||
+          unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
         }
     }
+
+// if we write an SBML L3 document, we have to explicitely set the units on the model
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mSBMLLevel > 2)
+    {
+      pSBMLModel->setAreaUnits(uDef.getId());
+    }
+
+#endif // LIBSBML_VERSION 
 }
 
 /**
@@ -2814,9 +2877,9 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       if (pSBMLModel != NULL)
         {
           unsigned int i = 0, iMax = this->mExportedFunctions.size();
-#if LIBSBML_VERSION > 30401
+#if LIBSBML_VERSION >= 40100
           int result;
-#endif // LIBSBML_VERSION > 30401
+#endif // LIBSBML_VERSION >= 40100
           FunctionDefinition* pFunDef = NULL;
           std::map<const FunctionDefinition*, const CCopasiObject*>::const_iterator funPos;
 
@@ -2825,13 +2888,13 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
               pFunDef = this->mExportedFunctions.get(i);
               assert(pFunDef != NULL);
 // add methods only return a value starting with libsbml 4
-#if LIBSBML_VERSION > 30401
+#if LIBSBML_VERSION >= 40100
               result = pSBMLModel->addFunctionDefinition(pFunDef);
               assert(result == LIBSBML_OPERATION_SUCCESS);
 #else
               pSBMLModel->addFunctionDefinition(pFunDef);
               assert(pSBMLModel->getFunctionDefinition(pFunDef->getId()) != NULL);
-#endif // LIBSBML_VERSION > 30401
+#endif // LIBSBML_VERSION >= 40100
               // now we need to add the newly created FunctionDefinition to the copasi2sbml map
               funPos = this->mFunctionMap.find(pFunDef);
               assert(funPos != this->mFunctionMap.end());
@@ -3746,10 +3809,27 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
 
               if (this->mParameterReplacementMap.find(pLocalParameter->getCN()) == this->mParameterReplacementMap.end())
                 {
-                  Parameter* pSBMLPara = pKLaw->createParameter();
+                  // starting with SBML Level 3, the parameters of a kinetic law are expressed in
+                  // libsbml 4.1 does not handle this in a nice way,
+                  // so way have to distinguish between the levels we export
+                  // Actually here we could probably have gotten away with the old code, but
+                  // better safe than sorry
+                  Parameter* pSBMLPara = NULL;
+#if LIBSBML_VERSION >= 40100
+
+                  if (this->mSBMLLevel > 2)
+                    {
+                      pSBMLPara = pKLaw->createLocalParameter();
+                    }
+                  else
+                    {
+#endif // LIBSBML_VERSION
+                      pSBMLPara = pKLaw->createParameter();
+#if LIBSBML_VERSION >= 40100
+                    }
 
                   pSBMLPara->setId(pPara->getObjectName().c_str());
-
+#endif // LIBSBML_VERSION
                   // don't call setName on level 1 objects because this will also
                   // change the id
                   if (this->mpSBMLDocument->getLevel() > 1)

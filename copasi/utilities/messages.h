@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.152 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/20 14:47:45 $
+//   $Date: 2010/09/21 12:56:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -253,8 +253,13 @@ const MESSAGES Messages[] =
   {MCSBML + 86, "SBML (86): COPASI found calls to the delay function in one or more reaction kinetics. These calls have been replaced by a reference to a global parameter which has an expression that corresponds to the original delay call."},
   {MCSBML + 87, "SBML (87): Reactions with references to local kinetic parameters found in delay calls.\nLocal parameters in the following reactions have been converted to global variables:\n%s"},
   {MCSBML + 88, "SBML (88): Reaction with id \"%s\" referenced in kinetic law for reaction with id \"%s\".\nCOPASI can not handle references to reaction fluxes in kinetic laws.\nPlease modify your model to use global parameters which reference the reaction id instead of referencing the reaction id directly."},
-  {MCSBML + 89, "SBML (89): Reaction with id \"%s\" has non-integer dimensionality. This is currently not supported by COPASI. COPASI will assume that the compatment is three dimenional."},
+  {MCSBML + 89, "SBML (89): Reaction with id \"%s\" has non-integer dimensionality. This is currently not supported by COPASI. COPASI will assume that the compartment is three dimensional."},
   {MCSBML + 90, "SBML (90): Reaction with id \"%s\" has no spatial dimensions set. COPASI will assume that the compatment is three dimenional."},
+  {MCSBML + 91, "SBML (91): The default %s unit has not been set in the model. COPASI will use %s as the default %s unit."},
+  {MCSBML + 92, "SBML (92): The default extends unit has not been set in the model or differs from the substance default units. COPASI will assume that the extends units are the same as the substance units."},
+  {MCSBML + 93, "SBML (93): The model uses units on numbers which COPASI currently can't handle. Please be aware that the display of units in COPASI might therefore be incorrect,"},
+  {MCSBML + 94, "SBML (94): Assignment or event assignment to species reference found in model. Only initial assignments to species references are currently supported in COPASI. The assignment has been ignored. The results produced by this model might therefore not be what you expect."},
+  {MCSBML + 95, "SBML (95): The model uses species reference ids in mathematical expressions. This is currently not supported in COPASI and the corresponding model elements have been ignored. The results produced by this model might therefore not be what you expect."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

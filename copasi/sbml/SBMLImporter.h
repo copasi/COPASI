@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/17 12:05:12 $
+//   $Date: 2010/09/21 12:56:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,8 @@ protected:
   bool mUnsupportedRuleFound;
   bool mUnsupportedRateRuleFound;
   bool mUnsupportedAssignmentRuleFound;
+  bool mUnitOnNumberFound;
+  bool mAssignmentToSpeciesReferenceFound;
   unsigned int mLevel;
   unsigned int mOriginalLevel;
   unsigned int mVersion;
@@ -662,6 +664,12 @@ public:
    * This is e.g. used to check if expression in L2V1 contain references to reaction ids.
    */
   std::string findIdInASTTree(const ASTNode* pMath, const std::set<std::string>& reactionIds);
+
+  /**
+   * This method check if a unit has been set on a number node.
+   * If such a node is found in the tree, true is returned.
+   */
+  static bool checkForUnitsOnNumbers(const ASTNode* pNode);
 };
 
 #endif

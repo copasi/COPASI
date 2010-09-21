@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.259 $
+//   $Revision: 1.260 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/20 14:47:46 $
+//   $Date: 2010/09/21 12:56:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,9 @@
 #include <sbml/Species.h>
 #include <sbml/SpeciesReference.h>
 #include <sbml/Reaction.h>
+#if LIBSBML_VERSION >= 40100
+#include <sbml/LocalParameter.h>
+#endif // LIBSBML_VERSION
 #include <sbml/KineticLaw.h>
 #include <sbml/math/FormulaFormatter.h>
 #include <sbml/Model.h>
@@ -122,208 +125,437 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
   SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
+  UnitDefinition *pSubstanceUnits = NULL;
+  UnitDefinition *pTimeUnits = NULL;
+  UnitDefinition *pVolumeUnits = NULL;
+  UnitDefinition *pAreaUnits = NULL;
+  UnitDefinition *pLengthUnits = NULL;
   /* Set standard units to match the standard units of SBML files. */
 
-  if (sbmlModel->getNumUnitDefinitions() != 0)
+#if LIBSBML_VERSION >= 40100
+
+  // for SBML L3 files the default units are defined on the model
+  if (this->mLevel > 2)
     {
-      unsigned int counter;
-
-      for (counter = 0; counter < sbmlModel->getNumUnitDefinitions(); counter++)
+      // we make copies o the unit definitions so that we do not have to remember
+      // if we created them or not
+      if (sbmlModel->isSetSubstanceUnits())
         {
-          UnitDefinition* uDef = sbmlModel->getUnitDefinition(counter);
-          std::string unitId = uDef->getId();
+          assert(sbmlModel->getUnitDefinition(sbmlModel->getSubstanceUnits()) != NULL);
+          pSubstanceUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getSubstanceUnits()));
+        }
 
-          if (unitId == "substance")
+      if (sbmlModel->isSetTimeUnits())
+        {
+          assert(sbmlModel->getUnitDefinition(sbmlModel->getTimeUnits()) != NULL);
+          pTimeUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getTimeUnits()));
+        }
+
+      if (sbmlModel->isSetVolumeUnits())
+        {
+          assert(sbmlModel->getUnitDefinition(sbmlModel->getVolumeUnits()) != NULL);
+          pVolumeUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getVolumeUnits()));
+        }
+
+      if (sbmlModel->isSetAreaUnits())
+        {
+          assert(sbmlModel->getUnitDefinition(sbmlModel->getAreaUnits()) != NULL);
+          pAreaUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getAreaUnits()));
+        }
+
+      if (sbmlModel->isSetLengthUnits())
+        {
+          assert(sbmlModel->getUnitDefinition(sbmlModel->getLengthUnits()) != NULL);
+          pLengthUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getLengthUnits()));
+        }
+    }
+  else
+    {
+#endif // LIBSBML_VERSION
+
+      if (sbmlModel->getNumUnitDefinitions() != 0)
+        {
+          unsigned int counter;
+
+          // we make copies o the unit definitions so that we do not have to remember
+          // if we created them or not
+          for (counter = 0; counter < sbmlModel->getNumUnitDefinitions(); counter++)
             {
-              std::pair<CModel::QuantityUnit, bool> qUnit;
+              UnitDefinition* uDef = sbmlModel->getUnitDefinition(counter);
+              std::string unitId = uDef->getId();
 
-              try
+              if (unitId == "substance")
                 {
-                  qUnit = this->handleSubstanceUnit(uDef);
+                  pSubstanceUnits = new UnitDefinition(*uDef);
                 }
-              catch (...)
+              else if (unitId == "time")
                 {
-                  std::ostringstream os;
-                  os << "Error while importing substance units.";
-
-                  // check if the last message on the stack is an exception
-                  // and if so, add the message text to the current exception
-                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-                    {
-                      // we only want the message, not the timestamp line
-                      std::string text = CCopasiMessage::peekLastMessage().getText();
-                      os << text.substr(text.find("\n"));
-                    }
-
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+                  pTimeUnits = new UnitDefinition(*uDef);
                 }
-
-              if (qUnit.second == false)
+              else if (unitId == "volume")
                 {
-                  // the unit could not be handled, give an error message and
-                  // set the units to mole
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
-                  this->mpCopasiModel->setQuantityUnit(CModel::Mol);
+                  pVolumeUnits = new UnitDefinition(*uDef);
                 }
-              else
+              else if ((unitId == "area"))
                 {
-                  this->mpCopasiModel->setQuantityUnit(qUnit.first);
+                  pAreaUnits = new UnitDefinition(*uDef);
                 }
-            }
-          else if (unitId == "time")
-            {
-              std::pair<CModel::TimeUnit, bool> tUnit;
-
-              try
+              else if ((unitId == "length"))
                 {
-                  tUnit = this->handleTimeUnit(uDef);
-                }
-              catch (...)
-                {
-                  std::ostringstream os;
-                  os << "Error while importing time units.";
-
-                  // check if the last message on the stack is an exception
-                  // and if so, add the message text to the current exception
-                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-                    {
-                      // we only want the message, not the timestamp line
-                      std::string text = CCopasiMessage::peekLastMessage().getText();
-                      os << text.substr(text.find("\n"));
-                    }
-
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
-                }
-
-              if (tUnit.second == false)
-                {
-                  // the unit could not be handled, give an error message and
-                  // set the units to second
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
-                  this->mpCopasiModel->setTimeUnit(CModel::s);
-                }
-              else
-                {
-                  this->mpCopasiModel->setTimeUnit(tUnit.first);
-                }
-            }
-          else if (unitId == "volume")
-            {
-              std::pair<CModel::VolumeUnit, bool> vUnit;
-
-              try
-                {
-                  vUnit = this->handleVolumeUnit(uDef);
-                }
-              catch (...)
-                {
-                  std::ostringstream os;
-                  os << "Error while importing volume units.";
-
-                  // check if the last message on the stack is an exception
-                  // and if so, add the message text to the current exception
-                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-                    {
-                      // we only want the message, not the timestamp line
-                      std::string text = CCopasiMessage::peekLastMessage().getText();
-                      os << text.substr(text.find("\n"));
-                    }
-
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
-                }
-
-              if (vUnit.second == false)
-                {
-                  // the unit could not be handled, give an error message and
-                  // set the units to litre
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "litre");
-                  this->mpCopasiModel->setVolumeUnit(CModel::l);
-                }
-              else
-                {
-                  this->mpCopasiModel->setVolumeUnit(vUnit.first);
-                }
-            }
-          else if ((unitId == "area"))
-            {
-              std::pair<CModel::AreaUnit, bool> vUnit;
-
-              try
-                {
-                  vUnit = this->handleAreaUnit(uDef);
-                }
-              catch (...)
-                {
-                  std::ostringstream os;
-                  os << "Error while importing area units.";
-
-                  // check if the last message on the stack is an exception
-                  // and if so, add the message text to the current exception
-                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-                    {
-                      // we only want the message, not the timestamp line
-                      std::string text = CCopasiMessage::peekLastMessage().getText();
-                      os << text.substr(text.find("\n"));
-                    }
-
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
-                }
-
-              if (vUnit.second == false)
-                {
-                  // the unit could not be handled, give an error message and
-                  // set the units to litre
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "area", "square meter");
-                  this->mpCopasiModel->setAreaUnit(CModel::m2);
-                }
-              else
-                {
-                  this->mpCopasiModel->setAreaUnit(vUnit.first);
-                }
-            }
-          else if ((unitId == "length"))
-            {
-              std::pair<CModel::LengthUnit, bool> vUnit;
-
-              try
-                {
-                  vUnit = this->handleLengthUnit(uDef);
-                }
-              catch (...)
-                {
-                  std::ostringstream os;
-                  os << "Error while importing length units.";
-
-                  // check if the last message on the stack is an exception
-                  // and if so, add the message text to the current exception
-                  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-                    {
-                      // we only want the message, not the timestamp line
-                      std::string text = CCopasiMessage::peekLastMessage().getText();
-                      os << text.substr(text.find("\n"));
-                    }
-
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
-                }
-
-              if (vUnit.second == false)
-                {
-                  // the unit could not be handled, give an error message and
-                  // set the units to litre
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "length", "meter");
-                  this->mpCopasiModel->setLengthUnit(CModel::m);
-                }
-              else
-                {
-                  this->mpCopasiModel->setLengthUnit(vUnit.first);
+                  pLengthUnits = new UnitDefinition(*uDef);
                 }
             }
         }
+
+#if LIBSBML_VERSION >= 40100
+    }
+
+#endif // LIBSBML_VERSION
+
+  // create the default units if some unit has not been specified
+  if (pSubstanceUnits == NULL)
+    {
+      if (this->mLevel > 2)
+        {
+          // issue a warning
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "substance", "mole" , "substance");
+        }
+
+      // create the default units
+      pSubstanceUnits = new UnitDefinition(this->mLevel, this->mVersion);
+      pSubstanceUnits->setId("dummy_substance");
+      pSubstanceUnits->setName("dummy_substance");
+      Unit* pUnit = pSubstanceUnits->createUnit();
+      pUnit->setKind(UNIT_KIND_MOLE);
+      pUnit->setExponent(1);
+      pUnit->setMultiplier(1.0);
+      pUnit->setScale(0);
+    }
+
+  if (pTimeUnits == NULL)
+    {
+      if (this->mLevel > 2)
+        {
+          // issue a warning
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "time", "second" , "time");
+        }
+
+      // create the default units
+      pTimeUnits = new UnitDefinition(this->mLevel, this->mVersion);
+      pTimeUnits->setId("dummy_time");
+      pTimeUnits->setName("dummy_time");
+      Unit* pUnit = pTimeUnits->createUnit();
+      pUnit->setKind(UNIT_KIND_SECOND);
+      pUnit->setExponent(1);
+      pUnit->setMultiplier(1.0);
+      pUnit->setScale(0);
+    }
+
+  if (pVolumeUnits == NULL)
+    {
+      if (this->mLevel > 2)
+        {
+          // issue a warning
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "volume", "litre" , "volume");
+        }
+
+      // create the default units
+      pVolumeUnits = new UnitDefinition(this->mLevel, this->mVersion);
+      pVolumeUnits->setId("dummy_volume");
+      pVolumeUnits->setName("dummy_volume");
+      Unit* pUnit = pVolumeUnits->createUnit();
+      pUnit->setKind(UNIT_KIND_LITRE);
+      pUnit->setExponent(1);
+      pUnit->setMultiplier(1.0);
+      pUnit->setScale(0);
+    }
+
+  if (pAreaUnits == NULL)
+    {
+      if (this->mLevel > 2)
+        {
+          // issue a warning
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "area", "m^2" , "area");
+        }
+
+      // create the default units
+      pAreaUnits = new UnitDefinition(this->mLevel, this->mVersion);
+      pAreaUnits->setId("dummy_area");
+      pAreaUnits->setName("dummy_area");
+      Unit* pUnit = pAreaUnits->createUnit();
+      pUnit->setKind(UNIT_KIND_METRE);
+      pUnit->setExponent(2);
+      pUnit->setMultiplier(1.0);
+      pUnit->setScale(0);
+    }
+
+  if (pLengthUnits == NULL)
+    {
+      if (this->mLevel > 2)
+        {
+          // issue a warning
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "length", "m" , "length");
+        }
+
+      // create the default units
+      pLengthUnits = new UnitDefinition(this->mLevel, this->mVersion);
+      pLengthUnits->setId("dummy_length");
+      pLengthUnits->setName("dummy_length");
+      Unit* pUnit = pLengthUnits->createUnit();
+      pUnit->setKind(UNIT_KIND_METRE);
+      pUnit->setExponent(1);
+      pUnit->setMultiplier(1.0);
+      pUnit->setScale(0);
+    }
+
+  // now we have some common code to actually import the units
+
+  // handle the substance units
+  assert(pSubstanceUnits != NULL);
+
+  if (pSubstanceUnits != NULL)
+    {
+      std::pair<CModel::QuantityUnit, bool> qUnit;
+
+      try
+        {
+          qUnit = this->handleSubstanceUnit(pSubstanceUnits);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing substance units.";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
+      if (qUnit.second == false)
+        {
+          // the unit could not be handled, give an error message and
+          // set the units to mole
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
+          this->mpCopasiModel->setQuantityUnit(CModel::Mol);
+        }
+      else
+        {
+          this->mpCopasiModel->setQuantityUnit(qUnit.first);
+        }
+
+#if LIBSBML_VERSION >= 40100
+
+      // check if the extends units are set and if they are equal to the substance units
+      // otherwise issue a warning
+      if (this->mLevel > 2)
+        {
+          if (!sbmlModel->isSetExtentUnits())
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 92);
+            }
+          else
+            {
+              const UnitDefinition* pExtendsUnits = sbmlModel->getUnitDefinition(sbmlModel->getExtentUnits());
+              assert(pExtendsUnits != NULL);
+
+              if (!areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pExtendsUnits))
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 92);
+                }
+            }
+        }
+
+#endif // LIBSBML_VERSION
+      delete pSubstanceUnits;
+      pSubstanceUnits = NULL;
+    }
+
+  // handle the time units
+  assert(pTimeUnits != NULL);
+
+  if (pTimeUnits != NULL)
+    {
+      std::pair<CModel::TimeUnit, bool> tUnit;
+
+      try
+        {
+          tUnit = this->handleTimeUnit(pTimeUnits);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing time units.";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
+      if (tUnit.second == false)
+        {
+          // the unit could not be handled, give an error message and
+          // set the units to second
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
+          this->mpCopasiModel->setTimeUnit(CModel::s);
+        }
+      else
+        {
+          this->mpCopasiModel->setTimeUnit(tUnit.first);
+        }
+
+      delete pTimeUnits;
+      pTimeUnits = NULL;
+    }
+
+  // handle the volume units
+  assert(pVolumeUnits != NULL);
+
+  if (pVolumeUnits != NULL)
+    {
+      std::pair<CModel::VolumeUnit, bool> vUnit;
+
+      try
+        {
+          vUnit = this->handleVolumeUnit(pVolumeUnits);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing volume units.";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
+      if (vUnit.second == false)
+        {
+          // the unit could not be handled, give an error message and
+          // set the units to litre
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "litre");
+          this->mpCopasiModel->setVolumeUnit(CModel::l);
+        }
+      else
+        {
+          this->mpCopasiModel->setVolumeUnit(vUnit.first);
+        }
+
+      delete pVolumeUnits;
+      pVolumeUnits = NULL;
+    }
+
+  // handle the area units
+  assert(pAreaUnits != NULL);
+
+  if (pAreaUnits != NULL)
+    {
+      std::pair<CModel::AreaUnit, bool> vUnit;
+
+      try
+        {
+          vUnit = this->handleAreaUnit(pAreaUnits);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing area units.";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
+      if (vUnit.second == false)
+        {
+          // the unit could not be handled, give an error message and
+          // set the units to litre
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "area", "square meter");
+          this->mpCopasiModel->setAreaUnit(CModel::m2);
+        }
+      else
+        {
+          this->mpCopasiModel->setAreaUnit(vUnit.first);
+        }
+
+      delete pAreaUnits;
+      pAreaUnits = NULL;
+    }
+
+  // handle the length units
+  assert(pLengthUnits != NULL);
+
+  if (pLengthUnits != NULL)
+    {
+      std::pair<CModel::LengthUnit, bool> vUnit;
+
+      try
+        {
+          vUnit = this->handleLengthUnit(pLengthUnits);
+        }
+      catch (...)
+        {
+          std::ostringstream os;
+          os << "Error while importing length units.";
+
+          // check if the last message on the stack is an exception
+          // and if so, add the message text to the current exception
+          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
+            {
+              // we only want the message, not the timestamp line
+              std::string text = CCopasiMessage::peekLastMessage().getText();
+              os << text.substr(text.find("\n"));
+            }
+
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
+        }
+
+      if (vUnit.second == false)
+        {
+          // the unit could not be handled, give an error message and
+          // set the units to litre
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "length", "meter");
+          this->mpCopasiModel->setLengthUnit(CModel::m);
+        }
+      else
+        {
+          this->mpCopasiModel->setLengthUnit(vUnit.first);
+        }
+
+      delete pLengthUnits;
+      pLengthUnits = NULL;
     }
 
   // go through all compartments and species and check if the units are
   // consistent
-  checkElementUnits(sbmlModel, this->mpCopasiModel, mLevel, mVersion);
+  checkElementUnits(sbmlModel, this->mpCopasiModel, this->mLevel, this->mVersion);
   std::string title;
 
   if (this->isStochasticModel(sbmlModel))
@@ -845,6 +1077,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 36);
     }
 
+  // give a warning that units on pure number as allowed in SBML L3 and above
+  // are ignored by COPASI
+  if (this->mLevel > 2 && this->mUnitOnNumberFound)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 93);
+    }
+
+
   return this->mpCopasiModel;
 }
 
@@ -1040,13 +1280,13 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     }
 
   unsigned int dimensionality = 3;
-#if LIBSBML_VERSION > 30401
+#if LIBSBML_VERSION >= 40100
 
   if (sbmlCompartment->isSetSpatialDimensions())
     {
 #endif // LIBSBML_VERSION
       dimensionality = sbmlCompartment->getSpatialDimensions();
-#if LIBSBML_VERSION > 30401
+#if LIBSBML_VERSION >= 40100
       // starting with SBML Level 3, the spatial dimensions of a compartment can be
       // any rational number
       double dDimensionality = sbmlCompartment->getSpatialDimensions();
@@ -1062,7 +1302,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       // part before the komma also matches and maybe have a separate error message if not
       dDimensionality -= dimensionality;
 
-      if (fabs(dDimenionality) > 1e-9)
+      if (fabs(dDimensionality) > 1e-9)
         {
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 89, sbmlCompartment->getId().c_str());
           dimensionality = 3;
@@ -1283,7 +1523,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       C_FLOAT64 stoi = 1.0;
 
-      if (!sr->isSetStoichiometryMath())
+      if (this->mLevel < 3 && !sr->isSetStoichiometryMath())
         {
           stoi = sr->getStoichiometry() / sr->getDenominator();
         }
@@ -1317,8 +1557,40 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       copasiReaction->addSubstrate(pos->second->getKey(), stoi);
 
+      /*
+      // TODO uncomment once we are ready to handle references to stoichiometries
+      #if LIBSBML_VERSION >= 40100
+      // we need to store the id of the species reference if it is set because SBML Level 3 allows
+      // references to species references and if we want to support his, we need the id to import
+      // expressions that reference a species reference
+          if(this->mLevel > 2)
+          {
+              if(sr->isSetId())
+              {
+                  CCopasiVector<CChemEqElement>::const_iterator it=copasiReaction.getSubstrates().begin(),end=copasiReaction.getSubstrates().end();
+                  CChemEqElement* pElement=NULL;
+                  while(it != endit)
+                  {
+                      if((*it)->getMetaboliteKey() == pos->second->getKey())
+                      {
+                          pElement=const_cast<CChemEqElement*>(*it)
+                          break;
+                      }
+                      ++it;
+                  }
+                  assert(pElement != NULL);
+                  if(pElement != NULL)
+                  {
+                    copasi2sbmlmap[] = const_cast<SpeciesReference*>(sr);
+                  }
+              }
+          }
+
+      #endif // LIBSBML_VERSION
+      */
+
       // find the CChemEqElement that belongs to the added substrate
-      if (sr->isSetStoichiometryMath())
+      if (this->mLevel < 3 && sr->isSetStoichiometryMath())
         {
           CChemEq& chemEq = copasiReaction->getChemEq();
           CCopasiVector < CChemEqElement >::const_iterator it = chemEq.getSubstrates().begin();
@@ -1390,6 +1662,37 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       copasiReaction->addProduct(pos->second->getKey(), stoi);
 
+      /*
+      // TODO uncomment once we are ready to handle references to stoichiometries
+      #if LIBSBML_VERSION >= 40100
+      // we need to store the id of the species reference if it is set because SBML Level 3 allows
+      // references to species references and if we want to support his, we need the id to import
+      // expressions that reference a species reference
+          if(this->mLevel > 2)
+          {
+              if(sr->isSetId())
+              {
+                  CCopasiVector<CChemEqElement>::const_iterator it=copasiReaction.getProducts().begin(),end=copasiReaction.getProducts().end();
+                  CChemEqElement* pElement=NULL;
+                  while(it != endit)
+                  {
+                      if((*it)->getMetaboliteKey() == pos->second->getKey())
+                      {
+                          pElement=const_cast<CChemEqElement*>(*it);
+                          break;
+                      }
+                      ++it;
+                  }
+                  assert(pElement != NULL);
+                  if(pElement != NULL)
+                  {
+                    copasi2sbmlmap[] = const_cast<SpeciesReference*>(sr);
+                  }
+              }
+          }
+
+      #endif // LIBSBML_VERSION
+      */
       if (sr->isSetStoichiometryMath())
         {
           CChemEq& chemEq = copasiReaction->getChemEq();
@@ -1441,18 +1744,64 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       assert(pSBMLSpecies != NULL);
       hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
       copasiReaction->addModifier(pos->second->getKey());
+      /*
+      // TODO uncomment once we are ready to handle references to stoichiometries
+      #if LIBSBML_VERSION >= 40100
+      // we need to store the id of the species reference if it is set because SBML Level 3 allows
+      // references to species references and if we want to support his, we need the id to import
+      // expressions that reference a species reference
+          if(this->mLevel > 2)
+          {
+              if(sr->isSetId())
+              {
+                  CCopasiVector<CChemEqElement>::const_iterator it=copasiReaction.getModifiers().begin(),end=copasiReaction.getModifiers().end();
+                  CChemEqElement* pElement=NULL;
+                  while(it != endit)
+                  {
+                      if((*it)->getMetaboliteKey() == pos->second->getKey())
+                      {
+                          pElement=const_cast<CChemEqElement*>(*it);
+                          break;
+                      }
+                      ++it;
+                  }
+                  assert(pElement != NULL);
+                  if(pElement != NULL)
+                  {
+                    copasi2sbmlmap[] = const_cast<SpeciesReference*>(sr);
+                  }
+              }
+          }
+
+      #endif // LIBSBML_VERSION
+      */
     }
 
   /* in the newly created CFunction set the types for all parameters and
    * either a mapping or a value
    */
   const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
+  const ListOfParameters* pParamList = NULL;
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mLevel > 2)
+    {
+      pParamList = kLaw->getListOfLocalParameters();
+    }
+  else
+    {
+#endif // LIBSBML_VERSION
+      pParamList = kLaw->getListOfParameters();
+#if LIBSBML_VERSION >= 40100
+    }
+
+#endif // LIBSBML_VERSION
 
   if (kLaw != NULL)
     {
-      for (counter = 0; counter < kLaw->getNumParameters(); ++counter)
+      for (counter = 0; counter < pParamList->size(); ++counter)
         {
-          const Parameter* pSBMLParameter = kLaw->getParameter(counter);
+          const Parameter* pSBMLParameter = pParamList->get(counter);
           std::string id;
 
           if (this->mLevel == 1)
@@ -1967,6 +2316,8 @@ SBMLImporter::SBMLImporter():
   this->mUnsupportedRuleFound = false;
   this->mUnsupportedRateRuleFound = false;
   this->mUnsupportedAssignmentRuleFound = false;
+  this->mUnitOnNumberFound = false;
+  this->mAssignmentToSpeciesReferenceFound = false;
   this->mpImportHandler = NULL;
   this->mDelayFound = false;
   this->mAvogadroCreated = false;
@@ -2182,6 +2533,10 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               return NULL;
             }
         }
+
+      // TODO we need some code that check for required packages that we can't handle.
+      // TODO Since the current libsbml does not support this yet, we will have to wait for
+      // TODO libsbml 5, or write some code to check this ourselves.
 
       if (sbmlDoc->getModel() == NULL)
         {
@@ -3311,10 +3666,18 @@ void SBMLImporter::restoreFunctionDB()
 
 void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction)
 {
-  // this function goes through the tree three times.
+  // this function goes through the tree several times.
   // this can probably be handled more intelligently
+  // maybe we should use some kind of visitor schema
+  //
+  // check if there are units on pure numbers
+  // so that we can create a warning that they have been ignored
+  if (this->mLevel > 2 && !this->mUnitOnNumberFound)
+    {
+      this->mUnitOnNumberFound = SBMLImporter::checkForUnitsOnNumbers(pNode);
+    }
 
-  // first replace the calls to explicitely time depenent functions
+  // first replace the calls to explicitely time dependent functions
   this->replaceTimeDependentFunctionCalls(pNode);
 
   if (!this->mDelayFound || pSBMLReaction != NULL)
@@ -3357,7 +3720,26 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
               // delete the local parameters that have been replaced from the
               // reaction
               std::map<std::string, std::string>::const_iterator it = replacementMap.begin(), endit = replacementMap.end();
-              ListOfParameters* pList = pSBMLReaction->getKineticLaw()->getListOfParameters();
+              // starting with SBML Level 3, the parameters of a kinetic law are expressed in
+              // terms of a new class called LocalParameter instead of Parameter
+              // Unfortunatelly libsbml 4.1 uses separate data structures for
+              // the Parameters and the LocalParameters which mandates a small
+              // code change to be on the safe side
+              ListOfParameters* pList = NULL;
+#if LIBSBML_VERSION >= 40100
+
+              if (this->mLevel > 2)
+                {
+                  pList = pSBMLReaction->getKineticLaw()->getListOfLocalParameters();
+                }
+              else
+                {
+#endif // LIBSBML_VERSION
+#if LIBSBML_VERSION >= 40100
+                  pList = pSBMLReaction->getKineticLaw()->getListOfParameters();
+                }
+
+#endif // LIBSBML_VERSION
               Parameter* pParam = NULL;
 
               while (it != endit)
@@ -5253,17 +5635,17 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
 
       // Check if there is a reference to a reaction in the expression
       // This is not allowed for L2V1
-      std::set<std::string> reactionIds;
-
-      for (i = 0; i < sbmlModel->getListOfReactions()->size(); i++)
-        {
-          reactionIds.insert(sbmlModel->getReaction(i)->getId());
-        }
-
       const ASTNode* pMath = pRule->getMath();
 
       if (pMath != NULL)
         {
+          std::set<std::string> reactionIds;
+
+          for (i = 0; i < sbmlModel->getListOfReactions()->size(); i++)
+            {
+              reactionIds.insert(sbmlModel->getReaction(i)->getId());
+            }
+
           std::string id = SBMLImporter::findIdInASTTree(pMath, reactionIds);
 
           if (!id.empty())
@@ -5272,6 +5654,23 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
             }
         }
     }
+
+// the following code needs to use methods from libsbml 4.1 or above
+#if LIBSBML_VERSION >= 40100
+
+  // In SBML Level 3 documents,
+  if (this->mLevel == 3)
+    {
+      // TODO we need to check if we have a species reference as the target of
+      // TODO a rule because COPASI currently can not handle this and we have
+      // TODO to warn the user that we will ignore the rule
+      //
+      // TODO Likewise we have to check if the id of a species reference is reference in the
+      // TODO expression of the rule because this is also not implemented in COPASI yet and
+      // TODO we ignore the rule
+    }
+
+#endif // LIBSBML_VERSION
 }
 
 /**
@@ -7821,7 +8220,14 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
         {
           // it has exactly the same meaning as the delayAssignment flag in
           // COPASI, just a different name
-          pCOPASIEvent->setDelayAssignment(pEvent->getUseValuesFromTriggerTime());
+          if (pEvent->isSetUseValuesFromTriggerTime())
+            {
+              pCOPASIEvent->setDelayAssignment(pEvent->getUseValuesFromTriggerTime());
+            }
+          else
+            {
+              pCOPASIEvent->setDelayAssignment(false);
+            }
         }
       else
         {
@@ -8197,16 +8603,37 @@ void SBMLImporter::replace_delay_nodes(ConverterASTNode* pNode, Model* pModel, s
           // in the tree for the rule.
           // If there is a local parameter, we have to convert it to a global
           // parameter
-          if (pSBMLReaction->getKineticLaw()->getListOfParameters()->size() > 0)
+          // starting with SBML Level 3, the parameters of a kinetic law are expressed in
+          // terms of a new class called LocalParameter instead of Parameter
+          // Unfortunatelly libsbml 4.1 uses separate data structures for
+          // the Parameters and the LocalParameters which mandates a small
+          // code change to be on the safe side
+          ListOfParameters* pList = NULL;
+#if LIBSBML_VERSION >= 40100
+
+          if (this->mLevel > 2)
+            {
+              pList = pSBMLReaction->getKineticLaw()->getListOfLocalParameters();
+            }
+          else
+            {
+#endif // LIBSBML_VERSION
+              pList = pSBMLReaction->getKineticLaw()->getListOfParameters();
+#if LIBSBML_VERSION >= 40100
+            }
+
+#endif // LIBSBML_VERSION
+          unsigned int i, iMax = pList->size();
+
+          if (iMax > 0)
             {
               std::set<std::string> localIds;
               // first we fill the local id set
-              unsigned int i, iMax = pSBMLReaction->getKineticLaw()->getNumParameters();
               const Parameter* pParam = NULL;
 
               for (i = 0; i < iMax; ++i)
                 {
-                  pParam = pSBMLReaction->getKineticLaw()->getParameter(i);
+                  pParam = pList->get(i);
                   assert(pParam != NULL);
                   localIds.insert(pParam->getId());
                 }
@@ -8402,4 +8829,40 @@ void SBMLImporter::replace_name_nodes(ASTNode* pNode, const std::map<std::string
           this->replace_name_nodes(pNode->getChild(i), replacementMap);
         }
     }
+}
+
+/**
+ * This method check if a unit has been set on a number node.
+ * If such a node is found in the tree, true is returned.
+ */
+bool SBMLImporter::checkForUnitsOnNumbers(const ASTNode* pNode)
+{
+  bool result = false;
+
+  if (pNode != NULL)
+    {
+      switch (pNode->getType())
+        {
+          case AST_INTEGER:
+          case AST_REAL:
+          case AST_REAL_E:
+          case AST_RATIONAL:
+            result = pNode->isSetUnits();
+            break;
+          default:
+            // recurse into the tree
+          {
+            unsigned int i, iMax = pNode->getNumChildren();
+
+            for (i = 0; i < iMax && result == false; ++i)
+              {
+                result = SBMLImporter::checkForUnitsOnNumbers(pNode->getChild(i));
+              }
+          }
+          break;
+
+        }
+    }
+
+  return result;
 }
