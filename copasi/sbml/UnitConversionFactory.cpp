@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/13 07:51:37 $
+//   $Date: 2010/09/21 13:28:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,6 +150,11 @@ UnitDefinition* UnitConversionFactory::convertToSI(const Unit& unit)
         break;
 
       case UNIT_KIND_MOLE:
+#if LIBSBML_VERSION >= 40100
+        // this may be not totally correct, but this is the way we currently intend to
+        // handle it in COPASI
+      case UNIT_KIND_AVOGADRO:
+#endif // LIBSBML_VERSION
         pUdef = convertMoleToSI(unit);
         break;
 

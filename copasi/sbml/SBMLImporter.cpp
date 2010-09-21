@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.260 $
+//   $Revision: 1.261 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/21 12:56:36 $
+//   $Date: 2010/09/21 13:28:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2619,7 +2619,11 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
           fatalError();
         }
 
-      if ((u->getKind() == UNIT_KIND_MOLE))
+      if ((u->getKind() == UNIT_KIND_MOLE)
+#if LIBSBML_VERSION >= 40100
+          || u->getKind() == UNIT_KIND_AVOGADRO
+#endif // LIBSBML_VERSION
+         )
         {
           double multiplier = u->getMultiplier();
           int scale = u->getScale();
@@ -7045,6 +7049,24 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
           UnitDefinition::reorder(pTmpUdef1);
           UnitDefinition::reorder(pTmpUdef2);
           unsigned int i = 0, iMax = pTmpUdef1->getNumUnits();
+#if LIBSBML_VERSION >= 40100
+
+          // for COPASI mole and avogadro are the same units, so in order to compare them,
+          // we replace the avogadro unit by mole
+          for (i = 0; i < iMax; ++i)
+            {
+              if (pTmpUdef1->getUnit(i)->getKind() == UNIT_KIND_AVOGADRO)
+                {
+                  pTmpUdef1->getUnit(i)->setKind(UNIT_KIND_MOLE);
+                }
+
+              if (pTmpUdef2->getUnit(i)->getKind() == UNIT_KIND_AVOGADRO)
+                {
+                  pTmpUdef2->getUnit(i)->setKind(UNIT_KIND_MOLE);
+                }
+            }
+
+#endif // LIBSBML_VERSION
           const Unit *pU1, *pU2;
 
           while (newResult == true && i != iMax)
@@ -7486,6 +7508,21 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
           pUnit->setMultiplier(1.0);
           pUnit->setScale(0);
         }
+
+#if LIBSBML_VERSION >= 40100
+      else if (unitId == "avogadro")
+        {
+          pUnitDefinition = new UnitDefinition(pSBMLModel->getLevel(), pSBMLModel->getVersion());
+          pUnitDefinition->setId("dummy_avogadro");
+          pUnitDefinition->setName("dummy_avogadro");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_AVOGADRO);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+
+#endif // LIBSBML_VERSION
     }
 
   return pUnitDefinition;
