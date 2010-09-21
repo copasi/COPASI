@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 14:00:26 $
+//   $Date: 2010/09/21 17:43:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,29 +20,6 @@
 #include <vector>
 #include <set>
 #include <utility>
-
-// opengl includes
-#ifdef _WIN32
-# include "windows.h" // Needed for OpenGL
-# define _USE_MATH_DEFINES // without the following define, M_PI will not be declared under windows
-#endif // _WIN32
-
-#ifdef __APPLE__
-# include "OpenGL/gl.h"
-# include "OpenGL/glu.h"
-#else
-# include "GL/gl.h"
-# include "GL/glu.h"
-# include "GL/glext.h"
-# ifndef _WIN32
-#  define GLX_GLXEXT_PROTOTYPES
-#  include "GL/glx.h"
-# endif // _WIN32
-#endif // __APPLE__
-
-// global includes
-#ifdef _WIN32
-#endif // _WIN32
 
 #include <copasi/layout/utility_classes.h>
 #include <copasi/layout/CLRGBAColor.h>

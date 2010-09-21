@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 14:00:26 $
+//   $Date: 2010/09/21 17:43:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,43 +20,59 @@
 #include <sbml/layout/render/Transformation.h>
 
 #include "CLLayoutRenderer.h"
-#include <copasi/layout/CLBase.h>
-#include <copasi/layout/CLGradientStops.h>
-#include <copasi/layout/CLDefaultStyles.h>
-#include <copasi/layout/CLFontRendererBase.h>
-#include <copasi/layout/CLRenderResolver.h>
-#include <copasi/layout/CLRGBAColor.h>
-#include <copasi/layout/CLRelAbsVector.h>
-#include <copasi/layout/CLTransformation.h>
-#include <copasi/layout/CLGraphicalPrimitive1D.h>
-#include <copasi/layout/CLGraphicalPrimitive2D.h>
-#include <copasi/layout/CLGroup.h>
-#include <copasi/layout/CLLocalRenderInformation.h>
-#include <copasi/layout/CLGlobalRenderInformation.h>
-#include <copasi/layout/CLStyle.h>
-#include <copasi/layout/CLLocalStyle.h>
-#include <copasi/layout/CLGlobalStyle.h>
-#include <copasi/layout/CLRenderPoint.h>
-#include <copasi/layout/CLRenderCubicBezier.h>
-#include <copasi/layout/CLRenderCurve.h>
-#include <copasi/layout/CLEllipse.h>
-#include <copasi/layout/CLImage.h>
-#include <copasi/layout/CLImageTexturizer.h>
-#include <copasi/layout/CLRectangle.h>
-#include <copasi/layout/CLPolygon.h>
-#include <copasi/layout/CLText.h>
-#include <copasi/layout/CLCurve.h>
-#include <copasi/layout/CLayout.h>
-#include <copasi/layout/CLGraphicalObject.h>
-#include <copasi/layout/CLGlyphs.h>
-#include <copasi/layout/CLReactionGlyph.h>
-#include <copasi/model/CModel.h>
-#include <copasi/model/CReaction.h>
+#include "copasi/layout/CLBase.h"
+#include "copasi/layout/CLGradientStops.h"
+#include "copasi/layout/CLDefaultStyles.h"
+#include "copasi/layout/CLFontRendererBase.h"
+#include "copasi/layout/CLRenderResolver.h"
+#include "copasi/layout/CLRGBAColor.h"
+#include "copasi/layout/CLRelAbsVector.h"
+#include "copasi/layout/CLTransformation.h"
+#include "copasi/layout/CLGraphicalPrimitive1D.h"
+#include "copasi/layout/CLGraphicalPrimitive2D.h"
+#include "copasi/layout/CLGroup.h"
+#include "copasi/layout/CLLocalRenderInformation.h"
+#include "copasi/layout/CLGlobalRenderInformation.h"
+#include "copasi/layout/CLStyle.h"
+#include "copasi/layout/CLLocalStyle.h"
+#include "copasi/layout/CLGlobalStyle.h"
+#include "copasi/layout/CLRenderPoint.h"
+#include "copasi/layout/CLRenderCubicBezier.h"
+#include "copasi/layout/CLRenderCurve.h"
+#include "copasi/layout/CLEllipse.h"
+#include "copasi/layout/CLImage.h"
+#include "copasi/layout/CLImageTexturizer.h"
+#include "copasi/layout/CLRectangle.h"
+#include "copasi/layout/CLPolygon.h"
+#include "copasi/layout/CLText.h"
+#include "copasi/layout/CLCurve.h"
+#include "copasi/layout/CLayout.h"
+#include "copasi/layout/CLGraphicalObject.h"
+#include "copasi/layout/CLGlyphs.h"
+#include "copasi/layout/CLReactionGlyph.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CReaction.h"
 
+// opengl includes
 #ifdef _WIN32
+# include "windows.h" // Needed for OpenGL
+# define _USE_MATH_DEFINES // without the following define, M_PI will not be declared under windows
 // disable warning about unsafe fopen
-#pragma warning(disable : 4996)
+# pragma warning(disable : 4996)
 #endif // _WIN32
+
+#ifdef __APPLE__
+# include "OpenGL/gl.h"
+# include "OpenGL/glu.h"
+#else
+# include "GL/gl.h"
+# include "GL/glu.h"
+# include "GL/glext.h"
+# ifndef _WIN32
+#  define GLX_GLXEXT_PROTOTYPES
+#  include "GL/glx.h"
+# endif // _WIN32
+#endif // __APPLE__
 
 // specifies how many segments are used to approximate the rounded
 // corners of a rectangle
