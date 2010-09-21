@@ -59,6 +59,7 @@ Source: ..\setup\copasi\bin\QtNetwork4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtOpenGL4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtSql4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtSvg4.dll; DestDir: {app}\bin
+Source: ..\setup\copasi\bin\QtWebKit4.dll; DestDir: {app}\bin;
 Source: ..\setup\copasi\bin\msvcr80.dll; DestDir: {app}\bin; Check: InstallUserRuntime()
 Source: ..\setup\copasi\bin\msvcp80.dll; DestDir: {app}\bin; Check: InstallUserRuntime()
 Source: ..\setup\copasi\README.txt; DestDir: {app}
