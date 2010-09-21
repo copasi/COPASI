@@ -52,6 +52,7 @@ Source: ..\setup\copasi\bin\QtXml4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\CopasiSE.exe; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\CopasiUI.exe; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\libmmd.dll; DestDir: {app}\bin
+Source: ..\setup\copasi\bin\phonon4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\Qt3Support4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtCore4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtGui4.dll; DestDir: {app}\bin
@@ -59,7 +60,8 @@ Source: ..\setup\copasi\bin\QtNetwork4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtOpenGL4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtSql4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtSvg4.dll; DestDir: {app}\bin
-Source: ..\setup\copasi\bin\QtWebKit4.dll; DestDir: {app}\bin;
+Source: ..\setup\copasi\bin\QtWebKit4.dll; DestDir: {app}\bin
+Source: ..\setup\copasi\bin\svml_dispmd.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\msvcr80.dll; DestDir: {app}\bin; Check: InstallUserRuntime()
 Source: ..\setup\copasi\bin\msvcp80.dll; DestDir: {app}\bin; Check: InstallUserRuntime()
 Source: ..\setup\copasi\README.txt; DestDir: {app}
