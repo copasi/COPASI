@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/21 12:56:36 $
+//   $Date: 2010/09/21 15:51:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ protected:
   std::set<std::string> mReactionsWithReplacedLocalParameters;
   std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
   std::vector<std::string> mIgnoredParameterUnits;
-  std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> > mStoichiometricExpressionMap;
+  std::map<const ASTNode*, std::string > mStoichiometricExpressionMap;
   bool mDelayFound;
   std::set<const Parameter*> mPotentialAvogadroNumbers;
   bool mAvogadroCreated;
@@ -98,6 +98,29 @@ protected:
   std::map<std::string, std::string> mDelayNodeMap;
   std::set<std::string> mUsedSBMLIds;
   bool mUsedSBMLIdsPopulated;
+
+
+#if LIBSBML_VERSION >= 40100
+  // this map is used for storing the parameters that are used as factors that have to be applied to the multiplicities
+  // of the chemical equation elements
+  const CModelValue* mpModelConversionFactor;
+  // we only store the id of the species as the value and use this value as the key into the mSpeciesConversionParameterMap below
+  std::map<CChemEqElement*, std::string> mChemEqElementSpeciesIdMap;
+  // yet another map that stores conversion parameters per species id
+  // This will speed up the assignment of
+  std::map<std::string, const CModelValue*> mSpeciesConversionParameterMap;
+  // and yet another map that maps SBML parameter keys to COPASI model values
+  std::map<std::string, const CModelValue*> mSBMLIdModelValueMap;
+
+  // in this set we store the ids of all SBML species references
+  // so that we can later check if a reference to a species reference is used
+  // in a mathematical expression
+  std::set<std::string> mSBMLSpeciesReferenceIds;
+
+  // this set stores all initial assignments that can not be directly set on some model element
+  // e.g. if there is an initial assignment for a species reference
+  std::set<InitialAssignment*> mUnhandledInitialAssignments;
+#endif // LIBSBML_VERSION
 
   /**
    * Creates and returns a COPASI CModel from the SBMLDocument given as argument.
@@ -665,11 +688,21 @@ public:
    */
   std::string findIdInASTTree(const ASTNode* pMath, const std::set<std::string>& reactionIds);
 
+#if LIBSBML_VERSION >= 40100
   /**
    * This method check if a unit has been set on a number node.
    * If such a node is found in the tree, true is returned.
    */
   static bool checkForUnitsOnNumbers(const ASTNode* pNode);
+
+  /**
+   * This method checks if there are conversion factors that need to be applied to
+   * ChemicalEquationElements and applies them.
+   */
+  void applyConversionFactors();
+
+#endif // LIBSBML_VERSION
+
 };
 
-#endif
+#endif // SBMLIMPORTER_H__

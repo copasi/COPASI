@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.261 $
+//   $Revision: 1.262 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/21 13:28:28 $
+//   $Date: 2010/09/21 15:51:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -825,6 +825,29 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
     }
 
+#if LIBSBML_VERSION >= 40100
+
+  // now that all parameters have been imported, we can check if the model
+  // defines a global conversion factor
+  if (this->mLevel > 2 && sbmlModel->isSetConversionFactor())
+    {
+      std::string id = sbmlModel->getConversionFactor();
+      assert(id != "");
+      std::map<std::string, const CModelValue*>::const_iterator pos = this->mSBMLIdModelValueMap.find(id);
+      assert(pos != this->mSBMLIdModelValueMap.end());
+
+      if (pos != this->mSBMLIdModelValueMap.end())
+        {
+          this->mpModelConversionFactor = pos->second;
+        }
+      else
+        {
+          fatalError();
+        }
+    }
+
+#endif // LIBSBML_VERSION
+
   if (!this->mIgnoredParameterUnits.empty())
     {
       std::ostringstream os;
@@ -1050,6 +1073,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
   // evaluate and apply the initial expressions
   this->applyStoichiometricExpressions(copasi2sbmlmap, sbmlModel);
+#if LIBSBML_LEVEL >= 40100
+
+  // now we apply the conversion factors
+  if (this->mLevel > 2)
+    {
+      this->applyConversionFactors();
+    }
+
+#endif // LIBSBML_VERSION
   this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
 
   // remove the temporary avogadro parameter if one was created
@@ -1443,6 +1475,23 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
 
   SBMLImporter::importMIRIAM(sbmlSpecies, copasiMetabolite);
+#if LIBSBML_VERSION >= 40100
+
+  // handle the conversion factor
+  // We need to collect the association between CChemEqElements and the parameter that is used as
+  // the conversion factor for a species
+  if (sbmlSpecies->isSetConversionFactor())
+    {
+      std::map<std::string, const CModelValue*>::const_iterator pos = this->mSBMLIdModelValueMap.find(sbmlSpecies->getConversionFactor());
+
+      if (pos != this->mSBMLIdModelValueMap.end())
+        {
+          this->mSpeciesConversionParameterMap[sbmlSpecies->getId()] = pos->second;
+        }
+    }
+
+#endif // LIBSBML_VERSION
+
   return copasiMetabolite;
 }
 
@@ -1557,37 +1606,42 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       copasiReaction->addSubstrate(pos->second->getKey(), stoi);
 
-      /*
-      // TODO uncomment once we are ready to handle references to stoichiometries
-      #if LIBSBML_VERSION >= 40100
+#if LIBSBML_VERSION >= 40100
+
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
       // references to species references and if we want to support his, we need the id to import
       // expressions that reference a species reference
-          if(this->mLevel > 2)
-          {
-              if(sr->isSetId())
-              {
-                  CCopasiVector<CChemEqElement>::const_iterator it=copasiReaction.getSubstrates().begin(),end=copasiReaction.getSubstrates().end();
-                  CChemEqElement* pElement=NULL;
-                  while(it != endit)
-                  {
-                      if((*it)->getMetaboliteKey() == pos->second->getKey())
-                      {
-                          pElement=const_cast<CChemEqElement*>(*it)
-                          break;
-                      }
-                      ++it;
-                  }
-                  assert(pElement != NULL);
-                  if(pElement != NULL)
-                  {
-                    copasi2sbmlmap[] = const_cast<SpeciesReference*>(sr);
-                  }
-              }
-          }
+      if (this->mLevel > 2)
+        {
+          if (sr->isSetId())
+            {
+              this->mSBMLSpeciesReferenceIds.insert(sr->getId());
+              CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getSubstrates().begin(), endit = copasiReaction->getChemEq().getSubstrates().end();
+              CChemEqElement* pElement = NULL;
 
-      #endif // LIBSBML_VERSION
-      */
+              while (it != endit)
+                {
+                  if ((*it)->getMetaboliteKey() == pos->second->getKey())
+                    {
+                      pElement = const_cast<CChemEqElement*>(*it);
+                      break;
+                    }
+
+                  ++it;
+                }
+
+              assert(pElement != NULL);
+
+              if (pElement != NULL)
+                {
+                  copasi2sbmlmap[pElement] = const_cast<SpeciesReference*>(sr);
+
+                  this->mChemEqElementSpeciesIdMap[pElement] = sr->getSpecies();
+                }
+            }
+        }
+
+#endif // LIBSBML_VERSION
 
       // find the CChemEqElement that belongs to the added substrate
       if (this->mLevel < 3 && sr->isSetStoichiometryMath())
@@ -1609,7 +1663,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           assert(pChemEqElement != NULL);
-          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), std::make_pair(pChemEqElement->getCN(), CChemEq::SUBSTRATE)));
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement->getKey()));
         }
     }
 
@@ -1662,37 +1716,42 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       copasiReaction->addProduct(pos->second->getKey(), stoi);
 
-      /*
-      // TODO uncomment once we are ready to handle references to stoichiometries
-      #if LIBSBML_VERSION >= 40100
+#if LIBSBML_VERSION >= 40100
+
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
       // references to species references and if we want to support his, we need the id to import
       // expressions that reference a species reference
-          if(this->mLevel > 2)
-          {
-              if(sr->isSetId())
-              {
-                  CCopasiVector<CChemEqElement>::const_iterator it=copasiReaction.getProducts().begin(),end=copasiReaction.getProducts().end();
-                  CChemEqElement* pElement=NULL;
-                  while(it != endit)
-                  {
-                      if((*it)->getMetaboliteKey() == pos->second->getKey())
-                      {
-                          pElement=const_cast<CChemEqElement*>(*it);
-                          break;
-                      }
-                      ++it;
-                  }
-                  assert(pElement != NULL);
-                  if(pElement != NULL)
-                  {
-                    copasi2sbmlmap[] = const_cast<SpeciesReference*>(sr);
-                  }
-              }
-          }
+      if (this->mLevel > 2)
+        {
+          if (sr->isSetId())
+            {
+              this->mSBMLSpeciesReferenceIds.insert(sr->getId());
+              CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getProducts().begin(), endit = copasiReaction->getChemEq().getProducts().end();
+              CChemEqElement* pElement = NULL;
 
-      #endif // LIBSBML_VERSION
-      */
+              while (it != endit)
+                {
+                  if ((*it)->getMetaboliteKey() == pos->second->getKey())
+                    {
+                      pElement = const_cast<CChemEqElement*>(*it);
+                      break;
+                    }
+
+                  ++it;
+                }
+
+              assert(pElement != NULL);
+
+              if (pElement != NULL)
+                {
+                  copasi2sbmlmap[pElement] = const_cast<SpeciesReference*>(sr);
+                  this->mChemEqElementSpeciesIdMap[pElement] = sr->getSpecies();
+                }
+            }
+        }
+
+#endif // LIBSBML_VERSION
+
       if (sr->isSetStoichiometryMath())
         {
           CChemEq& chemEq = copasiReaction->getChemEq();
@@ -1712,7 +1771,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           assert(pChemEqElement != NULL);
-          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), std::make_pair(pChemEqElement->getCN(), CChemEq::PRODUCT)));
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement->getKey()));
         }
     }
 
@@ -1744,37 +1803,41 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       assert(pSBMLSpecies != NULL);
       hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
       copasiReaction->addModifier(pos->second->getKey());
-      /*
-      // TODO uncomment once we are ready to handle references to stoichiometries
-      #if LIBSBML_VERSION >= 40100
+
+#if LIBSBML_VERSION >= 40100
+
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
       // references to species references and if we want to support his, we need the id to import
       // expressions that reference a species reference
-          if(this->mLevel > 2)
-          {
-              if(sr->isSetId())
-              {
-                  CCopasiVector<CChemEqElement>::const_iterator it=copasiReaction.getModifiers().begin(),end=copasiReaction.getModifiers().end();
-                  CChemEqElement* pElement=NULL;
-                  while(it != endit)
-                  {
-                      if((*it)->getMetaboliteKey() == pos->second->getKey())
-                      {
-                          pElement=const_cast<CChemEqElement*>(*it);
-                          break;
-                      }
-                      ++it;
-                  }
-                  assert(pElement != NULL);
-                  if(pElement != NULL)
-                  {
-                    copasi2sbmlmap[] = const_cast<SpeciesReference*>(sr);
-                  }
-              }
-          }
+      if (this->mLevel > 2)
+        {
+          if (sr->isSetId())
+            {
+              this->mSBMLSpeciesReferenceIds.insert(sr->getId());
+              CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getModifiers().begin(), endit = copasiReaction->getChemEq().getModifiers().end();
+              CChemEqElement* pElement = NULL;
 
-      #endif // LIBSBML_VERSION
-      */
+              while (it != endit)
+                {
+                  if ((*it)->getMetaboliteKey() == pos->second->getKey())
+                    {
+                      pElement = const_cast<CChemEqElement*>(*it);
+                      break;
+                    }
+
+                  ++it;
+                }
+
+              assert(pElement != NULL);
+
+              if (pElement != NULL)
+                {
+                  copasi2sbmlmap[pElement] = const_cast<ModifierSpeciesReference*>(sr);
+                }
+            }
+        }
+
+#endif // LIBSBML_VERSION
     }
 
   /* in the newly created CFunction set the types for all parameters and
@@ -2321,6 +2384,16 @@ SBMLImporter::SBMLImporter():
   this->mpImportHandler = NULL;
   this->mDelayFound = false;
   this->mAvogadroCreated = false;
+#if LIBSBML_VERSION >= 40100
+  // these data structures are used to handle the new conversion factores in
+  // SBML L3 models and references to species references
+  this->mpModelConversionFactor = NULL;
+  this->mChemEqElementSpeciesIdMap.clear();
+  this->mSpeciesConversionParameterMap.clear();
+  this->mSBMLIdModelValueMap.clear();
+  this->mSBMLSpeciesReferenceIds.clear();
+#endif // LIBSBML_VERSION
+
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
   this->mIgnoredSBMLMessages.insert(10513);
@@ -3489,6 +3562,14 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
   pMV->setSBMLId(sbmlId);
   SBMLImporter::importMIRIAM(sbmlParameter, pMV);
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mLevel > 2)
+    {
+      this->mSBMLIdModelValueMap[sbmlId] = pMV;
+    }
+
+#endif // LIBSBML_VERSION 
   return pMV;
 }
 
@@ -3676,11 +3757,14 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
   //
   // check if there are units on pure numbers
   // so that we can create a warning that they have been ignored
+#if LIBSBML_VERSION >= 40100
+
   if (this->mLevel > 2 && !this->mUnitOnNumberFound)
     {
       this->mUnitOnNumberFound = SBMLImporter::checkForUnitsOnNumbers(pNode);
     }
 
+#endif // LIBSBML_VERSION
   // first replace the calls to explicitely time dependent functions
   this->replaceTimeDependentFunctionCalls(pNode);
 
@@ -7569,6 +7653,22 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                       this->replaceObjectNames(&tmpNode, copasi2sbmlMap, true);
                       // replace time with initial time
                       this->replace_time_with_initial_time(&tmpNode, pCopasiModel);
+#if LIBSBML_VERSION >= 40100
+                      // starting with sbml level 3 this could actually be an initial assignment to
+                      // a species reference which we can't store in COPASI
+                      // So we treat this the same way as the stoichiometryMath in SBML level 2
+                      CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pos->second);
+
+                      if (this->mLevel > 2 &&  pChemEqElement != NULL)
+                        {
+                          // store the expression for the stoichiometry in the stoichiometric expression map
+                          // this has been tested and should work
+                          this->mStoichiometricExpressionMap.insert(std::make_pair(pMath, pChemEqElement->getKey()));
+                          // go to the next iteration
+                          continue;
+                        }
+
+#endif // LIBSBML_VERSION
                       // now we convert the node to a CEvaluationNode
                       CExpression* pExpression = new CExpression;
                       pExpression->setTree(tmpNode);
@@ -7626,7 +7726,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
             }
           else
             {
-              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57 , "Initialassignment", symbol.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57 , "InitialAssignment", symbol.c_str());
             }
         }
     }
@@ -7635,22 +7735,18 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
 void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   bool warningDone = false;
-  std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> >::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
+  std::map<const ASTNode*, std::string>::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(this->mpCopasiModel);
 
   while (it != end)
     {
-      CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, it->second.first);
+      CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(it->second);
       assert(pObject != NULL);
       CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pObject);
       assert(pChemEqElement != NULL);
       ConverterASTNode* pNode = new ConverterASTNode(*it->first);
       this->preprocessNode(pNode, pSBMLModel, copasi2sbmlmap);
-      /**
-       * Removed because this no longer works for variable volumes
-       this->replaceSubstanceOnlySpeciesNodes(pNode, this->mSubstanceOnlySpecies);
-       */
       this->replaceObjectNames(pNode, copasi2sbmlmap, true);
       CExpression* pExpr = new CExpression("", mpDataModel);
       pExpr->setTree(*pNode);
@@ -7677,7 +7773,19 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
 
           if (pChemEq != NULL)
             {
-              if (it->second.second == CChemEq::SUBSTRATE)
+              CCopasiVector < CChemEqElement >::const_iterator iit = pChemEq->getSubstrates().begin(), iendit = pChemEq->getSubstrates().end();
+
+              while (iit != iendit)
+                {
+                  if ((*iit)->getKey() == it->second)
+                    {
+                      break;
+                    }
+
+                  ++iit;
+                }
+
+              if (iit != iendit)
                 {
                   pChemEq->addMetabolite(pChemEqElement->getMetaboliteKey(), value, CChemEq::SUBSTRATE);
                 }
@@ -8868,6 +8976,8 @@ void SBMLImporter::replace_name_nodes(ASTNode* pNode, const std::map<std::string
     }
 }
 
+#if LIBSBML_VERSION >= 40100
+
 /**
  * This method check if a unit has been set on a number node.
  * If such a node is found in the tree, true is returned.
@@ -8903,3 +9013,48 @@ bool SBMLImporter::checkForUnitsOnNumbers(const ASTNode* pNode)
 
   return result;
 }
+
+/**
+ * This method checks if there are conversion factors that need to be applied to
+ * ChemicalEquationElements and applies them.
+ */
+void SBMLImporter::applyConversionFactors()
+{
+  std::map<CChemEqElement*, std::string>::iterator it = this->mChemEqElementSpeciesIdMap.begin(), endit = this->mChemEqElementSpeciesIdMap.end();
+  std::map<std::string, const CModelValue*>::const_iterator pos, endpos = this->mSpeciesConversionParameterMap.end();
+  const CModelValue* pModelValue = NULL;
+  double v;
+
+  while (it != endit)
+    {
+      pos = this->mSpeciesConversionParameterMap.find(it->second);
+
+      if (pos != endpos)
+        {
+          pModelValue = pos->second;
+          assert(pModelValue != NULL);
+        }
+      else
+        {
+          if (this->mpModelConversionFactor != NULL)
+            {
+              pModelValue = this->mpModelConversionFactor;
+            }
+          else
+            {
+              pModelValue = NULL;
+            }
+        }
+
+      if (pModelValue != NULL)
+        {
+          v = pModelValue->getInitialValue();
+          v *= it->first->getMultiplicity();
+          it->first->setMultiplicity(v);
+        }
+
+      ++it;
+    }
+}
+
+#endif // LIBSBML_VERSION
