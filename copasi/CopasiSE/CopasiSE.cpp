@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:55:46 $
+//   $Date: 2010/09/22 13:21:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,9 +31,6 @@
 #include <iostream>
 
 #define COPASI_MAIN
-
-#include "copasilicense.h"
-#include "copasiversion.h"
 
 #include "copasi.h"
 
@@ -122,7 +119,7 @@ int main(int argc, char *argv[])
 
   if (License)
     {
-      std::cout << CopasiLicense << std::endl;
+      std::cout << CCopasiRootContainer::getLicenseTxt() << std::endl;
 
       retcode = 0;
       goto finish;

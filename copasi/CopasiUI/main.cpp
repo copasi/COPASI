@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:57:33 $
+//   $Date: 2010/09/22 13:21:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,6 @@
 #define COPASI_MAIN
 
 #include "copasi.h"
-#include "copasilicense.h"
-#include "copasiversion.h"
 
 #include "UI/copasiui3window.h"
 #include "UI/objectdebug.h"
