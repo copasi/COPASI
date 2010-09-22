@@ -483,9 +483,6 @@ autoconf
 automake
 rm -rf autom4te.cache
 
-mv copasi/License${license}.txt.h copasi/copasilicense.h
-rm copasi/License*.txt.h
-
 #remove any reference to commercial license code
 CleanFiles=`find . -type f -exec grep -Hq '#ifdef COPASI_LICENSE_COM' {} \; -exec echo {} \; | sort -u`
 for file in $CleanFiles; do
