@@ -34,6 +34,7 @@ if [ x"$#" = x1 ]; then
 
   case x"$1" in 
   xWIN32)
+    d2u admin/mkWIN32.sh
     . admin/mkWIN32.sh
     ;;
 
