@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263 $
+//   $Revision: 1.264 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/22 15:10:17 $
+//   $Date: 2010/09/22 16:15:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -589,7 +589,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   this->mpCopasiModel->setTitle(title.c_str());
-
+#if LIBSBML_VERSION >= 40100
+  // fill the set of SBML species reference ids because
+  // we need this to check for references to species references in all expressions
+  // as long as we do not support these references
+  SBMLImporter::updateSBMLSpeciesReferenceIds(sbmlModel, this->mSBMLSpeciesReferenceIds);
+#endif // LIBSBML_VERSION
   /* import the functions */
   unsigned int counter;
   CCopasiVectorN< CEvaluationTree >* functions = &(this->functionDB->loadedFunctions());
@@ -1637,7 +1642,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
         {
           if (sr->isSetId())
             {
-              this->mSBMLSpeciesReferenceIds.insert(sr->getId());
               CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getSubstrates().begin(), endit = copasiReaction->getChemEq().getSubstrates().end();
               CChemEqElement* pElement = NULL;
 
@@ -1747,7 +1751,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
         {
           if (sr->isSetId())
             {
-              this->mSBMLSpeciesReferenceIds.insert(sr->getId());
               CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getProducts().begin(), endit = copasiReaction->getChemEq().getProducts().end();
               CChemEqElement* pElement = NULL;
 
@@ -1835,7 +1838,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
         {
           if (sr->isSetId())
             {
-              this->mSBMLSpeciesReferenceIds.insert(sr->getId());
               CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getModifiers().begin(), endit = copasiReaction->getChemEq().getModifiers().end();
               CChemEqElement* pElement = NULL;
 
@@ -1929,6 +1931,15 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
         }
       else
         {
+#if LIBSBML_VERSION >= 40100
+
+          // check for references to species references in the expression because we don't support them yet
+          if (!SBMLImporter::findIdInASTTree(kLawMath, this->mSBMLSpeciesReferenceIds).empty())
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+            }
+
+#endif // LIBSBML_VERSION
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
           this->preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction);
 
@@ -2413,7 +2424,6 @@ SBMLImporter::SBMLImporter():
   this->mChemEqElementSpeciesIdMap.clear();
   this->mSpeciesConversionParameterMap.clear();
   this->mSBMLIdModelValueMap.clear();
-  this->mSBMLSpeciesReferenceIds.clear();
   this->mRuleForSpeciesReferenceIgnored = false;
   this->mEventAssignmentForSpeciesReferenceIgnored = false;
 #endif // LIBSBML_VERSION
@@ -5395,7 +5405,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
 #if LIBSBML_VERSION >= 40100
 
   // if the id occurs in mSBMLSpeciesReferenceIds, we have an assignment to a species reference which is not supported
-  if (this->mSBMLSpeciesReferenceIds.find(sbmlId) != this->mSBMLSpeciesReferenceIds.end())
+  if (this->mLevel > 2 && this->mSBMLSpeciesReferenceIds.find(sbmlId) != this->mSBMLSpeciesReferenceIds.end())
     {
       this->mRuleForSpeciesReferenceIgnored = true;
       return;
@@ -5629,6 +5639,7 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
 
 void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME, CModelEntity::Status status, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
+
   if (!rule->isSetMath())
     {
       std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(pME);
@@ -5643,6 +5654,17 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 58 , "rule", id.c_str());
       return;
     }
+
+#if LIBSBML_VERSION >= 40100
+
+  // check for references to species references in the expression because we don't support them yet
+  if (!SBMLImporter::findIdInASTTree(rule->getMath(), this->mSBMLSpeciesReferenceIds).empty())
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+    }
+
+#endif // LIBSBML_VERSION
+
 
   if (rule->getTypeCode() == SBML_ASSIGNMENT_RULE)
     {
@@ -5811,20 +5833,23 @@ std::string SBMLImporter::findIdInASTTree(const ASTNode* pMath, const std::set<s
 {
   std::string id = "";
 
-  if (pMath->getType() == AST_NAME)
+  if (pMath != NULL)
     {
-      if (reactionIds.find(pMath->getName()) != reactionIds.end())
+      if (pMath->getType() == AST_NAME)
         {
-          id = pMath->getName();
+          if (reactionIds.find(pMath->getName()) != reactionIds.end())
+            {
+              id = pMath->getName();
+            }
         }
-    }
-  else
-    {
-      unsigned int i, iMax = pMath->getNumChildren();
-
-      for (i = 0; i < iMax && id.empty(); ++i)
+      else
         {
-          id = findIdInASTTree(pMath->getChild(i), reactionIds);
+          unsigned int i, iMax = pMath->getNumChildren();
+
+          for (i = 0; i < iMax && id.empty(); ++i)
+            {
+              id = findIdInASTTree(pMath->getChild(i), reactionIds);
+            }
         }
     }
 
@@ -7682,12 +7707,22 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                 }
               else
                 {
+                  const ASTNode* pMath = pInitialAssignment->getMath();
+                  assert(pMath != NULL);
+#if LIBSBML_VERSION >= 40100
+
+                  // check for references to species references in the expression because we don't support them yet
+                  if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+                    }
+
+#endif // LIBSBML_VERSION
+
                   try
                     {
                       // create a CEvaluationNode based tree from the math
                       // expression
-                      const ASTNode* pMath = pInitialAssignment->getMath();
-                      assert(pMath != NULL);
                       ConverterASTNode tmpNode(*pMath);
                       this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlMap);
                       // replace the object names
@@ -8365,6 +8400,17 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
   assert(pMath != NULL);
 
+#if LIBSBML_VERSION >= 40100
+
+  // check for references to species references in the expression because we don't support them yet
+  if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+    }
+
+#endif // LIBSBML_VERSION
+
+
   // convert and set math expression
   ConverterASTNode* pTmpNode = new ConverterASTNode(*pMath);
 
@@ -8396,6 +8442,15 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
       pMath = pDelay->getMath();
       assert(pMath != NULL);
+#if LIBSBML_VERSION >= 40100
+
+      // check for references to species references in the expression because we don't support them yet
+      if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+        }
+
+#endif // LIBSBML_VERSION
       // convert and set math expression
       pTmpNode = new ConverterASTNode(*pMath);
       this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
@@ -8463,7 +8518,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 #if LIBSBML_VERSION >= 40100
 
       // if the id occurs in mSBMLSpeciesReferenceIds, we have an assignment to a species reference which is not supported
-      if (this->mSBMLSpeciesReferenceIds.find(variable) != this->mSBMLSpeciesReferenceIds.end())
+      if (this->mLevel > 2 && this->mSBMLSpeciesReferenceIds.find(variable) != this->mSBMLSpeciesReferenceIds.end())
         {
           this->mEventAssignmentForSpeciesReferenceIgnored = true;
           // next iteration
@@ -8499,11 +8554,20 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
       CExpression* pExpression = NULL;
       CEventAssignment* pAssignment = NULL;
+      pMath = pEventAssignment->getMath();
+      assert(pMath != NULL);
+#if LIBSBML_VERSION >= 40100
+
+      // check for references to species references in the expression because we don't support them yet
+      if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+        }
+
+#endif // LIBSBML_VERSION
 
       try
         {
-          pMath = pEventAssignment->getMath();
-          assert(pMath != NULL);
           // convert and set math expression
           pTmpNode = new ConverterASTNode(*pMath);
           this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
@@ -9115,5 +9179,65 @@ void SBMLImporter::applyConversionFactors()
       ++it;
     }
 }
+
+/**
+ * Goes through all SBML reactions and collects the ids of all species references.
+ */
+void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<std::string>& ids)
+{
+  ids.clear();
+
+  if (pModel == NULL) return;
+
+  unsigned int i, iMax = pModel->getNumReactions();
+  unsigned int j, jMax;
+  const Reaction* pReaction = NULL;
+  const SpeciesReference* pSpeciesReference = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      // we only need to care about substrates and products
+      // because modifiers do not have stoichiometry, so it doesn't make sense to
+      // assign something to them or reference them in a mathematical expression
+      pReaction = pModel->getReaction(i);
+      assert(pReaction != NULL);
+
+      if (pReaction != NULL)
+        {
+          // first the substrates
+          jMax = pReaction->getNumReactants();
+
+          for (j = 0; j < jMax; ++j)
+            {
+              pSpeciesReference = pReaction->getReactant(j);
+              assert(pSpeciesReference != NULL);
+
+              if (pSpeciesReference != NULL && pSpeciesReference->isSetId())
+                {
+                  // make sure all ids are unique
+                  assert(ids.find(pSpeciesReference->getId()) == ids.end());
+                  ids.insert(pSpeciesReference->getId());
+                }
+            }
+
+          // same for the products
+          jMax = pReaction->getNumProducts();
+
+          for (j = 0; j < jMax; ++j)
+            {
+              pSpeciesReference = pReaction->getProduct(j);
+              assert(pSpeciesReference != NULL);
+
+              if (pSpeciesReference != NULL && pSpeciesReference->isSetId())
+                {
+                  // make sure all ids are unique
+                  assert(ids.find(pSpeciesReference->getId()) == ids.end());
+                  ids.insert(pSpeciesReference->getId());
+                }
+            }
+        }
+    }
+}
+
 
 #endif // LIBSBML_VERSION

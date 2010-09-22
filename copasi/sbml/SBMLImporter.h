@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/22 15:10:17 $
+//   $Date: 2010/09/22 16:15:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -700,6 +700,11 @@ public:
    * ChemicalEquationElements and applies them.
    */
   void applyConversionFactors();
+
+  /**
+   * Goes through all SBML reactions and collects the ids of all species references.
+   */
+  static void updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<std::string>& ids);
 
 #endif // LIBSBML_VERSION
 

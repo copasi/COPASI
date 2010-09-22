@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.153 $
+//   $Revision: 1.154 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/22 15:10:17 $
+//   $Date: 2010/09/22 16:15:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -259,7 +259,7 @@ const MESSAGES Messages[] =
   {MCSBML + 92, "SBML (92): The default extends unit has not been set in the model or differs from the substance default units. COPASI will assume that the extends units are the same as the substance units."},
   {MCSBML + 93, "SBML (93): The model uses units on numbers which COPASI currently can't handle. Please be aware that the display of units in COPASI might therefore be incorrect,"},
   {MCSBML + 94, "SBML (94): %s for species reference found in model. Only initial assignments to species references are currently supported in COPASI. The %s has been ignored. The results produced by this model might therefore not be what you expect."},
-  {MCSBML + 95, "SBML (95): The model uses species reference ids in mathematical expressions. This is currently not supported in COPASI and the corresponding model elements have been ignored. The results produced by this model might therefore not be what you expect."},
+  {MCSBML + 95, "SBML (95): The model uses species reference ids in mathematical expressions. This model can currently not be imported by COPASI."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
