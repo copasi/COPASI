@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/report.pro,v $ 
-#   $Revision: 1.22 $ 
+#   $Revision: 1.23 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 19:02:49 $ 
+#   $Date: 2010/09/22 13:21:10 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,13 +17,14 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.22 $ $Author: shoops $ $Date: 2010/07/16 19:02:49 $
+# $Revision: 1.23 $ $Author: shoops $ $Date: 2010/09/22 13:21:10 $
 ######################################################################
 
 LIB = report
 
 # Input
-HEADERS +=  CArrayElementReference.h \
+HEADERS += ArtisticLicense.h \
+           CArrayElementReference.h \
            CCopasiArray.h \
            CCopasiContainer.h \
            CCopasiObject.h \

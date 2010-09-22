@@ -1,10 +1,11 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/15 18:17:49 $
+//   $Date: 2010/09/22 13:21:10 $
 // End CVS Header
+
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,7 +19,7 @@
 #include "copasi.h"
 
 #include "CCopasiRootContainer.h"
-
+#include "ArtisticLicense.h"
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/commandline/COptions.h"
@@ -151,6 +152,7 @@ CKeyFactory* CCopasiRootContainer::getKeyFactory()
   return &pRootContainer->mKeyFactory;
 }
 
+// static
 bool CCopasiRootContainer::removeDatamodel(const CCopasiDataModel * pDatamodel)
 {
   if (!pDatamodel)
@@ -164,8 +166,23 @@ bool CCopasiRootContainer::removeDatamodel(const CCopasiDataModel * pDatamodel)
   return true;
 }
 
+// static
 bool CCopasiRootContainer::removeDatamodel(const unsigned C_INT32 index)
 {
   const CCopasiDataModel* pDatamodel = (*CCopasiRootContainer::getDatamodelList())[index];
   return CCopasiRootContainer::removeDatamodel(pDatamodel);
 }
+
+// static
+const char * CCopasiRootContainer::getLicenseTxt()
+{
+  return CopasiLicenseTxt;
+}
+
+// static
+const char * CCopasiRootContainer::getLicenseHTML()
+{
+  return CopasiLicenseHtml;
+}
+
+

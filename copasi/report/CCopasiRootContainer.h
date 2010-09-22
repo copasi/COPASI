@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/09/07 15:02:28 $
+//   $Author: shoops $
+//   $Date: 2010/09/22 13:21:10 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -132,6 +137,10 @@ public:
   static bool removeDatamodel(const CCopasiDataModel * pDatamodel);
 
   static bool removeDatamodel(const unsigned C_INT32 index);
+
+  static const char * getLicenseTxt();
+
+  static const char * getLicenseHTML();
 };
 
 #endif /* COPASI_CCopasiRootContainer */
