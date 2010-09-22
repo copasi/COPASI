@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/22 12:17:24 $
+//   $Date: 2010/09/22 14:00:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5679,9 +5679,18 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         }
     }
 
+
+  // starting with SBML L3 all model elements that are derived from SBase can have
+  // a model history
+  //
   // if it is the model, we have to set the model history
   // in addition to the normal CVTerms
-  if (pModel != NULL)
+  if ((pModel != NULL && this->mSBMLLevel < 3)
+#if LIBSBML_VERSION >= 40100
+// actually this preprocessor directive is not really necessary, but better safe then sorry
+      || this->mSBMLLevel > 2
+#endif // LIBSBML_VERSION
+     )
     {
       // the model history consists of the creators, the creation time and the
       // modification time
@@ -5752,22 +5761,49 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           modelHistory.setModifiedDate(&modifiedDate);
         }
 
-      // set the model history on the model
-      Model* pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
-      assert(pSBMLModel != NULL);
+#if LIBSBML_VERSION >= 40100
 
-      // make sure the model has a meta id
-      if (!pSBMLModel->isSetMetaId())
+      if (this->mSBMLLevel > 2)
         {
-          std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
-          metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLModel));
-          pSBMLModel->setMetaId(metaId);
+          // set the model history on the sbml object
+
+          // make sure the model has a meta id
+          if (!pSBMLObject->isSetMetaId())
+            {
+              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
+              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
+              pSBMLObject->setMetaId(metaId);
+            }
+
+          if (modified == true)
+            {
+              pSBMLObject->setModelHistory(&modelHistory);
+            }
+        }
+      else
+        {
+#endif // LIBSBML_VERSION
+          // set the model history on the model
+          Model* pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
+          assert(pSBMLModel != NULL);
+
+          // make sure the model has a meta id
+          if (!pSBMLModel->isSetMetaId())
+            {
+              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
+              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLModel));
+              pSBMLModel->setMetaId(metaId);
+            }
+
+          if (modified == true)
+            {
+              pSBMLModel->setModelHistory(&modelHistory);
+            }
+
+#if LIBSBML_VERSION >= 40100
         }
 
-      if (modified == true)
-        {
-          pSBMLModel->setModelHistory(&modelHistory);
-        }
+#endif // LIBSBML_VERSION
     }
 
   if (this->mExportCOPASIMIRIAM == true)
