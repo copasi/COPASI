@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/21 12:56:36 $
+//   $Date: 2010/09/22 12:17:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -812,6 +812,16 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
         }
       else
         {
+#if LIBSBML_VERSION >= 40100
+
+          if (this->mSBMLLevel > 2)
+            {
+              pSBMLSpecies->unsetConversionFactor();
+              // we have to remove the conversionFactor because on import we multiplied the stoichiometries
+              // with this factor
+            }
+
+#endif // LIBSBML_VERSION
           // clear the spatialSizeUnits attribute if there is any
           if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 3))
             {
@@ -2795,6 +2805,16 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   // update the MIRIAM annotation on the model
   CSBMLExporter::updateMIRIAMAnnotation(pModel, this->mpSBMLDocument->getModel(), this->mMetaIdMap);
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mSBMLLevel > 2)
+    {
+      // we have to remove the conversionFactor because on import we multiplied the stoichiometries
+      // with this factor
+      this->mpSBMLDocument->getModel()->unsetConversionFactor();
+    }
+
+#endif // LIBSBML_VERSION
 
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
