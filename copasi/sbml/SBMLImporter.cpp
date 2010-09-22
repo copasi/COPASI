@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.262 $
+//   $Revision: 1.263 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/21 15:51:40 $
+//   $Date: 2010/09/22 15:10:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -977,6 +977,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // id which has to be known when importing the rule
 
   /* Create the rules */
+  // rules should be imported after reactions because we use the mSBMLSpeciesReferenceIds to determine if a
+  // rule changes a species reference (stoichiometry
+  // Since COPASI does not support this, we need to ignore the rule
   this->areRulesUnique(sbmlModel);
   num = sbmlModel->getNumRules();
 
@@ -1042,7 +1045,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // TODO When implementing import of constraints, don't forget to replace calls to
   // TODO explicitely time dependent functions in the constraints math exptression.
 
-  // import all event
+  // import all events
+  // events should be imported after reactions because we use the mSBMLSpeciesReferenceIds to determine if an
+  // event assignment changes a species reference (stoichiometry
+  // Since COPASI does not support this, we need to ignore the event assignment
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
 
   this->mpCopasiModel->setCompileFlag();
@@ -1051,6 +1057,22 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 3);
     }
+
+#if LIBSBML_VERSION >= 40100
+
+  if (this->mRuleForSpeciesReferenceIgnored == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Rule" , "Rule");
+    }
+
+  if (this->mEventAssignmentForSpeciesReferenceIgnored == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Event assignment", "event assignment");
+    }
+
+#endif // LIBSBML_VERSION
+
+
 
   if (mpImportHandler)
     {
@@ -2392,6 +2414,8 @@ SBMLImporter::SBMLImporter():
   this->mSpeciesConversionParameterMap.clear();
   this->mSBMLIdModelValueMap.clear();
   this->mSBMLSpeciesReferenceIds.clear();
+  this->mRuleForSpeciesReferenceIgnored = false;
+  this->mEventAssignmentForSpeciesReferenceIgnored = false;
 #endif // LIBSBML_VERSION
 
   this->mIgnoredSBMLMessages.insert(10501);
@@ -5304,6 +5328,12 @@ bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
 void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   // so far we only support assignment rules and rate rules
+#if LIBSBML_VERSION >= 40100
+  // this is just there to make sure we don't accidentaly move the code
+  // for the import of rules before the code that imports reactions
+  // because this would lead to the species id set being empty
+  assert(pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty());
+#endif // LIBSBML_VERSION
   SBMLTypeCode_t type = sbmlRule->getTypeCode();
 
   if (type == SBML_ASSIGNMENT_RULE)
@@ -5361,6 +5391,17 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           fatalError();
         }
     }
+
+#if LIBSBML_VERSION >= 40100
+
+  // if the id occurs in mSBMLSpeciesReferenceIds, we have an assignment to a species reference which is not supported
+  if (this->mSBMLSpeciesReferenceIds.find(sbmlId) != this->mSBMLSpeciesReferenceIds.end())
+    {
+      this->mRuleForSpeciesReferenceIgnored = true;
+      return;
+    }
+
+#endif // LIBSBML_VERSION
 
   // find out to what kind of object the id belongs
   SBMLTypeCode_t type = SBML_UNKNOWN;
@@ -8241,6 +8282,12 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pNode, const CModel* 
 }
 void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
+#if LIBSBML_VERSION >= 40100
+  // this is just there to make sure we don't accidentaly move the code
+  // for the import of events before the code that imports reactions
+  // because this would lead to the species id set being empty
+  assert(pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty());
+#endif // LIBSBML_VERSION
   unsigned int i, iMax = pSBMLModel->getNumEvents();
 
   for (i = 0; i < iMax; ++i)
@@ -8413,6 +8460,18 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
       // the COPASI object that corresponds to the variable
       const std::string& variable = pEventAssignment->getVariable();
+#if LIBSBML_VERSION >= 40100
+
+      // if the id occurs in mSBMLSpeciesReferenceIds, we have an assignment to a species reference which is not supported
+      if (this->mSBMLSpeciesReferenceIds.find(variable) != this->mSBMLSpeciesReferenceIds.end())
+        {
+          this->mEventAssignmentForSpeciesReferenceIgnored = true;
+          // next iteration
+          continue;
+        }
+
+#endif // LIBSBML_VERSION
+
       std::map<std::string, CCopasiObject*>::iterator pos = id2copasiMap.find(variable);
 
       if (pos == id2copasiMap.end())

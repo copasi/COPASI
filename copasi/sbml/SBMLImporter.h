@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/21 15:51:40 $
+//   $Date: 2010/09/22 15:10:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,9 +117,9 @@ protected:
   // in a mathematical expression
   std::set<std::string> mSBMLSpeciesReferenceIds;
 
-  // this set stores all initial assignments that can not be directly set on some model element
-  // e.g. if there is an initial assignment for a species reference
-  std::set<InitialAssignment*> mUnhandledInitialAssignments;
+  bool mRuleForSpeciesReferenceIgnored;
+  bool mEventAssignmentForSpeciesReferenceIgnored;
+
 #endif // LIBSBML_VERSION
 
   /**
