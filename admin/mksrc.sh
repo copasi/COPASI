@@ -21,7 +21,7 @@ major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
 minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
 build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
 
-license=`gawk -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} END {print license} ' copasi/Makefile`
+license="US"
 
 test -d copasi-${build}-src && rm -rf copasi-${build}-src
 
@@ -38,13 +38,12 @@ cp README.SunOS copasi-${build}-src
 cp README.Win32 copasi-${build}-src
 cp README_MAC.rtf copasi-${build}-src
 
-cp COPASI_License_${license}.txt copasi-${build}-src/COPASI_License.txt
+cp copasi/ArtisticLicense.txt copasi-${build}-src/LICENSE.txt
 
 cp --parent admin/flex.sh copasi-${build}-src
 cp --parent admin/install-sh copasi-${build}-src
 cp --parent admin/missing copasi-${build}-src
-sed -e 's/_${license}//g' admin/mkbuild.sh \
-  > copasi-${build}-src/admin/mkbuild.sh
+cp --parent admin/mkbuild.sh copasi-${build}-src
 cp --parent admin/yacc.sh copasi-${build}-src
 chmod 755 copasi-${build}-src/admin/*
 
