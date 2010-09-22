@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQSplashWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:47:31 $
+//   $Author: shoops $
+//   $Date: 2010/09/22 13:22:54 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -33,8 +38,7 @@
 #include "AboutDialog.h"
 
 #include "utilities/CVersion.h"
-
-extern const char * CopasiLicense;
+#include "report/CCopasiRootContainer.h"
 
 void CQSplashWidget::init()
 {
@@ -51,7 +55,7 @@ void CQSplashWidget::slotViewLicense()
 #endif // COPASI_LICENSE_COM
   FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
 
-  AboutDialog* aboutDialog = new AboutDialog(this, CopasiLicense, 76, 30);
+  AboutDialog* aboutDialog = new AboutDialog(this, CCopasiRootContainer::getLicenseHTML(), 76, 30);
   aboutDialog->setCaption(FixedTitle);
   aboutDialog->exec();
 }

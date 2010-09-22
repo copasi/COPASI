@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.63 $
+#   $Revision: 1.64 $
 #   $Name:  $
-#   $Author: ssahle $
-#   $Date: 2010/05/14 22:23:04 $
+#   $Author: shoops $
+#   $Date: 2010/09/22 13:22:54 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.63 $ $Author: ssahle $ $Date: 2010/05/14 22:23:04 $
+# $Revision: 1.64 $ $Author: shoops $ $Date: 2010/09/22 13:22:54 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -144,7 +144,7 @@ DISTFILES += \
         copasi.vcproj \
         copasi.sln \
         copasi.h \
-        copasilicense.h \
+        ArtisticLicense.txt \
         copasiversion.h \
         copasi.pro \
         lapack.h \

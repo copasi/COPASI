@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.288 $
+//   $Revision: 1.289 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:27:24 $
+//   $Date: 2010/09/22 13:22:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,8 +37,6 @@
 #ifdef COPASI_SBW_INTEGRATION
 #include <stdlib.h>
 #endif // COPASI_SBW_INTEGRATION
-
-extern const char * CopasiLicense;
 
 #include "AboutDialog.h"
 #include "CopasiFileDialog.h"
@@ -1112,7 +1110,7 @@ void CopasiUI3Window::about()
 
 void CopasiUI3Window::license()
 {
-  AboutDialog* aboutDialog = new AboutDialog(this, CopasiLicense, 76, 30);
+  AboutDialog* aboutDialog = new AboutDialog(this, CCopasiRootContainer::getLicenseHTML(), 76, 30);
   aboutDialog->setCaption(FixedTitle);
   aboutDialog->exec();
 }
