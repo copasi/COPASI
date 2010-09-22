@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.152 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/09 12:02:05 $
+//   $Author: gauges $
+//   $Date: 2010/09/22 13:24:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -716,6 +716,25 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandler*/, int sbmlLevel, int sbmlVersion)
 {
   CCopasiMessage::clearDeque();
+  SBMLDocument* pOrigSBMLDocument = NULL;
+
+#if LIBSBML_VERSION >= 40100
+
+  // if we export an L2 model to L3 or vice versa, we have to throw away any prior information
+  // about the current sbml document because libsbml does not support the conversion
+  // so we need to make sure that all model elements are created from scratch from the corresponding COPASI elements
+  if (this->mpCurrentSBMLDocument != NULL &&
+      ((this->mpCurrentSBMLDocument->getLevel() > 2 && sbmlLevel < 3) ||
+       (this->mpCurrentSBMLDocument->getLevel() < 3 && sbmlLevel > 2)
+      )
+     )
+    {
+      pOrigSBMLDocument = this->mpCurrentSBMLDocument;
+      this->mpCurrentSBMLDocument = NULL;
+    }
+
+#endif // LIBSBML_VERSION
+
 
   CSBMLExporter exporter;
   // Per default export COPASIs MIRIAM annotation.
@@ -731,7 +750,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
   // This is actual vital to get around Bug 1086 as well.
   // Once I have a Level 1 model, all calls to setName on an
   // SBML object in that model also resets the id, which does not work with the current exporter
-  if (sbmlLevel != 1 || mpCurrentSBMLDocument == NULL)
+  if ((sbmlLevel != 1 || mpCurrentSBMLDocument == NULL) && pOrigSBMLDocument == NULL)
     {
       if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
         {
@@ -753,6 +772,13 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
           ++it;
         }
     }
+  // if we have saved the original SBML model somewhere
+  // we have to reset it
+  else if (pOrigSBMLDocument != NULL)
+    {
+      this->mpCurrentSBMLDocument = pOrigSBMLDocument;
+    }
+
 
   return str;
 }
@@ -804,6 +830,24 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
   CSBMLExporter exporter;
   exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
+  SBMLDocument* pOrigSBMLDocument = NULL;
+
+#if LIBSBML_VERSION >= 40100
+
+  // if we export an L2 model to L3 or vice versa, we have to throw away any prior information
+  // about the current sbml document because libsbml does not support the conversion
+  // so we need to make sure that all model elements are created from scratch from the corresponding COPASI elements
+  if (this->mpCurrentSBMLDocument != NULL &&
+      ((this->mpCurrentSBMLDocument->getLevel() > 2 && sbmlLevel < 3) ||
+       (this->mpCurrentSBMLDocument->getLevel() < 3 && sbmlLevel > 2)
+      )
+     )
+    {
+      pOrigSBMLDocument = this->mpCurrentSBMLDocument;
+      this->mpCurrentSBMLDocument = NULL;
+    }
+
+#endif // LIBSBML_VERSION
 
   //exporter.setExportHandler(pExportHandler);
   if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile)) return false;
@@ -815,7 +859,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   // This is actual vital to get around Bug 1086 as well.
   // Once I have a Level 1 model, all calls to setName on an
   // SBML object in that model also resets the id, which does not work with the current exporter
-  if (sbmlLevel != 1 || mpCurrentSBMLDocument == NULL)
+  if ((sbmlLevel != 1 || mpCurrentSBMLDocument == NULL) && pOrigSBMLDocument == NULL)
     {
 
       if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
@@ -835,6 +879,12 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
           this->mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
           ++it;
         }
+    }
+  // if we have saved the original SBML model somewhere
+  // we have to reset it
+  else if (pOrigSBMLDocument != NULL)
+    {
+      this->mpCurrentSBMLDocument = pOrigSBMLDocument;
     }
 
   mSBMLFileName = FileName;
