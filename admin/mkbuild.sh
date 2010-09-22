@@ -28,7 +28,7 @@ if [ x"$#" = x1 ]; then
   minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
   build=`${AWK} -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
 
-  license=`${AWK} -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} $0 ~ "USE_LICENSE=COM" {license = "COM"} END {print license} ' copasi/Makefile`
+  license="US"
 
   rm Copasi-$build-$1*.*
 
@@ -153,7 +153,7 @@ echo "Set the icon in the Info.plist file."
 
 # add the license to the image
     echo "Copying license file."
-    cp COPASI_License_${license}.txt ${TMPDIR}/copasi/COPASI-LICENSE.txt
+    cp ./copasi/ArtisticLicense.txt ${TMPDIR}/copasi/LICENSE.txt
 
 # set the bundles flag with SetFile
     echo "Setting the bundle flag."
@@ -192,7 +192,7 @@ echo "Set the icon in the Info.plist file."
     cp ../README.$1 copasi/README
     chmod 644 copasi/README
 
-    cp ../COPASI_License_${license}.txt copasi/LICENSE
+    cp ../copasi/ArtisticLicense.txt copasi/LICENSE
     chmod 644 copasi/LICENSE
 
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin

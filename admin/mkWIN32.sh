@@ -34,7 +34,7 @@ cp ../README.$1 copasi/README.txt
 chmod 644 copasi/README.txt
 
 # Copy license
-cp ../COPASI_License_${license}.txt copasi/LICENSE.txt
+cp ../copasi/ArtisticLicense.txt copasi/LICENSE.txt
 chmod 644 copasi/LICENSE.txt
 
 # Copy executables and manifests 
