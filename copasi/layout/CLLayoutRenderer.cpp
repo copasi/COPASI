@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/21 17:43:50 $
+//   $Author: gauges $
+//   $Date: 2010/09/23 14:47:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -718,160 +718,163 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
 
   // set some attributes from mCurrentAttributes (stroke, stroke_width,
   // stroke_dasharray)
-  std::map<std::string, CLRGBAColor>::const_iterator pos = this->mColorMap.find(mCurrentAttributes.mStroke);
-  assert(pos != this->mColorMap.end());
-  const CLRGBAColor& c = pos->second;
-  glColor4ub(c.mR, c.mG, c.mB, c.mA);
-  unsigned int i, iMax = pCurve->getNumElements();
-  CLRenderPoint start, end, bp1, bp2;
-  CLPoint p1, p2, p3, p4;
-  const CLRenderPoint* pP = NULL;
-  const CLRenderCubicBezier* pCB = NULL;
-  // the first one has to be a point
-  const CLRenderPoint* pStart = pCurve->getCurveElement(0);
-  p1 = convert_to_absolute(pStart, pBB);
-  std::vector<simple_point> v;
-  // there are going to be at least iMax elements in the vector
-  v.reserve(iMax);
-  simple_point p;
-  p.mX = p1.getX();
-  p.mY = p1.getY();
-  p.mZ = p1.getZ();
-  v.push_back(p);
-  GLdouble* pData = NULL;
-
-  for (i = 1; i < iMax; ++i)
+  if (this->mCurrentAttributes.mStroke != "none")
     {
-      pP = pCurve->getCurveElement(i);
-      pCB = dynamic_cast<const CLRenderCubicBezier*>(pP);
+      std::map<std::string, CLRGBAColor>::const_iterator pos = this->mColorMap.find(mCurrentAttributes.mStroke);
+      assert(pos != this->mColorMap.end());
+      const CLRGBAColor& c = pos->second;
+      glColor4ub(c.mR, c.mG, c.mB, c.mA);
+      unsigned int i, iMax = pCurve->getNumElements();
+      CLRenderPoint start, end, bp1, bp2;
+      CLPoint p1, p2, p3, p4;
+      const CLRenderPoint* pP = NULL;
+      const CLRenderCubicBezier* pCB = NULL;
+      // the first one has to be a point
+      const CLRenderPoint* pStart = pCurve->getCurveElement(0);
+      p1 = convert_to_absolute(pStart, pBB);
+      std::vector<simple_point> v;
+      // there are going to be at least iMax elements in the vector
+      v.reserve(iMax);
+      simple_point p;
+      p.mX = p1.getX();
+      p.mY = p1.getY();
+      p.mZ = p1.getZ();
+      v.push_back(p);
+      GLdouble* pData = NULL;
 
-      if (pCB != NULL)
+      for (i = 1; i < iMax; ++i)
         {
-          end = CLRenderPoint(pCB->x(), pCB->y(), pCB->z());
-          bp1 = CLRenderPoint(pCB->basePoint1_X(), pCB->basePoint1_Y(), pCB->basePoint1_Z());
-          bp2 = CLRenderPoint(pCB->basePoint2_X(), pCB->basePoint2_Y(), pCB->basePoint2_Z());
-          p2 = convert_to_absolute(&end, pBB);
-          p3 = convert_to_absolute(&bp1, pBB);
-          p4 = convert_to_absolute(&bp2, pBB);
-          pData = new GLdouble[3*NUM_BEZIER_POINTS];
-          CLLayoutRenderer::calculate_cubicbezier(p1.getX(), p1.getY(), p1.getZ(),
-                                                  p3.getX(), p3.getY(), p3.getZ(),
-                                                  p4.getX(), p4.getY(), p4.getZ(),
-                                                  p2.getX(), p2.getY(), p2.getZ(),
-                                                  NUM_BEZIER_POINTS, pData);
-          unsigned int j;
-          unsigned int index = 0;
+          pP = pCurve->getCurveElement(i);
+          pCB = dynamic_cast<const CLRenderCubicBezier*>(pP);
 
-          for (j = 0; j < NUM_BEZIER_POINTS; ++j)
+          if (pCB != NULL)
             {
-              p.mX = pData[index++];
-              p.mY = pData[index++];
-              p.mZ = pData[index++];
+              end = CLRenderPoint(pCB->x(), pCB->y(), pCB->z());
+              bp1 = CLRenderPoint(pCB->basePoint1_X(), pCB->basePoint1_Y(), pCB->basePoint1_Z());
+              bp2 = CLRenderPoint(pCB->basePoint2_X(), pCB->basePoint2_Y(), pCB->basePoint2_Z());
+              p2 = convert_to_absolute(&end, pBB);
+              p3 = convert_to_absolute(&bp1, pBB);
+              p4 = convert_to_absolute(&bp2, pBB);
+              pData = new GLdouble[3*NUM_BEZIER_POINTS];
+              CLLayoutRenderer::calculate_cubicbezier(p1.getX(), p1.getY(), p1.getZ(),
+                                                      p3.getX(), p3.getY(), p3.getZ(),
+                                                      p4.getX(), p4.getY(), p4.getZ(),
+                                                      p2.getX(), p2.getY(), p2.getZ(),
+                                                      NUM_BEZIER_POINTS, pData);
+              unsigned int j;
+              unsigned int index = 0;
+
+              for (j = 0; j < NUM_BEZIER_POINTS; ++j)
+                {
+                  p.mX = pData[index++];
+                  p.mY = pData[index++];
+                  p.mZ = pData[index++];
+                  v.push_back(p);
+                }
+
+              delete[] pData;
+            }
+          else
+            {
+              end = CLRenderPoint(pP->x(), pP->y(), pP->z());
+              p2 = convert_to_absolute(&end, pBB);
+              p.mX = p2.getX();
+              p.mY = p2.getY();
+              p.mZ = p2.getZ();
               v.push_back(p);
             }
 
+          // this end is the next start
+          p1 = p2;
+        }
+
+      iMax = (unsigned int)v.size();
+
+      if (iMax > 1)
+        {
+          pData = new GLdouble[3*iMax];
+          unsigned int index = 0;
+          const simple_point* pSimple = NULL;
+
+          for (i = 0; i < iMax; ++i)
+            {
+              pSimple = &v[i];
+              pData[index++] = pSimple->mX;
+              pData[index++] = pSimple->mY;
+              pData[index++] = pSimple->mZ;
+            }
+
+          // draw the line
+          this->draw_line(iMax, pData);
           delete[] pData;
         }
-      else
+
+      // map arrow heads
+      if (!mCurrentAttributes.mStartHead.empty() && mCurrentAttributes.mStartHead != "none")
         {
-          end = CLRenderPoint(pP->x(), pP->y(), pP->z());
-          p2 = convert_to_absolute(&end, pBB);
-          p.mX = p2.getX();
-          p.mY = p2.getY();
-          p.mZ = p2.getZ();
-          v.push_back(p);
-        }
-
-      // this end is the next start
-      p1 = p2;
-    }
-
-  iMax = (unsigned int)v.size();
-
-  if (iMax > 1)
-    {
-      pData = new GLdouble[3*iMax];
-      unsigned int index = 0;
-      const simple_point* pSimple = NULL;
-
-      for (i = 0; i < iMax; ++i)
-        {
-          pSimple = &v[i];
-          pData[index++] = pSimple->mX;
-          pData[index++] = pSimple->mY;
-          pData[index++] = pSimple->mZ;
-        }
-
-      // draw the line
-      this->draw_line(iMax, pData);
-      delete[] pData;
-    }
-
-  // map arrow heads
-  if (!mCurrentAttributes.mStartHead.empty() && mCurrentAttributes.mStartHead != "none")
-    {
-      assert(pCurve->getNumElements() > 1);
-      const CLRenderPoint* pStart = pCurve->getCurveElement(0);
-      const CLPoint start = convert_to_absolute(pStart, pBB);
-      CLPoint v;
-      const CLRenderPoint* pEnd = pCurve->getCurveElement(1);
-      const CLRenderCubicBezier* pCB = dynamic_cast<const CLRenderCubicBezier*>(pEnd);
-
-      if (!pCB)
-        {
-          const CLPoint end = convert_to_absolute(pEnd, pBB);
-          v = CLPoint(start.getX() - end.getX(), start.getY() - end.getY(), start.getZ() - end.getZ());
-        }
-      else
-        {
-          const CLRenderPoint* pEnd = new CLRenderPoint(pCB->basePoint1_X(), pCB->basePoint1_Y(), pCB->basePoint1_Z());
-          const CLPoint end = convert_to_absolute(pEnd, pBB);
-          delete pEnd;
-          v = CLPoint(start.getX() - end.getX(), start.getY() - end.getY(), start.getZ() - end.getZ());
-        }
-
-      // we have to clear the arrow head attributes before we call the mapping
-      // function.
-      // If we don't do that and the line ending contains a curve, it will try
-      // to map itself to the curve again which is an endless loop.
-      this->save_current_attributes();
-      std::string headId = mCurrentAttributes.mStartHead;
-      this->map_arrow_head(start, v, headId);
-      // set the old attributes again
-      this->restore_current_attributes();
-    }
-
-  if (!mCurrentAttributes.mEndHead.empty() && mCurrentAttributes.mEndHead != "none")
-    {
-      const CLRenderPoint* pEnd = pCurve->getCurveElement(pCurve->getNumElements() - 1);
-      const CLPoint end = convert_to_absolute(pEnd, pBB);
-
-      const CLRenderCubicBezier* pCB = dynamic_cast<const CLRenderCubicBezier*>(pEnd);
-      CLPoint v;
-
-      if (!pCB)
-        {
-          const CLRenderPoint* pStart = pCurve->getCurveElement(pCurve->getNumElements() - 2);
+          assert(pCurve->getNumElements() > 1);
+          const CLRenderPoint* pStart = pCurve->getCurveElement(0);
           const CLPoint start = convert_to_absolute(pStart, pBB);
-          v = CLPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
-        }
-      else
-        {
-          const CLRenderPoint* pStart = new CLRenderPoint(pCB->basePoint2_X(), pCB->basePoint2_Y(), pCB->basePoint2_Z());
-          const CLPoint start = convert_to_absolute(pStart, pBB);
-          delete pStart;
-          v = CLPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
+          CLPoint v;
+          const CLRenderPoint* pEnd = pCurve->getCurveElement(1);
+          const CLRenderCubicBezier* pCB = dynamic_cast<const CLRenderCubicBezier*>(pEnd);
+
+          if (!pCB)
+            {
+              const CLPoint end = convert_to_absolute(pEnd, pBB);
+              v = CLPoint(start.getX() - end.getX(), start.getY() - end.getY(), start.getZ() - end.getZ());
+            }
+          else
+            {
+              const CLRenderPoint* pEnd = new CLRenderPoint(pCB->basePoint1_X(), pCB->basePoint1_Y(), pCB->basePoint1_Z());
+              const CLPoint end = convert_to_absolute(pEnd, pBB);
+              delete pEnd;
+              v = CLPoint(start.getX() - end.getX(), start.getY() - end.getY(), start.getZ() - end.getZ());
+            }
+
+          // we have to clear the arrow head attributes before we call the mapping
+          // function.
+          // If we don't do that and the line ending contains a curve, it will try
+          // to map itself to the curve again which is an endless loop.
+          this->save_current_attributes();
+          std::string headId = mCurrentAttributes.mStartHead;
+          this->map_arrow_head(start, v, headId);
+          // set the old attributes again
+          this->restore_current_attributes();
         }
 
-      // we have to clear the arrow head attributes before we call the mapping
-      // function.
-      // If we don't do that and the line ending contains a curve, it will try
-      // to map itself to the curve again which is an endless loop.
-      this->save_current_attributes();
-      std::string headId = mCurrentAttributes.mEndHead;
-      this->map_arrow_head(end, v, headId);
-      // set the old attributes again
-      this->restore_current_attributes();
+      if (!mCurrentAttributes.mEndHead.empty() && mCurrentAttributes.mEndHead != "none")
+        {
+          const CLRenderPoint* pEnd = pCurve->getCurveElement(pCurve->getNumElements() - 1);
+          const CLPoint end = convert_to_absolute(pEnd, pBB);
+
+          const CLRenderCubicBezier* pCB = dynamic_cast<const CLRenderCubicBezier*>(pEnd);
+          CLPoint v;
+
+          if (!pCB)
+            {
+              const CLRenderPoint* pStart = pCurve->getCurveElement(pCurve->getNumElements() - 2);
+              const CLPoint start = convert_to_absolute(pStart, pBB);
+              v = CLPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
+            }
+          else
+            {
+              const CLRenderPoint* pStart = new CLRenderPoint(pCB->basePoint2_X(), pCB->basePoint2_Y(), pCB->basePoint2_Z());
+              const CLPoint start = convert_to_absolute(pStart, pBB);
+              delete pStart;
+              v = CLPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
+            }
+
+          // we have to clear the arrow head attributes before we call the mapping
+          // function.
+          // If we don't do that and the line ending contains a curve, it will try
+          // to map itself to the curve again which is an endless loop.
+          this->save_current_attributes();
+          std::string headId = mCurrentAttributes.mEndHead;
+          this->map_arrow_head(end, v, headId);
+          // set the old attributes again
+          this->restore_current_attributes();
+        }
     }
 
   this->restore_current_attributes();
@@ -2523,8 +2526,8 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, unsigned int numPoints, 
               pNewData[5*i] = pData[3*i];
               pNewData[5*i+1] = pData[3*i+1];
               pNewData[5*i+2] = pData[3*i+2];
-              pNewData[5*i+3] = ((pData[3*i])) / width;
-              pNewData[5*i+4] = ((pData[3*i+1])) / height;
+              pNewData[5*i+3] = (pData[3*i] + xOffset - pBB->getPosition().getX()) / width;
+              pNewData[5*i+4] = (pData[3*i+1] + yOffset - pBB->getPosition().getY()) / height;
             }
 
           pData = pNewData;
