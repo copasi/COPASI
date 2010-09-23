@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalPrimitive1D.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Author: gauges $
+//   $Date: 2010/09/23 13:24:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,7 +100,7 @@ bool CLGraphicalPrimitive1D::isSetStrokeWidth() const
  */
 bool CLGraphicalPrimitive1D::isSetStroke() const
 {
-  return !this->mStroke.empty();
+  return (!this->mStroke.empty() && this->mStroke != "none");
 }
 
 /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLTransformation2D.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/16 18:28:06 $
+//   $Author: gauges $
+//   $Date: 2010/09/23 13:24:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,10 +134,10 @@ void CLTransformation2D::updateMatrix2D()
 {
   mMatrix2D[0] = mMatrix[0];
   mMatrix2D[1] = mMatrix[1];
-  mMatrix2D[2] = mMatrix[4];
-  mMatrix2D[3] = mMatrix[5];
-  mMatrix2D[4] = mMatrix[12];
-  mMatrix2D[5] = mMatrix[13];
+  mMatrix2D[2] = mMatrix[3];
+  mMatrix2D[3] = mMatrix[4];
+  mMatrix2D[4] = mMatrix[9];
+  mMatrix2D[5] = mMatrix[10];
 }
 
 void CLTransformation2D::setMatrix(const double m[12])
