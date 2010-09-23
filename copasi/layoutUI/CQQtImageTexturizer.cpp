@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQQtImageTexturizer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/17 14:01:16 $
+//   $Author: gauges $
+//   $Date: 2010/09/23 13:57:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "CQQtImageTexturizer.h"
 #include <copasi/layout/utility_classes.h>
 #include <copasi/utilities/CCopasiMessage.h>
+#include <copasi/utilities/utility.h>
 
 // virtual
 CLTextureSpec* CQQtImageTexturizer::operator()(const std::string& filename, const std::string& basedir)
@@ -66,7 +67,8 @@ CLTextureSpec* CQQtImageTexturizer::operator()(const std::string& filename, cons
 CLTextureSpec* CQQtImageTexturizer::create_texture_for_image(const std::string& filename, const char* format)
 {
   CLTextureSpec* pResult = NULL;
-  QImage image(QString().fromAscii(filename.c_str()), format);
+  // use UTF8 strings for filenames since this seems to be safer across platforms
+  QImage image(QString().fromUtf8(localeToUtf8(filename).c_str()), format);
 
   if (!image.isNull())
     {

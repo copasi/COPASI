@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLImageTexturizer.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/23 13:42:11 $
+//   $Date: 2010/09/23 13:57:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 
 #include "CLImageTexturizer.h"
 
-#include "../utilities/CDirEntry.h"
-#include "../utilities/utility.h"
+#include <copasi/utilities/CDirEntry.h>
+#include <copasi/utilities/utility.h>
 
 std::string CLImageTexturizer::to_absolute_path(const std::string& filename, const std::string& basedir)
 {
