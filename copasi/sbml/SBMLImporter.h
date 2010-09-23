@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.86.2.1 $
+//   $Revision: 1.86.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/23 08:23:59 $
+//   $Date: 2010/09/23 12:26:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ protected:
   std::set<std::string> mReactionsWithReplacedLocalParameters;
   std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
   std::vector<std::string> mIgnoredParameterUnits;
-  std::map<const ASTNode*, std::string > mStoichiometricExpressionMap;
+  std::map<const ASTNode*, CChemEqElement* > mStoichiometricExpressionMap;
   bool mDelayFound;
   std::set<const Parameter*> mPotentialAvogadroNumbers;
   bool mAvogadroCreated;

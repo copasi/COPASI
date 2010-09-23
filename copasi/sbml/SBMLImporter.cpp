@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.1 $
+//   $Revision: 1.263.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/23 08:23:58 $
+//   $Date: 2010/09/23 12:26:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1689,7 +1689,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           assert(pChemEqElement != NULL);
-          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement->getKey()));
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement));
         }
     }
 
@@ -1796,7 +1796,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           assert(pChemEqElement != NULL);
-          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement->getKey()));
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement));
         }
     }
 
@@ -5342,7 +5342,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*,
   // this is just there to make sure we don't accidentaly move the code
   // for the import of rules before the code that imports reactions
   // because this would lead to the species id set being empty
-  assert(pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty());
+  assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));
 #endif // LIBSBML_VERSION
   SBMLTypeCode_t type = sbmlRule->getTypeCode();
 
@@ -7739,7 +7739,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                         {
                           // store the expression for the stoichiometry in the stoichiometric expression map
                           // this has been tested and should work
-                          this->mStoichiometricExpressionMap.insert(std::make_pair(pMath, pChemEqElement->getKey()));
+                          this->mStoichiometricExpressionMap.insert(std::make_pair(pMath, pChemEqElement));
                           // go to the next iteration
                           continue;
                         }
@@ -7811,16 +7811,14 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
 void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   bool warningDone = false;
-  std::map<const ASTNode*, std::string>::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
+  std::map<const ASTNode*, CChemEqElement* >::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(this->mpCopasiModel);
 
   while (it != end)
     {
-      CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(it->second);
-      assert(pObject != NULL);
-      CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pObject);
-      assert(pChemEqElement != NULL);
+      assert(it->second != NULL);
+      CChemEqElement* pChemEqElement = it->second;
       ConverterASTNode* pNode = new ConverterASTNode(*it->first);
       this->preprocessNode(pNode, pSBMLModel, copasi2sbmlmap);
       this->replaceObjectNames(pNode, copasi2sbmlmap, true);
@@ -7853,7 +7851,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
 
               while (iit != iendit)
                 {
-                  if ((*iit)->getKey() == it->second)
+                  if ((*iit) == pChemEqElement)
                     {
                       break;
                     }
@@ -8321,7 +8319,7 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
   // this is just there to make sure we don't accidentaly move the code
   // for the import of events before the code that imports reactions
   // because this would lead to the species id set being empty
-  assert(pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty());
+  assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));
 #endif // LIBSBML_VERSION
   unsigned int i, iMax = pSBMLModel->getNumEvents();
 
