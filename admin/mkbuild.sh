@@ -119,33 +119,9 @@ echo "Set the icon in the Info.plist file."
 
 # copy the Qt Framework into the image
     echo "Copying Frameworks:"
-    cp -r ${ENVIRONMENT}/Frameworks \
-    ${TMPDIR}/copasi/CopasiUI.app/Contents/
-    echo "Setting dynamic linker options:"
-    install_name_tool -change QtSvg.framework/Versions/4/QtSvg \
-      @executable_path/../Frameworks/QtSvg \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
-    install_name_tool -change Qt3Support.framework/Versions/4/Qt3Support \
-      @executable_path/../Frameworks/Qt3Support \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
-    install_name_tool -change QtSql.framework/Versions/4/QtSql \
-      @executable_path/../Frameworks/QtSql \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
-    install_name_tool -change QtNetwork.framework/Versions/4/QtNetwork \
-      @executable_path/../Frameworks/QtNetwork \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
-    install_name_tool -change QtXml.framework/Versions/4/QtXml \
-      @executable_path/../Frameworks/QtXml \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
-    install_name_tool -change QtOpenGL.framework/Versions/4/QtOpenGL \
-      @executable_path/../Frameworks/QtOpenGL \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
-    install_name_tool -change QtGui.framework/Versions/4/QtGui \
-      @executable_path/../Frameworks/QtGui \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
-    install_name_tool -change QtCore.framework/Versions/4/QtCore \
-      @executable_path/../Frameworks/QtCore \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
+    pushd ${TMPDIR}/copasi
+    macdeployqt CopasiUI.app/ -no-plugins
+    popd
 
 # add the readme to the image
     echo "Copying readme file."
