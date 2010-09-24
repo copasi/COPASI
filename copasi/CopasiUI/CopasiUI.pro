@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.152.2.4 $
+#   $Revision: 1.152.2.5 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/09/22 19:25:45 $
+#   $Date: 2010/09/24 18:40:20 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.152.2.4 $ $Author: shoops $ $Date: 2010/09/22 19:25:45 $
+# $Revision: 1.152.2.5 $ $Author: shoops $ $Date: 2010/09/24 18:40:20 $
 ######################################################################
 
 TEMPLATE = app
@@ -83,6 +83,7 @@ contains(BUILD_OS, Linux) {
     dynamic_LIBS -= -lpthread
 
     dynamic_LIBS += -lQt3Support \
+                    -lQtWebKit \
                     -lQtSvg \
                     -lQtSql \
                     -lQtNetwork \
