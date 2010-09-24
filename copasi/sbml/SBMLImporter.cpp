@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.2 $
+//   $Revision: 1.263.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/23 12:26:05 $
+//   $Date: 2010/09/24 09:19:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1868,24 +1868,25 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
    * either a mapping or a value
    */
   const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
-  const ListOfParameters* pParamList = NULL;
-#if LIBSBML_VERSION >= 40100
-
-  if (this->mLevel > 2)
-    {
-      pParamList = kLaw->getListOfLocalParameters();
-    }
-  else
-    {
-#endif // LIBSBML_VERSION
-      pParamList = kLaw->getListOfParameters();
-#if LIBSBML_VERSION >= 40100
-    }
-
-#endif // LIBSBML_VERSION
 
   if (kLaw != NULL)
     {
+      const ListOfParameters* pParamList = NULL;
+#if LIBSBML_VERSION >= 40100
+
+      if (this->mLevel > 2)
+        {
+          pParamList = kLaw->getListOfLocalParameters();
+        }
+      else
+        {
+#endif // LIBSBML_VERSION
+          pParamList = kLaw->getListOfParameters();
+#if LIBSBML_VERSION >= 40100
+        }
+
+#endif // LIBSBML_VERSION
+
       for (counter = 0; counter < pParamList->size(); ++counter)
         {
           const Parameter* pSBMLParameter = pParamList->get(counter);
