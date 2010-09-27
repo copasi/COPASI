@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.2 $
+//   $Revision: 1.290.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/27 15:29:55 $
+//   $Date: 2010/09/27 16:53:35 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,6 +126,10 @@
 ListViews::ListViews(QWidget *parent, const char *name):
 
     QSplitter(Qt::Horizontal, parent, name),
+    currentWidget(NULL),
+    lastKey(),
+    mSaveObjectKey(),
+    mSaveFolderID(C_INVALID_INDEX),
     mpMathModel(NULL),
     mpCMCAResultWidget(NULL),
     mpCQMCAWidget(NULL),
@@ -748,7 +752,7 @@ void ListViews::storeCurrentItem()
   mSaveObjectKey = pNode->getObjectKey();
   mSaveFolderID = pNode->getId();
 
-  while (mSaveFolderID == -1)
+  while (mSaveFolderID == C_INVALID_INDEX)
     {
       pNode = pNode->parent();
       mSaveFolderID = pNode->getId();

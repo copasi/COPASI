@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.9.2.2 $
+  $Revision: 1.9.2.3 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/09/27 15:29:55 $
+  $Date: 2010/09/27 16:53:35 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 
 #include "Tree.h"
 
-IndexedNode::IndexedNode(int id, const QString & name, const std::string & key,
+IndexedNode::IndexedNode(size_t id, const QString & name, const std::string & key,
                          const IndexedNode* pParentNode):
     mId(id),
     mpParentNode(pParentNode),
@@ -35,7 +35,7 @@ IndexedNode::IndexedNode(int id, const QString & name, const std::string & key,
     mName(name),
     mObjectKey(key)
 {
-  if (mId != -1)
+  if (mId != C_INVALID_INDEX)
     {
       mSortKey.setNum(id);
       mSortKey += "_" + mName;
@@ -97,12 +97,12 @@ bool IndexedNode::removeChild(const std::string & key)
   return false;
 }
 
-void IndexedNode::addChild(int id, const QString & name, const std::string & key)
+void IndexedNode::addChild(size_t id, const QString & name, const std::string & key)
 {
   mChildren.push_back(new IndexedNode(id, name, key, this));
 }
 
-int IndexedNode::getId() const {return mId;};
+size_t IndexedNode::getId() const {return mId;};
 
 //contents methods
 const QString & IndexedNode::getName() const {return mName;};
@@ -133,13 +133,13 @@ IndexedTree::IndexedTree()
   root.mId = -1;
 }
 
-void IndexedTree::add(int parentId, int newId, const QString & name, const std::string & key)
+void IndexedTree::add(size_t parentId, size_t newId, const QString & name, const std::string & key)
 {
   IndexedNode * parent = findNodeFromId(parentId);
   parent->addChild(newId, name, key);
 }
 
-IndexedNode * IndexedTree::findNodeFromId(int id)
+IndexedNode * IndexedTree::findNodeFromId(size_t id)
 {
   IndexedNode * tmp = findNodeFromId(root, id);
   //assert(tmp != NULL);
@@ -147,7 +147,7 @@ IndexedNode * IndexedTree::findNodeFromId(int id)
   return tmp;
 }
 
-IndexedNode * IndexedTree::findNodeFromId(IndexedNode & node, int id) const
+IndexedNode * IndexedTree::findNodeFromId(IndexedNode & node, size_t id) const
 {
   if (node.getId() == id)
     return &node;

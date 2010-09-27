@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.17.2.2 $
+   $Revision: 1.17.2.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/09/27 15:29:55 $
+   $Date: 2010/09/27 16:53:35 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,12 +41,16 @@
 #include <string>
 #include <qstring.h>
 
+#ifndef C_INVALID_INDEX
+#define C_INVALID_INDEX (std::numeric_limits< size_t >::max())
+#endif
+
 class IndexedTree;
 
 class IndexedNode
 {
 public:
-  IndexedNode(int id = 0, const QString & name = "",
+  IndexedNode(size_t id = C_INVALID_INDEX, const QString & name = "",
               const std::string & key = "", const IndexedNode* pParentNode = NULL);
 
   IndexedNode(const IndexedNode & src, const IndexedNode* pParentNode = NULL);
@@ -63,9 +67,9 @@ public:
 
   bool removeChild(const std::string & key);
 
-  void addChild(int id, const QString & name, const std::string & key);
+  void addChild(size_t id, const QString & name, const std::string & key);
 
-  int getId() const;
+  size_t getId() const;
 
   //contents methods
   const QString & getName() const;
@@ -83,7 +87,7 @@ public:
   const IndexedNode * parent() const;
 
 private:
-  int mId;
+  size_t mId;
   const IndexedNode * mpParentNode;
   QString mSortKey;
 
@@ -102,7 +106,7 @@ class IndexedTree
 private:
   IndexedNode root; // declares the head of the tree
 
-  IndexedNode * findNodeFromId(IndexedNode & node, int id) const;
+  IndexedNode * findNodeFromId(IndexedNode & node, size_t id) const;
 
   IndexedNode * findNodeFromKey(IndexedNode & node, const std::string& key) const;
 
@@ -113,9 +117,9 @@ public :
 
   ~IndexedTree() {};
 
-  void add(int parentId, int newId, const QString & name, const std::string & key);
+  void add(size_t parentId, size_t newId, const QString & name, const std::string & key);
 
-  IndexedNode * findNodeFromId(int id);
+  IndexedNode * findNodeFromId(size_t id);
 
   IndexedNode * findNodeFromKey(const std::string& key);
 

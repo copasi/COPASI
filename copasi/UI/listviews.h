@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.168.2.1 $
+//   $Revision: 1.168.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:57 $
+//   $Author: shoops $
+//   $Date: 2010/09/27 16:53:35 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,7 +177,7 @@ private:
   std::string lastKey;
 
   std::string mSaveObjectKey;
-  C_INT32 mSaveFolderID;
+  size_t mSaveFolderID;
 
   bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
 
