@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.83.4.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/11/13 08:35:50 $
+//   $Date: 2010/09/27 15:48:02 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -36,6 +41,7 @@
 #include "SliderSettingsDialog.h"
 #include "CQMessageBox.h"
 #include "CopasiSlider.h"
+#include "listviews.h"
 #include "mathematics.h"
 #include "qtUtilities.h"
 #include "xml/CCopasiXMLInterface.h"
@@ -748,6 +754,17 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
 
 void SliderDialog::updateAllSliders()
 {
+  // this method might not always do what we want
+  // e.g. if we change a volume via a slider, the initial amount/concentrations
+  // of the species are updated automatically, but if there is a slider for the
+  // automatically updated value and we changed that value as well together with
+  // the volume, the change of amount/concentration is probably lost depending on
+  // the order of the sliders
+  // We need to do this in two rounds, first we set all the new values
+  //
+  // To solve this, I added a new argument to updateValue that determines if the call also updates the dependencies.
+  // Here we do not let the updateValue call update the dependencies, but we take care of this ourselves
+  // with a call to ListView::refreshInitialValues
   if (mCurrentFolderId == -1) return;
 
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
@@ -760,7 +777,24 @@ void SliderDialog::updateAllSliders()
 
       if (pCopasiSlider)
         {
-          pCopasiSlider->updateValue(autoModify);
+          pCopasiSlider->updateValue(autoModify, false);
+        }
+    }
+
+  if (maxCount > 0)
+    {
+      ListViews::refreshInitialValues();
+
+      // now we need to go through the slider again and make sure that
+      // they actually display the updated values
+      for (i = 0; i < maxCount; ++i)
+        {
+          CopasiSlider* pCopasiSlider = dynamic_cast<CopasiSlider*>(v[i]);
+
+          if (pCopasiSlider)
+            {
+              pCopasiSlider->updateSliderData();
+            }
         }
     }
 }
