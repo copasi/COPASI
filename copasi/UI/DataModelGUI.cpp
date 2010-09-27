@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.2 $
+//   $Revision: 1.93.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/27 15:29:55 $
+//   $Date: 2010/09/27 17:27:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,7 @@ void DataModelGUI::linkDataModelToGUI()
 
 void DataModelGUI::populateData()
 {
-  mTree.add(-1, 0, "Copasi", "");
+  mTree.add(C_INVALID_INDEX, 0, "Copasi", "");
   std::stringstream in;
   in.str(DataModeltxt);
 
@@ -221,9 +221,22 @@ void DataModelGUI::updateCompartments()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      parent->addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(C_INVALID_INDEX
+// virtual
+                       void CTabWidget::objectDeleted()
+      {
+        std::vector< CopasiWidget * >::iterator it = mPages.begin();
+        std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+        for (; it != end; ++it)
+          (*it)->enter(mKey);
+
+        return true;
+      }
+
+      ,
+      FROM_UTF8(obj->getObjectName()),
+      obj->getKey());
     }
 }
 
@@ -241,9 +254,22 @@ void DataModelGUI::updateMetabolites()
   for (j = 0; j < jmax; j++)
     {
       metab = objects[j];
-      parent->addChild(-1,
-                       FROM_UTF8(CMetabNameInterface::getDisplayName((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *metab)),
-                       metab->getKey());
+      parent->addChild(C_INVALID_INDEX
+// virtual
+                       void CTabWidget::objectDeleted()
+      {
+        std::vector< CopasiWidget * >::iterator it = mPages.begin();
+        std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+        for (; it != end; ++it)
+          (*it)->enter(mKey);
+
+        return true;
+      }
+
+      ,
+      FROM_UTF8(CMetabNameInterface::getDisplayName((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *metab)),
+      metab->getKey());
     }
 }
 
@@ -262,9 +288,22 @@ void DataModelGUI::updateReactions()
     {
       obj = objects[j];
       obj->compile();
-      parent->addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(C_INVALID_INDEX
+// virtual
+                       void CTabWidget::objectDeleted()
+      {
+        std::vector< CopasiWidget * >::iterator it = mPages.begin();
+        std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+        for (; it != end; ++it)
+          (*it)->enter(mKey);
+
+        return true;
+      }
+
+      ,
+      FROM_UTF8(obj->getObjectName()),
+      obj->getKey());
     }
 }
 
@@ -282,9 +321,22 @@ void DataModelGUI::updateModelValues()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      parent->addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(C_INVALID_INDEX
+// virtual
+                       void CTabWidget::objectDeleted()
+      {
+        std::vector< CopasiWidget * >::iterator it = mPages.begin();
+        std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+        for (; it != end; ++it)
+          (*it)->enter(mKey);
+
+        return true;
+      }
+
+      ,
+      FROM_UTF8(obj->getObjectName()),
+      obj->getKey());
     }
 }
 
@@ -302,9 +354,22 @@ void DataModelGUI::updateFunctions()
   for (j = 0; j < jmax; j++)
     {
       if ((obj = dynamic_cast<CFunction *>(objects[j])))
-        parent->addChild(-1,
-                         FROM_UTF8(obj->getObjectName()),
-                         obj->getKey());
+        parent->addChild(C_INVALID_INDEX
+// virtual
+                         void CTabWidget::objectDeleted()
+        {
+          std::vector< CopasiWidget * >::iterator it = mPages.begin();
+          std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+          for (; it != end; ++it)
+            (*it)->enter(mKey);
+
+          return true;
+        }
+
+      ,
+      FROM_UTF8(obj->getObjectName()),
+      obj->getKey());
     }
 }
 
@@ -324,9 +389,22 @@ void DataModelGUI::updateEvents()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      parent->addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(C_INVALID_INDEX
+// virtual
+                       void CTabWidget::objectDeleted()
+      {
+        std::vector< CopasiWidget * >::iterator it = mPages.begin();
+        std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+        for (; it != end; ++it)
+          (*it)->enter(mKey);
+
+        return true;
+      }
+
+      ,
+      FROM_UTF8(obj->getObjectName()),
+      obj->getKey());
     }
 }
 
@@ -344,9 +422,22 @@ void DataModelGUI::updateReportDefinitions()
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
-      parent->addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(C_INVALID_INDEX
+// virtual
+                       void CTabWidget::objectDeleted()
+      {
+        std::vector< CopasiWidget * >::iterator it = mPages.begin();
+        std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+        for (; it != end; ++it)
+          (*it)->enter(mKey);
+
+        return true;
+      }
+
+      ,
+      FROM_UTF8(obj->getObjectName()),
+      obj->getKey());
     }
 }
 
@@ -366,9 +457,22 @@ void DataModelGUI::updatePlots()
   for (j = 0; j < jmax; j++)
     {
       obj = (*pDataModel->getPlotDefinitionList())[j];
-      parent->addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->CCopasiParameter::getKey());
+      parent->addChild(C_INVALID_INDEX
+// virtual
+                       void CTabWidget::objectDeleted()
+      {
+        std::vector< CopasiWidget * >::iterator it = mPages.begin();
+        std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+        for (; it != end; ++it)
+          (*it)->enter(mKey);
+
+        return true;
+      }
+
+      ,
+      FROM_UTF8(obj->getObjectName()),
+      obj->CCopasiParameter::getKey());
     }
 
 }
@@ -834,7 +938,20 @@ bool DataModelGUI::insertRow(int parentId, const std::string &key)
 
   beginInsertRows(parentIndex, parentNode->childCount(), parentNode->childCount());
   std::string objName = CCopasiRootContainer::getKeyFactory()->get(key)->getObjectName();
-  parentNode->addChild(-1, FROM_UTF8(objName), key);
+  parentNode->addChild(C_INVALID_INDEX
+// virtual
+                       void CTabWidget::objectDeleted()
+  {
+    std::vector< CopasiWidget * >::iterator it = mPages.begin();
+    std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+    for (; it != end; ++it)
+      (*it)->enter(mKey);
+
+    return true;
+  }
+
+  , FROM_UTF8(objName), key);
 
   endInsertRows();
 
