@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.1 $
+//   $Revision: 1.290.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:57 $
+//   $Author: shoops $
+//   $Date: 2010/09/27 15:29:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,6 +208,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   // Need to somehow signal mpTreeView to change when navigating using up and down arrows
   connect(mpTreeView, SIGNAL(activated(const QModelIndex &)),
           this, SLOT(slotFolderChanged(const QModelIndex &)));
+
 }
 
 ListViews::~ListViews()
@@ -742,7 +743,7 @@ void ListViews::storeCurrentItem()
   if (!index.isValid())
     return;
 
-  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
+  const IndexedNode * pNode = static_cast<IndexedNode*>(index.internalPointer());
 
   mSaveObjectKey = pNode->getObjectKey();
   mSaveFolderID = pNode->getId();
@@ -765,7 +766,7 @@ void ListViews::restoreCurrentItem()
   if (mSaveObjectKey.length() > 0)
     index = mpDataModelGUI->findIndexFromKey(mSaveObjectKey);
 
-  //if not successfull then try the ID.
+  //if not successful then try the ID.
   if (!index.isValid())
     index = mpDataModelGUI->findIndexFromId(mSaveFolderID);
 

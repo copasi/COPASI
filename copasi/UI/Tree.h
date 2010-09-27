@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.17.2.1 $
+   $Revision: 1.17.2.2 $
    $Name:  $
-   $Author: aekamal $
-   $Date: 2010/09/27 13:44:58 $
+   $Author: shoops $
+   $Date: 2010/09/27 15:29:55 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@ public:
   IndexedNode(int id = 0, const QString & name = "",
               const std::string & key = "", const IndexedNode* pParentNode = NULL);
 
-  IndexedNode(const IndexedNode & src);
+  IndexedNode(const IndexedNode & src, const IndexedNode* pParentNode = NULL);
 
 private:
   IndexedNode & operator=(const IndexedNode&);
@@ -80,7 +80,7 @@ public:
   int columnCount() const;
   int row() const;
   int column() const;
-  IndexedNode *parent();
+  const IndexedNode * parent() const;
 
 private:
   int mId;

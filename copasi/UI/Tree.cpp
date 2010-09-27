@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.9.2.1 $
+  $Revision: 1.9.2.2 $
   $Name:  $
-  $Author: aekamal $
-  $Date: 2010/09/27 13:44:58 $
+  $Author: shoops $
+  $Date: 2010/09/27 15:29:55 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,9 +46,10 @@ IndexedNode::IndexedNode(int id, const QString & name, const std::string & key,
     }
 };
 
-IndexedNode::IndexedNode(const IndexedNode & src):
+IndexedNode::IndexedNode(const IndexedNode & src,
+                         const IndexedNode* pParentNode):
     mId(src.mId),
-    mpParentNode(src.mpParentNode),
+    mpParentNode(pParentNode),
     mSortKey(src.mSortKey),
     mChildren(),
     mName(src.mName),
@@ -57,7 +58,7 @@ IndexedNode::IndexedNode(const IndexedNode & src):
   std::vector<IndexedNode*>::const_iterator it, itEnd = src.mChildren.end();
 
   for (it = src.mChildren.begin(); it != itEnd; ++it)
-    mChildren.push_back(new IndexedNode(**it));
+    mChildren.push_back(new IndexedNode(**it, this));
 
 };
 
@@ -210,9 +211,9 @@ int IndexedNode::columnCount() const
   return 1;
 }
 
-IndexedNode *IndexedNode::parent()
+const IndexedNode *IndexedNode::parent() const
 {
-  return const_cast<IndexedNode*>(mpParentNode);
+  return mpParentNode;
 }
 
 int IndexedNode::row() const

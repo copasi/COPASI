@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.1 $
+//   $Revision: 1.93.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:57 $
+//   $Author: shoops $
+//   $Date: 2010/09/27 15:29:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
+
 
 //*****************************************************************************
 
@@ -266,6 +267,7 @@ void DataModelGUI::updateReactions()
                        obj->getKey());
     }
 }
+
 void DataModelGUI::updateModelValues()
 {
   IndexedNode * parent = mTree.findNodeFromId(115);
@@ -688,12 +690,13 @@ QModelIndex DataModelGUI::parent(const QModelIndex &index) const
     return QModelIndex();
 
   IndexedNode *childItem = static_cast<IndexedNode*>(index.internalPointer());
-  IndexedNode *parentItem = childItem->parent();
+  const IndexedNode * parentItem = childItem->parent();
 
   if (parentItem == getRootNode())
     return QModelIndex();
 
-  return createIndex(parentItem->row(), parentItem->column(), parentItem);
+  return createIndex(parentItem->row(), parentItem->column(),
+                     const_cast< IndexedNode * >(parentItem));
 }
 
 QModelIndex DataModelGUI::findIndexFromId(int id)
@@ -842,16 +845,16 @@ bool DataModelGUI::insertRow(int parentId, const std::string &key)
 
 bool DataModelGUI::removeRow(const std::string &key)
 {
-  IndexedNode *node = mTree.findNodeFromKey(key);
+  IndexedNode *pNode = mTree.findNodeFromKey(key);
 
-  if (!node || !node->parent())
+  if (!pNode || !pNode->parent())
     return false;
 
 
-  QModelIndex parentIndex = findIndexFromId(node->parent()->getId());
+  QModelIndex parentIndex = findIndexFromId(pNode->parent()->getId());
 
-  beginRemoveRows(parentIndex, node->row(), node->row());
-  node->parent()->removeChild(key);
+  beginRemoveRows(parentIndex, pNode->row(), pNode->row());
+  const_cast< IndexedNode * >(pNode->parent())->removeChild(key);
   endRemoveRows();
 
   emit dataChanged(parentIndex, parentIndex);
