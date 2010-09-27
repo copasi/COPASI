@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQQtImageTexturizer.cpp,v $
-//   $Revision: 1.2.2.1 $
+//   $Revision: 1.2.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/23 13:57:08 $
+//   $Date: 2010/09/27 08:52:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 #else
 # include "GL/gl.h"
 # include "GL/glu.h"
-# include "GL/glext.h"
+# include "copasi/GL/glext.h"
 # ifndef _WIN32
 #  define GLX_GLXEXT_PROTOTYPES
 #  include "GL/glx.h"

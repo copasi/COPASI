@@ -1,15 +1,22 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/17 14:00:49 $
+//   $Author: gauges $
+//   $Date: 2010/09/27 08:52:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+#ifdef __APPLE__
+// this should make sure g++ on apple does not load
+// the glext from the 10.4 sdk so that we can load the one provided with COPASI
+#define GL_GLEXT_LEGACY
+#endif
+
 
 // SBML includes
 #include <copasi/model/CModel.h>
@@ -50,12 +57,14 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
+#undef GL_GLEXT_LEGACY
+#include <copasi/GL/glext.h>
 #else
 #define GLX_GLXEXT_LEGACY
 #include <GL/gl.h>
 #include <GL/glu.h>
 // I am including a new glext with the source code
-#include <GL/glext.h>
+#include <copasi/GL/glext.h>
 #ifndef _WIN32
 #include <GL/glx.h>
 #endif // _WIN32
@@ -1148,7 +1157,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
           //
           size /= 4;
           // if the image size is larger than a certain size, we have to subdivide the drawing into smaller bits.
-          int chunk_size = 0;
+          GLint chunk_size = 0;
           glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &chunk_size);
 
           //chunk_size=200;
@@ -1160,7 +1169,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
               GLuint* rbuffers = NULL;
               GLuint* multisampleBuffers = NULL;
               bool multisample_supported = false;
-              int samples = 0;
+              GLint samples = 0;
 
               if (std::string(extensionsString).find("GL_EXT_framebuffer_multisample") != std::string::npos)
                 {
@@ -1207,7 +1216,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                   unsigned int ySteps = imageHeight / chunk_size;
                   unsigned int restX = imageWidth % chunk_size;
                   unsigned int restY = imageHeight % chunk_size;
-                  unsigned int i, j;
+                  unsigned int i = 0, j = 0;
                   int k;
                   double xModelStep = chunk_size * width / imageWidth;
                   double yModelStep = chunk_size * height / imageHeight;
