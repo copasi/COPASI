@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.4 $
+//   $Revision: 1.93.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/27 17:29:30 $
+//   $Date: 2010/09/27 17:30:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,7 @@ void DataModelGUI::linkDataModelToGUI()
 
 void DataModelGUI::populateData()
 {
-  mTree.add(C_INVALID, 0, "Copasi", "");
+  mTree.add(C_INVALID_INDEX, 0, "Copasi", "");
   std::stringstream in;
   in.str(DataModeltxt);
 
