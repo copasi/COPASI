@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/02 16:44:09 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -438,8 +438,10 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
       if (defaultRow && this->index(index.row(), COL_NAME_SPECIES).data().toString() == "species")
         mpSpecies->setObjectName(TO_UTF8(createNewName("species", COL_NAME_SPECIES)));
 
+      //Save Key
+      std::string key = mpSpecies->getKey();
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
     }
 
   return true;
@@ -458,10 +460,10 @@ bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
     {
       mpSpecies =
         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createMetabolite(TO_UTF8(createNewName("species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, mpSpecies->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, "");
 
   return true;
 }
@@ -475,11 +477,12 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeMetabolite(position);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, "");
 
   return true;
 }

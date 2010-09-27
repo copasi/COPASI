@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/08 17:35:02 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,7 +207,6 @@ void CQCompartmentsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
 {
   mpTblCompartments->resizeColumnsToContents();
   updateDeleteBtns();
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
 void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)

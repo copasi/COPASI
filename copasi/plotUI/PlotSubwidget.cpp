@@ -312,6 +312,7 @@ void PlotSubwidget::deletePlot()
   Index =
     pDataModel->getPlotDefinitionList()->CCopasiVector<CPlotSpecification>::getIndex(pspec);
   pDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
+  std::string deletedKey = mKey;
 
   Size = pDataModel->getPlotDefinitionList()->size();
 
@@ -321,7 +322,7 @@ void PlotSubwidget::deletePlot()
     enter("");
 
   //ListViews::
-  protectedNotify(ListViews::PLOT, ListViews::DELETE, mKey);
+  protectedNotify(ListViews::PLOT, ListViews::DELETE, deletedKey);
 }
 
 //-----------------------------------------------------------------------------
@@ -345,9 +346,10 @@ void PlotSubwidget::addPlot()
       name += TO_UTF8(QString::number(i));
     }
 
-  protectedNotify(ListViews::PLOT, ListViews::ADD);
-
-  enter(pPl->CCopasiParameter::getKey());
+  std::string key = pPl->CCopasiParameter::getKey();
+  protectedNotify(ListViews::PLOT, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 //-----------------------------------------------------------------------------

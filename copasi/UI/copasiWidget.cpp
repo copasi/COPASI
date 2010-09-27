@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.2.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Date: 2010/09/27 13:44:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 
 #include "copasiWidget.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "copasiui3window.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
@@ -80,7 +81,7 @@ bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::
   if (!mIgnoreUpdates)
     {
       mIgnoreUpdates = true;
-      mpListView->notify(objectType, action, key);
+      mpListView->getDataModel()->notify(objectType, action, key);
       notifyRun = true;
     }
 

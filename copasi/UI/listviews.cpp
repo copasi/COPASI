@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290 $
+//   $Revision: 1.290.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/08 13:39:23 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,12 +208,22 @@ ListViews::ListViews(QWidget *parent, const char *name):
   // Need to somehow signal mpTreeView to change when navigating using up and down arrows
   connect(mpTreeView, SIGNAL(activated(const QModelIndex &)),
           this, SLOT(slotFolderChanged(const QModelIndex &)));
-
 }
 
 ListViews::~ListViews()
 {
   //TODO clean up
+}
+
+void ListViews::slotUpdateCompleteView()
+{
+  storeCurrentItem();
+
+  mpTreeView->setModel(NULL);
+  mpTreeView->setModel(mpDataModelGUI);
+  mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
+
+  restoreCurrentItem();
 }
 
 /************************ListViews::setDataModel(DataModel<Folder>* dm)----------->
@@ -226,13 +236,26 @@ ListViews::~ListViews()
  ************************************************************************************/
 void ListViews::setDataModel(DataModelGUI* dm)
 {
+  //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
+  disconnect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
+  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
+             this, SLOT(notify(ListViews::ObjectType, ListViews::Action, const std::string&)));
+
   mpDataModelGUI = dm;
+
+  //update the tree nodes with single widgets.
+  mpDataModelGUI->updateAllEntities();
 
   mpTreeView->setModel(NULL);
   mpTreeView->setModel(mpDataModelGUI);
   mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
 
   ConstructNodeWidgets();
+
+  //Now Connect updateCompleteView() and notifyView() from DataModelGUI
+  connect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
+  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
+          this, SLOT(notify(ListViews::ObjectType, ListViews::Action, const std::string&)));
 }
 
 
@@ -800,230 +823,6 @@ int ListViews::getCurrentItemId()
   return pNode->getId();
 }
 
-
-//*******************************************************************************
-
-bool ListViews::updateDataModelAndListviews(ObjectType objectType,
-    Action action, const std::string & key) //static
-{
-  bool success = true;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  //maintain the "changed" flag
-  switch (objectType)
-    {
-      case METABOLITE:
-
-        switch (action)
-          {
-            case CHANGE:
-              break;
-            case RENAME:
-              break;
-            case ADD:
-              break;
-            case DELETE:
-
-              // check if it was the last metabolite, if yes,
-              // make the metabolite table the current widget
-              if (mpDataModelGUI)
-                {
-                  unsigned int numMetabolites = pDataModel->getModel()->getMetabolites().size();
-
-                  if (numMetabolites == 0)
-                    {
-                      switchToOtherWidget(112, "");
-                    }
-                }
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-      case COMPARTMENT:
-
-        switch (action)
-          {
-            case CHANGE:
-              break;
-            case RENAME:
-              break;
-            case ADD:
-              break;
-            case DELETE:
-
-              // check if it was the last compartment, if yes,
-              // make the compartment table the current widget
-              if (mpDataModelGUI)
-                {
-                  unsigned int numCompartments = pDataModel->getModel()->getCompartments().size();
-
-                  if (numCompartments == 0)
-                    {
-                      switchToOtherWidget(111, "");
-                    }
-                }
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-      case REACTION:
-
-        switch (action)
-          {
-            case CHANGE:
-              break;
-            case RENAME:
-              break;
-            case ADD:
-              break;
-            case DELETE:
-
-              // check if it was the last reaction, if yes,
-              // make the reaction table the current widget
-              if (mpDataModelGUI)
-                {
-                  unsigned int numReactions = pDataModel->getModel()->getReactions().size();
-
-                  if (numReactions == 0)
-                    {
-                      switchToOtherWidget(114, "");
-                    }
-                }
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-
-      case MODELVALUE:
-
-        switch (action)
-          {
-            case CHANGE:
-              break;
-            case RENAME:
-              break;
-            case ADD:
-              break;
-            case DELETE:
-
-              // check if it was the last value, if yes,
-              // make the model value table the current widget
-              if (mpDataModelGUI)
-                {
-                  unsigned int numValues = pDataModel->getModel()->getNumModelValues();
-
-                  if (numValues == 0)
-                    {
-                      switchToOtherWidget(115, "");
-                    }
-                }
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-        //case FUNCTION:
-
-      case PLOT:
-
-        switch (action)
-          {
-            case DELETE:
-
-              if (mpDataModelGUI)
-                {
-                  unsigned int numPlots = (pDataModel->getPlotDefinitionList())->size();
-
-                  if (numPlots == 0)
-                    {
-                      switchToOtherWidget(42, "");
-                    }
-                }
-
-              break;
-            case CHANGE:
-            case ADD:
-            case RENAME:
-              break;
-          }
-
-        if (mpDataModelGUI) pDataModel->changed();
-
-        break;
-
-      case REPORT:
-
-        switch (action)
-          {
-            case DELETE:
-
-              if (mpDataModelGUI)
-
-                {
-                  unsigned int numReports = ((pDataModel)->getReportDefinitionList())->size();
-
-                  if (numReports == 0)
-                    {
-                      switchToOtherWidget(43, "");
-                    }
-                }
-
-              pDataModel->changed();
-
-              break;
-            default :
-              ;
-          }
-
-        break;
-
-      case MODEL:
-
-        switch (action)
-          {
-            case CHANGE:
-            case RENAME:
-
-              if (mpDataModelGUI) pDataModel->changed();
-
-              break;
-            case ADD:
-            case DELETE:
-
-              if (mpDataModelGUI) setDataModel(mpDataModelGUI);
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-
-      default:
-        break;
-    }
-
-  storeCurrentItem();
-  mpDataModelGUI->notify(objectType, action, key);
-  //item may point to an invalid ListViewItem now
-  restoreCurrentItem();
-
-  return success;
-}
-
 //**************************************************************************************+***
 
 //static members **************************
@@ -1064,9 +863,6 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   // update all initial value
   if (action != RENAME)
     refreshInitialValues();
-
-  //update the datamodel and the listviews trees
-  if (!updateDataModelAndListviews(objectType, action, key)) success = false;
 
   if (!updateCurrentWidget(objectType, action, key)) success = false;
 

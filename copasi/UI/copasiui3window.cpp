@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289 $
+//   $Revision: 1.289.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/22 13:22:54 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,7 +214,7 @@ CopasiUI3Window * CopasiUI3Window::create()
  */
 CopasiUI3Window::CopasiUI3Window():
     QMainWindow(),
-    dataModel(NULL),
+    mpDataModelGUI(NULL),
     mpListView(NULL),
     mpBoxSelectFramework(NULL),
     newFlag(0),
@@ -274,17 +274,17 @@ CopasiUI3Window::CopasiUI3Window():
   mpaExportSBML->setEnabled(false);
   mpaExportODE->setEnabled(false);
 
-  if (!dataModel)
+  if (!mpDataModelGUI)
     {
       // create the data model
-      dataModel = new DataModelGUI(this);
+      mpDataModelGUI = new DataModelGUI(this);
     }
 
   mpListView = new ListViews(this);
 
   connect(mpListView->mpTreeView, SIGNAL(pressed(const QModelIndex &)), this, SLOT(listViewsFolderChanged(const QModelIndex &)));
 
-  mpListView->setDataModel(dataModel);
+  mpListView->setDataModel(mpDataModelGUI);
   mpListView->show();
   this->setCentralWidget(mpListView);
 
@@ -326,7 +326,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpAutoSaveTimer = new QTimer(this);
   mpAutoSaveTimer->start(AutoSaveInterval); // every 10 minutes
   connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
-  // mpListView->notify(ListViews::FUNCTION, ListViews::ADD, "");
+  // mpDataModelGUI->notify(ListViews::FUNCTION, ListViews::ADD, "");
 
   setApplicationFont();
 
@@ -341,7 +341,7 @@ CopasiUI3Window::~CopasiUI3Window()
 #endif // COPASI_SBW_INTEGRATION
 
   pdelete(mpListView);
-  pdelete(dataModel);
+  pdelete(mpDataModelGUI);
 }
 
 void CopasiUI3Window::createActions()
@@ -575,12 +575,12 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
       if (Answer == QMessageBox::Cancel) return false;
     }
 
-  if (dataModel && !tmp.isNull())
+  if (mpDataModelGUI && !tmp.isNull())
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
 
-      if ((success = dataModel->saveModel(TO_UTF8(tmp), true)))
+      if ((success = mpDataModelGUI->saveModel(TO_UTF8(tmp), true)))
         {
           assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
           (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
@@ -617,7 +617,7 @@ void CopasiUI3Window::newDoc()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (dataModel && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+  if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
     {
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
@@ -639,17 +639,17 @@ void CopasiUI3Window::newDoc()
         }
     }
 
-  mpListView->notify(ListViews::MODEL, ListViews::DELETE,
-                     (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
   mpListView->switchToOtherWidget(0, "");
 
-  if (!dataModel)
-    dataModel = new DataModelGUI(this); // create the data model
+  if (!mpDataModelGUI)
+    mpDataModelGUI = new DataModelGUI(this); // create the data model
 
-  dataModel->createModel();
-  mpListView->setDataModel(dataModel);
-  mpListView->notify(ListViews::MODEL, ListViews::ADD, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+  mpDataModelGUI->createModel();
+  mpListView->setDataModel(mpDataModelGUI);
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
   //if (!mbObject_browser_open)
   //mpFileMenu->setItemEnabled(nobject_browser, true);
 
@@ -685,7 +685,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (dataModel && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+      if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -707,13 +707,13 @@ void CopasiUI3Window::slotFileOpen(QString file)
             }
         }
 
-      mpListView->notify(ListViews::MODEL, ListViews::DELETE,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
 
-      if (!dataModel)
-        dataModel = new DataModelGUI(this); // create a new data model
+      if (!mpDataModelGUI)
+        mpDataModelGUI = new DataModelGUI(this); // create a new data model
 
       QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
@@ -722,7 +722,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
       try
         {
-          success = dataModel->loadModel(TO_UTF8(newFile));
+          success = mpDataModelGUI->loadModel(TO_UTF8(newFile));
         }
       catch (...)
         {
@@ -738,8 +738,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
           CQMessageBox::critical(this, QString("File Error"), Message,
                                  QMessageBox::Ok, QMessageBox::Ok);
-          dataModel->createModel();
-          mpListView->setDataModel(dataModel);
+          mpDataModelGUI->createModel();
+          mpListView->setDataModel(mpDataModelGUI);
         }
 
       CCopasiMessage msg = CCopasiMessage::getLastMessage();
@@ -774,8 +774,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
           mSaveAsRequired = true;
         }
 
-      mpListView->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
       mpaSave->setEnabled(true);
       mpaSaveAs->setEnabled(true);
@@ -816,8 +816,8 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
       mSaveAsRequired = true;
     }
 
-  mpListView->notify(ListViews::MODEL, ListViews::ADD,
-                     (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
   QString newFile = "";
 
@@ -838,8 +838,8 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
       mpListView->switchToOtherWidget(0, "");
 
-      if (!dataModel)
-        dataModel = new DataModelGUI(this); // create a new data model
+      if (!mpDataModelGUI)
+        mpDataModelGUI = new DataModelGUI(this); // create a new data model
 
       QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
@@ -848,7 +848,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
       try
         {
-          success = dataModel->addModel(TO_UTF8(newFile));
+          success = mpDataModelGUI->addModel(TO_UTF8(newFile));
         }
       catch (...)
         {
@@ -964,12 +964,12 @@ bool CopasiUI3Window::slotFileSave()
 
   bool success = true;
 
-  if (dataModel)
+  if (mpDataModelGUI)
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
 
-      if ((success = dataModel->saveModel(FileName, true)))
+      if ((success = mpDataModelGUI->saveModel(FileName, true)))
         {
           (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
         }
@@ -1006,7 +1006,7 @@ void CopasiUI3Window::slotQuit()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (dataModel && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+  if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
     {
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
@@ -1052,7 +1052,7 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (dataModel && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+  if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
     {
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
@@ -1168,7 +1168,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (dataModel && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+      if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -1190,14 +1190,14 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
             }
         }
 
-      mpListView->notify(ListViews::MODEL, ListViews::DELETE,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
 
-      if (!dataModel)
+      if (!mpDataModelGUI)
         {
-          dataModel = new DataModelGUI(this); // create a new data model
+          mpDataModelGUI = new DataModelGUI(this); // create a new data model
         }
 
       QCursor oldCursor = cursor();
@@ -1205,7 +1205,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 
       try
         {
-          success = dataModel->importSBMLFromString(sbmlDocumentText);
+          success = mpDataModelGUI->importSBMLFromString(sbmlDocumentText);
         }
 
       catch (CCopasiException except)
@@ -1224,8 +1224,8 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
                                  QMessageBox::Ok, QMessageBox::Ok);
           CCopasiMessage::clearDeque();
 
-          dataModel->createModel();
-          mpListView->setDataModel(dataModel);
+          mpDataModelGUI->createModel();
+          mpListView->setDataModel(mpDataModelGUI);
         }
 
       /* still check for warnings.
@@ -1237,8 +1237,8 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
           this->checkPendingMessages();
         }
 
-      mpListView->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
       //if (!bobject_browser_open)
       //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
@@ -1273,7 +1273,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (dataModel && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+      if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -1295,14 +1295,14 @@ void CopasiUI3Window::slotImportSBML(QString file)
             }
         }
 
-      mpListView->notify(ListViews::MODEL, ListViews::DELETE,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
 
-      if (!dataModel)
+      if (!mpDataModelGUI)
         {
-          dataModel = new DataModelGUI(this); // create a new data model
+          mpDataModelGUI = new DataModelGUI(this); // create a new data model
         }
 
       QCursor oldCursor = cursor();
@@ -1310,7 +1310,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
       try
         {
-          success = dataModel->importSBML(TO_UTF8(SBMLFile));
+          success = mpDataModelGUI->importSBML(TO_UTF8(SBMLFile));
         }
 
       catch (...)
@@ -1328,15 +1328,15 @@ void CopasiUI3Window::slotImportSBML(QString file)
           CQMessageBox::critical(this, QString("File Error"), Message,
                                  QMessageBox::Ok, QMessageBox::Ok);
 
-          dataModel->createModel();
-          mpListView->setDataModel(dataModel);
+          mpDataModelGUI->createModel();
+          mpListView->setDataModel(mpDataModelGUI);
         }
       else
         // We check in all case for warnings. This will help also for unsuccessful imports
         this->checkPendingMessages();
 
-      mpListView->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
       mpaSave->setEnabled(true);
       mpaSaveAs->setEnabled(true);
@@ -1405,7 +1405,7 @@ void CopasiUI3Window::slotExportSBML()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  if (dataModel && !tmp.isNull())
+  if (mpDataModelGUI && !tmp.isNull())
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
@@ -1413,7 +1413,7 @@ void CopasiUI3Window::slotExportSBML()
 
       try
         {
-          success = dataModel->exportSBML(TO_UTF8(tmp), true, sbmlLevel, sbmlVersion, exportIncomplete);
+          success = mpDataModelGUI->exportSBML(TO_UTF8(tmp), true, sbmlLevel, sbmlVersion, exportIncomplete);
         }
       catch (CCopasiException except)
         {
@@ -1490,12 +1490,12 @@ void CopasiUI3Window::slotExportMathModel()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  if (dataModel && !tmp.isNull())
+  if (mpDataModelGUI && !tmp.isNull())
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
 
-      if (!dataModel->exportMathModel(TO_UTF8(tmp), TO_UTF8(*userFilter), true))
+      if (!mpDataModelGUI->exportMathModel(TO_UTF8(tmp), TO_UTF8(*userFilter), true))
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
@@ -1533,7 +1533,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
       CCopasiMessage::clearDeque();
     }
 
-  mpListView->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
 void CopasiUI3Window::slotShowSliders(bool flag)
@@ -1543,7 +1543,7 @@ void CopasiUI3Window::slotShowSliders(bool flag)
 }
 
 DataModelGUI* CopasiUI3Window::getDataModel()
-{return dataModel;}
+{return mpDataModelGUI;}
 
 void CopasiUI3Window::listViewsFolderChanged(const QModelIndex &)
 {
@@ -1748,7 +1748,7 @@ std::string CopasiUI3Window::exportSBMLToString()
 
   std::string ret;
 
-  if (dataModel)
+  if (mpDataModelGUI)
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
@@ -1756,7 +1756,7 @@ std::string CopasiUI3Window::exportSBMLToString()
 
       try
         {
-          ret = dataModel->exportSBMLToString();
+          ret = mpDataModelGUI->exportSBMLToString();
         }
       catch (CCopasiException except)
         {
@@ -1813,12 +1813,12 @@ void CopasiUI3Window::slotUpdateMIRIAM()
 
   CCopasiMessage::clearDeque();
 
-  if (!dataModel)
-    dataModel = new DataModelGUI(this); // create a new data model
+  if (!mpDataModelGUI)
+    mpDataModelGUI = new DataModelGUI(this); // create a new data model
 
   try
     {
-      success = dataModel->updateMIRIAM(
+      success = mpDataModelGUI->updateMIRIAM(
                   CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources());
     }
   catch (...)
@@ -1867,7 +1867,7 @@ void CopasiUI3Window::slotApplyInitialState()
       pModel->applyInitialValues();
       pModel->updateNonSimulatedValues();
 
-      mpListView->notify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
     }
 }
 
@@ -1884,7 +1884,7 @@ void CopasiUI3Window::slotUpdateInitialState()
       pModel->setInitialState(pModel->getState());
       pModel->updateInitialValues();
 
-      mpListView->notify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
     }
 }
 
@@ -1976,7 +1976,7 @@ void CopasiUI3Window::slotExpandModel()
   CQExpandModelData *widget = new CQExpandModelData;
   widget->exec();
 
-  mpListView->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
 #ifdef WITH_MERGEMODEL
@@ -1990,12 +1990,12 @@ void CopasiUI3Window::slotAddModel()
   CModelAdd add(pModel, mModel);
   add.simpleCall();
 
-  mpListView->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
 void CopasiUI3Window::slotMergeModels()
 {
-  mpListView->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
@@ -2011,7 +2011,7 @@ void CopasiUI3Window::slotMergeModels()
       CQMergingData *widget = new CQMergingData;
       widget->exec();
 
-      mpListView->notify(ListViews::MODEL, ListViews::CHANGE, "");
+      mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
     }
 }
 #endif

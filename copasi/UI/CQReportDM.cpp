@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.4.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -137,7 +143,7 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
         pRepDef->setObjectName(TO_UTF8(createNewName("report", COL_NAME_REPORTS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::REPORT, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::REPORT, ListViews::CHANGE, pRepDef->getKey());
     }
 
   return true;
@@ -149,11 +155,12 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(createNewName("report", COL_NAME_REPORTS)), "");
+      CReportDefinition *pRepDef =
+        (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(createNewName("report", COL_NAME_REPORTS)), "");
+      emit notifyGUI(ListViews::REPORT, ListViews::ADD, pRepDef->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::REPORT, ListViews::ADD, "");
 
   return true;
 }
@@ -167,11 +174,12 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->operator[](position)->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->CCopasiVector< CReportDefinition >::remove(position);
+      emit notifyGUI(ListViews::REPORT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::REPORT, ListViews::DELETE, "");
 
   return true;
 }

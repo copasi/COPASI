@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.4.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Date: 2010/09/27 13:44:55 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -258,7 +263,7 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
         pComp->setObjectName(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pComp->getKey());
     }
 
   return true;
@@ -270,11 +275,11 @@ bool CQCompartmentDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
+      CCompartment * pComp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, "");
 
   return true;
 }
@@ -288,11 +293,12 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeCompartment(position);
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, "");
 
   return true;
 }

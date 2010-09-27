@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.17.2.1 $
    $Name:  $
    $Author: aekamal $
-   $Date: 2010/08/13 21:19:01 $
+   $Date: 2010/09/27 13:44:58 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,8 @@ public:
   const std::vector<IndexedNode*>& children() const;
 
   void removeChildren();
+
+  bool removeChild(const std::string & key);
 
   void addChild(int id, const QString & name, const std::string & key);
 

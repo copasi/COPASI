@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/09/25 18:43:42 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:57 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -523,6 +528,7 @@ void CQSpeciesDetail::slotBtnDelete()
           pModel->getMetabolites().getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
         pModel->removeMetabolite(mKey);
+        std::string deletedKey = mKey;
 
         unsigned C_INT32 size =
           pModel->getMetabolites().size();
@@ -533,7 +539,7 @@ void CQSpeciesDetail::slotBtnDelete()
           enter("");
 
 #undef DELETE
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, deletedKey);
         //TODO notify about reactions
         break;
       }
@@ -580,8 +586,10 @@ void CQSpeciesDetail::slotBtnNew()
         break;
     }
 
-  enter(mpMetab->getKey());
-  protectedNotify(ListViews::METABOLITE, ListViews::ADD);
+  std::string key = mpMetab->getKey();
+  enter(key);
+  protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 void CQSpeciesDetail::slotBtnRevert()

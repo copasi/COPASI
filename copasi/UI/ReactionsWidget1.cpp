@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205 $
+//   $Revision: 1.205.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:57:43 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -317,12 +317,14 @@ bool ReactionsWidget1::saveToReaction()
 
       mpRi->setFunctionWithEmptyMapping("");
 
+      std::string deletedKey = mKey;
+
       if (size > 0)
         enter(pModel->getReactions()[std::min(ReactionIndex, size - 1)]->getKey());
       else
         enter("");
 
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
       return true;
     }
 
@@ -457,9 +459,10 @@ void ReactionsWidget1::slotBtnNewClicked()
       name += TO_UTF8(QString::number(i));
     }
 
-  protectedNotify(ListViews::REACTION, ListViews::ADD);
-  enter(pDataModel->getModel()->getReactions()[name]->getKey());
-  //pListView->switchToOtherWidget(mKeys[row]);
+  std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
+  protectedNotify(ListViews::REACTION, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 // Just added 5/18/04
@@ -491,6 +494,8 @@ void ReactionsWidget1::slotBtnDeleteClicked()
         = pDataModel->getModel()->getReactions().getIndex(mpRi->getReactionName());
 
         pDataModel->getModel()->removeReaction(mKey);
+        std::string deletedKey = mKey;
+
         unsigned C_INT32 size
         = pDataModel->getModel()->getReactions().size();
 
@@ -501,7 +506,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
         else
           enter("");
 
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
         break;
       }
       default:                                                     // No or Escape
@@ -625,7 +630,7 @@ void ReactionsWidget1::slotNewFunction()
     }
 
   CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(nname), true);
-  protectedNotify(ListViews::FUNCTION, ListViews::ADD);
+  protectedNotify(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
 
   mpListView->switchToOtherWidget(0, pFunc->getKey());
 }

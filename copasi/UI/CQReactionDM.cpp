@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.4.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -195,7 +200,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
         pRea->setObjectName(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
     }
 
   return true;
@@ -304,11 +309,11 @@ bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+      CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::REACTION, ListViews::ADD, "");
 
   return true;
 }
@@ -322,11 +327,12 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeReaction(position);
+      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");
 
   return true;
 }

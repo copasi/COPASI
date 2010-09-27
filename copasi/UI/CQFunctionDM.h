@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.4.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:25 $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -45,8 +51,6 @@ protected:
 
 private:
   bool isFunctionReadOnly(const QModelIndex &index) const;
-signals:
-  void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 };
 
 #endif //CQFunctionDM_H

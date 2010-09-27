@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantitiesWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/08 17:35:02 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,7 +207,6 @@ void CQGlobalQuantitiesWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
 {
   mpTblGlobalQuantities->resizeColumnsToContents();
   updateDeleteBtns();
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
 void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)

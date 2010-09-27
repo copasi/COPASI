@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/02 16:44:09 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,9 +71,6 @@ protected:
 
   bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
   bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
-
-signals:
-  void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 };
 
 #endif //CQSpecieDM_H

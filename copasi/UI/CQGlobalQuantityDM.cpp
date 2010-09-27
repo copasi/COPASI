@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.4.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -228,7 +234,7 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
         pGQ->setObjectName(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, pGQ->getKey());
     }
 
   return true;
@@ -240,11 +246,11 @@ bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
+      CModelValue *pGQ = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGQ->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, "");
 
   return true;
 }
@@ -258,11 +264,12 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeModelValue(position);
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, "");
 
   return true;
 }

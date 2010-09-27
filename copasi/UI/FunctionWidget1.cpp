@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.174 $
+//   $Revision: 1.174.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -903,8 +903,10 @@ void FunctionWidget1::slotNewButtonClicked()
 
   CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
 
-  protectedNotify(ListViews::FUNCTION, ListViews::ADD);
-  enter(pFunc->getKey());
+  std::string key = pFunc->getKey();
+  protectedNotify(ListViews::FUNCTION, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 //! Slot for being activated whenever Delete button is clicked
@@ -940,6 +942,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
           CCopasiRootContainer::getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
         CCopasiRootContainer::getFunctionList()->removeFunction(mKey);
+        std::string deletedKey = mKey;
 
         unsigned C_INT32 size =
           CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
@@ -949,7 +952,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
         else
           enter("");
 
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, deletedKey);
 
         break;
       }

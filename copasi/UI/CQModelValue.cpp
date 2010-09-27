@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/11/30 17:45:57 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -89,8 +94,10 @@ void CQModelValue::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  enter(mpModelValue->getKey());
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD);
+  std::string key = mpModelValue->getKey();
+  enter(key);
+  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 void CQModelValue::slotBtnDelete()
@@ -119,6 +126,8 @@ void CQModelValue::slotBtnDelete()
           static_cast<CCopasiVector< CModelValue > *>(&pDataModel->getModel()->getModelValues())->getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
         pDataModel->getModel()->removeModelValue(mKey);
+        std::string deletedKey = mKey;
+
         unsigned C_INT32 size =
           pDataModel->getModel()->getModelValues().size();
 
@@ -130,7 +139,7 @@ void CQModelValue::slotBtnDelete()
           enter("");
 
 #undef DELETE
-        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, deletedKey);
         break;
       }
 

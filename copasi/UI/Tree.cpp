@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.9 $
+  $Revision: 1.9.2.1 $
   $Name:  $
   $Author: aekamal $
-  $Date: 2010/08/27 21:08:53 $
+  $Date: 2010/09/27 13:44:58 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,8 +79,27 @@ void IndexedNode::removeChildren()
   mChildren.clear();
 }
 
+bool IndexedNode::removeChild(const std::string & key)
+{
+  std::vector<IndexedNode*>::iterator it, itEnd = mChildren.end();
+
+  for (it = mChildren.begin(); it != itEnd; ++it)
+    {
+      if ((*it)->getObjectKey() == key)
+        {
+          delete *it;
+          mChildren.erase(it);
+          return true;
+        }
+    }
+
+  return false;
+}
+
 void IndexedNode::addChild(int id, const QString & name, const std::string & key)
-{mChildren.push_back(new IndexedNode(id, name, key, this));};
+{
+  mChildren.push_back(new IndexedNode(id, name, key, this));
+}
 
 int IndexedNode::getId() const {return mId;};
 
@@ -92,16 +111,16 @@ void IndexedNode::setName(const QString & name)
   mName = name;
   mSortKey.setNum(mId);
   mSortKey += "_" + name;
-};
+}
 
-const std::string & IndexedNode::getObjectKey() const {return mObjectKey;};
+const std::string & IndexedNode::getObjectKey() const {return mObjectKey;}
 
-void IndexedNode::setObjectKey(const std::string & key) {mObjectKey = key;};
+void IndexedNode::setObjectKey(const std::string & key) {mObjectKey = key;}
 
 const QString & IndexedNode::getSortKey() const
 {
   return mSortKey;
-};
+}
 
 const std::vector<IndexedNode*> & IndexedNode::children() const
 {return mChildren;};

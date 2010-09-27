@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.4.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -211,7 +217,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
         pFunc->setObjectName(TO_UTF8(createNewName("function", COL_NAME_FUNCTIONS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, pFunc->getKey());
     }
 
   return true;
@@ -223,11 +229,12 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      CCopasiRootContainer::getFunctionList()->add(new CKinFunction(TO_UTF8(createNewName("function", COL_NAME_FUNCTIONS))), true);
+      CFunction *pFunc;
+      CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(createNewName("function", COL_NAME_FUNCTIONS))), true);
+      emit notifyGUI(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::FUNCTION, ListViews::ADD, "");
 
   return true;
 }
@@ -242,9 +249,10 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex&)
       if (!isFunctionReadOnly(this->index(position + row, 0)))
         {
           beginRemoveRows(QModelIndex(), position + row, position + row);
+          std::string deletedKey = CCopasiRootContainer::getFunctionList()->loadedFunctions()[position]->getKey();
           CCopasiRootContainer::getFunctionList()->removeFunction(position + row);
           endRemoveRows();
-          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, "");
+          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, deletedKey);
         }
     }
 

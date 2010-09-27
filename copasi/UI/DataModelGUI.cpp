@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.93.2.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/29 16:06:03 $
+//   $Date: 2010/09/27 13:44:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,7 +50,6 @@
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
-
 
 //*****************************************************************************
 
@@ -147,12 +146,61 @@ void DataModelGUI::populateData()
     }
 }
 
-void DataModelGUI::setObjectNumber(IndexedNode *node, unsigned int noOfObjects)
+QVariant DataModelGUI::data(const QModelIndex &index, int role) const
 {
-  QString oldNodeName = node->getName();
-  QString newNodeName = oldNodeName.left(oldNodeName.lastIndexOf('(')).trimmed();
-  newNodeName += " (" + QString::number(noOfObjects) + ")";
-  node->setName(newNodeName);
+  if (!index.isValid())
+    return QVariant();
+
+  if (role != Qt::DisplayRole)
+    return QVariant();
+
+  IndexedNode *item = static_cast<IndexedNode*>(index.internalPointer());
+
+  return QVariant(getNameWithObjectNo(item));
+}
+
+QString DataModelGUI::getNameWithObjectNo(const IndexedNode *node) const
+{
+  QString name = node->getName();
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  switch (node->getId())
+    {
+      case 5:
+        name += " (" + QString::number(CCopasiRootContainer::getFunctionList()->loadedFunctions().size())
+                + ")";
+        break;
+      case 42:
+        name += " (" + QString::number((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size())
+                + ")";
+        break;
+      case 43:
+        name += " (" + QString::number((*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size())
+                + ")";
+        break;
+      case 111:
+        name += " (" + QString::number(pModel->getCompartments().size())
+                + ")";
+        break;
+      case 112:
+        name += " (" + QString::number(pModel->getMetabolites().size())
+                + ")";
+        break;
+      case 114:
+        name += " (" + QString::number(pModel->getReactions().size())
+                + ")";
+        break;
+      case 115:
+        name += " (" + QString::number(pModel->getModelValues().size())
+                + ")";
+        break;
+      case 116:
+        name += " (" + QString::number(pModel->getEvents().size())
+                + ")";
+        break;
+    }
+
+  return name;
 }
 
 void DataModelGUI::updateCompartments()
@@ -176,8 +224,6 @@ void DataModelGUI::updateCompartments()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
-
-  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateMetabolites()
@@ -198,8 +244,6 @@ void DataModelGUI::updateMetabolites()
                        FROM_UTF8(CMetabNameInterface::getDisplayName((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *metab)),
                        metab->getKey());
     }
-
-  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateReactions()
@@ -221,10 +265,7 @@ void DataModelGUI::updateReactions()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
-
-  setObjectNumber(parent, jmax);
 }
-
 void DataModelGUI::updateModelValues()
 {
   IndexedNode * parent = mTree.findNodeFromId(115);
@@ -243,8 +284,6 @@ void DataModelGUI::updateModelValues()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
-
-  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateFunctions()
@@ -265,8 +304,6 @@ void DataModelGUI::updateFunctions()
                          FROM_UTF8(obj->getObjectName()),
                          obj->getKey());
     }
-
-  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateEvents()
@@ -289,8 +326,6 @@ void DataModelGUI::updateEvents()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
-
-  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updateReportDefinitions()
@@ -311,8 +346,6 @@ void DataModelGUI::updateReportDefinitions()
                        FROM_UTF8(obj->getObjectName()),
                        obj->getKey());
     }
-
-  setObjectNumber(parent, jmax);
 }
 
 void DataModelGUI::updatePlots()
@@ -336,7 +369,6 @@ void DataModelGUI::updatePlots()
                        obj->CCopasiParameter::getKey());
     }
 
-  setObjectNumber(parent, jmax);
 }
 
 //*****************************************************************
@@ -612,19 +644,6 @@ int DataModelGUI::columnCount(const QModelIndex &parent) const
     return getRootNode()->columnCount();
 }
 
-QVariant DataModelGUI::data(const QModelIndex &index, int role) const
-{
-  if (!index.isValid())
-    return QVariant();
-
-  if (role != Qt::DisplayRole)
-    return QVariant();
-
-  IndexedNode *item = static_cast<IndexedNode*>(index.internalPointer());
-
-  return QVariant(item->getName());
-}
-
 Qt::ItemFlags DataModelGUI::flags(const QModelIndex &index) const
 {
   if (!index.isValid())
@@ -705,15 +724,8 @@ QModelIndex DataModelGUI::findIndexFromKey(const std::string& key)
   return index;
 }
 
-void DataModelGUI::emitDataChanged()
+void DataModelGUI::updateAllEntities()
 {
-  const QModelIndex index = findIndexFromId(1);
-  emit dataChanged(index, index);
-}
-
-bool DataModelGUI::notify(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  //just do everything.  Later we can decide from parameters what really needs to be done
   updateCompartments();
 
   updateMetabolites();
@@ -730,7 +742,132 @@ bool DataModelGUI::notify(ListViews::ObjectType C_UNUSED(objectType), ListViews:
 
   updatePlots();
 
-  emitDataChanged();
+  emit updateCompleteView();
+}
+
+bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  if (key == "")
+    {
+      //just update everything if no key given.
+      updateAllEntities();
+      emit notifyView(objectType, action, key);
+      return true;
+    }
+
+  if (action == ListViews::RENAME || action == ListViews::CHANGE)
+    {
+      if (objectType == ListViews::MODEL)
+        {
+          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+          CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+          assert(pDataModel != NULL);
+
+          pDataModel->changed();
+        }
+      else
+        changeRow(key);
+    }
+  else if (action == ListViews::DELETE)
+    {
+      if (objectType == ListViews::MODEL)
+        {
+          updateAllEntities();
+          emit notifyView(objectType, action, key);
+          return true;
+        }
+      else
+        removeRow(key);
+    }
+  else if (action == ListViews::ADD)
+    {
+
+      switch (objectType)
+        {
+          case ListViews::MODEL:
+            updateAllEntities();
+            emit notifyView(objectType, action, key);
+            return true;
+            break;
+          case ListViews::COMPARTMENT:
+            insertRow(111, key);
+            break;
+          case ListViews::METABOLITE:
+            insertRow(112, key);
+            break;
+          case ListViews::REACTION:
+            insertRow(114, key);
+            break;
+          case ListViews::MODELVALUE:
+            insertRow(115, key);
+            break;
+          case ListViews::EVENT:
+            insertRow(116, key);
+            break;
+          case ListViews::PLOT:
+            insertRow(42, key);
+            break;
+          case ListViews::REPORT:
+            insertRow(43, key);
+            break;
+          case ListViews::FUNCTION:
+            insertRow(5, key);
+            break;
+        }
+    }
+
+  emit notifyView(objectType, action, key);
+  return true;
+}
+
+bool DataModelGUI::insertRow(int parentId, const std::string &key)
+{
+  IndexedNode *parentNode = mTree.findNodeFromId(parentId);
+
+  if (!parentNode)
+    return false;
+
+  QModelIndex parentIndex = findIndexFromId(parentId);
+
+  beginInsertRows(parentIndex, parentNode->childCount(), parentNode->childCount());
+  std::string objName = CCopasiRootContainer::getKeyFactory()->get(key)->getObjectName();
+  parentNode->addChild(-1, FROM_UTF8(objName), key);
+
+  endInsertRows();
+
+  emit dataChanged(parentIndex, parentIndex);
 
   return true;
+}
+
+bool DataModelGUI::removeRow(const std::string &key)
+{
+  IndexedNode *node = mTree.findNodeFromKey(key);
+
+  if (!node || !node->parent())
+    return false;
+
+
+  QModelIndex parentIndex = findIndexFromId(node->parent()->getId());
+
+  beginRemoveRows(parentIndex, node->row(), node->row());
+  node->parent()->removeChild(key);
+  endRemoveRows();
+
+  emit dataChanged(parentIndex, parentIndex);
+
+  return true;
+}
+
+void DataModelGUI::changeRow(const std::string &key)
+{
+  IndexedNode *node = mTree.findNodeFromKey(key);
+
+  if (!node)
+    return;
+
+  std::string objName = CCopasiRootContainer::getKeyFactory()->get(key)->getObjectName();
+  node->setName(FROM_UTF8(objName));
+  QModelIndex index = findIndexFromKey(key);
+  emit dataChanged(index, index);
 }

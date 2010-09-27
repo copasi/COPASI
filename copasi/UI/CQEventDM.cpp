@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.4.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Date: 2010/09/27 13:44:55 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -208,7 +213,7 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
         pEvent->setObjectName(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, pEvent->getKey());
     }
 
   return true;
@@ -220,11 +225,12 @@ bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
+      CEvent *pEvent =
+        (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
+      emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::EVENT, ListViews::ADD, "");
 
   return true;
 }
@@ -238,11 +244,12 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(position);
+      emit notifyGUI(ListViews::EVENT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::EVENT, ListViews::DELETE, "");
 
   return true;
 }

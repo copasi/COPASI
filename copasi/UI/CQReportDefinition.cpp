@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/15 15:57:54 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -367,6 +367,8 @@ void CQReportDefinition::btnDeleteReportClicked()
 
   Index = pDataModel->getReportDefinitionList()->CCopasiVector<CReportDefinition>::getIndex(mpReportDefinition);
   pDataModel->getReportDefinitionList()->removeReportDefinition(mKey);
+  std::string deletedKey = mKey;
+
 
   Size = pDataModel->getReportDefinitionList()->size();
 
@@ -375,7 +377,7 @@ void CQReportDefinition::btnDeleteReportClicked()
   else
     enter("");
 
-  protectedNotify(ListViews::REPORT, ListViews::DELETE, mKey);
+  protectedNotify(ListViews::REPORT, ListViews::DELETE, deletedKey);
 }
 
 void CQReportDefinition::btnNewReportClicked()
@@ -395,8 +397,10 @@ void CQReportDefinition::btnNewReportClicked()
       Name += TO_UTF8(QString::number(i));
     }
 
-  protectedNotify(ListViews::REPORT, ListViews::ADD);
-  enter(pRep->getKey());
+  std::string key = pRep->getKey();
+  protectedNotify(ListViews::REPORT, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 void CQReportDefinition::btnRevertClicked()

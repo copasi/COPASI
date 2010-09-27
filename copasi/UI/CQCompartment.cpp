@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.17.2.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Date: 2010/09/27 13:44:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,8 +112,10 @@ void CQCompartment::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  enter(mpCompartment->getKey());
-  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD);
+  std::string key = mpCompartment->getKey();
+  enter(key);
+  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 void CQCompartment::slotBtnDelete()
@@ -139,6 +141,7 @@ void CQCompartment::slotBtnDelete()
         unsigned C_INT32 Index =
           pDataModel->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
         pDataModel->getModel()->removeCompartment(mKey);
+        std::string deletedKey = mKey;
 
         unsigned C_INT32 Size =
           pDataModel->getModel()->getCompartments().size();
@@ -148,7 +151,7 @@ void CQCompartment::slotBtnDelete()
         else
           enter("");
 
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, deletedKey);
         break;
       }
 

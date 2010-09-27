@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:16 $
+//   $Author: aekamal $
+//   $Date: 2010/09/27 13:44:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
     pDataModel->getModel()->getEvents().CCopasiVector< CEvent >::getIndex(mpEvent);
 
   pDataModel->getModel()->removeEvent(mKey);
+  std::string deletedKey = mKey;
 
   unsigned C_INT32 size = pDataModel->getModel()->getEvents().size();
 
@@ -96,7 +97,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
   else
     enter("");
 
-  protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, deletedKey);
 }
 
 /// Slot to create a new event; activated whenever the New button is clicked
@@ -120,8 +121,10 @@ void CQEventWidget1::slotBtnNewClicked()
       name += TO_UTF8(QString::number(i));
     }
 
-  protectedNotify(ListViews::EVENT, ListViews::ADD);
-  enter((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey());
+  std::string key = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey();
+  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 /*! Slot to go back to the previous values of the active event widget whenever the Revert button is clicked */
