@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Date: 2010/09/27 13:20:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,7 +214,7 @@ protected:
       GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
       GLbitfield mask, GLenum filter);
 #else
-#ifndef __APPLE__  // if it is not an apple, we assume it is an X11 system
+//#ifndef __APPLE__  // if it is not an apple, we assume it is an X11 system
   typedef GLenum(*PFNGLCHECKFRAMEBUFFERSTATUSEXT)(GLenum target);
   typedef void (*PFNGLGENFRAMEBUFFERSEXT)(GLsizei n, GLuint* framebuffers);
   typedef void (*PFNGLGENRENDERBUFFERSEXT)(GLsizei n, GLuint* renderbuffers);
@@ -229,9 +229,9 @@ protected:
   typedef void (*PFNGLBLITFRAMEBUFFEREXT)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1,
                                           GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
                                           GLbitfield mask, GLenum filter);
-#endif // __APPLE__
+//#endif // __APPLE__
 #endif // WIN32
-#ifndef __APPLE__
+//#ifndef __APPLE__
   PFNGLCHECKFRAMEBUFFERSTATUSEXT glCheckFramebufferStatusEXTPtr;
   PFNGLGENFRAMEBUFFERSEXT glGenFramebuffersEXTPtr;
   PFNGLGENRENDERBUFFERSEXT glGenRenderbuffersEXTPtr;
@@ -243,7 +243,7 @@ protected:
   PFNGLFRAMEBUFFERRENDERBUFFEREXT glFramebufferRenderbufferEXTPtr;
   PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXT glRenderbufferStorageMultisampleEXTPtr;
   PFNGLBLITFRAMEBUFFEREXT glBlitFramebufferEXTPtr;
-#endif // __APPLE__
+//#endif // __APPLE__
 
 protected:
 
@@ -293,7 +293,7 @@ protected:
                    GLuint** rbuffers, GLuint** multiRBuffers,
                    GLubyte** pImageData, GLuint samples = 0);
 
-#ifndef __APPLE__
+//#ifndef __APPLE__
   /**
    * On non apple systems, we need to get the pointers to extension functions.
    */
@@ -304,6 +304,12 @@ protected:
    */
   void clear_extension_functions();
 
+//#endif // __APPLE__
+//
+#ifdef __APPLE__
+  // This routine comes straight from Apples OpenGL programming guide
+  // It basically does the same as the glxGetProcAddr from glx
+  void * MyNSGLGetProcAddress(const char *name);
 #endif // __APPLE__
 
 protected slots:

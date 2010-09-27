@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.5.2.1 $
+//   $Revision: 1.5.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/27 08:52:52 $
+//   $Date: 2010/09/27 13:20:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,11 @@
 #include <limits>
 #include <functional>
 #include <algorithm>
+#ifdef __APPLE__
+#include <string>
+#include <stdlib.h>
+#include <mach-o/dyld.h>
+#endif // __APPLE__
 
 // opengl includes
 #ifdef _WIN32
@@ -68,7 +73,7 @@
 #ifndef _WIN32
 #include <GL/glx.h>
 #endif // _WIN32
-// somehow glx defines a macro called CursorShape whcih clashes with the Qt enum of the same name
+// somehow glx defines a macro called CursorShape which clashes with the Qt enum of the same name
 #undef CursorShape
 #endif // __APPLE__
 
@@ -1189,9 +1194,9 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
 
               // if we are not on an apple, we have to initialize the functions
               // for the OpenGL extensions
-#ifndef __APPLE__
+//#ifndef __APPLE__
               this->initialize_extension_functions();
-#endif // __APPLE__
+//#endif // __APPLE__
 
               if (imageWidth > (unsigned int)chunk_size || imageHeight > (unsigned int)chunk_size)
                 {
@@ -1420,9 +1425,10 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
               // for the OpenGL extensions again because we can not reuse them
               // for the next export sicne they are context dependent and the context might have changed
               // This is not absolutly necessary, but it might help finding problems.
-#ifndef __APPLE__
+//#ifndef __APPLE__
               this->clear_extension_functions();
-#endif // __APPLE__
+
+//#endif // __APPLE__
               // if the stored selection is not empty, we have to restore the selection
               if (!selection.empty())
                 {
@@ -1475,7 +1481,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
  */
 bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, GLuint& fbo, GLuint& multiFBO, GLuint** rbuffers, GLuint** multiRBuffers, GLubyte** pImageData, GLuint samples)
 {
-#ifndef __APPLE__
+//#ifndef __APPLE__
   // make sure all the functions that we need are actually initialized
   assert(glGenFramebuffersEXTPtr != NULL);
   assert(glGenRenderbuffersEXTPtr != NULL);
@@ -1483,94 +1489,96 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
   assert(glBindRenderbufferEXTPtr != NULL);
   assert(glRenderbufferStorageEXTPtr != NULL);
   assert(glFramebufferRenderbufferEXTPtr != NULL);
-#endif // __APPLE__
+
+//#endif // __APPLE__
   // create the framebuffer object, the render buffer objects and bind them
   if (fbo == 0)
     {
       // create the framebuffer object
-#ifdef __APPLE__
-      glGenFramebuffersEXT(1, &fbo);
-#else
+//#ifdef __APPLE__
+//      glGenFramebuffersEXT(1, &fbo);
+//#else
       (*glGenFramebuffersEXTPtr)(1, &fbo);
-#endif // __APPLE__
+//#endif // __APPLE__
       assert(fbo != 0);
-#ifdef __APPLE__
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
-#else
+//#ifdef __APPLE__
+//      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+//#else
       (*glBindFramebufferEXTPtr)(GL_FRAMEBUFFER_EXT, fbo);
-#endif // __APPLE__
+//#endif // __APPLE__
     }
 
   if ((*rbuffers) == NULL)
     {
       // create the render buffers and create storage for them
       (*rbuffers) = new GLuint[2];
-#ifdef __APPLE__
-      glGenRenderbuffersEXT(2, (*rbuffers));
-#else
+//#ifdef __APPLE__
+//      glGenRenderbuffersEXT(2, (*rbuffers));
+//#else
       (*glGenRenderbuffersEXTPtr)(2, (*rbuffers));
-#endif // __APPLE__
+//#endif // __APPLE__
       assert((*rbuffers)[0] != 0);
       assert((*rbuffers)[1] != 0);
-#ifdef __APPLE__
-      glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
-      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA, imageWidth, imageHeight);
-      glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
-      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
-#else
+//#ifdef __APPLE__
+//      glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
+//      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA, imageWidth, imageHeight);
+//      glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
+//      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
+//#else
       (*glBindRenderbufferEXTPtr)(GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
       (*glRenderbufferStorageEXTPtr)(GL_RENDERBUFFER_EXT, GL_RGBA, imageWidth, imageHeight);
       (*glBindRenderbufferEXTPtr)(GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
       (*glRenderbufferStorageEXTPtr)(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
-#endif // __APPLE__
+//#endif // __APPLE__
     }
 
-#ifdef __APPLE__
-  // attach the color buffer
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
-  // attach the depth buffer
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
-#else
+//#ifdef __APPLE__
+//  // attach the color buffer
+//  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
+//  // attach the depth buffer
+//  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
+//#else
   // attach the color buffer
   (*glFramebufferRenderbufferEXTPtr)(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
   // attach the depth buffer
   (*glFramebufferRenderbufferEXTPtr)(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
-#endif // __APPLE__
+//#endif // __APPLE__
 
   if (samples > 1)
     {
-#ifndef __APPLE__
+//#ifndef __APPLE__
       // make sure all the functions that we need are actually initialized
       assert(glRenderbufferStorageMultisampleEXTPtr != NULL);
       assert(glBlitFramebufferEXTPtr != NULL);
-#endif // __APPLE__
+
+//#endif // __APPLE__
       // create the framebuffer and render buffers for multisampling
       if (multiFBO == 0)
         {
-#ifdef __APPLE__
-          glGenFramebuffersEXT(1, &multiFBO);
-          assert(multiFBO != 0);
-          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, multiFBO);
-#else
+//#ifdef __APPLE__
+//          glGenFramebuffersEXT(1, &multiFBO);
+//          assert(multiFBO != 0);
+//          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, multiFBO);
+//#else
           (*glGenFramebuffersEXTPtr)(1, &multiFBO);
           assert(multiFBO != 0);
           (*glBindFramebufferEXTPtr)(GL_FRAMEBUFFER_EXT, multiFBO);
-#endif // __APPLE__
+//#endif // __APPLE__
         }
 
       if ((*multiRBuffers) == NULL)
         {
           // create the render buffers and create storage for them
           (*multiRBuffers) = new GLuint[2];
-#ifdef __APPLE__
-          glGenRenderbuffersEXT(2, (*multiRBuffers));
-          assert((*multiRBuffers)[0] != 0);
-          assert((*multiRBuffers)[1] != 0);
-          glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
-          glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, samples, GL_RGBA, imageWidth, imageHeight);
-          glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
-          glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, samples, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
-#else
+//#ifdef __APPLE__
+//          glGenRenderbuffersEXT(2, (*multiRBuffers));
+//          assert((*multiRBuffers)[0] != 0);
+//          assert((*multiRBuffers)[1] != 0);
+//          glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
+//          glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, samples, GL_RGBA, imageWidth, imageHeight);
+//          glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
+//          glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, samples, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
+//#else
           (*glGenRenderbuffersEXTPtr)(2, (*multiRBuffers));
           assert((*multiRBuffers)[0] != 0);
           assert((*multiRBuffers)[1] != 0);
@@ -1578,20 +1586,20 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
           (*glRenderbufferStorageMultisampleEXTPtr)(GL_RENDERBUFFER_EXT, samples, GL_RGBA, imageWidth, imageHeight);
           (*glBindRenderbufferEXTPtr)(GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
           (*glRenderbufferStorageMultisampleEXTPtr)(GL_RENDERBUFFER_EXT, samples, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
-#endif // __APPLE__
+//#endif // __APPLE__
         }
 
-#ifdef __APPLE__
-      // attach the color buffer
-      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
-      // attach the depth buffer
-      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
-#else
+//#ifdef __APPLE__
+//      // attach the color buffer
+//      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
+//      // attach the depth buffer
+//      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
+//#else
       // attach the color buffer
       (*glFramebufferRenderbufferEXTPtr)(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
       // attach the depth buffer
       (*glFramebufferRenderbufferEXTPtr)(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
-#endif // __APPLE__
+//#endif // __APPLE__
     }
 
   // remember if we have to go on
@@ -1635,27 +1643,27 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
       if (samples > 1)
         {
           // we need to blit the image from the multisample buffer to the normal buffer
-#ifdef __APPLE__
-          glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, multiFBO);
-          glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, fbo);
-#else
+//#ifdef __APPLE__
+//          glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, multiFBO);
+//          glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, fbo);
+//#else
           (*glBindFramebufferEXTPtr)(GL_READ_FRAMEBUFFER_EXT, multiFBO);
           (*glBindFramebufferEXTPtr)(GL_DRAW_FRAMEBUFFER_EXT, fbo);
-#endif // __APPLE__
+//#endif // __APPLE__
           // check the status
           fail = !this->check_fbo_status(messageHeader, message);
 
           if (fail == false)
             {
-#ifdef __APPLE__
-              glBlitFramebufferEXT(0, 0, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-              // now we need to bind the blit buffer in order to read from it
-              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
-#else
+//#ifdef __APPLE__
+//              glBlitFramebufferEXT(0, 0, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+//              // now we need to bind the blit buffer in order to read from it
+//              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+//#else
               (*glBlitFramebufferEXTPtr)(0, 0, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
               // now we need to bind the blit buffer in order to read from it
               (*glBindFramebufferEXTPtr)(GL_FRAMEBUFFER_EXT, fbo);
-#endif // __APPLE__
+//#endif // __APPLE__
               fail = !this->check_fbo_status(messageHeader, message);
             }
         }
@@ -1700,7 +1708,7 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
  */
 void CQGLLayoutPainter::destroy_buffers(GLuint& fbo, GLuint* rbuffers, GLuint& multiFBO, GLuint* multiRBuffers)
 {
-#ifndef __APPLE__
+//#ifndef __APPLE__
   // make sure all the functions that we need are actually initialized
   assert(glDeleteFramebuffersEXTPtr != NULL);
   assert(glDeleteRenderbuffersEXTPtr != NULL);
@@ -1711,15 +1719,12 @@ void CQGLLayoutPainter::destroy_buffers(GLuint& fbo, GLuint* rbuffers, GLuint& m
 
   (*glDeleteFramebuffersEXTPtr)(1, &fbo);
   (*glDeleteFramebuffersEXTPtr)(1, &multiFBO);
-#else
-
-  if (rbuffers != NULL) glDeleteRenderbuffersEXT(2, rbuffers);
-
-  if (multiRBuffers != NULL) glDeleteRenderbuffersEXT(2, multiRBuffers);
-
-  glDeleteFramebuffersEXT(1, &fbo);
-  glDeleteFramebuffersEXT(1, &multiFBO);
-#endif // __APPLE__
+//else
+//  if (rbuffers != NULL) glDeleteRenderbuffersEXT(2, rbuffers);
+//  if (multiRBuffers != NULL) glDeleteRenderbuffersEXT(2, multiRBuffers);
+//  glDeleteFramebuffersEXT(1, &fbo);
+// glDeleteFramebuffersEXT(1, &multiFBO);
+//endif // __APPLE__
   fbo = 0;
   multiFBO = 0;
 }
@@ -1734,13 +1739,13 @@ bool CQGLLayoutPainter::check_fbo_status(QString& messageHeader, QString& messag
 {
   bool success = false;
   messageHeader = tr("Error creating image");
-#ifndef __APPLE__
+//#ifndef __APPLE__
   // make sure all the functions that we need are actually initialized
   assert(glCheckFramebufferStatusEXTPtr != NULL);
   GLenum status = (*glCheckFramebufferStatusEXTPtr)(GL_FRAMEBUFFER_EXT);
-#else
-  GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-#endif // __APPLE__
+//#else
+//  GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+//#endif // __APPLE__
 
   switch (status)
     {
@@ -1768,7 +1773,7 @@ bool CQGLLayoutPainter::check_fbo_status(QString& messageHeader, QString& messag
   return success;
 }
 
-#ifndef __APPLE__
+//#ifndef __APPLE__
 
 /**
  * On non apple systems, we need to get the pointers to extension functions.
@@ -1800,6 +1805,19 @@ void CQGLLayoutPainter::initialize_extension_functions()
   glFramebufferRenderbufferEXTPtr = (PFNGLFRAMEBUFFERRENDERBUFFEREXT)glXGetProcAddressARB((const GLubyte*)"glFramebufferRenderbufferEXT");
   glRenderbufferStorageMultisampleEXTPtr = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXT)glXGetProcAddressARB((const GLubyte*)"glRenderbufferStorageMultisampleEXT");
   glBlitFramebufferEXTPtr = (PFNGLBLITFRAMEBUFFEREXT)glXGetProcAddressARB((const GLubyte*)"glBlitFramebufferEXT");
+#else
+  glCheckFramebufferStatusEXTPtr = (PFNGLCHECKFRAMEBUFFERSTATUSEXT)MyNSGLGetProcAddress("glCheckFramebufferStatusEXT");
+  glGenFramebuffersEXTPtr = (PFNGLGENFRAMEBUFFERSEXT)MyNSGLGetProcAddress("glGenFramebuffersEXT");
+  glGenRenderbuffersEXTPtr = (PFNGLGENRENDERBUFFERSEXT)MyNSGLGetProcAddress("glGenRenderbuffersEXT");
+  glDeleteFramebuffersEXTPtr = (PFNGLDELETEFRAMEBUFFERSEXT)MyNSGLGetProcAddress("glDeleteFramebuffersEXT");
+  glDeleteRenderbuffersEXTPtr = (PFNGLDELETERENDERBUFFERSEXT)MyNSGLGetProcAddress("glDeleteRenderbuffersEXT");
+  glBindFramebufferEXTPtr = (PFNGLBINDFRAMEBUFFEREXT)MyNSGLGetProcAddress("glBindFramebufferEXT");
+  glBindRenderbufferEXTPtr = (PFNGLBINDRENDERBUFFEREXT)MyNSGLGetProcAddress("glBindRenderbufferEXT");
+  glRenderbufferStorageEXTPtr = (PFNGLRENDERBUFFERSTORAGEEXT)MyNSGLGetProcAddress("glRenderbufferStorageEXT");
+  glFramebufferRenderbufferEXTPtr = (PFNGLFRAMEBUFFERRENDERBUFFEREXT)MyNSGLGetProcAddress("glFramebufferRenderbufferEXT");
+  glRenderbufferStorageMultisampleEXTPtr = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXT)MyNSGLGetProcAddress("glRenderbufferStorageMultisampleEXT");
+  glBlitFramebufferEXTPtr = (PFNGLBLITFRAMEBUFFEREXT)MyNSGLGetProcAddress("glBlitFramebufferEXT");
+
 #endif // __APPLE__
 #endif // _WIN32
 }
@@ -1820,6 +1838,28 @@ void CQGLLayoutPainter::clear_extension_functions()
   glFramebufferRenderbufferEXTPtr = NULL;
   glRenderbufferStorageMultisampleEXTPtr = NULL;
   glBlitFramebufferEXTPtr = NULL;
+}
+
+#ifdef __APPLE__
+void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
+{
+  NSSymbol symbol;
+  char *symbolName;
+  symbolName = (char*)malloc(strlen(name) + 2);
+
+  strcpy(symbolName + 1, name);
+
+  symbolName[0] = '_';
+  symbol = NULL;
+
+  if (NSIsSymbolNameDefined(symbolName))
+    {
+      symbol = NSLookupAndBindSymbol(symbolName);
+    }
+
+  free(symbolName);
+
+  return symbol ? NSAddressOfSymbol(symbol) : NULL;
 }
 
 #endif // __APPLE__
