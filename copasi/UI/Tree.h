@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.17.2.3 $
+   $Revision: 1.17.2.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/09/27 16:53:35 $
+   $Date: 2010/09/27 17:49:37 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@
 #include <vector>
 #include <string>
 #include <qstring.h>
+#include <limits>
 
 #ifndef C_INVALID_INDEX
 #define C_INVALID_INDEX (std::numeric_limits< size_t >::max())
