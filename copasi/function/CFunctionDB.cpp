@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.84.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/26 22:08:51 $
+//   $Date: 2010/09/28 16:09:10 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -262,6 +267,17 @@ bool CFunctionDB::removeFunction(unsigned C_INT32 index)
 {
   if (index == C_INVALID_INDEX) return false;
 
+  // We need to delete all dependent objects in all data models.
+  CCopasiVector< CCopasiDataModel >::iterator it = CCopasiRootContainer::getDatamodelList()->begin();
+  CCopasiVector< CCopasiDataModel >::iterator end = CCopasiRootContainer::getDatamodelList()->end();
+
+  std::set< const CCopasiObject * > DeletedObjects = mLoadedFunctions[index]->getDeletedObjects();
+
+  for (; it != end; ++it)
+    {
+      (*it)->getModel()->removeDependentModelObjects(DeletedObjects);
+    }
+
   mLoadedFunctions.CCopasiVector<CEvaluationTree>::remove(index);
 
   return true;
@@ -278,9 +294,7 @@ bool CFunctionDB::removeFunction(const std::string &key)
 
   if (index == C_INVALID_INDEX) return false;
 
-  mLoadedFunctions.CCopasiVector<CEvaluationTree>::remove(index);
-
-  return true;
+  return removeFunction(index);
 }
 
 CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
