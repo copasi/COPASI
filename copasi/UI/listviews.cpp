@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.3 $
+//   $Revision: 1.290.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/27 16:53:35 $
+//   $Author: aekamal $
+//   $Date: 2010/09/28 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,6 +204,9 @@ ListViews::ListViews(QWidget *parent, const char *name):
 
   currentWidget = defaultWidget; // keeps track of the currentWidget in use
   lastKey = "";
+
+  mSaveObjectKey = "";
+  mSaveFolderID = -1;
 
   // establishes the communication between the mpTreeView clicked and the routine called....
   connect(mpTreeView, SIGNAL(pressed(const QModelIndex &)),
@@ -476,21 +479,22 @@ void ListViews::ConstructNodeWidgets()
  */
 CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
 {
-  if (!index.isValid())
+  if (!index.isValid() || !mpDataModelGUI)
     return NULL;
 
-  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
   // first try ID
-  C_INT32 id = pNode->getId();
+  C_INT32 id = mpDataModelGUI->getId(index);
   CopasiWidget* pWidget = findWidgetFromId(id);
 
   if (pWidget != NULL)
     return pWidget;
 
   // then try parent id:
-  if (!pNode->parent()) return NULL;
+  QModelIndex parentIndex = mpDataModelGUI->parent(index);
 
-  id = pNode->parent()->getId();
+  if (!parentIndex.isValid()) return NULL;
+
+  id = mpDataModelGUI->getId(parentIndex);
 
   switch (id)
     {
@@ -672,7 +676,7 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 {
   bool changeWidget = true;
 
-  if (!index.isValid()) return;
+  if (!index.isValid() || !mpDataModelGUI) return;
 
   mpTreeView->setCurrentIndex(index);
 
@@ -681,9 +685,7 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (!newWidget) return; //do nothing
 
-  const IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
-
-  std::string itemKey = pNode->getObjectKey();
+  std::string itemKey = mpDataModelGUI->getKey(index);
 
   if (newWidget == currentWidget)
     if (itemKey == lastKey) return; //do nothing
@@ -744,18 +746,17 @@ void ListViews::storeCurrentItem()
   //save the id and object key of the current ListViewItem
   QModelIndex index = mpTreeView->currentIndex();
 
-  if (!index.isValid())
+  if (!index.isValid() || !mpDataModelGUI)
     return;
 
-  const IndexedNode * pNode = static_cast<IndexedNode*>(index.internalPointer());
+  mSaveObjectKey = mpDataModelGUI->getKey(index);
+  mSaveFolderID = mpDataModelGUI->getId(index);
 
-  mSaveObjectKey = pNode->getObjectKey();
-  mSaveFolderID = pNode->getId();
-
-  while (mSaveFolderID == C_INVALID_INDEX)
+  while (mSaveObjectKey == "" && mSaveFolderID == -1)
     {
-      pNode = pNode->parent();
-      mSaveFolderID = pNode->getId();
+      index = mpDataModelGUI->parent(index);
+      mSaveObjectKey = mpDataModelGUI->getKey(index);
+      mSaveFolderID = mpDataModelGUI->getId(index);
     }
 }
 
@@ -763,6 +764,8 @@ void ListViews::restoreCurrentItem()
 {
   //reset the item from the saved values
   if (!mpDataModelGUI) return;
+
+  if (mSaveObjectKey == "" && mSaveFolderID == -1) return;
 
   QModelIndex index;
 
@@ -821,11 +824,10 @@ int ListViews::getCurrentItemId()
 {
   QModelIndex index = mpTreeView->currentIndex();
 
-  if (!index.isValid())
+  if (!index.isValid() || !mpDataModelGUI)
     return -1;
 
-  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
-  return pNode->getId();
+  return mpDataModelGUI->getId(index);
 }
 
 //**************************************************************************************+***

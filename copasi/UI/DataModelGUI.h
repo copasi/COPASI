@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.33.2.1 $
+//   $Revision: 1.33.2.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:57 $
+//   $Date: 2010/09/28 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,8 @@ private:
   COutputHandlerPlot mOutputHandlerPlot;
 
   void linkDataModelToGUI();
+
+  IndexedNode* getItem(const QModelIndex &index) const;
 
   QString getNameWithObjectNo(const IndexedNode *node) const;
 
@@ -109,6 +111,8 @@ public:
   int columnCount(const QModelIndex &parent = QModelIndex()) const;
   QModelIndex findIndexFromId(int id);
   QModelIndex findIndexFromKey(const std::string& key);
+  int getId(const QModelIndex &index) const;
+  std::string getKey(const QModelIndex &index) const;
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 
 protected:
