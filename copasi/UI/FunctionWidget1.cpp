@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.174.2.2 $
+//   $Revision: 1.174.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/29 16:10:10 $
+//   $Author: aekamal $
+//   $Date: 2010/09/29 19:28:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -966,7 +966,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
           }
 
         protectedNotify(ListViews::FUNCTION, ListViews::DELETE, deletedKey);
-
+        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
 

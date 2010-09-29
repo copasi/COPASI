@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.2.4.2 $
+//   $Revision: 1.2.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/29 16:10:11 $
+//   $Author: aekamal $
+//   $Date: 2010/09/29 19:28:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -554,6 +554,7 @@ void CQSpeciesDetail::slotBtnDelete()
 
 #undef DELETE
         protectedNotify(ListViews::METABOLITE, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         //TODO notify about reactions
         break;
       }

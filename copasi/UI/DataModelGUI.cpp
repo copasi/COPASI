@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.7 $
+//   $Revision: 1.93.2.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/29 15:51:31 $
+//   $Author: aekamal $
+//   $Date: 2010/09/29 19:28:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,45 +192,107 @@ QString DataModelGUI::getNameWithObjectNo(const IndexedNode *node) const
 {
   QString name = node->getName();
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  int noOfObjects = -1;
 
   switch (node->getId())
     {
       case 5:
-        name += " (" + QString::number(CCopasiRootContainer::getFunctionList()->loadedFunctions().size())
-                + ")";
+        noOfObjects = CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
         break;
       case 42:
-        name += " (" + QString::number((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size())
-                + ")";
+        noOfObjects = (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size();
         break;
       case 43:
-        name += " (" + QString::number((*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size())
-                + ")";
+        noOfObjects = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size();
         break;
       case 111:
-        name += " (" + QString::number(pModel->getCompartments().size())
-                + ")";
+        noOfObjects = pModel->getCompartments().size();
         break;
       case 112:
-        name += " (" + QString::number(pModel->getMetabolites().size())
-                + ")";
+        noOfObjects = pModel->getMetabolites().size();
         break;
       case 114:
-        name += " (" + QString::number(pModel->getReactions().size())
-                + ")";
+        noOfObjects = pModel->getReactions().size();
         break;
       case 115:
-        name += " (" + QString::number(pModel->getModelValues().size())
-                + ")";
+        noOfObjects = pModel->getModelValues().size();
         break;
       case 116:
-        name += " (" + QString::number(pModel->getEvents().size())
-                + ")";
+        noOfObjects = pModel->getEvents().size();
         break;
     }
 
+  if (noOfObjects != -1)
+    name += " (" + QString::number(noOfObjects) + ")";
+
   return name;
 }
+
+/*QString DataModelGUI::getNameWithObjectNo(const IndexedNode *node) const
+{
+  QString name = node->getName();
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  int noOfObjects = -1;
+  bool updateChildren = false;
+
+  switch (node->getId())
+    {
+      case 5:
+        noOfObjects = CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
+        updateChildren = noOfObject != node->childCount();
+        if (updateChildren)
+          updateFunctions();
+        break;
+      case 42:
+        noOfObjects = (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size();
+        updateChildren = noOfObject != node->childCount();
+        if (updateChildren)
+          updatePlots();
+        break;
+      case 43:
+        noOfObjects = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size();
+        updateChildren = noOfObject != node->childCount();
+        if (updateChildren)
+          updateReportDefinitions();
+        break;
+      case 111:
+        noOfObjects = pModel->getCompartments().size();
+        updateChildren = noOfObject != node->childCount();
+        if (updateChildren)
+          updateCompartments();
+        break;
+      case 112:
+        noOfObjects = pModel->getMetabolites().size();
+        updateChildren = noOfObject != node->childCount();
+        if (updateChildren)
+          updateMetabolites();
+        break;
+      case 114:
+        noOfObjects = pModel->getReactions().size();
+        updateChildren = noOfObject != node->childCount();
+        if (updateChildren)
+          updateReactions();
+        break;
+      case 115:
+        noOfObjects = pModel->getModelValues().size();
+        updateChildren = noOfObject != node->childCount();
+        if (updateChildren)
+          updateModelValues();
+        break;
+      case 116:
+        noOfObjects = pModel->getEvents().size();
+        updateChildren = noOfObject != node->childCount();
+        if (updateChildren)
+          updateEvents();
+        break;
+    }
+
+  if (noOfObjects != -1)
+    name += " (" + QString::number(noOfObjects) + ")";
+
+  return name;
+}
+*/
 
 void DataModelGUI::updateCompartments()
 {
@@ -685,7 +747,7 @@ QVariant DataModelGUI::headerData(int C_UNUSED(section), Qt::Orientation orienta
 
 QModelIndex DataModelGUI::index(int row, int column, const QModelIndex &parent) const
 {
-  if (parent.isValid() && parent.column() != 0)
+  if (!hasIndex(row, column, parent))
     return QModelIndex();
 
   IndexedNode * parentItem = getItem(parent);
@@ -705,6 +767,8 @@ QModelIndex DataModelGUI::parent(const QModelIndex &index) const
   IndexedNode *childItem = getItem(index);
   IndexedNode *parentItem = const_cast<IndexedNode *>(childItem->parent());
 
+  if (!mTree.isNodeFromTree(parentItem))
+    return QModelIndex();
 
   if (parentItem == getRootNode())
     return QModelIndex();

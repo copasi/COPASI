@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.17.2.5 $
+   $Revision: 1.17.2.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2010/09/29 15:51:32 $
+   $Author: aekamal $
+   $Date: 2010/09/29 19:28:47 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,6 +126,7 @@ public :
 
   IndexedNode * getRoot() {return &root;};
   const IndexedNode * getRoot() const {return &root;};
+  bool isNodeFromTree(const IndexedNode * node) const;
 };
 
 #endif

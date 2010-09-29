@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.6 $
+//   $Revision: 1.290.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/29 15:51:30 $
+//   $Author: aekamal $
+//   $Date: 2010/09/29 19:28:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,10 +226,6 @@ ListViews::~ListViews()
 
 void ListViews::slotUpdateCompleteView()
 {
-  mpTreeView->setModel(NULL);
-  mpTreeView->setModel(mpDataModelGUI);
-  mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
-
   restoreCurrentItem();
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.7.4.1 $
+//   $Revision: 1.7.4.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:56 $
+//   $Date: 2010/09/29 19:28:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -253,6 +253,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex&)
           CCopasiRootContainer::getFunctionList()->removeFunction(position + row);
           endRemoveRows();
           emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, deletedKey);
+          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
         }
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.2 $
+//   $Revision: 1.205.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/29 16:10:10 $
+//   $Author: aekamal $
+//   $Date: 2010/09/29 19:28:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -339,6 +339,7 @@ bool ReactionsWidget1::saveToReaction()
         }
 
       protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
       return true;
     }
 
@@ -533,6 +534,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
           }
 
         protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
       default:                                                     // No or Escape

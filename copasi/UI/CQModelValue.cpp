@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.15.4.2 $
+//   $Revision: 1.15.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/29 16:10:11 $
+//   $Author: aekamal $
+//   $Date: 2010/09/29 19:28:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,6 +153,7 @@ void CQModelValue::slotBtnDelete()
 
 #undef DELETE
         protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
 

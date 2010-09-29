@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.15.4.1 $
+//   $Revision: 1.15.4.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:56 $
+//   $Date: 2010/09/29 19:28:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -284,6 +284,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
     {
       ri.setFunctionWithEmptyMapping("");
       emit notifyGUI(ListViews::REACTION, ListViews::DELETE, objKey);
+      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
       return;
     }
 
@@ -330,6 +331,7 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
       std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeReaction(position);
       emit notifyGUI(ListViews::REACTION, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
     }
 
   endRemoveRows();

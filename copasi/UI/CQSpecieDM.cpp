@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.11.2.1 $
+//   $Revision: 1.11.2.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:56 $
+//   $Date: 2010/09/29 19:28:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -399,8 +399,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
                       mpSpecies->setValue(Factor * this->index(index.row(), COL_NUMBER).data().toDouble());
                     }
 
-                  emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");
-                  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+                  emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, mpSpecies->getKey());
+                  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pCompartment->getKey());
                 }
             }
         }
@@ -480,6 +480,7 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex&)
       std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeMetabolite(position);
       emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
     }
 
   endRemoveRows();

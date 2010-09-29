@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.6.4.1 $
+//   $Revision: 1.6.4.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:56 $
+//   $Date: 2010/09/29 19:28:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -267,6 +267,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex&)
       std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeModelValue(position);
       emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
     }
 
   endRemoveRows();

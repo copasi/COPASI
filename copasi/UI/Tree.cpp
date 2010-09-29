@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.9.2.4 $
+  $Revision: 1.9.2.5 $
   $Name:  $
-  $Author: shoops $
-  $Date: 2010/09/29 15:51:31 $
+  $Author: aekamal $
+  $Date: 2010/09/29 19:28:47 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,6 +198,17 @@ IndexedNode * IndexedTree::findNodeFromKey(IndexedNode & node, const std::string
 
   return NULL;
 }
+
+bool IndexedTree::isNodeFromTree(const IndexedNode * node) const
+{
+  IndexedNode r = root;
+
+  if (findNodeFromId(r, node->getId()) || findNodeFromKey(r, node->getObjectKey()))
+    return true;
+
+  return false;
+}
+
 
 IndexedNode* IndexedNode::child(int row)
 {
