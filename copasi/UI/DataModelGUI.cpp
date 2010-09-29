@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.8 $
+//   $Revision: 1.93.2.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/09/29 19:28:46 $
+//   $Date: 2010/09/29 19:36:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -767,8 +767,8 @@ QModelIndex DataModelGUI::parent(const QModelIndex &index) const
   IndexedNode *childItem = getItem(index);
   IndexedNode *parentItem = const_cast<IndexedNode *>(childItem->parent());
 
-  if (!mTree.isNodeFromTree(parentItem))
-    return QModelIndex();
+  //if (!mTree.isNodeFromTree(parentItem))
+  //return QModelIndex();
 
   if (parentItem == getRootNode())
     return QModelIndex();
