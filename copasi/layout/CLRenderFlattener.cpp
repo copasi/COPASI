@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderFlattener.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2010/09/29 12:59:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 #include <copasi/layout/CLLocalStyle.h>
 #include <copasi/layout/CLGlobalStyle.h>
 #include <copasi/layout/CLRenderInformationBase.h>
+#include <copasi/utilities/CCopasiMessage.h>
 
 /**
  * static method that takes a const reference to a global render
@@ -71,13 +72,20 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
       // do nothing
     }
 
-  // create a list of referenced renderinformaiton objects
+  // create a list of referenced renderinformation objects
   std::list<const CLRenderInformationBase*> referenceChain;
   const CLRenderInformationBase* pCurrent = &renderInformation;
   const CLRenderInformationBase* pNext = NULL;
 
   while (pCurrent != NULL)
     {
+      // check for reference loops in reference chain
+      if (std::find(referenceChain.begin(), referenceChain.end(), pCurrent) != referenceChain.end())
+        {
+          // we have a loop
+          CCopasiMessage(CCopasiMessage::EXCEPTION, "Fatal Error. Found a loop in the referenceRenderInformation attribute chain of the render informaiton");
+        }
+
       referenceChain.push_back(pCurrent);
       std::string referenceKey = pCurrent->getReferenceRenderInformationKey();
 
@@ -86,7 +94,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
         {
           if (local && localList.size() != 0)
             {
-              unsigned j, jMax = localList.size();
+              unsigned j = 0, jMax = localList.size();
 
               while (j < jMax)
                 {
@@ -103,7 +111,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
           // search the global list if necessary
           if (!pNext && globalList.size() != 0)
             {
-              unsigned j, jMax = globalList.size();
+              unsigned j = 0, jMax = globalList.size();
 
               while (j < jMax)
                 {
