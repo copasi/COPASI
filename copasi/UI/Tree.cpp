@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.9.2.5 $
+  $Revision: 1.9.2.6 $
   $Name:  $
   $Author: aekamal $
-  $Date: 2010/09/29 19:28:47 $
+  $Date: 2010/09/29 21:20:11 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,10 +201,22 @@ IndexedNode * IndexedTree::findNodeFromKey(IndexedNode & node, const std::string
 
 bool IndexedTree::isNodeFromTree(const IndexedNode * node) const
 {
-  IndexedNode r = root;
+  return isNodeFromTree(root, node);
+}
 
-  if (findNodeFromId(r, node->getId()) || findNodeFromKey(r, node->getObjectKey()))
+bool IndexedTree::isNodeFromTree(const IndexedNode & node, const IndexedNode * testNode) const
+{
+  if (&node == testNode)
     return true;
+
+  const std::vector<IndexedNode*> & children = node.children();
+  std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
+
+  for (it = children.begin(); it != itEnd; ++it)
+    {
+      if (isNodeFromTree(**it, testNode))
+        return true;
+    }
 
   return false;
 }
