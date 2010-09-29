@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/29 13:45:04 $
+//   $Date: 2010/09/29 15:02:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@
 #include <QStackedWidget>
 #include <QStatusBar>
 #include <QToolBar>
+#include <QVBoxLayout>
 
 #include "CQGLLayoutViewer.h"
 #include "CQLayoutMainWindow.h"
@@ -245,27 +246,39 @@ void CQNewMainWindow::createToolBars()
 
   // add a toolbar for the selection widgets
   mpSelectionToolBar = addToolBar(tr("Select"));
-  QFrame* pFrame = new QFrame;
-  QHBoxLayout* pLayout = new QHBoxLayout;
-  QLabel* pLabel = new QLabel("Layout: ");
+  QFrame* pFrame1 = new QFrame;
+  QVBoxLayout* pLayout = new QVBoxLayout;
+  pLayout->setSpacing(3);
+  QLabel* pLabel = new QLabel("Layout:");
   pLayout->addWidget(pLabel);
   this->mpLayoutDropdown = new QComboBox;
   this->mpLayoutDropdown->setMinimumWidth(80);
   this->mpLayoutDropdown->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  pFrame1->setLayout(pLayout);
   pLayout->addWidget(this->mpLayoutDropdown);
-  pLabel = new QLabel("Render Information: ");
+
+  QFrame* pFrame2 = new QFrame;
+  pLayout = new QVBoxLayout;
+  pLayout->setSpacing(3);
+  pFrame2->setLayout(pLayout);
+  pLabel = new QLabel("Render Information:");
   pLayout->addWidget(pLabel);
   this->mpRenderDropdown = new QComboBox;
   this->mpRenderDropdown->setMinimumWidth(80);
   this->mpRenderDropdown->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   pLayout->addWidget(this->mpRenderDropdown);
-  pLabel = new QLabel("Zoom Factor: ");
+
+
+  QFrame* pFrame3 = new QFrame;
+  pLayout = new QVBoxLayout;
+  pLayout->setSpacing(3);
+  pFrame3->setLayout(pLayout);
+  pLabel = new QLabel("Zoom Factor:");
   pLayout->addWidget(pLabel);
   this->mpZoomDropdown = new QComboBox;
   this->mpZoomDropdown->setMinimumWidth(50);
   this->mpZoomDropdown->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   pLayout->addWidget(this->mpZoomDropdown);
-  pFrame->setLayout(pLayout);
   // fill the zoom factor box
   unsigned int i, iMax = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
   int defaultIndex = -1;
@@ -283,7 +296,9 @@ void CQNewMainWindow::createToolBars()
   // set 100% as the default zoom factor
   assert(defaultIndex != -1);
   this->mpZoomDropdown->setCurrentIndex(defaultIndex);
-  this->mpSelectionToolBar->addWidget(pFrame);
+  this->mpSelectionToolBar->addWidget(pFrame1);
+  this->mpSelectionToolBar->addWidget(pFrame2);
+  this->mpSelectionToolBar->addWidget(pFrame3);
   // connect the combobox signals
   connect(this->mpLayoutDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotLayoutChanged(int)));
   connect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
