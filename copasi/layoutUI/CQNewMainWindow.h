@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Date: 2010/09/29 13:45:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,10 +52,12 @@ protected:
 
   void resetView();
 
+public slots:
+  void slotLayoutChanged(int index);
+
 private slots:
   void slotResetView();
   void slotRenderInfoChanged(int index);
-  void slotLayoutChanged(int index);
   void slotZoomChanged(int index);
   void slotZoomMenuItemActivated(QAction*);
 

@@ -1,10 +1,11 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Date: 2010/09/29 13:45:04 $
 // End CVS Header
+
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -94,6 +95,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   createStatusBar();
 
   setUnifiedTitleAndToolBarOnMac(true);
+  this->addGlobalRenderInfoItemsToList();
   this->addDefaultRenderInfoItemsToList();
   this->updateLayoutList();
 }
@@ -249,19 +251,19 @@ void CQNewMainWindow::createToolBars()
   pLayout->addWidget(pLabel);
   this->mpLayoutDropdown = new QComboBox;
   this->mpLayoutDropdown->setMinimumWidth(80);
-  this->mpLayoutDropdown->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+  this->mpLayoutDropdown->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   pLayout->addWidget(this->mpLayoutDropdown);
   pLabel = new QLabel("Render Information: ");
   pLayout->addWidget(pLabel);
   this->mpRenderDropdown = new QComboBox;
   this->mpRenderDropdown->setMinimumWidth(80);
-  this->mpRenderDropdown->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+  this->mpRenderDropdown->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   pLayout->addWidget(this->mpRenderDropdown);
   pLabel = new QLabel("Zoom Factor: ");
   pLayout->addWidget(pLabel);
   this->mpZoomDropdown = new QComboBox;
   this->mpZoomDropdown->setMinimumWidth(50);
-  this->mpZoomDropdown->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+  this->mpZoomDropdown->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   pLayout->addWidget(this->mpZoomDropdown);
   pFrame->setLayout(pLayout);
   // fill the zoom factor box

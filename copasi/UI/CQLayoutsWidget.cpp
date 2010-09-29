@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:35:58 $
+//   $Date: 2010/09/29 13:45:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -288,6 +288,9 @@ void CQLayoutsWidget::slot_show(int row)
             }
           else
             {
+#ifdef USE_CRENDER_EXTENSION
+              pos->second->slotLayoutChanged(row);
+#endif // USE_CRENDER_EXTENSION
               pos->second->show();
               pos->second->showNormal();
               pos->second->setActiveWindow();
@@ -302,6 +305,7 @@ void CQLayoutsWidget::slot_show(int row)
         {
 #ifdef USE_CRENDER_EXTENSION
           CQNewMainWindow* pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+          pWin->slotLayoutChanged(row);
 #else
           CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout);
 #endif // USE_CRENDER_EXTENSION
