@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderFlattener.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/29 12:59:40 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 16:34:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include <string>
 #include <assert.h>
 #include <typeinfo>
+#include <algorithm>
 
 #include <copasi/layout/CLLocalStyle.h>
 #include <copasi/layout/CLGlobalStyle.h>
@@ -72,8 +73,8 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
       // do nothing
     }
 
-  // create a list of referenced renderinformation objects
-  std::list<const CLRenderInformationBase*> referenceChain;
+  // create a list of referenced render information objects
+  std::vector< const CLRenderInformationBase * > referenceChain;
   const CLRenderInformationBase* pCurrent = &renderInformation;
   const CLRenderInformationBase* pNext = NULL;
 
@@ -83,7 +84,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
       if (std::find(referenceChain.begin(), referenceChain.end(), pCurrent) != referenceChain.end())
         {
           // we have a loop
-          CCopasiMessage(CCopasiMessage::EXCEPTION, "Fatal Error. Found a loop in the referenceRenderInformation attribute chain of the render informaiton");
+          CCopasiMessage(CCopasiMessage::EXCEPTION, "Fatal Error. Found a loop in the referenceRenderInformation attribute chain of the render information");
         }
 
       referenceChain.push_back(pCurrent);
@@ -150,7 +151,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
   std::map<std::string, const CLColorDefinition*> colors;
   std::map<std::string, const CLLineEnding*> lineEndings;
   std::map<std::string, const CLGradientBase*> gradients;
-  std::list<const CLRenderInformationBase*>::const_iterator it = referenceChain.begin(), endit = referenceChain.end();
+  std::vector< const CLRenderInformationBase * >::const_iterator it = referenceChain.begin(), endit = referenceChain.end();
   unsigned int i, iMax;
   const CLColorDefinition* pColorDefinition = NULL;
   const CLGradientBase* pGradientBase = NULL;
