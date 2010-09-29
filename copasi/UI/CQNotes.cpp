@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.12.2.1 $
+//   $Revision: 1.12.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/27 17:16:13 $
+//   $Date: 2010/09/29 15:59:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,18 @@ bool CQNotes::update(ListViews::ObjectType /* objectType */, ListViews::Action a
 bool CQNotes::leave()
 {
   mpBtnToggleEdit->setFocus();
-  save();
+
+  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+
+  if (mpObject != NULL)
+    {
+      save();
+    }
+  else
+    {
+      mKey = "";
+      mpDataModel = NULL;
+    }
 
   return true;
 }
