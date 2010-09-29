@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.2.4.1 $
+//   $Revision: 1.2.4.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:57 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 16:10:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "CQSpeciesDetail.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
+#include "CTabWidget.h"
 
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
@@ -252,6 +253,7 @@ bool CQSpeciesDetail::enterProtected()
 
   if (!mpMetab)
     {
+
       mpListView->switchToOtherWidget(112, "");
       return false;
     }
@@ -533,10 +535,22 @@ void CQSpeciesDetail::slotBtnDelete()
         unsigned C_INT32 size =
           pModel->getMetabolites().size();
 
-        if (size > 0)
-          enter(pModel->getMetabolites()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
+
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (size > 0)
+              pTabWidget->enter(pModel->getMetabolites()[std::min(index, size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
 
 #undef DELETE
         protectedNotify(ListViews::METABOLITE, ListViews::DELETE, deletedKey);

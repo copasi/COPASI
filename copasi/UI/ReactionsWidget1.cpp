@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.1 $
+//   $Revision: 1.205.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:57 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 16:10:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,8 @@
 #include "ChemEqValidator.h"
 #include "FunctionWidget1.h"
 #include "CQMessageBox.h"
+#include "CTabWidget.h"
+
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -319,10 +321,22 @@ bool ReactionsWidget1::saveToReaction()
 
       std::string deletedKey = mKey;
 
-      if (size > 0)
-        enter(pModel->getReactions()[std::min(ReactionIndex, size - 1)]->getKey());
-      else
-        enter("");
+      QObject *pParent = parent();
+      CTabWidget * pTabWidget = NULL;
+
+      while (pParent != NULL &&
+             (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+        {
+          pParent = pParent->parent();
+        }
+
+      if (pTabWidget != NULL)
+        {
+          if (size > 0)
+            pTabWidget->enter(pModel->getReactions()[std::min(ReactionIndex, size - 1)]->getKey());
+          else
+            pTabWidget->enter("");
+        }
 
       protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
       return true;
@@ -501,10 +515,22 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
         mpRi->setFunctionWithEmptyMapping("");
 
-        if (size > 0)
-          enter(pDataModel->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
+
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (size > 0)
+              pTabWidget->enter(pDataModel->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
 
         protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
         break;

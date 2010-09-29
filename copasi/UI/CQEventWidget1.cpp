@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.24.2.1 $
+//   $Revision: 1.24.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:55 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 16:10:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
 #include "CQIcons.h"
+#include "CTabWidget.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
@@ -88,14 +89,26 @@ void CQEventWidget1::slotBtnDeleteClicked()
   pDataModel->getModel()->removeEvent(mKey);
   std::string deletedKey = mKey;
 
-  unsigned C_INT32 size = pDataModel->getModel()->getEvents().size();
+  unsigned C_INT32 Size = pDataModel->getModel()->getEvents().size();
 
   mpEvent = NULL;
 
-  if (size > 0)
-    enter(pDataModel->getModel()->getEvents()[std::min(index, size - 1)]->getKey());
-  else
-    enter("");
+  QObject *pParent = parent();
+  CTabWidget * pTabWidget = NULL;
+
+  while (pParent != NULL &&
+         (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+    {
+      pParent = pParent->parent();
+    }
+
+  if (pTabWidget != NULL)
+    {
+      if (Size > 0)
+        pTabWidget->enter(pDataModel->getModel()->getEvents()[std::min(index, Size - 1)]->getKey());
+      else
+        pTabWidget->enter("");
+    }
 
   protectedNotify(ListViews::EVENT, ListViews::DELETE, deletedKey);
 }

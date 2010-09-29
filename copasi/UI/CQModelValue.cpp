@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.15.4.1 $
+//   $Revision: 1.15.4.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:56 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 16:10:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
+#include "CTabWidget.h"
 
 #include "model/CModel.h"
 #include "model/CModelValue.h"
@@ -133,10 +134,22 @@ void CQModelValue::slotBtnDelete()
 
         mpModelValue = NULL;
 
-        if (size > 0)
-          enter(pDataModel->getModel()->getModelValues()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
+
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (size > 0)
+              pTabWidget->enter(pDataModel->getModel()->getModelValues()[std::min(index, size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
 
 #undef DELETE
         protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, deletedKey);

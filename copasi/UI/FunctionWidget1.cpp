@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.174.2.1 $
+//   $Revision: 1.174.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:57 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 16:10:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include "CQMessageBox.h"
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
+#include "CTabWidget.h"
 
 #include "tex/CMathMLToTeX.h"
 
@@ -947,10 +948,22 @@ void FunctionWidget1::slotDeleteButtonClicked()
         unsigned C_INT32 size =
           CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
 
-        if (size > 0)
-          enter(CCopasiRootContainer::getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
+
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (size > 0)
+              pTabWidget->enter(CCopasiRootContainer::getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
 
         protectedNotify(ListViews::FUNCTION, ListViews::DELETE, deletedKey);
 

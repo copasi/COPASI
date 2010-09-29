@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.17.2.1 $
+//   $Revision: 1.17.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:55 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 16:10:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include "UI/qtUtilities.h"
 
 #include "CQCompartment.h"
+#include "CTabWidget.h"
 
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the
@@ -146,10 +147,22 @@ void CQCompartment::slotBtnDelete()
         unsigned C_INT32 Size =
           pDataModel->getModel()->getCompartments().size();
 
-        if (Size > 0)
-          enter(pDataModel->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
+
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (Size > 0)
+              pTabWidget->enter(pDataModel->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
 
         protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, deletedKey);
         break;
