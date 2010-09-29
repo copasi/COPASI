@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.2 $
+//   $Revision: 1.83.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/29 10:12:15 $
+//   $Date: 2010/09/29 12:11:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -614,11 +614,11 @@ void SliderDialog::fillSliderBox()
       if (mpCurrSlider)
         {
           // check if the slider value is determined by an expression
-          CModelValue* pMV = dynamic_cast<CModelValue*>(this->mpCurrSlider->object());
+          CModelEntity* pME = dynamic_cast<CModelEntity*>(this->mpCurrSlider->object()->getObjectParent());
 
-          if (pMV != NULL)
+          if (pME != NULL)
             {
-              if (pMV->getInitialExpressionPtr() != NULL)
+              if (!pME->getInitialExpression().empty())
                 {
                   // we have to disable the slider widget and set a tooltip
                   // that explains why this slider is disabled
