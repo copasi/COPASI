@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.36.4.1 $
+//   $Revision: 1.36.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/27 15:48:02 $
+//   $Date: 2010/09/29 10:12:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,8 @@ void CopasiSlider::updateSliderData()
               this->mpQSlider->setEnabled(true);
             }
         }
+
+      this->update();
     }
 }
 

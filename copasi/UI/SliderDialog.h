@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37 $
+$Revision: 1.37.4.1 $
 $Name:  $
 $Author: gauges $
-$Date: 2009/07/27 11:07:30 $
+$Date: 2010/09/29 10:12:15 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,12 @@ public:
   void setCurrentFolderId(C_INT32 id);
   void setParentWindow(CopasiUI3Window* pPW);
 
+  // sets the framework on the sliders dialog
+  // This leads to changed sliders for metabolites
+  // Because depending on the framework, we only allow sliders
+  // for amount or concentration, but not both for the same metabolite
+  void setFramework(int index);
+
 protected:
   CopasiUI3Window* mpParentWindow;
   QPushButton* mpRunTaskButton;
@@ -99,6 +105,11 @@ protected:
   void setCurrentSlider(CopasiSlider* pSlider);
   virtual bool eventFilter(QObject*, QEvent* event);
   bool sliderObjectChanged(CSlider* pSlider) const;
+
+  // This method check if the given object is a reference to the initial amount or the initial concentration
+  // of a metabolite. Then it checks the current framework and the metabolite if a slider to the object
+  // is actually allowed and if it isn't, it will return the correct object
+  const CCopasiObject* determineCorrectObjectForSlider(const CCopasiObject* pObject);
 
 protected slots:
   void removeSlider(CopasiSlider* slider);

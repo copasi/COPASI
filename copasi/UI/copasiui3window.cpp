@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.1 $
+//   $Revision: 1.289.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:54 $
+//   $Author: gauges $
+//   $Date: 2010/09/29 10:12:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1893,6 +1893,7 @@ void CopasiUI3Window::slotFrameworkChanged(int index)
   mpListView->commit();
 
   mpListView->setFramework(index);
+  mpSliders->setFramework(index);
 }
 
 void CopasiUI3Window::slotCapture()

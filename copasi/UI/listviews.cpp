@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.4 $
+//   $Revision: 1.290.2.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/28 19:50:16 $
+//   $Author: gauges $
+//   $Date: 2010/09/29 10:12:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1076,4 +1076,9 @@ ScanWidget* ListViews::getScanWidget()
 CQMCAWidget* ListViews::getMCAWidget()
 {
   return mpCQMCAWidget;
+}
+
+int ListViews::getFramework()
+{
+  return ListViews::mFramework;
 }

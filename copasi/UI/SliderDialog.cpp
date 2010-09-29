@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.1 $
+//   $Revision: 1.83.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/27 15:48:02 $
+//   $Date: 2010/09/29 10:12:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,15 +216,19 @@ void SliderDialog::createNewSlider()
 
   if (!object) return;
 
+  CCopasiObject* pTmpObject = NULL;
+
   while (it != endit)
     {
       // create a new slider
       assert((*it) != NULL);
+      pTmpObject = const_cast<CCopasiObject*>(determineCorrectObjectForSlider(*it));
+
       CSlider* pCSlider = new CSlider("slider", (*CCopasiRootContainer::getDatamodelList())[0]);
 
       if (pCSlider)
         {
-          pCSlider->setSliderObject(const_cast< CCopasiObject * >(*it));
+          pCSlider->setSliderObject(pTmpObject);
           pCSlider->setAssociatedEntityKey(object->getKey());
           // check if a slider for that object already exists and if so, prompt
           // the user what to do
@@ -609,6 +613,33 @@ void SliderDialog::fillSliderBox()
 
       if (mpCurrSlider)
         {
+          // check if the slider value is determined by an expression
+          CModelValue* pMV = dynamic_cast<CModelValue*>(this->mpCurrSlider->object());
+
+          if (pMV != NULL)
+            {
+              if (pMV->getInitialExpressionPtr() != NULL)
+                {
+                  // we have to disable the slider widget and set a tooltip
+                  // that explains why this slider is disabled
+                  if (this->mpCurrSlider->isEnabled())
+                    {
+                      this->mpCurrSlider->setEnabled(false);
+                      this->mpCurrSlider->setToolTip("This value is determined by an initial expression.");
+                    }
+                }
+              else
+                {
+                  // if the slider is disabled, we have to enable it and delete the tooltip
+                  if (!this->mpCurrSlider->isEnabled())
+                    {
+                      this->mpCurrSlider->setEnabled(true);
+                      this->mpCurrSlider->setToolTip("");
+                    }
+
+                }
+            }
+
           mpCurrSlider->updateSliderData();
         }
 
@@ -919,3 +950,121 @@ void SliderDialog::setParentWindow(CopasiUI3Window* pPW)
 {
   mpParentWindow = pPW;
 }
+
+// This method check if the given object is a reference to the initial amount or the initial concentration
+// of a metabolite. Then it checks the current framework and the metabolite if a slider to the object
+// is actually allowed and if it isn't, it will return the correct object
+const CCopasiObject* SliderDialog::determineCorrectObjectForSlider(const CCopasiObject* pObject)
+{
+  const CCopasiObject* pResult = NULL;
+
+  if (pObject == NULL)
+    {
+      pResult = NULL;
+    }
+  else
+    {
+      CMetab* pMetab = dynamic_cast<CMetab*>((pObject)->getObjectParent());
+      // we just assume the object is correct for the framework
+      // this saves some additional test later on
+      pResult = pObject;
+
+      if (pMetab != NULL)
+        {
+          // now we have to check if the framework is the concentrations framework
+          // and if we are actually allowed to change the concentration on a metabolite
+          if (ListViews::getFramework() == 0)
+            {
+              // we are in the concentrations framework
+              //
+              // sometimes it is not allowed to change the concentration of a metabolite
+              // because it would change the volume of the compartment
+              if (pMetab->isInitialConcentrationChangeAllowed() && pObject == pMetab->getInitialValueReference())
+                {
+                  // if the current object is for the concentration, we return a new object to the amount
+                  pResult = pMetab->getInitialConcentrationReference();
+                  assert(pResult != NULL);
+                }
+            }
+          else
+            {
+              // we are in the particle number framework
+              // if the object is for the amount, we leave it, otherwise we
+              // return a new object for the amount
+              if (pObject == pMetab->getInitialConcentrationReference())
+                {
+                  pResult = pMetab->getInitialValueReference();
+                  assert(pResult != NULL);
+                }
+
+            }
+        }
+    }
+
+  return pResult;
+}
+
+// sets the framework on the sliders dialog
+// This leads to changed sliders for metabolites
+// Because depending on the framework, we only allow sliders
+// for amount or concentration, but not both for the same metabolite
+void SliderDialog::setFramework(int /*index*/)
+{
+  bool changed = false;
+  // we go through the sliders and check if the slider for species amount
+  // or concentration are still appropriate for the framework that has been set
+  std::map<C_INT32, std::vector<QWidget*> >::iterator it = this->mSliderMap.begin(), endit = this->mSliderMap.end();
+  std::vector<QWidget*>::iterator it2, endit2;
+  CCopasiObject *pObject = NULL, *pTmpObject = NULL;
+  CopasiSlider* pSlider = NULL;
+
+  while (it != endit)
+    {
+      it2 = it->second.begin();
+      endit2 = it->second.end();
+
+      while (it2 != endit2)
+        {
+          pSlider = dynamic_cast<CopasiSlider*>(*it2);
+
+          if (pSlider != NULL)
+            {
+              pObject = pSlider->object();
+              assert(pObject != NULL);
+
+              if (pObject != NULL)
+                {
+                  pTmpObject = const_cast<CCopasiObject*>(this->determineCorrectObjectForSlider(pObject));
+
+                  if (pTmpObject != pObject)
+                    {
+                      // we have to recalculate the range
+                      double oldMin = pSlider->minValue();
+                      double oldMax = pSlider->maxValue();
+                      double oldValue = pSlider->value();
+                      // we have to set the new object on the slider
+                      pSlider->setObject(pTmpObject);
+                      double newValue =  pSlider->value();
+                      double newMin = (oldMin / oldValue) * newValue;
+                      double newMax = (oldMax / oldValue) * newValue;
+                      pSlider->setMinValue(newMin);
+                      pSlider->setMaxValue(newMax);
+                      changed = true;
+                    }
+                }
+            }
+
+          ++it2;
+        }
+
+      ++it;
+    }
+
+  // we don't care if the change was for the current
+  // task, we justm update if there was any change at all
+  if (changed = true)
+    {
+      this->update();
+    }
+}
+

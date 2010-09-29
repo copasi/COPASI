@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.168.2.2 $
+//   $Revision: 1.168.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/27 16:53:35 $
+//   $Author: gauges $
+//   $Date: 2010/09/29 10:12:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,6 +153,9 @@ public:
 
   static void refreshInitialValues();
   static void buildChangedObjects();
+
+  // returns the framework
+  static int getFramework();
 
 private:
   CMathModel *mpMathModel;
