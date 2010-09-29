@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37.4.1 $
+$Revision: 1.37.4.2 $
 $Name:  $
-$Author: gauges $
-$Date: 2010/09/29 10:12:15 $
+$Author: shoops $
+$Date: 2010/09/29 15:51:31 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,23 +59,7 @@ public:
   void setFramework(int index);
 
 protected:
-  CopasiUI3Window* mpParentWindow;
-  QPushButton* mpRunTaskButton;
-  QPushButton* mpNewSliderButton;
-  QCheckBox* mpAutoRunCheckBox;
-  QCheckBox* mpAutoModifyRangesCheckBox;
-  QScrollArea* mpScrollView;
-  QFrame* mpSliderBox;
-  QMenu* mpContextMenu;
-  CopasiSlider* mpCurrSlider;
-  std::map<C_INT32 , std::vector< QWidget* > > mSliderMap;
-  std::map < C_INT32 , void(SliderDialog::*)() > mTaskMap;
-  C_INT32 mCurrentFolderId;
-
   C_INT32 mapFolderId2EntryId(C_INT32 folderId) const;
-
-  bool mSliderValueChanged;
-  bool mSliderPressed;
 
   void init();
 
@@ -124,6 +108,25 @@ protected slots:
   void sliderPressed();
   void resetValue();
   void setDefault();
+
+protected:
+  CopasiUI3Window* mpParentWindow;
+  QPushButton* mpRunTaskButton;
+  QPushButton* mpNewSliderButton;
+  QCheckBox* mpAutoRunCheckBox;
+  QCheckBox* mpAutoModifyRangesCheckBox;
+  QScrollArea* mpScrollView;
+  QFrame* mpSliderBox;
+  QMenu* mpContextMenu;
+  CopasiSlider* mpCurrSlider;
+  std::map<C_INT32 , std::vector< QWidget* > > mSliderMap;
+  std::map < C_INT32 , void(SliderDialog::*)() > mTaskMap;
+  C_INT32 mCurrentFolderId;
+  bool mSliderValueChanged;
+  bool mSliderPressed;
+  int mFramework;
+
+
 };
 
 #endif

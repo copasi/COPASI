@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
- $Revision: 1.17.4.1 $
+ $Revision: 1.17.4.2 $
  $Name:  $
- $Author: gauges $
- $Date: 2010/09/27 15:48:02 $
+ $Author: shoops $
+ $Date: 2010/09/29 15:51:31 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,12 +37,13 @@ class CCopasiObject;
 class QLabel;
 class CCopasiParameterGroup;
 class QToolButton;
+class DataModelGUI;
 
 class CopasiSlider: public QFrame
 {
   Q_OBJECT
 public:
-  CopasiSlider(CSlider* pSlider, QWidget* parent = 0);
+  CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent = 0);
   virtual ~CopasiSlider();
 
   CSlider::Type type() const;
@@ -90,6 +91,7 @@ protected:
   QToolButton* mpCloseButton;
   QToolButton* mpEditButton;
   bool mValueOutOfRange;
+  DataModelGUI * mpDM;
 
   int calculatePositionFromValue(C_FLOAT64 value);
   C_FLOAT64 calculateValueFromPosition(int position);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.6 $
+//   $Revision: 1.93.2.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/28 19:50:16 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 15:51:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 #include "utilities/CVector.h"
 #include "CProgressBar.h"
 #include "listviews.h"
+#include "CQMessageBox.h"
 
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
@@ -56,7 +57,13 @@
 
 DataModelGUI::DataModelGUI(QObject* parent):
     QAbstractItemModel(parent),
-    mOutputHandlerPlot()
+    mTree(),
+    mpApp(NULL),
+    mOutputHandlerPlot(),
+    mListViews(),
+    mFramework(0),
+    mUpdateVector(),
+    mChangedObjects()
 {
   this->populateData();
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -112,7 +119,7 @@ void DataModelGUI::linkDataModelToGUI()
 
 void DataModelGUI::populateData()
 {
-  mTree.add(C_INVALID_INDEX, 0, "Copasi", "");
+  mTree.add(C_INVALID_INDEX, 0, "COPASI", "");
   std::stringstream in;
   in.str(DataModeltxt);
 
@@ -757,6 +764,19 @@ void DataModelGUI::updateAllEntities()
 
 bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+  std::set< ListViews * >::iterator it = mListViews.begin();
+  std::set< ListViews * >::iterator end = mListViews.end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->storeCurrentItem();
+    }
+
+
+  // update all initial value
+  if (action != ListViews::RENAME)
+    refreshInitialValues();
+
   if (key == "")
     {
       //just update everything if no key given.
@@ -799,29 +819,42 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
             emit notifyView(objectType, action, key);
             return true;
             break;
+
           case ListViews::COMPARTMENT:
             insertRow(111, key);
             break;
+
           case ListViews::METABOLITE:
             insertRow(112, key);
             break;
+
           case ListViews::REACTION:
             insertRow(114, key);
             break;
+
           case ListViews::MODELVALUE:
             insertRow(115, key);
             break;
+
           case ListViews::EVENT:
             insertRow(116, key);
             break;
+
           case ListViews::PLOT:
             insertRow(42, key);
             break;
+
           case ListViews::REPORT:
             insertRow(43, key);
             break;
+
           case ListViews::FUNCTION:
             insertRow(5, key);
+            break;
+
+          case ListViews::LAYOUT:
+          case ListViews::MIRIAM:
+          case ListViews::STATE:
             break;
         }
     }
@@ -892,4 +925,154 @@ IndexedNode * DataModelGUI::getItem(const QModelIndex &index) const
     }
 
   return const_cast<IndexedNode*>(getRootNode());
+}
+
+void DataModelGUI::registerListView(ListViews * pListView)
+{
+  pListView->setDataModel(this);
+  mListViews.insert(pListView);
+}
+
+void DataModelGUI::deregisterListView(ListViews * pListView)
+{
+  pListView->setDataModel(NULL);
+  mListViews.erase(pListView);
+}
+
+void DataModelGUI::buildChangedObjects()
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  pModel->compileIfNecessary(NULL);
+
+  mChangedObjects.clear();
+
+  CModelEntity ** ppEntity = pModel->getStateTemplate().getEntities();
+  CModelEntity ** ppEntityEnd = pModel->getStateTemplate().endFixed();
+
+  CMetab * pMetab;
+  std::set< const CCopasiObject * > Objects;
+
+  // The objects which are changed are all initial values of of all model entities including
+  // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
+  // This is basically all the parameters in the parameter overview whose value is editable.
+
+  // :TODO: Theoretically, it is possible that also task parameters influence the initial
+  // state of a model but that is currently not handled.
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      // If we have an initial expression we have no initial values
+      if ((*ppEntity)->getInitialExpression() != "" ||
+          (*ppEntity)->getStatus() == CModelEntity::ASSIGNMENT)
+        continue;
+
+      // Metabolites have two initial values
+      if (mFramework == 0 &&
+          (pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
+        {
+          // The concentration is assumed to be fix accept when this would lead to circular dependencies,
+          // for the parent's compartment's initial volume.
+          if (pMetab->isInitialConcentrationChangeAllowed() &&
+              !isnan(pMetab->getInitialConcentration()))
+            mChangedObjects.insert(pMetab->getInitialConcentrationReference());
+          else
+            mChangedObjects.insert(pMetab->getInitialValueReference());
+        }
+      else
+        mChangedObjects.insert((*ppEntity)->getInitialValueReference());
+    }
+
+  // The reaction parameters
+  CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
+  unsigned C_INT32 i, imax;
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
+
+      for (i = 0, imax = Group.size(); i < imax; i++)
+        mChangedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
+    }
+
+  // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+  // and link matrices.
+  const CArrayAnnotation * pMatrix = NULL;
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Stoichiometry(ann)")));
+
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
+
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Reduced stoichiometry(ann)")));
+
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
+
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Link matrix(ann)")));
+
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
+
+  try
+    {
+      mUpdateVector = pModel->buildInitialRefreshSequence(mChangedObjects);
+    }
+
+  catch (...)
+    {
+      QString Message = "Error while updating the initial values!\n\n";
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(NULL, QString("COPASI Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+
+      mUpdateVector.clear();
+      return;
+    }
+}
+
+void DataModelGUI::refreshInitialValues()
+{
+  buildChangedObjects();
+
+  std::vector< Refresh * >::iterator it = mUpdateVector.begin();
+  std::vector< Refresh * >::iterator end = mUpdateVector.end();
+
+  for (; it != end; ++it)
+    (**it)();
+}
+
+void DataModelGUI::setFramework(int framework)
+{
+  std::set< ListViews * >::iterator it = mListViews.begin();
+  std::set< ListViews * >::iterator end = mListViews.end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->setFramework(framework);
+    }
+}
+
+void DataModelGUI::updateMIRIAMResourceContents()
+{
+  std::set< ListViews * >::iterator it = mListViews.begin();
+  std::set< ListViews * >::iterator end = mListViews.end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->updateMIRIAMResourceContents();
+    }
+}
+
+void DataModelGUI::commit()
+{
+  std::set< ListViews * >::iterator it = mListViews.begin();
+  std::set< ListViews * >::iterator end = mListViews.end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->commit();
+    }
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.52.2.1 $
+//   $Revision: 1.52.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:57 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 15:51:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,7 +180,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       pListView->getDataModel()->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
 
       if (CQMessageBox::question(NULL, "No Report Definition Defined",
-                                 "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
+                                 "No report definition defined, COPASI has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
                                  QMessageBox::Ok | QMessageBox::No, QMessageBox::Ok) == QMessageBox::Ok)
         jumpToReportDefinitionEdit();
 

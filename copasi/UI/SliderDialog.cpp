@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.3 $
+//   $Revision: 1.83.4.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/29 12:11:46 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 15:51:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #include <QScrollArea>
 
 #include "SliderDialog.h"
+#include "DataModelGUI.h"
 #include "copasiui3window.h"
 #include "CQTrajectoryWidget.h"
 #include "SteadyStateWidget.h"
@@ -79,9 +80,12 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
     mpSliderBox(NULL),
     mpContextMenu(NULL),
     mpCurrSlider(NULL),
+    mSliderMap(),
+    mTaskMap(),
     mCurrentFolderId(0),
     mSliderValueChanged(false),
-    mSliderPressed(false)
+    mSliderPressed(false),
+    mFramework(0)
 {
   QVBoxLayout* pMainLayout = new QVBoxLayout(this);
   this->setLayout(pMainLayout);
@@ -413,6 +417,9 @@ void SliderDialog::init()
 
 void SliderDialog::addSlider(CSlider* pSlider)
 {
+  if (mpParentWindow == NULL)
+    return;
+
   // check if there already is a slider for this  object
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI();
@@ -427,7 +434,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
 
   if (!tmp)
     {
-      setCurrentSlider(new CopasiSlider(pSlider, mpSliderBox));
+      setCurrentSlider(new CopasiSlider(pSlider, mpParentWindow->getDataModel(), mpSliderBox));
       mpCurrSlider->installEventFilter(this);
       mpCurrSlider->setHidden(true);
       mpCurrSlider->updateSliderData();
@@ -515,6 +522,9 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
 
 void SliderDialog::fillSliderBox()
 {
+  if (mpParentWindow == NULL)
+    return;
+
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
 
   if (mCurrentFolderId != -1)
@@ -553,7 +563,7 @@ void SliderDialog::fillSliderBox()
 
           if (!found)
             {
-              setCurrentSlider(new CopasiSlider((*pVector)[i], mpSliderBox));
+              setCurrentSlider(new CopasiSlider((*pVector)[i], mpParentWindow->getDataModel(), mpSliderBox));
               connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
               connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
               connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
@@ -666,7 +676,8 @@ C_INT32 SliderDialog::mapFolderId2EntryId(C_INT32 folderId) const
 
 void SliderDialog::runTask()
 {
-  if (mTaskMap.find(mCurrentFolderId) != mTaskMap.end())
+  if (mpParentWindow != NULL &&
+      mTaskMap.find(mCurrentFolderId) != mTaskMap.end())
     {
       setEnabled(false);
       updateAllSliders();
@@ -814,7 +825,8 @@ void SliderDialog::updateAllSliders()
 
   if (maxCount > 0)
     {
-      ListViews::refreshInitialValues();
+      if (mpParentWindow != NULL)
+        mpParentWindow->getDataModel()->refreshInitialValues();
 
       // now we need to go through the slider again and make sure that
       // they actually display the updated values
@@ -973,7 +985,7 @@ const CCopasiObject* SliderDialog::determineCorrectObjectForSlider(const CCopasi
         {
           // now we have to check if the framework is the concentrations framework
           // and if we are actually allowed to change the concentration on a metabolite
-          if (ListViews::getFramework() == 0)
+          if (mFramework == 0)
             {
               // we are in the concentrations framework
               //
@@ -1008,8 +1020,10 @@ const CCopasiObject* SliderDialog::determineCorrectObjectForSlider(const CCopasi
 // This leads to changed sliders for metabolites
 // Because depending on the framework, we only allow sliders
 // for amount or concentration, but not both for the same metabolite
-void SliderDialog::setFramework(int /*index*/)
+void SliderDialog::setFramework(int framework)
 {
+  mFramework = framework;
+
   bool changed = false;
   // we go through the sliders and check if the slider for species amount
   // or concentration are still appropriate for the framework that has been set

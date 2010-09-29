@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.5 $
+//   $Revision: 1.290.2.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/29 10:12:15 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 15:51:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,11 +126,12 @@
 ListViews::ListViews(QWidget *parent, const char *name):
 
     QSplitter(Qt::Horizontal, parent, name),
+    mpDataModelGUI(NULL),
+    mpMathModel(NULL),
     currentWidget(NULL),
     lastKey(),
     mSaveObjectKey(),
     mSaveFolderID(C_INVALID_INDEX),
-    mpMathModel(NULL),
     mpCMCAResultWidget(NULL),
     mpCQMCAWidget(NULL),
     mpCompartmentsWidget(NULL),
@@ -225,8 +226,6 @@ ListViews::~ListViews()
 
 void ListViews::slotUpdateCompleteView()
 {
-  storeCurrentItem();
-
   mpTreeView->setModel(NULL);
   mpTreeView->setModel(mpDataModelGUI);
   mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
@@ -242,14 +241,17 @@ void ListViews::slotUpdateCompleteView()
  ** Description:-This method is used to set the datamodel to be used by the
  ** listview class to extract the data from the data-model
  ************************************************************************************/
-void ListViews::setDataModel(DataModelGUI* dm)
+void ListViews::setDataModel(DataModelGUI* pDM)
 {
   //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
-  disconnect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
-  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
-             this, SLOT(notify(ListViews::ObjectType, ListViews::Action, const std::string&)));
+  if (mpDataModelGUI != NULL)
+    {
+      disconnect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
+      disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
+                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string&)));
+    }
 
-  mpDataModelGUI = dm;
+  mpDataModelGUI = pDM;
 
   //update the tree nodes with single widgets.
   mpDataModelGUI->updateAllEntities();
@@ -261,9 +263,12 @@ void ListViews::setDataModel(DataModelGUI* dm)
   ConstructNodeWidgets();
 
   //Now Connect updateCompleteView() and notifyView() from DataModelGUI
-  connect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
-  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
-          this, SLOT(notify(ListViews::ObjectType, ListViews::Action, const std::string&)));
+  if (mpDataModelGUI != NULL)
+    {
+      connect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
+      connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
+              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string&)));
+    }
 }
 
 
@@ -752,7 +757,7 @@ void ListViews::storeCurrentItem()
   mSaveObjectKey = mpDataModelGUI->getKey(index);
   mSaveFolderID = mpDataModelGUI->getId(index);
 
-  while (mSaveObjectKey == "" && mSaveFolderID == -1)
+  while (mSaveObjectKey == "" && mSaveFolderID == C_INVALID_INDEX)
     {
       index = mpDataModelGUI->parent(index);
       mSaveObjectKey = mpDataModelGUI->getKey(index);
@@ -765,7 +770,7 @@ void ListViews::restoreCurrentItem()
   //reset the item from the saved values
   if (!mpDataModelGUI) return;
 
-  if (mSaveObjectKey == "" && mSaveFolderID == -1) return;
+  if (mSaveObjectKey == "" && mSaveFolderID == C_INVALID_INDEX) return;
 
   QModelIndex index;
 
@@ -803,7 +808,7 @@ void ListViews::restoreCurrentItem()
 
 void ListViews::buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNode *startNode)
 {
-  if (startNode->childCount() == 0 || startNode->getId() == -1)
+  if (startNode->childCount() == 0 || startNode->getId() == C_INVALID_INDEX)
     return;
 
   QModelIndex index = mpDataModelGUI->findIndexFromId(startNode->getId());
@@ -834,19 +839,7 @@ int ListViews::getCurrentItemId()
 
 //static members **************************
 
-// static
-DataModelGUI* ListViews::mpDataModelGUI;
-
-// static
-std::set< const CCopasiObject * > ListViews::mChangedObjects;
-
-// static
-std::vector< Refresh * > ListViews::mUpdateVector;
-
-// static
-int ListViews::mFramework;
-
-bool ListViews::notify(ObjectType objectType, Action action, const std::string & key)
+bool ListViews::slotNotify(ObjectType objectType, Action action, const std::string & key)
 {
   if (objectType != MODEL &&
       objectType != STATE &&
@@ -866,10 +859,6 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
     {
       mpLayoutsWidget->deleteLayoutWindows();
     }
-
-  // update all initial value
-  if (action != RENAME)
-    refreshInitialValues();
 
   if (!updateCurrentWidget(objectType, action, key)) success = false;
 
@@ -891,13 +880,10 @@ bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const 
 CopasiWidget* ListViews::getCurrentWidget()
 {return this->currentWidget;}
 
-bool ListViews::commit()
+void ListViews::commit()
 {
-  bool success = true;
-
-  if (currentWidget && !currentWidget->leave()) success = false;
-
-  return success;
+  if (currentWidget != NULL)
+    currentWidget->leave();
 }
 
 void ListViews::notifyChildWidgets(ObjectType objectType,
@@ -914,19 +900,6 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
         {
           pCopasiWidget->update(objectType, action, key);
         }
-    }
-}
-
-void ListViews::setChildWidgetsFramework(int framework)
-{
-  QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
-  QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets
-  CopasiWidget * pCopasiWidget;
-
-  while (it.hasNext())
-    {
-      if ((pCopasiWidget = it.next()) != NULL)
-        pCopasiWidget->setFramework(framework);
     }
 }
 
@@ -947,116 +920,17 @@ void ListViews::updateMIRIAMResourceContents()
 
 void ListViews::setFramework(int framework)
 {
-  mFramework = framework;
-  setChildWidgetsFramework(framework);
-}
+  QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
+  QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets
+  CopasiWidget * pCopasiWidget;
 
-// static
-void ListViews::buildChangedObjects()
-{
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  pModel->compileIfNecessary(NULL);
-
-  mChangedObjects.clear();
-
-  CModelEntity ** ppEntity = pModel->getStateTemplate().getEntities();
-  CModelEntity ** ppEntityEnd = pModel->getStateTemplate().endFixed();
-
-  CMetab * pMetab;
-  std::set< const CCopasiObject * > Objects;
-
-  // The objects which are changed are all initial values of of all model entities including
-  // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
-  // This is basically all the parameters in the parameter overview whose value is editable.
-
-  // :TODO: Theoretically, it is possible that also task parameters influence the initial
-  // state of a model but that is currently not handled.
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
+  while (it.hasNext())
     {
-      // If we have an initial expression we have no initial values
-      if ((*ppEntity)->getInitialExpression() != "" ||
-          (*ppEntity)->getStatus() == CModelEntity::ASSIGNMENT)
-        continue;
-
-      // Metabolites have two initial values
-      if (mFramework == 0 &&
-          (pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
-        {
-          // The concentration is assumed to be fix accept when this would lead to circular dependencies,
-          // for the parent's compartment's initial volume.
-          if (pMetab->isInitialConcentrationChangeAllowed() &&
-              !isnan(pMetab->getInitialConcentration()))
-            mChangedObjects.insert(pMetab->getInitialConcentrationReference());
-          else
-            mChangedObjects.insert(pMetab->getInitialValueReference());
-        }
-      else
-        mChangedObjects.insert((*ppEntity)->getInitialValueReference());
-    }
-
-  // The reaction parameters
-  CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
-  unsigned C_INT32 i, imax;
-
-  for (; itReaction != endReaction; ++itReaction)
-    {
-      const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
-
-      for (i = 0, imax = Group.size(); i < imax; i++)
-        mChangedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
-    }
-
-  // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
-  // and link matrices.
-  const CArrayAnnotation * pMatrix = NULL;
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Stoichiometry(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Reduced stoichiometry(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Link matrix(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  try
-    {
-      mUpdateVector = pModel->buildInitialRefreshSequence(mChangedObjects);
-    }
-
-  catch (...)
-    {
-      QString Message = "Error while updating the initial values!\n\n";
-      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-
-      CQMessageBox::critical(NULL, QString("COPASI Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
-      CCopasiMessage::clearDeque();
-
-      mUpdateVector.clear();
-      return;
+      if ((pCopasiWidget = it.next()) != NULL)
+        pCopasiWidget->setFramework(framework);
     }
 }
 
-// static
-void ListViews::refreshInitialValues()
-{
-  buildChangedObjects();
-
-  std::vector< Refresh * >::iterator it = mUpdateVector.begin();
-  std::vector< Refresh * >::iterator end = mUpdateVector.end();
-
-  for (; it != end; ++it)
-    (**it)();
-}
 
 CQTrajectoryWidget* ListViews::getTrajectoryWidget()
 {
@@ -1078,7 +952,3 @@ CQMCAWidget* ListViews::getMCAWidget()
   return mpCQMCAWidget;
 }
 
-int ListViews::getFramework()
-{
-  return ListViews::mFramework;
-}

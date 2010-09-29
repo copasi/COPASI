@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.33.2.2 $
+//   $Revision: 1.33.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/28 19:50:16 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 15:51:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,15 +43,6 @@ class DataModelGUI : public QAbstractItemModel
 {
   Q_OBJECT
 private:
-  IndexedTree mTree; // create the  object of the tree
-
-  //CMathModel * mpMathModel;
-  //bool mMathModelUpdateScheduled;
-
-  QApplication *mpApp;
-
-  COutputHandlerPlot mOutputHandlerPlot;
-
   void linkDataModelToGUI();
 
   IndexedNode* getItem(const QModelIndex &index) const;
@@ -115,6 +106,16 @@ public:
   std::string getKey(const QModelIndex &index) const;
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 
+  void registerListView(ListViews * pListView);
+  void deregisterListView(ListViews * pListView);
+
+  void refreshInitialValues();
+  void buildChangedObjects();
+  void setFramework(int framework);
+  void updateMIRIAMResourceContents();
+  void commit();
+
+
 protected:
   bool insertRow(int parentId, const std::string &key);
   bool removeRow(const std::string &key);
@@ -123,6 +124,16 @@ protected:
 signals:
   void updateCompleteView();
   void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+
+private:
+  IndexedTree mTree; // create the  object of the tree
+  QApplication *mpApp;
+  COutputHandlerPlot mOutputHandlerPlot;
+  std::set< ListViews * > mListViews;
+  int mFramework;
+  std::vector< Refresh * > mUpdateVector;
+  std::set< const CCopasiObject * > mChangedObjects;
+
 };
 
 #endif

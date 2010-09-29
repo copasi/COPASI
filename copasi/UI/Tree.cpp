@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.9.2.3 $
+  $Revision: 1.9.2.4 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/09/27 16:53:35 $
+  $Date: 2010/09/29 15:51:31 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 // All rights reserved.
 
 #include <assert.h>
+#include <iostream>
 
 #include "copasi.h"
 
@@ -55,6 +56,8 @@ IndexedNode::IndexedNode(const IndexedNode & src,
     mName(src.mName),
     mObjectKey(src.mObjectKey)
 {
+  std::cout << "IndexedNode copy constructor called" << std::endl;
+
   std::vector<IndexedNode*>::const_iterator it, itEnd = src.mChildren.end();
 
   for (it = src.mChildren.begin(); it != itEnd; ++it)
@@ -130,7 +133,7 @@ const std::vector<IndexedNode*> & IndexedNode::children() const
 
 IndexedTree::IndexedTree()
 {
-  root.mId = -1;
+  root.mId = C_INVALID_INDEX;
 }
 
 void IndexedTree::add(size_t parentId, size_t newId, const QString & name, const std::string & key)

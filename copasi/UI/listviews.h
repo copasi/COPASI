@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.168.2.3 $
+//   $Revision: 1.168.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/29 10:12:15 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 15:51:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,9 +131,13 @@ public:
                    , LAYOUT
                   };
 
-  void setDataModel(DataModelGUI* dm);
-  static DataModelGUI* getDataModel() {return mpDataModelGUI;};
-  bool commit();
+  void setDataModel(DataModelGUI* pDM);
+  DataModelGUI* getDataModel() {return mpDataModelGUI;};
+  void setFramework(int framework);
+
+  void updateMIRIAMResourceContents();
+  void commit();
+
   void switchToOtherWidget(C_INT32 id, const std::string & key);
 
   void storeCurrentItem();
@@ -151,15 +155,7 @@ public:
   ScanWidget* getScanWidget();
   CQMCAWidget* getMCAWidget();
 
-  static void refreshInitialValues();
-  static void buildChangedObjects();
-
-  // returns the framework
-  static int getFramework();
-
 private:
-  CMathModel *mpMathModel;
-
   CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;
 
   void ConstructNodeWidgets();
@@ -168,14 +164,13 @@ private:
 private slots:
   void slotFolderChanged(const QModelIndex & index);
   void slotUpdateCompleteView();
-  bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 
 private:
-  static DataModelGUI* mpDataModelGUI;
-  static std::vector< Refresh * > mUpdateVector;
-  static std::set< const CCopasiObject * > mChangedObjects;
-  static int mFramework;
 
+  DataModelGUI* mpDataModelGUI;
+
+  CMathModel *mpMathModel;
   CopasiWidget* currentWidget;
   std::string lastKey;
 
@@ -188,11 +183,6 @@ private:
                           Action action,
                           const std::string & key);
 
-  void setChildWidgetsFramework(int framework);
-
-  void setFramework(int framework);
-
-  void updateMIRIAMResourceContents();
 
   //the widgets
   QTreeView *mpTreeView;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.36.4.2 $
+//   $Revision: 1.36.4.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/29 10:12:14 $
+//   $Author: shoops $
+//   $Date: 2010/09/29 15:51:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,11 +36,20 @@
 #include "CopasiSlider.h"
 #include "listviews.h"
 #include "qtUtilities.h"
+#include "DataModelGUI.h"
 
 #include "icons/closeSlider.xpm"
 #include "icons/editSlider.xpm"
 
-CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QFrame(parent), mpCSlider(pSlider) , mpQSlider(NULL), mpLabel(NULL), mpCloseButton(NULL), mpEditButton(NULL), mValueOutOfRange(false)
+CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent):
+    QFrame(parent),
+    mpCSlider(pSlider),
+    mpQSlider(NULL),
+    mpLabel(NULL),
+    mpCloseButton(NULL),
+    mpEditButton(NULL),
+    mValueOutOfRange(false),
+    mpDM(pDM)
 {
   this->setLayout(new QHBoxLayout);
   this->setFrameShape(QFrame::Box);
@@ -152,7 +161,7 @@ void CopasiSlider::setValue(C_FLOAT64 value)
     pObject->setObjectValue(value != 0.0);
 
   // recalculate all other dependent values
-  ListViews::refreshInitialValues();
+  mpDM->refreshInitialValues();
 
   this->mpQSlider->setValue(this->calculatePositionFromValue(value));
 
@@ -323,7 +332,7 @@ void CopasiSlider::updateValue(bool modifyRange, bool updateDependencies)
   // recalculate all other dependent values
   if (updateDependencies)
     {
-      ListViews::refreshInitialValues();
+      mpDM->refreshInitialValues();
     }
 
 }
