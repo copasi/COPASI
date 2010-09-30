@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDM.cpp,v $
-//   $Revision: 1.3.4.2 $
+//   $Revision: 1.3.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:31 $
+//   $Date: 2010/09/30 17:40:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,7 +200,8 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex&)
 
           for (; it != end; ++it)
             {
-              static_cast< const CCopasiTask *>(*it)->getReport().setReportDefinition(NULL);
+              const CCopasiTask * pTask = static_cast< const CCopasiTask *>(*it);
+              const_cast< CCopasiTask * >(pTask)->getReport().setReportDefinition(NULL);
             }
         }
 
