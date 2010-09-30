@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:28 $
+//   $Date: 2010/09/30 18:24:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -433,7 +433,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
   std::string result;
 
   CExpression* tmpExpression;
-  tmpExpression = new CExpression(*pExpression);
+  tmpExpression = new CExpression(*pExpression, pDataModel);
   assert(pDataModel != NULL);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmpExpression->getNodeList();
