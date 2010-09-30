@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.15.4.2 $
+//   $Revision: 1.15.4.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/29 19:28:45 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -211,7 +211,10 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
   std::string objKey = pRea->getKey();
   QString equation = value.toString();
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL) return;
 
@@ -258,7 +261,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
       Objects.remove(Objects.length() - 2, 2);
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, pModel, ObjectType,
+        CQMessageBox::confirmDelete(NULL, ObjectType,
                                     Objects, DeletedObjects);
 
       switch (choice)
@@ -344,7 +347,10 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -372,7 +378,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "reaction",
+            CQMessageBox::confirmDelete(NULL, "reaction",
                                         FROM_UTF8(pReaction->getObjectName()),
                                         pReaction->getDeletedObjects());
 

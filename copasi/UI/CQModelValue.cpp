@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.15.4.3 $
+//   $Revision: 1.15.4.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/29 19:28:45 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,7 +115,7 @@ void CQModelValue::slotBtnDelete()
     return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, pModel, "species",
+    CQMessageBox::confirmDelete(this, "species",
                                 FROM_UTF8(mpModelValue->getObjectName()),
                                 mpModelValue->getDeletedObjects());
 

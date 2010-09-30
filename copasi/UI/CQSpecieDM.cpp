@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.11.2.2 $
+//   $Revision: 1.11.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/29 19:28:46 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -493,7 +493,10 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -521,7 +524,7 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "species",
+            CQMessageBox::confirmDelete(NULL, "species",
                                         FROM_UTF8(pSpecie->getObjectName()),
                                         pSpecie->getDeletedObjects());
 

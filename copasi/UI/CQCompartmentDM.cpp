@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.9.4.2 $
+//   $Revision: 1.9.4.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/29 19:28:45 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -310,7 +310,10 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -338,7 +341,7 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "compartment",
+            CQMessageBox::confirmDelete(NULL, "compartment",
                                         FROM_UTF8(pCompartment->getObjectName()),
                                         pCompartment->getDeletedObjects());
 

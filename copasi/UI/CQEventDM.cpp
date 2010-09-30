@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.7.4.1 $
+//   $Revision: 1.7.4.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:55 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -259,7 +259,10 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -288,7 +291,7 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
         {
           std::set< const CCopasiObject * > deletedObjects;
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "event",
+            CQMessageBox::confirmDelete(NULL, "event",
                                         FROM_UTF8(pEvent->getObjectName()),
                                         deletedObjects);
 

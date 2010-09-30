@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.10 $
+//   $Revision: 1.93.2.11 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/29 21:20:11 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -846,78 +846,89 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
       return true;
     }
 
-  if (action == ListViews::RENAME || action == ListViews::CHANGE)
+  switch (action)
     {
-      if (objectType == ListViews::MODEL)
-        {
-          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-          CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-          assert(pDataModel != NULL);
+      case ListViews::RENAME:
+      case ListViews::CHANGE:
+      {
+        if (objectType == ListViews::MODEL)
+          {
+            assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+            CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+            assert(pDataModel != NULL);
 
-          pDataModel->changed();
-        }
-      else
-        changeRow(key);
-    }
-  else if (action == ListViews::DELETE)
-    {
-      if (objectType == ListViews::MODEL)
-        {
-          updateAllEntities();
-          emit notifyView(objectType, action, key);
-          return true;
-        }
-      else
-        removeRow(key);
-    }
-  else if (action == ListViews::ADD)
-    {
+            pDataModel->changed();
+          }
+        else
+          {
+            changeRow(key);
+          }
+      }
+      break;
 
-      switch (objectType)
-        {
-          case ListViews::MODEL:
+      case ListViews::DELETE:
+      {
+        if (objectType == ListViews::MODEL)
+          {
             updateAllEntities();
-            emit notifyView(objectType, action, key);
-            return true;
-            break;
+          }
+        else
+          {
+            removeRow(key);
+          }
+      }
+      break;
 
-          case ListViews::COMPARTMENT:
-            insertRow(111, key);
-            break;
+      case ListViews::ADD:
+      {
 
-          case ListViews::METABOLITE:
-            insertRow(112, key);
-            break;
+        switch (objectType)
+          {
+            case ListViews::MODEL:
+              updateAllEntities();
+              break;
 
-          case ListViews::REACTION:
-            insertRow(114, key);
-            break;
+            case ListViews::COMPARTMENT:
+              insertRow(111, key);
+              break;
 
-          case ListViews::MODELVALUE:
-            insertRow(115, key);
-            break;
+            case ListViews::METABOLITE:
+              insertRow(112, key);
+              // TODO check whether the species' compartment is in the list
+              break;
 
-          case ListViews::EVENT:
-            insertRow(116, key);
-            break;
+            case ListViews::REACTION:
+              insertRow(114, key);
+              // TODO check whether all reaction species and their compartments are in the list
+              break;
 
-          case ListViews::PLOT:
-            insertRow(42, key);
-            break;
+            case ListViews::MODELVALUE:
+              insertRow(115, key);
+              break;
 
-          case ListViews::REPORT:
-            insertRow(43, key);
-            break;
+            case ListViews::EVENT:
+              insertRow(116, key);
+              break;
 
-          case ListViews::FUNCTION:
-            insertRow(5, key);
-            break;
+            case ListViews::PLOT:
+              insertRow(42, key);
+              break;
 
-          case ListViews::LAYOUT:
-          case ListViews::MIRIAM:
-          case ListViews::STATE:
-            break;
-        }
+            case ListViews::REPORT:
+              insertRow(43, key);
+              break;
+
+            case ListViews::FUNCTION:
+              insertRow(5, key);
+              break;
+
+            case ListViews::LAYOUT:
+            case ListViews::MIRIAM:
+            case ListViews::STATE:
+              break;
+          }
+      }
+      break;
     }
 
   emit notifyView(objectType, action, key);

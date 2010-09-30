@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.49.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/09 12:02:05 $
+//   $Date: 2010/09/30 17:02:32 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,7 +101,15 @@ public:
   const CCopasiVectorN< CCopasiTask > * getTaskList() const;
   CCopasiTask * addTask(const CCopasiTask::Type & taskType);
   bool addDefaultTasks();
-  std::set<std::string> listTaskDependentOnReport(const std::string & key);
+  /**
+   * Appends pointers to tasks, which are dependent on any of the candidates
+   * to the list dependentTasks.
+   * @param std::set< const CCopasiObject * > candidates
+   * @param std::set< const CCopasiObject * > & dependentTasks
+   * @return bool functionsAppended
+   */
+  bool appendDependentTasks(std::set< const CCopasiObject * > candidates,
+                            std::set< const CCopasiObject * > & dependentTasks) const;
 
   CReportDefinitionVector * getReportDefinitionList();
   CReportDefinition * addReport(const CCopasiTask::Type & taskType);

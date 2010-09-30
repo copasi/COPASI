@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.17.2.3 $
+//   $Revision: 1.17.2.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/29 19:28:45 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,7 +131,7 @@ void CQCompartment::slotBtnDelete()
   if (mpCompartment == NULL) return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, pModel, "compartment",
+    CQMessageBox::confirmDelete(this, "compartment",
                                 FROM_UTF8(mpCompartment->getObjectName()),
                                 mpCompartment->getDeletedObjects());
 

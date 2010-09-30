@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.174.2.3 $
+//   $Revision: 1.174.2.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/29 19:28:46 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -913,12 +913,6 @@ void FunctionWidget1::slotNewButtonClicked()
 //! Slot for being activated whenever Delete button is clicked
 void FunctionWidget1::slotDeleteButtonClicked()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-
-  if (pModel == NULL)
-    return;
-
   CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
 
   if (pFunctionDB == NULL)
@@ -930,7 +924,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
     return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, pModel, "function",
+    CQMessageBox::confirmDelete(NULL, "function",
                                 FROM_UTF8(pFunction->getObjectName()),
                                 pFunction->getDeletedObjects());
 

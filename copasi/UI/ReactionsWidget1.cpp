@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.3 $
+//   $Revision: 1.205.2.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/29 19:28:47 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,7 +291,7 @@ bool ReactionsWidget1::saveToReaction()
       Objects.remove(Objects.length() - 2, 2);
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, pModel, ObjectType,
+        CQMessageBox::confirmDelete(NULL, ObjectType,
                                     Objects, DeletedObjects);
 
       switch (choice)
@@ -497,7 +497,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
   if (pReaction == NULL) return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, pModel, "reaction",
+    CQMessageBox::confirmDelete(NULL, "reaction",
                                 FROM_UTF8(pReaction->getObjectName()),
                                 pReaction->getDeletedObjects());
 

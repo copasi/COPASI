@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Date: 2010/09/30 17:02:30 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,7 +27,6 @@ class QTabWidget;
 class QTextEdit;
 class QVBoxLayout;
 class CCopasiObject;
-class CModel;
 
 class CQMessageBox: public QMessageBox
 {
@@ -49,7 +53,7 @@ public:
                                  const QString &text, StandardButtons buttons = Ok,
                                  StandardButton defaultButton = NoButton);
 
-  static StandardButton confirmDelete(QWidget *parent, CModel * pModel,
+  static StandardButton confirmDelete(QWidget *parent,
                                       const QString &objectType, const QString &objects,
                                       const std::set< const CCopasiObject * > & deletedObjects);
 

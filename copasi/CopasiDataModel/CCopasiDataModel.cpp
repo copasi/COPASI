@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.152 $
+//   $Revision: 1.152.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/22 13:24:49 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 17:02:32 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1057,22 +1057,37 @@ bool CCopasiDataModel::addDefaultTasks()
   return true;
 }
 
-std::set<std::string> CCopasiDataModel::listTaskDependentOnReport(const std::string & key)
+bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > candidates,
+    std::set< const CCopasiObject * > & dependentTasks) const
 {
-  std::set<std::string> TaskKeys;
+  size_t Size = dependentTasks.size();
 
-  CReportDefinition * pReportDefinition
-  = dynamic_cast< CReportDefinition * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  std::set< const CCopasiObject * >::const_iterator it = candidates.begin();
+  std::set< const CCopasiObject * >::const_iterator end = candidates.end();
 
-  if (!pReportDefinition) return TaskKeys;
+  CCopasiVectorN< CCopasiTask >::const_iterator itTask = mpTaskList->begin();
+  CCopasiVectorN< CCopasiTask >::const_iterator endTask = mpTaskList->end();
 
-  unsigned C_INT32 i, imax = mpTaskList->size();
 
-  for (i = 0; i < imax; i++)
-    if (pReportDefinition == (*mpTaskList)[i]->getReport().getReportDefinition())
-      TaskKeys.insert((*mpTaskList)[i]->getKey());
+  for (; it != end; ++it)
+    {
+      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(*it);
 
-  return TaskKeys;
+      if (pReportDefinition == NULL)
+        continue;
+
+      itTask = mpTaskList->begin();
+
+      for (; itTask != endTask; ++itTask)
+        {
+          if ((*itTask)->getReport().getReportDefinition() == pReportDefinition)
+            {
+              dependentTasks.insert(*itTask);
+            }
+        }
+    }
+
+  return Size < dependentTasks.size();
 }
 
 CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskType)
