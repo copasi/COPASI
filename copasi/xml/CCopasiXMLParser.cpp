@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223 $
+//   $Revision: 1.223.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/21 16:48:01 $
+//   $Date: 2010/09/30 19:09:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2930,11 +2930,14 @@ void CCopasiXMLParser::ListOfEventsElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::EventElement::EventElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpListOfAssignmentsElementHandler(NULL)
 {}
 
 CCopasiXMLParser::EventElement::~EventElement()
-{}
+{
+  pdelete(mpListOfAssignmentsElementHandler);
+}
 
 void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
@@ -3009,13 +3012,16 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
 
             if (!strcmp(pszName, "ListOfAssignments"))
               {
-                if (!mpCurrentHandler)
+                if (!mpListOfAssignmentsElementHandler)
                   {
-                    mpCurrentHandler = new ListOfAssignmentsElement(mParser, mCommon);
+                    mpListOfAssignmentsElementHandler =
+                      new ListOfAssignmentsElement(mParser, mCommon);
 
                     mCommon.mAssignments.reserve(100);
                     mCommon.mAssignments.resize(0);
                   }
+
+                mpCurrentHandler = mpListOfAssignmentsElementHandler;
               }
 
             break;
@@ -3050,7 +3056,7 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
                          pszName, "Event", mParser.getCurrentLineNumber());
 
         mParser.popElementHandler();
-        mCurrentElement = START_ELEMENT;
+        mLastKnownElement = START_ELEMENT;
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);

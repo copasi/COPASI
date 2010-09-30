@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.73.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/13 16:15:33 $
+//   $Date: 2010/09/30 19:09:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1508,6 +1508,50 @@ private:
     virtual void end(const XML_Char *pszName);
   };
 
+  class ListOfAssignmentsElement:
+      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     * Enum of invoked parsers
+     */
+    enum Element
+    {
+      ListOfAssignments = 0,
+      Assignment
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfAssignmentsElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfAssignmentsElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+
+    //        std::vector<std::pair<std::string, std::string> > mAssignments;
+  };
+
   class EventElement:
       public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
@@ -1530,6 +1574,8 @@ private:
      * The key in the CopasiML file
      */
     std::string mKey;
+
+    ListOfAssignmentsElement * mpListOfAssignmentsElementHandler;
 
     // Operations
   public:
@@ -1652,50 +1698,6 @@ private:
      * @param const XML_Char *pszName
      */
     virtual void end(const XML_Char *pszName);
-  };
-
-  class ListOfAssignmentsElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
-  {
-    // Attributes
-  private:
-    /**
-     * Enum of invoked parsers
-     */
-    enum Element
-    {
-      ListOfAssignments = 0,
-      Assignment
-    };
-
-    // Operations
-  public:
-    /**
-     * Constructor
-     */
-    ListOfAssignmentsElement(CCopasiXMLParser & parser,
-                             SCopasiXMLParserCommon & common);
-
-    /**
-     * Destructor
-     */
-    virtual ~ListOfAssignmentsElement();
-
-    /**
-     * Start element handler
-     * @param const XML_Char *pszName
-     * @param const XML_Char **papszAttrs
-     */
-    virtual void start(const XML_Char *pszName,
-                       const XML_Char **papszAttrs);
-
-    /**
-     * End element handler
-     * @param const XML_Char *pszName
-     */
-    virtual void end(const XML_Char *pszName);
-
-    //        std::vector<std::pair<std::string, std::string> > mAssignments;
   };
 
   class CommentElement:
