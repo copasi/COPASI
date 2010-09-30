@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.51.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/14 22:18:57 $
+//   $Author: shoops $
+//   $Date: 2010/09/30 18:23:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -328,7 +328,7 @@ public:
   void setUpdateModel(const bool & updateModel);
 
   /**
-   * Check whether the task must update the modle
+   * Check whether the task must update the model
    * @return const bool & updateModel
    */
   const bool & isUpdateModel() const;
@@ -336,7 +336,7 @@ public:
   /**
    * Set the call back of the task
    * @param CProcessReport * pCallBack
-   * @result bool succes
+   * @result bool success
    */
   virtual bool setCallBack(CProcessReport * pCallBack);
 
@@ -344,7 +344,7 @@ public:
 
   /**
    * Resizes result matrices and updates array annotations for a specific task.
-   * For now this will be hardcoded in the respective derived classes.
+   * For now this will be hard coded in the respective derived classes.
    * We may introduce a more generic mechanism for this in the future.
    * This is used when we need to know about the data structures of a task result
    * without actually performing the task, e.g. when selecting objects for output.
@@ -374,7 +374,7 @@ public:
   virtual bool process(const bool & useInitialValues);
 
   /**
-   * Perform neccessary cleaup procedures
+   * Perform necessary cleanup procedures
    */
   virtual bool restore();
 
@@ -441,7 +441,7 @@ public:
   virtual void output(const COutputInterface::Activity & activity);
 
   /**
-   * Introduce an additional seperator into the ouput
+   * Introduce an additional separator into the output
    * @param const Activity & activity
    */
   virtual void separate(const COutputInterface::Activity & activity);
