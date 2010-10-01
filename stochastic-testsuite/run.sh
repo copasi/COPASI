@@ -78,7 +78,7 @@ for MODEL in $MODELS;do
              rm -f ${TESTSDIR}/${MODEL}-mean-compare.RESULT 
              ./compare_mean.py ${MEAN_OUTFILE} ${MEAN_REFERENCE_FILE} ${SD_REFERENCE_FILE} $NUM_REPEATS ${TESTSDIR}/${MODEL}-mean-compare.RESULT || RESULT="failed"; 
              rm -f ${TESTSDIR}/${MODEL}-sd-compare.RESULT 
-             ./compare_sd.py ${SD_OUTFILE} ${TESTSDIR}/${MODEL}-sd.csv $NUM_REPEATS ${TESTSDIR}/${MODEL}-sd-compare.RESULT || RESULT="failed";
+             ./compare_sd.py ${SD_OUTFILE} ${SD_REFERENCE_FILE} $NUM_REPEATS ${TESTSDIR}/${MODEL}-sd-compare.RESULT || RESULT="failed";
           else
             echo "Error. Could not find file \"${MEAN_REFERENCE_FILE}\"";
             RESULT="failed"
