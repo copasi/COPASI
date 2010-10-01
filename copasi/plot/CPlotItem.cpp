@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 21:15:18 $
+//   $Date: 2010/10/01 11:41:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,9 +156,7 @@ void CPlotItem::setActivity(const COutputInterface::Activity & activity)
       case curve2d:
       case histoItem1d:
         mActivity = activity;
-        assert(COutputInterface::BEFORE <= mActivity &&
-               mActivity <= (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER));
-        * mpXMLActivity = XMLRecordingActivity[mActivity];
+        *mpXMLActivity = XMLRecordingActivity[mActivity];
         break;
 
       default:
