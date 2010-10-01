@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:14 $
+//   $Date: 2010/10/01 13:26:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -162,7 +162,7 @@ private:
   /**
   * max number of single stochastic steps to do in one step()
   */
-  C_INT32 mMaxSteps;
+  size_t mMaxSteps;
 
   /**
   * maximal increase of a particle number in one step.

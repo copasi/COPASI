@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.78.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:14 $
+//   $Date: 2010/10/01 13:26:32 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,18 +139,19 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
   C_FLOAT64 time = mpCurrentState->getTime();
   C_FLOAT64 endtime = time + deltaT;
 
-  for (i = 0; ((i < (unsigned C_INT32) mMaxSteps) && (time < endtime)); i++)
+  size_t Steps = 0;
+
+  while (time < endtime)
     {
       time = doSingleStep(time, endtime);
+
+      if (++Steps > mMaxSteps)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
+        }
     }
 
   mpCurrentState->setTime(time);
-
-  if ((i >= (unsigned C_INT32) mMaxSteps) && (!mMaxStepsReached))
-    {
-      mMaxStepsReached = true; //only report this message once
-      CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
-    }
 
   // get back the particle numbers:
 
