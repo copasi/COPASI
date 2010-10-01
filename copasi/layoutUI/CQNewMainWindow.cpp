@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.5 $
+//   $Revision: 1.1.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/01 09:25:55 $
+//   $Date: 2010/10/01 13:27:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,8 +153,6 @@ void CQNewMainWindow::createMenus()
 {
   mpFileMenu = menuBar()->addMenu(tr("&File"));
   mpFileMenu->addAction(mpSwitchModeAct);
-  mpFileMenu->addSeparator();
-  mpFileMenu->addAction(mpScreenshotAct);
   mpFileMenu->addSeparator();
   mpFileMenu->addAction(mpCloseAct);
 
