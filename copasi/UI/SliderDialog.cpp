@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.4 $
+//   $Revision: 1.83.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/29 15:51:31 $
+//   $Date: 2010/10/01 13:06:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -921,7 +921,14 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
   if (!object) return NULL;
 
   std::vector<CSlider*>* pVector = new std::vector<CSlider*>();
-  pVector = getCSlidersForObject(object, pVector);
+
+  try
+    {
+      pVector = getCSlidersForObject(object, pVector);
+    }
+
+  catch (...) {}
+
   return pVector;
 }
 
