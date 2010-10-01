@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:27 $
+//   $Date: 2010/10/01 11:31:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,27 +132,30 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
   if (qName == "msub")
     {
-      QString &last = mListOfUncompletedTags.last();  // must be not empty
-
-      // <msub> direct after <mfrac>
-      if (last.contains("mfrac"))
+      if (mListOfUncompletedTags.size() > 0)
         {
-          QStringList strList = last.split("_");
-          QString &lastUncompletedTags = strList.first();
-          QString &idxStr = strList.last();
-          int idx = idxStr.toInt();
-          idx++;
+          QString &last = mListOfUncompletedTags.last();  // must be not empty
 
-          // update with incrementally index
-          last = lastUncompletedTags + "_" + QString::number(idx);
+          // <msub> direct after <mfrac>
+          if (last.contains("mfrac"))
+            {
+              QStringList strList = last.split("_");
+              QString &lastUncompletedTags = strList.first();
+              QString &idxStr = strList.last();
+              int idx = idxStr.toInt();
+              idx++;
 
-          tex += "{";
-        }
+              // update with incrementally index
+              last = lastUncompletedTags + "_" + QString::number(idx);
 
-      // <msub> direct after <mfenced>
-      if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
-        {
-          tex += ", \\, ";
+              tex += "{";
+            }
+
+          // <msub> direct after <mfenced>
+          if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
+            {
+              tex += ", \\, ";
+            }
         }
 
       mListOfUncompletedTags.push_back("msub_0");
@@ -160,27 +163,30 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
   if (qName == "msup")
     {
-      QString &last = mListOfUncompletedTags.last();  // must be not empty
-
-      // <msup> direct after <mfrac>
-      if (last.contains("mfrac"))
+      if (mListOfUncompletedTags.size() > 0)
         {
-          QStringList strList = last.split("_");
-          QString &lastUncompletedTags = strList.first();
-          QString &idxStr = strList.last();
-          int idx = idxStr.toInt();
-          idx++;
+          QString &last = mListOfUncompletedTags.last();  // must be not empty
 
-          // update with incrementally index
-          last = lastUncompletedTags + "_" + QString::number(idx);
+          // <msup> direct after <mfrac>
+          if (last.contains("mfrac"))
+            {
+              QStringList strList = last.split("_");
+              QString &lastUncompletedTags = strList.first();
+              QString &idxStr = strList.last();
+              int idx = idxStr.toInt();
+              idx++;
 
-          tex += "{";
-        }
+              // update with incrementally index
+              last = lastUncompletedTags + "_" + QString::number(idx);
 
-      // <msup> direct after <mfenced>
-      if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
-        {
-          tex += ", \\, ";
+              tex += "{";
+            }
+
+          // <msup> direct after <mfenced>
+          if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
+            {
+              tex += ", \\, ";
+            }
         }
 
       mListOfUncompletedTags.push_back("msup_0");
@@ -332,15 +338,14 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "mfrac")
     {
-      if (mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
+      if (mListOfUncompletedTags.size() > 0 &&
+          mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
         mListOfUncompletedTags.pop_back();
 
-      if (!mListOfUncompletedTags.isEmpty())
-        {
-          // </mfrac> direct after </mfrac>
-          if (mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
-            tex += " }";
-        }
+      // </mfrac> direct after </mfrac>
+      if (mListOfUncompletedTags.size() > 0 &&
+          mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
+        tex += " }";
     }
 
   if (qName == "mtr")
@@ -356,7 +361,8 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "mrow")
     {
-      if (mListOfUncompletedTags.last() == "mrow")  // must not be empty
+      if (mListOfUncompletedTags.size() > 0 &&
+          mListOfUncompletedTags.last() == "mrow")  // must not be empty
         mListOfUncompletedTags.pop_back();
 
       tex += " } ";
@@ -364,7 +370,8 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "mfenced")
     {
-      if (mListOfUncompletedTags.last() == "mfenced") // must be not empty
+      if (mListOfUncompletedTags.size() > 0 &&
+          mListOfUncompletedTags.last() == "mfenced") // must be not empty
         mListOfUncompletedTags.pop_back();
 
       tex += "\\right)";
@@ -372,7 +379,8 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
       QString &last = mListOfUncompletedTags.last();  // must be not empty
 
       // </msub> direct after </mfenced>
-      if (last.contains("msub"))
+      if (mListOfUncompletedTags.size() > 0 &&
+          last.contains("msub"))
         {
           QStringList strList = last.split("_");
           QString &lastUncompletedTags = strList.first();
@@ -388,7 +396,8 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
         }
 
       // </msup> direct after </mfenced>
-      if (last.contains("msup"))
+      if (mListOfUncompletedTags.size() > 0 &&
+          last.contains("msup"))
         {
           QStringList strList = last.split("_");
           QString &lastUncompletedTags = strList.first();
@@ -399,28 +408,33 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
 
-          if (lastUncompletedTags.contains("msup") && idx == 2)
+          if (mListOfUncompletedTags.size() > 0 &&
+              lastUncompletedTags.contains("msup") && idx == 2)
             tex += "^";
         }
     }
 
   if (qName == "msub")
     {
-      if (mListOfUncompletedTags.last().contains("msub")) // must be not empty
+      if (mListOfUncompletedTags.size() > 0 &&
+          mListOfUncompletedTags.last().contains("msub")) // must be not empty
         mListOfUncompletedTags.pop_back();
 
       // </mfrac> direct after </msub>
-      if (mListOfUncompletedTags.last().contains("mfrac"))  // must ne not empty
+      if (mListOfUncompletedTags.size() > 0 &&
+          mListOfUncompletedTags.last().contains("mfrac"))  // must ne not empty
         tex += " }";
     }
 
   if (qName == "msup")
     {
-      if (mListOfUncompletedTags.last().contains("msup")) // must be not empty
+      if (mListOfUncompletedTags.size() > 0 &&
+          mListOfUncompletedTags.last().contains("msup")) // must be not empty
         mListOfUncompletedTags.pop_back();
 
       // </mfrac> direct after </msup>
-      if (mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
+      if (mListOfUncompletedTags.size() > 0 &&
+          mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
         tex += " }";
     }
 
