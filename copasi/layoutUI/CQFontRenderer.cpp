@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.cpp,v $
-//   $Revision: 1.2.2.1 $
+//   $Revision: 1.2.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/27 08:52:52 $
+//   $Date: 2010/10/03 15:31:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ CLTextTextureSpec* CQFontRenderer::operator()(const std::string& family, double 
 {
   CLFontSpec spec;
   spec.mFamily = family;
-  spec.mSize = fontSize;
+  spec.mSize = fontSize * zoomFactor;
   spec.mWeight = weight;
   spec.mStyle = style;
   QFont font = this->getFont(spec);
@@ -330,9 +330,10 @@ CLTextTextureSpec* CQFontRenderer::getTexture(QFont& font, const std::string& te
   font.setStyleStrategy(QFont::ForceOutline);
   QFontMetrics fontMetrics(font);
   std::pair<double, double> size = this->getTextureSize(font, text);
+  //std::cout << "texture size: " << size.first << "," << size.second << std::endl;
   // make the size a power of 2
-  unsigned int exponentWidth = (unsigned int)ceil(log(size.first * zoomFactor + 2) / log(2.0));
-  unsigned int exponentHeight = (unsigned int)ceil(log(size.second * zoomFactor + 2) / log(2.0));
+  unsigned int exponentWidth = (unsigned int)ceil(log(size.first /** zoomFactor*/ + 2) / log(2.0));
+  unsigned int exponentHeight = (unsigned int)ceil(log(size.second /** zoomFactor*/ + 2) / log(2.0));
   unsigned int width = 1 << exponentWidth;
   unsigned int height = 1 << exponentHeight;
   // draw the text somewhere with white stroke on black background
@@ -347,7 +348,7 @@ CLTextTextureSpec* CQFontRenderer::getTexture(QFont& font, const std::string& te
   painter.translate(1.0, 1.0);
   // we scale after the erase so that we don't have to divide the width and
   // the height
-  painter.scale(zoomFactor, zoomFactor);
+  //painter.scale(zoomFactor, zoomFactor);
   painter.drawText(0.0, fontMetrics.ascent() + 1, text.c_str());
   painter.end();
   // convert the image to an OpenGL texture
