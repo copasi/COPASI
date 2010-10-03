@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.1 $
+//   $Revision: 1.5.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/23 14:47:07 $
+//   $Date: 2010/10/03 15:33:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1303,6 +1303,7 @@ void CLLayoutRenderer::draw_text(const CLText* pText, const CLBoundingBox* pBB)
 
       if (pos->second != NULL && pos->second->mTextureName != 0)
         {
+          //std::cout << "Drawing text \"" << pText->getText() << "\"." << std::endl;
           CLLayoutRenderer::draw_text(pos->second, x, y, z, pBB);
         }
 
@@ -1316,6 +1317,7 @@ void CLLayoutRenderer::draw_text(const CLText* pText, const CLBoundingBox* pBB)
  */
 void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, double y, double z, const CLBoundingBox* pBB)
 {
+  //std::cout << "Drawing text with texture at " << pTexture << std::endl;
   if (pTexture != NULL && pBB != NULL)
     {
       // create a texture for the text.
@@ -1372,7 +1374,7 @@ void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, do
       //std::cout << "the upper side of the textured box will be located at: " << yOffset << std::endl;
 
       //
-      // we draw a rectangle in the corrent stroke color. At places where the texture is black, the underlying color should be seen.
+      // we draw a rectangle in the current stroke color. At places where the texture is black, the underlying color should be seen.
       // load the texture
       // enable 2D texturing
       glBindTexture(GL_TEXTURE_2D, pTexture->mTextureName);
@@ -1394,14 +1396,20 @@ void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, do
           glTranslated(-this->mCurrentAttributes.mX, -this->mCurrentAttributes.mY, -this->mCurrentAttributes.mZ);
         }
 
+      //std::cout << "Drawing texture with:" << std::endl;
+      //std::cout << "text height: "  << pTexture->mTextHeight << " text width: " << pTexture->mTextWidth << std::endl;
+      //std::cout << "texture height: "  << pTexture->mTextureHeight << " texture width: " << pTexture->mTextureWidth << std::endl;
+      //std::cout << "scale: " << pTexture->mScale << std::endl;
       double widthRatio = pTexture->mTextWidth * pTexture->mScale / pTexture->mTextureWidth;
+      //std::cout << "width ratio: " << widthRatio << std::endl;
       double heightRatio = pTexture->mTextHeight * pTexture->mScale / pTexture->mTextureHeight;
+      //std::cout << "height ratio: " << heightRatio << std::endl;
       glBegin(GL_POLYGON);
       glTexCoord2f(0.0, 1.0);
       glVertex3f(0.0, 0.0, 0.0);
       glTexCoord2d(0.0, 1.0 - heightRatio);
       glVertex3d(0.0, pTexture->mTextHeight, 0.0);
-      glTexCoord2d(widthRatio, 1 - heightRatio);
+      glTexCoord2d(widthRatio, 1.0 - heightRatio);
       glVertex3d(pTexture->mTextWidth, pTexture->mTextHeight, 0.0);
       glTexCoord2d(widthRatio, 1.0);
       glVertex3d(pTexture->mTextWidth, 0.0, 0.0);
@@ -3197,6 +3205,7 @@ void CLLayoutRenderer::update_textures_and_colors()
               // add the texture although it might be NULL
               //std::cout << "Creating new texture for text glyph: " << pTG->getId() << std::endl;
               CLTextTextureSpec* pTexture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, this->mZoomFactor);
+              //std::cout << "Created texture at " << pTexture << " for text \"" << text << "\"" << std::endl;
               //std::cout << "texture id: " << pTexture->mTextureName << std::endl;
               pos->second[text] = pTexture;
               this->mTextGlyphMap[pTG] = pTexture;
@@ -3229,6 +3238,8 @@ void CLLayoutRenderer::update_textures_and_colors()
 
                   pTexture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, newScale);
                   // check if the texture has a size that is supported
+                  //std::cout << "Created texture at " << pTexture << " for text \"" << text << "\"" << std::endl;
+                  //std::cout << "texture id: " << pTexture->mTextureName << std::endl;
                   pos2->second = pTexture;
                   //std::cout << "rescaled texture id: " << pTexture->mTextureName << std::endl;
                   this->mTextGlyphMap[pTG] = pTexture;
@@ -3629,6 +3640,8 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
                 {
                   // add the texture although it might be NULL
                   CLTextTextureSpec* pTexture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, this->mZoomFactor);
+                  //std::cout << "No texture found. Created texture at " << pTexture << " for text \"" << text << "\"" << std::endl;
+                  //std::cout << "texture id: " << pTexture->mTextureName << std::endl;
                   pos->second[text] = pTexture;
                   this->mTextMap[pText] = pTexture;
                 }
@@ -3640,15 +3653,18 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
 
                   if (pTexture != NULL && pTexture->mScale != this->mZoomFactor)
                     {
+                      //std::cout << "We create a larger texture for texture at " << pTexture << "." << std::endl;
                       // we create a new larger texture
                       double newScale = pTexture->mMaxScale;
 
                       if (pTexture->mTextureName != 0)
                         {
+                          //std::cout << "We delete the current OpenGL texture:" << pTexture->mTextureName << std::endl;
                           glDeleteTextures(1, &pTexture->mTextureName);
                         }
 
                       delete pTexture;
+                      pTexture = NULL;
                       pos2->second = NULL;
 
                       if (fabs(newScale + 1.0) < ALMOST_ZERO)
@@ -3657,11 +3673,14 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
                         }
 
                       pTexture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, newScale);
+                      //std::cout << "Created texture at " << pTexture << " for text \"" << text << "\"" << std::endl;
+                      //std::cout << "texture id: " << pTexture->mTextureName << std::endl;
                       pos2->second = pTexture;
                       this->mTextMap[pText] = pTexture;
                     }
                   else
                     {
+                      //std::cout << "We are reusing the texture at " << pos2->second << std::endl;
                       this->mTextMap[pText] = pos2->second;
                     }
                 }
