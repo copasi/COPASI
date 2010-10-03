@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.2 $
+//   $Revision: 1.5.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/03 15:33:01 $
+//   $Date: 2010/10/03 16:25:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1396,23 +1396,24 @@ void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, do
           glTranslated(-this->mCurrentAttributes.mX, -this->mCurrentAttributes.mY, -this->mCurrentAttributes.mZ);
         }
 
-      //std::cout << "Drawing texture with:" << std::endl;
+      //std::cout << "zoom factor: " << this->mZoomFactor << std::endl;
+      //std::cout << "Drawing texture " << pTexture->mTextureName << " with:" << std::endl;
       //std::cout << "text height: "  << pTexture->mTextHeight << " text width: " << pTexture->mTextWidth << std::endl;
       //std::cout << "texture height: "  << pTexture->mTextureHeight << " texture width: " << pTexture->mTextureWidth << std::endl;
-      //std::cout << "scale: " << pTexture->mScale << std::endl;
-      double widthRatio = pTexture->mTextWidth * pTexture->mScale / pTexture->mTextureWidth;
+      //std::cout << "texture scale: " << pTexture->mScale << std::endl;
+      double widthRatio = pTexture->mTextWidth /** pTexture->mScale*/ / pTexture->mTextureWidth;
       //std::cout << "width ratio: " << widthRatio << std::endl;
-      double heightRatio = pTexture->mTextHeight * pTexture->mScale / pTexture->mTextureHeight;
+      double heightRatio = pTexture->mTextHeight /** pTexture->mScale*/ / pTexture->mTextureHeight;
       //std::cout << "height ratio: " << heightRatio << std::endl;
       glBegin(GL_POLYGON);
       glTexCoord2f(0.0, 1.0);
       glVertex3f(0.0, 0.0, 0.0);
       glTexCoord2d(0.0, 1.0 - heightRatio);
-      glVertex3d(0.0, pTexture->mTextHeight, 0.0);
+      glVertex3d(0.0, pTexture->mTextHeight / pTexture->mScale, 0.0);
       glTexCoord2d(widthRatio, 1.0 - heightRatio);
-      glVertex3d(pTexture->mTextWidth, pTexture->mTextHeight, 0.0);
+      glVertex3d(pTexture->mTextWidth / pTexture->mScale, pTexture->mTextHeight / pTexture->mScale, 0.0);
       glTexCoord2d(widthRatio, 1.0);
-      glVertex3d(pTexture->mTextWidth, 0.0, 0.0);
+      glVertex3d(pTexture->mTextWidth / pTexture->mScale, 0.0, 0.0);
       glEnd();
       glPopMatrix();
       // disable the 2D texture again
