@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.3 $
+//   $Revision: 1.5.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/03 16:25:21 $
+//   $Date: 2010/10/05 18:58:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -328,7 +328,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
   unsigned int i, iMax = pCurve->getNumCurveSegments();
   const CLLineSegment* pLineSegment = NULL;
   // apply the current transformation
-  glMatrixMode(GL_MODELVIEW_MATRIX);
+  glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
   if (memcmp(mCurrentAttributes.mpTransform, CLTransformation::getIdentityMatrix(), 12*sizeof(double)))
@@ -684,7 +684,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
       this->map_arrow_head(*pP, v, mCurrentAttributes.mEndHead);
     }
 
-  glMatrixMode(GL_MODELVIEW_MATRIX);
+  glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 }
 
@@ -701,7 +701,7 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
   CLLayoutRenderer::extract_1d_attributes(pCurve, &mCurrentAttributes);
   CLLayoutRenderer::extract_arrowhead_information(pCurve, &mCurrentAttributes);
   // apply the current transformation
-  glMatrixMode(GL_MODELVIEW_MATRIX);
+  glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
   if (memcmp(mCurrentAttributes.mpTransform, CLTransformation::getIdentityMatrix(), 12*sizeof(double)))
@@ -878,7 +878,7 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
     }
 
   this->restore_current_attributes();
-  glMatrixMode(GL_MODELVIEW_MATRIX);
+  glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 }
 
@@ -1120,7 +1120,7 @@ void CLLayoutRenderer::draw_group(const CLGroup* pGroup, const CLBoundingBox* pB
   mCurrentAttributes.mZ = pBB->getPosition().getZ();
   mCurrentAttributes.mWidth = pBB->getDimensions().getWidth();
   mCurrentAttributes.mHeight = pBB->getDimensions().getHeight();
-  glMatrixMode(GL_MODELVIEW_MATRIX);
+  glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
   // apply the current transformation
@@ -1213,7 +1213,7 @@ void CLLayoutRenderer::draw_group(const CLGroup* pGroup, const CLBoundingBox* pB
 
   // restore the attributes
   this->restore_current_attributes();
-  glMatrixMode(GL_MODELVIEW_MATRIX);
+  glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 }
 
@@ -1379,7 +1379,7 @@ void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, do
       // enable 2D texturing
       glBindTexture(GL_TEXTURE_2D, pTexture->mTextureName);
       glEnable(GL_TEXTURE_2D);
-      glMatrixMode(GL_MODELVIEW_MATRIX);
+      glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
       glTranslated(xOffset, yOffset, zOffset);
 
@@ -1510,7 +1510,7 @@ void CLLayoutRenderer::draw_image(const CLImage* pImage, const CLBoundingBox* pB
       CLRenderPoint p(pImage->getX(), pImage->getY());
       CLPoint point = CLLayoutRenderer::convert_to_absolute(&p, pBB);
       // apply the current transformation
-      glMatrixMode(GL_MODELVIEW_MATRIX);
+      glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
 
       if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12*sizeof(double)))
@@ -1527,7 +1527,7 @@ void CLLayoutRenderer::draw_image(const CLImage* pImage, const CLBoundingBox* pB
 
       // enable 2D texturing
       glEnable(GL_TEXTURE_2D);
-      glMatrixMode(GL_MODELVIEW_MATRIX);
+      glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
       glTranslated(point.getX(), point.getY(), point.getZ());
       glBegin(GL_POLYGON);
@@ -1551,7 +1551,7 @@ void CLLayoutRenderer::draw_image(const CLImage* pImage, const CLBoundingBox* pB
 
   // restore the attributes
   this->restore_current_attributes();
-  glMatrixMode(GL_MODELVIEW_MATRIX);
+  glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 }
 
@@ -2456,7 +2456,7 @@ void CLLayoutRenderer::map_gradient_color(double rel_distance, const CLGradientB
  */
 void CLLayoutRenderer::draw_datapoints(GLdouble* pData, unsigned int numPoints, const CLBoundingBox* pBB, bool doTesselation, float xOffset, float yOffset, float zOffset)
 {
-  glMatrixMode(GL_MODELVIEW_MATRIX);
+  glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(xOffset, yOffset, zOffset);
 
@@ -2674,7 +2674,7 @@ void CLLayoutRenderer::map_arrow_head(const CLPoint& mapTo, const CLPoint& direc
       const CLLineEnding* pLineEnding = this->mpResolver->getLineEnding(headId);
       assert(pLineEnding);
       // TODO create an error if the line ending was not found
-      glMatrixMode(GL_MODELVIEW_MATRIX);
+      glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
       glLoadIdentity();
       glTranslated(mapTo.getX(), mapTo.getY(), mapTo.getZ());
