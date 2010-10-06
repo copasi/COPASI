@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.4 $
+//   $Revision: 1.5.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/05 18:58:45 $
+//   $Date: 2010/10/06 04:31:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1377,8 +1377,8 @@ void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, do
       // we draw a rectangle in the current stroke color. At places where the texture is black, the underlying color should be seen.
       // load the texture
       // enable 2D texturing
-      glBindTexture(GL_TEXTURE_2D, pTexture->mTextureName);
       glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, pTexture->mTextureName);
       glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
       glTranslated(xOffset, yOffset, zOffset);
@@ -3205,11 +3205,26 @@ void CLLayoutRenderer::update_textures_and_colors()
             {
               // add the texture although it might be NULL
               //std::cout << "Creating new texture for text glyph: " << pTG->getId() << std::endl;
-              CLTextTextureSpec* pTexture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, this->mZoomFactor);
+              std::pair<CLTextTextureSpec*, GLubyte*> texture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, this->mZoomFactor);
+
               //std::cout << "Created texture at " << pTexture << " for text \"" << text << "\"" << std::endl;
               //std::cout << "texture id: " << pTexture->mTextureName << std::endl;
-              pos->second[text] = pTexture;
-              this->mTextGlyphMap[pTG] = pTexture;
+              if (texture.first != NULL && texture.second != NULL)
+                {
+                  glGenTextures(1, &texture.first->mTextureName);
+                  assert(texture.first->mTextureName != 0);
+                  glBindTexture(GL_TEXTURE_2D, texture.first->mTextureName);
+                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+                  glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texture.first->mTextureWidth, texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
+                  delete[] texture.second;
+                }
+
+              pos->second[text] = texture.first;
+              this->mTextGlyphMap[pTG] = texture.first;
             }
           else
             {
@@ -3237,13 +3252,28 @@ void CLLayoutRenderer::update_textures_and_colors()
                       newScale = this->mZoomFactor;
                     }
 
-                  pTexture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, newScale);
+                  std::pair<CLTextTextureSpec*, GLubyte*> texture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, newScale);
+
                   // check if the texture has a size that is supported
                   //std::cout << "Created texture at " << pTexture << " for text \"" << text << "\"" << std::endl;
                   //std::cout << "texture id: " << pTexture->mTextureName << std::endl;
-                  pos2->second = pTexture;
+                  if (texture.first != NULL && texture.second != NULL)
+                    {
+                      glGenTextures(1, &texture.first->mTextureName);
+                      assert(texture.first->mTextureName != 0);
+                      glBindTexture(GL_TEXTURE_2D, texture.first->mTextureName);
+                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+                      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texture.first->mTextureWidth, texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
+                      delete[] texture.second;
+                    }
+
+                  pos2->second = texture.first;
                   //std::cout << "rescaled texture id: " << pTexture->mTextureName << std::endl;
-                  this->mTextGlyphMap[pTG] = pTexture;
+                  this->mTextGlyphMap[pTG] = texture.first;
                 }
               else
                 {
@@ -3640,11 +3670,26 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
               if (pos2 == pos->second.end())
                 {
                   // add the texture although it might be NULL
-                  CLTextTextureSpec* pTexture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, this->mZoomFactor);
+                  std::pair<CLTextTextureSpec*, GLubyte*> texture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, this->mZoomFactor);
+
                   //std::cout << "No texture found. Created texture at " << pTexture << " for text \"" << text << "\"" << std::endl;
                   //std::cout << "texture id: " << pTexture->mTextureName << std::endl;
-                  pos->second[text] = pTexture;
-                  this->mTextMap[pText] = pTexture;
+                  if (texture.first != NULL && texture.second != NULL)
+                    {
+                      glGenTextures(1, &texture.first->mTextureName);
+                      assert(texture.first->mTextureName != 0);
+                      glBindTexture(GL_TEXTURE_2D, texture.first->mTextureName);
+                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+                      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texture.first->mTextureWidth, texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
+                      delete[] texture.second;
+                    }
+
+                  pos->second[text] = texture.first;
+                  this->mTextMap[pText] = texture.first;
                 }
               else
                 {
@@ -3673,11 +3718,26 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
                           newScale = this->mZoomFactor;
                         }
 
-                      pTexture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, newScale);
+                      std::pair<CLTextTextureSpec*, GLubyte*> texture = (*this->mpFontRenderer)(fontSpec.mFamily, fontSpec.mSize, text, fontSpec.mWeight, fontSpec.mStyle, newScale);
+
                       //std::cout << "Created texture at " << pTexture << " for text \"" << text << "\"" << std::endl;
                       //std::cout << "texture id: " << pTexture->mTextureName << std::endl;
-                      pos2->second = pTexture;
-                      this->mTextMap[pText] = pTexture;
+                      if (texture.first != NULL && texture.second != NULL)
+                        {
+                          glGenTextures(1, &texture.first->mTextureName);
+                          assert(texture.first->mTextureName != 0);
+                          glBindTexture(GL_TEXTURE_2D, texture.first->mTextureName);
+                          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+                          glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texture.first->mTextureWidth, texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
+                          delete[] texture.second;
+                        }
+
+                      pos2->second = texture.first;
+                      this->mTextMap[pText] = texture.first;
                     }
                   else
                     {

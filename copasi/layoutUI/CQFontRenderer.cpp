@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.cpp,v $
-//   $Revision: 1.2.2.2 $
+//   $Revision: 1.2.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/03 15:31:45 $
+//   $Date: 2010/10/06 04:31:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,7 +71,7 @@ CQFontRenderer::~CQFontRenderer()
  * The caller is responsible to free the memory of the TextureSpec object
  * and of the pData in the TextureSpec.
  */
-CLTextTextureSpec* CQFontRenderer::operator()(const std::string& family, double fontSize, const std::string& text, CLText::FONT_WEIGHT weight, CLText::FONT_STYLE style, double zoomFactor)
+std::pair<CLTextTextureSpec*, GLubyte*> CQFontRenderer::operator()(const std::string& family, double fontSize, const std::string& text, CLText::FONT_WEIGHT weight, CLText::FONT_STYLE style, double zoomFactor)
 {
   CLFontSpec spec;
   spec.mFamily = family;
@@ -79,8 +79,7 @@ CLTextTextureSpec* CQFontRenderer::operator()(const std::string& family, double 
   spec.mWeight = weight;
   spec.mStyle = style;
   QFont font = this->getFont(spec);
-  CLTextTextureSpec* pSpec = getTexture(font, text, zoomFactor);
-  return pSpec;
+  return getTexture(font, text, zoomFactor);
 }
 
 /**
@@ -323,7 +322,7 @@ std::pair<double, double> CQFontRenderer::getTextureSize(const CLFontSpec& spec,
  * The caller has to free the memory for the TextureSpec object and the
  * pData in the TextureSpec object.
  */
-CLTextTextureSpec* CQFontRenderer::getTexture(QFont& font, const std::string& text, double zoomFactor)
+std::pair<CLTextTextureSpec*, GLubyte*> CQFontRenderer::getTexture(QFont& font, const std::string& text, double zoomFactor)
 {
   CLTextTextureSpec* pSpec = NULL;
   // find out what size the text will have
@@ -377,6 +376,8 @@ CLTextTextureSpec* CQFontRenderer::getTexture(QFont& font, const std::string& te
       glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
     }
 
+  GLubyte* textureData = NULL;
+
   if (w != 0)
     {
       if (w != pSpec->mTextureWidth)
@@ -385,7 +386,7 @@ CLTextTextureSpec* CQFontRenderer::getTexture(QFont& font, const std::string& te
           pSpec->mTextureHeight = height;
         }
 
-      GLubyte* textureData = new GLubyte[width*height];
+      textureData = new GLubyte[width*height];
       pSpec->mAscent = (double)fontMetrics.ascent();
       unsigned int i, iMax = width * height;
 
@@ -393,20 +394,9 @@ CLTextTextureSpec* CQFontRenderer::getTexture(QFont& font, const std::string& te
         {
           textureData[i] = image.bits()[4*i];
         }
-
-      glGenTextures(1, &pSpec->mTextureName);
-      assert(pSpec->mTextureName != 0);
-      glBindTexture(GL_TEXTURE_2D, pSpec->mTextureName);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, format, GL_UNSIGNED_BYTE, textureData);
-      delete[] textureData;
     }
 
-  return pSpec;
+  return std::pair<CLTextTextureSpec*, GLubyte*>(pSpec, textureData);
 }
 
 /**
@@ -471,7 +461,7 @@ void CQFontRenderer::getFamilyList(const std::string& family, std::list<std::str
     }
 }
 
-CLTextTextureSpec* CQFontRenderer::createTexture(const std::string& family, double fontSize, const std::string& text, CLText::FONT_WEIGHT weight, CLText::FONT_STYLE style, double zoomFactor)
+std::pair<CLTextTextureSpec*, GLubyte*> CQFontRenderer::createTexture(const std::string& family, double fontSize, const std::string& text, CLText::FONT_WEIGHT weight, CLText::FONT_STYLE style, double zoomFactor)
 {
   return FONT_RENDERER(family, fontSize, text, weight, style, zoomFactor);
 }
