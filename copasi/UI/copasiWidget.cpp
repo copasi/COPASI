@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.34.2.1 $
+//   $Revision: 1.34.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:55 $
+//   $Author: shoops $
+//   $Date: 2010/10/09 14:27:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,13 +35,23 @@
 
 CopasiWidget::CopasiWidget(QWidget * parent, const char * name, Qt::WFlags f)
     : QWidget(parent, name, f),
-    mpListView(static_cast<ListViews *>(parent)),
+    mpListView(NULL),
     mKey(),
     mpObject(NULL),
     mpDataModel(NULL),
     mIgnoreUpdates(false),
     mFramework(0)
-{}
+{
+  QObject *pParent = parent;
+
+  while (pParent != NULL &&
+         (mpListView = dynamic_cast< ListViews * >(pParent)) == NULL)
+    {
+      pParent = pParent->parent();
+    }
+
+  assert(mpListView != NULL);
+}
 
 bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {return true;}
