@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.32 $ 
+//   $Revision: 1.33 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:28 $ 
+//   $Author: gauges $ 
+//   $Date: 2010/10/13 12:03:02 $ 
 // End CVS Header 
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -122,4 +122,7 @@
 %include "CLReactionGlyph.i"
 %include "CLayout.i"
 %include "CListOfLayouts.i"
+%include "CSensMethod.i"
+%include "CSensProblem.i"
+%include "CSensTask.i"
 
