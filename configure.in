@@ -266,6 +266,45 @@ if test x"${JAVA_LIB_PATH}" != x""; then
   QMAKE_ARG="$QMAKE_ARG JAVA_LIB_PATH=$JAVA_LIB_PATH"
 fi
 
+AC_ARG_ENABLE([octave],
+  AS_HELP_STRING([--enable-octave],
+                 [build octave wrappers (default: disabled)]),
+  [ENABLE_OCTAVE=$enable_octave],
+  [ENABLE_OCTAVE="no"])
+
+if test x"${ENABLE_OCTAVE}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_OCTAVE=$ENABLE_OCTAVE"
+fi
+
+AC_ARG_WITH([mkoctfile],
+  AS_HELP_STRING([--with-mkoctfile=PATH],
+                 [Full path of mkoctfile executable]),
+  [MKOCTFILE_BIN=$withval])
+
+if test x"${MKOCTFILE_BIN}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG MKOCTFILE_BIN=$MKOCTFILE_BIN"
+fi
+
+AC_ARG_ENABLE([perl],
+  AS_HELP_STRING([--enable-perl],
+                 [build perl wrappers (default: disabled)]),
+  [ENABLE_PERL=$enable_perl],
+  [ENABLE_PERL="no"])
+
+if test x"${ENABLE_PERL}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_PERL=$ENABLE_PERL"
+fi
+
+AC_ARG_WITH([perlbin],
+  AS_HELP_STRING([--with-perlbin=PATH],
+                 [Full path of perl executable]),
+  [PERL_BIN=$withval])
+
+if test x"${PERL_BIN}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PERL_BIN=$PERL_BIN"
+fi
+
+
 AC_ARG_WITH([junit],
   AS_HELP_STRING([--with-junit=PATH],
                  [Path to junit]),
