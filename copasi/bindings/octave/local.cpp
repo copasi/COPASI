@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/octave/local.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/14 10:34:12 $
+//   $Date: 2010/10/14 15:37:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,9 @@
 #include "parameterFitting/CFitTask.h"
 
 //#include <iostream>
+
+// OCTAVE seems to define VERSION as a MACRO which messes up compilation
+#undef VERSION
 
 typedef CCopasiVector<CEvent> EventVector;
 typedef CCopasiVectorN<CEvent> EventVectorN;
