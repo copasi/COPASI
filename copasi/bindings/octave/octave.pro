@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/octave/octave.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/10/14 15:37:30 $ 
+#   $Date: 2010/10/14 20:06:29 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -239,7 +239,7 @@ isEmpty(SWIG_PATH){
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $$SWIG_INTERFACE_FILES octave.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -octave -o $$wrapper_source.target octave.i; sed -e 's/Octave_map/octave_map/' $$wrapper_source.target > tmp.cpp;mv tmp.cpp $$wrapper_source.target
+      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -octave -o $$wrapper_source.target octave.i; sed -e 's/octave_map/Octave_map/' $$wrapper_source.target > tmp.cpp;mv tmp.cpp $$wrapper_source.target
   
       QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
     }
