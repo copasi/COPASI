@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/perl/perl.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/10/14 13:50:20 $ 
+#   $Date: 2010/10/15 12:51:48 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,6 +25,15 @@ CONFIG -= qt
 
 include(../../common.pri)
 include(../../app.pri)
+
+isEmpty(PERL_BIN){
+  # we just assume it is in the path
+  PERL_BIN = $$system(which perl)
+}
+
+isEmpty($$PERL_BIN) | !exists($$PERL_BIN){
+  error("Could not find R binary at \"$${PERL_BIN}\"."); 
+}
 
 contains(BUILD_OS,WIN32){
    TARGET = _COPASI

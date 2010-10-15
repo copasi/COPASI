@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/octave/octave.pro,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2010/10/14 20:06:29 $ 
+#   $Date: 2010/10/15 12:51:47 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -252,7 +252,11 @@ QMAKE_CLEAN += COPASI.oct
 
 isEmpty(MKOCTFILE_BIN){
   # we just assume it is in the path
-  MKOCTFILE_BIN = mkoctfile
+  MKOCTFILE_BIN = $$system(which mkoctfile)
+}
+
+isEmpty($$MKOCTFILE_BIN) | !exists($$MKOCTFILE_BIN){
+  error("Could not find R binary at \"$${MKOCTFILE_BIN}\"."); 
 }
 
 OCTAVE_INCLUDES = $$system($$MKOCTFILE_BIN -p INCFLAGS)
