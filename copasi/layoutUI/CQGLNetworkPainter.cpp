@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.160 $
+//   $Revision: 1.160.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Date: 2010/10/19 12:22:20 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -3019,7 +3019,11 @@ void CQGLNetworkPainter::setZoomFactor(C_FLOAT64 zoom)
   if (zoom != this->mCurrentZoom)
     {
       this->mCurrentZoom = zoom;
-      this->updateGL();
+
+      if (this->isVisible())
+        {
+          this->updateGL();
+        }
     }
 }
 
@@ -3043,7 +3047,11 @@ void CQGLNetworkPainter::update()
   if (mIsInitialized)
     {
       this->resizeGL(this->width(), this->height());
-      this->updateGL();
+
+      if (this->isVisible())
+        {
+          this->updateGL();
+        }
     }
 }
 

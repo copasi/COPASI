@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.5.2.3 $
+//   $Revision: 1.5.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/01 13:27:30 $
+//   $Date: 2010/10/19 12:22:20 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,13 +158,16 @@ void CQGLLayoutPainter::resizeGL(int w, int h)
 
 void CQGLLayoutPainter::paintGL()
 {
-  if (this->mpRenderer)
+  if (this->isVisible())
     {
-      this->resizeGL(this->width(), this->height());
-    }
+      if (this->mpRenderer)
+        {
+          this->resizeGL(this->width(), this->height());
+        }
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
-  draw();
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
+      draw();
+    }
 }
 
 void CQGLLayoutPainter::draw()
@@ -194,8 +197,12 @@ void CQGLLayoutPainter::setZoomFactor(double zoom)
     {
       this->mpRenderer->setZoomFactor(zoom);
       this->mCurrentZoom = zoom;
-      this->resizeGL(this->width(), this->height());
-      this->updateGL();
+
+      if (this->isVisible())
+        {
+          this->resizeGL(this->width(), this->height());
+          this->updateGL();
+        }
     }
 }
 
@@ -232,7 +239,7 @@ void CQGLLayoutPainter::update()
 {
   // only update if we have a renderer, otherwise we might call OpenGL
   // functions before OpenGL has been initialized
-  if (this->mpRenderer)
+  if (this->mpRenderer && this->isVisible())
     {
       this->resizeGL(this->width(), this->height());
       this->updateGL();
@@ -356,10 +363,14 @@ void CQGLLayoutPainter::update(const CCopasiDataModel* pDatamodel, CLayout* pLay
   this->mMinX -= MARGIN;
   this->mMinY -= MARGIN;
   this->setCurrentPosition(this->mMinX, this->mMinY);
+
   // call resize to set the correct viewport
-  this->resizeGL(this->width(), this->height());
-  // draw the layout
-  this->updateGL();
+  if (this->isVisible())
+    {
+      this->resizeGL(this->width(), this->height());
+      // draw the layout
+      this->updateGL();
+    }
 }
 
 void CQGLLayoutPainter::change_style(const CLRenderInformationBase* pRenderInfo, bool defaultStyle)
@@ -375,7 +386,10 @@ void CQGLLayoutPainter::change_style(const CLRenderInformationBase* pRenderInfo,
       this->mpRenderer->change_style(dynamic_cast<const CLGlobalRenderInformation*>(pRenderInfo), defaultStyle);
     }
 
-  this->updateGL();
+  if (this->isVisible())
+    {
+      this->updateGL();
+    }
 }
 
 void CQGLLayoutPainter::mousePressEvent(QMouseEvent* pMouseEvent)
@@ -516,7 +530,12 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
               }
 
             this->mState = CQGLLayoutPainter::STATE_NORMAL;
-            this->updateGL();
+
+            if (this->isVisible())
+              {
+                this->updateGL();
+              }
+
             break;
           case CQGLLayoutPainter::STATE_DRAG:
 
@@ -551,7 +570,11 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                   }
 
                 emit documentChanged();
-                this->updateGL();
+
+                if (this->isVisible())
+                  {
+                    this->updateGL();
+                  }
               }
 
             this->mState = CQGLLayoutPainter::STATE_NORMAL;
@@ -579,7 +602,12 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                             if (this->mpRenderer->isSelected(*it))
                               {
                                 this->mpRenderer->removeFromSelection(*it);
-                                this->updateGL();
+
+                                if (this->isVisible())
+                                  {
+                                    this->updateGL();
+                                  }
+
                                 break;
                               }
 
@@ -599,7 +627,12 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                             if (!this->mpRenderer->isSelected(*it))
                               {
                                 this->mpRenderer->addToSelection(*it);
-                                this->updateGL();
+
+                                if (this->isVisible())
+                                  {
+                                    this->updateGL();
+                                  }
+
                                 break;
                               }
 
@@ -635,7 +668,11 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
 
                         this->mpRenderer->clearSelection();
                         this->mpRenderer->addToSelection(pObject);
-                        this->updateGL();
+
+                        if (this->isVisible())
+                          {
+                            this->updateGL();
+                          }
                       }
                   }
                 else
@@ -643,7 +680,11 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                     if (!this->mpRenderer->getSelection().empty())
                       {
                         this->mpRenderer->clearSelection();
-                        this->updateGL();
+
+                        if (this->isVisible())
+                          {
+                            this->updateGL();
+                          }
                       }
                   }
 
@@ -700,7 +741,11 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
             std::pair<double, double> coords2 = this->mpRenderer->convert_to_model_space(maxX, maxY);
             CLBoundingBox bb(CLPoint(coords1.first, coords1.second), CLDimensions(coords2.first - coords1.first, coords2.second - coords1.second));
             this->mpRenderer->setSelectionBox(&bb);
-            this->updateGL();
+
+            if (this->isVisible())
+              {
+                this->updateGL();
+              }
           }
 
         break;
@@ -735,7 +780,10 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
             // there is no need to emit the changed signal here
             // since the user (normally) releases the mouse button
             // before anything that can react to the change takes effect
-            this->updateGL();
+            if (this->isVisible())
+              {
+                this->updateGL();
+              }
           }
 
         break;
@@ -863,7 +911,11 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
                     std::pair<double, double> coords2 = this->mpRenderer->convert_to_model_space(maxX, maxY);
                     CLBoundingBox bb(CLPoint(coords1.first, coords1.second), CLDimensions(coords2.first - coords1.first, coords2.second - coords1.second));
                     this->mpRenderer->setSelectionBox(&bb);
-                    this->updateGL();
+
+                    if (this->isVisible())
+                      {
+                        this->updateGL();
+                      }
                   }
               }
           }
@@ -1033,14 +1085,22 @@ void CQGLLayoutPainter::revertCurve()
           const CLCurve* pCurve = this->mpRenderer->revert_curve(&static_cast<const CLMetabReferenceGlyph*>(*selection.begin())->getCurve());
           static_cast<CLMetabReferenceGlyph*>(*selection.begin())->setCurve(*pCurve);
           delete pCurve;
-          this->updateGL();
+
+          if (this->isVisible())
+            {
+              this->updateGL();
+            }
         }
       else if (dynamic_cast<const CLReactionGlyph*>(*selection.begin()) && static_cast<const CLReactionGlyph*>(*selection.begin())->getCurve().getNumCurveSegments() != 0)
         {
           const CLCurve* pCurve = this->mpRenderer->revert_curve(&static_cast<const CLReactionGlyph*>(*selection.begin())->getCurve());
           static_cast<CLReactionGlyph*>(*selection.begin())->setCurve(*pCurve);
           delete pCurve;
-          this->updateGL();
+
+          if (this->isVisible())
+            {
+              this->updateGL();
+            }
         }
     }
 }
