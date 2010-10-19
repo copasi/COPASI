@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.3 $
+//   $Revision: 1.263.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/24 09:19:08 $
+//   $Date: 2010/10/19 17:05:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -7217,6 +7217,8 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
                 }
             }
 
+          // we have to reset i to 0
+          i = 0;
 #endif // LIBSBML_VERSION
           const Unit *pU1, *pU2;
 
