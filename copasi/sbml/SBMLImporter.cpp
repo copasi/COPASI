@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.4 $
+//   $Revision: 1.263.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/19 17:05:23 $
+//   $Date: 2010/10/19 17:59:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -8468,9 +8468,9 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
         {
           // it has exactly the same meaning as the delayAssignment flag in
           // COPASI, just a different name
-          if (pEvent->isSetUseValuesFromTriggerTime())
+          if (pEvent->getUseValuesFromTriggerTime() == true)
             {
-              pCOPASIEvent->setDelayAssignment(pEvent->getUseValuesFromTriggerTime());
+              pCOPASIEvent->setDelayAssignment(true);
             }
           else
             {
