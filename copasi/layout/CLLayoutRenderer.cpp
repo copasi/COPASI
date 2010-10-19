@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.5 $
+//   $Revision: 1.5.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/06 04:31:25 $
+//   $Date: 2010/10/19 13:29:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1024,7 +1024,7 @@ void CLLayoutRenderer::draw_layout()
                   // in order to position text glyphs corectly, we have to move them up by their mAscent
                   CLBoundingBox bb = pTG->getBoundingBox();
                   CLPoint* pP = &bb.getPosition();
-                  pP->setY(pP->getY() - pos->second->mAscent);
+                  pP->setY(pP->getY() - pos->second->mAscent / this->mZoomFactor);
                   bb.setPosition(*pP);
                   this->draw_text(styleIt->second, &bb, pos->second);
 
@@ -1340,27 +1340,27 @@ void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, do
         {
           // the x offset has to be changed to
           // (xOffset+width/2.0)-textWidth/2.0
-          xOffset = xOffset + pBB->getDimensions().getWidth() / 2.0 - pTexture->mTextWidth / 2.0;
+          xOffset = xOffset + pBB->getDimensions().getWidth() / 2.0 - pTexture->mTextWidth / (2.0 * this->mZoomFactor);
         }
       else if (mCurrentAttributes.mTextAnchor == CLText::ANCHOR_END)
         {
           // the x offset has to be changed to
           // xOffset+width-textWidth
-          xOffset = xOffset + pBB->getDimensions().getWidth() - pTexture->mTextWidth;
+          xOffset = xOffset + pBB->getDimensions().getWidth() - pTexture->mTextWidth / this->mZoomFactor;
         }
 
       // do vertical positioning
       if (mCurrentAttributes.mVTextAnchor == CLText::ANCHOR_MIDDLE)
         {
           // the text is vertically centered in the box
-          yOffset += (pBB->getDimensions().getHeight() - pTexture->mTextHeight) / 2.0;
+          yOffset += (pBB->getDimensions().getHeight() - pTexture->mTextHeight / this->mZoomFactor) / 2.0;
         }
       else if (mCurrentAttributes.mVTextAnchor == CLText::ANCHOR_BOTTOM)
         {
           // the lower edge of the text is located at the top edge of the box
           // since heigher y values are downward, this alligns the text at
           // the lower end of the box
-          yOffset += (pBB->getDimensions().getHeight() - pTexture->mTextHeight);
+          yOffset += (pBB->getDimensions().getHeight() - pTexture->mTextHeight / this->mZoomFactor);
         }
 
       // the yOffset has to consider the mAscent of the text because the
