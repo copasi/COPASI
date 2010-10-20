@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.73.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 17:40:50 $
+//   $Date: 2010/10/20 15:14:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.73.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 17:40:50 $
+//   $Date: 2010/10/20 15:14:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@
 #include "UI/qtUtilities.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
+#include "commandline/CLocaleString.h"
 
 #define ActivitySize 8
 
@@ -1029,7 +1030,7 @@ bool CopasiPlot::saveData(const std::string & filename)
   // No data
   if (ItemActivity == ActivitySize) return true;
 
-  std::ofstream fs(utf8ToLocale(filename).c_str());
+  std::ofstream fs(CLocaleString::fromUtf8(filename).c_str());
 
   if (!fs.good()) return false;
 

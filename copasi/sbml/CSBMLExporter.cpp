@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.84.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/22 15:31:30 $
+//   $Author: shoops $
+//   $Date: 2010/10/20 15:14:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "utilities/CVersion.h"
 #include "sbmlunit/CUnitInterfaceSBML.h"
+#include "commandline/CLocaleString.h"
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false)
 {}
@@ -3013,7 +3014,7 @@ bool CSBMLExporter::exportModel(CCopasiDataModel& dataModel, const std::string& 
       /* check if the file already exists.
          If yes, write if overwrite is true,
          else create an appropriate  CCopasiMessage. */
-      std::ifstream testInfile(utf8ToLocale(filename).c_str(), std::ios::in);
+      std::ifstream testInfile(CLocaleString::fromUtf8(filename).c_str(), std::ios::in);
 
       if (testInfile && !overwrite)
         {
@@ -3023,7 +3024,7 @@ bool CSBMLExporter::exportModel(CCopasiDataModel& dataModel, const std::string& 
         }
 
       /* write the document to a file */
-      std::ofstream outfile(utf8ToLocale(filename).c_str(), std::ios::out | std::ios::trunc);
+      std::ofstream outfile(CLocaleString::fromUtf8(filename).c_str(), std::ios::out | std::ios::trunc);
       outfile << str;
       outfile.close();
     }

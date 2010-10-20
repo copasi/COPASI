@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.4.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/02/01 16:49:14 $
+//   $Author: shoops $
+//   $Date: 2010/10/20 15:14:28 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,6 +27,7 @@
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 #include "CQOptimizationResult.h"
+#include "commandline/CLocaleString.h"
 
 /*
  *  Constructs a CQOptimizationResult which is a child of 'parent', with the
@@ -164,7 +170,7 @@ void CQOptimizationResult::slotSave(void)
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail()) return;
 

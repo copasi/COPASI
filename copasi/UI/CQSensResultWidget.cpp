@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/04/02 15:47:09 $
+//   $Author: shoops $
+//   $Date: 2010/10/20 15:14:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 
 #include "UI/CopasiFileDialog.h"
 #include "sensitivities/CSensTask.h"
+#include "commandline/CLocaleString.h"
 
 /*
  *  Constructs a CQSensResultWidget which is a child of 'parent', with the
@@ -262,7 +263,7 @@ void CQSensResultWidget::saveToFile()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail())
     return;

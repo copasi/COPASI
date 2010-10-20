@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.46.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 18:22:47 $
+//   $Date: 2010/10/20 15:14:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,7 @@
 #include "utilities/CDirEntry.h"
 #include "utilities/utility.h"
 #include "copasi/report/CCopasiRootContainer.h"
+#include "commandline/CLocaleString.h"
 
 #define COL_NAME 0
 #define COL_TYPE 1
@@ -433,7 +434,7 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
       mShown = mpBoxExperiment->currentItem();
 
       std::ifstream File;
-      File.open(utf8ToLocale(mpExperiment->getFileName()).c_str());
+      File.open(CLocaleString::fromUtf8(mpExperiment->getFileName()).c_str());
 
       unsigned C_INT32 CurrentLine = 1;
       success &= mpExperiment->read(File, CurrentLine);
@@ -1294,7 +1295,7 @@ void CQExperimentData::slotTypeChanged(int row)
 
       // Since the iterpretation of the data has changed we need read the file again
       std::ifstream File;
-      File.open(utf8ToLocale(mpExperiment->getFileName()).c_str());
+      File.open(CLocaleString::fromUtf8(mpExperiment->getFileName()).c_str());
 
       unsigned C_INT32 CurrentLine = 1;
       mpExperiment->read(File, CurrentLine);
@@ -1582,7 +1583,7 @@ void CQExperimentData::slotWeightMethod(int weightMethod)
       if (Changed)
         {
           std::ifstream File;
-          File.open(utf8ToLocale(pNext->getFileName()).c_str());
+          File.open(CLocaleString::fromUtf8(pNext->getFileName()).c_str());
 
           unsigned C_INT32 CurrentLine = 1;
           pNext->read(File, CurrentLine);

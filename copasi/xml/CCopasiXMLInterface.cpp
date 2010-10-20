@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.53 $
+ $Revision: 1.53.4.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/02/09 22:20:29 $
+ $Date: 2010/10/20 15:14:30 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@
 #include "utilities/CCopasiVector.h"
 #include "utilities/CSlider.h"
 #include "utilities/CDirEntry.h"
+#include "commandline/CLocaleString.h"
 
 SCopasiXMLGUI::SCopasiXMLGUI(const std::string & name,
                              const CCopasiContainer * pParent,
@@ -291,7 +292,7 @@ bool CCopasiXMLInterface::load(const std::string & fileName,
 {
   mFilename = relativeTo;
 
-  std::ifstream is(utf8ToLocale(fileName).c_str());
+  std::ifstream is(CLocaleString::fromUtf8(fileName).c_str());
 
   if (is.fail()) return false;
 
@@ -303,7 +304,7 @@ bool CCopasiXMLInterface::save(const std::string & fileName,
 {
   mFilename = relativeTo;
 
-  std::ofstream os(utf8ToLocale(fileName).c_str());
+  std::ofstream os(CLocaleString::fromUtf8(fileName).c_str());
 
   if (os.fail()) return false;
 

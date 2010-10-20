@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:19 $
+//   $Date: 2010/10/20 15:14:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,16 +18,13 @@
 
 #include "CQExpressionMmlWidget.h"
 
-//#include <qvariant.h>
-//#include "CQExpressionWidget.h"
 #include "utilities/CCopasiException.h"
-//#include "CQMmlScrollView.h"
-//#include "CQExpressionMmlWidget.ui.h"
 
 #include "CQMessageBox.h"
 #include "qtUtilities.h" // for UTF8
 #include "CopasiFileDialog.h"
 #include "tex/CMathMLToTeX.h"
+#include "commandline/CLocaleString.h"
 
 #include <QtDebug>
 
@@ -145,7 +142,7 @@ void CQExpressionMmlWidget::slotSaveExpression()
 void CQExpressionMmlWidget::saveMML(const QString outfilename)
 {
   std::ofstream ofile;
-  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
+  ofile.open(CLocaleString::fromUtf8(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
   ofile << "<!DOCTYPE math PUBLIC \"-//W3C//DTD MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\">" << std::endl;
@@ -169,7 +166,7 @@ void CQExpressionMmlWidget::saveTeX(const QString outfilename)
   CMathMLToTeX::convert(latexStr);
 
   std::ofstream ofile;
-  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
+  ofile.open(CLocaleString::fromUtf8(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << TO_UTF8(latexStr);
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-$Revision: 1.9 $
+$Revision: 1.9.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/07/16 19:05:16 $
+$Date: 2010/10/20 15:14:28 $
 End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@ End CVS Header */
 #include "report/CKeyFactory.h"
 #include "model/CModel.h"
 #include "lyap/CLyapProblem.h"
+#include "commandline/CLocaleString.h"
 
 #include "UI/CopasiFileDialog.h"
 
@@ -191,7 +192,7 @@ void CQLyapResultWidget::saveToFile()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail())
     return;

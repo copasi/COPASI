@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.42.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/02 16:46:19 $
+//   $Date: 2010/10/20 15:14:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,8 @@
 # ifdef ERROR
 #  undef ERROR
 # endif
+# define getenv _wgetenv
+# define getcwd _wgetcwd
 #else
 # include <unistd.h>
 #endif
@@ -61,11 +63,35 @@ COptions::~COptions()
 
 void COptions::init(C_INT argc, char *argv[])
 {
-  char **ArgV = new char * [argc];
-  C_INT ArgC = 0;
+  // We convert the commandline arguments to Utf8
+  std::string * Utf8 = new std::string[argc];
+  C_INT i;
+
+#ifdef WIN32
+  // We cannot use the commandline arguments provided by main as they are not sufficient
+  // to encode unicode data.
+  CLocaleString::lchar * CommandLine = GetCommandLineW();
+
+  CLocaleString::lchar ** Utf8V = CommandLineToArgvW(CommandLine, &argc);
+
+  for (i = 0; i < argc; ++i)
+    {
+      Utf8[i] = CLocaleString(Utf8V[i]).toUtf8();
+    }
+
+  LocalFree(Utf8V);
+
+#else
+
+  for (i = 0; i < argc; ++i)
+    {
+      Utf8[i] = CLocaleString(argv[i]).toUtf8();
+    }
+
+#endif
 
   if (argc > 0)
-    setValue("Self", localeToUtf8(argv[0]));
+    setValue("Self", Utf8[0]);
   else
     setValue("Self", std::string(""));
 
@@ -78,17 +104,18 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("SBWRegister", false);
   setValue("SBWModule", false);
 
-  C_INT i;
+  char **ArgV = new char * [argc];
+  C_INT ArgC = 0;
 
   for (i = 0; i < argc; i++)
     {
-      if (strcmp(argv[i], "-sbwregister") == 0)
+      if (Utf8[i] == "-sbwregister")
         setValue("SBWRegister", true);
-      else if (strcmp(argv[i], "-sbwmodule") == 0)
+      else if (Utf8[i] == "-sbwmodule")
         setValue("SBWModule", true);
       else
         {
-          ArgV[ArgC] = argv[i];
+          ArgV[ArgC] = strdup(Utf8[i].c_str());
           ArgC++;
         }
     }
@@ -99,29 +126,29 @@ void COptions::init(C_INT argc, char *argv[])
 
   const copasi::options &PreOptions = pPreParser->get_options();
 
-  setValue("CopasiDir", localeToUtf8(PreOptions.CopasiDir));
+  setValue("CopasiDir", PreOptions.CopasiDir);
 
   if (compareValue("CopasiDir", (std::string) ""))
     {
       setValue("CopasiDir", getCopasiDir());
     }
 
-  setValue("Home", localeToUtf8(PreOptions.Home));
+  setValue("Home", PreOptions.Home);
 
   if (compareValue("Home", (std::string) ""))
     setValue("Home", getHome());
 
-  setValue("Tmp", localeToUtf8(PreOptions.Tmp));
+  setValue("Tmp", PreOptions.Tmp);
 
   if (compareValue("Tmp", (std::string) ""))
     setValue("Tmp", getTemp());
 
-  setValue("ConfigDir", localeToUtf8(PreOptions.ConfigDir));
+  setValue("ConfigDir", PreOptions.ConfigDir);
 
   if (compareValue("ConfigDir", (std::string) ""))
     setValue("ConfigDir", getConfigDir());
 
-  setValue("ConfigFile", localeToUtf8(PreOptions.ConfigFile));
+  setValue("ConfigFile", PreOptions.ConfigFile);
 
   if (compareValue("ConfigFile", (std::string) ""))
     setValue("ConfigFile", getConfigFile());
@@ -131,7 +158,7 @@ void COptions::init(C_INT argc, char *argv[])
   std::vector< std::string >::const_iterator end = pPreParser->get_non_options().end();
 
   for (; it != end; ++it)
-    mNonOptions.push_back(localeToUtf8(*it));
+    mNonOptions.push_back(*it);
 
   const copasi::options &Options = pPreParser->get_options();
 
@@ -167,13 +194,13 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("Validate", Options.Validate);
   setValue("Verbose", Options.Verbose);
   setValue("License", Options.License);
-  setValue("Save", localeToUtf8(Options.Save));
-  setValue("ImportSBML", localeToUtf8(Options.ImportSBML));
-  setValue("ExportSBML", localeToUtf8(Options.ExportSBML));
+  setValue("Save", Options.Save);
+  setValue("ImportSBML", Options.ImportSBML);
+  setValue("ExportSBML", Options.ExportSBML);
   setValue("SBMLSchema", Options.SBMLSchema);
-  setValue("ExportC", localeToUtf8(Options.ExportC));
-  setValue("ExportXPPAUT", localeToUtf8(Options.ExportXPPAUT));
-  setValue("ExportBerkeleyMadonna", localeToUtf8(Options.ExportBerkeleyMadonna));
+  setValue("ExportC", Options.ExportC);
+  setValue("ExportXPPAUT", Options.ExportXPPAUT);
+  setValue("ExportBerkeleyMadonna", Options.ExportBerkeleyMadonna);
 
 #ifdef COPASI_LICENSE_COM
   setValue("RegisteredEmail", Options.RegisteredEmail);
@@ -182,7 +209,14 @@ void COptions::init(C_INT argc, char *argv[])
 #endif // COPASI_LICENSE_COM
 
   delete pPreParser;
+
+  for (i = 0; i < ArgC; i++)
+    {
+      free(ArgV[i]);
+    }
+
   delete [] ArgV;
+  delete [] Utf8;
 }
 
 void COptions::cleanup()
@@ -197,10 +231,9 @@ const COptions::nonOptionType & COptions::getNonOptions() {return mNonOptions;}
 
 std::string COptions::getEnvironmentVariable(const std::string & name)
 {
-  char * value = getenv(name.c_str());
+  CLocaleString Value = getenv(CLocaleString::fromUtf8(name).c_str());
 
-  if (value) return localeToUtf8(value);
-  else return "";
+  return Value.toUtf8();
 }
 
 std::string COptions::getCopasiDir(void)
@@ -215,30 +248,31 @@ std::string COptions::getCopasiDir(void)
     {
       size_t PrgNameSize = 256;
       size_t Returned;
-      char * PrgName = new char[PrgNameSize];
+      CLocaleString::lchar * PrgName = new CLocaleString::lchar[PrgNameSize];
 
-      while (!(Returned = GetModuleFileName(NULL, PrgName, PrgNameSize)) ||
+      while (!(Returned = GetModuleFileNameW(NULL, PrgName, PrgNameSize)) ||
              PrgNameSize == Returned)
         {
           if (GetLastError() != ERROR_ALREADY_EXISTS)
             {
-              *PrgName = '\0';
+              *PrgName = 0;
               break;
             }
 
           delete [] PrgName;
           PrgNameSize *= 2;
-          PrgName = new char[PrgNameSize];
+          PrgName = new CLocaleString::lchar[PrgNameSize];
         }
 
-      CopasiDir = PrgName;
+      CopasiDir = CLocaleString(PrgName).toUtf8();
+
       delete [] PrgName;
 
       /* Get rid of the executable */
       CopasiDir = CDirEntry::dirName(CopasiDir);
 
       /* Get rid of bin or sbin */
-      CopasiDir = localeToUtf8(CDirEntry::dirName(CopasiDir));
+      CopasiDir = CDirEntry::dirName(CopasiDir);
     }
 
 #endif // WIN32
@@ -265,7 +299,7 @@ std::string COptions::getCopasiDir(void)
                   CFIndex size = CFStringGetLength(macPath);
                   char* cString = new char[size + 1];
                   CFStringGetCString(macPath, cString, size + 1, kCFStringEncodingUTF8);
-                  CopasiDir = localeToUtf8(cString);
+                  CopasiDir = CLocaleString(cString).toUtf8();
                   delete[] cString;
                 }
             }
@@ -283,7 +317,7 @@ std::string COptions::getCopasiDir(void)
 std::string COptions::getPWD(void)
 {
   size_t PWDSize = 256;
-  char * PWD = NULL;
+  CLocaleString::lchar * PWD = NULL;
 
   while (!(PWD = getcwd(NULL, PWDSize)))
     {
@@ -292,17 +326,14 @@ std::string COptions::getPWD(void)
       PWDSize *= 2;
     }
 
-  std::string pwd;
+  std::string pwd = CLocaleString(PWD).toUtf8();
 
   if (PWD)
     {
-      pwd = PWD;
       free(PWD);
     }
-  else
-    pwd = "";
 
-  return localeToUtf8(pwd);
+  return pwd;
 }
 
 std::string COptions::getHome(void)

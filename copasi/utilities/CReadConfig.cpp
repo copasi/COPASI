@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-$Revision: 1.21 $
+$Revision: 1.21.4.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/01/07 19:38:35 $
+$Date: 2010/10/20 15:14:29 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@ End CVS Header */
 #include "CCopasiMessage.h"
 #include "CReadConfig.h"
 #include "utility.h"
+#include "commandline/CLocaleString.h"
 
 // char *initInputBuffer(char *name);
 // static C_INT32 GetFileSize(const char *name);
@@ -175,7 +176,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
   else if (type == "C_FLOAT64")
     {
       // may be we should check if Value is really a C_FLOAT64
-      *(C_FLOAT64 *) pout = atof(Value.c_str());
+      *(C_FLOAT64 *) pout = strToDouble(Value.c_str(), NULL);
     }
   else if (type == "C_INT32")
     {
@@ -256,10 +257,10 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
       komma = Value.find(",");
 
       std::string Type = Value.substr(0, komma);
-      * (char*) pout1 = (char) atoi(Type.c_str());
+      *(char*) pout1 = (char) atoi(Type.c_str());
 
       std::string Subtype = Value.substr(komma + 1);
-      * (char*) pout2 = (char) atoi(Subtype.c_str());
+      *(char*) pout2 = (char) atoi(Subtype.c_str());
     }
   else
     {
@@ -276,11 +277,12 @@ C_INT32 CReadConfig::initInputBuffer()
   char c[] = " ";
 
   // read the configuration file into the configuration buffer
-  std::ifstream File(utf8ToLocale(mFilename).c_str());
+  std::ifstream File(CLocaleString::fromUtf8(mFilename).c_str());
 
   if (File.fail())
     CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,
                    mFilename.c_str());
+
 
   while (true)
     {

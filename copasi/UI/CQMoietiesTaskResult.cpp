@@ -6,6 +6,11 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -41,6 +46,7 @@
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
 #include "report/CCopasiRootContainer.h"
+#include "commandline/CLocaleString.h"
 
 #define COL_SPECIES  0
 #define COL_AMOUNT   1
@@ -272,7 +278,7 @@ void CQMoietiesTaskResult::slotSave(void)
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail())
     return;

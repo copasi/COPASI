@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.3 $
+//   $Revision: 1.289.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/29 15:51:30 $
+//   $Date: 2010/10/20 15:14:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,7 @@
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
 #include "commandline/CConfigurationFile.h"
+#include "commandline/CLocaleString.h"
 #include "wizard/wizard.h"
 #include "report/CKeyFactory.h"
 #include "sbml/SBMLIncompatibility.h"
@@ -917,7 +918,7 @@ bool CopasiUI3Window::slotFileSave()
 
   mpDataModelGUI->commit();
 
-  std::ifstream File(utf8ToLocale(FileName).c_str());
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
   std::string Line;
   File >> Line;
   File.close();

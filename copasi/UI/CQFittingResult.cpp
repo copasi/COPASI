@@ -5,6 +5,7 @@
 //   $Author: shoops $
 //   $Date: 2010/03/21 15:21:13 $
 // End CVS Header
+
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -32,6 +33,7 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
 #include "report/CCopasiRootContainer.h"
+#include "commandline/CLocaleString.h"
 
 #include "UI/qtUtilities.h"
 
@@ -401,7 +403,7 @@ void CQFittingResult::slotSave(void)
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail()) return;
 

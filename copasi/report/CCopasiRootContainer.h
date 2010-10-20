@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/22 13:21:10 $
+//   $Date: 2010/10/20 15:14:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ public:
   /**
    * This method creates the only root container.
    */
-  static void init(int argc, char** argv, const bool & withGui = false);
+  static void init(int argc, char *argv[], const bool & withGui = false);
 
   static void destroy();
 

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:24 $
+//   $Date: 2010/10/20 15:14:26 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -26,6 +31,7 @@
 #include "model/CMetabNameInterface.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
+#include "commandline/CLocaleString.h"
 
 #include "sbml/SBase.h"
 #include "sbml/Compartment.h"
@@ -316,7 +322,7 @@ std::string CTimeSeries::getSBMLId(const unsigned C_INT32 & var, const CCopasiDa
 
 int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, const std::string& separator) const
 {
-  std::ofstream fileStream(utf8ToLocale(fileName).c_str());
+  std::ofstream fileStream(CLocaleString::fromUtf8(fileName).c_str());
   std::ostringstream* stringStream = new std::ostringstream();
   (*stringStream) << "# ";
   unsigned int counter2;

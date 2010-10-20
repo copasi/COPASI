@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.5 $
+//   $Revision: 1.263.2.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/10/19 17:59:06 $
+//   $Author: shoops $
+//   $Date: 2010/10/20 15:14:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "MIRIAM/CRDFGraphConverter.h"
 #include "compareExpressions/CEvaluationNodeNormalizer.h"
+#include "commandline/CLocaleString.h"
 
 #include "SBMLImporter.h"
 #include "SBMLUtils.h"
@@ -2499,7 +2500,7 @@ CModel* SBMLImporter::readSBML(std::string filename,
                                CCopasiDataModel* pDataModel)
 {
   // convert filename to the locale encoding
-  std::ifstream file(utf8ToLocale(filename).c_str());
+  std::ifstream file(CLocaleString::fromUtf8(filename).c_str());
 
   if (!file)
     {

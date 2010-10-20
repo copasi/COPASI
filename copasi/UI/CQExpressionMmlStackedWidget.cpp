@@ -24,6 +24,7 @@
 #include "qtUtilities.h" // for UTF8
 #include "CopasiFileDialog.h"
 #include "tex/CMathMLToTeX.h"
+#include "commandline/CLocaleString.h"
 
 #include "CQIcons.h"
 
@@ -193,7 +194,7 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
 void CQExpressionMmlStackedWidget::saveMML(const QString outfilename)
 {
   std::ofstream ofile;
-  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
+  ofile.open(CLocaleString::fromUtf8(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
   ofile << "<!DOCTYPE math PUBLIC \"-//W3C//DTD MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\">" << std::endl;
@@ -216,7 +217,7 @@ void CQExpressionMmlStackedWidget::saveTeX(const QString outfilename)
   CMathMLToTeX::convert(latexStr);
 
   std::ofstream ofile;
-  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
+  ofile.open(CLocaleString::fromUtf8(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << TO_UTF8(latexStr);
 

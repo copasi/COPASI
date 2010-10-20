@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.32.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/06 16:46:55 $
+   $Date: 2010/10/20 15:14:24 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,6 +22,8 @@
 #include "CExperimentFileInfo.h"
 #include "CExperiment.h"
 #include "CExperimentSet.h"
+
+#include "commandline/CLocaleString.h"
 
 CExperimentFileInfo::CExperimentFileInfo():
     mpSet(NULL),
@@ -53,7 +60,8 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
   mEmptyLines.clear();
 
   std::ifstream in;
-  in.open(utf8ToLocale(mFileName).c_str(), std::ios::binary);
+  in.open(CLocaleString::fromUtf8(mFileName).c_str(), std::ios::binary);
+
   if (in.fail())  // File can not be opened.
     {
       mLines = 0;
@@ -74,15 +82,15 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
 
           switch (c)
             {
-            case '\x20':
-            case '\x09':
-            case '\x0d':
-            case '\x0a':
-              break;
+              case '\x20':
+              case '\x09':
+              case '\x0d':
+              case '\x0a':
+                break;
 
-            default:
-              isEmpty = false;
-              break;
+              default:
+                isEmpty = false;
+                break;
             }
         }
 
@@ -122,6 +130,7 @@ bool CExperimentFileInfo::sync()
   for (; i < imax; i++)
     {
       if (mpSet->getExperiment(i)->getFileName() != mFileName) break;
+
       mList.push_back(new CExperimentInfo(*mpSet->getExperiment(i)));
     }
 
@@ -131,21 +140,21 @@ bool CExperimentFileInfo::sync()
 }
 
 bool CExperimentFileInfo::validate() const
-  {
-    unsigned C_INT32 Last = 0;
-    unsigned C_INT32 i, imax;
+{
+  unsigned C_INT32 Last = 0;
+  unsigned C_INT32 i, imax;
 
-    for (i = 0, imax = mList.size(); i < imax; i++)
-      {
-        if (Last >= mList[i]->First) return false;
+  for (i = 0, imax = mList.size(); i < imax; i++)
+    {
+      if (Last >= mList[i]->First) return false;
 
-        Last = mList[i]->Last;
+      Last = mList[i]->Last;
 
-        if (Last > mLines) return false;
-      }
+      if (Last > mLines) return false;
+    }
 
-    return true;
-  }
+  return true;
+}
 
 bool CExperimentFileInfo::validateFirst(const unsigned C_INT32 & index,
                                         const unsigned C_INT32 & value)
@@ -191,16 +200,16 @@ bool CExperimentFileInfo::validateHeader(const unsigned C_INT32 & index,
 }
 
 std::vector< std::string > CExperimentFileInfo::getExperimentNames() const
-  {
-    std::vector< std::string > List;
+{
+  std::vector< std::string > List;
 
-    unsigned C_INT32 i, imax;
+  unsigned C_INT32 i, imax;
 
-    for (i = 0, imax = mList.size(); i < imax; i++)
-      List.push_back(mList[i]->pExperiment->getObjectName());
+  for (i = 0, imax = mList.size(); i < imax; i++)
+    List.push_back(mList[i]->pExperiment->getObjectName());
 
-    return List;
-  }
+  return List;
+}
 
 CExperiment * CExperimentFileInfo::getExperiment(const std::string & name)
 {

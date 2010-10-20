@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.24.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/07/16 19:06:33 $
+   $Date: 2010/10/20 15:14:30 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,24 +118,6 @@ template <class CType> CType toEnum(const char * attribute,
 
   return enumDefault;
 }
-
-/**
- * Convert a utf8 string to the local used code page
- * This only has an effect on Windows as utf8 is the local
- * code page everywhere else
- * @param const std::string & utf8
- * @return std::string locale
- */
-std::string utf8ToLocale(const std::string & utf8);
-
-/**
- * Convert a string in the local used code page to utf8
- * This only has an effect on Windows as utf8 is the local
- * code page everywhere else
- * @param const std::string & locale
- * @return std::string utf8
- */
-std::string localeToUtf8(const std::string & locale);
 
 /**
  * Convert a character sequence to a double

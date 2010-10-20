@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.48.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/22 13:21:46 $
+//   $Date: 2010/10/20 15:14:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -332,16 +332,18 @@ int main(int argc, char *argv[])
 
           if (it == end) // Create a usage message
             {
-              std::string Help = "--help";
-              const char * Argv[2];
-              Argv[0] = argv[0];
-              Argv[1] = Help.c_str();
+              std::string Self;
+              COptions::getValue("Self", Self);
+
+              char * Argv[2];
+              Argv[0] = strdup(Self.c_str());
+              Argv[1] = strdup("--help");
 
               copasi::COptionParser Parser;
 
               try
                 {
-                  Parser.parse(2, (char **) Argv);
+                  Parser.parse(2, Argv);
                 }
 
               catch (copasi::autoexcept &e)

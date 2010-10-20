@@ -23,6 +23,7 @@
 #include "report/CCopasiRootContainer.h"
 
 #include "utilities/CAnnotatedMatrix.h"
+#include "commandline/CLocaleString.h"
 
 const CArrayAnnotation * pResult;
 
@@ -74,7 +75,7 @@ void CQTSSAResultSubWidget::saveDataToFile()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail()) return;
 

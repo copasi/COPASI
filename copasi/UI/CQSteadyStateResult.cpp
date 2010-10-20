@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSteadyStateResult.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 13:39:23 $
+//   $Date: 2010/10/20 15:14:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
+#include "commandline/CLocaleString.h"
 
 /*
  *  Constructs a CQSteadyStateResult which is a child of 'parent', with the
@@ -126,7 +127,7 @@ void CQSteadyStateResult::slotSave(void)
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail()) return;
 

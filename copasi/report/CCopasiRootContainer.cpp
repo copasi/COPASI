@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/22 13:21:10 $
+//   $Date: 2010/10/20 15:14:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ CCopasiRootContainer::~CCopasiRootContainer()
 /**
  * This method creates the only root container.
  */
-void CCopasiRootContainer::init(int argc, char** argv, const bool & withGUI)
+void CCopasiRootContainer::init(int argc, char *argv[], const bool & withGUI)
 {
   COptions::init(argc, argv);
 

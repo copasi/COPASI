@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.23.2.1 $
+//   $Revision: 1.23.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 18:24:26 $
+//   $Date: 2010/10/20 15:14:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,7 @@
 #include "function/CEvaluationNodeFunction.h"
 #include "utilities/CCopasiTree.h"
 #include "utilities/CCopasiMessage.h"
+#include "commandline/CLocaleString.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -77,7 +78,7 @@ bool CODEExporter::exportMathModel(const CCopasiDataModel * pDataModel, std::str
           If yes, write if overwrite is true,
           else create an appropriate  CCopasiMessage. */
 
-  std::ifstream testInfile(utf8ToLocale(mmasciiFilename).c_str(), std::ios::in);
+  std::ifstream testInfile(CLocaleString::fromUtf8(mmasciiFilename).c_str(), std::ios::in);
 
   if (testInfile && !overwriteFile)
     {
@@ -86,7 +87,7 @@ bool CODEExporter::exportMathModel(const CCopasiDataModel * pDataModel, std::str
       return false;
     }
 
-  std::ofstream outFile(utf8ToLocale(mmasciiFilename).c_str(), std::ios::out);
+  std::ofstream outFile(CLocaleString::fromUtf8(mmasciiFilename).c_str(), std::ios::out);
 
   /* translate Copasi data names in exporter syntax */
 

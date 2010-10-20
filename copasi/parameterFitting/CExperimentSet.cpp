@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-$Revision: 1.33 $
+$Revision: 1.33.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/07/16 19:01:59 $
+$Date: 2010/10/20 15:14:24 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@ End CVS Header */
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
+#include "commandline/CLocaleString.h"
 
 CExperimentSet::CExperimentSet(const CCopasiContainer * pParent,
                                const std::string & name):
@@ -104,7 +105,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
               in.clear();
             }
 
-          in.open(utf8ToLocale(CurrentFileName).c_str(), std::ios::binary);
+          in.open(CLocaleString::fromUtf8(CurrentFileName).c_str(), std::ios::binary);
 
           if (in.fail())
             {

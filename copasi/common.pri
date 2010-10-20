@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120 $ 
+#   $Revision: 1.120.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/08/12 20:48:52 $ 
+#   $Date: 2010/10/20 15:14:07 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120 $ $Author: shoops $ $Date: 2010/08/12 20:48:52 $  
+# $Revision: 1.120.2.1 $ $Author: shoops $ $Date: 2010/10/20 15:14:07 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -207,8 +207,6 @@ contains(BUILD_OS, WIN32) {
 
   win32-icc: {
      !build_pass: message("Using Intel Compiler.")
-     DEFINES += COPASI_ICC
-     DEFINES += _CRT_SECURE_NO_WARNINGS
   }
 
   !isEmpty(INTELRD_PATH) {
@@ -219,7 +217,8 @@ contains(BUILD_OS, WIN32) {
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
   DEFINES -= UNICODE
-   
+  DEFINES += _CRT_SECURE_NO_WARNINGS
+  
   #Release code optimization
   QMAKE_CFLAGS_RELEASE   -= -O1
   QMAKE_CFLAGS_RELEASE   *= -O2
@@ -276,6 +275,8 @@ contains(BUILD_OS, WIN32) {
       QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprt.lib"
     }
   }    
+
+  LIBS += shell32.lib
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL

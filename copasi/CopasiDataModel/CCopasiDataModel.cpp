@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.152.2.1 $
+//   $Revision: 1.152.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:32 $
+//   $Date: 2010/10/20 15:14:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "copasi/report/CCopasiTimer.h"
 #include "commandline/COptions.h"
 #include "commandline/CConfigurationFile.h"
+#include "commandline/CLocaleString.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
 #include "optimization/COptTask.h"
@@ -180,7 +181,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       !CDirEntry::makePathAbsolute(FileName, PWD))
     FileName = CDirEntry::fileName(FileName);
 
-  std::ifstream File(utf8ToLocale(FileName).c_str());
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
 
   if (File.fail())
     {
@@ -658,7 +659,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
       !CDirEntry::makePathAbsolute(FileName, PWD))
     FileName = CDirEntry::fileName(FileName);
 
-  std::ifstream File(utf8ToLocale(FileName).c_str());
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
 
   SBMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
