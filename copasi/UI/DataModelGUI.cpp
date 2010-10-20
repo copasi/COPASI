@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.11 $
+//   $Revision: 1.93.2.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:31 $
+//   $Date: 2010/10/20 13:28:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1118,12 +1118,14 @@ void DataModelGUI::refreshInitialValues()
 
 void DataModelGUI::setFramework(int framework)
 {
+  mFramework = framework;
+
   std::set< ListViews * >::iterator it = mListViews.begin();
   std::set< ListViews * >::iterator end = mListViews.end();
 
   for (; it != end; ++it)
     {
-      (*it)->setFramework(framework);
+      (*it)->setFramework(mFramework);
     }
 }
 
