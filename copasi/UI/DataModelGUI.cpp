@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.12 $
+//   $Revision: 1.93.2.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 13:28:02 $
+//   $Date: 2010/10/20 18:05:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -851,17 +851,24 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
       case ListViews::RENAME:
       case ListViews::CHANGE:
       {
-        if (objectType == ListViews::MODEL)
+        switch (objectType)
           {
-            assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-            CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-            assert(pDataModel != NULL);
+            case ListViews::MODEL:
+            {
+              assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+              CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+              assert(pDataModel != NULL);
 
-            pDataModel->changed();
-          }
-        else
-          {
-            changeRow(key);
+              pDataModel->changed();
+            }
+            break;
+
+            case ListViews::STATE:
+              break;
+
+            default:
+              changeRow(key);
+              break;
           }
       }
       break;
