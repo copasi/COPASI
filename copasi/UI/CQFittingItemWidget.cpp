@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Date: 2010/10/20 18:59:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -372,7 +372,8 @@ void CQFittingItemWidget::slotParamEdit()
           CCopasiSimpleSelectionTree::Time |
           CCopasiSimpleSelectionTree::Variables |
           CCopasiSimpleSelectionTree::ObservedValues |
-          CCopasiSimpleSelectionTree::ObservedConstants;
+          CCopasiSimpleSelectionTree::ObservedConstants |
+          CCopasiSimpleSelectionTree::Results;
         break;
     }
 
