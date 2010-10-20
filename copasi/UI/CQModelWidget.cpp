@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 17:33:03 $
+//   $Date: 2010/10/20 17:29:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,7 +117,7 @@ void CQModelWidget::load()
   mpComboAreaUnit->setCurrentText(FROM_UTF8(mpModel->getAreaUnitName()));
   mpComboLengthUnit->setCurrentText(FROM_UTF8(mpModel->getLengthUnitName()));
 
-  mpComboModelType->setCurrentItem(mpModel->getModelType());
+  mpComboModelType->setCurrentText(CModel::ModelTypeNames[mpModel->getModelType()]);
 
   mpEditInitialTime->setText(QString::number(mpModel->getInitialTime()));
   mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
@@ -171,9 +171,9 @@ void CQModelWidget::save()
       changed = true;
     }
 
-  if ((CModel::ModelType) mpComboModelType->currentItem() != mpModel->getModelType())
+  if (TO_UTF8(mpComboModelType->currentText()) != std::string(CModel::ModelTypeNames[mpModel->getModelType()]))
     {
-      mpModel->setModelType((CModel::ModelType) mpComboModelType->currentItem());
+      mpModel->setModelType(toEnum(TO_UTF8(mpComboModelType->currentText()), CModel::ModelTypeNames, CModel::deterministic));
       changed = true;
     }
 
