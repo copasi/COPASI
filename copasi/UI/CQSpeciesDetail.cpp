@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.2.4.4 $
+//   $Revision: 1.2.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:32 $
+//   $Date: 2010/10/20 13:27:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,7 +313,7 @@ void CQSpeciesDetail::load()
 
   mInitialNumberLastChanged = true;
 
-  // Transistion Time
+  // Transition Time
   mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime()));
 
   // Expression
