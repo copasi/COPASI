@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CLocaleString.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:21 $
+//   $Date: 2010/10/20 15:46:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,9 @@
 // All rights reserved.
 
 #include "CLocaleString.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef WIN32
 # include <windows.h>
@@ -22,6 +25,33 @@
 # include <errno.h>
 # include <iconv.h>
 # include <langinfo.h>
+#endif // SunOS || Linux
+
+#if (defined SunOS || defined Linux)
+const char * findLocale()
+{
+  static char * Locale = NULL;
+
+  if (Locale == NULL)
+    Locale = strdup(nl_langinfo(CODESET));
+
+#ifdef SunOS
+
+  if (strcmp(Locale, "646") == 0)
+    pfree(Locale);
+
+  if (Locale == NULL)
+    Locale = strdup("8859-1");
+
+#else
+
+  if (Locale == NULL)
+    Locale = strdup("ISO-8859-1");
+
+#endif
+
+  return Locale;
+}
 #endif // SunOS || Linux
 
 // static
@@ -64,7 +94,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
     }
 
   if (Converter == (iconv_t)(-1))
-    return utf8;
+    return CLocaleString(utf8.c_str());
 
   size_t Utf8Length = utf8.length();
   char * Utf8 = strdup(utf8.c_str());
@@ -228,7 +258,7 @@ std::string CLocaleString::toUtf8() const
     }
 
   if (Converter == (iconv_t)(-1))
-    return locale;
+    return mpStr;
 
   size_t LocaleLength = strlen(mpStr);
   char * Locale = strdup(mpStr);
