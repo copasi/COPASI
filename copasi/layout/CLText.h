@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLText.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:06 $
+//   $Date: 2010/10/20 13:56:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,7 +74,7 @@ protected:
 
 public:
   // Ctor
-  CLText(CCopasiContainer* pParent = NULL);
+  CLText(CCopasiContainer* pParent);
 
   /**
    * Constructor with optional coordinates.
