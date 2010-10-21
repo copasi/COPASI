@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.22.2.1 $
+//   $Revision: 1.22.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/21 16:52:38 $
+//   $Date: 2010/10/21 19:20:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,10 +227,14 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
                               const bool & equality,
                               const CVector< C_INT > & foundRoots)
 {
-  assert(foundRoots.size() == mRootIndex2Event.size());
+  // Apply all needed refresh calls to calculate the current root values.
+  std::vector< Refresh * >::const_iterator itRefresh = mRootRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mRootRefreshes.end();
 
-  DebugFile << "time: " << time << " equality: " << equality << std::endl;
-  DebugFile << foundRoots << std::endl;
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
+  assert(foundRoots.size() == mRootIndex2Event.size());
 
   // All events associated with the found roots need to be evaluated whether they fire.
   // In case one fires the corresponding event needs to be scheduled in the process queue.
@@ -243,11 +247,23 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
 
   CMathTrigger::CRootFinder **ppRootFinder = mRootIndex2RootFinder.array();
 
+  // We reevaluate the state of the non found roots, which should be save.
+  while (pFoundRoot != pFoundRootEnd)
+    {
+      if (*pFoundRoot < 1)
+        {
+          (*ppRootFinder)->calculateInitialTrue();
+        }
+
+      ++pFoundRoot; ++ppRootFinder;
+    }
+
+  pFoundRoot = foundRoots.array();
+  ppRootFinder = mRootIndex2RootFinder.array();
+
   // We go through the list of roots and process the events
   // which need to be checked whether they fire.
   bool TriggerBefore = true;
-
-  DebugFile << "(\t";
 
   while (pFoundRoot != pFoundRootEnd)
     {
@@ -265,7 +281,6 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
               (*ppRootFinder)->toggle(equality);
             }
 
-          DebugFile << (*ppRootFinder)->isTrue() << "\t";
           ++pFoundRoot; ++ppEvent; ++ppRootFinder;
         }
 
@@ -278,8 +293,6 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
           pProcessEvent->fire(time, equality, mProcessQueue);
         }
     }
-
-  DebugFile << ")" << std::endl;
 
   return;
 }
