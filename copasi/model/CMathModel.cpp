@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2010/10/21 16:52:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -229,6 +229,9 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
 {
   assert(foundRoots.size() == mRootIndex2Event.size());
 
+  DebugFile << "time: " << time << " equality: " << equality << std::endl;
+  DebugFile << foundRoots << std::endl;
+
   // All events associated with the found roots need to be evaluated whether they fire.
   // In case one fires the corresponding event needs to be scheduled in the process queue.
 
@@ -243,6 +246,8 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
   // We go through the list of roots and process the events
   // which need to be checked whether they fire.
   bool TriggerBefore = true;
+
+  DebugFile << "(\t";
 
   while (pFoundRoot != pFoundRootEnd)
     {
@@ -260,6 +265,7 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
               (*ppRootFinder)->toggle(equality);
             }
 
+          DebugFile << (*ppRootFinder)->isTrue() << "\t";
           ++pFoundRoot; ++ppEvent; ++ppRootFinder;
         }
 
@@ -272,6 +278,8 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
           pProcessEvent->fire(time, equality, mProcessQueue);
         }
     }
+
+  DebugFile << ")" << std::endl;
 
   return;
 }
@@ -478,17 +486,25 @@ bool CMathModel::determineInitialRoots(CVector< C_INT > & foundRoots)
   for (; ppRootFinder != ppEndRootFinder;
        ++ppRootFinder, ++pRootValue, ++pDerivative, ++pFoundRoot)
     {
-      if (!(*ppRootFinder)->isEquality() &&
-          **pRootValue == 0.0 &&
-          *pDerivative > 0.0)
+      if (**pRootValue == 0.0)
         {
-          *pFoundRoot = 1.0;
-          Found = true;
+          if (!(*ppRootFinder)->isEquality() &&
+              *pDerivative > 0.0)
+            {
+              *pFoundRoot = 1;
+              Found = true;
+
+              continue;
+            }
+
+          if ((*ppRootFinder)->isEquality() &&
+              *pDerivative < 0.0)
+            {
+              (*ppRootFinder)->toggle(true);
+            }
         }
-      else
-        {
-          *pFoundRoot = 0.0;
-        }
+
+      *pFoundRoot = 0;
     }
 
   return Found;
