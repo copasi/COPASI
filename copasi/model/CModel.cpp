@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.395 $
+//   $Revision: 1.395.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/21 16:48:02 $
+//   $Date: 2010/10/22 18:36:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -4075,6 +4075,16 @@ std::string CModel::getConcentrationRateUnitsDisplayString() const
     return Units + "/" + VolumeUnitNames[mVolumeUnit];
 
   return Units + "/(" + VolumeUnitNames[mVolumeUnit] + "*" + TimeUnitNames[mTimeUnit] + ")";
+}
+
+std::string CModel::getQuantityUnitsDisplayString() const
+{
+  if (mQuantityUnit == dimensionlessQuantity)
+    {
+      return "";
+    }
+
+  return QuantityUnitNames[mQuantityUnit];
 }
 
 std::string CModel::getQuantityRateUnitsDisplayString() const

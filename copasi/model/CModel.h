@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.188 $
+//   $Revision: 1.188.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/21 16:48:01 $
+//   $Date: 2010/10/22 18:36:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1162,6 +1162,12 @@ public:
    * @return std::string concentrationRateUnits
    */
   std::string getConcentrationRateUnitsDisplayString() const;
+
+  /**
+   * Retrieve the quantity units
+   * @return std::string quantityUnits
+   */
+  std::string getQuantityUnitsDisplayString() const;
 
   /**
    * Retrieve the quantity rate units
