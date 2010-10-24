@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.6 $
+//   $Revision: 1.263.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/10/20 15:14:26 $
+//   $Author: gauges $
+//   $Date: 2010/10/24 12:06:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5740,7 +5740,12 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
     }
 
   pME->setStatus(status);
-  pME->setExpressionPtr(pExpression);
+  bool result = pME->setExpressionPtr(pExpression);
+
+  if (result == false)
+    {
+      delete pExpression;
+    }
 }
 
 void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
@@ -6998,6 +7003,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         }
 
       delete pUdef2;
+      delete pUdef;
     }
 
   if (inconsistentUnits)
@@ -7175,6 +7181,9 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
   // delete the units we created
   delete pTimeUnits;
+  delete pDimensionlessUnits;
+  delete pLengthUnits;
+  delete pAreaUnits;
 }
 
 /**
