@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.7 $
+//   $Revision: 1.263.2.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/24 12:06:02 $
+//   $Date: 2010/10/24 12:10:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5745,6 +5745,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
   if (result == false)
     {
       delete pExpression;
+      CCopasiMessage(CCopasiMessage::RAW, "Some error occured while importing the rule for object with id \"", rule->getVariable().c_str(), "\".");
     }
 }
 
