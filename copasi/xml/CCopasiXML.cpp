@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.130 $
+//   $Revision: 1.130.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/21 16:48:01 $
+//   $Date: 2010/10/25 12:01:32 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -754,8 +754,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("ListOfConstants");
             }
 
-          if (pReaction->getFunction() !=
-              dynamic_cast<CFunction *>(CCopasiRootContainer::getKeyFactory()->get("UndefinedFunction_0")))
+          if (pReaction->getFunction() != CCopasiRootContainer::getUndefinedFunction())
             {
               Attr.erase();
               Attr.add("function", pReaction->getFunction()->getKey());

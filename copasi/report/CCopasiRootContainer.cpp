@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.14.2.1 $
+//   $Revision: 1.14.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:25 $
+//   $Date: 2010/10/25 12:01:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,12 +100,9 @@ void CCopasiRootContainer::initializeChildren()
   mpConfiguration = new CConfigurationFile;
   mpConfiguration->load();
 
-  mpUndefined = new CFunction("undefined");
+  mpUndefined = new CFunction("undefined", this);
   mpUndefined->setInfix("nan");
   mpUndefined->compile();
-
-  mKeyFactory.remove(mpUndefined->getKey());
-  mKeyFactory.addFix("UndefinedFunction_0", mpUndefined);
 }
 
 // static
