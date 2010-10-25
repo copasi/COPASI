@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.14.2.2 $
+//   $Revision: 1.14.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/25 12:01:33 $
+//   $Date: 2010/10/25 14:31:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,8 @@ extern CCopasiRootContainer * pRootContainer;
  */
 CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
     CCopasiContainer("Root", NULL, "CN", CCopasiObject::Root),
+    mKeyFactory(),
+    mpUnknownResource(NULL),
     mpFunctionList(NULL),
     mpConfiguration(NULL),
     mpDataModelList(NULL),
@@ -54,6 +56,8 @@ CCopasiRootContainer::~CCopasiRootContainer()
     {
       mpConfiguration->save();
     }
+
+  pdelete(mpUnknownResource);
 
   pdelete(mpConfiguration);
   // delete the function list
@@ -92,6 +96,10 @@ void CCopasiRootContainer::destroy()
 
 void CCopasiRootContainer::initializeChildren()
 {
+  mpUnknownResource = new CMIRIAMResource("Unknown Resource");
+  mpUnknownResource->setMIRIAMDisplayName("-- select --");
+  mpUnknownResource->setMIRIAMURI("urn:miriam:unknown");
+
   mpFunctionList = new CFunctionDB("FunctionDB", this);
   mpFunctionList->load();
 
@@ -148,6 +156,13 @@ CKeyFactory* CCopasiRootContainer::getKeyFactory()
 {
   return &pRootContainer->mKeyFactory;
 }
+
+// static
+const CMIRIAMResource & CCopasiRootContainer::getUnknownMiriamResource()
+{
+  return *pRootContainer->mpUnknownResource;
+}
+
 
 // static
 bool CCopasiRootContainer::removeDatamodel(const CCopasiDataModel * pDatamodel)

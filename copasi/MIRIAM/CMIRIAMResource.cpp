@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:58 $
+//   $Date: 2010/10/25 14:31:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,20 +27,7 @@
 #include "CConstants.h"
 
 #include "utilities/CCopasiException.h"
-
-// static
-CMIRIAMResource * CMIRIAMResources::pUnknownResource = NULL;
-
-// static
-void CMIRIAMResources::initializeUnkownResource()
-{
-  if (pUnknownResource == NULL)
-    {
-      pUnknownResource = new CMIRIAMResource("Unknown Resource");
-      pUnknownResource->setMIRIAMDisplayName("-- select --");
-      pUnknownResource->setMIRIAMURI("urn:miriam:unknown");
-    }
-}
+#include "report/CCopasiRootContainer.h"
 
 CMIRIAMResources::CMIRIAMResources(const std::string & name,
                                    const CCopasiContainer * pParent) :
@@ -78,8 +65,6 @@ void CMIRIAMResources::initializeParameter()
 
   createDisplayNameMap();
   createURIMap();
-
-  initializeUnkownResource();
 }
 
 void CMIRIAMResources::addMIRIAMResource(CMIRIAMResource * mimriamResource)
@@ -292,7 +277,7 @@ void CMIRIAMResources::createURIMap()
 const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const unsigned C_INT32 index) const
 {
   if (index >= mpMIRIAMResources->size())
-    return * pUnknownResource;
+    return CCopasiRootContainer::getUnknownMiriamResource();
 
   return * static_cast< CMIRIAMResource * >(mpMIRIAMResources->getGroup(index));
 }

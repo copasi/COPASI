@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.h,v $
-//   $Revision: 1.7.2.1 $
+//   $Revision: 1.7.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:25 $
+//   $Date: 2010/10/25 14:31:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/utilities/CCopasiVector.h"
 
+class CMIRIAMResource;
 class CFunctionDB;
 class CConfigurationFile;
 
@@ -77,6 +78,7 @@ private:
 
 protected:
   CKeyFactory mKeyFactory;
+  CMIRIAMResource *mpUnknownResource;
   CFunctionDB* mpFunctionList;
   CConfigurationFile* mpConfiguration;
   CCopasiVector<CCopasiDataModel>* mpDataModelList;
@@ -133,6 +135,8 @@ public:
    * Returns a pointer to the KeyFactory.
    */
   static CKeyFactory* getKeyFactory();
+
+  static const CMIRIAMResource & getUnknownMiriamResource();
 
   static bool removeDatamodel(const CCopasiDataModel * pDatamodel);
 
