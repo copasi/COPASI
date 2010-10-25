@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:36:58 $
+//   $Date: 2010/10/25 18:33:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -184,8 +184,8 @@ void CEventAssignment::setExpressionPtr(CExpression * pExpression)
   if (pExpression != NULL)
     {
       mpExpression = pExpression;
-      mpExpression->setObjectParent(this);
       mpExpression->setObjectName("Expression");
+      add(mpExpression, true);
 
       mpExpression->compile();
     }
@@ -235,8 +235,8 @@ CEvent::CEvent(const CEvent & src,
     mOrder(src.mOrder),
     mAssignments(src.mAssignments, this),
     mDelayAssignment(src.mDelayAssignment),
-    mpTriggerExpression(src.mpTriggerExpression == NULL ? NULL : new CExpression(*src.mpTriggerExpression)),
-    mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression))
+    mpTriggerExpression(src.mpTriggerExpression != NULL ? new CExpression(*src.mpTriggerExpression, this) : NULL),
+    mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL)
 {
   initObjects();
 
