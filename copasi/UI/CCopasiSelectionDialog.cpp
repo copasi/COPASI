@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/03/25 14:12:44 $
+//   $Author: aekamal $
+//   $Date: 2010/10/25 16:12:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,13 +22,11 @@
 
 #include "qpushbutton.h"
 #include "qcheckbox.h"
-#include "q3hbox.h"
-#include "q3vbox.h"
 #include "qlayout.h"
 #include <qcombobox.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
@@ -58,12 +56,12 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
     mExpertModeEnabled(true)
 {
   setWindowFlags(this->windowFlags() | Qt::WDestructiveClose);
-  mpMainLayout = new Q3VBoxLayout(this);
+  mpMainLayout = new QVBoxLayout(this);
 
   mpSelectionWidget = new CCopasiSelectionWidget(this);
   mpMainLayout->addWidget(mpSelectionWidget);
 
-  mpButtonBox = new Q3HBoxLayout(mpMainLayout);
+  mpButtonBox = new QHBoxLayout(mpMainLayout);
 
   mpOKButton = new QPushButton(this, "OK");
   mpOKButton->setText("OK");

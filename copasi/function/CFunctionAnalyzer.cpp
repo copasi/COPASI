@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 18:59:37 $
+//   $Author: aekamal $
+//   $Date: 2010/10/25 16:12:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 #ifdef WIN32
-double trunc(double x)
+double truncate(double x)
 {return (x < 0.0) ? -floor(fabs(x)) : floor(x);}
 #endif
 
@@ -255,9 +255,9 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::operator^(const CFunctionAn
        || (this->mStatus & zero)
        || (this->mStatus & positive)) && (rhs.mStatus & known))
     {
-      if ((rhs.mDouble == trunc(rhs.mDouble)) && (rhs.mDouble != 0.0)) //exponent is integer but not 0
+      if ((rhs.mDouble == truncate(rhs.mDouble)) && (rhs.mDouble != 0.0)) //exponent is integer but not 0
         {
-          if (rhs.mDouble / 2.0 == trunc(rhs.mDouble / 2.0)) //exponent is even
+          if (rhs.mDouble / 2.0 == truncate(rhs.mDouble / 2.0)) //exponent is even
             {
               if (this->mStatus & negative) ret.Or(positive);
 

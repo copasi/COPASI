@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.20 $
+$Revision: 1.20.4.1 $
 $Name:  $
-$Author: shoops $
-$Date: 2009/10/27 16:52:48 $
+$Author: aekamal $
+$Date: 2010/10/25 16:12:46 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
           if (!mPlotMap.count(key))
             mPlotMap[key] = new PlotWindow(this, pSpecification);
           else if ("Copasi Plot: " + pSpecification->getTitle() !=
-                   TO_UTF8(mPlotMap[key]->caption()))
+                   TO_UTF8(mPlotMap[key]->windowTitle()))
             mPlotMap[key] = new PlotWindow(this, pSpecification);
           else
             mPlotMap[key]->initFromSpec(pSpecification);

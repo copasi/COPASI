@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.18.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/11/06 16:02:39 $
+//   $Author: aekamal $
+//   $Date: 2010/10/25 16:12:47 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -298,6 +303,9 @@ void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
 
 bool CQMiriamWidget::enterProtected()
 {
+  if (mKey == "")
+    return false;
+
   mpMIRIAMInfo->load(mKey);
 
   //Set Models for the 4 TableViews

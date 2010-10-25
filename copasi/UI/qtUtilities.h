@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: aekamal $
+//   $Date: 2010/10/25 16:12:46 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,7 +23,7 @@
 #ifndef COPASI_qtUtilities
 #define COPASI_qtUtilities
 
-#include <qstring.h>
+#include <QString>
 #include "utilities/CCopasiParameter.h"
 
 class QStringList;

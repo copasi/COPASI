@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: aekamal $
+//   $Date: 2010/10/25 16:12:46 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,18 +26,14 @@
 #include <vector>
 
 #include <qdialog.h>
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3HBoxLayout>
 
 #include "UI/CCopasiSimpleSelectionTree.h"
 
 class QPushButton;
 class QCheckBox;
 class CCopasiSelectionWidget;
-class Q3HBox;
-class Q3VBoxLayout;
-class Q3HBoxLayout;
+class QVBoxLayout;
+class QHBoxLayout;
 class CCopasiObject;
 class CModel;
 class CArrayAnnotation;
@@ -45,10 +46,10 @@ protected:
   QPushButton* mpOKButton;
   QPushButton* mpCancelButton;
   QCheckBox* mpModeCheckBox;
-  Q3HBoxLayout* mpButtonBox;
+  QHBoxLayout* mpButtonBox;
   QWidget* mpMainWidget;
   CCopasiSelectionWidget* mpSelectionWidget;
-  Q3VBoxLayout* mpMainLayout;
+  QVBoxLayout* mpMainLayout;
   std::vector<const CCopasiObject * > * mpTmpVector;
   std::vector<const CCopasiObject * > * mpOutputVector;
   bool mExpertMode;

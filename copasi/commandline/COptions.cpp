@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.42.2.1 $
+//   $Revision: 1.42.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/10/20 15:14:21 $
+//   $Author: aekamal $
+//   $Date: 2010/10/25 16:12:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,8 @@ void COptions::init(C_INT argc, char *argv[])
   // to encode unicode data.
   CLocaleString::lchar * CommandLine = GetCommandLineW();
 
-  CLocaleString::lchar ** Utf8V = CommandLineToArgvW(CommandLine, &argc);
+  int intArgC = (int) argc;
+  CLocaleString::lchar ** Utf8V = CommandLineToArgvW(CommandLine, &intArgC);
 
   for (i = 0; i < argc; ++i)
     {

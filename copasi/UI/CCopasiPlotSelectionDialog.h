@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: aekamal $
+//   $Date: 2010/10/25 16:12:45 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,9 +26,8 @@
 #include <vector>
 
 #include <qdialog.h>
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3HBoxLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 
 #include "UI/CCopasiSimpleSelectionTree.h"

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.10 $
+#   $Revision: 1.10.2.1 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2010/09/07 16:33:27 $
+#   $Author: aekamal $
+#   $Date: 2010/10/25 16:12:47 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.10 $ $Author: shoops $ $Date: 2010/09/07 16:33:27 $
+# $Revision: 1.10.2.1 $ $Author: aekamal $ $Date: 2010/10/25 16:12:47 $
 ######################################################################
 
 LIB = plotUI

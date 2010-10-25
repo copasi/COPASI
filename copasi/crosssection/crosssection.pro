@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/crosssection.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.1.2.1 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2010/05/14 22:20:55 $ 
+#   $Author: aekamal $ 
+#   $Date: 2010/10/25 16:12:47 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,5 +25,3 @@ SOURCES += CCrossSectionMethod.cpp \
 include(../lib.pri)
 include(../common.pri)
 
-#The following line was inserted by qt3to4
-#QT +=  qt3support
