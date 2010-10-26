@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 17:32:17 $
+//   $Date: 2010/10/26 14:49:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,17 +47,20 @@ CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
   mPages.push_back(pCopasiWidget);
   mTabWidget->addTab(pCopasiWidget, label);
 
-  CQNotes* pNotes = new CQNotes(mTabWidget);
-  mPages.push_back(pNotes);
-  mTabWidget->addTab(mPages[1], "Notes");
+  if (!pCopasiWidget->inherits("CQModelWidget"))
+    {
+      CQNotes* pNotes = new CQNotes(mTabWidget);
+      mPages.push_back(pNotes);
+      mTabWidget->addTab(pNotes, "Notes");
+    }
 
   CQMiriamWidget* pMIRIAMWidget = new CQMiriamWidget(mTabWidget);
   mPages.push_back(pMIRIAMWidget);
-  mTabWidget->addTab(mPages[2], "Annotation");
+  mTabWidget->addTab(pMIRIAMWidget, "Annotation");
 
   CQRDFTreeView* pRDFTreeView = new CQRDFTreeView(mTabWidget);
   mPages.push_back(pRDFTreeView);
-  mTabWidget->addTab(mPages[3], "RDF Browser");
+  mTabWidget->addTab(pRDFTreeView, "RDF Browser");
 
 
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelWidget.cpp,v $
-//   $Revision: 1.2.2.1 $
+//   $Revision: 1.2.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 17:29:27 $
+//   $Date: 2010/10/26 14:49:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,6 +231,8 @@ bool CQModelWidget::leave()
 
   save();
 
+  mpNotes->leave();
+
   return true;
 }
 
@@ -242,6 +244,8 @@ bool CQModelWidget::enterProtected()
     mpModel = NULL;
 
   load();
+
+  mpNotes->enter(mKey);
 
   return true;
 }
