@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.33.2.3 $
+//   $Revision: 1.33.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/29 15:51:30 $
+//   $Date: 2010/10/26 17:38:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,7 +119,6 @@ public:
 protected:
   bool insertRow(int parentId, const std::string &key);
   bool removeRow(const std::string &key);
-  void changeRow(const std::string &key);
 
 signals:
   void updateCompleteView();

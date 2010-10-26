@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.13 $
+//   $Revision: 1.93.2.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 18:05:05 $
+//   $Date: 2010/10/26 17:38:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,92 +228,37 @@ QString DataModelGUI::getNameWithObjectNo(const IndexedNode *node) const
   return name;
 }
 
-/*QString DataModelGUI::getNameWithObjectNo(const IndexedNode *node) const
-{
-  QString name = node->getName();
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  int noOfObjects = -1;
-  bool updateChildren = false;
-
-  switch (node->getId())
-    {
-      case 5:
-        noOfObjects = CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
-        updateChildren = noOfObject != node->childCount();
-        if (updateChildren)
-          updateFunctions();
-        break;
-      case 42:
-        noOfObjects = (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size();
-        updateChildren = noOfObject != node->childCount();
-        if (updateChildren)
-          updatePlots();
-        break;
-      case 43:
-        noOfObjects = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size();
-        updateChildren = noOfObject != node->childCount();
-        if (updateChildren)
-          updateReportDefinitions();
-        break;
-      case 111:
-        noOfObjects = pModel->getCompartments().size();
-        updateChildren = noOfObject != node->childCount();
-        if (updateChildren)
-          updateCompartments();
-        break;
-      case 112:
-        noOfObjects = pModel->getMetabolites().size();
-        updateChildren = noOfObject != node->childCount();
-        if (updateChildren)
-          updateMetabolites();
-        break;
-      case 114:
-        noOfObjects = pModel->getReactions().size();
-        updateChildren = noOfObject != node->childCount();
-        if (updateChildren)
-          updateReactions();
-        break;
-      case 115:
-        noOfObjects = pModel->getModelValues().size();
-        updateChildren = noOfObject != node->childCount();
-        if (updateChildren)
-          updateModelValues();
-        break;
-      case 116:
-        noOfObjects = pModel->getEvents().size();
-        updateChildren = noOfObject != node->childCount();
-        if (updateChildren)
-          updateEvents();
-        break;
-    }
-
-  if (noOfObjects != -1)
-    name += " (" + QString::number(noOfObjects) + ")";
-
-  return name;
-}
-*/
-
 void DataModelGUI::updateCompartments()
 {
   IndexedNode * parent = mTree.findNodeFromId(111);
 
   parent->removeChildren();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-  if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel() == NULL) return;
+  CModel * pModel = pDataModel->getModel();
 
-  const CCopasiVectorN< CCompartment > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
-  C_INT32 j, jmax = objects.size();
-  CCompartment *obj;
+  if (pModel == NULL) return;
 
-  for (j = 0; j < jmax; j++)
+  CCopasiVector< CCompartment >::iterator it = pModel->getCompartments().begin();
+  CCopasiVector< CCompartment >::iterator end = pModel->getCompartments().end();
+
+  QMap< QString, CCompartment * > Sorted;
+
+  for (; it != end; ++it)
     {
-      obj = objects[j];
+      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+    }
+
+  QMap< QString, CCompartment * >::iterator itSorted = Sorted.begin();
+  QMap< QString, CCompartment * >::iterator endSorted = Sorted.end();
+
+  for (; itSorted != endSorted; ++itSorted)
+    {
       parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+                       FROM_UTF8(itSorted.value()->getObjectName()),
+                       itSorted.value()->getKey());
     }
 }
 
@@ -323,17 +268,31 @@ void DataModelGUI::updateMetabolites()
 
   parent->removeChildren();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CCopasiVector< CMetab > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites();
-  C_INT32 j, jmax = objects.size();
-  CMetab *metab;
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-  for (j = 0; j < jmax; j++)
+  CModel * pModel = pDataModel->getModel();
+
+  if (pModel == NULL) return;
+
+  CCopasiVector< CMetab >::iterator it = pModel->getMetabolites().begin();
+  CCopasiVector< CMetab >::iterator end = pModel->getMetabolites().end();
+
+  QMap< QString, CMetab * > Sorted;
+
+  for (; it != end; ++it)
     {
-      metab = objects[j];
+      Sorted[FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, **it)).toLower()] = *it;
+    }
+
+  QMap< QString, CMetab * >::iterator itSorted = Sorted.begin();
+  QMap< QString, CMetab * >::iterator endSorted = Sorted.end();
+
+  for (; itSorted != endSorted; ++itSorted)
+    {
       parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(CMetabNameInterface::getDisplayName((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *metab)),
-                       metab->getKey());
+                       FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *itSorted.value())),
+                       itSorted.value()->getKey());
     }
 }
 
@@ -343,18 +302,31 @@ void DataModelGUI::updateReactions()
 
   parent->removeChildren();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CCopasiVectorN< CReaction > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions();
-  C_INT32 j, jmax = objects.size();
-  CReaction *obj;
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-  for (j = 0; j < jmax; j++)
+  CModel * pModel = pDataModel->getModel();
+
+  if (pModel == NULL) return;
+
+  CCopasiVector< CReaction >::iterator it = pModel->getReactions().begin();
+  CCopasiVector< CReaction >::iterator end = pModel->getReactions().end();
+
+  QMap< QString, CReaction * > Sorted;
+
+  for (; it != end; ++it)
     {
-      obj = objects[j];
-      obj->compile();
+      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+    }
+
+  QMap< QString, CReaction * >::iterator itSorted = Sorted.begin();
+  QMap< QString, CReaction * >::iterator endSorted = Sorted.end();
+
+  for (; itSorted != endSorted; ++itSorted)
+    {
       parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+                       FROM_UTF8(itSorted.value()->getObjectName()),
+                       itSorted.value()->getKey());
     }
 }
 
@@ -364,17 +336,31 @@ void DataModelGUI::updateModelValues()
 
   parent->removeChildren();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CCopasiVectorN< CModelValue > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues();
-  C_INT32 j, jmax = objects.size();
-  CModelValue *obj;
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-  for (j = 0; j < jmax; j++)
+  CModel * pModel = pDataModel->getModel();
+
+  if (pModel == NULL) return;
+
+  CCopasiVector< CModelValue >::iterator it = pModel->getModelValues().begin();
+  CCopasiVector< CModelValue >::iterator end = pModel->getModelValues().end();
+
+  QMap< QString, CModelValue * > Sorted;
+
+  for (; it != end; ++it)
     {
-      obj = objects[j];
+      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+    }
+
+  QMap< QString, CModelValue * >::iterator itSorted = Sorted.begin();
+  QMap< QString, CModelValue * >::iterator endSorted = Sorted.end();
+
+  for (; itSorted != endSorted; ++itSorted)
+    {
       parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+                       FROM_UTF8(itSorted.value()->getObjectName()),
+                       itSorted.value()->getKey());
     }
 }
 
@@ -384,17 +370,27 @@ void DataModelGUI::updateFunctions()
 
   parent->removeChildren();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CCopasiVectorN< CEvaluationTree > & objects = CCopasiRootContainer::getFunctionList()->loadedFunctions();
-  C_INT32 j, jmax = objects.size();
-  CFunction *obj;
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-  for (j = 0; j < jmax; j++)
+  CCopasiVector< CEvaluationTree >::iterator it = CCopasiRootContainer::getFunctionList()->loadedFunctions().begin();
+  CCopasiVector< CEvaluationTree >::iterator end = CCopasiRootContainer::getFunctionList()->loadedFunctions().end();
+
+  QMap< QString, CEvaluationTree * > Sorted;
+
+  for (; it != end; ++it)
     {
-      if ((obj = dynamic_cast<CFunction *>(objects[j])))
-        parent->addChild(C_INVALID_INDEX,
-                         FROM_UTF8(obj->getObjectName()),
-                         obj->getKey());
+      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+    }
+
+  QMap< QString, CEvaluationTree * >::iterator itSorted = Sorted.begin();
+  QMap< QString, CEvaluationTree * >::iterator endSorted = Sorted.end();
+
+  for (; itSorted != endSorted; ++itSorted)
+    {
+      parent->addChild(C_INVALID_INDEX,
+                       FROM_UTF8(itSorted.value()->getObjectName()),
+                       itSorted.value()->getKey());
     }
 }
 
@@ -404,19 +400,31 @@ void DataModelGUI::updateEvents()
 
   parent->removeChildren();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CCopasiVectorN< CEvent > & objects =
-    (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents();
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-  C_INT32 j, jmax = objects.size();
-  CEvent *obj;
+  CModel * pModel = pDataModel->getModel();
 
-  for (j = 0; j < jmax; j++)
+  if (pModel == NULL) return;
+
+  CCopasiVector< CEvent >::iterator it = pModel->getEvents().begin();
+  CCopasiVector< CEvent >::iterator end = pModel->getEvents().end();
+
+  QMap< QString, CEvent * > Sorted;
+
+  for (; it != end; ++it)
     {
-      obj = objects[j];
+      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+    }
+
+  QMap< QString, CEvent * >::iterator itSorted = Sorted.begin();
+  QMap< QString, CEvent * >::iterator endSorted = Sorted.end();
+
+  for (; itSorted != endSorted; ++itSorted)
+    {
       parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+                       FROM_UTF8(itSorted.value()->getObjectName()),
+                       itSorted.value()->getKey());
     }
 }
 
@@ -426,17 +434,27 @@ void DataModelGUI::updateReportDefinitions()
 
   parent->removeChildren();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CCopasiVector< CReportDefinition >* objects = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
-  C_INT32 j, jmax = objects->size();
-  CReportDefinition *obj;
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-  for (j = 0; j < jmax; j++)
+  CCopasiVector< CReportDefinition >::iterator it = pDataModel->getReportDefinitionList()->begin();
+  CCopasiVector< CReportDefinition >::iterator end = pDataModel->getReportDefinitionList()->end();
+
+  QMap< QString, CReportDefinition * > Sorted;
+
+  for (; it != end; ++it)
     {
-      obj = (*objects)[j];
+      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+    }
+
+  QMap< QString, CReportDefinition * >::iterator itSorted = Sorted.begin();
+  QMap< QString, CReportDefinition * >::iterator endSorted = Sorted.end();
+
+  for (; itSorted != endSorted; ++itSorted)
+    {
       parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+                       FROM_UTF8(itSorted.value()->getObjectName()),
+                       itSorted.value()->getKey());
     }
 }
 
@@ -445,22 +463,29 @@ void DataModelGUI::updatePlots()
   IndexedNode * parent = mTree.findNodeFromId(42);
 
   parent->removeChildren();
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
-  //  const CCopasiVector< CPlotSpecification >* objects = mPlotDefinitionList;
-  C_INT32 j, jmax = pDataModel->getPlotDefinitionList()->size();
-  CPlotSpecification *obj;
+  CCopasiVector< CPlotSpecification >::iterator it = pDataModel->getPlotDefinitionList()->begin();
+  CCopasiVector< CPlotSpecification >::iterator end = pDataModel->getPlotDefinitionList()->end();
 
-  for (j = 0; j < jmax; j++)
+  QMap< QString, CPlotSpecification * > Sorted;
+
+  for (; it != end; ++it)
     {
-      obj = (*pDataModel->getPlotDefinitionList())[j];
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->CCopasiParameter::getKey());
+      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
     }
 
+  QMap< QString, CPlotSpecification * >::iterator itSorted = Sorted.begin();
+  QMap< QString, CPlotSpecification * >::iterator endSorted = Sorted.end();
+
+  for (; itSorted != endSorted; ++itSorted)
+    {
+      parent->addChild(C_INVALID_INDEX,
+                       FROM_UTF8(itSorted.value()->getObjectName()),
+                       itSorted.value()->CCopasiParameter::getKey());
+    }
 }
 
 //*****************************************************************
@@ -866,8 +891,47 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
             case ListViews::STATE:
               break;
 
+            case ListViews::COMPARTMENT:
+              updateCompartments();
+              emit updateCompleteView();
+              break;
+
+            case ListViews::METABOLITE:
+              updateMetabolites();
+              emit updateCompleteView();
+              break;
+
+            case ListViews::REACTION:
+              updateReactions();
+              emit updateCompleteView();
+              break;
+
+            case ListViews::MODELVALUE:
+              updateModelValues();
+              emit updateCompleteView();
+              break;
+
+            case ListViews::EVENT:
+              updateEvents();
+              emit updateCompleteView();
+              break;
+
+            case ListViews::PLOT:
+              updatePlots();
+              emit updateCompleteView();
+              break;
+
+            case ListViews::REPORT:
+              updateReportDefinitions();
+              emit updateCompleteView();
+              break;
+
+            case ListViews::FUNCTION:
+              updateFunctions();
+              emit updateCompleteView();
+              break;
+
             default:
-              changeRow(key);
               break;
           }
       }
@@ -897,36 +961,53 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
 
             case ListViews::COMPARTMENT:
               insertRow(111, key);
+              updateCompartments();
+              emit updateCompleteView();
               break;
 
             case ListViews::METABOLITE:
               insertRow(112, key);
-              // TODO check whether the species' compartment is in the list
+              updateCompartments();
+              updateMetabolites();
+              emit updateCompleteView();
               break;
 
             case ListViews::REACTION:
               insertRow(114, key);
-              // TODO check whether all reaction species and their compartments are in the list
+              updateCompartments();
+              updateMetabolites();
+              updateReactions();
+              emit updateCompleteView();
               break;
 
             case ListViews::MODELVALUE:
               insertRow(115, key);
+              updateModelValues();
+              emit updateCompleteView();
               break;
 
             case ListViews::EVENT:
               insertRow(116, key);
+              updateEvents();
+              emit updateCompleteView();
               break;
 
             case ListViews::PLOT:
               insertRow(42, key);
+              updatePlots();
+              emit updateCompleteView();
               break;
 
             case ListViews::REPORT:
               insertRow(43, key);
+              updateReportDefinitions();
+              emit updateCompleteView();
               break;
 
             case ListViews::FUNCTION:
               insertRow(5, key);
+              updateFunctions();
+              emit updateCompleteView();
               break;
 
             case ListViews::LAYOUT:
@@ -979,19 +1060,6 @@ bool DataModelGUI::removeRow(const std::string &key)
   emit dataChanged(parentIndex, parentIndex);
 
   return true;
-}
-
-void DataModelGUI::changeRow(const std::string &key)
-{
-  IndexedNode *node = mTree.findNodeFromKey(key);
-
-  if (!node)
-    return;
-
-  std::string objName = CCopasiRootContainer::getKeyFactory()->get(key)->getObjectName();
-  node->setName(FROM_UTF8(objName));
-  QModelIndex index = findIndexFromKey(key);
-  emit dataChanged(index, index);
 }
 
 IndexedNode * DataModelGUI::getItem(const QModelIndex &index) const
