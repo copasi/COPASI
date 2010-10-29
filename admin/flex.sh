@@ -1,10 +1,13 @@
 #!/bin/bash
 
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
+AWK=${COPASI_AWK:-gawk}
 
 for arg in $@; do
   SOURCE_FILE=$arg
 done
+
+PREFIX=`$AWK -- '$0 ~ "%option prefix=" {split($2, out, "\""); print out[2]}' $SOURCE_FILE`
 
 TARGET_FILE=lex.${SOURCE_FILE/%.*/.c}
 
@@ -16,10 +19,9 @@ flex  -t $SOURCE_FILE | \
          -e 's/using std::istream;/using namespace std;/' \
          -e '/using std::ostream;/d' \
          -e '/#include <unistd.h>/d' \
-         -e '/class istream/i \
-#include <iostream> \
+         -e '/'${PREFIX}'free *( *yy_start_stack *);/a \
+  '${PREFIX}'free((yy_buffer_stack));
 ' \
-         -e 's/class istream/using namespace std/' \
          > $TARGET_FILE
 
 if [ x`uname -a | grep -ic cygwin` = x"1" ]; then
