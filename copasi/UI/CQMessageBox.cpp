@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.cpp,v $
-//   $Revision: 1.6.4.1 $
+//   $Revision: 1.6.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:32 $
+//   $Date: 2010/10/29 18:23:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,8 +139,15 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
       pFunctionDB == NULL)
     return QMessageBox::Ok;
 
-  // TODO In case a function is deleted we need to loop through all data models
-  pFunctionDB = CCopasiRootContainer::getFunctionList();
+  if (pFunctionDB != NULL)
+    {
+      // TODO In case a function is deleted we need to loop through all data models
+      pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+    }
+  else
+    {
+      pFunctionDB = CCopasiRootContainer::getFunctionList();
+    }
 
   QString msg =
     QString("Do you want to delete the listed %1?\n  %2\n").arg(objectType, objects);
