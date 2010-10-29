@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Date: 2010/10/29 17:58:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,14 +164,19 @@ protected:
   QColor mChangedColor;
 
   /**
-   * Function to control key press event
+   * Function to handle key press events.
    */
   virtual void keyPressEvent(QKeyEvent * e);
 
   /**
-   * Function to control mouse press event
+   * Function to handle mouse release events.
    */
-  virtual void mousePressEvent(QMouseEvent * e);
+  virtual void mouseReleaseEvent(QMouseEvent * e);
+
+  /**
+   * Function to handle drag leave events.
+   */
+  virtual void dropEvent(QDropEvent * e);
 
   /**
    * Function to check whether the given cursor position is in object
@@ -184,16 +189,6 @@ protected:
   int mAnchorPos;
 
 public:
-  /**
-   * Enumeration of movement type
-   */
-  enum MoveType {None, Left, Right, Mouse, Unknown };
-
-  /**
-   * Enumeration of action type
-   */
-  enum ActionType {NoAction, SelectToLeft, SelectToRight, Undo };
-
   /**
    * Enumeration of expression type
    */
@@ -259,17 +254,6 @@ public:
    */
   bool isValid();
 
-protected slots:
-  /**
-   * Slot for being activated whenever the cursor is moved
-   */
-  void slotCursorPositionChanged();
-
-  /**
-   * Slot for being activated whenever the selection is changed
-   */
-  void slotSelectionChanged();
-
 public slots:
   /**
    * Slot for being activated whenever the text on Expression Widget is changed
@@ -289,8 +273,6 @@ signals:
 
 private:
   CQExpressionHighlighter *expressionHighlighter;
-  MoveType mMove;
-  ActionType mAction;
   QTextCursor mCursor;
 };
 
