@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55.2.1 $
+//   $Revision: 1.55.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/29 17:58:05 $
+//   $Date: 2010/11/01 18:00:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,10 +215,6 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
   mAnchorPos = -1;
   mOldPos = -1;
 
-  connect(this, SIGNAL(cursorPositionChanged()),
-          this, SLOT(slotCursorPositionChanged()));
-  connect(this, SIGNAL(selectionChanged()),
-          this, SLOT(slotSelectionChanged()));
   connect(this, SIGNAL(textChanged()),
           this, SLOT(slotTextChanged()));
 }
