@@ -19,7 +19,7 @@ flex  -t $SOURCE_FILE | \
          -e 's/using std::istream;/using namespace std;/' \
          -e '/using std::ostream;/d' \
          -e '/#include <unistd.h>/d' \
-         -e '/'${PREFIX}'free *( *yy_start_stack *);/a \
+         -e '/yy_delete_buffer *( *YY_CURRENT_BUFFER *) *;/a \
   '${PREFIX}'free((yy_buffer_stack));
 ' \
          > $TARGET_FILE

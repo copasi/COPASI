@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer_lex.cpp,v $
-//   $Revision: 1.27.4.3 $
+//   $Revision: 1.27.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/29 19:20:51 $
+//   $Date: 2010/11/02 17:30:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1980,8 +1980,8 @@ yyFlexLexer::~yyFlexLexer()
 {
   delete [] yy_state_buf;
   CEvaluationfree(yy_start_stack);
-  CEvaluationfree((yy_buffer_stack));
   yy_delete_buffer(YY_CURRENT_BUFFER);
+  CEvaluationfree((yy_buffer_stack));
 }
 
 void yyFlexLexer::switch_streams(std::istream* new_in, std::ostream* new_out)
