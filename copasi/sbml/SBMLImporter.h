@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.86.2.2 $
+//   $Revision: 1.86.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/23 12:26:06 $
+//   $Date: 2010/11/02 10:42:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -687,6 +687,14 @@ public:
    * This is e.g. used to check if expression in L2V1 contain references to reaction ids.
    */
   std::string findIdInASTTree(const ASTNode* pMath, const std::set<std::string>& reactionIds);
+
+  /**
+   * This method divides the given expression by the given object and returns a new expression.
+   * The caller is responsible for freeing the memory for the new expression.
+   */
+  static CEvaluationNode* divideByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject);
+
+
 
 #if LIBSBML_VERSION >= 40100
   /**

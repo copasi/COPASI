@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.8 $
+//   $Revision: 1.263.2.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/24 12:10:04 $
+//   $Date: 2010/11/02 10:42:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2433,6 +2433,7 @@ SBMLImporter::SBMLImporter():
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
   this->mIgnoredSBMLMessages.insert(10513);
+  this->mIgnoredSBMLMessages.insert(10522);
   this->mIgnoredSBMLMessages.insert(10533);
   this->mIgnoredSBMLMessages.insert(10541);
   this->mIgnoredSBMLMessages.insert(10551);
@@ -5696,38 +5697,19 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
 
       if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
         {
-          // divide the expression by the volume
-          // check if the top level node is a multiplication and one
-          // of the children is the volume of the compartment the species
-          // is in. If this is the case, just drop the mutliplication
-          // instead of dividing
-          bool multiplication = false;
 
-          if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
-              (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
+          CEvaluationNode* pOrigNode = pExpression->getRoot();
+          assert(pOrigNode != NULL);
+          CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
+          assert(pNode != NULL);
+
+          if (pNode != NULL)
             {
-              const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
-              const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-
-              if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                {
-                  pExpression->setRoot(pChild2->copyBranch());
-                  multiplication = true;
-                }
-              else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                {
-                  pExpression->setRoot(pChild1->copyBranch());
-                  multiplication = true;
-                }
+              pExpression->setRoot(pNode);
             }
-
-          if (multiplication == false)
+          else
             {
-              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-              pOperatorNode->addChild(pVolumeNode);
-              pExpression->setRoot(pOperatorNode);
+              fatalError();
             }
         }
 
@@ -7775,12 +7757,20 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
 
                           if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
                             {
+                              CEvaluationNode* pOrigNode = pExpression->getRoot();
+                              assert(pOrigNode != NULL);
                               // divide the expression by the volume
-                              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-                              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-                              pOperatorNode->addChild(pVolumeNode);
-                              pExpression->setRoot(pOperatorNode);
+                              CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getInitialValueReference());
+                              assert(pNode != NULL);
+
+                              if (pNode != NULL)
+                                {
+                                  pExpression->setRoot(pNode);
+                                }
+                              else
+                                {
+                                  fatalError();
+                                }
                             }
 
                           pMetab->setInitialExpressionPtr(pExpression);
@@ -8607,40 +8597,24 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
               // of the children is the volume of the compartment the species
               // is in. If this is the case, just drop the multiplication
               // instead of dividing
-              bool multiplication = false;
               const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);
               assert(pMetab != NULL);
               const CCompartment* pCompartment = pMetab->getCompartment();
 
               if (pCompartment->getDimensionality() != 0)
                 {
+                  CEvaluationNode* pOrigNode = pExpression->getRoot();
+                  assert(pOrigNode != NULL);
+                  CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
+                  assert(pNode != NULL);
 
-                  if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
-                      (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
+                  if (pNode != NULL)
                     {
-                      const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
-                      const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-
-                      if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                        {
-
-                          pExpression->setRoot(pChild2->copyBranch());
-                          multiplication = true;
-                        }
-                      else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                        {
-                          pExpression->setRoot(pChild1->copyBranch());
-                          multiplication = true;
-                        }
+                      pExpression->setRoot(pNode);
                     }
-
-                  if (multiplication == false)
+                  else
                     {
-                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-                      pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-                      pOperatorNode->addChild(pVolumeNode);
-                      pExpression->setRoot(pOperatorNode);
+                      fatalError();
                     }
                 }
             }
@@ -9250,6 +9224,61 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<s
         }
     }
 }
+
+/**
+ * This method divides the given expression by the given object and returns a new expression.
+ * The caller is responsible for freeing the memory for the new expression.
+ */
+CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject)
+{
+  bool reverse = false;
+  CEvaluationNode* pResult = NULL;
+  assert(pOrigNode != NULL);
+  assert(pObject != NULL);
+
+  if (pOrigNode != NULL && pObject != NULL)
+    {
+      // first we check if this is thie reverse operation with the object
+      // if so, we just drop the reverse operaqtion, otherwise we apply the operation with the
+      // object
+      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
+          (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::MULTIPLY)
+        {
+          // either child can be the object
+          const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild());
+
+          if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+            {
+
+              pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+              reverse = true;
+            }
+
+          if (reverse == false)
+            {
+              pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+
+              if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+                {
+
+                  pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+                  reverse = true;
+                }
+            }
+        }
+
+      if (reverse == false)
+        {
+          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ">");
+          pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+          pResult->addChild(pOrigNode->copyBranch());
+          pResult->addChild(pVolumeNode);
+        }
+    }
+
+  return pResult;
+}
+
 
 
 #endif // LIBSBML_VERSION

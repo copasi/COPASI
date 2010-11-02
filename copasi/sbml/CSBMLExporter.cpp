@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.1 $
+//   $Revision: 1.84.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/10/20 15:14:26 $
+//   $Author: gauges $
+//   $Date: 2010/11/02 10:42:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -679,7 +679,6 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
     {
       if (compartment.getDimensionality() != 0)
         {
-          this->mVariableVolumes = true;
           this->mAssignmentVector.push_back(&compartment);
           pSBMLCompartment->setConstant(false);
           removeInitialAssignment(pSBMLCompartment->getId());
@@ -693,7 +692,6 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
     {
       if (compartment.getDimensionality() != 0)
         {
-          this->mVariableVolumes = true;
           this->mODEVector.push_back(&compartment);
           pSBMLCompartment->setConstant(false);
 
@@ -733,13 +731,6 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
         {
           if (compartment.getDimensionality() != 0)
             {
-              // only set the flag if the initial assignments would actually be
-              // exported.
-              if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 2))
-                {
-                  this->mVariableVolumes = true;
-                }
-
               this->mInitialAssignmentVector.push_back(&compartment);
             }
           else
@@ -1358,6 +1349,37 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       // contains variable volumes or if the quantity units are set to CModel::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
+
+      // check if the rule is for an amount species
+      // if this is the case, we have to multiply the expression by the volume
+      // of the compartment the species is in
+      // create the actual rule
+      const CMetab* pMetab = dynamic_cast<const CMetab*>(&modelEntity);
+
+      if (pMetab != NULL)
+        {
+          std::map<const CCopasiObject*, SBase*>::const_iterator pos = this->mCOPASI2SBMLMap.find(&modelEntity);
+          assert(pos != this->mCOPASI2SBMLMap.end());
+
+          if (dynamic_cast<const Species*>(pos->second)->getHasOnlySubstanceUnits() == true)
+            {
+              const CCompartment* pCompartment = pMetab->getCompartment();
+
+              if (pCompartment->getDimensionality() != 0)
+                {
+                  CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getInitialValueReference());
+                  assert(pNode != NULL);
+
+                  if (pNode != NULL)
+                    {
+                      delete pOrigNode;
+                      pOrigNode = pNode;
+                    }
+                }
+
+            }
+        }
+
       ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
       // convert local parameters that are referenced in an expression to global
@@ -1596,36 +1618,16 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
 
               if (pCompartment->getDimensionality() != 0)
                 {
-                  bool division = false;
+                  CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
+                  assert(pNode != NULL);
 
-                  // first we check if this is a division with the compartment volume
-                  // if so, we just drop the division, otherwise we multiply with the
-                  // compartment volume
-                  if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
-                      (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
+                  if (pNode != NULL)
                     {
-                      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
-
-                      if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                        {
-
-                          CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
-                          delete pOrigNode;
-                          pOrigNode = pTmpNode;
-                          division = true;
-                        }
-                    }
-
-                  if (division == false)
-                    {
-                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                      pOperatorNode->addChild(pOrigNode->copyBranch());
-                      pOperatorNode->addChild(pVolumeNode);
                       delete pOrigNode;
-                      pOrigNode = pOperatorNode;
+                      pOrigNode = pNode;
                     }
                 }
+
             }
         }
 
@@ -2823,6 +2825,11 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // try to find a parameter that represents Avogadros number
   findAvogadro(dataModel);
 
+  // check if there is an assignment to a volume
+  // in that case we has to export all species with the
+  // hasOnlySubstanceUnits flag set to true
+  this->mVariableVolumes = this->hasVolumeAssignment(dataModel);
+
   createCompartments(dataModel);
   createMetabolites(dataModel);
   createParameters(dataModel);
@@ -3695,34 +3702,13 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
                   if (pCompartment->getDimensionality() != 0)
                     {
-                      bool division = false;
+                      CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
+                      assert(pNode != NULL);
 
-                      // first we check if this is a division with the compartment volume
-                      // if so, we just drop the division, otherwise we multiply with the
-                      // compartment volume
-                      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
-                          (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
+                      if (pNode != NULL)
                         {
-                          const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
-
-                          if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                            {
-
-                              CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
-                              delete pOrigNode;
-                              pOrigNode = pTmpNode;
-                              division = true;
-                            }
-                        }
-
-                      if (division == false)
-                        {
-                          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                          CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                          pOperatorNode->addChild(pOrigNode->copyBranch());
-                          pOperatorNode->addChild(pVolumeNode);
                           delete pOrigNode;
-                          pOrigNode = pOperatorNode;
+                          pOrigNode = pNode;
                         }
                     }
                 }
@@ -6564,3 +6550,128 @@ void CSBMLExporter::assignSBMLIdsToReactions(CModel* pModel)
       ++it;
     }
 }
+
+
+/**
+ * This method goes through all compartments and events and checks if
+ * there is an assignment to a volume.
+ */
+bool CSBMLExporter::hasVolumeAssignment(const CCopasiDataModel& dataModel)
+{
+  bool result = false;
+
+  // make sure the SBML Document already exists and that it has a Model set
+  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return false;
+
+  CCopasiVectorNS<CCompartment>::const_iterator it = dataModel.getModel()->getCompartments().begin(), endit = dataModel.getModel()->getCompartments().end();
+  CModelEntity::Status status;
+
+  while (it != endit && result == false)
+    {
+      status = (*it)->getStatus();
+
+      if (status == CModelEntity::ASSIGNMENT || status == CModelEntity::ODE)
+        {
+          result = true;
+        }
+
+      if ((*it)->getInitialExpression() != "" && result == false)
+        {
+          if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 2))
+            {
+              result = true;
+            }
+        }
+
+      ++it;
+    }
+
+  CCopasiVectorN<CEvent>::const_iterator eit = dataModel.getModel()->getEvents().begin(), eendit = dataModel.getModel()->getEvents().end();
+
+  std::string key;
+  const CCopasiObject* pObject = NULL;
+  std::string objectType;
+
+  while (eit != eendit && result == false)
+    {
+      CCopasiVectorN< CEventAssignment >::const_iterator itAssignment = (*eit)->getAssignments().begin();
+      CCopasiVectorN< CEventAssignment >::const_iterator endAssignment = (*eit)->getAssignments().end();
+
+      while (itAssignment != endAssignment && result == false)
+        {
+          key = (*itAssignment)->getTargetKey();
+
+          //        now we have to get the object for the key, check if the object is a
+          //        compartment, species or global parameter,
+          pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+          assert(pObject != NULL);
+          objectType = pObject->getObjectType();
+
+          if (objectType == "Reference")
+            {
+              pObject = pObject->getObjectParent();
+              assert(pObject != NULL);
+              objectType = pObject->getObjectType();
+            }
+
+          if (objectType == "Compartment")
+            {
+              result = true;
+            }
+
+          ++itAssignment;
+        }
+
+      ++eit;
+    }
+
+  return result;
+}
+
+
+/**
+ * This method multiplies a given expression by the given object.
+ * The caller is responsible for freeing the memory for the new expression.
+ */
+CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject)
+{
+  bool reverse = false;
+  CEvaluationNode* pResult = NULL;
+  assert(pOrigNode != NULL);
+  assert(pObject != NULL);
+
+  if (pOrigNode != NULL && pObject != NULL)
+    {
+      // first we check if this is thie reverse operation with the object
+      // if so, we just drop the reverse operation, otherwise we apply the operation with the
+      // object
+      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
+          (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
+        {
+          // only the second child can be the object
+          const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
+
+          if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+            {
+
+              pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+              reverse = true;
+            }
+        }
+
+      if (reverse == false)
+        {
+          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ">");
+          pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+          pResult->addChild(pOrigNode->copyBranch());
+          pResult->addChild(pVolumeNode);
+        }
+    }
+
+  return pResult;
+}
+
+
+
+
+
