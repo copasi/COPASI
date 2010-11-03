@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000020.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Date: 2010/11/03 15:55:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ void test000020::test_references_to_species()
   Model* pModel = pDocument->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   // assert that there is only one compartment and
-  // assert the compartment is constant
+  // assert the compartment is not constant
   CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
   Compartment* pCompartment = pModel->getCompartment(0);
   CPPUNIT_ASSERT(pCompartment->getConstant() == false);
