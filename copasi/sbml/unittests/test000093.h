@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000093.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/02 14:54:44 $
+//   $Date: 2010/11/03 15:53:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@ class test000093 : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE(test000093);
   CPPUNIT_TEST(test_bug1503_1);
+  CPPUNIT_TEST(test_bug1503_2);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -38,6 +39,7 @@ public:
   void tearDown();
 
   void test_bug1503_1();
+  void test_bug1503_2();
 };
 
 #endif /* TEST000093_H__ */
