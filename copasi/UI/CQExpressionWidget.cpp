@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55.2.2 $
+//   $Revision: 1.55.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/01 18:00:40 $
+//   $Date: 2010/11/03 00:17:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,11 +60,10 @@ std::ostream &operator<<(std::ostream &os, const QTextCursor & d)
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : QSyntaxHighlighter(ew),
-    COPASIObjectPattern("\\{([^\\}]|\\.)*\\}")
+    mObjectDisplayPattern(CQExpressionWidget::DisplayPattern)
 {
   // COPASI object format
-  COPASIObjectFormat.setForeground(QColor(100, 0, 200));
-  //COPASIObjectPattern = QRegExp("\\{[^\\{]*\\}");
+  mObjectDisplayFormat.setForeground(QColor(100, 0, 200));
 }
 
 CQExpressionHighlighter::~CQExpressionHighlighter()
@@ -72,13 +71,13 @@ CQExpressionHighlighter::~CQExpressionHighlighter()
 
 void CQExpressionHighlighter::highlightBlock(const QString &text)
 {
-  int index = COPASIObjectPattern.indexIn(text);
+  int index = mObjectDisplayPattern.indexIn(text);
 
   while (index >= 0)
     {
-      int length = COPASIObjectPattern.matchedLength();
-      setFormat(index, length, COPASIObjectFormat);
-      index = COPASIObjectPattern.indexIn(text, index + length);
+      int length = mObjectDisplayPattern.matchedLength();
+      setFormat(index, length, mObjectDisplayFormat);
+      index = mObjectDisplayPattern.indexIn(text, index + length);
     }
 }
 
@@ -189,6 +188,13 @@ CFunction * CQValidatorFunction::getFunction()
 
 //***********************************************************************
 
+// static
+const char CQExpressionWidget::InfixPattern[] = "<(([^>]|\\.)*)>";
+
+// static
+const char CQExpressionWidget::DisplayPattern[] = "\\{(([^\\}]|\\.)*)\\}";
+
+
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
     : QTextEdit(parent, name),
     mpValidatorExpression(NULL),
@@ -201,7 +207,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
 {
   setTabChangesFocus(true);
 
-  expressionHighlighter = new CQExpressionHighlighter(this);
+  mpExpressionHighlighter = new CQExpressionHighlighter(this);
 
   int h, s, v;
 
@@ -523,9 +529,9 @@ void CQExpressionWidget::slotTextChanged()
 
 bool CQExpressionWidget::isInObject(int curPos)
 {
-  static QRegExp COPASIObjectPattern("\\{([^\\}]|\\.)*\\}");
+  static QRegExp ObjectDisplayPattern(CQExpressionWidget::DisplayPattern);
 
-  int Index = COPASIObjectPattern.indexIn(text());
+  int Index = ObjectDisplayPattern.indexIn(text());
 
   int Left = -1;
   int Right = -1;
@@ -533,7 +539,7 @@ bool CQExpressionWidget::isInObject(int curPos)
   while (0 <= Index && Index <= curPos)
     {
       Left = Index;
-      Index += COPASIObjectPattern.matchedLength();
+      Index += ObjectDisplayPattern.matchedLength();
       Right = Index;
 
       if (Left < curPos && curPos < Right)
@@ -541,7 +547,7 @@ bool CQExpressionWidget::isInObject(int curPos)
           return true;
         }
 
-      Index = COPASIObjectPattern.indexIn(text(), Index);
+      Index = ObjectDisplayPattern.indexIn(text(), Index);
     }
 
   return false;
@@ -584,9 +590,6 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   // Reset the parse list.
   mParseList.clear();
 
-  // clear the text edit
-  clear();
-
   mCursor = textCursor();
 
   CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
@@ -597,77 +600,64 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   containers.push_back(pDataModel);
   containers.push_back(pFunDB);
 
-  std::string Expression = expression;
-  std::string out_str = "";
+  const QString Infix(FROM_UTF8(expression));
+  QString Display;
 
-  unsigned C_INT32 i = 0;
+  QRegExp InfixObjectPattern(CQExpressionWidget::InfixPattern);
 
-  QTextCharFormat f1;
-  f1.setForeground(QColor(0, 0, 0));
+  int Index = 0;
+  QString::const_iterator it = Infix.begin();
+  QString::const_iterator end;
 
-  QTextCharFormat f = expressionHighlighter->COPASIObjectFormat;
-  QColor color2 = f.foreground().color();
-
-  setCurrentCharFormat(f1);
-
-  while (i < Expression.length())
+  while (true)
     {
-      if (Expression[i] == '<')
+      Index = InfixObjectPattern.indexIn(Infix, Index);
+
+      if (Index < 0)
         {
-          i++;
-          std::string objectName = "";
-
-          while (Expression[i] != '>' && i < Expression.length())
-            {
-              if (Expression[i] == '\\')
-                objectName += Expression[i++];
-
-              objectName += Expression[i];
-              i++;
-            }
-
-          CCopasiObjectName temp_CN(objectName);
-          CCopasiObject* temp_object = pDataModel->ObjectFromName(containers, temp_CN);
-
-          if (temp_object != NULL)
-            {
-              std::string DisplayName = temp_object->getObjectDisplayName();
-              mParseList[DisplayName] = temp_object;
-
-              // We need to escape }
-              std::string::size_type pos = DisplayName.find_first_of("}");
-
-              while (pos != std::string::npos)
-                {
-                  DisplayName.insert(pos, "\\");
-                  pos += 2;
-                  pos = DisplayName.find_first_of("}", pos);
-                }
-
-              setCurrentCharFormat(f);
-              insertPlainText(FROM_UTF8("{" + DisplayName + "}"));
-              setCurrentCharFormat(f1);
-            }
-
-          continue;
+          end = Infix.end();
         }
-
-      else if (Expression[i] == '>')
-        {
-          //do nothing
-        }
-
       else
         {
-          out_str = Expression[i];
-          insertPlainText(FROM_UTF8(out_str));
+          end = Infix.begin() + Index;
         }
 
-      i++;
+      // Copy the non-object part
+      for (; it != end; ++it)
+        {
+          Display.append(*it);
+        }
+
+      if (InfixObjectPattern.matchedLength() < 0)
+        break;
+
+      Index += InfixObjectPattern.matchedLength();
+      it += InfixObjectPattern.matchedLength();
+
+      CCopasiObjectName InfixName(TO_UTF8(InfixObjectPattern.cap(1)));
+      CCopasiObject * pObject = pDataModel->ObjectFromName(containers, InfixName);
+
+      if (pObject != NULL)
+        {
+          std::string DisplayName = pObject->getObjectDisplayName();
+
+          // We need to escape '\' and '}'
+          std::string::size_type pos = DisplayName.find_first_of("\\}");
+
+          while (pos != std::string::npos)
+            {
+              DisplayName.insert(pos, "\\");
+              pos += 2;
+              pos = DisplayName.find_first_of("\\}", pos);
+            }
+
+          mParseList[DisplayName] = pObject;
+
+          Display += '{' + FROM_UTF8(DisplayName) + '}';
+        }
     }
 
-  setCurrentCharFormat(f);
-
+  setText(Display);
   mpValidatorExpression->saved();
 
   return;
@@ -675,45 +665,51 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
 std::string CQExpressionWidget::getExpression() const
 {
-  std::string DisplayName = "";
-  std::string InfixCN = "";
+  QString Infix;
+  const QString Display(text());
 
-  std::string InfixDispayName = TO_UTF8(text());
-  std::map< std::string, const CCopasiObject *>::const_iterator it;
+  QRegExp DisplayObjectPattern(CQExpressionWidget::DisplayPattern);
 
-  unsigned int i;
+  int Index = 0;
+  QString::const_iterator it = Display.begin();
+  QString::const_iterator end;
 
-  for (i = 0; i < InfixDispayName.length(); i++)
+
+  while (true)
     {
-      if (InfixDispayName[i] == '{')
+      Index = DisplayObjectPattern.indexIn(Display, Index);
+
+      if (Index < 0)
         {
-          InfixCN += "<";
-
-          i++;
-          DisplayName = "";
-
-          while (i < InfixDispayName.length() && InfixDispayName[i] != '}')
-            {
-              if (InfixDispayName[i] == '\\') // '\' is an escape character.
-                i++;
-
-              DisplayName += InfixDispayName[i++];
-            }
-
-          it = mParseList.find(DisplayName);
-
-          if (it != mParseList.end())
-            InfixCN += it->second->getCN() + ">";
-          else
-            InfixCN = InfixCN.substr(0, InfixCN.length() - 1);
+          end = Display.end();
         }
       else
         {
-          InfixCN += InfixDispayName[i];
+          end = Display.begin() + Index;
         }
+
+      // Copy the non-object part
+      for (; it != end; ++it)
+        {
+          Infix.append(*it);
+        }
+
+      if (DisplayObjectPattern.matchedLength() < 0)
+        break;
+
+      Index += DisplayObjectPattern.matchedLength();
+      it += DisplayObjectPattern.matchedLength();
+
+      std::string DisplayName(TO_UTF8(DisplayObjectPattern.cap(1)));
+      std::map< std::string, const CCopasiObject *>::const_iterator itObject = mParseList.find(DisplayName);
+
+      if (itObject != mParseList.end())
+        Infix += "<" + FROM_UTF8(itObject->second->getCN()) + ">";
+      else
+        Infix += DisplayObjectPattern.cap(1);
     }
 
-  return InfixCN;
+  return TO_UTF8(Infix);
 }
 
 void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionType & expressionType)
@@ -773,7 +769,7 @@ void CQExpressionWidget::slotSelectObject()
       QTextCharFormat f1;
       f1.setForeground(QColor(0, 0, 0));
 
-      QTextCharFormat f = expressionHighlighter->COPASIObjectFormat;
+      QTextCharFormat f = mpExpressionHighlighter->mObjectDisplayFormat;
       QColor color2 = f.foreground().color();
 
       setCurrentCharFormat(f);

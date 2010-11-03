@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.23.2.1 $
+//   $Revision: 1.23.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/29 17:58:06 $
+//   $Date: 2010/11/03 00:17:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,8 +53,8 @@ protected:
   void highlightBlock(const QString &text);
 
 public:
-  QTextCharFormat COPASIObjectFormat;
-  QRegExp COPASIObjectPattern;
+  QTextCharFormat mObjectDisplayFormat;
+  QRegExp mObjectDisplayPattern;
 };
 
 /**
@@ -126,6 +126,9 @@ class CQExpressionWidget: public QTextEdit
 {
   Q_OBJECT
 public:
+  static const char InfixPattern[];
+  static const char DisplayPattern[];
+
   CQExpressionWidget(QWidget * parent = 0, const char * name = 0);
 
   ~CQExpressionWidget();
@@ -272,7 +275,7 @@ signals:
   void valid(bool valid);
 
 private:
-  CQExpressionHighlighter *expressionHighlighter;
+  CQExpressionHighlighter *mpExpressionHighlighter;
   QTextCursor mCursor;
 };
 
