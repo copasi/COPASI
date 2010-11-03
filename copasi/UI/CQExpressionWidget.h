@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.23.2.2 $
+//   $Revision: 1.23.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 00:17:53 $
+//   $Date: 2010/11/03 13:20:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,14 +146,6 @@ private:
   CQValidatorFunction * mpValidatorFunction;
 
 protected:
-  int mOldPar;
-  int mOldPos;
-
-  int mOldPar1;
-  int mOldPos1;
-  int mOldPar2;
-  int mOldPos2;
-
   /**
    * Function to indicate whether we are dealing with an INITIAL or TRANSIENT expression
    */
@@ -161,8 +153,6 @@ protected:
 
   std::map< std::string, const CCopasiObject * > mParseList;
   const CCopasiObject * mpCurrentObject;
-  QString mNewName;
-
   QColor mSavedColor;
   QColor mChangedColor;
 
@@ -182,14 +172,14 @@ protected:
   virtual void dropEvent(QDropEvent * e);
 
   /**
-   * Function to check whether the given cursor position is in object
+   * Function to check whether the given cursor position is in an object.
+   * If the position is within an object left and right mark the boundaries.
+   * @param const int & position
+   * @param int & left
+   * @param int & right
+   * @return bool isInObject
    */
-  bool isInObject(int pos);
-
-  /**
-   * return anchor position -> new 16.09.09
-   */
-  int mAnchorPos;
+  bool objectBoundaries(const int & position, int & left, int & right) const;
 
 public:
   /**

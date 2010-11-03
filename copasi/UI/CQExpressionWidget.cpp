@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55.2.3 $
+//   $Revision: 1.55.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 00:17:52 $
+//   $Date: 2010/11/03 13:20:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -199,11 +199,8 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
     : QTextEdit(parent, name),
     mpValidatorExpression(NULL),
     mpValidatorFunction(NULL),
-    mOldPar(0),
-    mOldPos(0),
     mObjectClasses(TransientExpression),
-    mpCurrentObject(NULL),
-    mNewName("")
+    mpCurrentObject(NULL)
 {
   setTabChangesFocus(true);
 
@@ -217,9 +214,6 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
   if (s < 20) s = 20;
 
   mChangedColor.setHsv(240, s, v);
-
-  mAnchorPos = -1;
-  mOldPos = -1;
 
   connect(this, SIGNAL(textChanged()),
           this, SLOT(slotTextChanged()));
@@ -258,30 +252,23 @@ void CQExpressionWidget::mouseReleaseEvent(QMouseEvent * e)
 
   mCursor = textCursor();
 
-  if (isInObject(mCursor.selectionStart()))
+  int Left;
+  int Right;
+
+  if (objectBoundaries(mCursor.selectionStart(), Left, Right))
     {
       // Move the selection start out of the object.
       mCursor.setPosition(mCursor.selectionEnd());
-      mCursor.setPosition(textCursor().selectionStart(), QTextCursor::KeepAnchor);
-
-      while (isInObject(mCursor.position()))
-        {
-          mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-        }
+      mCursor.setPosition(Left, QTextCursor::KeepAnchor);
 
       setTextCursor(mCursor);
     }
 
-  if (isInObject(mCursor.selectionEnd()))
+  if (objectBoundaries(mCursor.selectionEnd(), Left, Right))
     {
       // Move the selection end out of the object.
       mCursor.setPosition(mCursor.selectionStart());
-      mCursor.setPosition(textCursor().selectionEnd(), QTextCursor::KeepAnchor);
-
-      while (isInObject(mCursor.position()))
-        {
-          mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        }
+      mCursor.setPosition(Right, QTextCursor::KeepAnchor);
 
       setTextCursor(mCursor);
     }
@@ -293,32 +280,21 @@ void CQExpressionWidget::dropEvent(QDropEvent * e)
 
   QTextEdit::dropEvent(e);
 
-  if (isInObject(textCursor().position() - SelectedText.length()))
+  int Left;
+  int Right;
+
+  if (objectBoundaries(textCursor().position() - SelectedText.length(), Left, Right))
     {
       mCursor = textCursor();
-      // Remove the inserted text.
 
+      // Remove the inserted text.
       mCursor.setPosition(mCursor.position() - SelectedText.length(), QTextCursor::KeepAnchor);
       mCursor.removeSelectedText();
 
       int CurrentPosition = mCursor.position();
 
       // Determine the insertion point
-      while (isInObject(mCursor.position()))
-        {
-          mCursor.movePosition(QTextCursor::PreviousCharacter);
-        }
-
-      int Left = mCursor.position();
-      mCursor.setPosition(CurrentPosition);
-
-      // Determine the insertion point
-      while (isInObject(mCursor.position()))
-        {
-          mCursor.movePosition(QTextCursor::NextCharacter);
-        }
-
-      int Right = mCursor.position();
+      objectBoundaries(mCursor.position(), Left, Right);
 
       if (CurrentPosition - Left < Right - CurrentPosition)
         {
@@ -336,22 +312,17 @@ void CQExpressionWidget::dropEvent(QDropEvent * e)
 
 void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 {
-  bool cursorAdjusted = false;
+  int Left;
+  int Right;
 
   if (e == QKeySequence::SelectNextChar)
     {
       mCursor = textCursor();
       mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
 
-      while (isInObject(mCursor.position()))
+      if (objectBoundaries(mCursor.position(), Left, Right))
         {
-          mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-          cursorAdjusted = true;
-        }
-
-      if (cursorAdjusted)
-        {
-          mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+          mCursor.setPosition(Right - 1, QTextCursor::KeepAnchor);
           setTextCursor(mCursor);
         }
 
@@ -365,15 +336,9 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
       mCursor = textCursor();
       mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
 
-      while (isInObject(mCursor.position()))
+      if (objectBoundaries(mCursor.position(), Left, Right))
         {
-          mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-          cursorAdjusted = true;
-        }
-
-      if (cursorAdjusted)
-        {
-          mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+          mCursor.setPosition(Left + 1, QTextCursor::KeepAnchor);
           setTextCursor(mCursor);
         }
 
@@ -391,15 +356,9 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
           {
             mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
 
-            while (isInObject(mCursor.position()))
+            if (objectBoundaries(mCursor.position(), Left, Right))
               {
-                mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-                cursorAdjusted = true;
-              }
-
-            if (cursorAdjusted)
-              {
-                mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+                mCursor.setPosition(Left + 1, QTextCursor::KeepAnchor);
                 mCursor.deleteChar();
                 setTextCursor(mCursor);
               }
@@ -418,15 +377,9 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
           {
             mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
 
-            while (isInObject(mCursor.position()))
+            if (objectBoundaries(mCursor.position(), Left, Right))
               {
-                mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-                cursorAdjusted = true;
-              }
-
-            if (cursorAdjusted)
-              {
-                mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+                mCursor.setPosition(Right - 1, QTextCursor::KeepAnchor);
                 mCursor.deleteChar();
                 setTextCursor(mCursor);
               }
@@ -444,15 +397,9 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         // We check whether the new position is in an object.
         mCursor.movePosition(QTextCursor::PreviousCharacter);
 
-        while (isInObject(mCursor.position()))
+        if (objectBoundaries(mCursor.position(), Left, Right))
           {
-            mCursor.movePosition(QTextCursor::PreviousCharacter);
-            cursorAdjusted = true;
-          }
-
-        if (cursorAdjusted)
-          {
-            mCursor.movePosition(QTextCursor::NextCharacter);
+            mCursor.setPosition(Left + 1, QTextCursor::KeepAnchor);
             setTextCursor(mCursor);
           }
 
@@ -467,15 +414,9 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         // We check whether the new position is in an object.
         mCursor.movePosition(QTextCursor::NextCharacter);
 
-        while (isInObject(mCursor.position()))
+        if (objectBoundaries(mCursor.position(), Left, Right))
           {
-            mCursor.movePosition(QTextCursor::NextCharacter);
-            cursorAdjusted = true;
-          }
-
-        if (cursorAdjusted)
-          {
-            mCursor.movePosition(QTextCursor::PreviousCharacter);
+            mCursor.setPosition(Right - 1, QTextCursor::KeepAnchor);
             setTextCursor(mCursor);
           }
 
@@ -527,28 +468,28 @@ void CQExpressionWidget::slotTextChanged()
   emit valid(pValidator->validate(Input, pos) == QValidator::Acceptable);
 }
 
-bool CQExpressionWidget::isInObject(int curPos)
+bool CQExpressionWidget::objectBoundaries(const int & position, int & left, int & right) const
 {
   static QRegExp ObjectDisplayPattern(CQExpressionWidget::DisplayPattern);
 
   int Index = ObjectDisplayPattern.indexIn(text());
 
-  int Left = -1;
-  int Right = -1;
-
-  while (0 <= Index && Index <= curPos)
+  while (0 <= Index && Index <= position)
     {
-      Left = Index;
+      left = Index;
       Index += ObjectDisplayPattern.matchedLength();
-      Right = Index;
+      right = Index;
 
-      if (Left < curPos && curPos < Right)
+      if (left < position && position < right)
         {
           return true;
         }
 
       Index = ObjectDisplayPattern.indexIn(text(), Index);
     }
+
+  left = -1;
+  right = -1;
 
   return false;
 }
