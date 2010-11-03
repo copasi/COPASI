@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLDefaultStyles.cpp,v $
-//   $Revision: 1.2.2.1 $
+//   $Revision: 1.2.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/23 14:47:07 $
+//   $Author: shoops $
+//   $Date: 2010/11/03 17:08:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,12 @@
 // All rights reserved.
 
 #include "CLDefaultStyles.h"
+
+#define USE_LAYOUT 1
+
+#ifdef USE_CRENDER_EXTENSION
+#define USE_RENDER 1
+#endif // USE_CRENDER_EXTENSION
 
 // render includes
 #include <sbml/layout/render/GlobalRenderInformation.h>
