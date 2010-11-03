@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55.2.4 $
+//   $Revision: 1.55.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 13:20:21 $
+//   $Date: 2010/11/03 14:07:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,7 +189,7 @@ CFunction * CQValidatorFunction::getFunction()
 //***********************************************************************
 
 // static
-const char CQExpressionWidget::InfixPattern[] = "<(([^>]|\\.)*)>";
+const char CQExpressionWidget::InfixPattern[] = "<(CN=([^>]|\\.)*)>";
 
 // static
 const char CQExpressionWidget::DisplayPattern[] = "\\{(([^\\}]|\\.)*)\\}";
