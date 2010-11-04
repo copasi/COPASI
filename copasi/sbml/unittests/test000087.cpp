@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000087.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/11 11:55:16 $
+//   $Date: 2010/11/04 18:20:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -380,8 +380,10 @@ void test000087::test_simulate_reaction_flux_reference_1()
   pTrajectoryTask->getProblem()->setModel(pCOPASIDATAMODEL->getModel());
 
   pTrajectoryTask->setScheduled(true);
-
   pTrajectoryTask->getReport().setReportDefinition(pReport);
+  // the target needs to be set in order to get output on the stream
+  // object passed to the task in the call to initialize below
+  pTrajectoryTask->getReport().setTarget("test.tmp");
 
   CTrajectoryProblem* pProblem = dynamic_cast<CTrajectoryProblem*>(pTrajectoryTask->getProblem());
 
