@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.10 $
+//   $Revision: 1.263.2.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/04 16:38:48 $
+//   $Date: 2010/11/05 12:38:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2568,6 +2568,15 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           for (i = 0; (i < iMax) && (fatal == -1); ++i)
             {
               const XMLError* pSBMLError = sbmlDoc->getError(i);
+#if LIBSBML_VERSION >= 40200
+
+              // we check if the model contained a required package
+              if (sbmlDoc->getLevel() > 2 && pSBMLError->getErrorId() == 99107)
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                }
+
+#endif // LIBSBML_VERSION
               CCopasiMessage::Type messageType = CCopasiMessage::RAW;
 
               switch (pSBMLError->getSeverity())
@@ -2643,6 +2652,28 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               return NULL;
             }
         }
+
+#if LIBSBML_VERSION >= 40200
+      else
+        {
+          if (sbmlDoc->getLevel() > 2)
+            {
+              // we check if the model contained a required package
+              unsigned int i, iMax = sbmlDoc->getNumErrors();
+
+              for (i = 0; i < iMax ; ++i)
+                {
+                  const XMLError* pSBMLError = sbmlDoc->getError(i);
+
+                  if (pSBMLError->getErrorId() == 99107)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                    }
+                }
+            }
+        }
+
+#endif // LIBSBML_VERSION
 
       // TODO we need some code that check for required packages that we can't handle.
       // TODO Since the current libsbml does not support this yet, we will have to wait for
@@ -7777,12 +7808,39 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                                 }
                             }
 
-                          pMetab->setInitialExpressionPtr(pExpression);
+                          bool r = pMetab->setInitialExpressionPtr(pExpression);
+
+                          if (r == false)
+                            {
+                              if (pMetab->getInitialExpressionPtr() != pExpression)
+                                {
+                                  delete pExpression;
+                                }
+
+                              CCopasiMessage(CCopasiMessage::RAW, "Some error occured while importing the initial expression for species with id \"", pInitialAssignment->getSymbol().c_str(), "\".");
+                            }
                         }
                       else if (dynamic_cast<CCompartment*>(pos->second) != NULL || dynamic_cast<CModelValue*>(pos->second) != NULL)
                         {
                           CModelEntity* pME = dynamic_cast<CModelEntity*>(pos->second);
-                          pME->setInitialExpressionPtr(pExpression);
+                          bool r = pME->setInitialExpressionPtr(pExpression);
+
+                          if (r == false)
+                            {
+                              if (pME->getInitialExpressionPtr() != pExpression)
+                                {
+                                  delete pExpression;
+                                }
+
+                              if (dynamic_cast<CCompartment*>(pos->second))
+                                {
+                                  CCopasiMessage(CCopasiMessage::RAW, "Some error occured while importing the initial expression for compartment with id \"", pInitialAssignment->getSymbol().c_str(), "\".");
+                                }
+                              else
+                                {
+                                  CCopasiMessage(CCopasiMessage::RAW, "Some error occured while importing the initial expression for parameter with id \"", pInitialAssignment->getSymbol().c_str(), "\".");
+                                }
+                            }
                         }
                       else
                         {
