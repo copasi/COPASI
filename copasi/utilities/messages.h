@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.153.2.3 $
+//   $Revision: 1.153.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/05 13:30:16 $
+//   $Date: 2010/11/05 14:32:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,6 +263,7 @@ const MESSAGES Messages[] =
   {MCSBML + 96, "SBML (96): Model can't be imported because it requires a package that is unkonwn to COPASI."},
   {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\"."},
   {MCSBML + 98, "SBML (98): COPASI can't handle event priorities yet, COPASI removed all priorities."},
+  {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
