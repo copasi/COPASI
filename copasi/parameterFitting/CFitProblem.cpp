@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.66.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:59 $
+//   $Date: 2010/11/05 12:24:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1013,7 +1013,12 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  // Recalcuate the best solution.
+  if (!*mpParmCalculateStatistics)
+    {
+      return false;
+    }
+
+  // Recalculate the best solution.
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
@@ -1102,7 +1107,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   if (!CalculateFIM)
     {
-      // Make sure the timer is acurate.
+      // Make sure the timer is accurate.
       (*mCPUTime.getRefresh())();
 
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);

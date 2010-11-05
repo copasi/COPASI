@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.115.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2010/11/05 12:24:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,8 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mpParmSubtaskCN(NULL),
     mpParmObjectiveExpression(NULL),
     mpParmMaximize(NULL),
+    mpParmRandomizeStartValues(NULL),
+    mpParmCalculateStatistics(NULL),
     mpGrpItems(NULL),
     mpGrpConstraints(NULL),
     mpOptItems(NULL),
@@ -100,6 +102,8 @@ COptProblem::COptProblem(const COptProblem& src,
     mpParmSubtaskCN(NULL),
     mpParmObjectiveExpression(NULL),
     mpParmMaximize(NULL),
+    mpParmRandomizeStartValues(NULL),
+    mpParmCalculateStatistics(NULL),
     mpGrpItems(NULL),
     mpGrpConstraints(NULL),
     mpOptItems(NULL),
@@ -141,6 +145,10 @@ void COptProblem::initializeParameter()
     assertParameter("ObjectiveExpression", CCopasiParameter::EXPRESSION, std::string(""))->getValue().pEXPRESSION;
   mpParmMaximize =
     assertParameter("Maximize", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
+  mpParmRandomizeStartValues =
+    assertParameter("Randomize Start Values", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
+  mpParmCalculateStatistics =
+    assertParameter("Calculate Statistics", CCopasiParameter::BOOL, true)-> getValue().pBOOL;
 
   mpGrpItems = assertGroup("OptimizationItemList");
   mpGrpConstraints = assertGroup("OptimizationConstraintList");
@@ -367,6 +375,11 @@ bool COptProblem::initialize()
       mUpdateMethods[i] = (*it)->getUpdateMethod();
       changedObjects.insert((*it)->getObject());
       mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
+
+      if (*mpParmRandomizeStartValues)
+        {
+          (*it)->setStartValue((*it)->getRandomValue());
+        }
     }
 
   changedObjects.erase(NULL);
@@ -563,6 +576,11 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
+  if (!*mpParmCalculateStatistics)
+    {
+      return false;
+    }
+
   // Recalculate the best solution.
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
@@ -732,6 +750,18 @@ void COptProblem::setMaximize(const bool & maximize)
 
 const bool & COptProblem::maximize() const
 {return *mpParmMaximize;}
+
+void COptProblem::setRandomizeStartValues(const bool & randomize)
+{*mpParmRandomizeStartValues = randomize;}
+
+const bool & COptProblem::getRandomizeStartValues() const
+{return *mpParmRandomizeStartValues;}
+
+void COptProblem::setCalculateStatistics(const bool & calculate)
+{*mpParmCalculateStatistics = calculate;}
+
+const bool & COptProblem::getCalculateStatistics() const
+{return *mpParmCalculateStatistics;}
 
 const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
 {return mCounter;}

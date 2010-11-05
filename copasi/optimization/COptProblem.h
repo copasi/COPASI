@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.61.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 13:17:52 $
+//   $Date: 2010/11/05 12:24:34 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -275,6 +280,30 @@ public:
   const bool & maximize() const;
 
   /**
+   * Set whether we have to randomize start values
+   * @param const bool & randomize
+   */
+  void setRandomizeStartValues(const bool & randomize);
+
+  /**
+   * Retrieve whether we have to calculate statistics
+   * @return const bool & randomize
+   */
+  const bool & getRandomizeStartValues() const;
+
+  /**
+   * Set whether we have to calculate statistics
+   * @param const bool & calculate
+   */
+  void setCalculateStatistics(const bool & calculate);
+
+  /**
+   * Retrieve whether we have to calculate statistics
+   * @return const bool & maximize
+   */
+  const bool & getCalculateStatistics() const;
+
+  /**
    * Retrieve the objective function.
    * @return const unsigned C_INT32 & functionEvaluations
    */
@@ -347,6 +376,16 @@ protected:
    * A pointer to the value of the CCopasiParameter holding Maximize
    */
   bool * mpParmMaximize;
+
+  /**
+   * A pointer to the value of the CCopasiParameter holding Randomize Start Values
+   */
+  bool * mpParmRandomizeStartValues;
+
+  /**
+   * A pointer to the value of the CCopasiParameter holding Calculate Statistics
+   */
+  bool * mpParmCalculateStatistics;
 
   /**
    * A pointer to the value of the CCopasiParameterGroup holding the OptimizationItems

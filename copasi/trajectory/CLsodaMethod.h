@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.27 $
+ $Revision: 1.27.2.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/08/10 14:50:39 $
+ $Date: 2010/11/05 12:24:34 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,12 +104,12 @@ private:
    */
   C_INT mNumRoots;
 
+protected:
   /**
    *  Current time.
    */
   C_FLOAT64 mTime;
 
-protected:
   /**
    *  LSODA state.
    */

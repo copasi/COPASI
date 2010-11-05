@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:15 $
+//   $Author: shoops $
+//   $Date: 2010/11/05 12:24:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,18 @@ bool CQOptimizationWidget::saveTask()
       pProblem->setMaximize(mpBtnMaximize->isChecked());
     }
 
+  if (mpCheckRandomize->isChecked() != pProblem->getRandomizeStartValues())
+    {
+      mChanged = true;
+      pProblem->setRandomizeStartValues(mpCheckRandomize->isChecked());
+    }
+
+  if (mpCheckStatistics->isChecked() != pProblem->getCalculateStatistics())
+    {
+      mChanged = true;
+      pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
+    }
+
   mChanged |= mpParameters->save(NULL, NULL);
   mChanged |= mpConstraints->save(NULL, NULL);
 
@@ -140,6 +152,9 @@ bool CQOptimizationWidget::loadTask()
 
   mpBtnMaximize->setChecked(pProblem->maximize());
   mpBtnMinimize->setChecked(!pProblem->maximize());
+
+  mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
+  mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
 
   mpBoxSubtask->setCurrentText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
 
@@ -184,13 +199,13 @@ CCopasiMethod * CQOptimizationWidget::createMethod(const CCopasiMethod::SubType 
 void CQOptimizationWidget::slotParameterNumberChanged(int number)
 {
   QString TabLabel = "Parameters (" + QString::number(number) + ")";
-  mpTabWidget->setTabLabel(mpParametersPage, TabLabel);
+  mpTabWidget->setTabLabel(mpParameters, TabLabel);
 }
 
 void CQOptimizationWidget::slotConstraintNumberChanged(int number)
 {
   QString TabLabel = "Constraints (" + QString::number(number) + ")";
-  mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
+  mpTabWidget->setTabLabel(mpConstraints, TabLabel);
 }
 
 void CQOptimizationWidget::init()
@@ -221,21 +236,11 @@ void CQOptimizationWidget::init()
   mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::sens]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::sens]] = CCopasiTask::sens;
 
-  mpParameterPageLayout = new QHBoxLayout(mpParametersPage);
-
-  mpParameters = new CQFittingItemWidget(mpParametersPage);
-
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);
-  mpParameterPageLayout->addWidget(mpParameters);
 
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
 
-  mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage);
-
-  mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
-
   mpConstraints->setItemType(CQFittingItemWidget::OPT_CONSTRAINT);
-  mpConstraintPageLayout->addWidget(mpConstraints);
 
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 

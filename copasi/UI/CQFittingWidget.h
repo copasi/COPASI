@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 20:12:07 $
+//   $Author: shoops $
+//   $Date: 2010/11/05 12:24:33 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -66,12 +71,6 @@ public slots:
 
 protected:
   CQFittingItemWidget * mpCurrentList;
-  CQFittingItemWidget * mpConstraints;
-//    Q3HBoxLayout * mpParameterPageLayout;
-  QHBoxLayout * mpParameterPageLayout;
-  CQFittingItemWidget * mpParameters;
-//    Q3HBoxLayout * mpConstraintPageLayout;
-  QHBoxLayout * mpConstraintPageLayout;
   CExperimentSet * mpExperimentSet;
   std::map<std::string, std::string> mExperimentKeyMap;
   CCrossValidationSet * mpCrossValidationSet;

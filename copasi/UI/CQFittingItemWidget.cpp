@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.33.2.1 $
+//   $Revision: 1.33.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 18:59:59 $
+//   $Date: 2010/11/05 12:24:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,17 +45,10 @@
  *  Constructs a CQFittingItemWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, name, fl)
+CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, Qt::WindowFlags fl)
+    : QWidget(parent, fl)
 {
   setupUi(this);
-  /*
-    mpBtnObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
-    mpBtnLowerEdit->setIcon(QPixmap(Copasi16_Alpha_xpm));
-    mpBtnUpperEdit->setIcon(QPixmap(Copasi16_Alpha_xpm));
-  //  mpBtnObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
-  */
-  // set icon
 
   const QIcon icon = qt_get_icon(image0_ID);
   mpBtnDel->setIcon(icon);
