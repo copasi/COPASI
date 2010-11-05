@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.75.2.1 $
+//   $Revision: 1.75.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/25 18:33:30 $
+//   $Date: 2010/11/05 12:54:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,24 +255,36 @@ const CExpression* CModelEntity::getExpressionPtr() const
 
 bool CModelEntity::setExpressionPtr(CExpression* pExpression)
 {
-  if (pExpression == mpExpression) return false;
-
   if (isFixed()) return false;
 
-  if (mpModel)
-    mpModel->setCompileFlag(true);
+  if (pExpression == mpExpression) return true;
 
-  if (mpExpression)
-    pdelete(mpExpression);
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
+  pdelete(mpExpression);
 
   if (pExpression != NULL)
     {
       mpExpression = pExpression;
       mpExpression->setObjectName("Expression");
       add(mpExpression, true);
+
+      if (compile())
+        {
+          return true;
+        }
+
+      // If compile fails we do not take ownership
+      mpExpression->setObjectParent(NULL);
+      mpExpression = NULL;
+
+      return false;
     }
 
-  return compile();
+  return true;
 }
 
 CExpression* CModelEntity::getInitialExpressionPtr()
@@ -287,24 +299,36 @@ const CExpression* CModelEntity::getInitialExpressionPtr() const
 
 bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 {
-  if (pExpression == mpInitialExpression) return false;
-
   if (mStatus == ASSIGNMENT) return false;
 
-  if (mpModel)
-    mpModel->setCompileFlag(true);
+  if (pExpression == mpInitialExpression) return true;
 
-  if (mpInitialExpression)
-    pdelete(mpInitialExpression);
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
+  pdelete(mpInitialExpression);
 
   if (pExpression != NULL)
     {
       mpInitialExpression = pExpression;
       mpInitialExpression->setObjectName("InitialExpression");
       add(mpInitialExpression, true);
+
+      if (compile())
+        {
+          return true;
+        }
+
+      // If compile fails we do not take ownership
+      mpInitialExpression->setObjectParent(NULL);
+      mpInitialExpression = NULL;
+
+      return false;
     }
 
-  return compile();
+  return true;
 }
 
 bool CModelEntity::setInitialExpression(const std::string & expression)

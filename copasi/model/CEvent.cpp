@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.30.2.1 $
+//   $Revision: 1.30.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/25 18:33:30 $
+//   $Date: 2010/11/05 12:54:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -172,8 +172,10 @@ bool CEventAssignment::setExpression(const std::string & expression)
   return mpExpression->setInfix(expression);
 }
 
-void CEventAssignment::setExpressionPtr(CExpression * pExpression)
+bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
 {
+  if (pExpression == mpExpression) return true;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
@@ -187,8 +189,19 @@ void CEventAssignment::setExpressionPtr(CExpression * pExpression)
       mpExpression->setObjectName("Expression");
       add(mpExpression, true);
 
-      mpExpression->compile();
+      if (mpExpression->compile())
+        {
+          return true;
+        }
+
+      // If compile fails we do not take ownership
+      mpExpression->setObjectParent(NULL);
+      mpExpression = NULL;
+
+      return false;
     }
+
+  return true;
 }
 
 std::string CEventAssignment::getExpression() const
@@ -411,8 +424,10 @@ bool CEvent::setTriggerExpression(const std::string & expression)
   return mpTriggerExpression->setInfix(expression);
 }
 
-void CEvent::setTriggerExpressionPtr(CExpression * pExpression)
+bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
 {
+  if (pExpression == mpTriggerExpression) return true;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
@@ -423,9 +438,22 @@ void CEvent::setTriggerExpressionPtr(CExpression * pExpression)
   if (pExpression)
     {
       mpTriggerExpression = pExpression;
-      pExpression->setObjectParent(this);
-      mpTriggerExpression->compile();
+      mpTriggerExpression->setObjectName("TriggerExpression");
+      add(mpTriggerExpression, true);
+
+      if (mpTriggerExpression->compile())
+        {
+          return true;
+        }
+
+      // If compile fails we do not take ownership
+      mpTriggerExpression->setObjectParent(NULL);
+      mpTriggerExpression = NULL;
+
+      return false;
     }
+
+  return true;
 }
 
 std::string CEvent::getTriggerExpression() const
@@ -462,8 +490,10 @@ bool CEvent::setDelayExpression(const std::string & expression)
   return mpDelayExpression->setInfix(expression);
 }
 
-void CEvent::setDelayExpressionPtr(CExpression * pExpression)
+bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
 {
+  if (pExpression == mpDelayExpression) return true;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
@@ -474,9 +504,22 @@ void CEvent::setDelayExpressionPtr(CExpression * pExpression)
   if (pExpression)
     {
       mpDelayExpression = pExpression;
-      this->mpDelayExpression->setObjectParent(this);
-      mpDelayExpression->compile();
+      mpDelayExpression->setObjectName("DelayExpression");
+      add(mpDelayExpression, true);
+
+      if (mpDelayExpression->compile())
+        {
+          return true;
+        }
+
+      // If compile fails we do not take ownership
+      mpDelayExpression->setObjectParent(NULL);
+      mpDelayExpression = NULL;
+
+      return false;
     }
+
+  return true;
 }
 
 std::string CEvent::getDelayExpression() const

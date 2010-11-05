@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.16.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 18:08:01 $
+//   $Date: 2010/11/05 12:54:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,8 +116,9 @@ public:
   /**
    * Set the expression from an expression pointer. CEventAssignment takes ownership.
    * @param CExpression* pExpression
+   * @return bool success
    */
-  void setExpressionPtr(CExpression * pExpression);
+  bool setExpressionPtr(CExpression * pExpression);
 
   /**
    * Retrieve the expression as a string.
@@ -265,8 +266,9 @@ public:
   /**
    * Set the expression of trigger from an expression.
    * @param CExpression* pExpression
+   * @return bool success
    */
-  void setTriggerExpressionPtr(CExpression * pExpression);
+  bool setTriggerExpressionPtr(CExpression * pExpression);
 
   /**
    * Retrieve the expression of trigger as a string.
@@ -297,8 +299,9 @@ public:
   /**
    * Set the expression of delay from an expression.
    * @param CExpression* pExpression
+   * @return bool success
    */
-  void setDelayExpressionPtr(CExpression* pExpression);
+  bool setDelayExpressionPtr(CExpression* pExpression);
 
   /**
    * Retrieve the expression of the delay as a string.
