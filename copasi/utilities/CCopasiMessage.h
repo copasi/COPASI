@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.63.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:29:11 $
+//   $Date: 2010/11/05 13:30:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,27 +52,27 @@ Message;
 #define MCConfiguration          MCopasiBase + 1500
 #define MCOptimization           MCopasiBase + 1600
 #define MCSBML                   MCopasiBase + 1700
-#define MCTrajectoryProblem      MCopasiBase + 1800
-#define MCDirEntry               MCopasiBase + 1900
-#define MCFunction               MCopasiBase + 2000
-#define MCMathML                 MCopasiBase + 2100
-#define MCEvaluationNodeObject   MCopasiBase + 2200
-#define MCCopasiTask             MCopasiBase + 2300
-#define MCSteadyState            MCopasiBase + 2400
-#define MCFitting                MCopasiBase + 2500
-#define MCObject                 MCopasiBase + 2600
-#define MCLyap                   MCopasiBase + 2700
-#define MCODEExporter            MCopasiBase + 2800
-#define MCRegistration           MCopasiBase + 2900
-#define MCTSSAMethod             MCopasiBase + 3000
-#define MCTSSAProblem            MCopasiBase + 3100
-#define MCEigen                  MCopasiBase + 3200
-#define MCMiriam                 MCopasiBase + 3300
-#define MCMathModel              MCopasiBase + 3400
-#define MCModelMerging           MCopasiBase + 3500
-#define MCModelExpansion         MCopasiBase + 3600
-#define MCEFMAnalysis            MCopasiBase + 3700
-#define MCLayout                 MCopasiBase + 3800
+#define MCTrajectoryProblem      MCopasiBase + 2800
+#define MCDirEntry               MCopasiBase + 2900
+#define MCFunction               MCopasiBase + 3000
+#define MCMathML                 MCopasiBase + 3100
+#define MCEvaluationNodeObject   MCopasiBase + 3200
+#define MCCopasiTask             MCopasiBase + 3300
+#define MCSteadyState            MCopasiBase + 3400
+#define MCFitting                MCopasiBase + 3500
+#define MCObject                 MCopasiBase + 3600
+#define MCLyap                   MCopasiBase + 3700
+#define MCODEExporter            MCopasiBase + 3800
+#define MCRegistration           MCopasiBase + 3900
+#define MCTSSAMethod             MCopasiBase + 4000
+#define MCTSSAProblem            MCopasiBase + 4100
+#define MCEigen                  MCopasiBase + 4200
+#define MCMiriam                 MCopasiBase + 4300
+#define MCMathModel              MCopasiBase + 4400
+#define MCModelMerging           MCopasiBase + 4500
+#define MCModelExpansion         MCopasiBase + 4600
+#define MCEFMAnalysis            MCopasiBase + 4700
+#define MCLayout                 MCopasiBase + 4800
 
 /**
  *  This throws an exception with information where the error occurred.
