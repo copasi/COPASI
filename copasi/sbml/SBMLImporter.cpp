@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.11 $
+//   $Revision: 1.263.2.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/05 12:38:44 $
+//   $Date: 2010/11/05 14:35:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1076,7 +1076,26 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Event assignment", "event assignment");
     }
 
-#endif // LIBSBML_VERSION
+#if LIBSBML_VERSION >= 40200
+
+  if (this->mEventPrioritiesIgnored == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 98);
+    }
+
+  if (this->mInitialTriggerValues == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 97);
+    }
+
+  if (this->mNonPersistentTriggerFound == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 99);
+    }
+
+#endif // LIBSBML_VERSION >= 40200
+
+#endif // LIBSBML_VERSION >= 40100
 
 
 
@@ -2428,7 +2447,13 @@ SBMLImporter::SBMLImporter():
   this->mSBMLIdModelValueMap.clear();
   this->mRuleForSpeciesReferenceIgnored = false;
   this->mEventAssignmentForSpeciesReferenceIgnored = false;
-#endif // LIBSBML_VERSION
+#if LIBSBML_VERSION >= 40200
+  this->mEventPrioritiesIgnored = false;
+  this->mInitialTriggerValues = false;
+  this->mNonPersistentTriggerFound = false;
+#endif // LIBSBML_VERSION >= 40200
+
+#endif // LIBSBML_VERSION >= 40100
 
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
@@ -8419,6 +8444,16 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 {
   if (pEvent == NULL) return;
 
+#if LIBSBML_VERSION >= 40200
+
+  // create a warning if the priority is set
+  if (pEvent->isSetPriority())
+    {
+      this->mEventPrioritiesIgnored = true;
+    }
+
+#endif // LIBSBML_VERSION >= 40200
+
   /* Check if the name of the reaction is unique. */
   std::string eventName = "Event";
 
@@ -8454,6 +8489,28 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   // import the trigger
   const Trigger* pTrigger = pEvent->getTrigger();
   assert(pTrigger != NULL);
+
+#if LIBSBML_VERSION >= 40200
+
+  // create a warning if the initialValue is set
+  // We only need to consider the case where the initial value is false
+  // because that would enable the trigger to fire at t=0 which we can't handle yet.
+  if (pTrigger->isSetInitialValue() && pTrigger->getInitialValue() == false)
+    {
+      this->mInitialTriggerValues = true;
+    }
+
+  // create a warning if the persistent flag is set to false
+  // We only need to consider the case where the flag is set to false
+  // because that would mean that we have to recheck the trigger after it fired
+  if (pTrigger->isSetPersistent() && pTrigger->getPersistent() == false)
+    {
+      this->mNonPersistentTriggerFound = true;
+    }
+
+#endif // LIBSBML_VERSION >= 40200
+
+
 
   if (!pTrigger->isSetMath())
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.2 $
+//   $Revision: 1.84.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/02 10:42:08 $
+//   $Date: 2010/11/05 14:35:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -3320,6 +3320,18 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       event.setSBMLId(sbmlId);
     }
 
+#if LIBSBML_VERSION >= 40200
+
+  // if the event came from an SBML L3 model, we have to make sure that the
+  // priority is not set when we export the event, otherwise the exported model
+  // and the COPASI model will not behave the same.
+  if (this->mSBMLLevel > 2)
+    {
+      pSBMLEvent->setPriority(NULL);
+    }
+
+#endif  // LIBSBML_VERSION >= 40200
+
   // if the name doesn't consists of whitespace only, we set the name
   if (event.getObjectName().find_first_not_of("\t\r\n ") != std::string::npos)
     {
@@ -3385,6 +3397,19 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
     {
       Trigger* pTrigger = new Trigger(this->mSBMLLevel, this->mSBMLVersion);
       pTrigger->setMath(pNode);
+#if LIBSBML_VERSION >= 40200
+
+      // we need to make sure that the initial value of the trigger is set to true
+      // as well as the persistent flag
+      // for L3 event because otherwise the exported model will not do the same as
+      // the model in COPASI
+      if (this->mSBMLLevel > 2)
+        {
+          pTrigger->setInitialValue(true);
+          pTrigger->setPersistent(true);
+        }
+
+#endif  // LIBSBML_VERSION >= 40200
       pSBMLEvent->setTrigger(pTrigger);
       delete pNode;
       delete pTrigger;
