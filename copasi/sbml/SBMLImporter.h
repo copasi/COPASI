@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.86.2.3 $
+//   $Revision: 1.86.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/02 10:42:19 $
+//   $Date: 2010/11/05 14:38:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,8 +119,13 @@ protected:
 
   bool mRuleForSpeciesReferenceIgnored;
   bool mEventAssignmentForSpeciesReferenceIgnored;
+#if LIBSBML_VERSION >= 40200
+  bool mEventPrioritiesIgnored;
+  bool mInitialTriggerValues;
+  bool mNonPersistentTriggerFound;
+#endif // LIBSBML_VERSION >= 40200
 
-#endif // LIBSBML_VERSION
+#endif // LIBSBML_VERSION >= 40100
 
   /**
    * Creates and returns a COPASI CModel from the SBMLDocument given as argument.
