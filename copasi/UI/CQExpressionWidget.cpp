@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55.2.5 $
+//   $Revision: 1.55.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 14:07:16 $
+//   $Date: 2010/11/09 13:28:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,10 +189,10 @@ CFunction * CQValidatorFunction::getFunction()
 //***********************************************************************
 
 // static
-const char CQExpressionWidget::InfixPattern[] = "<(CN=([^>]|\\.)*)>";
+const char CQExpressionWidget::InfixPattern[] = "<(CN=([^\\\\>]|\\\\.)*)>";
 
 // static
-const char CQExpressionWidget::DisplayPattern[] = "\\{(([^\\}]|\\.)*)\\}";
+const char CQExpressionWidget::DisplayPattern[] = "\\{(([^\\\\\\}]|\\\\.)*)\\}";
 
 
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
@@ -596,6 +596,22 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
           Display += '{' + FROM_UTF8(DisplayName) + '}';
         }
+      else
+        {
+          std::string DisplayName = InfixName;
+
+          // We need to escape '\' and '}'
+          std::string::size_type pos = DisplayName.find_first_of("\\}");
+
+          while (pos != std::string::npos)
+            {
+              DisplayName.insert(pos, "\\");
+              pos += 2;
+              pos = DisplayName.find_first_of("\\}", pos);
+            }
+
+          Display += '{' + FROM_UTF8(DisplayName) + '}';
+        }
     }
 
   setText(Display);
@@ -647,7 +663,26 @@ std::string CQExpressionWidget::getExpression() const
       if (itObject != mParseList.end())
         Infix += "<" + FROM_UTF8(itObject->second->getCN()) + ">";
       else
-        Infix += DisplayObjectPattern.cap(1);
+        {
+          Infix += "<";
+
+          // We need to escape '\'
+          std::string CN = TO_UTF8(DisplayObjectPattern.cap(1));
+          std::string::const_iterator it = CN.begin();
+          std::string::const_iterator end = CN.end();
+
+          for (; it < end; ++it)
+            {
+              if (*it == '\\')
+                {
+                  ++it;
+                }
+
+              Infix += *it;
+            }
+
+          Infix += ">";
+        }
     }
 
   return TO_UTF8(Infix);
