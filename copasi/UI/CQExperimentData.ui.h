@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.46.2.1 $
+//   $Revision: 1.46.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:28 $
+//   $Date: 2010/11/09 01:59:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -501,7 +501,11 @@ void CQExperimentData::slotExperimentDelete()
       unsigned C_INT32 Next =
         mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey()) + 1;
 
-      mpCheckTo->setChecked(isLikePreviousExperiment(mpExperimentSetCopy->getExperiment(Next)));
+
+      if (Next < mpExperimentSetCopy->size())
+        mpCheckTo->setChecked(isLikePreviousExperiment(mpExperimentSetCopy->getExperiment(Next)));
+      else
+        mpCheckTo->setChecked(false);
     }
 
   connect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
