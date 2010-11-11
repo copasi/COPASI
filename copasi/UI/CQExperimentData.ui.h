@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.46.2.2 $
+//   $Revision: 1.46.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/09 01:59:46 $
+//   $Date: 2010/11/11 15:28:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -838,6 +838,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   disconnect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
   disconnect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
   disconnect(mpBtnSteadystate, SIGNAL(toggled(bool)), this, SLOT(slotExprimentType(bool)));
+  disconnect(mpEditSeparator, SIGNAL(textChanged(QString)), this, SLOT(slotSeparator()));
+  disconnect(mpCheckTab, SIGNAL(toggled(bool)), this, SLOT(slotCheckTab(bool)));
 
   if (!pExperiment)
     {
@@ -916,6 +918,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   connect(mpBtnSteadystate, SIGNAL(toggled(bool)), this, SLOT(slotExprimentType(bool)));
   connect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
   connect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
+  connect(mpEditSeparator, SIGNAL(textChanged(QString)), this, SLOT(slotSeparator()));
+  connect(mpCheckTab, SIGNAL(toggled(bool)), this, SLOT(slotCheckTab(bool)));
 
   return true;
 }
