@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.1 $
+//   $Revision: 1.66.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/05 12:24:57 $
+//   $Date: 2010/11/11 17:44:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,7 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
     mpSteadyState(NULL),
     mpTrajectory(NULL),
     mExperimentUpdateMethods(0, 0),
+    mExperimentUndoMethods(0, 0),
     mExperimentConstraints(0, 0),
     mExperimentDependentValues(0),
 #ifdef COPASI_CROSSVALIDATION
@@ -94,6 +95,7 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     mpSteadyState(NULL),
     mpTrajectory(NULL),
     mExperimentUpdateMethods(0, 0),
+    mExperimentUndoMethods(0, 0),
     mExperimentConstraints(0, 0),
     mExperimentDependentValues(src.mExperimentDependentValues),
 #ifdef COPASI_CROSSVALIDATION
@@ -401,6 +403,12 @@ bool CFitProblem::initialize()
   mExperimentUpdateMethods.resize(mpExperimentSet->getExperimentCount(),
                                   mpOptItems->size());
   mExperimentUpdateMethods = NULL;
+
+  // Build a matrix of experiment and experiment local undo items.
+  mExperimentUndoMethods.resize(mpExperimentSet->getExperimentCount(),
+                                mpOptItems->size());
+  mExperimentUndoMethods = NULL;
+
   mExperimentInitialRefreshes.resize(mpExperimentSet->getExperimentCount());
 
   std::vector< std::set< const CCopasiObject * > > ObjectSet;
@@ -451,6 +459,11 @@ bool CFitProblem::initialize()
 
               mExperimentUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
               ObjectSet[Index].insert(pItem->getObject());
+
+              // TODO CRITICAL We need to undo the changes for all non affected experiments
+              // We can do that by adding the update method with the current model value to
+              mExperimentUndoMethods(Index, j) = pItem->COptItem::getUpdateMethod();
+
             };
         }
 
@@ -684,6 +697,7 @@ bool CFitProblem::calculate()
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mExperimentDependentValues.array();
   UpdateMethod ** pUpdate = mExperimentUpdateMethods.array();
+  UpdateMethod ** pUndo =  mExperimentUndoMethods.array();
   std::vector<COptItem *>::iterator itItem;
   std::vector<COptItem *>::iterator endItem = mpOptItems->end();
   std::vector<COptItem *>::iterator itConstraint;
@@ -809,6 +823,29 @@ bool CFitProblem::calculate()
 
           // restore independent data
           pExp->restoreModelIndependentData();
+
+          // restore experiment local values
+          const C_FLOAT64 *pOriginal = mOriginalVariables.array();
+          const C_FLOAT64 *pOriginalEnd = pOriginal + mOriginalVariables.size();
+          bool RefreshNeeded = false;
+
+          // set the global and experiment local fit item values.
+          for (; pOriginal != pOriginalEnd; pOriginal++, pUndo++)
+            if (*pUndo)
+              {
+                (**pUndo)(*pOriginal);
+                RefreshNeeded = true;
+              }
+
+          if (RefreshNeeded)
+            {
+              // Update initial values which changed due to the fit item values.
+              itRefresh = mExperimentInitialRefreshes[i].begin();
+              endRefresh = mExperimentInitialRefreshes[i].end();
+
+              while (itRefresh != endRefresh)
+                (**itRefresh++)();
+            }
         }
     }
 
