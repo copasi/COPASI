@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.14 $
+//   $Revision: 1.93.2.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/26 17:38:55 $
+//   $Date: 2010/11/12 17:02:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,21 +244,37 @@ void DataModelGUI::updateCompartments()
   CCopasiVector< CCompartment >::iterator it = pModel->getCompartments().begin();
   CCopasiVector< CCompartment >::iterator end = pModel->getCompartments().end();
 
-  QMap< QString, CCompartment * > Sorted;
+  QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
   for (; it != end; ++it)
     {
-      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+      QMap< QString, CCopasiObject * > Insert;
+      QString DisplayName = FROM_UTF8((*it)->getObjectName());
+
+      QMap< QString, QMap< QString, CCopasiObject * > >::iterator found =
+        Sorted.find(DisplayName.toLower());
+
+      if (found != Sorted.end())
+        {
+          Insert = found.value();
+        }
+
+      Insert[DisplayName] = *it;
+      Sorted[DisplayName.toLower()] = Insert;
     }
 
-  QMap< QString, CCompartment * >::iterator itSorted = Sorted.begin();
-  QMap< QString, CCompartment * >::iterator endSorted = Sorted.end();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator itSorted = Sorted.begin();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator endSorted = Sorted.end();
 
   for (; itSorted != endSorted; ++itSorted)
     {
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(itSorted.value()->getObjectName()),
-                       itSorted.value()->getKey());
+      QMap< QString, CCopasiObject * >::iterator itCase = itSorted.value().begin();
+      QMap< QString, CCopasiObject * >::iterator endCase = itSorted.value().end();
+
+      for (; itCase != endCase; ++itCase)
+        {
+          parent->addChild(C_INVALID_INDEX, itCase.key(), itCase.value()->getKey());
+        }
     }
 }
 
@@ -278,21 +294,37 @@ void DataModelGUI::updateMetabolites()
   CCopasiVector< CMetab >::iterator it = pModel->getMetabolites().begin();
   CCopasiVector< CMetab >::iterator end = pModel->getMetabolites().end();
 
-  QMap< QString, CMetab * > Sorted;
+  QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
   for (; it != end; ++it)
     {
-      Sorted[FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, **it)).toLower()] = *it;
+      QMap< QString, CCopasiObject * > Insert;
+      QString DisplayName = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, **it));
+
+      QMap< QString, QMap< QString, CCopasiObject * > >::iterator found =
+        Sorted.find(DisplayName.toLower());
+
+      if (found != Sorted.end())
+        {
+          Insert = found.value();
+        }
+
+      Insert[DisplayName] = *it;
+      Sorted[DisplayName.toLower()] = Insert;
     }
 
-  QMap< QString, CMetab * >::iterator itSorted = Sorted.begin();
-  QMap< QString, CMetab * >::iterator endSorted = Sorted.end();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator itSorted = Sorted.begin();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator endSorted = Sorted.end();
 
   for (; itSorted != endSorted; ++itSorted)
     {
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *itSorted.value())),
-                       itSorted.value()->getKey());
+      QMap< QString, CCopasiObject * >::iterator itCase = itSorted.value().begin();
+      QMap< QString, CCopasiObject * >::iterator endCase = itSorted.value().end();
+
+      for (; itCase != endCase; ++itCase)
+        {
+          parent->addChild(C_INVALID_INDEX, itCase.key(), itCase.value()->getKey());
+        }
     }
 }
 
@@ -312,21 +344,37 @@ void DataModelGUI::updateReactions()
   CCopasiVector< CReaction >::iterator it = pModel->getReactions().begin();
   CCopasiVector< CReaction >::iterator end = pModel->getReactions().end();
 
-  QMap< QString, CReaction * > Sorted;
+  QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
   for (; it != end; ++it)
     {
-      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+      QMap< QString, CCopasiObject * > Insert;
+      QString DisplayName = FROM_UTF8((*it)->getObjectName());
+
+      QMap< QString, QMap< QString, CCopasiObject * > >::iterator found =
+        Sorted.find(DisplayName.toLower());
+
+      if (found != Sorted.end())
+        {
+          Insert = found.value();
+        }
+
+      Insert[DisplayName] = *it;
+      Sorted[DisplayName.toLower()] = Insert;
     }
 
-  QMap< QString, CReaction * >::iterator itSorted = Sorted.begin();
-  QMap< QString, CReaction * >::iterator endSorted = Sorted.end();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator itSorted = Sorted.begin();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator endSorted = Sorted.end();
 
   for (; itSorted != endSorted; ++itSorted)
     {
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(itSorted.value()->getObjectName()),
-                       itSorted.value()->getKey());
+      QMap< QString, CCopasiObject * >::iterator itCase = itSorted.value().begin();
+      QMap< QString, CCopasiObject * >::iterator endCase = itSorted.value().end();
+
+      for (; itCase != endCase; ++itCase)
+        {
+          parent->addChild(C_INVALID_INDEX, itCase.key(), itCase.value()->getKey());
+        }
     }
 }
 
@@ -346,21 +394,37 @@ void DataModelGUI::updateModelValues()
   CCopasiVector< CModelValue >::iterator it = pModel->getModelValues().begin();
   CCopasiVector< CModelValue >::iterator end = pModel->getModelValues().end();
 
-  QMap< QString, CModelValue * > Sorted;
+  QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
   for (; it != end; ++it)
     {
-      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+      QMap< QString, CCopasiObject * > Insert;
+      QString DisplayName = FROM_UTF8((*it)->getObjectName());
+
+      QMap< QString, QMap< QString, CCopasiObject * > >::iterator found =
+        Sorted.find(DisplayName.toLower());
+
+      if (found != Sorted.end())
+        {
+          Insert = found.value();
+        }
+
+      Insert[DisplayName] = *it;
+      Sorted[DisplayName.toLower()] = Insert;
     }
 
-  QMap< QString, CModelValue * >::iterator itSorted = Sorted.begin();
-  QMap< QString, CModelValue * >::iterator endSorted = Sorted.end();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator itSorted = Sorted.begin();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator endSorted = Sorted.end();
 
   for (; itSorted != endSorted; ++itSorted)
     {
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(itSorted.value()->getObjectName()),
-                       itSorted.value()->getKey());
+      QMap< QString, CCopasiObject * >::iterator itCase = itSorted.value().begin();
+      QMap< QString, CCopasiObject * >::iterator endCase = itSorted.value().end();
+
+      for (; itCase != endCase; ++itCase)
+        {
+          parent->addChild(C_INVALID_INDEX, itCase.key(), itCase.value()->getKey());
+        }
     }
 }
 
@@ -376,21 +440,37 @@ void DataModelGUI::updateFunctions()
   CCopasiVector< CEvaluationTree >::iterator it = CCopasiRootContainer::getFunctionList()->loadedFunctions().begin();
   CCopasiVector< CEvaluationTree >::iterator end = CCopasiRootContainer::getFunctionList()->loadedFunctions().end();
 
-  QMap< QString, CEvaluationTree * > Sorted;
+  QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
   for (; it != end; ++it)
     {
-      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+      QMap< QString, CCopasiObject * > Insert;
+      QString DisplayName = FROM_UTF8((*it)->getObjectName());
+
+      QMap< QString, QMap< QString, CCopasiObject * > >::iterator found =
+        Sorted.find(DisplayName.toLower());
+
+      if (found != Sorted.end())
+        {
+          Insert = found.value();
+        }
+
+      Insert[DisplayName] = *it;
+      Sorted[DisplayName.toLower()] = Insert;
     }
 
-  QMap< QString, CEvaluationTree * >::iterator itSorted = Sorted.begin();
-  QMap< QString, CEvaluationTree * >::iterator endSorted = Sorted.end();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator itSorted = Sorted.begin();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator endSorted = Sorted.end();
 
   for (; itSorted != endSorted; ++itSorted)
     {
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(itSorted.value()->getObjectName()),
-                       itSorted.value()->getKey());
+      QMap< QString, CCopasiObject * >::iterator itCase = itSorted.value().begin();
+      QMap< QString, CCopasiObject * >::iterator endCase = itSorted.value().end();
+
+      for (; itCase != endCase; ++itCase)
+        {
+          parent->addChild(C_INVALID_INDEX, itCase.key(), itCase.value()->getKey());
+        }
     }
 }
 
@@ -410,21 +490,37 @@ void DataModelGUI::updateEvents()
   CCopasiVector< CEvent >::iterator it = pModel->getEvents().begin();
   CCopasiVector< CEvent >::iterator end = pModel->getEvents().end();
 
-  QMap< QString, CEvent * > Sorted;
+  QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
   for (; it != end; ++it)
     {
-      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+      QMap< QString, CCopasiObject * > Insert;
+      QString DisplayName = FROM_UTF8((*it)->getObjectName());
+
+      QMap< QString, QMap< QString, CCopasiObject * > >::iterator found =
+        Sorted.find(DisplayName.toLower());
+
+      if (found != Sorted.end())
+        {
+          Insert = found.value();
+        }
+
+      Insert[DisplayName] = *it;
+      Sorted[DisplayName.toLower()] = Insert;
     }
 
-  QMap< QString, CEvent * >::iterator itSorted = Sorted.begin();
-  QMap< QString, CEvent * >::iterator endSorted = Sorted.end();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator itSorted = Sorted.begin();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator endSorted = Sorted.end();
 
   for (; itSorted != endSorted; ++itSorted)
     {
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(itSorted.value()->getObjectName()),
-                       itSorted.value()->getKey());
+      QMap< QString, CCopasiObject * >::iterator itCase = itSorted.value().begin();
+      QMap< QString, CCopasiObject * >::iterator endCase = itSorted.value().end();
+
+      for (; itCase != endCase; ++itCase)
+        {
+          parent->addChild(C_INVALID_INDEX, itCase.key(), itCase.value()->getKey());
+        }
     }
 }
 
@@ -440,21 +536,37 @@ void DataModelGUI::updateReportDefinitions()
   CCopasiVector< CReportDefinition >::iterator it = pDataModel->getReportDefinitionList()->begin();
   CCopasiVector< CReportDefinition >::iterator end = pDataModel->getReportDefinitionList()->end();
 
-  QMap< QString, CReportDefinition * > Sorted;
+  QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
   for (; it != end; ++it)
     {
-      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+      QMap< QString, CCopasiObject * > Insert;
+      QString DisplayName = FROM_UTF8((*it)->getObjectName());
+
+      QMap< QString, QMap< QString, CCopasiObject * > >::iterator found =
+        Sorted.find(DisplayName.toLower());
+
+      if (found != Sorted.end())
+        {
+          Insert = found.value();
+        }
+
+      Insert[DisplayName] = *it;
+      Sorted[DisplayName.toLower()] = Insert;
     }
 
-  QMap< QString, CReportDefinition * >::iterator itSorted = Sorted.begin();
-  QMap< QString, CReportDefinition * >::iterator endSorted = Sorted.end();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator itSorted = Sorted.begin();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator endSorted = Sorted.end();
 
   for (; itSorted != endSorted; ++itSorted)
     {
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(itSorted.value()->getObjectName()),
-                       itSorted.value()->getKey());
+      QMap< QString, CCopasiObject * >::iterator itCase = itSorted.value().begin();
+      QMap< QString, CCopasiObject * >::iterator endCase = itSorted.value().end();
+
+      for (; itCase != endCase; ++itCase)
+        {
+          parent->addChild(C_INVALID_INDEX, itCase.key(), itCase.value()->getKey());
+        }
     }
 }
 
@@ -470,21 +582,37 @@ void DataModelGUI::updatePlots()
   CCopasiVector< CPlotSpecification >::iterator it = pDataModel->getPlotDefinitionList()->begin();
   CCopasiVector< CPlotSpecification >::iterator end = pDataModel->getPlotDefinitionList()->end();
 
-  QMap< QString, CPlotSpecification * > Sorted;
+  QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
   for (; it != end; ++it)
     {
-      Sorted[FROM_UTF8((*it)->getObjectName()).toLower()] = *it;
+      QMap< QString, CCopasiObject * > Insert;
+      QString DisplayName = FROM_UTF8((*it)->getObjectName());
+
+      QMap< QString, QMap< QString, CCopasiObject * > >::iterator found =
+        Sorted.find(DisplayName.toLower());
+
+      if (found != Sorted.end())
+        {
+          Insert = found.value();
+        }
+
+      Insert[DisplayName] = *it;
+      Sorted[DisplayName.toLower()] = Insert;
     }
 
-  QMap< QString, CPlotSpecification * >::iterator itSorted = Sorted.begin();
-  QMap< QString, CPlotSpecification * >::iterator endSorted = Sorted.end();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator itSorted = Sorted.begin();
+  QMap< QString, QMap< QString, CCopasiObject * > >::iterator endSorted = Sorted.end();
 
   for (; itSorted != endSorted; ++itSorted)
     {
-      parent->addChild(C_INVALID_INDEX,
-                       FROM_UTF8(itSorted.value()->getObjectName()),
-                       itSorted.value()->CCopasiParameter::getKey());
+      QMap< QString, CCopasiObject * >::iterator itCase = itSorted.value().begin();
+      QMap< QString, CCopasiObject * >::iterator endCase = itSorted.value().end();
+
+      for (; itCase != endCase; ++itCase)
+        {
+          parent->addChild(C_INVALID_INDEX, itCase.key(), itCase.value()->getKey());
+        }
     }
 }
 
