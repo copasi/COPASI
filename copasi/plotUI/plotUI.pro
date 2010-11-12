@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.10.2.1 $
+#   $Revision: 1.10.2.2 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2010/10/25 16:12:47 $
+#   $Date: 2010/11/12 19:38:01 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.10.2.1 $ $Author: aekamal $ $Date: 2010/10/25 16:12:47 $
+# $Revision: 1.10.2.2 $ $Author: aekamal $ $Date: 2010/11/12 19:38:01 $
 ######################################################################
 
 LIB = plotUI
@@ -57,4 +57,4 @@ include(../common.pri)
 QT +=  opengl 
 
 #The following line is for implementing QtSvg module
-QT += svg qt3support
+QT += svg

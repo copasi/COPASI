@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.16 $
+//   $Revision: 1.93.2.17 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:59 $
+//   $Date: 2010/11/12 19:41:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,10 +228,7 @@ QString DataModelGUI::getNameWithObjectNo(const IndexedNode *node) const
   return name;
 }
 
-<<< <<< < DataModelGUI.cpp
 void DataModelGUI::updateCompartments()
-== == == =
-  void DataModelGUI::updateCompartments()
 {
   IndexedNode * parent = mTree.findNodeFromId(111);
 
@@ -282,7 +279,6 @@ void DataModelGUI::updateCompartments()
 }
 
 void DataModelGUI::updateMetabolites()
->>> >>> > 1.93.2.15
 {
   IndexedNode * parent = mTree.findNodeFromId(112);
 

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.239.2.1 $
+#   $Revision: 1.239.2.2 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/09/27 14:29:53 $
+#   $Author: aekamal $
+#   $Date: 2010/11/12 19:38:00 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.239.2.1 $ $Author: gauges $ $Date: 2010/09/27 14:29:53 $
+# $Revision: 1.239.2.2 $ $Author: aekamal $ $Date: 2010/11/12 19:38:00 $
 ######################################################################
 
 LIB = UI
@@ -90,7 +90,6 @@ HEADERS	+= \
   CCopasiPlotSelectionDialog.h \
   CCopasiSelectionDialog.h \
   CCopasiSelectionWidget.h \
-  CCopasiSimpleSelectionTree.h \
   ChemEqValidator.h \
   CMCAResultWidget.h \
   CopasiFileDialog.h \
@@ -126,6 +125,7 @@ HEADERS	+= \
   CQReportDM.h \
   CQReportListItem.h \
   CQSBMLFileDialog.h \
+  CQSimpleSelectionTree.h \
   CQSortFilterProxyModel.h \
   CQSpecieDM.h \
   CQSpinBoxDelegate.h \
@@ -221,7 +221,6 @@ SOURCES	+= \
   CCopasiPlotSelectionDialog.cpp \
   CCopasiSelectionDialog.cpp \
   CCopasiSelectionWidget.cpp \
-  CCopasiSimpleSelectionTree.cpp \
   CMCAResultWidget.cpp \
   CopasiFileDialog.cpp \
   CopasiSlider.cpp \
@@ -255,6 +254,7 @@ SOURCES	+= \
   CQReportDM.cpp \
   CQReportListItem.cpp \
   CQSBMLFileDialog.cpp \
+  CQSimpleSelectionTree.cpp \
   CQSortFilterProxyModel.cpp \
   CQSpecieDM.cpp \
   CQSpinBoxDelegate.cpp \

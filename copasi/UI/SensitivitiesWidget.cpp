@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.45.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:20 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:38:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -484,9 +484,9 @@ SensitivitiesWidget::slotChooseSingleFunction()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CCopasiSimpleSelectionTree::Variables |
-                                            CCopasiSimpleSelectionTree::ObservedValues |
-                                            CCopasiSimpleSelectionTree::ObservedConstants);
+                                            CQSimpleSelectionTree::Variables |
+                                            CQSimpleSelectionTree::ObservedValues |
+                                            CQSimpleSelectionTree::ObservedConstants);
 
   if (pObject)
     {
@@ -502,8 +502,8 @@ SensitivitiesWidget::slotChooseSingleVariable()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CCopasiSimpleSelectionTree::InitialTime |
-                                            CCopasiSimpleSelectionTree::Parameters);
+                                            CQSimpleSelectionTree::InitialTime |
+                                            CQSimpleSelectionTree::Parameters);
 
   if (pObject)
     {
@@ -519,8 +519,8 @@ SensitivitiesWidget::slotChooseSingleVariable2()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CCopasiSimpleSelectionTree::InitialTime |
-                                            CCopasiSimpleSelectionTree::Parameters);
+                                            CQSimpleSelectionTree::InitialTime |
+                                            CQSimpleSelectionTree::Parameters);
 
   if (pObject)
     {

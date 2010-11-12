@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.5 $
+//   $Revision: 1.83.4.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/10/01 13:06:43 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:38:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,8 +206,8 @@ void SliderDialog::createNewSlider()
 {
   // allow the user to create more than one slider
   std::vector<const CCopasiObject*> objects = CCopasiSelectionDialog::getObjectVector(this,
-      CCopasiSimpleSelectionTree::InitialTime |
-      CCopasiSimpleSelectionTree::Parameters);
+      CQSimpleSelectionTree::InitialTime |
+      CQSimpleSelectionTree::Parameters);
   std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
   std::vector<const CCopasiObject*>::const_iterator it = objects.begin(), endit = objects.end();
   bool yesToAll = false;

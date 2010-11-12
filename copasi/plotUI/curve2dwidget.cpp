@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:01:57 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:38:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,7 +126,7 @@ void Curve2DWidget::buttonPressedX()
   if (!mpModel) return;
 
   mpObjectX = CCopasiSelectionDialog::getObjectSingle(this,
-              CCopasiSimpleSelectionTree::NumericValues,
+              CQSimpleSelectionTree::NumericValues,
               mpObjectX);
 
   if (mpObjectX)
@@ -149,7 +149,7 @@ void Curve2DWidget::buttonPressedY()
   if (!mpModel) return;
 
   mpObjectY = CCopasiSelectionDialog::getObjectSingle(this,
-              CCopasiSimpleSelectionTree::NumericValues,
+              CQSimpleSelectionTree::NumericValues,
               mpObjectY);
 
   if (mpObjectY)

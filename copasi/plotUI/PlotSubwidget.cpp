@@ -97,7 +97,7 @@ void PlotSubwidget::addCurve2D()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
-  pBrowser->setModel(pDataModel->getModel(), CCopasiSimpleSelectionTree::NumericValues);
+  pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
   if (pBrowser->exec() == QDialog::Rejected)
     {
@@ -232,7 +232,7 @@ void PlotSubwidget::addCurve2D()
         }
     }
 
-  tabs->setCurrentPage(storeTab);
+  tabs->setCurrentIndex(storeTab);
 }
 
 void PlotSubwidget::addHisto1DTab(const std::string & title,
@@ -255,7 +255,7 @@ void PlotSubwidget::addHisto1D()
 {
   C_INT32 storeTab = tabs->count();
   addHisto1DTab("Histogram", CPlotDataChannelSpec(CCopasiObjectName("")), 1.0);
-  tabs->setCurrentPage(storeTab);
+  tabs->setCurrentIndex(storeTab);
 }
 
 void PlotSubwidget::createHistograms(std::vector<const CCopasiObject* >objects, const C_FLOAT64 & incr)
@@ -273,14 +273,14 @@ void PlotSubwidget::createHistograms(std::vector<const CCopasiObject* >objects, 
       //         lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
     }
 
-  tabs->setCurrentPage(storeTab);
+  tabs->setCurrentIndex(storeTab);
 }
 
 //-----------------------------------------------------------------------------
 
 void PlotSubwidget::removeCurve()
 {
-  delete tabs->currentPage();
+  delete tabs->currentWidget();
 }
 
 //-----------------------------------------------------------------------------
@@ -385,10 +385,10 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
         fatalError();
     }
 
-  C_INT32 oldIndex = tabs->currentPageIndex();
+  C_INT32 oldIndex = tabs->currentIndex();
 
   //clear tabWidget
-  while (tabs->currentPage()) delete tabs->currentPage();
+  while (tabs->currentWidget()) delete tabs->currentWidget();
 
   //reconstruct tabWidget from curve specs
   const CCopasiVector<CPlotItem> & curves = pspec->getItems();
@@ -415,7 +415,7 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
         }
     }
 
-  tabs->setCurrentPage(oldIndex);
+  tabs->setCurrentIndex(oldIndex);
 
   return true; //TODO really check
 }
@@ -449,7 +449,7 @@ bool PlotSubwidget::saveToPlotSpec()
 
   for (i = 0; i < imax; ++i)
     {
-      Curve2DWidget* tmpCurve2D = dynamic_cast<Curve2DWidget*>(tabs->page(i));
+      Curve2DWidget* tmpCurve2D = dynamic_cast<Curve2DWidget*>(tabs->widget(i));
 
       if (tmpCurve2D)
         {
@@ -457,7 +457,7 @@ bool PlotSubwidget::saveToPlotSpec()
           tmpCurve2D->SaveToCurveSpec(item);
         }
 
-      HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->page(i));
+      HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->widget(i));
 
       if (tmpHisto)
         {
@@ -503,7 +503,7 @@ bool PlotSubwidget::enterProtected()
 
 bool PlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates || !isShown()) return true;
+  if (mIgnoreUpdates || isHidden()) return true;
 
   switch (objectType)
     {//TODO: check list:
