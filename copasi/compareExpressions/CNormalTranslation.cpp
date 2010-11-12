@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.45.4.3 $
+//   $Revision: 1.45.4.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/12 10:52:34 $
+//   $Date: 2010/11/12 19:20:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -634,7 +634,7 @@ CEvaluationNode* CNormalTranslation::elementaryElimination(const CEvaluationNode
   const CEvaluationNode* pTmpOrig = pOrig;
   const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrig->getChild());
   bool childrenChanged = false;
-  std::vector<const CEvaluationNode*> children;
+  std::vector<CEvaluationNode*> children;
 
   while (pChild != NULL)
     {
@@ -654,19 +654,14 @@ CEvaluationNode* CNormalTranslation::elementaryElimination(const CEvaluationNode
       // we have to make a copy and work with the new node
       // first we have to copy the uncopied children
       pChild = static_cast<const CEvaluationNode*>(pTmpOrig->getChild());
-      std::vector<CEvaluationNode*> newChildren;
-      std::vector<const CEvaluationNode*>::iterator it = children.begin(), endit = children.end();
+      std::vector<CEvaluationNode*>::iterator it = children.begin(), endit = children.end();
 
       while (it != endit)
         {
-          if ((*it) == pChild)
+          if ((*it) == NULL)
             {
               // make a copy
-              newChildren.push_back((*it)->copyBranch());
-            }
-          else
-            {
-              newChildren.push_back(const_cast<CEvaluationNode*>(*it));
+              (*it) = pChild->copyBranch();
             }
 
           pChild = static_cast<const CEvaluationNode*>(pChild->getSibling());
@@ -674,7 +669,7 @@ CEvaluationNode* CNormalTranslation::elementaryElimination(const CEvaluationNode
         }
 
       assert(pChild == NULL);
-      pResult = pTmpOrig->copyNode(newChildren);
+      pResult = pTmpOrig->copyNode(children);
       pTmpOrig = pResult;
     }
 
