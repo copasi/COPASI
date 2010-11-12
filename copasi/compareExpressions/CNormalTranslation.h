@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.23.4.1 $
+//   $Revision: 1.23.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/12 07:39:29 $
+//   $Date: 2010/11/12 10:52:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -368,6 +368,8 @@ protected:
    * e.g. (A*B*D+A*C*D) -> returns (A*D) and (B+C)
    */
   static std::pair<CEvaluationNode*, CEvaluationNode*> factorize(const std::vector<CEvaluationNode*>& additions, const std::vector<CEvaluationNode*>& subtractions);
+
+  static void printPointers(const CEvaluationNode* pNode, const char* indent = "");
 
 };
 

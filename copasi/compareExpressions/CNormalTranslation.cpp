@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.45.4.2 $
+//   $Revision: 1.45.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/12 07:39:29 $
+//   $Date: 2010/11/12 10:52:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -402,97 +402,98 @@ CEvaluationNode* CNormalTranslation::eliminate(const CEvaluationNode* pOrig)
 {
   CEvaluationNode* pResult = NULL;
   CEvaluationNode* pTmp = NULL;
-  std::string infix = pOrig->getInfix();
+  const CEvaluationNode* pTmp2 = pOrig;
+  std::string infix = pTmp2->getInfix();
   bool changed = true;
 
   while (changed)
     {
-      if (pResult == NULL)
-        {
-          pResult = const_cast<CEvaluationNode*>(pOrig);
-        }
-
       // first make elementary eliminations
-      pTmp = CNormalTranslation::elementaryElimination(pResult);
+      pTmp = CNormalTranslation::elementaryElimination(pTmp2);
 
       if (pTmp != NULL)
         {
-          if (pResult != NULL && pResult  != pOrig)
+          if (pResult != NULL && pTmp2  != pOrig)
             {
-              delete pResult;
+              delete pTmp2;
             }
 
-          pResult = pTmp;
+          pTmp2 = pTmp;
         }
 
       // make sure the methods called below return NULL if there was no change
 
       // now get rid of nested powers a^b^c
-      pTmp = CNormalTranslation::eliminateNestedPowers(pResult);
+      pTmp = CNormalTranslation::eliminateNestedPowers(pTmp2);
 
       if (pTmp != NULL)
         {
-          if (pResult != pOrig)
+          if (pTmp2 != pOrig)
             {
-              delete pResult;
+              delete pTmp2;
             }
 
-          pResult = pTmp;
+          pTmp2 = pTmp;
         }
 
       // eliminate fractions within powers
       // (a/b)^3 -> a^3 / b^3
       // now get rid of directly nested fractions
-      pTmp = CNormalTranslation::eliminatePowersOfFractions(pResult);
+      pTmp = CNormalTranslation::eliminatePowersOfFractions(pTmp2);
 
       if (pTmp != NULL)
         {
-          if (pResult != pOrig)
+          if (pTmp2 != pOrig)
             {
               delete pResult;
             }
 
-          pResult = pTmp;
+          pTmp2 = pTmp;
         }
 
-      pTmp = CNormalTranslation::eliminateDirectlyNestedFractions(pResult);
+      pTmp = CNormalTranslation::eliminateDirectlyNestedFractions(pTmp2);
 
       if (pTmp != NULL)
         {
-          if (pResult != pOrig)
+          if (pTmp2 != pOrig)
             {
-              delete pResult;
+              delete pTmp2;
             }
 
-          pResult = pTmp;
+          pTmp2 = pTmp;
         }
 
       // now cancel since cancelation can lead to new nodes for which
       // elementary elimination would be possible, we might have to run
       // this loop again
-      pTmp = CNormalTranslation::cancel(pResult);
+      pTmp = CNormalTranslation::cancel(pTmp2);
 
       if (pTmp != NULL)
         {
-          if (pResult != pOrig)
+          if (pTmp2 != pOrig)
             {
-              delete pResult;
+              delete pTmp2;
             }
 
-          pResult = pTmp;
+          pTmp2 = pTmp;
         }
 
       // check if we are done
       // we are done if the infix has not changed over one loop run
-      if (/*base->toString()*/pResult->getInfix() == infix)
+      if (/*base->toString()*/pTmp2->getInfix() == infix)
         {
           changed = false;
         }
       else
         {
-          infix = pResult->getInfix(); //base->toString();
+          infix = pTmp2->getInfix(); //base->toString();
         }
 
+    }
+
+  if (pTmp2 != pOrig)
+    {
+      pResult = const_cast<CEvaluationNode*>(pTmp2);
     }
 
   return pResult;
@@ -3101,7 +3102,7 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
     {
       pNewChild = CNormalTranslation::cancel(pChild);
 
-      if (pNewChild != pChild)
+      if (pNewChild != NULL)
         {
           childrenChanged = true;
         }
@@ -3184,7 +3185,7 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           // if we are working on a copy, we can go and delete those elements, that are no longer needed (e.g. all but the first entry for each match element)
           // remember to delete the entries in negAdditions and negSubtractions
 
-          if (collected.size() != children.size())
+          if (collected.size() != (additions.size() + subtractions.size()))
             {
               std::vector<CEvaluationNode*> chain;
               unsigned int iMax = collected.size();
@@ -3330,7 +3331,7 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           // if we are working on a copy, we can go and delete those elements, that are no longer needed (e.g. all but the first entry for each match element)
           // remember to delete the entries in negAdditions and negSubtractions
 
-          if (collected.size() != children.size())
+          if (collected.size() != (multiplications.size() + divisions.size()))
             {
               if (pResult != NULL)
                 {
@@ -4697,6 +4698,22 @@ void CNormalTranslation::findNegativeNumbers(std::vector<const CEvaluationNode*>
         }
 
       ++it;
+    }
+}
+
+void CNormalTranslation::printPointers(const CEvaluationNode* pNode, const char* indent)
+{
+  if (pNode == NULL) return;
+
+  std::cout << indent << pNode << std::endl;
+  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+
+  if (pChild == NULL) return;
+
+  while (pChild != NULL)
+    {
+      CNormalTranslation::printPointers(pChild, (std::string(indent) + std::string("   ")).c_str());
+      pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
     }
 }
 
