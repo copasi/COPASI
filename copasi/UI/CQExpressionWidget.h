@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.23.2.3 $
+//   $Revision: 1.23.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/11/03 13:20:28 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@
 #include <vector>
 
 #include "UI/CQValidator.h"
-#include "UI/CCopasiSimpleSelectionTree.h"
+#include "UI/CQSimpleSelectionTree.h"
 
 #include "function/CExpression.h"
 #include "function/CFunction.h"
@@ -149,7 +149,7 @@ protected:
   /**
    * Function to indicate whether we are dealing with an INITIAL or TRANSIENT expression
    */
-  CCopasiSimpleSelectionTree::ObjectClasses mObjectClasses;
+  CQSimpleSelectionTree::ObjectClasses mObjectClasses;
 
   std::map< std::string, const CCopasiObject * > mParseList;
   const CCopasiObject * mpCurrentObject;
@@ -187,22 +187,22 @@ public:
    */
   enum ExpressionType
   {
-    InitialExpression = CCopasiSimpleSelectionTree::InitialTime |
-    CCopasiSimpleSelectionTree::Parameters |
-    CCopasiSimpleSelectionTree::ObservedConstants,
-    TransientExpression = CCopasiSimpleSelectionTree::InitialTime |
-    CCopasiSimpleSelectionTree::Parameters |
-    CCopasiSimpleSelectionTree::ObservedConstants |
-    CCopasiSimpleSelectionTree::Time |
-    CCopasiSimpleSelectionTree::Variables |
-    CCopasiSimpleSelectionTree::ObservedValues,
-    ObjectiveFunctions = CCopasiSimpleSelectionTree::InitialTime |
-    CCopasiSimpleSelectionTree::Parameters |
-    CCopasiSimpleSelectionTree::ObservedConstants |
-    CCopasiSimpleSelectionTree::Time |
-    CCopasiSimpleSelectionTree::Variables |
-    CCopasiSimpleSelectionTree::ObservedValues |
-    CCopasiSimpleSelectionTree::Results
+    InitialExpression = CQSimpleSelectionTree::InitialTime |
+    CQSimpleSelectionTree::Parameters |
+    CQSimpleSelectionTree::ObservedConstants,
+    TransientExpression = CQSimpleSelectionTree::InitialTime |
+    CQSimpleSelectionTree::Parameters |
+    CQSimpleSelectionTree::ObservedConstants |
+    CQSimpleSelectionTree::Time |
+    CQSimpleSelectionTree::Variables |
+    CQSimpleSelectionTree::ObservedValues,
+    ObjectiveFunctions = CQSimpleSelectionTree::InitialTime |
+    CQSimpleSelectionTree::Parameters |
+    CQSimpleSelectionTree::ObservedConstants |
+    CQSimpleSelectionTree::Time |
+    CQSimpleSelectionTree::Variables |
+    CQSimpleSelectionTree::ObservedValues |
+    CQSimpleSelectionTree::Results
   };
 
   /**

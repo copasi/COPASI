@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
-//   $Revision: 1.8.4.1 $
+//   $Revision: 1.8.4.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/10/25 16:12:45 $
+//   $Date: 2010/11/12 19:37:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-#include "UI/CCopasiSimpleSelectionTree.h"
+#include "UI/CQSimpleSelectionTree.h"
 
 class QWidget;
 class QPushButton;
@@ -54,7 +54,7 @@ public:
   void setOutputVectors(std::vector< const CCopasiObject * > * outputVector1,
                         std::vector< const CCopasiObject * > * outputVector2);
   void setModel(CModel* model,
-                const CCopasiSimpleSelectionTree::ObjectClasses & classes);
+                const CQSimpleSelectionTree::ObjectClasses & classes);
 
 protected slots:
   void slotOKButtonClicked();

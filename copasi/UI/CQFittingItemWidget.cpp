@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.33.2.2 $
+//   $Revision: 1.33.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/11/05 12:24:33 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,27 +232,27 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
 void CQFittingItemWidget::slotLowerEdit()
 {
-  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+  CQSimpleSelectionTree::ObjectClasses Classes;
 
   switch (mItemType)
     {
       case OPT_ITEM:
       case FIT_ITEM:
         Classes =
-          CCopasiSimpleSelectionTree::InitialTime |
-          CCopasiSimpleSelectionTree::Parameters |
-          CCopasiSimpleSelectionTree::ObservedConstants;
+          CQSimpleSelectionTree::InitialTime |
+          CQSimpleSelectionTree::Parameters |
+          CQSimpleSelectionTree::ObservedConstants;
         break;
 
       case OPT_CONSTRAINT:
       case FIT_CONSTRAINT:
         Classes =
-          CCopasiSimpleSelectionTree::InitialTime |
-          CCopasiSimpleSelectionTree::Parameters |
-          CCopasiSimpleSelectionTree::ObservedConstants |
-          CCopasiSimpleSelectionTree::Time |
-          CCopasiSimpleSelectionTree::Variables |
-          CCopasiSimpleSelectionTree::ObservedValues;
+          CQSimpleSelectionTree::InitialTime |
+          CQSimpleSelectionTree::Parameters |
+          CQSimpleSelectionTree::ObservedConstants |
+          CQSimpleSelectionTree::Time |
+          CQSimpleSelectionTree::Variables |
+          CQSimpleSelectionTree::ObservedValues;
         break;
     }
 
@@ -289,27 +289,27 @@ void CQFittingItemWidget::slotLowerEdit()
 
 void CQFittingItemWidget::slotUpperEdit()
 {
-  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+  CQSimpleSelectionTree::ObjectClasses Classes;
 
   switch (mItemType)
     {
       case OPT_ITEM:
       case FIT_ITEM:
         Classes =
-          CCopasiSimpleSelectionTree::InitialTime |
-          CCopasiSimpleSelectionTree::Parameters |
-          CCopasiSimpleSelectionTree::ObservedConstants;
+          CQSimpleSelectionTree::InitialTime |
+          CQSimpleSelectionTree::Parameters |
+          CQSimpleSelectionTree::ObservedConstants;
         break;
 
       case OPT_CONSTRAINT:
       case FIT_CONSTRAINT:
         Classes =
-          CCopasiSimpleSelectionTree::InitialTime |
-          CCopasiSimpleSelectionTree::Parameters |
-          CCopasiSimpleSelectionTree::ObservedConstants |
-          CCopasiSimpleSelectionTree::Time |
-          CCopasiSimpleSelectionTree::Variables |
-          CCopasiSimpleSelectionTree::ObservedValues;
+          CQSimpleSelectionTree::InitialTime |
+          CQSimpleSelectionTree::Parameters |
+          CQSimpleSelectionTree::ObservedConstants |
+          CQSimpleSelectionTree::Time |
+          CQSimpleSelectionTree::Variables |
+          CQSimpleSelectionTree::ObservedValues;
         break;
     }
 
@@ -348,25 +348,25 @@ void CQFittingItemWidget::slotParamEdit()
 {
   std::vector< const CCopasiObject * > Selection;
 
-  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+  CQSimpleSelectionTree::ObjectClasses Classes;
 
   switch (mItemType)
     {
       case OPT_ITEM:
       case FIT_ITEM:
         Classes =
-          CCopasiSimpleSelectionTree::InitialTime |
-          CCopasiSimpleSelectionTree::Parameters;
+          CQSimpleSelectionTree::InitialTime |
+          CQSimpleSelectionTree::Parameters;
         break;
 
       case OPT_CONSTRAINT:
       case FIT_CONSTRAINT:
         Classes =
-          CCopasiSimpleSelectionTree::Time |
-          CCopasiSimpleSelectionTree::Variables |
-          CCopasiSimpleSelectionTree::ObservedValues |
-          CCopasiSimpleSelectionTree::ObservedConstants |
-          CCopasiSimpleSelectionTree::Results;
+          CQSimpleSelectionTree::Time |
+          CQSimpleSelectionTree::Variables |
+          CQSimpleSelectionTree::ObservedValues |
+          CQSimpleSelectionTree::ObservedConstants |
+          CQSimpleSelectionTree::Results;
         break;
     }
 

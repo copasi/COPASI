@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:57 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -179,7 +184,7 @@ void CCopasiPlotSelectionDialog::setOutputVectors(std::vector< const CCopasiObje
 }
 
 void CCopasiPlotSelectionDialog::setModel(CModel* pModel,
-    const CCopasiSimpleSelectionTree::ObjectClasses & classes)
+    const CQSimpleSelectionTree::ObjectClasses & classes)
 {
   this->mpXAxisSelectionWidget->populateTree(pModel, classes);
   this->mpYAxisSelectionWidget->populateTree(pModel, classes);

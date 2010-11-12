@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.215 $
+//   $Revision: 1.215.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:16 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:38:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@
 
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskBtnWidget.h"
-#include "CCopasiSimpleSelectionTree.h"
+#include "CQSimpleSelectionTree.h"
 #include "CCopasiSelectionDialog.h"
 
 #include "report/CKeyFactory.h"
@@ -259,8 +259,8 @@ bool ScanWidget::slotAddItem()
         //+++
       case CScanProblem::SCAN_LINEAR:
       {
-        CCopasiSimpleSelectionTree::ObjectClasses Classes = CCopasiSimpleSelectionTree::InitialTime |
-            CCopasiSimpleSelectionTree::Parameters;
+        CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
+            CQSimpleSelectionTree::Parameters;
 
         std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
 
@@ -292,8 +292,8 @@ bool ScanWidget::slotAddItem()
 
       case CScanProblem::SCAN_RANDOM:
       {
-        CCopasiSimpleSelectionTree::ObjectClasses Classes = CCopasiSimpleSelectionTree::InitialTime |
-            CCopasiSimpleSelectionTree::Parameters;
+        CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
+            CQSimpleSelectionTree::Parameters;
 
         std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
 

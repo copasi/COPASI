@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-//   $Revision: 1.14.4.1 $
+//   $Revision: 1.14.4.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/10/25 16:12:46 $
+//   $Date: 2010/11/12 19:37:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 
 #include <qdialog.h>
 
-#include "UI/CCopasiSimpleSelectionTree.h"
+#include "UI/CQSimpleSelectionTree.h"
 
 class QPushButton;
 class QCheckBox;
@@ -65,17 +65,17 @@ public:
   ~CCopasiSelectionDialog();
   void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
   void setModel(const CModel* model,
-                const CCopasiSimpleSelectionTree::ObjectClasses & classes);
+                const CQSimpleSelectionTree::ObjectClasses & classes);
   void setSingleSelection(bool singleSelectionMode);
   void enableExpertMode(bool enable);
 
   static
   const CCopasiObject * getObjectSingle(QWidget * pParent,
-                                        const CCopasiSimpleSelectionTree::ObjectClasses & classes,
+                                        const CQSimpleSelectionTree::ObjectClasses & classes,
                                         const CCopasiObject * pCurrentObject = NULL);
   static
   std::vector< const CCopasiObject * > getObjectVector(QWidget * pParent,
-      const CCopasiSimpleSelectionTree::ObjectClasses & classes,
+      const CQSimpleSelectionTree::ObjectClasses & classes,
       const std::vector< const CCopasiObject * > * pCurrentSelection = NULL);
 
   /**

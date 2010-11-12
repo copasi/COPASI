@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.24.2.2 $
+//   $Revision: 1.24.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/29 16:10:10 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -167,7 +167,7 @@ void CQEventWidget1::init()
   mpExpressionDelay->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mExpressionTriggerValid = false;
-  //  mpExpressionTrigger->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+  //  mpExpressionTrigger->mpExpressionWidget->setExpressionType(CQSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
   mExpressionEAValid = false;
   mpExpressionEA->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
@@ -189,8 +189,8 @@ void CQEventWidget1::init()
  */
 void CQEventWidget1::slotAddTarget()
 {
-  CCopasiSimpleSelectionTree::ObjectClasses Classes =
-    CCopasiSimpleSelectionTree::Variables;
+  CQSimpleSelectionTree::ObjectClasses Classes =
+    CQSimpleSelectionTree::Variables;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
@@ -497,8 +497,8 @@ void CQEventWidget1::slotSelectObject()
   if (mCurrentTarget == C_INVALID_INDEX)
     return slotAddTarget();
 
-  CCopasiSimpleSelectionTree::ObjectClasses Classes =
-    CCopasiSimpleSelectionTree::Variables;
+  CQSimpleSelectionTree::ObjectClasses Classes =
+    CQSimpleSelectionTree::Variables;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);

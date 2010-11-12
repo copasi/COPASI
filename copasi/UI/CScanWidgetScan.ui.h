@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetScan.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.17.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -52,10 +57,10 @@ void CScanWidgetScan::init()
 void CScanWidgetScan::slotChooseObject()
 {
   const CCopasiObject * pObject =
-    //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE,
+    //    CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::INITIAL_VALUE,
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CCopasiSimpleSelectionTree::InitialTime |
-                                            CCopasiSimpleSelectionTree::Parameters,
+                                            CQSimpleSelectionTree::InitialTime |
+                                            CQSimpleSelectionTree::Parameters,
                                             mpObject);
 
   if (mpObject != pObject) // Object selection changed.

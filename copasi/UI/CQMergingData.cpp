@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -264,12 +264,12 @@ void CQMergingData::slotBtnCancel()
 void CQMergingData::slotModelObject(int row)
 {
 
-  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+  CQSimpleSelectionTree::ObjectClasses Classes;
 
   Classes =
-    CCopasiSimpleSelectionTree::Variables |
-    CCopasiSimpleSelectionTree::ObservedValues |
-    CCopasiSimpleSelectionTree::ObservedConstants;
+    CQSimpleSelectionTree::Variables |
+    CQSimpleSelectionTree::ObservedValues |
+    CQSimpleSelectionTree::ObservedConstants;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);

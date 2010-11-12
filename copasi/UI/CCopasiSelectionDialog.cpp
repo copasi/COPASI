@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.21.2.1 $
+//   $Revision: 1.21.2.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/10/25 16:12:45 $
+//   $Date: 2010/11/12 19:37:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,7 +97,7 @@ CCopasiSelectionDialog::~CCopasiSelectionDialog()
 }
 
 void CCopasiSelectionDialog::setModel(const CModel* pModel,
-                                      const CCopasiSimpleSelectionTree::ObjectClasses & classes)
+                                      const CQSimpleSelectionTree::ObjectClasses & classes)
 {
   this->mpSelectionWidget->populateTree(pModel, classes);
 }
@@ -148,7 +148,7 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
 
 const CCopasiObject *
 CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
-                                        const CCopasiSimpleSelectionTree::ObjectClasses & classes,
+                                        const CQSimpleSelectionTree::ObjectClasses & classes,
                                         const CCopasiObject * pCurrentObject)
 {
   std::vector< const CCopasiObject * > Selection;
@@ -187,7 +187,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
 }
 
 std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
-    const CCopasiSimpleSelectionTree::ObjectClasses & classes,
+    const CQSimpleSelectionTree::ObjectClasses & classes,
     const std::vector< const CCopasiObject * > * pCurrentSelection)
 {
   std::vector< const CCopasiObject * > Selection;
@@ -206,7 +206,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   else
     //    return Selection;
     {
-      if (classes == CCopasiSimpleSelectionTree::AnyObject)
+      if (classes == CQSimpleSelectionTree::AnyObject)
         {
           std::vector<const CCopasiObject *> newSelection;
 

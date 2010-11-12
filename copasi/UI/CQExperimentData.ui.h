@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.46.2.3 $
+//   $Revision: 1.46.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/11/11 15:28:56 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1055,19 +1055,19 @@ void CQExperimentData::slotModelObject(int row)
 {
   // :TODO: Implement object browser and update of column 'Model Object'.
 
-  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+  CQSimpleSelectionTree::ObjectClasses Classes;
   CExperiment::Type Type =
     static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentItem());
 
   if (Type == CExperiment::independent)
     Classes =
-      CCopasiSimpleSelectionTree::InitialTime |
-      CCopasiSimpleSelectionTree::Parameters;
+      CQSimpleSelectionTree::InitialTime |
+      CQSimpleSelectionTree::Parameters;
   else
     Classes =
-      CCopasiSimpleSelectionTree::Variables |
-      CCopasiSimpleSelectionTree::ObservedValues |
-      CCopasiSimpleSelectionTree::ObservedConstants;
+      CQSimpleSelectionTree::Variables |
+      CQSimpleSelectionTree::ObservedValues |
+      CQSimpleSelectionTree::ObservedConstants;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
@@ -1244,9 +1244,9 @@ void CQExperimentData::slotTypeChanged(int row)
 
       case CExperiment::independent:
 
-        if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::InitialTime |
-                                                CCopasiSimpleSelectionTree::Parameters,
-                                                pDataModel->getObject(CN)))
+        if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::InitialTime |
+                                           CQSimpleSelectionTree::Parameters,
+                                           pDataModel->getObject(CN)))
           slotModelObject(row);
 
         BtnEnabled = true;
@@ -1254,9 +1254,9 @@ void CQExperimentData::slotTypeChanged(int row)
 
       case CExperiment::dependent:
 
-        if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::Variables |
-                                                CCopasiSimpleSelectionTree::ObservedValues,
-                                                pDataModel->getObject(CN)))
+        if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::Variables |
+                                           CQSimpleSelectionTree::ObservedValues,
+                                           pDataModel->getObject(CN)))
           slotModelObject(row);
 
         BtnEnabled = true;

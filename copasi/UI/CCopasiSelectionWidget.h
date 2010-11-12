@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:57 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,7 +27,7 @@
 
 #include <q3widgetstack.h>
 
-#include "UI/CCopasiSimpleSelectionTree.h"
+#include "UI/CQSimpleSelectionTree.h"
 
 class ObjectBrowserWidget;
 class CModel;
@@ -37,7 +42,7 @@ public:
   ~CCopasiSelectionWidget();
 
   void populateTree(const CModel * model,
-                    const CCopasiSimpleSelectionTree::ObjectClasses & classes);
+                    const CQSimpleSelectionTree::ObjectClasses & classes);
   void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
   void setSingleSelection(bool singleSelection);
   bool isSingleSelection() const;
@@ -46,7 +51,7 @@ public:
   void commit();
 
 protected:
-  CCopasiSimpleSelectionTree* mpSimpleTree;
+  CQSimpleSelectionTree* mpSimpleTree;
   ObjectBrowserWidget* mpObjectBrowser;
   std::vector< const CCopasiObject * > * mpOutputVector;
   bool mSingleSelect;

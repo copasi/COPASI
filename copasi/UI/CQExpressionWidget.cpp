@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55.2.6 $
+//   $Revision: 1.55.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/11/09 13:28:11 $
+//   $Author: aekamal $
+//   $Date: 2010/11/12 19:37:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -722,7 +722,7 @@ void CQExpressionWidget::slotSelectObject()
   if (pObject)
     {
       // Check whether the object is valid
-      if (!CCopasiSimpleSelectionTree::filter(mObjectClasses, pObject))
+      if (!CQSimpleSelectionTree::filter(mObjectClasses, pObject))
         {
           CQMessageBox::critical(this, "Invalid Selection",
                                  "The use of the selected object is not allowed in this type of expression.");
