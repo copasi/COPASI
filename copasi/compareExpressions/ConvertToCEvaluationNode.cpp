@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.37.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 18:57:32 $
+//   $Author: gauges $
+//   $Date: 2010/11/12 07:39:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1033,16 +1033,18 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
   CEvaluationNode* pTmp2 = node->copyBranch();
   CEvaluationNode* pTmp = CNormalTranslation::expandProducts(pTmp2);
 
-  if (pTmp != pTmp2)
+  if (pTmp != /*NULL*/ pTmp2)
     {
       delete pTmp2;
+      pTmp2 = pTmp;
     }
 
-  pTmp2 = CNormalTranslation::evaluateNumbers(pTmp);
+  pTmp = CNormalTranslation::evaluateNumbers(pTmp2);
 
-  if (pTmp2 != pTmp)
+  if (pTmp != NULL)
     {
-      delete pTmp;
+      delete pTmp2;
+      pTmp2 = pTmp;
     }
 
   switch (CEvaluationNode::type(node->getType()))
@@ -1062,7 +1064,11 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
         break;
     }
 
-  delete pTmp2;
+  if (pTmp2 != node)
+    {
+      delete pTmp2;
+    }
+
   return pFrac;
 }
 
