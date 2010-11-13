@@ -17,6 +17,7 @@
 # All rights reserved. 
 
 LIB = sbmlunit
+DISTFILES = sbmlunit.pro
 
 # Input
 HEADERS +=  CUnitInterfaceSBML.h \

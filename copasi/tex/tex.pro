@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/tex.pro,v $ 
-#   $Revision: 1.4.2.1 $ 
+#   $Revision: 1.4.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/11/13 14:53:15 $ 
+#   $Date: 2010/11/13 16:56:00 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,6 +17,7 @@
 # All rights reserved. 
 
 LIB = tex
+DISTFILES = tex.pro
 
 # Input
 HEADERS += CMathMLToTeX.h \

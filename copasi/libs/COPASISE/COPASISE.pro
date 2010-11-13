@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $
-#   $Revision: 1.31.2.2 $
+#   $Revision: 1.31.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/11/13 15:40:41 $
+#   $Date: 2010/11/13 16:55:54 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,8 +25,9 @@
 ######################################################################
 
 TEMPLATE = lib
-
 SRC_TARGET = COPASISE
+DISTFILES = COPASISE.pro
+
 
 include(../../common.pri)
 
@@ -64,7 +65,5 @@ COPASI_LIBS += trajectory
 COPASI_LIBS += tss
 COPASI_LIBS += tssanalysis
 COPASI_LIBS += utilities
-
-DIST = COPASISE.pro
 
 include(../lib.pri)

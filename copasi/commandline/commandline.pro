@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/commandline.pro,v $
-#   $Revision: 1.16.2.2 $
+#   $Revision: 1.16.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/11/13 14:53:09 $
+#   $Date: 2010/11/13 16:55:54 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,10 +17,11 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.16.2.2 $ $Author: shoops $ $Date: 2010/11/13 14:53:09 $
+# $Revision: 1.16.2.3 $ $Author: shoops $ $Date: 2010/11/13 16:55:54 $
 ######################################################################
 
 LIB = commandline
+DISTFILES = commandline.pro
 
 #Input
 HEADERS += CConfigurationFile.h \

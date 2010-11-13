@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.pro,v $
-#   $Revision: 1.16.2.2 $
+#   $Revision: 1.16.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/11/13 14:53:16 $
+#   $Date: 2010/11/13 16:56:02 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -18,7 +18,8 @@
 
 LANGUAGE	= C++
 
-LIB= wizard
+LIB = wizard
+DISTFILES = wizard.pro
 
 HEADERS = wizard.h
 

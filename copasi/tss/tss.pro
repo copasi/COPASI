@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/tss.pro,v $
-#   $Revision: 1.13.2.1 $
+#   $Revision: 1.13.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/11/13 14:53:15 $
+#   $Date: 2010/11/13 16:56:01 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,10 +21,11 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.13.2.1 $ $Author: shoops $ $Date: 2010/11/13 14:53:15 $
+# $Revision: 1.13.2.2 $ $Author: shoops $ $Date: 2010/11/13 16:56:01 $
 ######################################################################
 
 LIB = tss
+DISTFILES = tss.pro
 
 # Input
 contains(DEFINES, COPASI_TSS) {

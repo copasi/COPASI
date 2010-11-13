@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/miase.pro,v $ 
-#   $Revision: 1.5.2.1 $ 
+#   $Revision: 1.5.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/11/13 14:53:11 $ 
+#   $Date: 2010/11/13 16:55:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -18,6 +18,7 @@
 
 LIB = miase
 SRC_TARGET = miase
+DISTFILES = miase.pro
 
 # Input
 HEADERS +=  CMiaseParser.h \

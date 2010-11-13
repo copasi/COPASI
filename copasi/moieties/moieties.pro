@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/moieties.pro,v $
-#   $Revision: 1.6.2.1 $
+#   $Revision: 1.6.2.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/11/13 14:53:12 $
+#   $Date: 2010/11/13 16:55:57 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,10 +17,11 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.6.2.1 $ $Author: shoops $ $Date: 2010/11/13 14:53:12 $
+# $Revision: 1.6.2.2 $ $Author: shoops $ $Date: 2010/11/13 16:55:57 $
 ######################################################################
 
 LIB = moieties
+DISTFILES = moieties.pro
 
 # Input
 HEADERS += CMoietiesMethod.h
