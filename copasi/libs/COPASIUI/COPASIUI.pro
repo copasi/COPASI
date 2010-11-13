@@ -1,10 +1,15 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASIUI/COPASIUI.pro,v $
-#   $Revision: 1.19 $
+#   $Revision: 1.19.10.1 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/10/01 14:25:20 $
+#   $Date: 2010/11/13 15:40:41 $
 # End CVS Header
+
+# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -38,5 +43,7 @@ COPASI_LIBS += plotUI
 COPASI_LIBS += tex
 COPASI_LIBS += UI
 COPASI_LIBS += wizard
+
+DIST = COPASIUI.pro
 
 include(../lib.pri)

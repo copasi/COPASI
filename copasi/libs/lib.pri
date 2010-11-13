@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/lib.pri,v $ 
-#   $Revision: 1.5.2.1 $ 
+#   $Revision: 1.5.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/11/13 15:21:10 $ 
+#   $Date: 2010/11/13 15:40:40 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.5.2.1 $ $Author: shoops $ $Date: 2010/11/13 15:21:10 $  
+# $Revision: 1.5.2.2 $ $Author: shoops $ $Date: 2010/11/13 15:40:40 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -77,6 +77,6 @@ include(../srcDistribution.pri)
       $(MKDIR) ../../../copasi_src/copasi/libs; \
     $(CHK_DIR_EXISTS) ../../../copasi_src/copasi/libs/$$SRC_TARGET || \
       $(MKDIR) ../../../copasi_src/copasi/libs/$$SRC_TARGET; \
-    $(COPY_FILE) --parents $(SOURCES) $(HEADERS) $(FORMS) $(DIST) \
+    $(COPY_FILE) --parents $${SOURCES} $${HEADERS} $${FORMS} $${FORMS3} $(DIST) \
       ../../../copasi_src/copasi/libs/$$SRC_TARGET/
 }
