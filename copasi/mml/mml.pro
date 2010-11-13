@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/mml.pro,v $ 
-#   $Revision: 1.8.2.1 $ 
+#   $Revision: 1.8.2.2 $ 
 #   $Name:  $ 
-#   $Author: aekamal $ 
-#   $Date: 2010/10/25 16:12:47 $ 
+#   $Author: shoops $ 
+#   $Date: 2010/11/13 14:53:12 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.8.2.1 $ $Author: aekamal $ $Date: 2010/10/25 16:12:47 $
+# $Revision: 1.8.2.2 $ $Author: shoops $ $Date: 2010/11/13 14:53:12 $
 ######################################################################
 
 LIB = mml
@@ -31,6 +31,7 @@ include(../lib.pri)
 CONFIG += qt
 
 include(../common.pri)
+include(../srcDistribution.pri)
 
 #The following line was inserted by qt3to4
 QT += xml  opengl 

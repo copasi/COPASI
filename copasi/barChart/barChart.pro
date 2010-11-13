@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/barChart.pro,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.5.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 18:54:05 $ 
+#   $Date: 2010/11/13 14:53:09 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -42,6 +42,7 @@ include(../lib.pri)
 CONFIG += qt 
 
 include(../common.pri)
+include(../srcDistribution.pri)
 
 #The following line was inserted by qt3to4
 QT += xml opengl 

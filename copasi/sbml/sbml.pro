@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $
-#   $Revision: 1.23 $
+#   $Revision: 1.23.2.1 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/07/16 19:02:49 $
+#   $Date: 2010/11/13 14:53:14 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -47,6 +47,7 @@ SOURCES += StdException.cpp \
 
 include(../lib.pri)
 include(../common.pri)
+include(../srcDistribution.pri)
 
 contains(BUILD_OS, WIN32) {
   DEFINES += LIBSBML_STATIC

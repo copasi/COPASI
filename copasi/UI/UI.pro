@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.239.2.2 $
+#   $Revision: 1.239.2.3 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2010/11/12 19:38:00 $
+#   $Author: shoops $
+#   $Date: 2010/11/13 14:53:16 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.239.2.2 $ $Author: aekamal $ $Date: 2010/11/12 19:38:00 $
+# $Revision: 1.239.2.3 $ $Author: shoops $ $Date: 2010/11/13 14:53:16 $
 ######################################################################
 
 LIB = UI
@@ -439,3 +439,4 @@ QT += xml  opengl qt3support webkit
 #The following line was inserted by qt3to4
 CONFIG += uic3
 
+include(../srcDistribution.pri)

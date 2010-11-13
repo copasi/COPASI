@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120.2.1 $ 
+#   $Revision: 1.120.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/10/20 15:14:07 $ 
+#   $Date: 2010/11/13 14:53:08 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120.2.1 $ $Author: shoops $ $Date: 2010/10/20 15:14:07 $  
+# $Revision: 1.120.2.2 $ $Author: shoops $ $Date: 2010/11/13 14:53:08 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -599,21 +599,6 @@ DEP1.target   = depend
 DEP1.depends  = qmake
 
 QMAKE_EXTRA_UNIX_TARGETS += DEP1
-
-!equals(TEMPLATE, subdirs) {
-  # Copy the sources for the tar ball
-  src_distribution.depends = Makefile
-  src_distribution.commands =   \
-    $(CHK_DIR_EXISTS) ../../copasi_src || $(MKDIR) ../../copasi_src; \
-    $(CHK_DIR_EXISTS) ../../copasi_src/copasi || \
-      $(MKDIR) ../../copasi_src/copasi; \
-    $(CHK_DIR_EXISTS) ../../copasi_src/copasi/$$SRC_TARGET || \
-      $(MKDIR) ../../copasi_src/copasi/$$SRC_TARGET; \
-    $(COPY_FILE) --parents $${SOURCES} $${HEADERS} $${FORMS} $${FORMS3} $(DIST) \
-      ../../copasi_src/copasi/$$SRC_TARGET/
-
-  QMAKE_EXTRA_UNIX_TARGETS += src_distribution
-}
 
 # addSubdirs(subdirs,deps): Adds directories to the project that depend on
 # other directories

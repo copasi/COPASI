@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utilities.pro,v $ 
-#   $Revision: 1.27 $ 
+#   $Revision: 1.27.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 19:06:33 $ 
+#   $Date: 2010/11/13 14:53:16 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.27 $ $Author: shoops $ $Date: 2010/07/16 19:06:33 $
+# $Revision: 1.27.2.1 $ $Author: shoops $ $Date: 2010/11/13 14:53:16 $
 ######################################################################
 
 LIB = utilities
@@ -79,3 +79,4 @@ SOURCES += CAnnotatedMatrix.cpp \
 
 include(../lib.pri)
 include(../common.pri)
+include(../srcDistribution.pri)

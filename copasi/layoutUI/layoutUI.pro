@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.34 $
+#   $Revision: 1.34.2.1 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2010/05/01 14:35:52 $
+#   $Author: shoops $
+#   $Date: 2010/11/13 14:53:11 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -105,4 +105,4 @@ contains(DEFINES,USE_CRENDER_EXTENSION) {
 FORMS += CQScreenshotDialog.ui 
 }
 
-
+include(../srcDistribution.pri)

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/xml.pro,v $
-#   $Revision: 1.14 $
+#   $Revision: 1.14.2.1 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/07/16 19:06:32 $
+#   $Date: 2010/11/13 14:53:17 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.14 $ $Author: shoops $ $Date: 2010/07/16 19:06:32 $
+# $Revision: 1.14.2.1 $ $Author: shoops $ $Date: 2010/11/13 14:53:17 $
 ######################################################################
 
 LIB = copasiXML
@@ -41,3 +41,4 @@ SOURCES += CCopasiXML.cpp \
 
 include(../lib.pri)
 include(../common.pri)
+include(../srcDistribution.pri)

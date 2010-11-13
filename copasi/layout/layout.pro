@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $
-#   $Revision: 1.13 $
+#   $Revision: 1.13.2.1 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/09/16 18:28:06 $
+#   $Date: 2010/11/13 14:53:10 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -126,4 +126,4 @@ SOURCES += CLColorDefinition.cpp \
            utility_classes.cpp
 }
 
-
+include(../srcDistribution.pri)

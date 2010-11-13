@@ -5,6 +5,7 @@
 #   $Author: shoops $ 
 #   $Date: 2008/04/11 15:21:36 $ 
 # End CVS Header 
+
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -30,3 +31,4 @@ SOURCES +=  CUnitInterfaceSBML.cpp \
 
 include(../lib.pri)
 include(../common.pri)
+include(../srcDistribution.pri)
