@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/libs.pro,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.5.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/16 18:55:46 $ 
+#   $Date: 2010/11/13 17:12:19 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -33,14 +33,17 @@ SUBDIRS += COPASISE
 DISTDIRS = $${SUBDIRS}
 
 DISTFILES += \
-        libs.pro
+        libs.pro \
+        lib.pri
+
+include(srcDistribution.pri)
 
 src_distribution.commands = \
   rm -rf ../../copasi_src/copasi/libs; \
   $(CHK_DIR_EXISTS) ../../copasi_src || $(MKDIR) ../../copasi_src; \
   $(CHK_DIR_EXISTS) ../../copasi_src/copasi || $(MKDIR) ../../copasi_src/copasi; \
   $(CHK_DIR_EXISTS) ../../copasi_src/copasi/libs || $(MKDIR) ../../copasi_src/copasi/libs; \
-  cp $$DISTFILES ../../copasi_src/copasi/libs; \
+  cp $${DISTFILES} ../../copasi_src/copasi/libs; \
   $$join(DISTDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
 
 QMAKE_EXTRA_UNIX_TARGETS += src_distribution

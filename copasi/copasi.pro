@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.64 $
+#   $Revision: 1.64.2.1 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/09/22 13:22:54 $
+#   $Date: 2010/11/13 17:12:08 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.64 $ $Author: shoops $ $Date: 2010/09/22 13:22:54 $
+# $Revision: 1.64.2.1 $ $Author: shoops $ $Date: 2010/11/13 17:12:08 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -148,13 +148,18 @@ DISTFILES += \
         copasiversion.h \
         copasi.pro \
         lapack.h \
-        mathematics.h
+        mathematics.h \
+        common.pri \
+        lib.pri \
+        srcDistribution.pri 
+
+include(srcDistribution.pri)
 
 src_distribution.commands = \
   rm -rf ../copasi_src/copasi; \
   $(CHK_DIR_EXISTS) ../copasi_src || $(MKDIR) ../copasi_src; \
   $(CHK_DIR_EXISTS) ../copasi_src/copasi || $(MKDIR) ../copasi_src/copasi; \
-  cp $$DISTFILES ../copasi_src/copasi/; \
+  cp $${DISTFILES} ../copasi_src/copasi/; \
   $$join(DISTDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
 
 QMAKE_EXTRA_UNIX_TARGETS += src_distribution
