@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/lib.pri,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.5.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/16 18:55:46 $ 
+#   $Date: 2010/11/13 15:21:10 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2010/03/16 18:55:46 $  
+# $Revision: 1.5.2.1 $ $Author: shoops $ $Date: 2010/11/13 15:21:10 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -63,6 +63,9 @@ win32 {
   TARGETDEPS += $$DESTDIR/$(TARGET)
   DESTDIR = .
 }
+
+
+include(../srcDistribution.pri)
 
 !equals(TEMPLATE, subdirs) {
   # Copy the sources for the tar ball

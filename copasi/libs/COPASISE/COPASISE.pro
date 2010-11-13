@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $
-#   $Revision: 1.31 $
+#   $Revision: 1.31.2.1 $
 #   $Name:  $
-#   $Author: ssahle $
-#   $Date: 2010/05/14 22:23:04 $
+#   $Author: shoops $
+#   $Date: 2010/11/13 15:21:17 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,11 +31,13 @@ SRC_TARGET = COPASISE
 include(../../common.pri)
 
 COPASI_LIBS += commandline
+
 #ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {
   COPASI_LIBS += commercial
 }
 #endif // COPASI_LICENSE_COM
+
 COPASI_LIBS += compareExpressions
 COPASI_LIBS += copasiDM
 COPASI_LIBS += copasiXML
@@ -62,7 +64,5 @@ COPASI_LIBS += trajectory
 COPASI_LIBS += tss
 COPASI_LIBS += tssanalysis
 COPASI_LIBS += utilities
-
-
 
 include(../lib.pri)
