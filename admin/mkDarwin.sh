@@ -38,20 +38,13 @@ fi
 # copy the icon into the Resources directory
 echo "Creating Resources directory."
 mkdir -p ${TMPDIR}/COPASI/CopasiUI.app/Contents/Resources
+
 echo "Copy the icon file to the bundle."
 cp copasi.icns ${TMPDIR}/COPASI/CopasiUI.app/Contents/Resources/
 
-# set the icon in the Info.plist file in the Contents directory
-# the icon file name is located between <string></string> tags in the line after
-# <key>CFBundleIconFile</key>
-# Maybe this would better be done with a dom parser.
-echo "Set the icon in the Info.plist file."
-LINE=`grep -n "CFBundleIconFile" ${TMPDIR}/COPASI/CopasiUI.app/Contents/Info.plist \
-  | cut -c1`
-LINE=$((LINE+1))
-sed -e "${LINE}s%<string>.*</string>%<string>copasi.icns</string>%" \
-  ${TMPDIR}/COPASI/CopasiUI.app/Contents/Info.plist > ${TMPDIR}/tmp.plist
-mv ${TMPDIR}/tmp.plist ${TMPDIR}/COPASI/CopasiUI.app/Contents/Info.plist
+# Create the Info.plist file
+sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
+  copasi/CopasiUI/CopasiUI.plist > ${TMPDIR}/COPASI/CopasiUI.app/Contents/Info.plist
 
 # copy default configuration
 echo "Make directory for default configuration"
