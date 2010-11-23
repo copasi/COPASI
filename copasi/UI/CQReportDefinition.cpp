@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.10.2.4 $
+//   $Revision: 1.10.2.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:58 $
+//   $Author: shoops $
+//   $Date: 2010/11/23 18:06:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -428,7 +428,15 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
 }
 
 bool CQReportDefinition::leave()
-{return save();}
+{
+  mpBtnCommit->setFocus();
+
+  save();
+
+  mpNotes->leave();
+
+  return true;
+}
 
 bool CQReportDefinition::enterProtected()
 {
@@ -440,7 +448,11 @@ bool CQReportDefinition::enterProtected()
       return false;
     }
 
-  return load();
+  load();
+
+  mpNotes->enter(mKey);
+
+  return true;
 }
 
 bool CQReportDefinition::load()
@@ -455,8 +467,6 @@ bool CQReportDefinition::load()
 
   mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
   mpTaskBox->setCurrentItem(mpReportDefinition->getTaskType());
-  mpCommentEdit->setText(FROM_UTF8(mpReportDefinition->getComment()));
-  mOldComment = mpCommentEdit->text();
 
   //separator
   if (mpReportDefinition->getSeparator().getStaticString() == "\t")
@@ -539,64 +549,6 @@ bool CQReportDefinition::save()
     }
 
   mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentItem());
-
-  if (mOldComment != mpCommentEdit->text())
-    {
-      std::string Richtext = TO_UTF8(mpCommentEdit->toHtml());
-      std::string::size_type pos = 0;
-
-      // We do not need a html document we need only the xhtml element.
-      if (Richtext.find("<!DOCTYPE", 0) != std::string::npos)
-        {
-          pos = Richtext.find('>', 0);
-          Richtext.erase(0, pos + 1);
-        }
-
-      // remove leading white spaces
-      pos = Richtext.find_first_not_of("\x0a\x0d\t ");
-
-      if (pos != 0) Richtext.erase(0, pos);
-
-      // remove trailing white sp ace
-      pos = Richtext.find_last_not_of("\x0a\x0d\t ");
-
-      if (pos < Richtext.length())
-        Richtext = Richtext.substr(0, pos + 1);
-
-      // Fix <hr> to <hr /> to have proper xhtml.
-      pos = 0;
-
-      while ((pos = Richtext.find("<hr>", pos)) != std::string::npos)
-        {
-          pos += 3;
-          Richtext.insert(pos, " /");
-        }
-
-      std::ostringstream xhtml;
-
-      if (Richtext == "")
-        {
-          xhtml << "<body xmlns=\"http://www.w3.org/1999/xhtml\" />";
-        }
-      else if (Richtext[0] == '<')
-        {
-          std::string::size_type pos = Richtext.find('>');
-          std::string FirstElement = Richtext.substr(0, pos);
-
-          if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos)
-            FirstElement += " xmlns=\"http://www.w3.org/1999/xhtml\"";
-
-          xhtml << FirstElement << Richtext.substr(pos);
-        }
-      else
-        {
-          xhtml << "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
-          xhtml << CCopasiXMLInterface::encode(Richtext);
-          xhtml << "</body>";
-        }
-
-      mpReportDefinition->setComment(xhtml.str());
-    }
 
   CCopasiReportSeparator Separator;
 
