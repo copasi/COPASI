@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.108.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:37 $
+//   $Date: 2010/11/23 18:53:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -406,6 +406,21 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
             pModel->processRoots(*mpCurrentTime, false, mpTrajectoryMethod->getRoots());
+
+            // If the root happens to coincide with end of the step we have to return and
+            // inform the integrator of eventual state changes.
+            if (fabs(*mpCurrentTime - endTime) < Tolerance)
+              {
+                if (StateChanged)
+                  {
+                    *mpCurrentState = pModel->getState();
+                    mpTrajectoryMethod->stateChanged();
+                    StateChanged = false;
+                  }
+
+                return true;
+              }
+
             break;
 
           case CTrajectoryMethod::FAILURE:
