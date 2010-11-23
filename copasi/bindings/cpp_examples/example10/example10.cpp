@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example10/example10.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/22 17:02:28 $
+//   $Date: 2010/11/23 08:33:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,9 +23,14 @@
 #include <vector>
 
 // this define is needed in the file where the main routine is defined
+// It has to be defined before copasi.h is included, otherwise
+// you will get unresolved symbols when linking your programm.
+// Alternatively, you can define the symbols that are defined in copasi.h yourself.
+// For that, check copasi.h
 #define COPASI_MAIN
-
 #include <copasi/copasi.h>
+
+
 #include <copasi/report/CCopasiRootContainer.h>
 #include <copasi/CopasiDataModel/CCopasiDataModel.h>
 #include <copasi/model/CModel.h>
@@ -50,9 +55,10 @@ int main(int argc, char** argv)
   assert(pDataModel != NULL);
   assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
 
-  // next we import a simple SBML model from a string
+  // check if we got exactly one argument, which should be an SBML filename
   if (argc == 2)
     {
+      // next we import a simple SBML model from a string
       std::string filename = argv[1];
       // clear the message queue so that we only have error messages from the import in the queue
       CCopasiMessage::clearDeque();
@@ -71,6 +77,7 @@ int main(int argc, char** argv)
       if (result == false)
         {
           std::cerr << "Error while importing the model from file named \"" << filename << "\"." << std::endl;
+          // final cleanup
           CCopasiRootContainer::destroy();
           return 1;
         }
@@ -87,6 +94,7 @@ int main(int argc, char** argv)
       if (result != true &&  mostSevere < CCopasiMessage::ERROR)
         {
           std::cerr << "Sorry. Model could not be imported." << std::endl;
+          // final cleanup
           CCopasiRootContainer::destroy();
           return 1;
         }
@@ -94,10 +102,10 @@ int main(int argc, char** argv)
       // get the task list
       CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
-      // get the trajectory task object
+      // get the metabolic control analysis task object
       CMCATask* pTask = dynamic_cast<CMCATask*>(TaskList["Metabolic Control Analysis"]);
 
-      // if there isn't one
+      // The task should always be there, but just to be sure, we check and create it, if it wasn't.
       if (pTask == NULL)
         {
           // create a new one
@@ -121,6 +129,9 @@ int main(int argc, char** argv)
       assert(pMCAMethod != NULL);
       // parameters that could be set on the method are:
       // "Modulation Factor" double 1e-9
+      // For documentation on the individual parameters for the MCA method
+      // and the steadystate method below, please check the COPASI documentation for those
+      // methods on http://www.copasi.org
       pMCAMethod->setValue("Modulation Factor", 1e-9);
 
 
@@ -142,19 +153,21 @@ int main(int argc, char** argv)
       CSteadyStateMethod* pSSMethod = dynamic_cast<CSteadyStateMethod*>(pSSTask->getMethod());
       assert(pSSMethod != NULL);
       pMCAMethod->setValue("Use Newton", true);
+      // sometime the setValue methods needs to passed the correct type
+      // to disambiguate the function call
       pMCAMethod->setValue("Iteration Limit", (C_INT32)70);
 
-      // if there isn't one
-      if (pTask == NULL)
+      // again, better safe than sorry, we check if the task was actually there and if not, we delete it
+      if (pSSTask == NULL)
         {
           // create a new one
-          pTask = new CMCATask();
+          pSSTask = new CSteadyStateTask();
           // remove any existing steadystate task just to be sure since in
           // theory only the cast might have failed above
-          TaskList.remove("Metabolic Control Analysis");
+          TaskList.remove("Steady-State");
 
           // add the new task to the task list
-          TaskList.add(pTask, true);
+          TaskList.add(pSSTask, true);
         }
 
 
@@ -179,12 +192,14 @@ int main(int argc, char** argv)
               std::cerr << CCopasiMessage::getAllMessageText(true);
             }
 
+          // final cleanup
           CCopasiRootContainer::destroy();
           return 1;
         }
 
       // since we want to output a flux, we first have to check if a steady state was found at all
-      // otherwise we could only output the elasticities
+      // otherwise we could only output the elasticities because control coefficients are only calculated
+      // if a steady state was found
       CSteadyStateMethod::ReturnCode sstatus = pMCAMethod->getSteadyStateStatus();
 
       switch (sstatus)
@@ -194,8 +209,10 @@ int main(int argc, char** argv)
             break;
           case CSteadyStateMethod::notFound:
           case CSteadyStateMethod::foundEquilibrium:
+            // we are also not interested in steady states with negative concentrations
           case CSteadyStateMethod::foundNegative:
             std::cerr << "Could not find a steady state with non-negative concentrations, so I can't output control coefficients." << std::endl;
+            CCopasiRootContainer::destroy();
             return 1;
             break;
         }
@@ -226,6 +243,8 @@ int main(int argc, char** argv)
           if (numReactions == 0)
             {
               std::cerr << "There are no reactions in the model, can't output a flux control coefficient." << std::endl;
+              CCopasiRootContainer::destroy();
+              return 1;
             }
 
           const CReaction* pReaction = pDataModel->getModel()->getReactions()[numReactions-1];
@@ -244,14 +263,21 @@ int main(int argc, char** argv)
 
           // since the rows and columns have the same annotation for the flux control coefficients, it doesn't matter
           // for which dimension we get the annotations
+          // In this example, we get the annotations that contain the common names.
+          // Alternatively, we could have used getAnnatationsString as in example 8 to get the annotations
+          // that contain the display names.
+          // In this case working with the common names is easier.
           const std::vector<CRegisteredObjectName>& annotations = pCCC->getAnnotationsCN(1);
 
           std::cout << "Flux Control Coefficient for Reaction \"" << pReaction->getObjectName() << "\" with itself:";
 
           unsigned int i = 0;
 
+          // find the annotation for the last reaction
           for (; i < annotations.size(); ++i)
             {
+              // if the annotation string is the common name of our reaction
+              // we can stop because we have found the correct index
               if (annotations[i] == pReaction->getCN())
                 {
                   break;
@@ -259,6 +285,9 @@ int main(int argc, char** argv)
             }
 
           assert(i != annotations.size());
+          // set the 2D index that we want to get from the annotated array
+          // In this case we want the control coefficient for the reaction with itself, so
+          // the index for both dimensions is the same (i)
           index[0] = i;
           index[1] = i;
           std::cout << std::setprecision(8);
@@ -268,11 +297,14 @@ int main(int argc, char** argv)
     }
   else
     {
+      // give a usage message
       std::cerr << "Usage: example10 SBMLFILE" << std::endl;
+      // final cleanup
       CCopasiRootContainer::destroy();
       return 1;
     }
 
+  // final cleanup
   CCopasiRootContainer::destroy();
   return 0;
 }
