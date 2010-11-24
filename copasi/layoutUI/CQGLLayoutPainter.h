@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/27 13:20:04 $
+//   $Date: 2010/11/24 14:51:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include <set>
 
 class CCopasiDataModel;
+class CCopasiObject;
 class CLGraphicalObject;
 class CLayout;
 class CLLayoutRenderer;
@@ -135,6 +136,68 @@ public:
    * Sets the selection to the items in the given set.
    */
   void setSelection(const std::set<CLGraphicalObject*>& selection);
+
+#ifdef COPASI_DEBUG
+  // the following methods are used to highlight elements in the diagram
+  // based on their association to model elements
+
+  /**
+   * Sets the list of model objects that are to be highlighted in the diagram.
+   */
+  void setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects);
+
+  /**
+   * Returns a const reference to the set of highlighted model objects.
+   */
+  const std::set<const CCopasiObject*>& getHighlightedModelObjects() const;
+
+  /**
+   * Returns a reference to the set of highlighted model objects.
+   */
+  std::set<const CCopasiObject*>& getHighlightedModelObjects();
+
+  /**
+   * Sets the highlight color.
+   */
+  void setHighlightColor(const GLfloat c[4]);
+
+  /**
+   * Returns a const pointer to the highlight color.
+   * The array has a size of 4 elements.
+   */
+  const GLfloat* getHighlightColor() const;
+
+  /**
+   * Sets the fog color.
+   */
+  void setFogColor(const GLfloat c[4]);
+
+  /**
+   * Returns a const pointer to the fog color.
+   * The array has a size of 4 elements.
+   */
+  const GLfloat* getFogColor() const;
+
+
+  /**
+   * Toggles the flag that determines if highlighted objects
+   * are actually highlighted or if the rest is fogged out.
+   */
+  void toggleHighlightFlag();
+
+  /**
+   * Toggles the flag that determines if highlighted objects
+   * are actually highlighted or if the rest is fogged out.
+   */
+  void setHighlightFlag(bool flag);
+
+  /**
+   * Returns the highlight flag.
+   */
+  bool getHighlightFlag() const;
+
+#endif // COPASI_DEBUG
+
 
   /**
    * Sets the aspect for the renderer.

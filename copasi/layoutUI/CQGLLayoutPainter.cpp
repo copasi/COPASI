@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.5.2.4 $
+//   $Revision: 1.5.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/19 12:22:20 $
+//   $Date: 2010/11/24 14:51:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1869,3 +1869,97 @@ void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
 }
 
 #endif // __APPLE__
+
+#ifdef COPASI_DEBUG
+// the following methods are used to highlight elements in the diagram
+// based on their association to model elements
+
+/**
+ * Sets the list of model objects that are to be highlighted in the diagram.
+ */
+void CQGLLayoutPainter::setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects)
+{
+  this->mpRenderer->setHighlightedModelObjects(highlightedObjects);
+}
+
+/**
+ * Returns a const reference to the set of highlighted model objects.
+ */
+const std::set<const CCopasiObject*>& CQGLLayoutPainter::getHighlightedModelObjects() const
+{
+  return this->mpRenderer->getHighlightedModelObjects();
+}
+
+/**
+ * Returns a reference to the set of highlighted model objects.
+ */
+std::set<const CCopasiObject*>& CQGLLayoutPainter::getHighlightedModelObjects()
+{
+  return this->mpRenderer->getHighlightedModelObjects();
+}
+
+/**
+ * Sets the highlight color.
+ */
+void CQGLLayoutPainter::setHighlightColor(const GLfloat c[4])
+{
+  this->mpRenderer->setHighlightColor(c);
+}
+
+/**
+ * Returns a const pointer to the highlight color.
+ * The array has a size of 4 elements.
+ */
+const GLfloat* CQGLLayoutPainter::getHighlightColor() const
+{
+  return this->mpRenderer->getHighlightColor();
+}
+
+/**
+ * Sets the fog color.
+ */
+void CQGLLayoutPainter::setFogColor(const GLfloat c[4])
+{
+  this->mpRenderer->setFogColor(c);
+}
+
+/**
+ * Returns a const pointer to the fog color.
+ * The array has a size of 4 elements.
+ */
+const GLfloat* CQGLLayoutPainter::getFogColor() const
+{
+  return this->mpRenderer->getFogColor();
+}
+
+
+/**
+ * Toggles the flag that determines if highlighted objects
+ * are actually highlighted or if the rest is fogged out.
+ */
+void CQGLLayoutPainter::toggleHighlightFlag()
+{
+  this->mpRenderer->toggleHighlightFlag();
+}
+
+/**
+ * Toggles the flag that determines if highlighted objects
+ * are actually highlighted or if the rest is fogged out.
+ */
+void CQGLLayoutPainter::setHighlightFlag(bool flag)
+{
+  this->mpRenderer->setHighlightFlag(flag);
+}
+
+/**
+ * Returns the highlight flag.
+ */
+bool CQGLLayoutPainter::getHighlightFlag() const
+{
+  return this->mpRenderer->getHighlightFlag();
+}
+
+#endif // COPASI_DEBUG
+
+
+

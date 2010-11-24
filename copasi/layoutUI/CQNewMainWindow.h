@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/09/29 13:45:04 $
+//   $Date: 2010/11/24 14:51:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include <QString>
 #include <QIcon>
 #include <string>
+#include <vector>
 
 class CCopasiDataModel;
 class CLayout;
@@ -31,6 +32,7 @@ class QComboBox;
 class QMenu;
 class QStackedWidget;
 class QToolBar;
+class CFluxMode;
 
 class CQNewMainWindow : public QMainWindow
 {
@@ -98,6 +100,33 @@ private slots:
    */
   void setStatusMessage(const QString& message, int timeout);
 
+#ifdef COPASI_DEBUG
+  /**
+   * Is called when the menu entry for toggling highlighting
+   * of elementary modes is toggled.
+   */
+  void toggleHighlightSlot(bool checked);
+
+  /**
+   * Checks for calculated elementary modes.
+   */
+  void checkForElementaryModesSlot();
+
+  /**
+   * Checks which elementary mode has been toggled and updates the
+   * highlighted objects list.
+   */
+  void elementaryModeTriggeredSlot(QAction* pAction);
+
+  /**
+   * This slot is triggered when the user wants to change
+   * the fog or the highlighting color, depending on the current
+   * highlighting mode.
+   */
+  void changeColorSlot(bool);
+
+#endif // COPASI_DEBUG
+
 private:
   enum DISPLAY_MODE
   {
@@ -122,6 +151,9 @@ private:
   QMenu *mpOptionsMenu;
   QMenu *mpHelpMenu;
   QMenu *mpZoomMenu;
+#ifdef COPASI_DEBUG
+  QMenu *mpElementaryModesMenu;
+#endif // COPASI_DEBUG
   QToolBar *mpFileToolBar;
   QToolBar *mpSelectionToolBar;
   QAction *mpSwitchModeAct;
@@ -152,6 +184,22 @@ private:
 
   QIcon mGraphIcon;
   QIcon mAnimationIcon;
+#ifdef COPASI_DEBUG
+  // It does not make sense to update
+  // the elementary flux modes menu each time
+  // because that will delete the information about
+  // selected modes.
+  // We have to remember the modes and only update if necessary.
+  std::vector<const CFluxMode*> mFluxModes;
+
+  // we need two icons for the fog and
+  // the highlight color
+  QPixmap* mpFogColorPixmap;
+  QPixmap* mpHighlightColorPixmap;
+  QAction* mpHighlightModeAction;
+  QAction* mpChangeColorAction;
+#endif // COPASI_DEBUG
+
 };
 
 #endif /* CQNEWMAINWINDOW_H__ */
