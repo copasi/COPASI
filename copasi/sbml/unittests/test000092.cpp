@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/08/12 16:40:27 $
+//   $Date: 2010/11/24 14:48:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1790,7 +1790,7 @@ void test000092::test_miriam_import_1()
   const CCopasiVector<CModification>* pModifications = &miriamInfo.getModifications();
   CPPUNIT_ASSERT(pModifications != NULL);
   // there should be only one modification date
-  CPPUNIT_ASSERT(pModifications->size() == 2);
+  CPPUNIT_ASSERT_MESSAGE("This test will fail until we have a workaround for the one modification date limit in SBML.", pModifications->size() == 2);
   const CModification* pModification = (*pModifications)[0];
   CPPUNIT_ASSERT(pModification != NULL);
   std::string dateTime = pModification->getDate();
