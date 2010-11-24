@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.53.4.1 $
+ $Revision: 1.53.4.2 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/10/20 15:14:30 $
+ $Date: 2010/11/24 18:06:01 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,9 +23,9 @@
 /**
  * CCopasiXMLInterface class.
  * The class CCopasiXMLInterface is the interface to various XML document
- * containing Copasi relevant informtion.
+ * containing COPASI relevant information.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  */
 
 #include <fstream>
@@ -241,6 +241,8 @@ CCopasiXMLInterface::DBL::operator const C_FLOAT64 & () const
 
 std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & dbl)
 {
+  os.precision(16);
+
   if (isnan(dbl.mValue))
     os << "NaN";
   else if (finite(dbl.mValue))
@@ -334,14 +336,7 @@ bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
     }
   else
     {
-      CXMLAttributeList Attributes;
-      Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
-
-      startSaveElement("body", Attributes);
-
       saveData(xhtml);
-
-      endSaveElement("body");
     }
 
   return true;
