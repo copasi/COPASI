@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/21 17:43:50 $
+//   $Author: gauges $
+//   $Date: 2010/11/24 14:50:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,6 +181,22 @@ protected:
 
   // a class that can create a texture from a jpeg or png image file
   CLImageTexturizer* mpImageTexturizer;
+
+#ifdef COPASI_DEBUG
+  std::set<const CCopasiObject*> mHighlightedModelObjects;
+
+  // flag that determines whether non-highlighted objects
+  // are placed in a fog or if highlighted objects are highlighted
+  // with a special color.
+  bool mHighlight;
+
+  // color value for highlighting
+  GLfloat mHighlightColor[4];
+
+  // color value for the fog
+  GLfloat mFogColor[4];
+#endif // COPASI_DEBUG
+
 
 public:
   /**
@@ -439,6 +455,67 @@ public:
    * Sets the class that can create textures from a given image file.
    */
   void setImageTexturizer(CLImageTexturizer* pTexturizer);
+
+#ifdef COPASI_DEBUG
+  // the following methods are used to highlight elements in the diagram
+  // based on their association to model elements
+
+  /**
+   * Sets the list of model objects that are to be highlighted in the diagram.
+   */
+  void setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects);
+
+  /**
+   * Returns a const reference to the set of highlighted model objects.
+   */
+  const std::set<const CCopasiObject*>& getHighlightedModelObjects() const;
+
+  /**
+   * Returns a reference to the set of highlighted model objects.
+   */
+  std::set<const CCopasiObject*>& getHighlightedModelObjects();
+
+  /**
+   * Sets the highlight color.
+   */
+  void setHighlightColor(const GLfloat c[4]);
+
+  /**
+   * Returns a const pointer to the highlight color.
+   * The array has a size of 4 elements.
+   */
+  const GLfloat* getHighlightColor() const;
+
+  /**
+   * Sets the fog color.
+   */
+  void setFogColor(const GLfloat c[4]);
+
+  /**
+   * Returns a const pointer to the fog color.
+   * The array has a size of 4 elements.
+   */
+  const GLfloat* getFogColor() const;
+
+
+  /**
+   * Toggles the flag that determines if highlighted objects
+   * are actually highlighted or if the rest is fogged out.
+   */
+  void toggleHighlightFlag();
+
+  /**
+   * Toggles the flag that determines if highlighted objects
+   * are actually highlighted or if the rest is fogged out.
+   */
+  void setHighlightFlag(bool flag);
+
+  /**
+   * Returns the highlight flag.
+   */
+  bool getHighlightFlag() const;
+
+#endif // COPASI_DEBUG
 
 protected:
   /**

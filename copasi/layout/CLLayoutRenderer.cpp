@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.6 $
+//   $Revision: 1.5.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/10/19 13:29:36 $
+//   $Date: 2010/11/24 14:50:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,20 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
     mDeduceSpeciesReferenceRoles(false),
     mpSelectionBox(NULL),
     mpImageTexturizer(NULL)
+#ifdef COPASI_DEBUG
+    , mHighlight(true)
+#endif // COPASI_DEBUG
 {
+#ifdef COPASI_DEBUG
+  this->mHighlightColor[0] = 0.5;
+  this->mHighlightColor[1] = 0.0;
+  this->mHighlightColor[2] = 0.0;
+  this->mHighlightColor[3] = 1.0;
+  this->mFogColor[0] = 0.5;
+  this->mFogColor[1] = 0.5;
+  this->mFogColor[2] = 0.5;
+  this->mFogColor[3] = 1.0;
+#endif // COPASI_DEBUG
   this->change_style(pRenderInformation);
 }
 
@@ -134,7 +147,20 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
     mpFontRenderer(NULL),
     mDeduceSpeciesReferenceRoles(false),
     mpSelectionBox(NULL)
+#ifdef COPASI_DEBUG
+    , mHighlight(true)
+#endif // COPASI_DEBUG
 {
+#ifdef COPASI_DEBUG
+  this->mHighlightColor[0] = 0.5;
+  this->mHighlightColor[0] = 0.0;
+  this->mHighlightColor[0] = 0.0;
+  this->mHighlightColor[0] = 1.0;
+  this->mFogColor[0] = 0.5;
+  this->mFogColor[1] = 0.5;
+  this->mFogColor[2] = 0.5;
+  this->mFogColor[3] = 1.0;
+#endif // COPASI_DEBUG
   this->change_style(pRenderInformation);
 }
 
@@ -908,15 +934,50 @@ void CLLayoutRenderer::draw_layout()
   // first we need to clear the screen
   // with the background color
   glDisable(GL_POLYGON_SMOOTH);
+#ifdef COPASI_DEBUG
+  glFogi(GL_FOG_MODE, GL_EXP);
+
+  if (this->mHighlight == true)
+    {
+      glFogfv(GL_FOG_COLOR, this->mHighlightColor);
+    }
+  else
+    {
+      glFogfv(GL_FOG_COLOR, this->mFogColor);
+    }
+
+  glFogf(GL_FOG_DENSITY, 0.5);
+  glHint(GL_FOG_HINT, GL_FASTEST);
+  glFogi(GL_FOG_COORD_SRC, GL_FOG_COORD);
+  glEnable(GL_FOG);
+  GLfloat highlight = (GLfloat)this->mHighlight;
+  GLfloat notHighlight = (GLfloat)(!this->mHighlight);
+#endif // COPASI_DEBUG
 
   if (this->mpResolver)
     {
       //std::cout << "Drawing layout." << std::endl;
       const CLColorDefinition* pBackgroundColor = this->mpResolver->getBackgroundColor();
-      glClearColor((GLclampf)((GLfloat)pBackgroundColor->getRed() / 255.0),
-                   (GLclampf)((GLfloat)pBackgroundColor->getGreen() / 255.0),
-                   (GLclampf)((GLfloat)pBackgroundColor->getBlue() / 255.0),
-                   (GLclampf)((GLfloat)pBackgroundColor->getAlpha() / 255.0));
+      GLfloat red = pBackgroundColor->getRed() / 255.0;
+      GLfloat green = pBackgroundColor->getGreen() / 255.0;
+      GLfloat blue = pBackgroundColor->getBlue() / 255.0;
+      GLfloat alpha = pBackgroundColor->getAlpha() / 255.0;
+#ifdef COPASI_DEBUG
+
+      if (this->mHighlight == false)
+        {
+          // we have to generate fog on the background ourselfes
+          red = (red + this->mFogColor[0]) * 0.5;
+          green = (green + this->mFogColor[1]) * 0.5;
+          blue = (blue + this->mFogColor[2]) * 0.5;
+          alpha = (alpha + this->mFogColor[3]) * 0.5;
+        }
+
+#endif // COPASI_DEBUG
+      glClearColor((GLclampf)red,
+                   (GLclampf)green,
+                   (GLclampf)blue,
+                   (GLclampf)alpha);
       glClear(GL_COLOR_BUFFER_BIT);
       glPushMatrix();
       this->mCurrentAttributes.mX = 0.0;
@@ -928,9 +989,28 @@ void CLLayoutRenderer::draw_layout()
       const CLMetabReferenceGlyph* pSRG = NULL;
       const CLTextGlyph* pTG = NULL;
       std::vector<const CLGraphicalObject*>::iterator it = this->mDrawables.begin(), endit = this->mDrawables.end();
+      const CCopasiObject* pModelObject = NULL;
+#ifdef COPASI_DEBUG
+// this is needed to highlight or fog certain elements in the diagram
+      std::set<const CCopasiObject*>::const_iterator end = this->mHighlightedModelObjects.end();
+#endif // COPASI_DEBUG      
 
       while (it != endit)
         {
+#ifdef COPASI_DEBUG
+// this is needed to highlight or fog certain elements in the diagram
+          pModelObject = (*it)->getModelObject();
+
+          if (pModelObject != NULL && this->mHighlightedModelObjects.find(pModelObject) != end)
+            {
+              glFogCoordf(highlight);
+            }
+          else
+            {
+              glFogCoordf(notHighlight);
+            }
+
+#endif //COPASI_DEBUG
           pRG = dynamic_cast<const CLReactionGlyph*>(*it);
           pSRG = dynamic_cast<const CLMetabReferenceGlyph*>(*it);
           pTG = dynamic_cast<const CLTextGlyph*>(*it);
@@ -1062,6 +1142,8 @@ void CLLayoutRenderer::draw_layout()
       glFlush();
       //std::cout << "Drawing finished." << std::endl << std::endl;
     }
+
+  glDisable(GL_FOG);
 }
 
 /**
@@ -6612,3 +6694,101 @@ void CLLayoutRenderer::setImageTexturizer(CLImageTexturizer* pTexturizer)
 {
   this->mpImageTexturizer = pTexturizer;
 }
+
+#ifdef COPASI_DEBUG
+
+/**
+ * Sets the list of model objects that are to be highlighted in the diagram.
+ */
+void CLLayoutRenderer::setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects)
+{
+  this->mHighlightedModelObjects = highlightedObjects;
+}
+
+/**
+ * Returns a const reference to the set of highlighted model objects.
+ */
+const std::set<const CCopasiObject*>& CLLayoutRenderer::getHighlightedModelObjects() const
+{
+  return this->mHighlightedModelObjects;
+}
+
+/**
+ * Returns a reference to the set of highlighted model objects.
+ */
+std::set<const CCopasiObject*>& CLLayoutRenderer::getHighlightedModelObjects()
+{
+  return this->mHighlightedModelObjects;
+}
+
+
+/**
+ * Sets the highlight color.
+ */
+void CLLayoutRenderer::setHighlightColor(const GLfloat c[4])
+{
+  this->mHighlightColor[0] = c[0];
+  this->mHighlightColor[1] = c[1];
+  this->mHighlightColor[2] = c[2];
+  this->mHighlightColor[3] = c[3];
+}
+
+/**
+ * Returns a const pointer to the highlight color.
+ * The array has a size of 4 elements.
+ */
+const GLfloat* CLLayoutRenderer::getHighlightColor() const
+{
+  return this->mHighlightColor;
+}
+
+/**
+ * Sets the fog color.
+ */
+void CLLayoutRenderer::setFogColor(const GLfloat c[4])
+{
+  this->mFogColor[0] = c[0];
+  this->mFogColor[1] = c[1];
+  this->mFogColor[2] = c[2];
+  this->mFogColor[3] = c[3];
+}
+
+/**
+ * Returns a const pointer to the fog color.
+ * The array has a size of 4 elements.
+ */
+const GLfloat* CLLayoutRenderer::getFogColor() const
+{
+  return this->mFogColor;
+}
+
+
+/**
+ * Toggles the flag that determines if highlighted objects
+ * are actually highlighted or if the rest is fogged out.
+ */
+void CLLayoutRenderer::toggleHighlightFlag()
+{
+  this->mHighlight = !this->mHighlight;
+}
+
+/**
+ * Toggles the flag that determines if highlighted objects
+ * are actually highlighted or if the rest is fogged out.
+ */
+void CLLayoutRenderer::setHighlightFlag(bool flag)
+{
+  this->mHighlight = flag;
+}
+
+/**
+ * Returns the highlight flag.
+ */
+bool CLLayoutRenderer::getHighlightFlag() const
+{
+  return this->mHighlight;
+}
+
+#endif // COPASI_DEBUG
+
+
