@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:46:13 $
+//   $Date: 2010/11/24 18:07:52 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -60,7 +65,7 @@ private:
   QStringList mPredicates;
   QStringList mResources;
   QStringList mReferences;
-  std::vector< QTableView * > mWidgets;
+  std::vector< CQTableView * > mWidgets;
   std::vector< CQBaseDataModel * > mDMs;
   std::vector< CQSortFilterProxyModel * > mProxyDMs;
   void deleteSelectedAuthors();

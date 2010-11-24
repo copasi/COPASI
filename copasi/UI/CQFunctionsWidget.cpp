@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 17:35:02 $
+//   $Date: 2010/11/24 18:07:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -211,7 +211,9 @@ void CQFunctionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
 
   if (mpFunctionDM->isDefaultRow(index))
-    return;
+    {
+      slotBtnNewClicked();
+    }
 
   std::string key = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()]->getKey();
 
