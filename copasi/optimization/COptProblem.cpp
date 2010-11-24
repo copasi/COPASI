@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.1 $
+//   $Revision: 1.115.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/05 12:24:34 $
+//   $Date: 2010/11/24 21:56:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -578,6 +578,9 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   if (!*mpParmCalculateStatistics)
     {
+      // Make sure the timer is accurate.
+      (*mCPUTime.getRefresh())();
+
       return false;
     }
 

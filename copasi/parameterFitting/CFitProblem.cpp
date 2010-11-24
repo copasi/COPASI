@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.2 $
+//   $Revision: 1.66.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/11 17:44:17 $
+//   $Date: 2010/11/24 21:56:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1052,6 +1052,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   if (!*mpParmCalculateStatistics)
     {
+      // Make sure the timer is accurate.
+      (*mCPUTime.getRefresh())();
+
       return false;
     }
 
@@ -1676,7 +1679,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
     for (l = 0; l < imax; l++)
       mCorrelation(i, l) *= S[i] * S[l];
 
-  // Make sure the timer is acurate.
+  // Make sure the timer is accurate.
   (*mCPUTime.getRefresh())();
 
   return true;
