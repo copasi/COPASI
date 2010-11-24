@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.7 $
+//   $Revision: 1.1.2.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/24 14:51:11 $
+//   $Author: shoops $
+//   $Date: 2010/11/24 22:54:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -845,9 +845,11 @@ void CQNewMainWindow::switchMode()
         this->setAnimationToolbar();
         this->setAnimationMenu();
         this->mpWidgetStack->setCurrentIndex(1);
+#ifdef COPASI_DEBUG
         this->mpElementaryModesMenu->setEnabled(false);
         this->mpHighlightModeAction->setEnabled(false);
         this->mpChangeColorAction->setEnabled(false);
+#endif // COPASI_DEBUG
         break;
       case CQNewMainWindow::ANIMATION_MODE:
         disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
@@ -859,9 +861,11 @@ void CQNewMainWindow::switchMode()
         this->setGraphToolbar();
         this->setGraphMenu();
         this->mpWidgetStack->setCurrentIndex(0);
+#ifdef COPASI_DEBUG
         this->mpElementaryModesMenu->setEnabled(true);
         this->mpHighlightModeAction->setEnabled(true);
         this->mpChangeColorAction->setEnabled(true);
+#endif // COPASI_DEBUG
         break;
     }
 }
@@ -1265,7 +1269,5 @@ void CQNewMainWindow::changeColorSlot(bool)
         }
     }
 }
-
-
 #endif // COPASI_DEBUG
 
