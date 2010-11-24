@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.39.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:31 $
+//   $Date: 2010/11/24 21:56:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -138,7 +143,7 @@ bool CRandomSearch::optimise()
   //if (mpReport) mpReport->printBody();
   mpParentTask->output(COutputInterface::DURING);
 
-  for (mCurrentIteration = 0; mCurrentIteration < mIterations && Continue; mCurrentIteration++)
+  for (mCurrentIteration = 1; mCurrentIteration < mIterations && Continue; mCurrentIteration++)
     {
       for (j = 0; j < mVariableSize && Continue; j++)
         {
