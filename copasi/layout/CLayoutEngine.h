@@ -1,0 +1,108 @@
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutEngine.h,v $
+//   $Revision: 1.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2010/11/26 23:20:12 $
+// End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+#ifndef CLAYOUTENGINE_H
+#define CLAYOUTENGINE_H
+
+#include <vector>
+#include <sstream>
+
+//#define USE_CLAPACK
+//#include "copasi.h"
+#include "odepack++/CLSODA.h"
+//#include "../utilities/CVector.h"
+
+class CAbstractLayoutInterface;
+
+class CLayoutEngine
+{
+public:
+  struct Data
+  {
+    C_INT dim;
+    CLayoutEngine * pMethod;
+  };
+
+  CLayoutEngine(CAbstractLayoutInterface * l, bool so);
+
+  void step();
+
+  void calcForces(std::vector<double> & state, std::vector<double> & forces);
+  void calcRHS(std::vector<double> & state, double* rhs);
+
+  CAbstractLayoutInterface * getLayoutInterface()
+  {return mpLayout;};
+
+  // /tell the engine that a variable was changed outside
+  //void changeVar(int index, double value);
+
+protected:
+  CAbstractLayoutInterface * mpLayout;
+
+  std::vector<double> mVariables;
+  std::vector<double> mRhs;
+
+  //for RK4
+  std::vector<double> mRhsA;
+  std::vector<double> mRhsB;
+  std::vector<double> mRhsC;
+  std::vector<double> mVar2;
+
+  bool mSecondOrder;
+//  std::vector<double> mVelocities;
+//  std::vector<double> mForce;
+
+  CLSODA mLSODA;
+
+  /**
+   * LSODA C_FLOAT64 work area
+   */
+  std::vector< C_FLOAT64 > mDWork;
+
+  /**
+   * LSODA C_INT work area
+   */
+  std::vector< C_INT > mIWork;
+
+  /**
+   * Stream to capture LSODA error messages
+   */
+  std::ostringstream mErrorMsg;
+
+  /**
+   *  LSODA state.
+   */
+  C_INT mLsodaStatus;
+
+  /**
+   * mData.dim is the dimension of the ODE system.
+   * mData.pMethod contains CLsodaMethod * this to be used in the static method EvalF
+   */
+  Data mData;
+
+  /**
+   *  Current time.
+   */
+  C_FLOAT64 mTime;
+
+  static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+  /**
+   *  This evaluates the derivatives
+   */
+  void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+
+};
+
+#endif // CLAYOUTENGINE_H
