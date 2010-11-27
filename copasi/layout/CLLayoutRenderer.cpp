@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.7 $
+//   $Revision: 1.5.2.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/24 14:50:04 $
+//   $Date: 2010/11/27 17:01:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,9 @@
 
 #include <sbml/layout/render/Transformation.h>
 
+// this define is needed so that the glFogCoordf function is found
+// in linux
+#define GL_GLEXT_PROTOTYPES
 #include "CLLayoutRenderer.h"
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CLGradientStops.h"
