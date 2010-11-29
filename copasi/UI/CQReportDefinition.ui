@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui,v $ </comment>
-<comment>   $Revision: 1.11.2.1 $ </comment>
+<comment>   $Revision: 1.11.2.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2010/11/23 18:06:10 $ </comment>
+<comment>   $Date: 2010/11/29 20:26:16 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -506,6 +506,214 @@
  </includes>
  <resources/>
  <connections>
+  <connection>
+   <sender>mpName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>nameChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpTaskBox</sender>
+   <signal>activated(QString)</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>taskChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpSeparator</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>separatorChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpPrecision</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>precisionChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpTabCheck</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>chkTabClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpTitleCheck</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>chkTitleClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnAdvanced</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnAdvancedClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnItem</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnItemClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnSeparator</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnSeparatorClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnText</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnTextClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnDelete</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnDeleteClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnUp</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnUpClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnDown</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnDownClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>mpBtnCommit</sender>
    <signal>clicked()</signal>
