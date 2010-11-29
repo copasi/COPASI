@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.9 $
+//   $Revision: 1.5.2.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/29 16:26:55 $
+//   $Author: shoops $
+//   $Date: 2010/11/29 20:00:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -6827,12 +6827,12 @@ void CLLayoutRenderer::initialize_gl_extension_functions()
   if (std::string(extensionsString).find("GL_EXT_fog_coord") == std::string::npos) return;
 
 #ifdef _WIN32
-  this->glFogCoordfEXTPtr = (PFNGLFOGCOORDFPROC)wglGetProcAddress("glFogCoordfEXT");
+  this->glFogCoordfEXTPtr = (void(*)(GLfloat))wglGetProcAddress("glFogCoordfEXT");
 #else
-#ifndef __APPLE__
-  this->glFogCoordfEXTPtr = (PFNGLFOGCOORDFPROC)glXGetProcAddressARB((GLfloat)"glFogCoordfEXT");
-#else
+#ifdef __APPLE__
   this->glFogCoordfEXTPtr = (void(*)(GLfloat))MyNSGLGetProcAddress("glFogCoordfEXT");
+#else
+  this->glFogCoordfEXTPtr = (void(*)(GLfloat))glXGetProcAddressARB("glFogCoordfEXT");
 #endif // __APPLE__
 #endif // _WIN32
   this->mGLFunctionsInitialized = true;
