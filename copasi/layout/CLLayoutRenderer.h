@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.4.2.1 $
+//   $Revision: 1.4.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/24 14:50:04 $
+//   $Date: 2010/11/29 16:26:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,6 +195,16 @@ protected:
 
   // color value for the fog
   GLfloat mFogColor[4];
+
+  // stores whether the OpenGL functions we need
+  // to allocate dynamically have been initialized
+  bool mGLFunctionsInitialized;
+
+  // have a function pointer to the glFogCoordf function
+  // in the renderer
+  // Maybe all this dynamic function initialization should
+  // be moved to some global place
+  void(*glFogCoordfEXTPtr)(GLfloat);
 #endif // COPASI_DEBUG
 
 
@@ -925,6 +935,14 @@ protected:
    * draws the selection box if there is one
    */
   void draw_selection_box() const;
+
+  /**
+   * The glFogCoordf function is part of OpenGL 1.4 and may not be available on
+   * all implementations, so we need to query for this dynamically.
+   */
+  void initialize_gl_extension_functions();
+
+  void * MyNSGLGetProcAddress(const char *name);
 };
 
 #endif // CLLAYOUTRENDERER_H__

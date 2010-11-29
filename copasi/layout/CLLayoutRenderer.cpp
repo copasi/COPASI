@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.8 $
+//   $Revision: 1.5.2.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/27 17:01:50 $
+//   $Date: 2010/11/29 16:26:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,13 @@
 # pragma warning(disable : 4996)
 #endif // _WIN32
 
+
 #ifdef __APPLE__
+#ifdef COPASI_DEBUG
+#include <string>
+#include <stdlib.h>
+#include <mach-o/dyld.h>
+#endif // COPASI_DEBUG
 # include "OpenGL/gl.h"
 # include "OpenGL/glu.h"
 #else
@@ -117,6 +123,8 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
     mpImageTexturizer(NULL)
 #ifdef COPASI_DEBUG
     , mHighlight(true)
+    , mGLFunctionsInitialized(false)
+    , glFogCoordfEXTPtr(NULL)
 #endif // COPASI_DEBUG
 {
 #ifdef COPASI_DEBUG
@@ -131,6 +139,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
 #endif // COPASI_DEBUG
   this->change_style(pRenderInformation);
 }
+
 
 /**
  * constructor for local render information
@@ -152,6 +161,8 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
     mpSelectionBox(NULL)
 #ifdef COPASI_DEBUG
     , mHighlight(true)
+    , mGLFunctionsInitialized(false)
+    , glFogCoordfEXTPtr(NULL)
 #endif // COPASI_DEBUG
 {
 #ifdef COPASI_DEBUG
@@ -163,6 +174,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
   this->mFogColor[1] = 0.5;
   this->mFogColor[2] = 0.5;
   this->mFogColor[3] = 1.0;
+  this->initialize_gl_extension_functions();
 #endif // COPASI_DEBUG
   this->change_style(pRenderInformation);
 }
@@ -938,6 +950,12 @@ void CLLayoutRenderer::draw_layout()
   // with the background color
   glDisable(GL_POLYGON_SMOOTH);
 #ifdef COPASI_DEBUG
+
+  if (this->mGLFunctionsInitialized == false)
+    {
+      this->initialize_gl_extension_functions();
+    }
+
   glFogi(GL_FOG_MODE, GL_EXP);
 
   if (this->mHighlight == true)
@@ -1004,13 +1022,16 @@ void CLLayoutRenderer::draw_layout()
 // this is needed to highlight or fog certain elements in the diagram
           pModelObject = (*it)->getModelObject();
 
-          if (pModelObject != NULL && this->mHighlightedModelObjects.find(pModelObject) != end)
+          if (this->glFogCoordfEXTPtr != NULL)
             {
-              glFogCoordf(highlight);
-            }
-          else
-            {
-              glFogCoordf(notHighlight);
+              if (pModelObject != NULL && this->mHighlightedModelObjects.find(pModelObject) != end)
+                {
+                  (*(this->glFogCoordfEXTPtr))(highlight);
+                }
+              else
+                {
+                  (*(this->glFogCoordfEXTPtr))(notHighlight);
+                }
             }
 
 #endif //COPASI_DEBUG
@@ -6791,6 +6812,54 @@ bool CLLayoutRenderer::getHighlightFlag() const
 {
   return this->mHighlight;
 }
+
+/**
+ * On non apple systems, we need to get the pointers to extension functions.
+ */
+void CLLayoutRenderer::initialize_gl_extension_functions()
+{
+  const char* extensionsString = (const char*)glGetString(GL_EXTENSIONS);
+
+  if (extensionsString == NULL) return;
+
+  // TODO this method of testing if the extension is supported is not very safe, we should check if there is
+  // a whitespace character or npos after the position
+  if (std::string(extensionsString).find("GL_EXT_fog_coord") == std::string::npos) return;
+
+#ifdef _WIN32
+  this->glFogCoordfEXTPtr = (PFNGLFOGCOORDFPROC)wglGetProcAddress("glFogCoordfEXT");
+#else
+#ifndef __APPLE__
+  this->glFogCoordfEXTPtr = (PFNGLFOGCOORDFPROC)glXGetProcAddressARB((GLfloat)"glFogCoordfEXT");
+#else
+  this->glFogCoordfEXTPtr = (void(*)(GLfloat))MyNSGLGetProcAddress("glFogCoordfEXT");
+#endif // __APPLE__
+#endif // _WIN32
+  this->mGLFunctionsInitialized = true;
+}
+
+#ifdef __APPLE__
+void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
+{
+  NSSymbol symbol;
+  char *symbolName;
+  symbolName = (char*)malloc(strlen(name) + 2);
+
+  strcpy(symbolName + 1, name);
+
+  symbolName[0] = '_';
+  symbol = NULL;
+
+  if (NSIsSymbolNameDefined(symbolName))
+    {
+      symbol = NSLookupAndBindSymbol(symbolName);
+    }
+
+  free(symbolName);
+
+  return symbol ? NSAddressOfSymbol(symbol) : NULL;
+}
+#endif // __APPLE__
 
 #endif // COPASI_DEBUG
 
