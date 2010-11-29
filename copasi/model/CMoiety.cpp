@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.53.4.1 $
+//   $Revision: 1.53.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/22 18:37:28 $
+//   $Date: 2010/11/29 16:57:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,6 @@ void CMoiety::refreshDependentNumber()
   for (; it != end; ++it)
     mNumber -= it->first * it->second->getValue();
 
-  mNumber = std::max(0.0, mNumber);
   return;
 }
 
