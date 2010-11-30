@@ -14,7 +14,7 @@ productcode=${GUID:0:8}-${GUID:8:4}-${GUID:12:4}-${GUID:16:4}-${GUID:20:12}
 
 [ -e setup ] && rm -rf setup
 mkdir setup
-cd setup
+pushd setup
 
 # Create directory structure
 mkdir copasi
@@ -46,6 +46,9 @@ cp ../copasi/CopasiSE/release/CopasiSE.exe  copasi/bin
     -manifest copasi\\bin\\CopasiUI.exe.manifest \
     -outputresource:copasi\\bin\\CopasiUI.exe\;1
 
+chmod 755 copasi/bin/CopasiUI.exe
+chmod 755 copasi/bin/CopasiSE.exe
+
 # Copy dependencies
 cp ~/environment/distribution/* copasi/bin
     
@@ -61,6 +64,7 @@ chmod 444 copasi/share/copasi/config/*
 # Copy examples
 cp ../TestSuite/distribution/* copasi/share/copasi/examples
 chmod 444 copasi/share/copasi/examples/*
+chmod 777 copasi/share/copasi/examples
 
 # Copy icons
 cp ../copasi/CopasiUI/icons/Copasi.ico copasi/share/copasi/icons
@@ -96,4 +100,4 @@ rm tmp.iss
 mv Copasi-$build-$1.exe ..
 chmod 755 ../Copasi-$build-$1.exe
 
-cd ..
+popd

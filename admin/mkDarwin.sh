@@ -89,8 +89,10 @@ echo "Setting the bundle flag."
 ${SETFILE} -a b ${TMPDIR}/COPASI/CopasiUI.app
 
 chown -R 99:99 ${TMPDIR}/COPASI
+
 # this had been deferred earlier
 chmod 444 ${TMPDIR}/COPASI/examples/*.*
+chmod 777 ${TMPDIR}/COPASI/examples
 
 # Unmount temporary image
 sleep 10
