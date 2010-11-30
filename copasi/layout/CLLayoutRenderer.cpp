@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.11 $
+//   $Revision: 1.5.2.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/30 06:40:38 $
+//   $Author: shoops $
+//   $Date: 2010/11/30 13:27:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,7 +124,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
 #ifdef COPASI_DEBUG
     , mHighlight(true)
     , mGLFunctionsInitialized(false)
-    , glFogCoordfEXTPtr(NULL)
+    , mpGlFogCoordfEXT(NULL)
 #endif // COPASI_DEBUG
 {
 #ifdef COPASI_DEBUG
@@ -162,7 +162,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
 #ifdef COPASI_DEBUG
     , mHighlight(true)
     , mGLFunctionsInitialized(false)
-    , glFogCoordfEXTPtr(NULL)
+    , mpGlFogCoordfEXT(NULL)
 #endif // COPASI_DEBUG
 {
 #ifdef COPASI_DEBUG
@@ -1022,15 +1022,15 @@ void CLLayoutRenderer::draw_layout()
 // this is needed to highlight or fog certain elements in the diagram
           pModelObject = (*it)->getModelObject();
 
-          if (this->glFogCoordfEXTPtr != NULL)
+          if (this->mpGlFogCoordfEXT != NULL)
             {
               if (pModelObject != NULL && this->mHighlightedModelObjects.find(pModelObject) != end)
                 {
-                  (*(this->glFogCoordfEXTPtr))(highlight);
+                  (*(this->mpGlFogCoordfEXT))(highlight);
                 }
               else
                 {
-                  (*(this->glFogCoordfEXTPtr))(notHighlight);
+                  (*(this->mpGlFogCoordfEXT))(notHighlight);
                 }
             }
 
@@ -6827,15 +6827,15 @@ void CLLayoutRenderer::initialize_gl_extension_functions()
   if (std::string(extensionsString).find("GL_EXT_fog_coord") == std::string::npos) return;
 
 #ifdef _WIN32
-  this->glFogCoordfEXTPtr = (void(*)(GLfloat))wglGetProcAddress("glFogCoordfEXT");
+  mpGlFogCoordfEXT = (void(*)(GLfloat)) wglGetProcAddress("glFogCoordfEXT");
 #else
 #ifdef __APPLE__
-  this->glFogCoordfEXTPtr = (void(*)(GLfloat))MyNSGLGetProcAddress("glFogCoordfEXT");
+  mpGlFogCoordfEXT = (void(*)(GLfloat)) MyNSGLGetProcAddress("glFogCoordfEXT");
 #else
-  this->glFogCoordfEXTPtr = (void(*)(GLfloat))glXGetProcAddressARB((const GLubyte*)"glFogCoordfEXT");
+  mpGlFogCoordfEXT = (void(*)(GLfloat)) glXGetProcAddressARB((const GLubyte*)"glFogCoordfEXT");
 #endif // __APPLE__
 #endif // _WIN32
-  this->mGLFunctionsInitialized = true;
+  mGLFunctionsInitialized = true;
 }
 
 #ifdef __APPLE__

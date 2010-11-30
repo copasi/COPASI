@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.4.2.2 $
+//   $Revision: 1.4.2.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/29 16:26:55 $
+//   $Author: shoops $
+//   $Date: 2010/11/30 13:27:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,7 +204,7 @@ protected:
   // in the renderer
   // Maybe all this dynamic function initialization should
   // be moved to some global place
-  void(*glFogCoordfEXTPtr)(GLfloat);
+  void(*mpGlFogCoordfEXT)(GLfloat);
 #endif // COPASI_DEBUG
 
 
