@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.6 $
+//   $Revision: 1.83.4.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:38:00 $
+//   $Author: gauges $
+//   $Date: 2010/11/30 07:45:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1083,7 +1083,7 @@ void SliderDialog::setFramework(int framework)
 
   // we don't care if the change was for the current
   // task, we justm update if there was any change at all
-  if (changed = true)
+  if (changed == true)
     {
       this->update();
     }
