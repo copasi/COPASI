@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.12 $
+//   $Revision: 1.5.2.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/11/30 13:27:14 $
+//   $Author: gauges $
+//   $Date: 2010/11/30 17:07:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -6850,10 +6850,14 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
   symbolName[0] = '_';
   symbol = NULL;
 
-  if (NSIsSymbolNameDefined(symbolName))
-    {
-      symbol = NSLookupAndBindSymbol(symbolName);
-    }
+//  if (NSIsSymbolNameDefined(symbolName))
+  {
+    const struct mach_header* header = NSAddImage("/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL", NSADDIMAGE_OPTION_RETURN_ON_ERROR);
+    // we should always find the OpenGL library
+    assert(header != NULL);
+    symbol = NSLookupSymbolInImage(header, symbolName, NSLOOKUPSYMBOLINIMAGE_OPTION_BIND | NSLOOKUPSYMBOLINIMAGE_OPTION_RETURN_ON_ERROR);
+    //symbol = NSLookupAndBindSymbol(symbolName);
+  }
 
   free(symbolName);
 
