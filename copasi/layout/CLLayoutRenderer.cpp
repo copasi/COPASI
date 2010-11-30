@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.10 $
+//   $Revision: 1.5.2.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/11/29 20:00:28 $
+//   $Author: gauges $
+//   $Date: 2010/11/30 06:40:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -6832,7 +6832,7 @@ void CLLayoutRenderer::initialize_gl_extension_functions()
 #ifdef __APPLE__
   this->glFogCoordfEXTPtr = (void(*)(GLfloat))MyNSGLGetProcAddress("glFogCoordfEXT");
 #else
-  this->glFogCoordfEXTPtr = (void(*)(GLfloat))glXGetProcAddressARB("glFogCoordfEXT");
+  this->glFogCoordfEXTPtr = (void(*)(GLfloat))glXGetProcAddressARB((const GLubyte*)"glFogCoordfEXT");
 #endif // __APPLE__
 #endif // _WIN32
   this->mGLFunctionsInitialized = true;
