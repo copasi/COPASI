@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTableView.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/24 18:07:53 $
+//   $Date: 2010/12/01 19:43:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,8 @@ public:
   CQTableView(QWidget * pParent = NULL);
   virtual ~CQTableView();
 
+  virtual void setModel(QAbstractItemModel * model);
+
 protected:
   virtual void keyPressEvent(QKeyEvent * pEvent);
 
@@ -40,10 +42,13 @@ protected:
 
 protected slots:
   void slotSingleClick();
+  void slotMoveDown();
 
 private:
   QTimer * mpTimer;
   QMouseEvent * mpMouseEvent;
+  bool mMoveDown;
+  QAbstractItemModel * mpModel;
 };
 
 #endif // COPASI_QTableView

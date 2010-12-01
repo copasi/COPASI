@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTableView.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/24 18:07:52 $
+//   $Date: 2010/12/01 19:43:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,9 @@
 CQTableView::CQTableView(QWidget * pParent):
     QTableView(pParent),
     mpTimer(NULL),
-    mpMouseEvent(NULL)
+    mpMouseEvent(NULL),
+    mMoveDown(false),
+    mpModel(NULL)
 {
   mpTimer = new QTimer(this);
   mpTimer->setSingleShot(true);
@@ -35,6 +37,22 @@ CQTableView::~CQTableView()
 {}
 
 // virtual
+void CQTableView::setModel(QAbstractItemModel * model)
+{
+  if (mpModel != NULL)
+    disconnect(mpModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex)),
+               this, SLOT(slotMoveDown()));
+
+  mpModel = model;
+
+  if (mpModel != NULL)
+    connect(mpModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex)),
+            this, SLOT(slotMoveDown()));
+
+  QTableView::setModel(model);
+}
+
+// virtual
 void CQTableView::keyPressEvent(QKeyEvent * pEvent)
 {
   QTableView::keyPressEvent(pEvent);
@@ -43,19 +61,11 @@ void CQTableView::keyPressEvent(QKeyEvent * pEvent)
     {
       case Qt::Key_Return:
       case Qt::Key_Enter:
-      {
-        QModelIndex Next = currentIndex();
-        Next = Next.sibling(Next.row() + 1, Next.column());
-
-        if (Next.isValid())
-          {
-            setCurrentIndex(Next);
-            edit(Next);
-          }
-      }
-      break;
+        mMoveDown = true;
+        break;
 
       default:
+        mMoveDown = false;
         break;
     }
 }
@@ -89,5 +99,14 @@ void CQTableView::slotSingleClick()
     {
       QTableView::mousePressEvent(mpMouseEvent);
       mpMouseEvent = NULL;
+    }
+}
+
+void CQTableView::slotMoveDown()
+{
+  if (mMoveDown)
+    {
+      QKeyEvent Down(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
+      QTableView::keyPressEvent(&Down);
     }
 }

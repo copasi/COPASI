@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.15.4.3 $
+//   $Revision: 1.15.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:30 $
+//   $Date: 2010/12/01 19:43:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,11 +29,10 @@
 #include "CQReactionDM.h"
 #include "qtUtilities.h"
 
-CQReactionDM::CQReactionDM(QObject *parent)
-    : CQBaseDataModel(parent)
-
-{
-}
+CQReactionDM::CQReactionDM(QObject *parent):
+    CQBaseDataModel(parent),
+    mNewEquation()
+{}
 
 int CQReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -93,7 +92,15 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(pRea->getObjectName())));
 
               case COL_EQUATION:
-                return QVariant(QString(FROM_UTF8(CChemEqInterface::getChemEqString((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *pRea, false))));
+
+                if (mNewEquation.isEmpty())
+                  {
+                    return QVariant(QString(FROM_UTF8(CChemEqInterface::getChemEqString((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *pRea, false))));
+                  }
+                else
+                  {
+                    return QVariant(mNewEquation);
+                  }
 
               case COL_RATE_LAW:
 
@@ -209,7 +216,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
 void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, const QVariant &value)
 {
   std::string objKey = pRea->getKey();
-  QString equation = value.toString();
+  mNewEquation = value.toString();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -224,17 +231,18 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
   CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   ri.initFromReaction(objKey);
 
-  if (TO_UTF8(equation) != ri.getChemEqString())
+  if (TO_UTF8(mNewEquation) != ri.getChemEqString())
     {
       //first check if the string is a valid equation
-      if (!CChemEqInterface::isValidEq(TO_UTF8(equation)))
+      if (!CChemEqInterface::isValidEq(TO_UTF8(mNewEquation)))
         {
+          mNewEquation = "";
           return;
         }
       else
         {
           //tell the reaction interface
-          ri.setChemEqString(TO_UTF8(equation), "");
+          ri.setChemEqString(TO_UTF8(mNewEquation), "");
         }
     }
 
@@ -274,6 +282,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
             break;
 
           default:
+            mNewEquation = "";
             return;
             break;
         }
@@ -288,6 +297,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
       ri.setFunctionWithEmptyMapping("");
       emit notifyGUI(ListViews::REACTION, ListViews::DELETE, objKey);
       emit notifyGUI(ListViews::REACTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+      mNewEquation = "";
       return;
     }
 
@@ -299,12 +309,18 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 
   //(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->compile();
   //this tells the gui what it needs to know.
-  if (createdObjects)
-    emit notifyGUI(ListViews::MODEL, ListViews::CHANGE, "");
-  else
+  if (createdObjects ||
+      DeletedParameters.size() != 0)
     {
-      if (createdMetabs) emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, "");
+      std::cout << "CQReactionDM::setEquation (3): " << index.row() << std::endl;
+      emit notifyGUI(ListViews::MODEL, ListViews::CHANGE, "");
     }
+  else if (createdMetabs)
+    {
+      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, "");
+    }
+
+  mNewEquation = "";
 }
 
 bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
