@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.30.2.2 $
+//   $Revision: 1.30.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/05 12:54:56 $
+//   $Date: 2010/12/02 13:30:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,32 +176,34 @@ bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
 {
   if (pExpression == mpExpression) return true;
 
+  if (pExpression == mpExpression) return true;
+
+  if (pExpression == NULL) return false;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
-  pdelete(mpExpression);
+  CExpression * pOld = mpExpression;
+  mpExpression = pExpression;
 
-  if (pExpression != NULL)
+  mpExpression->setObjectName("Expression");
+  add(mpExpression, true);
+
+  if (mpExpression->compile())
     {
-      mpExpression = pExpression;
-      mpExpression->setObjectName("Expression");
-      add(mpExpression, true);
-
-      if (mpExpression->compile())
-        {
-          return true;
-        }
-
-      // If compile fails we do not take ownership
-      mpExpression->setObjectParent(NULL);
-      mpExpression = NULL;
-
-      return false;
+      pdelete(pOld);
+      return true;
     }
 
-  return true;
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpExpression);
+  mpExpression->setObjectParent(NULL);
+  mpExpression = pOld;
+
+  return false;
 }
 
 std::string CEventAssignment::getExpression() const
@@ -428,32 +430,32 @@ bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
 {
   if (pExpression == mpTriggerExpression) return true;
 
+  if (pExpression == NULL) return false;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
-  pdelete(mpTriggerExpression);
+  CExpression * pOld = mpTriggerExpression;
+  mpTriggerExpression = pExpression;
 
-  if (pExpression)
+  mpTriggerExpression->setObjectName("Expression");
+  add(mpTriggerExpression, true);
+
+  if (mpTriggerExpression->compile())
     {
-      mpTriggerExpression = pExpression;
-      mpTriggerExpression->setObjectName("TriggerExpression");
-      add(mpTriggerExpression, true);
-
-      if (mpTriggerExpression->compile())
-        {
-          return true;
-        }
-
-      // If compile fails we do not take ownership
-      mpTriggerExpression->setObjectParent(NULL);
-      mpTriggerExpression = NULL;
-
-      return false;
+      pdelete(pOld);
+      return true;
     }
 
-  return true;
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpTriggerExpression);
+  mpTriggerExpression->setObjectParent(NULL);
+  mpTriggerExpression = pOld;
+
+  return false;
 }
 
 std::string CEvent::getTriggerExpression() const
@@ -494,32 +496,32 @@ bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
 {
   if (pExpression == mpDelayExpression) return true;
 
+  if (pExpression == NULL) return false;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
-  pdelete(mpDelayExpression);
+  CExpression * pOld = mpDelayExpression;
+  mpDelayExpression = pExpression;
 
-  if (pExpression)
+  mpDelayExpression->setObjectName("Expression");
+  add(mpDelayExpression, true);
+
+  if (mpDelayExpression->compile())
     {
-      mpDelayExpression = pExpression;
-      mpDelayExpression->setObjectName("DelayExpression");
-      add(mpDelayExpression, true);
-
-      if (mpDelayExpression->compile())
-        {
-          return true;
-        }
-
-      // If compile fails we do not take ownership
-      mpDelayExpression->setObjectParent(NULL);
-      mpDelayExpression = NULL;
-
-      return false;
+      pdelete(pOld);
+      return true;
     }
 
-  return true;
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpDelayExpression);
+  mpDelayExpression->setObjectParent(NULL);
+  mpDelayExpression = pOld;
+
+  return false;
 }
 
 std::string CEvent::getDelayExpression() const
