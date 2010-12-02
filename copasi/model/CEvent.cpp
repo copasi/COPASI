@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.30.2.3 $
+//   $Revision: 1.30.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/12/02 13:30:01 $
+//   $Author: gauges $
+//   $Date: 2010/12/02 17:28:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,8 +190,10 @@ bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
 
   mpExpression->setObjectName("Expression");
   add(mpExpression, true);
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(mpModel);
 
-  if (mpExpression->compile())
+  if (mpExpression->compile(listOfContainer))
     {
       pdelete(pOld);
       return true;
@@ -202,7 +204,6 @@ bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
   remove(mpExpression);
   mpExpression->setObjectParent(NULL);
   mpExpression = pOld;
-
   return false;
 }
 
@@ -442,8 +443,10 @@ bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
 
   mpTriggerExpression->setObjectName("Expression");
   add(mpTriggerExpression, true);
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(mpModel);
 
-  if (mpTriggerExpression->compile())
+  if (mpTriggerExpression->compile(listOfContainer))
     {
       pdelete(pOld);
       return true;
@@ -454,7 +457,6 @@ bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
   remove(mpTriggerExpression);
   mpTriggerExpression->setObjectParent(NULL);
   mpTriggerExpression = pOld;
-
   return false;
 }
 
@@ -508,8 +510,10 @@ bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
 
   mpDelayExpression->setObjectName("Expression");
   add(mpDelayExpression, true);
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(mpModel);
 
-  if (mpDelayExpression->compile())
+  if (mpDelayExpression->compile(listOfContainer))
     {
       pdelete(pOld);
       return true;
@@ -520,7 +524,6 @@ bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
   remove(mpDelayExpression);
   mpDelayExpression->setObjectParent(NULL);
   mpDelayExpression = pOld;
-
   return false;
 }
 
