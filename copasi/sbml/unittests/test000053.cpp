@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000053.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Date: 2010/12/02 09:17:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,15 +175,13 @@ void test000053::test2_bug1000()
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  // the behaviour of COPASI changed during development of Build-33
+  // Now setting the expression on the metabolite fails and the metabolite
+  // has a NULL pointer as the expression.
+  // Therefore the importer now sets the state back to fixed
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::FIXED);
   const CExpression* pExpr = pMetab->getExpressionPtr();
-  CPPUNIT_ASSERT(pExpr != NULL);
-  const CEvaluationNode* pRoot = pExpr->getRoot();
-  CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CONSTANT);
-  const CEvaluationNodeConstant* pConstantNode = dynamic_cast<const CEvaluationNodeConstant*>(pRoot);
-  CPPUNIT_ASSERT(pConstantNode != NULL);
-  CPPUNIT_ASSERT(((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pConstantNode->getType())) == CEvaluationNodeConstant::_NaN);
+  CPPUNIT_ASSERT(pExpr == NULL);
 }
 
 const char* test000053::MODEL_STRING_2 =
