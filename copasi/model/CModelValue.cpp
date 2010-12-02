@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.75.2.2 $
+//   $Revision: 1.75.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/11/05 12:54:56 $
+//   $Author: gauges $
+//   $Date: 2010/12/02 10:53:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -278,6 +278,8 @@ bool CModelEntity::setExpressionPtr(CExpression* pExpression)
         }
 
       // If compile fails we do not take ownership
+      // and we remove the object from the container
+      remove(this->mpExpression);
       mpExpression->setObjectParent(NULL);
       mpExpression = NULL;
 
@@ -322,6 +324,8 @@ bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
         }
 
       // If compile fails we do not take ownership
+      // and we remove the object from the container
+      remove(this->mpInitialExpression);
       mpInitialExpression->setObjectParent(NULL);
       mpInitialExpression = NULL;
 
