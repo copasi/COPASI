@@ -161,10 +161,12 @@ void CQTSSAResultSubWidget::slotTimeOrStepChanged()
   int s = mpSlider->value();
 
   if (mpButton1->isChecked())
-    if (s > 1)
-      mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
-    else
-      mpLabel->setNum(0);
+    {
+      if (s > 1)
+        mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
+      else
+        mpLabel->setNum(0);
+    }
 
   if (mpButton2->isChecked())
     mpLabel->setNum(s);
