@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.6.2.1 $
+//   $Revision: 1.6.2.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:56 $
+//   $Date: 2010/12/06 16:14:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,8 +47,10 @@ Qt::ItemFlags CQPlotDM::flags(const QModelIndex &index) const
   if (!index.isValid())
     return Qt::ItemIsEnabled;
 
-  if (index.column() == COL_NAME_PLOTS || index.column() == COL_ACTIVE_PLOTS)
+  if (index.column() == COL_NAME_PLOTS)
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+  else if (index.column() == COL_ACTIVE_PLOTS)
+    return QAbstractItemModel::flags(index) | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
   else
     return QAbstractItemModel::flags(index);
 }
@@ -75,7 +77,12 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
               case COL_NAME_PLOTS:
                 return QVariant(QString("New Plot"));
               case COL_ACTIVE_PLOTS:
-                return QVariant(true);
+
+                if (role == Qt::DisplayRole)
+                  return QVariant();
+                else
+                  return QVariant(true);
+
               default:
                 return QVariant(QString(""));
             }
@@ -96,10 +103,16 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
                 return QVariant((unsigned int)pPS->getItems().size());
 
               case COL_ACTIVE_PLOTS:
-                return QVariant(pPS->isActive());
+
+                if (role == Qt::DisplayRole)
+                  return QVariant();
+                else
+                  return QVariant(pPS->isActive());
             }
         }
     }
+  else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
+    return index.data(Qt::EditRole).toBool() ? QVariant(Qt::Checked) : QVariant(Qt::Unchecked);
 
   return QVariant();
 }
@@ -188,6 +201,11 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
           emit dataChanged(index, index);
           emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getKey());
         }
+    }
+  else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
+    {
+      QVariant data = value.toInt() == Qt::Checked ? QVariant(true) : QVariant(false);
+      return setData(index, data, Qt::EditRole);
     }
 
   return true;

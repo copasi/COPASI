@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotsWidget.cpp,v $
-//   $Revision: 1.5.2.1 $
+//   $Revision: 1.5.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/11/24 18:07:53 $
+//   $Author: aekamal $
+//   $Date: 2010/12/06 16:14:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
