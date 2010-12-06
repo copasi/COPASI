@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.13 $
+//   $Revision: 1.263.2.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/12/02 09:17:07 $
+//   $Author: aekamal $
+//   $Date: 2010/12/06 16:31:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -9345,6 +9345,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<s
         }
     }
 }
+#endif // LIBSBML_VERSION
 
 /**
  * This method divides the given expression by the given object and returns a new expression.
@@ -9399,7 +9400,3 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
 
   return pResult;
 }
-
-
-
-#endif // LIBSBML_VERSION
