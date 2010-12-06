@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.11.2.3 $
+//   $Revision: 1.11.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:31 $
+//   $Date: 2010/12/06 17:05:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_ICONCENTRATION:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(mpSpecies->getInitialConcentration()));
+                  return QVariant(QString::number(mpSpecies->getInitialConcentration(), 'g', 10));
                 else
                   return QVariant(mpSpecies->getInitialConcentration());
               }
@@ -193,7 +193,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_INUMBER:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(mpSpecies->getInitialValue()));
+                  return QVariant(QString::number(mpSpecies->getInitialValue(), 'g', 10));
                 else
                   return QVariant(mpSpecies->getInitialValue());
               }

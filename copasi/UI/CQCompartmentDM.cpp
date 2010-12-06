@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.9.4.3 $
+//   $Revision: 1.9.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:30 $
+//   $Date: 2010/12/06 17:05:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,7 +125,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_IVOLUME:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(pComp->getInitialValue()));
+                  return QVariant(QString::number(pComp->getInitialValue(), 'g', 10));
                 else
                   return QVariant(pComp->getInitialValue());
               }

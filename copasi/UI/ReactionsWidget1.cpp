@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.5 $
+//   $Revision: 1.205.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/01 19:43:45 $
+//   $Date: 2010/12/06 17:05:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -729,7 +729,7 @@ void ReactionsWidget1::setFramework(int framework)
         TextLabel8->setText("Flux" + Units);
 
         if (pReaction != NULL)
-          LineEdit3->setText(QString::number(pReaction->getFlux()));
+          LineEdit3->setText(QString::number(pReaction->getFlux(), 'g', 10));
 
         break;
 
@@ -744,7 +744,7 @@ void ReactionsWidget1::setFramework(int framework)
         TextLabel8->setText("Particle Flux" + Units);
 
         if (pReaction != NULL)
-          LineEdit3->setText(QString::number(pReaction->getParticleFlux()));
+          LineEdit3->setText(QString::number(pReaction->getParticleFlux(), 'g', 10));
 
         break;
     }

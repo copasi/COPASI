@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.2.4.5 $
+//   $Revision: 1.2.4.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 13:27:04 $
+//   $Date: 2010/12/06 17:05:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,8 +202,8 @@ void CQSpeciesDetail::setFramework(int framework)
         if (mpMetab != NULL)
           {
             mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
-            mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
-            mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
+            mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
+            mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
           }
         else
           {
@@ -234,8 +234,8 @@ void CQSpeciesDetail::setFramework(int framework)
 
         if (mpMetab != NULL)
           {
-            mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
-            mpEditRate->setText(QString::number(mpMetab->getRate()));
+            mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
+            mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
           }
         else
           {
@@ -314,7 +314,7 @@ void CQSpeciesDetail::load()
   mInitialNumberLastChanged = true;
 
   // Transition Time
-  mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime()));
+  mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime(), 'g', 10));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getExpression());

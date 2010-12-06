@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.6.4.3 $
+//   $Revision: 1.6.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:30 $
+//   $Date: 2010/12/06 17:05:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,7 +125,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
               case COL_INITIAL_GQ:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(pGQ->getInitialValue()));
+                  return QVariant(QString::number(pGQ->getInitialValue(), 'g', 10));
                 else
                   return QVariant(pGQ->getInitialValue());
               }

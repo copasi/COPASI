@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.17.2.4 $
+//   $Revision: 1.17.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:30 $
+//   $Date: 2010/12/06 17:05:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -393,10 +393,10 @@ void CQCompartment::load()
   mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
 
   // Transient Volume
-  mpEditCurrentVolume->setText(QString::number(mpCompartment->getValue()));
+  mpEditCurrentVolume->setText(QString::number(mpCompartment->getValue(), 'g', 10));
 
   // Concentration Rate
-  mpEditRate->setText(QString::number(mpCompartment->getRate()));
+  mpEditRate->setText(QString::number(mpCompartment->getRate(), 'g', 10));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpCompartment->getExpression());

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.15.4.5 $
+//   $Revision: 1.15.4.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/12 17:02:58 $
+//   $Date: 2010/12/06 17:05:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -318,13 +318,13 @@ void CQModelValue::load()
   mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
 
   // Initial Value
-  mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
+  mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue(), 'g', 10));
 
   // Current Value
-  mpEditCurrentValue->setText(QString::number(mpModelValue->getValue()));
+  mpEditCurrentValue->setText(QString::number(mpModelValue->getValue(), 'g', 10));
 
   // Rate
-  mpEditRate->setText(QString::number(mpModelValue->getRate()));
+  mpEditRate->setText(QString::number(mpModelValue->getRate(), 'g', 10));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());
@@ -395,7 +395,7 @@ void CQModelValue::save()
     }
 
   // set initial value
-  if (QString::number(mpModelValue->getInitialValue()) != mpEditInitialValue->text() &&
+  if (QString::number(mpModelValue->getInitialValue(), 'g', 10) != mpEditInitialValue->text() &&
       mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
     {
       mpModelValue->setInitialValue(mpEditInitialValue->text().toDouble());
