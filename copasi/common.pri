@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120.2.2 $ 
+#   $Revision: 1.120.2.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/11/13 14:53:08 $ 
+#   $Date: 2010/12/10 20:13:16 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120.2.2 $ $Author: shoops $ $Date: 2010/11/13 14:53:08 $  
+# $Revision: 1.120.2.3 $ $Author: shoops $ $Date: 2010/12/10 20:13:16 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -442,6 +442,13 @@ contains(STATIC_LINKAGE, yes) {
 }
  
 contains(BUILD_OS, Linux) {
+
+  TARGET_64 = $$system($CC -dM -E - < /dev/null | grep -q __x86_64__ && echo true)
+
+  contains(TARGET_64, true) {
+    message("Creating 64 bit binaries")
+  }
+
   release {
     contains(TEMPLATE, app) {
       QMAKE_POST_LINK = strip $(TARGET)
@@ -527,13 +534,22 @@ contains(BUILD_OS, Linux) {
     DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
 
-    LIBS += $${MKL_PATH}/lib/32/libmkl_solver.a \
-            -Wl,--start-group \
-              $${MKL_PATH}/lib/32/libmkl_intel.a \
-              $${MKL_PATH}/lib/32/libmkl_sequential.a \
-              $${MKL_PATH}/lib/32/libmkl_core.a \
-            -Wl,--end-group \
-            -lpthread
+    contains(TARGET_64, true) {
+      LIBS += -Wl,--start-group \
+                $${MKL_PATH}/lib/em64t/libmkl_intel_lp64.a \
+                $${MKL_PATH}/lib/em64t/libmkl_sequential.a \
+                $${MKL_PATH}/lib/em64t/libmkl_core.a \
+              -Wl,--end-group \
+              -lpthread
+    } else {
+      LIBS += $${MKL_PATH}/lib/32/libmkl_solver.a \
+              -Wl,--start-group \
+                $${MKL_PATH}/lib/32/libmkl_intel.a \
+                $${MKL_PATH}/lib/32/libmkl_sequential.a \
+                $${MKL_PATH}/lib/32/libmkl_core.a \
+              -Wl,--end-group \
+              -lpthread
+    }
 
   } else {
     !isEmpty(CLAPACK_PATH) {
