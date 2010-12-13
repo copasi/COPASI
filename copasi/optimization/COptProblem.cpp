@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.2 $
+//   $Revision: 1.115.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/24 21:56:11 $
+//   $Date: 2010/12/13 20:40:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -420,6 +420,9 @@ bool COptProblem::initialize()
 bool COptProblem::restore(const bool & updateModel)
 {
   bool success = true;
+
+  if (mpSubtask != NULL)
+    success &= mpSubtask->restore();
 
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();

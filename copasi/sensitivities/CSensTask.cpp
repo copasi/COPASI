@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.10.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/09 15:53:15 $
+//   $Author: shoops $
+//   $Date: 2010/12/13 20:40:29 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -47,7 +52,7 @@ CSensTask::CSensTask(const CSensTask & src,
     CCopasiTask(src, pParent)
 {
   mpProblem =
-    new CSensProblem(* (CSensProblem *) src.mpProblem, this);
+    new CSensProblem(*(CSensProblem *) src.mpProblem, this);
   mpMethod =
     CSensMethod::createSensMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
@@ -124,6 +129,20 @@ bool CSensTask::process(const bool & useInitialValues)
   mReport.output(COutputInterface::AFTER);
 
   return (success);
+}
+
+// virtual
+bool CSensTask::restore()
+{
+  bool success = true;
+
+  CSensMethod* pMethod =
+    dynamic_cast<CSensMethod *>(mpMethod);
+
+  if (pMethod != NULL)
+    pMethod->restore(mUpdateModel);
+
+  return success;
 }
 
 std::ostream &operator<<(std::ostream &os, const CSensTask & /* A */)

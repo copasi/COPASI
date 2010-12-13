@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:26 $
+//   $Date: 2010/12/13 20:40:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,7 +142,7 @@ CSteadyStateMethod::process(CState * pState,
 
   mpSteadyState = pState;
   mpJacobianX = & jacobianX;
-  mpProgressHandler = handler;
+  mpCallBack = handler;
 
   return processInternal();
 }

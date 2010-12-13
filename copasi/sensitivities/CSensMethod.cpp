@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:56 $
+//   $Date: 2010/12/13 20:40:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,9 +145,9 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
   //progress bar
   ++mProgress;
 
-  if (mpProgressBar)
+  if (mpCallBack)
     {
-      bool tmp = mpProgressBar->progressItem(mProgressHandler);
+      bool tmp = mpCallBack->progressItem(mProgressHandler);
       return tmp;
     }
 
@@ -623,6 +623,16 @@ bool CSensMethod::initialize(CSensProblem* problem)
   return success;
 }
 
+bool CSensMethod::restore(const bool & /* updateModel */)
+{
+  bool success = true;
+
+  if (mpSubTask != NULL)
+    success &= mpSubTask->restore();
+
+  return success;
+}
+
 C_INT32 CSensMethod::getNumberOfSubtaskCalculations()
 {
   C_INT32 ret = 1;
@@ -641,19 +651,19 @@ bool CSensMethod::process(CProcessReport * handler)
   if (!mLocalData.size()) return false;
 
   //initialize progress bar
-  mpProgressBar = handler;
+  mpCallBack = handler;
 
-  if (mpProgressBar)
+  if (mpCallBack)
     {
-      mpProgressBar->setName("performing sensitivities calculation...");
+      mpCallBack->setName("performing sensitivities calculation...");
       C_INT32 max = getNumberOfSubtaskCalculations();
       mProgress = 0;
-      mProgressHandler = mpProgressBar->addItem("Completion",
-                         CCopasiParameter::INT,
-                         &mProgress, &max);
+      mProgressHandler = mpCallBack->addItem("Completion",
+                                             CCopasiParameter::INT,
+                                             &mProgress, &max);
 
       if (mpSubTask)
-        mpSubTask->setCallBack(mpProgressBar);
+        mpSubTask->setCallBack(mpCallBack);
     }
 
   if (!calculate_one_level(mLocalData.size() - 1, mpProblem->getResult())) return false;
@@ -662,7 +672,7 @@ bool CSensMethod::process(CProcessReport * handler)
 
   do_collapsing();
 
-  if (mpProgressBar) mpProgressBar->finishItem(mProgressHandler);
+  if (mpCallBack) mpCallBack->finishItem(mProgressHandler);
 
   return true;
 }
