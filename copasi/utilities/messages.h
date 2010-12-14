@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.153.2.4 $
+//   $Revision: 1.153.2.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/05 14:32:52 $
+//   $Author: shoops $
+//   $Date: 2010/12/14 13:25:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,6 +297,7 @@ const MESSAGES Messages[] =
   {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report of task '%s'."},
   {MCCopasiTask + 6, "CCopasiTask (6): Requested output object:\n '%s'\n not found. It will be ignored."},
   {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
+  {MCCopasiTask + 8, "CCopasiTask (8): '%d' Function Evaluations out of '%d' failed."},
 
   {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
    "Therefore, the calculation of a steady state using the Newton method is not very meaningful."},

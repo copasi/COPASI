@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-//   $Revision: 1.14.10.1 $
+//   $Revision: 1.14.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:29 $
+//   $Date: 2010/12/14 13:25:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,17 +48,6 @@ public:
 
 class CSensMethod : public CCopasiMethod
 {
-protected:
-  /**
-   *  A pointer to the sensitivities problem.
-   */
-  CSensProblem * mpProblem;
-
-  /**
-   * A pointer to the progress bar handler
-   */
-  //CProcessReport * mpProgressHandler;
-
   // Operations
 private:
   /**
@@ -129,17 +118,6 @@ public:
 
 protected:
 
-  std::vector<CSensMethodLocalData> mLocalData;
-
-  std::vector<CCopasiObject*> mTargetfunctionPointers;
-
-  CCopasiTask * mpSubTask;
-
-  std::vector< Refresh * > mInitialRefreshes;
-
-  C_FLOAT64 * mpDeltaFactor;
-  C_FLOAT64 * mpMinDelta;
-
   bool calculate_one_level(unsigned C_INT32 level, CCopasiArray & result);
   bool do_target_calculation(CCopasiArray & result, bool first);
 
@@ -182,9 +160,30 @@ protected:
 
   C_FLOAT64 do_collapsing_innerloop(CCopasiArray::index_type & fullindex);
 
+  // Attributes
+protected:
+  /**
+   *  A pointer to the sensitivities problem.
+   */
+  CSensProblem * mpProblem;
+
+  std::vector<CSensMethodLocalData> mLocalData;
+
+  std::vector<CCopasiObject*> mTargetfunctionPointers;
+
+  CCopasiTask * mpSubTask;
+
+  std::vector< Refresh * > mInitialRefreshes;
+
+  C_FLOAT64 * mpDeltaFactor;
+  C_FLOAT64 * mpMinDelta;
+
+private:
   unsigned C_INT32 mProgressHandler;
   C_INT32 mProgress;
-  //bool mContinue;
+
+  size_t mCounter;
+  size_t mFailedCounter;
 };
 
 #endif

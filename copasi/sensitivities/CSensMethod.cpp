@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.34.2.1 $
+//   $Revision: 1.34.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:27 $
+//   $Date: 2010/12/14 13:25:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,17 @@ CSensMethod::createSensMethod(CCopasiMethod::SubType subType)
 CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
                          const CCopasiContainer * pParent):
     CCopasiMethod(CCopasiTask::sens, subType, pParent),
-    mpProblem(NULL)
+    mpProblem(NULL),
+    mLocalData(),
+    mTargetfunctionPointers(),
+    mpSubTask(NULL),
+    mInitialRefreshes(),
+    mpDeltaFactor(NULL),
+    mpMinDelta(NULL),
+    mProgressHandler(C_INVALID_INDEX),
+    mProgress(0),
+    mCounter(0),
+    mFailedCounter(0)
 {
   addParameter("Delta factor",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-3);
@@ -81,7 +91,17 @@ CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
 CSensMethod::CSensMethod(const CSensMethod & src,
                          const CCopasiContainer * pParent):
     CCopasiMethod(src, pParent),
-    mpProblem(src.mpProblem)
+    mpProblem(src.mpProblem),
+    mLocalData(),
+    mTargetfunctionPointers(),
+    mpSubTask(NULL),
+    mInitialRefreshes(),
+    mpDeltaFactor(NULL),
+    mpMinDelta(NULL),
+    mProgressHandler(C_INVALID_INDEX),
+    mProgress(0),
+    mCounter(0),
+    mFailedCounter(0)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -94,6 +114,8 @@ CSensMethod::~CSensMethod()
 
 bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
 {
+  bool success = false;
+
   //perform the necessary updates
   std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
   std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
@@ -102,21 +124,10 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
     (**it++)();
 
   //****** do subtask ******************
-  if (mpSubTask)
+  if (mpSubTask != NULL)
     {
-      if (mpProblem->getSubTaskType() == CSensProblem::SteadyState)
-        mpSubTask->process(/*first*/true);
-      else
-        mpSubTask->process(true);
-
-      // for steady state calculation only the first calculation is done from
-      //initial state, the remaining from the current state
-    }
-  else
-    {
-      //mpProblem->getModel()
-      //mpProblem->getModel()->updateSimulatedValues();
-      //mpProblem->getModel()->updateNonSimulatedValues();
+      success = mpSubTask->process(/*first*/true);
+      mCounter++;
     }
 
   mpProblem->getModel()->updateSimulatedValues(true);
@@ -134,12 +145,27 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
   result.resize(resultindex);
 
   //copy result
-  for (i = 0; i < imax; ++i)
+  if (success)
     {
-      if (imax > 1)
-        resultindex[0] = i;
+      for (i = 0; i < imax; ++i)
+        {
+          if (imax > 1)
+            resultindex[0] = i;
 
-      result[resultindex] = *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer();
+          result[resultindex] = *(C_FLOAT64 *)mTargetfunctionPointers[i]->getValuePointer();
+        }
+    }
+  else
+    {
+      mFailedCounter++;
+
+      for (i = 0; i < imax; ++i)
+        {
+          if (imax > 1)
+            resultindex[0] = i;
+
+          result[resultindex] = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+        }
     }
 
   //progress bar
@@ -151,7 +177,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
       return tmp;
     }
 
-  return true;
+  return success;
 }
 
 C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
@@ -648,6 +674,10 @@ C_INT32 CSensMethod::getNumberOfSubtaskCalculations()
 
 bool CSensMethod::process(CProcessReport * handler)
 {
+  // Reset the evaluation counter
+  mCounter = 0;
+  mFailedCounter = 0;
+
   if (!mLocalData.size()) return false;
 
   //initialize progress bar
@@ -673,6 +703,9 @@ bool CSensMethod::process(CProcessReport * handler)
   do_collapsing();
 
   if (mpCallBack) mpCallBack->finishItem(mProgressHandler);
+
+  if (mFailedCounter * 20 > mCounter) // > 5% failure rate
+    CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 8, mFailedCounter, mCounter);
 
   return true;
 }
