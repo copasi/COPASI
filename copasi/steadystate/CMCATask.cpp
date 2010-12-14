@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.16.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:26 $
+//   $Date: 2010/12/14 16:29:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,7 +169,7 @@ bool CMCATask::process(const bool & useInitialValues)
   CCopasiTask::output(COutputInterface::DURING);
   CCopasiTask::output(COutputInterface::AFTER);
 
-  return true;
+  return success;
 }
 
 bool CMCATask::restore()

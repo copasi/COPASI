@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.50.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:26 $
+//   $Date: 2010/12/14 16:29:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -426,7 +426,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   C_FLOAT64 * pUnscaled;
   C_FLOAT64 * pScaled;
 
-  // Reactions are rows, species are columnss
+  // Reactions are rows, species are columns
   for (col = 0; itSpecies != endSpecies; ++itSpecies, col++)
     {
       C_FLOAT64 VolumeInv = 1.0 / (*itSpecies)->getCompartment()->getValue();
@@ -455,11 +455,14 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   //   mScaledElasticitiesAnn->setCopasiVector(1, &metabs);
 
   //if we are not in a steady state we cannot calculate CCs
-  if (mSSStatus != CSteadyStateMethod::found) return;
+  if (mSSStatus != CSteadyStateMethod::found ||
+      condition != MCA_OK)
+    {
+      mScaledConcCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mScaledFluxCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-  // if previous calcutations failed return now
-  if (condition != MCA_OK)
-    return;
+      return;
+    }
 
   // Scale ConcCC
   // Reactions are columns, species are rows
@@ -518,7 +521,7 @@ void CMCAMethod::setModel(CModel* model)
  * @param ss_solution refer to steady-state solution
  * @param refer to the resolution
  */
-int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode C_UNUSED(status), C_FLOAT64 res)
+int CMCAMethod::CalculateMCA(C_FLOAT64 res)
 {
   assert(mpModel);
   int ret = MCA_OK;
@@ -529,6 +532,12 @@ int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode C_UNUSED(status), C_
     {
       ret = calculateUnscaledConcentrationCC();
       calculateUnscaledFluxCC(ret);
+    }
+  else
+    {
+      mUnscaledConcCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mUnscaledFluxCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
     }
 
   scaleMCA(ret, res);
@@ -557,7 +566,7 @@ bool CMCAMethod::process()
   // if not, calculate TimeMCA only
   if (1 /*mIsSteadyState*/)
     {
-      CalculateMCA(mSSStatus, mSteadyStateResolution);
+      CalculateMCA(mSteadyStateResolution);
     }
   else
     {
@@ -566,11 +575,6 @@ bool CMCAMethod::process()
 
   return true;
 }
-
-/*bool CMCAMethod::isSteadyState() const
-  {
-    return this->mIsSteadyState;
-  }*/
 
 void CMCAMethod::setSteadyStateStatus(CSteadyStateMethod::ReturnCode SSStatus)
 {
