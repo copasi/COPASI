@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.41.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 00:51:57 $
+//   $Date: 2010/12/14 12:27:22 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -59,17 +64,16 @@ CMassAction::~CMassAction() {DESTRUCTOR_TRACE;}
 
 const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
-  CCallParameters<C_FLOAT64>::const_iterator Factor;
-  CCallParameters<C_FLOAT64>::const_iterator End;
+  CCallParameters<C_FLOAT64>::const_iterator pCallParameters = callParameters.begin();
+
+  CCallParameters<C_FLOAT64>::const_iterator Factor = (pCallParameters + 1)->vector->begin();
+  CCallParameters<C_FLOAT64>::const_iterator End = (pCallParameters + 1)->vector->end();
 
   mValue = 0.0;
 
-  Factor = callParameters[1].vector->begin();
-  End = callParameters[1].vector->end();
-
   if (Factor != End)
     {
-      mValue = *callParameters[0].value   // k1
+      mValue = *(pCallParameters + 0)->value   // k1
                * *(Factor++)->value;      // first substrate.
 
       while (Factor != End)
@@ -81,12 +85,12 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
 
   C_FLOAT64 Products = 0.0;
 
-  Factor = callParameters[3].vector->begin();
-  End = callParameters[3].vector->end();
+  Factor = (pCallParameters + 3)->vector->begin();
+  End = (pCallParameters + 3)->vector->end();
 
   if (Factor != End)
     {
-      Products = *callParameters[2].value // k2
+      Products = *(pCallParameters + 2)->value // k2
                  * *(Factor++)->value;    // first product.
 
       while (Factor != End)
