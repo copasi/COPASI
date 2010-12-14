@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.45.4.4 $
+//   $Revision: 1.45.4.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/12 19:20:12 $
+//   $Date: 2010/12/14 15:07:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -776,7 +776,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationFunction(const CEvalua
         else if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::CONSTANT &&
                  ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild->getType())) == CEvaluationNodeConstant::_NaN)
           {
-            pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+            pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
           }
 
         if (pResult == NULL)
@@ -795,7 +795,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationFunction(const CEvalua
           {
             if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild->getType())) == CEvaluationNodeConstant::_NaN)
               {
-                pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+                pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
                 break;
               }
 
@@ -853,7 +853,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluatio
           // 0^(NaN) -> NaN
           if (pChild2->getType() == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeConstant::_NaN)
             {
-              pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+              pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
             }
           else if (pChild2->getType() == CEvaluationNode::NUMBER)
             {
@@ -864,7 +864,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluatio
               // 0^(-x) -> NaN
               if (fabs(value) < ZERO || value < 0.0)
                 {
-                  pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+                  pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
                 }
             }
 
@@ -880,7 +880,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluatio
           // 1^x -> 1
           if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeConstant::_NaN)
             {
-              pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+              pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
             }
 
           if (pResult == NULL)
@@ -901,7 +901,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluatio
       if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeConstant::_NaN)
         {
           // NaN^x -> NaN
-          pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+          pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
         }
       else if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeConstant::_INFINITY)
         {
@@ -934,7 +934,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluatio
           else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeConstant::_NaN)
             {
               // INFINITY^NaN    -> NaN
-              pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+              pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
             }
           /* the minus function is eliminated
           else if(CEvaluationNode::type(pChild2->getType())==CEvaluationNode::FUNCTION && ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pChild2->getType()))==CEvaluationNodeFunction::MINUS)
@@ -1184,7 +1184,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationDivide(const CEvaluati
   else if ((CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
             fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild2)->value()) < ZERO))
     {
-      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
     }
   // if the first child is 0, the result is 0
   else if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER &&
