@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.7.4.2 $
+//   $Revision: 1.7.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:31 $
+//   $Date: 2010/12/14 14:28:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,8 +133,10 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
               {
                 if (pEvent->getDelayExpression() == "")
                   return QVariant(QString("No"));
+                else if (pEvent->getDelayAssignment())
+                  return QVariant(QString("Assignment"));
                 else
-                  return QVariant(QString("Yes"));
+                  return QVariant(QString("Calculation"));
               }
 
               case COL_DELAY_EXPRESSION_EVENTS:
