@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:59 $
+//   $Author: shoops $
+//   $Date: 2010/12/14 17:36:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSortingEnabled(true);
   sortByColumn(-1, Qt::AscendingOrder);
-  setHeaderLabels(QStringList(""));
+  setHeaderLabels(QStringList("Sort"));
   setRootIsDecorated(true);
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, sizePolicy().hasHeightForWidth()));
   mpExpertSubtree = new QTreeWidgetItem(this, QStringList("Expert"));
