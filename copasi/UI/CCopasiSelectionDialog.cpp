@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.21.2.2 $
+//   $Revision: 1.21.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:57 $
+//   $Author: shoops $
+//   $Date: 2010/12/14 14:27:05 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -286,7 +286,10 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
           if (value)
             {
               index[0] = pDialog->mpCBRow->currentItem();
-              index[1] = pDialog->mpCBColumn->currentItem();
+
+              if (index.size() > 1)
+                index[1] = pDialog->mpCBColumn->currentItem();
+
               returnVector[0] = pArrayAnnotation->addElementReference(index);
             }
 
