@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120.2.3 $ 
+#   $Revision: 1.120.2.4 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/12/10 20:13:16 $ 
+#   $Date: 2010/12/15 18:19:34 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120.2.3 $ $Author: shoops $ $Date: 2010/12/10 20:13:16 $  
+# $Revision: 1.120.2.4 $ $Author: shoops $ $Date: 2010/12/15 18:19:34 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -446,9 +446,16 @@ contains(BUILD_OS, Linux) {
   TARGET_64 = $$system($CC -dM -E - < /dev/null | grep -q __x86_64__ && echo true)
 
   contains(TARGET_64, true) {
-    message("Creating 64 bit binaries")
+    message("Creating 64 bit binaries.")
   }
 
+  INTEL_COMPILER = $$system($CC -dM -E - < /dev/null | grep -q __INTEL_COMPILER && echo true)
+
+  contains(INTEL_COMPILER, true) {
+    message("Linking statically against Intel libraries.")
+    QMAKE_LFLAGS *= -static-intel
+  }
+  
   release {
     contains(TEMPLATE, app) {
       QMAKE_POST_LINK = strip $(TARGET)
@@ -460,7 +467,7 @@ contains(BUILD_OS, Linux) {
   }
   else {
     contains(STATIC_LINKAGE, yes) {
-      QMAKE_LFLAGS += -static
+      QMAKE_LFLAGS *= -static
     }
     else {
       QMAKE_LFLAGS -= -static
