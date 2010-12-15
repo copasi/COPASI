@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.3 $
+//   $Revision: 1.115.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:31 $
+//   $Date: 2010/12/15 16:49:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -563,11 +563,11 @@ bool COptProblem::calculate()
     }
 
   if (!success || isnan(mCalculateValue))
-    mCalculateValue = *mpParmMaximize ? -mInfinity : mInfinity;
+    mCalculateValue = mInfinity;
 
   if (mpCallBack) return mpCallBack->progressItem(mhCounter);
 
-  return success;
+  return true;
 }
 
 bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
