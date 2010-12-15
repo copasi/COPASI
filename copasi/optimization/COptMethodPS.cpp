@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2010/12/15 16:49:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -466,7 +466,7 @@ bool COptMethodPS::reachedStdDeviation()
   if (Variance > mVariance)
     return false;
 
-  // The variance of the function value is smaller than requiered. We now
+  // The variance of the function value is smaller than required. We now
   // Check the variance of the flock positions.
   CVector< C_FLOAT64 > FirstMoments(mVariableSize);
   CVector< C_FLOAT64 > SecondMoments(mVariableSize);
