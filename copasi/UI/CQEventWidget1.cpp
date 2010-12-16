@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.24.2.3 $
+//   $Revision: 1.24.2.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:57 $
+//   $Author: shoops $
+//   $Date: 2010/12/16 15:27:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,7 +190,7 @@ void CQEventWidget1::init()
 void CQEventWidget1::slotAddTarget()
 {
   CQSimpleSelectionTree::ObjectClasses Classes =
-    CQSimpleSelectionTree::Variables;
+    CQSimpleSelectionTree::EventTarget;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
@@ -498,7 +498,7 @@ void CQEventWidget1::slotSelectObject()
     return slotAddTarget();
 
   CQSimpleSelectionTree::ObjectClasses Classes =
-    CQSimpleSelectionTree::Variables;
+    CQSimpleSelectionTree::EventTarget;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);

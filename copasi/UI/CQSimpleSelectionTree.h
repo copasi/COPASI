@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:59 $
+//   $Author: shoops $
+//   $Date: 2010/12/16 15:27:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,8 @@ public:
     ObservedValues = 0x20,
     Results = 0x40,
     NumericValues = 0x80,
-    AnyObject = 0x100
+    AnyObject = 0x100,
+    EventTarget = 0x200
   };
 
   typedef int ObjectClasses;

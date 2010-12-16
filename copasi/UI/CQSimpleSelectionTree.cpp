@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/14 17:36:04 $
+//   $Date: 2010/12/16 15:27:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -838,6 +838,14 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses & classes, const CCopasiO
           (ObjectName == "Value" ||
            ObjectName == "Volume" ||
            ObjectName == "ParticleNumber" ||
+           ObjectName == "Concentration"))
+        return true;
+
+      if ((classes & EventTarget) &&
+          Status != CModelEntity::TIME &&
+          Status != CModelEntity::ASSIGNMENT &&
+          (ObjectName == "Value" ||
+           ObjectName == "Volume" ||
            ObjectName == "Concentration"))
         return true;
 
