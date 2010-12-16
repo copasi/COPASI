@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.5 $
+//   $Revision: 1.115.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/16 16:07:05 $
+//   $Date: 2010/12/16 17:01:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@
 COptProblem::COptProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     CCopasiProblem(type, pParent),
-    mInfinity(0.0),
+    mWorstValue(0.0),
     mpParmSubtaskCN(NULL),
     mpParmObjectiveExpression(NULL),
     mpParmMaximize(NULL),
@@ -98,7 +98,7 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
 COptProblem::COptProblem(const COptProblem& src,
                          const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
-    mInfinity(src.mInfinity),
+    mWorstValue(src.mWorstValue),
     mpParmSubtaskCN(NULL),
     mpParmObjectiveExpression(NULL),
     mpParmMaximize(NULL),
@@ -315,7 +315,7 @@ bool COptProblem::initializeSubtaskBeforeOutput()
 
 bool COptProblem::initialize()
 {
-  mInfinity = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+  mWorstValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
 
   if (!mpModel) return false;
 
@@ -329,7 +329,7 @@ bool COptProblem::initialize()
   mConstraintCounter = 0;
   mFailedConstraintCounter = 0;
 
-  mSolutionValue = mInfinity;
+  mSolutionValue = mWorstValue;
 
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(mpModel);
@@ -428,7 +428,7 @@ bool COptProblem::restore(const bool & updateModel)
   std::vector<COptItem * >::iterator end = mpOptItems->end();
   C_FLOAT64 * pTmp;
 
-  if (updateModel && mSolutionValue != mInfinity)
+  if (updateModel && mSolutionValue != mWorstValue)
     {
       // Set the model values and start values to the solution values
       pTmp = mSolutionVariables.array();
@@ -544,13 +544,11 @@ bool COptProblem::calculate()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mFailedCounter++;
       success = false;
     }
 
   catch (...)
     {
-      mFailedCounter++;
       success = false;
     }
 
@@ -563,7 +561,10 @@ bool COptProblem::calculate()
     }
 
   if (!success || isnan(mCalculateValue))
-    mCalculateValue = mInfinity;
+    {
+      mFailedCounter++;
+      mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
+    }
 
   if (mpCallBack) return mpCallBack->progressItem(mhCounter);
 
@@ -593,7 +594,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   calculate();
 
-  if (mSolutionValue == mInfinity)
+  if (mSolutionValue == mWorstValue)
     return false;
 
   mHaveStatistics = true;

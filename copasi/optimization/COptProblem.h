@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.61.4.1 $
+//   $Revision: 1.61.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/05 12:24:34 $
+//   $Date: 2010/12/16 17:01:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -354,7 +354,7 @@ protected:
   /**
    * A static value containing Infinity.
    */
-  C_FLOAT64 mInfinity;
+  C_FLOAT64 mWorstValue;
 
   /**
    * A pointer to the value of the CCopasiParameter holding the CN for the subtask

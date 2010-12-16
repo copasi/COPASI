@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.4 $
+//   $Revision: 1.66.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:30 $
+//   $Date: 2010/12/16 17:01:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,10 +62,10 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
     mCrossValidationUpdateMethods(0, 0),
     mCrossValidationConstraints(0, 0),
     mCrossValidationDependentValues(0),
-    mCrossValidationSolutionValue(mInfinity),
+    mCrossValidationSolutionValue(mWorstValue),
     mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mCrossValidationObjective(mInfinity),
+    mCrossValidationObjective(mWorstValue),
     mThresholdCounter(0),
 #endif // COPASI_CROSSVALIDATION
     mpTrajectoryProblem(NULL),
@@ -103,10 +103,10 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     mCrossValidationUpdateMethods(0, 0),
     mCrossValidationConstraints(0, 0),
     mCrossValidationDependentValues(src.mCrossValidationDependentValues),
-    mCrossValidationSolutionValue(mInfinity),
+    mCrossValidationSolutionValue(mWorstValue),
     mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mCrossValidationObjective(mInfinity),
+    mCrossValidationObjective(mWorstValue),
     mThresholdCounter(0),
 #endif // COPASI_CROSSVALIDATION
     mpTrajectoryProblem(NULL),
@@ -614,7 +614,7 @@ bool CFitProblem::initialize()
 
   mCrossValidationDependentValues.resize(mpCrossValidationSet->getDataPointCount());
 
-  mCrossValidationObjective = mInfinity;
+  mCrossValidationObjective = mWorstValue;
   mThresholdCounter = 0;
 #endif // COPASI_CROSSVALIDATION
 
@@ -749,7 +749,7 @@ bool CFitProblem::calculate()
                     if (!Continue)
                       {
                         mFailedCounter++;
-                        mCalculateValue = mInfinity;
+                        mCalculateValue = mWorstValue;
                         break;
                       }
 
@@ -855,7 +855,7 @@ bool CFitProblem::calculate()
       CCopasiMessage::getLastMessage();
 
       mFailedCounter++;
-      mCalculateValue = mInfinity;
+      mCalculateValue = mWorstValue;
 
       if (pExp) pExp->restoreModelIndependentData();
     }
@@ -863,13 +863,13 @@ bool CFitProblem::calculate()
   catch (...)
     {
       mFailedCounter++;
-      mCalculateValue = mInfinity;
+      mCalculateValue = mWorstValue;
 
       if (pExp) pExp->restoreModelIndependentData();
     }
 
   if (isnan(mCalculateValue))
-    mCalculateValue = mInfinity;
+    mCalculateValue = mWorstValue;
 
   if (mpCallBack) return mpCallBack->progressItem(mhCounter);
 
@@ -1076,7 +1076,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // Keep the results
   CVector< C_FLOAT64 > DependentValues = mExperimentDependentValues;
 
-  if (mSolutionValue == mInfinity)
+  if (mSolutionValue == mWorstValue)
     return false;
 
   // The statistics need to be calculated for the result, i.e., now.
@@ -1677,7 +1677,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         }
       else
         {
-          mParameterSD[i] = mInfinity;
+          mParameterSD[i] = mWorstValue;
           tmp = 1.0;
           mCorrelation(i, i) = 1.0;
         }
@@ -1802,7 +1802,7 @@ bool CFitProblem::calculateCrossValidation()
 
                     if (!Continue)
                       {
-                        CalculateValue = mInfinity;
+                        CalculateValue = mWorstValue;
                         break;
                       }
 
@@ -1884,7 +1884,7 @@ bool CFitProblem::calculateCrossValidation()
       CCopasiMessage::getLastMessage();
 
       mFailedCounter++;
-      CalculateValue = mInfinity;
+      CalculateValue = mWorstValue;
 
       if (pExp) pExp->restoreModelIndependentData();
     }
@@ -1892,16 +1892,16 @@ bool CFitProblem::calculateCrossValidation()
   catch (...)
     {
       mFailedCounter++;
-      CalculateValue = mInfinity;
+      CalculateValue = mWorstValue;
 
       if (pExp) pExp->restoreModelIndependentData();
     }
 
   if (isnan(CalculateValue))
-    CalculateValue = mInfinity;
+    CalculateValue = mWorstValue;
 
   if (!checkFunctionalConstraints())
-    CalculateValue = mInfinity;
+    CalculateValue = mWorstValue;
 
   if (mpCallBack)
     Continue &= mpCallBack->progressItem(mhCounter);
