@@ -1,4 +1,4 @@
-:@echo off 
+@echo off 
 
 echo @echo off > config.status.bat
 
@@ -6,6 +6,7 @@ echo echo running: configure.bat %* >> config.status.bat
 echo configure.bat %* >> config.status.bat
 
 set arguments=
+set PROJECT=win32-msvc2005
 
 :LOOP
 if '%1' == ''                      goto QMAKE
@@ -13,6 +14,7 @@ if '%1' == '--enable-debug'        goto DEBUG
 if '%1' == '--disable-debug'       goto RELEASE
 if '%1' == '--enable-release'      goto RELEASE
 if '%1' == '--disable-release'     goto DEBUG
+if '%1' == '--project'             goto PROJECT
 
 set arguments=%arguments% %1
 shift
@@ -21,6 +23,12 @@ goto LOOP
 :DEBUG
 :RELEASE
 rem debug and release is ignored
+shift
+goto LOOP
+
+:PROJECT
+shift
+set PROJECT=%1
 shift
 goto LOOP
 
@@ -58,14 +66,16 @@ set MY_QMAKESPEC=%QMAKESPEC%
 cd copasi
 echo Executing in copasi:
 
+rem Creating Visual Studio Project Files
 copy copasi.pro tmp_win32.pro
-echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
-
-set QMAKESPEC=win32-msvc2005
+set QMAKESPEC=%PROJECT%
+Echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% copasi.pro
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
-del tmp_win32*
+rem del tmp_win32*
 
 set QMAKESPEC=%MY_QMAKESPEC%
+
+rem Creating Makefiles
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
@@ -82,7 +92,7 @@ cd semantic-test-suite
 echo Executing in semantic-test-suite:
 
 echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
-set QMAKESPEC=win32-msvc2005
+set QMAKESPEC=%PROJECT%
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
@@ -97,7 +107,7 @@ cd stochastic-testsuite
 echo executing in stochastic-testsuite:
 
 echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
-set QMAKESPEC=win32-msvc2005
+set QMAKESPEC=%PROJECT%
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
@@ -111,7 +121,7 @@ cd sbml-testsuite
 echo executing in sbml-testsuite:
 
 echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
-set QMAKESPEC=win32-msvc2005
+set QMAKESPEC=%PROJECT%
 %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%

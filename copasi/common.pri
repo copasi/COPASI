@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120.2.4 $ 
+#   $Revision: 1.120.2.5 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/12/15 18:19:34 $ 
+#   $Date: 2010/12/17 21:48:27 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120.2.4 $ $Author: shoops $ $Date: 2010/12/15 18:19:34 $  
+# $Revision: 1.120.2.5 $ $Author: shoops $ $Date: 2010/12/17 21:48:27 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -206,7 +206,15 @@ contains(BUILD_OS, WIN32) {
   CONFIG += debug_and_release
 
   win32-icc: {
-     !build_pass: message("Using Intel Compiler.")
+    !build_pass: message("Using Intel Compiler.")
+  }
+
+  !contains(QMAKE_HOST.arch, x86_64) {
+    !build_pass: message("x86 build")
+    COPASI_ARCH = 32
+  } else {
+    !build_pass: message("x86_64 build")
+    COPASI_ARCH = 64
   }
 
   !isEmpty(INTELRD_PATH) {
@@ -281,15 +289,22 @@ contains(BUILD_OS, WIN32) {
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     QMAKE_CXXFLAGS += -I\""$${MKL_PATH}"\include\"
-    QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\ia32\lib\"
-    QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\ia32\"
-    LIBS += mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib
-    LIBS += libiomp5mt.lib
+
+    contains(COPASI_ARCH, 32) {
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\ia32\lib\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\ia32\"
+      LIBS += mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib -Qopenmp libguide.lib
+    } else {
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\em64t\lib\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\intel64\"
+      LIBS += mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib -Qopenmp libguide.lib
+    }
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
       QMAKE_CXXFLAGS   += -I\""$${CLAPACK_PATH}"\include\"
       QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}"\lib\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}\lib\\$${COPASI_ARCH}"\"
       LIBS += clapack.lib
     } else {
       error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
@@ -306,6 +321,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\StaticLibs\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\bin\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}\lib\\$${COPASI_ARCH}"\"
   } else {
     error( "EXPAT_PATH must be specified" )
   }
@@ -315,6 +331,7 @@ contains(BUILD_OS, WIN32) {
   !isEmpty(SBML_PATH) {
     QMAKE_CXXFLAGS += -I\""$${SBML_PATH}"\include\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"\lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}\lib\\$${COPASI_ARCH}"\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"\bin\"
   } else {
     error( "SBML_PATH must be specified" )
@@ -326,6 +343,7 @@ contains(BUILD_OS, WIN32) {
   !isEmpty(RAPTOR_PATH) {
     QMAKE_CXXFLAGS += -I\""$${RAPTOR_PATH}"\include\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}"\lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}\lib\\$${COPASI_ARCH}"\"
   } else {
     error( "RAPTOR_PATH must be specified" )
   }
@@ -336,6 +354,7 @@ contains(BUILD_OS, WIN32) {
     !isEmpty(SBW_PATH){
       QMAKE_CXXFLAGS += -I\""$${SBW_PATH}"\include\"
       QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}"\lib\"
+      QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}\lib\\$${COPASI_ARCH}"\"
       
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES *= WIN32
