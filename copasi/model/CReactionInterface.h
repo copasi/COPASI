@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:17:54 $
+//   $Date: 2010/12/22 19:52:14 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -166,7 +171,7 @@ public:
 
   //query information about the function variables
 
-  C_INT32 size() const
+  size_t size() const
   {if (mpFunction) return mpParameters->size(); else return 0;};
 
   bool isVector(unsigned C_INT32 index) const

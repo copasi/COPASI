@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.39.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:47 $
+//   $Date: 2010/12/22 19:52:14 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -127,13 +132,22 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
   std::vector< std::vector<std::string> >::const_iterator iEnd;
   std::vector<std::string>::const_iterator jt;
   std::vector<std::string>::const_iterator jEnd;
-  unsigned C_INT32 i;
+  size_t i;
 
   std::string metabName;
   const CModelEntity* pObj;
-  std::vector<std::string> SubList;
 
-  mNameMap.clear();
+  std::vector<std::string> SubList;
+  SubList.resize(1);
+  SubList[0] = "unknown";
+
+  mNameMap.resize(size());
+
+  for (i = 0; i != size(); ++i)
+    {
+      mNameMap[i] = SubList;
+    }
+
   mValues.resize(size(), 0.1);
   mIsLocal.resize(size(), false);
 
@@ -142,6 +156,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
 
   for (i = 0; it != iEnd; ++it, ++i)
     {
+
       if (isVector(i))
         {
           assert((getUsage(i) == CFunctionParameter::SUBSTRATE)
