@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-//   $Revision: 1.11.4.1 $
+//   $Revision: 1.11.4.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/12/06 16:17:26 $
+//   $Date: 2011/01/03 17:25:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,29 +32,22 @@ Contact: Please contact lixu1@vt.edu.
 #ifndef OBJECTBROWSERWIDGET_H
 #define OBJECTBROWSERWIDGET_H
 
-#include <qvariant.h>
-#include <qwidget.h>
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-#include <Q3Frame>
+#include <QWidget>
 #include <vector>
 
 template <class CType> class CCopasiVector;
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QSpacerItem;
 class QPushButton;
-class Q3ListView;
-class Q3ListViewItem;
-class Q3TextEdit;
+class QTreeWidget;
+class QTreeWidgetItem;
+class QTextEdit;
 class ObjectBrowserItem;
 class ObjectList;
-class Q3Frame;
+class QFrame;
 class CCopasiContainer;
 class CCopasiObject;
 class CopasiUI3Window;
@@ -73,14 +66,14 @@ public:
   ObjectList* objectItemList;
   ObjectList* refreshList;
 
-  Q3GridLayout* ObjectBrowserLayout;
+  QGridLayout* ObjectBrowserLayout;
   QPushButton* clearButton;
   QPushButton* toggleViewButton;
   QPushButton* commitButton;
-  Q3ListView* ObjectListView;
-  Q3Frame* Line1;
+  QTreeWidget* ObjectListView;
+  QFrame* Line1;
   QSpacerItem* spacer;
-  Q3TextEdit* ObjectItemText;
+  QTextEdit* ObjectItemText;
 
   void eXport(ObjectBrowserItem* pCurrent, std::vector< const CCopasiObject * > * outputVector);
   void removeDuplicate(ObjectList* objectItemList);
@@ -107,7 +100,7 @@ public slots:
   virtual void clearClicked();
   virtual void toggleViewClicked();
   virtual void commitClicked();
-  virtual void listviewChecked(Q3ListViewItem*);
+  virtual void listviewChecked(QTreeWidgetItem*, int);
 
 private:
   std::vector< const CCopasiObject * > * mOutputObjectVector;

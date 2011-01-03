@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-//   $Revision: 1.11.4.1 $
+//   $Revision: 1.11.4.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2010/12/06 16:17:26 $
+//   $Date: 2011/01/03 17:25:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,7 +50,7 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
     //    mparent(NULL)
 {
   this->setWindowFlags(windowFlags() | Qt::WDestructiveClose);
-  ObjectBrowserDialogLayout = new Q3GridLayout(this, 3, 4, 11, 6, "ObjectBrowserDialogLayout");
+  ObjectBrowserDialogLayout = new QGridLayout(this, 3, 4, 11, 6, "ObjectBrowserDialogLayout");
   ObjectBrowserDialogLayout->setAutoAdd(false);
 
   //  objectBrowserWidget = new ObjectBrowserWidget(this, NULL, 0, 1);
