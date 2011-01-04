@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.50.2.1 $
+//   $Revision: 1.50.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/14 16:29:24 $
+//   $Date: 2011/01/04 13:53:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,12 @@
 
 //TODO: put all matrix resizing and annotations creation in one place, so
 // that it has to be done only once if several MCA are calculated (e.g. in a scan)
+
+// static
+CMCAMethod * CMCAMethod::createMethod(CCopasiMethod::SubType /* subType */)
+{
+  return new CMCAMethod();
+}
 
 /**
  * Default constructor

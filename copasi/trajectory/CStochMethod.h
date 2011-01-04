@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-//   $Revision: 1.33.2.1 $
+//   $Revision: 1.33.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/01 13:26:31 $
+//   $Date: 2011/01/04 13:53:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,8 +47,7 @@ class CRandom;
 class CStochMethod : public CTrajectoryMethod
 {
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
 protected:
 

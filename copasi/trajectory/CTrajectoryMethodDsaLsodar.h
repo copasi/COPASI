@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:54:39 $
+//   $Date: 2011/01/04 13:53:09 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,8 +52,7 @@ class CRandom;
 class CTrajectoryMethodDsaLsodar : public CLsodaMethod
 {
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
   /* PUBLIC METHODS **********************************************************/
   class CReactionDependencies

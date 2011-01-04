@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-//   $Revision: 1.16.2.1 $
+//   $Revision: 1.16.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/14 16:29:24 $
+//   $Date: 2011/01/04 13:53:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,9 @@ CMCATask::CMCATask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::mca, pParent)
 {
   mpProblem = new CMCAProblem(this);
-  mpMethod = new CMCAMethod(this);
+
+  mpMethod = createMethod(CCopasiMethod::mcaMethodReder);
+  this->add(mpMethod, true);
 }
 
 CMCATask::CMCATask(const CMCATask & src,
@@ -58,11 +60,21 @@ CMCATask::CMCATask(const CMCATask & src,
 {
   mpProblem =
     new CMCAProblem(*(CMCAProblem *) src.mpProblem, this);
-  mpMethod = new CMCAMethod(this);
+
+  mpMethod = createMethod(src.mpMethod->getSubType());
+  this->add(mpMethod, true);
 }
 
 CMCATask::~CMCATask()
 {}
+
+// virtual
+CCopasiMethod * CMCATask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CMCAMethod::createMethod(Type);
+}
 
 void CMCATask::cleanup()
 {}

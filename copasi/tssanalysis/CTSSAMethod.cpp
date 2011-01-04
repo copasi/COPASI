@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.27.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:29 $
+//   $Date: 2011/01/04 13:53:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,8 +47,7 @@
 #include "blaswrap.h"           // BLAS
 
 CTSSAMethod *
-CTSSAMethod::createTSSAMethod(CCopasiMethod::SubType subType,
-                              CTSSAProblem * /* pProblem */)
+CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
 {
   CTSSAMethod * pMethod = NULL;
 

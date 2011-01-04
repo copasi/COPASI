@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.84.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:27 $
+//   $Date: 2011/01/04 13:53:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,11 +56,10 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
     mEigenValuesX("Eigenvalues of reduced system Jacobian", this)
 {
   mpProblem = new CSteadyStateProblem(this);
-  mpMethod =
-    CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::Newton);
+
+  mpMethod = createMethod(CCopasiMethod::Newton);
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
-  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+
   initObjects();
 }
 
@@ -77,17 +76,24 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
 {
   mpProblem =
     new CSteadyStateProblem(*(CSteadyStateProblem *) src.mpProblem, this);
-  mpMethod =
-    CSteadyStateMethod::createSteadyStateMethod(src.mpMethod->getSubType());
+
+  mpMethod = createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
-  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+
   initObjects();
 }
 
 CSteadyStateTask::~CSteadyStateTask()
 {
   pdelete(mpSteadyState);
+}
+
+// virtual
+CCopasiMethod * CSteadyStateTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CSteadyStateMethod::createMethod(Type);
 }
 
 void CSteadyStateTask::cleanup()

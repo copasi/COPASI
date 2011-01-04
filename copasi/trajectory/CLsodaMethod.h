@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.27.2.1 $
+ $Revision: 1.27.2.2 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/11/05 12:24:34 $
+ $Date: 2011/01/04 13:53:09 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,7 @@ class CModel;
 class CLsodaMethod : public CTrajectoryMethod
 {
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
 public:
   struct Data

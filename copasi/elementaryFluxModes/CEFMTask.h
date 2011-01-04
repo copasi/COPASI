@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/01 19:58:29 $
+//   $Date: 2011/01/04 13:53:05 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -39,7 +44,7 @@ public:
   /**
    * The methods which can be selected for performing this task.
    */
-  static const unsigned C_INT32 ValidMethods[];
+  static const unsigned int ValidMethods[];
 
   /**
    * Check whether the given method is in the list of valid methods
@@ -72,7 +77,7 @@ public:
   /**
    * Set the call back of the task
    * @param CProcessReport * pCallBack
-   * @result bool succes
+   * @result bool success
    */
   virtual bool setCallBack(CProcessReport * pCallBack);
 
@@ -102,6 +107,14 @@ public:
    * @return bool success
    */
   virtual bool setMethodType(const int & type);
+
+  /**
+   * Create a method of the specified type to solve the task.
+   * It is the duty of the caller to release the CCopasiMethod.
+   * @param const CCopasiMethod::SubType & type
+   * @return CCopasiMethod *
+   */
+  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Retrieve the Flux Modes

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.72.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:52:23 $
+//   $Date: 2011/01/04 13:53:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,13 +83,13 @@ const char* CCopasiTask::XMLType[] =
   NULL
 };
 
-const unsigned C_INT32 CCopasiTask::ValidMethods[] =
+const unsigned int CCopasiTask::ValidMethods[] =
 {
   CCopasiMethod::unset
 };
 
-bool CCopasiTask::isValidMethod(const unsigned C_INT32 & method,
-                                const unsigned C_INT32 * validMethods)
+bool CCopasiTask::isValidMethod(const unsigned int & method,
+                                const unsigned int * validMethods)
 {
   unsigned C_INT32 i;
 
@@ -301,8 +301,17 @@ CCopasiProblem * CCopasiTask::getProblem() {return mpProblem;}
 
 const CCopasiProblem * CCopasiTask::getProblem() const {return mpProblem;}
 
+// virtual
 bool CCopasiTask::setMethodType(const int & C_UNUSED(type))
-{return false;}
+{
+  return false;
+}
+
+// virtual
+CCopasiMethod * CCopasiTask::createMethod(const int & /* type */) const
+{
+  return NULL;
+}
 
 CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}
 

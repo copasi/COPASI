@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.37.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/03/25 14:27:22 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:53:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
  * of a problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
  *
- * Created for Copasi by Stefan Hoops 2002
+ * Created for COPASI by Stefan Hoops 2002
  */
 
 #ifndef COPASI_CSteadyStateTask
@@ -69,7 +69,7 @@ private:
   CArrayAnnotation * mpJacobianXAnn;
 
   /**
-   * Whether the model is actually reducable and calculating
+   * Whether the model is actually reducible and calculating
    * stability of the reduced steady states makes sense
    */
   bool mCalculateReducedSystem;
@@ -125,6 +125,14 @@ public:
   virtual ~CSteadyStateTask();
 
   /**
+   * Create a method of the specified type to solve the task.
+   * It is the duty of the caller to release the CCopasiMethod.
+   * @param const CCopasiMethod::SubType & type
+   * @return CCopasiMethod *
+   */
+  virtual CCopasiMethod * createMethod(const int & type) const;
+
+  /**
    * Resizes result matrices and updates array annotations for a specific task.
    * This is used when we need to know about the data structures of a task result
    * without actually performing the task, e.g. when selecting objects for output.
@@ -154,14 +162,14 @@ public:
   virtual bool process(const bool & useInitialValues);
 
   /**
-   * Perform neccessary cleaup procedures
+   * Perform necessary cleanup procedures
    */
   virtual bool restore();
 
   /**
    * This is the output method for any object. The default implementation
    * provided with CCopasiObject uses the ostream operator<< of the object
-   * to print the object.To overide this default behaviour one needs to
+   * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */

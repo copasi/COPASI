@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.h,v $
-//   $Revision: 1.9.4.1 $
+//   $Revision: 1.9.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:29 $
+//   $Date: 2011/01/04 13:53:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,14 @@ public:
    * Destructor
    */
   virtual ~CSensTask();
+
+  /**
+   * Create a method of the specified type to solve the task.
+   * It is the duty of the caller to release the CCopasiMethod.
+   * @param const CCopasiMethod::SubType & type
+   * @return CCopasiMethod *
+   */
+  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Resizes result matrices and updates array annotations.

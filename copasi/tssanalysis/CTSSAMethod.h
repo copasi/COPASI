@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 14:47:27 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:53:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ protected:
   /**
    *  A pointer to the current state. This is set from outside
    *  with the setState() method and never changed anywhere else.
-   *  It´s used to report the results
+   *  Itï¿½s used to report the results
    *  to the calling TSSATask
    */
   CState * mpCurrentState;
@@ -86,9 +86,7 @@ public:
    * appropriate simulation method.
    */
   static CTSSAMethod *
-  createTSSAMethod(CCopasiMethod::SubType subType
-                   = CCopasiMethod::unset,
-                   CTSSAProblem * pProblem = NULL);
+  createMethod(CCopasiMethod::SubType subType = CCopasiMethod::unset);
 
   /**
    * Copy constructor.

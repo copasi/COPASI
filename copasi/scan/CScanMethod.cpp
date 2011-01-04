@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.59.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/15 18:18:35 $
+//   $Date: 2011/01/04 13:53:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -337,7 +337,10 @@ void CScanItemBreak::step()
 
 //**************** CScanMethod class ***************************
 
-CScanMethod * CScanMethod::createMethod() {return new CScanMethod;}
+CScanMethod * CScanMethod::createMethod(CCopasiMethod::SubType subType)
+{
+  return new CScanMethod();
+}
 
 CScanMethod::CScanMethod():
     CCopasiMethod(CCopasiTask::scan, CCopasiMethod::scanMethod),

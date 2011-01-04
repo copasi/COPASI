@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.27.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/20 18:24:25 $
+//   $Date: 2011/01/04 13:53:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -116,8 +121,7 @@ public:
 class CHybridMethod : public CTrajectoryMethod
 {
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
   /* PUBLIC METHODS **********************************************************/
 

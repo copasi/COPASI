@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-  $Revision: 1.20.10.1 $
+  $Revision: 1.20.10.2 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/12/14 16:29:24 $
+  $Date: 2011/01/04 13:53:06 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ private:
   C_INT16 mSSReder;
 
   /**
-   * If need to evaluate the elasticites, ss_x
+   * If need to evaluate the elasticities, ss_x
    * will be assigned in calculateTimeMCA()
    */
   std::vector <C_FLOAT64> mSsx;
@@ -85,8 +85,14 @@ private:
 
 public:
   /**
+   * Create a MCA method.
+   * Note: the returned object has to be released after use with delete
+   */
+  static CMCAMethod * createMethod(CCopasiMethod::SubType subType = CCopasiMethod::mcaMethodReder);
+
+  /**
    * Default constructor
-   * @param const CCopasiContainer * pParent (Defailt: NULL)
+   * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CMCAMethod(const CCopasiContainer * pParent = NULL);
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-//   $Revision: 1.14.10.2 $
+//   $Revision: 1.14.10.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/14 13:25:56 $
+//   $Date: 2011/01/04 13:53:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,8 +70,8 @@ public:
    * Note: the returned object has to be released after use with delete
    */
   static CSensMethod *
-  createSensMethod(CCopasiMethod::SubType subType
-                   = CCopasiMethod::sensMethod);
+  createMethod(CCopasiMethod::SubType subType
+               = CCopasiMethod::sensMethod);
 
   /**
    * Copy constructor.

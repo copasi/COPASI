@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.16.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 02:12:24 $
+//   $Date: 2011/01/04 13:53:12 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,11 +27,11 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
-unsigned C_INT32 CMoietiesTask::ValidMethods[] =
-  {
-    CCopasiMethod::Householder,
-    CCopasiMethod::unset
-  };
+const unsigned int CMoietiesTask::ValidMethods[] =
+{
+  CCopasiMethod::Householder,
+  CCopasiMethod::unset
+};
 
 CMoietiesTask::CMoietiesTask(const CCopasiTask::Type & type,
                              const CCopasiContainer * pParent):
@@ -54,6 +59,7 @@ bool CMoietiesTask::setCallBack(CProcessReport * pCallBack)
   bool success = CCopasiTask::setCallBack(pCallBack);
 
   if (!mpProblem->setCallBack(pCallBack)) success = false;
+
   if (!mpMethod->setCallBack(pCallBack)) success = false;
 
   return success;
@@ -97,10 +103,18 @@ bool CMoietiesTask::setMethodType(const int & type)
 
   if (mpMethod->getSubType() == Type) return true;
 
-  pdelete (mpMethod);
+  pdelete(mpMethod);
 
-  mpMethod = CMoietiesMethod::createMethod(Type);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   return true;
+}
+
+// virtual
+CCopasiMethod * CMoietiesTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CMoietiesMethod::createMethod(Type);
 }

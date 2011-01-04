@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:26 $
+//   $Date: 2011/01/04 13:53:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ class CTrajectoryTask;
 class CNewtonMethod : public CSteadyStateMethod
 {
   friend CSteadyStateMethod *
-  CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType);
+  CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType);
 
   // Attributes
 private:

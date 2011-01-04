@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-//   $Revision: 1.12.10.1 $
+//   $Revision: 1.12.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:29 $
+//   $Date: 2011/01/04 13:53:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,9 +42,10 @@ CSensTask::CSensTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::sens, pParent)
 {
   mpProblem = new CSensProblem(this);
-  mpMethod = CSensMethod::createSensMethod(CCopasiMethod::sensMethod);
+
+  mpMethod = createMethod(CCopasiMethod::sensMethod);
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
+
 }
 
 CSensTask::CSensTask(const CSensTask & src,
@@ -53,14 +54,21 @@ CSensTask::CSensTask(const CSensTask & src,
 {
   mpProblem =
     new CSensProblem(*(CSensProblem *) src.mpProblem, this);
-  mpMethod =
-    CSensMethod::createSensMethod(src.mpMethod->getSubType());
+
+  mpMethod = createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
 }
 
 CSensTask::~CSensTask()
 {}
+
+// virtual
+CCopasiMethod * CSensTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CSensMethod::createMethod(Type);
+}
 
 void CSensTask::cleanup()
 {}

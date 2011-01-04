@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:55:34 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:53:06 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,7 +27,7 @@
  * of a problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
  *
- * Created for Copasi by Ralph Gauges 2004
+ * Created for COPASI by Ralph Gauges 2004
  */
 
 #ifndef COPASI_CMCATask_H__
@@ -39,99 +44,107 @@ class CMCAProblem;
 class CState;
 
 class CMCATask : public CCopasiTask
-  {
-    //Attributes
-  private:
-    /**
-     * A pointer to the found elasticities
-     */
+{
+  //Attributes
+private:
+  /**
+   * A pointer to the found elasticities
+   */
 
-    /**
-     * A pointer to the found flux control coefficients.
-     */
+  /**
+   * A pointer to the found flux control coefficients.
+   */
 
-    /**
-     * A pointer to the found concentration control coefficients.
-     */
+  /**
+   * A pointer to the found concentration control coefficients.
+   */
 
-    //Operations
-  public:
+  //Operations
+public:
 
-    /**
-     * Default constructor
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMCATask(const CCopasiContainer * pParent = NULL);
+  /**
+   * Default constructor
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CMCATask(const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Copy constructor
-     * @param const CMCATask & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMCATask(const CMCATask & src,
-             const CCopasiContainer * pParent = NULL);
+  /**
+   * Copy constructor
+   * @param const CMCATask & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CMCATask(const CMCATask & src,
+           const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Destructor
-     */
-    virtual ~CMCATask();
+  /**
+   * Destructor
+   */
+  virtual ~CMCATask();
 
-    /**
-     * Resizes result matrices and updates array annotations for a specific task.
-     * This is used when we need to know about the data structures of a task result
-     * without actually performing the task, e.g. when selecting objects for output.
-     * For now we assume that this functionality is also performed when
-     * initialize() is called.
-     */
-    virtual bool updateMatrices();
+  /**
+   * Create a method of the specified type to solve the task.
+   * It is the duty of the caller to release the CCopasiMethod.
+   * @param const CCopasiMethod::SubType & type
+   * @return CCopasiMethod *
+   */
+  virtual CCopasiMethod * createMethod(const int & type) const;
 
-    /**
-     * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested
-     * tasks to share the same output device.
-     * @param const OutputFlag & of
-     * @param COutputHandler * pOutputHandler
-     * @param std::ostream * pOstream (default: NULL)
-     * @return bool success
-     */
-    virtual bool initialize(const OutputFlag & of,
-                            COutputHandler * pOutputHandler,
-                            std::ostream * pOstream);
+  /**
+   * Resizes result matrices and updates array annotations for a specific task.
+   * This is used when we need to know about the data structures of a task result
+   * without actually performing the task, e.g. when selecting objects for output.
+   * For now we assume that this functionality is also performed when
+   * initialize() is called.
+   */
+  virtual bool updateMatrices();
 
-    /**
-     * Process the task with or without initializing to the initial state.
-     * @param const bool & useInitialValues
-     * @return bool success
-     */
-    virtual bool process(const bool & useInitialValues);
+  /**
+   * Initialize the task. If an ostream is given this ostream is used
+   * instead of the target specified in the report. This allows nested
+   * tasks to share the same output device.
+   * @param const OutputFlag & of
+   * @param COutputHandler * pOutputHandler
+   * @param std::ostream * pOstream (default: NULL)
+   * @return bool success
+   */
+  virtual bool initialize(const OutputFlag & of,
+                          COutputHandler * pOutputHandler,
+                          std::ostream * pOstream);
 
-    /**
-     * Perform neccessary cleaup procedures
-     */
-    virtual bool restore();
+  /**
+   * Process the task with or without initializing to the initial state.
+   * @param const bool & useInitialValues
+   * @return bool success
+   */
+  virtual bool process(const bool & useInitialValues);
 
-    /**
-     * Loads parameters for this solver with data coming from a
-     * CReadConfig object. (CReadConfig object reads an input stream)
-     * @param configbuffer reference to a CReadConfig object.
-     */
-    void load(CReadConfig & configBuffer);
+  /**
+   * Perform neccessary cleaup procedures
+   */
+  virtual bool restore();
 
-    // Friend functions
-    friend std::ostream &operator<<(std::ostream &os,
-                                    const CMCATask &A);
+  /**
+   * Loads parameters for this solver with data coming from a
+   * CReadConfig object. (CReadConfig object reads an input stream)
+   * @param configbuffer reference to a CReadConfig object.
+   */
+  void load(CReadConfig & configBuffer);
 
-    /**
-     * This functionality is expected from the problem but has to be implemented
-     * here for the moment. This is called from the corresponding method of the problem
-     */
-    void printResult(std::ostream * ostream) const;
+  // Friend functions
+  friend std::ostream &operator<<(std::ostream &os,
+                                  const CMCATask &A);
 
-  private:
-    /**
-     * cleanup()
-     */
-    void cleanup();
-  };
+  /**
+   * This functionality is expected from the problem but has to be implemented
+   * here for the moment. This is called from the corresponding method of the problem
+   */
+  void printResult(std::ostream * ostream) const;
+
+private:
+  /**
+   * cleanup()
+   */
+  void cleanup();
+};
 
 #endif // COPASI_CMCATask_H__

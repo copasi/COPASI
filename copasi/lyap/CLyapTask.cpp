@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.18.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:31:00 $
+//   $Date: 2011/01/04 13:53:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,15 +244,19 @@ bool CLyapTask::setMethodType(const int & type)
   if (mpMethod->getSubType() == Type) return true;
 
   pdelete(mpMethod);
-  mpMethod =
-    CLyapMethod::createMethod(Type);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   return true;
 }
 
-//const CTimeSeries & CLyapTask::getTimeSeries() const
-//{return mTimeSeries;}
+// virtual
+CCopasiMethod * CLyapTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CLyapMethod::createMethod(Type);
+}
 
 bool CLyapTask::methodCallback(const C_FLOAT64 & percentage, bool onlyProgress)
 {

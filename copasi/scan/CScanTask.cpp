@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.81.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:55 $
+//   $Date: 2011/01/04 13:53:07 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ CScanTask::CScanTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::scan, pParent)
 {
   mpProblem = new CScanProblem(this);
-  mpMethod = CScanMethod::createMethod();
+  mpMethod = createMethod(CCopasiMethod::scanMethod);
   this->add(mpMethod, true);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
@@ -61,13 +61,21 @@ CScanTask::CScanTask(const CScanTask & src,
     CCopasiTask(src, pParent)
 {
   mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
-  mpMethod = CScanMethod::createMethod();
+  mpMethod = createMethod(CCopasiMethod::scanMethod);
   this->add(mpMethod, true);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
 CScanTask::~CScanTask()
 {cleanup();}
+
+// virtual
+CCopasiMethod * CScanTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CScanMethod::createMethod(Type);
+}
 
 void CScanTask::cleanup()
 {}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.108.2.1 $
+//   $Revision: 1.108.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/23 18:53:11 $
+//   $Date: 2011/01/04 13:53:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ bool ble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
 
-const unsigned C_INT32 CTrajectoryTask::ValidMethods[] =
+const unsigned int CTrajectoryTask::ValidMethods[] =
 {
   CCopasiMethod::deterministic,
   CCopasiMethod::stochastic,
@@ -85,9 +85,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     mpCurrentTime(NULL)
 {
   mpProblem = new CTrajectoryProblem(this);
-  mpMethod =
-    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::deterministic,
-        (CTrajectoryProblem *) mpProblem);
+  mpMethod = createMethod(CCopasiMethod::deterministic);
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
@@ -112,9 +110,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mpProblem =
     new CTrajectoryProblem(*static_cast< CTrajectoryProblem * >(src.mpProblem), this);
 
-  mpMethod =
-    CTrajectoryMethod::createTrajectoryMethod(src.mpMethod->getSubType(),
-        static_cast< CTrajectoryProblem *>(mpProblem));
+  mpMethod = createMethod(src.mpMethod->getSubType());
   * mpMethod = * src.mpMethod;
 
   mpMethod->elevateChildren();
@@ -149,7 +145,7 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   ((CTrajectoryProblem *) mpProblem)->load(configBuffer);
 
   pdelete(mpMethod);
-  mpMethod = CTrajectoryMethod::createTrajectoryMethod();
+  mpMethod = CTrajectoryMethod::createMethod();
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
@@ -461,9 +457,7 @@ bool CTrajectoryTask::setMethodType(const int & type)
   if (mpMethod->getSubType() == Type) return true;
 
   pdelete(mpMethod);
-  mpMethod =
-    CTrajectoryMethod::createTrajectoryMethod(Type,
-        (CTrajectoryProblem *) mpProblem);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
@@ -474,6 +468,14 @@ bool CTrajectoryTask::setMethodType(const int & type)
     mUpdateMoieties = false;
 
   return true;
+}
+
+// virtual
+CCopasiMethod * CTrajectoryTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CTrajectoryMethod::createMethod(Type);
 }
 
 CState * CTrajectoryTask::getState()

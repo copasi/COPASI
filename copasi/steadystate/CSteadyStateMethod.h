@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-//   $Revision: 1.21.22.1 $
+//   $Revision: 1.21.22.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:30 $
+//   $Date: 2011/01/04 13:53:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,8 +121,8 @@ public:
    * Note: the returned object has to be released after use with delete
    */
   static CSteadyStateMethod *
-  createSteadyStateMethod(CCopasiMethod::SubType subType
-                          = CCopasiMethod::Newton);
+  createMethod(CCopasiMethod::SubType subType
+               = CCopasiMethod::Newton);
 
   /**
    * Copy constructor.

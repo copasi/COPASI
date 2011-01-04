@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 14:48:16 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:53:08 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,7 @@ class CState;
 class CILDMModifiedMethod : public CTSSAMethod
 {
   friend CTSSAMethod *
-  CTSSAMethod::createTSSAMethod(CCopasiMethod::SubType subType,
-                                CTSSAProblem * pProblem);
+  CTSSAMethod::createMethod(CCopasiMethod::SubType subType);
 
   // Operations
 private:
@@ -67,7 +66,7 @@ public:
   ~CILDMModifiedMethod();
 
   /**
-   * Intialize the method parameter
+   * Initialize the method parameter
    */
   virtual void initializeParameter();
 

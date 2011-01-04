@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.33.2.1 $
+//   $Revision: 1.33.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:30 $
+//   $Date: 2011/01/04 13:53:06 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@
 #include "model/CCompartment.h"
 
 CSteadyStateMethod *
-CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType)
+CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType)
 {
   CSteadyStateMethod * pMethod = NULL;
 
