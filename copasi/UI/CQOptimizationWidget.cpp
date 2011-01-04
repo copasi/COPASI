@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.23.2.1 $
+//   $Revision: 1.23.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/05 12:24:33 $
+//   $Date: 2011/01/04 13:57:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,8 @@
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "UI/CQFittingItemWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CCopasiSelectionDialog.h"
@@ -215,11 +217,13 @@ void CQOptimizationWidget::init()
   mpHeaderWidget->setTaskName(taskName);
 
   verticalLayout->insertWidget(0, mpHeaderWidget);
-  verticalLayout->insertSpacing(1, 14);      // space between header and body
-  verticalLayout->addWidget(mpBtnWidget);
+  // verticalLayout->insertSpacing(1, 14);      // space between header and body
 
-  addMethodSelectionBox(COptTask::ValidMethods, 0);
-  addMethodParameterTable(1);
+  mpMethodWidget->setValidMethods(COptTask::ValidMethods);
+  mpMethodWidget->enableMethodParameter(true);
+  verticalLayout->addWidget(mpMethodWidget);
+
+  verticalLayout->addWidget(mpBtnWidget);
 
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::ObjectiveFunctions);
 

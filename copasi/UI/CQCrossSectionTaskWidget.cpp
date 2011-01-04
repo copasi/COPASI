@@ -61,7 +61,7 @@ void CQCrossSectionTaskWidget::init()
   mpHeaderWidget->setTaskName("Cross Section");
 
   crossSectionTWLayout->insertWidget(0, mpHeaderWidget); // header
-  crossSectionTWLayout->insertSpacing(1, 14);      // space between header and body
+  // crossSectionTWLayout->insertSpacing(1, 14);      // space between header and body
   crossSectionTWLayout->addWidget(mpBtnWidget);      // 'footer'
 
   addMethodParameterTable(0);

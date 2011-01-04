@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:14 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:57:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
 
 #include "lyap/CLyapTask.h"
@@ -165,10 +166,12 @@ void CQLyapWidget::init()
   mpHeaderWidget->setTaskName("Lyapunov Exponents");
 
   vboxLayout->insertWidget(0, mpHeaderWidget);  // header
-  vboxLayout->insertSpacing(1, 14);       // space between header and body
-  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
+  // vboxLayout->insertSpacing(1, 14);       // space between header and body
 
-  addMethodParameterTable(0);
+  mpMethodWidget->enableMethodParameter(true);
+  vboxLayout->addWidget(mpMethodWidget);
+
+  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
 }
 
 void CQLyapWidget::slotDelayChecked()

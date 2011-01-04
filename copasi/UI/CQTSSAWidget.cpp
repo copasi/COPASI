@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.16.2.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/05 13:25:08 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:57:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "CQTSSAResultWidget.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
 #include "CQValidator.h"
 #include "CQMessageBox.h"
@@ -92,11 +93,13 @@ void CQTSSAWidget::init()
   mpHeaderWidget->setTaskName("Time Scale Separation Analysis");
 
   vboxLayout->insertWidget(0, mpHeaderWidget);  // header
-  vboxLayout->insertSpacing(1, 14);       // space between header and body
-  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
+  // vboxLayout->insertSpacing(1, 14);       // space between header and body
 
-  addMethodSelectionBox(CTSSATask::ValidMethods, 0);
-  addMethodParameterTable(1);
+  mpMethodWidget->setValidMethods(CTSSATask::ValidMethods);
+  mpMethodWidget->enableMethodParameter(true);
+  vboxLayout->addWidget(mpMethodWidget);
+
+  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
 
   mpValidatorDuration = new CQValidatorDouble(mpEditDuration);
   mpEditDuration->setValidator(mpValidatorDuration);
@@ -249,7 +252,7 @@ bool CQTSSAWidget::loadTask()
 
 CCopasiMethod * CQTSSAWidget::createMethod(const CCopasiMethod::SubType & type)
 {
-  return CTSSAMethod::createTSSAMethod(type);
+  return CTSSAMethod::createMethod(type);
 }
 
 bool CQTSSAWidget::runTask()

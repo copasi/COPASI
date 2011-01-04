@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.239.2.5 $
+#   $Revision: 1.239.2.6 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/11/24 18:07:53 $
+#   $Date: 2011/01/04 13:57:48 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.239.2.5 $ $Author: shoops $ $Date: 2010/11/24 18:07:53 $
+# $Revision: 1.239.2.6 $ $Author: shoops $ $Date: 2011/01/04 13:57:48 $
 ######################################################################
 
 LIB = UI
@@ -70,6 +70,9 @@ HEADERS	+= \
   CQSpeciesDetail.h \
   CQSpeciesWidget.h \
   CQSteadyStateResult.h \
+  CQTaskBtnWidget.h \
+  CQTaskHeaderWidget.h \
+  CQTaskMethodWidget.h \
   CQTrajectoryWidget.h \
   CQTSSAWidget.h \
   CQTSSAResultSubWidget.h \
@@ -201,6 +204,9 @@ SOURCES	+= \
   CQSpeciesDetail.cpp \
   CQSpeciesWidget.cpp \
   CQSteadyStateResult.cpp \
+  CQTaskBtnWidget.cpp \
+  CQTaskHeaderWidget.cpp \
+  CQTaskMethodWidget.cpp \
   CQTaskThread.cpp \
   CQTrajectoryWidget.cpp \
   CQTSSAWidget.cpp \
@@ -301,9 +307,6 @@ FORMS3 += CQSplashWidget.ui
 HEADERS += CQSplashWidget.ui.h
 FORMS3 += CQStartValueReset.ui
 HEADERS += CQStartValueReset.ui.h
-FORMS3 += CQTaskBtnWidget.ui
-FORMS3 += CQTaskHeaderWidget.ui
-HEADERS += CQTaskHeaderWidget.ui.h
 FORMS3 += CUpDownSubwidget.ui
 HEADERS += CUpDownSubwidget.ui.h
 FORMS3 += DefaultplotDialog.ui
@@ -367,6 +370,9 @@ FORMS += CQSensResultWidget.ui
 FORMS += CQSpeciesDetail.ui
 FORMS += CQSpeciesWidget.ui
 FORMS += CQSteadyStateResult.ui
+FORMS += CQTaskBtnWidget.ui
+FORMS += CQTaskHeaderWidget.ui
+FORMS += CQTaskMethodWidget.ui
 FORMS += CQTrajectoryWidget.ui
 FORMS += CQTSSAWidget.ui
 FORMS += CQTSSAResultSubWidget.ui

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-$Revision: 1.11 $
+$Revision: 1.11.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/07/16 19:05:17 $
+$Date: 2011/01/04 13:57:49 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual

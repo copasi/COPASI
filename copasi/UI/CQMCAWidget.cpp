@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:15 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:57:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "CMCAResultWidget.h"
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/qtUtilities.h"
 
@@ -119,8 +120,6 @@ bool CQMCAWidget::loadTask()
   // instead calling loadMethod(), the following codes is used
   mpCheckSteadyState->setChecked(pProblem->isSteadyStateRequested());
 
-//  mpTblParameter->setNumRows(0);
-  mpTblParameter->setRowCount(0);
   bool success = loadParameterTable();
 
   mChanged = false;
@@ -135,7 +134,7 @@ bool CQMCAWidget::saveTask()
   if (!pTask) return false;
 
   saveCommon();
-  saveMethod();
+  // saveMethod();
 
   CMCAProblem * pProblem =
     dynamic_cast< CMCAProblem * >(mpTask->getProblem());
@@ -164,15 +163,18 @@ void CQMCAWidget::init()
   mpHeaderWidget->mpUpdateModel->hide();
 
   vboxLayout->insertWidget(0, mpHeaderWidget);  // header
-  vboxLayout->insertSpacing(1, 14);       // space between header and body
-  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
+  // vboxLayout->insertSpacing(1, 14);       // space between header and body
 
-  addMethodParameterTable(0);
+  mpMethodWidget->enableMethodParameter(true);
+  vboxLayout->addWidget(mpMethodWidget);
+
+  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
 }
 
 bool CQMCAWidget::loadParameterTable()
 {
-  bool init = (mpTblParameter->rowCount() == 0);
+
+  bool init = (mpMethodWidget->mpTableParameter->rowCount() == 0);
 
   unsigned C_INT32 NumRows = mpMethod->size();
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -187,7 +189,7 @@ bool CQMCAWidget::loadParameterTable()
       NumRows += pSteadyStateTask->getMethod()->size();
     }
 
-  mpTblParameter->setRowCount(NumRows);
+  mpMethodWidget->mpTableParameter->setRowCount(NumRows);
 
   unsigned C_INT32 i, k;
   CCopasiParameter::Type Type;
@@ -195,13 +197,13 @@ bool CQMCAWidget::loadParameterTable()
 
   for (i = 0; i < mpMethod->size() && init; i++)
     {
-      mpTblParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
-      mpTblParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpMethod->getName(i)));
+      mpMethodWidget->mpTableParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
+      mpMethodWidget->mpTableParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpMethod->getName(i)));
 
       value = getParameterValue(mpMethod, i, &Type);
       QTableWidgetItem *itemValue = new QTableWidgetItem(value);
       itemValue->setTextAlignment(Qt::AlignRight);
-      mpTblParameter->setItem(i, 0, itemValue);
+      mpMethodWidget->mpTableParameter->setItem(i, 0, itemValue);
     }
 
   if (mpCheckSteadyState->isChecked())
@@ -216,13 +218,13 @@ bool CQMCAWidget::loadParameterTable()
       for (i = mpMethod->size(), k = 0; k < pMethod->size(); k++, i++)
         {
           // create item of the current row and give it a name
-          mpTblParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
-          mpTblParameter->verticalHeaderItem(i)->setText(FROM_UTF8(pMethod->getName(k)));
+          mpMethodWidget->mpTableParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
+          mpMethodWidget->mpTableParameter->verticalHeaderItem(i)->setText(FROM_UTF8(pMethod->getName(k)));
 
           value = getParameterValue(pMethod, k, &Type);
           QTableWidgetItem *itemValue = new QTableWidgetItem(value);
           itemValue->setTextAlignment(Qt::AlignRight);
-          mpTblParameter->setItem(i, 0, itemValue);
+          mpMethodWidget->mpTableParameter->setItem(i, 0, itemValue);
         }
     }
 
@@ -239,7 +241,7 @@ bool CQMCAWidget::saveParameterTable()
 
   for (i = 0; i < mpMethod->size(); i++)
     {
-      value = mpTblParameter->item(i, 0)->text();
+      value = mpMethodWidget->mpTableParameter->item(i, 0)->text();
 
       if (value != getParameterValue(mpMethod, i, &Type))
         {
@@ -260,7 +262,7 @@ bool CQMCAWidget::saveParameterTable()
 
       for (i = mpMethod->size(), k = 0; k < pMethod->size(); i++, k++)
         {
-          value = mpTblParameter->item(i, 0)->text();
+          value = mpMethodWidget->mpTableParameter->item(i, 0)->text();
 
           if (value != getParameterValue(pMethod, k, &Type))
             {

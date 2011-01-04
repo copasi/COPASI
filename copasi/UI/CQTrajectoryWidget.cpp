@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:15 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:57:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CQValidator.h"
 #include "UI/CQMessageBox.h"
@@ -72,11 +73,13 @@ void CQTrajectoryWidget::init()
   mpHeaderWidget->setTaskName("Time Course");
 
   verticalLayout->insertWidget(0, mpHeaderWidget);  // header
-  verticalLayout->insertSpacing(1, 14);       // space between header and body
-  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
+  // verticalLayout->insertSpacing(1, 14);       // space between header and body
 
-  addMethodSelectionBox(CTrajectoryTask::ValidMethods, 0);
-  addMethodParameterTable(1);
+  mpMethodWidget->setValidMethods(CTrajectoryTask::ValidMethods);
+  mpMethodWidget->enableMethodParameter(true);
+  verticalLayout->addWidget(mpMethodWidget);
+
+  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   slotOutputDelay(false);
 
@@ -318,7 +321,7 @@ bool CQTrajectoryWidget::loadTask()
 
 CCopasiMethod * CQTrajectoryWidget::createMethod(const CCopasiMethod::SubType & type)
 {
-  return CTrajectoryMethod::createTrajectoryMethod(type);
+  return CTrajectoryMethod::createMethod(type);
 }
 
 bool CQTrajectoryWidget::runTask()

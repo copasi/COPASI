@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.59.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:56 $
+//   $Date: 2011/01/04 13:57:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,7 @@
 #include "CReportDefinitionSelect.h"
 #include "DefaultplotDialog.h"
 #include "CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "CQTaskBtnWidget.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
@@ -61,13 +62,10 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl):
     CopasiWidget(parent, name, fl),
     mProgressBar(NULL),
     mpHeaderWidget(NULL),
+    mpMethodWidget(NULL),
     mpBtnWidget(NULL),
     mpMethodLayout(NULL),
-    mpLblParameter(NULL),
-    mpTblParameter(NULL),
     mpSpacer1(NULL),
-    mpLblMethod(NULL),
-    mpBoxMethod(NULL),
     mpSpacer2(NULL),
     mpTask(NULL),
     mpMethod(NULL),
@@ -79,7 +77,9 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl):
   setCaption(trUtf8("TaskWidget"));
 
   mpTaskThread = new CQTaskThread(this);
+
   mpHeaderWidget = new CQTaskHeaderWidget(this);
+  mpMethodWidget = new CQTaskMethodWidget(this);
   mpBtnWidget = new CQTaskBtnWidget(this);
 
   connect(mpBtnWidget->mpBtnRun, SIGNAL(clicked()), this, SLOT(runBtnClicked()));
@@ -98,7 +98,7 @@ TaskWidget::~TaskWidget()
 }
 
 //************************************************************
-
+#ifdef XXXX
 void TaskWidget::addHeaderToGrid(unsigned int row)
 {
   if (!mpMethodLayout)
@@ -199,6 +199,7 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
 
   return;
 }
+#endif // XXXX
 
 void TaskWidget::revertBtnClicked()
 {
@@ -217,7 +218,7 @@ void TaskWidget::revertBtnClicked()
 
 void TaskWidget::runBtnClicked()
 {
-  // Assure that all edits to the current widget are commited.
+  // Assure that all edits to the current widget are committed.
   mpBtnWidget->mpBtnRun->setFocus();
 
   runTask();
@@ -248,21 +249,6 @@ void TaskWidget::assistantBtnClicked()
     }
 
   if (pDlg)delete pDlg;
-}
-
-void TaskWidget::changeMethod(int /* index */)
-{
-  if (mpMethod != mpTask->getMethod())
-    pdelete(mpMethod);
-
-  CCopasiMethod::SubType Type =
-    toEnum(TO_UTF8(mpBoxMethod->currentText()), CCopasiMethod::SubTypeName, CCopasiMethod::unset);
-
-  mpMethod = createMethod(Type);
-
-  loadMethod();
-
-  return;
 }
 
 //************  executable button *******************
@@ -308,44 +294,9 @@ bool TaskWidget::loadMethod()
 {
   if (!mpTask) return false;
 
-  if (!mpMethod) return false;
+  mpMethodWidget->setTask(mpTask);
 
-  if (mpBoxMethod)
-    mpBoxMethod->setCurrentText(QString::fromUtf8(CCopasiMethod::SubTypeName[mpMethod->getSubType()]));
-
-  if (mpTblParameter)
-    {
-      QString Value;
-
-      mpTblParameter->setRowCount(mpMethod->size());
-
-      unsigned C_INT32 i;
-      CCopasiParameter::Type Type;
-#ifdef DEBUG_UI
-      qDebug() << "mpMethod->size() = " << mpMethod->size();
-#endif
-
-      for (i = 0; i < mpMethod->size(); i++)
-        {
-          // create item of the current row and give it a name
-          mpTblParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
-          mpTblParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpMethod->getName(i)));
-
-          Value = getParameterValue(mpMethod, i, &Type);
-
-          QTableWidgetItem *pValueItem = new QTableWidgetItem();
-          pValueItem->setData(Qt::EditRole, QVariant(Value));
-          pValueItem->setTextAlignment(Qt::AlignRight);
-          mpTblParameter->setItem(i, 0, pValueItem);
-        }
-
-      if (!mpMethod->size())
-        {
-          mpTblParameter->setFixedSize(100, 20);
-        }
-    }
-
-  return true;
+  return mpMethodWidget->loadMethod();
 }
 
 void TaskWidget::adjustTable()
@@ -354,49 +305,20 @@ void TaskWidget::adjustTable()
   qDebug() << "--> TaskWidget::adjustTable <--";
 #endif
 
-  mpTblParameter->resizeColumnsToContents();
-  mpTblParameter->resizeRowsToContents();
+  // mpTblParameter->resizeColumnsToContents();
+  // mpTblParameter->resizeRowsToContents();
 
+  /*
   mpTblParameter->setFixedSize(mpTblParameter->columnWidth(0) + mpTblParameter->verticalHeader()->sizeHint().width() + 5,
                                mpTblParameter->verticalHeader()->sizeHint().height() * mpTblParameter->rowCount() + 5);
+                               */
 }
 
 bool TaskWidget::saveMethod()
 {
   if (!mpTask) return false;
 
-  CCopasiMethod* method = mpTask->getMethod();
-
-  if (!method) return false;
-
-  if (method->getSubType() != mpMethod->getSubType())
-    {
-      mpTask->setMethodType(mpMethod->getSubType());
-      mChanged = true;
-    }
-
-  mpMethod = mpTask->getMethod();
-
-  unsigned C_INT32 i;
-  QString Value;
-  CCopasiParameter::Type Type;
-
-  for (i = 0; i < mpMethod->size(); i++)
-    {
-      if (!mpTblParameter)
-        break;
-
-      if (!mpTblParameter->item(i, 0))
-        continue;
-
-      Value = mpTblParameter->item(i, 0)->text();
-
-      if (Value != getParameterValue(mpMethod, i, &Type))
-        {
-          setParameterValue(mpMethod, i, Value);
-          mChanged = true;
-        }
-    }
+  mChanged &= mpMethodWidget->saveMethod();
 
   return true;
 }

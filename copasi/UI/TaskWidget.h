@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.26 $
+ $Revision: 1.26.2.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/07/16 19:05:17 $
+ $Date: 2011/01/04 13:57:49 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,7 @@ class QPushButton;
 class QSpacerItem;
 
 class CQTaskHeaderWidget;
+class CQTaskMethodWidget;
 class CQTaskBtnWidget;
 
 class CCopasiTask;
@@ -95,8 +96,6 @@ protected slots:
 
   void assistantBtnClicked();
 
-  void changeMethod(int);
-
 public slots:
 
   void adjustTable();
@@ -121,13 +120,13 @@ protected:
 
   //these methods should be called by the constructor, loadTask(), or saveTask() methods
   //of the derived classes. They handle the method parameters table
-  void addMethodSelectionBox(const unsigned C_INT32 * validMethods, unsigned int row);
-  void addMethodParameterTable(unsigned int row);
+  // void addMethodSelectionBox(const unsigned C_INT32 * validMethods, unsigned int row);
+  // void addMethodParameterTable(unsigned int row);
 
   //convenience functions
-  void addHeaderToGrid(unsigned int row);
+  // void addHeaderToGrid(unsigned int row);
 //    bool addHLineToGrid(Q3GridLayout* grid, unsigned int row, unsigned int maxcol);
-  bool addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol);
+  // bool addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol);
 
   bool loadMethod();
   bool saveMethod();
@@ -144,14 +143,11 @@ protected:
 
   CProgressBar * mProgressBar;
   CQTaskHeaderWidget * mpHeaderWidget;
+  CQTaskMethodWidget * mpMethodWidget;
   CQTaskBtnWidget * mpBtnWidget;
   QGridLayout * mpMethodLayout;
 
-  QLabel * mpLblParameter;
-  QTableWidget * mpTblParameter;
   QSpacerItem * mpSpacer1;
-  QLabel * mpLblMethod;
-  QComboBox * mpBoxMethod;
   QSpacerItem * mpSpacer2;
 
   CCopasiTask * mpTask;

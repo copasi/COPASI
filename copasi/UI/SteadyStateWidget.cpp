@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.126 $
+//   $Revision: 1.126.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 13:39:58 $
+//   $Date: 2011/01/04 13:57:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@
 #include "listviews.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
 #include "CQSteadyStateResult.h"
 
@@ -89,10 +90,12 @@ void SteadyStateWidget::init()
   mpHeaderWidget->setTaskName("Steady State");
 
   SteadyStateWidgetLayout->insertWidget(0, mpHeaderWidget); // header
-  SteadyStateWidgetLayout->insertSpacing(1, 14);      // space between header and body
-  SteadyStateWidgetLayout->addWidget(mpBtnWidget);      // 'footer'
+  // SteadyStateWidgetLayout->insertSpacing(1, 14);      // space between header and body
 
-  addMethodParameterTable(0);
+  mpMethodWidget->enableMethodParameter(true);
+  SteadyStateWidgetLayout->addWidget(mpMethodWidget);
+
+  SteadyStateWidgetLayout->addWidget(mpBtnWidget);      // 'footer'
 }
 
 CCopasiMethod * SteadyStateWidget::createMethod(const CCopasiMethod::SubType & /*type*/)

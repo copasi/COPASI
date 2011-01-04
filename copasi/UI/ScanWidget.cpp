@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.215.2.1 $
+//   $Revision: 1.215.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:38:00 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:57:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
   mpHeaderWidget->setTaskName("Parameter Scan");
 
   ScanWidgetLayout->addWidget(mpHeaderWidget, 0, 0);
+
+  mpBtnWidget->verticalLayout->removeItem(mpBtnWidget->verticalSpacer);
   ScanWidgetLayout->addWidget(mpBtnWidget, 3, 0);
 
   //*****************
@@ -111,13 +113,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
 
   //*****************************
 
-//  Layout24 = new Q3HBoxLayout(0, 0, 6, "Layout24");
-  Layout24 = new QHBoxLayout(0, 0, 6, "Layout24");
-
   scrollview = new CScanContainerWidget(this);
-  Layout24->addWidget(scrollview);
-
-  ScanWidgetLayout->addLayout(Layout24, 2, 0);
+  ScanWidgetLayout->addWidget(scrollview, 2, 0);
 
   // tab order
   /*setTabOrder(taskName, sExecutable);

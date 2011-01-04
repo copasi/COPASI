@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.45.2.1 $
+//   $Revision: 1.45.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:38:00 $
+//   $Author: shoops $
+//   $Date: 2011/01/04 13:57:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,7 @@
 #include "qtUtilities.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "CCopasiSelectionDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -148,10 +149,12 @@ void SensitivitiesWidget::init()
   mpHeaderWidget->setTaskName("Sensitivities");
 
   verticalLayout->insertWidget(0, mpHeaderWidget);  // header
-  verticalLayout->insertSpacing(1, 14);      // space between header and body
-  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
+  // verticalLayout->insertSpacing(1, 14);      // space between header and body
 
-  addMethodParameterTable(0);
+  mpMethodWidget->enableMethodParameter(true);
+  verticalLayout->addWidget(mpMethodWidget);
+
+  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   // icons
   QImage img0;
@@ -266,7 +269,7 @@ bool SensitivitiesWidget::saveTask()
 }
 
 CCopasiMethod * SensitivitiesWidget::createMethod(const CCopasiMethod::SubType & type)
-{return CSensMethod::createSensMethod(type);}
+{return CSensMethod::createMethod(type);}
 
 bool SensitivitiesWidget::runTask()
 {
