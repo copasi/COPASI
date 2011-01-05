@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.4 $
+//   $Revision: 1.289.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:27 $
+//   $Date: 2011/01/05 15:25:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -543,9 +543,8 @@ void CopasiUI3Window::createMenuBar()
 
 //***** Slots ***************************
 
-bool CopasiUI3Window::slotFileSaveAs(QString str)
+void CopasiUI3Window::slotFileSaveAs(QString str)
 {
-  bool success = true;
   mpDataModelGUI->commit();
 
   C_INT32 Answer = QMessageBox::No;
@@ -564,7 +563,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
                                           str, "COPASI Files (*.cps)",
                                           "Choose a filename to save under");
 
-      if (tmp.isEmpty()) return false;
+      if (tmp.isEmpty()) return;
 
 #ifdef DEBUG_UI
       qDebug() << "tmp = " << tmp;
@@ -573,40 +572,44 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
       // Checks whether the file exists
       Answer = checkSelection(tmp);
 
-      if (Answer == QMessageBox::Cancel) return false;
+      if (Answer == QMessageBox::Cancel) return;
     }
 
   if (mpDataModelGUI && !tmp.isNull())
     {
-      QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
 
-      if ((success = mpDataModelGUI->saveModel(TO_UTF8(tmp), true)))
-        {
-          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-          (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
-          updateTitle();
-        }
-      else
-        {
-          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-            {
-              CQMessageBox::critical(this, "Save File Error",
-                                     CCopasiMessage::getAllMessageText().c_str(),
-                                     QMessageBox::Ok | QMessageBox::Default,
-                                     QMessageBox::NoButton);
-              CCopasiMessage::clearDeque();
-            }
-        }
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+      mpDataModelGUI->saveModel(TO_UTF8(tmp), true);
+    }
+}
 
-      setCursor(oldCursor);
+void CopasiUI3Window::slotFileSaveFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
 
-      refreshRecentFileMenu();
+  if (success)
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
+      updateTitle();
+    }
+  else
+    {
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          CQMessageBox::critical(this, "Save File Error",
+                                 CCopasiMessage::getAllMessageText().c_str(),
+                                 QMessageBox::Ok | QMessageBox::Default,
+                                 QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
     }
 
-  mSaveAsRequired = false;
+  unsetCursor();
+  refreshRecentFileMenu();
 
-  return success;
+  mSaveAsRequired = false;
 }
 
 void CopasiUI3Window::newDoc()
@@ -662,8 +665,6 @@ void CopasiUI3Window::newDoc()
 
 void CopasiUI3Window::slotFileOpen(QString file)
 {
-  bool success = true;
-
   mpDataModelGUI->commit();
 
   QString newFile = "";
@@ -709,77 +710,73 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
       mpListView->switchToOtherWidget(0, "");
 
-      QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
 
       CCopasiMessage::clearDeque();
 
-      try
-        {
-          success = mpDataModelGUI->loadModel(TO_UTF8(newFile));
-        }
-      catch (...)
-        {
-          success = false;
-        }
-
-      setCursor(oldCursor);
-
-      if (!success)
-        {
-          QString Message = "Error while loading file " + newFile + QString("!\n\n");
-          Message += FROM_UTF8(CCopasiMessage::getAllMessageText(true));
-
-          CQMessageBox::critical(this, QString("File Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::Ok);
-          mpDataModelGUI->createModel();
-        }
-
-      CCopasiMessage msg = CCopasiMessage::getLastMessage();
-
-      if (msg.getNumber() != MCCopasiMessage + 1)
-        {
-          QString Message = "Problem while loading file " + newFile + QString("!\n\n");
-          Message += FROM_UTF8(msg.getText());
-
-          msg = CCopasiMessage::getLastMessage();
-
-          while (msg.getNumber() != MCCopasiMessage + 1)
-            {
-              Message += "\n";
-              Message += FROM_UTF8(msg.getText());
-              msg = CCopasiMessage::getLastMessage();
-            }
-
-          CQMessageBox::warning(this, QString("File Warning"), Message,
-                                QMessageBox::Ok, QMessageBox::Ok);
-        }
-
-      if (strcasecmp(CDirEntry::suffix(TO_UTF8(newFile)).c_str(), ".cps") == 0 &&
-          CDirEntry::isWritable(TO_UTF8(newFile)))
-        mSaveAsRequired = false;
-      else
-        mSaveAsRequired = true;
-
-      if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
-        {
-          newDoc();
-          mSaveAsRequired = true;
-        }
-
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
-
-      mpaSave->setEnabled(true);
-      mpaSaveAs->setEnabled(true);
-      mpaExportSBML->setEnabled(true);
-      mpaExportODE->setEnabled(true);
-
-      updateTitle();
-      mpListView->switchToOtherWidget(1, "");
-
-      refreshRecentFileMenu();
+      mNewFile = newFile;
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
+      mpDataModelGUI->loadModel(TO_UTF8(newFile));
     }
+}
+void CopasiUI3Window::slotFileOpenFinished(bool success)
+{
+  unsetCursor();
+
+  if (!success)
+    {
+      QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
+      Message += FROM_UTF8(CCopasiMessage::getAllMessageText(true));
+
+      CQMessageBox::critical(this, QString("File Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+      mpDataModelGUI->createModel();
+    }
+
+  CCopasiMessage msg = CCopasiMessage::getLastMessage();
+
+  if (msg.getNumber() != MCCopasiMessage + 1)
+    {
+      QString Message = "Problem while loading file " + mNewFile + QString("!\n\n");
+      Message += FROM_UTF8(msg.getText());
+
+      msg = CCopasiMessage::getLastMessage();
+
+      while (msg.getNumber() != MCCopasiMessage + 1)
+        {
+          Message += "\n";
+          Message += FROM_UTF8(msg.getText());
+          msg = CCopasiMessage::getLastMessage();
+        }
+
+      CQMessageBox::warning(this, QString("File Warning"), Message,
+                            QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+  if (strcasecmp(CDirEntry::suffix(TO_UTF8(mNewFile)).c_str(), ".cps") == 0 &&
+      CDirEntry::isWritable(TO_UTF8(mNewFile)))
+    mSaveAsRequired = false;
+  else
+    mSaveAsRequired = true;
+
+  if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
+    {
+      newDoc();
+      mSaveAsRequired = true;
+    }
+
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+
+  mpaSave->setEnabled(true);
+  mpaSaveAs->setEnabled(true);
+  mpaExportSBML->setEnabled(true);
+  mpaExportODE->setEnabled(true);
+
+  updateTitle();
+  mpListView->switchToOtherWidget(1, "");
+
+  refreshRecentFileMenu();
 }
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
@@ -904,7 +901,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
 #endif
 
-bool CopasiUI3Window::slotFileSave()
+void CopasiUI3Window::slotFileSave()
 {
   //  mpDataModelGUI->commit(); --> remove to the line after checking the following condition (07.04.08)
 
@@ -950,38 +947,18 @@ bool CopasiUI3Window::slotFileSave()
             break;
 
           case QMessageBox::Cancel:
-            return false;
+            return;
             break;
         }
     }
 
-  bool success = true;
-
   if (mpDataModelGUI)
     {
-      QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
 
-      if ((success = mpDataModelGUI->saveModel(FileName, true)))
-        {
-          (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
-        }
-      else
-        {
-          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-            {
-              CQMessageBox::critical(this, "Save File Error",
-                                     CCopasiMessage::getAllMessageText().c_str(),
-                                     QMessageBox::Ok, QMessageBox::Ok);
-              CCopasiMessage::clearDeque();
-            }
-        }
-
-      setCursor(oldCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+      mpDataModelGUI->saveModel(FileName, true);
     }
-
-  refreshRecentFileMenu();
-  return success;
 }
 
 void CopasiUI3Window::slotQuit()
@@ -993,14 +970,14 @@ void CopasiUI3Window::slotQuit()
       return;
     }
 
-  bool success = true;
-
   mpDataModelGUI->commit();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
   if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
     {
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
                                      "Do you want to save the changes before exiting?",
@@ -1008,19 +985,25 @@ void CopasiUI3Window::slotQuit()
                                      QMessageBox::Save))
         {
           case QMessageBox::Save:
-            success = slotFileSave();
+            slotFileSave();
+
             break;
 
           case QMessageBox::Discard:
-            success = true;
+            slotQuitFinished(true);
             break;
 
           case QMessageBox::Cancel:
           default:
-            success = false;
+            slotQuitFinished(false);
             break;
         }
     }
+}
+
+void CopasiUI3Window::slotQuitFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
 
   if (success)
     {
@@ -1039,14 +1022,15 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
       return;
     }
 
-  bool success = true;
-
   mpDataModelGUI->commit();
-
+  mpCloseEvent = ce;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
 
   if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
     {
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCloseEventFinished(bool)));
+
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
                                      "Do you want to save the changes before exiting?",
@@ -1054,30 +1038,36 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
                                      QMessageBox::Save))
         {
           case QMessageBox::Save:
-            success = slotFileSave();
+            slotFileSave();
             break;
 
           case QMessageBox::Discard:
-            success = true;
+            slotCloseEventFinished(true);
             break;
 
           case QMessageBox::Cancel:
           default:
-            success = false;
+            slotCloseEventFinished(false);
             break;
         }
     }
 
+  return;
+}
+
+void CopasiUI3Window::slotCloseEventFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCloseEventFinished(bool)));
+
   if (success)
     {
       CleanUp();
-      ce->accept();
+      mpCloseEvent->accept();
     }
   else
-    ce->ignore();
-
-  return;
+    mpCloseEvent->ignore();
 }
+
 
 // Cleanup all the temp .cps files created at runtime.
 void CopasiUI3Window::CleanUp()
@@ -1153,8 +1143,6 @@ void CopasiUI3Window::slotTutorialWizard()
 
 void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 {
-  bool success = true;
-
   mpDataModelGUI->commit();
 
   if (!sbmlDocumentText.empty())
@@ -1193,52 +1181,49 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
           mpDataModelGUI = new DataModelGUI(this); // create a new data model
         }
 
-      QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
 
-      try
-        {
-          success = mpDataModelGUI->importSBMLFromString(sbmlDocumentText);
-        }
-
-      catch (CCopasiException except)
-        {
-          success = false;
-        }
-
-      setCursor(oldCursor);
-
-      if (!success)
-        {
-          QString Message = "Error while importing SBML model!\n\n";
-          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-
-          CQMessageBox::critical(this, QString("Import Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::Ok);
-          CCopasiMessage::clearDeque();
-
-          mpDataModelGUI->createModel();
-        }
-
-      /* still check for warnings.
-       * Maybe events or rules were ignored while reading
-       * the file.
-       */
-      if (success)
-        {
-          this->checkPendingMessages();
-        }
-
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
-
-      //if (!bobject_browser_open)
-      //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-      //       msave_button->setEnabled(true);
-      //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-
-      mpListView->switchToOtherWidget(1, "");
+      mpDataModelGUI->importSBMLFromString(sbmlDocumentText);
     }
+}
+
+void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
+
+  unsetCursor();
+
+  if (!success)
+    {
+      QString Message = "Error while importing SBML model!\n\n";
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(this, QString("Import Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+
+      mpDataModelGUI->createModel();
+    }
+
+  /* still check for warnings.
+   * Maybe events or rules were ignored while reading
+   * the file.
+   */
+  if (success)
+    {
+      this->checkPendingMessages();
+    }
+
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+
+  //if (!bobject_browser_open)
+  //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
+  //       msave_button->setEnabled(true);
+  //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+  mpListView->switchToOtherWidget(1, "");
 
   updateTitle();
 
@@ -1247,8 +1232,6 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 
 void CopasiUI3Window::slotImportSBML(QString file)
 {
-  bool success = true;
-
   mpDataModelGUI->commit();
 
   QString SBMLFile;
@@ -1297,47 +1280,44 @@ void CopasiUI3Window::slotImportSBML(QString file)
           mpDataModelGUI = new DataModelGUI(this); // create a new data model
         }
 
-      QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
 
-      try
-        {
-          success = mpDataModelGUI->importSBML(TO_UTF8(SBMLFile));
-        }
-
-      catch (...)
-        {
-          success = false;
-        }
-
-      setCursor(oldCursor);
-
-      if (!success)
-        {
-          QString Message = "Error while loading file " + SBMLFile + QString("!\n\n");
-          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-
-          CQMessageBox::critical(this, QString("File Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::Ok);
-
-          mpDataModelGUI->createModel();
-        }
-      else
-        // We check in all case for warnings. This will help also for unsuccessful imports
-        this->checkPendingMessages();
-
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
-
-      mpaSave->setEnabled(true);
-      mpaSaveAs->setEnabled(true);
-      mpaExportSBML->setEnabled(true);
-      mpaExportODE->setEnabled(true);
-
-      mpListView->switchToOtherWidget(1, "");
-
-      refreshRecentSBMLFileMenu();
+      mNewFile = SBMLFile;
+      mpDataModelGUI->importSBML(TO_UTF8(SBMLFile));
     }
+}
+
+void CopasiUI3Window::slotImportSBMLFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
+  unsetCursor();
+
+  if (!success)
+    {
+      QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(this, QString("File Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+
+      mpDataModelGUI->createModel();
+    }
+  else
+    // We check in all case for warnings. This will help also for unsuccessful imports
+    this->checkPendingMessages();
+
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+
+  mpaSave->setEnabled(true);
+  mpaSaveAs->setEnabled(true);
+  mpaExportSBML->setEnabled(true);
+  mpaExportODE->setEnabled(true);
+
+  mpListView->switchToOtherWidget(1, "");
+
+  refreshRecentSBMLFileMenu();
 
   updateTitle();
 
@@ -1398,45 +1378,19 @@ void CopasiUI3Window::slotExportSBML()
 
   if (mpDataModelGUI && !tmp.isNull())
     {
-      QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      bool success = false;
-
-      try
-        {
-          success = mpDataModelGUI->exportSBML(TO_UTF8(tmp), true, sbmlLevel, sbmlVersion, exportIncomplete);
-        }
-      catch (CCopasiException except)
-        {
-          success = false;
-          setCursor(oldCursor);
-
-          //CQMessageBox::critical(this, QString("File Error"),
-          //                       QString("Error. Could not export file ") + tmp + QString("!"),
-          //                       QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-        }
-
-      setCursor(oldCursor);
-
-      /*
-      if (!success)
-        {
-          QString Message = "Error while saving file " + tmp + QString("!\n\n");
-          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-
-          CQMessageBox::critical(this, QString("File Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
-        }
-      else
-        {
-        */
-      this->checkPendingMessages();
-      /*
-      }
-      */
-      refreshRecentSBMLFileMenu();
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSBMLFinished(bool)));
+      mpDataModelGUI->exportSBML(TO_UTF8(tmp), true, sbmlLevel, sbmlVersion, exportIncomplete);
     }
+}
+
+void CopasiUI3Window::slotExportSBMLFinished(bool /* success */)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSBMLFinished(bool)));
+  unsetCursor();
+
+  checkPendingMessages();
+  refreshRecentSBMLFileMenu();
 }
 
 void CopasiUI3Window::slotExportMathModel()
@@ -1483,23 +1437,27 @@ void CopasiUI3Window::slotExportMathModel()
 
   if (mpDataModelGUI && !tmp.isNull())
     {
-      QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-
-      if (!mpDataModelGUI->exportMathModel(TO_UTF8(tmp), TO_UTF8(*userFilter), true))
-        {
-          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-            {
-              CQMessageBox::critical(this, "Export Error",
-                                     CCopasiMessage::getAllMessageText().c_str(),
-                                     QMessageBox::Ok | QMessageBox::Default,
-                                     QMessageBox::NoButton);
-              CCopasiMessage::clearDeque();
-            }
-        }
-
-      setCursor(oldCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportMathModelFinished(bool)));
+      mpDataModelGUI->exportMathModel(TO_UTF8(tmp), TO_UTF8(*userFilter), true);
     }
+}
+
+void CopasiUI3Window::slotExportMathModelFinished(bool success)
+{
+  unsetCursor();
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportMathModelFinished(bool)));
+
+  if (!success &&
+      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+    {
+      CQMessageBox::critical(this, "Export Error",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default,
+                             QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
 }
 
 void CopasiUI3Window::slotConvertToIrreversible()
@@ -1733,45 +1691,32 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
     }
 }
 
-std::string CopasiUI3Window::exportSBMLToString()
+void CopasiUI3Window::exportSBMLToString(std::string & SBML)
 {
   mpDataModelGUI->commit();
 
-  std::string ret;
-
   if (mpDataModelGUI)
     {
-      QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      bool success = true;
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSBMLToStringFinished(bool)));
 
-      try
-        {
-          ret = mpDataModelGUI->exportSBMLToString();
-        }
-      catch (CCopasiException except)
-        {
-          success = false;
-          setCursor(oldCursor);
-          CQMessageBox::critical(this, QString("File Error"),
-                                 QString("Error. Could not do SBML export!"),
-                                 QMessageBox::Ok, QMessageBox::Ok);
-        }
-
-      setCursor(oldCursor);
-
-      if (!success)
-        {
-          QString Message = "Error while SBML model!\n\n";
-          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-
-          CQMessageBox::critical(this, QString("File Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::Ok);
-          CCopasiMessage::clearDeque();
-        }
+      mpDataModelGUI->exportSBMLToString(SBML);
     }
+}
 
-  return ret;
+void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
+{
+  unsetCursor();
+
+  if (!success)
+    {
+      QString Message = "Error while SBML model!\n\n";
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(this, QString("File Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+    }
 }
 
 QThread * CopasiUI3Window::getMainThread() const
@@ -2352,25 +2297,37 @@ void CopasiUI3Window::sbwSlotMenuTriggered(QAction * pAction)
 {
   mpDataModelGUI->commit();
 
-  QStringList::size_type nId = mSBWActionMap[pAction];
+  mSBWActionId = mSBWActionMap[pAction];
 
-  if (nId == mSBWAnalyzerModules.size())
+  if (mSBWActionId == mSBWAnalyzerModules.size())
     {
       sbwRegister();
     }
   else
     {
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(sbwSlotMenuTriggeredFinished(bool)));
+      exportSBMLToString(mSBMLDocumentString);
+    }
+}
+
+
+void CopasiUI3Window::sbwSlotMenuTriggeredFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(sbwSlotMenuTriggeredFinished(bool)));
+
+  if (success)
+    {
       try
         {
-          int nModule = SBWLowLevel::getModuleInstance(mSBWAnalyzerModules[nId].ascii());
-          int nService = SBWLowLevel::moduleFindServiceByName(nModule, mSBWAnalyzerServices[nId].ascii());
+          int nModule = SBWLowLevel::getModuleInstance(mSBWAnalyzerModules[mSBWActionId].ascii());
+          int nService = SBWLowLevel::moduleFindServiceByName(nModule, mSBWAnalyzerServices[mSBWActionId].ascii());
           int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
 
           DataBlockWriter args;
-          args << exportSBMLToString();
-
+          args << mSBMLDocumentString;
           SBWLowLevel::methodSend(nModule, nService, nMethod, args);
         }
+
       catch (SBWException * pE)
         {
           CQMessageBox::critical(this, "SBW Error",
@@ -2379,6 +2336,8 @@ void CopasiUI3Window::sbwSlotMenuTriggered(QAction * pAction)
                                  QMessageBox::NoButton);
         }
     }
+
+  mSBMLDocumentString = "";
 }
 
 std::vector< DataBlockReader > CopasiUI3Window::sbwFindServices(const std::string & category,
@@ -2429,19 +2388,51 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwAnalysis(SystemsBio
 
 SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwGetSBML(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader /*reader*/)
 {
-  try
+  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(sbwSlotGetSBMLFinished(bool)));
+
+  QMutexLocker Locker(&mSBWMutex);
+  mSBWCallFinished = false;
+
+  exportSBMLToString(mSBMLDocumentString);
+
+  if (!mSBWCallFinished)
     {
-      // write the current model as SBML and return it
-      std::string sSBMLModel = exportSBMLToString();
-      SystemsBiologyWorkbench::DataBlockWriter result;
-      result << sSBMLModel;
-      return result;
+      mSBWWaitSlot.wait(&mSBWMutex);
     }
 
-  catch (...)
+  SystemsBiologyWorkbench::DataBlockWriter result;
+
+  if (mSBWSuccess)
     {
-      throw new SystemsBiologyWorkbench::SBWApplicationException("Error getting the SBML.");
+      try
+        {
+          // write the current model as SBML and return it
+          result << mSBMLDocumentString;
+          mSBMLDocumentString = "";
+
+          return result;
+        }
+
+      catch (...)
+        {
+          throw new SystemsBiologyWorkbench::SBWApplicationException("Error getting the SBML.");
+        }
     }
+
+  throw new SystemsBiologyWorkbench::SBWApplicationException("Error getting the SBML.");
+
+  // This will never be reached.
+  return result;
+}
+
+void CopasiUI3Window::sbwSlotGetSBMLFinished(bool success)
+{
+  QMutexLocker Locker(&mSBWMutex);
+
+  mSBWCallFinished = true;
+  mSBWSuccess = success;
+
+  mSBWWaitSlot.wakeAll();
 }
 #else
 //void CopasiUI3Window::slotSBWMenuTriggered(QAction * /* pAction */) {}

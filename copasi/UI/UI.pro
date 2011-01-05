@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.239.2.6 $
+#   $Revision: 1.239.2.7 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/01/04 13:57:48 $
+#   $Date: 2011/01/05 15:26:00 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.239.2.6 $ $Author: shoops $ $Date: 2011/01/04 13:57:48 $
+# $Revision: 1.239.2.7 $ $Author: shoops $ $Date: 2011/01/05 15:26:00 $
 ######################################################################
 
 LIB = UI
@@ -135,6 +135,7 @@ HEADERS	+= \
   CQSpinBoxDelegate.h \
   CQTableView.h \
   CQTaskThread.h \
+  CQThread.h \
   CQTSSAResultWidget.h \
   CQTSSATimeScaleWidget.h \
   CQUpdatesWidget.h \
@@ -208,6 +209,7 @@ SOURCES	+= \
   CQTaskHeaderWidget.cpp \
   CQTaskMethodWidget.cpp \
   CQTaskThread.cpp \
+  CQThread.cpp \
   CQTrajectoryWidget.cpp \
   CQTSSAWidget.cpp \
   CQTSSAResultSubWidget.cpp \

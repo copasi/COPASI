@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.95.2.1 $
+//   $Revision: 1.95.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/27 13:44:55 $
+//   $Author: shoops $
+//   $Date: 2011/01/05 15:25:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,8 @@
 #ifdef COPASI_SBW_INTEGRATION
 #include <QApplication>
 #include <QEvent>
+#include <QMutex>
+#include <QWaitCondition>
 
 #define WIN32_LEAN_AND_MEAN
 #include <SBW/SBW.h>
@@ -78,13 +80,13 @@ public:
   void suspendAutoSave(const bool & suspend);
 
   /**
-   * This is used to import an sbml file from a std::string in the gui
-   * it does all the necessaray GUI stuff like asking to save the old
+   * This is used to import an SBML file from a std::string in the GUI
+   * it does all the necessary GUI stuff like asking to save the old
    * document, displaying messages, etc.
    */
   void importSBMLFromString(const std::string & sbmlDocumentText);
 
-  std::string exportSBMLToString();
+  void exportSBMLToString(std::string & SBML);
 
   QThread * getMainThread() const;
 
@@ -110,20 +112,29 @@ public slots:
 
 protected slots:
   void slotFileOpen(QString file = QString::null);
+  void slotFileOpenFinished(bool success);
   void slotFileExamplesCopasiFiles(QString file = QString::null);
   void slotFileExamplesSBMLFiles(QString file = QString::null);
-  bool slotFileSave();
-  bool slotFileSaveAs(QString str = QString::null);
+  void slotFileSave();
+  void slotFileSaveAs(QString str = QString::null);
+  void slotFileSaveFinished(bool success);
   void newDoc();
   void slotFilePrint();
   void slotImportSBML(QString file = QString::null);
+  void slotImportSBMLFinished(bool success);
+  void slotImportSBMLFromStringFinished(bool success);
   void slotExportSBML();
+  void slotExportSBMLFinished(bool success);
+  void slotExportSBMLToStringFinished(bool success);
   void slotExportMathModel();
+  void slotExportMathModelFinished(bool success);
   void slotTutorialWizard();
   void about();
   void license();
   void aboutQt();
   void slotQuit();
+  void slotQuitFinished(bool success);
+  void slotCloseEventFinished(bool success);
   void slotPreferences();
   void slotConvertToIrreversible();
   void listViewsFolderChanged(const QModelIndex & index);
@@ -222,6 +233,8 @@ private:
   CMIRIAMResources * mpMIRIAMResources;
 
   QThread * mpMainThread;
+  QString mNewFile;
+  QCloseEvent * mpCloseEvent;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:
@@ -312,6 +325,8 @@ private:
 
 protected slots:
   void sbwSlotMenuTriggered(QAction * pAction);
+  void sbwSlotMenuTriggeredFinished(bool success);
+  void sbwSlotGetSBMLFinished(bool success);
 
 private:
   /**
@@ -353,6 +368,19 @@ private:
    * This variable indicates whether COPASI is to ignore SBW shutdown events
    */
   bool mSBWIgnoreShutdownEvent;
+
+  QMutex mSBWMutex;
+
+  QWaitCondition mSBWWaitSlot;
+
+  bool mSBWCallFinished;
+
+  bool mSBWSuccess;
+
+  std::string mSBMLDocumentString;
+
+  QStringList::size_type mSBWActionId;
+
 
 #endif // COPASI_SBW_INTEGRATION
 

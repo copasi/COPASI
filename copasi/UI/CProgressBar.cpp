@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 14:52:57 $
+//   $Date: 2011/01/05 15:26:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,13 +79,6 @@ CProgressBar::~CProgressBar()
 {
   finish();
 
-  // We need to activate the user interface again.
-  if (mpMainWidget != NULL)
-    {
-      mpMainWidget->setEnabled(true);
-      qApp->processEvents();
-    }
-
   unsigned C_INT32 i, imax = mProgressItemList.size();
 
   for (i = 0; i < imax; i++)
@@ -117,6 +110,7 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
   else
     {
       slotAddItem(hItem);
+      qApp->processEvents();
     }
 
   return hItem;
@@ -192,6 +186,7 @@ bool CProgressBar::progressItem(const unsigned C_INT32 & handle)
   else
     {
       slotProgressAll();
+      qApp->processEvents();
     }
 
   return mProceed;
@@ -229,6 +224,13 @@ bool CProgressBar::finish()
         }
     }
 
+  // We need to activate the user interface again.
+  if (mpMainWidget != NULL)
+    {
+      mpMainWidget->setEnabled(true);
+      qApp->processEvents();
+    }
+
   CProcessReport::finish();
   done(1);
 
@@ -255,6 +257,7 @@ bool CProgressBar::finishItem(const unsigned C_INT32 & handle)
   else
     {
       slotFinishItem(handle);
+      qApp->processEvents();
     }
 
   return (CProcessReport::finishItem(handle) && mProceed);
@@ -300,6 +303,7 @@ bool CProgressBar::setName(const std::string & name)
   else
     {
       slotSetName(FROM_UTF8(name));
+      qApp->processEvents();
     }
 
   return true;

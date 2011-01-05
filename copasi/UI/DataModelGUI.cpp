@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.17 $
+//   $Revision: 1.93.2.18 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:41:21 $
+//   $Author: shoops $
+//   $Date: 2011/01/05 15:26:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 
 #include "DataModelGUI.h"
 #include "DataModel.txt.h"
+#include "CQThread.h"
 #include "qtUtilities.h"
 #include "utilities/CVector.h"
 #include "CProgressBar.h"
@@ -669,174 +670,284 @@ bool DataModelGUI::createModel()
   return true;
 }
 
-bool DataModelGUI::loadModel(const std::string & fileName)
+void DataModelGUI::loadModel(const std::string & fileName)
 {
-  CProgressBar* pProgressBar = new CProgressBar();
+  mpProgressBar = new CProgressBar();
 
-  bool success = true;
+  mSuccess = true;
+  mFileName = fileName;
 
+  mpThread = new CQThread(this, &DataModelGUI::loadModelRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(loadModelFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::loadModelRun()
+{
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      success = (*CCopasiRootContainer::getDatamodelList())[0]->loadModel(fileName, pProgressBar);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->loadModel(mFileName, mpProgressBar);
     }
 
   catch (...)
     {
-      success = false;
+      mSuccess = false;
     }
+}
 
-  if (success)
+void DataModelGUI::loadModelFinished()
+{
+  if (mSuccess)
     {
-      CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(fileName);
+      CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
 
-      // getModel()->setCompileFlag();
       mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
-
       linkDataModelToGUI();
     }
 
-  pdelete(pProgressBar);
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(loadModelFinished()));
 
-  return success;
+  threadFinished();
 }
 
-bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
+
+void DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 {
-  CProgressBar* pProgressBar = new CProgressBar();
+  mpProgressBar = new CProgressBar();
 
-  bool success = true;
+  mSuccess = true;
+  mFileName = fileName;
+  mOverWrite = overwriteFile;
 
+  mpThread = new CQThread(this, &DataModelGUI::saveModelRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::saveModelRun()
+{
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      success = (*CCopasiRootContainer::getDatamodelList())[0]->saveModel(fileName, pProgressBar, overwriteFile);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->saveModel(mFileName, mpProgressBar, mOverWrite);
     }
 
   catch (...)
     {
-      success = false;
+      mSuccess = false;
     }
-
-  if (success)
-    CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(fileName);
-
-  pdelete(pProgressBar);
-
-  return true;
 }
 
-bool DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
+void DataModelGUI::saveModelFinished()
 {
-  CProgressBar* tmpBar = new CProgressBar();
-  bool success = false;
+  if (mSuccess)
+    CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
 
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
+
+  threadFinished();
+}
+
+
+void DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
+{
+  mpProgressBar = new CProgressBar();
+
+  mSuccess = true;
+  mpSBMLImportString = & sbmlDocumentText;
+
+  mpThread = new CQThread(this, &DataModelGUI::importSBMLFromStringRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFromStringFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::importSBMLFromStringRun()
+{
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      success = (*CCopasiRootContainer::getDatamodelList())[0]->importSBMLFromString(sbmlDocumentText, tmpBar);
-    }
-  catch (CCopasiException except)
-    {
-      pdelete(tmpBar);
-      throw except;
-    }
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
-
-  pdelete(tmpBar);
-
-  linkDataModelToGUI();
-  return success;
-}
-
-bool DataModelGUI::importSBML(const std::string & fileName)
-{
-  CProgressBar* tmpBar = new CProgressBar();
-  bool success = false;
-
-  try
-    {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      success = (*CCopasiRootContainer::getDatamodelList())[0]->importSBML(fileName, tmpBar);
-    }
-
-  catch (CCopasiException except)
-    {
-      pdelete(tmpBar);
-      throw except;
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBMLFromString(*mpSBMLImportString, mpProgressBar);
     }
 
   catch (...)
     {
-      pdelete(tmpBar);
-      fatalError();
+      mSuccess = false;
     }
-
-  if (success) CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(fileName);
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
-
-  pdelete(tmpBar);
-
-  linkDataModelToGUI();
-  return success;
 }
 
-std::string DataModelGUI::exportSBMLToString()
+void DataModelGUI::importSBMLFromStringFinished()
 {
-  CProgressBar* tmpBar = new CProgressBar();
-  std::string str;
+  if (mSuccess)
+    {
+      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      linkDataModelToGUI();
+    }
 
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFromStringFinished()));
+
+  threadFinished();
+}
+
+void DataModelGUI::importSBML(const std::string & fileName)
+{
+  mpProgressBar = new CProgressBar();
+
+  mSuccess = true;
+  mFileName = fileName;
+
+  mpThread = new CQThread(this, &DataModelGUI::importSBMLRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::importSBMLRun()
+{
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      str = (*CCopasiRootContainer::getDatamodelList())[0]->exportSBMLToString(tmpBar, 2, 3);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBML(mFileName, mpProgressBar);
     }
-  catch (CCopasiException except)
+
+  catch (...)
     {
-      pdelete(tmpBar);
-      throw except;
+      mSuccess = false;
     }
-
-  pdelete(tmpBar);
-
-  return str;
 }
 
-bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM)
+void DataModelGUI::importSBMLFinished()
 {
-  CProgressBar* tmpBar = new CProgressBar();
-  bool success = false;
+  if (mSuccess)
+    {
+      CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
 
+      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      linkDataModelToGUI();
+    }
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFinished()));
+
+  threadFinished();
+}
+
+
+void DataModelGUI::exportSBMLToString(std::string & sbmlDocumentText)
+{
+  mpProgressBar = new CProgressBar();
+  mSuccess = true;
+  mpSBMLExportString = & sbmlDocumentText;
+
+  mpThread = new CQThread(this, &DataModelGUI::exportSBMLToStringRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLToStringFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::exportSBMLToStringRun()
+{
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      success = (*CCopasiRootContainer::getDatamodelList())[0]->exportSBML(fileName, overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete, exportCOPASIMIRIAM, tmpBar);
+      *mpSBMLExportString = (*CCopasiRootContainer::getDatamodelList())[0]->exportSBMLToString(mpProgressBar, 2, 3);
     }
-  catch (CCopasiException except)
+
+  catch (...)
     {
-      pdelete(tmpBar);
-      throw except;
+      mSuccess = false;
     }
-
-  if (success) CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(fileName);
-
-  pdelete(tmpBar);
-
-  return success;
 }
 
-bool DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
+void DataModelGUI::exportSBMLToStringFinished()
 {
-  CProgressBar* pProgressBar = new CProgressBar();
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  bool success = (*CCopasiRootContainer::getDatamodelList())[0]->exportMathModel(fileName, pProgressBar, filter, overwriteFile);
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLToStringFinished()));
 
-  pdelete(pProgressBar);
-  return success;
+  threadFinished();
+}
+
+void DataModelGUI::threadFinished()
+{
+  mpThread->deleteLater();
+  mpThread = NULL;
+
+  mpProgressBar->finish();
+  mpProgressBar->deleteLater();
+  mpProgressBar = NULL;
+
+  emit finished(mSuccess);
+}
+
+void DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM)
+{
+  mpProgressBar = new CProgressBar();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mOverWrite = overwriteFile;
+  mSBMLLevel = sbmlLevel;
+  mSBMLVersion = sbmlVersion;
+  mSBMLExportIncomplete = exportIncomplete;
+  mSBMLExportCOPASIMIRIAM = exportCOPASIMIRIAM;
+
+  mpThread = new CQThread(this, &DataModelGUI::exportSBMLRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::exportSBMLRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->exportSBML(mFileName, mOverWrite, mSBMLLevel, mSBMLVersion, mSBMLExportIncomplete, mSBMLExportCOPASIMIRIAM, mpProgressBar);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::exportSBMLFinished()
+{
+  if (mSuccess)
+    CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
+
+  threadFinished();
+}
+
+void DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
+{
+  mpProgressBar = new CProgressBar();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mOverWrite = overwriteFile;
+  mExportFormat = filter;
+
+  mpThread = new CQThread(this, &DataModelGUI::exportMathModelRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::exportMathModelRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->exportMathModel(mFileName, mpProgressBar, mExportFormat, mOverWrite);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::exportMathModelFinished()
+{
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
+
 }
 
 bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
@@ -1353,3 +1464,4 @@ void DataModelGUI::commit()
       (*it)->commit();
     }
 }
+

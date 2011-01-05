@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.33.2.4 $
+//   $Revision: 1.33.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/26 17:38:55 $
+//   $Date: 2011/01/05 15:25:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,8 @@
 //class CMathModel;
 class QTimer;
 class CMIRIAMResources;
+class CQThread;
+class CProgressBar;
 
 class DataModelGUI : public QAbstractItemModel
 {
@@ -67,20 +69,39 @@ public:
   const IndexedNode * getRootNode() const;
   const IndexedNode * getNode(int id);
 
-  bool loadModel(const std::string & fileName);
   bool createModel();
-  bool saveModel(const std::string & fileName, bool overwriteFile = false);
+  void loadModel(const std::string & fileName);
+  void saveModel(const std::string & fileName, bool overwriteFile = false);
+
 #ifdef WITH_MERGEMODEL
   bool addModel(const std::string & fileName);
 #endif
 
-  bool updateMIRIAM(CMIRIAMResources & miriamResources);
+  void importSBML(const std::string & fileName);
+  void exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
+  void importSBMLFromString(const std::string & sbmlDocumentText);
+  void exportSBMLToString(std::string & sbmlDocumentText);
+  void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
 
-  bool importSBMLFromString(const std::string & sbmlDocumentText);
-  bool importSBML(const std::string & fileName);
-  std::string exportSBMLToString();
-  bool exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
-  bool exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
+  void loadModelRun();
+  void saveModelRun();
+  void importSBMLRun();
+  void exportSBMLRun();
+  void importSBMLFromStringRun();
+  void exportSBMLToStringRun();
+  void exportMathModelRun();
+
+public slots:
+  void loadModelFinished();
+  void saveModelFinished();
+  void importSBMLFinished();
+  void exportSBMLFinished();
+  void importSBMLFromStringFinished();
+  void exportSBMLToStringFinished();
+  void exportMathModelFinished();
+
+public:
+  bool updateMIRIAM(CMIRIAMResources & miriamResources);
 
   COutputDefinitionVector & getPlotDefinitionList();
 
@@ -120,9 +141,13 @@ protected:
   bool insertRow(int parentId, const std::string &key);
   bool removeRow(const std::string &key);
 
+private:
+  void threadFinished();
+
 signals:
   void updateCompleteView();
   void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  void finished(bool success);
 
 private:
   IndexedTree mTree; // create the  object of the tree
@@ -133,6 +158,18 @@ private:
   std::vector< Refresh * > mUpdateVector;
   std::set< const CCopasiObject * > mChangedObjects;
 
+  CQThread * mpThread;
+  CProgressBar * mpProgressBar;
+  bool mSuccess;
+  const std::string * mpSBMLImportString;
+  std::string * mpSBMLExportString;
+  std::string mFileName;
+  bool mOverWrite;
+  int mSBMLLevel;
+  int mSBMLVersion;
+  bool mSBMLExportIncomplete;
+  bool mSBMLExportCOPASIMIRIAM;
+  std::string mExportFormat;
 };
 
 #endif
