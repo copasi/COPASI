@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.59.2.1 $
+//   $Revision: 1.59.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:57:49 $
+//   $Date: 2011/01/05 19:03:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -344,7 +344,7 @@ bool TaskWidget::commonBeforeRunTask()
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
   //create progress bar
-  mProgressBar = new CProgressBar();
+  mProgressBar = CProgressBar::create();
   mpTask->setCallBack(mProgressBar);
 
   CCopasiMessage::clearDeque();
@@ -355,7 +355,7 @@ bool TaskWidget::commonAfterRunTask()
 {
   if (!mpTask) return false;
 
-  if (mProgressBar)
+  if (mProgressBar != NULL)
     {
       mProgressBar->finish();
       mProgressBar->deleteLater();
@@ -396,7 +396,8 @@ bool TaskWidget::commonRunTask()
     {
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
-          mProgressBar->finish();
+          if (mProgressBar != NULL) mProgressBar->finish();
+
           CQMessageBox::critical(this, "Initialization Error",
                                  CCopasiMessage::getAllMessageText().c_str(),
                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
@@ -408,7 +409,8 @@ bool TaskWidget::commonRunTask()
 
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::ERROR)
     {
-      mProgressBar->finish();
+      if (mProgressBar != NULL) mProgressBar->finish();
+
       CQMessageBox::critical(this, "Initialization Error",
                              CCopasiMessage::getAllMessageText().c_str(),
                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
@@ -443,7 +445,8 @@ void TaskWidget::slotExceptionOccured(CCopasiException *C_UNUSED(pException))
 {
   if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
     {
-      mProgressBar->finish();
+      if (mProgressBar != NULL) mProgressBar->finish();
+
       CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
@@ -471,7 +474,8 @@ void TaskWidget::finishTask()
     {
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
-          mProgressBar->finish();
+          if (mProgressBar != NULL) mProgressBar->finish();
+
           CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();

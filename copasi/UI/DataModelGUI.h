@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.33.2.5 $
+//   $Revision: 1.33.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 15:25:59 $
+//   $Date: 2011/01/05 19:03:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ private:
   CQThread * mpThread;
   CProgressBar * mpProgressBar;
   bool mSuccess;
-  const std::string * mpSBMLImportString;
+  std::string mSBMLImportString;
   std::string * mpSBMLExportString;
   std::string mFileName;
   bool mOverWrite;

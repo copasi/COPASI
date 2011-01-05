@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 14:52:57 $
+//   $Date: 2011/01/05 19:03:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,11 +43,18 @@ class CProgressBar : public CQProgressDialog, public CProcessReport
 {
   Q_OBJECT
 public:
+  static CProgressBar * create(QWidget* parent = 0,
+                               const char* name = 0,
+                               bool modal = false,
+                               Qt::WFlags fl = 0);
+
+private:
   CProgressBar(QWidget* parent = 0,
                const char* name = 0,
                bool modal = false,
                Qt::WFlags fl = 0);
 
+public:
   virtual ~CProgressBar();
 
   /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.5 $
+//   $Revision: 1.289.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 15:25:59 $
+//   $Date: 2011/01/05 19:02:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -721,6 +721,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 }
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
   unsetCursor();
 
   if (!success)
@@ -1707,10 +1708,11 @@ void CopasiUI3Window::exportSBMLToString(std::string & SBML)
 void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
 {
   unsetCursor();
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSBMLToStringFinished(bool)));
 
   if (!success)
     {
-      QString Message = "Error while SBML model!\n\n";
+      QString Message = "Error while exporting SBML model!\n\n";
       Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
       CQMessageBox::critical(this, QString("File Error"), Message,
@@ -2393,7 +2395,7 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwGetSBML(SystemsBiol
   QMutexLocker Locker(&mSBWMutex);
   mSBWCallFinished = false;
 
-  exportSBMLToString(mSBMLDocumentString);
+  mpDataModelGUI->exportSBMLToString(mSBMLDocumentString);
 
   if (!mSBWCallFinished)
     {

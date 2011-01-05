@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.18 $
+//   $Revision: 1.93.2.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 15:26:00 $
+//   $Date: 2011/01/05 19:02:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -672,7 +672,7 @@ bool DataModelGUI::createModel()
 
 void DataModelGUI::loadModel(const std::string & fileName)
 {
-  mpProgressBar = new CProgressBar();
+  mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
@@ -714,7 +714,7 @@ void DataModelGUI::loadModelFinished()
 
 void DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 {
-  mpProgressBar = new CProgressBar();
+  mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
@@ -752,10 +752,10 @@ void DataModelGUI::saveModelFinished()
 
 void DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
 {
-  mpProgressBar = new CProgressBar();
+  mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
-  mpSBMLImportString = & sbmlDocumentText;
+  mSBMLImportString = sbmlDocumentText;
 
   mpThread = new CQThread(this, &DataModelGUI::importSBMLFromStringRun);
   connect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFromStringFinished()));
@@ -767,7 +767,7 @@ void DataModelGUI::importSBMLFromStringRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBMLFromString(*mpSBMLImportString, mpProgressBar);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBMLFromString(mSBMLImportString, mpProgressBar);
     }
 
   catch (...)
@@ -778,6 +778,8 @@ void DataModelGUI::importSBMLFromStringRun()
 
 void DataModelGUI::importSBMLFromStringFinished()
 {
+  mSBMLImportString = "";
+
   if (mSuccess)
     {
       mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
@@ -791,7 +793,7 @@ void DataModelGUI::importSBMLFromStringFinished()
 
 void DataModelGUI::importSBML(const std::string & fileName)
 {
-  mpProgressBar = new CProgressBar();
+  mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
@@ -833,7 +835,8 @@ void DataModelGUI::importSBMLFinished()
 
 void DataModelGUI::exportSBMLToString(std::string & sbmlDocumentText)
 {
-  mpProgressBar = new CProgressBar();
+  mpProgressBar = CProgressBar::create();
+
   mSuccess = true;
   mpSBMLExportString = & sbmlDocumentText;
 
@@ -865,19 +868,25 @@ void DataModelGUI::exportSBMLToStringFinished()
 
 void DataModelGUI::threadFinished()
 {
-  mpThread->deleteLater();
-  mpThread = NULL;
+  if (mpThread != NULL)
+    {
+      mpThread->deleteLater();
+      mpThread = NULL;
+    }
 
-  mpProgressBar->finish();
-  mpProgressBar->deleteLater();
-  mpProgressBar = NULL;
+  if (mpProgressBar != NULL)
+    {
+      mpProgressBar->finish();
+      mpProgressBar->deleteLater();
+      mpProgressBar = NULL;
+    }
 
   emit finished(mSuccess);
 }
 
 void DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM)
 {
-  mpProgressBar = new CProgressBar();
+  mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
@@ -918,7 +927,7 @@ void DataModelGUI::exportSBMLFinished()
 
 void DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
 {
-  mpProgressBar = new CProgressBar();
+  mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
@@ -953,7 +962,7 @@ void DataModelGUI::exportMathModelFinished()
 bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 {
   bool success = true;
-  CProgressBar* pProgressBar = new CProgressBar();
+  CProgressBar* pProgressBar = CProgressBar::create();
   //try
   //{
   success = miriamResources.updateMIRIAMResources(pProgressBar);

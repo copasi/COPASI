@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.cpp,v $
-//   $Revision: 1.6.4.2 $
+//   $Revision: 1.6.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/29 18:23:19 $
+//   $Date: 2011/01/05 19:02:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,10 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QStyle>
+#include <QApplication>
+#include <QThread>
 
+#include "copasiui3window.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
@@ -74,6 +77,12 @@ QMessageBox::StandardButton CQMessageBox::information(QWidget *parent, const QSt
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    return defaultButton;
+
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Information, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
   StandardButton choice = (StandardButton) pMessageBox->exec();
@@ -86,6 +95,12 @@ QMessageBox::StandardButton CQMessageBox::question(QWidget *parent, const QStrin
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    return defaultButton;
+
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Question, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
   StandardButton choice = (StandardButton) pMessageBox->exec();
@@ -99,6 +114,12 @@ QMessageBox::StandardButton CQMessageBox::warning(QWidget *parent, const QString
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    return defaultButton;
+
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Warning, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
   StandardButton choice = (StandardButton) pMessageBox->exec();
@@ -112,6 +133,12 @@ QMessageBox::StandardButton CQMessageBox::critical(QWidget *parent, const QStrin
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    return defaultButton;
+
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Critical, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
   StandardButton choice = (StandardButton) pMessageBox->exec();
