@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.5 $
+//   $Revision: 1.66.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/16 17:01:19 $
+//   $Date: 2011/01/05 15:22:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -460,10 +460,9 @@ bool CFitProblem::initialize()
               mExperimentUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
               ObjectSet[Index].insert(pItem->getObject());
 
-              // TODO CRITICAL We need to undo the changes for all non affected experiments
+              // We need to undo the changes for all non affected experiments.
               // We can do that by adding the update method with the current model value to
               mExperimentUndoMethods(Index, j) = pItem->COptItem::getUpdateMethod();
-
             };
         }
 
