@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.62.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:50:40 $
+//   $Date: 2011/01/06 16:46:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,6 +201,9 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
+  // The return status of the integrator.
+  Status Status = NORMAL;
+
   if (mRoots.size() > 0)
     {
       mLSODAR(&EvalF, //  1. evaluate F
@@ -247,6 +250,19 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
             break;
 
+          case 3:
+
+            // If mLsodaStatus == 3 we have found a root. This needs to be indicated to
+            // the caller as it is not sufficient to rely on the fact that T < TOUT
+            if (mLsodaStatus == 3)
+              {
+                // It is sufficient to switch to 2. Eventual state changes due to events
+                // are indicated via the method stateChanged()
+                mLsodaStatus = 2;
+                Status = ROOT;
+              }
+
+            // We do have to continue to check the root masking state.
           default:
 
             switch (mRootMasking)
@@ -286,6 +302,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                       mRootMasking = DISCRETE;
                     }
 
+                  // We have to restart the integrator
                   mLsodaStatus = 1;
                 }
               }
@@ -317,24 +334,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
   // Why did we ignore this error?
   // if (mLsodaStatus == -1) mLsodaStatus = 2;
 
-  // The status of the integrator.
-  Status Status = NORMAL;
-
   if ((mLsodaStatus <= 0))
     {
       Status = FAILURE;
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
-    }
-
-  // If mLsodaStatus == 3 we have found a root. This needs to be indicated to
-  // the caller as it is not sufficient to rely on the fact that T < TOUT
-
-  if (mLsodaStatus == 3)
-    {
-      // It is sufficient to switch to 2. Eventual state changes due to events
-      // are indicated via the method stateChanged()
-      mLsodaStatus = 2;
-      Status = ROOT;
     }
 
   mMethodState.setTime(mTime);
