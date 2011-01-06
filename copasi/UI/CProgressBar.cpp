@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.33.2.2 $
+//   $Revision: 1.33.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 19:02:59 $
+//   $Date: 2011/01/06 16:51:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,6 @@ CProgressBar * CProgressBar::create(QWidget* parent, const char* name,
   if (pMainWidget != NULL &&
       static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
     {
-      // TODO CRITICAL Implement me!
       return NULL;
     }
   else
