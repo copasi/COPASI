@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.6 $
+//   $Revision: 1.289.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 19:02:59 $
+//   $Date: 2011/01/06 16:52:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2308,7 +2308,7 @@ void CopasiUI3Window::sbwSlotMenuTriggered(QAction * pAction)
   else
     {
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(sbwSlotMenuTriggeredFinished(bool)));
-      exportSBMLToString(mSBMLDocumentString);
+      exportSBMLToString(mSBWDocumentString);
     }
 }
 
@@ -2326,7 +2326,7 @@ void CopasiUI3Window::sbwSlotMenuTriggeredFinished(bool success)
           int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
 
           DataBlockWriter args;
-          args << mSBMLDocumentString;
+          args << mSBWDocumentString;
           SBWLowLevel::methodSend(nModule, nService, nMethod, args);
         }
 
@@ -2339,7 +2339,7 @@ void CopasiUI3Window::sbwSlotMenuTriggeredFinished(bool success)
         }
     }
 
-  mSBMLDocumentString = "";
+  mSBWDocumentString = "";
 }
 
 std::vector< DataBlockReader > CopasiUI3Window::sbwFindServices(const std::string & category,
@@ -2395,7 +2395,7 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwGetSBML(SystemsBiol
   QMutexLocker Locker(&mSBWMutex);
   mSBWCallFinished = false;
 
-  mpDataModelGUI->exportSBMLToString(mSBMLDocumentString);
+  mpDataModelGUI->exportSBMLToString(mSBWDocumentString);
 
   if (!mSBWCallFinished)
     {
@@ -2409,8 +2409,8 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwGetSBML(SystemsBiol
       try
         {
           // write the current model as SBML and return it
-          result << mSBMLDocumentString;
-          mSBMLDocumentString = "";
+          result << mSBWDocumentString;
+          mSBWDocumentString = "";
 
           return result;
         }

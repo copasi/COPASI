@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.95.2.2 $
+//   $Revision: 1.95.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 15:25:59 $
+//   $Date: 2011/01/06 16:52:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -377,7 +377,7 @@ private:
 
   bool mSBWSuccess;
 
-  std::string mSBMLDocumentString;
+  std::string mSBWDocumentString;
 
   QStringList::size_type mSBWActionId;
 
