@@ -51,24 +51,9 @@ cp ../copasi/wizard/help_html/figures/*.png \
   copasi/share/copasi/doc/html/figures
 chmod 644 copasi/share/copasi/doc/html/figures/*.png
 
-tar -czf ../Copasi-$build-$1.tar.gz copasi
+tar -czf ../Copasi-$build-$PACKAGE.tar.gz copasi
 
-if [ x"$license" = xUS ]; then
-  UPLOAD copasi/bin/CopasiSE \
-    $license/Copasi-AllSE/$1/CopasiSE-$build
-fi
-
-cp ../copasi/CopasiUI/CopasiUI-dynamic  copasi/bin/CopasiUI
-chmod 755 copasi/bin/CopasiUI
-
-cp ../copasi/CopasiSE/CopasiSE-dynamic  copasi/bin/CopasiSE
-chmod 755 copasi/bin/CopasiSE
-
-tar -czf ../Copasi-$build-$1-Dynamic.tar.gz copasi
-
-if [ x"$license" = xUS ]; then
-  UPLOAD copasi/bin/CopasiSE \
-     $license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
-fi
+UPLOAD copasi/bin/CopasiSE \
+  $license/Copasi-AllSE/$1/CopasiSE-$build
 
 popd
