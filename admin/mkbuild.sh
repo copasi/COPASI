@@ -5,6 +5,10 @@ PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 SCP=${COPASI_SCP:-scp}
 AWK=${COPASI_AWK:-gawk}
 
+PACKAGE=${COPASI_PACKAGE:-$1}
+
+echo $PACKAGE
+
 if [ x"$COPASI_UPLOAD" != x ]; then
   function UPLOAD () {
     SRC=""
@@ -30,7 +34,7 @@ if [ x"$#" = x1 ]; then
 
   license="US"
 
-  rm Copasi-$build-$1*.*
+  rm Copasi-$build-${PACKAGE}*.*
 
   case x"$1" in 
   xWIN32)
@@ -46,7 +50,7 @@ if [ x"$#" = x1 ]; then
     ;;
   esac
 
-  UPLOAD Copasi-$build-$1*.* \
+  UPLOAD Copasi-$build-${PACKAGE}*.* \
     $license
 
 else
