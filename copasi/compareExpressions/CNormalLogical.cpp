@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.37.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/13 13:49:23 $
+//   $Author: shoops $
+//   $Date: 2011/01/10 17:00:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -906,7 +906,7 @@ bool CNormalLogical::generateCanonicalDNF(ItemSetOfSets& tmpAndSets) const
               // create a new row for the truth table
               // the bits in i can be mapped to the truth values
               std::bitset<16> bitSet(i);
-              unsigned int j, jMax = itemVector.size();
+              size_t j, jMax = itemVector.size();
 
               for (j = 0; j < jMax; ++j)
                 {

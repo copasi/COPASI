@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/16 09:51:52 $
+//   $Author: shoops $
+//   $Date: 2011/01/10 17:00:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,7 +144,7 @@ CNormalSum::~CNormalSum()
  * Retrieve the number of summands of this sum.
  * @return int
  */
-int CNormalSum::getSize() const
+size_t CNormalSum::getSize() const
 {
   return mProducts.size() + mFractions.size();
 }

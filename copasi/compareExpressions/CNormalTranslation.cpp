@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.45.4.5 $
+//   $Revision: 1.45.4.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/12/14 15:07:31 $
+//   $Author: shoops $
+//   $Date: 2011/01/10 17:00:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1428,7 +1428,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOri
             // splitProduct doesn't copy nodes
             CNormalTranslation::splitProduct(pTmpOrig, multiplications, divisions, false);
             std::set<const CEvaluationNode*> multiplicationNumberNodes;
-            unsigned int i, iMax = multiplications.size();
+            size_t i, iMax = multiplications.size();
             const CEvaluationNode* pNode = NULL;
 
             for (i = 0; i < iMax; ++i)
@@ -1568,7 +1568,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOri
             CNormalTranslation::splitSum(pTmpOrig, additions, subtractions, false);
             CNormalTranslation::swapNegativeNumbers(additions, subtractions);
             std::set<const CEvaluationNode*> additionNumberNodes;
-            unsigned int i, iMax = additions.size();
+            size_t i, iMax = additions.size();
             const CEvaluationNode* pNode = NULL;
 
             for (i = 0; i < iMax; ++i)
@@ -1756,7 +1756,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOri
             else
               {
                 // delete all nodes in additions and subtractions
-                unsigned int i, iMax = additions.size();
+                size_t i, iMax = additions.size();
 
                 for (i = 0; i < iMax; ++i)
                   {
@@ -2076,7 +2076,7 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEva
 {
   std::vector<const CEvaluationNode*> tmpAdditions, tmpSubtractions;
   CNormalTranslation::splitSum(pRoot, tmpAdditions, tmpSubtractions, minus);
-  unsigned int i, iMax = tmpAdditions.size();
+  size_t i, iMax = tmpAdditions.size();
   additions.reserve(iMax);
 
   for (i = 0; i < iMax; ++i)
@@ -2338,7 +2338,7 @@ CEvaluationNode* CNormalTranslation::expandPowerNodes(const CEvaluationNode* pOr
           // replace all nodes in additions and subtractions by
           // pChild1^node so we can use the generic method to create the
           // multiplication chain
-          unsigned int i, iMax = additions.size();
+          size_t i, iMax = additions.size();
 
           for (i = 0; i < iMax; ++i)
             {
@@ -2798,7 +2798,7 @@ CEvaluationNode* CNormalTranslation::expandProducts(CEvaluationNode* pOrig)
     {
       std::vector<const CEvaluationNode*> multiplications, divisions;
       CNormalTranslation::splitProduct(pOrig, multiplications, divisions, false);
-      unsigned int i, iMax = multiplications.size();
+      size_t i, iMax = multiplications.size();
       CEvaluationNode* pTmpResult;
 
       for (i = 0; i < iMax; ++i)
@@ -2967,11 +2967,11 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
   // and subtractions2 the results for the multiplication with the elements
   // of additions2 must be multiplied by -1
   std::vector<CEvaluationNode*> tmp;
-  unsigned int i, iMax = additions1.size();
+  size_t i, iMax = additions1.size();
 
   for (i = 0; i < iMax; ++i)
     {
-      unsigned int j, jMax = additions2.size();
+      size_t j, jMax = additions2.size();
 
       for (j = 0; j < jMax; ++j)
         {
@@ -2986,7 +2986,7 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
 
   for (i = 0; i < iMax; ++i)
     {
-      unsigned int j, jMax = subtractions2.size();
+      size_t j, jMax = subtractions2.size();
 
       for (j = 0; j < jMax; ++j)
         {
@@ -3008,7 +3008,7 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
 
   for (i = 0; i < iMax; ++i)
     {
-      unsigned int j, jMax = subtractions2.size();
+      size_t j, jMax = subtractions2.size();
 
       for (j = 0; j < jMax; ++j)
         {
@@ -3023,7 +3023,7 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
 
   for (i = 0; i < iMax; ++i)
     {
-      unsigned int j, jMax = additions2.size();
+      size_t j, jMax = additions2.size();
 
       for (j = 0; j < jMax; ++j)
         {
@@ -3183,7 +3183,7 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           if (collected.size() != (additions.size() + subtractions.size()))
             {
               std::vector<CEvaluationNode*> chain;
-              unsigned int iMax = collected.size();
+              size_t iMax = collected.size();
 
               // this is not correct yet. Has to be updated for the new data structures
               // if we have created a copy of pTmpOrig because if changed children, we can delete that copy
@@ -3338,7 +3338,7 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
               divisions.clear();
               std::vector<CEvaluationNode*> numeratorChain;
               std::vector<CEvaluationNode*> denominatorChain;
-              unsigned int iMax = collected.size();
+              size_t iMax = collected.size();
 
               for (unsigned int i = 0; i < iMax; ++i)
                 {
@@ -3950,7 +3950,7 @@ CEvaluationNode* CNormalTranslation::expandPowerBases(const CEvaluationNode* pRo
           CNormalTranslation::splitSum(pBase, additions, subtractions, false);
           CNormalTranslation::swapNegativeNumbers(additions, subtractions);
           std::pair<CEvaluationNode*, CEvaluationNode*> resultPair = CNormalTranslation::factorize(additions, subtractions);
-          unsigned int i, iMax = additions.size();
+          size_t i, iMax = additions.size();
 
           for (i = 0; i < iMax; ++i)
             {
@@ -4004,8 +4004,8 @@ std::pair<CEvaluationNode*, CEvaluationNode*> CNormalTranslation::factorize(cons
   assert(additions.size() > 0);
   // get all multipllications and divisions from the first entry in additions
   std::vector<const CEvaluationNode*> multiplications, divisions;
-  unsigned int i, iMax = additions.size();
-  unsigned int iiMax = iMax + subtractions.size();
+  size_t i, iMax = additions.size();
+  size_t iiMax = iMax + subtractions.size();
   std::vector<std::vector<const CEvaluationNode*> > multiplicationVectors, divisionVectors;
 
   for (i = 0; i < iiMax; ++i)
@@ -4192,8 +4192,8 @@ std::pair<CEvaluationNode*, CEvaluationNode*> CNormalTranslation::factorize(cons
 
   if (!(commonMultiplications.empty() && commonDivisions.empty()))
     {
-      unsigned int i, iMax = additions.size();
-      unsigned int iiMax = iMax + subtractions.size();
+      size_t i, iMax = additions.size();
+      size_t iiMax = iMax + subtractions.size();
       std::vector<CEvaluationNode*> newAdditions, newSubtractions;
 
       for (i = 0; i < iiMax; ++i)
