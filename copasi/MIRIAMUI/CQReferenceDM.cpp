@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:01:00 $
+//   $Date: 2011/01/10 13:36:42 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ QVariant CQReferenceDM::data(const QModelIndex &index, int role) const
           if (index.column() == COL_RESOURCE_REFERENCE)
             return QVariant(QString("-- select --"));
           else if (index.column() == COL_ROW_NUMBER)
-            return QVariant(index.row() + 1);
+            return QVariant(QString(""));
           else
             return QVariant(QString(""));
         }

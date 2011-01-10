@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDM.cpp,v $
-//   $Revision: 1.3.4.3 $
+//   $Revision: 1.3.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:40:39 $
+//   $Date: 2011/01/10 13:36:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ QVariant CQReportDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_REPORTS:
                 return QVariant(QString("New Report"));
               default:

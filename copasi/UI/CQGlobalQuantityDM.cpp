@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.6.4.4 $
+//   $Revision: 1.6.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/06 17:05:39 $
+//   $Date: 2011/01/10 13:36:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_GQ:
                 return QVariant(QString("New Quantity"));
               case COL_TYPE_GQ:

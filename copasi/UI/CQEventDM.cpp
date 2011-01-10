@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.7.4.3 $
+//   $Revision: 1.7.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/14 14:28:13 $
+//   $Date: 2011/01/10 13:36:42 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_EVENTS:
                 return QVariant(QString("New Event"));
               case COL_ORDER_EVENTS:

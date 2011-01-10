@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.15.4.4 $
+//   $Revision: 1.15.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/01 19:43:45 $
+//   $Date: 2011/01/10 13:36:42 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_REACTIONS:
                 return QVariant(QString("New Reaction"));
               default:

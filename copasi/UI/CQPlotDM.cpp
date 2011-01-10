@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.6.2.2 $
+//   $Revision: 1.6.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/12/06 16:14:12 $
+//   $Author: shoops $
+//   $Date: 2011/01/10 13:36:42 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,7 +73,7 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_PLOTS:
                 return QVariant(QString("New Plot"));
               case COL_ACTIVE_PLOTS:
