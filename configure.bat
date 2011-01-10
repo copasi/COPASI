@@ -67,11 +67,11 @@ cd copasi
 echo Executing in copasi:
 
 rem Creating Visual Studio Project Files
-copy copasi.pro tmp_win32.pro
+copy copasi.pro tmp.pro
 set QMAKESPEC=%PROJECT%
 Echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% copasi.pro
-%QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp_win32.pro
-rem del tmp_win32*
+%QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% tmp.pro
+rem del tmp*
 
 set QMAKESPEC=%MY_QMAKESPEC%
 
