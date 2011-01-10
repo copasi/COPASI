@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.39.4.1 $
+//   $Revision: 1.39.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/22 19:52:14 $
+//   $Date: 2011/01/10 13:10:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,7 +215,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
             }
         }
 
-      mNameMap.push_back(SubList);
+      mNameMap[i] = SubList;
     }
 
   return success;
