@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.15 $
+//   $Revision: 1.263.2.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/12/13 14:15:32 $
+//   $Date: 2011/01/10 15:55:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setTimeUnit(CModel::s);
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
+
+  unsigned C_INT32 step = 0, totalSteps, hStep;
+  mImportStep = 1;
+
+  if (!mpImportHandler->progressItem(mhImportStep)) return false;
+
   SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
   UnitDefinition *pSubstanceUnits = NULL;
   UnitDefinition *pTimeUnits = NULL;
@@ -601,11 +607,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   CCopasiVectorN< CEvaluationTree >* functions = &(this->functionDB->loadedFunctions());
 
   unsigned int num = (*functions).size();
-  unsigned C_INT32 step = 0, totalSteps, hStep;
 
   if (mpImportHandler)
     {
-      mImportStep = 1;
+      mImportStep = 2;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
@@ -875,7 +880,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (mpImportHandler)
     {
       mpImportHandler->finishItem(hStep);
-      mImportStep = 7;
+      mImportStep = 6;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
@@ -976,6 +981,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   // import the initial assignments
   // we do this after the reactions since intial assignments can reference reaction ids.
+  if (mpImportHandler)
+    {
+      mpImportHandler->finishItem(hStep);
+      mImportStep = 7;
+
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+    }
+
   importInitialAssignments(sbmlModel, copasi2sbmlmap, this->mpCopasiModel);
 
   // import all rules
@@ -992,7 +1005,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (mpImportHandler)
     {
       mpImportHandler->finishItem(hStep);
-      mImportStep = 6;
+      mImportStep = 8;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
@@ -1055,6 +1068,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // events should be imported after reactions because we use the mSBMLSpeciesReferenceIds to determine if an
   // event assignment changes a species reference (stoichiometry
   // Since COPASI does not support this, we need to ignore the event assignment
+  if (mpImportHandler)
+    {
+      mpImportHandler->finishItem(hStep);
+      mImportStep = 9;
+
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+
+    }
+
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
 
   this->mpCopasiModel->setCompileFlag();
@@ -1102,7 +1124,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (mpImportHandler)
     {
       mpImportHandler->finishItem(hStep);
-      mImportStep = 8;
+      mImportStep = 10;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
     }
@@ -2576,16 +2598,45 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       if (mpImportHandler)
         {
           mpImportHandler->setName("Importing SBML file...");
-          mTotalSteps = 8;
+          mTotalSteps = 11;
           mhImportStep = mpImportHandler->addItem("Step",
                                                   CCopasiParameter::UINT,
                                                   & mImportStep,
                                                   &mTotalSteps);
         }
 
+      unsigned C_INT32 step, totalSteps, hStep;
+
+      if (this->mpImportHandler != 0)
+        {
+          step = 0;
+          totalSteps = 1;
+          hStep = mpImportHandler->addItem("Reading SBML file...",
+                                           CCopasiParameter::UINT,
+                                           & step,
+                                           &totalSteps);
+        }
+
+
       SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
 
-      if (sbmlDoc->checkConsistency() != 0)
+      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
+      if (this->mpImportHandler != 0)
+        {
+          step = 0;
+          totalSteps = 1;
+          hStep = mpImportHandler->addItem("Checking consitency...",
+                                           CCopasiParameter::UINT,
+                                           & step,
+                                           &totalSteps);
+        }
+
+      bool checkResult = sbmlDoc->checkConsistency();
+
+      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
+      if (checkResult != 0)
         {
           int fatal = -1;
           unsigned int i, iMax = sbmlDoc->getNumErrors();
@@ -7748,6 +7799,18 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
       ++it;
     }
 
+  unsigned C_INT32 step, totalSteps, hStep;
+
+  if (this->mpImportHandler != 0)
+    {
+      step = 0;
+      totalSteps = iMax;
+      hStep = mpImportHandler->addItem("Importing initial assignments...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+
   for (i = 0; i < iMax; ++i)
     {
       const InitialAssignment* pInitialAssignment = pSBMLModel->getInitialAssignment(i);
@@ -7772,6 +7835,8 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                   // check for references to species references in the expression because we don't support them yet
                   if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
                     {
+                      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
                       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
                     }
 
@@ -7798,7 +7863,10 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                           // store the expression for the stoichiometry in the stoichiometric expression map
                           // this has been tested and should work
                           this->mStoichiometricExpressionMap.insert(std::make_pair(pMath, pChemEqElement));
+
                           // go to the next iteration
+                          if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
+
                           continue;
                         }
 
@@ -7889,6 +7957,8 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                           os << "\n" << text.substr(text.find("\n") + 1);
                         }
 
+                      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
                       CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                     }
                 }
@@ -7898,6 +7968,8 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
               CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57 , "InitialAssignment", symbol.c_str());
             }
         }
+
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
     }
 }
 
@@ -8415,6 +8487,18 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
   assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));
 #endif // LIBSBML_VERSION
   unsigned int i, iMax = pSBMLModel->getNumEvents();
+  unsigned C_INT32 step, totalSteps, hStep;
+
+  if (this->mpImportHandler != 0)
+    {
+      step = 0;
+      totalSteps = iMax;
+      hStep = mpImportHandler->addItem("Importing initial assignments...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+
 
   for (i = 0; i < iMax; ++i)
     {
@@ -8437,8 +8521,12 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
               os << "\n" << text.substr(text.find("\n") + 1);
             }
 
+          if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
           CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
+
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
     }
 }
 
