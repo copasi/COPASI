@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.95.2.3 $
+//   $Revision: 1.95.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/06 16:52:27 $
+//   $Date: 2011/01/10 16:36:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,6 +111,7 @@ public slots:
   void autoSave();
 
 protected slots:
+  void slotProcessCommandline();
   void slotFileOpen(QString file = QString::null);
   void slotFileOpenFinished(bool success);
   void slotFileExamplesCopasiFiles(QString file = QString::null);

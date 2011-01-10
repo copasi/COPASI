@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.7 $
+//   $Revision: 1.289.2.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/06 16:52:26 $
+//   $Date: 2011/01/10 16:36:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -296,29 +296,10 @@ CopasiUI3Window::CopasiUI3Window():
   this->mpSliders->setCurrentFolderId(id);
   this->mpSliders->resize(320, 350);
 
-  //look at commandline
-  if (!COptions::compareValue("ImportSBML", std::string("")))
-    {
-      // Import the SBML File
-      std::string ImportSBML;
-      COptions::getValue("ImportSBML", ImportSBML);
-      slotImportSBML(FROM_UTF8(ImportSBML));
-    }
-  else if (COptions::getNonOptions().size())
-    {
-      slotFileOpen(FROM_UTF8(COptions::getNonOptions()[0]));
-    }
-  else
-    {
-      newDoc();
-    }
-
-  mpListView->switchToOtherWidget(0, "");
-
   resize(800, 600);
   show();
 
-  checkPendingMessages();
+  mpListView->switchToOtherWidget(0, "");
 
   // Assure that the changed flag is still false;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -333,6 +314,14 @@ CopasiUI3Window::CopasiUI3Window():
 
   // drop acceptance
   setAcceptDrops(true);
+
+  QTimer * pTimer = new QTimer(this);
+  pTimer->setSingleShot(true);
+  pTimer->setInterval(250);
+
+  connect(pTimer, SIGNAL(timeout()), this, SLOT(slotProcessCommandline()));
+
+  pTimer->start();
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -661,6 +650,26 @@ void CopasiUI3Window::newDoc()
   updateTitle();
   mpListView->switchToOtherWidget(1, "");
   mSaveAsRequired = true;
+}
+
+void CopasiUI3Window::slotProcessCommandline()
+{
+  //look at commandline
+  if (!COptions::compareValue("ImportSBML", std::string("")))
+    {
+      // Import the SBML File
+      std::string ImportSBML;
+      COptions::getValue("ImportSBML", ImportSBML);
+      slotImportSBML(FROM_UTF8(ImportSBML));
+    }
+  else if (COptions::getNonOptions().size())
+    {
+      slotFileOpen(FROM_UTF8(COptions::getNonOptions()[0]));
+    }
+  else
+    {
+      newDoc();
+    }
 }
 
 void CopasiUI3Window::slotFileOpen(QString file)
