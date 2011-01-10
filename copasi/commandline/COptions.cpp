@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.42.2.2 $
+//   $Revision: 1.42.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/10/25 16:12:46 $
+//   $Author: shoops $
+//   $Date: 2011/01/10 16:48:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -247,8 +247,8 @@ std::string COptions::getCopasiDir(void)
 
   if (CopasiDir == "")
     {
-      size_t PrgNameSize = 256;
-      size_t Returned;
+      DWORD PrgNameSize = 256;
+      DWORD Returned;
       CLocaleString::lchar * PrgName = new CLocaleString::lchar[PrgNameSize];
 
       while (!(Returned = GetModuleFileNameW(NULL, PrgName, PrgNameSize)) ||

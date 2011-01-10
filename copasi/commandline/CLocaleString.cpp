@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CLocaleString.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:46:50 $
+//   $Date: 2011/01/10 16:48:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,7 @@ const char * findLocale()
 CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 {
 #ifdef WIN32
-  size_t size;
+  int size;
 
   size = MultiByteToWideChar(CP_UTF8, // code page
                              MB_ERR_INVALID_CHARS, // character-type options
@@ -218,7 +218,7 @@ std::string CLocaleString::toUtf8() const
     }
 
 #ifdef WIN32
-  size_t size;
+  int size;
 
   size = WideCharToMultiByte(CP_UTF8, // code page
                              0, // performance and mapping flags
