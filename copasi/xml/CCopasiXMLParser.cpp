@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.1 $
+//   $Revision: 1.223.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 19:09:12 $
+//   $Date: 2011/01/10 16:32:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -769,7 +769,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
             Reversible = mParser.getAttributeValue("reversible", papszAttrs, false);
 
             if (!Reversible) // We may have an old file format using positive
-              Reversible = mParser.getAttributeValue("positive", papszAttrs, false);
+              Reversible = mParser.getAttributeValue("positive", papszAttrs, "unspecified");
 
             mCommon.mExistingFunction = false;
             mCommon.pFunction = CEvaluationTree::create(Type);
