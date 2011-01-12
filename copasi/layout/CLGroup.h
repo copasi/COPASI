@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGroup.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ public:
   /**
    * Returns the number of elements in the group.
    */
-  unsigned int getNumElements() const;
+  size_t getNumElements() const;
 
   /**
    * Returns the list of  elements.
@@ -177,13 +177,13 @@ public:
    * Returns element with index n.
    * If there is no such element, NULL is returned.
    */
-  CCopasiObject* getElement(unsigned int n);
+  CCopasiObject* getElement(size_t n);
 
   /**
    * Returns element with index n.
    * If there is no such element, NULL is returned.
    */
-  const CCopasiObject* getElement(unsigned int n) const;
+  const CCopasiObject* getElement(size_t n) const;
 
   /**
    * Returns true if the horizonal alignment attribute has been set.

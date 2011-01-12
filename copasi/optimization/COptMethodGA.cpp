@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.56.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/01/12 19:04:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,7 +109,7 @@ bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   return Continue;
 }
 
-bool COptMethodGA::swap(unsigned C_INT32 from, unsigned C_INT32 to)
+bool COptMethodGA::swap(size_t from, size_t to)
 {
   CVector< C_FLOAT64 > * pTmp = mIndividual[to];
   mIndividual[to] = mIndividual[from];
@@ -119,7 +119,7 @@ bool COptMethodGA::swap(unsigned C_INT32 from, unsigned C_INT32 to)
   mValue[to] = mValue[from];
   mValue[from] = dTmp;
 
-  C_INT32 iTmp = mLosses[to];
+  size_t iTmp = mLosses[to];
   mLosses[to] = mLosses[from];
   mLosses[from] = iTmp;
 
@@ -129,7 +129,7 @@ bool COptMethodGA::swap(unsigned C_INT32 from, unsigned C_INT32 to)
 //mutate one individual
 bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
 {
-  unsigned C_INT32 j;
+  size_t j;
 
   // mutate the parameters
   for (j = 0; j < mVariableSize; j++)
@@ -165,13 +165,13 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
                              CVector< C_FLOAT64 > & child1,
                              CVector< C_FLOAT64 > & child2)
 {
-  unsigned C_INT32 i, crp;
-  unsigned C_INT32 nCross = 0;
+  size_t i, crp;
+  size_t nCross = 0;
 
   mCrossOver = mCrossOverFalse;
 
   if (mVariableSize > 1)
-    nCross = mpRandom->getRandomU(mVariableSize / 2);
+    nCross = mpRandom->getRandomU((unsigned C_INT32)(mVariableSize / 2));
 
   if (nCross == 0)
     {
@@ -186,7 +186,7 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = mpRandom->getRandomU(mVariableSize - 1);
+      crp = mpRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1));
       mCrossOver[crp] = true;
     }
 
@@ -214,7 +214,7 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
 
 bool COptMethodGA::shuffle()
 {
-  unsigned C_INT32 i, from, to, tmp;
+  size_t i, from, to, tmp;
 
   //  Why sort first? We can just keep shuffling.
   //  for(i=0; i<mPopulationSize; i++) mShuffle[i] = i;
@@ -234,7 +234,7 @@ bool COptMethodGA::shuffle()
 
 bool COptMethodGA::replicate()
 {
-  unsigned C_INT32 i;
+  size_t i;
   bool Continue = true;
 
   // generate a random order for the parents
@@ -265,21 +265,21 @@ bool COptMethodGA::replicate()
 // select mPopulationSize individuals
 bool COptMethodGA::select()
 {
-  unsigned C_INT32 i, j, nopp, opp;
-  unsigned C_INT32 TotalPopulation = 2 * mPopulationSize;
+  size_t i, j, nopp, opp;
+  size_t TotalPopulation = 2 * mPopulationSize;
 
   // tournament competition
   mLosses = 0; // Set all wins to 0.
 
   // compete with ~ 20% of the TotalPopulation
-  nopp = std::max<unsigned C_INT32>(1, mPopulationSize / 5);
+  nopp = std::max<size_t>(1, mPopulationSize / 5);
 
   // parents and offspring are all in competition
   for (i = 0; i < TotalPopulation; i++)
     for (j = 0; j < nopp; j++)
       {
         // get random opponent
-        opp = mpRandom->getRandomU(TotalPopulation - 1);
+        opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
 
         if (mValue[i] < mValue[opp])
           mLosses[opp]++;
@@ -293,16 +293,16 @@ bool COptMethodGA::select()
                        mLosses.array() + TotalPopulation,
                        mPivot);
 
-  FSwapClass<COptMethodGA, unsigned C_INT32, bool> Swap(this, &COptMethodGA::swap);
+  FSwapClass<COptMethodGA, size_t, bool> Swap(this, &COptMethodGA::swap);
   applyPartialPivot(mPivot, mPopulationSize, Swap);
 
   return true;
 }
 
 // check the best individual at this generation
-unsigned C_INT32 COptMethodGA::fittest()
+size_t COptMethodGA::fittest()
 {
-  unsigned C_INT32 i, BestIndex = C_INVALID_INDEX;
+  size_t i, BestIndex = C_INVALID_INDEX;
   C_FLOAT64 BestValue = DBL_MAX;
 
   for (i = 0; i < mPopulationSize && !mLosses[i]; i++)
@@ -316,13 +316,13 @@ unsigned C_INT32 COptMethodGA::fittest()
 }
 
 // initialise the population
-bool COptMethodGA::creation(unsigned C_INT32 first,
-                            unsigned C_INT32 last)
+bool COptMethodGA::creation(size_t first,
+                            size_t last)
 {
-  unsigned C_INT32 Last = std::min(last, mPopulationSize);
+  size_t Last = std::min(last, (size_t) mPopulationSize);
 
-  unsigned C_INT32 i;
-  unsigned C_INT32 j;
+  size_t i;
+  size_t j;
 
   C_FLOAT64 mn;
   C_FLOAT64 mx;
@@ -396,7 +396,7 @@ bool COptMethodGA::initialize()
 {
   cleanup();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   if (!COptMethod::initialize())
     {
@@ -412,8 +412,7 @@ bool COptMethodGA::initialize()
   if (mpCallBack)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
-                          CCopasiParameter::UINT,
-                          & mGeneration,
+                          mGeneration,
                           & mGenerations);
 
   mGeneration++;
@@ -453,7 +452,7 @@ bool COptMethodGA::initialize()
 
 bool COptMethodGA::cleanup()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   pdelete(mpRandom);
 
@@ -477,10 +476,10 @@ bool COptMethodGA::optimise()
 
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
-  unsigned C_INT32 Stalled, Stalled10, Stalled30, Stalled50;
+  size_t Stalled, Stalled10, Stalled30, Stalled50;
   Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
 
-  unsigned C_INT32 i;
+  size_t i;
 
   // initialise the population
   // first individual is the initial guess
@@ -555,19 +554,19 @@ bool COptMethodGA::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          Continue &= creation((unsigned C_INT32)(mPopulationSize / 2),
+          Continue &= creation((size_t)(mPopulationSize / 2),
                                mPopulationSize);
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          Continue &= creation((unsigned C_INT32)(mPopulationSize * 0.7),
+          Continue &= creation((size_t)(mPopulationSize * 0.7),
                                mPopulationSize);
           Stalled10 = Stalled30 = 0;
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          Continue &= creation((unsigned C_INT32)(mPopulationSize * 0.9),
+          Continue &= creation((size_t)(mPopulationSize * 0.9),
                                mPopulationSize);
           Stalled10 = 0;
         }

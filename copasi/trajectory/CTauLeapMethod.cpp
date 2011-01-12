@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:03:19 $
+//   $Date: 2011/01/12 19:06:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -593,7 +593,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   //check for ODE rules
-  C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+  size_t i, imax = pTP->getModel()->getNumModelValues();
 
   for (i = 0; i < imax; ++i)
     {

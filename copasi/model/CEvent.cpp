@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.30.2.4 $
+//   $Revision: 1.30.2.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/12/02 17:28:53 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:04:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -321,7 +321,7 @@ void CEvent::initObjects()
     }
 }
 
-void CEvent::setOrder(const unsigned C_INT32 & order, const bool & correctOther)
+void CEvent::setOrder(const size_t & order, const bool & correctOther)
 {
   if (mOrder != order &&
       mpModel != NULL)
@@ -340,7 +340,7 @@ void CEvent::setOrder(const unsigned C_INT32 & order, const bool & correctOther)
   mOrder = order;
 }
 
-const unsigned C_INT32 & CEvent::getOrder() const
+const size_t & CEvent::getOrder() const
 {
   return mOrder;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:15:28 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:00:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -393,7 +393,7 @@ CEvaluationNodeCall::buildParameters(const std::vector<CEvaluationNode *> & vect
 
   CCallParameters< C_FLOAT64 > * pCallParameters =
     new CCallParameters< C_FLOAT64 >(vector.size());
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; it != end; ++it, i++)
     {
@@ -415,7 +415,7 @@ CEvaluationNodeCall::clearParameters(CCallParameters< C_FLOAT64 > * pCallParamet
   std::vector<CEvaluationNode *>::const_iterator it = vector.begin();
   std::vector<CEvaluationNode *>::const_iterator end = vector.end();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; it != end; ++it, i++)
     {
@@ -437,7 +437,7 @@ CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vec
   std::vector<CEvaluationNode *>::const_iterator it = vector.begin();
   std::vector<CEvaluationNode *>::const_iterator end = vector.end();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; it != end; ++it, i++)
     {
@@ -468,7 +468,7 @@ const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
 void CEvaluationNodeCall::writeMathML(std::ostream & out,
                                       const std::vector<std::vector<std::string> > & env,
                                       bool expand,
-                                      unsigned C_INT32 l) const
+                                      size_t l) const
 {
   switch (mType & 0x00FFFFFF)
     {

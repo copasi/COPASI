@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.7.4.4 $
+//   $Revision: 1.7.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:42 $
+//   $Date: 2011/01/12 19:07:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ CQFunctionDM::CQFunctionDM(QObject *parent)
 
 int CQFunctionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return CCopasiRootContainer::getFunctionList()->loadedFunctions().size() + 1;
+  return (int) CCopasiRootContainer::getFunctionList()->loadedFunctions().size() + 1;
 }
 int CQFunctionDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -290,7 +290,7 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CEvaluationTree * pFunction = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         CCopasiRootContainer::getFunctionList()->loadedFunctions().CCopasiVector< CEvaluationTree >::getIndex(pFunction);
 
       if (delRow != C_INVALID_INDEX)
@@ -301,7 +301,7 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
                                         pFunction->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

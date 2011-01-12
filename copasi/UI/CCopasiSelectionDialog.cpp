@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.21.2.3 $
+//   $Revision: 1.21.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/14 14:27:05 $
+//   $Date: 2011/01/12 19:07:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -309,8 +309,8 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
           return returnVector;
         }
 
-      int minRows, maxRows, minCols, maxCols;
-      int i, j;
+      size_t minRows, maxRows, minCols, maxCols;
+      size_t i, j;
 
       if (pDialog->mpCBRow->currentItem())
         {
@@ -344,7 +344,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
             {
               for (j = minCols; j < maxCols; ++j)
                 {
-                  returnVector.push_back(pArrayAnnotation->addElementReference(i, j));
+                  returnVector.push_back(pArrayAnnotation->addElementReference((int) i, (int) j));
                 }
             }
         }
@@ -353,7 +353,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
         {
           for (i = minRows; i < maxRows; ++i)
             {
-              returnVector.push_back(pArrayAnnotation->addElementReference(i));
+              returnVector.push_back(pArrayAnnotation->addElementReference((int) i));
             }
         }
 

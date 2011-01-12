@@ -6,6 +6,11 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -47,10 +52,10 @@ public:
   void writeMathML(std::ostream & out) const;
 
 protected:
-  void writeMathML(std::ostream & out, const ASTNode* node, unsigned int l) const;
-  virtual void writeMathMLFunction(std::ostream & out, const ASTNode* node, unsigned int l) const;
-  virtual void writeMathMLName(std::ostream & out, const ASTNode* node, unsigned int l) const;
-  virtual void writeMathMLNumber(std::ostream & out, const ASTNode* node, unsigned int l) const;
+  void writeMathML(std::ostream & out, const ASTNode* node, size_t l) const;
+  virtual void writeMathMLFunction(std::ostream & out, const ASTNode* node, size_t l) const;
+  virtual void writeMathMLName(std::ostream & out, const ASTNode* node, size_t l) const;
+  virtual void writeMathMLNumber(std::ostream & out, const ASTNode* node, size_t l) const;
 
   const ASTNode* mRootNode;
   const Model* mpModel;

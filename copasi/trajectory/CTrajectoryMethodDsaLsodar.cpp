@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.cpp,v $
-//   $Revision: 1.2.2.1 $
+//   $Revision: 1.2.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/05 12:24:35 $
+//   $Date: 2011/01/12 19:06:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -770,7 +770,7 @@ void CTrajectoryMethodDsaLsodar::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /*
 }
 
 // virtual
-void CTrajectoryMethodDsaLsodar::evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, C_FLOAT64 * r)
+void CTrajectoryMethodDsaLsodar::evalR(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */, const C_INT * /* nr */, C_FLOAT64 * /* r */)
 {
 
 }
@@ -806,7 +806,7 @@ void CTrajectoryMethodDsaLsodar::integrateDeterministicPart(const C_FLOAT64 & de
 /**
  *   Executes the specified reaction in the system once.
  *
- *   @param index A C_INT32 specifying the index of the reaction, which
+ *   @param index A size_t specifying the index of the reaction, which
  *                 will be fired.
  *   @param time   The current time
  */
@@ -999,7 +999,7 @@ bool CTrajectoryMethodDsaLsodar::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   //check for rules
-  C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+  size_t i, imax = pTP->getModel()->getNumModelValues();
 
   for (i = 0; i < imax; ++i)
     {

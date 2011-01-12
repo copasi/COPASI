@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.4.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/02/03 21:15:18 $
+   $Date: 2011/01/12 19:05:07 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,7 +165,7 @@ public:
 
   std::vector<CPlotDataChannelSpec> & getChannels();
   const std::vector<CPlotDataChannelSpec> & getChannels() const;
-  unsigned C_INT32 getNumChannels() const;
+  size_t getNumChannels() const;
   void addChannel(const CPlotDataChannelSpec & channel);
 };
 

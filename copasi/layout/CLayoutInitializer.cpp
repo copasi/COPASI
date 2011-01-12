@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutInitializer.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.24.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/01 18:36:12 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:26 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,10 +27,11 @@ CLayout * CLayoutInitializer::createLayoutFromCModel(const CModel* model)
 
   CLayout * layout = new CLayout("dummy layout");
 
-  C_INT32 i, imax;
+  size_t i, imax;
 
   //compartments
   imax = model->getCompartments().size();
+
   for (i = 0; i < imax; ++i)
     {
       CLCompartmentGlyph * comp = createCompartmentGlyph(model->getCompartments()[i]);
@@ -35,6 +41,7 @@ CLayout * CLayoutInitializer::createLayoutFromCModel(const CModel* model)
   //metabs
   std::map<std::string, std::string> metabMap; //maps from metab key to metab glyph key
   imax = model->getMetabolites().size();
+
   for (i = 0; i < imax; ++i)
     {
       CLMetabGlyph * comp = createMetabGlyph(model->getMetabolites()[i]);
@@ -44,6 +51,7 @@ CLayout * CLayoutInitializer::createLayoutFromCModel(const CModel* model)
 
   //reactions
   imax = model->getReactions().size();
+
   for (i = 0; i < imax; ++i)
     {
       CLReactionGlyph * reac = createReactionGlyph(model->getReactions()[i], metabMap);
@@ -87,10 +95,11 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
   rg->setModelObjectKey(r->getKey());
 
   const CChemEq & ce = r->getChemEq();
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   //substrates
   imax = ce.getSubstrates().size();
+
   for (i = 0; i < imax; ++i)
     {
       //create metab reference glyph and add to reaction glyph
@@ -103,12 +112,14 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
 
       //set the corresponding metab glyph key
       const std::map<std::string, std::string>::const_iterator it = mm.find(metabKey);
+
       if (it != mm.end())
         tmpMRG->setMetabGlyphKey(it->second);
     }
 
   //products
   imax = ce.getProducts().size();
+
   for (i = 0; i < imax; ++i)
     {
       //create metab reference glyph and add to reaction glyph
@@ -121,12 +132,14 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
 
       //set the corresponding metab glyph key
       const std::map<std::string, std::string>::const_iterator it = mm.find(metabKey);
+
       if (it != mm.end())
         tmpMRG->setMetabGlyphKey(it->second);
     }
 
   //modifier
   imax = ce.getModifiers().size();
+
   for (i = 0; i < imax; ++i)
     {
       //create metab reference glyph and add to reaction glyph
@@ -139,6 +152,7 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
 
       //set the corresponding metab glyph key
       const std::map<std::string, std::string>::const_iterator it = mm.find(metabKey);
+
       if (it != mm.end())
         tmpMRG->setMetabGlyphKey(it->second);
     }

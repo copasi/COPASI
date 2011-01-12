@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.17.2.1 $
+//   $Revision: 1.17.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:09 $
+//   $Date: 2011/01/12 19:06:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,9 +126,9 @@ protected:
 
   /**
    * Calculate the propensity of the indexed reaction
-   * @param const C_INT32 & index
+   * @param const size_t & index
    */
-  void calculateAmu(const C_INT32 & index);
+  void calculateAmu(const size_t & index);
 
   /**
    * Fire the next reaction if it fire before the endTime
@@ -219,7 +219,7 @@ protected:
   /**
    * The index of the next reaction which fires
    */
-  unsigned C_INT32 mNextReactionIndex;
+  size_t mNextReactionIndex;
 
   /**
    * A boolean flag indicating whether correction for higher order reactions need to be applied

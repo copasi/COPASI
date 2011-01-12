@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.19.2.2 $
+//   $Revision: 1.19.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:57:48 $
+//   $Date: 2011/01/12 19:07:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,7 @@ bool CQFittingWidget::saveTask()
 
   std::string Name;
   CExperiment * pExperiment;
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   std::set<CExperiment *> DealtWith;
 
@@ -248,7 +248,7 @@ bool CQFittingWidget::loadTask()
   mpExperimentSet = new CExperimentSet(*pExperimentSet);
 
   mExperimentKeyMap.clear();
-  unsigned C_INT32 i, imax = mpExperimentSet->getExperimentCount();
+  size_t i, imax = mpExperimentSet->getExperimentCount();
 
   for (i = 0; i < imax; i++)
     mExperimentKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.3 $
+//   $Revision: 1.84.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/05 14:35:48 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:05:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1282,7 +1282,7 @@ void CSBMLExporter::createInitialAssignments(CCopasiDataModel& dataModel)
   // make sure the mInitialAssignmentVector has been filled already
 
   // create the initial assignments
-  unsigned int i, iMax = this->mInitialAssignmentVector.size();
+  size_t i, iMax = this->mInitialAssignmentVector.size();
   const CModelEntity* pME = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -1471,7 +1471,7 @@ void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
 
   // create the rules
   const CModelEntity* pME = NULL;
-  unsigned int i, iMax = orderedAssignmentRules.size();
+  size_t i, iMax = orderedAssignmentRules.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -1860,7 +1860,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
 
   if (pModel == NULL) return;
 
-  unsigned int i, iMax = this->mAssignmentVector.size();
+  size_t i, iMax = this->mAssignmentVector.size();
   const CModelEntity* pME;
 
   for (i = 0; i < iMax; ++i)
@@ -1914,7 +1914,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
   // Starting with COPASI Build 30 references to local parameters are allowed
   // as well because they are converted to global parameters
   const std::vector<CEvaluationNode*>& objectNodes = expr.getNodeList();
-  unsigned j, jMax = objectNodes.size();
+  size_t j, jMax = objectNodes.size();
 
   for (j = 0; j < jMax; ++j)
     {
@@ -2279,7 +2279,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& /*d
   // check all metabolites,parameters and compartments
   // make sure the list of assignments and initial assignments is filled
   // before this function is called
-  unsigned int i, iMax = mAssignmentVector.size();
+  size_t i, iMax = mAssignmentVector.size();
   const CModelEntity* pME = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -2646,7 +2646,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
           ASTNode* pLambda = new ASTNode(AST_LAMBDA);
           // add the parameters to the function definition
           const CFunctionParameters& funParams = function.getVariables();
-          unsigned int i, iMax = funParams.size();
+          size_t i, iMax = funParams.size();
           ASTNode* pParamNode = NULL;
 
           for (i = 0; i < iMax; ++i)
@@ -3819,7 +3819,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
     }
 
   // create the local parameters
-  unsigned int i, iMax = reaction.getFunctionParameters().size();
+  size_t i, iMax = reaction.getFunctionParameters().size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -4034,7 +4034,7 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
     {
       CEvaluationNodeCall* pFunctionCall = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFun->getObjectName());
       this->mUsedFunctions.insert(pFun);
-      unsigned int i, iMax = arguments.size();
+      size_t i, iMax = arguments.size();
       std::string cn;
 
       for (i = 0; i < iMax; ++i)
@@ -4740,7 +4740,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel
   // anyway
   const CModelEntity* pME = NULL;
   const CCopasiVectorNS<CCompartment>& compartments = pModel->getCompartments();
-  unsigned int i, iMax = compartments.size();
+  size_t i, iMax = compartments.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -4828,7 +4828,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CEvaluationNode& node, std:
       // store the old size
       // if one error has been found, we can stop looking at the other
       // children
-      unsigned int size = result.size();
+      size_t size = result.size();
       const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(node.getChild());
 
       while (pChild != NULL && result.size() == size)
@@ -5015,7 +5015,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
           unsigned int num = 0;
           std::count(arguments[1].begin(), arguments[1].end(), *it, num);
 #else
-          unsigned int num = std::count(arguments[1].begin(), arguments[1].end(), *it);
+          size_t num = std::count(arguments[1].begin(), arguments[1].end(), *it);
 #endif  // __SUNPRO_CC
           assert(num != 0);
           finishedElements.insert(*it);
@@ -5086,7 +5086,7 @@ bool CSBMLExporter::isValidSId(const std::string& id)
     {
       char c = id[0];
       result = (c == '_' || (c > 64 && c < 91) || (c > 96 && c < 123));
-      unsigned int i, iMax = id.length();
+      size_t i, iMax = id.length();
 
       for (i = 1; (i < iMax) && result; ++i)
         {
@@ -5477,7 +5477,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
   // the MIRIAM elements that are valid for all entities are the references (IS
   // DECRIBED BY) and the biological descriptions
   const CCopasiVector<CBiologicalDescription>& descriptions = miriamInfo.getBiologicalDescriptions();
-  unsigned int i, iMax = descriptions.size();
+  size_t i, iMax = descriptions.size();
   const CBiologicalDescription* pDescription = NULL;
   CVTerm cvTerm;
   // COPASI only uses Biological Qualifiers
@@ -5712,7 +5712,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       ModelHistory modelHistory;
       // first we add all creators
       const CCopasiVector<CCreator>& creators = miriamInfo.getCreators();
-      unsigned int i, iMax = creators.size();
+      size_t i, iMax = creators.size();
       const CCreator* pCreator = NULL;
       ModelCreator modelCreator;
 
@@ -6171,7 +6171,7 @@ void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiData
 
 void CSBMLExporter::outputIncompatibilities() const
 {
-  unsigned int i, iMax = this->mIncompatibilities.size();
+  size_t i, iMax = this->mIncompatibilities.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -6476,7 +6476,7 @@ void CSBMLExporter::restore_local_parameters(ASTNode* pOrigNode, const CCopasiDa
  */
 void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::string, const SBase*>& idMap)
 {
-  unsigned int i, iMax = CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
+  size_t i, iMax = CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
   std::string id;
 
   for (i = 0; i < iMax; ++i)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-//   $Revision: 1.34.2.1 $
+//   $Revision: 1.34.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:07 $
+//   $Date: 2011/01/12 19:06:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,7 @@ private:
   /**
    * Handle to process item
    */
-  unsigned C_INT32 mhProgress;
+  size_t mhProgress;
 
   /**
    * the subtask

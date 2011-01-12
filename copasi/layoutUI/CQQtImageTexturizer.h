@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQQtImageTexturizer.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 14:01:16 $
+//   $Date: 2011/01/12 19:02:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 
 #include <copasi/layout/CLImageTexturizer.h>
 
-class CLTextureSpec;
+struct CLTextureSpec;
 
 class CQQtImageTexturizer : public CLImageTexturizer
 {

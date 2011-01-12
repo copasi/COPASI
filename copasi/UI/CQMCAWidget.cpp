@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.10.2.1 $
+//   $Revision: 1.10.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:57:47 $
+//   $Date: 2011/01/12 19:07:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,7 +176,7 @@ bool CQMCAWidget::loadParameterTable()
 
   bool init = (mpMethodWidget->mpTableParameter->rowCount() == 0);
 
-  unsigned C_INT32 NumRows = mpMethod->size();
+  size_t NumRows = mpMethod->size();
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
   if (mpCheckSteadyState->isChecked())
@@ -189,21 +189,21 @@ bool CQMCAWidget::loadParameterTable()
       NumRows += pSteadyStateTask->getMethod()->size();
     }
 
-  mpMethodWidget->mpTableParameter->setRowCount(NumRows);
+  mpMethodWidget->mpTableParameter->setRowCount((int) NumRows);
 
-  unsigned C_INT32 i, k;
+  size_t i, k;
   CCopasiParameter::Type Type;
   QString value;
 
   for (i = 0; i < mpMethod->size() && init; i++)
     {
-      mpMethodWidget->mpTableParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
-      mpMethodWidget->mpTableParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpMethod->getName(i)));
+      mpMethodWidget->mpTableParameter->setVerticalHeaderItem((int) i, new QTableWidgetItem());
+      mpMethodWidget->mpTableParameter->verticalHeaderItem((int) i)->setText(FROM_UTF8(mpMethod->getName(i)));
 
       value = getParameterValue(mpMethod, i, &Type);
       QTableWidgetItem *itemValue = new QTableWidgetItem(value);
       itemValue->setTextAlignment(Qt::AlignRight);
-      mpMethodWidget->mpTableParameter->setItem(i, 0, itemValue);
+      mpMethodWidget->mpTableParameter->setItem((int) i, 0, itemValue);
     }
 
   if (mpCheckSteadyState->isChecked())
@@ -218,13 +218,13 @@ bool CQMCAWidget::loadParameterTable()
       for (i = mpMethod->size(), k = 0; k < pMethod->size(); k++, i++)
         {
           // create item of the current row and give it a name
-          mpMethodWidget->mpTableParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
-          mpMethodWidget->mpTableParameter->verticalHeaderItem(i)->setText(FROM_UTF8(pMethod->getName(k)));
+          mpMethodWidget->mpTableParameter->setVerticalHeaderItem((int) i, new QTableWidgetItem());
+          mpMethodWidget->mpTableParameter->verticalHeaderItem((int) i)->setText(FROM_UTF8(pMethod->getName(k)));
 
           value = getParameterValue(pMethod, k, &Type);
           QTableWidgetItem *itemValue = new QTableWidgetItem(value);
           itemValue->setTextAlignment(Qt::AlignRight);
-          mpMethodWidget->mpTableParameter->setItem(i, 0, itemValue);
+          mpMethodWidget->mpTableParameter->setItem((int) i, 0, itemValue);
         }
     }
 
@@ -235,13 +235,13 @@ bool CQMCAWidget::loadParameterTable()
 
 bool CQMCAWidget::saveParameterTable()
 {
-  unsigned C_INT32 i, k;
+  size_t i, k;
   QString value;
   CCopasiParameter::Type Type;
 
   for (i = 0; i < mpMethod->size(); i++)
     {
-      value = mpMethodWidget->mpTableParameter->item(i, 0)->text();
+      value = mpMethodWidget->mpTableParameter->item((int) i, 0)->text();
 
       if (value != getParameterValue(mpMethod, i, &Type))
         {
@@ -262,7 +262,7 @@ bool CQMCAWidget::saveParameterTable()
 
       for (i = mpMethod->size(), k = 0; k < pMethod->size(); i++, k++)
         {
-          value = mpMethodWidget->mpTableParameter->item(i, 0)->text();
+          value = mpMethodWidget->mpTableParameter->item((int) i, 0)->text();
 
           if (value != getParameterValue(pMethod, k, &Type))
             {

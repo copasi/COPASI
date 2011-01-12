@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:09 $
+//   $Date: 2011/01/12 19:06:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -393,7 +393,7 @@ protected:
   /**
    * Index of the first species determined by reactions in CState
    */
-  unsigned C_INT32 mFirstReactionSpeciesIndex;
+  size_t mFirstReactionSpeciesIndex;
 
 
   bool mMaxStepsReached;
@@ -401,7 +401,7 @@ protected:
   /**
    *   Number of elementary steps after the last partitioning.
    */
-  unsigned C_INT32 mStepsAfterPartitionSystem;
+  size_t mStepsAfterPartitionSystem;
 
   /**
    * The particle and reaction numbers
@@ -416,7 +416,7 @@ protected:
   /**
    * The index of the next reaction which fires
    */
-  unsigned C_INT32 mNextReactionIndex;
+  size_t mNextReactionIndex;
 
   /**
    * A boolean flag indicating whether correction for higher order reactions need to be applied

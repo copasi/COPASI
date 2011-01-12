@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientStops.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 CLGradientStops::CLGradientStops(const CLGradientBase* pGradient, const std::map<std::string, CLRGBAColor>& colormap)
     : mSpreadMethod(pGradient->getSpreadMethod()), mColorData(NULL), mIndex(0), mHelp(0.0)
 {
-  unsigned int i, iMax = pGradient->getNumGradientStops();
+  size_t i, iMax = pGradient->getNumGradientStops();
 
   if (iMax > 0)
     {

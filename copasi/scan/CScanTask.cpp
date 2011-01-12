@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.81.2.1 $
+//   $Revision: 1.81.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:07 $
+//   $Date: 2011/01/12 19:06:14 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,10 +147,9 @@ bool CScanTask::process(const bool & useInitialValues)
     {
       mpCallBack->setName("performing parameter scan...");
 
-      unsigned C_INT32 totalSteps = pMethod->getTotalNumberOfSteps();
+      unsigned C_INT32 totalSteps = (unsigned C_INT32) pMethod->getTotalNumberOfSteps();
       mhProgress = mpCallBack->addItem("Number of Steps",
-                                       CCopasiParameter::UINT,
-                                       &mProgress,
+                                       mProgress,
                                        &totalSteps);
 
       if (mpSubtask)

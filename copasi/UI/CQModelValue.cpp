@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.15.4.6 $
+//   $Revision: 1.15.4.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/06 17:05:40 $
+//   $Date: 2011/01/12 19:07:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,13 +123,13 @@ void CQModelValue::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        unsigned C_INT32 index =
+        size_t index =
           static_cast<CCopasiVector< CModelValue > *>(&pDataModel->getModel()->getModelValues())->getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
         pDataModel->getModel()->removeModelValue(mKey);
         std::string deletedKey = mKey;
 
-        unsigned C_INT32 size =
+        size_t size =
           pDataModel->getModel()->getModelValues().size();
 
         mpModelValue = NULL;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-//   $Revision: 1.30.30.1 $
+//   $Revision: 1.30.30.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/22 19:51:10 $
+//   $Date: 2011/01/12 19:01:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,8 +111,8 @@ public:
   /**
    *
    */
-  CFunctionParameter * operator[](unsigned C_INT32 index);
-  const CFunctionParameter * operator[](unsigned C_INT32 index) const;
+  CFunctionParameter * operator[](size_t index);
+  const CFunctionParameter * operator[](size_t index) const;
 
   /**
    *
@@ -127,10 +127,10 @@ public:
 
   /**
    * Swap parameters
-   * @param const unsigned C_INT32 & from
-   * @param const unsigned C_INT32 & to
+   * @param const size_t & from
+   * @param const size_t & to
    */
-  void swap(const unsigned C_INT32 & from, const unsigned C_INT32 & to);
+  void swap(const size_t & from, const size_t & to);
 
   /**
    * tells whether there is a parameter with vector type and the given role
@@ -145,22 +145,22 @@ public:
    *  after the last found item. This is usefull if several parameters
    *  with the same usage exist.
    *  @param "const string &" usage
-   *  @param "unsigned C_INT32 &" pos (first call should be with 0)
+   *  @param "size_t &" pos (first call should be with 0)
    *  @return "CFunctionParameter &" usageRange
    */
   const CFunctionParameter * getParameterByUsage(CFunctionParameter::Role usage,
-      unsigned C_INT32 & pos) const;
+      size_t & pos) const;
 
   /**
    * gets the number of Parameters with a specific usage
    */
-  unsigned C_INT32 getNumberOfParametersByUsage(CFunctionParameter::Role usage) const;
+  size_t getNumberOfParametersByUsage(CFunctionParameter::Role usage) const;
 
   /**
    * find a parameter by its name and return its index
    */
-  unsigned C_INT32 findParameterByName(const std::string & name,
-                                       CFunctionParameter::DataType & dataType) const;
+  size_t findParameterByName(const std::string & name,
+                             CFunctionParameter::DataType & dataType) const;
 
   bool operator==(const CFunctionParameters & rhs) const;
 

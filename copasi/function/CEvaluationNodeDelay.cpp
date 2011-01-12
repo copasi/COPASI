@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:55:48 $
+//   $Date: 2011/01/12 19:00:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,7 +201,7 @@ ASTNode* CEvaluationNodeDelay::toAST(const CCopasiDataModel* pDataModel) const
 void CEvaluationNodeDelay::writeMathML(std::ostream & out,
                                        const std::vector<std::vector<std::string> > & env,
                                        bool expand,
-                                       unsigned C_INT32 l) const
+                                       size_t l) const
 {
   switch (mType & 0x00FFFFFF)
     {

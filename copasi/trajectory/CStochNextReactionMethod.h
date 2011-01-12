@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.10.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/09/13 15:06:15 $
+   $Date: 2011/01/12 19:06:53 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ private:
   /**
    * Update the priority queue
    */
-  void updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time);
+  void updatePriorityQueue(size_t reaction_index, C_FLOAT64 time);
 };
 
 #endif

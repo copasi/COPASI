@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.13.32.1 $
+   $Revision: 1.13.32.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/10/20 15:14:24 $
+   $Date: 2011/01/12 19:04:55 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,7 @@ CExperimentFileInfo::CExperimentFileInfo(CExperimentSet & set):
 
 CExperimentFileInfo::~CExperimentFileInfo()
 {
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (i = 0, imax = mList.size(); i < imax; i++)
     pdelete(mList[i]);
@@ -115,7 +115,7 @@ bool CExperimentFileInfo::sync()
 {
   mpSet->sort();
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (i = 0, imax = mList.size(); i < imax; i++)
     pdelete(mList[i]);
@@ -141,8 +141,8 @@ bool CExperimentFileInfo::sync()
 
 bool CExperimentFileInfo::validate() const
 {
-  unsigned C_INT32 Last = 0;
-  unsigned C_INT32 i, imax;
+  size_t Last = 0;
+  size_t i, imax;
 
   for (i = 0, imax = mList.size(); i < imax; i++)
     {
@@ -156,15 +156,15 @@ bool CExperimentFileInfo::validate() const
   return true;
 }
 
-bool CExperimentFileInfo::validateFirst(const unsigned C_INT32 & index,
-                                        const unsigned C_INT32 & value)
+bool CExperimentFileInfo::validateFirst(const size_t & index,
+                                        const size_t & value)
 {
   if (mLines < value ||
       mList[index]->Last < value ||
       (value == mList[index]->Last &&
        value == mList[index]->pExperiment->getHeaderRow())) return false;
 
-  unsigned C_INT32 Saved = mList[index]->First;
+  size_t Saved = mList[index]->First;
   mList[index]->First = value;
 
   bool Result = validate();
@@ -173,15 +173,15 @@ bool CExperimentFileInfo::validateFirst(const unsigned C_INT32 & index,
   return Result;
 }
 
-bool CExperimentFileInfo::validateLast(const unsigned C_INT32 & index,
-                                       const unsigned C_INT32 & value)
+bool CExperimentFileInfo::validateLast(const size_t & index,
+                                       const size_t & value)
 {
   if (mLines < value ||
       value < mList[index]->First ||
       (value == mList[index]->First &&
        value == mList[index]->pExperiment->getHeaderRow())) return false;
 
-  unsigned C_INT32 Saved = mList[index]->Last;
+  size_t Saved = mList[index]->Last;
   mList[index]->Last = value;
 
   bool Result = validate();
@@ -190,8 +190,8 @@ bool CExperimentFileInfo::validateLast(const unsigned C_INT32 & index,
   return Result;
 }
 
-bool CExperimentFileInfo::validateHeader(const unsigned C_INT32 & index,
-    const unsigned C_INT32 & value)
+bool CExperimentFileInfo::validateHeader(const size_t & index,
+    const size_t & value)
 {
   return (value <= mLines &&
           (mList[index]->First < mList[index]->Last ||
@@ -203,7 +203,7 @@ std::vector< std::string > CExperimentFileInfo::getExperimentNames() const
 {
   std::vector< std::string > List;
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (i = 0, imax = mList.size(); i < imax; i++)
     List.push_back(mList[i]->pExperiment->getObjectName());
@@ -213,7 +213,7 @@ std::vector< std::string > CExperimentFileInfo::getExperimentNames() const
 
 CExperiment * CExperimentFileInfo::getExperiment(const std::string & name)
 {
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (i = 0, imax = mList.size(); i < imax; i++)
     if (mList[i]->pExperiment->getObjectName() == name)
@@ -222,20 +222,20 @@ CExperiment * CExperimentFileInfo::getExperiment(const std::string & name)
   return NULL;
 }
 
-bool CExperimentFileInfo::getFirstUnusedSection(unsigned C_INT32 & First,
-    unsigned C_INT32 & Last)
+bool CExperimentFileInfo::getFirstUnusedSection(size_t & First,
+    size_t & Last)
 {
   mUsedEnd = 0;
 
   return getNextUnusedSection(First, Last);
 }
 
-bool CExperimentFileInfo::getNextUnusedSection(unsigned C_INT32 & First,
-    unsigned C_INT32 & Last)
+bool CExperimentFileInfo::getNextUnusedSection(size_t & First,
+    size_t & Last)
 {
   First = mUsedEnd + 1;
 
-  unsigned C_INT32 i, imax = mList.size();
+  size_t i, imax = mList.size();
 
   for (i = 0; i < imax; i++)
     {
@@ -267,11 +267,11 @@ bool CExperimentFileInfo::getNextUnusedSection(unsigned C_INT32 & First,
   return false;
 }
 
-bool CExperimentFileInfo::adjustForEmptyLines(unsigned C_INT32 & First,
-    unsigned C_INT32 & Last)
+bool CExperimentFileInfo::adjustForEmptyLines(size_t & First,
+    size_t & Last)
 {
-  std::vector<unsigned C_INT32>::const_iterator it = mEmptyLines.begin();
-  std::vector<unsigned C_INT32>::const_iterator end = mEmptyLines.end();
+  std::vector<size_t>::const_iterator it = mEmptyLines.begin();
+  std::vector<size_t>::const_iterator end = mEmptyLines.end();
 
   while (it != end && *it < First) ++it;
 

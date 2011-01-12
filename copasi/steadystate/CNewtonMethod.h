@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.32.2.1 $
+//   $Revision: 1.32.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:07 $
+//   $Date: 2011/01/12 19:06:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,11 +63,11 @@ private:
   bool mAcceptNegative;
   bool mForceNewton;
   bool mKeepProtocol;
-  C_INT32 mIterationLimit;
+  unsigned C_INT32 mIterationLimit;
   C_FLOAT64 mMaxDurationForward;
   C_FLOAT64 mMaxDurationBackward;
 
-  C_INT mDimension;
+  size_t mDimension;
   C_FLOAT64 * mpX;
   CVector< C_FLOAT64 > mAtol;
   CVector< C_FLOAT64 > mH;

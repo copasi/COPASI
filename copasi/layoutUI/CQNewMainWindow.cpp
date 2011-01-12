@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.8 $
+//   $Revision: 1.1.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/24 22:54:31 $
+//   $Date: 2011/01/12 19:02:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -389,7 +389,7 @@ void CQNewMainWindow::slotResetView()
   this->mpAnimationWindow->slotResetView();
 }
 
-void CQNewMainWindow::slotLayoutChanged(int index)
+void CQNewMainWindow::slotLayoutChanged(size_t index)
 {
   //std::cout << "new layout " << index << std::endl;
   CLayout* pTmpLayout = (*this->mpDataModel->getListOfLayouts())[index];
@@ -403,7 +403,7 @@ void CQNewMainWindow::slotLayoutChanged(int index)
     }
 }
 
-void CQNewMainWindow::slotRenderInfoChanged(int index)
+void CQNewMainWindow::slotRenderInfoChanged(size_t index)
 {
   // check if a local or a global render information has been selected
   CLRenderInformationBase* pRenderInfo = NULL;
@@ -415,10 +415,10 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
       return;
     }
 
-  unsigned int numLocalRenderInfo = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
-  unsigned int numFileRenderInfo = numLocalRenderInfo + this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
+  size_t numLocalRenderInfo = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
+  size_t numFileRenderInfo = numLocalRenderInfo + this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
 
-  if ((unsigned int)index >= numLocalRenderInfo)
+  if (index >= numLocalRenderInfo)
     {
       // it is a global render information or a default render info
       if ((unsigned int)index >= numFileRenderInfo)
@@ -461,9 +461,9 @@ void CQNewMainWindow::updateRenderInformationList()
   // disconnect the slot
   disconnect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
   // remove the local render information items
-  unsigned int num = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() + getNumDefaultStyles();
+  size_t num = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() + getNumDefaultStyles();
 
-  while ((unsigned int)this->mpRenderDropdown->count() > num)
+  while ((size_t) this->mpRenderDropdown->count() > num)
     {
       this->mpRenderDropdown->removeItem(0);
     }
@@ -472,7 +472,7 @@ void CQNewMainWindow::updateRenderInformationList()
   if (this->mpCurrentLayout)
     {
       num = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
-      unsigned int i;
+      size_t i;
       CLRenderInformationBase* pTmpRenderInfo = NULL;
 
       for (i = num; i > 0; --i)
@@ -497,7 +497,7 @@ void CQNewMainWindow::updateRenderInformationList()
   if (dynamic_cast<const CLGlobalRenderInformation*>(this->mpCurrentRenderInformation))
     {
       // find the correct index
-      unsigned int i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
+      size_t i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -522,11 +522,11 @@ void CQNewMainWindow::updateRenderInformationList()
             }
 
           assert(i != iMax);
-          this->mpRenderDropdown->setCurrentIndex(num + i);
+          this->mpRenderDropdown->setCurrentIndex((int)(num + i));
         }
       else
         {
-          this->mpRenderDropdown->setCurrentIndex(num + i);
+          this->mpRenderDropdown->setCurrentIndex((int)(num + i));
         }
     }
   else
@@ -551,7 +551,7 @@ void CQNewMainWindow::updateRenderInformationList()
             {
               // take the first global render information
               this->mpCurrentRenderInformation = this->mpDataModel->getListOfLayouts()->getRenderInformation(0);
-              this->mpRenderDropdown->setCurrentIndex(num);
+              this->mpRenderDropdown->setCurrentIndex((int) num);
             }
           else if (getNumDefaultStyles() > 0)
             {
@@ -577,7 +577,7 @@ void CQNewMainWindow::addGlobalRenderInfoItemsToList()
   // disconnect the slot
   disconnect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
   this->mpRenderDropdown->clear();
-  int i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
+  size_t i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
   CLRenderInformationBase* pTmpRenderInfo = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -603,7 +603,7 @@ void CQNewMainWindow::addDefaultRenderInfoItemsToList()
 {
   // disconnect the slot
   disconnect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
-  int i, iMax = getNumDefaultStyles();
+  size_t i, iMax = getNumDefaultStyles();
   CLRenderInformationBase* pTmpRenderInfo = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -625,7 +625,7 @@ void CQNewMainWindow::addDefaultRenderInfoItemsToList()
   connect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
 }
 
-void CQNewMainWindow::slotZoomChanged(int index)
+void CQNewMainWindow::slotZoomChanged(size_t index)
 {
   this->mpLayoutViewer->setZoomFactor(CQNewMainWindow::ZOOM_FACTORS[index]);
   // also change the zoom factor for the animation window
@@ -634,7 +634,7 @@ void CQNewMainWindow::slotZoomChanged(int index)
   // also set the zoom factor in the menu
   if (index < this->mpZoomActionGroup->actions().size())
     {
-      this->mpZoomActionGroup->actions().at(index)->setChecked(true);
+      this->mpZoomActionGroup->actions().at((int) index)->setChecked(true);
     }
 }
 
@@ -795,7 +795,7 @@ void CQNewMainWindow::updateLayoutList()
   disconnect(this->mpLayoutDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotLayoutChanged(int)));
   this->mpLayoutDropdown->clear();
   const CLayout* pTmpLayout = NULL;
-  unsigned int i, iMax = this->mpDataModel->getListOfLayouts()->size();
+  size_t i, iMax = this->mpDataModel->getListOfLayouts()->size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -933,7 +933,7 @@ void CQNewMainWindow::checkForElementaryModesSlot()
               if (pProblem != NULL && !pProblem->getFluxModes().empty())
                 {
                   const std::vector< CFluxMode >& fluxModes = pProblem->getFluxModes();
-                  unsigned int iMax = fluxModes.size();
+                  size_t iMax = fluxModes.size();
 
                   if (this->mFluxModes.size() != iMax)
                     {

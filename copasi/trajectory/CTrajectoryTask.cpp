@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.108.2.2 $
+//   $Revision: 1.108.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:08 $
+//   $Date: 2011/01/12 19:06:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -211,7 +211,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   //*****
 
-  //unsigned C_INT32 FailCounter = 0;
+  //size_t FailCounter = 0;
 
   C_FLOAT64 Duration = mpTrajectoryProblem->getDuration();
   C_FLOAT64 StepSize = mpTrajectoryProblem->getStepSize();
@@ -262,15 +262,14 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 handlerFactor = 100.0 / Duration;
 
   C_FLOAT64 Percentage = 0;
-  unsigned C_INT32 hProcess;
+  size_t hProcess;
 
   if (mpCallBack)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
       hProcess = mpCallBack->addItem("Completion",
-                                     CCopasiParameter::DOUBLE,
-                                     &Percentage,
+                                     Percentage,
                                      &hundred);
     }
 

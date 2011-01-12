@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Date: 2011/01/12 19:07:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,7 @@ private:
   bool mChanged;
   CEvent *mpEvent;
   std::string mAssignmentKey;
-  unsigned C_INT32 mCurrentTarget;
+  size_t mCurrentTarget;
   CCopasiVector< CEventAssignment > mAssignments;
 
   void init();
@@ -71,7 +71,7 @@ private slots:
   void slotAddTarget();
   void slotDeleteTarget();
   void slotSelectObject();
-  void slotActualizeAssignmentExpression(int index);
+  void slotActualizeAssignmentExpression(size_t index);
   void slotApplyDelay(bool display);
 };
 

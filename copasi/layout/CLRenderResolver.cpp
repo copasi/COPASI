@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderResolver.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,7 @@ CLRenderResolver::~CLRenderResolver()
 void CLRenderResolver::fill_base_maps(const CLRenderInformationBase* pRenderInformation)
 {
   // fill maps for colors, gradients and line endings
-  unsigned int i, iMax = pRenderInformation->getNumColorDefinitions();
+  size_t i, iMax = pRenderInformation->getNumColorDefinitions();
   const CLColorDefinition* pColor = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -141,7 +141,7 @@ void CLRenderResolver::fill_base_maps(const CLRenderInformationBase* pRenderInfo
  */
 void CLRenderResolver::fill_global_maps(const CLGlobalRenderInformation* pRenderInformation)
 {
-  unsigned int i, iMax = pRenderInformation->getNumStyles();
+  size_t i, iMax = pRenderInformation->getNumStyles();
   const CLStyle* pStyle = NULL;
 
   for (i = 0 ; i < iMax ; ++i)
@@ -176,7 +176,7 @@ void CLRenderResolver::fill_global_maps(const CLGlobalRenderInformation* pRender
  */
 void CLRenderResolver::fill_local_maps(const CLLocalRenderInformation* pRenderInformation)
 {
-  unsigned int i, iMax = pRenderInformation->getNumStyles();
+  size_t i, iMax = pRenderInformation->getNumStyles();
   const CLStyle* pStyle = NULL;
 
   for (i = 0; i < iMax; ++i)

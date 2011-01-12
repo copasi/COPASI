@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.39.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:15:28 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:00:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -256,7 +256,7 @@ public:
   virtual void writeMathML(std::ostream & out,
                            const std::vector<std::vector<std::string> > & env,
                            bool expand = true,
-                           unsigned C_INT32 l = 0) const;
+                           size_t l = 0) const;
 
   void printRecursively(std::ostream & os, int indent = 0) const;
 
@@ -344,11 +344,11 @@ protected:
   public:
     /**
      * Default constructor
-     * @param const unsigned C_INT32 & left (default: 0)
-     * @param const unsigned C_INT32 & right (default: 0)
+     * @param const size_t & left (default: 0)
+     * @param const size_t & right (default: 0)
      */
-    CPrecedence(const unsigned C_INT32 & left = 0,
-                const unsigned C_INT32 & right = 0);
+    CPrecedence(const size_t & left = 0,
+                const size_t & right = 0);
 
     /**
      * Copy constructor
@@ -364,12 +364,12 @@ protected:
     /**
      * The left precedence
      */
-    unsigned C_INT32 left;
+    size_t left;
 
     /**
      * The left precedence
      */
-    unsigned C_INT32 right;
+    size_t right;
   }
   mPrecedence;
 };

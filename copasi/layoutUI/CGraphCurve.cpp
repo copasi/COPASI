@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.18.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:19 $
+//   $Date: 2011/01/12 19:02:01 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -90,7 +95,7 @@ void CGraphCurve::invertOrderOfPoints()
           pts.push_back(lastSeg.getBase2());
           pts.push_back(lastSeg.getEnd());
           std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
-          C_INT32 num = bezierPts.size();
+          size_t num = bezierPts.size();
           CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
           mArrow.setLine(segForArrow);
           mArrow.setPoint(CLPoint(bezierPts[num - 1].getX(), bezierPts[num - 1].getY()));

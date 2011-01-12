@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.22.2.2 $
+//   $Revision: 1.22.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/21 19:20:33 $
+//   $Date: 2011/01/12 19:04:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -349,7 +349,7 @@ size_t CMathModel::getNumRoots() const
 
 void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
 {
-  unsigned C_INT32 NumCols =
+  size_t NumCols =
     mpModel->getStateTemplate().getNumIndependent() + mpModel->getNumDependentReactionMetabs() + 1;
 
   CVector< C_FLOAT64 > Rates(NumCols);
@@ -368,8 +368,8 @@ void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives
   // Now calculate derivatives of all metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
-  C_INT N = mRootValues.size();
-  C_INT K = NumCols;
+  C_INT N = (C_INT) mRootValues.size();
+  C_INT K = (C_INT) NumCols;
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
@@ -528,13 +528,13 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
 {
   CState State = mpModel->getState();
 
-  unsigned C_INT32 NumRows = mRootValues.size();
+  size_t NumRows = mRootValues.size();
 
   // Partial derivatives with respect to time and all variables determined by ODEs and reactions.
-  unsigned C_INT32 NumCols =
+  size_t NumCols =
     State.getNumIndependent() + mpModel->getNumDependentReactionMetabs() + 1;
 
-  unsigned C_INT32 Col = 0;
+  size_t Col = 0;
 
   jacobian.resize(NumRows, NumCols);
 

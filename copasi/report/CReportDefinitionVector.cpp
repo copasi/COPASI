@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
- $Revision: 1.21 $
+ $Revision: 1.21.4.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/02/19 19:51:19 $
+ $Date: 2011/01/12 19:05:31 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -51,7 +56,8 @@ const std::string& CReportDefinitionVector::getKey()
 
 CReportDefinition* CReportDefinitionVector::createReportDefinition(const std::string & name, const std::string & comment)
 {
-  unsigned C_INT32 i;
+  size_t i;
+
   for (i = 0; i < size(); i++)
     if ((*this)[i]->getObjectName() == name)
       return NULL; // duplicate name
@@ -68,7 +74,8 @@ bool CReportDefinitionVector::removeReportDefinition(const std::string & key)
 {
   CReportDefinition* pRep =
     dynamic_cast<CReportDefinition *>(CCopasiRootContainer::getKeyFactory()->get(key));
-  unsigned C_INT32 index = this->CCopasiVector<CReportDefinition>::getIndex(pRep);
+  size_t index = this->CCopasiVector<CReportDefinition>::getIndex(pRep);
+
   if (index == C_INVALID_INDEX)
     return false;
 

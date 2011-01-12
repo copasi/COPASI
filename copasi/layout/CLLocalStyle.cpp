@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLocalStyle.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2011/01/12 19:01:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ CLLocalStyle::CLLocalStyle(const LocalStyle& source, CCopasiContainer* pParent):
 /**
  * Returns the number of keys in the key set.
  */
-unsigned int CLLocalStyle::getNumKeys() const
+size_t CLLocalStyle::getNumKeys() const
 {
   return this->mKeyList.size();
 }

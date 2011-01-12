@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.21.4.1 $
+//   $Revision: 1.21.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:26 $
+//   $Date: 2011/01/12 19:06:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ C_FLOAT64 CTimeSeries::mDummyFloat(0.0);
 CTimeSeries::CTimeSeries():
     COutputInterface(),
     CMatrix< C_FLOAT64 >(),
-    mAllocatedSteps(mRows),
+    mAllocatedSteps(0),
     mRecordedSteps(0),
     mpIt(mArray),
     mpEnd(mArray + size()),
@@ -63,7 +63,7 @@ CTimeSeries::CTimeSeries():
 CTimeSeries::CTimeSeries(const CTimeSeries & src):
     COutputInterface(src),
     CMatrix< C_FLOAT64 >(src),
-    mAllocatedSteps(mRows),
+    mAllocatedSteps(src.mAllocatedSteps),
     mRecordedSteps(src.mRecordedSteps),
     mpIt(mArray + mRecordedSteps * mCols),
     mpEnd(mArray + size()),
@@ -78,7 +78,7 @@ CTimeSeries::CTimeSeries(const CTimeSeries & src):
 CTimeSeries::~CTimeSeries()
 {}
 
-void CTimeSeries::allocate(const unsigned C_INT32 & steps)
+void CTimeSeries::allocate(const size_t & steps)
 {
   // The actual allocation is deferred to compile
   mAllocatedSteps = steps;
@@ -119,7 +119,7 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
   CModelEntity *const* it = Template.getEntities();
   CModelEntity *const* end = Template.endFixed();
 
-  C_INT32 i, imax = end - it;
+  size_t i, imax = end - it;
 
   CMatrix< C_FLOAT64 >::resize(mAllocatedSteps + 1, imax);
 
@@ -159,8 +159,8 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
   mTitles[0] = "Time";
   mKeys[0] = pModel->getKey();
 
-  const unsigned C_INT32 * pUserOrder = Template.getUserOrder().array();
-  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + Template.getUserOrder().size();
+  const size_t * pUserOrder = Template.getUserOrder().array();
+  const size_t * pUserOrderEnd = pUserOrder + Template.getUserOrder().size();
   it = Template.getEntities();
 
   for (i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
@@ -204,14 +204,14 @@ void CTimeSeries::finish()
 
 //*** the methods to retrieve data from the CTimeSeries *******
 
-const unsigned C_INT32 & CTimeSeries::getRecordedSteps() const
+const size_t & CTimeSeries::getRecordedSteps() const
 {return mRecordedSteps;}
 
-const unsigned C_INT32 & CTimeSeries::getNumVariables() const
+const size_t & CTimeSeries::getNumVariables() const
 {return mCols;}
 
-const C_FLOAT64 & CTimeSeries::getData(const unsigned C_INT32 & step,
-                                       const unsigned C_INT32 & var) const
+const C_FLOAT64 & CTimeSeries::getData(const size_t & step,
+                                       const size_t & var) const
 {
   if (step < mRecordedSteps && var < mCols)
     return *(mArray + step * mCols + mPivot[var]);
@@ -219,12 +219,12 @@ const C_FLOAT64 & CTimeSeries::getData(const unsigned C_INT32 & step,
   return mDummyFloat;
 }
 
-C_FLOAT64 CTimeSeries::getConcentrationData(const unsigned C_INT32 & step,
-    const unsigned C_INT32 & var) const
+C_FLOAT64 CTimeSeries::getConcentrationData(const size_t & step,
+    const size_t & var) const
 {
   if (step < mRecordedSteps && var < mCols)
     {
-      const unsigned C_INT32 & Col = mPivot[var];
+      const size_t & Col = mPivot[var];
 
       if (mCompartment[Col] != C_INVALID_INDEX)
         return *(mArray + step * mCols + Col) * mNumberToQuantityFactor / *(mArray + step * mCols + mCompartment[Col]);
@@ -235,7 +235,7 @@ C_FLOAT64 CTimeSeries::getConcentrationData(const unsigned C_INT32 & step,
   return mDummyFloat;
 }
 
-const std::string & CTimeSeries::getTitle(const unsigned C_INT32 & var) const
+const std::string & CTimeSeries::getTitle(const size_t & var) const
 {
   if (var < mCols)
     return mTitles[mPivot[var]];
@@ -243,7 +243,7 @@ const std::string & CTimeSeries::getTitle(const unsigned C_INT32 & var) const
   return mDummyString;
 }
 
-const std::string & CTimeSeries::getKey(const unsigned C_INT32 & var) const
+const std::string & CTimeSeries::getKey(const size_t & var) const
 {
   if (var < mCols)
     return mKeys[mPivot[var]];
@@ -251,7 +251,7 @@ const std::string & CTimeSeries::getKey(const unsigned C_INT32 & var) const
   return mDummyString;
 }
 
-std::string CTimeSeries::getSBMLId(const unsigned C_INT32 & var, const CCopasiDataModel* pDataModel) const
+std::string CTimeSeries::getSBMLId(const size_t & var, const CCopasiDataModel* pDataModel) const
 {
   std::string key = getKey(var);
   std::string result("");
@@ -325,8 +325,8 @@ int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, co
   std::ofstream fileStream(CLocaleString::fromUtf8(fileName).c_str());
   std::ostringstream* stringStream = new std::ostringstream();
   (*stringStream) << "# ";
-  unsigned int counter2;
-  unsigned int maxCount2 = this->getNumVariables();
+  size_t counter2;
+  size_t maxCount2 = this->getNumVariables();
 
   for (counter2 = 0; counter2 < maxCount2; ++counter2)
     {
@@ -338,8 +338,8 @@ int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, co
 
   if (!fileStream.good()) return 1;
 
-  unsigned int counter;
-  unsigned int maxCount = mRecordedSteps;
+  size_t counter;
+  size_t maxCount = mRecordedSteps;
 
   for (counter = 0; counter < maxCount; ++counter)
     {

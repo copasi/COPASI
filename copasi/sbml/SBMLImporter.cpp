@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.16 $
+//   $Revision: 1.263.2.17 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/01/10 15:55:23 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:05:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,7 +126,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
 
-  unsigned C_INT32 step = 0, totalSteps, hStep;
+  unsigned C_INT32 step = 0, totalSteps;
+  size_t hStep;
+
   mImportStep = 1;
 
   if (!mpImportHandler->progressItem(mhImportStep)) return false;
@@ -606,7 +608,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   unsigned int counter;
   CCopasiVectorN< CEvaluationTree >* functions = &(this->functionDB->loadedFunctions());
 
-  unsigned int num = (*functions).size();
+  size_t num = (*functions).size();
 
   if (mpImportHandler)
     {
@@ -614,10 +616,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing function definitions",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -651,10 +652,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing compartments...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -715,10 +715,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing species...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -793,10 +792,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing global parameters...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -885,10 +883,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing reactions...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -1010,10 +1007,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing global parameters...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -1203,7 +1199,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
       // function definition
       // if we don't do this, two functions might have the same SBML id during
       // export which makes the exporter code so much more difficult
-      unsigned int i, iMax = this->functionDB->loadedFunctions().size();
+      size_t i, iMax = this->functionDB->loadedFunctions().size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -1434,8 +1430,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
-  while (copasiModel->getCompartments().getIndex(name + appendix) != static_cast < unsigned C_INT32
-         >(-1))
+  while (copasiModel->getCompartments().getIndex(name + appendix) != C_INVALID_INDEX)
     {
       numberStream.str("");
       numberStream << "_" << counter;
@@ -2156,7 +2151,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                           // do the mapping
                           CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
-                          unsigned int i, iMax = v->size();
+                          size_t i, iMax = v->size();
 
                           for (i = 0; i < iMax; ++i)
                             {
@@ -2186,7 +2181,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                               std::map<std::string, std::string > arguments;
                               const CFunctionParameters& funParams = tree->getVariables();
                               const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
-                              unsigned int i, iMax = funParams.size();
+                              size_t i, iMax = funParams.size();
 
                               for (i = 0; (i < iMax) && pTmpNode; ++i)
                                 {
@@ -2268,7 +2263,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                           // do the mapping
                           CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
-                          unsigned int i, iMax = v->size();
+                          size_t i, iMax = v->size();
 
                           for (i = 0; i < iMax; ++i)
                             {
@@ -2600,20 +2595,19 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           mpImportHandler->setName("Importing SBML file...");
           mTotalSteps = 11;
           mhImportStep = mpImportHandler->addItem("Step",
-                                                  CCopasiParameter::UINT,
-                                                  & mImportStep,
+                                                  mImportStep,
                                                   &mTotalSteps);
         }
 
-      unsigned C_INT32 step, totalSteps, hStep;
+      unsigned C_INT32 step, totalSteps;
+      size_t hStep;
 
       if (this->mpImportHandler != 0)
         {
           step = 0;
           totalSteps = 1;
           hStep = mpImportHandler->addItem("Reading SBML file...",
-                                           CCopasiParameter::UINT,
-                                           & step,
+                                           step,
                                            &totalSteps);
         }
 
@@ -2627,8 +2621,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           step = 0;
           totalSteps = 1;
           hStep = mpImportHandler->addItem("Checking consitency...",
-                                           CCopasiParameter::UINT,
-                                           & step,
+                                           step,
                                            &totalSteps);
         }
 
@@ -4298,7 +4291,7 @@ CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const 
                                         pCopasiReaction->getChemEq().getSubstrates().size(),
                                         pCopasiReaction->getChemEq().getProducts().size(),
                                         pCopasiReaction->isReversible() ? TriTrue : TriFalse);
-  unsigned int i, iMax = functions.size();
+  size_t i, iMax = functions.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -4325,7 +4318,7 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
 
   if (funParams1.size() == funParams2.size())
     {
-      unsigned int i, iMax = funParams1.size();
+      size_t i, iMax = funParams1.size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -4440,7 +4433,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
             {
               CChemEq tmpEq;
               const CCopasiVector<CChemEqElement>* metabolites = &chemicalEquation.getSubstrates();
-              unsigned int i, iMax = metabolites->size();
+              size_t i, iMax = metabolites->size();
               result = (iMax > 0);
 
               if (result)
@@ -4520,7 +4513,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
       std::vector<const CEvaluationNode*> arguments;
       std::map<const CMetab*, C_FLOAT64> multiplicityMap;
       this->separateProductArguments(pRootNode, arguments);
-      unsigned int numParameters = 0, i, iMax = arguments.size();
+      size_t numParameters = 0, i, iMax = arguments.size();
       v = new std::vector<CEvaluationNodeObject*>;
 
       if (iMax != 0)
@@ -4658,7 +4651,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
       if (result)
         {
           const CCopasiVector<CChemEqElement>& metabolites = chemicalEquation.getSubstrates();
-          unsigned i, iMax = metabolites.size();
+          size_t i, iMax = metabolites.size();
 
           // all metabolites must occur in the muliplicityMap so they have to have the same size
           // and a mass action must have at least one metabolite
@@ -4713,7 +4706,7 @@ CEvaluationTree* SBMLImporter::createExpressionFromFunction(const CFunction* pFu
   if (pFunParams.size() == functionArgumentCNs.size())
     {
       std::map<std::string , std::string> variable2CNMap;
-      unsigned int i, iMax = pFunParams.size();
+      size_t i, iMax = pFunParams.size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -4797,7 +4790,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
 
   const CCopasiVector<CChemEqElement>* pV = &pChemEq.getSubstrates();
 
-  unsigned int i, iMax = pV->size();
+  size_t i, iMax = pV->size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -4820,7 +4813,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
       v[(*pV)[i]] = CChemEq::MODIFIER;
     }
 
-  unsigned int parameterIndex = 0;
+  size_t parameterIndex = 0;
 
   while (pChildNode)
     {
@@ -4940,9 +4933,9 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
       const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
 
-      unsigned int i, iMax = metabolites->size();
+      size_t i, iMax = metabolites->size();
 
-      unsigned int j, jMax;
+      size_t j, jMax;
 
       for (i = 0; i < iMax; ++i)
         for (j = 0, jMax = static_cast<int>(fabs((*metabolites)[i]->getMultiplicity())); j < jMax; j++)
@@ -4977,7 +4970,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
     }
   else
     {
-      unsigned int i, iMax = pCopasiReaction->getFunction()->getVariables().size();
+      size_t i, iMax = pCopasiReaction->getFunction()->getVariables().size();
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
 
       for (i = 0; i < iMax; ++i)
@@ -5192,16 +5185,17 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 {
   if (pTmpFunctionDB)
     {
-      unsigned C_INT32 step, totalSteps, hStep;
-      unsigned C_INT32 i, iMax = this->mpCopasiModel->getReactions().size();
+      unsigned C_INT32 step, totalSteps;
+      size_t hStep;
+      size_t i, iMax = this->mpCopasiModel->getReactions().size();
 
       if (mpImportHandler)
         {
           step = 0;
-          totalSteps = iMax + this->mpCopasiModel->getCompartments().size() + this->mpCopasiModel->getMetabolites().size() + this->mpCopasiModel->getModelValues().size();
+          totalSteps =
+            (unsigned C_INT32)(iMax + this->mpCopasiModel->getCompartments().size() + this->mpCopasiModel->getMetabolites().size() + this->mpCopasiModel->getModelValues().size());
           hStep = mpImportHandler->addItem("Searching used functions...",
-                                           CCopasiParameter::UINT,
-                                           & step,
+                                           step,
                                            &totalSteps);
         }
 
@@ -5334,7 +5328,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
             }
 
           // handle all assignments
-          unsigned int j, jMax = pEvent->getAssignments().size();
+          size_t j, jMax = pEvent->getAssignments().size();
 
           for (j = 0; j < jMax; ++j)
             {
@@ -5361,10 +5355,9 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
         {
           mpImportHandler->finishItem(hStep);
           step = 0;
-          totalSteps = pTmpFunctionDB->loadedFunctions().size();
+          totalSteps = (unsigned C_INT32) pTmpFunctionDB->loadedFunctions().size();
           hStep = mpImportHandler->addItem("Removing unused functions...",
-                                           CCopasiParameter::UINT,
-                                           & step,
+                                           step,
                                            &totalSteps);
         }
 
@@ -7799,15 +7792,15 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
       ++it;
     }
 
-  unsigned C_INT32 step, totalSteps, hStep;
+  unsigned C_INT32 step, totalSteps;
+  size_t hStep;
 
   if (this->mpImportHandler != 0)
     {
       step = 0;
       totalSteps = iMax;
       hStep = mpImportHandler->addItem("Importing initial assignments...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -8487,15 +8480,15 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
   assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));
 #endif // LIBSBML_VERSION
   unsigned int i, iMax = pSBMLModel->getNumEvents();
-  unsigned C_INT32 step, totalSteps, hStep;
+  unsigned C_INT32 step, totalSteps;
+  size_t hStep;
 
   if (this->mpImportHandler != 0)
     {
       step = 0;
       totalSteps = iMax;
       hStep = mpImportHandler->addItem("Importing initial assignments...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMReactionDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 17:18:42 $
+//   $Date: 2011/01/12 19:07:47 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -33,7 +38,7 @@ int CQEFMReactionDM::rowCount(const QModelIndex & C_UNUSED(parent)) const
   if (mpTask == NULL)
     return 0;
 
-  return mModesSize;
+  return (int) mModesSize;
 }
 
 int CQEFMReactionDM::columnCount(const QModelIndex & C_UNUSED(parent)) const
@@ -41,7 +46,7 @@ int CQEFMReactionDM::columnCount(const QModelIndex & C_UNUSED(parent)) const
   if (mpTask == NULL)
     return 0;
 
-  return mReactionsSize + 1; // For flux mode number
+  return (int)(mReactionsSize + 1);  // For flux mode number
 }
 
 Qt::ItemFlags CQEFMReactionDM::flags(const QModelIndex &index) const

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMNetReactionDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/01 19:59:21 $
+//   $Date: 2011/01/12 19:07:47 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -32,7 +37,7 @@ int CQEFMNetReactionDM::rowCount(const QModelIndex & C_UNUSED(parent)) const
   if (mpTask == NULL)
     return 0;
 
-  return mModesSize;
+  return (int) mModesSize;
 }
 
 int CQEFMNetReactionDM::columnCount(const QModelIndex & C_UNUSED(parent)) const

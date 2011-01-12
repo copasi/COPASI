@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:06 $
+//   $Date: 2011/01/12 19:01:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,7 +93,7 @@ public:
   static void convertRenderInformationReferencesIds(CCopasiVector<RENDER_INFORMATION>& list,
       const std::map<std::string, std::string> & idToKeyMap)
   {
-    unsigned int i, iMax = list.size();
+    size_t i, iMax = list.size();
     RENDER_INFORMATION* pRI = NULL;
     std::map<std::string, std::string>::const_iterator pos;
 
@@ -140,13 +140,13 @@ public:
   static void convertRenderInformationReferencesKeys(ListOf& list,
       const std::map<std::string, std::string> & keyToIdMap)
   {
-    unsigned int i, iMax = list.size();
+    size_t i, iMax = list.size();
     RENDER_INFORMATION* pRI = NULL;
     std::map<std::string, std::string>::const_iterator pos;
 
     for (i = 0; i < iMax; ++i)
       {
-        pRI = dynamic_cast<RENDER_INFORMATION*>(list.get(i));
+        pRI = dynamic_cast<RENDER_INFORMATION*>(list.get((unsigned int) i));
         assert(pRI != NULL);
 
         if (pRI->getReferenceRenderInformationId().find_first_not_of(" \t\n\r") != std::string::npos)

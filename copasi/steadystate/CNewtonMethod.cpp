@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.98.2.1 $
+//   $Revision: 1.98.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/13 20:40:30 $
+//   $Date: 2011/01/12 19:06:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -197,7 +197,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
                               : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
-  unsigned C_INT32 hProcess;
+  size_t hProcess;
   unsigned C_INT32 Step = 0;
   unsigned C_INT32 MaxSteps;
   MaxSteps = (unsigned C_INT32) ceil(log(maxDuration / minDuration) / log(iterationFactor));
@@ -206,8 +206,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
   if (mpCallBack)
     hProcess = mpCallBack->addItem(tmpstring,
-                                   CCopasiParameter::UINT,
-                                   & Step,
+                                   Step,
                                    & MaxSteps);
 
   //setup trajectory
@@ -403,7 +402,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
 
   //repeat till the new max rate is smaller than the old.
   //max 32 times
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; (i < 32) && !((newValue < currentValue)); i++)
     {
@@ -473,16 +472,15 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
 CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 {
   NewtonResultCode result = CNewtonMethod::notFound;
-  C_INT32 k;
+  unsigned C_INT32 k;
 
   k = 0;
   //start progress bar
-  unsigned C_INT32 hProcess;
+  size_t hProcess;
 
   if (mpCallBack)
     hProcess = mpCallBack->addItem("Newton method...",
-                                   CCopasiParameter::UINT,
-                                   & k,
+                                   k,
                                    & mIterationLimit);
 
   C_FLOAT64 targetValue;
@@ -782,8 +780,8 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 {
   X = B;
 
-  C_INT M = mpJacobianX->numCols();
-  C_INT N = mpJacobianX->numRows();
+  C_INT M = (C_INT) mpJacobianX->numCols();
+  C_INT N = (C_INT) mpJacobianX->numRows();
 
   if (M == 0 || N == 0 || M != N)
     {

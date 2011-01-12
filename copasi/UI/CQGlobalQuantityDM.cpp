@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.6.4.5 $
+//   $Revision: 1.6.4.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:41 $
+//   $Date: 2011/01/12 19:07:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ const std::vector< unsigned C_INT32 >& CQGlobalQuantityDM::getItemToType()
 
 int CQGlobalQuantityDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues().size() + 1;
 }
 int CQGlobalQuantityDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -305,7 +305,7 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CModelValue * pGQ = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
 
       if (delRow != C_INVALID_INDEX)
@@ -316,7 +316,7 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex&)
                                         pGQ->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

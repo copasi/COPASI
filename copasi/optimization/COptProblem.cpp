@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.6 $
+//   $Revision: 1.115.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/16 17:01:19 $
+//   $Date: 2011/01/12 19:04:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,14 +268,12 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
       mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
-                            CCopasiParameter::DOUBLE,
-                            & mSolutionValue);
+                            mSolutionValue);
       // We need to reset mCounter here since initialize is called later during the process
       mCounter = 0;
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
-                            CCopasiParameter::UINT,
-                            & mCounter);
+                            mCounter);
     }
 
   return true;
@@ -347,8 +345,8 @@ bool COptProblem::initialize()
   if (mpSubtask != NULL)
     ContainerList.push_back(mpSubtask);
 
-  unsigned C_INT32 i;
-  unsigned C_INT32 Size = mpOptItems->size();
+  size_t i;
+  size_t Size = mpOptItems->size();
 
   mUpdateMethods.resize(Size);
   mSolutionVariables.resize(Size);
@@ -575,7 +573,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
 {
   // Set the current values to the solution values.
-  unsigned C_INT32 i, imax = mSolutionVariables.size();
+  size_t i, imax = mSolutionVariables.size();
 
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -666,10 +664,10 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
 const C_FLOAT64 & COptProblem::getSolutionValue() const
 {return mSolutionValue;}
 
-COptItem & COptProblem::getOptItem(const unsigned C_INT32 & index)
+COptItem & COptProblem::getOptItem(const size_t & index)
 {return *(*mpOptItems)[index];}
 
-unsigned C_INT32 COptProblem::getOptItemSize() const
+size_t COptProblem::getOptItemSize() const
 {return mpGrpItems->size();}
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
@@ -685,11 +683,11 @@ COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
   return *pItem;
 }
 
-bool COptProblem::removeOptItem(const unsigned C_INT32 & index)
+bool COptProblem::removeOptItem(const size_t & index)
 {return mpGrpItems->removeParameter(index);}
 
-bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
-                              const unsigned C_INT32 & iTo)
+bool COptProblem::swapOptItem(const size_t & iFrom,
+                              const size_t & iTo)
 {return mpGrpItems->swap(iFrom, iTo);}
 
 const std::vector< COptItem * > & COptProblem::getOptItemList() const
@@ -731,7 +729,7 @@ bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
 
   if (pTasks)
     {
-      unsigned C_INT32 i, imax = pTasks->size();
+      size_t i, imax = pTasks->size();
 
       for (i = 0; i < imax; i++)
         if ((*pTasks)[i]->getType() == subtaskType)
@@ -810,7 +808,7 @@ void COptProblem::printResult(std::ostream * ostream) const
   std::vector< COptItem * >::const_iterator endItem =
     mpOptItems->end();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; itItem != endItem; ++itItem, i++)
     {

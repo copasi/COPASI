@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.h,v $
-  $Revision: 1.13 $
+  $Revision: 1.13.2.1 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/09/16 18:26:16 $
+  $Date: 2011/01/12 19:00:58 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,7 +135,7 @@ public:
   virtual void writeMathML(std::ostream & out,
                            const std::vector<std::vector<std::string> > & env,
                            bool expand = true,
-                           unsigned C_INT32 l = 0) const;
+                           size_t l = 0) const;
 
 private:
 

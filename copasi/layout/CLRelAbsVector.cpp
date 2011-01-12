@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRelAbsVector.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2011/01/12 19:01:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ void CLRelAbsVector::setCoordinate(const std::string& coordString)
 {
   bool result = true;
   // first we remove all whitespaces from the string
-  unsigned int i, iMax = coordString.size();
+  size_t i, iMax = coordString.size();
   std::string trimmed;
 
   for (i = 0; i < iMax; ++i)

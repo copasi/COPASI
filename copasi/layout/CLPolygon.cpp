@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLPolygon.cpp,v $
-//   $Revision: 1.4.2.1 $
+//   $Revision: 1.4.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 17:08:20 $
+//   $Date: 2011/01/12 19:01:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ CLPolygon::CLPolygon(const CLPolygon& source, CCopasiContainer* pParent):
     mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("Polygon", this);
-  unsigned int i, iMax = source.mListOfElements.size();
+  size_t i, iMax = source.mListOfElements.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -72,19 +72,19 @@ CLPolygon::CLPolygon(const Polygon& source, CCopasiContainer* pParent):
     mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("Polygon", this);
-  unsigned int i, iMax = source.getNumElements();
+  size_t i, iMax = source.getNumElements();
 
   for (i = 0; i < iMax; ++i)
     {
       CLRenderPoint* pElement = NULL;
 
-      if (dynamic_cast<const RenderCubicBezier*>(source.getElement(i)))
+      if (dynamic_cast<const RenderCubicBezier*>(source.getElement((unsigned int) i)))
         {
-          pElement = new CLRenderCubicBezier(*static_cast<const RenderCubicBezier*>(source.getElement(i)));
+          pElement = new CLRenderCubicBezier(*static_cast<const RenderCubicBezier*>(source.getElement((unsigned int) i)));
         }
       else
         {
-          pElement = new CLRenderPoint(*source.getElement(i));
+          pElement = new CLRenderPoint(*source.getElement((unsigned int) i));
         }
 
       this->mListOfElements.push_back(pElement);
@@ -97,7 +97,7 @@ CLPolygon::CLPolygon(const Polygon& source, CCopasiContainer* pParent):
 CLPolygon::~CLPolygon()
 {
   CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
-  unsigned int i, iMax = this->mListOfElements.size();
+  size_t i, iMax = this->mListOfElements.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -108,7 +108,7 @@ CLPolygon::~CLPolygon()
 /**
  * Returns the number of line segments.
  */
-unsigned int CLPolygon::getNumElements() const
+size_t CLPolygon::getNumElements() const
 {
   return this->mListOfElements.size();
 }
@@ -153,7 +153,7 @@ CLRenderCubicBezier* CLPolygon::createCubicBezier()
  * Returns a pointer to the line segement with with the given index or
  * NULL if the index is invalid.
  */
-CLRenderPoint* CLPolygon::getElement(unsigned int index)
+CLRenderPoint* CLPolygon::getElement(size_t index)
 {
   return (index < this->mListOfElements.size()) ? (this->mListOfElements[index]) : NULL;
 }
@@ -162,7 +162,7 @@ CLRenderPoint* CLPolygon::getElement(unsigned int index)
  * Returns const a pointer to the line segement with with the given index or
  * NULL if the index is invalid.
  */
-const CLRenderPoint* CLPolygon::getElement(unsigned int index) const
+const CLRenderPoint* CLPolygon::getElement(size_t index) const
 {
   return (index < this->mListOfElements.size()) ? (this->mListOfElements[index]) : NULL;
 }
@@ -185,7 +185,7 @@ void CLPolygon::addElement(const CLRenderPoint* pLS)
 /**
  * Removes the curve segment with the given index.
  */
-void CLPolygon::removeElement(unsigned int i)
+void CLPolygon::removeElement(size_t i)
 {
   if (i < this->mListOfElements.size())
     {
@@ -211,7 +211,7 @@ Polygon* CLPolygon::toSBML(unsigned int level, unsigned int version) const
 {
   Polygon* pPolygon = new Polygon(level, version);
   this->addSBMLAttributes(pPolygon);
-  unsigned int i, iMax = this->mListOfElements.size();
+  size_t i, iMax = this->mListOfElements.size();
 
   for (i = 0; i < iMax; ++i)
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.13 $
+//   $Revision: 1.5.2.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/30 17:07:36 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -366,7 +366,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
   assert(pos != this->mColorMap.end());
   const CLRGBAColor& c = pos->second;
   glColor4ub(c.mR, c.mG, c.mB, c.mA);
-  unsigned int i, iMax = pCurve->getNumCurveSegments();
+  size_t i, iMax = pCurve->getNumCurveSegments();
   const CLLineSegment* pLineSegment = NULL;
   // apply the current transformation
   glMatrixMode(GL_MODELVIEW);
@@ -432,12 +432,12 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
           if (i != 0 && !((*pP) == lastEnd))
             {
               // draw the lines the are currently in v and clear v
-              iMax = (unsigned int)v.size();
+              iMax = v.size();
 
               if (iMax > 1)
                 {
                   pData = new GLdouble[3*iMax];
-                  unsigned int index = 0;
+                  size_t index = 0;
                   const simple_point* pSimple = NULL;
 
                   for (i = 0; i < iMax; ++i)
@@ -466,8 +466,8 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                                                   pP4->getX(), pP4->getY(), pP4->getZ(),
                                                   pP2->getX(), pP2->getY(), pP2->getZ(),
                                                   NUM_BEZIER_POINTS, pData);
-          unsigned int j;
-          unsigned int index = 0;
+          size_t j;
+          size_t index = 0;
 
           for (j = 0; j < NUM_BEZIER_POINTS; ++j)
             {
@@ -486,7 +486,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
               // but a little wider
               if (mCurrentAttributes.mStroke != "none" && mCurrentAttributes.mStrokeWidth > 0.0)
                 {
-                  unsigned int j;
+                  size_t j;
                   std::map<std::string, CLRGBAColor>::const_iterator pos = this->mColorMap.find(mCurrentAttributes.mStroke);
                   const CLRGBAColor& c = pos->second;
                   glColor4ub(c.mR, c.mG, c.mB, c.mA);
@@ -552,12 +552,12 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
           if (i != 0 && !((*pP) == lastEnd))
             {
               // draw the lines that are currently in v and clear v
-              iMax = (unsigned int)v.size();
+              iMax = v.size();
 
               if (iMax > 1)
                 {
                   pData = new GLdouble[3*iMax];
-                  unsigned int index = 0;
+                  size_t index = 0;
                   const simple_point* pSimple = NULL;
 
                   for (i = 0; i < iMax; ++i)
@@ -593,7 +593,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glScaled(mCurrentAttributes.mStrokeWidth*2.0, mCurrentAttributes.mStrokeWidth*2.0, 1.0);
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
-                  unsigned int j;
+                  size_t j;
 
                   for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
                     {
@@ -626,7 +626,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glScaled(mCurrentAttributes.mStrokeWidth*2.0, mCurrentAttributes.mStrokeWidth*2.0, 1.0);
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
-                  unsigned int j;
+                  size_t j;
 
                   for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
                     {
@@ -640,12 +640,12 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
         }
     }
 
-  iMax = (unsigned int)v.size();
+  iMax = v.size();
 
   if (iMax > 1)
     {
       pData = new GLdouble[3*iMax];
-      unsigned int index = 0;
+      size_t index = 0;
       const simple_point* pSimple = NULL;
 
       for (i = 0; i < iMax; ++i)
@@ -674,7 +674,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
               glScaled(mCurrentAttributes.mStrokeWidth, mCurrentAttributes.mStrokeWidth, 1.0);
               glBegin(GL_TRIANGLE_FAN);
               glVertex3d(0.0, 0.0, 0.0);
-              unsigned int j;
+              size_t j;
 
               for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
                 {
@@ -765,7 +765,7 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
       assert(pos != this->mColorMap.end());
       const CLRGBAColor& c = pos->second;
       glColor4ub(c.mR, c.mG, c.mB, c.mA);
-      unsigned int i, iMax = pCurve->getNumElements();
+      size_t i, iMax = pCurve->getNumElements();
       CLRenderPoint start, end, bp1, bp2;
       CLPoint p1, p2, p3, p4;
       const CLRenderPoint* pP = NULL;
@@ -802,8 +802,8 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
                                                       p4.getX(), p4.getY(), p4.getZ(),
                                                       p2.getX(), p2.getY(), p2.getZ(),
                                                       NUM_BEZIER_POINTS, pData);
-              unsigned int j;
-              unsigned int index = 0;
+              size_t j;
+              size_t index = 0;
 
               for (j = 0; j < NUM_BEZIER_POINTS; ++j)
                 {
@@ -829,12 +829,12 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
           p1 = p2;
         }
 
-      iMax = (unsigned int)v.size();
+      iMax = v.size();
 
       if (iMax > 1)
         {
           pData = new GLdouble[3*iMax];
-          unsigned int index = 0;
+          size_t index = 0;
           const simple_point* pSimple = NULL;
 
           for (i = 0; i < iMax; ++i)
@@ -979,19 +979,19 @@ void CLLayoutRenderer::draw_layout()
     {
       //std::cout << "Drawing layout." << std::endl;
       const CLColorDefinition* pBackgroundColor = this->mpResolver->getBackgroundColor();
-      GLfloat red = pBackgroundColor->getRed() / 255.0;
-      GLfloat green = pBackgroundColor->getGreen() / 255.0;
-      GLfloat blue = pBackgroundColor->getBlue() / 255.0;
-      GLfloat alpha = pBackgroundColor->getAlpha() / 255.0;
+      GLfloat red = (GLfloat)(pBackgroundColor->getRed() / 255.0);
+      GLfloat green = (GLfloat)(pBackgroundColor->getGreen() / 255.0);
+      GLfloat blue = (GLfloat)(pBackgroundColor->getBlue() / 255.0);
+      GLfloat alpha = (GLfloat)(pBackgroundColor->getAlpha() / 255.0);
 #ifdef COPASI_DEBUG
 
       if (this->mHighlight == false)
         {
           // we have to generate fog on the background ourselfes
-          red = (red + this->mFogColor[0]) * 0.5;
-          green = (green + this->mFogColor[1]) * 0.5;
-          blue = (blue + this->mFogColor[2]) * 0.5;
-          alpha = (alpha + this->mFogColor[3]) * 0.5;
+          red = (GLfloat)((red + this->mFogColor[0]) * 0.5);
+          green = (GLfloat)((green + this->mFogColor[1]) * 0.5);
+          blue = (GLfloat)((blue + this->mFogColor[2]) * 0.5);
+          alpha = (GLfloat)((alpha + this->mFogColor[3]) * 0.5);
         }
 
 #endif // COPASI_DEBUG
@@ -1244,7 +1244,7 @@ void CLLayoutRenderer::draw_group(const CLGroup* pGroup, const CLBoundingBox* pB
 
   // draw each element
   const CCopasiObject* pObject = NULL;
-  unsigned int i, iMax = pGroup->getNumElements();
+  size_t i, iMax = pGroup->getNumElements();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -1549,7 +1549,7 @@ void CLLayoutRenderer::draw_ellipse(const CLEllipse* pEllipse, const CLBoundingB
   unsigned int i;
   double delta_phi = 2 * M_PI / NUM_CIRCLE_SEGMENTS;
   double phi = 0.0;
-  unsigned int index = 0;
+  size_t index = 0;
 
   for (i = 0; i < NUM_CIRCLE_SEGMENTS; ++i)
     {
@@ -1668,7 +1668,7 @@ void CLLayoutRenderer::draw_polygon(const CLPolygon* pPolygon, const CLBoundingB
 {
   /*
    * Old code to draw the polygon when it consists of only straight lines.
-      unsigned int numPoints=pPolygon->getNumElements()+1;
+      size_t numPoints=pPolygon->getNumElements()+1;
   if(numPoints>1)
   {
     // store and change the attributes
@@ -1676,10 +1676,10 @@ void CLLayoutRenderer::draw_polygon(const CLPolygon* pPolygon, const CLBoundingB
     CLLayoutRenderer::extract_2d_attributes(pPolygon,&mCurrentAttributes);
     // create the data points
     GLdouble* pData=new GLdouble[3*numPoints];
-    unsigned int i,iMax=numPoints-1;
+    size_t i,iMax=numPoints-1;
     CLPoint p;
     const CLRenderPoint* pP;
-    unsigned int index=0;
+    size_t index=0;
     for(i=0;i<iMax;++i)
     {
       pP=pPolygon->getElement(i);
@@ -1706,7 +1706,7 @@ void CLLayoutRenderer::draw_polygon(const CLPolygon* pPolygon, const CLBoundingB
       CLPoint p2, p3, p4;
       std::vector<simple_point> v;
       // there are going to be at least iMax elements in the vector
-      unsigned int i, iMax = pPolygon->getNumElements();
+      size_t i, iMax = pPolygon->getNumElements();
       v.reserve(iMax);
       simple_point p;
       p.mX = p1.getX();
@@ -1736,8 +1736,8 @@ void CLLayoutRenderer::draw_polygon(const CLPolygon* pPolygon, const CLBoundingB
                                                       p4.getX(), p4.getY(), p4.getZ(),
                                                       p2.getX(), p2.getY(), p2.getZ(),
                                                       NUM_BEZIER_POINTS, pData);
-              unsigned int j;
-              unsigned int index = 0;
+              size_t j;
+              size_t index = 0;
 
               for (j = 0; j < NUM_BEZIER_POINTS; ++j)
                 {
@@ -1763,12 +1763,12 @@ void CLLayoutRenderer::draw_polygon(const CLPolygon* pPolygon, const CLBoundingB
           p1 = p2;
         }
 
-      iMax = (unsigned int)v.size();
+      iMax = v.size();
 
       if (iMax > 1)
         {
           pData = new GLdouble[3*(iMax+1)];
-          unsigned int index = 0;
+          size_t index = 0;
           const simple_point* pSimple = NULL;
 
           for (i = 0; i < iMax; ++i)
@@ -1819,7 +1819,7 @@ void CLLayoutRenderer::draw_rectangle(const CLRectangle* pRectangle, const CLBou
 
   if (ry > height / 2.0) ry = height / 2.0;
 
-  unsigned int numPoints = 4;
+  size_t numPoints = 4;
 
   if (rx > 0.0 && ry > 0.0)
     {
@@ -1836,11 +1836,11 @@ void CLLayoutRenderer::draw_rectangle(const CLRectangle* pRectangle, const CLBou
   double y = p.getY();
   double z = p.getZ();
   // now we fill the data array
-  unsigned int index = 0;
+  size_t index = 0;
 
   if (rx > 0.0 && ry > 0.0)
     {
-      unsigned int i = 0;
+      size_t i = 0;
       pData[i++] = 0.0;
       pData[i++] = ry;
       pData[i++] = 0.0;
@@ -2474,7 +2474,7 @@ void CLLayoutRenderer::map_gradient_color(double rel_distance, const CLGradientB
   // larget than rel_distance
   assert(pGradient->getNumGradientStops() >= 2);
   const CLGradientStop *lower = NULL, *higher = NULL, *current = NULL;
-  unsigned int k, kMax = pGradient->getNumGradientStops();
+  size_t k, kMax = pGradient->getNumGradientStops();
 
   for (k = 0; k < kMax; ++k)
     {
@@ -2560,7 +2560,7 @@ void CLLayoutRenderer::map_gradient_color(double rel_distance, const CLGradientB
 /**
  * Method to draw a render polygon from a set of datapoints
  */
-void CLLayoutRenderer::draw_datapoints(GLdouble* pData, unsigned int numPoints, const CLBoundingBox* pBB, bool doTesselation, float xOffset, float yOffset, float zOffset)
+void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const CLBoundingBox* pBB, bool doTesselation, float xOffset, float yOffset, float zOffset)
 {
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
@@ -2712,7 +2712,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, unsigned int numPoints, 
           gluTessBeginPolygon(pTess, NULL);
           gluTessBeginContour(pTess);
           // specify the actual vertex data
-          unsigned j = 0, jMax = numPoints - 1;
+          size_t j = 0, jMax = numPoints - 1;
 
           while (j < jMax)
             {
@@ -2735,7 +2735,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, unsigned int numPoints, 
           // it must be a single colored object, so we just draw the vertex array
           glEnableClientState(GL_VERTEX_ARRAY);
           glVertexPointer(3, GL_DOUBLE, 0, pData);
-          glDrawArrays(GL_POLYGON, 0, numPoints - 1);
+          glDrawArrays(GL_POLYGON, 0, (GLsizei)(numPoints - 1));
           glDisableClientState(GL_VERTEX_ARRAY);
         }
 
@@ -2757,7 +2757,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, unsigned int numPoints, 
       glColor4ub(c.mR, c.mG, c.mB, c.mA);
       this->draw_line(numPoints, pData);
       // draw the final cap
-      unsigned int index = (numPoints - 2) * 3;
+      size_t index = (numPoints - 2) * 3;
       draw_cap(pData[index], pData[index+1], pData[index+2], pData[0], pData[1], pData[2], pData[3], pData[4], pData[5], mCurrentAttributes.mStrokeWidth);
     }
 
@@ -2942,7 +2942,7 @@ void CLLayoutRenderer::calculate_cubicbezier(double sx, double sy, double sz, do
 /**
  * Method to draw a line made up of a set of points.
  */
-void CLLayoutRenderer::draw_line(unsigned int numPoints, GLdouble* pData)
+void CLLayoutRenderer::draw_line(size_t numPoints, GLdouble* pData)
 {
   // a line has to have more than one point
   if (numPoints > 1)
@@ -2958,7 +2958,7 @@ void CLLayoutRenderer::draw_line(unsigned int numPoints, GLdouble* pData)
 
       GLfloat* pTextureCoordinates = NULL;
       GLdouble* pOrigData = pData;
-      unsigned int iMax = numPoints;
+      size_t iMax = numPoints;
 
       if (pTexture != NULL)
         {
@@ -3083,19 +3083,19 @@ CLLineStippleTexture* CLLayoutRenderer::createLineStippleTexture(const std::vect
   return new CLLineStippleTexture(dasharray);
 }
 
-void CLLayoutRenderer::segment_data(double length, double ratio, unsigned int numPoints, GLdouble* pData, std::vector<simple_point>& v)
+void CLLayoutRenderer::segment_data(double length, double ratio, size_t numPoints, GLdouble* pData, std::vector<simple_point>& v)
 {
   double current_distance = 0.0;
-  unsigned int i, iMax = numPoints;
+  size_t i, iMax = numPoints;
   simple_point start = {pData[0], pData[1], pData[2], 0.0};
   // add the first point
   v.push_back(start);
   double vx, vy, vz, l;
   double current_repeat, end_repeat;
-  unsigned int current_repeat_i, end_repeat_i;
+  size_t current_repeat_i, end_repeat_i;
   simple_point p;
   simple_point end;
-  unsigned int index = 3;
+  size_t index = 3;
 
   for (i = 1; i < iMax; ++i)
     {
@@ -3615,7 +3615,7 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
 
   const CLRenderCurve* pCurve = NULL;
 
-  unsigned int i, iMax = pGroup->getNumElements();
+  size_t i, iMax = pGroup->getNumElements();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -4001,7 +4001,7 @@ void CLLayoutRenderer::setY(double y)
 void CLLayoutRenderer::update_colors(const CLGradientBase* pGradient)
 {
   GLubyte colorA[4];
-  unsigned int i, iMax = pGradient->getNumGradientStops();
+  size_t i, iMax = pGradient->getNumGradientStops();
   const CLGradientStop* pStop = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -4583,14 +4583,14 @@ void CLLayoutRenderer::setDeduceSpeciesReferenceRoles(bool deduce)
           // try to deduce the roles and maybe update the style map
           if (this->mpLayout != NULL)
             {
-              unsigned int i, iMax = this->mpLayout->getListOfReactionGlyphs().size();
+              size_t i, iMax = this->mpLayout->getListOfReactionGlyphs().size();
 
               if (iMax > 0)
                 {
                   CLReactionGlyph* pRG = NULL;
                   CLMetabReferenceGlyph* pSRG = NULL;
                   std::set<CLMetabReferenceGlyph*> speciesReferenceGlyphs;
-                  unsigned int j, jMax;
+                  size_t j, jMax;
 
                   for (i = 0; i < iMax; ++i)
                     {
@@ -4814,7 +4814,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
             {
               pCurve = &pSRG->getCurve();
               assert(pCurve != NULL);
-              unsigned int i, iMax = pCurve->getNumCurveSegments();
+              size_t i, iMax = pCurve->getNumCurveSegments();
 
               for (i = 0; i < iMax; ++i)
                 {
@@ -4832,7 +4832,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
             {
               pCurve = &pRG->getCurve();
               assert(pCurve != NULL);
-              unsigned int i, iMax = pCurve->getNumCurveSegments();
+              size_t i, iMax = pCurve->getNumCurveSegments();
 
               for (i = 0; i < iMax; ++i)
                 {
@@ -4873,11 +4873,11 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
           const CLCurve* pCurve = NULL;
           const CLLineSegment* pLS = NULL;
           const CLBoundingBox* pBB = NULL;
-          unsigned int k, kMax;
-          unsigned int j, jMax;
+          size_t k, kMax;
+          size_t j, jMax;
           double bbx, bby, bbwidth, bbheight;
           double toleranceRadius = 5.0 / this->mZoomFactor;
-          unsigned int i, iMax = this->mpLayout->getListOfCompartmentGlyphs().size();
+          size_t i, iMax = this->mpLayout->getListOfCompartmentGlyphs().size();
 
           for (i = 0; i < iMax; ++i)
             {
@@ -5085,7 +5085,7 @@ bool CLLayoutRenderer::isSegmentHit(const CLLineSegment* pLS, double x, double y
           // calculate points to get line segments and check each one for a hit
           GLdouble* pData = new GLdouble[3*NUM_BEZIER_POINTS];
           CLLayoutRenderer::calculate_cubicbezier(x1, y1, 0.0, x2, y2, 0.0, x3, y3, 0.0, x4, y4, 0.0, NUM_BEZIER_POINTS, pData);
-          unsigned int i;
+          size_t i;
           double distance = 0.0;
 
           for (i = 1; i < NUM_BEZIER_POINTS && !result; ++i)
@@ -5190,7 +5190,7 @@ CLBoundingBox* CLLayoutRenderer::getCurveBoundingBox(const CLCurve* pCurve)
   double yMin = xMin;
   double xMax = -xMin;
   double yMax = xMax;
-  unsigned int i, iMax = pCurve->getNumCurveSegments();
+  size_t i, iMax = pCurve->getNumCurveSegments();
   const CLLineSegment* pLS = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -5300,7 +5300,7 @@ void CLLayoutRenderer::drawSelectionBox(double x, double y, double width, double
       pArrowData[19]=6.0;
       pArrowData[20]=0.0;
 
-      unsigned int i;
+      size_t i;
       // right
       glPushMatrix();
       glTranslatef(width + 2 * SELECTION_FRAME_WIDTH + 3, (height + 2 * SELECTION_FRAME_WIDTH)/ 2.0 ,0.0);
@@ -5553,10 +5553,10 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
       const CLCurve* pCurve = NULL;
       const CLLineSegment* pLS = NULL;
       const CLBoundingBox* pBB = NULL;
-      unsigned int k, kMax;
-      unsigned int j, jMax;
+      size_t k, kMax;
+      size_t j, jMax;
       double x, y;
-      unsigned int i, iMax = this->mpLayout->getListOfCompartmentGlyphs().size();
+      size_t i, iMax = this->mpLayout->getListOfCompartmentGlyphs().size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -6156,8 +6156,8 @@ void CLLayoutRenderer::update_associations()
     {
       // first we have to create a map that specifies for each speciesreference with an id
       // whether it is a modifier or not
-      unsigned int j, jMax;
-      unsigned int i, iMax = this->mpModel->getReactions().size();
+      size_t j, jMax;
+      size_t i, iMax = this->mpModel->getReactions().size();
       const CReaction* pReaction = NULL;
       std::map<std::string, bool> modifierMap;
 
@@ -6376,7 +6376,7 @@ void CLLayoutRenderer::move_graphical_object(CLGraphicalObject* pObject, double 
  */
 void CLLayoutRenderer::move_curve_object(CLCurve* pCurve, double dx, double dy, bool leaveStartPoint, bool leaveEndpoint)
 {
-  unsigned int i, iMax = pCurve->getNumCurveSegments();
+  size_t i, iMax = pCurve->getNumCurveSegments();
   CLLineSegment* pLS = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -6663,7 +6663,7 @@ void CLLayoutRenderer::move_selection(double dx, double dy, bool moveAssociated)
 CLCurve* CLLayoutRenderer::revert_curve(const CLCurve* pCurve)
 {
   CLCurve* pC = new CLCurve();
-  unsigned int i, iMax = pCurve->getNumCurveSegments();
+  size_t i, iMax = pCurve->getNumCurveSegments();
   const CLLineSegment* pLS = NULL;
   CLLineSegment* pNewLS = NULL;
 

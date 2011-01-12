@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.25.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/01/12 19:04:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,7 +150,7 @@ bool COptMethodEP::optimise()
 
 bool COptMethodEP::cleanup()
 {
-  unsigned C_INT32 i;
+  size_t i;
   // pdelete all used variables
   pdelete(mpRandom);
 
@@ -167,7 +167,7 @@ bool COptMethodEP::initialize()
 {
   cleanup();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   if (!COptMethod::initialize()) return false;
 
@@ -177,8 +177,7 @@ bool COptMethodEP::initialize()
   if (mpCallBack)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
-                          CCopasiParameter::UINT,
-                          & mGeneration,
+                          mGeneration,
                           & mGenerations);
 
   mGeneration++;
@@ -239,8 +238,8 @@ void COptMethodEP::initObjects()
 
 bool COptMethodEP::creation()
 {
-  unsigned C_INT32 i;
-  unsigned C_INT32 j;
+  size_t i;
+  size_t j;
 
   C_FLOAT64 mn;
   C_FLOAT64 mx;
@@ -417,21 +416,21 @@ bool COptMethodEP::creation()
 
 bool COptMethodEP::select()
 {
-  unsigned C_INT32 i, j, nopp, opp;
-  unsigned C_INT32 TotalPopulation = 2 * mPopulationSize;
+  size_t i, j, nopp, opp;
+  size_t TotalPopulation = 2 * mPopulationSize;
 
   // tournament competition
   mLosses = 0; // Set all losses to 0.
 
   // compete with ~ 20% of the TotalPopulation
-  nopp = std::max<unsigned C_INT32>(1, mPopulationSize / 5);
+  nopp = std::max<size_t>(1, mPopulationSize / 5);
 
   // parents and offspring are all in competition
   for (i = 0; i < TotalPopulation; i++)
     for (j = 0; j < nopp; j++)
       {
         // get random opponent
-        opp = mpRandom->getRandomU(TotalPopulation - 1);
+        opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
 
         if (mValue[i] < mValue[opp])
           mLosses[opp]++;
@@ -444,13 +443,13 @@ bool COptMethodEP::select()
                        mLosses.array() + TotalPopulation,
                        mPivot);
 
-  FSwapClass<COptMethodEP, unsigned C_INT32, bool> Swap(this, &COptMethodEP::swap);
+  FSwapClass<COptMethodEP, size_t, bool> Swap(this, &COptMethodEP::swap);
   applyPartialPivot(mPivot, mPopulationSize, Swap);
 
   return true;
 }
 
-bool COptMethodEP::swap(unsigned C_INT32 from, unsigned C_INT32 to)
+bool COptMethodEP::swap(size_t from, size_t to)
 {
   CVector< C_FLOAT64 > * pTmp = mIndividual[to];
   mIndividual[to] = mIndividual[from];
@@ -464,16 +463,16 @@ bool COptMethodEP::swap(unsigned C_INT32 from, unsigned C_INT32 to)
   mValue[to] = mValue[from];
   mValue[from] = dTmp;
 
-  C_INT32 iTmp = mLosses[to];
+  size_t iTmp = mLosses[to];
   mLosses[to] = mLosses[from];
   mLosses[from] = iTmp;
 
   return true;
 }
 
-unsigned C_INT32 COptMethodEP::fittest()
+size_t COptMethodEP::fittest()
 {
-  unsigned C_INT32 i, BestIndex = 0;
+  size_t i, BestIndex = 0;
   C_FLOAT64 BestValue = mValue[0];
 
   for (i = 1; i < mPopulationSize && !mLosses[i]; i++)
@@ -488,8 +487,8 @@ unsigned C_INT32 COptMethodEP::fittest()
 
 bool COptMethodEP::replicate()
 {
-  unsigned C_INT32 i;
-  unsigned C_INT32 j;
+  size_t i;
+  size_t j;
   bool Continue = true;
 
   // iterate over parents
@@ -511,9 +510,9 @@ bool COptMethodEP::replicate()
   return Continue;
 }
 
-bool COptMethodEP::mutate(unsigned C_INT32 i)
+bool COptMethodEP::mutate(size_t i)
 {
-  unsigned C_INT32 j;
+  size_t j;
   C_FLOAT64 v1;
 
   CVector<C_FLOAT64> & Individual = *mIndividual[i];

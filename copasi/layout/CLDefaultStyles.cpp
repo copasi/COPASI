@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLDefaultStyles.cpp,v $
-//   $Revision: 1.2.2.2 $
+//   $Revision: 1.2.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 17:08:14 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -506,9 +506,9 @@ CCopasiVector<CLGlobalRenderInformation>* getDefaultStyles()
 /**
  * This method returns the number of global styles.
  */
-unsigned int getNumDefaultStyles()
+size_t getNumDefaultStyles()
 {
-  unsigned int result = 0;
+  size_t result = 0;
 
   if (!DEFAULT_STYLES)
     {
@@ -527,7 +527,7 @@ unsigned int getNumDefaultStyles()
  * This method returns the default render information object with
  * the requested index. If the index isinvalid, NULL is returned.
  */
-CLGlobalRenderInformation* getDefaultStyle(unsigned int index)
+CLGlobalRenderInformation* getDefaultStyle(size_t index)
 {
   if (!DEFAULT_STYLES)
     {
@@ -556,12 +556,12 @@ CCopasiVector<CLGlobalRenderInformation>* loadDefaultStyles()
   ListOfGlobalRenderInformation* pRI = new ListOfGlobalRenderInformation();
   pRI->parseXML(XMLNode(stream));
   // convert the SBML objects to COPASI objects
-  unsigned int i, iMax = pRI->size();
+  size_t i, iMax = pRI->size();
   CCopasiVector<CLGlobalRenderInformation>* pResult = new CCopasiVector<CLGlobalRenderInformation>;
 
   for (i = 0; i < iMax; ++i)
     {
-      pResult->add(new CLGlobalRenderInformation(*static_cast<const GlobalRenderInformation*>(pRI->get(i))));
+      pResult->add(new CLGlobalRenderInformation(*static_cast<const GlobalRenderInformation*>(pRI->get((unsigned int) i))));
     }
 
   return pResult;

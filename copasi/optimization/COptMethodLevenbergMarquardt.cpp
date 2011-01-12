@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/01/12 19:04:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,7 +73,7 @@ bool COptMethodLevenbergMarquardt::optimise()
   C_INT dim, starts, info, nrhs;
   C_INT one = 1;
 
-  unsigned C_INT32 i;
+  size_t i;
   C_FLOAT64 LM_lambda, nu, convp, convx;
   bool calc_hess;
   nrhs = 1;
@@ -360,8 +360,7 @@ bool COptMethodLevenbergMarquardt::initialize()
   if (mpCallBack)
     mhIteration =
       mpCallBack->addItem("Current Iteration",
-                          CCopasiParameter::UINT,
-                          & mIteration,
+                          mIteration,
                           & mIterationLimit);
 
   mVariableSize = mpOptItem->size();
@@ -394,7 +393,7 @@ bool COptMethodLevenbergMarquardt::initialize()
 // evaluate the value of the gradient by forward differences
 void COptMethodLevenbergMarquardt::gradient()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   C_FLOAT64 y;
   C_FLOAT64 x;
@@ -422,7 +421,7 @@ void COptMethodLevenbergMarquardt::gradient()
 //evaluate the Hessian
 void COptMethodLevenbergMarquardt::hessian()
 {
-  unsigned C_INT32 i, j;
+  size_t i, j;
 
   if (mHaveResiduals)
     {
@@ -433,7 +432,7 @@ void COptMethodLevenbergMarquardt::hessian()
 
       const CVector< C_FLOAT64 > CurrentResiduals = Residuals;
 
-      unsigned C_INT32 ResidualSize = Residuals.size();
+      size_t ResidualSize = Residuals.size();
 
       C_FLOAT64 * pJacobianT = mResidualJacobianT.array();
 

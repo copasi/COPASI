@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.61.4.2 $
+//   $Revision: 1.61.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/16 17:01:19 $
+//   $Date: 2011/01/12 19:04:41 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,9 +153,9 @@ public:
 
   /**
    * Retrieve the size of the variable vectors.
-   * @result unsigned C_INT32 VariableSize
+   * @result size_t VariableSize
    */
-  unsigned C_INT32 getVariableSize() const;
+  size_t getVariableSize() const;
 
   /**
    * Retrieve the list of optimization parameters.
@@ -207,16 +207,16 @@ public:
 
   /**
    * Retrieve the 'index' optimization item.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return COptItem optItem
    */
-  COptItem & getOptItem(const unsigned C_INT32 & index);
+  COptItem & getOptItem(const size_t & index);
 
   /**
    * Retrieve the number of optimization items.
-   * @return const unsigned C_INT32 size
+   * @return const size_t size
    */
-  unsigned C_INT32 getOptItemSize() const;
+  size_t getOptItemSize() const;
 
   /**
    * Add an optimization item to the problem.
@@ -227,19 +227,19 @@ public:
 
   /**
    * Remove an optimization items.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return bool success
    */
-  bool removeOptItem(const unsigned C_INT32 & index);
+  bool removeOptItem(const size_t & index);
 
   /**
    * Swap two optimization items.
-   * @param const unsigned C_INT32 & iFrom
-   * @param const unsigned C_INT32 & iTo
+   * @param const size_t & iFrom
+   * @param const size_t & iTo
    * @return bool success
    */
-  bool swapOptItem(const unsigned C_INT32 & iFrom,
-                   const unsigned C_INT32 & iTo);
+  bool swapOptItem(const size_t & iFrom,
+                   const size_t & iTo);
 
   /**
    * Set optimization function
@@ -488,12 +488,12 @@ protected:
   /**
    * Handle of "Best Value" process report item
    */
-  unsigned C_INT32 mhSolutionValue;
+  size_t mhSolutionValue;
 
   /**
    * Handle of "Function Evaluations" process report item
    */
-  unsigned C_INT32 mhCounter;
+  size_t mhCounter;
 
   /**
    * Indicates whether the results shall be stored. The default

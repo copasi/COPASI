@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.cpp,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:58 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:07:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -162,7 +162,7 @@ void CQMergingData::load()
 
   pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  unsigned C_INT32 i, imax = pModel->getMetabolites().size();
+  size_t i, imax = pModel->getMetabolites().size();
   mColumnName.resize(imax);
   mColumnKey.resize(imax);
   mObjectKey.resize(imax);
@@ -187,7 +187,7 @@ void CQMergingData::load()
       pTmp++;
     }
 
-  mpTable->setRowCount(imax);
+  mpTable->setRowCount((int) imax);
 
   QToolButton* pBtn;
   QComboBox * pComboBox;
@@ -201,7 +201,7 @@ void CQMergingData::load()
       QTableWidgetItem *nameItem = new QTableWidgetItem();
 
       nameItem->setText(FROM_UTF8(ColumnNames[i]));
-      mpTable->setItem(i, COL_NAME, nameItem);
+      mpTable->setItem((int) i, COL_NAME, nameItem);
 
       // COL_TYPE
       pComboBox = new QComboBox(mpTable);
@@ -211,15 +211,15 @@ void CQMergingData::load()
       Type = CModelMerging::ignore;
       pComboBox->setCurrentItem(Type);
 
-      mpComboMap->setMapping(pComboBox, i);
+      mpComboMap->setMapping(pComboBox, (int) i);
       connect(pComboBox, SIGNAL(activated(int)), mpComboMap, SLOT(map()));
 
-      mpTable->setCellWidget(i, COL_TYPE, pComboBox);
+      mpTable->setCellWidget((int) i, COL_TYPE, pComboBox);
 
       // COL_TYPE_HIDDEN
       QTableWidgetItem *typeItem = new QTableWidgetItem();
       typeItem->setText(QString::number(pComboBox->currentItem()));
-      mpTable->setItem(i, COL_TYPE_HIDDEN, typeItem);
+      mpTable->setItem((int) i, COL_TYPE_HIDDEN, typeItem);
 
       // COL_BTN
       pBtn = new QToolButton(mpTable);
@@ -230,10 +230,10 @@ void CQMergingData::load()
       if (Type == CModelMerging::ignore)
         pBtn->setEnabled(false);
 
-      mpBtnMap->setMapping(pBtn, i);
+      mpBtnMap->setMapping(pBtn, (int) i);
       connect(pBtn, SIGNAL(clicked()), mpBtnMap, SLOT(map()));
 
-      mpTable->setCellWidget(i, COL_BTN, pBtn);
+      mpTable->setCellWidget((int) i, COL_BTN, pBtn);
     }
 
   mpTable->resizeColumnToContents(COL_NAME);
@@ -299,8 +299,8 @@ void CQMergingData::slotModelObject(int row)
       key = tmp->getKey();
       //}
 
-      unsigned C_INT32 i, imax = pModel->getMetabolites().size();
-      unsigned C_INT32 ikey, ireset;
+      size_t i, imax = pModel->getMetabolites().size();
+      size_t ikey, ireset;
 
       if (pModel->getMetabolites()[row]->getKey() == key)
         {
@@ -347,12 +347,12 @@ void CQMergingData::slotModelObject(int row)
             }
 
           QTableWidgetItem *resetItem = new QTableWidgetItem();
-          mpTable->setItem(ireset, COL_NAME, resetItem);
+          mpTable->setItem((int) ireset, COL_NAME, resetItem);
           resetItem->setBackground(Qt::transparent);
           resetItem->setText(FROM_UTF8(mColumnName[ireset]));
 
           //static_cast<QComboBox *>(mpTable->cellWidget(ireset, COL_TYPE))->insertItem(1,ColumnTypes[1]);
-          static_cast<QComboBox *>(mpTable->cellWidget(ireset, COL_TYPE))->insertItem(CModelMerging::merge, ColumnTypes[CModelMerging::merge]);
+          static_cast<QComboBox *>(mpTable->cellWidget((int) ireset, COL_TYPE))->insertItem(CModelMerging::merge, ColumnTypes[CModelMerging::merge]);
         }
 
       /* set the type of the reserved object to "ignore" and make the type choise impossible */
@@ -370,13 +370,13 @@ void CQMergingData::slotModelObject(int row)
             }
         }
 
-      static_cast<QComboBox *>(mpTable->cellWidget(ikey, COL_TYPE))->setCurrentItem(CModelMerging::ignore);
+      static_cast<QComboBox *>(mpTable->cellWidget((int) ikey, COL_TYPE))->setCurrentItem(CModelMerging::ignore);
 
-      static_cast<QComboBox *>(mpTable->cellWidget(ikey, COL_TYPE))->removeItem(CModelMerging::merge);
+      static_cast<QComboBox *>(mpTable->cellWidget((int) ikey, COL_TYPE))->removeItem(CModelMerging::merge);
 
       QTableWidgetItem *ikeyItem = new QTableWidgetItem();
 
-      mpTable->setItem(ikey, COL_NAME, ikeyItem);
+      mpTable->setItem((int) ikey, COL_NAME, ikeyItem);
 
       ikeyItem->setBackground(Qt::cyan);
 
@@ -394,8 +394,8 @@ void CQMergingData::slotTypeChanged(int row)
 {
   bool empty = true;
 
-  unsigned C_INT32 i, imax = pModel->getMetabolites().size();
-  unsigned C_INT32 ireset;
+  size_t i, imax = pModel->getMetabolites().size();
+  size_t ireset;
 
   for (i = 0; i < imax; ++i)
     {
@@ -434,11 +434,11 @@ void CQMergingData::slotTypeChanged(int row)
         if (!empty)
           {
             QTableWidgetItem *resetItem = new QTableWidgetItem();
-            mpTable->setItem(ireset, COL_NAME, resetItem);
+            mpTable->setItem((int) ireset, COL_NAME, resetItem);
             resetItem->setBackground(Qt::transparent);
             resetItem->setText(FROM_UTF8(mColumnName[ireset]));
             //static_cast<QComboBox *>(mpTable->cellWidget(ireset, COL_TYPE))->insertItem(1,ColumnTypes[1]);
-            static_cast<QComboBox *>(mpTable->cellWidget(ireset, COL_TYPE))->insertItem(CModelMerging::merge, ColumnTypes[CModelMerging::merge]);
+            static_cast<QComboBox *>(mpTable->cellWidget((int) ireset, COL_TYPE))->insertItem(CModelMerging::merge, ColumnTypes[CModelMerging::merge]);
           }
 
         BtnEnabled = false;

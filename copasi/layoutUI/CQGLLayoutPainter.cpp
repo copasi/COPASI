@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.5.2.5 $
+//   $Revision: 1.5.2.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/24 14:51:11 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:02:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -826,7 +826,7 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
 
                 if (pCurve != NULL)
                   {
-                    unsigned int i, iMax = pCurve->getNumCurveSegments();
+                    size_t i, iMax = pCurve->getNumCurveSegments();
                     CLLineSegment* pLS = NULL;
                     std::pair<double, double> coords = this->mpRenderer->convert_to_model_space(this->mMousePressPosition.x(), this->mMousePressPosition.y());
                     CLPoint pressPoint(coords.first, coords.second);
@@ -986,7 +986,7 @@ void CQGLLayoutPainter::update_status_and_cursor()
 
                     if (pCurve != NULL)
                       {
-                        unsigned int i, iMax = pCurve->getNumCurveSegments();
+                        size_t i, iMax = pCurve->getNumCurveSegments();
                         std::pair<double, double> coords = this->mpRenderer->convert_to_model_space(this->mMouseCurrentPosition.x(), this->mMouseCurrentPosition.y());
                         CLPoint currentPoint(coords.first, coords.second);
                         // we only need to consider the basepoints of cubic beziers since the method

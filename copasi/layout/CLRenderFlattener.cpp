@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderFlattener.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/29 16:34:52 $
+//   $Date: 2011/01/12 19:01:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
         {
           if (local && localList.size() != 0)
             {
-              unsigned j = 0, jMax = localList.size();
+              size_t j = 0, jMax = localList.size();
 
               while (j < jMax)
                 {
@@ -112,7 +112,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
           // search the global list if necessary
           if (!pNext && globalList.size() != 0)
             {
-              unsigned j = 0, jMax = globalList.size();
+              size_t j = 0, jMax = globalList.size();
 
               while (j < jMax)
                 {
@@ -152,7 +152,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
   std::map<std::string, const CLLineEnding*> lineEndings;
   std::map<std::string, const CLGradientBase*> gradients;
   std::vector< const CLRenderInformationBase * >::const_iterator it = referenceChain.begin(), endit = referenceChain.end();
-  unsigned int i, iMax;
+  size_t i, iMax;
   const CLColorDefinition* pColorDefinition = NULL;
   const CLGradientBase* pGradientBase = NULL;
   const CLLineEnding* pLineEnding = NULL;

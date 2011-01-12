@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.188.2.1 $
+//   $Revision: 1.188.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/22 18:36:30 $
+//   $Date: 2011/01/12 19:04:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,7 +123,7 @@ public:
 
   private:
     const CMatrix< C_FLOAT64 > & mA;
-    const unsigned C_INT32 & mNumIndependent;
+    const size_t & mNumIndependent;
     static const elementType mZero;
     static const elementType mUnit;
 
@@ -131,10 +131,10 @@ public:
     /**
      * Default constructor
      * @param const CMatrix< C_FLOAT64 > & A
-     * @param const unsigned C_INT32 & mNumIndependent
+     * @param const size_t & mNumIndependent
      */
     CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-                    const unsigned C_INT32 & numIndependent);
+                    const size_t & numIndependent);
 
     /**
      * Destructor.
@@ -150,24 +150,24 @@ public:
 
     /**
      * The number of rows of the matrix.
-     * @return unsigned C_INT32 rows
+     * @return size_t rows
      */
-    unsigned C_INT32 numRows() const;
+    size_t numRows() const;
 
     /**
      * The number of columns of the matrix
-     * @return unsigned C_INT32 cols
+     * @return size_t cols
      */
-    unsigned C_INT32 numCols() const;
+    size_t numCols() const;
 
     /**
      * Retrieve a matrix element  using the c-style indexing.
-     * @param const unsigned C_INT32 & row
-     * @param const unsigned C_INT32 & col
+     * @param const size_t & row
+     * @param const size_t & col
      * @return elementType & element
      */
-    inline elementType & operator()(const unsigned C_INT32 & row,
-                                    const unsigned C_INT32 & col) const
+    inline elementType & operator()(const size_t & row,
+                                    const size_t & col) const
     {
       if (row >= mNumIndependent)
         return const_cast< elementType & >(mA(row - mNumIndependent, col));
@@ -326,37 +326,37 @@ public:
    *  Get the number of total metabolites
    *  @return C_INT32 totMetab
    */
-  unsigned C_INT32 getNumMetabs() const;
+  size_t getNumMetabs() const;
 
   /**
    *  Get the number of variable metabolites
-   *  @return unsigned C_INT32 totMetab
+   *  @return size_t totMetab
    */
-  unsigned C_INT32 getNumVariableMetabs() const;
+  size_t getNumVariableMetabs() const;
 
   /**
    *  Get the number of metabolites determined by ODEs
-   *  @return unsigned C_INT32 dimension
+   *  @return size_t dimension
    */
-  unsigned C_INT32 getNumODEMetabs() const;
+  size_t getNumODEMetabs() const;
 
   /**
    *  Get the number of metabolites determined by assigments
-   *  @return unsigned C_INT32 dimension
+   *  @return size_t dimension
    */
-  unsigned C_INT32 getNumAssignmentMetabs() const;
+  size_t getNumAssignmentMetabs() const;
 
   /**
    *  Get the number of independent metabolites determined by reactions
-   *  @return unsigned C_INT32 dimension
+   *  @return size_t dimension
    */
-  unsigned C_INT32 getNumIndependentReactionMetabs() const;
+  size_t getNumIndependentReactionMetabs() const;
 
   /**
    *  Get the number of dependent metabolites determined by reactions
-   *  @return unsigned C_INT32 dimension
+   *  @return size_t dimension
    */
-  unsigned C_INT32 getNumDependentReactionMetabs() const;
+  size_t getNumDependentReactionMetabs() const;
 
   //********** additional values *****************************
 
@@ -371,7 +371,7 @@ public:
    *  Get the number of non concentration values
    *  @return C_INT32
    */
-  unsigned C_INT32 getNumModelValues() const;
+  size_t getNumModelValues() const;
 
   //********** TT *****************************
 
@@ -392,9 +392,9 @@ public:
 
   /**
    * Get the total steps
-   * @return unsigned C_INT32 total steps;
+   * @return size_t total steps;
    */
-  unsigned C_INT32 getTotSteps() const;
+  size_t getTotSteps() const;
 
   /**
    * Retrieve the vector of particle fluxes from the model
@@ -501,14 +501,14 @@ public:
    * @param const std::string & Target
    * @return index
    */
-  unsigned C_INT32 findMetabByName(const std::string & Target) const;
+  size_t findMetabByName(const std::string & Target) const;
 
   /**
    * Returns the index of the moiety
    * @param const std::string & Target
    * @return index
    */
-  unsigned C_INT32 findMoiety(const std::string &Target) const;
+  size_t findMoiety(const std::string &Target) const;
 
   /**
    * Get the LU decomposition matrix of this model
@@ -837,7 +837,7 @@ public:
   /* Remove a metabolite from the model */
   bool removeMetabolite(const std::string & key,
                         const bool & recursive = true);
-  bool removeMetabolite(const unsigned C_INT32 index,
+  bool removeMetabolite(const size_t index,
                         const bool & recursive = true);
   bool removeMetabolite(const CMetab* pMetabolite,
                         const bool & recursive = true);
@@ -926,7 +926,7 @@ public:
                                   const C_FLOAT64 & volume = 1.0);
 
   /** Remove a Compartment from the model */
-  bool removeCompartment(const unsigned C_INT32 index,
+  bool removeCompartment(const size_t index,
                          const bool & recursive = true);
 
   /** Remove a Compartment from the model */
@@ -953,7 +953,7 @@ public:
                       const bool & recursive = true);
 
   /** Remove a reaction from the model using its index*/
-  bool removeReaction(const unsigned C_INT32 index,
+  bool removeReaction(const size_t index,
                       const bool & recursive = true);
 
   /** Remove a local reaction parameter from the model */
@@ -969,11 +969,11 @@ public:
 
   /**
    * Remove an event from the model
-   * @param const unsigned C_INT32 index
+   * @param const size_t index
    * @param const bool & recursive (default: true)
    * @return bool success
    */
-  bool removeEvent(const unsigned C_INT32 index,
+  bool removeEvent(const size_t index,
                    const bool & recursive = true);
 
   /**
@@ -998,10 +998,10 @@ public:
    * Synchronize the order of other events effected by the change
    * of the given event
    * @param const CEvent * pEvent
-   * @param const unsigned C_INT32 newOrder
+   * @param const size_t newOrder
    */
   void synchronizeEventOrder(const CEvent * pEvent,
-                             const unsigned C_INT32 newOrder);
+                             const size_t newOrder);
 
   /**
    * Add a non concentration value to the model
@@ -1015,16 +1015,16 @@ public:
                         const bool & recursive = true);
   bool removeModelValue(const std::string & key,
                         const bool & recursive = true);
-  bool removeModelValue(const unsigned C_INT32 index,
+  bool removeModelValue(const size_t index,
                         const bool & recursive = true);
 
   //*************************
 
   /**
    * Retrieve the metabolite permutation vector
-   * @return CVector< unsigned C_INT32 > & permutation
+   * @return CVector< size_t > & permutation
    */
-  const CVector< unsigned C_INT32 > & getMetabolitePermutation() const;
+  const CVector< size_t > & getMetabolitePermutation() const;
 
   /**
    * Retrieve the state template
@@ -1374,39 +1374,39 @@ private:
   /**
    * Vector for storing the row interchanges during LU-Decomposition
    */
-  CVector< unsigned C_INT32 > mRowLU;
+  CVector< size_t > mRowLU;
 
   /**
    * Vector for storing the row and column interchanges needed to calculate
    * the full Jacobian in user order.
    */
-  CVector< unsigned C_INT32 > mJacobianPivot;
+  CVector< size_t > mJacobianPivot;
 
   /**
    * The number of unused metabs in the model
    */
-  unsigned C_INT32 mNumMetabolitesUnused;
+  size_t mNumMetabolitesUnused;
 
   /**
    * The number of metabs determined by ODEs in the model
    */
-  unsigned C_INT32 mNumMetabolitesODE;
+  size_t mNumMetabolitesODE;
 
   /**
    * The number of metabs determined by reactions in the model
    */
-  unsigned C_INT32 mNumMetabolitesReaction;
+  size_t mNumMetabolitesReaction;
 
   /**
    * The number of metabs determined by assignments in the model
    */
-  unsigned C_INT32 mNumMetabolitesAssignment;
+  size_t mNumMetabolitesAssignment;
 
   /**
    * The number of metabs determined by reactions which can be calculated
    * through moieties
    */
-  unsigned C_INT32 mNumMetabolitesReactionIndependent;
+  size_t mNumMetabolitesReactionIndependent;
 
   /**
    *   This matrix stores L

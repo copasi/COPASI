@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalRenderInformation.cpp,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 17:08:15 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,7 +71,7 @@ CLGlobalRenderInformation::CLGlobalRenderInformation(const GlobalRenderInformati
 /**
  * Returns the number of styles.
  */
-unsigned int CLGlobalRenderInformation::getNumStyles() const
+size_t CLGlobalRenderInformation::getNumStyles() const
 {
   return this->mListOfStyles.size();
 }
@@ -96,7 +96,7 @@ const CCopasiVector<CLGlobalStyle>* CLGlobalRenderInformation::getListOfStyles()
  * Returns a pointer to the style with the given index.
  * If the index is invalid, NULL is returned.
  */
-CLStyle* CLGlobalRenderInformation::getStyle(unsigned int i)
+CLStyle* CLGlobalRenderInformation::getStyle(size_t i)
 {
   return (i < this->mListOfStyles.size()) ? this->mListOfStyles[i] : NULL;
 }
@@ -105,7 +105,7 @@ CLStyle* CLGlobalRenderInformation::getStyle(unsigned int i)
  * Returns a pointer to the style with the given index.
  * If the index is invalid, NULL is returned.
  */
-const CLStyle* CLGlobalRenderInformation::getStyle(unsigned int i) const
+const CLStyle* CLGlobalRenderInformation::getStyle(size_t i) const
 {
   return (i < this->mListOfStyles.size()) ? this->mListOfStyles[i] : NULL;
 }
@@ -131,7 +131,7 @@ GlobalRenderInformation* CLGlobalRenderInformation::toSBML(unsigned int level, u
   GlobalRenderInformation* pLRI = new GlobalRenderInformation(level, version);
   //this->addSBMLAttributes(pLRI,colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
   this->addSBMLAttributes(pLRI);
-  unsigned int i, iMax = this->mListOfStyles.size();
+  size_t i, iMax = this->mListOfStyles.size();
 
   for (i = 0; i < iMax; ++i)
     {

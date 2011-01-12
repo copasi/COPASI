@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
-//   $Author: heilmand $
-//   $Date: 2010/08/02 15:12:05 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 18:56:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,10 +65,10 @@ public:
    *  The first reversibleNumber lines of stoi must be reversible reactions.
    *  Note: stoi is actually the transpose of the stoichiometry matrix
    *  @param "const vector < vector < double > >" & stoi
-   *  @param "C_INT32 " reversibleNumber
+   *  @param "size_t " reversibleNumber
    */
   CTableauMatrix(const std::vector < std::vector < double > > & stoi,
-                 C_INT32 reversibleNumber);
+                 size_t reversibleNumber);
 
   /**
    *  Destructor
@@ -77,9 +77,9 @@ public:
 
   /**
    * Retrieve the number of tableau lines
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  unsigned C_INT32 size() const;
+  size_t size() const;
 
   /**
    *  Retrieves the first line from the matrix

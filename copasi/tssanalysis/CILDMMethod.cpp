@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:29 $
+//   $Date: 2011/01/12 19:07:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,7 +123,7 @@ void CILDMMethod::step(const double & deltaT)
   Stoichiom = mpModel -> getRedStoi();
 
   // const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
-  C_INT32 reacs_size = mpModel -> getRedStoi().size();
+  size_t reacs_size = mpModel -> getRedStoi().size();
   reacs_size = reacs_size / dim; //TODO what is this?
 
   /* the vector mY is the current state of the system*/
@@ -1102,9 +1102,9 @@ void CILDMMethod::setVectors(int slowMode)
 
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
-  unsigned C_INT32 i;
+  size_t i;
 
-  for (i = 0; i < (unsigned C_INT32) mData.dim; i++)
+  for (i = 0; i < (size_t) mData.dim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
   mVec_mVslowMetab.push_back(mCurrentStep);
@@ -1137,7 +1137,7 @@ void CILDMMethod::setVectors(int slowMode)
 
   /* temporary tabs */
 
-  C_INT reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpModel->getReactions().size();
 
   mVec_mTMP1.push_back(mCurrentStep);
   mVec_mTMP1[mCurrentStep].resize(reacs_size, mData.dim);
@@ -1305,7 +1305,7 @@ bool CILDMMethod::setAnnotationM(int step)
   std::stringstream sstr;
   sstr.str("");
   sstr.clear();
-  C_INT32 i;
+  size_t i;
 
   mVslowPrint.resize(mData.dim, mData.dim);
   mVslowPrint = mVec_mVslow[step];
@@ -1397,7 +1397,7 @@ bool CILDMMethod::setAnnotationM(int step)
 
   /* temporary tabs */
 
-  C_INT reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpModel->getReactions().size();
 
   mTMP1Print.resize(reacs_size, mData.dim);
   mTMP1Print = mVec_mTMP1[step];

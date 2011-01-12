@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.102.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:36:08 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:02:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -542,7 +542,7 @@ void CQLayoutMainWindow::loadData()
       this->mpTimeSlider->setEnabled(true);
       this->mDataPresent = true;
       mpParaPanel->enableStepNumberChoice();
-      int maxVal = mpGLViewport->getPainter()->getNumberOfSteps();
+      size_t maxVal = mpGLViewport->getPainter()->getNumberOfSteps();
       this->mpTimeSlider->setRange(0, maxVal - 1);
       this->mpControlWidget->setNumSteps(maxVal);
       mpGLViewport->getPainter()->updateGL();
@@ -573,7 +573,7 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
   int i = 0;
   std::string key, name;
   C_FLOAT64 val;
-  mpValTable->setNumRows(dataSet.getNumberOfElements());
+  mpValTable->setNumRows((int) dataSet.getNumberOfElements());
   mpValTable->setNumCols(2);
   disconnect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 

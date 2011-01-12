@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.17.2.5 $
+//   $Revision: 1.17.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/06 17:05:40 $
+//   $Date: 2011/01/12 19:07:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,13 +139,13 @@ void CQCompartment::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        unsigned C_INT32 Index =
+        size_t Index =
           pDataModel->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
         pDataModel->getModel()->removeCompartment(mKey);
         std::string deletedKey = mKey;
         //std::string moveToKey = "";
 
-        unsigned C_INT32 Size =
+        size_t Size =
           pDataModel->getModel()->getCompartments().size();
 
         QObject *pParent = parent();

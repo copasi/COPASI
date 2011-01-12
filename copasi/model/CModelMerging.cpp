@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.16.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2011/01/12 19:04:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ bool CModelAdd::addEvents(std::string name)
 
   bool info = false;
 
-  unsigned C_INT32 i, imax = mmModel->getEvents().size();
+  size_t i, imax = mmModel->getEvents().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -135,7 +135,7 @@ bool CModelAdd::addEvents(std::string name)
 
       /* copy the assignments */
 
-      unsigned C_INT32 j, jmax = sourceEvent->getAssignments().size();
+      size_t j, jmax = sourceEvent->getAssignments().size();
 
       for (j = 0; j < jmax; ++j)
         {
@@ -178,7 +178,7 @@ bool CModelAdd::copyEventAssignmentExpression(const CEventAssignment * sourceAss
   tmp = new CExpression(*pExpression, mmModel);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
+  size_t j, jmax = objectNodes.size();
 
   for (j = 0; j < jmax; ++j)
     {
@@ -233,7 +233,7 @@ bool CModelAdd::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEven
   tmp = new CExpression(*pExpression, mmModel);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
+  size_t j, jmax = objectNodes.size();
 
   for (j = 0; j < jmax; ++j)
     {
@@ -288,7 +288,7 @@ bool CModelAdd::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEv
   tmp = new CExpression(*pExpression, mmModel);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
+  size_t j, jmax = objectNodes.size();
 
   for (j = 0; j < jmax; ++j)
     {
@@ -343,7 +343,7 @@ bool CModelAdd::copyExpression(const CModelEntity * sourceEntity, CModelEntity *
   tmp = new CExpression(*pExpression, mmModel);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
+  size_t j, jmax = objectNodes.size();
 
   for (j = 0; j < jmax; ++j)
     {
@@ -398,7 +398,7 @@ bool CModelAdd::copyInitialExpression(const CModelEntity * sourceEntity, CModelE
   tmp = new CExpression(*pExpression, mmModel);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
+  size_t j, jmax = objectNodes.size();
 
   for (j = 0; j < jmax; ++j)
     {
@@ -443,7 +443,7 @@ bool CModelAdd::copyInitialExpression(const CModelEntity * sourceEntity, CModelE
 bool CModelAdd::addCompartments(std::string name)
 {
 
-  unsigned C_INT32 i, imax = mmModel->getCompartments().size();
+  size_t i, imax = mmModel->getCompartments().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -475,7 +475,7 @@ bool CModelAdd::addCompartmentsExpressions()
 
   bool info = false;
 
-  unsigned C_INT32 i, imax = mmModel->getCompartments().size();
+  size_t i, imax = mmModel->getCompartments().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -526,7 +526,7 @@ bool CModelAdd::addMetabolites(std::string name)
 {
   bool info = false;
 
-  unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
+  size_t i, imax = mmModel->getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -558,7 +558,7 @@ bool CModelAdd::addMetabolitesExpressions()
 {
   bool info = false;
 
-  unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
+  size_t i, imax = mmModel->getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -612,7 +612,7 @@ bool CModelAdd::addModelValues(std::string name)
 {
   bool info = false;
 
-  unsigned C_INT32 i, imax = mmModel->getModelValues().size();
+  size_t i, imax = mmModel->getModelValues().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -641,7 +641,7 @@ bool CModelAdd::addModelValuesExpressions()
 {
   bool info = false;
 
-  unsigned C_INT32 i, imax = mmModel->getModelValues().size();
+  size_t i, imax = mmModel->getModelValues().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -695,9 +695,9 @@ bool CModelAdd::addReactions(std::string name)
 
   //create copies of the relevant reactions
 
-  unsigned C_INT32 i, imax = mmModel->getReactions().size();
+  size_t i, imax = mmModel->getReactions().size();
 
-  unsigned C_INT32 ic, icmax = mmModel->getCompartments().size();
+  size_t ic, icmax = mmModel->getCompartments().size();
 
   for (ic = 0; ic < icmax; ++ic)
     {
@@ -723,7 +723,7 @@ bool CModelAdd::addReactions(std::string name)
               newReac->setReversible(sourceReac->isReversible());
               std::map<std::string, std::string>::const_iterator mapIt;
               std::string targetKey;
-              unsigned C_INT32 j, jmax = sourceReac->getChemEq().getSubstrates().size();
+              size_t j, jmax = sourceReac->getChemEq().getSubstrates().size();
 
               for (j = 0; j < jmax; ++j)
                 {
@@ -797,7 +797,7 @@ bool CModelAdd::addReactions(std::string name)
                         if (isVector)
                           newReac->clearParameterMapping(j);
 
-                        unsigned C_INT32 k;
+                        size_t k;
 
                         for (k = 0; k < sourceReac->getParameterMappings()[j].size(); ++k)
                           {
@@ -896,7 +896,7 @@ bool CModelAdd::reactionInvolvesCompartment(const CReaction * reac, const CCompa
 
   if (!comp) return false;
 
-  unsigned C_INT32 i, imax = reac->getChemEq().getSubstrates().size();
+  size_t i, imax = reac->getChemEq().getSubstrates().size();
 
   for (i = 0; i < imax; ++i)
     if (reac->getChemEq().getSubstrates()[i]->getMetabolite()->getCompartment() == comp)
@@ -941,7 +941,7 @@ void  CModelMerging::simpleCall(std::vector< std::string > & /* toKey */, std::v
       fatalError();
     }
 
-  unsigned C_INT32 i, j, imax = mpModel->getMetabolites().size();
+  size_t i, j, imax = mpModel->getMetabolites().size();
 
   CMetab * metab;
   CMetab * metab1;
@@ -988,8 +988,8 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
   //merge in  the relevant reactions
 
-  unsigned C_INT32 i, imax = mpModel->getReactions().size();
-  unsigned C_INT32 j, jmax;
+  size_t i, imax = mpModel->getReactions().size();
+  size_t j, jmax;
 
   for (i = 0; i < imax; ++i)
     {
@@ -1039,7 +1039,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
                 //we assume that only SUBSTRATE, PRODUCT, MODIFIER can be vectors
 
-                unsigned C_INT32 k, kmax = reac->getParameterMappings()[j].size();
+                size_t k, kmax = reac->getParameterMappings()[j].size();
 
                 for (k = 0; k < kmax; ++k)
                   if (reac->getParameterMappings()[j][k] == key)
@@ -1219,7 +1219,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
   if (pExpression == NULL) return info;
 
   const std::vector<CEvaluationNode*>& objectNodes = pExpression->getNodeList();
-  unsigned j, jmax = objectNodes.size();
+  size_t j, jmax = objectNodes.size();
 
   for (j = 0; j < jmax; ++j)
     {

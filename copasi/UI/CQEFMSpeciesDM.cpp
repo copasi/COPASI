@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMSpeciesDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/02 16:25:42 $
+//   $Date: 2011/01/12 19:07:47 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -36,7 +41,7 @@ int CQEFMSpeciesDM::rowCount(const QModelIndex & C_UNUSED(parent)) const
   if (mpTask == NULL)
     return 0;
 
-  return mModesSize;
+  return (int) mModesSize;
 }
 
 int CQEFMSpeciesDM::columnCount(const QModelIndex & C_UNUSED(parent)) const
@@ -44,7 +49,7 @@ int CQEFMSpeciesDM::columnCount(const QModelIndex & C_UNUSED(parent)) const
   if (mpTask == NULL)
     return 0;
 
-  return mSpeciesSize + 1; // For flux mode number
+  return (int)(mSpeciesSize + 1);  // For flux mode number
 }
 
 Qt::ItemFlags CQEFMSpeciesDM::flags(const QModelIndex &index) const

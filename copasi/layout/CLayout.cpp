@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.19.2.1 $
+//   $Revision: 1.19.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 17:08:08 $
+//   $Date: 2011/01/12 19:01:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,7 @@ void CLayout::addGraphicalObject(CLGraphicalObject * glyph)
 
 std::ostream & operator<<(std::ostream &os, const CLayout & l)
 {
-  C_INT32 i, imax;
+  size_t i, imax;
 
   os << "Layout  \"" << l.getObjectName() << "\" " << l.mDimensions << "\n\n";
 
@@ -195,7 +195,7 @@ void CLayout::exportToDotFile(std::ostream & os) const
   os << "digraph G {\n";
 
   //species glyphs
-  unsigned C_INT32 i, imax = mvMetabs.size();
+  size_t i, imax = mvMetabs.size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -211,7 +211,7 @@ void CLayout::exportToDotFile(std::ostream & os) const
       writeDotNode(os, mvReactions[i]->getKey() + "_P", "", 1);
       writeDotEdge(os, mvReactions[i]->getKey() + "_S", mvReactions[i]->getKey() + "_P", 1);
 
-      unsigned C_INT j, jmax = mvReactions[i]->getListOfMetabReferenceGlyphs().size();
+      size_t j, jmax = mvReactions[i]->getListOfMetabReferenceGlyphs().size();
 
       for (j = 0; j < jmax; ++j)
         {
@@ -286,7 +286,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
   std::map<const CLBase*, const SBase*> layoutmap;
 
   //Compartment glyphs
-  unsigned C_INT32 i, imax = mvCompartments.size();
+  size_t i, imax = mvCompartments.size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -482,11 +482,11 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
           ++layoutMapIt;
         }
 
-      unsigned int j, jMax = pLRI->getNumStyles();
+      size_t j, jMax = pLRI->getNumStyles();
 
       for (j = 0; j < jMax; ++j)
         {
-          SBMLDocumentLoader::convertLayoutObjectKeys(*(pLRI->getStyle(j)), layoutObjectKeyToIdMap);
+          SBMLDocumentLoader::convertLayoutObjectKeys(*(pLRI->getStyle((unsigned int) j)), layoutObjectKeyToIdMap);
         }
 
       layout->getListOfLocalRenderInformation()->appendAndOwn(pLRI);
@@ -544,7 +544,7 @@ void CLayout::addLocalRenderInformation(CLLocalRenderInformation * pRenderInfo)
  * Returns a const pointer to the local render information with the given index or NULL
  * if the index is invalid.
  */
-const CLLocalRenderInformation* CLayout::getRenderInformation(unsigned C_INT32 index) const
+const CLLocalRenderInformation* CLayout::getRenderInformation(size_t index) const
 {
   if (index >= this->mvLocalRenderInformationObjects.size()) return NULL;
 
@@ -555,7 +555,7 @@ const CLLocalRenderInformation* CLayout::getRenderInformation(unsigned C_INT32 i
  * Returns a pointer to the local render information with the given index or NULL
  * if the index is invalid.
  */
-CLLocalRenderInformation* CLayout::getRenderInformation(unsigned C_INT32 index)
+CLLocalRenderInformation* CLayout::getRenderInformation(size_t index)
 {
   if (index >= this->mvLocalRenderInformationObjects.size()) return NULL;
 
@@ -582,7 +582,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
   const CLBoundingBox* pBB;
   const CLPoint* pP = NULL;
   const CLDimensions* pDim;
-  unsigned int i, iMax = this->getListOfCompartmentGlyphs().size();
+  size_t i, iMax = this->getListOfCompartmentGlyphs().size();
   double x, y, x2, y2;
 
   for (i = 0; i < iMax; ++i)
@@ -659,7 +659,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
   const CLMetabReferenceGlyph* pSRG = NULL;
 
-  unsigned int j, jMax;
+  size_t j, jMax;
 
   iMax = this->getListOfReactionGlyphs().size();
 

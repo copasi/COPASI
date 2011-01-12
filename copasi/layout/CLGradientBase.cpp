@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientBase.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,11 +70,11 @@ CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& na
         break;
     }
 
-  unsigned int i, iMax = source.getNumGradientStops();
+  size_t i, iMax = source.getNumGradientStops();
 
   for (i = 0; i < iMax; ++i)
     {
-      CLGradientStop* pStop = new CLGradientStop(*source.getGradientStop(i));
+      CLGradientStop* pStop = new CLGradientStop(*source.getGradientStop((unsigned int) i));
       this->addGradientStop(pStop);
       delete pStop;
     }
@@ -107,7 +107,7 @@ void CLGradientBase::setSpreadMethod(CLGradientBase::SPREADMETHOD method)
 /**
  * Returns the number of gradient stops.
  */
-unsigned int CLGradientBase::getNumGradientStops() const
+size_t CLGradientBase::getNumGradientStops() const
 {
   return this->mGradientStops.size();
 }
@@ -132,7 +132,7 @@ const CCopasiVector<CLGradientStop>* CLGradientBase::getListOfGradientStops() co
  * Returns a pointer to the gradient stop with the given index or NULL
  * if the index is invalid.
  */
-CLGradientStop* CLGradientBase::getGradientStop(unsigned int i)
+CLGradientStop* CLGradientBase::getGradientStop(size_t i)
 {
   return (i < this->mGradientStops.size()) ? (this->mGradientStops[i]) : NULL;
 }
@@ -141,7 +141,7 @@ CLGradientStop* CLGradientBase::getGradientStop(unsigned int i)
  * Returns a const pointer to the gradient stop with the given index or NULL
  * if the index is invalid.
  */
-const CLGradientStop* CLGradientBase::getGradientStop(unsigned int i) const
+const CLGradientStop* CLGradientBase::getGradientStop(size_t i) const
 {
   return (i < this->mGradientStops.size()) ? (this->mGradientStops[i]) : NULL;
 }
@@ -208,7 +208,7 @@ void CLGradientBase::addSBMLAttributes(GradientBase* pBase) const
         break;
     }
 
-  unsigned int i, iMax = this->mGradientStops.size();
+  size_t i, iMax = this->mGradientStops.size();
 
   for (i = 0; i < iMax; ++i)
     {

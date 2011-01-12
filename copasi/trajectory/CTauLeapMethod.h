@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.15.2.1 $
+ $Revision: 1.15.2.2 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/01/04 13:53:09 $
+ $Date: 2011/01/12 19:06:54 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -229,7 +229,7 @@ protected:
   /**
    *   Number of reactions.
    */
-  unsigned C_INT32 mNumReactions;
+  size_t mNumReactions;
 
   /**
    * A vector containing dependency information to minimize the required updates.
@@ -239,7 +239,7 @@ protected:
   /**
    *   Number of variable metabolites.
    */
-  unsigned C_INT32 mNumReactionSpecies;
+  size_t mNumReactionSpecies;
 
   /**
    * A vector of reaction propensities

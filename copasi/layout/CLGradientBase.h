@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientBase.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ public:
   /**
    * Returns the number of gradient stops.
    */
-  unsigned int getNumGradientStops() const;
+  size_t getNumGradientStops() const;
 
   /**
    * Returns a pointer to the gradient stop vector.
@@ -104,13 +104,13 @@ public:
    * Returns a pointer to the gradient stop with the given index or NULL
    * if the index is invalid.
    */
-  CLGradientStop* getGradientStop(unsigned int i);
+  CLGradientStop* getGradientStop(size_t i);
 
   /**
    * Returns a const pointer to the gradient stop with the given index or NULL
    * if the index is invalid.
    */
-  const CLGradientStop* getGradientStop(unsigned int i) const;
+  const CLGradientStop* getGradientStop(size_t i) const;
 
   /**
    * Creates a new GradientStop.

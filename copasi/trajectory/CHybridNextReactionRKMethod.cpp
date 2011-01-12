@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionRKMethod.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.5.38.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:16 $
+   $Date: 2011/01/12 19:06:53 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,13 +48,14 @@ CHybridNextReactionRKMethod::CHybridNextReactionRKMethod(const CCopasiContainer 
  */
 C_FLOAT64 CHybridNextReactionRKMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
 {
-  C_INT32 rIndex = 0;
+  size_t rIndex = 0;
   C_FLOAT64 ds = 0.0;
 
   // if there are stochastic reactions
   if (mPQ.size() != 0) // there is at least one stochastic reaction
     {
       getStochTimeAndIndex(ds, rIndex);
+
       if (ds <= endTime) // ds is an absolute time value!
         {
           // if there are deterministic reactions
@@ -57,35 +63,43 @@ C_FLOAT64 CHybridNextReactionRKMethod::doSingleStep(C_FLOAT64 currentTime, C_FLO
             {
               integrateDeterministicPart(ds - currentTime);
             }
+
           fireReaction(rIndex);
           mpCurrentState->setTime(ds);
+
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
               partitionSystem();
               mStepsAfterPartitionSystem = 0;
             }
+
           updatePriorityQueue(rIndex, ds);
         }
       else
         {
           ds = endTime;
+
           // if there are deterministic reactions
           if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(endTime - currentTime);
             }
+
           mpCurrentState->setTime(ds);
+
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
               partitionSystem();
               mStepsAfterPartitionSystem = 0;
             }
+
           updatePriorityQueue(-1, endTime);
         }
     }
   else // there is no stochastic reaction
     {
       ds = currentTime + mStepsize;
+
       if (ds <= endTime)
         {
           // if there are deterministic reactions
@@ -93,31 +107,39 @@ C_FLOAT64 CHybridNextReactionRKMethod::doSingleStep(C_FLOAT64 currentTime, C_FLO
             {
               integrateDeterministicPart(mStepsize);
             }
+
           mpCurrentState->setTime(ds);
+
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
               partitionSystem();
               mStepsAfterPartitionSystem = 0;
             }
+
           updatePriorityQueue(-1, ds);
         }
       else
         {
           ds = endTime;
+
           // if there are deterministic reactions
           if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(endTime - currentTime);
             }
+
           mpCurrentState->setTime(ds);
+
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
               partitionSystem();
               mStepsAfterPartitionSystem = 0;
             }
+
           updatePriorityQueue(-1, endTime);
         }
     }
+
   //deprecated:  outputDebug(mOutputFile, 1);  // DEBUG
   //deprecated:  outputData(mOutputFile, 1);  // DEBUG
   return ds;

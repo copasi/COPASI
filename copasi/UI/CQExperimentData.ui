@@ -812,7 +812,7 @@
     <variable>std::map&lt;std::string, std::string&gt; mFileMap;</variable>
     <variable access="public">friend class CQExperimentDataValidator;</variable>
     <variable>CQExperimentDataValidator * mpValidatorFirst;</variable>
-    <variable>unsigned int mShown;</variable>
+    <variable>size_t mShown;</variable>
     <variable>CQExperimentDataValidator * mpValidatorName;</variable>
     <variable>QSignalMapper * mpComboMap;</variable>
     <variable>bool mCrossValidation;</variable>

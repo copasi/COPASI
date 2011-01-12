@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.h,v $
-//   $Revision: 1.5.4.1 $
+//   $Revision: 1.5.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/25 14:31:44 $
+//   $Date: 2011/01/12 19:03:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -236,10 +236,10 @@ public:
   const unsigned C_INT32 & getMIRIAMUpdateFrequency() const;
 
   /**
-   * Set the of interval between updates
-   * @param const unsigned C_INT32 & updateFrequency
+   * Set the days between updates
+   * @param const size_t & days
    */
-  void setMIRIAMUpdateFrequency(const unsigned C_INT32 updateFrequency);
+  void setMIRIAMUpdateFrequencyInDays(const size_t & days);
 
   /**
    * Update the MIRIAM resources
@@ -258,24 +258,24 @@ public:
 
   /**
    * Retrieve the indexed resource
-   * @param const unsigned C_INT32 index
+   * @param const size_t index
    * @return const CMIRIAMResource & resource
    */
-  const CMIRIAMResource & getMIRIAMResource(const unsigned C_INT32 index) const;
+  const CMIRIAMResource & getMIRIAMResource(const size_t index) const;
 
   /**
    * Retrieve the index of the resource with the given URI
    * @param const std::string & URI
-   * @return unsigned C_INT32 index
+   * @return size_t index
    */
-  unsigned C_INT32 getMIRIAMResourceIndex(const std::string & URI) const;
+  size_t getMIRIAMResourceIndex(const std::string & URI) const;
 
   /**
    * Retrieve the index of the resource with the given display name
    * @param const std::string & displayName
-   * @return unsigned C_INT32 index
+   * @return size_t index
    */
-  unsigned C_INT32 getResourceIndexFromDisplayName(const std::string & displayName) const;
+  size_t getResourceIndexFromDisplayName(const std::string & displayName) const;
 
   //    bool setURI(const std::string & URI);
 
@@ -331,12 +331,12 @@ private:
   /**
    * A map from display name to resource index
    */
-  std::map< std::string, unsigned C_INT32 > mDisplayName2Resource;
+  std::map< std::string, size_t > mDisplayName2Resource;
 
   /**
    * A map from URI to resource index
    */
-  std::map< std::string, unsigned C_INT32 > mURI2Resource;
+  std::map< std::string, size_t > mURI2Resource;
 }; //class CMIRIAMResources
 
 #endif // COPASI_CMIRIAMResource

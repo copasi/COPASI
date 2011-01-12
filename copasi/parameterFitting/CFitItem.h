@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.16.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:20 $
+//   $Date: 2011/01/12 19:04:56 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -147,23 +152,23 @@ public:
 
   /**
    * Retreive the key of the indexed experiment.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return const std::string & key
    */
-  const std::string & getExperiment(const unsigned C_INT32 & index) const;
+  const std::string & getExperiment(const size_t & index) const;
 
   /**
    * Remove the indexed experiment from the affected experiments
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return bool success
    */
-  bool removeExperiment(const unsigned C_INT32 & index);
+  bool removeExperiment(const size_t & index);
 
   /**
    * Retrieve the number of experiments
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  unsigned C_INT32 getExperimentCount() const;
+  size_t getExperimentCount() const;
 
   /**
    * Retrieve a string listing all experiments the item applies to
@@ -181,23 +186,23 @@ public:
 
   /**
    * Retreive the key of the indexed experiment.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return const std::string & key
    */
-  const std::string & getCrossValidation(const unsigned C_INT32 & index) const;
+  const std::string & getCrossValidation(const size_t & index) const;
 
   /**
    * Remove the indexed experiment from the affected cross validations
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return bool success
    */
-  bool removeCrossValidation(const unsigned C_INT32 & index);
+  bool removeCrossValidation(const size_t & index);
 
   /**
    * Retrieve the number of cross validations
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  unsigned C_INT32 getCrossValidationCount() const;
+  size_t getCrossValidationCount() const;
 
   /**
    * Retrieve a string listing all cross validations the item applies to

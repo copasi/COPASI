@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotsWidget.cpp,v $
-//   $Revision: 1.5.2.2 $
+//   $Revision: 1.5.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/12/06 16:14:12 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:07:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,9 +105,9 @@ void CQPlotsWidget::deleteSelectedPlots()
 
   for (i = 0; i < imax; i++)
     {
-      if (pSelectionModel->isRowSelected(i, QModelIndex()))
+      if (pSelectionModel->isRowSelected((int) i, QModelIndex()))
         {
-          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index(i, 0)));
+          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index((int) i, 0)));
         }
     }
 

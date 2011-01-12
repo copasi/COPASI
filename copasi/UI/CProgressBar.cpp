@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.33.2.3 $
+//   $Revision: 1.33.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/06 16:51:45 $
+//   $Date: 2011/01/12 19:07:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,8 +79,8 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
       qApp->processEvents();
     }
 
-  connect(this, SIGNAL(signalAddItem(const unsigned int)),
-          this, SLOT(slotAddItem(const unsigned int)));
+  connect(this, SIGNAL(signalAddItem(const size_t)),
+          this, SLOT(slotAddItem(const size_t)));
 
   connect(this, SIGNAL(signalSetName(QString)),
           this, SLOT(slotSetName(QString)));
@@ -88,28 +88,28 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
   connect(this, SIGNAL(signalProgressAll()),
           this, SLOT(slotProgressAll()));
 
-  connect(this, SIGNAL(signalFinishItem(const unsigned int)),
-          this, SLOT(slotFinishItem(const unsigned int)));
+  connect(this, SIGNAL(signalFinishItem(const size_t)),
+          this, SLOT(slotFinishItem(const size_t)));
 }
 
 CProgressBar::~CProgressBar()
 {
   finish();
 
-  unsigned C_INT32 i, imax = mProgressItemList.size();
+  size_t i, imax = mProgressItemList.size();
 
   for (i = 0; i < imax; i++)
     pdelete(mProgressItemList[i]);
 }
 
 
-unsigned C_INT32 CProgressBar::addItem(const std::string & name,
-                                       const CCopasiParameter::Type & type,
-                                       const void * pValue,
-                                       const void * pEndValue)
+size_t CProgressBar::addItem(const std::string & name,
+                             const CCopasiParameter::Type & type,
+                             const void * pValue,
+                             const void * pEndValue)
 
 {
-  unsigned C_INT32 hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
+  size_t hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
 
   if (mpMainThread != NULL &&
       QThread::currentThread() != mpMainThread)
@@ -134,7 +134,7 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
 }
 
 
-void CProgressBar::slotAddItem(const unsigned int handle)
+void CProgressBar::slotAddItem(const size_t handle)
 {
   if (handle == C_INVALID_INDEX) return;
 
@@ -142,7 +142,7 @@ void CProgressBar::slotAddItem(const unsigned int handle)
 
   if (handle >= mProgressItemList.size()) // we need to resize
     {
-      unsigned C_INT32 i, imax = mProgressItemList.size();
+      size_t i, imax = mProgressItemList.size();
 
       mProgressItemList.resize(2 * imax, true); // Note, imax is never zero
 
@@ -164,14 +164,14 @@ void CProgressBar::slotAddItem(const unsigned int handle)
   mWaitSlot.wakeAll();
 }
 
-bool CProgressBar::resetItem(const unsigned C_INT32 & handle)
+bool CProgressBar::resetItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
   return (mProgressItemList[handle]->reset() && mProceed);
 }
 
-bool CProgressBar::progressItem(const unsigned C_INT32 & handle)
+bool CProgressBar::progressItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
@@ -211,7 +211,7 @@ bool CProgressBar::progressItem(const unsigned C_INT32 & handle)
 
 void CProgressBar::slotProgressAll()
 {
-  unsigned C_INT32 hItem, hmax = mProgressItemList.size();
+  size_t hItem, hmax = mProgressItemList.size();
 
   QMutexLocker Locker(&mMutex);
 
@@ -254,7 +254,7 @@ bool CProgressBar::finish()
   return mProceed;
 }
 
-bool CProgressBar::finishItem(const unsigned C_INT32 & handle)
+bool CProgressBar::finishItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
@@ -280,7 +280,7 @@ bool CProgressBar::finishItem(const unsigned C_INT32 & handle)
   return (CProcessReport::finishItem(handle) && mProceed);
 }
 
-void CProgressBar::slotFinishItem(const unsigned int handle)
+void CProgressBar::slotFinishItem(const size_t handle)
 {
   if (isValidHandle(handle) &&
       mProgressItemList[handle] != NULL)

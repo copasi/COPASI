@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-//   $Revision: 1.26.4.1 $
+//   $Revision: 1.26.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/05 12:24:32 $
+//   $Date: 2011/01/12 19:07:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,8 +79,8 @@ signals:
 protected:
   const CCopasiDataModel * mpDataModel;
   const CCrossValidationSet **mppCrossValidationSet;
-  std::set< unsigned int > mSelection;
-  unsigned int mCurrentRow;
+  std::set< size_t > mSelection;
+  size_t mCurrentRow;
   std::vector< COptItem * > * mpItemsCopy;
   ItemType mItemType;
   QColor mChangedColor;
@@ -103,11 +103,11 @@ private:
   void init();
   void destroy();
   void setTableText(const int & row, const COptItem * pItem);
-  unsigned int currentRow();
+  size_t currentRow();
   void loadSelection();
   void saveSelection();
-  void selectRow(const unsigned int & row);
-  void setItemSelection(const std::set<unsigned int> & selection);
+  void selectRow(const size_t & row);
+  void setItemSelection(const std::set<size_t> & selection);
 
 private slots:
   void slotCheckLowerInf(bool checked);

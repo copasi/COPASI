@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.84.4.1 $
+//   $Revision: 1.84.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/28 16:09:10 $
+//   $Date: 2011/01/12 19:00:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,7 +263,7 @@ void CFunctionDB::addAndAdaptName(CEvaluationTree * pFunction)
   this->add(pFunction, true);
 }
 
-bool CFunctionDB::removeFunction(unsigned C_INT32 index)
+bool CFunctionDB::removeFunction(size_t index)
 {
   if (index == C_INVALID_INDEX) return false;
 
@@ -289,7 +289,7 @@ bool CFunctionDB::removeFunction(const std::string &key)
 
   if (!func) return false;
 
-  unsigned C_INT32 index =
+  size_t index =
     mLoadedFunctions.CCopasiVector<CEvaluationTree>::getIndex(func);
 
   if (index == C_INVALID_INDEX) return false;
@@ -299,7 +299,7 @@ bool CFunctionDB::removeFunction(const std::string &key)
 
 CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
 {
-  unsigned C_INT32 index = mLoadedFunctions.getIndex(functionName);
+  size_t index = mLoadedFunctions.getIndex(functionName);
 
   if (index != C_INVALID_INDEX)
     return mLoadedFunctions[index];
@@ -309,7 +309,7 @@ CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
 
 CEvaluationTree * CFunctionDB::findLoadFunction(const std::string & functionName)
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < mLoadedFunctions.size(); i++)
     if (functionName == mLoadedFunctions[i]->getObjectName())
@@ -322,14 +322,14 @@ CCopasiVectorN < CEvaluationTree > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
 std::vector<CFunction*>
-CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
-                               const unsigned C_INT32 noProducts,
+CFunctionDB::suitableFunctions(const size_t noSubstrates,
+                               const size_t noProducts,
                                const TriLogic reversibility)
 {
   std::vector<CFunction*> ret;
   CFunction *pFunction;
 
-  unsigned C_INT32 i, imax = mLoadedFunctions.size();
+  size_t i, imax = mLoadedFunctions.size();
 
   for (i = 0; i < imax; i++)
     {

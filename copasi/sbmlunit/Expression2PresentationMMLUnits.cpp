@@ -38,7 +38,7 @@ void Expression2PresentationMMLUnits::setUnitInterface(CUnitInterfaceSBML * unit
 
 #define SPC(level) std::string(level, ' ')
 
-void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const ASTNode* node, unsigned int l) const
+void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const ASTNode* node, size_t l) const
 {
   std::string reactionID = mpReaction ? mpReaction->getId() : "";
   CUnitInformation* unitInformation = mpUnitInterface->getMappedUnitFromIdentifier(node->getName(),
@@ -79,7 +79,7 @@ void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const 
     writeMathMLBox(out, oss.str(), getMathML(*unitInformation), color, l);
 }
 
-void Expression2PresentationMMLUnits::writeMathMLNumber(std::ostream & out, const ASTNode* node, unsigned int l) const
+void Expression2PresentationMMLUnits::writeMathMLNumber(std::ostream & out, const ASTNode* node, size_t l) const
 {
   CUnitInformation* unitInformation = mpUnitInterface->getMappedUnitFromNumberNode(node);
   CUnitInformation* unitInformation2 = NULL;
@@ -165,7 +165,7 @@ std::string Expression2PresentationMMLUnits::getMathML(const CUnitInformation & 
 }
 
 void Expression2PresentationMMLUnits::writeMathMLBox(std::ostream & out, const std::string & a, const std::string & b,
-    const std::string & color, unsigned int l) const
+    const std::string & color, size_t l) const
 {
   out << SPC(l) << "<mstyle background=\"" << color << "\"><mfrac linethickness=\"0\">" << std::endl;
   out << a;
@@ -179,7 +179,7 @@ void Expression2PresentationMMLUnits::writeMathMLBox(std::ostream & out, const s
 }
 
 void Expression2PresentationMMLUnits::writeMathMLBox(std::ostream & out, const std::string & a, const std::string & b, const std::string & c,
-    const std::string & color, unsigned int l) const
+    const std::string & color, size_t l) const
 {
   out << SPC(l) << "<mstyle background=\"" << color << "\"><mtable rowspacing=\"0.1 ex\">" << std::endl;
   out << SPC(l + 1) << "<mtr><mtd>" << std::endl;
@@ -202,7 +202,7 @@ std::string Expression2PresentationMMLUnits::getMathML(const UnitDefinition & ud
   std::string tmp;
 
   /*tmp += "<mrow>";
-  unsigned int i, imax = ud.getNumUnits();
+  size_t i, imax = ud.getNumUnits();
   for (i=0; i<imax; ++i)
   {
     if (i) tmp += "<mo>&CenterDot;</mo>";
@@ -212,15 +212,15 @@ std::string Expression2PresentationMMLUnits::getMathML(const UnitDefinition & ud
 
   tmp += "<mrow>";
   bool isFirst = true;
-  unsigned int i, imax = ud.getNumUnits();
+  size_t i, imax = ud.getNumUnits();
 
   for (i = 0; i < imax; ++i)
     {
-      if (ud.getUnit(i)->getExponent() >= 0)
+      if (ud.getUnit((unsigned int) i)->getExponent() >= 0)
         {
           if (!isFirst) tmp += "<mo>&CenterDot;</mo>";
 
-          tmp += getMathML(ud.getUnit(i), true);
+          tmp += getMathML(ud.getUnit((unsigned int) i), true);
           isFirst = false;
         }
     }
@@ -232,11 +232,11 @@ std::string Expression2PresentationMMLUnits::getMathML(const UnitDefinition & ud
 
   for (i = 0; i < imax; ++i)
     {
-      if (ud.getUnit(i)->getExponent() < 0)
+      if (ud.getUnit((unsigned int) i)->getExponent() < 0)
         {
           if (!isFirst) tmp2 += "<mo>&CenterDot;</mo>";
 
-          tmp2 += getMathML(ud.getUnit(i), true);
+          tmp2 += getMathML(ud.getUnit((unsigned int) i), true);
           isFirst = false;
         }
     }

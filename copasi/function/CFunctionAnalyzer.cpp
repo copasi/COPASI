@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.20.2.2 $
+//   $Revision: 1.20.2.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/10/25 18:49:01 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:00:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -559,7 +559,7 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
             }
         }
 
-      C_INT32 i, imax;
+      size_t i, imax;
 
       // Substrate concentrations set to zero
       imax = mSubstrateZero.size();
@@ -835,7 +835,7 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
             }
         }
 
-      C_INT32 i, imax;
+      size_t i, imax;
 
       // Substrate concentrations set to zero
       imax = mSubstrateZero.size();
@@ -934,7 +934,7 @@ void CFunctionAnalyzer::Result::FunctionInformation::writeTable(std::ostream & o
 {
   //if (!pF) return;
 
-  unsigned int i, imax;
+  size_t i, imax;
 
   if (rt)
     {
@@ -943,7 +943,7 @@ void CFunctionAnalyzer::Result::FunctionInformation::writeTable(std::ostream & o
       os << "  <TR>\n";
       os << "    <TD></TD>\n";
       //CValue results
-      unsigned int j, jmax = mUnchangedParameters.size();
+      size_t j, jmax = mUnchangedParameters.size();
 
       for (j = 0; j < jmax; ++j)
         os << "    <TD>" << mUnchangedParameters[j] << "</TD>\n";
@@ -959,7 +959,7 @@ void CFunctionAnalyzer::Result::FunctionInformation::writeTable(std::ostream & o
           os << "    <TD>Substrate \"" << mSubstrateZero[i].first.second /*pF->getVariables()[mSubstrateZero[i].first]->getObjectName()*/ << "\" set to 0:</TD>\n";
 
           //CValue results
-          unsigned int j, jmax = mSubstrateZero[i].second.size();
+          size_t j, jmax = mSubstrateZero[i].second.size();
 
           for (j = 0; j < jmax; ++j)
             os << "    <TD>" << mSubstrateZero[i].second[j] << "</TD>\n";
@@ -976,7 +976,7 @@ void CFunctionAnalyzer::Result::FunctionInformation::writeTable(std::ostream & o
           os << "    <TD>Product \"" << mProductZero[i].first.second << "\" set to 0: </TD>\n";
 
           //CValue results
-          unsigned int j, jmax = mProductZero[i].second.size();
+          size_t j, jmax = mProductZero[i].second.size();
 
           for (j = 0; j < jmax; ++j)
             os << "    <TD>" << mProductZero[i].second[j] << "</TD>\n";
@@ -993,7 +993,7 @@ void CFunctionAnalyzer::Result::FunctionInformation::writeTable(std::ostream & o
 //static
 void CFunctionAnalyzer::constructCallParameters(const CFunctionParameters & fp, std::vector<CValue> & callParameters, bool posi)
 {
-  unsigned C_INT32 i, imax = fp.size();
+  size_t i, imax = fp.size();
   callParameters.resize(imax);
 
   for (i = 0; i < imax; ++i)
@@ -1022,7 +1022,7 @@ void CFunctionAnalyzer::constructCallParameters(const CFunctionParameters & fp, 
 //static
 void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> & callParameters, /*const CModel* model,*/ const CReaction* reaction)
 {
-  unsigned C_INT32 i, imax = reaction->getFunctionParameters().size();
+  size_t i, imax = reaction->getFunctionParameters().size();
   callParameters.resize(imax);
 
   for (i = 0; i < imax; ++i)
@@ -1099,7 +1099,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
             break;
             //
             //           case MODULUS:
-            //             Value = (C_FLOAT64) (((C_INT32) mpLeft->value()) % ((C_INT32) mpRight->value()));
+            //             Value = (C_FLOAT64) (((size_t) mpLeft->value()) % ((size_t) mpRight->value()));
             //             break;
             //
 
@@ -1160,7 +1160,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
       if (!pENCall->getCalledTree()->getRoot()) return CValue::invalid;
 
-      unsigned C_INT32 i, imax = tmpFunc->getVariables().size();
+      size_t i, imax = tmpFunc->getVariables().size();
 
       if (imax != pENCall->getListOfChildNodes().size()) return CValue::invalid;
 
@@ -1233,7 +1233,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
   //***** now the kinetic function with single substrates or products == zero ******
   std::vector<CValue> tmpValueVector;
 
-  C_INT32 i, imax = f->getVariables().size();
+  size_t i, imax = f->getVariables().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -1270,7 +1270,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
             {
             }
 
-          mResult.mOriginalFunction.mSubstrateZero.push_back(std::pair<std::pair<int, std::string>, std::vector<CValue> >(std::pair<int, std::string>(i, f->getVariables()[i]->getObjectName()), tmpValueVector));
+          mResult.mOriginalFunction.mSubstrateZero.push_back(std::pair<std::pair<size_t, std::string>, std::vector<CValue> >(std::pair<size_t, std::string>(i, f->getVariables()[i]->getObjectName()), tmpValueVector));
         }
 
       if (f->getVariables()[i]->getUsage() == CFunctionParameter::PRODUCT)
@@ -1304,7 +1304,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
             {
             }
 
-          mResult.mOriginalFunction.mProductZero.push_back(std::pair<std::pair<int, std::string>, std::vector<CValue> >(std::pair<int, std::string>(i, f->getVariables()[i]->getObjectName()), tmpValueVector));
+          mResult.mOriginalFunction.mProductZero.push_back(std::pair<std::pair<size_t, std::string>, std::vector<CValue> >(std::pair<size_t, std::string>(i, f->getVariables()[i]->getObjectName()), tmpValueVector));
         }
     }
 

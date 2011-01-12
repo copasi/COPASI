@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.9.2.1 $
+//   $Revision: 1.9.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:42 $
+//   $Date: 2011/01/12 19:03:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ CQCreatorDM::CQCreatorDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
 
 int CQCreatorDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpMIRIAMInfo->getCreators().size() + 1;
+  return (int) mpMIRIAMInfo->getCreators().size() + 1;
 }
 int CQCreatorDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -199,15 +199,15 @@ bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CCreator * pCreator = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         mpMIRIAMInfo->getCreators().CCopasiVector< CCreator >::getIndex(pCreator);
 
       if (delRow != C_INVALID_INDEX)
         {
           if (askEveryItem)
             {
-              QString givenName = data(this->index(delRow, COL_GIVEN_NAME), Qt::DisplayRole).toString();
-              QString familyName = data(this->index(delRow, COL_FAMILY_NAME), Qt::DisplayRole).toString();
+              QString givenName = data(this->index((int) delRow, COL_GIVEN_NAME), Qt::DisplayRole).toString();
+              QString familyName = data(this->index((int) delRow, COL_FAMILY_NAME), Qt::DisplayRole).toString();
               QString msg = "Do you want to delete author '";
 
               if (!givenName.isNull())
@@ -231,11 +231,11 @@ bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
           if (choice == QMessageBox::NoToAll)
             {return retVal;}
           else if (choice == QMessageBox::Yes)
-            {retVal = removeRow(delRow);}
+            {retVal = removeRow((int) delRow);}
           else if (choice == QMessageBox::YesToAll)
             {
               askEveryItem = false;
-              retVal = removeRow(delRow);
+              retVal = removeRow((int) delRow);
             }
         }
     }

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.31.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2011/01/12 19:07:46 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -80,9 +85,9 @@ protected:
   void fillTable();
   //void createNewObject();
   void updateRow(const C_INT32 row);
-  void handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 row);
+  void handleSBMLId(const CCopasiObject* obj, size_t row);
   QString createNewName(const QString name);
-  void resizeTable(const unsigned C_INT32 numRows);
+  void resizeTable(const size_t numRows);
   bool isTableChanged();
 
   Q3Table* table;
@@ -94,7 +99,7 @@ protected:
   QPushButton* btnClear;
   std::vector<std::string> mKeys;
 
-  C_INT32 numCols;
+  size_t numCols;
 
   std::vector<bool> mFlagChanged;
   std::vector<bool> mFlagDelete;
@@ -140,12 +145,12 @@ protected:
   /**
    * fills one table row with the data from one object
    */
-  virtual void tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row) = 0;
+  virtual void tableLineFromObject(const CCopasiObject* obj, size_t row) = 0;
 
   /**
    * reads the contents of one row of the table and writes it to the object
    */
-  virtual void tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj) = 0;
+  virtual void tableLineToObject(size_t row, CCopasiObject* obj) = 0;
 
   /**
    * creates a new object
@@ -161,7 +166,7 @@ protected:
    * this is used to fill a row of the table when a new object is added to the table.
    * it fills only the data columns, not the name. It should not fill column exc.
    */
-  virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc) = 0;
+  virtual void defaultTableLineContent(size_t row, size_t exc) = 0;
 
   /**
    * the prefix that is used to construct new object names
@@ -171,10 +176,10 @@ protected:
   /**
    * This method provides a hook for derived classes to act on changes in
    * the table.
-   * @param unsigned C_INT32 row
-   * @param unsigned C_INT32 col
+   * @param size_t row
+   * @param size_t col
    */
-  virtual void valueChanged(unsigned C_INT32 /*row*/, unsigned C_INT32 /*col*/)
+  virtual void valueChanged(size_t /*row*/, size_t /*col*/)
   {return;}
 
   /**

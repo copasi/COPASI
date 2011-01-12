@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.27.2.1 $
+//   $Revision: 1.27.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:08 $
+//   $Date: 2011/01/12 19:07:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,7 +175,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
           case tssCSP:
           {
-            unsigned C_INT32 i, imax;
+            size_t i, imax;
 
             imax = pModel->getCompartments().size();
 
@@ -223,7 +223,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
 // Check if the model has a model parameter  with an ODE
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < pModel->getModelValues().size(); i++)
     {
@@ -309,7 +309,7 @@ void CTSSAMethod::initializeIntegrationsParameter()
           else
             {
               const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
-              unsigned C_INT32 i, imax;
+              size_t i, imax;
               C_FLOAT64 Volume = DBL_MAX;
 
               for (i = 0, imax = Compartment.size(); i < imax; i++)
@@ -366,8 +366,8 @@ void CTSSAMethod::integrationStep(const double & deltaT)
   C_FLOAT64 EndTime = mTime + deltaT;
   C_INT ITOL = 2; // mRtol scalar, mAtol vector
   C_INT one = 1;
-  C_INT DSize = mDWork.size();
-  C_INT ISize = mIWork.size();
+  C_INT DSize = (C_INT) mDWork.size();
+  C_INT ISize = (C_INT) mIWork.size();
 
   mLSODA(&EvalF, //  1. evaluate F
          &mData.dim, //  2. number of variables
@@ -1745,8 +1745,8 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
 
 void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
 {
-  C_INT i, imax;
-  C_INT indep;
+  size_t i, imax;
+  size_t indep;
 
   // indep = mpModel->getNumIndependentMetabs();
   indep = mpModel->getNumIndependentReactionMetabs();
@@ -1959,13 +1959,13 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   if (mReducedModel)
     {
       //mpState->setUpdateDependentRequired(true);
-      mData.dim = mpState->getNumIndependent();
+      mData.dim = (C_INT) mpState->getNumIndependent();
     }
   else
     {
       //mpState->setUpdateDependentRequired(false);
       // mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
-      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
+      mData.dim = (C_INT)(mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs());
     }
 
   mYdot.resize(mData.dim);

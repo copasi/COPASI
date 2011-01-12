@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.4.2.3 $
+//   $Revision: 1.4.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/30 13:27:14 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,7 @@ class CLTextGlyph;
 class CLTransform;
 class CModel;
 struct CLTextureSpec;
-class CLTextTextureSpec;
+struct CLTextTextureSpec;
 
 class CLLayoutRenderer
 {
@@ -739,7 +739,7 @@ protected:
   /**
    * Draw a set of datapoints with the current attributes using the given bounding box.
    */
-  void draw_datapoints(GLdouble* pData, unsigned int numPoints, const CLBoundingBox* pBB, bool doTesselation = false, float xOffset = 0.0, float yOffset = 0.0, float zOffset = 0.0);
+  void draw_datapoints(GLdouble* pData, size_t numPoints, const CLBoundingBox* pBB, bool doTesselation = false, float xOffset = 0.0, float yOffset = 0.0, float zOffset = 0.0);
 
   /**
    * Maps the given arrow head to the given line segment.
@@ -794,7 +794,7 @@ protected:
   /**
    * Method to draw a line made up of a set of points.
    */
-  void draw_line(unsigned int numPoints, GLdouble* pData);
+  void draw_line(size_t numPoints, GLdouble* pData);
 
   static void createGLMatrix(const double* const matrix, GLdouble* glMatrix);
 
@@ -812,7 +812,7 @@ protected:
    * This is needed if we need to apply line stippling for OpenGL < 2.0
    * where texture sizes have to be a power of 2.
    */
-  void segment_data(double length, double ratio, unsigned int numPoints, GLdouble* pData, std::vector<simple_point>& v);
+  void segment_data(double length, double ratio, size_t numPoints, GLdouble* pData, std::vector<simple_point>& v);
 
   /**
    * This method goes through all layout objects and checks them if they

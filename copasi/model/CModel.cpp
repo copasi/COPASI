@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.395.2.1 $
+//   $Revision: 1.395.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/22 18:36:30 $
+//   $Date: 2011/01/12 19:04:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,7 +150,7 @@ CModel::CModel(CCopasiContainer* pParent):
   *mpIValue = 0.0;
   *mpValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  unsigned C_INT32 i, imax = mSteps.size();
+  size_t i, imax = mSteps.size();
 
   for (i = 0; i < imax; i++)
     mSteps[i]->compile(/*mCompartments*/);
@@ -212,7 +212,7 @@ CModel::CModel(CCopasiContainer* pParent):
 //   CONSTRUCTOR_TRACE;
 //   initObjects();
 //
-//   unsigned C_INT32 i, imax = mSteps.size();
+//   size_t i, imax = mSteps.size();
 //
 //   for (i = 0; i < imax; i++)
 //     mSteps[i]->compile(/*mCompartments*/);
@@ -264,7 +264,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 {
   C_INT32 Size = 0;
   C_INT32 Fail = 0;
-  unsigned C_INT32 i;
+  size_t i;
   std::string tmp;
 
   // For old Versions we must read the list of Metabolites beforehand
@@ -393,15 +393,14 @@ bool CModel::compile()
   CMatrix< C_FLOAT64 > LU;
 
   unsigned C_INT32 CompileStep = 0;
-  unsigned C_INT32 hCompileStep;
+  size_t hCompileStep;
 
   if (mpCompileHandler)
     {
       mpCompileHandler->setName("Compiling model...");
       unsigned C_INT32 totalSteps = 7;
       hCompileStep = mpCompileHandler->addItem("Compile Process",
-                     CCopasiParameter::UINT,
-                     & CompileStep,
+                     CompileStep,
                      &totalSteps);
     }
 
@@ -533,26 +532,25 @@ bool CModel::forceCompile(CProcessReport* pProcessReport)
 
 void CModel::buildStoi()
 {
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, numCols;
 
   initializeMetabolites();
 
-  unsigned C_INT32 numRows, numCols;
+  size_t numRows;
   numRows = mNumMetabolitesReaction;
-  numCols = mSteps.size();
+  numCols = (unsigned C_INT32) mSteps.size();
 
   mParticleFluxes.resize(numCols);
   mStoi.resize(numRows, numCols);
   mStoi = 0.0;
 
-  unsigned C_INT32 hProcess;
+  size_t hProcess;
 
   if (mpCompileHandler)
     {
       i = 0;
       hProcess = mpCompileHandler->addItem("Building Stoichiometry",
-                                           CCopasiParameter::UINT,
-                                           &i,
+                                           i,
                                            &numCols);
     }
 
@@ -615,7 +613,7 @@ void CModel::buildStoi()
 
 bool CModel::handleUnusedMetabolites()
 {
-  unsigned C_INT32 numRows, numCols;
+  size_t numRows, numCols;
   numRows = mStoi.numRows();
   numCols = mStoi.numCols();
 
@@ -623,9 +621,9 @@ bool CModel::handleUnusedMetabolites()
   pStoi = mStoi.array();
   pStoiEnd = mStoi.array() + numRows * numCols;
 
-  unsigned C_INT32 i, NumUnused;
+  size_t i, NumUnused;
   C_FLOAT64 tmp;
-  std::vector< unsigned C_INT32 > Unused;
+  std::vector< size_t > Unused;
 
   for (i = 0; i < numRows; i++)
     {
@@ -652,8 +650,8 @@ bool CModel::handleUnusedMetabolites()
   std::vector< CMetab * >::iterator itUsedMetabolites = UsedMetabolites.begin();
   std::vector< CMetab * > UnusedMetabolites(NumUnused);
   std::vector< CMetab * >::iterator itUnusedMetabolites = UnusedMetabolites.begin();
-  std::vector< unsigned C_INT32 >::const_iterator itUnused = Unused.begin();
-  std::vector< unsigned C_INT32 >::const_iterator endUnused = Unused.end();
+  std::vector< size_t >::const_iterator itUnused = Unused.begin();
+  std::vector< size_t >::const_iterator endUnused = Unused.end();
 
   CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
   CCopasiVector< CMetab >::iterator endMetab = itMetab + mNumMetabolitesReaction;
@@ -721,15 +719,15 @@ bool CModel::handleUnusedMetabolites()
 
 void CModel::buildRedStoi()
 {
-  unsigned C_INT32 i;
-  unsigned C_INT32 numCols = mStoi.numCols();
+  size_t i;
+  size_t numCols = mStoi.numCols();
 
   mRedStoi.resize(mNumMetabolitesReactionIndependent, numCols);
   mStoiReordered.resize(mStoi.numRows(), numCols);
 
   C_FLOAT64 * pRedStoi = mRedStoi.array();
   C_FLOAT64 * pStoiReordered = mStoiReordered.array();
-  unsigned C_INT32 * pRow = mRowLU.array();
+  size_t * pRow = mRowLU.array();
 
   // Create a temporary copy of the metabolites determined by reactions to reorder them
   // accordingly.
@@ -776,7 +774,7 @@ void CModel::updateMatrixAnnotations()
   CCopasiVector< CMetab >::const_iterator end = it + mNumMetabolitesReactionIndependent;
 
   CCopasiObjectName CN;
-  unsigned C_INT32 j;
+  size_t j;
 
   for (j = 0; it != end; ++it, j++)
     {
@@ -810,8 +808,8 @@ void CModel::updateMoietyValues()
 
 void CModel::buildMoieties()
 {
-  unsigned C_INT32 i, imax = MNumMetabolitesReactionDependent;
-  unsigned C_INT32 j;
+  size_t i, imax = MNumMetabolitesReactionDependent;
+  size_t j;
 
   CCopasiVector< CMetab >::iterator it =
     mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesReactionIndependent; //begin of dependent metabs
@@ -971,28 +969,28 @@ const CCopasiVectorN < CEvent > & CModel::getEvents() const
 
 //********
 
-unsigned C_INT32 CModel::getNumMetabs() const
+size_t CModel::getNumMetabs() const
 {return mMetabolites.size();}
 
-unsigned C_INT32 CModel::getNumVariableMetabs() const
+size_t CModel::getNumVariableMetabs() const
 {return mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment;}
 
-unsigned C_INT32 CModel::getNumODEMetabs() const
+size_t CModel::getNumODEMetabs() const
 {CCHECK return mNumMetabolitesODE;}
 
-unsigned C_INT32 CModel::getNumAssignmentMetabs() const
+size_t CModel::getNumAssignmentMetabs() const
 {CCHECK return mNumMetabolitesAssignment;}
 
-unsigned C_INT32 CModel::getNumIndependentReactionMetabs() const
+size_t CModel::getNumIndependentReactionMetabs() const
 {CCHECK return mNumMetabolitesReactionIndependent;}
 
-unsigned C_INT32 CModel::getNumDependentReactionMetabs() const
+size_t CModel::getNumDependentReactionMetabs() const
 {CCHECK return mNumMetabolitesReaction - mNumMetabolitesReactionIndependent;}
 
-unsigned C_INT32 CModel::getTotSteps() const
+size_t CModel::getTotSteps() const
 {return mSteps.size();}
 
-unsigned C_INT32 CModel::getNumModelValues() const
+size_t CModel::getNumModelValues() const
 {return mValues.size();}
 
 const std::string & CModel::getKey() const
@@ -1060,7 +1058,7 @@ void CModel::setTime(const C_FLOAT64 & time)
 const C_FLOAT64 & CModel::getTime() const
 {return *mpValue;}
 
-const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
+const CVector<size_t> & CModel::getMetabolitePermutation() const
 {CCHECK return mRowLU;}
 
 //**********************************************************************
@@ -1068,9 +1066,9 @@ const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
 /**
  *        Returns the index of the metab
  */
-unsigned C_INT32 CModel::findMetabByName(const std::string & Target) const
+size_t CModel::findMetabByName(const std::string & Target) const
 {
-  unsigned C_INT32 i, s;
+  size_t i, s;
   std::string name;
 
   s = mMetabolites.size();
@@ -1089,9 +1087,9 @@ unsigned C_INT32 CModel::findMetabByName(const std::string & Target) const
 /**
  *        Returns the index of the Moiety
  */
-unsigned C_INT32 CModel::findMoiety(const std::string &Target) const
+size_t CModel::findMoiety(const std::string &Target) const
 {
-  unsigned C_INT32 i, s;
+  size_t i, s;
   std::string name;
 
   s = mMoieties.size();
@@ -1250,11 +1248,11 @@ bool CModel::buildUserOrder()
   mJacobianPivot.resize(mStateTemplate.getNumIndependent() + MNumMetabolitesReactionDependent);
   //now sized to the number of entities with ODEs + all metabolites dependent on reactions
 
-  const unsigned C_INT32 * pUserOrder = mStateTemplate.getUserOrder().array();
-  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + mStateTemplate.getUserOrder().size();
+  const size_t * pUserOrder = mStateTemplate.getUserOrder().array();
+  const size_t * pUserOrderEnd = pUserOrder + mStateTemplate.getUserOrder().size();
   ppEntity = mStateTemplate.getEntities();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
     {
@@ -1296,7 +1294,7 @@ bool CModel::buildInitialSequence()
   // The reaction parameters
   CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
   CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (; itReaction != endReaction; ++itReaction)
     {
@@ -1720,8 +1718,8 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
   // Now calculate derivatives of all metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
-  C_INT N = mNumMetabolitesReaction;
-  C_INT K = mSteps.size();
+  C_INT N = (C_INT) mNumMetabolitesReaction;
+  C_INT K = (C_INT) mSteps.size();
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
@@ -1747,8 +1745,8 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
   // Now calculate derivatives of the independent metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
-  C_INT N = mNumMetabolitesReactionIndependent;
-  C_INT K = mSteps.size();
+  C_INT N = (C_INT) mNumMetabolitesReactionIndependent;
+  C_INT K = (C_INT) mSteps.size();
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
@@ -1760,8 +1758,8 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
 void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
                                        const C_FLOAT64 & resolution)
 {
-  unsigned C_INT32 Col;
-  unsigned C_INT32 nCol = mElasticities.numCols();
+  size_t Col;
+  size_t nCol = mElasticities.numCols();
 
   C_FLOAT64 * itE;
   C_FLOAT64 * beginE = mElasticities.array();
@@ -1799,11 +1797,11 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & derivationFactor,
                                const C_FLOAT64 & /* resolution */)
 {
-  unsigned C_INT32 Dim =
+  size_t Dim =
     mCurrentState.getNumIndependent() + MNumMetabolitesReactionDependent;
   //Dim now contains the number of entities with ODEs + number of metabs depending on reactions.
 
-  unsigned C_INT32 Col;
+  size_t Col;
 
   jacobian.resize(Dim, Dim);
   CMatrix< C_FLOAT64 > Jacobian(Dim, Dim);
@@ -1874,9 +1872,9 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
   // We need to bring the jacobian into the expected order, i.e.,
   // convert it to the user defined order
-  unsigned C_INT32 * pPermRow = mJacobianPivot.array();
-  unsigned C_INT32 * pPermEnd = pPermRow + mJacobianPivot.size();
-  unsigned C_INT32 * pPermCol;
+  size_t * pPermRow = mJacobianPivot.array();
+  size_t * pPermEnd = pPermRow + mJacobianPivot.size();
+  size_t * pPermCol;
 
   C_FLOAT64 * pTo;
   pTo = jacobian.array();
@@ -1898,8 +1896,8 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
 {
   C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 
-  unsigned C_INT32 Dim = mCurrentState.getNumIndependent();
-  unsigned C_INT32 Col;
+  size_t Dim = mCurrentState.getNumIndependent();
+  size_t Col;
 
   jacobianX.resize(Dim, Dim);
 
@@ -2118,7 +2116,7 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
-  C_INT32 i, imax = mMetabolites.size();
+  size_t i, imax = mMetabolites.size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -2505,7 +2503,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
                                  const C_FLOAT64 & iconc,
                                  const CMetab::Status & status)
 {
-  unsigned C_INT32 Index;
+  size_t Index;
 
   if (mCompartments.size() == 0)
     return NULL;
@@ -2538,7 +2536,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
   return pMetab;
 }
 
-bool CModel::removeMetabolite(const unsigned C_INT32 index,
+bool CModel::removeMetabolite(const size_t index,
                               const bool & recursive)
 {
   const CMetab* pMetabolite = getMetabolites()[index];
@@ -2598,7 +2596,7 @@ CCompartment* CModel::createCompartment(const std::string & name,
   return cpt;
 }
 
-bool CModel::removeCompartment(const unsigned C_INT32 index,
+bool CModel::removeCompartment(const size_t index,
                                const bool & recursive)
 {
   const CCompartment * pCompartment = getCompartments()[index];
@@ -2625,7 +2623,7 @@ bool CModel::removeCompartment(const CCompartment * pCompartment,
     }
 
   //Check if Compartment with that name exists
-  unsigned C_INT32 index =
+  size_t index =
     mCompartments.CCopasiVector< CCompartment >::getIndex(pCompartment);
 
   if (index == C_INVALID_INDEX)
@@ -2663,7 +2661,7 @@ bool CModel::removeReaction(const std::string & key,
   return removeReaction(pReaction, recursive);
 }
 
-bool CModel::removeReaction(const unsigned C_INT32 index,
+bool CModel::removeReaction(const size_t index,
                             const bool & recursive)
 {
   const CReaction * pReaction = getReactions()[index];
@@ -2682,7 +2680,7 @@ bool CModel::removeReaction(const CReaction * pReaction,
     }
 
   //Check if Reaction exists
-  unsigned C_INT32 index =
+  size_t index =
     mSteps.CCopasiVector< CReaction >::getIndex(pReaction);
 
   if (index == C_INVALID_INDEX)
@@ -2768,7 +2766,7 @@ void CModel::removeDependentModelObjects(const std::set<const CCopasiObject*> & 
   return;
 }
 
-bool CModel::removeModelValue(const unsigned C_INT32 index,
+bool CModel::removeModelValue(const size_t index,
                               const bool & recursive)
 {
   const CModelValue * pMV = getModelValues()[index];
@@ -2794,7 +2792,7 @@ bool CModel::removeModelValue(const CModelValue * pModelValue,
     }
 
   //Check if Value with that name exists
-  unsigned C_INT32 index =
+  size_t index =
     mValues.CCopasiVector< CModelValue >::getIndex(pModelValue);
 
   if (index == C_INVALID_INDEX)
@@ -2817,7 +2815,7 @@ CEvent* CModel::createEvent(const std::string & name)
   // Assure that the event order is unique.
   // We assume that the existing events are ordered consecutively without
   // gaps.
-  unsigned C_INT32 Order = 0;
+  size_t Order = 0;
 
   CCopasiVectorN< CEvent >::const_iterator it = mEvents.begin();
   CCopasiVectorN< CEvent >::const_iterator end = mEvents.end();
@@ -2842,7 +2840,7 @@ CEvent* CModel::createEvent(const std::string & name)
   return pEvent;
 }
 
-bool CModel::removeEvent(const unsigned C_INT32 index,
+bool CModel::removeEvent(const size_t index,
                          const bool & recursive)
 {
   const CEvent * pEvent = mEvents[index];
@@ -2865,7 +2863,7 @@ bool CModel::removeEvent(const CEvent * pEvent,
     return false;
 
   //Check if Event exists
-  unsigned C_INT32 index =
+  size_t index =
     mEvents.CCopasiVector< CEvent >::getIndex(pEvent);
 
   if (index == C_INVALID_INDEX)
@@ -2881,9 +2879,9 @@ bool CModel::removeEvent(const CEvent * pEvent,
 }
 
 void CModel::synchronizeEventOrder(const CEvent * pEvent,
-                                   const unsigned C_INT32 newOrder)
+                                   const size_t newOrder)
 {
-  const unsigned C_INT32 & OldOrder = pEvent->getOrder();
+  const size_t & OldOrder = pEvent->getOrder();
 
   // If the OldOrder is the default for newly created events
   // we do nothing. This assumes that whenever CEvent::setOrder is called
@@ -2902,7 +2900,7 @@ void CModel::synchronizeEventOrder(const CEvent * pEvent,
       // interval [newOrder, OldOrder)
       for (; it != end; ++it)
         {
-          const unsigned C_INT32 & Order = (*it)->getOrder();
+          const size_t & Order = (*it)->getOrder();
 
           if (newOrder <= Order && Order < OldOrder)
             {
@@ -2916,7 +2914,7 @@ void CModel::synchronizeEventOrder(const CEvent * pEvent,
       // interval (OldOrder, newOrder]
       for (; it != end; ++it)
         {
-          const unsigned C_INT32 & Order = (*it)->getOrder();
+          const size_t & Order = (*it)->getOrder();
 
           if (OldOrder < Order && Order <= newOrder)
             {
@@ -2950,7 +2948,7 @@ bool CModel::convert2NonReversible()
 
   CCopasiVectorN< CReaction > & steps = this->getReactions();
 
-  unsigned C_INT32 i, imax = steps.size();
+  size_t i, imax = steps.size();
 
   for (i = 0; i < imax; ++i)
     if (steps[i]->isReversible())
@@ -2998,7 +2996,7 @@ bool CModel::convert2NonReversible()
             if (tmp.second) CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.second);
           }
 
-        C_INT32 i, imax;
+        size_t i, imax;
 
         //**** create 1st reaction.
         reac1 = createReaction(rn1);
@@ -3187,7 +3185,7 @@ void CModel::initObjects()
 
 bool CModel::hasReversibleReaction() const
 {
-  unsigned C_INT32 i, imax = mSteps.size();
+  size_t i, imax = mSteps.size();
 
   for (i = 0; i < imax; ++i) if (mSteps[i]->isReversible()) return true;
 
@@ -3202,7 +3200,7 @@ const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mZero = 0.0;
 const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
 
 CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-    const unsigned C_INT32 & numIndependent):
+    const size_t & numIndependent):
     mA(A),
     mNumIndependent(numIndependent)
 {CONSTRUCTOR_TRACE;}
@@ -3214,22 +3212,22 @@ CModel::CLinkMatrixView &
 CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView & rhs)
 {
   const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
-  const_cast< unsigned C_INT32 & >(mNumIndependent) = rhs.mNumIndependent;
+  const_cast< size_t & >(mNumIndependent) = rhs.mNumIndependent;
 
   return *this;
 }
 
-unsigned C_INT32 CModel::CLinkMatrixView::numRows() const
+size_t CModel::CLinkMatrixView::numRows() const
 {return mNumIndependent + mA.numRows();}
 
-unsigned C_INT32 CModel::CLinkMatrixView::numCols() const
+size_t CModel::CLinkMatrixView::numCols() const
 {return mA.numCols();}
 
 std::ostream &operator<<(std::ostream &os,
                          const CModel::CLinkMatrixView & A)
 {
-  unsigned C_INT32 i, imax = A.numRows();
-  unsigned C_INT32 j, jmax = A.numCols();
+  size_t i, imax = A.numRows();
+  size_t j, jmax = A.numCols();
   os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
   for (i = 0; i < imax; i++)
@@ -3245,9 +3243,9 @@ std::ostream &operator<<(std::ostream &os,
 
 std::string CModel::suitableForStochasticSimulation() const
 {
-  unsigned C_INT32 i, reactSize = mSteps.size();
+  size_t i, reactSize = mSteps.size();
   C_INT32 multInt;
-  unsigned C_INT32 j;
+  size_t j;
   C_FLOAT64 multFloat;
   //  C_INT32 metabSize = mMetabolites->size();
 
@@ -3295,8 +3293,8 @@ void CModel::buildLinkZero()
 
   mRedStoi = mStoi;
 
-  C_INT NumReactions = mRedStoi.numCols();
-  C_INT NumSpecies = mRedStoi.numRows();
+  C_INT NumReactions = (C_INT) mRedStoi.numCols();
+  C_INT NumSpecies = (C_INT) mRedStoi.numRows();
   C_INT LDA = std::max<C_INT>(1, NumReactions);
 
   CVector< C_INT > JPVT(NumSpecies);
@@ -3662,7 +3660,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
       // The reaction parameters
       CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
       CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
-      unsigned C_INT32 i, imax;
+      size_t i, imax;
 
       for (; itReaction != endReaction; ++itReaction)
         {
@@ -3866,7 +3864,7 @@ std::string CModel::printParameterOverview()
 
   oss << std::endl;
 
-  unsigned C_INT32 i, imax, j, jmax;
+  size_t i, imax, j, jmax;
 
   //Compartments
   const CCopasiVector< CCompartment > & comps = model->getCompartments();

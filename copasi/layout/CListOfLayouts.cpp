@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.20.2.1 $
+//   $Revision: 1.20.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 17:08:18 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
 {
   if (!lol) return;
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 #ifdef USE_CRENDER_EXTENSION
   // the global render information has to be handled first, because we might need
   // some of the maps for the export of the local render information in the layout
@@ -181,11 +181,11 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
   //check if a something needs to be deleted from the SBML data structures
   for (i = lol->size(); i > 0; --i)
     {
-      SBase* object = lol->get(i - 1);
+      SBase* object = lol->get((unsigned int) i - 1);
 
       if (writtenToSBML.find(object) == writtenToSBML.end())
         {
-          lol->remove(i - 1);
+          lol->remove((unsigned int) i - 1);
           pdelete(object);
 
           //TODO: delete from map
@@ -210,7 +210,7 @@ void CListOfLayouts::addGlobalRenderInformation(CLGlobalRenderInformation * pRen
  *  Returns a pointer to the global render information object with the given index.
  *  If the index is invalid, NULL is returned.
  */
-CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(unsigned C_INT32 index)
+CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(size_t index)
 {
   if (index < this->mvGlobalRenderInformationObjects.size())
     {
@@ -224,7 +224,7 @@ CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(unsigned C_INT32
  *  Returns a const pointer to the global render information object with the given index.
  *  If the index is invalid, NULL is returned.
  */
-const CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(unsigned C_INT32 index) const
+const CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(size_t index) const
 {
   if (index < this->mvGlobalRenderInformationObjects.size())
     {

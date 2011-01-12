@@ -111,7 +111,7 @@ void PlotSubwidget::addCurve2D()
     }
 
   std::vector<CCopasiObjectName> objects1, objects2;
-  unsigned C_INT32 i;
+  size_t i;
   std::vector<CCopasiObjectName>::const_iterator sit;
   const CArrayAnnotation *pArray;
 
@@ -216,7 +216,7 @@ void PlotSubwidget::addCurve2D()
     }
   else
     {
-      unsigned C_INT32 imax;
+      size_t imax;
 
       if (objects1.size() > objects2.size())
         imax = objects2.size();
@@ -262,7 +262,7 @@ void PlotSubwidget::createHistograms(std::vector<const CCopasiObject* >objects, 
 {
   C_INT32 storeTab = tabs->count();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 1; i < objects.size(); ++i)
     {
@@ -296,7 +296,7 @@ void PlotSubwidget::commitPlot()
 
 void PlotSubwidget::deletePlot()
 {
-  unsigned C_INT32 Index, Size;
+  size_t Index, Size;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -392,7 +392,7 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
 
   //reconstruct tabWidget from curve specs
   const CCopasiVector<CPlotItem> & curves = pspec->getItems();
-  unsigned C_INT32 i, imax = curves.size();
+  size_t i, imax = curves.size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -444,12 +444,12 @@ bool PlotSubwidget::saveToPlotSpec()
 
   //curves
   CPlotItem* item;
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
   imax = tabs->count();
 
   for (i = 0; i < imax; ++i)
     {
-      Curve2DWidget* tmpCurve2D = dynamic_cast<Curve2DWidget*>(tabs->widget(i));
+      Curve2DWidget* tmpCurve2D = dynamic_cast<Curve2DWidget*>(tabs->widget((int) i));
 
       if (tmpCurve2D)
         {
@@ -457,7 +457,7 @@ bool PlotSubwidget::saveToPlotSpec()
           tmpCurve2D->SaveToCurveSpec(item);
         }
 
-      HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->widget(i));
+      HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->widget((int) i));
 
       if (tmpHisto)
         {

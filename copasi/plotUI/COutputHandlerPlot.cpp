@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.20.4.1 $
+$Revision: 1.20.4.2 $
 $Name:  $
-$Author: aekamal $
-$Date: 2010/10/25 16:12:46 $
+$Author: shoops $
+$Date: 2011/01/12 19:05:19 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
   //step through the vector of specifications and create the plot windows
   std::string key;
 
-  unsigned C_INT32 i, imax = mpDefinitionVector->size();
+  size_t i, imax = mpDefinitionVector->size();
 
   for (i = 0; i < imax; i++)
     {

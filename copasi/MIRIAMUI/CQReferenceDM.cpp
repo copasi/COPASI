@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.cpp,v $
-//   $Revision: 1.10.2.1 $
+//   $Revision: 1.10.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:42 $
+//   $Date: 2011/01/12 19:03:35 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ CQReferenceDM::CQReferenceDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
 
 int CQReferenceDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpMIRIAMInfo->getReferences().size() + 1;
+  return (int) mpMIRIAMInfo->getReferences().size() + 1;
 }
 int CQReferenceDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -194,15 +194,15 @@ bool CQReferenceDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CReference * pReference = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         mpMIRIAMInfo->getReferences().CCopasiVector< CReference >::getIndex(pReference);
 
       if (delRow != C_INVALID_INDEX)
         {
           if (askEveryItem)
             {
-              QString resource = data(this->index(delRow, COL_RESOURCE_REFERENCE), Qt::DisplayRole).toString();
-              QString Id = data(this->index(delRow, COL_ID_REFERENCE), Qt::DisplayRole).toString();
+              QString resource = data(this->index((int) delRow, COL_RESOURCE_REFERENCE), Qt::DisplayRole).toString();
+              QString Id = data(this->index((int) delRow, COL_ID_REFERENCE), Qt::DisplayRole).toString();
               QString msg = "Do you want to delete Reference '";
 
               if (!resource.isNull())
@@ -226,11 +226,11 @@ bool CQReferenceDM::removeRows(QModelIndexList rows, const QModelIndex&)
           if (choice == QMessageBox::NoToAll)
             {return retVal;}
           else if (choice == QMessageBox::Yes)
-            {retVal = removeRow(delRow);}
+            {retVal = removeRow((int) delRow);}
           else if (choice == QMessageBox::YesToAll)
             {
               askEveryItem = false;
-              retVal = removeRow(delRow);
+              retVal = removeRow((int) delRow);
             }
         }
     }

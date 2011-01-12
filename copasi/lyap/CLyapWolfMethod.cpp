@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.19.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:49 $
+//   $Date: 2011/01/12 19:03:09 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -107,8 +112,8 @@ double CLyapWolfMethod::step(const double & deltaT)
   C_FLOAT64 EndTime = mTime + deltaT;
   C_INT one = 1;
   C_INT two = 2;
-  C_INT DSize = mDWork.size();
-  C_INT ISize = mIWork.size();
+  C_INT DSize = (C_INT) mDWork.size();
+  C_INT ISize = (C_INT) mIWork.size();
 
   mLSODA(&EvalF , //  1. evaluate F
          &mData.dim , //  2. number of variables
@@ -166,9 +171,9 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 
   //calculate the number of variables for lsoda integration
   if (mDoDivergence)
-    mData.dim = mSystemSize * (1 + mNumExp) + 1;
+    mData.dim = (C_INT)(mSystemSize * (1 + mNumExp) + 1);
   else
-    mData.dim = mSystemSize * (1 + mNumExp);
+    mData.dim = (C_INT)(mSystemSize * (1 + mNumExp));
 
   //reserve space for exponents. The vectors in the task are resized by the task because they
   //need to have a minimum size defined in the task
@@ -198,7 +203,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   //reserve space for jacobian
   mJacobian.resize(mSystemSize, mSystemSize);
 
-  unsigned C_INT32 i, imax = mNumExp;
+  size_t i, imax = mNumExp;
 
   for (i = 0; i < imax; ++i)
     {
@@ -291,7 +296,7 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
 
   dbl1 = ydot + mSystemSize;
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 1; i <= mNumExp; ++i)
     {
@@ -385,7 +390,7 @@ bool CLyapWolfMethod::calculate()
 
   mLsodaStatus = 1; //the state has changed, we need to restart lsoda
 
-  unsigned C_INT32 i;
+  size_t i;
 
   C_FLOAT64 realStepSize;
 
@@ -439,7 +444,7 @@ void CLyapWolfMethod::orthonormalize()
   mNorms[0] = norm(dbl, dblEnd);
   scalarmult(dbl, dblEnd, 1 / mNorms[0]);
 
-  unsigned C_INT32 i, j;
+  size_t i, j;
 
   for (i = 1; i < mNumExp; ++i)
     {

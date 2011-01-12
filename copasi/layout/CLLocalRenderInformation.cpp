@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLocalRenderInformation.cpp,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 17:08:19 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,18 +59,18 @@ CLLocalRenderInformation::CLLocalRenderInformation(const LocalRenderInformation&
     CLRenderInformationBase(source, "LocalRenderInformation", pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
-  unsigned int i, iMax = source.getNumStyles();
+  size_t i, iMax = source.getNumStyles();
 
   for (i = 0; i < iMax; ++i)
     {
-      this->mListOfStyles.add(new CLLocalStyle(*source.getStyle(i)), true);
+      this->mListOfStyles.add(new CLLocalStyle(*source.getStyle((unsigned int) i)), true);
     }
 }
 
 /**
  * Returns the number of styles.
  */
-unsigned int CLLocalRenderInformation::getNumStyles() const
+size_t CLLocalRenderInformation::getNumStyles() const
 {
   return this->mListOfStyles.size();
 }
@@ -95,7 +95,7 @@ const CCopasiVector<CLLocalStyle>* CLLocalRenderInformation::getListOfStyles() c
  * Returns a pointer to the style with the given index.
  * If the index is invalid, NULL is returned.
  */
-CLLocalStyle* CLLocalRenderInformation::getStyle(unsigned int i)
+CLLocalStyle* CLLocalRenderInformation::getStyle(size_t i)
 {
   return (i < this->mListOfStyles.size()) ? this->mListOfStyles[i] : NULL;
 }
@@ -104,7 +104,7 @@ CLLocalStyle* CLLocalRenderInformation::getStyle(unsigned int i)
  * Returns a pointer to the style with the given index.
  * If the index is invalid, NULL is returned.
  */
-const CLLocalStyle* CLLocalRenderInformation::getStyle(unsigned int i) const
+const CLLocalStyle* CLLocalRenderInformation::getStyle(size_t i) const
 {
   return (i < this->mListOfStyles.size()) ? this->mListOfStyles[i] : NULL;
 }
@@ -129,7 +129,7 @@ LocalRenderInformation* CLLocalRenderInformation::toSBML(unsigned int level, uns
   LocalRenderInformation* pLRI = new LocalRenderInformation(level, version);
   //this->addSBMLAttributes(pLRI,colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
   this->addSBMLAttributes(pLRI);
-  unsigned int i, iMax = this->mListOfStyles.size();
+  size_t i, iMax = this->mListOfStyles.size();
 
   for (i = 0; i < iMax; ++i)
     {

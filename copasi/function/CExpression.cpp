@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 13:41:34 $
+//   $Date: 2011/01/12 19:00:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -182,7 +187,7 @@ std::string CExpression::getDisplay_XPP_String() const
 
 #include "utilities/copasimathml.h"
 
-void CExpression::writeMathML(std::ostream & out, bool fullExpand, unsigned C_INT32 l) const
+void CExpression::writeMathML(std::ostream & out, bool fullExpand, size_t l) const
 {
   if (mpRoot)
     {
@@ -202,7 +207,7 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, unsigned C_IN
 // static
 CExpression * CExpression::createInitialExpression(const CExpression & expression, const CCopasiDataModel* pDataModel)
 {
-  unsigned C_INT32 Size = CCopasiMessage::size();
+  size_t Size = CCopasiMessage::size();
   CExpression * pInitialExpression = new CExpression(expression, expression.getObjectParent());
 
   std::vector< CEvaluationNode * > * pNodeList =

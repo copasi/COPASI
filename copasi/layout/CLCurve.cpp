@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,7 +126,7 @@ bool CLCurve::isContinuous() const
 {
   if (mvCurveSegments.size() <= 1) return true;
 
-  C_INT32 i, imax = mvCurveSegments.size() - 1;
+  size_t i, imax = mvCurveSegments.size() - 1;
 
   for (i = 0; i < imax; ++i)
     if (!(mvCurveSegments[i].getEnd() == mvCurveSegments[i + 1].getStart()))
@@ -143,7 +143,7 @@ std::vector <CLPoint> CLCurve::getListOfPoints() const
 
   if (!isContinuous()) return ret;
 
-  C_INT32 i, imax = mvCurveSegments.size();
+  size_t i, imax = mvCurveSegments.size();
 
   for (i = 0; i < imax; ++i)
     ret.push_back(mvCurveSegments[i].getStart());
@@ -158,7 +158,7 @@ void CLCurve::exportToSBML(Curve * c, const std::map<CCopasiObject*, SBase*> & c
   if (!c) return;
 
   //we will reconstruct the curve completely without checking the existing curve
-  unsigned C_INT32 i, imax = c->getListOfCurveSegments()->size();
+  size_t i, imax = c->getListOfCurveSegments()->size();
 
   for (i = 0; i < imax; ++i) delete c->getListOfCurveSegments()->remove(0);
 
@@ -183,7 +183,7 @@ std::ostream & operator<<(std::ostream &os, const CLCurve & c)
   if (c.getNumCurveSegments())
     {
       os << "      Curve:\n";
-      C_INT32 i, imax = c.getNumCurveSegments();
+      size_t i, imax = c.getNumCurveSegments();
 
       for (i = 0; i < imax; ++i)
         os << "        " << c.getCurveSegments()[i] << "\n";
@@ -204,7 +204,7 @@ CLBoundingBox CLCurve::calculateBoundingBox() const
   double xMax = -xMin;
   double yMax = -xMin;
   double x, y;
-  unsigned int i, iMax = this->getNumCurveSegments();
+  size_t i, iMax = this->getNumCurveSegments();
   const CLLineSegment* pLS = NULL;
   const CLPoint* pP = NULL;
 

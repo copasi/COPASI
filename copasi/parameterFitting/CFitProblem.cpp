@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.6 $
+//   $Revision: 1.66.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 15:22:12 $
+//   $Date: 2011/01/12 19:04:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,7 +204,7 @@ bool CFitProblem::elevateChildren()
 
   if (pTasks)
     {
-      unsigned C_INT32 i, imax = pTasks->size();
+      size_t i, imax = pTasks->size();
 
       if (!mpParmSteadyStateCN->compare(0, 5 , "Task_") ||
           *mpParmSteadyStateCN == "")
@@ -420,9 +420,9 @@ bool CFitProblem::initialize()
   std::vector<COptItem * >::iterator itTmp;
 
   CFitItem * pItem;
-  unsigned C_INT32 i, imax;
-  unsigned C_INT32 j;
-  unsigned C_INT32 Index;
+  size_t i, imax;
+  size_t j;
+  size_t Index;
 
   imax = mSolutionVariables.size();
 
@@ -686,9 +686,9 @@ bool CFitProblem::calculate()
   mCounter += 1;
   bool Continue = true;
 
-  unsigned i, imax = mpExperimentSet->getExperimentCount();
-  unsigned j;
-  unsigned kmax;
+  size_t i, imax = mpExperimentSet->getExperimentCount();
+  size_t j;
+  size_t kmax;
   mCalculateValue = 0.0;
 
   CExperiment * pExp = NULL;
@@ -922,7 +922,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
   CFitItem * pFitItem;
   CExperiment * pExperiment;
 
-  unsigned C_INT32 i, j;
+  size_t i, j;
 
   os << "\tParameter\tValue\tGradient\tStandard Deviation" << std::endl;
 
@@ -972,7 +972,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
       os << "Parameter Interdependence:" << std::endl;
       os << "  " << mFisher << std::endl;
 
-      unsigned C_INT32 k, kmax = mpExperimentSet->getExperimentCount();
+      size_t k, kmax = mpExperimentSet->getExperimentCount();
 
       for (k = 0; k < kmax; k++)
         {
@@ -1038,9 +1038,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
 {
   // Set the current values to the solution values.
-  unsigned C_INT32 i, imax = mSolutionVariables.size();
-  unsigned C_INT32 j, jmax = mExperimentDependentValues.size();
-  unsigned C_INT32 l;
+  size_t i, imax = mSolutionVariables.size();
+  size_t j, jmax = mExperimentDependentValues.size();
+  size_t l;
 
   mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1092,7 +1092,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   mpCrossValidationSet->calculateStatistics();
 
-  unsigned C_INT32 lmax = this->mCrossValidationDependentValues.size();
+  size_t lmax = this->mCrossValidationDependentValues.size();
 
   if (lmax)
     mCrossValidationRMS = sqrt(mCrossValidationSolutionValue / lmax);
@@ -1388,7 +1388,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   char U = 'U';
   C_INT info = 0;
-  C_INT N = imax;
+  C_INT N = (C_INT) imax;
 
   dpotrf_(&U, &N, mCorrelation.array(), &N, &info);
 

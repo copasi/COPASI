@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,13 +155,13 @@ public:
    * Returns a const pointer to the local render information with the given index or NULL
    * if the index is invalid.
    */
-  const CLLocalRenderInformation* getRenderInformation(unsigned C_INT32 index) const;
+  const CLLocalRenderInformation* getRenderInformation(size_t index) const;
 
   /**
    * Returns a pointer to the local render information with the given index or NULL
    * if the index is invalid.
    */
-  CLLocalRenderInformation* getRenderInformation(unsigned C_INT32 index);
+  CLLocalRenderInformation* getRenderInformation(size_t index);
 
   /**
    *  add local render information to layout. The layout takes ownership of the object.

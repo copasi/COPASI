@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.9.4.1 $
+//   $Revision: 1.9.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:28 $
+//   $Date: 2011/01/12 19:07:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,7 @@ void CQOptimizationResult::languageChange()
 
 void CQOptimizationResult::init()
 {
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   // Set up the parameters table
   mpParameters->setNumCols(mpParameters->numCols() + 1);
@@ -74,7 +74,7 @@ void CQOptimizationResult::init()
   mpParameters->setReadOnly(true);
 
   for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
-    mpParameters->adjustColumn(i);
+    mpParameters->adjustColumn((int) i);
 }
 
 bool CQOptimizationResult::update(ListViews::ObjectType /* objectType */,
@@ -113,7 +113,7 @@ bool CQOptimizationResult::enterProtected()
   mpEditCPUTime->setText(QString::number(ExecutionTime));
   mpEditSpeed->setText(QString::number(FunctionEvaluations / ExecutionTime));
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   // Loop over the optimization items
   const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
@@ -125,7 +125,7 @@ bool CQOptimizationResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpParameters->setNumRows(imax);
+  mpParameters->setNumRows((int) imax);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -136,17 +136,17 @@ bool CQOptimizationResult::enterProtected()
         pDataModel->getObject(Items[i]->getObjectCN());
 
       if (pObject)
-        mpParameters->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
+        mpParameters->setText((int) i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
       else
-        mpParameters->setText(i, 0, "Not Found");
+        mpParameters->setText((int) i, 0, "Not Found");
 
       const C_FLOAT64 & Solution = Solutions[i];
-      mpParameters->setText(i, 1, QString::number(Solution));
-      mpParameters->setText(i, 2, QString::number(Gradients[i]));
+      mpParameters->setText((int) i, 1, QString::number(Solution));
+      mpParameters->setText((int) i, 2, QString::number(Gradients[i]));
     }
 
   for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
-    mpParameters->adjustColumn(i);
+    mpParameters->adjustColumn((int) i);
 
   return true;
 }
@@ -174,14 +174,14 @@ void CQOptimizationResult::slotSave(void)
 
   if (file.fail()) return;
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   // The global result and statistics
   file << "Objective Value" << std::endl;
   file << mpProblem->getSolutionValue() << std::endl;
 
   file << "Function Evaluations\tCPU Time [s]\tEvaluations/second [1/s]" << std::endl;
-  const unsigned C_INT32 & FunctionEvaluations = mpProblem->getFunctionEvaluations();
+  const size_t & FunctionEvaluations = mpProblem->getFunctionEvaluations();
   const C_FLOAT64 & ExecutionTime = mpProblem->getExecutionTime();
   file << FunctionEvaluations << "\t";
   file << ExecutionTime << "\t";

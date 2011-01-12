@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.59.4.1 $
+//   $Revision: 1.59.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:08 $
+//   $Date: 2011/01/12 19:06:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,7 +101,7 @@ CScanItem::CScanItem(CCopasiParameterGroup* si)
   mpValue = const_cast<CCopasiObject *>(tmpObject);
 }
 
-unsigned C_INT32 CScanItem::getNumSteps() const {return mNumSteps;};
+size_t CScanItem::getNumSteps() const {return mNumSteps;};
 
 void CScanItem::restoreValue() const
 {
@@ -315,8 +315,8 @@ bool CScanItemRandom::isValidScanItem()
     mReportB(0),
     mST(NULL)
 {
-  mReportB = *(unsigned C_INT32*)(si->getValue("Report break"));
-  mPlotB = *(unsigned C_INT32*)(si->getValue("Plot break"));
+  mReportB = *(size_t*)(si->getValue("Report break"));
+  mPlotB = *(size_t*)(si->getValue("Plot break"));
   mST = st;
   mNumSteps = 0;
 }
@@ -337,7 +337,7 @@ void CScanItemBreak::step()
 
 //**************** CScanMethod class ***************************
 
-CScanMethod * CScanMethod::createMethod(CCopasiMethod::SubType subType)
+CScanMethod * CScanMethod::createMethod(CCopasiMethod::SubType /* subType */)
 {
   return new CScanMethod();
 }
@@ -377,7 +377,7 @@ bool CScanMethod::cleanupScanItems()
 {
   if (!mpProblem) return false;
 
-  unsigned C_INT32 i, imax = mScanItems.size();
+  size_t i, imax = mScanItems.size();
 
   for (i = 0; i < imax; ++i) if (mScanItems[i]) delete mScanItems[i];
 
@@ -398,7 +398,7 @@ bool CScanMethod::init()
   mTotalSteps = 1;
   std::set< const CCopasiObject * > ObjectSet;
 
-  unsigned C_INT32 i, imax = mpProblem->getNumberOfScanItems();
+  size_t i, imax = mpProblem->getNumberOfScanItems();
 
   for (i = 0; i < imax; ++i)
     {
@@ -418,7 +418,7 @@ bool CScanMethod::init()
   if (imax != 0)
     {
       //search from the end
-      C_INT32 j;
+      size_t j;
 
       for (j = mScanItems.size() - 1; j >= 0; --j)
         {
@@ -442,7 +442,7 @@ bool CScanMethod::scan()
 
   bool success = true;
 
-  unsigned C_INT32 i, imax = mScanItems.size();
+  size_t i, imax = mScanItems.size();
 
   //store old parameter values
   for (i = 0; i < imax; ++i)
@@ -461,7 +461,7 @@ bool CScanMethod::scan()
   return success;
 }
 
-bool CScanMethod::loop(unsigned C_INT32 level)
+bool CScanMethod::loop(size_t level)
 {
   bool isLastMasterItem = (level == (mScanItems.size() - 1)); //TODO
 
@@ -516,7 +516,7 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  unsigned C_INT32 i, imax = pP->getNumberOfScanItems();
+  size_t i, imax = pP->getNumberOfScanItems();
 
   if (imax <= 0)
     {

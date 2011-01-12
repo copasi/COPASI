@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.86.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:02:01 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -88,7 +93,7 @@ public:
 
   bool createDataSets();
   bool mDataPresentP; // shows, whether time series data has been load before
-  C_INT32 getNumberOfSteps();
+  size_t getNumberOfSteps();
   bool isCircleMode();
 
   void setNodeSize(std::string key, C_FLOAT64 val);
@@ -97,7 +102,7 @@ public:
   std::string getNodeNameEntry(int i);
   std::string getNameForNodeKey(std::string key);
 
-  int getNumberOfNodeEntries() {return viewerNodes.size();}
+  size_t getNumberOfNodeEntries() {return viewerNodes.size();}
   CDataEntity* getDataSetAt(C_INT32 stepNumber);
 
   void mapLabelsToRectangles();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.20.2.1 $
+//   $Revision: 1.20.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 17:08:25 $
+//   $Date: 2011/01/12 19:01:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -278,7 +278,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
       //gradientIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getKey(),gradientIdToKeyMap));
       //lineEndingIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getKey(),lineEndingIdToKeyMap));
       // fix the references to layout objects in id lists
-      unsigned int j, jMax = pLRI->getNumStyles();
+      size_t j, jMax = pLRI->getNumStyles();
 
       for (j = 0; j < jMax; j++)
         {
@@ -291,7 +291,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   // fix the references
   // we have to consider the global ids as well
   // since all ids in these two map should be unique, we can just combine them
-  unsigned int count = idToKeyMap.size() + globalIdToKeyMap.size();
+  size_t count = idToKeyMap.size() + globalIdToKeyMap.size();
   idToKeyMap.insert(globalIdToKeyMap.begin(), globalIdToKeyMap.end());
   // make sure the ids were really unique
   assert(idToKeyMap.size() == count);
@@ -454,7 +454,7 @@ void SBMLDocumentLoader::convertPropertyIds(CLTransformation2D* pObject,
                  pG->setEndHead(pos->second);
                }
                // call this method for all children
-               unsigned int i,iMax=pG->getNumElements();
+               size_t i,iMax=pG->getNumElements();
                for(i=0; i < iMax; ++i)
                {
                    SBMLDocumentLoader::convertPropertyIds(dynamic_cast<CLTransformation2D*>(pG->getElement(i)),colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap);
@@ -493,7 +493,7 @@ void SBMLDocumentLoader::convertPropertyIds(CLTransformation2D* pObject,
 void SBMLDocumentLoader::convertColorIds(CLGradientBase& gradient,
         const std::map<std::string,std::string>& colorIdToKeyMap)
 {
-    unsigned int i,iMax=gradient.getNumGradientStops();
+    size_t i,iMax=gradient.getNumGradientStops();
     CLGradientStop* pStop=NULL;
     std::map<std::string,std::string>::const_iterator pos;
     for(i=0; i < iMax; ++i)
@@ -598,7 +598,7 @@ void SBMLDocumentLoader::convertPropertyKeys(Transformation2D* pObject,
                  pG->setEndHead(pos->second);
                }
                // call this method for all children
-               unsigned int i,iMax=pG->getNumElements();
+               size_t i,iMax=pG->getNumElements();
                for(i=0; i < iMax; ++i)
                {
                    SBMLDocumentLoader::convertPropertyKeys(dynamic_cast<Transformation2D*>(pG->getElement(i)),colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
@@ -637,7 +637,7 @@ void SBMLDocumentLoader::convertPropertyKeys(Transformation2D* pObject,
 void SBMLDocumentLoader::convertColorKeys(GradientBase& gradient,
         const std::map<std::string,std::string>& colorKeyToIdMap)
 {
-    unsigned int i,iMax=gradient.getNumGradientStops();
+    size_t i,iMax=gradient.getNumGradientStops();
     GradientStop* pStop=NULL;
     std::map<std::string,std::string>::const_iterator pos;
     for(i=0; i < iMax; ++i)
@@ -692,7 +692,7 @@ void SBMLDocumentLoader::convertPropertyKeys(RENDER_INFORMATION* pObject,
         assert(pos!=colorKeyToIdMap.end());
         pObject->setBackgroundColor(pos->second);
     }
-    unsigned int i,iMax=pObject->getNumLineEndings();
+    size_t i,iMax=pObject->getNumLineEndings();
     for(i=0;i < iMax; ++i)
     {
         SBMLDocumentLoader::convertPropertyIds(dynamic_cast<CLTransformation2D*>(pObject->getLineEnding(i)->getGroup()),colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
@@ -756,7 +756,7 @@ void SBMLDocumentLoader::expandIdToKeyMaps(const CLRenderInformationBase* pRende
         if(s.find_first_not_of(" \t\n\r") != std::string::npos)
         {
             // we have to create the entry for the referenced render info
-            unsigned int i,iMax=renderInformationVector.size();
+            size_t i,iMax=renderInformationVector.size();
             for(i=0; i < iMax; ++i)
             {
                 if(renderInformationVector[i]->getKey() == "s")
@@ -841,7 +841,7 @@ void SBMLDocumentLoader::expandKeyToIdMaps(const RenderInformationBase* pRenderI
         if(s.find_first_not_of(" \t\n\r") != std::string::npos)
         {
             // we have to create the entry for the referenced render info
-            unsigned int i,iMax=renderInformationVector.size();
+            size_t i,iMax=renderInformationVector.size();
             for(i=0; i < iMax; ++i)
             {
                 if(renderInformationVector.get(i)->getId() == "s")

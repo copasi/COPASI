@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMatrixDialog.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/03/25 14:01:30 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:07:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
   int i;
 
   mpLabelRow->setText("Rows : " + FROM_UTF8(tmp->getDimensionDescription(0)));
-  int nRows = tmp->size()[0];
+  size_t nRows = tmp->size()[0];
 
   if (!single)
     mpCBRow->insertItem("ALL");
@@ -63,7 +63,7 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
       mpCBColumn->show();
 
       mpLabelColumn->setText("Columns : " + FROM_UTF8(tmp->getDimensionDescription(1)));
-      int nCols = tmp->size()[1];
+      size_t nCols = tmp->size()[1];
 
       if (!single)
         mpCBColumn->insertItem("ALL");
@@ -85,7 +85,7 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
           mpCBDim3->show();
 
           mpLabelDim3->setText("Dimension : " + FROM_UTF8(tmp->getDimensionDescription(2)));
-          int nDims = tmp->size()[2];
+          size_t nDims = tmp->size()[2];
 
           if (!single)
             mpCBDim3->insertItem("ALL");

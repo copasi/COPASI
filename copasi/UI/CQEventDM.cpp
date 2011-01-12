@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.7.4.4 $
+//   $Revision: 1.7.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:42 $
+//   $Date: 2011/01/12 19:07:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,7 @@ CQEventDM::CQEventDM(QObject *parent)
 
 int CQEventDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents().size() + 1;
 }
 int CQEventDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -286,7 +286,7 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CEvent * pEvent = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getEvents().CCopasiVector< CEvent >::getIndex(pEvent);
 
       if (delRow != C_INVALID_INDEX)
@@ -298,7 +298,7 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
                                         deletedObjects);
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

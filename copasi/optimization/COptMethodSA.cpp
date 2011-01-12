@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/01/12 19:04:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,9 +73,9 @@ bool COptMethodSA::optimise()
       return false;
     }
 
-  unsigned C_INT32 i, j, k, m;
+  size_t i, j, k, m;
 
-  unsigned C_INT32 h, a;
+  size_t h, a;
   C_FLOAT64 xc, p, c, nt, New;
   C_FLOAT64 fk[STORED];
   bool ready;
@@ -126,7 +126,7 @@ bool COptMethodSA::optimise()
   mAccepted = 0;
 
   // set the number of steps at one single temperature
-  nt = 5 * mVariableSize;
+  nt = (C_FLOAT64)(5 * mVariableSize);
 
   if (nt < 100) nt = 100;
 
@@ -315,9 +315,7 @@ bool COptMethodSA::initialize()
   if (mpCallBack)
     mhTemperature =
       mpCallBack->addItem("Current Temperature",
-                          CCopasiParameter::UDOUBLE,
-                          & mTemperature,
-                          NULL);
+                          mTemperature);
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mContinue = true;

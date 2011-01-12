@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.10.2.1 $
+//   $Revision: 1.10.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/25 14:31:45 $
+//   $Date: 2011/01/12 19:03:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,15 +97,15 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
   CMIRIAMResource * pMIRIAMResource = NULL;
   std::string Name, URI, Deprecated, Pattern, IsDeprecated;
   int itNames = 0, itURIs = 0, sizeNames = 0, sizeURIs = 0;
-  unsigned C_INT32 processStep = 0, processSteps, hUpdateStep;
+  unsigned C_INT32 processStep = 0, processSteps;
+  size_t hUpdateStep;
   struct ns2__getDataTypesNameResponse DataTypesName;
 
   if (pProxy->getDataTypesName(DataTypesName) == SOAP_OK)
     {
       sizeNames = DataTypesName.getDataTypesNameReturn->__size;
       processSteps = sizeNames + 2;
-      hUpdateStep = pProcessReport->addItem("Update Process",
-                                            CCopasiParameter::UINT, &processStep, &processSteps);
+      hUpdateStep = pProcessReport->addItem("Update Process", processStep, &processSteps);
 
       if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
         return false;
@@ -193,10 +193,10 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 }
 
 void CMIRIAMResources::setMIRIAMLastUpdateDate()
-{*mpLastUpdateDate = (unsigned C_INT32) getActDateInSeconds();}
+{*mpLastUpdateDate = getActDateInSeconds();}
 
-void CMIRIAMResources::setMIRIAMUpdateFrequency(const unsigned C_INT32 updateFrequency)
-{*mpUpdateFrequency = updateFrequency * 24 * 60 * 60;}
+void CMIRIAMResources::setMIRIAMUpdateFrequencyInDays(const size_t & days)
+{*mpUpdateFrequency = (unsigned C_INT32)(days * 24 * 60 * 60);}
 
 unsigned C_INT32 CMIRIAMResources::getActDateInSeconds()
 {return (unsigned C_INT32) time(NULL);}
@@ -226,7 +226,7 @@ void CMIRIAMResources::createDisplayNameMap()
 {
   mDisplayName2Resource.clear();
 
-  unsigned C_INT32 Index = 0;
+  size_t Index = 0;
 
   CCopasiParameterGroup::index_iterator it = mpMIRIAMResources->beginIndex();
   CCopasiParameterGroup::index_iterator end = mpMIRIAMResources->endIndex();
@@ -242,7 +242,7 @@ void CMIRIAMResources::createURIMap()
 {
   mURI2Resource.clear();
 
-  unsigned C_INT32 Index = 0;
+  size_t Index = 0;
   CMIRIAMResource * pResource = NULL;
 
   CCopasiParameterGroup::index_iterator it = mpMIRIAMResources->beginIndex();
@@ -274,7 +274,7 @@ void CMIRIAMResources::createURIMap()
     }
 }
 
-const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const unsigned C_INT32 index) const
+const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const size_t index) const
 {
   if (index >= mpMIRIAMResources->size())
     return CCopasiRootContainer::getUnknownMiriamResource();
@@ -282,12 +282,12 @@ const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const unsigned C_INT
   return * static_cast< CMIRIAMResource * >(mpMIRIAMResources->getGroup(index));
 }
 
-unsigned C_INT32 CMIRIAMResources::getMIRIAMResourceIndex(const std::string & URI) const
+size_t CMIRIAMResources::getMIRIAMResourceIndex(const std::string & URI) const
 {
-  unsigned C_INT32 index = C_INVALID_INDEX;
+  size_t index = C_INVALID_INDEX;
 
-  std::map< std::string , unsigned C_INT32 >::const_iterator it = mURI2Resource.lower_bound(URI);
-  std::map< std::string , unsigned C_INT32 >::const_iterator end = mURI2Resource.upper_bound(URI);
+  std::map< std::string , size_t >::const_iterator it = mURI2Resource.lower_bound(URI);
+  std::map< std::string , size_t >::const_iterator end = mURI2Resource.upper_bound(URI);
 
   if (it == mURI2Resource.begin())
     return index;
@@ -307,10 +307,10 @@ unsigned C_INT32 CMIRIAMResources::getMIRIAMResourceIndex(const std::string & UR
   return index;
 }
 
-unsigned C_INT32 CMIRIAMResources::getResourceIndexFromDisplayName(const std::string & displayName) const
+size_t CMIRIAMResources::getResourceIndexFromDisplayName(const std::string & displayName) const
 {
   // Check if the display name is a know resource
-  std::map< std::string, unsigned C_INT32>::const_iterator it =
+  std::map< std::string, size_t>::const_iterator it =
     mDisplayName2Resource.find(displayName.c_str());
 
   // If we did not find the resource we set it to unknown
@@ -326,7 +326,7 @@ unsigned C_INT32 CMIRIAMResources::getResourceIndexFromDisplayName(const std::st
 /*void CMIRIAMResources::printResources(const std::string & sourceClass,
                                       const std::string & sourceFunction) const
   {
-    unsigned C_INT32 Index = 0;
+    size_t Index = 0;
 
     CCopasiParameterGroup::index_iterator it = mpMIRIAMResources->beginIndex();
     CCopasiParameterGroup::index_iterator end = mpMIRIAMResources->endIndex();

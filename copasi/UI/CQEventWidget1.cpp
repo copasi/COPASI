@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.24.2.4 $
+//   $Revision: 1.24.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/16 15:27:49 $
+//   $Date: 2011/01/12 19:07:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,13 +83,13 @@ void CQEventWidget1::slotBtnDeleteClicked()
   if (pModel == NULL)
     return;
 
-  unsigned C_INT32 index =
+  size_t index =
     pDataModel->getModel()->getEvents().CCopasiVector< CEvent >::getIndex(mpEvent);
 
   pDataModel->getModel()->removeEvent(mKey);
   std::string deletedKey = mKey;
 
-  unsigned C_INT32 Size = pDataModel->getModel()->getEvents().size();
+  size_t Size = pDataModel->getModel()->getEvents().size();
 
   mpEvent = NULL;
 
@@ -204,7 +204,7 @@ void CQEventWidget1::slotAddTarget()
   mAssignments.add(new CEventAssignment(pME->getKey()), true);
   mpLBTarget->addItem(FROM_UTF8(pME->getObjectDisplayName()));
 
-  mpLBTarget->setCurrentRow(mAssignments.size() - 1);
+  mpLBTarget->setCurrentRow((int)(mAssignments.size() - 1));
 }
 
 /*! Slot to remove the active target from the appearance
@@ -215,9 +215,9 @@ void CQEventWidget1::slotDeleteTarget()
   if (mCurrentTarget > mAssignments.size() - 1 ||
       mAssignments.size() == 0) return;
 
-  unsigned C_INT32 ToBeDeleted = mCurrentTarget;
+  size_t ToBeDeleted = mCurrentTarget;
 
-  QListWidgetItem * pItem = mpLBTarget->takeItem(ToBeDeleted);
+  QListWidgetItem * pItem = mpLBTarget->takeItem((int) ToBeDeleted);
   pdelete(pItem);
 
   mAssignments.remove(ToBeDeleted);
@@ -240,8 +240,8 @@ bool CQEventWidget1::loadFromEvent()
   mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
 
   // *** Order
-  mpSpinOrder->setRange(1, pModel->getEvents().size());
-  mpSpinOrder->setValue(mpEvent->getOrder());
+  mpSpinOrder->setRange(1, (int) pModel->getEvents().size());
+  mpSpinOrder->setValue((int) mpEvent->getOrder());
 
   // *** Expression of Trigger
   mpExpressionTrigger->mpExpressionWidget->setExpression(mpEvent->getTriggerExpression());
@@ -310,7 +310,7 @@ bool CQEventWidget1::loadFromEvent()
   mpLBTarget->clear();
   mpLBTarget->insertItems(0, Targets);
 
-  int NewTarget = mCurrentTarget;
+  size_t NewTarget = mCurrentTarget;
 
   if (mCurrentTarget == C_INVALID_INDEX &&
       mAssignments.size() > 0)
@@ -318,7 +318,7 @@ bool CQEventWidget1::loadFromEvent()
       NewTarget = 0;
     }
 
-  mpLBTarget->setCurrentRow(NewTarget);
+  mpLBTarget->setCurrentRow((int) NewTarget);
 
   mChanged = false;
 
@@ -357,7 +357,7 @@ void CQEventWidget1::saveToEvent()
     }
 
   // Order
-  if (mpEvent->getOrder() != (unsigned C_INT32) mpSpinOrder->value())
+  if (mpEvent->getOrder() != (size_t) mpSpinOrder->value())
     {
       mpEvent->setOrder(mpSpinOrder->value());
       mChanged = true;
@@ -400,7 +400,7 @@ void CQEventWidget1::saveToEvent()
   CCopasiVector< CEventAssignment >::const_iterator end = mAssignments.end();
 
   CCopasiVectorN< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
-  unsigned C_INT32 Found;
+  size_t Found;
 
   // We first update all assignments.
   for (; it != end; ++it)
@@ -423,7 +423,13 @@ void CQEventWidget1::saveToEvent()
   CCopasiVectorN< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
   CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
 
-  C_INT32 DeleteCount = OldAssignments.size() - mAssignments.size();
+  size_t DeleteCount = 0;
+
+  if (OldAssignments.size() > mAssignments.size())
+    {
+      DeleteCount = OldAssignments.size() - mAssignments.size();
+    }
+
   std::vector< std::string > ToBeDeleted;
 
   for (; itOld != endOld && DeleteCount > 0; ++itOld)
@@ -512,17 +518,17 @@ void CQEventWidget1::slotSelectObject()
   if (mAssignments[mCurrentTarget]->setTargetKey(pME->getKey()))
     {
       // If the target key change was successfull we need to update the label.
-      mpLBTarget->item(mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
+      mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
     }
 }
 
 /// Slot to actualize the assignment expression widget of event assignment according to the target
-void CQEventWidget1::slotActualizeAssignmentExpression(int index)
+void CQEventWidget1::slotActualizeAssignmentExpression(size_t index)
 {
-  unsigned C_INT32 NewTarget = (unsigned C_INT32) index;
+  size_t NewTarget = index;
 
-  if ((unsigned C_INT32) index != C_INVALID_INDEX &&
-      (unsigned C_INT32) index >= mAssignments.size())
+  if (index != C_INVALID_INDEX &&
+      index >= mAssignments.size())
     {
       NewTarget = mAssignments.size() - 1;
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-//   $Revision: 1.35.4.1 $
+//   $Revision: 1.35.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:07 $
+//   $Date: 2011/01/12 19:06:13 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,14 +44,14 @@ class CRandom;
 class CScanItem
 {
 protected:
-  unsigned C_INT32 mNumSteps;
+  size_t mNumSteps;
 
   // C_FLOAT64 * mpValue;
   CCopasiObject * mpValue;
 
   C_FLOAT64 mStoreValue;
 
-  unsigned C_INT32 mIndex;
+  size_t mIndex;
 
   bool mFlagFinished;
 
@@ -61,7 +61,7 @@ public:
       CRandom* rg,
       CScanTask* st);
 
-  unsigned C_INT32 getNumSteps() const;
+  size_t getNumSteps() const;
 
   void restoreValue() const;
 
@@ -149,7 +149,7 @@ public:
 /*class CScanItemBreak: public CScanItem
   {
   private:
-    unsigned C_INT32 mPlotB, mReportB;
+    size_t mPlotB, mReportB;
     CScanTask* mST;
   public:
     CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st);
@@ -182,18 +182,18 @@ protected:
 
   std::vector< Refresh * > mInitialRefreshes;
 
-  unsigned C_INT32 mTotalSteps;
+  size_t mTotalSteps;
 
   /**
    * the index of the last item that has several subitems,
    * also the last item that need to generate output separators
    */
-  C_INT32 mLastNestingItem;
+  size_t mLastNestingItem;
 
   /**
    *
    */
-  //unsigned C_INT32 mVariableSize;
+  //size_t mVariableSize;
 
   /**
    *
@@ -246,12 +246,12 @@ public:
 
   bool scan();
 
-  unsigned C_INT32 getTotalNumberOfSteps() const {return mTotalSteps;};
+  size_t getTotalNumberOfSteps() const {return mTotalSteps;};
 
   /**
    *  The main scan method.
    */
-  //void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
+  //void scan(size_t s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
 
   /**
    * Check if the method is suitable for this problem
@@ -263,19 +263,19 @@ private:
 
   bool cleanupScanItems();
 
-  bool loop(unsigned C_INT32 level);
+  bool loop(size_t level);
 
   bool calculate();
 
   /**
    *  Set the value of the scan parameter based on the distribution
-   *  @param unsigned C_INT32 i where to start in the distribution
-   *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
-   *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
+   *  @param size_t i where to start in the distribution
+   *  @param size_t first first parameter in the set of Master/Slaves
+   *  @param size_t last last parameter in the set of Master/Slaves
    */
-  //void setScanParameterValue(unsigned C_INT32 i,
-  //                           unsigned C_INT32 first,
-  //                           unsigned C_INT32 last);
+  //void setScanParameterValue(size_t i,
+  //                           size_t first,
+  //                           size_t last);
 };
 
 #endif // COPASI_CTrajectoryMethod

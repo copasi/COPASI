@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.83.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:55:48 $
+//   $Date: 2011/01/12 19:00:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,13 +87,13 @@ bool CFunction::setInfix(const std::string & infix)
   return true;
 }
 
-unsigned C_INT32 CFunction::getVariableIndex(const std::string & name) const
+size_t CFunction::getVariableIndex(const std::string & name) const
 {
   CFunctionParameter::DataType VariableType;
   return mVariables.findParameterByName(name, VariableType);
 }
 
-const C_FLOAT64 & CFunction::getVariableValue(const unsigned C_INT32 & index) const
+const C_FLOAT64 & CFunction::getVariableValue(const size_t & index) const
 {return *(*mpCallParameters)[index].value;}
 
 void CFunction::setReversible(const TriLogic & reversible)
@@ -207,7 +207,7 @@ bool CFunction::initVariables()
 
   //now remove all variables that are not in the tree anymore
   CFunctionParameter::DataType Type;
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = mVariables.size() - 1; i < C_INVALID_INDEX; i--)
     if (NewVariables.findParameterByName(mVariables[i]->getObjectName(), Type) == C_INVALID_INDEX)
@@ -216,8 +216,8 @@ bool CFunction::initVariables()
   return true;
 }
 
-bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
-                           const unsigned C_INT32 noProducts,
+bool CFunction::isSuitable(const size_t noSubstrates,
+                           const size_t noProducts,
                            const TriLogic reversible)
 {
   // A function which in neither restricted to reversible nor to irreversible reactions is always suitable
@@ -267,7 +267,7 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
 
 void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::string> > & env)
 {
-  unsigned C_INT32 i, imax = getVariables().size();
+  size_t i, imax = getVariables().size();
 
   env.clear();
   env.resize(imax);
@@ -281,7 +281,7 @@ void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::str
 void CFunction::writeMathML(std::ostream & out,
                             const std::vector<std::vector<std::string> > & env,
                             bool expand, bool fullExpand,
-                            unsigned C_INT32 l) const
+                            size_t l) const
 {
   if (expand && mpRoot)
     {
@@ -299,7 +299,7 @@ void CFunction::writeMathML(std::ostream & out,
       out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
       out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-      unsigned C_INT32 i, imax = getVariables().size();
+      size_t i, imax = getVariables().size();
 
       for (i = 0; i < imax; ++i)
         {
@@ -311,7 +311,7 @@ void CFunction::writeMathML(std::ostream & out,
     }
 }
 
-void CFunction::writeMathML(std::ostream & out, unsigned C_INT32 l) const
+void CFunction::writeMathML(std::ostream & out, size_t l) const
 {
   //out << "<math>" << std::endl;
 
@@ -319,7 +319,7 @@ void CFunction::writeMathML(std::ostream & out, unsigned C_INT32 l) const
   out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
   out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-  unsigned C_INT32 i, imax = getVariables().size();
+  size_t i, imax = getVariables().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -411,7 +411,7 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
   newFunction2->mReversible = TriFalse;
 
   //update the roles
-  C_INT32 i, imax;
+  size_t i, imax;
 
   imax = newFunction1->mVariables.size();
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.37.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2011/01/12 19:04:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,9 +84,9 @@ public:
    * Retrieve the index of an entity in the template.
    * Returns C_INVALID_INDEX if the entity is not found.
    * @param const CModelEntity * entity
-   * @return unsigned C_INT32 index
+   * @return size_t index
    */
-  unsigned C_INT32 getIndex(const CModelEntity * entity) const;
+  size_t getIndex(const CModelEntity * entity) const;
 
   /**
    * Reorder the template.
@@ -102,9 +102,9 @@ public:
 
   /**
    * Retrieve a pivot vector which can be used to reconstruct the user order.
-   * @return const CVector<unsigned C_INT32> & userOrder
+   * @return const CVector<size_t> & userOrder
    */
-  const CVector<unsigned C_INT32> & getUserOrder() const;
+  const CVector<size_t> & getUserOrder() const;
 
   /**
    * Retrieve the array of pointers to all entities.
@@ -194,34 +194,34 @@ public:
 
   /**
    * Retrieve the number of independent entities.
-   * @return unsigned C_INT32 numIndependent
+   * @return size_t numIndependent
    */
-  unsigned C_INT32 getNumIndependent() const;
+  size_t getNumIndependent() const;
 
   /**
    * Retrieve the number of dependent entities.
-   * @return unsigned C_INT32 numDependent
+   * @return size_t numDependent
    */
-  unsigned C_INT32 getNumDependent() const;
+  size_t getNumDependent() const;
 
   /**
    * Retrieve the number of variable entities, i.e., the sum of
    * independent and dependent variables.
-   * @return unsigned C_INT32 numVariable
+   * @return size_t numVariable
    */
-  unsigned C_INT32 getNumVariable() const;
+  size_t getNumVariable() const;
 
   /**
    * Retrieve the number of fixed entities.
-   * @return unsigned C_INT32 numFixed
+   * @return size_t numFixed
    */
-  unsigned C_INT32 getNumFixed() const;
+  size_t getNumFixed() const;
 
   /**
    * Retrieve size of the template, i.e., the number of entities.
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  const unsigned C_INT32 & size() const;
+  const size_t & size() const;
 
 protected:
   /**
@@ -254,7 +254,7 @@ private:
   /**
    * The allocate size of the template
    */
-  unsigned C_INT32 mSize;
+  size_t mSize;
 
   /**
    * A pointer to the independent entities
@@ -279,17 +279,17 @@ private:
   /**
    * The index in which the next added entity must be inserted.
    */
-  unsigned C_INT32 mInsert;
+  size_t mInsert;
 
   /**
    * A map of pointer to entities to the index it appear in the template
    */
-  std::map< CModelEntity *, unsigned C_INT32 > mIndexMap;
+  std::map< CModelEntity *, size_t > mIndexMap;
 
   /**
    * A pivot vector storing the user order of the entities
    */
-  CVector<unsigned C_INT32> mUserOrder;
+  CVector<size_t> mUserOrder;
 
   /**
    * The array of initial values of all entities
@@ -419,28 +419,28 @@ public:
 
   /**
    * Retrieve the number of independent entities.
-   * @return unsigned C_INT32 numIndependent
+   * @return size_t numIndependent
    */
-  unsigned C_INT32 getNumIndependent() const;
+  size_t getNumIndependent() const;
 
   /**
    * Retrieve the number of dependent entities.
-   * @return unsigned C_INT32 numDependent
+   * @return size_t numDependent
    */
-  unsigned C_INT32 getNumDependent() const;
+  size_t getNumDependent() const;
 
   /**
    * Retrieve the number of variable entities, i.e., the sum of
    * independent and dependent variables.
-   * @return unsigned C_INT32 numVariable
+   * @return size_t numVariable
    */
-  unsigned C_INT32 getNumVariable() const;
+  size_t getNumVariable() const;
 
   /**
    * Retrieve the number of fixed entities.
-   * @return unsigned C_INT32 numFixed
+   * @return size_t numFixed
    */
-  unsigned C_INT32 getNumFixed() const;
+  size_t getNumFixed() const;
 
   /*
   void setUpdateDependentRequired(const bool & required);
@@ -450,17 +450,17 @@ public:
 protected:
   // These methods are only accessible from CStateTemplate
   friend class CStateTemplate;
-  C_FLOAT64 * resize(const unsigned C_INT32 & size);
+  C_FLOAT64 * resize(const size_t & size);
 
   /**
    * Update the pointers to the different types of entities
-   * @param const unsigned C_INT32 & numIndependent
-   * @param const unsigned C_INT32 & numDependent
-   * @param const unsigned C_INT32 & numFixed
+   * @param const size_t & numIndependent
+   * @param const size_t & numDependent
+   * @param const size_t & numFixed
    */
-  void updateIterator(const unsigned C_INT32 & numIndependent,
-                      const unsigned C_INT32 & numDependent,
-                      const unsigned C_INT32 & numFixed);
+  void updateIterator(const size_t & numIndependent,
+                      const size_t & numDependent,
+                      const size_t & numFixed);
 
 private:
   /**
@@ -471,7 +471,7 @@ private:
   /**
    * Size of the state
    */
-  unsigned C_INT32 mSize;
+  size_t mSize;
 
   /**
    * Pointer to the beginning of values of independent entities.

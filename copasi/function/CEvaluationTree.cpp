@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.67.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:52 $
+//   $Date: 2011/01/12 19:00:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -196,10 +196,10 @@ const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
   return *mpNodeList;
 }
 
-unsigned C_INT32 CEvaluationTree::getVariableIndex(const std::string & /*name*/) const
+size_t CEvaluationTree::getVariableIndex(const std::string & /*name*/) const
 {return C_INVALID_INDEX;}
 
-const C_FLOAT64 & CEvaluationTree::getVariableValue(const unsigned C_INT32 & /*index*/) const
+const C_FLOAT64 & CEvaluationTree::getVariableValue(const size_t & /*index*/) const
 {
   static C_FLOAT64 Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   return Value;
@@ -515,12 +515,12 @@ const std::string& CEvaluationTree::getSBMLId() const
 }
 
 bool CEvaluationTree::completeEvaluationTreeList(std::vector< CEvaluationTree * > & list,
-    const unsigned C_INT32 & added)
+    const size_t & added)
 {
   unsigned Added = 0;
 
-  unsigned C_INT32 i, imax = list.size();
-  unsigned C_INT32 Index;
+  size_t i, imax = list.size();
+  size_t Index;
 
   CEvaluationTree * pTree;
   std::vector< CEvaluationNode * >::const_iterator it;

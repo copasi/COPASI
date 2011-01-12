@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.90.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/10 19:07:50 $
+//   $Date: 2011/01/12 19:05:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -491,6 +491,9 @@ bool CCopasiObject::isValueBool() const
 
 bool CCopasiObject::isValueInt() const
 {return (0 < (mObjectFlag & ValueInt));}
+
+bool CCopasiObject::isValueInt64() const
+{return (0 < (mObjectFlag & ValueInt64));}
 
 bool CCopasiObject::isValueDbl() const
 {return (0 < (mObjectFlag & ValueDbl));}

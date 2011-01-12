@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-//   $Revision: 1.42.22.1 $
+//   $Revision: 1.42.22.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/22 19:51:10 $
+//   $Date: 2011/01/12 19:01:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ bool CFunctionParameters::add(const std::string & name,
                               const CFunctionParameter::DataType & type,
                               CFunctionParameter::Role usage)
 {
-  unsigned C_INT32 Index = mParameters.getIndex(name);
+  size_t Index = mParameters.getIndex(name);
 
   if (Index != C_INVALID_INDEX)
     return false;
@@ -85,10 +85,10 @@ void CFunctionParameters::remove(const std::string & name)
   mParameters.remove(name);
 }
 
-CFunctionParameter * CFunctionParameters::operator[](unsigned C_INT32 index)
+CFunctionParameter * CFunctionParameters::operator[](size_t index)
 {return mParameters[index];}
 
-const CFunctionParameter * CFunctionParameters::operator[](unsigned C_INT32 index) const
+const CFunctionParameter * CFunctionParameters::operator[](size_t index) const
 {return mParameters[index];}
 
 CFunctionParameter * CFunctionParameters::operator[](const std::string &name)
@@ -99,14 +99,14 @@ const CFunctionParameter * CFunctionParameters::operator[](const std::string &na
 
 size_t CFunctionParameters::size() const {return mParameters.size();}
 
-void CFunctionParameters::swap(const unsigned C_INT32 & from, const unsigned C_INT32 & to)
+void CFunctionParameters::swap(const size_t & from, const size_t & to)
 {mParameters.swap(from, to);}
 
 const CFunctionParameter *
 CFunctionParameters::getParameterByUsage(CFunctionParameter::Role usage,
-    unsigned C_INT32 & pos) const
+    size_t & pos) const
 {
-  unsigned C_INT32 i, imax = mParameters.size();
+  size_t i, imax = mParameters.size();
 
   for (i = pos; i < imax; i++)
     if (mParameters[i]->getUsage() == usage)
@@ -122,10 +122,10 @@ CFunctionParameters::getParameterByUsage(CFunctionParameter::Role usage,
   return NULL;
 }
 
-unsigned C_INT32 CFunctionParameters::getNumberOfParametersByUsage(CFunctionParameter::Role usage) const
+size_t CFunctionParameters::getNumberOfParametersByUsage(CFunctionParameter::Role usage) const
 {
-  unsigned C_INT32 i, imax = mParameters.size();
-  unsigned C_INT32 count = 0;
+  size_t i, imax = mParameters.size();
+  size_t count = 0;
 
   for (i = 0; i < imax; i++)
     if (mParameters[i]->getUsage() == usage) ++count;
@@ -133,12 +133,12 @@ unsigned C_INT32 CFunctionParameters::getNumberOfParametersByUsage(CFunctionPara
   return count;
 }
 
-unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & name,
+size_t CFunctionParameters::findParameterByName(const std::string & name,
     CFunctionParameter::DataType & dataType) const
 {
   //std::string VectorName = name.substr(0, name.find_last_of('_'));
   std::string Name;
-  unsigned C_INT32 i, imax = mParameters.size();
+  size_t i, imax = mParameters.size();
 
   for (i = 0; i < imax; i++)
     {
@@ -156,7 +156,7 @@ unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & na
 
 bool CFunctionParameters::isVector(CFunctionParameter::Role role) const
 {
-  unsigned C_INT32 i, imax = mParameters.size();
+  size_t i, imax = mParameters.size();
 
   for (i = 0; i < imax; i++)
     if (mParameters[i]->getUsage() == role)
@@ -173,7 +173,7 @@ bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
 
   CFunctionParameter::Role lhsRole, rhsRole;
 
-  C_INT32 i, imax = size();
+  size_t i, imax = size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -201,7 +201,7 @@ std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d)
   //os << "    CFunctionParameters.mParameters " << std::endl << d.mParameters;
   //os << "----CFunctionParameters " << std::endl;
 
-  C_INT32 i, imax = d.mParameters.size();
+  size_t i, imax = d.mParameters.size();
 
   for (i = 0; i < imax; ++i)
     {

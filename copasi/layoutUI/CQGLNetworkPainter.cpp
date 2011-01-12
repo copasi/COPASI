@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.160.2.1 $
+//   $Revision: 1.160.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/10/19 12:22:20 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:02:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2145,7 +2145,7 @@ bool CQGLNetworkPainter::createDataSets()
   return loadDataSuccessful;
 }
 
-C_INT32 CQGLNetworkPainter::getNumberOfSteps()
+size_t CQGLNetworkPainter::getNumberOfSteps()
 {
   return mDataSets.size();
 }
@@ -2175,7 +2175,7 @@ void CQGLNetworkPainter::runAnimation()
 
 void CQGLNetworkPainter::triggerAnimationStep()
 {
-  C_INT32 numberOfSteps = 100;
+  size_t numberOfSteps = 100;
   bool animationRunning = true;
 
   if (pParentLayoutWindow != NULL)

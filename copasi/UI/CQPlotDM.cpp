@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.6.2.3 $
+//   $Revision: 1.6.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:42 $
+//   $Date: 2011/01/12 19:07:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ CQPlotDM::CQPlotDM(QObject *parent)
 
 int CQPlotDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size() + 1;
 }
 int CQPlotDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -279,9 +279,9 @@ bool CQPlotDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       pPS = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pDataModel->getPlotDefinitionList()->CCopasiVector< CPlotSpecification >::getIndex(pPS);
-      removeRow(delRow);
+      removeRow((int) delRow);
     }
 
   return true;

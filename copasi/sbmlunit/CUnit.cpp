@@ -128,7 +128,7 @@ void CUnit::applyExponent(double exp)
     }
 }
 
-void CUnit::applyExponent(const std::string& id, int frame)
+void CUnit::applyExponent(const std::string& id, size_t frame)
 {
   if (isDimensionless())
     return;
@@ -146,7 +146,7 @@ void CUnit::applyExponent(const std::string& id, int frame)
     }
 }
 
-void CUnit::applyInverseExponent(const std::string& id, int frame)
+void CUnit::applyInverseExponent(const std::string& id, size_t frame)
 {
   if (isDimensionless())
     return;

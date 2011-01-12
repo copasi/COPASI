@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.4.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/02/12 12:14:43 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:07:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,7 +74,7 @@ void CQExpandModelData::load()
 
   pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  unsigned C_INT32 i, imax = pModel->getCompartments().size();
+  size_t i, imax = pModel->getCompartments().size();
 
   mCompartmentName.resize(imax);
 
@@ -92,7 +92,7 @@ void CQExpandModelData::load()
 
       mpBoxCompartmentName->setEditable(false);
 
-      mpComboMap->setMapping(mpBoxCompartmentName, i);
+      mpComboMap->setMapping(mpBoxCompartmentName, (int) i);
       connect(mpBoxCompartmentName, SIGNAL(activated(int)), mpComboMap, SLOT(map()));
     }
 
@@ -108,7 +108,7 @@ void CQExpandModelData::slotOK()
 {
   std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
 
-  unsigned C_INT32 i, imax = pModel->getCompartments().size();
+  size_t i, imax = pModel->getCompartments().size();
 
   std::string key;
 
@@ -141,7 +141,7 @@ void CQExpandModelData::slotOK()
   if (diff)
     for (i = 0; i < imax; ++i)
       {
-        pCheckBox = dynamic_cast< QCheckBox* >(mpSpeciesTable->cellWidget(i, 1));
+        pCheckBox = dynamic_cast< QCheckBox* >(mpSpeciesTable->cellWidget((int) i, 1));
 
         if (pCheckBox == NULL); //TODO
 
@@ -183,7 +183,7 @@ void CQExpandModelData::slotCompartmentChanged(/* int row */)
 
   std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
 
-  unsigned C_INT32 i, imax = pModel->getCompartments().size();
+  size_t i, imax = pModel->getCompartments().size();
 
   std::string key;
 
@@ -210,7 +210,7 @@ void CQExpandModelData::slotApplyDiffusion(bool show)
 
       std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());
 
-      unsigned C_INT32 i, imax = pModel->getCompartments().size();
+      size_t i, imax = pModel->getCompartments().size();
 
       const CCompartment* comp;
 
@@ -226,16 +226,16 @@ void CQExpandModelData::slotApplyDiffusion(bool show)
           mMetaboliteName[i] = metab->getObjectName();
         }
 
-      mpSpeciesTable->setRowCount(imax);
+      mpSpeciesTable->setRowCount((int) imax);
 
       for (i = 0; i < imax; i++)
         {
           QTableWidgetItem *nameItem = new QTableWidgetItem();
           nameItem->setText(FROM_UTF8(mMetaboliteName[i]));
-          mpSpeciesTable->setItem(i, 0, nameItem);
+          mpSpeciesTable->setItem((int) i, 0, nameItem);
 
           pCheckBox = new QCheckBox(mpSpeciesTable);
-          mpSpeciesTable->setCellWidget(i, 1, pCheckBox);
+          mpSpeciesTable->setCellWidget((int) i, 1, pCheckBox);
 
           pCheckBox->setChecked(false);
         }

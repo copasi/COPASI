@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.28.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 17:28:23 $
+//   $Date: 2011/01/12 19:04:55 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -157,10 +162,10 @@ public:
   /**
    * Reads the experiment data form a the given stream
    * @param std::istream & in
-   * @param unsigned C_INT32 & currentLine
+   * @param size_t & currentLine
    * @return bool success
    */
-  bool read(std::istream & in, unsigned C_INT32 & currentLine);
+  bool read(std::istream & in, size_t & currentLine);
 
   /**
    * Calculate/set the weights used in the sum of squares.
@@ -170,19 +175,19 @@ public:
 
   /**
    * Retrieve the list of dependent data objects
-   * @return const std::map< CCopasiObject *, unsigned C_INT32 > & dependentObjects
+   * @return const std::map< CCopasiObject *, size_t > & dependentObjects
    */
-  const std::map< CCopasiObject *, unsigned C_INT32 > & getDependentObjects() const;
+  const std::map< CCopasiObject *, size_t > & getDependentObjects() const;
 
   /**
    * Calculate the sum of squares for the indexed row of the experiment.
    * If residuals is not NULL residuals will contain the differences
    * between the calculated and the experiment values.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @param C_FLOAT64 *& residuals (may be NULL)
    * @return C_FLOAT64 sumOfSquares
    */
-  C_FLOAT64 sumOfSquares(const unsigned C_INT32 & index,
+  C_FLOAT64 sumOfSquares(const size_t & index,
                          C_FLOAT64 *& residuals) const;
 
   /**
@@ -190,11 +195,11 @@ public:
    * On return dependentValues contains the calculated values. If
    * residuals is not NULL residuals will contain the differences
    * between the calculated and the experiment values.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @param C_FLOAT64 *& dependentValues (must not be NULL)
    * @return C_FLOAT64 sumOfSquares
    */
-  C_FLOAT64 sumOfSquaresStore(const unsigned C_INT32 & index,
+  C_FLOAT64 sumOfSquaresStore(const size_t & index,
                               C_FLOAT64 *& dependentValues);
 
   /**
@@ -212,9 +217,9 @@ public:
 
   /**
    * Try to guess the number of columns
-   * @return unsigned C_INT32 numColumns
+   * @return size_t numColumns
    */
-  unsigned C_INT32 guessColumnNumber() const;
+  size_t guessColumnNumber() const;
 
   /**
    * Retrieve the column names
@@ -224,10 +229,10 @@ public:
 
   /**
    * Update the model with the independent data of the experiment
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return bool success
    */
-  bool updateModelWithIndependentData(const unsigned C_INT32 & index);
+  bool updateModelWithIndependentData(const size_t & index);
 
   /**
    * Restore the model with the independent data from before the experiment
@@ -302,7 +307,7 @@ public:
    * with the values of the index data record. If index exceedds the
    * number of data records all values are set to NaN.
    */
-  void updateFittedPointValues(const unsigned C_INT32 & index);
+  void updateFittedPointValues(const size_t & index);
 
   /**
    * Retrieve the number of columns
@@ -358,9 +363,9 @@ public:
 
   /**
    * Retrieve the number of data rows
-   * @return const unsigned C_INT32 numDataRows
+   * @return const size_t numDataRows
    */
-  unsigned C_INT32 getNumDataRows() const;
+  size_t getNumDataRows() const;
 
   /**
    * Retrieve the separator
@@ -492,9 +497,9 @@ public:
   /**
    * Retrieve the data point caount for the object.
    * @param CCopasiObject *const& pObject
-   * @return unsigned C_INT32 count
+   * @return size_t count
    */
-  unsigned C_INT32 getCount(CCopasiObject *const& pObject) const;
+  size_t getCount(CCopasiObject *const& pObject) const;
 
 private:
   /**
@@ -607,7 +612,7 @@ private:
 
   CVector< C_FLOAT64 > mIndependentValues;
 
-  unsigned C_INT32 mNumDataRows;
+  size_t mNumDataRows;
 
   /**
    * The relevant dependent experimental data after reading a file
@@ -624,12 +629,12 @@ private:
 
   CVector< C_FLOAT64 > mColumnObjectiveValue;
   CVector< C_FLOAT64 > mColumnRMS;
-  CVector< unsigned C_INT32 > mColumnCount;
+  CVector< size_t > mColumnCount;
 
   /**
    * A map of all dependent data objects to dependent data columns;
    */
-  std::map< CCopasiObject *, unsigned C_INT32 > mDependentObjects;
+  std::map< CCopasiObject *, size_t > mDependentObjects;
 
   CCopasiVector< CFittingPoint > mFittingPoints;
 };

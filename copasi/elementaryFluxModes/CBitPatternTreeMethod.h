@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/02 18:09:36 $
+//   $Date: 2011/01/12 18:56:04 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -188,7 +193,7 @@ protected:
   /**
    * Handle to the process report item "Current Step"
    */
-  unsigned C_INT32 mhProgressCounter;
+  size_t mhProgressCounter;
 
   /**
    * The current combination used for process report.
@@ -203,7 +208,7 @@ protected:
   /**
    * Handle to the process report item "Combination"
    */
-  unsigned C_INT32 mhProgressCounter2;
+  size_t mhProgressCounter2;
 
   /**
    * A vector to recording the expansion of the stoichiometry matrix.

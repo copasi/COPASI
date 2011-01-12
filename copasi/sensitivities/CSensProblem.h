@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:51:46 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:06:25 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -47,7 +52,7 @@ public:
 
   std::vector<CCopasiObject*> getVariablesPointerList(CCopasiDataModel* pDataModel);
 
-  //unsigned C_INT32 dimensionality() const;
+  //size_t dimensionality() const;
 
   bool operator==(const CSensItem & rhs) const;
   bool operator!=(const CSensItem & rhs) const;
@@ -120,14 +125,14 @@ public:
   CSensItem getTargetFunctions() const;
   void changeTargetFunctions(const CSensItem item);
 
-  unsigned C_INT32 getNumberOfVariables() const;
-  CSensItem getVariables(unsigned C_INT32 index) const;
+  size_t getNumberOfVariables() const;
+  CSensItem getVariables(size_t index) const;
 
   void addVariables(const CSensItem & item);
 
-  bool changeVariables(unsigned C_INT32 index, const CSensItem & item);
+  bool changeVariables(size_t index, const CSensItem & item);
 
-  bool removeVariables(unsigned C_INT32 index);
+  bool removeVariables(size_t index);
 
   //remove all variables:
   bool removeVariables();

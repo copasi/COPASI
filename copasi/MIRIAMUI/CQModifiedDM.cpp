@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.10.2.1 $
+//   $Revision: 1.10.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:42 $
+//   $Date: 2011/01/12 19:03:35 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
 
 int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpMIRIAMInfo->getModifications().size() + 1;
+  return (int) mpMIRIAMInfo->getModifications().size() + 1;
 }
 int CQModifiedDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -190,14 +190,14 @@ bool CQModifiedDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CModification * pModified = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         mpMIRIAMInfo->getModifications().CCopasiVector< CModification >::getIndex(pModified);
 
       if (delRow != C_INVALID_INDEX)
         {
           if (askEveryItem)
             {
-              QString dateModified = data(this->index(delRow, COL_DATE_MODIFIED), Qt::DisplayRole).toString();
+              QString dateModified = data(this->index((int) delRow, COL_DATE_MODIFIED), Qt::DisplayRole).toString();
               QString msg = "Do you want to delete Date/Time Modified '";
 
               if (!dateModified.isNull())
@@ -216,12 +216,12 @@ bool CQModifiedDM::removeRows(QModelIndexList rows, const QModelIndex&)
             {return retVal;}
           else if (choice == QMessageBox::Yes)
             {
-              retVal = removeRow(delRow);
+              retVal = removeRow((int) delRow);
             }
           else if (choice == QMessageBox::YesToAll)
             {
               askEveryItem = false;
-              retVal = removeRow(delRow);
+              retVal = removeRow((int) delRow);
             }
         }
     }

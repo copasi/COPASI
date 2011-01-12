@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/21 13:28:28 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:05:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1582,8 +1582,8 @@ LIBSBML_EXTERN
 bool UnitConversionFactory::isIdUnused(const std::string& id)
 {
   bool unused = true;
-  unsigned int i;
-  unsigned int maxIds = usedIds.size();
+  size_t i;
+  size_t maxIds = usedIds.size();
 
   for (i = 0; i < maxIds; ++i)
     {

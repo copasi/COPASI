@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.15.4.5 $
+//   $Revision: 1.15.4.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:42 $
+//   $Date: 2011/01/12 19:07:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ CQReactionDM::CQReactionDM(QObject *parent):
 
 int CQReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions().size() + 1;
 }
 int CQReactionDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -388,7 +388,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CReaction * pReaction = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getReactions().CCopasiVector< CReaction >::getIndex(pReaction);
 
       if (delRow != C_INVALID_INDEX)
@@ -399,7 +399,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
                                         pReaction->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

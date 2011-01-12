@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderCurve.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2011/01/12 19:01:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,7 +84,7 @@ public:
   /**
    * Returns the number of curve segments.
    */
-  unsigned int getNumElements() const;
+  size_t getNumElements() const;
 
   /**
    * Creates a new bezier element.
@@ -102,13 +102,13 @@ public:
    * Returns a const pointer to the curve segment with the given index or NULL if
    * the id is invalid.
    */
-  const CLRenderPoint* getCurveElement(unsigned int index) const;
+  const CLRenderPoint* getCurveElement(size_t index) const;
 
   /**
    * Returns a pointer to the curve segment with the given index or NULL if
    * the id is invalid.
    */
-  CLRenderPoint* getCurveElement(unsigned int index);
+  CLRenderPoint* getCurveElement(size_t index);
 
   /**
    * Adds a copy of the given curve segment to the end of the list of
@@ -119,7 +119,7 @@ public:
   /**
    * Removes the curve segment with the given index.
    */
-  void removeCurveElement(unsigned int i);
+  void removeCurveElement(size_t i);
 
   /**
    * Returns a const pointer to the list of curve segments.

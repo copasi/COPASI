@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/13 10:53:38 $
+//   $Date: 2011/01/12 19:04:01 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -153,7 +158,7 @@ void CMathEvent::fire(const C_FLOAT64 & time,
                       const bool & equality,
                       CProcessQueue & processQueue)
 {
-  unsigned C_INT32 EventId = processQueue.createEventId();
+  size_t EventId = processQueue.createEventId();
 
   // Add each assignment to the calculation queue
   CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
@@ -220,7 +225,7 @@ CMathTrigger & CMathEvent::getMathTrigger()
   return mTrigger;
 }
 
-const unsigned C_INT32 & CMathEvent::getOrder() const
+const size_t & CMathEvent::getOrder() const
 {
   return mOrder;
 }

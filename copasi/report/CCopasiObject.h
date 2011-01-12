@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.83.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:04 $
+//   $Date: 2011/01/12 19:05:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,16 +177,17 @@ protected:
     Reference = 0x10,
     ValueBool = 0x20,
     ValueInt = 0x40,
-    ValueDbl = 0x80,
-    NonUniqueName = 0x100,
-    StaticString = 0x200,
-    ValueString = 0x400,
-    Separator = 0x800,
-    ModelEntity = 0x1000,
-    Array = 0x2000,
-    DataModel = 0x4000,
-    Root = 0x8000,
-    Gui = 0x10000
+    ValueInt64 = 0x80,
+    ValueDbl = 0x100,
+    NonUniqueName = 0x200,
+    StaticString = 0x400,
+    ValueString = 0x800,
+    Separator = 0x1000,
+    ModelEntity = 0x2000,
+    Array = 0x4000,
+    DataModel = 0x8000,
+    Root = 0x10000,
+    Gui = 0x20000
   };
 
 private:
@@ -387,6 +388,7 @@ public:
 
   bool isValueBool() const;
   bool isValueInt() const;
+  bool isValueInt64() const;
   bool isValueDbl() const;
   bool isNonUniqueName() const;
   bool isStaticString() const;

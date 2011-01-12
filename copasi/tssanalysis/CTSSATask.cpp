@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.14.2.1 $
+//   $Revision: 1.14.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:08 $
+//   $Date: 2011/01/12 19:07:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -184,7 +184,7 @@ bool CTSSATask::process(const bool & useInitialValues)
       L = &tfl;
     }
 
-  unsigned C_INT32 StepCounter = 1;
+  size_t StepCounter = 1;
 
   C_FLOAT64 outputStartTime = mpTSSAProblem->getOutputStartTime();
 
@@ -200,15 +200,14 @@ bool CTSSATask::process(const bool & useInitialValues)
   C_FLOAT64 handlerFactor = 100.0 / mpTSSAProblem->getDuration();
 
   C_FLOAT64 Percentage = 0;
-  unsigned C_INT32 hProcess;
+  size_t hProcess;
 
   if (mpCallBack)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
       hProcess = mpCallBack->addItem("Completion",
-                                     CCopasiParameter::DOUBLE,
-                                     &Percentage,
+                                     Percentage,
                                      &hundred);
     }
 

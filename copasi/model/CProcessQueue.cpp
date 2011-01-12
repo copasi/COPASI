@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2011/01/12 19:04:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@ CProcessQueue::CKey::CKey() :
     mCascadingLevel(0),
     mEquality(false),
     mOrder(0),
-    mEventId(std::numeric_limits<unsigned C_INT32>::max())
+    mEventId(std::numeric_limits<size_t>::max())
 {}
 
 CProcessQueue::CKey::CKey(const CKey & src) :
@@ -43,9 +43,9 @@ CProcessQueue::CKey::CKey(const CKey & src) :
 
 CProcessQueue::CKey::CKey(const C_FLOAT64 & executionTime,
                           const bool & equality,
-                          const unsigned C_INT32 & order,
-                          const unsigned C_INT32 & eventId,
-                          const unsigned C_INT32 & cascadingLevel) :
+                          const size_t & order,
+                          const size_t & eventId,
+                          const size_t & cascadingLevel) :
     mExecutionTime(executionTime),
     mCascadingLevel(cascadingLevel),
     mEquality(equality),
@@ -113,7 +113,7 @@ CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
 CProcessQueue::CAction::~CAction()
 {}
 
-void CProcessQueue::CAction::process(const unsigned C_INT32 & eventId)
+void CProcessQueue::CAction::process(const size_t & eventId)
 {
   // If the expression pointer is not NULL we have a calculation.
   if (mpExpression != NULL)
@@ -176,8 +176,8 @@ CProcessQueue::~CProcessQueue()
 
 bool CProcessQueue::addAssignment(const C_FLOAT64 & executionTime,
                                   const bool & equality,
-                                  const unsigned C_INT32 & order,
-                                  const unsigned C_INT32 & eventId,
+                                  const size_t & order,
+                                  const size_t & eventId,
                                   C_FLOAT64 * pTarget,
                                   const C_FLOAT64 & value,
                                   CMathEvent * pEvent)
@@ -185,7 +185,7 @@ bool CProcessQueue::addAssignment(const C_FLOAT64 & executionTime,
   // It is not possible to proceed backwards in time.
   if (executionTime < mTime) return false;
 
-  unsigned C_INT32 CascadingLevel = mCascadingLevel;
+  size_t CascadingLevel = mCascadingLevel;
 
   if (executionTime > mTime)
     CascadingLevel = 0;
@@ -202,8 +202,8 @@ bool CProcessQueue::addAssignment(const C_FLOAT64 & executionTime,
 
 bool CProcessQueue::addCalculation(const C_FLOAT64 & executionTime,
                                    const bool & equality,
-                                   const unsigned C_INT32 & order,
-                                   const unsigned C_INT32 & eventId,
+                                   const size_t & order,
+                                   const size_t & eventId,
                                    C_FLOAT64 * pTarget,
                                    CMathExpression * pExpression,
                                    CMathEvent * pEvent)
@@ -211,7 +211,7 @@ bool CProcessQueue::addCalculation(const C_FLOAT64 & executionTime,
   // It is not possible to proceed backwards in time.
   if (executionTime < mTime) return false;
 
-  unsigned C_INT32 CascadingLevel = mCascadingLevel;
+  size_t CascadingLevel = mCascadingLevel;
 
   if (executionTime > mTime)
     CascadingLevel = 0;
@@ -241,7 +241,7 @@ void CProcessQueue::initialize(CMathModel * pMathModel)
   mEventIdSet.clear();
   mSimultaneousAssignments = false;
 
-  unsigned C_INT32 NumRoots = mpMathModel->getNumRoots();
+  size_t NumRoots = mpMathModel->getNumRoots();
   mRootsFound.resize(NumRoots);
   mRootsFound = 0;
   mRootValues1.resize(NumRoots);
@@ -289,7 +289,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
   // as the queue enforces the proper ordering.
   while (success &&
          notEmpty(Assignments) &&
-         mCascadingLevel != std::numeric_limits<unsigned C_INT32>::max())
+         mCascadingLevel != std::numeric_limits<size_t>::max())
     {
       // We switch to the next cascading level so that events triggered by the
       // execution of assignments are properly scheduled.
@@ -371,8 +371,8 @@ CProcessQueue::range CProcessQueue::getCalculations()
   range Calculations;
 
   CKey UpperBound(mTime, mEquality,
-                  std::numeric_limits<unsigned C_INT32>::max(),
-                  std::numeric_limits<unsigned C_INT32>::max(),
+                  std::numeric_limits<size_t>::max(),
+                  std::numeric_limits<size_t>::max(),
                   mCascadingLevel);
 
   Calculations.first = mCalculations.begin();
@@ -410,8 +410,8 @@ CProcessQueue::range CProcessQueue::getAssignments()
 {
   range Assignments;
   CKey UpperBound(mTime, mEquality,
-                  std::numeric_limits<unsigned C_INT32>::max(),
-                  std::numeric_limits<unsigned C_INT32>::max(),
+                  std::numeric_limits<size_t>::max(),
+                  std::numeric_limits<size_t>::max(),
                   mCascadingLevel);
 
   Assignments.first = mAssignments.begin();
@@ -452,8 +452,8 @@ bool CProcessQueue::executeCalculations(CProcessQueue::range & calculations)
   iterator it = calculations.first;
   assert(it != mCalculations.end());
 
-  unsigned C_INT32 EventIdOld = it->first.getEventId();
-  unsigned C_INT32 EventIdNew = createEventId();
+  size_t EventIdOld = it->first.getEventId();
+  size_t EventIdNew = createEventId();
 
   CMathEvent * pEvent = it->second.mpEvent;
 
@@ -485,8 +485,8 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   iterator it = assignments.first;
   assert(it != mAssignments.end());
 
-  unsigned C_INT32 EventIdOld = it->first.getEventId();
-  unsigned C_INT32 EventIdNew = 0;
+  size_t EventIdOld = it->first.getEventId();
+  size_t EventIdNew = 0;
 
   CMathEvent * pEvent = it->second.mpEvent;
 
@@ -579,9 +579,9 @@ bool CProcessQueue::notEmpty(const CProcessQueue::range & range)
   return range.first != range.second;
 }
 
-const unsigned C_INT32 & CProcessQueue::createEventId()
+const size_t & CProcessQueue::createEventId()
 {
-  unsigned C_INT32 EventId = 0;
+  size_t EventId = 0;
 
   if (mEventIdSet.size() > 0)
     {
@@ -591,7 +591,7 @@ const unsigned C_INT32 & CProcessQueue::createEventId()
   return * mEventIdSet.insert(++EventId).first;
 }
 
-void CProcessQueue::destroyEventId(const unsigned C_INT32 & eventId)
+void CProcessQueue::destroyEventId(const size_t & eventId)
 {
   mEventIdSet.erase(eventId);
 }

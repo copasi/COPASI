@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.15.4.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/02/11 19:42:49 $
+   $Date: 2011/01/12 19:04:55 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,9 +87,9 @@ public:
 
   /**
    * Retreive the number of the experiments in the set
-   * @return unsigned C_INT32 experimentCount
+   * @return size_t experimentCount
    */
-  unsigned C_INT32 getExperimentCount() const;
+  size_t getExperimentCount() const;
 
 public:
   /**
@@ -100,23 +100,23 @@ public:
 
   /**
    * Remove an experiment from the set
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    */
-  void removeExperiment(const unsigned C_INT32 & index);
+  void removeExperiment(const size_t & index);
 
   /**
    * Retrieve the indexed experiment
-   * @param const unsigned C_INT32 & index,
+   * @param const size_t & index,
    * @return CExperiment * experiment
    */
-  CExperiment * getExperiment(const unsigned C_INT32 & index);
+  CExperiment * getExperiment(const size_t & index);
 
   /**
    * Retrieve the indexed experiment
-   * @param const unsigned C_INT32 & index,
+   * @param const size_t & index,
    * @return const CExperiment * experiment
    */
-  const CExperiment * getExperiment(const unsigned C_INT32 & index) const;
+  const CExperiment * getExperiment(const size_t & index) const;
 
   /**
    * Retrieve the indexed experiment
@@ -141,31 +141,31 @@ public:
 
   /**
    * Retrieve the indexed experiment type
-   * @param const unsigned C_INT32 & index,
+   * @param const size_t & index,
    * @return const CCopasiTasK::Type & experimentType
    */
-  const CCopasiTask::Type & getExperimentType(const unsigned C_INT32 & index) const;
+  const CCopasiTask::Type & getExperimentType(const size_t & index) const;
 
   /**
    * Retrieve the independent data of the indexed experiment.
-   * @param const unsigned C_INT32 & index,
+   * @param const size_t & index,
    * @return const CMatrix< C_FLOAT64 > & independentData
    */
-  const CMatrix< C_FLOAT64 > & getIndependentData(const unsigned C_INT32 & index) const;
+  const CMatrix< C_FLOAT64 > & getIndependentData(const size_t & index) const;
 
   /**
    * Retrieve the dependent data of the indexed experiment.
-   * @param const unsigned C_INT32 & index,
+   * @param const size_t & index,
    * @return const CMatrix< C_FLOAT64 > & dependentData
    */
-  const CMatrix< C_FLOAT64 > & getDependentData(const unsigned C_INT32 & index) const;
+  const CMatrix< C_FLOAT64 > & getDependentData(const size_t & index) const;
 
   /**
    * Convert an experiment key to an index
    * @param const std::string & key
-   * @return unsigned C_INT32 index
+   * @return size_t index
    */
-  unsigned C_INT32 keyToIndex(const std::string & key) const;
+  size_t keyToIndex(const std::string & key) const;
 
   /**
    * Sort the experiments in the set
@@ -180,9 +180,9 @@ public:
 
   /**
    * Retreive the number of data points of all experiments combined.
-   * @return unsigned C_INT32 dataPointCount
+   * @return size_t dataPointCount
    */
-  unsigned C_INT32 getDataPointCount() const;
+  size_t getDataPointCount() const;
 
   /**
    * Retrieve the list of dependent data objects
@@ -231,7 +231,7 @@ private:
   /**
    * The number of parameters which are not of type CExperiment
    */
-  unsigned C_INT32 mNonExperiments;
+  size_t mNonExperiments;
 
   /**
    * A set of all dependent data objects;
@@ -261,7 +261,7 @@ private:
   /**
    * A list of the number of data points for each dependent object;
    */
-  CVector< unsigned C_INT32 > mDependentDataCount;
+  CVector< size_t > mDependentDataCount;
 };
 
 #ifdef COPASI_CROSSVALIDATION

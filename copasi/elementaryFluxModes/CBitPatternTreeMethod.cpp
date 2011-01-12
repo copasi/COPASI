@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.25.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/07 09:16:21 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 18:56:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,13 +147,12 @@ bool CBitPatternTreeMethod::initialize()
   mpStepMatrix = new CStepMatrix(KernelMatrix);
 
   mProgressCounter = 0;
-  mProgressCounterMax = mpStepMatrix->getNumUnconvertedRows();
+  mProgressCounterMax = (unsigned C_INT32) mpStepMatrix->getNumUnconvertedRows();
 
   if (mpCallBack)
     mhProgressCounter =
       mpCallBack->addItem("Current Step",
-                          CCopasiParameter::UINT,
-                          & mProgressCounter,
+                          mProgressCounter,
                           & mProgressCounterMax);
 
   return true;
@@ -201,13 +200,12 @@ bool CBitPatternTreeMethod::calculate()
 
           // Iterate over all combinations and add/remove columns to the step matrix
           mProgressCounter2 = 0;
-          mProgressCounter2Max = PositiveTree.size() * NegativeTree.size();
+          mProgressCounter2Max = (unsigned C_INT32)(PositiveTree.size() * NegativeTree.size());
 
           if (mpCallBack)
             mhProgressCounter2 =
               mpCallBack->addItem("Combinations",
-                                  CCopasiParameter::UINT,
-                                  & mProgressCounter2,
+                                  mProgressCounter2,
                                   & mProgressCounter2Max);
 
           combine(PositiveTree.getRoot(), NegativeTree.getRoot());
@@ -234,7 +232,7 @@ bool CBitPatternTreeMethod::calculate()
             }
         }
 
-      mProgressCounter = mProgressCounterMax - mpStepMatrix->getNumUnconvertedRows();
+      mProgressCounter = mProgressCounterMax - (unsigned C_INT32) mpStepMatrix->getNumUnconvertedRows();
 
       if (mpCallBack)
         Continue &= mpCallBack->progressItem(mhProgressCounter);
@@ -419,7 +417,7 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
 
   size_t NumSpecies = Stoi.numRows();
 
-  C_INT32 Dim = std::min(NumExpandedReactions, NumSpecies);
+  size_t Dim = std::min(NumExpandedReactions, NumSpecies);
 
   if (Dim == 0)
     {
@@ -450,14 +448,14 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
           // TODO We should check the we have integer stoichiometry.
           if (itReactionExpansion->second == false)
             {
-              *pExpandedStoiTranspose = -floor(*pStoi + 0.5);
+              *pExpandedStoiTranspose = (C_INT64) - floor(*pStoi + 0.5);
 
               // Advance the iterators
               ++itReactionExpansion;
               pExpandedStoiTranspose += NumSpecies;
             }
 
-          *pExpandedStoiTranspose = floor(*pStoi + 0.5);
+          *pExpandedStoiTranspose = (C_INT64) floor(*pStoi + 0.5);
         }
     }
 
@@ -474,13 +472,13 @@ void CBitPatternTreeMethod::buildFluxModes()
   CStepMatrix::const_iterator end = mpStepMatrix->end();
 
   CVector< size_t > Indexes;
-  C_INT NumSpecies = mExpandedStoiTranspose.numCols();
+  size_t NumSpecies = mExpandedStoiTranspose.numCols();
 
   for (; it != end; ++it)
     {
       getUnsetBitIndexes(*it, Indexes);
 
-      C_INT NumReactions = Indexes.size();
+      size_t NumReactions = Indexes.size();
 
       // Remove trivial modes, i.e., reversible reactions
       if (NumReactions == 2 &&
@@ -539,7 +537,7 @@ void CBitPatternTreeMethod::buildFluxModes()
               std::pair< size_t, bool > & ReactionForward = mReactionForward[*pIndex];
 
               Reactions[ReactionForward.first] =
-                (ReactionForward.second == true) ? *pFluxMultiplier : -*pFluxMultiplier;
+                (C_FLOAT64)((ReactionForward.second == true) ? *pFluxMultiplier : -*pFluxMultiplier);
 
               if (!(*mpReorderedReactions)[ReactionForward.first]->isReversible())
                 {

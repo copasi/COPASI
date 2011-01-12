@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.19.2.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 14:47:43 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:07:18 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -333,7 +333,7 @@ void CCSPMethod::findTimeScaleSeparation(C_INT & n, C_INT & k, CVector< C_FLOAT6
 #endif
 
 /* find  the number of candidates to  fast  according to the time-scale separation ratio */
-void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 > & eigen, C_INT & info)
+void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 > & eigen, C_INT & /* info */)
 {
 
   C_INT i;
@@ -383,7 +383,7 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
 void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B)
 {
 
-  C_INT reacs_size = mpModel->getReactions().size();
+  C_INT reacs_size = (C_INT) mpModel->getReactions().size();
   emptyOutputData(N, N, reacs_size);
 
 #ifdef CSPDEBUG
@@ -1137,7 +1137,7 @@ void CCSPMethod::start(const CState * initialState)
 
   /*  CSP Output  */
 
-  C_INT32 reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpModel->getReactions().size();
 
   mAmplitude.resize(mData.dim);
   mRadicalPointer.resize(mData.dim, mData.dim);
@@ -1228,7 +1228,7 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
 {
 
   C_INT i, j, m, r;
-  C_INT32 reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpModel->getReactions().size();
   //const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
   //C_INT  size = mpModel->getRedStoi().size();
@@ -1347,7 +1347,7 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
 {
 
   C_INT i, r, j;
-  C_INT32 reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpModel->getReactions().size();
   const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
 
@@ -1445,7 +1445,7 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 {
 
   C_INT i, r;
-  C_INT reacs_size = mpModel->getReactions().size();
+  C_INT reacs_size = (C_INT) mpModel->getReactions().size();
   const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
 
@@ -2072,7 +2072,7 @@ void CCSPMethod::setVectors(int fast)
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
   C_INT i, r, m;
-  C_INT reacs_size = mpModel->getReactions().size();
+  C_INT reacs_size = (C_INT) mpModel->getReactions().size();
 
   for (i = 0; i < mData.dim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);

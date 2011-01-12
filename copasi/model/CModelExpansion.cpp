@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.9.2.1 $
+//   $Revision: 1.9.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/12/17 13:45:13 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:04:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
 
   ci.keyMap[mpModel->getKey()] = "";
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   imax = mpModel->getCompartments().size();
 
@@ -196,8 +196,8 @@ std::string CModelExpansion::testName(const std::string & mname, std::set<std::s
 
   std::ostringstream newname;
 
-  //unsigned C_INT32 name_size = mname.size();
-  //unsigned C_INT32 i;
+  //size_t name_size = mname.size();
+  //size_t i;
 
   /*
   for (i = 0; i < name_size; i++)
@@ -233,8 +233,8 @@ void CModelExpansion::nameInSet(const std::string & mname, std::set<std::string>
 
   //std::ostringstream newname, tmp;
 
-  //unsigned C_INT32 name_size = mname.size();
-  //unsigned C_INT32 i;
+  //size_t name_size = mname.size();
+  //size_t i;
 
   //for (i = 0; i < name_size; i++)
   //  {
@@ -260,7 +260,7 @@ std::vector<CModelExpansion::CompartmentInfo> CModelExpansion::copyCompartment(c
   unsigned int num = 0;
   // we make a set that contains all reactions that involve the given compartment
   std::set<const CReaction*> relevantReactions;
-  unsigned int i = 0, iMax = this->mpModel->getReactions().size();
+  size_t i = 0, iMax = this->mpModel->getReactions().size();
   const CReaction* pReact = NULL;
 
   while (i < iMax)
@@ -294,7 +294,7 @@ std::vector<CModelExpansion::CompartmentInfo> CModelExpansion::copyCompartment(c
       info.keyMap[source->getKey()] = newComp->getKey();
 
       //create copies of the metabs
-      unsigned C_INT32 i, imax = source->getMetabolites().size();
+      size_t i, imax = source->getMetabolites().size();
 
       for (i = 0; i < imax; ++i)
         {
@@ -335,7 +335,7 @@ std::vector<CModelExpansion::CompartmentInfo> CModelExpansion::copyCompartment(c
           pNewReac->setReversible(pReact->isReversible());
           std::map<std::string, std::string>::const_iterator mapIt;
           std::string targetKey;
-          unsigned C_INT32 j, jmax = pReact->getChemEq().getSubstrates().size();
+          size_t j, jmax = pReact->getChemEq().getSubstrates().size();
 
           for (j = 0; j < jmax; ++j)
             {
@@ -416,7 +416,7 @@ std::vector<CModelExpansion::CompartmentInfo> CModelExpansion::copyCompartment(c
                         pNewReac->clearParameterMapping(j);
                       }
 
-                    unsigned C_INT32 k;
+                    size_t k;
 
                     for (k = 0; k < pReact->getParameterMappings()[j].size(); ++k)
                       {
@@ -500,7 +500,7 @@ bool CModelExpansion::reactionInvolvesCompartment(const CReaction * reac, const 
 
   if (!comp) return false;
 
-  unsigned C_INT32 i, imax = reac->getChemEq().getSubstrates().size();
+  size_t i, imax = reac->getChemEq().getSubstrates().size();
 
   for (i = 0; i < imax; ++i)
     if (reac->getChemEq().getSubstrates()[i]->getMetabolite()->getCompartment() == comp)
@@ -525,7 +525,7 @@ bool CModelExpansion::copyModelValuesExpressions(std::string copyname)
 {
   bool info = false;
 
-  unsigned C_INT32 i, imax = mpModel->getModelValues().size();
+  size_t i, imax = mpModel->getModelValues().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -594,7 +594,7 @@ bool CModelExpansion::copyMetabolitesExpressions(const CCompartment* source)
 {
   bool info = false;
 
-  unsigned C_INT32 i, imax = source->getMetabolites().size();
+  size_t i, imax = source->getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -669,7 +669,7 @@ std::string CModelExpansion::copyExpression(const CExpression * pExpression)
   tmp = new CExpression(*pExpression, mpModel);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
+  size_t j, jmax = objectNodes.size();
 
   for (j = 0; j < jmax; ++j)
     {
@@ -719,7 +719,7 @@ bool CModelExpansion::copyEvents(std::string copyname)
 
   bool info = false;
 
-  unsigned C_INT32 i, imax = mpModel->getEvents().size();
+  size_t i, imax = mpModel->getEvents().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -794,7 +794,7 @@ bool CModelExpansion::copyEvents(std::string copyname)
 
       bool identic = true;
 
-      unsigned C_INT32 j, jmax = sourceEvent->getAssignments().size();
+      size_t j, jmax = sourceEvent->getAssignments().size();
 
       for (j = 0; j < jmax; ++j)
         {
@@ -873,7 +873,7 @@ void CModelExpansion::initializeNameSets()
 
   if (this->mpModel != NULL)
     {
-      unsigned int i, iMax = this->mpModel->getCompartments().size();
+      size_t i, iMax = this->mpModel->getCompartments().size();
 
       for (i = 0; i < iMax; ++i)
         {

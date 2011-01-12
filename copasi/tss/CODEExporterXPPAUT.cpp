@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:55:35 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:07:06 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -87,14 +92,15 @@ std::string CODEExporterXPPAUT::translateObjectName(const std::string & realName
   std::string newName;
   std::ostringstream tmpName;
 
-  unsigned C_INT32 realName_size = realName.size();
-  unsigned C_INT32 i;
+  size_t realName_size = realName.size();
+  size_t i;
 
   ch = realName[0];
 
   if (!std::isalpha(ch, C))
     {
       tmpName << "_";
+
       if (std::isdigit(ch, C)) tmpName << ch;
     }
   else tmpName << ch;
@@ -112,32 +118,35 @@ std::string CODEExporterXPPAUT::translateObjectName(const std::string & realName
         }
 
       if (std::isdigit(ch, C)) tmpName << ch;
+
       if (std::ispunct(ch, C))
         switch (ch)
           {
-          case '_':
-            tmpName << ch;
-            break;
-          case '-':
-            tmpName << "_";
-            break;
-          case '{':
-            tmpName << "_";
-            break;
-          case '}':
-            tmpName << "_";
-            break;
-          default:
-            break;
+            case '_':
+              tmpName << ch;
+              break;
+            case '-':
+              tmpName << "_";
+              break;
+            case '{':
+              tmpName << "_";
+              break;
+            case '}':
+              tmpName << "_";
+              break;
+            default:
+              break;
           }
     }
 
   newName = tmpName.str();
 
-  unsigned C_INT32 newName_size = newName.size();
+  size_t newName_size = newName.size();
+
   if (newName_size > 7)
     {
       std::ostringstream cutName;
+
       for (i = 0; i < 7; i++)
         cutName << newName[i];
 
@@ -160,12 +169,13 @@ std::string CODEExporterXPPAUT::testName(const std::string & name)
 
   std::ostringstream newname, tmp;
 
-  unsigned C_INT32 name_size = name.size();
-  unsigned C_INT32 i;
+  size_t name_size = name.size();
+  size_t i;
 
   for (i = 0; i < name_size; i++)
     {
       ch = name[i];
+
       if (std::isalpha(ch, C) && std::islower(ch, C))
         tmp << (char) toupper(ch);
       else
@@ -185,7 +195,7 @@ std::string CODEExporterXPPAUT::testName(const std::string & name)
       std::string ecount;
       std::ostringstream tmpecount;
       std::ostringstream tmpname;
-      unsigned C_INT32 ecount_size, tmpname_size;
+      size_t ecount_size, tmpname_size;
 
       Frequancy[tmp.str()]++;
       tmpecount << Frequancy[tmp.str()];
@@ -199,7 +209,9 @@ std::string CODEExporterXPPAUT::testName(const std::string & name)
           CCopasiMessage(CCopasiMessage::ERROR, "too many repeated names to modify to XPP syntax"); //TODO
           fatalError();
         }
+
       tmpname_size = name_size + ecount_size;
+
       if (tmpname_size > 7)
         {
           for (i = 0; i < (7 - ecount_size); i++)
@@ -214,7 +226,7 @@ std::string CODEExporterXPPAUT::testName(const std::string & name)
 
 void CODEExporterXPPAUT::setReservedNames()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   const std::string reserved[45] =
     {"SIN", "COS", "TAN", "ATAN", "ATAN2", "SINH", "EXP", "DELAY", "LN", "LOG10",
@@ -253,15 +265,16 @@ void CODEExporterXPPAUT::exportSingleLine(const std::string & line, std::ostring
 
   std::locale C("C");
 
-  unsigned C_INT32 limit = 256, total = 1000;
-  //unsigned C_INT32 limit = 10, total = 15;
+  size_t limit = 256, total = 1000;
+
+  //size_t limit = 10, total = 15;
   if (line.size() > total)
     CCopasiMessage(CCopasiMessage::WARNING, MCODEExporter + 1);
 
   if (line.size() > limit)
     {
 
-      unsigned C_INT32 i, pos0, pos, end = line.size();
+      size_t i, pos0, pos, end = line.size();
 
       pos0 = 0;
       pos = limit - 1;
@@ -295,6 +308,7 @@ void CODEExporterXPPAUT::exportSingleLine(const std::string & line, std::ostring
       if (pos > end)
         {
           std::string part;
+
           for (i = pos0; i < end; i++)
             {
               part += line[i];
@@ -332,43 +346,49 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
 
   switch (metab->getStatus())
     {
-    case CModelEntity::FIXED:
+      case CModelEntity::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
+
         if (!exportSingleObject(fixed, name, expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ODE:
-    case CModelEntity::REACTIONS:
+      case CModelEntity::ODE:
+      case CModelEntity::REACTIONS:
       {
         if (!metab->isDependent())
           {
             initial << "#" << comments << std::endl;
             initial << "init ";
+
             if (!exportSingleObject(initial, name, expression, comments))
               return false;
           }
         else
           {
             assignment << "#" << comments << std::endl;
+
             if (!exportSingleObject(assignment, name, expression, comments))
               return false;
           }
 
         break;
       }
-    case CModelEntity::ASSIGNMENT:
+      case CModelEntity::ASSIGNMENT:
       {
         assignment << "#" << comments << std::endl;
+
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
+
         break;
       }
-    default:
-      return false;
-      break;
+      default:
+        return false;
+        break;
     }
 
   return true;
@@ -379,35 +399,42 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
 
   switch (comp->getStatus())
     {
-    case CModelEntity::FIXED:
+      case CModelEntity::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
+
         if (!exportSingleObject(fixed, NameMap[comp->getKey()], expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ODE:
+      case CModelEntity::ODE:
       {
         initial << "#" << comments << std::endl;
         initial << "init ";
+
         if (!exportSingleObject(initial, NameMap[comp->getKey()], expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ASSIGNMENT:
+      case CModelEntity::ASSIGNMENT:
       {
 #if 0
         assignment << "#" << comments << std::endl;
+
         if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
           return false;
+
 #endif
         break;
       }
-    default:
-      return false;
-      break;
+      default:
+        return false;
+        break;
     }
+
   return true;
 }
 
@@ -416,34 +443,40 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
 
   switch (modval->getStatus())
     {
-    case CModelEntity::FIXED:
+      case CModelEntity::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
+
         if (!exportSingleObject(fixed, NameMap[modval->getKey()], expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ODE:
+      case CModelEntity::ODE:
       {
         initial << "#" << comments << std::endl;
         initial << "init ";
+
         if (!exportSingleObject(initial, NameMap[modval->getKey()], expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ASSIGNMENT:
+      case CModelEntity::ASSIGNMENT:
       {
 #if 0
         assignment << "#" << comments << std::endl;
+
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
           return false;
+
 #endif
         break;
       }
-    default:
-      return false;
-      break;
+      default:
+        return false;
+        break;
     }
 
   return true;
@@ -455,6 +488,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
   const CMetab* metab;
   metab = dynamic_cast< const CMetab * >(tmp);
+
   if (metab)
     {
       std::ostringstream smKey;
@@ -466,32 +500,38 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
   switch (tmp->getStatus())
     {
-    case CModelEntity::FIXED:
+      case CModelEntity::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
+
         if (!exportSingleObject(fixed, name, expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ODE:
+      case CModelEntity::ODE:
       {
         initial << "#" << comments << std::endl;
         initial << "init ";
+
         if (!exportSingleObject(initial, name, expression, comments))
           return false;
+
         break;
       }
-    case CModelEntity::ASSIGNMENT:
+      case CModelEntity::ASSIGNMENT:
       {
         assignment << "#" << comments << std::endl;
+
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
+
         break;
       }
-    default:
-      return false;
-      break;
+      default:
+        return false;
+        break;
     }
 
   return true;
@@ -502,6 +542,7 @@ bool CODEExporterXPPAUT::exportSingleParameter(const CCopasiParameter* param, st
   fixed << "#" << comments << std::endl;
 
   fixed << "param ";
+
   if (!exportSingleObject(fixed, NameMap[param->getKey()], expression, comments)) return false;
 
   return true;
@@ -537,29 +578,30 @@ bool CODEExporterXPPAUT::exportSingleODE(const CModelEntity* mentity, std::strin
   if (!isEmptyString(comments)) ode << "#" << comments << std::endl;
 
   odeKey << "ode_" << mentity->getKey();
+
   if (!exportSingleObject(ode, NameMap[odeKey.str()], equation, comments)) return false;
 
   return true;
 }
 
-std::string CODEExporterXPPAUT::exportTitleString(const unsigned C_INT32 tmp)
+std::string CODEExporterXPPAUT::exportTitleString(const size_t tmp)
 {
   switch (tmp)
     {
-    case INITIAL:
-      return "# Initial values:";
-    case FIXED:
-      return "# Fixed Model Entities:";
-    case ASSIGNMENT:
-      return "# Assignment Model Entities:";
-    case FUNCTIONS:
-      return "#Kinetics:  ";
-    case HEADERS:
-      return " ";
-    case ODEs:
-      return "# Equations:";
-    default:
-      return " ";
+      case INITIAL:
+        return "# Initial values:";
+      case FIXED:
+        return "# Fixed Model Entities:";
+      case ASSIGNMENT:
+        return "# Assignment Model Entities:";
+      case FUNCTIONS:
+        return "#Kinetics:  ";
+      case HEADERS:
+        return " ";
+      case ODEs:
+        return "# Equations:";
+      default:
+        return " ";
     }
 }
 

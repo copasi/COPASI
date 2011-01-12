@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.7.38.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
+   $Date: 2011/01/12 19:05:31 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,55 +31,55 @@
 
 /** @dia:pos 21.4754,29.8662 */
 class CCopasiObjectName: public std::string
-  {
-    // Operations
-  public:
-    CCopasiObjectName();
+{
+  // Operations
+public:
+  CCopasiObjectName();
 
-    CCopasiObjectName(const std::string & name);
+  CCopasiObjectName(const std::string & name);
 
-    CCopasiObjectName(const CCopasiObjectName & src);
+  CCopasiObjectName(const CCopasiObjectName & src);
 
-    ~CCopasiObjectName();
+  ~CCopasiObjectName();
 
-    CCopasiObjectName getPrimary() const;
+  CCopasiObjectName getPrimary() const;
 
-    CCopasiObjectName getRemainder() const;
+  CCopasiObjectName getRemainder() const;
 
-    std::string getObjectType() const;
+  std::string getObjectType() const;
 
-    std::string getObjectName() const;
+  std::string getObjectName() const;
 
-    unsigned C_INT32 getElementIndex(const unsigned C_INT32 & pos = 0) const;
+  size_t getElementIndex(const size_t & pos = 0) const;
 
-    std::string getElementName(const unsigned C_INT32 & pos /*= 0*/,
-                               const bool & unescape = true) const;
+  std::string getElementName(const size_t & pos /*= 0*/,
+                             const bool & unescape = true) const;
 
-    static std::string escape(const std::string & name);
+  static std::string escape(const std::string & name);
 
-    static std::string unescape(const std::string & name);
+  static std::string unescape(const std::string & name);
 
-    // private:
-    std::string::size_type findEx(const std::string & toFind,
-                                  const std::string::size_type & pos = 0) const;
-  };
+  // private:
+  std::string::size_type findEx(const std::string & toFind,
+                                const std::string::size_type & pos = 0) const;
+};
 
 class CRegisteredObjectName: public CCopasiObjectName
-  {
-  public:
-    CRegisteredObjectName();
+{
+public:
+  CRegisteredObjectName();
 
-    CRegisteredObjectName(const std::string & name);
+  CRegisteredObjectName(const std::string & name);
 
-    CRegisteredObjectName(const CRegisteredObjectName & src);
+  CRegisteredObjectName(const CRegisteredObjectName & src);
 
-    ~CRegisteredObjectName();
+  ~CRegisteredObjectName();
 
-    static const std::set<CRegisteredObjectName*> & getSet()
-    {return mSet;}
+  static const std::set<CRegisteredObjectName*> & getSet()
+  {return mSet;}
 
-  private:
-    static std::set<CRegisteredObjectName*> mSet;
-  };
+private:
+  static std::set<CRegisteredObjectName*> mSet;
+};
 
 #endif // COPASI_CCopasiObjectName

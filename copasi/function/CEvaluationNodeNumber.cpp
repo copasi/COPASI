@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:47 $
+//   $Date: 2011/01/12 19:00:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -235,7 +240,7 @@ ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) 
 void CEvaluationNodeNumber::writeMathML(std::ostream & out,
                                         const std::vector<std::vector<std::string> > & /* env */,
                                         bool /* expand */,
-                                        unsigned C_INT32 l) const
+                                        size_t l) const
 {
   out << SPC(l) << "<mn>" << mData << "</mn>" << std::endl;
   //or use mValue instead?

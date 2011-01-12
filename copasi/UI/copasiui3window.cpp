@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.8 $
+//   $Revision: 1.289.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 16:36:51 $
+//   $Date: 2011/01/12 19:07:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -292,7 +292,7 @@ CopasiUI3Window::CopasiUI3Window():
   //create sliders window
   this->mpSliders = new SliderDialog(NULL);
   this->mpSliders->setParentWindow(this);
-  C_INT32 id = mpListView->getCurrentItemId();
+  size_t id = mpListView->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
   this->mpSliders->resize(320, 350);
 
@@ -1506,7 +1506,7 @@ DataModelGUI* CopasiUI3Window::getDataModel()
 
 void CopasiUI3Window::listViewsFolderChanged(const QModelIndex &)
 {
-  C_INT32 id = mpListView->getCurrentItemId();
+  size_t id = mpListView->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
 }
 

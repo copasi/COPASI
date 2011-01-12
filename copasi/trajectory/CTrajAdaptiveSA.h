@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajAdaptiveSA.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:09 $
+//   $Date: 2011/01/12 19:06:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,9 +254,7 @@ private:
   /**
    *   The Ordered reaction
    */
-  C_INT32 mFirstReactionSpeciesIndex;
-
-  C_INT32 isFirstTau;
+  size_t mFirstReactionSpeciesIndex;
 
 #ifdef ANALYZ_HYBRID
   /**
@@ -296,7 +294,7 @@ protected:
   /**
    * The index of the next reaction which fires
    */
-  unsigned C_INT32 mNextReactionIndex;
+  size_t mNextReactionIndex;
 
   /**
    * A boolean flag indicating whether correction for higher order reactions need to be applied

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:00:06 $
+//   $Date: 2011/01/12 19:03:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -451,7 +451,7 @@ std::vector< CRDFPredicate::AllowedLocationList > CRDFPredicate::Predicate2Allow
 // static
 void CRDFPredicate::createAllowedLocationsAbsolute()
 {
-  unsigned C_INT32 Predicate, PredicateMax = Predicate2AllowedLocationsRelative.size();
+  size_t Predicate, PredicateMax = Predicate2AllowedLocationsRelative.size();
 
   for (Predicate = 0; Predicate < PredicateMax; Predicate++)
     createAllowedLocationsAbsolute((ePredicateType) Predicate);
@@ -468,7 +468,7 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
 
   sAllowedLocation Relative;
 
-  unsigned C_INT32 i, imax = RelativeList.size();
+  size_t i, imax = RelativeList.size();
 
   for (i = 0; i < imax; i++)
     {
@@ -482,7 +482,7 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
       assert(Relative.Location.size() > 0);
 
       ePredicateType Parent = Relative.Location[0];
-      unsigned C_INT32 StartIndex = 0;
+      size_t StartIndex = 0;
 
       // about is the root, i.e., the path is absolute
       if (Parent == about)
@@ -510,14 +510,14 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
       AllowedLocationList & ParentList = Predicate2AllowedLocationsAbsolute[Parent];
 
       // For each parent path append the relative path
-      unsigned C_INT32 j, jmax = ParentList.size();
+      size_t j, jmax = ParentList.size();
 
       for (j = 0; j < jmax; j++)
         {
           Absolute.ReadOnly = ParentList[j].ReadOnly || Relative.ReadOnly;
           Absolute.Location = ParentList[j].Location;
 
-          unsigned C_INT32 k, kmax = Relative.Location.size();
+          size_t k, kmax = Relative.Location.size();
 
           for (k = StartIndex + 1; k < kmax; k++)
             Absolute.Location.push_back(Relative.Location[k]);

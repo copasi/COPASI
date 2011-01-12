@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/03 16:43:21 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:02:01 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -43,8 +48,8 @@ private slots:
   void slot_step_backward_clicked();
 
 protected:
-  unsigned int mNumSteps;
-  unsigned int mCurrentStep;
+  size_t mNumSteps;
+  size_t mCurrentStep;
   bool mPlaying;
 
   QPushButton* mpPlayButton;
@@ -65,8 +70,8 @@ protected:
 public:
   CQPlayerControlWidget(QWidget* pParent = NULL);
 
-  void setNumSteps(unsigned int numSteps);
-  void setCurrentStep(unsigned int currentStep);
+  void setNumSteps(size_t numSteps);
+  void setCurrentStep(size_t currentStep);
   bool isPlaying() const;
 
   QAction* getPlayAction();

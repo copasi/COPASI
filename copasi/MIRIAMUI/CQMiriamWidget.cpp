@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.18.4.2 $
+//   $Revision: 1.18.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/24 18:07:51 $
+//   $Date: 2011/01/12 19:03:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -349,7 +349,7 @@ void CQMiriamWidget::updateResourcesList()
   mResources.push_back("-- select --");
   mReferences.push_back("-- select --");
 
-  unsigned C_INT32 i, imax = pResource->getResourceList().size();
+  size_t i, imax = pResource->getResourceList().size();
 
   for (i = 0; i < imax; i++)
     if (pResource->getMIRIAMResource(i).getMIRIAMCitation())

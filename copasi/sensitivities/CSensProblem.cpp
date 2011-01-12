@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:51:46 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:06:25 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -112,7 +117,7 @@ std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CCopasiDataModel*
   return ret;
 }
 
-// unsigned C_INT32 CSensItem::dimensionality() const
+// size_t CSensItem::dimensionality() const
 // {
 //}
 
@@ -301,12 +306,12 @@ void CSensProblem::changeTargetFunctions(const CSensItem item)
   copySensItemToParameterGroup(&item, mpTargetFunctions);
 }
 
-unsigned C_INT32 CSensProblem::getNumberOfVariables() const
+size_t CSensProblem::getNumberOfVariables() const
 {
   return mpVariablesGroup->size();
 }
 
-CSensItem CSensProblem::getVariables(unsigned C_INT32 index) const
+CSensItem CSensProblem::getVariables(size_t index) const
 {
   CSensItem ret;
   CCopasiParameterGroup* tmp;
@@ -332,22 +337,22 @@ void CSensProblem::addVariables(const CSensItem & item)
 
 bool CSensProblem::removeVariables()
 {
-  C_INT32 imax = mpVariablesGroup->size();
+  size_t imax = mpVariablesGroup->size();
 
-  for (C_INT32 i = 0; i < imax; ++i)
+  for (size_t i = 0; i < imax; ++i)
     mpVariablesGroup->removeParameter(0);
 
   return true;
 }
 
-bool CSensProblem::removeVariables(unsigned C_INT32 index)
+bool CSensProblem::removeVariables(size_t index)
 {
   return mpVariablesGroup->removeParameter(index);
 }
 
-bool CSensProblem::changeVariables(unsigned C_INT32 index, const CSensItem & item)
+bool CSensProblem::changeVariables(size_t index, const CSensItem & item)
 {
-  unsigned C_INT32 num = getNumberOfVariables();
+  size_t num = getNumberOfVariables();
 
   if (index > num)
     return false;
@@ -591,7 +596,7 @@ std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
   os << "Calculation to perform: "
   << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl << std::endl;
 
-  unsigned C_INT32 i, imax = o.getNumberOfVariables();
+  size_t i, imax = o.getNumberOfVariables();
 
   for (i = 0; i < imax; ++i)
     {

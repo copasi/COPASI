@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:35:58 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:07:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,12 +61,12 @@ protected:
   /**
    * fills one table row with the data from one object
    */
-  virtual void tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row);
+  virtual void tableLineFromObject(const CCopasiObject* obj, size_t row);
 
   /**
    * reads the contents of one row of the table and writes it to the object
    */
-  virtual void tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj);
+  virtual void tableLineToObject(size_t row, CCopasiObject* obj);
 
   /**
    * creates a new object
@@ -82,7 +82,7 @@ protected:
    * this is used to fill a row of the table when a new object is added to the table.
    * it fills only the data columns, not the name. It should not fill column exc.
    */
-  virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc);
+  virtual void defaultTableLineContent(size_t row, size_t exc);
 
   /**
    * the prefix that is used to construct new object names
@@ -92,10 +92,10 @@ protected:
   /**
    * This method provides a hook for derived classes to act on changes in
    * the table.
-   * @param unsigned C_INT32 row
-   * @param unsigned C_INT32 col
+   * @param size_t row
+   * @param size_t col
    */
-  virtual void valueChanged(unsigned C_INT32 row, unsigned C_INT32 col);
+  virtual void valueChanged(size_t row, size_t col);
 
 protected:
 

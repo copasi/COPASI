@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLPolygon.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 14:00:26 $
+//   $Date: 2011/01/12 19:01:28 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,7 @@ public:
   /**
    * Returns the number of line segments.
    */
-  unsigned int getNumElements() const;
+  size_t getNumElements() const;
 
   /**
    * Returns a pointer to the list of curve segments.
@@ -90,13 +90,13 @@ public:
    * Returns a pointer to the point with with the given index or
    * NULL if the index is invalid.
    */
-  CLRenderPoint* getElement(unsigned int index);
+  CLRenderPoint* getElement(size_t index);
 
   /**
    * Returns const a pointer to the line segement with with the given index or
    * NULL if the index is invalid.
    */
-  const CLRenderPoint* getElement(unsigned int index) const;
+  const CLRenderPoint* getElement(size_t index) const;
 
   /**
    * Adds a copy of the given line segment to the list of line segements.
@@ -106,7 +106,7 @@ public:
   /**
    * Removes the curve segment with the given index.
    */
-  void removeElement(unsigned int i);
+  void removeElement(size_t i);
 
   /**
    * Returns the key string of the object.

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.26.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 14:53:55 $
+//   $Date: 2011/01/12 19:04:01 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -629,7 +634,7 @@ bool CMathTrigger::compileVARIABLE(const CEvaluationNode * pSource,
 {
   assert(!mFunctionVariableMap.empty());
 
-  unsigned C_INT32 Index =
+  size_t Index =
     static_cast< const CEvaluationNodeVariable * >(pSource)->getIndex();
 
   const CEvaluationNode * pNode = mFunctionVariableMap.top()[Index];
@@ -646,7 +651,7 @@ CEvaluationNode * CMathTrigger::copyBranch(const CEvaluationNode * pSource)
     {
       assert(!mFunctionVariableMap.empty());
 
-      unsigned C_INT32 Index =
+      size_t Index =
         static_cast< const CEvaluationNodeVariable * >(pSource)->getIndex();
 
       return mFunctionVariableMap.top()[Index]->copyBranch();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderInformationBase.cpp,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/03 17:08:23 $
+//   $Date: 2011/01/12 19:01:32 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,13 +79,13 @@ CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& so
     mKey(""),
     mName(source.getName())
 {
-  unsigned int i, iMax = source.getNumColorDefinitions();
+  size_t i, iMax = source.getNumColorDefinitions();
   const ColorDefinition* pCD = NULL;
   CLColorDefinition* pLCD = NULL;
 
   for (i = 0; i < iMax; ++i)
     {
-      pCD = source.getColorDefinition(i);
+      pCD = source.getColorDefinition((unsigned int) i);
       pLCD = new CLColorDefinition(*pCD);
       this->mListOfColorDefinitions.add(pLCD, true);
       //colorIdToKeyMap.insert(std::pair<std::string,std::string>(pCD->getId(),pLCD->getKey()));
@@ -99,14 +99,14 @@ CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& so
 
   for (i = 0; i < iMax; ++i)
     {
-      pGD = source.getGradientDefinition(i);
+      pGD = source.getGradientDefinition((unsigned int) i);
 
       if (dynamic_cast<const LinearGradient*>(pGD))
         {
           pLGD = new CLLinearGradient(*static_cast<const LinearGradient*>(pGD));
           this->mListOfGradientDefinitions.add(pLGD, true);
         }
-      else if (dynamic_cast<const RadialGradient*>(source.getGradientDefinition(i)))
+      else if (dynamic_cast<const RadialGradient*>(source.getGradientDefinition((unsigned int) i)))
         {
           pLGD = new CLRadialGradient(*static_cast<const RadialGradient*>(pGD));
           this->mListOfGradientDefinitions.add(pLGD, true);
@@ -123,7 +123,7 @@ CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& so
 
   for (i = 0; i < iMax; ++i)
     {
-      pLE = source.getLineEnding(i);
+      pLE = source.getLineEnding((unsigned int) i);
       pLLE = new CLLineEnding(*pLE);
       this->mListOfLineEndings.add(pLLE, true);
       //lineEndingIdToKeyMap.insert(std::pair<std::string,std::string>(pLE->getId(),pLLE->getKey()));
@@ -157,7 +157,7 @@ void CLRenderInformationBase::setReferenceRenderInformationKey(const std::string
 /**
  * Returns the number of color definitions.
  */
-unsigned int CLRenderInformationBase::getNumColorDefinitions() const
+size_t CLRenderInformationBase::getNumColorDefinitions() const
 {
   return this->mListOfColorDefinitions.size();
 }
@@ -182,7 +182,7 @@ const CCopasiVector<CLColorDefinition>* CLRenderInformationBase::getListOfColorD
  * Returns a pointer to the color definition with the given index, or NULL
  *if the index is invalid.
  */
-CLColorDefinition* CLRenderInformationBase::getColorDefinition(unsigned int index)
+CLColorDefinition* CLRenderInformationBase::getColorDefinition(size_t index)
 {
   return (index < this->mListOfColorDefinitions.size()) ? this->mListOfColorDefinitions[index] : NULL;
 }
@@ -191,7 +191,7 @@ CLColorDefinition* CLRenderInformationBase::getColorDefinition(unsigned int inde
  * Returns a const pointer to the color definition with the given index, or NULL
  *if the index is invalid.
  */
-const CLColorDefinition* CLRenderInformationBase::getColorDefinition(unsigned int index) const
+const CLColorDefinition* CLRenderInformationBase::getColorDefinition(size_t index) const
 {
   return (index < this->mListOfColorDefinitions.size()) ? this->mListOfColorDefinitions[index] : NULL;
 }
@@ -209,7 +209,7 @@ CLColorDefinition* CLRenderInformationBase::createColorDefinition()
 /**
  * Removes the color definition with the given index.
  */
-void CLRenderInformationBase::removeColorDefinition(unsigned int index)
+void CLRenderInformationBase::removeColorDefinition(size_t index)
 {
   if (index < this->mListOfColorDefinitions.size())
     {
@@ -229,7 +229,7 @@ void CLRenderInformationBase::addColorDefinition(const CLColorDefinition* pCD)
 /**
  * Returns the number of gradient definitions.
  */
-unsigned int CLRenderInformationBase::getNumGradientDefinitions() const
+size_t CLRenderInformationBase::getNumGradientDefinitions() const
 {
   return this->mListOfGradientDefinitions.size();
 }
@@ -254,7 +254,7 @@ const CCopasiVector<CLGradientBase>* CLRenderInformationBase::getListOfGradientD
  * Returns a pointer to the gradient definition with the given index, or NULL
  *if the index is invalid.
  */
-CLGradientBase* CLRenderInformationBase::getGradientDefinition(unsigned int index)
+CLGradientBase* CLRenderInformationBase::getGradientDefinition(size_t index)
 {
   return (index < this->mListOfGradientDefinitions.size()) ? this->mListOfGradientDefinitions[index] : NULL;
 }
@@ -263,7 +263,7 @@ CLGradientBase* CLRenderInformationBase::getGradientDefinition(unsigned int inde
  * Returns a const pointer to the gradient definition with the given index, or NULL
  *if the index is invalid.
  */
-const CLGradientBase* CLRenderInformationBase::getGradientDefinition(unsigned int index) const
+const CLGradientBase* CLRenderInformationBase::getGradientDefinition(size_t index) const
 {
   return (index < this->mListOfGradientDefinitions.size()) ? this->mListOfGradientDefinitions[index] : NULL;
 }
@@ -291,7 +291,7 @@ CLLinearGradient* CLRenderInformationBase::createLinearGradientDefinition()
 /**
  * Removes the gradient definition with the given index.
  */
-void CLRenderInformationBase::removeGradientDefinition(unsigned int index)
+void CLRenderInformationBase::removeGradientDefinition(size_t index)
 {
   if (index < this->mListOfGradientDefinitions.size())
     {
@@ -318,7 +318,7 @@ void CLRenderInformationBase::addGradientDefinition(const CLGradientBase* pGradi
 /**
  * Returns the number of line endings.
  */
-unsigned int CLRenderInformationBase::getNumLineEndings() const
+size_t CLRenderInformationBase::getNumLineEndings() const
 {
   return this->mListOfLineEndings.size();
 }
@@ -343,7 +343,7 @@ const CCopasiVector<CLLineEnding>* CLRenderInformationBase::getListOfLineEndings
  * Returns a pointer to the line ending with the given index, or NULL
  *if the index is invalid.
  */
-CLLineEnding* CLRenderInformationBase::getLineEnding(unsigned int index)
+CLLineEnding* CLRenderInformationBase::getLineEnding(size_t index)
 {
   return (index < this->mListOfLineEndings.size()) ? this->mListOfLineEndings[index] : NULL;
 }
@@ -352,7 +352,7 @@ CLLineEnding* CLRenderInformationBase::getLineEnding(unsigned int index)
  * Returns a const pointer to the line ending with the given index, or NULL
  *if the index is invalid.
  */
-const CLLineEnding* CLRenderInformationBase::getLineEnding(unsigned int index) const
+const CLLineEnding* CLRenderInformationBase::getLineEnding(size_t index) const
 {
   return (index < this->mListOfLineEndings.size()) ? this->mListOfLineEndings[index] : NULL;
 }
@@ -370,7 +370,7 @@ CLLineEnding* CLRenderInformationBase::createLineEnding()
 /**
  * Removes the line ending with the given index.
  */
-void CLRenderInformationBase::removeLineEnding(unsigned int index)
+void CLRenderInformationBase::removeLineEnding(size_t index)
 {
   if (index < this->mListOfLineEndings.size())
     {
@@ -419,7 +419,7 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
 {
   pBase->setReferenceRenderInformationId(this->getReferenceRenderInformationKey());
   pBase->setBackgroundColor(this->getBackgroundColor());
-  unsigned int i, iMax = this->mListOfColorDefinitions.size();
+  size_t i, iMax = this->mListOfColorDefinitions.size();
 
   for (i = 0; i < iMax; ++i)
     {

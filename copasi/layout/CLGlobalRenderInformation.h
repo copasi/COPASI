@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalRenderInformation.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ public:
   /**
    * Returns the number of styles.
    */
-  unsigned int getNumStyles() const;
+  size_t getNumStyles() const;
 
   /**
    * Returns a pointer to the LitOfStyles object.
@@ -70,13 +70,13 @@ public:
    * Returns a pointer to the style with the given index.
    * If the index is invalid, NULL is returned.
    */
-  CLStyle* getStyle(unsigned int i);
+  CLStyle* getStyle(size_t i);
 
   /**
    * Returns a pointer to the style with the given index.
    * If the index is invalid, NULL is returned.
    */
-  const CLStyle* getStyle(unsigned int i) const;
+  const CLStyle* getStyle(size_t i) const;
 
   CLGlobalStyle* createStyle();
 

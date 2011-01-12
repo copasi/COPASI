@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/01/29 21:59:25 $
+//   $Date: 2011/01/12 18:56:04 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -84,19 +89,19 @@ public:
 
   inline size_t getNumberOfUnsetBits() const
   {
-    return mBitSet.size() * CHAR_BIT * sizeof(unsigned C_INT32) - mIgnoredBits - mNumberSetBits;
+    return mBitSet.size() * CHAR_BIT * sizeof(size_t) - mIgnoredBits - mNumberSetBits;
   }
 
   inline size_t getNumberOfBits() const
   {
-    return mBitSet.size() * CHAR_BIT * sizeof(unsigned C_INT32) - mIgnoredBits;
+    return mBitSet.size() * CHAR_BIT * sizeof(size_t) - mIgnoredBits;
   }
 
   inline CZeroSet & operator |= (const CZeroSet & rhs)
   {
-    unsigned C_INT32 * pIt = mBitSet.array();
-    unsigned C_INT32 * pEnd = pIt + mBitSet.size();
-    const unsigned C_INT32 * pRhs = rhs.mBitSet.array();
+    size_t * pIt = mBitSet.array();
+    size_t * pEnd = pIt + mBitSet.size();
+    const size_t * pRhs = rhs.mBitSet.array();
     mNumberSetBits = 0;
 
     for (; pIt != pEnd; ++pIt, ++pRhs)
@@ -112,9 +117,9 @@ public:
 
   inline CZeroSet & operator &= (const CZeroSet & rhs)
   {
-    unsigned C_INT32 * pIt = mBitSet.array();
-    unsigned C_INT32 * pEnd = pIt + mBitSet.size();
-    const unsigned C_INT32 * pRhs = rhs.mBitSet.array();
+    size_t * pIt = mBitSet.array();
+    size_t * pEnd = pIt + mBitSet.size();
+    const size_t * pRhs = rhs.mBitSet.array();
     mNumberSetBits = 0;
 
     for (; pIt != pEnd; ++pIt, ++pRhs)
@@ -138,9 +143,9 @@ public:
   // Superset
   inline bool operator >= (const CZeroSet & rhs) const
   {
-    const unsigned C_INT32 * pIt = mBitSet.array();
-    const unsigned C_INT32 * pEnd = pIt + mBitSet.size();
-    const unsigned C_INT32 * pRhs = rhs.mBitSet.array();
+    const size_t * pIt = mBitSet.array();
+    const size_t * pEnd = pIt + mBitSet.size();
+    const size_t * pRhs = rhs.mBitSet.array();
 
     for (; pIt != pEnd; ++pIt, ++pRhs)
       {
@@ -157,24 +162,24 @@ public:
       return false;
 
     return memcmp(mBitSet.array(), rhs.mBitSet.array(),
-                  mBitSet.size() * sizeof(unsigned C_INT32)) == 0;
+                  mBitSet.size() * sizeof(size_t)) == 0;
   }
 
   bool isExtremeRay(const std::vector< CStepMatrixColumn * > & columns) const;
 
   // Attributes
 private:
-  CVector<unsigned C_INT32> mBitSet;
+  CVector<size_t> mBitSet;
 
   size_t mIgnoredBits;
 
   size_t mNumberSetBits;
 
-  inline size_t countSetBits(unsigned C_INT32 bits)
+  inline size_t countSetBits(size_t bits)
   {
     size_t numberOfBits = 0;
 
-    for (size_t i = 0; i < CHAR_BIT * sizeof(unsigned C_INT32); ++i)
+    for (size_t i = 0; i < CHAR_BIT * sizeof(size_t); ++i)
       {
         if ((bits >> i) & 1)
           {

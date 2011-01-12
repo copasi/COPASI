@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-//   $Revision: 1.14.10.3 $
+//   $Revision: 1.14.10.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:10 $
+//   $Date: 2011/01/12 19:06:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ public:
    * holds the index in the index array corresponding to the given level.
    * I.e. which dimension of the result array the variables correspond to.
    */
-  C_INT32 index;
+  size_t index;
 };
 
 class CSensMethod : public CCopasiMethod
@@ -114,11 +114,11 @@ public:
    * estimate how many calls to the subtask are necessary. Works only after
    * initialize() was called.
    */
-  C_INT32 getNumberOfSubtaskCalculations();
+  size_t getNumberOfSubtaskCalculations();
 
 protected:
 
-  bool calculate_one_level(unsigned C_INT32 level, CCopasiArray & result);
+  bool calculate_one_level(size_t level, CCopasiArray & result);
   bool do_target_calculation(CCopasiArray & result, bool first);
 
   C_FLOAT64 do_variation(CCopasiObject* variable);
@@ -129,7 +129,7 @@ protected:
    */
   void setValue(CCopasiObject* variable, C_FLOAT64 value);
 
-  void calculate_difference(unsigned C_INT32 level, const C_FLOAT64 & delta,
+  void calculate_difference(size_t level, const C_FLOAT64 & delta,
                             CCopasiArray & result, CCopasiArray::index_type & resultindex);
 
   /**
@@ -149,7 +149,7 @@ protected:
    * This contains the loop over the variables for scaling the sensitivities. Works recursively
    * and calls scaling_targetfunction() in the end.
    */
-  void scaling_variables(C_INT32 level, const C_FLOAT64 & factor,
+  void scaling_variables(size_t level, const C_FLOAT64 & factor,
                          CCopasiArray::index_type & resultindex);
 
   /**
@@ -179,8 +179,8 @@ protected:
   C_FLOAT64 * mpMinDelta;
 
 private:
-  unsigned C_INT32 mProgressHandler;
-  C_INT32 mProgress;
+  size_t mProgressHandler;
+  unsigned C_INT32 mProgress;
 
   size_t mCounter;
   size_t mFailedCounter;

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 13:41:34 $
+//   $Date: 2011/01/12 19:00:59 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -104,7 +109,7 @@ public:
    * level specifies indentation
    * fullExpand==true means function calls are expanded
    */
-  void writeMathML(std::ostream & out, bool fullExpand, unsigned C_INT32 l) const;
+  void writeMathML(std::ostream & out, bool fullExpand, size_t l) const;
 
   /**
    * Retrieve a pointer to the object defined by CN. This method may only be called

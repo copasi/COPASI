@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CDataEntity.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.16.1 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/02/14 18:24:30 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:02:00 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -24,24 +29,24 @@
 #include "copasi.h"
 
 class CDataEntity
-  {
-  private:
-    C_FLOAT64 mTime;
-    std::map<std::string, C_FLOAT64> mSpeciesValueMap;
-    std::map<std::string, C_FLOAT64> mOrigValueMap;
+{
+private:
+  C_FLOAT64 mTime;
+  std::map<std::string, C_FLOAT64> mSpeciesValueMap;
+  std::map<std::string, C_FLOAT64> mOrigValueMap;
 
-  public:
-    CDataEntity();
-    CDataEntity(C_FLOAT64 t);
-    CDataEntity(const CDataEntity & src);
+public:
+  CDataEntity();
+  CDataEntity(C_FLOAT64 t);
+  CDataEntity(const CDataEntity & src);
 
-    void putValueForSpecies(std::string nodeKey, C_FLOAT64 value);
-    void putOrigValueForSpecies(std::string nodeKey, C_FLOAT64 value);
+  void putValueForSpecies(std::string nodeKey, C_FLOAT64 value);
+  void putOrigValueForSpecies(std::string nodeKey, C_FLOAT64 value);
 
-    C_FLOAT64 getValueForSpecies(std::string nodeKey);
-    C_FLOAT64 getOrigValueForSpecies(std::string nodeKey);
-    int getNumberOfElements(){return mSpeciesValueMap.size();}
-    C_FLOAT64 getTime(){return mTime;}
-    friend std::ostream & operator<<(std::ostream &os, const CDataEntity & gn);
-  };
+  C_FLOAT64 getValueForSpecies(std::string nodeKey);
+  C_FLOAT64 getOrigValueForSpecies(std::string nodeKey);
+  size_t getNumberOfElements() {return mSpeciesValueMap.size();}
+  C_FLOAT64 getTime() {return mTime;}
+  friend std::ostream & operator<<(std::ostream &os, const CDataEntity & gn);
+};
 #endif

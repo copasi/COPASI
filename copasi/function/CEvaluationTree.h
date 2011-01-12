@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.36.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:52 $
+//   $Date: 2011/01/12 19:00:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,16 +202,16 @@ public:
   /**
    * Retrieve the index to the value of the named variable.
    * @param const std::string & name
-   * @return unsigned C_INT32
+   * @return size_t
    */
-  virtual unsigned C_INT32 getVariableIndex(const std::string & name) const;
+  virtual size_t getVariableIndex(const std::string & name) const;
 
   /**
    * Retrieve the value of the indexed variable
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return const C_FLOAT64 & variableValue
    */
-  virtual const C_FLOAT64 & getVariableValue(const unsigned C_INT32 & index) const;
+  virtual const C_FLOAT64 & getVariableValue(const size_t & index) const;
 
   /**
    * Returns the root node of the tree.
@@ -241,11 +241,11 @@ public:
   /**
    * Complete the list of evaluation tree such that all called trees are includes.
    * @param std::vector< CEvaluationTree * > & list
-   * @param const unsigned C_INT32 & added (Default: list.size())
+   * @param const size_t & added (Default: list.size())
    * @return bool success
    */
   static bool completeEvaluationTreeList(std::vector< CEvaluationTree * > & list,
-                                         const unsigned C_INT32 & added = 0);
+                                         const size_t & added = 0);
 
   /**
    * Check whether the the tree has circular dependencies.

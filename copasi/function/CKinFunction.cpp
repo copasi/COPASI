@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.63.30.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:57:28 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:00 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -47,7 +52,7 @@ CKinFunction::CKinFunction(const CFunction & src,
 
   if (configBuffer)
     {
-      unsigned C_INT32 i, Size;
+      size_t i, Size;
       configBuffer->getVariable("Nodes", "C_INT32", &Size);
       mNodes.resize(Size);
 
@@ -98,7 +103,7 @@ void CKinFunction::createParameters()
   CCopasiVectorN < CFunctionParameter > Parameters;
   CCopasiVectorN < CFunctionParameter > Volumes;
 
-  unsigned C_INT32 i, imax = mNodes.size();
+  size_t i, imax = mNodes.size();
 
   CFunctionParameter *pParameter;
 
@@ -113,7 +118,8 @@ void CKinFunction::createParameters()
             };
 
           std::string Name = mNodes[i]->getName();
-          unsigned C_INT32 j, jmax = 12;
+          size_t j, jmax = 12;
+
           for (j = 0; j < jmax; j++)
             if (Name == Reserved[j]) break;
 
@@ -142,50 +148,60 @@ void CKinFunction::createParameters()
 
           switch (mNodes[i]->getSubtype())
             {
-            case N_SUBSTRATE:
-              pParameter->setUsage(CFunctionParameter::SUBSTRATE);
-              if (Substrates.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
-                Substrates.add(pParameter, false);
-              else
-                pdelete(pParameter);
-              break;
+              case N_SUBSTRATE:
+                pParameter->setUsage(CFunctionParameter::SUBSTRATE);
 
-            case N_PRODUCT:
-              pParameter->setUsage(CFunctionParameter::PRODUCT);
-              if (Products.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
-                Products.add(pParameter, false);
-              else
-                pdelete(pParameter);
-              break;
+                if (Substrates.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
+                  Substrates.add(pParameter, false);
+                else
+                  pdelete(pParameter);
 
-            case N_MODIFIER:
-              pParameter->setUsage(CFunctionParameter::MODIFIER);
-              if (Modifiers.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
-                Modifiers.add(pParameter, false);
-              else
-                pdelete(pParameter);
-              break;
+                break;
 
-            case N_KCONSTANT:
-            case N_NOP:
-              pParameter->setUsage(CFunctionParameter::PARAMETER);
-              if (Parameters.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
-                Parameters.add(pParameter, false);
-              else
-                pdelete(pParameter);
-              break;
+              case N_PRODUCT:
+                pParameter->setUsage(CFunctionParameter::PRODUCT);
 
-            case N_VOLUME:
-              pParameter->setUsage(CFunctionParameter::VOLUME);
-              if (Volumes.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
-                Volumes.add(pParameter, false);
-              else
-                pdelete(pParameter);
-              break;
+                if (Products.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
+                  Products.add(pParameter, false);
+                else
+                  pdelete(pParameter);
 
-            default:
-              pdelete(pParameter);
-              fatalError();
+                break;
+
+              case N_MODIFIER:
+                pParameter->setUsage(CFunctionParameter::MODIFIER);
+
+                if (Modifiers.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
+                  Modifiers.add(pParameter, false);
+                else
+                  pdelete(pParameter);
+
+                break;
+
+              case N_KCONSTANT:
+              case N_NOP:
+                pParameter->setUsage(CFunctionParameter::PARAMETER);
+
+                if (Parameters.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
+                  Parameters.add(pParameter, false);
+                else
+                  pdelete(pParameter);
+
+                break;
+
+              case N_VOLUME:
+                pParameter->setUsage(CFunctionParameter::VOLUME);
+
+                if (Volumes.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
+                  Volumes.add(pParameter, false);
+                else
+                  pdelete(pParameter);
+
+                break;
+
+              default:
+                pdelete(pParameter);
+                fatalError();
             }
         }
     }
@@ -193,28 +209,38 @@ void CKinFunction::createParameters()
   getVariables().cleanup();
 
   imax = Substrates.size();
+
   for (i = 0; i < imax; i++)
     getVariables().add(Substrates[i], true);
+
   Substrates.cleanup();
 
   imax = Products.size();
+
   for (i = 0; i < imax; i++)
     getVariables().add(Products[i], true);
+
   Products.cleanup();
 
   imax = Modifiers.size();
+
   for (i = 0; i < imax; i++)
     getVariables().add(Modifiers[i], true);
+
   Modifiers.cleanup();
 
   imax = Parameters.size();
+
   for (i = 0; i < imax; i++)
     getVariables().add(Parameters[i], true);
+
   Parameters.cleanup();
 
   imax = Volumes.size();
+
   for (i = 0; i < imax; i++)
     getVariables().add(Volumes[i], true);
+
   Volumes.cleanup();
 }
 
@@ -222,7 +248,7 @@ std::vector< CNodeK * > & CKinFunction::getNodes() {return mNodes;}
 
 void CKinFunction::cleanupNodes()
 {
-  unsigned C_INT32 i, imax = mNodes.size();
+  size_t i, imax = mNodes.size();
 
   for (i = 0; i < imax; i++)
     if (mNodes[i]) delete mNodes[i];

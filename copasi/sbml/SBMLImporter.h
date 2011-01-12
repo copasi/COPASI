@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.86.2.4 $
+//   $Revision: 1.86.2.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/05 14:38:05 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:05:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,7 +81,7 @@ protected:
   std::set<std::string> mDivisionByCompartmentReactions;
   CProcessReport* mpImportHandler;
   unsigned C_INT32 mImportStep;
-  unsigned C_INT32 mhImportStep;
+  size_t mhImportStep;
   unsigned C_INT32 mTotalSteps;
   std::map<Species*, Compartment*> mSubstanceOnlySpecies;
   std::set<std::string> mFastReactions;

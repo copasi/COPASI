@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLStyle.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:06 $
+//   $Date: 2011/01/12 19:01:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,7 +104,7 @@ CLGroup* CLStyle::getGroup()
 /**
  * Returns the number roles ids in the role list.
  */
-unsigned int CLStyle::getNumRoles() const
+size_t CLStyle::getNumRoles() const
 {
   return this->mRoleList.size();
 }
@@ -136,7 +136,7 @@ void CLStyle::removeRole(const std::string& role)
 /**
  * Returns the number of types in the type list.
  */
-unsigned int CLStyle::getNumTypes() const
+size_t CLStyle::getNumTypes() const
 {
   return this->mTypeList.size();
 }

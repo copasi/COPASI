@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFluxModeDM.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/01 19:59:21 $
+//   $Date: 2011/01/12 19:07:49 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -32,8 +37,8 @@ class CQFluxModeDM : public CQBaseDataModel
 
 public:
   CQFluxModeDM(QObject *parent = 0);
-  int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;
   QVariant data(const QModelIndex &index, int role) const;
   QVariant headerData(int section, Qt::Orientation orientation,
@@ -53,7 +58,7 @@ protected:
 private:
   const CEFMTask * mpTask;
   std::vector< CFluxMode >::const_iterator mBeginModes;
-  int mModesSize;
+  size_t mModesSize;
 };
 
 #endif //CQFluxModeDM_H

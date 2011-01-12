@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderInformationBase.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:06 $
+//   $Date: 2011/01/12 19:01:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,7 +93,7 @@ public:
   /**
    * Returns the number of color definitions.
    */
-  unsigned int getNumColorDefinitions() const;
+  size_t getNumColorDefinitions() const;
 
   /**
    * Returns a pointer to the list of color definitions.
@@ -109,13 +109,13 @@ public:
    * Returns a pointer to the color definition with the given index, or NULL
    *if the index is invalid.
    */
-  CLColorDefinition* getColorDefinition(unsigned int index);
+  CLColorDefinition* getColorDefinition(size_t index);
 
   /**
    * Returns a const pointer to the color definition with the given index, or NULL
    *if the index is invalid.
    */
-  const CLColorDefinition* getColorDefinition(unsigned int index) const;
+  const CLColorDefinition* getColorDefinition(size_t index) const;
 
   /**
    * Creates a new color definition.
@@ -125,7 +125,7 @@ public:
   /**
    * Removes the color definition with the given index.
    */
-  void removeColorDefinition(unsigned int index);
+  void removeColorDefinition(size_t index);
 
   /**
    * Adds a copy of the given color definition to the end of the list of
@@ -136,7 +136,7 @@ public:
   /**
    * Returns the number of gradient definitions.
    */
-  unsigned int getNumGradientDefinitions() const;
+  size_t getNumGradientDefinitions() const;
 
   /**
    * Returns a pointer to the list of gradient definitions.
@@ -152,13 +152,13 @@ public:
    * Returns a pointer to the gradient definition with the given index, or NULL
    *if the index is invalid.
    */
-  CLGradientBase* getGradientDefinition(unsigned int index);
+  CLGradientBase* getGradientDefinition(size_t index);
 
   /**
    * Returns a const pointer to the gradient definition with the given index, or NULL
    *if the index is invalid.
    */
-  const CLGradientBase* getGradientDefinition(unsigned int index) const;
+  const CLGradientBase* getGradientDefinition(size_t index) const;
 
   /**
    * Creates a new linear gradient definition.
@@ -173,7 +173,7 @@ public:
   /**
    * Removes the gradient definition with the given index.
    */
-  void removeGradientDefinition(unsigned int index);
+  void removeGradientDefinition(size_t index);
 
   /**
    * Adds a copy of the given gradient definition to the end of the list of
@@ -184,7 +184,7 @@ public:
   /**
    * Returns the number of line endings.
    */
-  unsigned int getNumLineEndings() const;
+  size_t getNumLineEndings() const;
 
   /**
    * Returns a pointer to the list of line endings.
@@ -200,13 +200,13 @@ public:
    * Returns a pointer to the line ending with the given index, or NULL
    *if the index is invalid.
    */
-  CLLineEnding* getLineEnding(unsigned int index);
+  CLLineEnding* getLineEnding(size_t index);
 
   /**
    * Returns a const pointer to the line ending with the given index, or NULL
    *if the index is invalid.
    */
-  const CLLineEnding* getLineEnding(unsigned int index) const;
+  const CLLineEnding* getLineEnding(size_t index) const;
 
   /**
    * Creates a new line ending.
@@ -216,7 +216,7 @@ public:
   /**
    * Removes the line ending with the given index.
    */
-  void removeLineEnding(unsigned int index);
+  void removeLineEnding(size_t index);
 
   /**
    * Adds a copy of the given line ending to the end of the list of line

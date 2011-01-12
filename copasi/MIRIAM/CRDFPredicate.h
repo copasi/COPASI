@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:00:06 $
+//   $Date: 2011/01/12 19:03:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,7 +93,7 @@ public:
   struct sAllowedLocation
   {
 public:
-    unsigned C_INT32 MaxOccurance;
+    size_t MaxOccurance;
     bool ReadOnly;
     CRDFObject::eObjectType Type;
     Path Location;

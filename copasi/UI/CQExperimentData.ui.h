@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.46.2.4 $
+//   $Revision: 1.46.2.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:58 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:07:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,7 +164,7 @@ public:
             return Intermediate;
           }
 
-        unsigned C_INT32 First, Last;
+        size_t First, Last;
 
         switch (mType)
           {
@@ -172,7 +172,7 @@ public:
 
               if (!mpContext->mpFileInfo->validateFirst(mpContext->mShown, input.toULong()))
                 {
-                  unsigned C_INT32 NewFirst = input.toULong();
+                  size_t NewFirst = input.toULong();
 
                   mpContext->mpFileInfo->getFirstUnusedSection(First, Last);
 
@@ -183,13 +183,13 @@ public:
                     {
                       if (First > mpContext->mpExperiment->getLastRow())
                         {
-                          mpContext->mpExperiment->setLastRow(Last);
-                          mpContext->mpExperiment->setFirstRow(First);
+                          mpContext->mpExperiment->setLastRow((unsigned C_INT32) Last);
+                          mpContext->mpExperiment->setFirstRow((unsigned C_INT32) First);
                         }
                       else
                         {
-                          mpContext->mpExperiment->setFirstRow(First);
-                          mpContext->mpExperiment->setLastRow(Last);
+                          mpContext->mpExperiment->setFirstRow((unsigned C_INT32) First);
+                          mpContext->mpExperiment->setLastRow((unsigned C_INT32) Last);
                         }
 
                       mpContext->syncExperiments();
@@ -266,7 +266,7 @@ void CQExperimentData::slotFirst()
 {
   qWarning("CQExperimentData::slotFirst(): Not implemented yet");
 
-  unsigned C_INT32 Row = C_INVALID_INDEX;
+  size_t Row = C_INVALID_INDEX;
 
   if (mpEditFirst->text() != "")
     Row = mpEditFirst->text().toULong();
@@ -284,7 +284,7 @@ void CQExperimentData::slotFirst()
 
 void CQExperimentData::slotLast()
 {
-  unsigned C_INT32 Row = C_INVALID_INDEX;
+  size_t Row = C_INVALID_INDEX;
 
   if (mpEditLast->text() != "")
     Row = mpEditLast->text().toULong();
@@ -354,13 +354,13 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
       mpExperiment->setExperimentType(CCopasiTask::steadyState);
     }
 
-  unsigned C_INT32 i, imax = mpTable->numRows();
+  size_t i, imax = mpTable->numRows();
 
   if (isSteadyState)
     for (i = 0; i < imax; i++)
       {
         CExperiment::Type Type =
-          static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
+          static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentItem());
 
         if (Type == CExperiment::time)
           mpExperiment->getObjectMap().setRole(i, CExperiment::ignore);
@@ -396,14 +396,14 @@ void CQExperimentData::slotExperimentAdd()
   CExperiment Experiment(mpDataModel);
   CExperiment * pExperiment = mpExperimentSetCopy->addExperiment(Experiment);
 
-  unsigned C_INT32 First, Last;
+  size_t First, Last;
   mpFileInfo->getFirstUnusedSection(First, Last);
-  pExperiment->setFirstRow(First);
-  pExperiment->setLastRow(Last);
-  pExperiment->setHeaderRow(First);
+  pExperiment->setFirstRow((unsigned C_INT32) First);
+  pExperiment->setLastRow((unsigned C_INT32) Last);
+  pExperiment->setHeaderRow((unsigned C_INT32) First);
   pExperiment->setFileName(mpFileInfo->getFileName());
 
-  pExperiment->setNumColumns(pExperiment->guessColumnNumber());
+  pExperiment->setNumColumns((unsigned C_INT32) pExperiment->guessColumnNumber());
   mpFileInfo->sync();
 
   mpBoxExperiment->insertItem(FROM_UTF8(pExperiment->getObjectName()));
@@ -436,7 +436,7 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
       std::ifstream File;
       File.open(CLocaleString::fromUtf8(mpExperiment->getFileName()).c_str());
 
-      unsigned C_INT32 CurrentLine = 1;
+      size_t CurrentLine = 1;
       success &= mpExperiment->read(File, CurrentLine);
 
       if (success)
@@ -463,20 +463,20 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
 void CQExperimentData::slotExperimentDelete()
 {
   // Get info from current selection
-  unsigned C_INT32 index = mpBoxExperiment->currentItem();
+  size_t index = mpBoxExperiment->currentItem();
 
   if (index == C_INVALID_INDEX) return;
 
   std::string key =
-    mpFileInfo->getExperiment(TO_UTF8(mpBoxExperiment->item(index)->text()))->CCopasiParameter::getKey();
+    mpFileInfo->getExperiment(TO_UTF8(mpBoxExperiment->item((int) index)->text()))->CCopasiParameter::getKey();
 
   // change selection
   if (mpBoxExperiment->count() > 1)
     {
       if (mpBoxExperiment->count() > index + 1)
-        mpBoxExperiment->setSelected(index + 1, true);
+        mpBoxExperiment->setSelected((int)(index + 1), true);
       else
-        mpBoxExperiment->setSelected(index - 1, true);
+        mpBoxExperiment->setSelected((int)(index - 1), true);
     }
   else
     slotExperimentChanged(NULL);
@@ -485,7 +485,7 @@ void CQExperimentData::slotExperimentDelete()
   mpExperimentSetCopy->removeExperiment(mpExperimentSetCopy->keyToIndex(key));
   syncExperiments();
 
-  unsigned C_INT32 First, Last;
+  size_t First, Last;
   mpBtnExperimentAdd->setEnabled(mpFileInfo->getFirstUnusedSection(First, Last));
 
   // We need to correct mpCheckFrom and mpCheckTo since the removal of the experiment
@@ -498,7 +498,7 @@ void CQExperimentData::slotExperimentDelete()
 
   if (mpExperiment)
     {
-      unsigned C_INT32 Next =
+      size_t Next =
         mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey()) + 1;
 
 
@@ -525,15 +525,15 @@ void CQExperimentData::slotFileAdd()
 
   std::map<std::string, std::string>::const_iterator it = mFileMap.begin();
   std::map<std::string, std::string>::const_iterator end = mFileMap.end();
-  unsigned C_INT32 i;
+  size_t i;
 
   for (; it != end; ++it)
     if (it->second == TO_UTF8(File))
       {
         for (i = 0; i < mpBoxFile->count(); i++)
-          if (it->first == TO_UTF8(mpBoxFile->item(i)->text()))
+          if (it->first == TO_UTF8(mpBoxFile->item((int) i)->text()))
             {
-              mpBoxFile->setSelected(i, true);
+              mpBoxFile->setSelected((int) i, true);
               break;
             }
 
@@ -552,7 +552,7 @@ void CQExperimentData::slotFileAdd()
 
   mpBoxFile->setSelected(mpBoxFile->count() - 1, true);
 
-  unsigned C_INT32 First, Last;
+  size_t First, Last;
 
   if (mpFileInfo->getFirstUnusedSection(First, Last))
     {
@@ -596,36 +596,36 @@ void CQExperimentData::slotFileChanged(Q3ListBoxItem * pItem)
       slotExperimentChanged(NULL);
     }
 
-  unsigned C_INT32 First, Last;
+  size_t First, Last;
   mpBtnExperimentAdd->setEnabled(mpFileInfo->getFirstUnusedSection(First, Last));
 }
 
 void CQExperimentData::slotFileDelete()
 {
   // Get info from current selection
-  unsigned C_INT32 index = mpBoxFile->currentItem();
+  size_t index = mpBoxFile->currentItem();
 
   if (index == C_INVALID_INDEX) return;
 
-  std::string FileName = mFileMap[TO_UTF8(mpBoxFile->item(index)->text())];
+  std::string FileName = mFileMap[TO_UTF8(mpBoxFile->item((int) index)->text())];
 
   // change selection
   if (mpBoxFile->count() > 1)
     {
       if (mpBoxFile->count() > index + 1)
-        mpBoxFile->setSelected(index + 1, true);
+        mpBoxFile->setSelected((int)(index + 1), true);
       else
-        mpBoxFile->setSelected(index - 1, true);
+        mpBoxFile->setSelected((int)(index - 1), true);
     }
   else
     slotFileChanged(NULL);
 
   // remove file
-  mFileMap.erase(TO_UTF8(mpBoxFile->item(index)->text()));
-  mpBoxFile->removeItem(index);
+  mFileMap.erase(TO_UTF8(mpBoxFile->item((int) index)->text()));
+  mpBoxFile->removeItem((int) index);
 
   // delete all experiments in current file.
-  unsigned C_INT32 i = mpExperimentSetCopy->getExperimentCount() - 1;
+  size_t i = mpExperimentSetCopy->getExperimentCount() - 1;
 
   for (; i < C_INVALID_INDEX; i--)
     if (mpExperimentSetCopy->getExperiment(i)->getFileName() == FileName)
@@ -645,7 +645,7 @@ void CQExperimentData::slotOK()
 
   CExperiment * pExperiment;
 
-  unsigned C_INT32 i = mpExperimentSet->getExperimentCount() - 1;
+  size_t i = mpExperimentSet->getExperimentCount() - 1;
 
   for (; i < C_INVALID_INDEX; i--)
     {
@@ -744,7 +744,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
   // Build the key map so that we are able to update the correct experiments
   // on OK.
   mKeyMap.clear();
-  unsigned C_INT32 i, imax = mpExperimentSet->getExperimentCount();
+  size_t i, imax = mpExperimentSet->getExperimentCount();
 
   for (i = 0; i < imax; i++)
     mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
@@ -896,7 +896,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
       mOldWeightMethod = pExperiment->getWeightMethod();
       mpBoxWeightMethod->setCurrentItem(mOldWeightMethod);
 
-      unsigned C_INT32 Next =
+      size_t Next =
         mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) + 1;
 
       mpCheckFrom->setChecked(isLikePreviousExperiment(pExperiment));
@@ -930,7 +930,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
 
   bool success = true;
 
-  unsigned C_INT32 Next =
+  size_t Next =
     mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) + 1;
 
   if (Next < mpExperimentSetCopy->getExperimentCount() && mpCheckTo->isChecked())
@@ -951,7 +951,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
       int current = mpBoxExperiment->currentItem();
       disconnect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
                  this, SLOT(slotExperimentChanged(Q3ListBoxItem*)));
-      mpBoxExperiment->changeItem(value, mShown);
+      mpBoxExperiment->changeItem(value, (int) mShown);
       mpBoxExperiment->setSelected(current, true);
       connect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
               this, SLOT(slotExperimentChanged(Q3ListBoxItem*)));
@@ -998,7 +998,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
 
   mpFileInfo->sync();
 
-  unsigned C_INT32 First, Last;
+  size_t First, Last;
   mpBtnExperimentAdd->setEnabled(mpFileInfo->getFirstUnusedSection(First, Last));
 
   mpValidatorName->saved();
@@ -1016,8 +1016,8 @@ void CQExperimentData::syncExperiments()
   std::string Current = TO_UTF8(mpBoxExperiment->currentText());
   std::string Shown;
 
-  if (mShown != (unsigned int) - 1)
-    Shown = TO_UTF8(mpBoxExperiment->item(mShown)->text());
+  if (mShown != C_INVALID_INDEX)
+    Shown = TO_UTF8(mpBoxExperiment->item((int) mShown)->text());
 
   mpFileInfo->sync();
 
@@ -1027,7 +1027,7 @@ void CQExperimentData::syncExperiments()
   std::vector< std::string >::const_iterator it = ExperimentNames.begin();
   std::vector< std::string >::const_iterator end = ExperimentNames.end();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; it != end; ++it, i++)
     {
@@ -1092,7 +1092,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       return;
     }
 
-  unsigned C_INT32 TimeRow = C_INVALID_INDEX;
+  size_t TimeRow = C_INVALID_INDEX;
 
   pdelete(mpComboMap);
   mpComboMap = new QSignalMapper(this);
@@ -1118,8 +1118,8 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
   if (mpBtnSteadystate->isChecked())
     ColumnTypes.pop_back();
 
-  unsigned C_INT32 i, imax = ColumnNames.size();
-  mpTable->setNumRows(imax);
+  size_t i, imax = ColumnNames.size();
+  mpTable->setNumRows((int) imax);
 
   CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
 
@@ -1131,7 +1131,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
   for (i = 0; i < imax; i++)
     {
       // COL_NAME
-      mpTable->setText(i, COL_NAME, FROM_UTF8(ColumnNames[i]));
+      mpTable->setText((int) i, COL_NAME, FROM_UTF8(ColumnNames[i]));
 
       // COL_TYPE
       pComboBox = new QComboBox(mpTable);
@@ -1140,7 +1140,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       if (guess && TimeRow == C_INVALID_INDEX &&
           mpBtnTimeCourse->isChecked() &&
-          mpTable->text(i, COL_NAME).contains("time", false))
+          mpTable->text((int) i, COL_NAME).contains("time", false))
         ObjectMap.setRole(i, CExperiment::time);
 
       Type = ObjectMap.getRole(i);
@@ -1149,13 +1149,13 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       pComboBox->setCurrentItem(Type);
 
-      mpComboMap->setMapping(pComboBox, i);
+      mpComboMap->setMapping(pComboBox, (int) i);
       connect(pComboBox, SIGNAL(activated(int)), mpComboMap, SLOT(map()));
 
-      mpTable->setCellWidget(i, COL_TYPE, pComboBox);
+      mpTable->setCellWidget((int) i, COL_TYPE, pComboBox);
 
       // COL_TYPE_HIDDEN
-      mpTable->setText(i, COL_TYPE_HIDDEN, QString::number(pComboBox->currentItem()));
+      mpTable->setText((int) i, COL_TYPE_HIDDEN, QString::number(pComboBox->currentItem()));
 
       // COL_BTN
       pBtn = new QToolButton(mpTable);
@@ -1166,10 +1166,10 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       if (Type == CExperiment::ignore || Type == CExperiment::time)
         pBtn->setEnabled(false);
 
-      mpBtnMap->setMapping(pBtn, i);
+      mpBtnMap->setMapping(pBtn, (int) i);
       connect(pBtn, SIGNAL(clicked()), mpBtnMap, SLOT(map()));
 
-      mpTable->setCellWidget(i, COL_BTN, pBtn);
+      mpTable->setCellWidget((int) i, COL_BTN, pBtn);
 
       // COL_OBJECT and COL_OBJECT_HIDDEN
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -1181,20 +1181,20 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           pObject = pDataModel->getObject(ObjectMap.getObjectCN(i));
 
           if (pObject)
-            mpTable->setText(i, COL_OBJECT, FROM_UTF8(pObject->getObjectDisplayName()));
+            mpTable->setText((int) i, COL_OBJECT, FROM_UTF8(pObject->getObjectDisplayName()));
           else
-            mpTable->setText(i, COL_OBJECT, "not found");
+            mpTable->setText((int) i, COL_OBJECT, "not found");
 
-          mpTable->setText(i, COL_OBJECT_HIDDEN, FROM_UTF8(ObjectMap.getObjectCN(i)));
+          mpTable->setText((int) i, COL_OBJECT_HIDDEN, FROM_UTF8(ObjectMap.getObjectCN(i)));
         }
       else
         {
-          mpTable->setText(i, COL_OBJECT, "");
-          mpTable->setText(i, COL_OBJECT_HIDDEN, "");
+          mpTable->setText((int) i, COL_OBJECT, "");
+          mpTable->setText((int) i, COL_OBJECT_HIDDEN, "");
         }
 
       if (Type != CExperiment::dependent)
-        mpTable->setText(i, COL_WEIGHT, "");
+        mpTable->setText((int) i, COL_WEIGHT, "");
       else
         {
           C_FLOAT64 DefaultWeight = ObjectMap.getDefaultWeight(i);
@@ -1209,14 +1209,14 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           else
             WeightText = QString::number(Weight);
 
-          mpTable->setText(i, COL_WEIGHT, WeightText);
+          mpTable->setText((int) i, COL_WEIGHT, WeightText);
         }
     }
 
   if (TimeRow != C_INVALID_INDEX)
     for (i = 0; i < imax; i++)
       if (i != TimeRow)
-        static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->removeItem(CExperiment::time);
+        static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->removeItem(CExperiment::time);
 }
 
 void CQExperimentData::slotTypeChanged(int row)
@@ -1305,7 +1305,7 @@ void CQExperimentData::slotTypeChanged(int row)
       std::ifstream File;
       File.open(CLocaleString::fromUtf8(mpExperiment->getFileName()).c_str());
 
-      unsigned C_INT32 CurrentLine = 1;
+      size_t CurrentLine = 1;
       mpExperiment->read(File, CurrentLine);
       mpExperiment->compile();
 
@@ -1349,7 +1349,7 @@ void CQExperimentData::slotSeparator()
   else
     mpExperiment->setSeparator(TO_UTF8(mpEditSeparator->text()));
 
-  mpExperiment->setNumColumns(mpExperiment->guessColumnNumber());
+  mpExperiment->setNumColumns((unsigned C_INT32) mpExperiment->guessColumnNumber());
   mpExperiment->readColumnNames();
 
   loadTable(mpExperiment, true);
@@ -1359,7 +1359,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 {
   CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
   CExperimentObjectMap & MasterObjectMap = mpExperiment->getObjectMap();
-  unsigned C_INT32 i, imax = mpTable->numRows();
+  size_t i, imax = mpTable->numRows();
   bool FoundTime = false;
   bool Changed = false;
 
@@ -1368,7 +1368,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
   for (i = 0; i < imax; i++)
     {
       CExperiment::Type Type =
-        static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
+        static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentItem());
 
       if (Type == CExperiment::time)
         FoundTime = true;
@@ -1379,13 +1379,13 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
           Changed = true;
         }
 
-      if (ObjectMap.getObjectCN(i) != TO_UTF8(mpTable->text(i, COL_OBJECT_HIDDEN)))
+      if (ObjectMap.getObjectCN(i) != TO_UTF8(mpTable->text((int) i, COL_OBJECT_HIDDEN)))
         {
-          ObjectMap.setObjectCN(i, TO_UTF8(mpTable->text(i, COL_OBJECT_HIDDEN)));
+          ObjectMap.setObjectCN(i, TO_UTF8(mpTable->text((int) i, COL_OBJECT_HIDDEN)));
           Changed = true;
         }
 
-      QString WeightText = mpTable->text(i, COL_WEIGHT);
+      QString WeightText = mpTable->text((int) i, COL_WEIGHT);
 
       // Empty fields are treated as default.
       if (WeightText == "")
@@ -1420,13 +1420,13 @@ void CQExperimentData::slotCheckFrom(bool checked)
 {
   mpCheckFrom->setFocus();
 
-  unsigned C_INT32 Current = this->mpBoxExperiment->currentItem();
+  size_t Current = this->mpBoxExperiment->currentItem();
 
   if (checked && Current && Current != C_INVALID_INDEX)
     {
       // Load the information from the previous experiment
       CExperiment * pPrevious =
-        mpFileInfo->getExperiment(TO_UTF8(mpBoxExperiment->text(Current - 1)));
+        mpFileInfo->getExperiment(TO_UTF8(mpBoxExperiment->text((int)(Current - 1))));
 
       unsigned C_INT32 OldWeightMethod = mOldWeightMethod;
       loadExperiment(pPrevious);
@@ -1463,7 +1463,7 @@ bool CQExperimentData::isLikePreviousExperiment(CExperiment * pExperiment)
 {
   if (!pExperiment) return false;
 
-  unsigned C_INT32 Previous =
+  size_t Previous =
     mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) - 1;
 
   if (Previous == C_INVALID_INDEX) return false;
@@ -1496,7 +1496,7 @@ void CQExperimentData::slotCheckTo(bool checked)
 
   if (!checked || !mpExperiment) return;
 
-  unsigned C_INT32 Next =
+  size_t Next =
     mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey()) + 1;
 
   if (Next < mpExperimentSetCopy->getExperimentCount())
@@ -1530,18 +1530,18 @@ void CQExperimentData::enableEdit(const bool & enable)
       // Disable is inheritted but enable not.
       if (mpExperiment)
         {
-          unsigned C_INT32 i, imax = mpTable->numRows();
+          size_t i, imax = mpTable->numRows();
 
           for (i = 0; i < imax; i++)
             {
-              mpTable->cellWidget(i, COL_TYPE)->setEnabled(true);
+              mpTable->cellWidget((int) i, COL_TYPE)->setEnabled(true);
 
               CExperiment::Type Type =
-                static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
+                static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentItem());
 
               if (Type == CExperiment::ignore || Type == CExperiment::time) continue;
 
-              mpTable->cellWidget(i, COL_BTN)->setEnabled(true);
+              mpTable->cellWidget((int) i, COL_BTN)->setEnabled(true);
             }
         }
     }
@@ -1565,9 +1565,9 @@ void CQExperimentData::slotWeightMethod(int weightMethod)
   if ((CExperiment::WeightMethod) weightMethod ==
       mpExperiment->getWeightMethod()) return;
 
-  unsigned C_INT32 Current =
+  size_t Current =
     mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey());
-  unsigned C_INT32 Next = Current + 1;
+  size_t Next = Current + 1;
 
   // Find all experiments which are like this.
   while (Next < mpExperimentSetCopy->getExperimentCount() && mpCheckTo->isChecked())
@@ -1593,7 +1593,7 @@ void CQExperimentData::slotWeightMethod(int weightMethod)
           std::ifstream File;
           File.open(CLocaleString::fromUtf8(pNext->getFileName()).c_str());
 
-          unsigned C_INT32 CurrentLine = 1;
+          size_t CurrentLine = 1;
           pNext->read(File, CurrentLine);
           pNext->compile();
         }

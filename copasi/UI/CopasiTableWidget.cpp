@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.71.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2011/01/12 19:07:45 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -128,7 +133,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //this->init(); //this has to be done by the constructor of the derived classes
 }
 
-void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 row)
+void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, size_t row)
 {
   QString tmp("");
   bool flag = false;
@@ -158,7 +163,7 @@ void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 
     }
 
   //only set the text if the object has an sbml id
-  if (flag) table->setText(row, numCols - 1, tmp);
+  if (flag) table->setText((int) row, (int)(numCols - 1), tmp);
 }
 
 void CopasiTableWidget::fillTable()
@@ -168,7 +173,7 @@ void CopasiTableWidget::fillTable()
   std::vector<const CCopasiObject*> objects = getObjects();
 
   //  const CCopasiVectorN < CCompartment > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
-  C_INT32 i, j, jmax = objects.size();
+  size_t i, j, jmax = objects.size();
 
   resizeTable(jmax + 1);
 
@@ -182,12 +187,12 @@ void CopasiTableWidget::fillTable()
       mFlagDelete[j] = false;
       mFlagNew[j] = false;
       mFlagRenamed[j] = false;
-      updateRow(j);
+      updateRow((int) j);
     }
 
   // Clear the name in the last row and show default content.
-  table->clearCell(jmax, 1);
-  defaultTableLineContent(jmax, 0);
+  table->clearCell((int) jmax, 1);
+  defaultTableLineContent((int) jmax, 0);
 
   //clear last line and adjust column width of the table
   for (i = 0; i < numCols; ++i)
@@ -197,7 +202,7 @@ void CopasiTableWidget::fillTable()
 
       if (flagtoAdjust == true)
         {
-          table->adjustColumn(i);
+          table->adjustColumn((int) i);
         }
     }
 
@@ -213,7 +218,7 @@ void CopasiTableWidget::fillTable()
   mFlagDelete[jmax] = false;
   mFlagNew[jmax] = false;
   mFlagRenamed[jmax] = false;
-  updateRow(jmax);
+  updateRow((int) jmax);
 
   if (!mRO)
     {
@@ -424,9 +429,9 @@ void CopasiTableWidget::slotTableDelKey()
     slotBtnDeleteClicked();
 }
 
-void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
+void CopasiTableWidget::resizeTable(const size_t numRows)
 {
-  table->setNumRows(numRows);
+  table->setNumRows((int) numRows);
   mKeys.resize(numRows);
   mFlagChanged.resize(numRows);
   mFlagDelete.resize(numRows);
@@ -437,7 +442,7 @@ void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
   if (numRows > 0)
     {
       defaultTableLineContent(numRows - 1, 0);
-      table->setRowReadOnly(numRows - 1, false);
+      table->setRowReadOnly((int)(numRows - 1), false);
     }
 }
 
@@ -467,13 +472,13 @@ void CopasiTableWidget::updateRow(const C_INT32 row)
 QString CopasiTableWidget::createNewName(const QString name)
 {
   QString nname = name;
-  unsigned C_INT32 j, jmax = mKeys.size();
-  unsigned C_INT32 i = 1;
+  size_t j, jmax = mKeys.size();
+  size_t i = 1;
 
   for (;; ++i)
     {
       for (j = 0; j < jmax; ++j)
-        if (table->text(j, 1) == nname) break;
+        if (table->text((int) j, 1) == nname) break;
 
       if (j == jmax) break;
 

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:47 $
+//   $Date: 2011/01/12 19:04:01 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -36,7 +41,7 @@ void CModelAnalyzer::checkModel(const CModel* model)
 
   mpModel = model;
 
-  C_INT32 i, imax = model->getTotSteps();
+  size_t i, imax = model->getTotSteps();
 
   for (i = 0; i < imax; ++i)
     {
@@ -77,7 +82,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
   //********* mapping **********************
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
   imax = reaction->getChemEq().getSubstrates().size();
 
   for (i = 0; i < imax; ++i)
@@ -85,7 +90,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
       //each substrate of the reaction needs to be mapped to a function parameter with role SUBSTRATE
       std::string tmpkey = reaction->getChemEq().getSubstrates()[i]->getMetaboliteKey();
 
-      unsigned C_INT32 j, jmax = reaction->getFunctionParameters().size();
+      size_t j, jmax = reaction->getFunctionParameters().size();
 
       for (j = 0; j < jmax; ++j)
         {
@@ -114,7 +119,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
         {
           std::string tmpkey = reaction->getChemEq().getProducts()[i]->getMetaboliteKey();
 
-          unsigned C_INT32 j, jmax = reaction->getFunctionParameters().size();
+          size_t j, jmax = reaction->getFunctionParameters().size();
 
           for (j = 0; j < jmax; ++j)
             {
@@ -142,7 +147,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
       //each modifier of the reaction should be mapped to a function parameter with role MODIFIER
       std::string tmpkey = reaction->getChemEq().getModifiers()[i]->getMetaboliteKey();
 
-      unsigned C_INT32 j, jmax = reaction->getFunctionParameters().size();
+      size_t j, jmax = reaction->getFunctionParameters().size();
 
       for (j = 0; j < jmax; ++j)
         {
@@ -162,7 +167,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
         }
     }
 
-  unsigned C_INT32 j, jmax;
+  size_t j, jmax;
 
   //loop over all function parameters
   imax = reaction->getFunctionParameters().size();
@@ -355,7 +360,7 @@ bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, boo
   if (mReversibilityMismatch)
     os << CFunctionAnalyzer::write(3, rt, "The reversibility of the reaction and the kinetic function doesn't match.", "");
 
-  unsigned int i, imax;
+  size_t i, imax;
   imax = mChemEqSubs.size();
 
   for (i = 0; i < imax; ++i)
@@ -473,7 +478,7 @@ void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool verbose) const
 {
 
   //reaction results
-  unsigned i, imax = mReactionResults.size();
+  size_t i, imax = mReactionResults.size();
 
   for (i = 0; i < imax; ++i)
     {

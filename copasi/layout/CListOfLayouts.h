@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,13 +88,13 @@ public:
    *  Returns a pointer to the global render information object with the given index.
    *  If the index is invalid, NULL is returned.
    */
-  CLGlobalRenderInformation* getRenderInformation(unsigned C_INT32 index);
+  CLGlobalRenderInformation* getRenderInformation(size_t index);
 
   /**
    *  Returns a const pointer to the global render information object with the given index.
    *  If the index is invalid, NULL is returned.
    */
-  const CLGlobalRenderInformation* getRenderInformation(unsigned C_INT32 index) const;
+  const CLGlobalRenderInformation* getRenderInformation(size_t index) const;
 
 #endif /* USE_CRENDER_EXTENSION */
 };

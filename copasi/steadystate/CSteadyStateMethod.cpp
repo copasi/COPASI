@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.33.2.2 $
+//   $Revision: 1.33.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:06 $
+//   $Date: 2011/01/12 19:06:36 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,7 +182,7 @@ bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
 {
   const CCopasiVectorNS < CReaction > & Reaction =
     mpProblem->getModel()->getReactions();
-  unsigned C_INT32 i, imax = Reaction.size();
+  size_t i, imax = Reaction.size();
 
   for (i = 0; i < imax; i++)
     if (Reaction[i]->getFlux() / Reaction[i]->getLargestCompartment().getValue() > resolution)

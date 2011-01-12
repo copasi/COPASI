@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.62.2.1 $
+//   $Revision: 1.62.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/06 16:46:24 $
+//   $Date: 2011/01/12 19:06:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,7 +126,7 @@ void CLsodaMethod::initializeParameter()
           else
             {
               const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
-              unsigned C_INT32 i, imax;
+              size_t i, imax;
               C_FLOAT64 Volume = DBL_MAX;
 
               for (i = 0, imax = Compartment.size(); i < imax; i++)
@@ -198,8 +198,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
   C_INT ITOL = 2; // mRtol scalar, mAtol vector
   C_INT one = 1;
-  C_INT DSize = mDWork.size();
-  C_INT ISize = mIWork.size();
+  C_INT DSize = (C_INT) mDWork.size();
+  C_INT ISize = (C_INT) mIWork.size();
 
   // The return status of the integrator.
   Status Status = NORMAL;
@@ -363,15 +363,15 @@ void CLsodaMethod::start(const CState * initialState)
   mTargetTime = mTime;
   mRootCounter = 0;
 
-  mNumRoots = mpModel->getNumRoots();
+  mNumRoots = (C_INT) mpModel->getNumRoots();
   mRoots.resize(mNumRoots);
   destroyRootMask();
   mRootMasking = NONE;
 
   if (*mpReducedModel)
-    mData.dim = mMethodState.getNumIndependent();
+    mData.dim = (C_INT) mMethodState.getNumIndependent();
   else
-    mData.dim = mMethodState.getNumIndependent() + mpModel->getNumDependentReactionMetabs();
+    mData.dim = (C_INT)(mMethodState.getNumIndependent() + mpModel->getNumDependentReactionMetabs());
 
   // When we have roots we need to add an artificial ODE dDummy/dt = 1
   if (mData.dim == 0 && mNumRoots != 0)

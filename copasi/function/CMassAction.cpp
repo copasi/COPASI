@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.41.4.1 $
+//   $Revision: 1.41.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/14 12:27:22 $
+//   $Date: 2011/01/12 19:01:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,7 +169,7 @@ void CMassAction::writeMathML(std::ostream & out,
                               const std::vector<std::vector<std::string> > & env,
                               bool /* expand */,
                               bool /* fullExpand */,
-                              unsigned C_INT32 l) const
+                              size_t l) const
 {
   bool rev = (isReversible() == TriTrue);
 
@@ -180,7 +180,7 @@ void CMassAction::writeMathML(std::ostream & out,
 
   out << SPC(l + 1) << env[0][0] << std::endl;
 
-  unsigned i, imax = env[1].size();
+  size_t i, imax = env[1].size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -193,7 +193,7 @@ void CMassAction::writeMathML(std::ostream & out,
       out << SPC(l + 1) << "<mo>-</mo>" << std::endl;
       out << SPC(l + 1) << env[2][0] << std::endl;
 
-      unsigned i, imax = env[3].size();
+      size_t i, imax = env[3].size();
 
       for (i = 0; i < imax; ++i)
         {

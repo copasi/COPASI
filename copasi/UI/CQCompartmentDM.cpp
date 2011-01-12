@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.9.4.5 $
+//   $Revision: 1.9.4.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:41 $
+//   $Date: 2011/01/12 19:07:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ const std::vector< unsigned C_INT32 >& CQCompartmentDM::getItemToType()
 
 int CQCompartmentDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments().size() + 1;
 }
 int CQCompartmentDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -335,7 +335,7 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CCompartment * pCompartment = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
 
       if (delRow != C_INVALID_INDEX)
@@ -346,7 +346,7 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
                                         pCompartment->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

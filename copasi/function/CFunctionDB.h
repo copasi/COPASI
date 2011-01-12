@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.54.4.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:24 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:01:00 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -128,7 +133,7 @@ public:
   CEvaluationTree* createFunction(const std::string &name, const CEvaluationTree::Type & type = CEvaluationTree::Function);
 #endif // FFFF
 
-  bool removeFunction(unsigned C_INT32 index);
+  bool removeFunction(size_t index);
 
   bool removeFunction(const std::string &key);
 
@@ -166,14 +171,14 @@ public:
    *  Retrieves the vector of functions that are suitable for a
    *  number of substrates, products and reversibility status.
    *  Note: The returns CCopasiVector has to be deleted after use!
-   *  @param "const unsigned C_INT32" noSubstrates the number of substrates
-   *  @param "const unsigned C_INT32" noProducts the number of products
+   *  @param "const size_t" noSubstrates the number of substrates
+   *  @param "const size_t" noProducts the number of products
    *  @param "const TriLogic" reversible the reversibility status
    *  @return "std::vector<CFunction*> " suitableFunctions
    */
   std::vector<CFunction*>
-  suitableFunctions(const unsigned C_INT32 noSubstrates,
-                    const unsigned C_INT32 noProducts,
+  suitableFunctions(const size_t noSubstrates,
+                    const size_t noProducts,
                     const TriLogic reversibility);
 
   /**
