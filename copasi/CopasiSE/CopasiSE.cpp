@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.48.2.1 $
+//   $Revision: 1.48.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:23 $
+//   $Date: 2011/01/12 17:25:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
 
 #ifdef XXXX
       CCallParameters<C_FLOAT64> Variables(20);
-      unsigned C_INT32 j, i, imax = Variables.size();
+      size_t j, i, imax = Variables.size();
       CRandom * pRandom = CRandom::createGenerator();
 
       for (i = 0; i < imax; i++)
@@ -449,7 +449,7 @@ int main(int argc, char *argv[])
                 }
 
               CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
-              unsigned C_INT32 i, imax = TaskList.size();
+              size_t i, imax = TaskList.size();
 
               for (i = 0; i < imax; i++)
                 if (TaskList[i]->isScheduled())
@@ -554,7 +554,7 @@ int validate()
   assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
-  unsigned C_INT32 i, imax = TaskList.size();
+  size_t i, imax = TaskList.size();
 
   for (i = 0; i < imax; i++)
     if (TaskList[i]->isScheduled())
