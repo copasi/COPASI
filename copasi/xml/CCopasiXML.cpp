@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.130.2.1 $
+//   $Revision: 1.130.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/25 12:01:32 $
+//   $Date: 2011/01/12 19:13:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,7 +442,7 @@ bool CCopasiXML::saveModel()
       endSaveElement("InitialExpression");
     }
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   // Compartment
   if ((imax = mpModel->getCompartments().size()) > 0)
@@ -455,7 +455,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("simulationType", "");
       Attributes.add("dimensionality", "");
 
-      unsigned C_INT32 i, imax = mpModel->getCompartments().size();
+      size_t i, imax = mpModel->getCompartments().size();
 
       for (i = 0; i < imax; i++)
         {
@@ -635,10 +635,10 @@ bool CCopasiXML::saveModel()
 
       CXMLAttributeList Attr;
       const CCopasiVector< CChemEqElement > * pReactantList;
-      unsigned C_INT32 j, jmax;
+      size_t j, jmax;
 
       std::vector< const CCopasiObject * > ObjectList;
-      unsigned C_INT32 k, kmax;
+      size_t k, kmax;
 
       Attributes.erase();
       Attributes.add("key", "");
@@ -940,7 +940,7 @@ bool CCopasiXML::saveFunctionList()
 
   if (!haveFunctionList()) return success;
 
-  unsigned C_INT32 i, imax = mpFunctionList->size();
+  size_t i, imax = mpFunctionList->size();
 
   if (!imax) return success;
 
@@ -1005,7 +1005,7 @@ bool CCopasiXML::saveFunctionList()
         {
           startSaveElement("ListOfParameterDescriptions");
 
-          unsigned C_INT32 j, jmax = pFunction->getVariables().size();
+          size_t j, jmax = pFunction->getVariables().size();
           CFunctionParameter * pParameter;
 
           Attributes.erase();
@@ -1047,7 +1047,7 @@ bool CCopasiXML::savePlotList()
       return success;
     }
 
-  unsigned C_INT32 i, imax = mpPlotList->size();
+  size_t i, imax = mpPlotList->size();
 
   //std::cerr << "Saving " << imax << " plots." << std::endl;
   if (!imax) return success;
@@ -1067,7 +1067,7 @@ bool CCopasiXML::savePlotList()
       startSaveElement("PlotSpecification", Attributes);
       saveParameterGroup(* pPlot->CCopasiParameter::getValue().pGROUP);
       startSaveElement("ListOfPlotItems");
-      unsigned C_INT32 j, jmax = pPlot->getItems().size();
+      size_t j, jmax = pPlot->getItems().size();
 
       //std::cerr << "Saving " << jmax << "PlotItems." << std::endl;
       for (j = 0; j < jmax; j++)
@@ -1079,7 +1079,7 @@ bool CCopasiXML::savePlotList()
           startSaveElement("PlotItem", Attributes);
           saveParameterGroup(* pPlotItem->CCopasiParameter::getValue().pGROUP);
           startSaveElement("ListOfChannels");
-          unsigned C_INT32 k, kmax = pPlotItem->getNumChannels();
+          size_t k, kmax = pPlotItem->getNumChannels();
 
           //std::cerr << "Saving " << kmax << " Channels." << std::endl;
           for (k = 0; k < kmax; k++)
@@ -1120,7 +1120,7 @@ bool CCopasiXML::saveTaskList()
 
   if (!haveTaskList()) return success;
 
-  unsigned C_INT32 i, imax = mpTaskList->size();
+  size_t i, imax = mpTaskList->size();
 
   if (!imax) return success;
 
@@ -1194,7 +1194,7 @@ bool CCopasiXML::saveReportSection(const std::string & name,
   CXMLAttributeList Attributes;
   Attributes.add("NoName", "");
 
-  unsigned C_INT32 j, jmax = section.size();
+  size_t j, jmax = section.size();
 
   if (jmax)
     {
@@ -1232,7 +1232,7 @@ bool CCopasiXML::saveReportList()
 
   if (!haveReportList()) return success;
 
-  unsigned C_INT32 i, imax = mpReportList->size();
+  size_t i, imax = mpReportList->size();
 
   if (!imax) return success;
 
@@ -1265,7 +1265,7 @@ bool CCopasiXML::saveReportList()
           startSaveElement("Table", Attributes);
 
           const std::vector <CRegisteredObjectName> & Table = * pReport->getTableAddr();
-          unsigned C_INT32 j, jmax = Table.size();
+          size_t j, jmax = Table.size();
 
           Attributes.erase();
           Attributes.add("cn", "");
@@ -1327,7 +1327,7 @@ void CCopasiXML::saveCurve(const CLCurve& c)
   if (c.getNumCurveSegments() > 0)
     {
       startSaveElement("ListOfCurveSegments");
-      unsigned C_INT32 i, imax = c.getNumCurveSegments();
+      size_t i, imax = c.getNumCurveSegments();
 
       for (i = 0; i < imax; ++i)
         {
@@ -1366,7 +1366,7 @@ bool CCopasiXML::saveLayoutList()
 
   if (!haveLayoutList()) return success;
 
-  unsigned C_INT32 i, imax = mpLayoutList->size();
+  size_t i, imax = mpLayoutList->size();
 
   if (!imax) return success;
 
@@ -1389,7 +1389,7 @@ bool CCopasiXML::saveLayoutList()
       Attributes.add("height", pLayout->getDimensions().getHeight());
       saveElement("Dimensions", Attributes);
 
-      unsigned C_INT32 j, jmax;
+      size_t j, jmax;
 
       //compartment glyphs
       if (pLayout->getListOfCompartmentGlyphs().size() > 0)
@@ -1486,7 +1486,7 @@ bool CCopasiXML::saveLayoutList()
 
               // metab reference glyphs
               startSaveElement("ListOfMetaboliteReferenceGlyphs");
-              unsigned C_INT32 k, kmax = cg->getListOfMetabReferenceGlyphs().size();
+              size_t k, kmax = cg->getListOfMetabReferenceGlyphs().size();
 
               for (k = 0; k < kmax; ++k)
                 {
@@ -1654,7 +1654,7 @@ bool CCopasiXML::saveGUI()
       Attributes.add("tickFactor", "");
       Attributes.add("scaling", "");
 
-      unsigned C_INT32 i, imax = mpGUI->getSliderList()->size();
+      size_t i, imax = mpGUI->getSliderList()->size();
 
       for (i = 0; i < imax; i++)
         {
@@ -1743,7 +1743,7 @@ bool CCopasiXML::buildFunctionList()
 void CCopasiXML::saveListOfGlobalRenderInformation(const CCopasiVector<CLGlobalRenderInformation>& list)
 {
   startSaveElement("ListOfGlobalRenderInformation");
-  unsigned int i, iMax = list.size();
+  size_t i, iMax = list.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -1759,7 +1759,7 @@ void CCopasiXML::saveListOfGlobalRenderInformation(const CCopasiVector<CLGlobalR
 void CCopasiXML::saveListOfLocalRenderInformation(const CCopasiVector<CLLocalRenderInformation>& list)
 {
   startSaveElement("ListOfRenderInformation");
-  unsigned int i, iMax = list.size();
+  size_t i, iMax = list.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -1781,7 +1781,7 @@ void CCopasiXML::saveGlobalRenderInformation(const CLGlobalRenderInformation& re
   // now we save the definition that are the same for all render information objects
   saveRenderInformationDefinitionElements(renderInfo);
   // last we save the global styles
-  unsigned int i, iMax = renderInfo.getNumStyles();
+  size_t i, iMax = renderInfo.getNumStyles();
 
   if (iMax > 0)
     {
@@ -1810,7 +1810,7 @@ void CCopasiXML::saveLocalRenderInformation(const CLLocalRenderInformation& rend
   // now we save the definition that are the same for all render information objects
   saveRenderInformationDefinitionElements(renderInfo);
   // last we save the global styles
-  unsigned int i, iMax = renderInfo.getNumStyles();
+  size_t i, iMax = renderInfo.getNumStyles();
 
   if (iMax > 0)
     {
@@ -1864,7 +1864,7 @@ void CCopasiXML::saveRenderInformationAttributes(const CLRenderInformationBase& 
  */
 void CCopasiXML::saveRenderInformationDefinitionElements(const CLRenderInformationBase& renderInfo)
 {
-  unsigned int i, iMax = renderInfo.getNumColorDefinitions();
+  size_t i, iMax = renderInfo.getNumColorDefinitions();
 
   if (iMax > 0)
     {
@@ -2008,7 +2008,7 @@ void CCopasiXML::saveGradientAttributes(const CLGradientBase& gradient, CXMLAttr
  */
 void CCopasiXML::saveGradientElements(const CLGradientBase& gradient)
 {
-  unsigned int i, iMax = gradient.getNumGradientStops();
+  size_t i, iMax = gradient.getNumGradientStops();
 
   if (iMax > 0)
     {
@@ -2115,7 +2115,7 @@ void CCopasiXML::saveGroupElement(const CLGroup& group)
   saveTextAttributes<CLGroup>(group, attributes);
   saveArrowHeadAttributes<CLGroup>(group, attributes);
   startSaveElement("Group", attributes);
-  unsigned int i, iMax = group.getNumElements();
+  size_t i, iMax = group.getNumElements();
 
   if (iMax > 0)
     {
@@ -2180,7 +2180,7 @@ void CCopasiXML::save1DAttributes(const CLGraphicalPrimitive1D& primitive, CXMLA
   if (primitive.isSetDashArray())
     {
       std::ostringstream os;
-      unsigned int i, iMax = primitive.getDashArray().size();
+      size_t i, iMax = primitive.getDashArray().size();
       os << primitive.getDashArray()[0];
 
       for (i = 1; i < iMax; ++i)
@@ -2527,7 +2527,7 @@ void CCopasiXML::saveRenderCurveElement(const CLRenderCurve& curve)
 void CCopasiXML::saveCurveElements(const std::vector<CLRenderPoint*>& curveElements)
 {
   startSaveElement("ListOfElements");
-  unsigned int i, iMax = curveElements.size();
+  size_t i, iMax = curveElements.size();
 
   for (i = 0; i < iMax; ++i)
     {

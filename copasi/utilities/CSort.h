@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:06:33 $
+//   $Date: 2011/01/12 19:13:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,31 +19,48 @@
 #define COPASI_CSort
 
 #include <algorithm>
+#include <functional>
 #include <float.h>
 
 #include "utilities/CVector.h"
 
-/**
- * The base functor providing the default compare method for the
- * sorting methods. This default comparison is done with the
- * operator <. to mimic the behaviour of STL sort algorithms
- */
-template <typename RandomAccessIterator>
-class FCompareBase
+template<typename RandomAccessIterator>
+class CompareDefault
 {
 public:
   /**
+   * Contructor
+   */
+  CompareDefault() {};
+
+  /**
    * Virtual desctructor
    */
-  virtual ~FCompareBase() {};
+  virtual ~CompareDefault() {};
+
+
+  bool operator()(const std::pair< RandomAccessIterator, size_t > & lhs,
+                  const std::pair< RandomAccessIterator, size_t > & rhs)
+  {
+    return *lhs.first < *rhs.first;
+  }
+};
+
+class CompareDoubleWithNaN
+{
+public:
   /**
-   * Operator wrapping the comparison operator <
-   * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs
-   * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs
-   * @return bool lessThan
+   * Contructor
    */
-  virtual bool operator()(const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
-                          const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
+  CompareDoubleWithNaN() {};
+
+  /**
+   * Virtual desctructor
+   */
+  virtual ~CompareDoubleWithNaN() {};
+
+  bool operator()(const std::pair< C_FLOAT64 *, size_t > & lhs,
+                  const std::pair< C_FLOAT64 *, size_t > & rhs)
   {
     return
       isnan(*lhs.first) ?
@@ -53,65 +70,21 @@ public:
 };
 
 /**
- * This functor provids the means to specify a compare method
- * for the sorting methods.
- */
-template <typename RandomAccessIterator , typename LessThanCompare>
-class FCompare : FCompareBase<RandomAccessIterator>
-{
-protected:
-  /**
-   * Default constructor
-   */
-  FCompare() {};
-
-public:
-  /**
-   * Virtual desctructor
-   */
-  virtual ~FCompare() {};
-
-  /**
-   * Specific constructor
-   * @param LessThanCompare method
-   */
-  FCompare(LessThanCompare method):
-      mpCompare(method)
-  {}
-
-  /**
-   * Operator wrapping the coparison method
-   * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs
-   * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs
-   * @return bool lessThan
-   */
-  virtual bool operator()(const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
-                          const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
-  {return (*mpCompare)(*lhs.first, *rhs.first);}
-
-private:
-  /**
-   * A pointer to the wrapped compare method.
-   */
-  LessThanCompare mpCompare;
-};
-
-/**
  * Sorting method returning a pivot vector instead of performing the sort.
  * The underlying sorting method is std::sort with the operator < used for
  * comparison .
  * @param RandomAccessIterator first
  * @param RandomAccessIterator last
- * @param CVector<unsigned C_INT32> & pivot
+ * @param CVector<size_t> & pivot
  */
 template <typename RandomAccessIterator>
 void sortWithPivot(RandomAccessIterator first,
                    RandomAccessIterator last,
-                   CVector<unsigned C_INT32> & pivot)
+                   CVector<size_t> & pivot)
 {
-  FCompareBase<RandomAccessIterator> Compare;
+  CompareDefault<RandomAccessIterator> Compare;
 
-  __sortWithPivot(first, last, Compare, pivot);
+  sortWithPivot(first, last, Compare, pivot);
 
   return;
 }
@@ -123,44 +96,24 @@ void sortWithPivot(RandomAccessIterator first,
  * @param RandomAccessIterator first
  * @param RandomAccessIterator last
  * @param LessThanCompare method
- * @param CVector<unsigned C_INT32> & pivot
+ * @param CVector<size_t> & pivot
  */
 template <typename RandomAccessIterator, typename LessThanCompare>
 void sortWithPivot(RandomAccessIterator first,
                    RandomAccessIterator last,
-                   LessThanCompare method,
-                   CVector<unsigned C_INT32> & pivot)
-{
-  FCompare<RandomAccessIterator, LessThanCompare> Compare(method);
-
-  __sortWithPivot(first, last, Compare, pivot);
-
-  return;
-}
-
-/**
- * The actual implementation of the sortWithPivot algorithm.
- * @param RandomAccessIterator first
- * @param RandomAccessIterator last
- * @param FCompareBase<RandomAccessIterator> & compare
- * @param CVector<unsigned C_INT32> & pivot
- */
-template <typename RandomAccessIterator>
-void __sortWithPivot(RandomAccessIterator first,
-                     RandomAccessIterator last,
-                     FCompareBase<RandomAccessIterator> & compare,
-                     CVector<unsigned C_INT32> & pivot)
+                   LessThanCompare compare,
+                   CVector<size_t> & pivot)
 {
   assert(first < last);
 
   // Initialize the two column array to be sorted
-  CVector<std::pair<RandomAccessIterator, unsigned C_INT32> > ToBeSorted;
+  CVector<std::pair<RandomAccessIterator, size_t> > ToBeSorted;
   ToBeSorted.resize(last - first);
 
   RandomAccessIterator it;
-  unsigned C_INT32 i;
+  size_t i;
 
-  typename std::pair<RandomAccessIterator, unsigned C_INT32> * itToBeSorted;
+  typename std::pair<RandomAccessIterator, size_t> * itToBeSorted;
 
   for (it = first, i = 0, itToBeSorted = ToBeSorted.array();
        it != last;
@@ -178,8 +131,8 @@ void __sortWithPivot(RandomAccessIterator first,
 
   // Copy the resulting pivots to the pivot vector.
   pivot.resize(last - first);
-  CVector<unsigned C_INT32>::elementType *itPivot = pivot.array();
-  CVector<unsigned C_INT32>::elementType *endPivot = itPivot + (last - first);
+  CVector<size_t>::elementType *itPivot = pivot.array();
+  CVector<size_t>::elementType *endPivot = itPivot + (last - first);
 
   for (; itPivot != endPivot; ++itToBeSorted, ++itPivot)
     *itPivot = itToBeSorted->second;
@@ -194,17 +147,17 @@ void __sortWithPivot(RandomAccessIterator first,
  * @param RandomAccessIterator first
  * @param RandomAccessIterator middle
  * @param RandomAccessIterator last
- * @param CVector<unsigned C_INT32> & pivot
+ * @param CVector<size_t> & pivot
  */
 template <typename RandomAccessIterator>
 void partialSortWithPivot(RandomAccessIterator first,
                           RandomAccessIterator middle,
                           RandomAccessIterator last,
-                          CVector<unsigned C_INT32> & pivot)
+                          CVector<size_t> & pivot)
 {
-  FCompareBase<RandomAccessIterator> Compare;
+  CompareDefault<RandomAccessIterator> Compare;
 
-  __partialSortWithPivot(first, middle, last, Compare, pivot);
+  partialSortWithPivot(first, middle, last, Compare, pivot);
 
   return;
 }
@@ -217,47 +170,25 @@ void partialSortWithPivot(RandomAccessIterator first,
  * @param RandomAccessIterator middle
  * @param RandomAccessIterator last
  * @param LessThanCompare method
- * @param CVector<unsigned C_INT32> & pivot
+ * @param CVector<size_t> & pivot
  */
 template <typename RandomAccessIterator, typename LessThanCompare>
 void partialSortWithPivot(RandomAccessIterator first,
                           RandomAccessIterator middle,
                           RandomAccessIterator last,
-                          LessThanCompare method,
-                          CVector<unsigned C_INT32> & pivot)
-{
-  FCompare<RandomAccessIterator, LessThanCompare> Compare(method);
-
-  __partialSortWithPivot(first, middle, last, Compare, pivot);
-
-  return;
-}
-
-/**
- * The actual implementation of the partialSortWithPivot algorithm.
- * @param RandomAccessIterator first
- * @param RandomAccessIterator middle
- * @param RandomAccessIterator last
- * @param FCompareBase<RandomAccessIterator> & compare
- * @param CVector<unsigned C_INT32> & pivot
- */
-template <typename RandomAccessIterator>
-void __partialSortWithPivot(RandomAccessIterator first,
-                            RandomAccessIterator middle,
-                            RandomAccessIterator last,
-                            FCompareBase<RandomAccessIterator> & compare,
-                            CVector<unsigned C_INT32> & pivot)
+                          LessThanCompare compare,
+                          CVector<size_t> & pivot)
 {
   assert(first < middle && middle <= last);
 
   // Initialize the two column array to be sorted
-  CVector<std::pair<RandomAccessIterator, unsigned C_INT32> > ToBeSorted;
+  CVector<std::pair<RandomAccessIterator, size_t> > ToBeSorted;
   ToBeSorted.resize(last - first);
 
   RandomAccessIterator it;
-  unsigned C_INT32 i;
+  size_t i;
 
-  typename std::pair<RandomAccessIterator, unsigned C_INT32> * itToBeSorted;
+  typename std::pair<RandomAccessIterator, size_t> * itToBeSorted;
 
   for (it = first, i = 0, itToBeSorted = ToBeSorted.array();
        it != last;
@@ -276,8 +207,8 @@ void __partialSortWithPivot(RandomAccessIterator first,
 
   // Copy the resulting pivots to the pivot vector.
   pivot.resize(last - first);
-  CVector<unsigned C_INT32>::elementType *itPivot = pivot.array();
-  CVector<unsigned C_INT32>::elementType *endPivot = itPivot + (last - first);
+  CVector<size_t>::elementType *itPivot = pivot.array();
+  CVector<size_t>::elementType *endPivot = itPivot + (last - first);
 
   for (; itPivot != endPivot; ++itToBeSorted, ++itPivot)
     *itPivot = itToBeSorted->second;
@@ -389,23 +320,23 @@ private:
 /**
  * Reorder the elements according to the provided pivots
  * The swap method must be of the form:
- *   ReturnType operator() (unsigned C_INT32 to, unsigned C_INT32 from)
+ *   ReturnType operator() (size_t to, size_t from)
  * where the ReturnType is not used and therefore arbitrary. Objects of
  * type FSwapBase are suitable candidates.
- * @param const CVector<unsigned C_INT32> & pivot
+ * @param const CVector<size_t> & pivot
  * @param SwapMethod swap
  * @return bool success
  */
 template <typename SwapMethod>
-bool applyPivot(const CVector<unsigned C_INT32> & pivot,
+bool applyPivot(const CVector<size_t> & pivot,
                 SwapMethod swap)
 {
   CVector< bool > Applied(pivot.size());
   Applied = false;
 
-  unsigned C_INT32 i, imax = pivot.size();
-  unsigned C_INT32 to;
-  unsigned C_INT32 from;
+  size_t i, imax = pivot.size();
+  size_t to;
+  size_t from;
 
   for (i = 0; i < imax; i++)
     if (!Applied[i])
@@ -432,25 +363,25 @@ bool applyPivot(const CVector<unsigned C_INT32> & pivot,
  * Partial reordering of the first 'ordered' elements according to the
  * provided pivots.
  * The swap method must be of the form:
- *   ReturnType operator() (unsigned C_INT32 to, unsigned C_INT32 from)
+ *   ReturnType operator() (size_t to, size_t from)
  * where the ReturnType is not used and therefore arbitrary. Objects of
  * type FSwapBase are suitable candidates.
- * @param const CVector<unsigned C_INT32> & pivot
- * @param const unsigned C_INT32 & ordered
+ * @param const CVector<size_t> & pivot
+ * @param const size_t & ordered
  * @param SwapMethod swap
  * @return bool success
  */
 template <typename SwapMethod>
-bool applyPartialPivot(const CVector<unsigned C_INT32> & pivot,
-                       const unsigned C_INT32 & ordered,
+bool applyPartialPivot(const CVector<size_t> & pivot,
+                       const size_t & ordered,
                        SwapMethod swap)
 {
   CVector< bool > Applied(pivot.size());
   Applied = false;
 
-  unsigned C_INT32 i;
-  unsigned C_INT32 to;
-  unsigned C_INT32 from;
+  size_t i;
+  size_t to;
+  size_t from;
 
   for (i = 0; i < ordered; i++)
     if (!Applied[i])

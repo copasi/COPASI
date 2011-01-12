@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.7 $
+//   $Revision: 1.83.4.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/30 07:45:06 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:12:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,14 +59,14 @@
 #include "model/CModel.h"
 #include "CCopasiSelectionDialog.h"
 
-C_INT32 SliderDialog::numMappings = 7;
-C_INT32 SliderDialog::folderMappings[][2] =
+size_t SliderDialog::numMappings = 7;
+size_t SliderDialog::folderMappings[][2] =
 {
   {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}
 };
 
-//C_INT32 SliderDialog::numKnownTasks = 4;
-//C_INT32 SliderDialog::[] = {21, 23, 24, 31};
+//size_t SliderDialog::numKnownTasks = 4;
+//size_t SliderDialog::[] = {21, 23, 24, 31};
 //const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
@@ -315,7 +315,7 @@ void SliderDialog::removeSlider()
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       CCopasiVector<CSlider>* pSliderList = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI()->getSliderList();
-      unsigned int i, maxCount = pSliderList->size();
+      size_t i, maxCount = pSliderList->size();
 
       for (i = 0; i < maxCount; ++i)
         {
@@ -398,7 +398,7 @@ SliderDialog::~SliderDialog()
   delete mpAutoModifyRangesCheckBox;
   delete mpSliderBox;
   delete mpScrollView;
-  unsigned int i, j, maxWidgets, maxVectors = mSliderMap.size();
+  size_t i, j, maxWidgets, maxVectors = mSliderMap.size();
 
   for (i = 0; i < maxVectors; ++i)
     {
@@ -459,7 +459,7 @@ CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI();
   assert(pGUI);
-  unsigned i, maxCount = pGUI->getSliderList()->size();
+  size_t i, maxCount = pGUI->getSliderList()->size();
 
   for (i = 0; i < maxCount; ++i)
     {
@@ -479,7 +479,7 @@ CopasiSlider* SliderDialog::findCopasiSliderForCSlider(CSlider* pCSlider)
 {
   CopasiSlider* pResult = NULL;
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
-  unsigned int i, maxCount = v.size();
+  size_t i, maxCount = v.size();
   CopasiSlider* pTmpSlider;
 
   for (i = 0; i < maxCount; ++i)
@@ -498,7 +498,7 @@ CopasiSlider* SliderDialog::findCopasiSliderForCSlider(CSlider* pCSlider)
   return pResult;
 }
 
-void SliderDialog::setCurrentFolderId(C_INT32 id)
+void SliderDialog::setCurrentFolderId(size_t id)
 {
   id = mapFolderId2EntryId(id);
 
@@ -532,7 +532,7 @@ void SliderDialog::fillSliderBox()
       std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
       // maybe other program parts have added or deleted some sliders
       assert(pVector);
-      unsigned int i, j, maxSliders, maxWidgets;
+      size_t i, j, maxSliders, maxWidgets;
       maxWidgets = v.size();
       maxSliders = pVector->size();
 
@@ -612,7 +612,7 @@ void SliderDialog::fillSliderBox()
     }
 
   v = mSliderMap[mCurrentFolderId];
-  unsigned int i, maxCount = v.size();
+  size_t i, maxCount = v.size();
 
   for (i = maxCount; i != 0; --i)
     {
@@ -657,9 +657,9 @@ void SliderDialog::fillSliderBox()
     }
 }
 
-C_INT32 SliderDialog::mapFolderId2EntryId(C_INT32 folderId) const
+size_t SliderDialog::mapFolderId2EntryId(size_t folderId) const
 {
-  C_INT32 id = -1;
+  size_t id = -1;
   int counter;
 
   for (counter = 0; counter < SliderDialog::numMappings; ++counter)
@@ -766,7 +766,7 @@ void SliderDialog::closeEvent(QCloseEvent* e)
     }
 }
 
-CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
+CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
 {
   folderId = mapFolderId2EntryId(folderId);
   CCopasiTask* task = NULL;
@@ -811,7 +811,7 @@ void SliderDialog::updateAllSliders()
 
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
-  unsigned int i, maxCount = v.size();
+  size_t i, maxCount = v.size();
 
   for (i = 0; i < maxCount; ++i)
     {
@@ -865,7 +865,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
   CCopasiVector<CSlider>* pSliderList = pGUI->getSliderList();
   assert(pSliderList);
   // go through the list in reverse so that items can be deleted
-  unsigned int i, iMax = pSliderList->size();
+  size_t i, iMax = pSliderList->size();
   bool issueWarning = false;
 
   for (i = iMax; i > 0; --i)
@@ -904,7 +904,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
 void SliderDialog::clearSliderBox()
 {
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
-  unsigned int i, maxCount = v.size();
+  size_t i, maxCount = v.size();
 
   for (i = 0; i < maxCount; ++i)
     {
@@ -1034,7 +1034,7 @@ void SliderDialog::setFramework(int framework)
   bool changed = false;
   // we go through the sliders and check if the slider for species amount
   // or concentration are still appropriate for the framework that has been set
-  std::map<C_INT32, std::vector<QWidget*> >::iterator it = this->mSliderMap.begin(), endit = this->mSliderMap.end();
+  std::map<size_t, std::vector<QWidget*> >::iterator it = this->mSliderMap.begin(), endit = this->mSliderMap.end();
   std::vector<QWidget*>::iterator it2, endit2;
   CCopasiObject *pObject = NULL, *pTmpObject = NULL;
   CopasiSlider* pSlider = NULL;

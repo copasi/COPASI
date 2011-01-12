@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-$Revision: 1.29 $
+$Revision: 1.29.4.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/01/07 19:38:35 $
+$Date: 2011/01/12 19:13:20 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,427 +32,430 @@ End CVS Header */
  *  Created for COPASI by Stefan Hoops 2002
  */
 class CCopasiParameterGroup: public CCopasiParameter
+{
+public:
+  typedef std::vector< CCopasiParameter * > parameterGroup;
+  typedef parameterGroup::iterator index_iterator;
+  typedef CCopasiContainer::objectMap::iterator name_iterator;
+
+  // Operations
+protected:
+  /**
+   * Default constructor
+   */
+  CCopasiParameterGroup();
+
+public:
+  /**
+   * Copy constructor
+   * @param "const CCopasiParameterGroup &" src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CCopasiParameterGroup(const CCopasiParameterGroup & src,
+                        const CCopasiContainer * pParent = NULL);
+
+  /**
+   * Specific constructor
+   * @param const string & name
+   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const std::string & objectType (default: "ParameterGroup")
+   */
+  CCopasiParameterGroup(const std::string & name,
+                        const CCopasiContainer * pParent = NULL,
+                        const std::string & objectType = "ParameterGroup");
+
+  /**
+   * Destructor
+   */
+  virtual ~CCopasiParameterGroup();
+
+  /**
+   * This methods must be called to elevate subgroups to
+   * derived objects. The default implementation does nothing.
+   * @return bool success
+   */
+  virtual bool elevateChildren();
+
+  /**
+   * Assignment operator
+   * @param const CCopasiParameterGroup & rhs
+   * @return CCopasiParameterGroup & lhs
+   */
+  CCopasiParameterGroup & operator = (const CCopasiParameterGroup & rhs);
+
+  /**
+   * Retrieve the begin of an alphabetically sorted iterator
+   * @return name_iterator begin
+   */
+  name_iterator beginName() const;
+
+  /**
+   * Retrieve the end of an alphabetically sorted iterator
+   * @return name_iterator end
+   */
+  name_iterator endName() const;
+
+  /**
+   * Retrieve the begin of unsorted iterator
+   * Note: the swap function may be used to change the order
+   * @return name_iterator begin
+   */
+  index_iterator beginIndex() const;
+
+  /**
+   * Retrieve the end of unsorted iterator
+   * Note: the swap function may be used to change the order
+   * @return name_iterator end
+   */
+  index_iterator endIndex() const;
+
+  /**
+   * Add a parameter
+   * @param const CCopasiParameter & parameter
+   * @return bool success
+   */
+  bool addParameter(const CCopasiParameter & parameter);
+
+  /**
+   * Add a parameter to the group
+   * @param const std::string & name
+   * @param const CCopasiParameter::Type type
+   * @return bool success
+   */
+  bool addParameter(const std::string & name,
+                    const CCopasiParameter::Type type);
+
+  /**
+   * Add a parameter to the group
+   * @param const std::string & name
+   * @param const CCopasiParameter::Type type
+   * @param const CType & value
+   * @return bool success
+   */
+  template < class CType >
+  bool addParameter(const std::string & name,
+                    const CCopasiParameter::Type type,
+                    const CType & value)
   {
-  public:
-    typedef std::vector< CCopasiParameter * > parameterGroup;
-    typedef parameterGroup::iterator index_iterator;
-    typedef CCopasiContainer::objectMap::iterator name_iterator;
+    CCopasiParameter * pParameter;
 
-    // Operations
-  protected:
-    /**
-     * Default constructor
-     */
-    CCopasiParameterGroup();
-
-  public:
-    /**
-     * Copy constructor
-     * @param "const CCopasiParameterGroup &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiParameterGroup(const CCopasiParameterGroup & src,
-                          const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Specific constructor
-     * @param const string & name
-     * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & objectType (default: "ParameterGroup")
-     */
-    CCopasiParameterGroup(const std::string & name,
-                          const CCopasiContainer * pParent = NULL,
-                          const std::string & objectType = "ParameterGroup");
-
-    /**
-     * Destructor
-     */
-    virtual ~CCopasiParameterGroup();
-
-    /**
-     * This methods must be called to elevate subgroups to
-     * derived objects. The default implementation does nothing.
-     * @return bool success
-     */
-    virtual bool elevateChildren();
-
-    /**
-     * Assignment operator
-     * @param const CCopasiParameterGroup & rhs
-     * @return CCopasiParameterGroup & lhs
-     */
-    CCopasiParameterGroup & operator = (const CCopasiParameterGroup & rhs);
-
-    /**
-     * Retrieve the begin of an alphabetically sorted iterator
-     * @return name_iterator begin
-     */
-    name_iterator beginName() const;
-
-    /**
-     * Retrieve the end of an alphabetically sorted iterator
-     * @return name_iterator end
-     */
-    name_iterator endName() const;
-
-    /**
-     * Retrieve the begin of unsorted iterator
-     * Note: the swap function may be used to change the order
-     * @return name_iterator begin
-     */
-    index_iterator beginIndex() const;
-
-    /**
-     * Retrieve the end of unsorted iterator
-     * Note: the swap function may be used to change the order
-     * @return name_iterator end
-     */
-    index_iterator endIndex() const;
-
-    /**
-     * Add a parameter
-     * @param const CCopasiParameter & parameter
-     * @return bool success
-     */
-    bool addParameter(const CCopasiParameter & parameter);
-
-    /**
-     * Add a parameter to the group
-     * @param const std::string & name
-     * @param const CCopasiParameter::Type type
-     * @return bool success
-     */
-    bool addParameter(const std::string & name,
-                      const CCopasiParameter::Type type);
-
-    /**
-     * Add a parameter to the group
-     * @param const std::string & name
-     * @param const CCopasiParameter::Type type
-     * @param const CType & value
-     * @return bool success
-     */
-    template < class CType >
-          bool addParameter(const std::string & name,
-                            const CCopasiParameter::Type type,
-                            const CType & value)
+    if (type == GROUP)
       {
-        CCopasiParameter * pParameter;
+        CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
 
-        if (type == GROUP)
+        if (!tmp->isValidValue(value))
           {
-            CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
-            if (!tmp->isValidValue(value))
-              {
-                delete tmp;
-                return false;
-              }
-
-            parameterGroup *pGroup = tmp->mValue.pGROUP;
-            tmp->mValue.pGROUP =
-              static_cast<parameterGroup *>(const_cast<void *>((const void *) & value));
-
-            pParameter = new CCopasiParameterGroup(*tmp);
-
-            tmp->mValue.pGROUP = pGroup;
             delete tmp;
-          }
-        else
-          {
-            pParameter = new CCopasiParameter(name, type);
-            if (!pParameter->isValidValue(value))
-              {
-                delete pParameter;
-                return false;
-              }
-
-            pParameter->setValue(value);
+            return false;
           }
 
-        addParameter(pParameter);
+        parameterGroup *pGroup = tmp->mValue.pGROUP;
+        tmp->mValue.pGROUP =
+          static_cast<parameterGroup *>(const_cast<void *>((const void *) & value));
 
-        return true;
+        pParameter = new CCopasiParameterGroup(*tmp);
+
+        tmp->mValue.pGROUP = pGroup;
+        delete tmp;
       }
-
-    /**
-     * Assert that a parameter with the given name and type is present.
-     * If not the parameter is created with the default value.
-     * @param const std::string & name
-     * @param const CCopasiParameter::Type type
-     * @param const CType & Value
-     * @return CCopasiParameter * pParameter
-     */
-    template < class CType >
-          CCopasiParameter * assertParameter(const std::string & name,
-                                             const CCopasiParameter::Type type,
-                                             const CType & defaultValue)
+    else
       {
-        CCopasiParameter * pParm = getParameter(name);
-        if (pParm && pParm->getType() == type) return pParm;
+        pParameter = new CCopasiParameter(name, type);
 
-        if (pParm) removeParameter(name);
+        if (!pParameter->isValidValue(value))
+          {
+            delete pParameter;
+            return false;
+          }
 
-        addParameter(name, type, defaultValue);
-
-        return getParameter(name);
+        pParameter->setValue(value);
       }
 
-    /**
-     * Add a subgroup to the group
-     * @param const std::string & name
-     * @return bool success
-     */
-    bool addGroup(const std::string & name);
+    addParameter(pParameter);
 
-    /**
-     * Assert that a group with the given name is present.
-     * If not the group is created as empty group.
-     * @param const std::string & name
-     * @return CCopasiParameterGroup * pGroup
-     */
-    CCopasiParameterGroup * assertGroup(const std::string & name);
+    return true;
+  }
 
-    /**
-     * Remove a parameter or subgroup from the group
-     * @param const std::string & name
-     * @return bool success
-     */
-    bool removeParameter(const std::string & name);
+  /**
+   * Assert that a parameter with the given name and type is present.
+   * If not the parameter is created with the default value.
+   * @param const std::string & name
+   * @param const CCopasiParameter::Type type
+   * @param const CType & Value
+   * @return CCopasiParameter * pParameter
+   */
+  template < class CType >
+  CCopasiParameter * assertParameter(const std::string & name,
+                                     const CCopasiParameter::Type type,
+                                     const CType & defaultValue)
+  {
+    CCopasiParameter * pParm = getParameter(name);
 
-    /**
-     * Remove a parameter or subgroup from the group
-     * @param const unsigned C_INT32 & index
-     * @return bool success
-     */
-    bool removeParameter(const unsigned C_INT32 & index);
+    if (pParm && pParm->getType() == type) return pParm;
 
-    /**
-     * Retrieve a parameter or subgroup from the group
-     * @param const std::string & name
-     * @return CCopasiParameter * parameter
-     */
-    CCopasiParameter * getParameter(const std::string & name);
+    if (pParm) removeParameter(name);
 
-    /**
-     * Retrieve a parameter or subgroup from the group
-     * @param const std::string & name
-     * @return const CCopasiParameter * parameter
-     */
-    const CCopasiParameter * getParameter(const std::string & name) const;
+    addParameter(name, type, defaultValue);
 
-    /**
-     * Retrieve a parameter or subgroup from the group
-     * @param const unsigned C_INT32 & index
-     * @return CCopasiParameter * parameter
-     */
-    CCopasiParameter * getParameter(const unsigned C_INT32 & index);
+    return getParameter(name);
+  }
 
-    /**
-     * Retrieve a parameter or subgroup from the group
-     * @param const unsigned C_INT32 & index
-     * @return const CCopasiParameter * parameter
-     */
-    const CCopasiParameter * getParameter(const unsigned C_INT32 & index) const;
+  /**
+   * Add a subgroup to the group
+   * @param const std::string & name
+   * @return bool success
+   */
+  bool addGroup(const std::string & name);
 
-    /**
-     * Retrieve a subgroup from the group
-     * @param const std::string & name
-     * @return CCopasiParameterGroup * group
-     */
-    CCopasiParameterGroup * getGroup(const std::string & name);
+  /**
+   * Assert that a group with the given name is present.
+   * If not the group is created as empty group.
+   * @param const std::string & name
+   * @return CCopasiParameterGroup * pGroup
+   */
+  CCopasiParameterGroup * assertGroup(const std::string & name);
 
-    /**
-     * Retrieve a subgroup from the group
-     * @param const std::string & name
-     * @return const CCopasiParameterGroup * group
-     */
-    const CCopasiParameterGroup * getGroup(const std::string & name) const;
+  /**
+   * Remove a parameter or subgroup from the group
+   * @param const std::string & name
+   * @return bool success
+   */
+  bool removeParameter(const std::string & name);
 
-    /**
-     * Retrieve a subgroup from the group
-     * @param const unsigned C_INT32 & index
-     * @return CCopasiParameterGroup * parameter
-     */
-    CCopasiParameterGroup * getGroup(const unsigned C_INT32 & index);
+  /**
+   * Remove a parameter or subgroup from the group
+   * @param const size_t & index
+   * @return bool success
+   */
+  bool removeParameter(const size_t & index);
 
-    /**
-     * Retrieve a subgroup from the group
-     * @param const unsigned C_INT32 & index
-     * @return const CCopasiParameterGroup * parameter
-     */
-    const CCopasiParameterGroup * getGroup(const unsigned C_INT32 & index) const;
+  /**
+   * Retrieve a parameter or subgroup from the group
+   * @param const std::string & name
+   * @return CCopasiParameter * parameter
+   */
+  CCopasiParameter * getParameter(const std::string & name);
 
-    /**
-     * Retrieve a pointer to the value of a parameter or subgroup
-     * @param const std::string & name
-     * @return const CCopasiParameter::Value & Value
-     */
-    const CCopasiParameter::Value & getValue(const std::string & name) const;
+  /**
+   * Retrieve a parameter or subgroup from the group
+   * @param const std::string & name
+   * @return const CCopasiParameter * parameter
+   */
+  const CCopasiParameter * getParameter(const std::string & name) const;
 
-    /**
-     * Retrieve a pointer to the value of a parameter or subgroup
-     * @param const unsigned C_INT32 & index
-     * @return const CCopasiParameter::Value & Value
-     */
-    const CCopasiParameter::Value & getValue(const unsigned C_INT32 & index) const;
+  /**
+   * Retrieve a parameter or subgroup from the group
+   * @param const size_t & index
+   * @return CCopasiParameter * parameter
+   */
+  CCopasiParameter * getParameter(const size_t & index);
 
-    /**
-     * Retrieve a pointer to the value of a parameter or subgroup
-     * @param const std::string & name
-     * @return CCopasiParameter::Value & Value
-     */
-    CCopasiParameter::Value & getValue(const std::string & name);
+  /**
+   * Retrieve a parameter or subgroup from the group
+   * @param const size_t & index
+   * @return const CCopasiParameter * parameter
+   */
+  const CCopasiParameter * getParameter(const size_t & index) const;
 
-    /**
-     * Retrieve a pointer to the value of a parameter or subgroup
-     * @param const unsigned C_INT32 & index
-     * @return CCopasiParameter::Value & Value
-     */
-    CCopasiParameter::Value & getValue(const unsigned C_INT32 & index);
+  /**
+   * Retrieve a subgroup from the group
+   * @param const std::string & name
+   * @return CCopasiParameterGroup * group
+   */
+  CCopasiParameterGroup * getGroup(const std::string & name);
 
-    /**
-     * Retrieve the type of a parameter or subgroup
-     * @param const std::string & name
-     * @return CCopasiParameter::Type
-     */
-    CCopasiParameter::Type getType(const std::string & name) const;
+  /**
+   * Retrieve a subgroup from the group
+   * @param const std::string & name
+   * @return const CCopasiParameterGroup * group
+   */
+  const CCopasiParameterGroup * getGroup(const std::string & name) const;
 
-    /**
-     * Retrieve the type of a parameter or subgroup
-     * @param const unsigned C_INT32 & index
-     * @return CCopasiParameter::Type
-     */
-    CCopasiParameter::Type getType(const unsigned C_INT32 & index) const;
+  /**
+   * Retrieve a subgroup from the group
+   * @param const size_t & index
+   * @return CCopasiParameterGroup * parameter
+   */
+  CCopasiParameterGroup * getGroup(const size_t & index);
 
-    /**
-     * Retrieve the key of a parameter or subgroup
-     * @param const std::string & name
-     * @return std::string key
-     */
-    std::string getKey(const std::string & name) const;
+  /**
+   * Retrieve a subgroup from the group
+   * @param const size_t & index
+   * @return const CCopasiParameterGroup * parameter
+   */
+  const CCopasiParameterGroup * getGroup(const size_t & index) const;
 
-    /**
-     * Retrieve the key of a parameter or subgroup
-     * @param const unsigned C_INT32 & index
-     * @return std::string key
-     */
-    std::string getKey(const unsigned C_INT32 & index) const;
+  /**
+   * Retrieve a pointer to the value of a parameter or subgroup
+   * @param const std::string & name
+   * @return const CCopasiParameter::Value & Value
+   */
+  const CCopasiParameter::Value & getValue(const std::string & name) const;
 
-    /**
-     * Retrieve the name of a parameter or subgroup
-     * @param const unsigned C_INT32 & index
-     * @return std::string name
-     *
-     */
-    virtual const std::string & getName(const unsigned C_INT32 & index) const;
+  /**
+   * Retrieve a pointer to the value of a parameter or subgroup
+   * @param const size_t & index
+   * @return const CCopasiParameter::Value & Value
+   */
+  const CCopasiParameter::Value & getValue(const size_t & index) const;
 
-    /**
-     * Set the value of a parameter or subgroup.
-     * @param const std::string & name
-     * @param const CType & value
-     * @return bool success
-     */
-    template <class CType>
-    bool setValue(const std::string & name,
-                  const CType & value)
-    {
-      CCopasiParameter * pParameter =
-        const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
+  /**
+   * Retrieve a pointer to the value of a parameter or subgroup
+   * @param const std::string & name
+   * @return CCopasiParameter::Value & Value
+   */
+  CCopasiParameter::Value & getValue(const std::string & name);
 
-      if (pParameter) return pParameter->setValue(value);
+  /**
+   * Retrieve a pointer to the value of a parameter or subgroup
+   * @param const size_t & index
+   * @return CCopasiParameter::Value & Value
+   */
+  CCopasiParameter::Value & getValue(const size_t & index);
 
-      return false;
-    }
+  /**
+   * Retrieve the type of a parameter or subgroup
+   * @param const std::string & name
+   * @return CCopasiParameter::Type
+   */
+  CCopasiParameter::Type getType(const std::string & name) const;
 
-    /**
-     * Set the value of a parameter or subgroup.
-     * @param const unsigned C_INT32 & index
-     * @param const CType & value
-     * @return bool success
-     */
-    template <class CType>
-    bool setValue(const unsigned C_INT32 & index,
-                  const CType & value)
-    {
-      CCopasiParameter * pParameter =
-        const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
+  /**
+   * Retrieve the type of a parameter or subgroup
+   * @param const size_t & index
+   * @return CCopasiParameter::Type
+   */
+  CCopasiParameter::Type getType(const size_t & index) const;
 
-      if (pParameter) return pParameter->setValue(value);
+  /**
+   * Retrieve the key of a parameter or subgroup
+   * @param const std::string & name
+   * @return std::string key
+   */
+  std::string getKey(const std::string & name) const;
 
-      return false;
-    }
+  /**
+   * Retrieve the key of a parameter or subgroup
+   * @param const size_t & index
+   * @return std::string key
+   */
+  std::string getKey(const size_t & index) const;
 
-    /**
-     * Swap two parameters
-     * Note: This has effect on the index_iterator and index access methods.
-     * @param const unsigned C_INT32 & iFrom
-     * @param const unsigned C_INT32 & iTo
-     * @return bool success
-     */
-    bool swap(const unsigned C_INT32 & iFrom,
-              const unsigned C_INT32 & iTo);
+  /**
+   * Retrieve the name of a parameter or subgroup
+   * @param const size_t & index
+   * @return std::string name
+   *
+   */
+  virtual const std::string & getName(const size_t & index) const;
 
-    /**
-     * Swap two parameters
-     * Note: This has effect on the iterator and index access methods.
-     * @param index_iterator & from
-     * @param index_iterator & to
-     * @return bool success
-     */
-    bool swap(index_iterator & from,
-              index_iterator & to);
+  /**
+   * Set the value of a parameter or subgroup.
+   * @param const std::string & name
+   * @param const CType & value
+   * @return bool success
+   */
+  template <class CType>
+  bool setValue(const std::string & name,
+                const CType & value)
+  {
+    CCopasiParameter * pParameter =
+      const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
 
-    /**
-     * The size of the parameter group
-     * @ return unsigned C_INT32 size
-     */
-    unsigned C_INT32 size() const;
+    if (pParameter) return pParameter->setValue(value);
 
-    /**
-     * Clear all parameters and subgroups
-     */
-    void clear();
+    return false;
+  }
 
-    /**
-     * Retrieve the index of a parameter or subgroup with a given name
-     * @param const std::string & name
-     * @return unsigned C_INT32 index
-     */
-    unsigned C_INT32 getIndex(const std::string & name) const;
+  /**
+   * Set the value of a parameter or subgroup.
+   * @param const size_t & index
+   * @param const CType & value
+   * @return bool success
+   */
+  template <class CType>
+  bool setValue(const size_t & index,
+                const CType & value)
+  {
+    CCopasiParameter * pParameter =
+      const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
 
-    /**
-     * This is the output method for any object. The default implementation
-     * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.To override this default behavior one needs to
-     * reimplement the virtual print function.
-     * @param std::ostream * ostream
-     */
-    virtual void print(std::ostream * ostream) const;
+    if (pParameter) return pParameter->setValue(value);
 
-    /**
-     * Output stream operator
-     * @param ostream & os
-     * @param const CCopasiParameterGroup & o
-     * @return ostream & os
-     */
-    friend std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o);
+    return false;
+  }
 
-    /**
-     * Comparison operator
-     * @param const CCopasiParameterGroup & lhs
-     * @param const CCopasiParameterGroup & rhs
-     * @return bool equal
-     */
-    friend bool operator==(const CCopasiParameterGroup & lhs,
-                           const CCopasiParameterGroup & rhs);
+  /**
+   * Swap two parameters
+   * Note: This has effect on the index_iterator and index access methods.
+   * @param const size_t & iFrom
+   * @param const size_t & iTo
+   * @return bool success
+   */
+  bool swap(const size_t & iFrom,
+            const size_t & iTo);
 
-  public:
-    /**
-     * Add a parameter
-     * @param CCopasiParameter * pParameter
-     */
-    void addParameter(CCopasiParameter * pParameter);
-  };
+  /**
+   * Swap two parameters
+   * Note: This has effect on the iterator and index access methods.
+   * @param index_iterator & from
+   * @param index_iterator & to
+   * @return bool success
+   */
+  bool swap(index_iterator & from,
+            index_iterator & to);
+
+  /**
+   * The size of the parameter group
+   * @ return size_t size
+   */
+  size_t size() const;
+
+  /**
+   * Clear all parameters and subgroups
+   */
+  void clear();
+
+  /**
+   * Retrieve the index of a parameter or subgroup with a given name
+   * @param const std::string & name
+   * @return size_t index
+   */
+  size_t getIndex(const std::string & name) const;
+
+  /**
+   * This is the output method for any object. The default implementation
+   * provided with CCopasiObject uses the ostream operator<< of the object
+   * to print the object.To override this default behavior one needs to
+   * reimplement the virtual print function.
+   * @param std::ostream * ostream
+   */
+  virtual void print(std::ostream * ostream) const;
+
+  /**
+   * Output stream operator
+   * @param ostream & os
+   * @param const CCopasiParameterGroup & o
+   * @return ostream & os
+   */
+  friend std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o);
+
+  /**
+   * Comparison operator
+   * @param const CCopasiParameterGroup & lhs
+   * @param const CCopasiParameterGroup & rhs
+   * @return bool equal
+   */
+  friend bool operator==(const CCopasiParameterGroup & lhs,
+                         const CCopasiParameterGroup & rhs);
+
+public:
+  /**
+   * Add a parameter
+   * @param CCopasiParameter * pParameter
+   */
+  void addParameter(CCopasiParameter * pParameter);
+};
 
 // :TODO: This should be a member function but Visual C++ 6.0
 // can not deal with specifying template parameters correctly.
@@ -474,6 +477,7 @@ ElevateTo * elevate(CCopasiParameter * pParm)
     }
 
   ElevateFrom * pFrom = dynamic_cast<ElevateFrom *>(pParm);
+
   if (!pFrom)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 3);

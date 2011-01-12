@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.53.4.2 $
+ $Revision: 1.53.4.3 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/11/24 18:06:01 $
+ $Date: 2011/01/12 19:13:43 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,7 +263,7 @@ std::string CCopasiXMLInterface::utf8(const std::string & str)
      Since every string within COPASI is treated as latin1 and input
      is only obtained through QT and Expat which will provide latin1
      encoded strings the below should suffice. */
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (i = 0, imax = str.length(); i < imax; i++)
     {
@@ -525,7 +525,7 @@ bool CXMLAttributeList::erase()
   return true;
 }
 
-unsigned C_INT32 CXMLAttributeList::size() {return mAttributeList.size() / 2;}
+size_t CXMLAttributeList::size() {return mAttributeList.size() / 2;}
 
 bool CXMLAttributeList::add(const std::string & name, const C_FLOAT64 & value)
 {
@@ -534,26 +534,26 @@ bool CXMLAttributeList::add(const std::string & name, const C_FLOAT64 & value)
              CCopasiXMLInterface::attribute);
 }
 
-bool CXMLAttributeList::setName(const unsigned C_INT32 & index,
+bool CXMLAttributeList::setName(const size_t & index,
                                 const std::string & name)
 {
   mAttributeList[2 * index] = name;
   return true;
 }
 
-const std::string & CXMLAttributeList::getName(const unsigned C_INT32 & index) const
+const std::string & CXMLAttributeList::getName(const size_t & index) const
 {return mAttributeList[2 * index];}
 
-const std::string & CXMLAttributeList::getValue(const unsigned C_INT32 & index) const
+const std::string & CXMLAttributeList::getValue(const size_t & index) const
 {return mAttributeList[2 * index + 1];}
 
-bool CXMLAttributeList::skip(const unsigned C_INT32 & index)
+bool CXMLAttributeList::skip(const size_t & index)
 {
   mSaveList[index] = false;
   return true;
 }
 
-std::string CXMLAttributeList::getAttribute(const unsigned C_INT32 & index) const
+std::string CXMLAttributeList::getAttribute(const size_t & index) const
 {
   if (mSaveList[index])
     return " " + mAttributeList[2 * index] + "=\"" + mAttributeList[2 * index + 1] + "\"";

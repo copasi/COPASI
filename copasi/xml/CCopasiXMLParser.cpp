@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.2 $
+//   $Revision: 1.223.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 16:32:17 $
+//   $Date: 2011/01/12 19:13:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -680,7 +680,7 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
         {
-          unsigned C_INT32 i, imax = mCommon.pFunctionList->size();
+          size_t i, imax = mCommon.pFunctionList->size();
 
           for (i = imax - 1; i != C_INVALID_INDEX; i--)
             {
@@ -744,7 +744,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
   CEvaluationTree::Type Type;
   const char * Name;
   const char * Reversible;
-  unsigned C_INT32 index;
+  size_t index;
   CFunction * pFunction;
 
   mpCurrentHandler = NULL;
@@ -1241,7 +1241,7 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
           if (pFunction)
             {
               CFunctionParameters & Variables = pFunction->getVariables();
-              unsigned C_INT32 i = Variables.size() - 1;
+              size_t i = Variables.size() - 1;
 
               for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::TEMPORARY; i--)
                 Variables.remove(Variables[i]->getObjectName());
@@ -1343,7 +1343,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
             // If we are here we have a user defined function.
             // We need to check whether the variable exists within the function.
             CFunctionParameter::DataType DataType;
-            unsigned C_INT32 Index =
+            size_t Index =
               pFunction->getVariables().findParameterByName(Name, DataType);
 
             bool isUsed = true;
@@ -1360,7 +1360,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
               }
 
             // Make sure that we have enough parameter to swap
-            unsigned C_INT32 Counter = 0;
+            size_t Counter = 0;
 
             while (Order >= pFunction->getVariables().size())
               {
@@ -1685,7 +1685,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
                          pszName, "InitialExpression", mParser.getCurrentLineNumber());
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mCommon.pModel->setInitialExpression(mCommon.CharacterData);
 
@@ -2159,7 +2159,7 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
                          pszName, "Expression", mParser.getCurrentLineNumber());
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mpCompartment->setExpression(mCommon.CharacterData);
 
@@ -2177,7 +2177,7 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
                          pszName, "InitialExpression", mParser.getCurrentLineNumber());
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mpCompartment->setInitialExpression(mCommon.CharacterData);
 
@@ -2455,7 +2455,7 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
                          pszName, "Expression", mParser.getCurrentLineNumber());
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mpMetabolite->setExpression(mCommon.CharacterData);
 
@@ -2474,7 +2474,7 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
                          pszName, "InitialExpression", mParser.getCurrentLineNumber());
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mpMetabolite->setInitialExpression(mCommon.CharacterData);
 
@@ -2753,7 +2753,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
                          pszName, "Expression", mParser.getCurrentLineNumber());
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mpMV->setExpression(mCommon.CharacterData);
 
@@ -2773,7 +2773,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
                          pszName, "InitialExpression", mParser.getCurrentLineNumber());
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mpMV->setInitialExpression(mCommon.CharacterData);
 
@@ -2894,7 +2894,7 @@ void CCopasiXMLParser::ListOfEventsElement::end(const XML_Char *pszName)
         // of the events is unique.
         {
           // Multi-purpose insert.
-          std::pair< std::set< unsigned C_INT32 >::iterator, bool > insert =
+          std::pair< std::set< size_t >::iterator, bool > insert =
             mEventOrders.insert(mCommon.pEvent->getOrder());
 
           // Check if the insert failed
@@ -3091,7 +3091,7 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
           }
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mCommon.pEvent->setTriggerExpression(mCommon.CharacterData);
 
@@ -3114,7 +3114,7 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
           }
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           mCommon.pEvent->setDelayExpression(mCommon.CharacterData);
 
@@ -3321,7 +3321,7 @@ void CCopasiXMLParser::AssignmentElement::end(const XML_Char *pszName)
                          pszName, "Expression", mParser.getCurrentLineNumber());
 
         {
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           if (mCommon.pEventAssignment != NULL)
             mCommon.pEventAssignment->setExpression(mCommon.CharacterData);
@@ -5032,7 +5032,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
   const CStateTemplate & Template = mCommon.pModel->getStateTemplate();
   CState IState = mCommon.pModel->getInitialState();
   C_FLOAT64 * pValues = IState.beginIndependent() - 1;
-  unsigned C_INT32 Index;
+  size_t Index;
 
   switch (mCurrentElement)
     {
@@ -5493,7 +5493,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
   std::string name;
   std::string sType;
 
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -5713,7 +5713,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   const char * name;
   const char * sType;
@@ -5992,7 +5992,7 @@ void CCopasiXMLParser::CurveElement::start(const XML_Char *pszName, const XML_Ch
 {
   mCurrentElement++; /* We should always be on hte next element */
   //  mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -6199,7 +6199,7 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -6450,7 +6450,7 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -6701,7 +6701,7 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -6980,7 +6980,7 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -7257,7 +7257,7 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -7524,7 +7524,7 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -7762,7 +7762,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
 {
   mCurrentElement++; /* We should always be on the next element */
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   switch (mCurrentElement)
     {
@@ -8721,7 +8721,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
 
   C_FLOAT64 d;
   C_INT32 i;
-  unsigned C_INT32 ui;
+  size_t ui;
   bool b;
 
   switch (mCurrentElement)
@@ -8967,7 +8967,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
 {
   mCurrentElement++; // We should always be on the next element
   mpCurrentHandler = NULL;
-  mLineNumber = (unsigned int) - 1;
+  mLineNumber = (size_t) - 1;
 
   std::string name;
   std::string sType;
@@ -9121,13 +9121,13 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
 
   CReportDefinition* reportDefinition;
 
-  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > > >::iterator outerIt;
+  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, size_t > > >::iterator outerIt;
 
-  std::vector<std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > >::iterator innerIt2;
+  std::vector<std::pair < std::vector <CRegisteredObjectName >*, size_t > >::iterator innerIt2;
 
   std::vector<CRegisteredObjectName>* nameVector;
 
-  unsigned int reportIndex;
+  size_t reportIndex;
 
   switch (mCurrentElement)
     {
@@ -9563,10 +9563,10 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
         // add the key that is stored in mCommon.CharacterData to the map
         if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
           {
-            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
+            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, size_t> >();
           }
 
-        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, unsigned C_INT32>(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
+        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, size_t>(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
         mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(""));
         mCurrentElement = Header;
         break;
@@ -9703,10 +9703,10 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
         // add the key that is stored in mCommon.CharacterData to the map
         if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
           {
-            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
+            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, size_t> >();
           }
 
-        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, unsigned C_INT32>(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
+        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, size_t>(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
         mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(""));
         mCurrentElement = Body;
         break;
@@ -9843,10 +9843,10 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
         // add the key that is stored in mCommon.CharacterData to the map
         if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
           {
-            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
+            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, size_t> >();
           }
 
-        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, unsigned C_INT32>(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
+        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, size_t>(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
         mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(""));
         mCurrentElement = Footer;
         break;

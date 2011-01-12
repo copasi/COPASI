@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.33.2.6 $
+//   $Revision: 1.33.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 19:03:00 $
+//   $Date: 2011/01/12 19:12:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,11 +119,11 @@ public:
   QModelIndex index(int row, int column,
                     const QModelIndex &parent = QModelIndex()) const;
   QModelIndex parent(const QModelIndex &index) const;
-  int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  int columnCount(const QModelIndex &parent = QModelIndex()) const;
-  QModelIndex findIndexFromId(int id);
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  QModelIndex findIndexFromId(size_t id);
   QModelIndex findIndexFromKey(const std::string& key);
-  int getId(const QModelIndex &index) const;
+  size_t getId(const QModelIndex &index) const;
   std::string getKey(const QModelIndex &index) const;
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 

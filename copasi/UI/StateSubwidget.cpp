@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 14:54:20 $
+//   $Date: 2011/01/12 19:13:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,7 +104,7 @@ void StateSubwidget::loadMetabolites()
   CCopasiVectorN< CMetab >::const_iterator end = mpModel->getMetabolites().end();
   C_INT32 i = 0;
 
-  mpTblMetabolites->setNumRows(mpModel->getMetabolites().size());
+  mpTblMetabolites->setNumRows((int) mpModel->getMetabolites().size());
 
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE ||
@@ -138,7 +138,7 @@ void StateSubwidget::loadCompartments()
   CCopasiVectorN< CCompartment >::const_iterator end = mpModel->getCompartments().end();
   C_INT32 i = 0;
 
-  mpTblCompartments->setNumRows(mpModel->getCompartments().size());
+  mpTblCompartments->setNumRows((int) mpModel->getCompartments().size());
 
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE)
@@ -165,7 +165,7 @@ void StateSubwidget::loadReactions()
   CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
   C_INT32 i = 0;
 
-  mpTblReactions->setNumRows(mpModel->getReactions().size());
+  mpTblReactions->setNumRows((int) mpModel->getReactions().size());
 
   for (; it != end; ++it)
     {
@@ -189,7 +189,7 @@ void StateSubwidget::loadModelValues()
   CCopasiVectorN< CModelValue >::const_iterator end = mpModel->getModelValues().end();
   C_INT32 i = 0;
 
-  mpTblModelValues->setNumRows(mpModel->getModelValues().size());
+  mpTblModelValues->setNumRows((int) mpModel->getModelValues().size());
 
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE)
@@ -223,19 +223,19 @@ void StateSubwidget::loadJacobian()
   const CVector< C_FLOAT64 > & eigen_i = mpTask->getEigenValues().getI();
   const CVector< C_FLOAT64 > & eigen_r = mpTask->getEigenValues().getR();
 
-  unsigned C_INT32 i, imax = eigen_i.size();
-  tableEigenValues->setNumRows(imax);
+  size_t i, imax = eigen_i.size();
+  tableEigenValues->setNumRows((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      tableEigenValues->setText(i, 0, QString::number(eigen_r[i]));
-      tableEigenValues->setText(i, 1, QString::number(eigen_i[i]));
+      tableEigenValues->setText((int) i, 0, QString::number(eigen_r[i]));
+      tableEigenValues->setText((int) i, 1, QString::number(eigen_i[i]));
     }
 
-  unsigned C_INT32 j;
+  size_t j;
 
   for (j = 0; j < 2; ++j)
-    tableEigenValues->adjustColumn(j);
+    tableEigenValues->adjustColumn((int) j);
 
   //JacobianX
 
@@ -252,16 +252,16 @@ void StateSubwidget::loadJacobian()
   const CVector< C_FLOAT64 > & eigen_rX = mpTask->getEigenValuesReduced().getR();
 
   imax = eigen_iX.size();
-  tableEigenValuesX->setNumRows(imax);
+  tableEigenValuesX->setNumRows((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      tableEigenValuesX->setText(i, 0, QString::number(eigen_rX[i]));
-      tableEigenValuesX->setText(i, 1, QString::number(eigen_iX[i]));
+      tableEigenValuesX->setText((int) i, 0, QString::number(eigen_rX[i]));
+      tableEigenValuesX->setText((int) i, 1, QString::number(eigen_iX[i]));
     }
 
   for (j = 0; j < 2; ++j)
-    tableEigenValuesX->adjustColumn(j);
+    tableEigenValuesX->adjustColumn((int) j);
 
   //stability report
   stabilityTextEdit->setReadOnly(true);

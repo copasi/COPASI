@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.h,v $
-//   $Revision: 1.11.4.1 $
+//   $Revision: 1.11.4.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/10/25 16:12:46 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:12:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,12 +32,12 @@ class CCopasiParameterGroup;
 /**
  * Retrieve a parameter from a parameter group and convert it to a QString.
  * @param const CCopasiParameterGroup * group
- * @param const unsigned C_INT32 & index
+ * @param const size_t & index
  * @param CCopasiParameter::Type * type (default: NULL)
  * @return QString value
  */
 QString getParameterValue(const CCopasiParameterGroup * group,
-                          const unsigned C_INT32 & index,
+                          const size_t & index,
                           CCopasiParameter::Type * type = NULL);
 /**
  * Retrieve a parameter from a parameter group and convert it to a QString.
@@ -54,12 +54,12 @@ QString getParameterValue(const CCopasiParameterGroup * group,
  * Success = true is returned when the set operation was succesful, i.e.,
  * value == getParameterValue.
  * @param CCopasiParameterGroup * group
- * @param const std::string & name
+ * @param const size_t & index
  * @param const QString & value
  * @return bool success.
  */
 bool setParameterValue(CCopasiParameterGroup * group,
-                       const unsigned C_INT32 & index,
+                       const size_t & index,
                        const QString & value);
 
 /**
@@ -67,7 +67,7 @@ bool setParameterValue(CCopasiParameterGroup * group,
  * Success = true is returned when the set operation was succesful, i.e.,
  * value == getParameterValue.
  * @param CCopasiParameterGroup * group
- * @param const unsigned C_INT32 & index
+ * @param const std::string & name
  * @param const QString & value
  * @return bool success.
  */

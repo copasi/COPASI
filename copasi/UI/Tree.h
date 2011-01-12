@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.17.2.8 $
+   $Revision: 1.17.2.9 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2010/09/30 07:24:07 $
+   $Author: shoops $
+   $Date: 2011/01/12 19:13:00 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,10 +81,10 @@ public:
   const QString & getSortKey() const;
 
   IndexedNode *child(int row);
-  int childCount() const;
-  int columnCount() const;
-  int row() const;
-  int column() const;
+  size_t childCount() const;
+  size_t columnCount() const;
+  size_t row() const;
+  size_t column() const;
   const IndexedNode * parent() const;
 
 private:

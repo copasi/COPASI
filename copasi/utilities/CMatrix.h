@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.38.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/01 15:29:23 $
+//   $Date: 2011/01/12 19:13:21 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -73,12 +78,12 @@ protected:
   /**
    * Number of rows in the matrix.
    */
-  unsigned C_INT32 mRows;
+  size_t mRows;
 
   /**
    * Number of columns in the matrix
    */
-  unsigned C_INT32 mCols;
+  size_t mCols;
 
   /**
    * The array storing the matrix elements
@@ -89,10 +94,10 @@ protected:
 public:
   /**
    * Default constructor
-   * @param unsigned C_INT32 rows (default = 0)
-   * @param unsigned C_INT32 cols (default = 0)
+   * @param size_t rows (default = 0)
+   * @param size_t cols (default = 0)
    */
-  CMatrix(unsigned C_INT32 rows = 0, unsigned C_INT32 cols = 0) :
+  CMatrix(size_t rows = 0, size_t cols = 0) :
       mRows(0),
       mCols(0),
       mArray(NULL)
@@ -126,28 +131,28 @@ public:
 
   /**
    * The number of elements stored in the matrix.
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  virtual unsigned C_INT32 size() const {return mRows * mCols;}
+  virtual size_t size() const {return mRows * mCols;}
 
   /**
    * The number of rows of the matrix.
-   * @return unsigned C_INT32 rows
+   * @return size_t rows
    */
-  virtual unsigned C_INT32 numRows() const {return mRows;}
+  virtual size_t numRows() const {return mRows;}
 
   /**
    * The number of columns of the matrix
-   * @return unsigned C_INT32 cols
+   * @return size_t cols
    */
-  virtual unsigned C_INT32 numCols() const {return mCols;}
+  virtual size_t numCols() const {return mCols;}
 
   /**
    * Resize the matrix. The previous content is lost
-   * @param unsigned C_INT32 rows
-   * @param unsigned C_INT32 cols
+   * @param size_t rows
+   * @param size_t cols
    */
-  virtual void resize(unsigned C_INT32 rows, unsigned C_INT32 cols)
+  virtual void resize(size_t rows, size_t cols)
   {
     if (rows * cols != mRows * mCols)
       {
@@ -205,7 +210,7 @@ public:
    */
   virtual CMatrix <CType> & operator = (const CType & value)
   {
-    unsigned C_INT32 i, imax = mRows * mCols;
+    size_t i, imax = mRows * mCols;
     CType * tmp = mArray;
 
     for (i = 0; i < imax; i++, tmp++) *tmp = value;
@@ -221,7 +226,7 @@ public:
    */
   virtual CMatrix <CType> & operator *(const CType & value)
   {
-    unsigned C_INT32 i, imax = mRows * mCols;
+    size_t i, imax = mRows * mCols;
     CType * tmp = mArray;
 
     for (i = 0; i < imax; i++, tmp++) *tmp *= value;
@@ -246,7 +251,7 @@ public:
   {
     assert(mRows == rhs.mRows && mCols == rhs.mCols);
 
-    unsigned C_INT32 i, imax = mRows * mCols;
+    size_t i, imax = mRows * mCols;
     CType * tmp1 = mArray;
     CType * tmp2 = rhs.mArray;
 
@@ -258,28 +263,28 @@ public:
 
   /**
    * Retrieve a row of the matrix using c-style indexing
-   * @param unsigned C_INT32 row
+   * @param size_t row
    * @return CType * row
    */
-  virtual inline CType * operator[](unsigned C_INT32 row)
+  virtual inline CType * operator[](size_t row)
   {return mArray + row * mCols;}
 
   /**
    * Retrieve a row of the matrix using c-style indexing
-   * @param unsigned C_INT32 row
+   * @param size_t row
    * @return const CType * row
    */
-  virtual inline const CType * operator[](unsigned C_INT32 row) const
+  virtual inline const CType * operator[](size_t row) const
   {return mArray + row * mCols;}
 
   /**
    * Retrieve a matrix element using c-style indexing.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return const elementType & element
    */
-  virtual inline elementType & operator()(const unsigned C_INT32 & row,
-                                          const unsigned C_INT32 & col)
+  virtual inline elementType & operator()(const size_t & row,
+                                          const size_t & col)
   {
     assert(row < mRows && col < mCols);
     return *(mArray + row * mCols + col);
@@ -287,12 +292,12 @@ public:
 
   /**
    * Retrieve a matrix element using c-style indexing.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return const elementType & element
    */
-  virtual inline const elementType & operator()(const unsigned C_INT32 & row,
-      const unsigned C_INT32 & col) const
+  virtual inline const elementType & operator()(const size_t & row,
+      const size_t & col) const
   {
     assert(row < mRows && col < mCols);
     return *(mArray + row * mCols + col);
@@ -314,10 +319,10 @@ public:
 
   /**
    * Reorder the rows according to the provided pivots
-   * @param const CVector<unsigned C_INT32> & pivot
+   * @param const CVector<size_t> & pivot
    * @return bool success
    */
-  bool applyPivot(const CVector<unsigned C_INT32> & pivot)
+  bool applyPivot(const CVector<size_t> & pivot)
   {
     if (pivot.size() != mRows) return false;
 
@@ -325,9 +330,9 @@ public:
     Applied = false;
     CType *pTmp = new CType[mCols];
 
-    unsigned C_INT32 i;
-    unsigned C_INT32 to;
-    unsigned C_INT32 from;
+    size_t i;
+    size_t to;
+    size_t from;
 
     for (i = 0; i < mRows; i++)
       if (!Applied[i])
@@ -396,38 +401,38 @@ public:
 
   /**
    * Retrieve a row of the matrix using Fortran style indexing.
-   * @param unsigned C_INT32 row
+   * @param size_t row
    * @return elementType * row
    */
-  inline elementType * operator[](unsigned C_INT32 row)
+  inline elementType * operator[](size_t row)
   {return mA[row - 1] - 1;}
 
   /**
    * Retrieve a row of the matrix using Fortran style indexing.
-   * @param unsigned C_INT32 row
+   * @param size_t row
    * @return const elementType * row
    */
-  inline const elementType * operator[](unsigned C_INT32 row) const
+  inline const elementType * operator[](size_t row) const
   {return mA[row - 1] - 1;}
 
   /**
    * Retrieve a matrix element using Fortran style indexing.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return const elementType & element
    */
-  inline elementType & operator()(const unsigned C_INT32 & row,
-                                  const unsigned C_INT32 & col)
+  inline elementType & operator()(const size_t & row,
+                                  const size_t & col)
   {return mA(row - 1, col - 1);}
 
   /**
    * Retrieve a matrix element using Fortran style indexing.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return const elementType & element
    */
-  inline const elementType & operator()(const unsigned C_INT32 & row,
-                                        const unsigned C_INT32 & col) const
+  inline const elementType & operator()(const size_t & row,
+                                        const size_t & col) const
   {return mA(row - 1, col - 1);}
 };
 
@@ -451,24 +456,24 @@ public:
 
   /**
    * The number of rows of the matrix.
-   * @return unsigned C_INT32 rows
+   * @return size_t rows
    */
-  unsigned C_INT32 numRows() const {return mA.numRows();}
+  size_t numRows() const {return mA.numRows();}
 
   /**
    * The number of columns of the matrix
-   * @return unsigned C_INT32 cols
+   * @return size_t cols
    */
-  unsigned C_INT32 numCols() const {return mA.numCols();}
+  size_t numCols() const {return mA.numCols();}
 
   /**
    * Retrieve a matrix element using the indexing style of the matrix.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return elementType element
    */
-  inline elementType operator()(const unsigned C_INT32 & row,
-                                const unsigned C_INT32 & col) const
+  inline elementType operator()(const size_t & row,
+                                const size_t & col) const
   {
     if (row > col)
       return mZero;
@@ -519,24 +524,24 @@ public:
 
   /**
    * The number of rows of the matrix.
-   * @return unsigned C_INT32 rows
+   * @return size_t rows
    */
-  unsigned C_INT32 numRows() const {return mA.numRows();}
+  size_t numRows() const {return mA.numRows();}
 
   /**
    * The number of columns of the matrix
-   * @return unsigned C_INT32 cols
+   * @return size_t cols
    */
-  unsigned C_INT32 numCols() const {return mA.numCols();}
+  size_t numCols() const {return mA.numCols();}
 
   /**
    * Retrieve a matrix element using the indexing style of the matrix.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return elementType element
    */
-  inline elementType operator()(const unsigned C_INT32 & row,
-                                const unsigned C_INT32 & col) const
+  inline elementType operator()(const size_t & row,
+                                const size_t & col) const
   {
     if (row < col)
       return mZero;
@@ -591,24 +596,24 @@ public:
 
   /**
    * The number of rows of the matrix.
-   * @return unsigned C_INT32 rows
+   * @return size_t rows
    */
-  unsigned C_INT32 numRows() const {return mA.numRows();}
+  size_t numRows() const {return mA.numRows();}
 
   /**
    * The number of columns of the matrix
-   * @return unsigned C_INT32 cols
+   * @return size_t cols
    */
-  unsigned C_INT32 numCols() const {return mA.numCols();}
+  size_t numCols() const {return mA.numCols();}
 
   /**
    * Retrieve a matrix element  using the indexing style of the matrix.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return elementType element
    */
-  inline elementType operator()(const unsigned C_INT32 & row,
-                                const unsigned C_INT32 & col) const
+  inline elementType operator()(const size_t & row,
+                                const size_t & col) const
   {
     if (row < col)
       return mA(row, col);
@@ -665,24 +670,24 @@ public:
 
   /**
    * The number of rows of the matrix.
-   * @return unsigned C_INT32 rows
+   * @return size_t rows
    */
-  unsigned C_INT32 numRows() const {return mA.numRows();}
+  size_t numRows() const {return mA.numRows();}
 
   /**
    * The number of columns of the matrix
-   * @return unsigned C_INT32 cols
+   * @return size_t cols
    */
-  unsigned C_INT32 numCols() const {return mA.numCols();}
+  size_t numCols() const {return mA.numCols();}
 
   /**
    * Retrieve a matrix element using the indexing style of the matrix.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return elementType element
    */
-  inline elementType operator()(const unsigned C_INT32 & row,
-                                const unsigned C_INT32 & col) const
+  inline elementType operator()(const size_t & row,
+                                const size_t & col) const
   {
     if (row > col)
       return mA(row, col);
@@ -731,24 +736,24 @@ public:
 
   /**
    * The number of rows of the matrix.
-   * @return unsigned C_INT32 rows
+   * @return size_t rows
    */
-  unsigned C_INT32 numRows() const {return mA.numCols();}
+  size_t numRows() const {return mA.numCols();}
 
   /**
    * The number of columns of the matrix
-   * @return unsigned C_INT32 cols
+   * @return size_t cols
    */
-  unsigned C_INT32 numCols() const {return mA.numRows();}
+  size_t numCols() const {return mA.numRows();}
 
   /**
    * Retrieve a matrix element using the indexing style of the matrix.
-   * @param const unsigned C_INT32 & row
-   * @param const unsigned C_INT32 & col
+   * @param const size_t & row
+   * @param const size_t & col
    * @return elementType element
    */
-  inline elementType operator()(const unsigned C_INT32 & row,
-                                const unsigned C_INT32 & col) const
+  inline elementType operator()(const size_t & row,
+                                const size_t & col) const
   {return mA(col, row);}
 
   /**
@@ -779,7 +784,7 @@ std::ostream &operator<<(std::ostream &os, const CMatrix< CType > & A)
 {
   os << "Matrix(" << A.mRows << "x" << A.mCols << ")" << std::endl;
 
-  unsigned C_INT32 i, j;
+  size_t i, j;
   CType * tmp = A.mArray;
 
   for (i = 0; i < A.mRows; i++)
@@ -797,8 +802,8 @@ template <class Matrix>
 std::ostream &operator<<(std::ostream &os,
                          const CUpperTriangularView< Matrix > & A)
 {
-  unsigned C_INT32 i, imax = A.numRows();
-  unsigned C_INT32 j, jmax = A.numCols();
+  size_t i, imax = A.numRows();
+  size_t j, jmax = A.numCols();
   os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
   for (i = 0; i < imax; i++)
@@ -816,8 +821,8 @@ template <class Matrix>
 std::ostream &operator<<(std::ostream &os,
                          const CLowerTriangularView< Matrix > & A)
 {
-  unsigned C_INT32 i, imax = A.numRows();
-  unsigned C_INT32 j, jmax = A.numCols();
+  size_t i, imax = A.numRows();
+  size_t j, jmax = A.numCols();
   os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
   for (i = 0; i < imax; i++)
@@ -835,8 +840,8 @@ template <class Matrix>
 std::ostream &operator << (std::ostream &os,
                            const CUnitUpperTriangularView< Matrix > & A)
 {
-  unsigned C_INT32 i, imax = A.numRows();
-  unsigned C_INT32 j, jmax = A.numCols();
+  size_t i, imax = A.numRows();
+  size_t j, jmax = A.numCols();
   os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
   for (i = 0; i < imax; i++)
@@ -854,8 +859,8 @@ template <class Matrix>
 std::ostream &operator << (std::ostream &os,
                            const CUnitLowerTriangularView< Matrix > & A)
 {
-  unsigned C_INT32 i, imax = A.numRows();
-  unsigned C_INT32 j, jmax = A.numCols();
+  size_t i, imax = A.numRows();
+  size_t j, jmax = A.numCols();
   os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
   for (i = 0; i < imax; i++)
@@ -873,8 +878,8 @@ template <class Matrix>
 std::ostream &operator << (std::ostream &os,
                            const CTransposeView< Matrix > & A)
 {
-  unsigned C_INT32 i, imax = A.numRows();
-  unsigned C_INT32 j, jmax = A.numCols();
+  size_t i, imax = A.numRows();
+  size_t j, jmax = A.numCols();
   os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
   for (i = 0; i < imax; i++)

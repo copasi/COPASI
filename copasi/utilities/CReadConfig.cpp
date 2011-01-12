@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-$Revision: 1.21.4.1 $
+$Revision: 1.21.4.2 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/10/20 15:14:29 $
+$Date: 2011/01/12 19:13:21 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
                                  enum Mode mode)
 {
   char c[] = " ";
-  C_INT32 equal = 0;
+  size_t equal = 0;
   std::string Line;
   std::string Name;
   std::string Value;
@@ -252,7 +252,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
 
   if (type == "node")
     {
-      C_INT32 komma = 0;
+      size_t komma = 0;
 
       komma = Value.find(",");
 

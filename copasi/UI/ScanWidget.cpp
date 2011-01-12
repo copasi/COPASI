@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.215.2.2 $
+//   $Revision: 1.215.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:57:49 $
+//   $Date: 2011/01/12 19:12:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,7 +164,7 @@ bool ScanWidget::loadTask()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
-  unsigned C_INT32 i, imax = scanProblem->getNumberOfScanItems();
+  size_t i, imax = scanProblem->getNumberOfScanItems();
 
   for (i = 0; i < imax; ++i)
     {
@@ -343,7 +343,7 @@ bool ScanWidget::saveTask()
 
   const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
 
-  unsigned C_INT32 i, imax = widgetList.size();
+  size_t i, imax = widgetList.size();
 
   for (i = 0; i < imax; ++i)
     {

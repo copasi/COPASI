@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.8.4.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2009/04/24 12:53:18 $
+   $Author: shoops $
+   $Date: 2011/01/12 19:13:22 $
    End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -110,7 +115,7 @@ public:
    * @param const unisgned C_INT32 & size (default: 0)
    * @param const char & separator (default: '\t')
    */
-  CTableRow(const unsigned C_INT32 & size = 0,
+  CTableRow(const size_t & size = 0,
             const char & separator = '\t');
 
   /**
@@ -132,33 +137,33 @@ public:
 
   /**
    * Resize
-   * @param const unsigned C_INT32 & size
+   * @param const size_t & size
    * @return bool success
    */
-  bool resize(const unsigned C_INT32 & size);
+  bool resize(const size_t & size);
 
   /**
    * Retrieve the size of the row
-   * @return const unsigned C_INT32 size
+   * @return const size_t size
    */
-  unsigned C_INT32 size() const;
+  size_t size() const;
 
   /**
    * Retrieve the index of the last non empty cell
    * in the last read operation.
-   * @const unsigned C_INT32 & lastFilledCell
+   * @const size_t & lastFilledCell
    */
-  const unsigned C_INT32 & getLastFilledCell() const;
+  const size_t & getLastFilledCell() const;
 
   /**
    * Try to guess the number of columns
    * in the current line
    * @param std::istream &is
    * @param const bool & rewind
-   * @return unsigned C_INT32 numColumns
+   * @return size_t numColumns
    */
-  unsigned C_INT32 guessColumnNumber(std::istream &is,
-                                     const bool & rewind);
+  size_t guessColumnNumber(std::istream &is,
+                           const bool & rewind);
 
   /**
    * Check whether row contains any cells with data
@@ -191,7 +196,7 @@ private:
 
   bool mIsEmpty;
 
-  unsigned C_INT32 mLastFilledCell;
+  size_t mLastFilledCell;
 };
 
 #endif // COPASI_CTableCell

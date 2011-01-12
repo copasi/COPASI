@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/08 22:38:18 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:12:58 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -89,7 +94,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
   ret.push_back("unknown");
 
   //first all the metabs in the model
-  unsigned C_INT32 i, imax = model.getMetabolites().size();
+  size_t i, imax = model.getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
     ret.push_back(CMetabNameInterface::getDisplayName(&model, *model.getMetabolites()[i]));
@@ -155,7 +160,7 @@ QStringList ParameterTable::getListOfAllGlobalParameterNames(const CModel & mode
   ret += "unknown";
 
   //all the global paramters  in the model
-  unsigned C_INT32 i, imax = model.getNumModelValues();
+  size_t i, imax = model.getNumModelValues();
 
   for (i = 0; i < imax; ++i)
     ret += FROM_UTF8(model.getModelValues()[i]->getObjectName());
@@ -171,7 +176,7 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
   ret += "unknown";
 
   //all the global paramters  in the model
-  unsigned C_INT32 i, imax = model.getCompartments().size();
+  size_t i, imax = model.getCompartments().size();
 
   for (i = 0; i < imax; ++i)
     ret += FROM_UTF8(model.getCompartments()[i]->getObjectName());
@@ -193,9 +198,9 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                                        ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
   units.findDimensions(ri.isMulticompartment());
 
-  C_INT32 i, imax = ri.size();
-  C_INT32 j, jmax;
-  C_INT32 rowCounter = 0;
+  size_t i, imax = ri.size();
+  size_t j, jmax;
+  size_t rowCounter = 0;
 
   //ColorTableItem *item;
   Q3TableItem *item;
@@ -225,17 +230,17 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   mLine2Index.clear();
 
   setNumRows(0); // this is a hack to clear the table.
-  setNumRows(imax*2);
+  setNumRows((int)(imax*2));
 
   for (i = 0; i < imax; ++i)
     {
       // add additional space
-      clearCell(rowCounter, 0); clearCell(rowCounter, 1); clearCell(rowCounter, 2);
-      setRowReadOnly(rowCounter, true);
-      setRowHeight(rowCounter++, 8);
+      clearCell((int) rowCounter, 0); clearCell((int) rowCounter, 1); clearCell((int) rowCounter, 2);
+      setRowReadOnly((int) rowCounter, true);
+      setRowHeight((int) rowCounter++, 8);
 
       //
-      setRowReadOnly(rowCounter, false);
+      setRowReadOnly((int) rowCounter, false);
       mIndex2Line[i] = rowCounter;
 
       // set the stuff that is different for the specific usages
@@ -279,7 +284,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       if (usage == CFunctionParameter::MODIFIER) item->setPixmap(*pModifier);
 
-      setItem(rowCounter, 0, item);
+      setItem((int) rowCounter, 0, item);
 
       // add second column
       item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
@@ -291,7 +296,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
         }
 
-      setItem(rowCounter, 1, item);
+      setItem((int) rowCounter, 1, item);
 
       // add third column
       if (usage == CFunctionParameter::PARAMETER)
@@ -304,7 +309,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           item = new ColorTableItem(this, Q3TableItem::Never, color, "");
         }
 
-      setItem(rowCounter, 2, item);
+      setItem((int) rowCounter, 2, item);
 
       // add units column
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -312,7 +317,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       assert(pDataModel != NULL);
       item = new ColorTableItem(this, Q3TableItem::Never, color,
                                 FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(pDataModel)));
-      setItem(rowCounter, 4, item);
+      setItem((int) rowCounter, 4, item);
 
       // add a line for a metabolite Parameter
       if ((usage == CFunctionParameter::SUBSTRATE)
@@ -335,7 +340,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
               if (ri.isLocked(i))
                 {
                   item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8((*metabNames)[0]));
-                  setItem(rowCounter, 3, item);
+                  setItem((int) rowCounter, 3, item);
                 }
               else
                 {
@@ -343,7 +348,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                   combo = new Q3ComboTableItem(this, qsl);
                   //combo->setText(FROM_UTF8((*metabNames)[0]));
                   combo->setCurrentItem(FROM_UTF8((*metabNames)[0]));
-                  setItem(rowCounter, 3, combo);
+                  setItem((int) rowCounter, 3, combo);
                 }
             }
           else
@@ -351,7 +356,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
               if (ri.isLocked(i))
                 {
                   item = new ColorTableItem(this, Q3TableItem::Never, color, "");
-                  setItem(rowCounter, 3, item);
+                  setItem((int) rowCounter, 3, item);
                 }
               else // this should not happen
                 {
@@ -359,18 +364,18 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                   combo = new Q3ComboTableItem(this, qsl);
                   //combo->setText("add species");
                   combo->setCurrentItem("add species");
-                  setItem(rowCounter, 3, combo);
+                  setItem((int) rowCounter, 3, combo);
                 }
 
               // add lines for vector parameters
               jmax = metabNames->size();
-              setNumRows(numRows() + jmax);
+              setNumRows(numRows() + (int) jmax);
 
               for (j = 0; j < jmax; ++j)
                 {
                   ++rowCounter;
                   item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8((*metabNames)[j]));
-                  setItem(rowCounter, 3, item);
+                  setItem((int) rowCounter, 3, item);
                 }
             }
         }
@@ -380,13 +385,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           if (ri.isLocalValue(i))
             {
               item = new ColorTableItem(this, Q3TableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
-              setItem(rowCounter, 3, item);
+              setItem((int) rowCounter, 3, item);
             }
           else //global parameter
             {
               combo = new Q3ComboTableItem(this, getListOfAllGlobalParameterNames(model));
               combo->setCurrentItem(FROM_UTF8(ri.getMapping(i)));
-              setItem(rowCounter, 3, combo);
+              setItem((int) rowCounter, 3, combo);
             }
         }
       // add a line for a kinetic parameter
@@ -394,22 +399,22 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         {
           combo = new Q3ComboTableItem(this, getListOfAllCompartmentNames(model));
           combo->setCurrentItem(FROM_UTF8(ri.getMapping(i)));
-          setItem(rowCounter, 3, combo);
+          setItem((int) rowCounter, 3, combo);
         }
       // add a line for time
       else if (usage == CFunctionParameter::TIME)
         {
           item = new ColorTableItem(this, Q3TableItem::OnTyping, color, "");
-          setItem(rowCounter, 3, item);
+          setItem((int) rowCounter, 3, item);
         }
       // add a line for an unknown role
       else
         {
           item = new ColorTableItem(this, Q3TableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
-          setItem(rowCounter, 3, item);
+          setItem((int) rowCounter, 3, item);
         }
 
-      adjustRow(rowCounter);
+      adjustRow((int) rowCounter);
 
       //mLine2Index
 
@@ -425,7 +430,7 @@ void ParameterTable::handleCurrentCell(int row, int col)
 {
   bool changed = false;
 
-  int i, imax = mIndex2Line.size();
+  size_t i, imax = mIndex2Line.size();
 
   for (i = 0; i < imax; ++i)
     if (mIndex2Line[i] - 1 == row)
@@ -450,7 +455,7 @@ void ParameterTable::handleCurrentCell(int row, int col)
 void ParameterTable::slotCellChanged(int row, int col)
 {
   // find the index of the parameter
-  C_INT32 i, imax = mIndex2Line.size();
+  size_t i, imax = mIndex2Line.size();
 
   for (i = imax - 1; i >= 0; --i)
     if (mIndex2Line[i] <= row) break;
@@ -468,11 +473,11 @@ void ParameterTable::slotCellChanged(int row, int col)
       else
         {
         }*/
-      emit parameterStatusChanged(i, !tmp->isChecked());
+      emit parameterStatusChanged((int) i, !tmp->isChecked());
     }
   else
     {
-      emit signalChanged(i, row - mIndex2Line[i], text(row, col));
+      emit signalChanged((int) i, row - (int) mIndex2Line[i], text(row, col));
     }
 }
 

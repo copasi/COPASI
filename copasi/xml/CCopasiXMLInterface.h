@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.35.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 13:16:13 $
+//   $Date: 2011/01/12 19:13:43 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -369,48 +374,48 @@ public:
 
   /**
    * Retrieve the size of the list.
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  unsigned C_INT32 size();
+  size_t size();
 
   /**
    * Set the name of the indexed attribute
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @param const std::string & name
    * @return bool success
    */
-  bool setName(const unsigned C_INT32 & index,
+  bool setName(const size_t & index,
                const std::string & name);
 
   /**
    * Retrieve the name of the indexed attribute.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return const std::string & name
    */
-  const std::string & getName(const unsigned C_INT32 & index) const;
+  const std::string & getName(const size_t & index) const;
 
   /**
    * Set the name and value of the indexed attribute
    * Note: the value will be XML encoded
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @param const std::string & name
    * @param const CType & value
    * @return bool success
    */
-  template <class CType> inline bool set(const unsigned C_INT32 & index,
+  template <class CType> inline bool set(const size_t & index,
                                          const std::string & name,
                                          const CType & value)
   {return set(index, name, value, CCopasiXMLInterface::attribute);}
   /**
   * Set the name and value of the indexed attribute
   * Note: the value will be XML encoded
-  * @param const unsigned C_INT32 & index
+  * @param const size_t & index
   * @param const std::string & name
   * @param const CType & value
   * @param const CCopasiXMLInterface::EncodingType & encodingType
   * @return bool success
   */
-  template <class CType> bool set(const unsigned C_INT32 & index,
+  template <class CType> bool set(const size_t & index,
                                   const std::string & name,
                                   const CType & value,
                                   const CCopasiXMLInterface::EncodingType & encodingType)
@@ -440,23 +445,23 @@ public:
   /**
    * Set the value of the indexed attribute
    * Note: the value will be XML encoded
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @param const CType & value
    * @return bool success
    */
-  template <class CType> inline bool setValue(const unsigned C_INT32 & index,
+  template <class CType> inline bool setValue(const size_t & index,
       const CType & value)
   {return setValue(index, value, CCopasiXMLInterface::attribute);}
 
   /**
    * Set the value of the indexed attribute
    * Note: the value will be XML encoded
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @param const CType & value
    * @param const CCopasiXMLInterface::EncodingType & encodingType
    * @return bool success
    */
-  template <class CType> bool setValue(const unsigned C_INT32 & index,
+  template <class CType> bool setValue(const size_t & index,
                                        const CType & value,
                                        const CCopasiXMLInterface::EncodingType & encodingType)
   {
@@ -482,24 +487,24 @@ public:
 
   /**
    * Retrieve the value of the indexed attribute.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return const std::string & value
    */
-  const std::string & getValue(const unsigned C_INT32 & index) const;
+  const std::string & getValue(const size_t & index) const;
 
   /**
    * Set whether the indexed attribute shall be skipped during save.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return bool success
    */
-  bool skip(const unsigned C_INT32 & index);
+  bool skip(const size_t & index);
 
   /**
    * Retrieve the indexed attribute (' name="value"' or '' if skipped).
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return std::string attribute
    */
-  std::string getAttribute(const unsigned C_INT32 & index) const;
+  std::string getAttribute(const size_t & index) const;
 
   friend std::ostream &operator<<(std::ostream &os, const CXMLAttributeList & attr);
 };

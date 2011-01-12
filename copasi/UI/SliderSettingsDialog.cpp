@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-//   $Revision: 1.19.4.1 $
+//   $Revision: 1.19.4.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:38:00 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:12:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,8 +48,8 @@ CSlider* SliderSettingsDialog::getSlider()
 
 void SliderSettingsDialog::setSlider(CSlider * slider)
 {
-  unsigned int i;
-  unsigned int iMax = mDefinedSliders.size();
+  size_t i;
+  size_t iMax = mDefinedSliders.size();
   bool found = false;
 
   for (i = 0; i < iMax; ++i)
@@ -411,7 +411,7 @@ void SliderSettingsDialog::browseButtonPressed()
         return;
 
       // Check whether a slider with the object already exists
-      unsigned C_INT32 i, iMax = mDefinedSliders.size();
+      size_t i, iMax = mDefinedSliders.size();
 
       for (i = 0; i < iMax; ++i)
         if (mDefinedSliders[i]->getSliderObject() == pObject)

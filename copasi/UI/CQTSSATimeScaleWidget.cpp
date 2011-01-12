@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.5.2.1 $
+//   $Revision: 1.5.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/01 11:52:34 $
+//   $Date: 2011/01/12 19:12:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,7 +74,7 @@ void CQTSSATimeScaleWidget::paintTimeScale(CVector< C_FLOAT64> vector)
 
       if (vector.size() != mpPaintWidget->mVector.size())
         {
-          mpSlider->setRange(0, (vector.size() - 1));
+          mpSlider->setRange(0, (int)(vector.size() - 1));
           mpSlider->setValue(mpSlider->minValue());
         }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.19 $
+//   $Revision: 1.93.2.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 19:02:59 $
+//   $Date: 2011/01/12 19:12:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,7 +168,7 @@ QVariant DataModelGUI::data(const QModelIndex &index, int role) const
   return QVariant(getNameWithObjectNo(item));
 }
 
-int DataModelGUI::getId(const QModelIndex &index) const
+size_t DataModelGUI::getId(const QModelIndex &index) const
 {
   if (!index.isValid())
     return -1;
@@ -193,7 +193,7 @@ QString DataModelGUI::getNameWithObjectNo(const IndexedNode *node) const
 {
   QString name = node->getName();
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  int noOfObjects = -1;
+  size_t noOfObjects = -1;
 
   switch (node->getId())
     {
@@ -993,12 +993,12 @@ int DataModelGUI::rowCount(const QModelIndex &parent) const
 
   const IndexedNode *parentItem = getItem(parent);
 
-  return parentItem->childCount();
+  return (int) parentItem->childCount();
 }
 
 int DataModelGUI::columnCount(const QModelIndex &C_UNUSED(parent)) const
 {
-  return getRootNode()->columnCount();
+  return (int) getRootNode()->columnCount();
 }
 
 Qt::ItemFlags DataModelGUI::flags(const QModelIndex &index) const
@@ -1043,11 +1043,11 @@ QModelIndex DataModelGUI::parent(const QModelIndex &index) const
   if (parentItem == getRootNode() || !parentItem || !(mTree.isNodeFromTree(parentItem)))
     return QModelIndex();
 
-  return createIndex(parentItem->row(), parentItem->column(),
+  return createIndex((int) parentItem->row(), (int) parentItem->column(),
                      const_cast< IndexedNode * >(parentItem));
 }
 
-QModelIndex DataModelGUI::findIndexFromId(int id)
+QModelIndex DataModelGUI::findIndexFromId(size_t id)
 {
   QModelIndex index;
   IndexedNode * pNode = mTree.findNodeFromId(id);
@@ -1056,7 +1056,7 @@ QModelIndex DataModelGUI::findIndexFromId(int id)
     return index;
 
   if (pNode)
-    index = createIndex(pNode->row(), pNode->column(), pNode);
+    index = createIndex((int) pNode->row(), (int) pNode->column(), pNode);
 
   return index;
 }
@@ -1070,7 +1070,7 @@ QModelIndex DataModelGUI::findIndexFromKey(const std::string& key)
     return index;
 
   if (pNode)
-    index = createIndex(pNode->row(), pNode->column(), pNode);
+    index = createIndex((int) pNode->row(), (int) pNode->column(), pNode);
 
   return index;
 }
@@ -1280,7 +1280,7 @@ bool DataModelGUI::insertRow(int parentId, const std::string &key)
 
   QModelIndex parentIndex = findIndexFromId(parentId);
 
-  beginInsertRows(parentIndex, parentNode->childCount(), parentNode->childCount());
+  beginInsertRows(parentIndex, (int) parentNode->childCount(), (int) parentNode->childCount());
   std::string objName = CCopasiRootContainer::getKeyFactory()->get(key)->getObjectName();
   parentNode->addChild(C_INVALID_INDEX, FROM_UTF8(objName), key);
 
@@ -1301,7 +1301,7 @@ bool DataModelGUI::removeRow(const std::string &key)
 
   QModelIndex parentIndex = findIndexFromId(pNode->parent()->getId());
 
-  beginRemoveRows(parentIndex, pNode->row(), pNode->row());
+  beginRemoveRows(parentIndex, (int) pNode->row(), (int) pNode->row());
   const_cast< IndexedNode * >(pNode->parent())->removeChild(key);
   endRemoveRows();
 
@@ -1381,7 +1381,7 @@ void DataModelGUI::buildChangedObjects()
   // The reaction parameters
   CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (; itReaction != endReaction; ++itReaction)
     {

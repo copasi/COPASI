@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.11.2.5 $
+//   $Revision: 1.11.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:42 $
+//   $Date: 2011/01/12 19:12:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ const std::vector< unsigned C_INT32 >& CQSpecieDM::getItemToType()
 
 int CQSpecieDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites().size() + 1;
 }
 int CQSpecieDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -518,7 +518,7 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CMetab * pSpecie = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getMetabolites().CCopasiVector< CMetab >::getIndex(pSpecie);
 
       if (delRow != C_INVALID_INDEX)
@@ -529,7 +529,7 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
                                         pSpecie->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

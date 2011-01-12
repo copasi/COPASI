@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.73.2.1 $
+//   $Revision: 1.73.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 19:09:12 $
+//   $Date: 2011/01/12 19:13:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,7 +285,7 @@ public:
    * A map that stores a vector of pairs of header,body or footer addresses
    *  with the index together with the key to the reference.
    */
-  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > > > reportReferenceMap;
+  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, size_t > > > reportReferenceMap;
 
   SCopasiXMLGUI * pGUI;
 
@@ -381,7 +381,7 @@ private:
     /**
      * The line number the unknown element was encountered.
      */
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
     // Operations
   public:
@@ -1622,7 +1622,7 @@ private:
     /**
      * A set of event orders used to enforce uniqueness
      */
-    std::set< unsigned C_INT32 > mEventOrders;
+    std::set< size_t > mEventOrders;
 
     // Operations
   public:
@@ -1722,7 +1722,7 @@ private:
     /**
      * The level of nested xhtml elements.
      */
-    unsigned C_INT32 mLevel;
+    size_t mLevel;
 
     /**
      * Information whether an element is empty
@@ -1894,7 +1894,7 @@ private:
     /**
      * The line number the unknown parameter was encountered.
      */
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
     // Operations
   public:
@@ -2025,7 +2025,7 @@ private:
     /**
      * The line number the unknown parameter was encountered.
      */
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
     // Operations
   public:
@@ -2333,7 +2333,7 @@ private:
     /**
      * The line number the unknown parameter was encountered.
      */
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
     // Operations
   public:
@@ -3076,7 +3076,7 @@ private:
     /**
      * The level of nested xhtml elements.
      */
-    unsigned C_INT32 mLevel;
+    size_t mLevel;
 
     /**
      * Information whether an element is empty
@@ -3258,7 +3258,7 @@ private:
       BasePoint2
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     CurveElement(CCopasiXMLParser & parser,
@@ -3283,7 +3283,7 @@ private:
       Dimensions
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     CompartmentGlyphElement(CCopasiXMLParser & parser,
@@ -3329,7 +3329,7 @@ private:
       Dimensions
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     MetaboliteGlyphElement(CCopasiXMLParser & parser,
@@ -3376,7 +3376,7 @@ private:
       Curve
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     MetaboliteReferenceGlyphElement(CCopasiXMLParser & parser,
@@ -3424,7 +3424,7 @@ private:
       ListOfMetaboliteReferenceGlyphs
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     ReactionGlyphElement(CCopasiXMLParser & parser,
@@ -3470,7 +3470,7 @@ private:
       Dimensions
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     TextGlyphElement(CCopasiXMLParser & parser,
@@ -3516,7 +3516,7 @@ private:
       Dimensions
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     AdditionalGOElement(CCopasiXMLParser & parser,
@@ -3568,7 +3568,7 @@ private:
 #endif // USE_CRENDER_EXTENSION
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     LayoutElement(CCopasiXMLParser & parser,

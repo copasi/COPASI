@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-  $Revision: 1.9.2.6 $
+  $Revision: 1.9.2.7 $
   $Name:  $
-  $Author: aekamal $
-  $Date: 2010/09/29 21:20:11 $
+  $Author: shoops $
+  $Date: 2011/01/12 19:13:00 $
   End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,12 +227,12 @@ IndexedNode* IndexedNode::child(int row)
   return mChildren[row];
 }
 
-int IndexedNode::childCount() const
+size_t IndexedNode::childCount() const
 {
   return mChildren.size();
 }
 
-int IndexedNode::columnCount() const
+size_t IndexedNode::columnCount() const
 {
   return 1;
 }
@@ -242,14 +242,14 @@ const IndexedNode *IndexedNode::parent() const
   return mpParentNode;
 }
 
-int IndexedNode::row() const
+size_t IndexedNode::row() const
 {
   if (mpParentNode)
     {
       const std::vector<IndexedNode*> & children = mpParentNode->children();
       std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
 
-      int i = 0;
+      size_t i = 0;
 
       for (it = children.begin(); it != itEnd; ++it, i++)
         {
@@ -261,7 +261,7 @@ int IndexedNode::row() const
   return -1;
 }
 
-int IndexedNode::column() const
+size_t IndexedNode::column() const
 {
   return (columnCount() - 1);
 }

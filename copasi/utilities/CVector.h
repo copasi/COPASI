@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.41.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:06:33 $
+//   $Date: 2011/01/12 19:13:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,7 +44,7 @@ protected:
   /**
    * Size of the vector.
    */
-  unsigned C_INT32 mSize;
+  size_t mSize;
 
   /**
    * The array storing the vector elements
@@ -63,10 +63,10 @@ public:
 
   /**
    * Specific constructor
-   * @param const unsigned C_INT32 & size
+   * @param const size_t & size
    * @param CType * vector
    */
-  CVectorCore(const unsigned C_INT32 & size,
+  CVectorCore(const size_t & size,
               CType * vector):
       mSize(size),
       mVector(vector)
@@ -80,40 +80,40 @@ public:
 
   /**
    * The number of elements stored in the vector.
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  unsigned C_INT32 size() const {return mSize;}
+  size_t size() const {return mSize;}
 
   /**
    * Retrieve an element of the vector
-   * @param const unsigned C_INT32 & row
+   * @param const size_t & row
    * @return CType & element
    */
-  inline CType & operator[](const unsigned C_INT32 & row)
+  inline CType & operator[](const size_t & row)
   {return *(mVector + row);}
 
   /**
    * Retrieve an element of the vector
-   * @param const unsigned C_INT32 & row
+   * @param const size_t & row
    * @return const CType & element
    */
-  inline const CType & operator[](const unsigned C_INT32 & row) const
+  inline const CType & operator[](const size_t & row) const
   {return *(mVector + row);}
 
   /**
    * Retrieve a vector element using Fortan style indexing.
-   * @param const unsigned C_INT32 & row
+   * @param const size_t & row
    * @return const CType & element
    */
-  inline CType & operator()(const unsigned C_INT32 & row)
+  inline CType & operator()(const size_t & row)
   {return *(mVector + (row - 1));}
 
   /**
    * Retrieve a vector element using Fortan style indexing.
-   * @param const unsigned C_INT32 & row
+   * @param const size_t & row
    * @return const CType & element
    */
-  inline const CType & operator()(const unsigned C_INT32 & row) const
+  inline const CType & operator()(const size_t & row) const
   {return *(mVector + (row - 1));}
 
   /**
@@ -162,9 +162,9 @@ template <class CType> class CVector : public CVectorCore< CType >
 public:
   /**
    * Default constructor
-   * @param unsigned C_INT32 size (default = 0)
+   * @param size_t size (default = 0)
    */
-  CVector(unsigned C_INT32 size = 0) :
+  CVector(size_t size = 0) :
       CVectorCore< CType >()
   {resize(size);}
 
@@ -190,15 +190,15 @@ public:
 
   /**
    * Resize the vector. The previous content is lost
-   * @param unsigned C_INT32 size
+   * @param size_t size
    */
-  void resize(unsigned C_INT32 size, const bool & copy = false)
+  void resize(size_t size, const bool & copy = false)
   {
     //TODO: maybe we should only resize if the vector gets bigger
     //or much smaller?
     if (size == CVectorCore< CType >::mSize) return;
 
-    unsigned C_INT32 OldSize = CVectorCore< CType >::mSize;
+    size_t OldSize = CVectorCore< CType >::mSize;
     CType * OldVector = CVectorCore< CType >::mVector;
 
     //TODO: maybe we should only resize if the vector gets bigger
@@ -269,7 +269,7 @@ public:
    */
   CVector< CType > & operator = (const CType & value)
   {
-    unsigned C_INT32 i;
+    size_t i;
     CType * tmp = CVectorCore< CType >::mVector;
 
     for (i = 0; i < CVectorCore< CType >::mSize; i++, tmp++)
@@ -282,10 +282,10 @@ public:
 
   /**
    * Reorder the elements according to the provided pivots
-   * @param const CVector<unsigned C_INT32> & pivot
+   * @param const CVector<size_t> & pivot
    * @return bool success
    */
-  bool applyPivot(const CVector<unsigned C_INT32> & pivot)
+  bool applyPivot(const CVector<size_t> & pivot)
   {
     if (pivot.size() != CVectorCore< CType >::mSize) return false;
 
@@ -293,9 +293,9 @@ public:
     Applied = false;
     CType tmp;
 
-    unsigned C_INT32 i;
-    unsigned C_INT32 to;
-    unsigned C_INT32 from;
+    size_t i;
+    size_t to;
+    size_t from;
 
     for (i = 0; i < CVectorCore< CType >::mSize; i++)
       if (!Applied[i])
@@ -333,7 +333,7 @@ std::ostream &operator<<(std::ostream &os, const CVectorCore< CType > & A)
 
   if (A.mSize)
     {
-      unsigned C_INT32 i;
+      size_t i;
       CType * tmp = A.mVector;
       os << *(tmp++);
 

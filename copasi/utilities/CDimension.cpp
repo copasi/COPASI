@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
- $Revision: 1.9 $
+ $Revision: 1.9.4.1 $
  $Name:  $
- $Author: ssahle $
- $Date: 2009/05/08 22:38:18 $
+ $Author: shoops $
+ $Date: 2011/01/12 19:13:21 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -300,7 +305,7 @@ void CFindDimensions::setupDimensions()
 
   mDimensions.resize(mpFunction->getVariables().size());
 
-  unsigned C_INT32 i, imax = mpFunction->getVariables().size();
+  size_t i, imax = mpFunction->getVariables().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -392,7 +397,7 @@ void CFindDimensions::findDimensions()
       return;
     }
 
-  unsigned C_INT32 i, imax = mpFunction->getVariables().size();
+  size_t i, imax = mpFunction->getVariables().size();
 
   for (i = 0; i < imax; ++i)
     if (mDimensions[i].isUnknown())
@@ -418,12 +423,12 @@ void CFindDimensions::setChemicalEquation(const CChemEq* eq)
       return;
     }
 
-  mM1 = eq->getMolecularity(CChemEq::SUBSTRATE);
-  mM2 = eq->getMolecularity(CChemEq::PRODUCT);
+  mM1 = (C_FLOAT64) eq->getMolecularity(CChemEq::SUBSTRATE);
+  mM2 = (C_FLOAT64) eq->getMolecularity(CChemEq::PRODUCT);
 }
 
-void CFindDimensions::setMolecularitiesForMassAction(const unsigned C_INT32 & m1,
-    const unsigned C_INT32 & m2)
+void CFindDimensions::setMolecularitiesForMassAction(const size_t & m1,
+    const size_t & m2)
 {
   mM1 = (m1 != C_INVALID_INDEX) ? m1 : -1.0;
   mM2 = (m2 != C_INVALID_INDEX) ? m2 : -1.0;
@@ -452,7 +457,7 @@ void CFindDimensions::findDimensionsMassAction()
 }
 
 //find dim for one parameter
-void CFindDimensions::findDimension(unsigned C_INT32 index)
+void CFindDimensions::findDimension(size_t index)
 {
   if (!mpFunction) return;
 
@@ -658,7 +663,7 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
 void CFindDimensions::printDebugOutput(const CCopasiDataModel* pDataModel) const
 {
   std::cout << "mDimensions " << mDimensions.size() << std::endl;
-  unsigned C_INT32 i, imax = mDimensions.size();
+  size_t i, imax = mDimensions.size();
 
   for (i = 0; i < imax; ++i)
     std::cout << i << ": " << mDimensions[i].print(pDataModel) << std::endl;

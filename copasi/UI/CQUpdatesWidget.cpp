@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 14:04:26 $
+//   $Date: 2011/01/12 19:12:57 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -152,20 +157,20 @@ void CQUpdatesWidget::loadOneTable(Q3Table* pTable, const std::vector< Refresh *
 {
   pTable->setNumCols(2);
 
-  C_INT32 i, imax = list.size();
-  pTable->setNumRows(imax);
+  size_t i, imax = list.size();
+  pTable->setNumRows((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
       std::map<const Refresh*, const CCopasiObject*>::const_iterator it = mRefreshsMap.find(list[i]);
 
       if (it != mRefreshsMap.end() && it->second)
-        pTable->setText(i, 0, FROM_UTF8(it->second->getObjectDisplayName()));
+        pTable->setText((int) i, 0, FROM_UTF8(it->second->getObjectDisplayName()));
 
       const CCopasiObject* tmp = list[i]->getObject();
 
       if (tmp)
-        pTable->setText(i, 1, FROM_UTF8(tmp->getObjectDisplayName()));
+        pTable->setText((int) i, 1, FROM_UTF8(tmp->getObjectDisplayName()));
     }
 }
 
@@ -185,16 +190,16 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   mpTableObj->horizontalHeader()->setLabel(3, "Reduced system");
   mpTableObj->horizontalHeader()->setLabel(4, "status");
 
-  int i, imax;
+  size_t i, imax;
 
   //metabolites
   imax = pModel->getMetabolites().size();
 
-  if (imax > mpTableObj->numRows()) mpTableObj->setNumRows(imax);
+  if (imax > mpTableObj->numRows()) mpTableObj->setNumRows((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      mpTableObj->verticalHeader()->setLabel(i, QString::number(i));
+      mpTableObj->verticalHeader()->setLabel((int) i, QString::number(i));
 
       CMetab* pM = pModel->getMetabolites()[i];
 
@@ -210,7 +215,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       if (pM->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableObj->setItem(i, 0, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
+      mpTableObj->setItem((int) i, 0, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
                           FROM_UTF8(pM->getObjectName())));
       //mpTableObj->setText(i, 0, FROM_UTF8(pM->getObjectName()));
       std::string tmpString = CModelEntity::StatusName[pM->getStatus()];
@@ -220,7 +225,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       else
         tmpString += " (Used = false, ";
 
-      mpTableObj->setItem(i, 1, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
+      mpTableObj->setItem((int) i, 1, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
                           FROM_UTF8(tmpString)));
       //mpTableObj->setText(i, 1, FROM_UTF8(tmpString));
     }
@@ -232,7 +237,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   //metabolitesX
   imax = pModel->getMetabolitesX().size();
 
-  if (imax > mpTableObj->numRows()) mpTableObj->setNumRows(imax);
+  if (imax > mpTableObj->numRows()) mpTableObj->setNumRows((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
@@ -250,7 +255,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       if (pM->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableObj->setItem(i, 3, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
+      mpTableObj->setItem((int) i, 3, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
                           FROM_UTF8(pM->getObjectName())));
       //mpTableObj->setText(i, 3, FROM_UTF8(pM->getObjectName()));
 
@@ -261,7 +266,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       else
         tmpString += " (Used = false, ";
 
-      mpTableObj->setItem(i, 4, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
+      mpTableObj->setItem((int) i, 4, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
                           FROM_UTF8(tmpString)));
       //      mpTableObj->setText(i, 4, FROM_UTF8(tmpString));
     }
@@ -273,7 +278,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   const CStateTemplate & st = pModel->getStateTemplate();
   imax = st.size();
   mpTableState->setNumRows(0);
-  mpTableState->setNumRows(imax + 1);
+  mpTableState->setNumRows((int)(imax + 1));
   mpTableState->setNumCols(5);
   mpTableState->horizontalHeader()->setLabel(0, "Name");
   mpTableState->horizontalHeader()->setLabel(1, "status");
@@ -283,7 +288,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
   for (i = 0; i < imax; ++i)
     {
-      mpTableState->verticalHeader()->setLabel(i, QString::number(i));
+      mpTableState->verticalHeader()->setLabel((int) i, QString::number(i));
 
       CModelEntity* pME = *(st.getEntities() + i);
 
@@ -298,7 +303,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       if (dynamic_cast<CModelValue*>(pME)) c = QColor(100, 100, 250);
 
-      mpTableState->setItem(i, 0, new ColorTableItem(mpTableState, Q3TableItem::Never, c,
+      mpTableState->setItem((int) i, 0, new ColorTableItem(mpTableState, Q3TableItem::Never, c,
                             FROM_UTF8(pME->getObjectDisplayName())));
       //      mpTableState->setText(i, 0,FROM_UTF8(pME->getObjectDisplayName()));
 
@@ -322,25 +327,25 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       if (pME->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableState->setItem(i, 1, new ColorTableItem(mpTableState, Q3TableItem::Never, c,
+      mpTableState->setItem((int) i, 1, new ColorTableItem(mpTableState, Q3TableItem::Never, c,
                             FROM_UTF8(tmpString)));
       //mpTableState->setText(i, 1, FROM_UTF8(tmpString));
     }
 
   QColor c(200, 250, 250);
 
-  for (i = st.beginIndependent() - st.getEntities(); i < st.endIndependent() - st.getEntities(); ++i)
-    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
+  for (i = st.beginIndependent() - st.getEntities(); i < (size_t)(st.endIndependent() - st.getEntities()); ++i)
+    mpTableState->setItem((int) i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
 
   c = QColor(250, 200, 250);
 
-  for (i = st.beginDependent() - st.getEntities(); i < st.endDependent() - st.getEntities(); ++i)
-    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
+  for (i = st.beginDependent() - st.getEntities(); i < (size_t)(st.endDependent() - st.getEntities()); ++i)
+    mpTableState->setItem((int) i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
 
   c = QColor(200, 200, 200);
 
-  for (i = st.beginFixed() - st.getEntities(); i < st.endFixed() - st.getEntities(); ++i)
-    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
+  for (i = st.beginFixed() - st.getEntities(); i < (size_t)(st.endFixed() - st.getEntities()); ++i)
+    mpTableState->setItem((int) i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
 
   int tmpint = st.beginIndependent() - st.getEntities();
   mpTableState->setText(tmpint, 2, "beginIndependent ");
@@ -363,11 +368,11 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
   for (i = 0; i < (int) atolv.size(); ++i)
     {
-      mpTableState->setText(i + tmpint, 3, QString::number(atolv[i]));
+      mpTableState->setText((int) i + tmpint, 3, QString::number(atolv[i]));
 
       CModelEntity* pME = *(st.getEntities() + i + 1);
       C_FLOAT64 tmp = std::min(atolv[i], std::max(100.0 * DBL_MIN, fabs(pME->getInitialValue())));
-      mpTableState->setText(i + tmpint, 4, QString::number(tmp));
+      mpTableState->setText((int) i + tmpint, 4, QString::number(tmp));
     }
 
   mpTableState->adjustColumn(0);

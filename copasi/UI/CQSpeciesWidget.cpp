@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.12.2.1 $
+//   $Revision: 1.12.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/24 18:07:53 $
+//   $Date: 2011/01/12 19:12:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,9 +111,9 @@ void CQSpeciesWidget::deleteSelectedSpecies()
 
   for (i = 0; i < imax; i++)
     {
-      if (pSelectionModel->isRowSelected(i, QModelIndex()))
+      if (pSelectionModel->isRowSelected((int) i, QModelIndex()))
         {
-          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index(i, 0)));
+          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index((int) i, 0)));
         }
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.63.2.1 $
+//   $Revision: 1.63.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/11/05 13:30:17 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:13:20 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@
 #include <string>
 #include <deque>
 
-typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;}
+typedef struct MESSAGES {size_t No; const char * Text;}
 Message;
 
 #define MCopasiBase              5000
@@ -121,7 +121,7 @@ private:
   /**
    * Message Number
    */
-  unsigned C_INT32 mNumber;
+  size_t mNumber;
 
 #ifndef WIN32
   /**
@@ -185,9 +185,9 @@ public:
 
   /**
    * Retrieve the size of the dequeue
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  static unsigned C_INT32 size();
+  static size_t size();
 
   /**
    * Retrieve highest severity of the messages in the dequeue.
@@ -197,10 +197,10 @@ public:
 
   /**
    * Check whether a message with the given number is in the dequeue
-   * @param const unsigned C_INT32 & number
+   * @param const size_t & number
    * @return bool found
    */
-  static bool checkForMessage(const unsigned C_INT32 & number);
+  static bool checkForMessage(const size_t & number);
 
   /**
    *  Default constructor.
@@ -227,10 +227,10 @@ public:
    *  Specified constructor.
    *  This creates a formated message.
    *  @param CCopasiMessage::Type type (RAW|TRACE|WARNING|ERROR)
-   *  @param unsigned C_INT32 number (message number see message.h)
+   *  @param size_t number (message number see message.h)
    *  @param ... arguments like in printf
    */
-  CCopasiMessage(Type type, unsigned C_INT32 number, ...);
+  CCopasiMessage(Type type, size_t number, ...);
 
   /**
    *  Destructor.
@@ -256,9 +256,9 @@ public:
 
   /**
    *  Retrieves the number of the message.
-   *  @return "const unsigned C_INT32 &" mNumber
+   *  @return "const size_t &" mNumber
    */
-  const unsigned C_INT32 & getNumber() const;
+  const size_t & getNumber() const;
 
 private:
   /**

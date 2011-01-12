@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.6 $
+//   $Revision: 1.205.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/06 17:05:39 $
+//   $Date: 2011/01/12 19:12:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -221,7 +221,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
   connect(LineEdit1, SIGNAL(edited()), this, SLOT(slotNameChanged()));
 
-  //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
+  //connect(table, SIGNAL(signalChanged(size_t, size_t, Qstring)), this, SLOT(slotTableChanged(size_t, size_t, QString)));
 }
 
 ReactionsWidget1::~ReactionsWidget1()
@@ -266,7 +266,7 @@ bool ReactionsWidget1::saveToReaction()
 
   if (pModel == NULL) return false;
 
-  unsigned C_INT32 ReactionIndex = pModel->getReactions().getIndex(mpRi->getReactionName());
+  size_t ReactionIndex = pModel->getReactions().getIndex(mpRi->getReactionName());
 
   // Before we save any changes we must check whether any local reaction parameters,
   // which are used in any mathematical expression in the model are removed.
@@ -316,7 +316,7 @@ bool ReactionsWidget1::saveToReaction()
 
   if (reac == NULL)
     {
-      unsigned C_INT32 size = pModel->getReactions().size();
+      size_t size = pModel->getReactions().size();
 
       mpRi->setFunctionWithEmptyMapping("");
 
@@ -463,7 +463,7 @@ void ReactionsWidget1::slotBtnNewClicked()
   slotBtnOKClicked();
 
   std::string name = "reaction";
-  int i = 0;
+  size_t i = 0;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -506,13 +506,13 @@ void ReactionsWidget1::slotBtnDeleteClicked()
     {
       case QMessageBox::Ok:                                                     // Yes or Enter
       {
-        unsigned C_INT32 index
+        size_t index
         = pDataModel->getModel()->getReactions().getIndex(mpRi->getReactionName());
 
         pDataModel->getModel()->removeReaction(mKey);
         std::string deletedKey = mKey;
 
-        unsigned C_INT32 size
+        size_t size
         = pDataModel->getModel()->getReactions().size();
 
         mpRi->setFunctionWithEmptyMapping("");
@@ -591,7 +591,7 @@ void ReactionsWidget1::FillWidgetFromRI()
   commitChanges->setEnabled(mpRi->isValid());
 }
 
-void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
+void ReactionsWidget1::slotTableChanged(size_t index, size_t sub, QString newValue)
 {
   // setValue
   if (mpRi->getUsage(index) == CFunctionParameter::PARAMETER)
@@ -613,7 +613,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mpRi->setMapping(index, TO_UTF8(table->text(table->mIndex2Line[index], 3)));
+          mpRi->setMapping((int) index, TO_UTF8(table->text((int) table->mIndex2Line[index], 3)));
         }
     }
 
@@ -624,7 +624,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
   table->setCurrentCell(rrr, ccc);
 }
 
-void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
+void ReactionsWidget1::slotParameterStatusChanged(size_t index, bool local)
 {
   if (local)
     mpRi->setLocal(index);
@@ -646,7 +646,7 @@ void ReactionsWidget1::slotNewFunction()
 
   std::string name = std::string("Rate Law for ") + TO_UTF8(LineEdit1->text());
   std::string nname = name;
-  int i = 0;
+  size_t i = 0;
   CCopasiVectorN<CEvaluationTree>& FunctionList
   = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:57:50 $
+//   $Date: 2011/01/12 19:12:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,7 +131,7 @@ bool CQTaskMethodWidget::loadMethod()
     {
       QString Value;
 
-      mpTableParameter->setRowCount(mpMethod->size());
+      mpTableParameter->setRowCount((int) mpMethod->size());
 
       unsigned C_INT32 i;
       CCopasiParameter::Type Type;

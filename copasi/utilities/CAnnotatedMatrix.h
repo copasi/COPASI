@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.25.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/03/25 14:12:44 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 19:13:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,7 +128,7 @@ public:
   /**
    * set the mode for the dimension d
    */
-  void setMode(unsigned int d, Mode m);
+  void setMode(size_t d, Mode m);
 
   /**
    * set the mode for all dimensions, this also sets the
@@ -137,13 +137,13 @@ public:
    */
   void setMode(Mode m);
 
-  Mode getMode(unsigned int d) const
+  Mode getMode(size_t d) const
   {return mModes[d];};
 
   Mode getDefaultMode() const
   {return mDefaultMode;};
 
-  unsigned int dimensionality() const;
+  size_t dimensionality() const;
 
   CCopasiAbstractArray::index_type size() const
   {return mpArray->size();}
@@ -155,16 +155,16 @@ public:
    * If the mode is VECTOR_ON_THE_FLY the CNs are generated when getAnnotationsCN()
    * or getAnnotationsString() is called.
    */
-  void setCopasiVector(unsigned int d, const CCopasiContainer* v);
+  void setCopasiVector(size_t d, const CCopasiContainer* v);
 
-  void setAnnotationCN(unsigned int d, unsigned int i, const std::string cn);
-  void setAnnotationString(unsigned int d, unsigned int i, const std::string s);
+  void setAnnotationCN(size_t d, size_t i, const std::string cn);
+  void setAnnotationString(size_t d, size_t i, const std::string s);
 
   /**
    * returns the vector of CNs that correspond to the rows, columns, ... of the array.
    * This method must not be called if the mode for the dimension d is STRINGS or NUMBERS
    */
-  const std::vector<CRegisteredObjectName> & getAnnotationsCN(unsigned int d) const;
+  const std::vector<CRegisteredObjectName> & getAnnotationsCN(size_t d) const;
 
   /**
    * This returns strings that annotate the rows, columns, ... of the array.
@@ -176,10 +176,10 @@ public:
    * and then call the method again to get the plain object names, the first reference will
    * after that also point to the plain object names.
    */
-  const std::vector<std::string> & getAnnotationsString(unsigned int d, bool display = true) const;
+  const std::vector<std::string> & getAnnotationsString(size_t d, bool display = true) const;
 
-  const std::string & getDimensionDescription(unsigned int d) const;
-  void setDimensionDescription(unsigned int d, const std::string & s);
+  const std::string & getDimensionDescription(size_t d) const;
+  void setDimensionDescription(size_t d, const std::string & s);
 
   const std::string & getDescription() const;
   void setDescription(const std::string & s);
@@ -229,23 +229,23 @@ public:
   /**
    *  resize the internal vectors according to the dimensionality of the array
    */
-  void reDimensionalize(unsigned int d);
+  void reDimensionalize(size_t d);
 
-  void resizeOneDimension(unsigned int d);
+  void resizeOneDimension(size_t d);
 
-  //void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const;
+  //void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, size_t level) const;
 
   /**
    *  generate the list of CNs from the COPASI vector v.
    *  v needs to be a CCopasiVector (or derived from it)!
    */
-  bool createAnnotationsCNFromCopasiVector(unsigned int d, const CCopasiContainer* v) const;
+  bool createAnnotationsCNFromCopasiVector(size_t d, const CCopasiContainer* v) const;
 
-  void createNumbers(unsigned int d) const;
+  void createNumbers(size_t d) const;
 
   //void printDebug(std::ostream & out) const;
 
-  void printRecursively(std::ostream & ostream, C_INT32 level,
+  void printRecursively(std::ostream & ostream, size_t level,
                         CCopasiAbstractArray::index_type & index,
                         const std::vector<std::vector<std::string> > & display) const;
 

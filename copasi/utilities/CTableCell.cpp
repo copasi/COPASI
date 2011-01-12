@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-$Revision: 1.19 $
+$Revision: 1.19.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/07/16 19:06:32 $
+$Date: 2011/01/12 19:13:22 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,7 +125,7 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
   return is;
 }
 
-CTableRow::CTableRow(const unsigned C_INT32 & size,
+CTableRow::CTableRow(const size_t & size,
                      const char & separator):
     mCells(0),
     mSeparator(separator),
@@ -143,7 +143,7 @@ CTableRow::~CTableRow() {}
 const std::vector< CTableCell > & CTableRow::getCells() const
 {return mCells;}
 
-bool CTableRow::resize(const unsigned C_INT32 & size)
+bool CTableRow::resize(const size_t & size)
 {
   mCells.resize(size);
 
@@ -156,14 +156,14 @@ bool CTableRow::resize(const unsigned C_INT32 & size)
   return true;
 }
 
-unsigned C_INT32 CTableRow::size() const
+size_t CTableRow::size() const
 {return mCells.size();}
 
-const unsigned C_INT32 & CTableRow::getLastFilledCell() const
+const size_t & CTableRow::getLastFilledCell() const
 {return mLastFilledCell;}
 
-unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
-    const bool & rewind)
+size_t CTableRow::guessColumnNumber(std::istream &is,
+                                    const bool & rewind)
 {
   std::istream::pos_type pos;
 
@@ -173,7 +173,7 @@ unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
 
   if (rewind) is.seekg(pos);
 
-  unsigned C_INT32 count;
+  size_t count;
 
   for (count = mCells.size() - 1; count != C_INVALID_INDEX; count--)
     if (!mCells[count].isEmpty()) break;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDM.cpp,v $
-//   $Revision: 1.3.4.4 $
+//   $Revision: 1.3.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 13:36:41 $
+//   $Date: 2011/01/12 19:12:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ CQReportDM::CQReportDM(QObject *parent)
 
 int CQReportDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size() + 1;
 }
 int CQReportDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -244,7 +244,7 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CReportDefinition * pReport = *j;
 
-      unsigned C_INT32 delRow = pReportList->getIndex(pReport);
+      size_t delRow = pReportList->getIndex(pReport);
 
       if (delRow != C_INVALID_INDEX)
         {
@@ -258,7 +258,7 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
           if (choice == QMessageBox::Ok)
             {
-              removeRow(delRow);
+              removeRow((int) delRow);
             }
         }
     }

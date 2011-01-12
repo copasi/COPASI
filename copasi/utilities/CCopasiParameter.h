@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
- $Revision: 1.30 $
+ $Revision: 1.30.4.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/10/08 12:32:31 $
+ $Date: 2011/01/12 19:13:20 $
  End CVS Header */
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -98,7 +103,7 @@ protected:
   /**
    *  The size allocated for the value of the parameter.
    */
-  unsigned C_INT32 mSize;
+  size_t mSize;
 
   /**
    *  A pointer to the value of the parameter.
@@ -156,7 +161,7 @@ public:
 
   /**
    * Set the value of the parameter
-   * @param const unsigned C_INT32 & value
+   * @param const const CType & value
    * @return bool isValidValue
    */
   template <class CType> bool setValue(const CType & value)

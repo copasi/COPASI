@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Date: 2011/01/12 19:12:57 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -39,13 +44,14 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries & TS)
 
   if (mpTS != NULL)
     {
-      setNumRows(mpTS->getRecordedSteps());
-      setNumCols(mpTS->getNumVariables());
+      setNumRows((int) mpTS->getRecordedSteps());
+      setNumCols((int) mpTS->getNumVariables());
 
       Q3Header *tableHeader = horizontalHeader();
-      C_INT32 i, imax = mpTS->getNumVariables();
+      size_t i, imax = mpTS->getNumVariables();
+
       for (i = 0; i < imax; ++i)
-        tableHeader->setLabel(i, FROM_UTF8(mpTS->getTitle(i)));
+        tableHeader->setLabel((int) i, FROM_UTF8(mpTS->getTitle(i)));
     }
   else
     {
@@ -57,7 +63,9 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries & TS)
 QString CTimeSeriesTable::textForCell(unsigned int row, unsigned int col)
 {
   if (mpTS == NULL) return "";
+
   if (row > mpTS->getRecordedSteps()) return "";
+
   if (col > mpTS->getNumVariables()) return "";
 
   if (mFlagConc)
@@ -78,6 +86,6 @@ const CTimeSeries* CTimeSeriesTable::getTimeSeries()
 }
 
 bool CTimeSeriesTable::doShowConcentrations() const
-  {
-    return this->mFlagConc;
-  }
+{
+  return this->mFlagConc;
+}

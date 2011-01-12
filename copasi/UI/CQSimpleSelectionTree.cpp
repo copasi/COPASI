@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/16 15:27:49 $
+//   $Date: 2011/01/12 19:12:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,8 +153,8 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
   // find all species (aka metabolites) and create items in the metabolite subtree
   const CCopasiVector<CMetab>& metabolites = pModel->getMetabolites();
-  unsigned int counter;
-  unsigned int maxCount = metabolites.size();
+  size_t counter;
+  size_t maxCount = metabolites.size();
 
   for (counter = maxCount; counter != 0; --counter)
     {
@@ -266,8 +266,8 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       pItem = new QTreeWidgetItem(mpReactionParameterSubtree,
                                   QStringList(FROM_UTF8(react->getObjectName())));
       const CCopasiParameterGroup & Parameters = react->getParameters();
-      unsigned int j;
-      unsigned int numParameters = Parameters.size();
+      size_t j;
+      size_t numParameters = Parameters.size();
 
       for (j = numParameters; j != 0; --j)
         {
@@ -669,7 +669,7 @@ bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string & name, con
 {
   bool unique = true;
   bool found = false;
-  unsigned int counter;
+  size_t counter;
 
   for (counter = 0; counter < metabolites.size(); ++counter)
     {
@@ -714,8 +714,8 @@ void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > *
 {
   // clear selection on tree and select new objects
   clearSelection();
-  unsigned int i;
-  unsigned int iMax = objects->size();
+  size_t i;
+  size_t iMax = objects->size();
 
   if ((selectionMode() == QAbstractItemView::SingleSelection || selectionMode() == QAbstractItemView::NoSelection) && iMax > 1)
     {
@@ -800,6 +800,7 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses & classes, const CCopasiO
   if ((classes & NumericValues) &&
       (pObject->isValueDbl() ||
        pObject->isValueInt() ||
+       pObject->isValueInt64() ||
        pObject->isArray()))
     return true;
 
@@ -906,6 +907,7 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses & classes, const CCopasiO
       if ((classes & Results) &&
           (pCheckedObject->isValueDbl() ||
            pCheckedObject->isValueInt() ||
+           pCheckedObject->isValueInt64() ||
            pCheckedObject->isArray()))
         return true;
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.8 $
+//   $Revision: 1.290.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/23 18:06:09 $
+//   $Date: 2011/01/12 19:12:57 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -484,7 +484,7 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
     return NULL;
 
   // first try ID
-  C_INT32 id = mpDataModelGUI->getId(index);
+  size_t id = mpDataModelGUI->getId(index);
   CopasiWidget* pWidget = findWidgetFromId(id);
 
   if (pWidget != NULL)
@@ -529,7 +529,7 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
   return NULL;
 }
 
-CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
+CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
 {
   switch (id)
     {
@@ -776,12 +776,12 @@ void ListViews::restoreCurrentItem()
 
   //if not successful then try the ID.
   if (!index.isValid())
-    index = mpDataModelGUI->findIndexFromId(mSaveFolderID);
+    index = mpDataModelGUI->findIndexFromId((int) mSaveFolderID);
 
   if (index.isValid())
     {
       //Build Map with expanded values of all nodes without children.
-      QMap<int, bool> isExpandedMap;
+      QMap<size_t, bool> isExpandedMap;
       buildExpandedMap(isExpandedMap, mpDataModelGUI->getNode(0));
 
       //Refresh View
@@ -789,7 +789,7 @@ void ListViews::restoreCurrentItem()
       mpTreeView->setModel(mpDataModelGUI);
 
       //Set Nodes to original expanded value
-      QMap<int, bool>::iterator it, itEnd = isExpandedMap.end();
+      QMap<size_t, bool>::iterator it, itEnd = isExpandedMap.end();
 
       for (it = isExpandedMap.begin(); it != itEnd; ++it)
         {
@@ -802,12 +802,12 @@ void ListViews::restoreCurrentItem()
     }
 }
 
-void ListViews::buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNode *startNode)
+void ListViews::buildExpandedMap(QMap<size_t, bool> &isExpandedMap, const IndexedNode *startNode)
 {
   if (startNode->childCount() == 0 || startNode->getId() == C_INVALID_INDEX)
     return;
 
-  QModelIndex index = mpDataModelGUI->findIndexFromId(startNode->getId());
+  QModelIndex index = mpDataModelGUI->findIndexFromId((int) startNode->getId());
 
   if (index.isValid() && mpTreeView->isExpanded(index))
     isExpandedMap[startNode->getId()] = mpTreeView->isExpanded(index);
@@ -821,12 +821,12 @@ void ListViews::buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNo
     }
 }
 
-int ListViews::getCurrentItemId()
+size_t ListViews::getCurrentItemId()
 {
   QModelIndex index = mpTreeView->currentIndex();
 
   if (!index.isValid() || !mpDataModelGUI)
-    return -1;
+    return C_INVALID_INDEX;
 
   return mpDataModelGUI->getId(index);
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.168.2.4 $
+//   $Revision: 1.168.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/29 15:51:31 $
+//   $Date: 2011/01/12 19:12:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,8 +142,8 @@ public:
 
   void storeCurrentItem();
   void restoreCurrentItem();
-  int getCurrentItemId();
-  CopasiWidget* findWidgetFromId(const C_INT32 & id) const;
+  size_t getCurrentItemId();
+  CopasiWidget* findWidgetFromId(const size_t & id) const;
 
   // return current widget - added 02.07.08
   CopasiWidget* getCurrentWidget();
@@ -159,7 +159,7 @@ private:
   CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;
 
   void ConstructNodeWidgets();
-  void buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNode *startNode);
+  void buildExpandedMap(QMap<size_t, bool> &isExpandedMap, const IndexedNode *startNode);
 
 private slots:
   void slotFolderChanged(const QModelIndex & index);

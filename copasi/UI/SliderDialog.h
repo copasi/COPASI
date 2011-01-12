@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37.4.2 $
+$Revision: 1.37.4.3 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/09/29 15:51:31 $
+$Date: 2011/01/12 19:12:59 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@ public:
   SliderDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
   virtual ~SliderDialog();
   void addSlider(CSlider* slider);
-  void setCurrentFolderId(C_INT32 id);
+  void setCurrentFolderId(size_t id);
   void setParentWindow(CopasiUI3Window* pPW);
 
   // sets the framework on the sliders dialog
@@ -59,15 +59,15 @@ public:
   void setFramework(int index);
 
 protected:
-  C_INT32 mapFolderId2EntryId(C_INT32 folderId) const;
+  size_t mapFolderId2EntryId(size_t folderId) const;
 
   void init();
 
-  static C_INT32 numMappings;
-  static C_INT32 folderMappings[][2];
-  //    static C_INT32 knownTaskIDs[];
+  static size_t numMappings;
+  static size_t folderMappings[][2];
+  //    static size_t knownTaskIDs[];
   //    static const char* knownTaskNames[];
-  //    static C_INT32 numKnownTasks;
+  //    static size_t numKnownTasks;
 
   virtual void contextMenuEvent(QContextMenuEvent* e);
 
@@ -77,7 +77,7 @@ protected:
   virtual void runMCATask();
   virtual void closeEvent(QCloseEvent* e);
 
-  virtual CCopasiTask* getTaskForFolderId(C_INT32 folderId);
+  virtual CCopasiTask* getTaskForFolderId(size_t folderId);
   virtual void updateAllSliders();
   std::vector<CSlider*>* getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const;
   CopasiSlider* findCopasiSliderForCSlider(CSlider* pCSlider);
@@ -119,9 +119,9 @@ protected:
   QFrame* mpSliderBox;
   QMenu* mpContextMenu;
   CopasiSlider* mpCurrSlider;
-  std::map<C_INT32 , std::vector< QWidget* > > mSliderMap;
-  std::map < C_INT32 , void(SliderDialog::*)() > mTaskMap;
-  C_INT32 mCurrentFolderId;
+  std::map< size_t, std::vector< QWidget* > > mSliderMap;
+  std::map < size_t, void(SliderDialog::*)() > mTaskMap;
+  size_t mCurrentFolderId;
   bool mSliderValueChanged;
   bool mSliderPressed;
   int mFramework;

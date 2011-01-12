@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.2.4.6 $
+//   $Revision: 1.2.4.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/12/06 17:05:40 $
+//   $Date: 2011/01/12 19:12:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,7 +291,7 @@ void CQSpeciesDetail::load()
   mpComboBoxCompartment->clear();
 
   mpComboBoxCompartment->setDuplicatesEnabled(false);
-  unsigned C_INT32 m;
+  size_t m;
 
   for (m = 0; m < Compartments.size(); m++)
     {
@@ -480,7 +480,7 @@ void CQSpeciesDetail::loadReactionTable()
   std::set< const CCopasiObject * > Reactions;
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
 
-  mpReactionTable->setRowCount(Reactions.size());
+  mpReactionTable->setRowCount((int) Reactions.size());
 
   std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
   std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
@@ -526,13 +526,13 @@ void CQSpeciesDetail::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        unsigned C_INT32 index =
+        size_t index =
           pModel->getMetabolites().getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
         pModel->removeMetabolite(mKey);
         std::string deletedKey = mKey;
 
-        unsigned C_INT32 size =
+        size_t size =
           pModel->getMetabolites().size();
 
         QObject *pParent = parent();

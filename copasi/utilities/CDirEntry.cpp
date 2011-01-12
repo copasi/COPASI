@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-//   $Revision: 1.25.4.1 $
+//   $Revision: 1.25.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:29 $
+//   $Date: 2011/01/12 19:13:21 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -219,7 +219,7 @@ std::string CDirEntry::createTmpName(const std::string & dir,
       RandomName = dir + Separator;
       unsigned C_INT32 Char;
 
-      for (unsigned C_INT32 i = 0; i < 8; i++)
+      for (size_t i = 0; i < 8; i++)
         {
           Char = pRandom->getRandomU(35);
 
@@ -309,7 +309,7 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
   // Open directory stream and try read info about first entry
   struct _wfinddata_t Entry;
-  C_INT32 hList = _wfindfirst(CLocaleString::fromUtf8(FilePattern).c_str(), &Entry);
+  intptr_t hList = _wfindfirst(CLocaleString::fromUtf8(FilePattern).c_str(), &Entry);
 
   if (hList == -1) return success;
 
@@ -451,7 +451,7 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
 
   absolutePath = normalize(absolutePath);
 
-  unsigned C_INT32 i, imax = std::min(absolutePath.length(), RelativeTo.length());
+  size_t i, imax = std::min(absolutePath.length(), RelativeTo.length());
 
   for (i = 0; i < imax; i++)
     if (absolutePath[i] != RelativeTo[i]) break;
@@ -569,7 +569,7 @@ std::string CDirEntry::normalize(const std::string & path)
 
 #ifdef WIN32
   // converts all '\' to '/' (only on WIN32)
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (i = 0, imax = Normalized.length(); i < imax; i++)
     if (Normalized[i] == '\\') Normalized[i] = '/';

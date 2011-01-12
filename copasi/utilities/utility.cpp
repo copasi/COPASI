@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.37.2.4 $
+$Revision: 1.37.2.5 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/10/20 16:03:26 $
+$Date: 2011/01/12 19:13:22 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,7 +173,7 @@ std::string quote(const std::string & name,
 
 void FixSName(const std::string &original, std::string &fixed)
 {
-  int i, len;
+  size_t i, len;
 
   // check reserved names
   if (original == "abs") {fixed = "_abs"; return;}
@@ -313,7 +313,7 @@ void FixSName(const std::string &original, std::string &fixed)
  */
 void FixXHTML(const std::string &original, std::string &fixed)
 {
-  C_INT32 i, p, len;
+  size_t i, p, len;
   std::string Str;
   // find the next illegal character
   Str = original;
