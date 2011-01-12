@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.152.2.2 $
+//   $Revision: 1.152.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:22 $
+//   $Date: 2011/01/12 21:48:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -306,7 +306,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           // We need to initialize all the task so that results are available
 
           // We suppress all errors and warnings
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
           CCopasiVectorN< CCopasiTask >::iterator it = mpTaskList->begin();
           CCopasiVectorN< CCopasiTask >::iterator end = mpTaskList->end();
@@ -560,7 +560,7 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport,
   // We need to initialize all the task so that results are available
 
   // We suppress all errors and warnings
-  unsigned C_INT32 Size = CCopasiMessage::size();
+  size_t Size = CCopasiMessage::size();
 
   CCopasiVectorN< CCopasiTask >::iterator it = mpTaskList->begin();
   CCopasiVectorN< CCopasiTask >::iterator end = mpTaskList->end();
@@ -1049,7 +1049,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 
 bool CCopasiDataModel::addDefaultTasks()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
     if (mpTaskList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
@@ -1259,7 +1259,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
 bool CCopasiDataModel::addDefaultReports()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
     {
@@ -1351,7 +1351,7 @@ std::map<CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
 void CCopasiDataModel::removeSBMLIdFromFunctions()
 {
   CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
-  unsigned int i, iMax = pFunDB->loadedFunctions().size();
+  size_t i, iMax = pFunDB->loadedFunctions().size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -1368,7 +1368,7 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
     return false;
 
   //Check if Layout with that name exists
-  unsigned C_INT32 index =
+  size_t index =
     mpListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
 
   if (index == C_INVALID_INDEX)
@@ -1385,7 +1385,7 @@ const CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopas
   const CCopasiObject * pObject = NULL;
   const CCopasiContainer* pContainer;
   CCopasiObjectName ContainerName;
-  unsigned C_INT32 containerIndex;
+  size_t containerIndex;
   std::string::size_type pos;
 
   //favor to search the list of container first
