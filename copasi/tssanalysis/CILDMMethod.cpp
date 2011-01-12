@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.32.2.1 $
+//   $Revision: 1.32.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:18 $
+//   $Date: 2011/01/12 21:44:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,7 +123,7 @@ void CILDMMethod::step(const double & deltaT)
   Stoichiom = mpModel -> getRedStoi();
 
   // const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
-  size_t reacs_size = mpModel -> getRedStoi().size();
+  C_INT reacs_size = (C_INT) mpModel->getRedStoi().size();
   reacs_size = reacs_size / dim; //TODO what is this?
 
   /* the vector mY is the current state of the system*/
@@ -1305,7 +1305,7 @@ bool CILDMMethod::setAnnotationM(int step)
   std::stringstream sstr;
   sstr.str("");
   sstr.clear();
-  size_t i;
+  C_INT i;
 
   mVslowPrint.resize(mData.dim, mData.dim);
   mVslowPrint = mVec_mVslow[step];
@@ -1385,7 +1385,7 @@ bool CILDMMethod::setAnnotationM(int step)
 
   mReacSlowSpacePrint.resize(mReacSlowSpace.size(), 1);
 
-  for (i = 0; i < (C_INT32) mReacSlowSpace.size(); i++)
+  for (i = 0; i < (C_INT) mReacSlowSpace.size(); i++)
     mReacSlowSpacePrint(i, 0) = mVec_mReacSlowSpace[step][i];
 
   pReacSlowSpacePrintAnn->resize();
@@ -1408,7 +1408,7 @@ bool CILDMMethod::setAnnotationM(int step)
     {
       timeScale = mVec_TimeScale[step][i];
 
-      if (i < (C_INT) mVec_SlowModes[step])
+      if (i < mVec_SlowModes[step])
         sstr << "Slow: ";
       else
         sstr << "Fast: ";
@@ -1431,7 +1431,7 @@ bool CILDMMethod::setAnnotationM(int step)
     {
       timeScale = mVec_TimeScale[step][i];
 
-      if (i < (C_INT) mVec_SlowModes[step])
+      if (i < mVec_SlowModes[step])
         sstr << "Slow: ";
       else
         sstr << "Fast: ";

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.8.4.1 $
+//   $Revision: 1.8.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:00 $
+//   $Date: 2011/01/12 21:44:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,13 +153,13 @@ void CDotOutput::writeObjectNode(std::ostream & os, const CCopasiObject * ptr, c
 
   std::ostringstream oss;
 
-  if (od.mSimulatedRefreshesIndex != -1)
+  if (od.mSimulatedRefreshesIndex != C_INVALID_INDEX)
     oss << "SR=" << od.mSimulatedRefreshesIndex << " ";
 
-  if (od.mNonSimulatedRefreshesIndex != -1)
+  if (od.mNonSimulatedRefreshesIndex != C_INVALID_INDEX)
     oss << "NSR=" << od.mNonSimulatedRefreshesIndex << " ";
 
-  if (od.mConstantRefreshesIndex != -1)
+  if (od.mConstantRefreshesIndex != C_INVALID_INDEX)
     oss << "CR=" << od.mConstantRefreshesIndex << " ";
 
   os << "\"" << ptr->getObjectDisplayName() << "\" [shape=plaintext, color=blue, " << std::endl;

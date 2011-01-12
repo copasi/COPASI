@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-//   $Revision: 1.18.4.1 $
+//   $Revision: 1.18.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:13:21 $
+//   $Date: 2011/01/12 21:44:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,9 +46,9 @@ size_t CIndexedPriorityQueue::removeStochReaction(const size_t index)
   size_t t;
 
   // check if index is valid
-  if ((index < 0) || (index >= mIndexPointer.size())) return - 1;
+  if (index >= mIndexPointer.size()) return C_INVALID_INDEX;
 
-  if ((mIndexPointer[index] != -1) && (mIndexPointer[index] != (mHeap.size() - 1))) // if the node with the given index exists in the tree
+  if ((mIndexPointer[index] != C_INVALID_INDEX) && (mIndexPointer[index] != (mHeap.size() - 1))) // if the node with the given index exists in the tree
     {// remove the node with the given index from the tree
       swapNodes(t = mIndexPointer[index], mHeap.size() - 1);
       mHeap.pop_back();
@@ -70,7 +70,7 @@ size_t CIndexedPriorityQueue::insertStochReaction(const size_t index, const C_FL
   size_t pos;
 
   // check if index is valid
-  if ((index < 0) || (index >= mIndexPointer.size())) return - 1;
+  if (index >= mIndexPointer.size()) return - 1;
 
   // first the node is inserted at the end of the heap
   mIndexPointer[index] = mHeap.size();
@@ -95,7 +95,7 @@ void CIndexedPriorityQueue::initializeIndexPointer(const size_t numberOfReaction
 
   for (i = 0; i < numberOfReactions; i++)
     {
-      mIndexPointer.push_back(-1);
+      mIndexPointer.push_back(C_INVALID_INDEX);
     }
 }
 
@@ -126,7 +126,7 @@ size_t CIndexedPriorityQueue::pushPair(const size_t index, const C_FLOAT64 key)
 
 void CIndexedPriorityQueue::buildHeap()
 {
-  for (size_t i = mHeap.size() / 2 - 1; i >= 0; i--)
+  for (size_t i = mHeap.size() / 2 - 1; i != C_INVALID_INDEX; i--)
     {
       heapify(i);
     }
@@ -190,7 +190,7 @@ void CIndexedPriorityQueue::updateAux(const size_t pos)
   size_t parent_pos = parent(pos);
   C_FLOAT64 keyval = mHeap[pos].mKey;
 
-  if ((parent_pos >= 0) && (keyval < mHeap[parent_pos].mKey))
+  if (keyval < mHeap[parent_pos].mKey)
     {
       swapNodes(pos, parent_pos);
       updateAux(parent_pos);
@@ -202,7 +202,7 @@ void CIndexedPriorityQueue::updateAux(const size_t pos)
       C_FLOAT64 min = 0.0;
       size_t min_pos = 0;
 
-      if (static_cast<unsigned int>(left) < mHeap.size())
+      if (left < mHeap.size())
         {
           min = mHeap[left].mKey;
           min_pos = left;
@@ -210,7 +210,7 @@ void CIndexedPriorityQueue::updateAux(const size_t pos)
 
       C_FLOAT64 val; // = mHeap[right].mKey; //!!!
 
-      if ((static_cast<unsigned int>(right) < mHeap.size()) && ((val = mHeap[right].mKey) < min))
+      if ((right < mHeap.size()) && ((val = mHeap[right].mKey) < min))
         {
           min = val;
           min_pos = right;

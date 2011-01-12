@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.59.4.2 $
+//   $Revision: 1.59.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:06:11 $
+//   $Date: 2011/01/12 21:44:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -420,7 +420,7 @@ bool CScanMethod::init()
       //search from the end
       size_t j;
 
-      for (j = mScanItems.size() - 1; j >= 0; --j)
+      for (j = mScanItems.size() - 1; j != C_INVALID_INDEX; --j)
         {
           if (mScanItems[j]->isNesting())
             {
@@ -482,7 +482,7 @@ bool CScanMethod::loop(size_t level)
 
       //separator needs to be handled slightly differently if we are at the last item
       if (currentSI->isNesting())
-        ((CScanTask*)(getObjectParent()))->outputSeparatorCallback((C_INT32)level == mLastNestingItem);
+        ((CScanTask*)(getObjectParent()))->outputSeparatorCallback(level == mLastNestingItem);
     }
 
   return true;

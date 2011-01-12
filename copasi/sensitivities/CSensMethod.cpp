@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.34.2.4 $
+//   $Revision: 1.34.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:06:25 $
+//   $Date: 2011/01/12 21:44:50 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,7 +249,7 @@ void CSensMethod::calculate_difference(size_t level, const C_FLOAT64 & delta,
       //check overflow
       size_t j;
 
-      for (j = dim - 1; j >= 0; --j)
+      for (j = dim - 1; j != C_INVALID_INDEX; --j)
         {
           if (indexit[j] >= indexmax[j])
             {
@@ -358,7 +358,7 @@ void CSensMethod::scaling_targetfunction(const C_FLOAT64 & factor,
       //check overflow
       size_t j;
 
-      for (j = dim - 1; j >= 0; --j)
+      for (j = dim - 1; j != C_INVALID_INDEX; --j)
         {
           if (indexit[j] >= indexmax[j])
             {
@@ -476,7 +476,7 @@ void CSensMethod::do_collapsing()
           //check overflow
           size_t j;
 
-          for (j = dim - 1; j >= 0; --j)
+          for (j = dim - 1; j != C_INVALID_INDEX; --j)
             {
               if (collapsedresultindex[j] >= indexmax[j])
                 {

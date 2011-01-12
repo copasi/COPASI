@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.33.2.4 $
+//   $Revision: 1.33.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:48 $
+//   $Date: 2011/01/12 21:44:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1021,7 +1021,7 @@ void CQFittingItemWidget::slotDown()
   std::set< size_t >::reverse_iterator end = mSelection.rend();
   COptItem * pItem;
 
-  if (*it == (mpTable->rowCount() - 1))
+  if ((int) *it == (mpTable->rowCount() - 1))
     ++it; // The last row can not be moved down.
 
   for (; it != end; ++it)

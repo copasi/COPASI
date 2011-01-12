@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-//   $Revision: 1.27.4.2 $
+//   $Revision: 1.27.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:06:52 $
+//   $Date: 2011/01/12 21:44:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -492,7 +492,7 @@ protected:
   /**
    *   Max number of doSingleStep() per step()
    */
-  C_INT32 mMaxSteps;
+  unsigned C_INT32 mMaxSteps;
 
   bool mMaxStepsReached;
 

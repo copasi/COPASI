@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.37.2.5 $
+$Revision: 1.37.2.6 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/01/12 19:13:22 $
+$Date: 2011/01/12 21:44:52 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -319,7 +319,7 @@ void FixXHTML(const std::string &original, std::string &fixed)
   Str = original;
   fixed.erase();
 
-  for (i = 0; i != -1;)
+  for (i = 0; i != std::string::npos;)
     {
       p = Str.find_first_of("&><\"΅Ά£¤¥¦§¨©ª«¬­®―°±²³΄µ¶·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡÒΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώÿ");
       fixed += Str.substr(0, p)
@@ -327,7 +327,7 @@ void FixXHTML(const std::string &original, std::string &fixed)
       len = Str.length();
       i = Str.find_first_of("&><\"΅Ά£¤¥¦§¨©ª«¬­®―°±²³΄µ¶·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡÒΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώÿ");
 
-      if (i != -1)
+      if (i != std::string::npos)
         {
           switch (Str[i])
             {

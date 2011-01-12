@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionLSODAMethod.cpp,v $
-   $Revision: 1.1.38.1 $
+   $Revision: 1.1.38.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/01/12 19:06:53 $
+   $Date: 2011/01/12 21:44:51 $
    End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,7 +93,7 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
               mStepsAfterPartitionSystem = 0;
             }
 
-          updatePriorityQueue(-1, endTime);
+          updatePriorityQueue(C_INVALID_INDEX, endTime);
         }
     }
   else // there is no stochastic reaction
@@ -116,7 +116,7 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
               mStepsAfterPartitionSystem = 0;
             }
 
-          updatePriorityQueue(-1, ds);
+          updatePriorityQueue(C_INVALID_INDEX, ds);
         }
       else
         {
@@ -136,7 +136,7 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
               mStepsAfterPartitionSystem = 0;
             }
 
-          updatePriorityQueue(-1, endTime);
+          updatePriorityQueue(C_INVALID_INDEX, endTime);
         }
     }
 

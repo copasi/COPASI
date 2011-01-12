@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.30.4.1 $
+//   $Revision: 1.30.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:58 $
+//   $Date: 2011/01/12 21:44:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -433,7 +433,7 @@ void ParameterTable::handleCurrentCell(int row, int col)
   size_t i, imax = mIndex2Line.size();
 
   for (i = 0; i < imax; ++i)
-    if (mIndex2Line[i] - 1 == row)
+    if ((int) mIndex2Line[i] - 1 == row)
       {
         changed = true;
         if ((mOldRow < row) || (row == 0)) ++row; else --row;
@@ -457,8 +457,8 @@ void ParameterTable::slotCellChanged(int row, int col)
   // find the index of the parameter
   size_t i, imax = mIndex2Line.size();
 
-  for (i = imax - 1; i >= 0; --i)
-    if (mIndex2Line[i] <= row) break;
+  for (i = imax - 1; i != C_INVALID_INDEX; --i)
+    if ((int) mIndex2Line[i] <= row) break;
 
   //handle the check boxes
   if (col == 2) //only checkboxes is this column

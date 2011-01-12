@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.85.2.1 $
+//   $Revision: 1.85.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:13:20 $
+//   $Date: 2011/01/12 21:44:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -732,7 +732,7 @@ public:
   {
     size_t Index = getIndex(name.getElementName(0));
 
-    if (Index == -1) return NULL;
+    if (Index == C_INVALID_INDEX) return NULL;
 
     CCopasiObject * pObject = *(CCopasiVector< CType >::begin() + Index);
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.16.2.1 $
+//   $Revision: 1.16.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:01:26 $
+//   $Date: 2011/01/12 21:44:56 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,13 +163,13 @@ public:
 
   const CLLineSegment* getSegmentAt(size_t i) const
   {
-    if ((i >= 0) && (i < mvCurveSegments.size()))return &(mvCurveSegments[i]);
+    if (i < mvCurveSegments.size())return &(mvCurveSegments[i]);
     else return NULL;
   }
 
   CLLineSegment* getSegmentAt(size_t i)
   {
-    if ((i >= 0) && (i < mvCurveSegments.size()))return &(mvCurveSegments[i]);
+    if (i < mvCurveSegments.size())return &(mvCurveSegments[i]);
     else return NULL;
   }
 

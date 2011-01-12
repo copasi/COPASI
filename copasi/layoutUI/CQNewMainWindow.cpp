@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.9 $
+//   $Revision: 1.1.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:02:01 $
+//   $Date: 2011/01/12 21:44:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -409,7 +409,7 @@ void CQNewMainWindow::slotRenderInfoChanged(size_t index)
   CLRenderInformationBase* pRenderInfo = NULL;
 
   // the local render information is first in the list
-  if (index == -1)
+  if (index == C_INVALID_INDEX)
     {
       //std::cout << "index is -1" << std::endl;
       return;
@@ -632,7 +632,7 @@ void CQNewMainWindow::slotZoomChanged(size_t index)
   this->mpAnimationWindow->setZoomFactor(this->mpZoomDropdown->currentText());
 
   // also set the zoom factor in the menu
-  if (index < this->mpZoomActionGroup->actions().size())
+  if ((int) index < this->mpZoomActionGroup->actions().size())
     {
       this->mpZoomActionGroup->actions().at((int) index)->setChecked(true);
     }

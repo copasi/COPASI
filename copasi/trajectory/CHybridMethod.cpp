@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.62.2.1 $
+//   $Revision: 1.62.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:06:52 $
+//   $Date: 2011/01/12 21:44:52 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -674,7 +674,7 @@ void CHybridMethod::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
     }
 
   // draw new random number and update the reaction just fired
-  if ((rIndex != -1) && (mReactionFlags[rIndex].mpPrev == NULL))
+  if ((rIndex != C_INVALID_INDEX) && (mReactionFlags[rIndex].mpPrev == NULL))
     {// reaction is stochastic
       newTime = time + generateReactionTime(rIndex);
       mPQ.updateNode(rIndex, newTime);
@@ -1375,7 +1375,7 @@ std::set<size_t> *CHybridMethod::getParticipatesIn(size_t /* rIndex */)
  */
 void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
 {
-  static C_INT32 counter = 0;
+  static unsigned C_INT32 counter = 0;
   size_t i;
 
   switch (mode)

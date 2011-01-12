@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.8 $
+//   $Revision: 1.83.4.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:59 $
+//   $Date: 2011/01/12 21:44:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,7 +144,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   this->mpContextMenu->insertItem("Reset Value", this, SLOT(resetValue()));
   this->mpContextMenu->insertItem("Set new default value", this, SLOT(setDefault()));
 
-  this->mSliderMap[ -1].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
+  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
 
   this->mTaskMap[23] = &SliderDialog::runTimeCourse;
   this->mTaskMap[21] = &SliderDialog::runSteadyStateTask;
@@ -153,7 +153,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
-  this->setCurrentFolderId(-1);
+  this->setCurrentFolderId(C_INVALID_INDEX);
   init();
 }
 
@@ -504,7 +504,7 @@ void SliderDialog::setCurrentFolderId(size_t id)
 
   if (id == mCurrentFolderId) return;
 
-  if (id == -1)
+  if (id == C_INVALID_INDEX)
     {
       setEnabled(false);
     }
@@ -527,7 +527,7 @@ void SliderDialog::fillSliderBox()
 
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
 
-  if (mCurrentFolderId != -1)
+  if (mCurrentFolderId != C_INVALID_INDEX)
     {
       std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
       // maybe other program parts have added or deleted some sliders
@@ -659,8 +659,8 @@ void SliderDialog::fillSliderBox()
 
 size_t SliderDialog::mapFolderId2EntryId(size_t folderId) const
 {
-  size_t id = -1;
-  int counter;
+  size_t id = C_INVALID_INDEX;
+  size_t counter;
 
   for (counter = 0; counter < SliderDialog::numMappings; ++counter)
     {
@@ -807,7 +807,7 @@ void SliderDialog::updateAllSliders()
   // To solve this, I added a new argument to updateValue that determines if the call also updates the dependencies.
   // Here we do not let the updateValue call update the dependencies, but we take care of this ourselves
   // with a call to ListView::refreshInitialValues
-  if (mCurrentFolderId == -1) return;
+  if (mCurrentFolderId == C_INVALID_INDEX) return;
 
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];

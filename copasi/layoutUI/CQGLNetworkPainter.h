@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.86.4.1 $
+//   $Revision: 1.86.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:02:01 $
+//   $Date: 2011/01/12 21:44:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -230,7 +230,7 @@ private:
 
   void drawColorLegend();
 
-  C_INT32 stepShown;
+  size_t stepShown;
   QTimer *regularTimer;
   CQLayoutMainWindow *pParentLayoutWindow;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.12.4.1 $
+//   $Revision: 1.12.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:57 $
+//   $Date: 2011/01/12 21:44:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,7 +195,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   //metabolites
   imax = pModel->getMetabolites().size();
 
-  if (imax > mpTableObj->numRows()) mpTableObj->setNumRows((int) imax);
+  if ((int) imax > mpTableObj->numRows()) mpTableObj->setNumRows((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
@@ -237,7 +237,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   //metabolitesX
   imax = pModel->getMetabolitesX().size();
 
-  if (imax > mpTableObj->numRows()) mpTableObj->setNumRows((int) imax);
+  if ((int) imax > mpTableObj->numRows()) mpTableObj->setNumRows((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
@@ -366,7 +366,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   CVector< C_FLOAT64 > atolv = pModel->initializeAtolVector(1, false);
   tmpint = st.beginIndependent() - st.getEntities();
 
-  for (i = 0; i < (int) atolv.size(); ++i)
+  for (i = 0; i < atolv.size(); ++i)
     {
       mpTableState->setText((int) i + tmpint, 3, QString::number(atolv[i]));
 

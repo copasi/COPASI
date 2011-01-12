@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.160.2.2 $
+//   $Revision: 1.160.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:02:01 $
+//   $Date: 2011/01/12 21:44:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1311,9 +1311,9 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
   // http://www.3dsource.de/faq/rasterization.htm)
   glDisable(GL_DEPTH_TEST);
   std::vector<CLLineSegment> segments = c.getCurveSegments();
-  unsigned int i;
+  size_t i;
 
-  for (int k = 0; k < c.getNumCurveSegments(); k++)
+  for (size_t k = 0; k < c.getNumCurveSegments(); k++)
     {
       CLLineSegment seg = segments[k];
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMatrixDialog.ui.h,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:50 $
+//   $Date: 2011/01/12 21:44:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@
 
 void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
 {
-  int i;
+  size_t i;
 
   mpLabelRow->setText("Rows : " + FROM_UTF8(tmp->getDimensionDescription(0)));
   size_t nRows = tmp->size()[0];

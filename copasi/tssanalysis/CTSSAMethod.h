@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.10.2.1 $
+//   $Revision: 1.10.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:08 $
+//   $Date: 2011/01/12 21:44:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -454,7 +454,7 @@ public:
   /**
     *vectors contain whole data for all calculationsteps
     **/
-  std::vector< int > mVec_SlowModes;
+  std::vector< C_INT > mVec_SlowModes;
   std::vector< C_FLOAT64 > mCurrentTime;
   std::vector< CVector<C_FLOAT64> > mVec_TimeScale;
 

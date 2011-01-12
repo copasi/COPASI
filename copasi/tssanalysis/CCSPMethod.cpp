@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.19.2.1 $
+//   $Revision: 1.19.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:18 $
+//   $Date: 2011/01/12 21:44:54 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1228,7 +1228,7 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
 {
 
   C_INT i, j, m, r;
-  size_t reacs_size = mpModel->getReactions().size();
+  C_INT reacs_size = (C_INT) mpModel->getReactions().size();
   //const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
   //C_INT  size = mpModel->getRedStoi().size();
@@ -1347,7 +1347,7 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
 {
 
   C_INT i, r, j;
-  size_t reacs_size = mpModel->getReactions().size();
+  C_INT reacs_size = (C_INT) mpModel->getReactions().size();
   const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
 
