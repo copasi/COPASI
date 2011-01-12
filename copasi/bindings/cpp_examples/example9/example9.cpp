@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example9/example9.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:56:00 $
+//   $Date: 2011/01/12 21:43:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,7 +207,7 @@ int main()
       // object is a vector with two unsigned int elements
       // First element is the index for the outer dimension and the second element is the index
       // for the inner dimension
-      std::vector<unsigned int> index(2);
+      std::vector<size_t> index(2);
       // since the rows and columns have the same annotation for the jacobian, it doesn't matter
       // for which dimension we get the annotations
       const std::vector<std::string>& annotations = pAJ->getAnnotationsString(1);
