@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120.2.6 $ 
+#   $Revision: 1.120.2.7 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/01/10 19:05:09 $ 
+#   $Date: 2011/01/12 19:15:01 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120.2.6 $ $Author: shoops $ $Date: 2011/01/10 19:05:09 $  
+# $Revision: 1.120.2.7 $ $Author: shoops $ $Date: 2011/01/12 19:15:01 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -212,12 +212,12 @@ contains(BUILD_OS, WIN32) {
   !contains(QMAKE_HOST.arch, x86_64) {
     !build_pass: message("x86 build")
     COPASI_ARCH = 32
-    QMAKE_LFLAGS += /MACHINE:x86
+    QMAKE_LFLAGS += /MACHINE:X86
   } else {
     !build_pass: message("x86_64 build")
     COPASI_ARCH = 64
     QMAKE_CFLAGS += /Wp64
-    QMAKE_LFLAGS += /MACHINE:64
+    QMAKE_LFLAGS += /MACHINE:X64
   }
 
   !isEmpty(INTELRD_PATH) {
