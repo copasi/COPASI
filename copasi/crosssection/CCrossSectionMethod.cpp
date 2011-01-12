@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/24 12:45:49 $
+//   $Author: shoops $
+//   $Date: 2011/01/12 17:25:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,12 +63,12 @@ CCrossSectionMethod::~CCrossSectionMethod()
 {DESTRUCTOR_TRACE;}
 
 
-bool CCrossSectionMethod::process(CProcessReport * handler)
+bool CCrossSectionMethod::process(CProcessReport * /* handler */)
 {
   return false;
 }
 
-bool CCrossSectionMethod::initialize(CCrossSectionProblem* problem)
+bool CCrossSectionMethod::initialize(CCrossSectionProblem* /* problem */)
 {
   return false;
 }
