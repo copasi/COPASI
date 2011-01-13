@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example8/example8.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:55:58 $
+//   $Date: 2011/01/13 19:36:29 $
 // End CVS Header
 
 
@@ -154,7 +154,7 @@ int main()
       pModel->applyInitialValues();
       // we need an array that stores the result
       // the size of the matrix does not really matter because
-      // the calculateJacobian autoamtically resizes it to the correct
+      // the calculateJacobian automatically resizes it to the correct
       // size
       CMatrix<C_FLOAT64> jacobian;
       // the first parameter to the calculation function is a reference to
@@ -172,7 +172,7 @@ int main()
       // we get a pointer to all entities
       CModelEntity** pEntities = const_cast<CStateTemplate&>(stateTemplate).getEntities();
       // and we need the user order
-      const CVector<unsigned C_INT32>& userOrder = stateTemplate.getUserOrder();
+      const CVector<size_t>& userOrder = stateTemplate.getUserOrder();
       // from those two, we can construct an new vector that contains
       // the names of the entities in the jacobian in the order in which they appear in
       // the jacobian
@@ -180,7 +180,7 @@ int main()
       const CModelEntity* pEntity = NULL;
       CModelEntity::Status status;
 
-      for (unsigned int i = 0; i < userOrder.size(); ++i)
+      for (size_t i = 0; i < userOrder.size(); ++i)
         {
           pEntity = pEntities[userOrder[i]];
           assert(pEntity != NULL);
@@ -202,18 +202,18 @@ int main()
       std::cout << "Jacobian Matrix:" << std::endl << std::endl;
       std::cout << std::setw(5) << " ";
 
-      for (unsigned int i = 0; i < nameVector.size(); ++i)
+      for (size_t i = 0; i < nameVector.size(); ++i)
         {
           std::cout << std::setw(5) << nameVector[i];
         }
 
       std::cout << std::endl;
 
-      for (unsigned int i = 0; i < nameVector.size(); ++i)
+      for (size_t i = 0; i < nameVector.size(); ++i)
         {
           std::cout << std::setw(5) << nameVector[i];
 
-          for (unsigned int j = 0; j < nameVector.size(); ++j)
+          for (size_t j = 0; j < nameVector.size(); ++j)
             {
               std::cout << std::setw(5) << std::setprecision(3) << jacobian[i][j];
             }
@@ -239,13 +239,13 @@ int main()
 
       std::cout << std::endl;
       beginIndependent = stateTemplate.beginIndependent();
-      unsigned int iMax = stateTemplate.getNumIndependent();
+      size_t iMax = stateTemplate.getNumIndependent();
 
-      for (unsigned int i = 0; i < iMax; ++i)
+      for (size_t i = 0; i < iMax; ++i)
         {
           std::cout << std::setw(5) << (*(beginIndependent + i))->getObjectName();
 
-          for (unsigned int j = 0; j < iMax; ++j)
+          for (size_t j = 0; j < iMax; ++j)
             {
               std::cout << std::setw(5) << std::setprecision(3) << jacobian[i][j];
             }

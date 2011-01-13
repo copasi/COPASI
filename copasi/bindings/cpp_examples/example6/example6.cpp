@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 17:28:23 $
+//   $Date: 2011/01/13 19:36:32 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -166,14 +172,14 @@ int main()
   // we simulated 4000 steps, including the initial state, this should be
   // 4001 step in the timeseries
   assert(pTimeSeries->getRecordedSteps() == 4001);
-  int i, iMax = pTimeSeries->getNumVariables();
+  size_t i, iMax = pTimeSeries->getNumVariables();
   // there should be four variables, the three metabolites and time
   assert(iMax == 5);
-  int lastIndex = pTimeSeries->getRecordedSteps() - 1;
+  size_t lastIndex = pTimeSeries->getRecordedSteps() - 1;
   // open the file
   // we need to remember in which order the variables are written to file
   // since we need to specify this later in the parameter fitting task
-  std::set<int> indexSet;
+  std::set<size_t> indexSet;
   std::vector<CMetab*> metabVector;
 
   // write the header
@@ -208,7 +214,7 @@ int main()
 
       for (i = 0; i < lastIndex; ++i)
         {
-          int j;
+          size_t j;
           std::ostringstream s;
 
           for (j = 0; j < iMax; ++j)

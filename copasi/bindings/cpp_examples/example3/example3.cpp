@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example3/example3.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.6.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/03/04 08:16:15 $
+//   $Author: shoops $
+//   $Date: 2011/01/13 19:36:32 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -13,7 +18,7 @@
 
 /**
  * This is an example on how to import an sbml file
- * create a report for a time course simulation 
+ * create a report for a time course simulation
  * and run a time course simulation
  */
 
@@ -43,10 +48,12 @@ int main(int argc, char** argv)
   // create a new datamodel
   CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
   assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+
   // the only argument to the main routine should be the name of an SBML file
   if (argc == 2)
     {
       std::string filename = argv[1];
+
       try
         {
           // load the model without progress report
@@ -58,6 +65,7 @@ int main(int argc, char** argv)
           CCopasiRootContainer::destroy();
           return 1;
         }
+
       CModel* pModel = pDataModel->getModel();
       assert(pModel != NULL);
       // create a report with the correct filename and all the species against
@@ -83,11 +91,13 @@ int main(int argc, char** argv)
       pHeader->push_back(CCopasiStaticString("time").getCN());
       pHeader->push_back(pReport->getSeparator().getCN());
 
-      unsigned int i, iMax = pModel->getMetabolites().size();
-      for (i = 0;i < iMax;++i)
+      size_t i, iMax = pModel->getMetabolites().size();
+
+      for (i = 0; i < iMax; ++i)
         {
           CMetab* pMetab = pModel->getMetabolites()[i];
           assert(pMetab != NULL);
+
           // we don't want output for FIXED metabolites right now
           if (pMetab->getStatus() != CModelEntity::FIXED)
             {
@@ -104,6 +114,7 @@ int main(int argc, char** argv)
               pHeader->push_back(pReport->getSeparator().getCN());
             }
         }
+
       if (iMax > 0)
         {
           // delete the last separator
@@ -112,6 +123,7 @@ int main(int argc, char** argv)
             {
               pBody->erase(--pBody->end());
             }
+
           if ((*pHeader->rbegin()) == pReport->getSeparator().getCN())
             {
               pHeader->erase(--pHeader->end());
@@ -123,6 +135,7 @@ int main(int argc, char** argv)
 
       // get the trajectory task object
       CTrajectoryTask* pTrajectoryTask = dynamic_cast<CTrajectoryTask*>(TaskList["Time-Course"]);
+
       // if there isn't one
       if (pTrajectoryTask == NULL)
         {
@@ -184,15 +197,18 @@ int main(int argc, char** argv)
       catch (...)
         {
           std::cerr << "Error. Running the time course simulation failed." << std::endl;
+
           // check if there are additional error messages
           if (CCopasiMessage::size() > 0)
             {
               // print the messages in chronological order
               std::cerr << CCopasiMessage::getAllMessageText(true);
             }
+
           CCopasiRootContainer::destroy();
           return 1;
         }
+
       // restore the state of the trajectory
       pTrajectoryTask->restore();
 
@@ -205,8 +221,9 @@ int main(int argc, char** argv)
       std::cout << "Each step contains " << pTimeSeries->getNumVariables() << " variables." << std::endl;
       std::cout << "The final state is: " << std::endl;
       iMax = pTimeSeries->getNumVariables();
-      unsigned int lastIndex = pTimeSeries->getRecordedSteps() - 1;
-      for (i = 0;i < iMax;++i)
+      size_t lastIndex = pTimeSeries->getRecordedSteps() - 1;
+
+      for (i = 0; i < iMax; ++i)
         {
           // here we get the particle number (at least for the species)
           // the unit of the other variables may not be particle numbers
