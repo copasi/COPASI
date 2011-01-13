@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.7 $
+//   $Revision: 1.205.2.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:58 $
+//   $Date: 2011/01/13 17:32:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -221,7 +221,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
   connect(LineEdit1, SIGNAL(edited()), this, SLOT(slotNameChanged()));
 
-  //connect(table, SIGNAL(signalChanged(size_t, size_t, Qstring)), this, SLOT(slotTableChanged(size_t, size_t, QString)));
+  //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
 }
 
 ReactionsWidget1::~ReactionsWidget1()
@@ -591,29 +591,31 @@ void ReactionsWidget1::FillWidgetFromRI()
   commitChanges->setEnabled(mpRi->isValid());
 }
 
-void ReactionsWidget1::slotTableChanged(size_t index, size_t sub, QString newValue)
+void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
+  size_t Index = index;
+
   // setValue
-  if (mpRi->getUsage(index) == CFunctionParameter::PARAMETER)
+  if (mpRi->getUsage(Index) == CFunctionParameter::PARAMETER)
     {
       if (sub != 0) return;
 
-      if (mpRi->isLocalValue(index))
-        mpRi->setLocalValue(index, newValue.toDouble()); // TODO: check
+      if (mpRi->isLocalValue(Index))
+        mpRi->setLocalValue(Index, newValue.toDouble()); // TODO: check
       else
-        mpRi->setMapping(index, TO_UTF8(newValue));
+        mpRi->setMapping(Index, TO_UTF8(newValue));
     }
-  else if (mpRi->getUsage(index) == CFunctionParameter::VOLUME)
+  else if (mpRi->getUsage(Index) == CFunctionParameter::VOLUME)
     {
       if (sub != 0) return;
 
-      mpRi->setMapping(index, TO_UTF8(newValue));
+      mpRi->setMapping(Index, TO_UTF8(newValue));
     }
   else
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mpRi->setMapping((int) index, TO_UTF8(table->text((int) table->mIndex2Line[index], 3)));
+          mpRi->setMapping((int) Index, TO_UTF8(table->text((int) table->mIndex2Line[index], 3)));
         }
     }
 
@@ -624,7 +626,7 @@ void ReactionsWidget1::slotTableChanged(size_t index, size_t sub, QString newVal
   table->setCurrentCell(rrr, ccc);
 }
 
-void ReactionsWidget1::slotParameterStatusChanged(size_t index, bool local)
+void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 {
   if (local)
     mpRi->setLocal(index);

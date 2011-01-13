@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.10 $
+//   $Revision: 1.1.2.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:54 $
+//   $Date: 2011/01/13 17:32:23 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -389,7 +389,7 @@ void CQNewMainWindow::slotResetView()
   this->mpAnimationWindow->slotResetView();
 }
 
-void CQNewMainWindow::slotLayoutChanged(size_t index)
+void CQNewMainWindow::slotLayoutChanged(int index)
 {
   //std::cout << "new layout " << index << std::endl;
   CLayout* pTmpLayout = (*this->mpDataModel->getListOfLayouts())[index];
@@ -403,7 +403,7 @@ void CQNewMainWindow::slotLayoutChanged(size_t index)
     }
 }
 
-void CQNewMainWindow::slotRenderInfoChanged(size_t index)
+void CQNewMainWindow::slotRenderInfoChanged(int index)
 {
   // check if a local or a global render information has been selected
   CLRenderInformationBase* pRenderInfo = NULL;
@@ -415,16 +415,18 @@ void CQNewMainWindow::slotRenderInfoChanged(size_t index)
       return;
     }
 
+  size_t Index = (size_t) index;
+
   size_t numLocalRenderInfo = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
   size_t numFileRenderInfo = numLocalRenderInfo + this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
 
-  if (index >= numLocalRenderInfo)
+  if (Index >= numLocalRenderInfo)
     {
       // it is a global render information or a default render info
-      if ((unsigned int)index >= numFileRenderInfo)
+      if (Index >= numFileRenderInfo)
         {
           // it must be a default render information
-          pRenderInfo = getDefaultStyle(index - numFileRenderInfo);
+          pRenderInfo = getDefaultStyle(Index - numFileRenderInfo);
 
           if (pRenderInfo != this->mpCurrentRenderInformation)
             {
@@ -434,7 +436,7 @@ void CQNewMainWindow::slotRenderInfoChanged(size_t index)
         }
       else
         {
-          pRenderInfo = this->mpDataModel->getListOfLayouts()->getRenderInformation(index - numLocalRenderInfo);
+          pRenderInfo = this->mpDataModel->getListOfLayouts()->getRenderInformation(Index - numLocalRenderInfo);
 
           if (pRenderInfo != this->mpCurrentRenderInformation)
             {
@@ -446,7 +448,7 @@ void CQNewMainWindow::slotRenderInfoChanged(size_t index)
   else
     {
       // it is a local render information
-      pRenderInfo = this->mpCurrentLayout->getRenderInformation(index);
+      pRenderInfo = this->mpCurrentLayout->getRenderInformation(Index);
 
       if (pRenderInfo != this->mpCurrentRenderInformation)
         {
@@ -625,7 +627,7 @@ void CQNewMainWindow::addDefaultRenderInfoItemsToList()
   connect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
 }
 
-void CQNewMainWindow::slotZoomChanged(size_t index)
+void CQNewMainWindow::slotZoomChanged(int index)
 {
   this->mpLayoutViewer->setZoomFactor(CQNewMainWindow::ZOOM_FACTORS[index]);
   // also change the zoom factor for the animation window
@@ -634,7 +636,7 @@ void CQNewMainWindow::slotZoomChanged(size_t index)
   // also set the zoom factor in the menu
   if ((int) index < this->mpZoomActionGroup->actions().size())
     {
-      this->mpZoomActionGroup->actions().at((int) index)->setChecked(true);
+      this->mpZoomActionGroup->actions().at(index)->setChecked(true);
     }
 }
 

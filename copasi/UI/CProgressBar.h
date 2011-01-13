@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.21.2.2 $
+//   $Revision: 1.21.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:46 $
+//   $Date: 2011/01/13 17:32:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,20 +146,20 @@ private:
   QThread * mpMainThread;
 
 signals:
-  void signalAddItem(const size_t handle);
+  void signalAddItem(const int handle);
   void signalSetName(QString name);
   void signalProgressAll();
-  void signalFinishItem(const size_t handle);
+  void signalFinishItem(const int handle);
 
 protected slots:
 
-  virtual void slotAddItem(const size_t handle);
+  virtual void slotAddItem(const int handle);
 
   virtual void slotSetName(QString name);
 
   virtual void slotProgressAll();
 
-  virtual void slotFinishItem(const size_t handle);
+  virtual void slotFinishItem(const int handle);
 
   virtual void btnStopPressed();
 

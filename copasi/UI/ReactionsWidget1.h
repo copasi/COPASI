@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-//   $Revision: 1.50.4.1 $
+//   $Revision: 1.50.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:59 $
+//   $Date: 2011/01/13 17:32:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,8 +77,8 @@ protected slots:
   virtual void slotNameChanged();
 
   //  public slots:
-  virtual void slotTableChanged(size_t index, size_t sub, QString newValue);
-  virtual void slotParameterStatusChanged(size_t index, bool local);
+  virtual void slotTableChanged(int index, int sub, QString newValue);
+  virtual void slotParameterStatusChanged(int index, bool local);
 
 protected:
   virtual bool enterProtected();

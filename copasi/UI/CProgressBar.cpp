@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.33.2.4 $
+//   $Revision: 1.33.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:46 $
+//   $Date: 2011/01/13 17:32:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,8 +79,8 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
       qApp->processEvents();
     }
 
-  connect(this, SIGNAL(signalAddItem(const size_t)),
-          this, SLOT(slotAddItem(const size_t)));
+  connect(this, SIGNAL(signalAddItem(const int)),
+          this, SLOT(slotAddItem(const int)));
 
   connect(this, SIGNAL(signalSetName(QString)),
           this, SLOT(slotSetName(QString)));
@@ -88,8 +88,8 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
   connect(this, SIGNAL(signalProgressAll()),
           this, SLOT(slotProgressAll()));
 
-  connect(this, SIGNAL(signalFinishItem(const size_t)),
-          this, SLOT(slotFinishItem(const size_t)));
+  connect(this, SIGNAL(signalFinishItem(const int)),
+          this, SLOT(slotFinishItem(const int)));
 }
 
 CProgressBar::~CProgressBar()
@@ -117,7 +117,7 @@ size_t CProgressBar::addItem(const std::string & name,
       QMutexLocker Locker(&mMutex);
       mSlotFinished = false;
 
-      emit signalAddItem(hItem);
+      emit signalAddItem((int) hItem);
 
       if (!mSlotFinished)
         {
@@ -126,7 +126,7 @@ size_t CProgressBar::addItem(const std::string & name,
     }
   else
     {
-      slotAddItem(hItem);
+      slotAddItem((int) hItem);
       qApp->processEvents();
     }
 
@@ -134,13 +134,15 @@ size_t CProgressBar::addItem(const std::string & name,
 }
 
 
-void CProgressBar::slotAddItem(const size_t handle)
+void CProgressBar::slotAddItem(const int handle)
 {
-  if (handle == C_INVALID_INDEX) return;
+  size_t Handle = (size_t) handle;
+
+  if (Handle == C_INVALID_INDEX) return;
 
   QMutexLocker Locker(&mMutex);
 
-  if (handle >= mProgressItemList.size()) // we need to resize
+  if (Handle >= mProgressItemList.size()) // we need to resize
     {
       size_t i, imax = mProgressItemList.size();
 
@@ -152,13 +154,13 @@ void CProgressBar::slotAddItem(const size_t handle)
       while (i < imax) mProgressItemList[i++] = NULL;
     }
 
-  if (mProcessReportItemList[handle]->hasEndValue())
-    mProgressItemList[handle] = new CQProgressItemBar(static_cast<CQProgressDialog *>(this));
+  if (mProcessReportItemList[Handle]->hasEndValue())
+    mProgressItemList[Handle] = new CQProgressItemBar(static_cast<CQProgressDialog *>(this));
   else
-    mProgressItemList[handle] = new CQProgressItemText(static_cast<CQProgressDialog *>(this));
+    mProgressItemList[Handle] = new CQProgressItemText(static_cast<CQProgressDialog *>(this));
 
-  mProgressItemList[handle]->initFromProcessReportItem(mProcessReportItemList[handle]);
-  insertProgressItem(mProgressItemList[handle]);
+  mProgressItemList[Handle]->initFromProcessReportItem(mProcessReportItemList[Handle]);
+  insertProgressItem(mProgressItemList[Handle]);
 
   mSlotFinished = true;
   mWaitSlot.wakeAll();
@@ -264,7 +266,7 @@ bool CProgressBar::finishItem(const size_t & handle)
       QMutexLocker Locker(&mMutex);
       mSlotFinished = false;
 
-      emit signalFinishItem(handle);
+      emit signalFinishItem((int) handle);
 
       if (!mSlotFinished)
         {
@@ -273,23 +275,25 @@ bool CProgressBar::finishItem(const size_t & handle)
     }
   else
     {
-      slotFinishItem(handle);
+      slotFinishItem((int) handle);
       qApp->processEvents();
     }
 
   return (CProcessReport::finishItem(handle) && mProceed);
 }
 
-void CProgressBar::slotFinishItem(const size_t handle)
+void CProgressBar::slotFinishItem(const int handle)
 {
-  if (isValidHandle(handle) &&
-      mProgressItemList[handle] != NULL)
+  size_t Handle = (size_t) handle;
+
+  if (isValidHandle(Handle) &&
+      mProgressItemList[Handle] != NULL)
     {
       QMutexLocker Locker(&mMutex);
 
-      removeProgressItem(mProgressItemList[handle]);
-      mProgressItemList[handle]->deleteLater();
-      mProgressItemList[handle] = NULL;
+      removeProgressItem(mProgressItemList[Handle]);
+      mProgressItemList[Handle]->deleteLater();
+      mProgressItemList[Handle] = NULL;
     }
 
   mSlotFinished = true;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:48 $
+//   $Date: 2011/01/13 17:32:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,7 +71,7 @@ private slots:
   void slotAddTarget();
   void slotDeleteTarget();
   void slotSelectObject();
-  void slotActualizeAssignmentExpression(size_t index);
+  void slotActualizeAssignmentExpression(int index);
   void slotApplyDelay(bool display);
 };
 

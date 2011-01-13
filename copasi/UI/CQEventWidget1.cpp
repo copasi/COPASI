@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.24.2.5 $
+//   $Revision: 1.24.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:47 $
+//   $Date: 2011/01/13 17:32:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -523,12 +523,12 @@ void CQEventWidget1::slotSelectObject()
 }
 
 /// Slot to actualize the assignment expression widget of event assignment according to the target
-void CQEventWidget1::slotActualizeAssignmentExpression(size_t index)
+void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 {
-  size_t NewTarget = index;
+  size_t NewTarget = (size_t) index;
 
-  if (index != C_INVALID_INDEX &&
-      index >= mAssignments.size())
+  if (NewTarget != C_INVALID_INDEX &&
+      NewTarget >= mAssignments.size())
     {
       NewTarget = mAssignments.size() - 1;
     }
