@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.5 (Build 30) (http://www.copasi.org) at 2009-03-22 18:45:21 UTC -->
-<COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="1" versionMinor="0" versionDevel="30">
+<!-- generated with COPASI 4.6.34 (development) (http://www.copasi.org) at 2011-01-13 17:27:07 UTC -->
+<?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="1" versionMinor="0" versionDevel="34">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <Expression>
@@ -22,29 +23,18 @@
         <ParameterDescription key="FunctionParameter_71" name="product" order="3" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_44" name="Objective Function 2" type="Expression">
-      <Expression>
-        &lt;CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[9][23]&gt;
-      </Expression>
-    </Function>
-    <Function key="Function_45" name="Objective Function" type="Expression">
-      <Expression>
-        &lt;CN=Root,Vector=TaskList[Metabolic Control Analysis],Method=MCA Method (Reder),Array=Scaled flux control coefficients,Reference=Annotated Matrix&gt;
-      </Expression>
-    </Function>
-    <Function key="Function_46" name="Objective Function 1" type="Expression">
-      <Expression>
-        -abs(&lt;CN=Root,Vector=TaskList[Metabolic Control Analysis],Method=MCA Method (Reder),Reference=temporary Flux contr coeff&gt;)
-      </Expression>
-    </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="MAPK cascade" timeUnit="s" volumeUnit="l" quantityUnit="µmol" type="deterministic">
+  <Model key="Model_1" name="MAPK cascade" simulationType="time" timeUnit="s" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="µmol" type="deterministic" avogadroConstant="6.0221415e+23">
     <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+<rdf:RDF
+   xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#"
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
   <rdf:Description rdf:about="#Model_1">
     <dcterms:bibliographicCitation>
       <rdf:Description>
-        <CopasiMT:isDescribedBy rdf:resource="urn:miriam:pubmed:8816754" />
+        <CopasiMT:isDescribedBy rdf:resource="urn:miriam:pubmed:8816754"/>
       </rdf:Description>
     </dcterms:bibliographicCitation>
     <dcterms:created>
@@ -95,26 +85,27 @@
     </dcterms:modified>
     <CopasiMT:is>
       <rdf:Bag>
-        <rdf:li rdf:resource="urn:miriam:biomodels.db:BIOMD0000000009" />
-        <rdf:li rdf:resource="urn:miriam:taxonomy:8355" />
+        <rdf:li rdf:resource="urn:miriam:biomodels.db:BIOMD0000000009"/>
+        <rdf:li rdf:resource="urn:miriam:taxonomy:8355"/>
       </rdf:Bag>
     </CopasiMT:is>
-    <CopasiMT:isHomologTo rdf:resource="urn:miriam:reactome:REACT_634" />
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO:0000165" />
+    <CopasiMT:isHomologTo rdf:resource="urn:miriam:reactome:REACT_634"/>
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO:0000165"/>
   </rdf:Description>
 </rdf:RDF>
+
     </MiriamAnnotation>
     <Comment>
       <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:DejaVu Sans">
 <p><span style="font-weight:600">MAPK cascade model</span> from Huang and Ferrell (1996) Ultrasensitivity in the mitogen-activated protein kinase cascade. <span style="font-style:italic">Proc. Natl. Acad. Sci. USA 93</span>, 10078-83 </p>
 <p>This COPASI file simulates a time course and includes a network diagram that can be used to visualize the results (under Model/Biochemical/Diagrams). </p>
-<p style="margin-top:14px"><span style="font-size:7pt">This model was altered trivially from the original in Biomodels (BIOMD0000000009), by renaming the species &quot;MAPKKK activator&quot; to E1 and &quot;MAPKKK inactivator&quot; to E2, to conform with the notation of the original paper. The diagram was constructed with SBW's Network Layout tool.</span></p>
+<p style="margin-top:14px"><span style="font-size:7pt">This model was altered trivially from the original in Biomodels (BIOMD0000000009), by renaming the species &quot;MAPKKK activator&quot; to E1 and &quot;MAPKKK inactivator&quot; to E2, to conform with the notation of the original paper. The diagram was constructed with SBW&apos;s Network Layout tool.</span></p>
 <p style="margin-top:14px"><span style="font-size:7pt">This model originated from BioModels Database: A Database of Annotated Published Models. It is copyright (c) 2005-2008 The BioModels Team. For more information see the </span><a href="http://www.ebi.ac.uk/biomodels/legal.html"><span style="font-size:7pt">terms of use</span></a><span style="font-size:7pt">.</span>      </p>
 <p>      </p>
 </body></html>
     </Comment>
     <ListOfCompartments>
-      <Compartment key="Compartment_0" name="compartment" simulationType="fixed">
+      <Compartment key="Compartment_0" name="compartment" simulationType="fixed" dimensionality="3">
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
@@ -358,20 +349,20 @@
           <Product metabolite="Metabolite_12" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_90" name="k1" value="1000"/>
-          <Constant key="Parameter_89" name="k2" value="150"/>
+          <Constant key="Parameter_1067" name="k1" value="1000"/>
+          <Constant key="Parameter_1066" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_90"/>
+              <SourceParameter reference="Parameter_1067"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_2"/>
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_89"/>
+              <SourceParameter reference="Parameter_1066"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_12"/>
@@ -402,12 +393,12 @@
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_500" name="k1" value="150"/>
+          <Constant key="Parameter_1065" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_500"/>
+              <SourceParameter reference="Parameter_1065"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_12"/>
@@ -431,20 +422,20 @@
           <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_459" name="k1" value="1000"/>
-          <Constant key="Parameter_486" name="k2" value="150"/>
+          <Constant key="Parameter_1064" name="k1" value="1000"/>
+          <Constant key="Parameter_1063" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_459"/>
+              <SourceParameter reference="Parameter_1064"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_3"/>
               <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_486"/>
+              <SourceParameter reference="Parameter_1063"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_13"/>
@@ -474,12 +465,12 @@
           <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_433" name="k1" value="150"/>
+          <Constant key="Parameter_1062" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_433"/>
+              <SourceParameter reference="Parameter_1062"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_13"/>
@@ -509,20 +500,20 @@
           <Product metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_400" name="k1" value="1000"/>
-          <Constant key="Parameter_493" name="k2" value="150"/>
+          <Constant key="Parameter_1061" name="k1" value="1000"/>
+          <Constant key="Parameter_1060" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_400"/>
+              <SourceParameter reference="Parameter_1061"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_4"/>
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_493"/>
+              <SourceParameter reference="Parameter_1060"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_14"/>
@@ -553,12 +544,12 @@
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_478" name="k1" value="150"/>
+          <Constant key="Parameter_1059" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_478"/>
+              <SourceParameter reference="Parameter_1059"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_14"/>
@@ -582,20 +573,20 @@
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_507" name="k1" value="1000"/>
-          <Constant key="Parameter_508" name="k2" value="150"/>
+          <Constant key="Parameter_1058" name="k1" value="1000"/>
+          <Constant key="Parameter_1057" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_507"/>
+              <SourceParameter reference="Parameter_1058"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_5"/>
               <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_508"/>
+              <SourceParameter reference="Parameter_1057"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_19"/>
@@ -624,12 +615,12 @@
           <Product metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_509" name="k1" value="150"/>
+          <Constant key="Parameter_1056" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_509"/>
+              <SourceParameter reference="Parameter_1056"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_19"/>
@@ -659,20 +650,20 @@
           <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_510" name="k1" value="1000"/>
-          <Constant key="Parameter_511" name="k2" value="150"/>
+          <Constant key="Parameter_1055" name="k1" value="1000"/>
+          <Constant key="Parameter_1054" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_510"/>
+              <SourceParameter reference="Parameter_1055"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_5"/>
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_511"/>
+              <SourceParameter reference="Parameter_1054"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_15"/>
@@ -704,12 +695,12 @@
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_512" name="k1" value="150"/>
+          <Constant key="Parameter_1053" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_512"/>
+              <SourceParameter reference="Parameter_1053"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_15"/>
@@ -733,20 +724,20 @@
           <Product metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_513" name="k1" value="1000"/>
-          <Constant key="Parameter_514" name="k2" value="150"/>
+          <Constant key="Parameter_1052" name="k1" value="1000"/>
+          <Constant key="Parameter_1051" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_513"/>
+              <SourceParameter reference="Parameter_1052"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_6"/>
               <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_514"/>
+              <SourceParameter reference="Parameter_1051"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_18"/>
@@ -776,12 +767,12 @@
           <Product metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_515" name="k1" value="150"/>
+          <Constant key="Parameter_1050" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_515"/>
+              <SourceParameter reference="Parameter_1050"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_18"/>
@@ -816,20 +807,20 @@
           <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_516" name="k1" value="1000"/>
-          <Constant key="Parameter_517" name="k2" value="150"/>
+          <Constant key="Parameter_1049" name="k1" value="1000"/>
+          <Constant key="Parameter_1048" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_516"/>
+              <SourceParameter reference="Parameter_1049"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_7"/>
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_517"/>
+              <SourceParameter reference="Parameter_1048"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_16"/>
@@ -865,12 +856,12 @@
           <Product metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_518" name="k1" value="150"/>
+          <Constant key="Parameter_1047" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_518"/>
+              <SourceParameter reference="Parameter_1047"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_16"/>
@@ -894,20 +885,20 @@
           <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_519" name="k1" value="1000"/>
-          <Constant key="Parameter_520" name="k2" value="150"/>
+          <Constant key="Parameter_1046" name="k1" value="1000"/>
+          <Constant key="Parameter_1045" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_519"/>
+              <SourceParameter reference="Parameter_1046"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_8"/>
               <SourceParameter reference="Metabolite_10"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_520"/>
+              <SourceParameter reference="Parameter_1045"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_21"/>
@@ -936,12 +927,12 @@
           <Product metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_521" name="k1" value="150"/>
+          <Constant key="Parameter_1044" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_521"/>
+              <SourceParameter reference="Parameter_1044"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_21"/>
@@ -976,20 +967,20 @@
           <Product metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_522" name="k1" value="1000"/>
-          <Constant key="Parameter_523" name="k2" value="150"/>
+          <Constant key="Parameter_1043" name="k1" value="1000"/>
+          <Constant key="Parameter_1042" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_522"/>
+              <SourceParameter reference="Parameter_1043"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_8"/>
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_523"/>
+              <SourceParameter reference="Parameter_1042"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_17"/>
@@ -1026,12 +1017,12 @@
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_524" name="k1" value="150"/>
+          <Constant key="Parameter_1041" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_524"/>
+              <SourceParameter reference="Parameter_1041"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_17"/>
@@ -1055,20 +1046,20 @@
           <Product metabolite="Metabolite_20" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_525" name="k1" value="1000"/>
-          <Constant key="Parameter_526" name="k2" value="150"/>
+          <Constant key="Parameter_1040" name="k1" value="1000"/>
+          <Constant key="Parameter_1039" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_525"/>
+              <SourceParameter reference="Parameter_1040"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
               <SourceParameter reference="Metabolite_9"/>
               <SourceParameter reference="Metabolite_10"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_526"/>
+              <SourceParameter reference="Parameter_1039"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
               <SourceParameter reference="Metabolite_20"/>
@@ -1098,12 +1089,12 @@
           <Product metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_527" name="k1" value="150"/>
+          <Constant key="Parameter_1038" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_527"/>
+              <SourceParameter reference="Parameter_1038"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_20"/>
@@ -1122,29 +1113,29 @@
       <StateTemplateVariable objectReference="Metabolite_5"/>
       <StateTemplateVariable objectReference="Metabolite_2"/>
       <StateTemplateVariable objectReference="Metabolite_14"/>
-      <StateTemplateVariable objectReference="Metabolite_9"/>
+      <StateTemplateVariable objectReference="Metabolite_7"/>
       <StateTemplateVariable objectReference="Metabolite_1"/>
-      <StateTemplateVariable objectReference="Metabolite_16"/>
+      <StateTemplateVariable objectReference="Metabolite_17"/>
       <StateTemplateVariable objectReference="Metabolite_18"/>
       <StateTemplateVariable objectReference="Metabolite_20"/>
-      <StateTemplateVariable objectReference="Metabolite_0"/>
-      <StateTemplateVariable objectReference="Metabolite_4"/>
-      <StateTemplateVariable objectReference="Metabolite_17"/>
       <StateTemplateVariable objectReference="Metabolite_15"/>
-      <StateTemplateVariable objectReference="Metabolite_7"/>
+      <StateTemplateVariable objectReference="Metabolite_4"/>
+      <StateTemplateVariable objectReference="Metabolite_16"/>
+      <StateTemplateVariable objectReference="Metabolite_0"/>
+      <StateTemplateVariable objectReference="Metabolite_9"/>
       <StateTemplateVariable objectReference="Metabolite_21"/>
-      <StateTemplateVariable objectReference="Metabolite_13"/>
-      <StateTemplateVariable objectReference="Metabolite_12"/>
       <StateTemplateVariable objectReference="Metabolite_19"/>
+      <StateTemplateVariable objectReference="Metabolite_12"/>
+      <StateTemplateVariable objectReference="Metabolite_13"/>
       <StateTemplateVariable objectReference="ModelValue_0"/>
       <StateTemplateVariable objectReference="Compartment_0"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 0 0 289062.7919999999 722.6569799999999 0 0 7226.569799999998 0 0 722.6569799999999 0 0 0 72.265698 2890627.92 0 0 2890627.92 0 0 0 0 0 4e-12
+      0 0 0 289062.792 722.6569799999999 0 0 7226.569799999999 0 2890627.92 722.6569799999999 0 0 0 0 2890627.92 0 72.265698 0 0 0 0 0 0 4e-12 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_11" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+    <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
       <Report reference="Report_8" target="" append="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
@@ -1158,11 +1149,11 @@
         <Parameter name="Use Back Integration" type="bool" value="1"/>
         <Parameter name="Accept Negative Concentrations" type="bool" value="0"/>
         <Parameter name="Iteration Limit" type="unsignedInteger" value="50"/>
-        <Parameter name="Maximum duration for forward integration" type="unsignedFloat" value="1e+09"/>
-        <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1e+06"/>
+        <Parameter name="Maximum duration for forward integration" type="unsignedFloat" value="1000000000"/>
+        <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_12" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+    <Task key="Task_13" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="1"/>
@@ -1174,12 +1165,10 @@
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
-        <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
-        <Parameter name="BDF Max Order" type="unsignedInteger" value="5"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_14" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -1190,25 +1179,27 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_14" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+    <Task key="Task_15" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
       <Report reference="Report_9" target="" append="1"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_15" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+    <Task key="Task_16" name="Optimization" type="optimization" scheduled="false" updateModel="false">
       <Report reference="Report_10" target="" append="1"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
-        <Parameter name="ObjectiveFunction" type="key" value=""/>
+        <ParameterText name="ObjectiveExpression" type="expression">
+          
+        </ParameterText>
         <Parameter name="Maximize" type="bool" value="0"/>
+        <Parameter name="Randomize Start Values" type="bool" value="0"/>
+        <Parameter name="Calculate Statistics" type="bool" value="1"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
         </ParameterGroup>
-        <Parameter name="Steady-State" type="string" value=""/>
-        <Parameter name="Time-Course" type="string" value=""/>
       </Problem>
       <Method name="Random Search" type="RandomSearch">
         <Parameter name="Number of Iterations" type="unsignedInteger" value="100000"/>
@@ -1216,10 +1207,12 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_16" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+    <Task key="Task_17" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
       <Report reference="Report_11" target="" append="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
+        <Parameter name="Randomize Start Values" type="bool" value="0"/>
+        <Parameter name="Calculate Statistics" type="bool" value="1"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
@@ -1236,16 +1229,16 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_17" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+    <Task key="Task_18" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
       <Report reference="Report_12" target="" append="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_11"/>
+        <Parameter name="Steady-State" type="key" value="Task_12"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+    <Task key="Task_19" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
       <Report reference="Report_13" target="" append="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
@@ -1257,15 +1250,12 @@
         <Parameter name="Overall time" type="unsignedFloat" value="1000"/>
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
-        <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
-        <Parameter name="BDF Max Order" type="unsignedInteger" value="5"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+    <Task key="Task_20" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
       <Report reference="Report_14" target="" append="1"/>
       <Problem>
-        <Parameter name="Deuflhard Tolerance" type="float" value="1e-06"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
         <Parameter name="Duration" type="float" value="1"/>
@@ -1273,15 +1263,10 @@
         <Parameter name="OutputStartTime" type="float" value="0"/>
       </Problem>
       <Method name="ILDM (LSODA,Deuflhard)" type="TimeScaleSeparation(ILDM,Deuflhard)">
-        <Parameter name="Integrate Reduced Model" type="bool" value="1"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
-        <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
-        <Parameter name="BDF Max Order" type="unsignedInteger" value="5"/>
-        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
       </Method>
     </Task>
-    <Task key="Task_20" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+    <Task key="Task_21" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
       <Report reference="Report_15" target="" append="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
@@ -1301,7 +1286,7 @@
         <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_22" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
@@ -1440,7 +1425,7 @@
   </ListOfReports>
   <GUI>
   </GUI>
-  <ListOfLayouts>
+  <ListOfLayouts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <Layout key="Layout_2" name="layout_0">
       <Dimensions width="1567.82" height="966.604"/>
       <ListOfMetabGlyphs>
@@ -1594,7 +1579,7 @@
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="526.915" y="81.9409"/>
                     <End x="447.248" y="133.142"/>
-                    <BasePoint1 x="510.09" y="92.7541"/>
+                    <BasePoint1 x="510.09" y="92.75409999999999"/>
                     <BasePoint2 x="472.243" y="132.629"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
@@ -1690,7 +1675,7 @@
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="526.265" y="362.155"/>
                     <End x="600.248" y="301.142"/>
-                    <BasePoint1 x="541.695" y="349.43"/>
+                    <BasePoint1 x="541.6950000000001" y="349.43"/>
                     <BasePoint2 x="575.669" y="296.574"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
@@ -1715,7 +1700,7 @@
                     <Start x="600.248" y="301.142"/>
                     <End x="733.649" y="212.642"/>
                     <BasePoint1 x="624.827" y="305.71"/>
-                    <BasePoint2 x="716.983" y="223.698"/>
+                    <BasePoint2 x="716.9829999999999" y="223.698"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1822,8 +1807,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="377.248" y="514.142"/>
-                <End x="377.248" y="514.142"/>
+                <Start x="377.248" y="514.1420000000001"/>
+                <End x="377.248" y="514.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -1833,7 +1818,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="349.422" y="559.585"/>
-                    <End x="377.248" y="514.142"/>
+                    <End x="377.248" y="514.1420000000001"/>
                     <BasePoint1 x="359.866" y="542.528"/>
                     <BasePoint2 x="364.056" y="535.378"/>
                   </CurveSegment>
@@ -1844,7 +1829,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="377.248" y="514.142"/>
+                    <Start x="377.248" y="514.1420000000001"/>
                     <End x="483.435" y="592.822"/>
                     <BasePoint1 x="390.44" y="492.906"/>
                     <BasePoint2 x="467.366" y="580.915"/>
@@ -1856,7 +1841,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="377.248" y="514.142"/>
+                    <Start x="377.248" y="514.1420000000001"/>
                     <End x="490.841" y="401.86"/>
                     <BasePoint1 x="390.44" y="492.906"/>
                     <BasePoint2 x="476.617" y="415.92"/>
@@ -1870,8 +1855,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="392.248" y="695.142"/>
-                <End x="392.248" y="695.142"/>
+                <Start x="392.248" y="695.1420000000001"/>
+                <End x="392.248" y="695.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -1881,9 +1866,9 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="482.47" y="632.494"/>
-                    <End x="392.248" y="695.142"/>
+                    <End x="392.248" y="695.1420000000001"/>
                     <BasePoint1 x="466.042" y="643.901"/>
-                    <BasePoint2 x="414.842" y="705.844"/>
+                    <BasePoint2 x="414.842" y="705.8440000000001"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1893,9 +1878,9 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="483.089" y="855.048"/>
-                    <End x="392.248" y="695.142"/>
+                    <End x="392.248" y="695.1420000000001"/>
                     <BasePoint1 x="473.21" y="837.658"/>
-                    <BasePoint2 x="414.842" y="705.844"/>
+                    <BasePoint2 x="414.842" y="705.8440000000001"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1904,9 +1889,9 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="392.248" y="695.142"/>
+                    <Start x="392.248" y="695.1420000000001"/>
                     <End x="189.908" y="732.556"/>
-                    <BasePoint1 x="369.655" y="684.44"/>
+                    <BasePoint1 x="369.655" y="684.4400000000001"/>
                     <BasePoint2 x="209.575" y="728.92"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
@@ -1918,8 +1903,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="229.248" y="686.142"/>
-                <End x="229.248" y="686.142"/>
+                <Start x="229.248" y="686.1420000000001"/>
+                <End x="229.248" y="686.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -1929,7 +1914,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="162.613" y="729.663"/>
-                    <End x="229.248" y="686.142"/>
+                    <End x="229.248" y="686.1420000000001"/>
                     <BasePoint1 x="179.358" y="718.726"/>
                     <BasePoint2 x="208.277" y="699.751"/>
                   </CurveSegment>
@@ -1940,7 +1925,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="229.248" y="686.142"/>
+                    <Start x="229.248" y="686.1420000000001"/>
                     <End x="162.036" y="548.297"/>
                     <BasePoint1 x="250.22" y="672.533"/>
                     <BasePoint2 x="170.802" y="566.274"/>
@@ -1952,7 +1937,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="229.248" y="686.142"/>
+                    <Start x="229.248" y="686.1420000000001"/>
                     <End x="471.578" y="857.725"/>
                     <BasePoint1 x="250.22" y="672.533"/>
                     <BasePoint2 x="455.256" y="846.168"/>
@@ -2039,7 +2024,7 @@
                     <Start x="721.248" y="436.142"/>
                     <End x="796.451" y="563.891"/>
                     <BasePoint1 x="735.622" y="415.687"/>
-                    <BasePoint2 x="786.305" y="546.656"/>
+                    <BasePoint2 x="786.3049999999999" y="546.6559999999999"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2062,8 +2047,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="680.248" y="712.142"/>
-                <End x="680.248" y="712.142"/>
+                <Start x="680.248" y="712.1420000000001"/>
+                <End x="680.248" y="712.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2072,8 +2057,8 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="784.012" y="605.044"/>
-                    <End x="680.248" y="712.142"/>
+                    <Start x="784.0119999999999" y="605.044"/>
+                    <End x="680.248" y="712.1420000000001"/>
                     <BasePoint1 x="770.095" y="619.408"/>
                     <BasePoint2 x="658.605" y="724.655"/>
                   </CurveSegment>
@@ -2085,7 +2070,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="512.646" y="857.414"/>
-                    <End x="680.248" y="712.142"/>
+                    <End x="680.248" y="712.1420000000001"/>
                     <BasePoint1 x="527.759" y="844.314"/>
                     <BasePoint2 x="658.605" y="724.655"/>
                   </CurveSegment>
@@ -2096,9 +2081,9 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="680.248" y="712.142"/>
-                    <End x="685.427" y="773.382"/>
-                    <BasePoint1 x="701.892" y="699.63"/>
+                    <Start x="680.248" y="712.1420000000001"/>
+                    <End x="685.427" y="773.3819999999999"/>
+                    <BasePoint1 x="701.8920000000001" y="699.63"/>
                     <BasePoint2 x="683.742" y="753.454"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
@@ -2110,8 +2095,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="573.248" y="696.142"/>
-                <End x="573.248" y="696.142"/>
+                <Start x="573.248" y="696.1420000000001"/>
+                <End x="573.248" y="696.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2121,7 +2106,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="660.865" y="776.398"/>
-                    <End x="573.248" y="696.142"/>
+                    <End x="573.248" y="696.1420000000001"/>
                     <BasePoint1 x="646.117" y="762.889"/>
                     <BasePoint2 x="591.599" y="713.121"/>
                   </CurveSegment>
@@ -2132,8 +2117,8 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="573.248" y="696.142"/>
-                    <End x="518.445" y="632.991"/>
+                    <Start x="573.248" y="696.1420000000001"/>
+                    <End x="518.4450000000001" y="632.991"/>
                     <BasePoint1 x="554.898" y="679.164"/>
                     <BasePoint2 x="531.553" y="648.096"/>
                   </CurveSegment>
@@ -2144,7 +2129,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="573.248" y="696.142"/>
+                    <Start x="573.248" y="696.1420000000001"/>
                     <End x="499.271" y="854.61"/>
                     <BasePoint1 x="554.898" y="679.164"/>
                     <BasePoint2 x="507.731" y="836.487"/>
@@ -2158,8 +2143,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="921.248" y="678.142"/>
-                <End x="921.248" y="678.142"/>
+                <Start x="921.248" y="678.1420000000001"/>
+                <End x="921.248" y="678.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2169,8 +2154,8 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="1104.62" y="777.092"/>
-                    <End x="921.248" y="678.142"/>
-                    <BasePoint1 x="1087.02" y="767.594"/>
+                    <End x="921.248" y="678.1420000000001"/>
+                    <BasePoint1 x="1087.02" y="767.5940000000001"/>
                     <BasePoint2 x="945.546" y="684.025"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
@@ -2181,7 +2166,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="831.432" y="603.889"/>
-                    <End x="921.248" y="678.142"/>
+                    <End x="921.248" y="678.1420000000001"/>
                     <BasePoint1 x="846.846" y="616.633"/>
                     <BasePoint2 x="945.546" y="684.025"/>
                   </CurveSegment>
@@ -2192,7 +2177,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="921.248" y="678.142"/>
+                    <Start x="921.248" y="678.1420000000001"/>
                     <End x="892.759" y="754.155"/>
                     <BasePoint1 x="896.95" y="672.259"/>
                     <BasePoint2 x="899.778" y="735.427"/>
@@ -2206,8 +2191,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="996.248" y="678.142"/>
-                <End x="996.248" y="678.142"/>
+                <Start x="996.248" y="678.1420000000001"/>
+                <End x="996.248" y="678.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2217,7 +2202,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="912.514" y="757.271"/>
-                    <End x="996.248" y="678.142"/>
+                    <End x="996.248" y="678.1420000000001"/>
                     <BasePoint1 x="927.05" y="743.535"/>
                     <BasePoint2 x="978.059" y="695.292"/>
                   </CurveSegment>
@@ -2228,7 +2213,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="996.248" y="678.142"/>
+                    <Start x="996.248" y="678.1420000000001"/>
                     <End x="1150.27" y="669.516"/>
                     <BasePoint1 x="1014.44" y="660.992"/>
                     <BasePoint2 x="1130.3" y="670.634"/>
@@ -2240,7 +2225,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="996.248" y="678.142"/>
+                    <Start x="996.248" y="678.1420000000001"/>
                     <End x="850.648" y="601.553"/>
                     <BasePoint1 x="1014.44" y="660.992"/>
                     <BasePoint2 x="868.349" y="610.864"/>
@@ -2254,8 +2239,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1349.25" y="715.142"/>
-                <End x="1349.25" y="715.142"/>
+                <Start x="1349.25" y="715.1420000000001"/>
+                <End x="1349.25" y="715.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2265,7 +2250,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="1243.15" y="678.559"/>
-                    <End x="1349.25" y="715.142"/>
+                    <End x="1349.25" y="715.1420000000001"/>
                     <BasePoint1 x="1262.06" y="685.079"/>
                     <BasePoint2 x="1339.09" y="692.297"/>
                   </CurveSegment>
@@ -2277,7 +2262,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="1410.27" y="687.776"/>
-                    <End x="1349.25" y="715.142"/>
+                    <End x="1349.25" y="715.1420000000001"/>
                     <BasePoint1 x="1392.02" y="695.96"/>
                     <BasePoint2 x="1339.09" y="692.297"/>
                   </CurveSegment>
@@ -2288,7 +2273,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1349.25" y="715.142"/>
+                    <Start x="1349.25" y="715.1420000000001"/>
                     <End x="1329.3" y="881.355"/>
                     <BasePoint1 x="1359.4" y="737.987"/>
                     <BasePoint2 x="1331.69" y="861.498"/>
@@ -2302,8 +2287,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1264.25" y="818.142"/>
-                <End x="1264.25" y="818.142"/>
+                <Start x="1264.25" y="818.1420000000001"/>
+                <End x="1264.25" y="818.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2313,7 +2298,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="1310.46" y="882.989"/>
-                    <End x="1264.25" y="818.142"/>
+                    <End x="1264.25" y="818.1420000000001"/>
                     <BasePoint1 x="1298.85" y="866.702"/>
                     <BasePoint2 x="1278.82" y="838.453"/>
                   </CurveSegment>
@@ -2324,7 +2309,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1264.25" y="818.142"/>
+                    <Start x="1264.25" y="818.1420000000001"/>
                     <End x="1171.24" y="794.559"/>
                     <BasePoint1 x="1249.67" y="797.831"/>
                     <BasePoint2 x="1190.63" y="799.475"/>
@@ -2336,10 +2321,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1264.25" y="818.142"/>
+                    <Start x="1264.25" y="818.1420000000001"/>
                     <End x="1433.37" y="702.739"/>
                     <BasePoint1 x="1249.67" y="797.831"/>
-                    <BasePoint2 x="1416.85" y="714.012"/>
+                    <BasePoint2 x="1416.85" y="714.0119999999999"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2350,8 +2335,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1019.25" y="564.142"/>
-                <End x="1019.25" y="564.142"/>
+                <Start x="1019.25" y="564.1420000000001"/>
+                <End x="1019.25" y="564.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2361,7 +2346,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="1161.15" y="655.994"/>
-                    <End x="1019.25" y="564.142"/>
+                    <End x="1019.25" y="564.1420000000001"/>
                     <BasePoint1 x="1144.36" y="645.126"/>
                     <BasePoint2 x="1012.4" y="588.187"/>
                   </CurveSegment>
@@ -2373,7 +2358,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="859.247" y="585.329"/>
-                    <End x="1019.25" y="564.142"/>
+                    <End x="1019.25" y="564.1420000000001"/>
                     <BasePoint1 x="879.073" y="582.703"/>
                     <BasePoint2 x="1012.4" y="588.187"/>
                   </CurveSegment>
@@ -2384,7 +2369,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1019.25" y="564.142"/>
+                    <Start x="1019.25" y="564.1420000000001"/>
                     <End x="1030.79" y="437.132"/>
                     <BasePoint1 x="1026.09" y="540.097"/>
                     <BasePoint2 x="1028.98" y="457.05"/>
@@ -2411,7 +2396,7 @@
                     <Start x="1009.51" y="433.482"/>
                     <End x="923.248" y="504.142"/>
                     <BasePoint1 x="994.043" y="446.155"/>
-                    <BasePoint2 x="942.613" y="488.331"/>
+                    <BasePoint2 x="942.6130000000001" y="488.331"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2423,7 +2408,7 @@
                     <Start x="923.248" y="504.142"/>
                     <End x="831.596" y="567.636"/>
                     <BasePoint1 x="903.884" y="519.954"/>
-                    <BasePoint2 x="848.036" y="556.247"/>
+                    <BasePoint2 x="848.0359999999999" y="556.247"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2446,8 +2431,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1305.25" y="544.142"/>
-                <End x="1305.25" y="544.142"/>
+                <Start x="1305.25" y="544.1420000000001"/>
+                <End x="1305.25" y="544.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2456,8 +2441,8 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1206.55" y="526.82"/>
-                    <End x="1305.25" y="544.142"/>
+                    <Start x="1206.55" y="526.8200000000001"/>
+                    <End x="1305.25" y="544.1420000000001"/>
                     <BasePoint1 x="1226.25" y="530.277"/>
                     <BasePoint2 x="1311.52" y="568.342"/>
                   </CurveSegment>
@@ -2469,7 +2454,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="1445.21" y="667.197"/>
-                    <End x="1305.25" y="544.142"/>
+                    <End x="1305.25" y="544.1420000000001"/>
                     <BasePoint1 x="1430.19" y="653.991"/>
                     <BasePoint2 x="1311.52" y="568.342"/>
                   </CurveSegment>
@@ -2480,7 +2465,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1305.25" y="544.142"/>
+                    <Start x="1305.25" y="544.1420000000001"/>
                     <End x="1356.7" y="433.46"/>
                     <BasePoint1 x="1298.97" y="519.942"/>
                     <BasePoint2 x="1348.27" y="451.596"/>
@@ -2494,8 +2479,8 @@
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1365.25" y="622.142"/>
-                <End x="1365.25" y="622.142"/>
+                <Start x="1365.25" y="622.1420000000001"/>
+                <End x="1365.25" y="622.1420000000001"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
@@ -2505,7 +2490,7 @@
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
                     <Start x="1369.05" y="435.14"/>
-                    <End x="1365.25" y="622.142"/>
+                    <End x="1365.25" y="622.1420000000001"/>
                     <BasePoint1 x="1368.64" y="455.136"/>
                     <BasePoint2 x="1365.85" y="597.149"/>
                   </CurveSegment>
@@ -2516,8 +2501,8 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1365.25" y="622.142"/>
-                    <End x="1243.13" y="665.637"/>
+                    <Start x="1365.25" y="622.1420000000001"/>
+                    <End x="1243.13" y="665.6369999999999"/>
                     <BasePoint1 x="1364.65" y="647.135"/>
                     <BasePoint2 x="1261.97" y="658.926"/>
                   </CurveSegment>
@@ -2528,7 +2513,7 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1365.25" y="622.142"/>
+                    <Start x="1365.25" y="622.1420000000001"/>
                     <End x="1427.83" y="669.77"/>
                     <BasePoint1 x="1364.65" y="647.135"/>
                     <BasePoint2 x="1411.92" y="657.658"/>
@@ -2722,4 +2707,3 @@
     <SBMLMap SBMLid="r9b" COPASIkey="Reaction_17"/>
   </SBMLReference>
 </COPASI>
-
