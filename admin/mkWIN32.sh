@@ -2,7 +2,7 @@ INNO_SETUP=${COPASI_INNO_SETUP:-"/cygdrive/c/Program Files/Inno Setup 5/ISCC.exe
 INNO_FILE=${COPASI_INNO_FILE:-"copasi.iss"}
 DEPDIR=${COPASI_DEPDIR:-"/home/shoops/environment/qt4/distribution"}
 
-MT={COPASI_MT:-"yes"}
+MT=${COPASI_MT:-"yes"}
 
 VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 
