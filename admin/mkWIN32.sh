@@ -1,4 +1,9 @@
-InnoSetup="/cygdrive/c/Program Files/Inno Setup 5/ISCC.exe"
+INNO_SETUP=${COPASI_INNO_SETUP:-"/cygdrive/c/Program Files/Inno Setup 5/ISCC.exe"}
+INNO_FILE=${COPASI_INNO_FILE:-"copasi.iss"}
+DEPDIR=${COPASI_DEPDIR:-"~/environment/distribution"}
+
+MT={COPASI_MT:-"yes"}
+
 VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 
 # Create the unique product code based on version and application name
@@ -42,19 +47,21 @@ cp ../copasi/CopasiUI/release/CopasiUI.exe*  copasi/bin
 cp ../copasi/CopasiSE/release/CopasiSE.exe  copasi/bin
 
 # Include the manifest in CopasiUI.exe
-"$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
-    -manifest copasi\\bin\\CopasiUI.exe.manifest \
-    -outputresource:copasi\\bin\\CopasiUI.exe\;1
+if [ x"$MT" = xyes ]; then
+  "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
+      -manifest copasi\\bin\\CopasiUI.exe.manifest \
+      -outputresource:copasi\\bin\\CopasiUI.exe\;1
+fi
 
 chmod 755 copasi/bin/CopasiUI.exe
 chmod 755 copasi/bin/CopasiSE.exe
 
 # Copy dependencies
-cp ~/environment/distribution/* copasi/bin
+cp ${DEPDIR}/* copasi/bin
     
 if [ x"$license" = xUS ]; then
   UPLOAD copasi/bin/CopasiSE.exe \
-    $license/Copasi-AllSE/$1/CopasiSE-$build.exe
+    $license/Copasi-AllSE/${PACKAGE}/CopasiSE-$build.exe
 fi
 
 # Copy configuration resources    
@@ -90,14 +97,14 @@ sed -e '/#define MyAppVersion/s/".*"/"'${major}.${minor}.${build}'"/' \
     -e '/#define MyBuild/s/".*"/"'${build}'"/' \
     -e '/#define MyAppId/s/".*"/"{{'${productcode}'}"/' \
     -e '/#define MyWorkDir/s/".*"/"'${workdir}'"/' \
-    copasi.iss > tmp.iss
+    ${INNO_FILE} > tmp.iss
 
 # Run Inno Setup to create package
-"$InnoSetup" tmp.iss
+"${INNO_SETUP}" tmp.iss
 rm tmp.iss
 
 # Move the package to its final location
-mv Copasi-$build-$1.exe ..
-chmod 755 ../Copasi-$build-$1.exe
+mv Copasi-$build-${PACKAGE}.exe ..
+chmod 755 ../Copasi-$build-${PACKAGE}.exe
 
 popd
