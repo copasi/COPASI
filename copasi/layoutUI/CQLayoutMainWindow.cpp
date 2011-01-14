@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.102.2.2 $
+//   $Revision: 1.102.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:53 $
+//   $Date: 2011/01/14 13:34:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -704,7 +704,7 @@ void CQLayoutMainWindow::showStep(double i)
     }
 }
 
-void CQLayoutMainWindow::changeStepValue(C_INT32 i)
+void CQLayoutMainWindow::changeStepValue(int i)
 {
   mpTimeSlider->setValue(i);
 }
@@ -1044,7 +1044,7 @@ void CQLayoutMainWindow::stepForwardAnimation()
 void CQLayoutMainWindow::stepBackwardAnimation()
 {
   // lower step by one if possible and redisplay
-  C_INT32 currentStep = this->getCurrentStep();
+  size_t currentStep = this->getCurrentStep();
 
   if (currentStep > 0)
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.86.4.2 $
+//   $Revision: 1.86.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:53 $
+//   $Date: 2011/01/14 13:34:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,13 +103,13 @@ public:
   std::string getNameForNodeKey(std::string key);
 
   size_t getNumberOfNodeEntries() {return viewerNodes.size();}
-  CDataEntity* getDataSetAt(C_INT32 stepNumber);
+  CDataEntity* getDataSetAt(size_t stepNumber);
 
   void mapLabelsToRectangles();
   void mapLabelsToCircles();
 
   void runAnimation();
-  void showStep(C_INT32 i);
+  void showStep(size_t i);
 
   void rescaleDataSets(CVisParameters::SCALING_MODE scaleMode);
   void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, CVisParameters::SCALING_MODE scaleMode);
@@ -146,7 +146,7 @@ public slots:
   void triggerAnimationStep();
 
 signals:
-  void stepChanged(C_INT32);
+  void stepChanged(int);
   void endOfAnimationReached();
   void signalZoomIn();
   void signalZoomOut();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.160.2.3 $
+//   $Revision: 1.160.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:53 $
+//   $Date: 2011/01/14 13:34:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2190,7 +2190,7 @@ void CQGLNetworkPainter::triggerAnimationStep()
       (animationRunning))
     {
       // set value in slider
-      emit stepChanged(stepShown);
+      emit stepChanged((int) stepShown);
       this->stepShown++;
     }
   else
@@ -2200,11 +2200,11 @@ void CQGLNetworkPainter::triggerAnimationStep()
     }
 }
 
-CDataEntity* CQGLNetworkPainter::getDataSetAt(C_INT32 stepNumber)
+CDataEntity* CQGLNetworkPainter::getDataSetAt(size_t stepNumber)
 {
   CDataEntity* pDataSet = NULL;
 
-  if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < mDataSets.size()))
+  if (stepNumber < mDataSets.size())
     {
       pDataSet = &(mDataSets[stepNumber]);
     }
@@ -2212,14 +2212,14 @@ CDataEntity* CQGLNetworkPainter::getDataSetAt(C_INT32 stepNumber)
   return pDataSet;
 }
 
-void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
+void CQGLNetworkPainter::showStep(size_t stepNumber)
 {
   this->stepShown = stepNumber;
 
   if (this->mLabelShape != CIRCLE)
     this->mLabelShape = CIRCLE;
 
-  if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < mDataSets.size()))
+  if (stepNumber < mDataSets.size())
     {
       CDataEntity dataSet = mDataSets[stepNumber];
       unsigned int i;
@@ -2935,7 +2935,7 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
     }
 
   assert(ancestor != NULL);
-  connect(this, SIGNAL(stepChanged(C_INT32)), ancestor, SLOT(changeStepValue(C_INT32)));
+  connect(this, SIGNAL(stepChanged(int)), ancestor, SLOT(changeStepValue(int)));
   connect(this, SIGNAL(endOfAnimationReached()), ancestor, SLOT(endOfAnimationReached()));
   regularTimer = new QTimer(this);
   connect(regularTimer, SIGNAL(timeout()), this, SLOT(triggerAnimationStep()));

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.53.2.1 $
+//   $Revision: 1.53.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:53 $
+//   $Date: 2011/01/14 13:34:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,7 @@ public slots:
   void slotLoopActivated(bool checked);
 
 public slots:
-  void changeStepValue(C_INT32 i);
+  void changeStepValue(int i);
   void endOfAnimationReached();
 
 private:
