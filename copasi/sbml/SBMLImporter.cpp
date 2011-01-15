@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.17 $
+//   $Revision: 1.263.2.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:05:47 $
+//   $Author: gauges $
+//   $Date: 2011/01/15 14:01:58 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,7 +131,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   mImportStep = 1;
 
-  if (!mpImportHandler->progressItem(mhImportStep)) return false;
+  if (mpImportHandler && !mpImportHandler->progressItem(mhImportStep)) return false;
 
   SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
   UnitDefinition *pSubstanceUnits = NULL;
