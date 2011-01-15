@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalRenderInformation.cpp,v $
-//   $Revision: 1.3.2.2 $
+//   $Revision: 1.3.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:27 $
+//   $Author: gauges $
+//   $Date: 2011/01/15 18:38:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,8 @@ GlobalRenderInformation* CLGlobalRenderInformation::toSBML(unsigned int level, u
   for (i = 0; i < iMax; ++i)
     {
       GlobalStyle* pStyle = static_cast<const CLGlobalStyle*>(this->getStyle(i))->toSBML(level, version);
-      pLRI->addStyle(pStyle);
+      int result = pLRI->addStyle(pStyle);
+      assert(result == LIBSBML_OPERATION_SUCCESS);
       delete pStyle;
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGroup.cpp,v $
-//   $Revision: 1.4.2.2 $
+//   $Revision: 1.4.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:27 $
+//   $Author: gauges $
+//   $Date: 2011/01/15 18:38:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -860,6 +860,7 @@ Group* CLGroup::toSBML(unsigned int level, unsigned int version) const
     }
 
   size_t i, iMax = this->mElements.size();
+  int result;
 
   for (i = 0; i < iMax; ++i)
     {
@@ -895,7 +896,8 @@ Group* CLGroup::toSBML(unsigned int level, unsigned int version) const
           pChild = static_cast<const CLGroup*>(pObject)->toSBML(level, version);
         }
 
-      pGroup->addChildElement(pChild);
+      result = pGroup->addChildElement(pChild);
+      assert(result == LIBSBML_OPERATION_SUCCESS);
       delete pChild;
     }
 

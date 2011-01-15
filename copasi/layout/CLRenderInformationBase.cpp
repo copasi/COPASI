@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderInformationBase.cpp,v $
-//   $Revision: 1.3.2.2 $
+//   $Revision: 1.3.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:32 $
+//   $Author: gauges $
+//   $Date: 2011/01/15 18:38:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -420,11 +420,13 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
   pBase->setReferenceRenderInformationId(this->getReferenceRenderInformationKey());
   pBase->setBackgroundColor(this->getBackgroundColor());
   size_t i, iMax = this->mListOfColorDefinitions.size();
+  int result;
 
   for (i = 0; i < iMax; ++i)
     {
       ColorDefinition* pCD = this->getColorDefinition(i)->toSBML(pBase->getLevel(), pBase->getVersion());
-      pBase->addColorDefinition(pCD);
+      result = pBase->addColorDefinition(pCD);
+      assert(result == LIBSBML_OPERATION_SUCCESS);
       //colorKeyToIdMap.insert(std::pair<std::string,std::string>(this->getColorDefinition(i)->getKey(),pCD->getId()));
       delete pCD;
     }
@@ -446,7 +448,8 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
           pGB = static_cast<const CLLinearGradient*>(pLGB)->toSBML(pBase->getLevel(), pBase->getVersion());
         }
 
-      pBase->addGradientDefinition(pGB);
+      result = pBase->addGradientDefinition(pGB);
+      assert(result == LIBSBML_OPERATION_SUCCESS);
       //gradientKeyToIdMap.insert(std::pair<std::string,std::string>(pLGB->getKey(),pGB->getId()));
       delete pGB;
     }
@@ -456,7 +459,8 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
   for (i = 0; i < iMax; ++i)
     {
       LineEnding* pLE = this->getLineEnding(i)->toSBML(pBase->getLevel(), pBase->getVersion());
-      pBase->addLineEnding(pLE);
+      result = pBase->addLineEnding(pLE);
+      assert(result == LIBSBML_OPERATION_SUCCESS);
       //lineEndingKeyToIdMap.insert(std::pair<std::string,std::string>(this->getLineEnding(i)->getKey(),pLE->getId()));
       delete pLE;
     }
