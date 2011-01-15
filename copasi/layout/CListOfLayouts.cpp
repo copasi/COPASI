@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.20.2.2 $
+//   $Revision: 1.20.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:27 $
+//   $Author: gauges $
+//   $Date: 2011/01/15 18:36:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,7 +103,8 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
     }
 
   // fix the references
-  SBMLDocumentLoader::convertRenderInformationReferencesKeys<GlobalRenderInformation>(*pLoL, keyToIdMap);
+  // we need to pass the ListOfGlobalRenderInformation objects as the first argument
+  SBMLDocumentLoader::convertRenderInformationReferencesKeys<GlobalRenderInformation>(*(pLoL->getListOfGlobalRenderInformation()), keyToIdMap);
   // fix the color ids, gradient ids and line ending ids.
   /*
   std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;
