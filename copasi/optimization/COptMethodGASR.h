@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
- $Revision: 1.10.4.1 $
+ $Revision: 1.10.4.2 $
  $Name:  $
- $Author: shoops $
- $Date: 2011/01/12 19:04:39 $
+ $Author: gauges $
+ $Date: 2011/01/15 14:01:32 $
  End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 #ifndef COPASI_COptMethodGASR
 #define COPASI_COptMethodGASR
 
-#include <limits.h>
+#include <limits>
 
 #include "optimization/COptMethod.h"
 #include "utilities/CVector.h"
