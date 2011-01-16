@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.1.2.4 $
+//   $Revision: 1.1.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/13 17:32:23 $
+//   $Author: gauges $
+//   $Date: 2011/01/16 11:27:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@ class QAction;
 class QActionGroup;
 class QCloseEvent;
 class QComboBox;
+class QLabel;
 class QMenu;
 class QStackedWidget;
 class QToolBar;
@@ -171,6 +172,7 @@ private:
   CQLayoutMainWindow* mpAnimationWindow;
   CCopasiDataModel* mpDataModel;
   QComboBox* mpLayoutDropdown;
+  QLabel* mpRenderLabel;
   QComboBox* mpRenderDropdown;
   QComboBox* mpZoomDropdown;
   CLayout* mpCurrentLayout;

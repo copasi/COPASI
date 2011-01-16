@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.11 $
+//   $Revision: 1.1.2.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/13 17:32:23 $
+//   $Author: gauges $
+//   $Date: 2011/01/16 11:27:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -302,8 +302,8 @@ void CQNewMainWindow::createToolBars()
   pLayout = new QVBoxLayout;
   pLayout->setSpacing(3);
   pFrame2->setLayout(pLayout);
-  pLabel = new QLabel(tr("Render Information:"));
-  pLayout->addWidget(pLabel);
+  this->mpRenderLabel = new QLabel(tr("Render Information:"));
+  pLayout->addWidget(this->mpRenderLabel);
   this->mpRenderDropdown = new QComboBox;
   this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
   pLayout->addWidget(this->mpRenderDropdown);
@@ -879,6 +879,7 @@ void CQNewMainWindow::setAnimationToolbar()
   // add load data action
   this->mpLoadDataAct->setVisible(true);
   // hide the render information box
+  this->mpRenderLabel->hide();
   this->mpRenderDropdown->hide();
 }
 
@@ -889,6 +890,7 @@ void CQNewMainWindow::setGraphToolbar()
   // add revert curve action
   this->mpRevertCurveAct->setVisible(true);
   // show the render information box
+  this->mpRenderLabel->show();
   this->mpRenderDropdown->show();
 }
 
