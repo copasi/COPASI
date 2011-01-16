@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.12 $
+//   $Revision: 1.1.2.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/01/16 11:27:24 $
+//   $Date: 2011/01/16 11:40:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -386,6 +386,8 @@ void CQNewMainWindow::resetView()
 void CQNewMainWindow::slotResetView()
 {
   this->resetView();
+  // if we are not in animation mode, we have to repaint
+  this->mpLayoutViewer->setZoomFactor(1.0);
   this->mpAnimationWindow->slotResetView();
 }
 
@@ -409,7 +411,7 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
   CLRenderInformationBase* pRenderInfo = NULL;
 
   // the local render information is first in the list
-  if (index == C_INVALID_INDEX)
+  if ((unsigned int)index == C_INVALID_INDEX)
     {
       //std::cout << "index is -1" << std::endl;
       return;
