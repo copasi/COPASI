@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.30.2.5 $
+//   $Revision: 1.30.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:00 $
+//   $Date: 2011/01/18 19:07:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,11 @@ CEventAssignment::CEventAssignment(const CEventAssignment & src,
 CEventAssignment::~CEventAssignment()
 {
   pdelete(mpExpression);
+
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
 }
 
 bool CEventAssignment::setObjectParent(const CCopasiContainer * pParent)
