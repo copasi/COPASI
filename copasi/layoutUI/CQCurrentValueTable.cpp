@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.4.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/13 11:32:49 $
+//   $Date: 2011/01/21 15:29:55 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,7 +119,14 @@ void CQCurrentValueTable::setAllBoxesChecked(bool checked)
 
           if (pTmp)
             {
-              pTmp->addItemInAnimation(this->getKeyForRow(i));
+              if (checked == true)
+                {
+                  pTmp->addItemInAnimation(this->getKeyForRow(i));
+                }
+              else
+                {
+                  pTmp->removeItemInAnimation(this->getKeyForRow(i));
+                }
             }
         }
     }
