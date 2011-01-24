@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-//   $Revision: 1.18.4.2 $
+//   $Revision: 1.18.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:53 $
+//   $Date: 2011/01/24 14:18:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,7 +190,8 @@ void CIndexedPriorityQueue::updateAux(const size_t pos)
   size_t parent_pos = parent(pos);
   C_FLOAT64 keyval = mHeap[pos].mKey;
 
-  if (keyval < mHeap[parent_pos].mKey)
+  if (parent_pos != C_INVALID_INDEX &&
+      keyval < mHeap[parent_pos].mKey)
     {
       swapNodes(pos, parent_pos);
       updateAux(parent_pos);
