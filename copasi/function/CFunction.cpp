@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.83.2.1 $
+//   $Revision: 1.83.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:00:59 $
+//   $Date: 2011/01/24 17:04:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,7 +209,7 @@ bool CFunction::initVariables()
   CFunctionParameter::DataType Type;
   size_t i;
 
-  for (i = mVariables.size() - 1; i < C_INVALID_INDEX; i--)
+  for (i = mVariables.size() - 1; i != C_INVALID_INDEX; i--)
     if (NewVariables.findParameterByName(mVariables[i]->getObjectName(), Type) == C_INVALID_INDEX)
       mVariables.remove(mVariables[i]->getObjectName());
 

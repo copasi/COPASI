@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.13 $
+//   $Revision: 1.1.2.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/01/16 11:40:33 $
+//   $Author: shoops $
+//   $Date: 2011/01/24 17:04:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -411,7 +411,7 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
   CLRenderInformationBase* pRenderInfo = NULL;
 
   // the local render information is first in the list
-  if ((unsigned int)index == C_INVALID_INDEX)
+  if (index == -1)
     {
       //std::cout << "index is -1" << std::endl;
       return;
