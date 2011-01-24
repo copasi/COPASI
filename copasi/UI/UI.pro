@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.239.2.7 $
+#   $Revision: 1.239.2.8 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/01/05 15:26:00 $
+#   $Author: aekamal $
+#   $Date: 2011/01/24 17:00:16 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.239.2.7 $ $Author: shoops $ $Date: 2011/01/05 15:26:00 $
+# $Revision: 1.239.2.8 $ $Author: aekamal $ $Date: 2011/01/24 17:00:16 $
 ######################################################################
 
 LIB = UI
@@ -50,6 +50,7 @@ HEADERS	+= \
   CQGlobalQuantitiesWidget.h \
   CQLyapWidget.h \
   CQLyapResultWidget.h \
+  CQMatrixDialog.h \
   CQMCAWidget.h \
   CQMergingData.h \
   CQModelValue.h \
@@ -57,6 +58,7 @@ HEADERS	+= \
   CQMoietiesTaskWidget.h \
   CQMoietiesTaskResult.h \
   CQNotes.h \
+  objectdebug.h \
   CQOptimizationWidget.h \
   CQOptimizationResult.h \
   CQPlotsWidget.h \
@@ -69,6 +71,7 @@ HEADERS	+= \
   CQSensResultWidget.h \
   CQSpeciesDetail.h \
   CQSpeciesWidget.h \
+  CQSplashWidget.h \
   CQSteadyStateResult.h \
   CQTaskBtnWidget.h \
   CQTaskHeaderWidget.h \
@@ -76,10 +79,12 @@ HEADERS	+= \
   CQTrajectoryWidget.h \
   CQTSSAWidget.h \
   CQTSSAResultSubWidget.h \
+  CUpDownSubwidget.h \
   CScanWidgetRandom.h \
   CScanWidgetRepeat.h \
   CScanWidgetScan.h \
   CScanWidgetTask.h \
+  DefaultplotDialog.h \
   FunctionWidget1.h \
   SensitivitiesWidget.h \
   SliderSettingsDialog.h \
@@ -185,6 +190,7 @@ SOURCES	+= \
   CQGlobalQuantitiesWidget.cpp \
   CQLyapWidget.cpp \
   CQLyapResultWidget.cpp \
+  CQMatrixDialog.cpp \
   CQMCAWidget.cpp \
   CQMergingData.cpp \
   CQModelValue.cpp \
@@ -204,6 +210,7 @@ SOURCES	+= \
   CQSensResultWidget.cpp \
   CQSpeciesDetail.cpp \
   CQSpeciesWidget.cpp \
+  CQSplashWidget.cpp \
   CQSteadyStateResult.cpp \
   CQTaskBtnWidget.cpp \
   CQTaskHeaderWidget.cpp \
@@ -217,7 +224,10 @@ SOURCES	+= \
   CScanWidgetRepeat.cpp \
   CScanWidgetScan.cpp \
   CScanWidgetTask.cpp \
+  CUpDownSubwidget.cpp \
+  DefaultplotDialog.cpp \
   FunctionWidget1.cpp \
+  objectdebug.cpp \
   SensitivitiesWidget.cpp \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
@@ -303,18 +313,8 @@ SOURCES	+= \
 ### uic3 forms
 FORMS3 += CQExperimentData.ui
 HEADERS += CQExperimentData.ui.h
-FORMS3 += CQMatrixDialog.ui
-HEADERS += CQMatrixDialog.ui.h
-FORMS3 += CQSplashWidget.ui
-HEADERS += CQSplashWidget.ui.h
 FORMS3 += CQStartValueReset.ui
 HEADERS += CQStartValueReset.ui.h
-FORMS3 += CUpDownSubwidget.ui
-HEADERS += CUpDownSubwidget.ui.h
-FORMS3 += DefaultplotDialog.ui
-HEADERS += DefaultplotDialog.ui.h
-FORMS3 += objectdebug.ui
-HEADERS += objectdebug.ui.h
 
 ### uic3 forms that do not work at the moment
 #FORMS3 += CQProgressItemBar.ui
@@ -352,6 +352,7 @@ FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
 FORMS += CQLyapWidget.ui
 FORMS += CQLyapResultWidget.ui
+FORMS += CQMatrixDialog.ui
 FORMS += CQMCAWidget.ui
 FORMS += CQMergingData.ui
 FORMS += CQModelValue.ui
@@ -371,6 +372,7 @@ FORMS += CQReportsWidget.ui
 FORMS += CQSensResultWidget.ui
 FORMS += CQSpeciesDetail.ui
 FORMS += CQSpeciesWidget.ui
+FORMS += CQSplashWidget.ui
 FORMS += CQSteadyStateResult.ui
 FORMS += CQTaskBtnWidget.ui
 FORMS += CQTaskHeaderWidget.ui
@@ -382,7 +384,10 @@ FORMS += CScanWidgetRandom.ui
 FORMS += CScanWidgetRepeat.ui
 FORMS += CScanWidgetScan.ui
 FORMS += CScanWidgetTask.ui
+FORMS += CUpDownSubwidget.ui
+FORMS += DefaultplotDialog.ui
 FORMS += FunctionWidget1.ui
+FORMS += objectdebug.ui
 FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
