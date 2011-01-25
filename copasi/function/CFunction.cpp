@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.83.2.2 $
+//   $Revision: 1.83.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/24 17:04:38 $
+//   $Author: gauges $
+//   $Date: 2011/01/25 19:39:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -371,9 +371,9 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
     const std::string & name1,
     const std::string & name2) const
 {
-  if (!this->mpRoot) return std::pair<CFunction *, CFunction *>(NULL, NULL);
+  if (!this->mpRoot) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
-  if (this->mReversible != TriTrue) return std::pair<CFunction *, CFunction *>(NULL, NULL);
+  if (this->mReversible != TriTrue) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
   //create 2 new functions
   CFunction* newFunction1 = new CFunction();
@@ -390,7 +390,7 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
   // find the split point
   const CEvaluationNode* splitnode = this->mpRoot->findTopMinus(callParameters);
 
-  if (!splitnode) return std::pair<CFunction *, CFunction *>(NULL, NULL);
+  if (!splitnode) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
   //create the 2 split trees
   CEvaluationNode* tmpRoots1 = this->mpRoot->splitBranch(splitnode, true); //left side
