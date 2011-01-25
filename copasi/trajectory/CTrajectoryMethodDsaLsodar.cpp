@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.cpp,v $
-//   $Revision: 1.2.2.2 $
+//   $Revision: 1.2.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:06:54 $
+//   $Author: gauges $
+//   $Date: 2011/01/25 21:28:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,8 +21,10 @@
 /* DEFINE ********************************************************************/
 
 #ifdef WIN32
+#if _MSC_VER < 1600
 #define min _cpp_min
 #define max _cpp_max
+#endif // _MSC_VER
 #endif // WIN32
 
 #include <limits.h>
