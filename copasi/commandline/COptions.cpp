@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.42.2.3 $
+//   $Revision: 1.42.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 16:48:57 $
+//   $Date: 2011/01/25 19:11:22 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -317,7 +317,12 @@ std::string COptions::getCopasiDir(void)
 
 std::string COptions::getPWD(void)
 {
+#ifdef WIN32
+  int PWDSize = 256;
+#else // WIN32
   size_t PWDSize = 256;
+#endif // not WIN32
+
   CLocaleString::lchar * PWD = NULL;
 
   while (!(PWD = getcwd(NULL, PWDSize)))
