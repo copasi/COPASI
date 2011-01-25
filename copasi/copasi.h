@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.74.2.3 $
+//   $Revision: 1.74.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/25 18:51:22 $
+//   $Author: gauges $
+//   $Date: 2011/01/25 20:25:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,8 +100,10 @@
 # define strdup _strdup       // they just have a different name for this guy
 # define isnan _isnan         // they just have a different name for this guy
 # define finite _finite       // they just have a different name for this guy
+#if _MSC_VER < 1600
 # define min _cpp_min         // they just have a different name for this guy
 # define max _cpp_max         // they just have a different name for this guy
+#endif // _MSC_VER
 # define abs64 _abs64
 #else
 # define C_INT64 long long int

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/clapackwrap.h,v $
-//   $Revision: 1.12.30.1 $
+//   $Revision: 1.12.30.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/25 18:44:06 $
+//   $Author: gauges $
+//   $Date: 2011/01/25 20:25:17 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1272,6 +1272,8 @@ using std::isnan;
 #endif // max
 
 #ifdef WIN32
+#if _MSC_VER < 1600
 # define min _cpp_min
 # define max _cpp_max
+#endif // _MSC_VER
 #endif // WIN32
