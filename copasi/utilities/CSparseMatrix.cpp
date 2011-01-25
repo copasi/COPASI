@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.cpp,v $
-//   $Revision: 1.8.4.1 $
+//   $Revision: 1.8.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:13:22 $
+//   $Date: 2011/01/25 18:45:00 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,9 +27,8 @@
 ///////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <float.h>
-#include <math.h>
-#include <limits>
+// #include <cmath>
+// #include <limits>
 
 #include "copasi.h"
 
@@ -599,7 +598,7 @@ bool SparseMatrixTest(const size_t & size,
                       const C_FLOAT64 & sparseness,
                       const unsigned C_INT32 & seed,
                       const bool & RMP,
-                      const bool & DGEMM,
+                      const bool & dgemmFlag,
                       const bool & SMP,
                       const bool & CCMP)
 {
@@ -701,7 +700,7 @@ bool SparseMatrixTest(const size_t & size,
       std::cout << std::endl;
     }
 
-  if (DGEMM)
+  if (dgemmFlag)
     {
       CPU.start();
       WALL.start();
