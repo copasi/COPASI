@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120.2.7 $ 
+#   $Revision: 1.120.2.8 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/01/12 19:15:01 $ 
+#   $Date: 2011/01/25 18:43:53 $ 
 # End CVS Header 
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120.2.7 $ $Author: shoops $ $Date: 2011/01/12 19:15:01 $  
+# $Revision: 1.120.2.8 $ $Author: shoops $ $Date: 2011/01/25 18:43:53 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -303,14 +303,26 @@ contains(BUILD_OS, WIN32) {
       LIBS += mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib -Qopenmp libguide.lib
     }
   } else {
-    !isEmpty(CLAPACK_PATH) {
-      DEFINES += USE_CLAPACK
-      QMAKE_CXXFLAGS   += -I\""$${CLAPACK_PATH}"\include\"
-      QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}"\lib\"
-      QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}\lib\\$${COPASI_ARCH}"\"
-      LIBS += clapack.lib
+    !isEmpty(LAPACK_PATH) {
+      DEFINES += USE_LAPACK
+      QMAKE_CXXFLAGS   += -I\""$${LAPACK_PATH}"\include\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${LAPACK_PATH}\lib\\$${COPASI_ARCH}"\"
+      debug {
+        LIBS += blasD.lib lapackD.lib
+      }
+      release {
+        LIBS += blas.lib lapack.lib
+      }
     } else {
-      error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
+      !isEmpty(CLAPACK_PATH) {
+        DEFINES += USE_CLAPACK
+        QMAKE_CXXFLAGS   += -I\""$${CLAPACK_PATH}"\include\"
+        QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}"\lib\"
+        QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}\lib\\$${COPASI_ARCH}"\"
+        LIBS += clapack.lib
+      } else {
+        error( "Either MKL_PATH, LPACK_PATH, or CLAPACK_PATH must be specified" )
+      }
     }
   }
 
