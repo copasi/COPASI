@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.cpp,v $
-//   $Revision: 1.8.4.2 $
+//   $Revision: 1.8.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/25 18:45:00 $
+//   $Date: 2011/01/25 21:03:35 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,9 @@
 ///////////////////////////////////////////////////////////
 
 #include <algorithm>
-// #include <cmath>
-// #include <limits>
+#include <float.h>
+#include <math.h>
+#include <limits>
 
 #include "copasi.h"
 
