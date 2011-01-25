@@ -15,6 +15,7 @@ if '%1' == '--disable-debug'       goto RELEASE
 if '%1' == '--enable-release'      goto RELEASE
 if '%1' == '--disable-release'     goto DEBUG
 if '%1' == '--project'             goto PROJECT
+if '%1' == '--libpath'             goto LIBPATH
 
 set arguments=%arguments% %1
 shift
@@ -32,6 +33,12 @@ set PROJECT=%1
 shift
 goto LOOP
 
+:LIBPATH
+shift
+set LDFLAGS=%LDFLAGS% /LIBPATH:%1
+shift
+goto LOOP
+
 :QMAKE
 if '%QT4DIR%' == '' goto QT4DIR_NotSet
 set QMAKE=%QT4DIR%\bin\qmake
@@ -44,6 +51,7 @@ goto CONFIGURE
 
 :QTDIR_NotSet
 set QMAKE=qmake
+goto CONFIGURE
 
 :CONFIGURE
 
@@ -129,4 +137,3 @@ set QMAKESPEC=%MY_QMAKESPEC%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
-
