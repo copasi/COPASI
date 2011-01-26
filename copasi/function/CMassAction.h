@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-//   $Revision: 1.27.30.1 $
+//   $Revision: 1.27.30.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:01:00 $
+//   $Date: 2011/01/26 21:10:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,9 @@
 /** @dia:route CFunction; v,58.2,35.55,39.4413,82.281,41.4407 */
 class CMassAction : public CFunction
 {
-  // Attributes
-private:
+  // Static Attributes
+public:
+  static const char * Infix[];
 
   // Operations
 public:

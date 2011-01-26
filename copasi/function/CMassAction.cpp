@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.41.4.2 $
+//   $Revision: 1.41.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:01:00 $
+//   $Date: 2011/01/26 21:10:12 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,13 +23,17 @@
 /**
  * CMassAction
  *
- * Created for Copasi by Stefan Hoops
+ * Created for COPASI by Stefan Hoops
  * (C) Stefan Hoops 2001
  */
 
 #include "copasi.h"
 #include "CMassAction.h"
 #include "utilities/utility.h"
+
+// static
+const char * CMassAction::Infix[] =
+  {"k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>", "k1*PRODUCT<substrate_i>"};
 
 CMassAction::CMassAction(const std::string & name,
                          const CCopasiContainer * pParent):
@@ -55,9 +59,9 @@ CMassAction::CMassAction(const TriLogic & reversible,
     CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
 
   if (reversible == TriTrue)
-    setInfix("k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>");
+    setInfix(Infix[0]);
   else
-    setInfix("k1*PRODUCT<substrate_i>");
+    setInfix(Infix[1]);
 }
 
 CMassAction::~CMassAction() {DESTRUCTOR_TRACE;}

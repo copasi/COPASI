@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55.2.7 $
+//   $Revision: 1.55.2.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:58 $
+//   $Author: shoops $
+//   $Date: 2011/01/26 21:10:11 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
 #include "function/CFunctionDB.h"
+#include "function/CMassAction.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
@@ -161,8 +162,12 @@ QValidator::State CQValidatorFunction::validate(QString & input, int & pos) cons
 
   if (pExpressionWidget != NULL)
     {
-      if (const_cast< CFunction * >(&mFunction)->setInfix(pExpressionWidget->getExpression()) &&
-          const_cast< CFunction * >(&mFunction)->compile())
+      std::string Infix = pExpressionWidget->getFunction();
+
+      if (Infix == CMassAction::Infix[0] ||
+          Infix == CMassAction::Infix[1] ||
+          (const_cast< CFunction * >(&mFunction)->setInfix(Infix) &&
+           const_cast< CFunction * >(&mFunction)->compile()))
         {
           QString Input = (*mpContainer.*mRetrieve)();
           CurrentState = CQValidator< QTextEdit >::validate(input, pos);
@@ -238,9 +243,30 @@ void CQExpressionWidget::writeMathML(std::ostream & out) const
     mpValidatorExpression->getExpression()->writeMathML(out, false, 0);
   else if (mpValidatorFunction != NULL)
     {
-      std::vector<std::vector<std::string> > params;
-      mpValidatorFunction->getFunction()->createListOfParametersForMathML(params);
-      mpValidatorFunction->getFunction()->writeMathML(out, params, true, false, 0);
+      std::string Infix = getFunction();
+
+      if (Infix == CMassAction::Infix[0])
+        {
+          CMassAction Function(TriTrue, NULL);
+          std::vector<std::vector<std::string> > params;
+
+          Function.createListOfParametersForMathML(params);
+          Function.writeMathML(out, params, true, false, 0);
+        }
+      else if (Infix == CMassAction::Infix[1])
+        {
+          CMassAction Function(TriFalse, NULL);
+          std::vector<std::vector<std::string> > params;
+
+          Function.createListOfParametersForMathML(params);
+          Function.writeMathML(out, params, true, false, 0);
+        }
+      else
+        {
+          std::vector<std::vector<std::string> > params;
+          mpValidatorFunction->getFunction()->createListOfParametersForMathML(params);
+          mpValidatorFunction->getFunction()->writeMathML(out, params, true, false, 0);
+        }
     }
 
   return;
