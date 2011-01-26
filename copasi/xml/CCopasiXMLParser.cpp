@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.3 $
+//   $Revision: 1.223.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:13:44 $
+//   $Date: 2011/01/26 18:47:24 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -845,9 +845,25 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                     case CEvaluationTree::UserDefined:
                     case CEvaluationTree::Function:
                     case CEvaluationTree::Expression:
-                      mCommon.pFunctionList->remove(Name);
-                      mCommon.pFunctionList->add(mCommon.pFunction, true);
-                      break;
+                      // Create a unique name
+                    {
+                      size_t Counter = 0;
+                      std::string NewName;
+
+                      do
+                        {
+                          Counter++;
+                          std::ostringstream ss;
+                          ss << Name << "_" << Counter;
+                          NewName = ss.str();
+                        }
+                      while (mCommon.pFunctionList->getIndex(NewName) != C_INVALID_INDEX);
+
+                      mCommon.pFunction->setObjectName(NewName);
+                    }
+
+                    mCommon.pFunctionList->add(mCommon.pFunction, true);
+                    break;
                   }
               }
             else
