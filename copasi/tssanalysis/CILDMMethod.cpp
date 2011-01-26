@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.32.2.2 $
+//   $Revision: 1.32.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:54 $
+//   $Date: 2011/01/26 21:14:31 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1464,9 +1464,9 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
   this->print(&os);
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(getObjectDataModel() != NULL);
   CTSSATask* pTask =
-    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+    dynamic_cast<CTSSATask *>((*getObjectDataModel()->getTaskList())["Time Scale Separation Analysis"]);
 
   CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
