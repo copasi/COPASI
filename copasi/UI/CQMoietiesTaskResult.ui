@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskResult.ui,v $ </comment>
-<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Revision: 1.8.2.1 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2010/04/02 17:07:28 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2011/01/26 13:15:45 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -140,12 +140,12 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
-   <header>copasiWidget.h</header>
+   <header>copasi/UI/copasiWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local">copasiWidget.h</include>
+  <include location="local" >copasi/UI/copasiWidget.h</include>
   <include location="local">CQArrayAnnotationsWidget.h</include>
  </includes>
  <resources/>

@@ -234,7 +234,7 @@ Restrictions</string>
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
-   <header>copasiWidget.h</header>
+   <header>copasi/UI/copasiWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
