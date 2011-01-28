@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.cpp,v $
-//   $Revision: 1.9.2.2 $
+//   $Revision: 1.9.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/01/24 17:00:15 $
+//   $Author: shoops $
+//   $Date: 2011/01/28 13:06:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 // All rights reserved.
 
 #include "CUpDownSubwidget.h"
+#include "CQIcons.h"
 
 /*
  *  Constructs a CUpDownSubwidget as a child of 'parent', with the
@@ -46,6 +47,12 @@ void CUpDownSubwidget::init()
 {
   setIndex(0, true, true);
   enableCopy(false);
+
+  toolButtonDel->setIcon(CQIcons::getIcon(CQIcons::Delete));
+  toolButtonUp->setIcon(CQIcons::getIcon(CQIcons::Up));
+  toolButtonCopy->setIcon(CQIcons::getIcon(CQIcons::Copy));
+  toolButtonDown->setIcon(CQIcons::getIcon(CQIcons::Down));
+
 }
 
 void CUpDownSubwidget::slotCopy()
