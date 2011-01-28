@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.1.2.4 $
+//   $Revision: 1.1.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:56 $
+//   $Date: 2011/01/28 21:30:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
 {
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSortingEnabled(true);
-  sortByColumn(-1, Qt::AscendingOrder);
+  sortByColumn(0, Qt::AscendingOrder);
   setHeaderLabels(QStringList("Sort"));
   setRootIsDecorated(true);
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, sizePolicy().hasHeightForWidth()));
