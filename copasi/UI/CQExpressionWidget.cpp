@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55.2.8 $
+//   $Revision: 1.55.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/26 21:10:11 $
+//   $Date: 2011/01/28 21:30:33 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -756,7 +756,6 @@ void CQExpressionWidget::slotSelectObject()
         }
 
       std::string Insert = pObject->getObjectDisplayName();
-      mParseList[Insert] = pObject;
 
       // We need to escape >
       std::string::size_type pos = Insert.find_first_of("}");
@@ -767,6 +766,8 @@ void CQExpressionWidget::slotSelectObject()
           pos += 2;
           pos = Insert.find_first_of("}", pos);
         }
+
+      mParseList[Insert] = pObject;
 
       QTextCharFormat f1;
       f1.setForeground(QColor(0, 0, 0));
