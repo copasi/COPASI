@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.9 $
+//   $Revision: 1.289.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:46 $
+//   $Date: 2011/01/28 21:31:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,7 +232,11 @@ CopasiUI3Window::CopasiUI3Window():
     mRecentSBMLFilesActionMap(),
     mpRecentSBMLFilesActionGroup(NULL),
     mpMIRIAMResources(NULL),
-    mpMainThread(QThread::currentThread())
+    mpMainThread(QThread::currentThread()),
+    mNewFile(),
+    mpCloseEvent(),
+    mQuitApplication(false)
+
 #ifdef COPASI_SBW_INTEGRATION
     , mpSBWModule(NULL)
     , mSBWAnalyzerModules()
@@ -599,6 +603,12 @@ void CopasiUI3Window::slotFileSaveFinished(bool success)
   refreshRecentFileMenu();
 
   mSaveAsRequired = false;
+
+  if (mNewFile != "")
+    {
+      emit signalLoadFile(mNewFile);
+      mNewFile = "";
+    }
 }
 
 void CopasiUI3Window::newDoc()
@@ -674,6 +684,8 @@ void CopasiUI3Window::slotProcessCommandline()
 
 void CopasiUI3Window::slotFileOpen(QString file)
 {
+  disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotFileOpen(QString)));
+
   mpDataModelGUI->commit();
 
   QString newFile = "";
@@ -701,7 +713,12 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                          QMessageBox::Save))
             {
               case QMessageBox::Save:
+                connect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotFileOpen(QString)));
+
+                mNewFile = newFile;
                 slotFileSave();
+                return;
+
                 break;
 
               case QMessageBox::Discard:
@@ -787,6 +804,8 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   mpListView->switchToOtherWidget(1, "");
 
   refreshRecentFileMenu();
+
+  mNewFile = "";
 }
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
@@ -980,13 +999,15 @@ void CopasiUI3Window::slotQuit()
       return;
     }
 
+  mQuitApplication = true;
+
   mpDataModelGUI->commit();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
   if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
     {
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotQuitFinished(bool)));
 
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
@@ -996,7 +1017,6 @@ void CopasiUI3Window::slotQuit()
         {
           case QMessageBox::Save:
             slotFileSave();
-
             break;
 
           case QMessageBox::Discard:
@@ -1009,13 +1029,19 @@ void CopasiUI3Window::slotQuit()
             break;
         }
     }
+  else
+    {
+      slotQuitFinished(true);
+    }
 }
 
 void CopasiUI3Window::slotQuitFinished(bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
 
-  if (success)
+  mQuitApplication &= success;
+
+  if (mQuitApplication)
     {
       CleanUp();
       qApp->quit();
@@ -1048,7 +1074,10 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
                                      QMessageBox::Save))
         {
           case QMessageBox::Save:
+            mQuitApplication = true;
             slotFileSave();
+            mpCloseEvent->ignore();
+            mpCloseEvent = NULL;
             break;
 
           case QMessageBox::Discard:
@@ -1069,13 +1098,26 @@ void CopasiUI3Window::slotCloseEventFinished(bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCloseEventFinished(bool)));
 
-  if (success)
+  mQuitApplication &= success;
+
+  if (mQuitApplication)
     {
       CleanUp();
-      mpCloseEvent->accept();
+      qApp->quit();
     }
-  else
-    mpCloseEvent->ignore();
+
+  if (mpCloseEvent != NULL)
+    {
+      if (success)
+        {
+          CleanUp();
+          mpCloseEvent->accept();
+        }
+      else
+        mpCloseEvent->ignore();
+    }
+
+  mpCloseEvent = NULL;
 }
 
 
@@ -1242,6 +1284,8 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
 
 void CopasiUI3Window::slotImportSBML(QString file)
 {
+  disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotImportSBML(QString)));
+
   mpDataModelGUI->commit();
 
   QString SBMLFile;
@@ -1267,7 +1311,11 @@ void CopasiUI3Window::slotImportSBML(QString file)
                                          QMessageBox::Save))
             {
               case QMessageBox::Save:
+                connect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotImportSBML(QString)));
+
+                mNewFile = SBMLFile;
                 slotFileSave();
+                return;
                 break;
 
               case QMessageBox::Discard:
@@ -1332,6 +1380,8 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
   updateTitle();
 
   mSaveAsRequired = true;
+
+  mNewFile = "";
 }
 
 void CopasiUI3Window::slotExportSBML()

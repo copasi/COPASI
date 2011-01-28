@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.95.2.4 $
+//   $Revision: 1.95.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/10 16:36:51 $
+//   $Date: 2011/01/28 21:31:26 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,6 +89,9 @@ public:
   void exportSBMLToString(std::string & SBML);
 
   QThread * getMainThread() const;
+
+signals:
+  void signalLoadFile(QString newFile);
 
 protected:
   virtual void closeEvent(QCloseEvent* e);
@@ -236,6 +239,7 @@ private:
   QThread * mpMainThread;
   QString mNewFile;
   QCloseEvent * mpCloseEvent;
+  bool mQuitApplication;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:
