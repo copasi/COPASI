@@ -2,8 +2,4 @@ auto
 moc_*.cpp
 Makefile
 ui_*.h
-CQExperimentData.cpp
-CQStartValueReset.h
-CQStartValueReset.cpp
-CQExperimentData.h
 *.xcodeproj

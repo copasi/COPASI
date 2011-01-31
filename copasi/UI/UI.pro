@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.239.2.8 $
+#   $Revision: 1.239.2.9 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2011/01/24 17:00:16 $
+#   $Date: 2011/01/31 17:34:08 $
 # End CVS Header
 
 # Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.239.2.8 $ $Author: aekamal $ $Date: 2011/01/24 17:00:16 $
+# $Revision: 1.239.2.9 $ $Author: aekamal $ $Date: 2011/01/31 17:34:08 $
 ######################################################################
 
 LIB = UI
@@ -40,6 +40,8 @@ HEADERS	+= \
   CQEFMWidget.h \
   CQEventsWidget.h \
   CQEventWidget1.h \
+  CQExperimentData.h \
+  CQExperimentSelection.h \
   CQExpressionMmlStackedWidget.h \
   CQExpressionMmlWidget.h \
   CQFittingItemWidget.h \
@@ -72,6 +74,7 @@ HEADERS	+= \
   CQSpeciesDetail.h \
   CQSpeciesWidget.h \
   CQSplashWidget.h \
+  CQStartValueReset.h \
   CQSteadyStateResult.h \
   CQTaskBtnWidget.h \
   CQTaskHeaderWidget.h \
@@ -119,7 +122,6 @@ HEADERS	+= \
   CQEFMReactionDM.h \
   CQEFMSpeciesDM.h  \
   CQEventDM.h \
-  CQExperimentSelection.h \
   CQExpressionWidget.h \
   CQFluxModeDM.h \
   CQFunctionDM.h \
@@ -179,6 +181,7 @@ SOURCES	+= \
   CQEFMWidget.cpp \
   CQEventsWidget.cpp \
   CQEventWidget1.cpp \
+  CQExperimentData.cpp \
   CQExperimentSelection.cpp \
   CQExpressionMmlStackedWidget.cpp \
   CQExpressionMmlWidget.cpp \
@@ -211,6 +214,7 @@ SOURCES	+= \
   CQSpeciesDetail.cpp \
   CQSpeciesWidget.cpp \
   CQSplashWidget.cpp \
+  CQStartValueReset.cpp \
   CQSteadyStateResult.cpp \
   CQTaskBtnWidget.cpp \
   CQTaskHeaderWidget.cpp \
@@ -310,12 +314,6 @@ SOURCES	+= \
   SOURCES -= TSSWidget.cpp
 }
 
-### uic3 forms
-FORMS3 += CQExperimentData.ui
-HEADERS += CQExperimentData.ui.h
-FORMS3 += CQStartValueReset.ui
-HEADERS += CQStartValueReset.ui.h
-
 ### uic3 forms that do not work at the moment
 #FORMS3 += CQProgressItemBar.ui
 HEADERS += CQProgressItemBar.h
@@ -341,6 +339,7 @@ FORMS += CQEFMResultWidget.ui
 FORMS += CQEFMWidget.ui
 FORMS += CQEventsWidget.ui
 FORMS += CQEventWidget1.ui
+FORMS += CQExperimentData.ui
 FORMS += CQExperimentSelection.ui
 FORMS += CQExpressionMmlStackedWidget.ui
 FORMS += CQExpressionMmlWidget.ui
@@ -373,6 +372,7 @@ FORMS += CQSensResultWidget.ui
 FORMS += CQSpeciesDetail.ui
 FORMS += CQSpeciesWidget.ui
 FORMS += CQSplashWidget.ui
+FORMS += CQStartValueReset.ui
 FORMS += CQSteadyStateResult.ui
 FORMS += CQTaskBtnWidget.ui
 FORMS += CQTaskHeaderWidget.ui
@@ -452,7 +452,5 @@ contains(USE_LICENSE, COM) {
 
 #The following line was inserted by qt3to4
 QT += xml  opengl qt3support webkit
-#The following line was inserted by qt3to4
-CONFIG += uic3
 
 include(../srcDistribution.pri)
