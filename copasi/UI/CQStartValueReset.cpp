@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQStartValueReset.cpp,v $
-//   $Revision: 1.3.2.2 $
+//   $Revision: 1.3.2.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/01/31 17:34:08 $
+//   $Date: 2011/01/31 17:36:10 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #include "CQStartValueReset.h"
 
 #include <qvariant.h>
-#include "CQStartValueReset.ui.h"
+
 /*
  *  Constructs a CQStartValueReset as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
