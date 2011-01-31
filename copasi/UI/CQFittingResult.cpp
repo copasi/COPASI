@@ -207,6 +207,27 @@ bool CQFittingResult::enterProtected()
 
   mpMain->load(mpProblem);
 
+  if (mpProblem->getCalculateStatistics())
+    {
+      mpTabWidget->setTabEnabled(mpExperiments, true);
+      mpTabWidget->setTabEnabled(mpValues, true);
+      mpTabWidget->setTabEnabled(mpCorrelations, true);
+      mpTabWidget->setTabEnabled(mpFisherInformation, true);
+    }
+  else
+    {
+      mpTabWidget->setTabEnabled(mpExperiments, false);
+      mpTabWidget->setTabEnabled(mpValues, false);
+      mpTabWidget->setTabEnabled(mpCorrelations, false);
+      mpTabWidget->setTabEnabled(mpFisherInformation, false);
+
+#ifdef COPASI_CROSSVALIDATION
+      mpTabWidget->setTabEnabled(mpCrossValidations, false);
+      mpTabWidget->setTabEnabled(mpCrossValidationValues, false);
+#endif // COPASI_CROSSVALIDATION
+
+    }
+
   size_t i, imax;
 
   // Loop over the optimization items
