@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.7 $
+//   $Revision: 1.115.2.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:41 $
+//   $Date: 2011/02/01 17:50:34 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -264,12 +264,12 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
   if (pCallBack)
     {
-      // We need to reset mSolutionValue here since initialize is called later during the process
+      // We need to reset mSolutionValue to correctly initialize the progress item.
       mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             mSolutionValue);
-      // We need to reset mCounter here since initialize is called later during the process
+      // We need to reset mCounter to correctly initialize the progress item.
       mCounter = 0;
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
@@ -578,51 +578,9 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  if (!*mpParmCalculateStatistics)
-    {
-      // Make sure the timer is accurate.
-      (*mCPUTime.getRefresh())();
-
-      return false;
-    }
-
   // Recalculate the best solution.
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
-
-  calculate();
-
-  if (mSolutionValue == mWorstValue)
-    return false;
-
-  mHaveStatistics = true;
-
-  C_FLOAT64 Current;
-  C_FLOAT64 Delta;
-
-  // Calculate the gradient
-  for (i = 0; i < imax; i++)
-    {
-      Current = mSolutionVariables[i];
-
-      if (fabs(Current) > resolution)
-        {
-          (*mUpdateMethods[i])(Current *(1.0 + factor));
-          Delta = 1.0 / (Current * factor);
-        }
-      else
-        {
-          (*mUpdateMethods[i])(resolution);
-          Delta = 1.0 / resolution;
-        }
-
-      calculate();
-
-      mGradient[i] = ((*mpParmMaximize ? -mCalculateValue : mCalculateValue) - mSolutionValue) * Delta;
-
-      // Restore the value
-      (*mUpdateMethods[i])(Current);
-    }
 
   // This is necessary so that the result can be displayed.
   mStoreResults = true;
@@ -631,6 +589,46 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // Make sure the timer is accurate.
   (*mCPUTime.getRefresh())();
+
+  if (mSolutionValue == mWorstValue)
+    return false;
+
+  if (*mpParmCalculateStatistics)
+    {
+      mHaveStatistics = true;
+
+      C_FLOAT64 Current;
+      C_FLOAT64 Delta;
+
+      // Calculate the gradient
+      for (i = 0; i < imax; i++)
+        {
+          Current = mSolutionVariables[i];
+
+          if (fabs(Current) > resolution)
+            {
+              (*mUpdateMethods[i])(Current *(1.0 + factor));
+              Delta = 1.0 / (Current * factor);
+            }
+          else
+            {
+              (*mUpdateMethods[i])(resolution);
+              Delta = 1.0 / resolution;
+            }
+
+          calculate();
+
+          mGradient[i] = ((*mpParmMaximize ? -mCalculateValue : mCalculateValue) - mSolutionValue) * Delta;
+
+          // Restore the value
+          (*mUpdateMethods[i])(Current);
+        }
+
+      calculate();
+
+      // Make sure the timer is accurate.
+      (*mCPUTime.getRefresh())();
+    }
 
   return true;
 }
