@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000053.cpp,v $
-//   $Revision: 1.6.2.2 $
+//   $Revision: 1.6.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/12/02 18:42:36 $
+//   $Date: 2011/02/01 09:21:53 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,28 +175,15 @@ void test000053::test2_bug1000()
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  // the behaviour of COPASI changed during development of Build-33
-  // Now setting the expression on the metabolite fails and the metabolite
-  // has a NULL pointer as the expression.
-  // Therefore the importer now sets the state back to fixed
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pExpr = pMetab->getExpressionPtr();
-  CPPUNIT_ASSERT(pExpr == NULL);
-  unsigned int i = 0, iMax = CCopasiMessage::size();
-  bool found = false;
-  std::string searchText = "Some error occured while importing the rule for object with id";
-
-  while (i < iMax && !found)
-    {
-      if (CCopasiMessage::getFirstMessage().getText().find(searchText) != std::string::npos)
-        {
-          found = true;
-        }
-
-      ++i;
-    }
-
-  CPPUNIT_ASSERT_MESSAGE("Failure to import the rule should have lead to an error", found == true);
+  CPPUNIT_ASSERT(pExpr != NULL);
+  const CEvaluationNode* pRoot = pExpr->getRoot();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CONSTANT);
+  const CEvaluationNodeConstant* pConstantNode = dynamic_cast<const CEvaluationNodeConstant*>(pRoot);
+  CPPUNIT_ASSERT(pConstantNode != NULL);
+  CPPUNIT_ASSERT(((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pConstantNode->getType())) == CEvaluationNodeConstant::_NaN);
 }
 
 const char* test000053::MODEL_STRING_2 =
@@ -249,28 +236,41 @@ void test000053::test3_bug1000()
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  // the behaviour of COPASI changed during development of Build-33
-  // Now setting the expression on the metabolite fails and the metabolite
-  // has a NULL pointer as the expression.
-  // Therefore the importer now sets the state back to fixed
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pExpr = pMetab->getExpressionPtr();
-  CPPUNIT_ASSERT(pExpr == NULL);
-  unsigned int i = 0, iMax = CCopasiMessage::size();
-  bool found = false;
-  std::string searchText = "Some error occured while importing the rule for object with id";
-
-  while (i < iMax && !found)
-    {
-      if (CCopasiMessage::getFirstMessage().getText().find(searchText) != std::string::npos)
-        {
-          found = true;
-        }
-
-      ++i;
-    }
-
-  CPPUNIT_ASSERT_MESSAGE("Failure to import the rule should have lead to an error", found == true);
+  CPPUNIT_ASSERT(pExpr != NULL);
+  const CEvaluationNode* pRoot = pExpr->getRoot();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CHOICE);
+  const CEvaluationNodeChoice* pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pRoot);
+  CPPUNIT_ASSERT(pChoiceNode != NULL);
+  const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pChoiceNode->getChild());
+  CPPUNIT_ASSERT(pChild1 != NULL);
+  const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+  CPPUNIT_ASSERT(pChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.5) / 0.5) < 1e-6);
+  const CEvaluationNode* pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+  CPPUNIT_ASSERT(pChild3 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::CONSTANT);
+  CPPUNIT_ASSERT(((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild3->getType())) == CEvaluationNodeConstant::_NaN);
+  pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
+  CPPUNIT_ASSERT(pChild1 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 3.0) / 3.0) < 1e-6);
+  pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+  CPPUNIT_ASSERT(pChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 4.0) / 4.0) < 1e-6);
 }
 
 const char* test000053::MODEL_STRING_3 =
