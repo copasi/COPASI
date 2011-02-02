@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskThread.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/12 19:26:58 $
+//   $Date: 2011/02/02 16:29:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,8 @@
 
 CQTaskThread::CQTaskThread(TaskWidget *tw):
     QThread(),
-    mpTaskWidget(tw)
+    mpTaskWidget(tw),
+    mSuccess(false)
 {}
 
 CQTaskThread::~CQTaskThread()
@@ -31,11 +32,15 @@ void CQTaskThread::run()
 {
   try
     {
-      if (!mpTaskWidget->getTask()->process(true))
-        throw CCopasiException(CCopasiMessage::peekLastMessage());
+      mSuccess = mpTaskWidget->getTask()->process(true);
     }
   catch (CCopasiException Exception)
     {
-      emit exceptionOccured(&Exception);
+      mSuccess = false;
     }
+}
+
+const bool & CQTaskThread::success() const
+{
+  return mSuccess;
 }

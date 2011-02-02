@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.59.2.2 $
+//   $Revision: 1.59.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 19:03:00 $
+//   $Date: 2011/02/02 16:29:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,9 +87,7 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl):
   connect(mpBtnWidget->mpBtnReport, SIGNAL(clicked()), this, SLOT(reportBtnClicked()));
   connect(mpBtnWidget->mpBtnAssistant, SIGNAL(clicked()), this, SLOT(assistantBtnClicked()));
 
-  connect(mpTaskThread, SIGNAL(exceptionOccured(CCopasiException*)), this, SLOT(slotExceptionOccured(CCopasiException*)));
   connect(mpTaskThread, SIGNAL(finished()), this, SLOT(slotFinishThread()));
-
 }
 
 TaskWidget::~TaskWidget()
@@ -441,20 +439,15 @@ bool TaskWidget::commonRunTask()
   return true;
 }
 
-void TaskWidget::slotExceptionOccured(CCopasiException *C_UNUSED(pException))
-{
-  if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-    {
-      if (mProgressBar != NULL) mProgressBar->finish();
-
-      CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-    }
-}
-
 void TaskWidget::slotFinishThread()
 {
-  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+  if (!mpTaskThread->success())
+    {
+      CQMessageBox::critical(this, "Calculation Error",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+    }
+  else if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
     {
       CQMessageBox::information(this, "Calculation Warning",
                                 CCopasiMessage::getAllMessageText().c_str(),

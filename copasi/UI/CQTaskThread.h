@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskThread.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/12 19:26:39 $
+//   $Date: 2011/02/02 16:29:27 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,11 +29,11 @@ public:
 
   virtual void run();
 
+  const bool & success() const;
+
 protected:
   TaskWidget *mpTaskWidget;
-
-signals:
-  void exceptionOccured(CCopasiException* pException);
+  bool mSuccess;
 };
 
 #endif //CQTaskThread_H
