@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CAnnotation.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:21:35 $
+//   $Date: 2011/02/07 15:34:59 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,6 +64,14 @@ public:
    */
   const std::string & getNotes() const;
 
+  /**
+   * Comparison operator
+   * @param const CAnnotation & rhs
+   * @return bool equal
+   */
+  bool operator == (const CAnnotation & rhs) const;
+
+
   // Attributes
 private:
   /**
@@ -75,6 +83,12 @@ private:
    * MIRIAM compliant annotation in RDF/XML format
    */
   std::string mMiriamAnnotation;
+
+  /**
+   * The XMLId used in the about statement
+   */
+  std::string mXMLId;
+
 };
 
 #endif // COPASI_CAnnotation
