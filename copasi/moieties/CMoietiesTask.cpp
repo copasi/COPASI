@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.cpp,v $
-//   $Revision: 1.2.16.1 $
+//   $Revision: 1.2.16.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:12 $
+//   $Date: 2011/02/07 19:12:16 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,9 +51,11 @@ CMoietiesTask::CMoietiesTask(const CMoietiesTask & src,
   this->add(mpMethod, true);
 }
 
+// virtual
 CMoietiesTask::~CMoietiesTask()
 {}
 
+// virtual
 bool CMoietiesTask::setCallBack(CProcessReport * pCallBack)
 {
   bool success = CCopasiTask::setCallBack(pCallBack);
@@ -65,6 +67,7 @@ bool CMoietiesTask::setCallBack(CProcessReport * pCallBack)
   return success;
 }
 
+// virtual
 bool CMoietiesTask::initialize(const OutputFlag & of,
                                COutputHandler * pOutputHandler,
                                std::ostream * pOstream)
@@ -84,6 +87,7 @@ bool CMoietiesTask::initialize(const OutputFlag & of,
   return success;
 }
 
+// virtual
 bool CMoietiesTask::process(const bool & /* useInitialValues */)
 {
   bool success = true;
@@ -95,6 +99,13 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
   output(COutputInterface::AFTER);
 
   return success;
+}
+
+// virtual
+bool CMoietiesTask::restore()
+{
+  mpProblem->getModel()->updateInitialValues();
+  return true;
 }
 
 bool CMoietiesTask::setMethodType(const int & type)
