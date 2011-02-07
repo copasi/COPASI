@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/19 12:53:50 $
+//   $Date: 2011/02/07 20:36:01 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1246,7 +1246,7 @@ void stress_test::normalizeFunctionDB()
 {
   CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
   assert(pFunctionDB != NULL);
-  CCopasiVectorN< CEvaluationTree > & loadedFunctions = pFunctionDB->loadedFunctions();
+  CCopasiVectorN< CFunction > & loadedFunctions = pFunctionDB->loadedFunctions();
   unsigned int i = 0, iMax = loadedFunctions.size();
 
   while (i < iMax)
