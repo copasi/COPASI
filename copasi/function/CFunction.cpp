@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.83.2.4 $
+//   $Revision: 1.83.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/07 15:39:47 $
+//   $Author: gauges $
+//   $Date: 2011/02/07 20:09:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 // All rights reserved.
 
 #include "copasi.h"
+#include <algorithm>
 
 #include "CFunction.h"
 #include "CFunctionDB.h"
