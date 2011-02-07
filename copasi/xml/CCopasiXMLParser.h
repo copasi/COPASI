@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.73.2.2 $
+//   $Revision: 1.73.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:13:44 $
+//   $Date: 2011/02/07 15:39:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,7 @@ class CEvent;
 class CEventAssignment;
 class CReaction;
 class CEvaluationTree;
+class CFunction;
 class CFunctionParameter;
 class CCopasiXMLParser;
 class CReportDefinitionVector;
@@ -124,12 +125,12 @@ public:
    * Pointer to a vector of functions which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CEvaluationTree > * pFunctionList;
+  CCopasiVectorN< CFunction > * pFunctionList;
 
   /**
    * Pointer to the currently processed function.
    */
-  CEvaluationTree * pFunction;
+  CFunction * pFunction;
 
   /**
    * Pointer to the currently processed function.
@@ -144,7 +145,12 @@ public:
   /**
    * Indicates whether the current function was already in the list;
    */
-  bool mExistingFunction;
+  bool mPredefinedFunction;
+
+  /**
+   * A map of new function to old keys  parameter definitions
+   */
+  std::map< size_t, std::string > mFunctionParameterKeyMap;
 
   /**
    * Pointer to the currently processed reaction.
@@ -3027,6 +3033,11 @@ private:
      */
     std::string mKey;
 
+    /**
+     * The index of a function with the same name
+     */
+    std::set< size_t > mExistingFunctionIndex;
+
     // Operations
   public:
     /**
@@ -4820,9 +4831,9 @@ public:
 
   /**
    * Set the list of loaded functions
-   * @param CCopasiVectorN< CEvaluationTree > * pFunctionList
+   * @param CCopasiVectorN< CFunction > * pFunctionList
    */
-  void setFunctionList(CCopasiVectorN< CEvaluationTree > * pFunctionList);
+  void setFunctionList(CCopasiVectorN< CFunction > * pFunctionList);
 
 #ifdef XXXX
   /**

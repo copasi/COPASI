@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.36.2.1 $
+//   $Revision: 1.36.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:00:59 $
+//   $Date: 2011/02/07 15:39:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -187,6 +187,13 @@ public:
   const std::string & getInfix() const;
 
   /**
+   * Comparison operator
+   * @param const CEvaluationTree & rhs
+   * @return bool equal
+   */
+  bool operator == (const CEvaluationTree & rhs) const;
+
+  /**
    * Retrieve the position of the error in the string description.
    * std::string::npos indicates no error.
    * @return std::string::size_type errorPosition
@@ -237,15 +244,6 @@ public:
    * Returns a reference to the SBML Id.
    */
   const std::string& getSBMLId() const;
-
-  /**
-   * Complete the list of evaluation tree such that all called trees are includes.
-   * @param std::vector< CEvaluationTree * > & list
-   * @param const size_t & added (Default: list.size())
-   * @return bool success
-   */
-  static bool completeEvaluationTreeList(std::vector< CEvaluationTree * > & list,
-                                         const size_t & added = 0);
 
   /**
    * Check whether the the tree has circular dependencies.

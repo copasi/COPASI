@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.10 $
+//   $Revision: 1.289.2.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/28 21:31:26 $
+//   $Date: 2011/02/07 15:39:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,7 +311,9 @@ CopasiUI3Window::CopasiUI3Window():
 
   mpAutoSaveTimer = new QTimer(this);
   mpAutoSaveTimer->start(AutoSaveInterval); // every 10 minutes
-  connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
+
+  // We need to disable autosave to avoid race conditions.
+  // connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
   // mpDataModelGUI->notify(ListViews::FUNCTION, ListViews::ADD, "");
 
   setApplicationFont();
@@ -1646,6 +1648,8 @@ void CopasiUI3Window::updateTitle()
 
 void CopasiUI3Window::autoSave()
 {
+  // TODO CRITICAL This needs to be moved into a sub thread so
+  // that a progress dialog can be displayed and the user can interrupt.
   if (!mSuspendAutoSave)
     {
       mSuspendAutoSave = true;

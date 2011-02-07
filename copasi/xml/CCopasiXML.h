@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:51:27 $
+//   $Author: shoops $
+//   $Date: 2011/02/07 15:39:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@
 
 class CModel;
 class CEvaluationTree;
+class CFunction;
 class CCopasiTask;
 class CReportDefinitionVector;
 class COutputDefinitionVector;
@@ -153,19 +154,19 @@ public:
 
   /**
    * Set the function list.
-   * @param CopasiVectorN< CEvaluationTree > * pFunctionList
+   * @param CopasiVectorN< CFunction > * pFunctionList
    * @return bool success
    */
-  bool setFunctionList(CCopasiVectorN< CEvaluationTree > *pFunctionList);
+  bool setFunctionList(CCopasiVectorN< CFunction > *pFunctionList);
 
   /**
-   * Retreive the function list.
-   * @return CCopasiVectorN< CEvaluationTree > * pFunctionList
+   * Retrieve the function list.
+   * @return CCopasiVectorN< CFunction > * pFunctionList
    */
-  CCopasiVectorN< CEvaluationTree > * getFunctionList() const;
+  CCopasiVectorN< CFunction > * getFunctionList() const;
 
   /**
-   * Retreive whether the XML contains a function list.
+   * Retrieve whether the XML contains a function list.
    * @return bool haveFunctionList
    */
   bool haveFunctionList() const;
@@ -191,13 +192,13 @@ public:
   bool setDatamodel(CCopasiDataModel* pDataModel);
 
   /**
-   * Retreive the task list.
+   * Retrieve the task list.
    * @return CCopasiVectorN< CCopasiTask > * taskList
    */
   CCopasiVectorN< CCopasiTask > * getTaskList() const;
 
   /**
-   * Retreive whether the XML contains a task list.
+   * Retrieve whether the XML contains a task list.
    * @return bool haveTaskList
    */
   bool haveTaskList() const;
@@ -216,13 +217,13 @@ public:
   bool setPlotList(COutputDefinitionVector * pPlotList);
 
   /**
-   * Retreive the plot list.
+   * Retrieve the plot list.
    * @return COutputDefinitionVector * plotList
    */
   COutputDefinitionVector * getPlotList() const;
 
   /**
-   * Retreive whether the XML contains a plot list.
+   * Retrieve whether the XML contains a plot list.
    * @return bool havePlotList
    */
   bool havePlotList() const;
@@ -241,13 +242,13 @@ public:
   bool setReportList(CReportDefinitionVector * pReportList);
 
   /**
-   * Retreive the report list.
+   * Retrieve the report list.
    * @return CReportDefinitionVector * reportList
    */
   CReportDefinitionVector * getReportList() const;
 
   /**
-   * Retreive whether the XML contains a report list.
+   * Retrieve whether the XML contains a report list.
    * @return bool haveReportList
    */
   bool haveReportList() const;
@@ -266,13 +267,13 @@ public:
   bool setGUI(SCopasiXMLGUI *pGUI);
 
   /**
-   * Retreive the SCopasiXMLGUI.
+   * Retrieve the SCopasiXMLGUI.
    * @return SCopasiXMLGUI * pGUI
    */
   SCopasiXMLGUI * getGUI() const;
 
   /**
-   * Retreive whether the XML contains a GUI.
+   * Retrieve whether the XML contains a GUI.
    * @return bool have GUI
    */
   bool haveGUI() const;
@@ -291,13 +292,13 @@ public:
   bool setLayoutList(const CListOfLayouts & reportList);
 
   /**
-   * Retreive the layout list.
+   * Retrieve the layout list.
    * @return CListOfLayouts * layoutList
    */
   CListOfLayouts * getLayoutList() const;
 
   /**
-   * Retreive whether the XML contains a layout list.
+   * Retrieve whether the XML contains a layout list.
    * @return bool haveLayoutList
    */
   bool haveLayoutList() const;
@@ -566,7 +567,7 @@ private:
    * Pointer to a vector of functions which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CEvaluationTree > * mpFunctionList;
+  CCopasiVectorN< CFunction > * mpFunctionList;
 
   /**
    * Pointer to a vector of tasks which has been loaded or is to be saved.

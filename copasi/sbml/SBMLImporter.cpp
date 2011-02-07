@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.18 $
+//   $Revision: 1.263.2.19 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/01/15 14:01:58 $
+//   $Author: shoops $
+//   $Date: 2011/02/07 15:39:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -606,7 +606,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 #endif // LIBSBML_VERSION
   /* import the functions */
   unsigned int counter;
-  CCopasiVectorN< CEvaluationTree >* functions = &(this->functionDB->loadedFunctions());
+  CCopasiVectorN< CFunction >* functions = &(this->functionDB->loadedFunctions());
 
   size_t num = (*functions).size();
 
@@ -2205,7 +2205,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   // have to find the function in the
                                   // functiondb
                                   CFunction* pNonconstFun = NULL;
-                                  CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
+                                  CCopasiVectorN<CFunction>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
 
                                   while (it != endit)
                                     {
@@ -2291,7 +2291,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   // have to find the function in the
                                   // functiondb
                                   CFunction* pNonconstFun = NULL;
-                                  CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
+                                  CCopasiVectorN<CFunction>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
 
                                   while (it != endit)
                                     {

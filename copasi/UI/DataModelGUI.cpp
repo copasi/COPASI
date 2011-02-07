@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.21 $
+//   $Revision: 1.93.2.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:55 $
+//   $Date: 2011/02/07 15:39:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,19 @@ DataModelGUI::DataModelGUI(QObject* parent):
     mListViews(),
     mFramework(0),
     mUpdateVector(),
-    mChangedObjects()
+    mChangedObjects(),
+    mpThread(NULL),
+    mpProgressBar(NULL),
+    mSuccess(false),
+    mSBMLImportString(),
+    mpSBMLExportString(NULL),
+    mFileName(),
+    mOverWrite(false),
+    mSBMLLevel(2),
+    mSBMLVersion(4),
+    mSBMLExportIncomplete(true),
+    mSBMLExportCOPASIMIRIAM(true),
+    mExportFormat()
 {
   this->populateData();
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -193,7 +205,7 @@ QString DataModelGUI::getNameWithObjectNo(const IndexedNode *node) const
 {
   QString name = node->getName();
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  size_t noOfObjects = -1;
+  size_t noOfObjects = C_INVALID_INDEX;
 
   switch (node->getId())
     {
@@ -438,8 +450,8 @@ void DataModelGUI::updateFunctions()
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
-  CCopasiVector< CEvaluationTree >::iterator it = CCopasiRootContainer::getFunctionList()->loadedFunctions().begin();
-  CCopasiVector< CEvaluationTree >::iterator end = CCopasiRootContainer::getFunctionList()->loadedFunctions().end();
+  CCopasiVector< CFunction >::iterator it = CCopasiRootContainer::getFunctionList()->loadedFunctions().begin();
+  CCopasiVector< CFunction >::iterator end = CCopasiRootContainer::getFunctionList()->loadedFunctions().end();
 
   QMap< QString, QMap< QString, CCopasiObject * > > Sorted;
 
@@ -1077,6 +1089,10 @@ QModelIndex DataModelGUI::findIndexFromKey(const std::string& key)
 
 void DataModelGUI::updateAllEntities()
 {
+  // The GUI is inactive whenever a progress bar exist. We wait with updates
+  // until then.
+  if (mpProgressBar != NULL) return;
+
   updateCompartments();
 
   updateMetabolites();
@@ -1098,6 +1114,10 @@ void DataModelGUI::updateAllEntities()
 
 bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+  // The GUI is inactive whenever a progress bar exist. We wait with updates
+  // until then.
+  if (mpProgressBar != NULL) return false;
+
   std::set< ListViews * >::iterator it = mListViews.begin();
   std::set< ListViews * >::iterator end = mListViews.end();
 

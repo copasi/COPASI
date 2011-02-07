@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.83.2.3 $
+//   $Revision: 1.83.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/01/25 19:39:49 $
+//   $Author: shoops $
+//   $Date: 2011/02/07 15:39:47 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,9 @@
 #include "copasi.h"
 
 #include "CFunction.h"
+#include "CFunctionDB.h"
 
+#include "report/CCopasiRootContainer.h"
 #include "utilities/copasimathml.h"
 
 CFunction::CFunction(const std::string & name,
@@ -86,6 +88,18 @@ bool CFunction::setInfix(const std::string & infix)
 
   return true;
 }
+
+bool CFunction::operator == (const CFunction & rhs) const
+{
+  if (!(*static_cast<const CEvaluationTree *>(this) == rhs))
+    return false;
+
+  if (!(mVariables == rhs.mVariables))
+    return false;
+
+  return true;
+}
+
 
 size_t CFunction::getVariableIndex(const std::string & name) const
 {
@@ -264,6 +278,44 @@ bool CFunction::isSuitable(const size_t noSubstrates,
 
   return true;
 }
+
+bool CFunction::completeFunctionList(std::vector< CFunction * > & list,
+                                     const size_t & added)
+{
+  unsigned Added = 0;
+
+  size_t i, imax = list.size();
+  size_t Index;
+
+  CEvaluationTree * pTree;
+  std::vector< CEvaluationNode * >::const_iterator it;
+  std::vector< CEvaluationNode * >::const_iterator end;
+
+  CCopasiVectorN< CFunction > & Functions =
+    CCopasiRootContainer::getFunctionList()->loadedFunctions();
+
+  for (i = (added) ? imax - added : 0; i < imax; i++)
+    {
+      pTree = list[i];
+
+      for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
+        {
+          if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+              (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
+              list.end() == std::find(list.begin(), list.end(), Functions[Index]))
+            {
+              list.push_back(Functions[Index]);
+              Added++;
+            }
+        }
+    }
+
+  if (Added)
+    return completeFunctionList(list, Added);
+  else
+    return true;
+}
+
 
 void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::string> > & env)
 {

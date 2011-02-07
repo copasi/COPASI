@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.130.2.2 $
+//   $Revision: 1.130.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:13:43 $
+//   $Date: 2011/02/07 15:39:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -272,13 +272,13 @@ bool CCopasiXML::freeModel()
   return true;
 }
 
-bool CCopasiXML::setFunctionList(CCopasiVectorN< CEvaluationTree > *pFunctionList)
+bool CCopasiXML::setFunctionList(CCopasiVectorN< CFunction > *pFunctionList)
 {
   mpFunctionList = pFunctionList;
   return true;
 }
 
-CCopasiVectorN< CEvaluationTree > * CCopasiXML::getFunctionList() const
+CCopasiVectorN< CFunction > * CCopasiXML::getFunctionList() const
 {return mpFunctionList;}
 
 bool CCopasiXML::haveFunctionList() const
@@ -1725,8 +1725,8 @@ bool CCopasiXML::buildFunctionList()
 {
   bool success = true;
 
-  CCopasiVectorN< CEvaluationTree > * pFunctionList
-  = new CCopasiVectorN< CEvaluationTree >;
+  CCopasiVectorN< CFunction > * pFunctionList
+  = new CCopasiVectorN< CFunction >;
 
   *pFunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
 

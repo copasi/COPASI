@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.67.2.1 $
+//   $Revision: 1.67.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:00:59 $
+//   $Date: 2011/02/07 15:39:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -184,6 +184,13 @@ bool CEvaluationTree::setInfix(const std::string & infix)
 
 const std::string & CEvaluationTree::getInfix() const
 {return mInfix;}
+
+bool CEvaluationTree::operator == (const CEvaluationTree & rhs) const
+{
+  return (mInfix == rhs.mInfix &&
+          mType == rhs.mType &&
+          *static_cast< const CAnnotation * >(this) == rhs);
+}
 
 std::string::size_type CEvaluationTree::getErrorPosition() const
 {return mErrorPosition;}
@@ -512,43 +519,6 @@ void CEvaluationTree::setSBMLId(const std::string& id)
 const std::string& CEvaluationTree::getSBMLId() const
 {
   return this->mSBMLId;
-}
-
-bool CEvaluationTree::completeEvaluationTreeList(std::vector< CEvaluationTree * > & list,
-    const size_t & added)
-{
-  unsigned Added = 0;
-
-  size_t i, imax = list.size();
-  size_t Index;
-
-  CEvaluationTree * pTree;
-  std::vector< CEvaluationNode * >::const_iterator it;
-  std::vector< CEvaluationNode * >::const_iterator end;
-
-  CCopasiVectorN< CEvaluationTree > & Functions =
-    CCopasiRootContainer::getFunctionList()->loadedFunctions();
-
-  for (i = (added) ? imax - added : 0; i < imax; i++)
-    {
-      pTree = list[i];
-
-      for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
-        {
-          if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
-              (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
-              list.end() == std::find(list.begin(), list.end(), Functions[Index]))
-            {
-              list.push_back(Functions[Index]);
-              Added++;
-            }
-        }
-    }
-
-  if (Added)
-    return completeEvaluationTreeList(list, Added);
-  else
-    return true;
 }
 
 bool CEvaluationTree::hasCircularDependency() const

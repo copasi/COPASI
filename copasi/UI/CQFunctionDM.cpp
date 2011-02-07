@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.7.4.5 $
+//   $Revision: 1.7.4.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:49 $
+//   $Date: 2011/02/07 15:39:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,7 +291,7 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
       CEvaluationTree * pFunction = *j;
 
       size_t delRow =
-        CCopasiRootContainer::getFunctionList()->loadedFunctions().CCopasiVector< CEvaluationTree >::getIndex(pFunction);
+        CCopasiRootContainer::getFunctionList()->loadedFunctions().CCopasiVector< CFunction >::getIndex(pFunction);
 
       if (delRow != C_INVALID_INDEX)
         {

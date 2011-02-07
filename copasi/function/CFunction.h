@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-//   $Revision: 1.51.4.1 $
+//   $Revision: 1.51.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:00:59 $
+//   $Date: 2011/02/07 15:39:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,13 @@ public:
    * @return bool success
    */
   virtual bool setInfix(const std::string & infix);
+
+  /**
+   * Comparison operator
+   * @param const CFunction & rhs
+   * @return bool equal
+   */
+  bool operator == (const CFunction & rhs) const;
 
   /**
    * Function to calculate the value of the function
@@ -152,6 +159,16 @@ public:
   bool isSuitable(const size_t noSubstrates,
                   const size_t noProducts,
                   const TriLogic reversible);
+
+  /**
+   * Complete the list of evaluation tree such that all called trees are includes.
+   * @param std::vector< CFunction * > & list
+   * @param const size_t & added (Default: list.size())
+   * @return bool success
+   */
+  static bool completeFunctionList(std::vector< CFunction * > & list,
+                                   const size_t & added = 0);
+
 
 protected:
   /**

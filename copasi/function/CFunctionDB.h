@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.54.4.1 $
+//   $Revision: 1.54.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:01:00 $
+//   $Date: 2011/02/07 15:39:46 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@ private:
   /**
    *  Vector of the currently loaded functions
    */
-  CCopasiVectorN < CEvaluationTree > mLoadedFunctions;
+  CCopasiVectorN < CFunction > mLoadedFunctions;
 
   // Operations
 
@@ -111,17 +111,17 @@ public:
 
   /**
    * Add the function to the database
-   * @param CEvaluationTree * pFunction
+   * @param CFunction * pFunction
    * @param const bool & adopt (default = false)
    * @return bool success
    */
-  bool add(CEvaluationTree * pFunction, const bool & adopt);
+  bool add(CFunction * pFunction, const bool & adopt);
 
   /**
    * Add the function to the database, if necessary adapt the name so it
    * is unique.
    */
-  void addAndAdaptName(CEvaluationTree * pFunction);
+  void addAndAdaptName(CFunction * pFunction);
 
 #ifdef FFFF
   /**
@@ -163,9 +163,9 @@ public:
 
   /**
    *  Retrieves the vector of loaded functions.
-   *  @return "CCopasiVectorNS < CKinFunction > &" loadedFunctions
+   *  @return "CCopasiVectorNS < CFunction > &" loadedFunctions
    */
-  CCopasiVectorN < CEvaluationTree > & loadedFunctions();
+  CCopasiVectorN < CFunction > & loadedFunctions();
 
   /**
    *  Retrieves the vector of functions that are suitable for a
@@ -203,7 +203,7 @@ public:
    * Retrieves a list of all functions used in the model
    * @return std::vector< CEvaluationTree * > usedFunctions
    */
-  std::vector< CEvaluationTree * > getUsedFunctions(const CModel* pModel) const;
+  std::vector< CFunction * > getUsedFunctions(const CModel* pModel) const;
 };
 
 #endif // COPASI_CFunctionDB

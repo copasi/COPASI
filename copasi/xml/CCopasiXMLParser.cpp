@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.4 $
+//   $Revision: 1.223.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/26 18:47:24 $
+//   $Date: 2011/02/07 15:39:48 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -348,7 +348,7 @@ void CCopasiXMLParser::pushElementHandler(CXMLElementHandler< CCopasiXMLParser, 
 void CCopasiXMLParser::popElementHandler()
 {mElementHandlerStack.pop();}
 
-void CCopasiXMLParser::setFunctionList(CCopasiVectorN< CEvaluationTree > * pFunctionList)
+void CCopasiXMLParser::setFunctionList(CCopasiVectorN< CFunction > * pFunctionList)
 {mCommon.pFunctionList = pFunctionList;}
 
 CModel * CCopasiXMLParser::getModel() const
@@ -637,7 +637,7 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
                          pszName, "ListOfFunctions", mParser.getCurrentLineNumber());
 
         if (!mCommon.pFunctionList)
-          mCommon.pFunctionList = new CCopasiVectorN< CEvaluationTree >;
+          mCommon.pFunctionList = new CCopasiVectorN< CFunction >;
 
         break;
 
@@ -744,8 +744,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
   CEvaluationTree::Type Type;
   const char * Name;
   const char * Reversible;
-  size_t index;
-  CFunction * pFunction;
+  size_t Index;
 
   mpCurrentHandler = NULL;
   mCurrentElement = mLastKnownElement;
@@ -766,55 +765,68 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
             Name = mParser.getAttributeValue("name", papszAttrs);
             type = mParser.getAttributeValue("type", papszAttrs);
             Type = toEnum(type, CEvaluationTree::XMLType, CEvaluationTree::UserDefined);
+
+            if (Type == CEvaluationTree::Expression)
+              {
+                Type = CEvaluationTree::UserDefined;
+              }
+
             Reversible = mParser.getAttributeValue("reversible", papszAttrs, false);
 
             if (!Reversible) // We may have an old file format using positive
               Reversible = mParser.getAttributeValue("positive", papszAttrs, "unspecified");
 
-            mCommon.mExistingFunction = false;
-            mCommon.pFunction = CEvaluationTree::create(Type);
-            pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
+            mCommon.mPredefinedFunction = false;
+            mCommon.pFunction = static_cast<CFunction *>(CEvaluationTree::create(Type));
 
             mCommon.pFunction->setObjectName(Name);
 
-            if (pFunction)
-              {
-                if (!strcmp(Reversible, "true"))
-                  pFunction->setReversible(TriTrue);
-                else if (!strcmp(Reversible, "false"))
-                  pFunction->setReversible(TriFalse);
-                else
-                  pFunction->setReversible(TriUnspecified);
-              }
+            if (!strcmp(Reversible, "true"))
+              mCommon.pFunction->setReversible(TriTrue);
+            else if (!strcmp(Reversible, "false"))
+              mCommon.pFunction->setReversible(TriFalse);
+            else
+              mCommon.pFunction->setReversible(TriUnspecified);
 
             mLastKnownElement = Function;
 
-            /* We have a new function and add it to the list */
-            index = mCommon.pFunctionList->getIndex(Name);
+            mExistingFunctionIndex.clear();
+            Index = mCommon.pFunctionList->getIndex(Name);
 
-            if (index != C_INVALID_INDEX) // A function with that name exists.
+            if (Index != C_INVALID_INDEX) // A function with that name exists.
               {
-                switch ((*mCommon.pFunctionList)[index]->getType())
+                mExistingFunctionIndex.insert(Index);
+
+                switch ((*mCommon.pFunctionList)[Index]->getType())
                   {
                     case CEvaluationTree::MassAction:
 
                       if (Type == CEvaluationTree::MassAction)
                         {
                           pdelete(mCommon.pFunction);
-                          mCommon.pFunction = (*mCommon.pFunctionList)[index];
-                          mCommon.mExistingFunction = true;
+                          mCommon.pFunction = (*mCommon.pFunctionList)[Index];
+                          mCommon.mPredefinedFunction = true;
                         }
                       else
                         {
-                          std::string tmp(Name);
-                          tmp += "[" + CEvaluationTree::TypeName[Type] + "]";
-                          index = mCommon.pFunctionList->getIndex(tmp);
+                          size_t Counter = 0;
+                          std::string NewName;
 
-                          if (index != C_INVALID_INDEX)
-                            mCommon.pFunctionList->remove(tmp);
+                          while (true)
+                            {
+                              Counter++;
+                              std::ostringstream ss;
+                              ss << Name << " [" << Counter << "]";
+                              NewName = ss.str();
+                              Index = mCommon.pFunctionList->getIndex(NewName);
 
-                          mCommon.pFunction->setObjectName(tmp);
-                          mCommon.pFunctionList->add(mCommon.pFunction, true);
+                              if (Index == C_INVALID_INDEX)
+                                break;
+
+                              mExistingFunctionIndex.insert(Index);
+                            }
+
+                          mCommon.pFunction->setObjectName(NewName);
                         }
 
                       break;
@@ -824,20 +836,29 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                       if (Type == CEvaluationTree::PreDefined)
                         {
                           pdelete(mCommon.pFunction);
-                          mCommon.pFunction = (*mCommon.pFunctionList)[index];
-                          mCommon.mExistingFunction = true;
+                          mCommon.pFunction = (*mCommon.pFunctionList)[Index];
+                          mCommon.mPredefinedFunction = true;
                         }
                       else
                         {
-                          std::string tmp(Name);
-                          tmp += "[" + CEvaluationTree::TypeName[Type] + "]";
-                          index = mCommon.pFunctionList->getIndex(tmp);
+                          size_t Counter = 0;
+                          std::string NewName;
 
-                          if (index != C_INVALID_INDEX)
-                            mCommon.pFunctionList->remove(tmp);
+                          while (true)
+                            {
+                              Counter++;
+                              std::ostringstream ss;
+                              ss << Name << " [" << Counter << "]";
+                              NewName = ss.str();
+                              Index = mCommon.pFunctionList->getIndex(NewName);
 
-                          mCommon.pFunction->setObjectName(tmp);
-                          mCommon.pFunctionList->add(mCommon.pFunction, true);
+                              if (Index == C_INVALID_INDEX)
+                                break;
+
+                              mExistingFunctionIndex.insert(Index);
+                            }
+
+                          mCommon.pFunction->setObjectName(NewName);
                         }
 
                       break;
@@ -850,26 +871,27 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                       size_t Counter = 0;
                       std::string NewName;
 
-                      do
+                      while (true)
                         {
                           Counter++;
                           std::ostringstream ss;
-                          ss << Name << "_" << Counter;
+                          ss << Name << " [" << Counter << "]";
                           NewName = ss.str();
+                          Index = mCommon.pFunctionList->getIndex(NewName);
+
+                          if (Index == C_INVALID_INDEX)
+                            break;
+
+                          mExistingFunctionIndex.insert(Index);
                         }
-                      while (mCommon.pFunctionList->getIndex(NewName) != C_INVALID_INDEX);
 
                       mCommon.pFunction->setObjectName(NewName);
                     }
 
-                    mCommon.pFunctionList->add(mCommon.pFunction, true);
                     break;
                   }
               }
-            else
-              mCommon.pFunctionList->add(mCommon.pFunction, true);
 
-            mCommon.KeyMap.addFix(mKey , mCommon.pFunction);
             return;
 
           case MiriamAnnotation:
@@ -951,6 +973,46 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
+
+        if (!mCommon.mPredefinedFunction)
+          {
+            // TODOWe need to check whether any existing function with the same
+            // name is identical
+
+            std::set< size_t >::const_iterator it = mExistingFunctionIndex.begin();
+            std::set< size_t >::const_iterator end = mExistingFunctionIndex.end();
+
+            for (; it != end; ++it)
+              {
+                CFunction * pFunction = (*mCommon.pFunctionList)[*it];
+
+                if (*pFunction == *mCommon.pFunction)
+                  {
+                    pdelete(mCommon.pFunction);
+                    mCommon.pFunction = (*mCommon.pFunctionList)[*it];
+
+                    break;
+                  }
+              }
+
+            /* We have a new function and add it to the list */
+            if (it == end)
+              {
+                mCommon.pFunctionList->add(mCommon.pFunction, true);
+              }
+          }
+
+        mCommon.KeyMap.addFix(mKey , mCommon.pFunction);
+
+        {
+          std::map< size_t, std::string >::const_iterator it = mCommon.mFunctionParameterKeyMap.begin();
+          std::map< size_t, std::string >::const_iterator end = mCommon.mFunctionParameterKeyMap.end();
+
+          for (; it != end; ++it)
+            {
+              mCommon.KeyMap.addFix(it->second, mCommon.pFunction->getVariables()[it->first]);
+            }
+        }
         break;
 
       case MiriamAnnotation:
@@ -979,7 +1041,7 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Expression", mParser.getCurrentLineNumber());
 
-        if (!mCommon.mExistingFunction)
+        if (!mCommon.mPredefinedFunction)
           mCommon.pFunction->setInfix(mCommon.CharacterData);
 
         break;
@@ -998,7 +1060,7 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MathML", mParser.getCurrentLineNumber());
 
-        if (!mCommon.mExistingFunction)
+        if (!mCommon.mPredefinedFunction)
           mCommon.pFunction->setInfix(mCommon.FunctionDescription);
 
         // MathML is in place of Expression in old CopasiML files.
@@ -1203,6 +1265,8 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::start(const XML_Char 
     {
       case ListOfParameterDescriptions:
 
+        mCommon.mFunctionParameterKeyMap.clear();
+
         if (strcmp(pszName, "ListOfParameterDescriptions"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfParameterDescriptions", mParser.getCurrentLineNumber());
@@ -1350,7 +1414,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
         else
           MaxOccurs = atoi(maxOccurs);
 
-        if (mCommon.mExistingFunction)
+        if (mCommon.mPredefinedFunction)
           {
             mCommon.KeyMap.addFix(Key, pFunction->getVariables()[Name]);
           }
@@ -1403,7 +1467,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
             else
               pParm->setType(CFunctionParameter::VFLOAT64);
 
-            mCommon.KeyMap.addFix(Key, pParm);
+            mCommon.mFunctionParameterKeyMap[Order] = Key;
           }
 
         break;
@@ -14297,7 +14361,7 @@ SCopasiXMLParserCommon::SCopasiXMLParserCommon():
     pFunction(NULL),
     pFunctionVariable(NULL),
     FunctionDescription(),
-    mExistingFunction(),
+    mPredefinedFunction(),
     pReaction(NULL),
     pEvent(NULL),
     pEventAssignment(NULL),

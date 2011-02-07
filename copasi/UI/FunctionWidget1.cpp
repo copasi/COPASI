@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.174.2.5 $
+//   $Revision: 1.174.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:57 $
+//   $Date: 2011/02/07 15:39:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -892,7 +892,7 @@ void FunctionWidget1::slotNewButtonClicked()
   std::string name = "function";
   int i = 0;
   CFunction* pFunc;
-  CCopasiVectorN<CEvaluationTree>& FunctionList
+  CCopasiVectorN<CFunction>& FunctionList
   = CCopasiRootContainer::getFunctionList()->loadedFunctions();
 
   while (FunctionList.getIndex(name) != C_INVALID_INDEX)

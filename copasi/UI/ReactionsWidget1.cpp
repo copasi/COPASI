@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.8 $
+//   $Revision: 1.205.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/13 17:32:22 $
+//   $Date: 2011/02/07 15:39:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -649,7 +649,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string name = std::string("Rate Law for ") + TO_UTF8(LineEdit1->text());
   std::string nname = name;
   size_t i = 0;
-  CCopasiVectorN<CEvaluationTree>& FunctionList
+  CCopasiVectorN<CFunction>& FunctionList
   = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
