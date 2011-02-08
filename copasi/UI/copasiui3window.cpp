@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.11 $
+//   $Revision: 1.289.2.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/07 15:39:44 $
+//   $Date: 2011/02/08 17:08:03 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,6 +234,7 @@ CopasiUI3Window::CopasiUI3Window():
     mpMIRIAMResources(NULL),
     mpMainThread(QThread::currentThread()),
     mNewFile(),
+    mCommitRequired(true),
     mpCloseEvent(),
     mQuitApplication(false)
 
@@ -688,7 +689,10 @@ void CopasiUI3Window::slotFileOpen(QString file)
 {
   disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotFileOpen(QString)));
 
-  mpDataModelGUI->commit();
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
 
   QString newFile = "";
 
@@ -718,6 +722,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
                 connect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotFileOpen(QString)));
 
                 mNewFile = newFile;
+                mCommitRequired = false;
                 slotFileSave();
                 return;
 
@@ -747,10 +752,12 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpDataModelGUI->loadModel(TO_UTF8(newFile));
     }
 }
+
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
   unsetCursor();
+  mCommitRequired = true;
 
   if (!success)
     {
@@ -1197,7 +1204,10 @@ void CopasiUI3Window::slotTutorialWizard()
 
 void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 {
-  mpDataModelGUI->commit();
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
 
   if (!sbmlDocumentText.empty())
     {
@@ -1212,6 +1222,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
                                          QMessageBox::Save))
             {
               case QMessageBox::Save:
+                mCommitRequired = false;
                 slotFileSave();
                 break;
 
@@ -1245,8 +1256,8 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
-
   unsetCursor();
+  mCommitRequired = true;
 
   if (!success)
     {
@@ -1288,7 +1299,10 @@ void CopasiUI3Window::slotImportSBML(QString file)
 {
   disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotImportSBML(QString)));
 
-  mpDataModelGUI->commit();
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
 
   QString SBMLFile;
 
@@ -1316,6 +1330,8 @@ void CopasiUI3Window::slotImportSBML(QString file)
                 connect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotImportSBML(QString)));
 
                 mNewFile = SBMLFile;
+                mCommitRequired = false;
+
                 slotFileSave();
                 return;
                 break;
@@ -1352,6 +1368,7 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
   unsetCursor();
+  mCommitRequired = true;
 
   if (!success)
     {

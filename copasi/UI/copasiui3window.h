@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.95.2.5 $
+//   $Revision: 1.95.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/28 21:31:26 $
+//   $Date: 2011/02/08 17:08:04 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,6 +238,7 @@ private:
 
   QThread * mpMainThread;
   QString mNewFile;
+  bool mCommitRequired;
   QCloseEvent * mpCloseEvent;
   bool mQuitApplication;
 
