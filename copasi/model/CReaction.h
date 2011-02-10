@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.104.2.1 $
+//   $Revision: 1.104.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:02 $
+//   $Date: 2011/02/10 21:21:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -303,6 +303,13 @@ public:
    * @return bool isLocal
    */
   bool isLocalParameter(const std::string & parameterName) const;
+
+  /**
+   * We are hiding local reaction parameter which are covered by global quantities.
+   * @param const CCopasiObjectName & cn
+   * @return const CCopasiObject * pObject
+   */
+  virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
   /**
    *  Gets the description of what parameters the function expects.

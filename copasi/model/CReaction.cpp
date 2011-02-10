@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.192.2.1 $
+//   $Revision: 1.192.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:02 $
+//   $Date: 2011/02/10 21:21:19 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -443,6 +443,36 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
   return isLocalParameter(index);
 }
 //***********************************************************************************************
+
+// virtual
+const CCopasiObject * CReaction::getObject(const CCopasiObjectName & cn) const
+{
+  const CCopasiObject * pObject = CCopasiContainer::getObject(cn);
+
+  if (pObject == NULL) return pObject;
+
+  const CCopasiContainer * pParent = pObject->getObjectParent();
+
+  while (pParent != this)
+    {
+      if (pParent->getObjectParent() == &mParameters)
+        {
+          if (isLocalParameter(pParent->getObjectName()))
+            {
+              return pObject;
+            }
+          else
+            {
+              return NULL;
+            }
+        }
+
+      pParent = pParent->getObjectParent();
+    }
+
+  return pObject;
+}
+
 
 void CReaction::initializeParameters()
 {
