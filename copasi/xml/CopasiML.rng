@@ -193,6 +193,22 @@
     <data type="string"/>
   </define>
 
+  <define name="other.datatype">
+    <mixed>
+      <zeroOrMore>
+        <element>
+          <anyName/>
+          <zeroOrMore>
+            <attribute>
+              <anyName/>
+              <text/>
+            </attribute>
+          </zeroOrMore>
+        </element>
+      </zeroOrMore>
+    </mixed>
+  </define>
+  
   <define name="xhtml.datatype">
     <mixed>
       <zeroOrMore>
@@ -204,7 +220,7 @@
               <text/>
             </attribute>
           </zeroOrMore>
-          <ref name="xhtml.datatype"/>
+          <ref name="other.datatype"/>
         </element>
       </zeroOrMore>
     </mixed>
