@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.48.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:32 $
+//   $Date: 2011/02/11 20:03:29 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -44,6 +49,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
     mpStepNumber(NULL),
     mpTimeSeriesRequested(NULL),
     mpOutputStartTime(NULL),
+    mpOutputEvent(NULL),
     mStepNumberSetLast(true)
 {
   initializeParameter();
@@ -63,6 +69,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
     mpStepNumber(NULL),
     mpTimeSeriesRequested(NULL),
     mpOutputStartTime(NULL),
+    mpOutputEvent(NULL),
     mStepNumberSetLast(src.mStepNumberSetLast)
 {
   initializeParameter();
@@ -87,7 +94,9 @@ void CTrajectoryProblem::initializeParameter()
   mpTimeSeriesRequested =
     assertParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
   mpOutputStartTime =
-    assertParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0)->getValue().pDOUBLE;;
+    assertParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0)->getValue().pDOUBLE;
+  mpOutputEvent =
+    assertParameter("Output Event", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
 }
 
 bool CTrajectoryProblem::elevateChildren()
@@ -191,6 +200,14 @@ void CTrajectoryProblem::setTimeSeriesRequested(bool flag)
 
 bool CTrajectoryProblem::timeSeriesRequested() const
 {return *mpTimeSeriesRequested;}
+
+void CTrajectoryProblem::setOutputEvent(const bool & outputEvent)
+{
+  *mpOutputEvent = outputEvent;
+}
+
+const bool & CTrajectoryProblem::getOutputEvent() const
+{return *mpOutputEvent;}
 
 /**
  * Load a trajectory problem

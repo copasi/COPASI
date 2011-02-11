@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.9.2.1 $
+//   $Revision: 1.9.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:57:49 $
+//   $Date: 2011/02/11 20:03:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -259,6 +259,12 @@ bool CQTrajectoryWidget::saveTask()
       mChanged = true;
     }
 
+  if (trajectoryproblem->getOutputEvent() != mpCheckOutputEvent->isChecked())
+    {
+      trajectoryproblem->setOutputEvent(mpCheckOutputEvent->isChecked());
+      mChanged = true;
+    }
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -304,6 +310,8 @@ bool CQTrajectoryWidget::loadTask()
   mpEditDelay->setEnabled(Delayed);
 
   mpEditDelay->setText(QString::number(trajectoryproblem->getOutputStartTime()));
+
+  mpCheckOutputEvent->setChecked(trajectoryproblem->getOutputEvent());
 
   //store time series checkbox
   mpCheckSave->setChecked(trajectoryproblem->timeSeriesRequested());

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.108.2.3 $
+//   $Revision: 1.108.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:06:54 $
+//   $Date: 2011/02/11 20:03:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -369,6 +369,11 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
       if (StateChanged)
         {
+          if (mpTrajectoryProblem->getOutputEvent())
+            {
+              output(COutputInterface::DURING);
+            }
+
           *mpCurrentState = pModel->getState();
           mpTrajectoryMethod->stateChanged();
           StateChanged = false;
@@ -383,11 +388,22 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             pModel->setState(*mpCurrentState);
             pModel->updateSimulatedValues(mUpdateMoieties);
 
+            if (*mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
+                mpTrajectoryProblem->getOutputEvent())
+              {
+                output(COutputInterface::DURING);
+              }
+
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
               return true;
+
+            if (StateChanged && mpTrajectoryProblem->getOutputEvent())
+              {
+                output(COutputInterface::DURING);
+              }
 
             break;
 
@@ -396,6 +412,12 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             pModel->updateSimulatedValues(mUpdateMoieties);
 
             pModel->processRoots(*mpCurrentTime, true, mpTrajectoryMethod->getRoots());
+
+            if (*mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
+                mpTrajectoryProblem->getOutputEvent())
+              {
+                output(COutputInterface::DURING);
+              }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
@@ -414,6 +436,13 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
                   }
 
                 return true;
+              }
+
+            if (mpTrajectoryProblem->getOutputEvent() &&
+                (StateChanged ||
+                 *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
+              {
+                output(COutputInterface::DURING);
               }
 
             break;

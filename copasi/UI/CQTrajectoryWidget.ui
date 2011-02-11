@@ -1,15 +1,15 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.ui,v $ </comment>
-<comment>   $Revision: 1.6 $ </comment>
+<comment>   $Revision: 1.6.4.1 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/11/30 19:28:01 $ </comment>
+<comment>   $Date: 2011/02/11 20:03:29 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
+<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
  <comment> All rights reserved. </comment>
@@ -19,8 +19,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>475</width>
-    <height>235</height>
+    <width>447</width>
+    <height>216</height>
    </rect>
   </property>
   <property name="autoFillBackground" >
@@ -111,11 +111,35 @@
       </layout>
      </item>
      <item row="3" column="1" colspan="3" >
-      <widget class="QCheckBox" name="mpCheckSave" >
-       <property name="text" >
-        <string>Save Result in Memory</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout" >
+       <item>
+        <widget class="QCheckBox" name="mpCheckOutputEvent" >
+         <property name="text" >
+          <string>Output Events  </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mpCheckSave" >
+         <property name="text" >
+          <string>Save Result in Memory</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>13</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
      <item row="4" column="0" colspan="4" >
       <widget class="Line" name="mpLine2" >
@@ -147,7 +171,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0" >
+     <item row="5" column="2" >
       <widget class="QLabel" name="mpLblOutputInterval" >
        <property name="text" >
         <string>Output Interval</string>
@@ -160,24 +184,24 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1" >
+     <item row="5" column="3" >
       <widget class="QLineEdit" name="mpEditOutputInterval" >
        <property name="readOnly" >
         <bool>true</bool>
        </property>
       </widget>
      </item>
+     <item row="6" column="0" colspan="4" >
+      <widget class="Line" name="mpLine1" >
+       <property name="frameShape" >
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
     </layout>
-   </item>
-   <item>
-    <widget class="Line" name="mpLine1" >
-     <property name="frameShape" >
-      <enum>QFrame::HLine</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
