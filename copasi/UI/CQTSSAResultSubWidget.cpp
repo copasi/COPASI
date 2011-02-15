@@ -309,7 +309,7 @@ void CQTSSAResultSubWidget::changeInterval()
   else
     {
 
-      mpSlider->setDisabled(true);
+      //mpSlider->setDisabled(true);
       mpArrayWidget->setArrayAnnotation(NULL);
       mpTimeScaleWidget->clearWidget();
 
