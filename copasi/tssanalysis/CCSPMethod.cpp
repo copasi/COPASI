@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.19.2.3 $
+//   $Revision: 1.19.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/26 21:14:31 $
+//   $Author: ssahle $
+//   $Date: 2011/02/15 15:19:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1868,6 +1868,8 @@ bool CCSPMethod::setAnnotationM(int step)
 
   if (mVec_SlowModes.size() == 0) return false;
 
+  if (step > mVec_SlowModes.size()) return false;
+
   step -= 1;
   M = mVec_SlowModes[step];
 
@@ -2162,7 +2164,8 @@ void CCSPMethod::emptyVectors()
 
 
 }
-/* TODO : Normed vectors are not included */
+
+#ifdef xxxx
 void CCSPMethod::printResult(std::ostream * ostream) const
 {
   std::ostream & os = *ostream;
@@ -2282,6 +2285,160 @@ void CCSPMethod::printResult(std::ostream * ostream) const
 
           for (r = 0; r < (C_INT) reacs.size(); r++)
             os << reacs[r]->getObjectName() << " :" << mVec_mImportanceIndex[istep][r][i] << std::endl;
+
+          os << std::endl;
+        }
+    }
+
+  return;
+}
+#endif
+
+void CCSPMethod::printResult(std::ostream * ostream) const
+{
+  std::ostream & os = *ostream;
+  C_INT M, i, m, r, istep = 0;
+
+  C_INT32 stepNumber;
+  //double timeScale;
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CTSSATask* pTask =
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+
+  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
+
+  //stepNumber = pProblem->getStepNumber();
+  stepNumber = mVec_SlowModes.size(); //this assumes all vectors have the same size, so we only have to look at one of them
+
+  this->print(&os);
+
+  const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
+
+  os << std::endl;
+  os << " Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << std::endl;
+  os << std::endl;
+
+  os << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, " << std::endl;
+  os << " the r-th reaction is said to be a fast reaction  " << std::endl;
+  os << std::endl;
+
+  os << " Participation Index : is a measure of participation of the r-th elementary reaction " << std::endl;
+  os << " to the balancing act of the i-th mode " << std::endl;
+  os << std::endl;
+
+  os << " Importance Index: is a measure of relative importance of the contribution of r-th elementary " << std::endl;
+  os << " reaction to the current reaction rate of i-th species   " << std::endl;
+  os << std::endl;
+
+  os << "Species : " << std::endl;
+
+  os << mpModel->getStateTemplate().beginIndependent()[0]->getObjectName();
+
+  for (i = 1; i < mData.dim; i++)
+    os << ",  " << mpModel->getStateTemplate().beginIndependent()[i]->getObjectName();
+
+  os  << std::endl;
+  os  << std::endl;
+
+  os << "Reactions : " << std::endl;
+  os << reacs[0]->getObjectName();
+
+  for (r = 1; r < (C_INT) reacs.size(); r++)
+    os << ",  " << reacs[r]->getObjectName();
+
+  os << std::endl;
+  os << std::endl;
+
+
+  os << "%%% Radical Pointer:  " << std::endl;
+
+  for (istep = 0; istep < stepNumber; istep++)
+    {
+
+      M = mVec_SlowModes[istep];
+
+      os << std::endl;
+      os << "%%%  Time step " << istep + 1  << std::endl;
+      os << std::endl;
+
+      for (m = 0; m < M; m++)
+        {
+          for (i = 0; i < mData.dim; i++)
+            os << mVec_mRadicalPointer[istep][i][m] << std::endl;
+
+          os << std::endl;
+
+        }
+
+      os << std::endl;
+    }
+
+  os << "%%%  Fast Reaction Pointer:" << std::endl;
+
+  for (istep = 0; istep < stepNumber; istep++)
+    {
+
+      M = mVec_SlowModes[istep];
+
+      os << std::endl;
+      os << "%%%  Time step " << istep + 1  << std::endl;
+      os << std::endl;
+
+
+      for (m = 0; m < M; m++)
+        {
+          for (r = 0; r < (C_INT) reacs.size(); r++)
+            os << mVec_mFastReactionPointer[istep][r][m] << std::endl;
+
+          os << std::endl;
+
+        }
+
+      os << std::endl;
+    }
+
+  os << "%%% Participation Index : " << std::endl;
+
+  for (istep = 0; istep < stepNumber; istep++)
+    {
+
+      M = mVec_SlowModes[istep];
+
+      os << std::endl;
+      os << "%%%  Time step " << istep + 1  << std::endl;
+      os << std::endl;
+
+
+      for (r = 0; r < (C_INT) reacs.size(); r++)
+        {
+
+          for (i = 0; i < mData.dim; i++)
+            os << mVec_mParticipationIndex[istep][r][i] << "   ";
+
+          os << std::endl;
+        }
+
+      os << std::endl;
+    }
+
+
+  os << "%%% Importance Index" << std::endl;
+
+  for (istep = 0; istep < stepNumber; istep++)
+    {
+
+      M = mVec_SlowModes[istep];
+
+      os << std::endl;
+      os << "%%%  Time step " << istep + 1  << std::endl;
+      os << std::endl;
+
+      for (r = 0; r < (C_INT) reacs.size(); r++)
+        {
+
+          for (i = 0; i < mData.dim; i++)
+            os << mVec_mImportanceIndex[istep][r][i] << "   ";
 
           os << std::endl;
         }

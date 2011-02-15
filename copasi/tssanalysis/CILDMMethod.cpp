@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.32.2.3 $
+//   $Revision: 1.32.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/26 21:14:31 $
+//   $Author: ssahle $
+//   $Date: 2011/02/15 15:19:25 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1299,6 +1299,8 @@ bool CILDMMethod::setAnnotationM(int step)
 
   if (mVec_mVslow.size() == 0) return false;
 
+  if (step > mVec_SlowModes.size()) return false;
+
   step -= 1;
   double timeScale;
   std::string str;
@@ -1470,7 +1472,8 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
   CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
-  stepNumber = pProblem->getStepNumber();
+  //stepNumber = pProblem->getStepNumber();
+  stepNumber = mVec_SlowModes.size();
 
   for (istep = 0; istep < stepNumber; istep++)
     {
