@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.72.2.1 $
+//   $Revision: 1.72.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:11 $
+//   $Date: 2011/02/16 18:33:15 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,7 +280,6 @@ bool CCopasiTask::process(const bool &)
 
 bool CCopasiTask::restore()
 {
-  //mReport.close();
   setCallBack(NULL);
 
   if (!mUpdateModel)
@@ -288,11 +287,12 @@ bool CCopasiTask::restore()
       if (mpInitialState)
         {
           mpProblem->getModel()->setInitialState(*mpInitialState);
-          mpProblem->getModel()->updateInitialValues();
         }
     }
 
   mpProblem->restore(mUpdateModel);
+
+  mpProblem->getModel()->updateInitialValues();
 
   return true;
 }
