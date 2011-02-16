@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.10.2.2 $
+//   $Revision: 1.10.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:54 $
+//   $Date: 2011/02/16 18:33:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,7 @@ public:
   {return mapTableToName[name];}
 
   //virtual void setAnnotationM(int s) = 0;
-  virtual bool setAnnotationM(int s) = 0;
+  virtual bool setAnnotationM(size_t s) = 0;
 
   /**
    *  Set a pointer to the current state.

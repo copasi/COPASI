@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.32.2.4 $
+//   $Revision: 1.32.2.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2011/02/15 15:19:25 $
+//   $Author: shoops $
+//   $Date: 2011/02/16 18:33:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1293,7 +1293,7 @@ void CILDMMethod::createAnnotationsM()
  *    - dimension description could consists of arrays of CommonNames
  **/
 //void CILDMMethod::setAnnotationM(int step)
-bool CILDMMethod::setAnnotationM(int step)
+bool CILDMMethod::setAnnotationM(size_t step)
 {
   if (step == 0) return false;
 
@@ -1467,10 +1467,6 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
   this->print(&os);
 
   assert(getObjectDataModel() != NULL);
-  CTSSATask* pTask =
-    dynamic_cast<CTSSATask *>((*getObjectDataModel()->getTaskList())["Time Scale Separation Analysis"]);
-
-  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
   //stepNumber = pProblem->getStepNumber();
   stepNumber = mVec_SlowModes.size();

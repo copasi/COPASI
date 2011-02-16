@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.19.2.4 $
+//   $Revision: 1.19.2.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2011/02/15 15:19:25 $
+//   $Author: shoops $
+//   $Date: 2011/02/16 18:33:45 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1854,7 +1854,7 @@ void CCSPMethod::createAnnotationsM()
  *    - dimension description could consists of arrays of CommonNames
  **/
 //void CCSPMethod::setAnnotationM(int step)
-bool CCSPMethod::setAnnotationM(int step)
+bool CCSPMethod::setAnnotationM(size_t step)
 {
   std::string str;
   std::stringstream sstr;
@@ -2303,10 +2303,6 @@ void CCSPMethod::printResult(std::ostream * ostream) const
   //double timeScale;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CTSSATask* pTask =
-    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
-
-  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
   //stepNumber = pProblem->getStepNumber();
   stepNumber = mVec_SlowModes.size(); //this assumes all vectors have the same size, so we only have to look at one of them
