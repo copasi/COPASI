@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.83.2.1 $
+//   $Revision: 1.83.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:05:31 $
+//   $Date: 2011/02/16 18:34:42 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,9 +146,7 @@ public:
   virtual bool isEqual(Refresh *const rhs) const
   {
     const RefreshTemplate< CClass > * pRhs =
-      dynamic_cast< RefreshTemplate< CClass > * >(rhs);
-
-    if (!pRhs) return false;
+      static_cast< RefreshTemplate< CClass > * >(rhs);
 
     return (mpInstance == pRhs->mpInstance && mMethod == pRhs->mMethod);
   }
