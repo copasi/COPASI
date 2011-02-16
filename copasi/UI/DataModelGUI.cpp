@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.93.2.22 $
+//   $Revision: 1.93.2.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/07 15:39:45 $
+//   $Date: 2011/02/16 18:03:30 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,6 +128,8 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(43)->setObjectKey(pDataModel->getReportDefinitionList()->getKey());
   //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
   mTree.findNodeFromId(42)->setObjectKey(pDataModel->getPlotDefinitionList()->getKey());
+
+  pDataModel->deleteOldData();
 }
 
 void DataModelGUI::populateData()
@@ -674,7 +676,7 @@ bool DataModelGUI::createModel()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (!(*CCopasiRootContainer::getDatamodelList())[0]->newModel(NULL, NULL)) return false;
+  if (!(*CCopasiRootContainer::getDatamodelList())[0]->newModel(NULL, NULL, NULL, true)) return false;
 
   mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
 
@@ -699,7 +701,7 @@ void DataModelGUI::loadModelRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->loadModel(mFileName, mpProgressBar);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->loadModel(mFileName, mpProgressBar, false);
     }
 
   catch (...)
@@ -779,7 +781,7 @@ void DataModelGUI::importSBMLFromStringRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBMLFromString(mSBMLImportString, mpProgressBar);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBMLFromString(mSBMLImportString, mpProgressBar, false);
     }
 
   catch (...)
@@ -820,7 +822,7 @@ void DataModelGUI::importSBMLRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBML(mFileName, mpProgressBar);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBML(mFileName, mpProgressBar, false);
     }
 
   catch (...)

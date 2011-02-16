@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.49.2.1 $
+//   $Revision: 1.49.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/30 17:02:32 $
+//   $Date: 2011/02/16 18:03:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,26 @@ private:
 
 class CCopasiDataModel: public CCopasiContainer, public COutputHandler
 {
+private:
+  class CData
+  {
+  public:
+
+    CData();
+
+    CData(const CData & src);
+
+    ~CData();
+
+    CModel * pModel;
+    CCopasiVectorN< CCopasiTask > * pTaskList;
+    CReportDefinitionVector * pReportDefinitionList;
+    COutputDefinitionVector * pPlotDefinitionList;
+    CListOfLayouts * pListOfLayouts;
+    SCopasiXMLGUI * pGUI;
+    SBMLDocument* pCurrentSBMLDocument;
+  };
+
   // Operations
 public:
   CCopasiDataModel(const bool withGUI = false);
@@ -80,20 +100,32 @@ public:
 
   ~CCopasiDataModel();
 
-  bool loadModel(const std::string & fileName, CProcessReport* pProcessReport);
+  bool loadModel(const std::string & fileName, CProcessReport* pProcessReport,
+                 const bool & deleteOldData = true);
   bool saveModel(const std::string & fileName, CProcessReport* pProcessReport,
                  bool overwriteFile = false,
                  const bool & autoSave = false);
   bool autoSave();
 
-  bool newModel(CModel * pModel, CProcessReport* pProcessReport, CListOfLayouts * pLol = NULL);
+  bool newModel(CModel * pModel,
+                CProcessReport* pProcessReport,
+                CListOfLayouts * pLol,
+                const bool & deleteOldData);
 
-  bool importSBMLFromString(const std::string & sbmlDocumentText, CProcessReport* pImportHandler = NULL);
-  bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
+  bool importSBMLFromString(const std::string & sbmlDocumentText,
+                            CProcessReport* pImportHandler = NULL,
+                            const bool & deleteOldData = true);
+
+  bool importSBML(const std::string & fileName,
+                  CProcessReport* pImportHandler = NULL,
+                  const bool & deleteOldData = true);
+
   std::string exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
   bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
   bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                        const std::string & filter, bool overwriteFile = false);
+
+  void deleteOldData();
 
   CModel * getModel();
   const CModel * getModel() const;
@@ -153,18 +185,15 @@ public:
   const std::string& getReferenceDirectory() const;
 #endif // USE_CRENDER_EXTENSION
 
+protected:
+  void hideOldData();
+
   // Attributes
 protected:
-  CModel * mpModel;
-  CCopasiVectorN< CCopasiTask > * mpTaskList;
-  CReportDefinitionVector * mpReportDefinitionList;
-
-  COutputDefinitionVector * mpPlotDefinitionList;
-
-  CListOfLayouts * mpListOfLayouts;
+  CData mData;
+  CData * mpOldData;
 
   bool mWithGUI;
-  SCopasiXMLGUI * mpGUI;
 
   std::string mSaveFileName;
   bool mChanged;
@@ -172,18 +201,12 @@ protected:
   CDataModelRenameHandler mRenameHandler;
 
   /**
-   * This will hold the SBMLDocument that was imported
-   * to create the current Model.
-   */
-  SBMLDocument* mpCurrentSBMLDocument;
-
-  /**
    * The name of the referenced SBML file
    */
   std::string mSBMLFileName;
 
   /**
-   * This will map each Copasi object to the
+   * This will map each COPASI object to the
    * corresponding SBML object if the current model
    * was created by an SBML import.
    */
