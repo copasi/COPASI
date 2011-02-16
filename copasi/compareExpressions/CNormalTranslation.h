@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.23.4.2 $
+//   $Revision: 1.23.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/12 10:52:34 $
+//   $Date: 2011/02/16 15:47:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@ class CNormalFraction;
 class CEvaluationTree;
 
 #include <exception>
+#include <list>
 
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CEvaluationNodeOperator.h"
@@ -82,7 +83,6 @@ struct product_match : public summ_match
  */
 class CNormalTranslation
 {
-
 public:
   /**
    * Simplify an evaluation tree given by the root node by creating a new simplified tree from the original one.
@@ -173,7 +173,7 @@ public:
    * This method expands products. (A+B)*(C+D) -> (A*C)+(A*D)+(B*C)+(B*D)
    * This method should be replaced by the one below pretty soon.
    */
-  static CEvaluationNode* expandProducts(CEvaluationNode* pOrig);
+  static CEvaluationNode* expandProducts(const CEvaluationNode* pOrig);
 
   /**
    * This method expands products. (A+B)*(C+D) -> (A*C)+(A*D)+(B*C)+(B*D)
@@ -248,6 +248,7 @@ protected:
    * and changes the number to a positive number.
    */
   static void swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, std::vector<CEvaluationNode*>& v2);
+
   /**
    * This routine finds all negative numbers in vector v1
    * and adds a copy with a positive number to v2
@@ -266,7 +267,7 @@ protected:
    * These steps can not lead to new simplifications in the children of the node
    * being simplified, so it is not necessary to run this on the children again.
    */
-  static CEvaluationNode* elementaryElimination(const CEvaluationNode* pOrig);
+  static CEvaluationNode* elementaryElimination(CEvaluationNode* pOrig);
 
   /**
    * This method makes elementary eliminations on function nodes
@@ -317,13 +318,20 @@ protected:
    * The methods get a vector of multiplication elements and a vector of division
    * elements and tries to find elements with the same power base in those two vectors.
    */
-  static std::vector<product_match> matchPowerBases(const std::vector<const CEvaluationNode*>& multiplications, const std::vector<const CEvaluationNode*>& divisions);
+  //static std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchPowerBases(const std::vector<const CEvaluationNode*>& multiplications, const std::vector<const CEvaluationNode*>& divisions);
+  static std::vector<product_match>                                  matchPowerBases(const std::vector<const CEvaluationNode*>& multiplications, const std::vector<const CEvaluationNode*>& divisions);
 
   /**
    * The methods get a vector of addition elements and a vector of subtractions
    * elements and tries to find equal elements in those two vectors.
    */
-  static std::vector<summ_match> matchSummands(const std::vector<const CEvaluationNode*>& additions, const std::vector<const CEvaluationNode*>& subtractions);
+  static std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchSummands(const std::vector<CEvaluationNode*>& additions, const std::vector<CEvaluationNode*>& subtractions);
+  static std::vector<summ_match>                                     matchSummands(const std::vector<const CEvaluationNode*>& additions, const std::vector<const CEvaluationNode*>& subtractions);
+
+  /**
+   * This methods records the order of nodes in a CEvaluationNode based tree.
+   */
+  static void order(const CEvaluationNode* pRoot, std::list<const CEvaluationNode*>& orderList);
 
   /**
    * Multiplies the two given nodes and returns the result.

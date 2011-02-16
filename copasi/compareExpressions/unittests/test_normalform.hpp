@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.18.12.3 $
+//   $Revision: 1.18.12.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/12 19:20:11 $
+//   $Date: 2011/02/16 15:47:40 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,6 +120,21 @@ class test_normalform : public CppUnit::TestFixture
   CPPUNIT_TEST(test_product_of_sums_1);
   CPPUNIT_TEST(test_product_of_sums_2);
 
+  // test for bugs
+  CPPUNIT_TEST(test_cancel_bug_1);
+  CPPUNIT_TEST(test_cancel_bug_2);
+  CPPUNIT_TEST(test_cancel_bug_3);
+  CPPUNIT_TEST(test_cancel_bug_4);
+  CPPUNIT_TEST(test_cancel_bug_5);
+  CPPUNIT_TEST(test_bug_1);
+  CPPUNIT_TEST(test_bug_2);
+  CPPUNIT_TEST(test_bug_3);
+  CPPUNIT_TEST(test_bug_4);
+  CPPUNIT_TEST(test_bug_5);
+  CPPUNIT_TEST(test_bug_6);
+  CPPUNIT_TEST(test_bug_7);
+  CPPUNIT_TEST(test_bug_8);
+
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -216,6 +231,47 @@ public:
   void test_product_of_sums_1();
   void test_product_of_sums_2();
 
+  // L * Ks^(1+n) -> Ks * L * Ks^n
+  void test_cancel_bug_1();
+
+  // L * Ks^(n-1) -> Ks^-1 * L * Ks^n
+  void test_cancel_bug_2();
+
+  // L * Ks^(1+n-x+3) -> Ks^4 * L * Ks^n * Ks^(-x)
+  void test_cancel_bug_3();
+
+  // L * Ks^(-1-n+x+3) -> (K^2 L * Ks^x) / * Ks^n
+  void test_cancel_bug_4();
+
+  // L * Ks^(-n-1) -> (L / (Ks * Ks^n)
+  void test_cancel_bug_5();
+
+  // A/B - C/D -> (A*D - C*B) / (B*D))
+  void test_bug_1();
+
+  // A/B + C/D -> (A*D + C*B) / (B*D))
+  void test_bug_2();
+
+  // (B*(1/B)) -> 1
+  void test_bug_3();
+
+  // B*(1-(1/B)) -> B-1
+  void test_bug_4();
+
+  // B*(1-D/(B*E)) -> (B*E-D)/E
+  void test_bug_5();
+
+
+  // A*(B/C)*(1-D/(B*E)) -> (-A*D+A*B*E)/(C*E)
+  void test_bug_6();
+
+  // (1/F)^3/(1/F) -> 1/F^2
+  void test_bug_7();
+
+  // (A/F)^3/(A/F) -> A^2/F^2
+  void test_bug_8();
+
+
   // PI < A
   bool check_LogicalItemA(const CNormalLogicalItem* pLogicalItem);
 
@@ -251,6 +307,8 @@ public:
 
   // 2*T^(3*J) == 6.2
   bool check_LogicalItemNotF(const CNormalLogicalItem* pLogicalItem);
+
+
 };
 
 #endif /* TEST_NORMALFORM_HPP__ */

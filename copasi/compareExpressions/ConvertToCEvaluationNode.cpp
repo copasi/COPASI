@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.37.2.1 $
+//   $Revision: 1.37.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/12 07:39:29 $
+//   $Date: 2011/02/16 15:47:39 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1033,13 +1033,16 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
   CEvaluationNode* pTmp2 = node->copyBranch();
   CEvaluationNode* pTmp = CNormalTranslation::expandProducts(pTmp2);
 
-  if (pTmp != /*NULL*/ pTmp2)
+  if (pTmp != NULL)
     {
       delete pTmp2;
-      pTmp2 = pTmp;
+    }
+  else
+    {
+      pTmp = pTmp2;
     }
 
-  pTmp = CNormalTranslation::evaluateNumbers(pTmp2);
+  pTmp2 = CNormalTranslation::evaluateNumbers(pTmp);
 
   if (pTmp != NULL)
     {
@@ -1064,7 +1067,7 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
         break;
     }
 
-  if (pTmp2 != node)
+  if (pTmp2 != NULL)
     {
       delete pTmp2;
     }
@@ -1362,30 +1365,49 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
 {
   CNormalGeneralPower* pPow = NULL;
 
-  if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR)
+  if (node != NULL)
     {
-      if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeOperator::POWER)
+      if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR)
         {
-          pPow = new CNormalGeneralPower();
-          pPow->setType(CNormalGeneralPower::POWER);
-        }
-      else if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeOperator::MODULUS)
-        {
-          pPow = new CNormalGeneralPower();
-          pPow->setType(CNormalGeneralPower::MODULO);
-        }
+          if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeOperator::POWER)
+            {
+              pPow = new CNormalGeneralPower();
+              pPow->setType(CNormalGeneralPower::POWER);
+            }
+          else if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeOperator::MODULUS)
+            {
+              pPow = new CNormalGeneralPower();
+              pPow->setType(CNormalGeneralPower::MODULO);
+            }
 
-      if (pPow != NULL)
-        {
-          // add the left and the right side
-          CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()));
-          CNormalFraction* pExponent = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
-          assert(pBase != NULL);
-          assert(pExponent != NULL);
-          pPow->setLeft(*pBase);
-          pPow->setRight(*pExponent);
-          delete pBase;
-          delete pExponent;
+          if (pPow != NULL)
+            {
+              // add the left and the right side
+              CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+              CNormalFraction* pExponent = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
+              assert(pBase != NULL);
+              assert(pExponent != NULL);
+              pPow->setLeft(*pBase);
+              pPow->setRight(*pExponent);
+              delete pBase;
+              delete pExponent;
+            }
+          else
+            {
+              // create a fraction for the base and a unit fraction for the exponent
+              pPow = new CNormalGeneralPower();
+              pPow->setType(CNormalGeneralPower::POWER);
+              CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node));
+              CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+              CNormalFraction* pExponent = createNormalRepresentation(pTmpNode);
+              delete pTmpNode;
+              assert(pBase != NULL);
+              assert(pExponent != NULL);
+              pPow->setLeft(*pBase);
+              pPow->setRight(*pExponent);
+              delete pBase;
+              delete pExponent;
+            }
         }
       else
         {
@@ -1403,23 +1425,6 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
           delete pBase;
           delete pExponent;
         }
-    }
-  else
-    {
-      assert(node->getChild() != NULL);
-      // create a fraction for the base and a unit fraction for the exponent
-      pPow = new CNormalGeneralPower();
-      pPow->setType(CNormalGeneralPower::POWER);
-      CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()));
-      CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-      CNormalFraction* pExponent = createNormalRepresentation(pTmpNode);
-      delete pTmpNode;
-      assert(pBase != NULL);
-      assert(pExponent != NULL);
-      pPow->setLeft(*pBase);
-      pPow->setRight(*pExponent);
-      delete pBase;
-      delete pExponent;
     }
 
   return pPow;

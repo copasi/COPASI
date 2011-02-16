@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalCall.h,v $
-//   $Revision: 1.2.4.1 $
+//   $Revision: 1.2.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/10 17:00:27 $
+//   $Author: gauges $
+//   $Date: 2011/02/16 15:47:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ public:
    * Retrieve the number of summands of this sum.
    * @return int
    */
-  size_t getSize() const;
+  int getSize() const;
 
   /**
    * Add fraction to this sum.

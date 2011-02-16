@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalCall.cpp,v $
-//   $Revision: 1.2.4.1 $
+//   $Revision: 1.2.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/10 17:00:27 $
+//   $Author: gauges $
+//   $Date: 2011/02/16 15:47:38 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,7 +127,7 @@ CNormalBase * CNormalCall::copy() const
  * Retrieve the number of summands of this sum.
  * @return int
  */
-size_t CNormalCall::getSize() const
+int CNormalCall::getSize() const
 {
   return this->mFractions.size();
 }
