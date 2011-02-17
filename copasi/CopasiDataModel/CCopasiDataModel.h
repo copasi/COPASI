@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.49.2.2 $
+//   $Revision: 1.49.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/16 18:03:29 $
+//   $Date: 2011/02/17 15:18:43 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,6 +79,8 @@ private:
     CData(const CData & src);
 
     ~CData();
+
+    CData & operator = (const CData & rhs);
 
     CModel * pModel;
     CCopasiVectorN< CCopasiTask > * pTaskList;
@@ -191,7 +193,7 @@ protected:
   // Attributes
 protected:
   CData mData;
-  CData * mpOldData;
+  CData mOldData;
 
   bool mWithGUI;
 

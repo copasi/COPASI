@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.152.2.4 $
+//   $Revision: 1.152.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/16 18:03:29 $
+//   $Date: 2011/02/17 15:18:42 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     CCopasiContainer("Root", NULL, "CN", CCopasiObject::DataModel),
     COutputHandler(),
     mData(),
-    mpOldData(NULL),
+    mOldData(),
     mWithGUI(withGUI),
     mChanged(false),
     mAutoSaveNeeded(false),
@@ -131,7 +131,7 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
     CCopasiContainer(name, pParent, type, CCopasiObject::DataModel),
     COutputHandler(),
     mData(),
-    mpOldData(NULL),
+    mOldData(),
     mWithGUI(withGUI),
     mChanged(false),
     mAutoSaveNeeded(false),
@@ -148,7 +148,6 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
 CCopasiDataModel::~CCopasiDataModel()
 {
   CCopasiObject::setRenameHandler(NULL);
-  pdelete(mpOldData);
   pdelete(pOldMetabolites);
 }
 
@@ -513,7 +512,7 @@ bool CCopasiDataModel::newModel(CModel * pModel,
                                 const bool & deleteOldData)
 {
   //deal with the CModel
-  mpOldData = new CData(mData);
+  mOldData = mData;
 
   if (pModel)
     mData.pModel = pModel;
@@ -960,7 +959,13 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
 void CCopasiDataModel::deleteOldData()
 {
-  pdelete(mpOldData);
+  pdelete(mOldData.pModel);
+  pdelete(mOldData.pTaskList);
+  pdelete(mOldData.pReportDefinitionList);
+  pdelete(mOldData.pPlotDefinitionList);
+  pdelete(mOldData.pListOfLayouts);
+  pdelete(mOldData.pGUI);
+  pdelete(mOldData.pCurrentSBMLDocument);
 }
 
 const CModel * CCopasiDataModel::getModel() const
@@ -1457,76 +1462,81 @@ CCopasiDataModel::CData::CData(const CData & src):
     pCurrentSBMLDocument(src.pCurrentSBMLDocument)
 {}
 
-
 CCopasiDataModel::CData::~CData()
+{}
+
+CCopasiDataModel::CData & CCopasiDataModel::CData::operator = (const CData & rhs)
 {
-  pdelete(pModel);
-  pdelete(pTaskList);
-  pdelete(pReportDefinitionList);
-  pdelete(pPlotDefinitionList);
-  pdelete(pListOfLayouts);
-  pdelete(pGUI);
-  pdelete(pCurrentSBMLDocument);
+  pModel = rhs.pModel;
+  pTaskList = rhs.pTaskList;
+  pReportDefinitionList = rhs.pReportDefinitionList;
+  pPlotDefinitionList = rhs.pPlotDefinitionList;
+  pListOfLayouts = rhs.pListOfLayouts;
+  pGUI = rhs.pGUI;
+  pCurrentSBMLDocument = rhs.pCurrentSBMLDocument;
+
+  return *this;
 }
 
 void CCopasiDataModel::hideOldData()
 {
-  if (mpOldData == NULL)
-    return;
-
-  if (mpOldData->pModel != NULL &&
-      mpOldData->pModel != mData.pModel)
+  if (mOldData.pModel != NULL &&
+      mOldData.pModel != mData.pModel)
     {
-      mpOldData->pModel->setObjectParent(NULL);
-      remove(mpOldData->pModel);
+      mOldData.pModel->setObjectParent(NULL);
+      remove(mOldData.pModel);
     }
   else
-    mpOldData->pModel = NULL;
+    mOldData.pModel = NULL;
 
-  if (mpOldData->pTaskList != NULL &&
-      mpOldData->pTaskList != mData.pTaskList)
+  if (mOldData.pTaskList != NULL &&
+      mOldData.pTaskList != mData.pTaskList)
     {
-      mpOldData->pTaskList->setObjectParent(NULL);
-      remove(mpOldData->pTaskList);
+      mOldData.pTaskList->setObjectParent(NULL);
+      remove(mOldData.pTaskList);
     }
   else
-    mpOldData->pTaskList = NULL;
+    mOldData.pTaskList = NULL;
 
-  if (mpOldData->pReportDefinitionList != NULL &&
-      mpOldData->pReportDefinitionList != mData.pReportDefinitionList)
+  if (mOldData.pReportDefinitionList != NULL &&
+      mOldData.pReportDefinitionList != mData.pReportDefinitionList)
     {
-      mpOldData->pReportDefinitionList->setObjectParent(NULL);
-      remove(mpOldData->pReportDefinitionList);
+      mOldData.pReportDefinitionList->setObjectParent(NULL);
+      remove(mOldData.pReportDefinitionList);
     }
   else
-    mpOldData->pReportDefinitionList = NULL;
+    mOldData.pReportDefinitionList = NULL;
 
-  if (mpOldData->pPlotDefinitionList != NULL &&
-      mpOldData->pPlotDefinitionList != mData.pPlotDefinitionList)
+  if (mOldData.pPlotDefinitionList != NULL &&
+      mOldData.pPlotDefinitionList != mData.pPlotDefinitionList)
     {
-      mpOldData->pPlotDefinitionList->setObjectParent(NULL);
-      remove(mpOldData->pPlotDefinitionList);
+      mOldData.pPlotDefinitionList->setObjectParent(NULL);
+      remove(mOldData.pPlotDefinitionList);
     }
   else
-    mpOldData->pPlotDefinitionList = NULL;
+    mOldData.pPlotDefinitionList = NULL;
 
-  if (mpOldData->pListOfLayouts != NULL &&
-      mpOldData->pListOfLayouts != mData.pListOfLayouts)
+  if (mOldData.pListOfLayouts != NULL &&
+      mOldData.pListOfLayouts != mData.pListOfLayouts)
     {
-      mpOldData->pListOfLayouts->setObjectParent(NULL);
-      remove(mpOldData->pListOfLayouts);
+      mOldData.pListOfLayouts->setObjectParent(NULL);
+      remove(mOldData.pListOfLayouts);
     }
   else
-    mpOldData->pListOfLayouts = NULL;
+    mOldData.pListOfLayouts = NULL;
 
-  if (mpOldData->pGUI != NULL &&
-      mpOldData->pGUI != mData.pGUI)
+  if (mOldData.pGUI != NULL &&
+      mOldData.pGUI != mData.pGUI)
     {
-      mpOldData->pGUI->setObjectParent(NULL);
-      remove(mpOldData->pGUI);
+      mOldData.pGUI->setObjectParent(NULL);
+      remove(mOldData.pGUI);
     }
   else
-    mpOldData->pGUI = NULL;
+    mOldData.pGUI = NULL;
+
+  if (mOldData.pCurrentSBMLDocument == mData.pCurrentSBMLDocument)
+    mOldData.pCurrentSBMLDocument = NULL;
+
 }
 
 
