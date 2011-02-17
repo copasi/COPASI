@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/utilities.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:52:25 $
+//   $Author: gauges $
+//   $Date: 2011/02/17 08:57:44 $
 // End CVS Header
+
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -48,7 +53,7 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
           return false;
         }
 
-      dataModel.newModel(XML.getModel(), NULL);
+      dataModel.newModel(XML.getModel(), NULL, NULL, true);
 
       if (XML.getTaskList())
         {

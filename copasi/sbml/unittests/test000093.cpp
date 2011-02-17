@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000093.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/03 15:53:06 $
+//   $Date: 2011/02/17 08:57:44 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -293,7 +293,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(pChild2->getName() == pCompartment->getId());
 
   // now we reimport the model and check if the divisions and mutliplications by the compartment have been reverted
-  pDataModel->newModel(NULL, NULL, NULL);
+  pDataModel->newModel(NULL, NULL, NULL, true);
   CPPUNIT_ASSERT(pDataModel->getModel()->getCompartments().size() == 0);
   bool result = pDataModel->importSBMLFromString(content);
   CPPUNIT_ASSERT(result == true);
@@ -780,7 +780,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(pChild2->getName() == pCompartment->getId());
 
   // now we reimport the model and check if the divisions and mutliplications by the compartment have been reverted
-  pDataModel->newModel(NULL, NULL, NULL);
+  pDataModel->newModel(NULL, NULL, NULL, true);
   CPPUNIT_ASSERT(pDataModel->getModel()->getCompartments().size() == 0);
   bool result = pDataModel->importSBMLFromString(content);
   CPPUNIT_ASSERT(result == true);
