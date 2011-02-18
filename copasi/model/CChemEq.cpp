@@ -1,12 +1,12 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
- $Revision: 1.50.4.1 $
+ $Revision: 1.50.4.2 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/01/12 19:04:00 $
+ $Date: 2011/02/18 19:58:14 $
  End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -75,6 +75,14 @@ const CCopasiVector < CChemEqElement > & CChemEq::getModifiers() const
 
 const CCopasiVector < CChemEqElement > & CChemEq::getBalances() const
 {return mBalances;}
+
+void CChemEq::setReversibility(const bool & reversible)
+{
+  mReversible = reversible;
+}
+
+const bool & CChemEq::getReversibility() const
+{return mReversible;}
 
 bool CChemEq::addMetabolite(const std::string & key, const C_FLOAT64 multiplicity, const MetaboliteRole & role)
 {

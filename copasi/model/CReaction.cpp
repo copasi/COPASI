@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.192.2.2 $
+//   $Revision: 1.192.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/10 21:21:19 $
+//   $Date: 2011/02/18 19:58:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -627,14 +627,16 @@ void CReaction::compile()
 }
 
 bool CReaction::loadOneRole(CReadConfig & configbuffer,
-                            CFunctionParameter::Role role, size_t n,
+                            CFunctionParameter::Role role, C_INT32 n,
                             const std::string & prefix)
 {
   const CModel * pModel
   = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
   const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
 
-  size_t i, imax, pos;
+  size_t pos;
+
+  C_INT32 i, imax;
   C_INT32 index;
   std::string name, parName, metabName;
   const CFunctionParameter* pParameter;
@@ -725,7 +727,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 
 C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 {
-  size_t SubstrateSize, ProductSize, ModifierSize, ParameterSize;
+  C_INT32 SubstrateSize, ProductSize, ModifierSize, ParameterSize;
 
   configbuffer.getVariable("Substrates", "C_INT32", &SubstrateSize);
   configbuffer.getVariable("Products", "C_INT32", &ProductSize);

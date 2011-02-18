@@ -1,12 +1,12 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
- $Revision: 1.40.4.1 $
+ $Revision: 1.40.4.2 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/01/12 19:04:00 $
+ $Date: 2011/02/18 19:58:14 $
  End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,13 +81,13 @@ public:
    * Set the reversibility of the of the equation
    * @param const bool & const bool & reversible
    */
-  void setReversibility(const bool & reversible) {mReversible = reversible;}
+  void setReversibility(const bool & reversible);
 
   /**
    * Retrieve the reversibility of the equation
    * @return const bool & reversible
    */
-  const bool & getReversibility() const {return mReversible;}
+  const bool & getReversibility() const;
 
   /**
    * Add a species to the equation

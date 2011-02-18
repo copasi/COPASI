@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.104.2.2 $
+//   $Revision: 1.104.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/10 21:21:19 $
+//   $Date: 2011/02/18 19:58:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -423,7 +423,7 @@ private:
    * Used for loading Gepasi files. Loads the mapping for one role
    */
   bool loadOneRole(CReadConfig & configbuffer,
-                   CFunctionParameter::Role role, size_t n,
+                   CFunctionParameter::Role role, C_INT32 n,
                    const std::string & prefix);
 
   /**
