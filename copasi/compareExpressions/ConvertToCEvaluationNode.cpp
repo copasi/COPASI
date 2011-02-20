@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.37.2.2 $
+//   $Revision: 1.37.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/16 15:47:39 $
+//   $Date: 2011/02/20 14:42:10 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -480,7 +480,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
           // create a general power with exponent 1
           CEvaluationNode::Type type = CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType());
 
-          if (type == CEvaluationNode::CONSTANT || type == CEvaluationNode::OBJECT || type == CEvaluationNode::VARIABLE || type == CEvaluationNode::FUNCTION || type == CEvaluationNode::CHOICE || type == CEvaluationNode::CALL)
+          if (type == CEvaluationNode::CONSTANT || type == CEvaluationNode::OBJECT || type == CEvaluationNode::VARIABLE || type == CEvaluationNode::FUNCTION || type == CEvaluationNode::CHOICE || type == CEvaluationNode::CALL || type == CEvaluationNode::LOGICAL)
             {
               CNormalBase* pItem = createItemPowerItem(dynamic_cast<const CEvaluationNode*>(node->getChild()));
               assert(pItem != NULL);
@@ -552,6 +552,14 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
   else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CONSTANT || CEvaluationNode::type(node->getType()) == CEvaluationNode::OBJECT || CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
     {
       CNormalItem* pItem = createItem(node);
+      assert(pItem != NULL);
+      pItemPower->setItem(*pItem);
+      delete pItem;
+      pItemPower->setExp(1.0);
+    }
+  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::LOGICAL)
+    {
+      CNormalBase* pItem = createItemPowerItem(node);
       assert(pItem != NULL);
       pItemPower->setItem(*pItem);
       delete pItem;
@@ -1684,12 +1692,11 @@ CNormalBase* createItemPowerItem(const CEvaluationNode* pNode)
       case CEvaluationNode::CALL:
         pResult = createCall(pNode);
         break;
-        /*
-        case CEvaluationNode::CHOICE:
+      case CEvaluationNode::CHOICE:
+        pResult = createChoice(pNode);
         break;
-        */
       case CEvaluationNode::LOGICAL:
-        throw std::exception();
+        pResult = createLogical(pNode);
         break;
       case CEvaluationNode::VARIABLE:
         pResult = createItem(pNode);

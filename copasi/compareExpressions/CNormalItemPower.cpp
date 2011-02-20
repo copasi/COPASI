@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.10.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/09 15:26:31 $
+//   $Date: 2011/02/20 14:42:10 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -26,12 +31,13 @@
 
 #include "copasi.h"
 
+#include "CNormalCall.h"
+#include "CNormalChoice.h"
+#include "CNormalFunction.h"
+#include "CNormalGeneralPower.h"
 #include "CNormalItem.h"
 #include "CNormalItemPower.h"
-#include "CNormalFunction.h"
-#include "CNormalCall.h"
-#include "CNormalGeneralPower.h"
-#include "CNormalChoice.h"
+#include "CNormalLogical.h"
 
 /**
  * Default constructor
@@ -58,10 +64,12 @@ CNormalItemPower::~CNormalItemPower()
 /**
  * Assignment operator Constructor
  */
-CNormalItemPower& CNormalItemPower::operator=(const CNormalItemPower& src)
+CNormalItemPower& CNormalItemPower::operator=(const CNormalItemPower & src)
 {
   if (this->mpItem != NULL) delete this->mpItem;
+
   this->mItemType = src.mItemType;
+
   if (this->mItemType != CNormalItemPower::INVALID)
     {
       this->mpItem = src.mpItem->copy();
@@ -70,6 +78,7 @@ CNormalItemPower& CNormalItemPower::operator=(const CNormalItemPower& src)
     {
       this->mpItem = NULL;
     }
+
   mExp = src.mExp;
   return *this;
 }
@@ -93,40 +102,54 @@ CNormalItemPower::CNormalItemPower(const CNormalBase& item, const C_FLOAT64& exp
 bool CNormalItemPower::setItem(const CNormalBase& item)
 {
   bool result = true;
+
   if (dynamic_cast<const CNormalItem*>(&item))
     {
       if (this->mpItem != NULL) delete this->mpItem;
+
       this->mItemType = CNormalItemPower::ITEM;
       this->mpItem = item.copy();
     }
   else if (dynamic_cast<const CNormalFunction*>(&item))
     {
       if (this->mpItem != NULL) delete this->mpItem;
+
       this->mItemType = CNormalItemPower::FUNCTION;
       this->mpItem = item.copy();
     }
   else if (dynamic_cast<const CNormalGeneralPower*>(&item))
     {
       if (this->mpItem != NULL) delete this->mpItem;
+
       this->mItemType = CNormalItemPower::POWER;
       this->mpItem = item.copy();
     }
   else if (dynamic_cast<const CNormalChoice*>(&item))
     {
       if (this->mpItem != NULL) delete this->mpItem;
+
       this->mItemType = CNormalItemPower::CHOICE;
       this->mpItem = item.copy();
     }
   else if (dynamic_cast<const CNormalCall*>(&item))
     {
       if (this->mpItem != NULL) delete this->mpItem;
+
       this->mItemType = CNormalItemPower::CALL;
+      this->mpItem = item.copy();
+    }
+  else if (dynamic_cast<const CNormalLogical*>(&item))
+    {
+      if (this->mpItem != NULL) delete this->mpItem;
+
+      this->mItemType = CNormalItemPower::LOGICAL;
       this->mpItem = item.copy();
     }
   else
     {
       result = false;
     }
+
   return result;
 }
 
@@ -138,6 +161,7 @@ bool CNormalItemPower::setExp(const C_FLOAT64& number)
 {
   if (mExp < 0.0)
     return false;
+
   mExp = number;
   return true;
 }
@@ -156,31 +180,32 @@ CNormalBase& CNormalItemPower::getItem()
  * @return mItem
  */
 const CNormalBase& CNormalItemPower::getItem() const
-  {
-    return *mpItem;
-  }
+{
+  return *mpItem;
+}
 
 /**
  * Retrieve the exponent of this power
  * @return mExp
  */
 const C_FLOAT64& CNormalItemPower::getExp() const
-  {
-    return mExp;
-  }
+{
+  return mExp;
+}
 
 /**
  * Examine equality of two item powers.
  * @return bool.
  */
 bool CNormalItemPower::operator==(const CNormalItemPower & rhs) const
-  {
-    bool result = (this->mItemType == rhs.mItemType);
-    result &= (this->mExp == rhs.mExp);
-    if (result == true)
-      {
-        switch (this->mItemType)
-          {
+{
+  bool result = (this->mItemType == rhs.mItemType);
+  result &= (this->mExp == rhs.mExp);
+
+  if (result == true)
+    {
+      switch (this->mItemType)
+        {
           case CNormalItemPower::ITEM:
             result = (dynamic_cast<CNormalItem&>(*this->mpItem) == dynamic_cast<CNormalItem&>(*rhs.mpItem));
             break;
@@ -196,91 +221,126 @@ bool CNormalItemPower::operator==(const CNormalItemPower & rhs) const
           case CNormalItemPower::CALL:
             result = (dynamic_cast<CNormalCall&>(*this->mpItem) == dynamic_cast<CNormalCall&>(*rhs.mpItem));
             break;
+          case CNormalItemPower::LOGICAL:
+            result = (dynamic_cast<CNormalLogical&>(*this->mpItem) == dynamic_cast<CNormalLogical&>(*rhs.mpItem));
+            break;
           case CNormalItemPower::INVALID:
             result = true;
             break;
-          }
-      }
-    return result;
-  }
+        }
+    }
+
+  return result;
+}
 
 /**
  * Examine inequality of two item powers.
  * @return bool.
  */
 bool CNormalItemPower::operator<(const CNormalItemPower & rhs) const
-  {
-    bool result = false;
-    if (this->mItemType < rhs.mItemType)
-      {
-        result = true;
-      }
-    else if (this->mItemType == rhs.mItemType)
-      {
-        switch (this->mItemType)
-          {
+{
+  bool result = false;
+
+  if (this->mItemType < rhs.mItemType)
+    {
+      result = true;
+    }
+  else if (this->mItemType == rhs.mItemType)
+    {
+      switch (this->mItemType)
+        {
           case CNormalItemPower::ITEM:
             result = (dynamic_cast<CNormalItem&>(*this->mpItem) < dynamic_cast<CNormalItem&>(*rhs.mpItem));
-            if(!result)
+
+            if (!result)
               {
                 result = !(dynamic_cast<CNormalItem&>(*rhs.mpItem) < dynamic_cast<CNormalItem&>(*this->mpItem));
-                if(result)
+
+                if (result)
                   {
                     result = (rhs.mExp < this->mExp);
                   }
               }
+
             break;
           case CNormalItemPower::FUNCTION:
             result = (dynamic_cast<CNormalFunction&>(*this->mpItem) < dynamic_cast<CNormalFunction&>(*rhs.mpItem));
-            if(!result)
+
+            if (!result)
               {
                 result = !(dynamic_cast<CNormalFunction&>(*rhs.mpItem) < dynamic_cast<CNormalFunction&>(*this->mpItem));
-                if(result)
+
+                if (result)
                   {
                     result = (rhs.mExp < this->mExp);
                   }
               }
+
             break;
           case CNormalItemPower::POWER:
             result = (dynamic_cast<CNormalGeneralPower&>(*this->mpItem) < dynamic_cast<CNormalGeneralPower&>(*rhs.mpItem));
-            if(!result)
+
+            if (!result)
               {
                 result = !(dynamic_cast<CNormalGeneralPower&>(*rhs.mpItem) < dynamic_cast<CNormalGeneralPower&>(*this->mpItem));
-                if(result)
+
+                if (result)
                   {
                     result = (rhs.mExp < this->mExp);
                   }
               }
+
             break;
           case CNormalItemPower::CHOICE:
             result = (dynamic_cast<CNormalChoice&>(*this->mpItem) < dynamic_cast<CNormalChoice&>(*rhs.mpItem));
-            if(!result)
+
+            if (!result)
               {
                 result = !(dynamic_cast<CNormalChoice&>(*rhs.mpItem) < dynamic_cast<CNormalChoice&>(*this->mpItem));
-                if(result)
+
+                if (result)
                   {
                     result = (rhs.mExp < this->mExp);
                   }
               }
+
             break;
           case CNormalItemPower::CALL:
             result = (dynamic_cast<CNormalCall&>(*this->mpItem) < dynamic_cast<CNormalCall&>(*rhs.mpItem));
-            if(!result)
+
+            if (!result)
               {
                 result = !(dynamic_cast<CNormalCall&>(*rhs.mpItem) < dynamic_cast<CNormalCall&>(*this->mpItem));
-                if(result)
+
+                if (result)
                   {
                     result = (rhs.mExp < this->mExp);
                   }
               }
+
+            break;
+          case CNormalItemPower::LOGICAL:
+            result = (dynamic_cast<CNormalLogical&>(*this->mpItem) < dynamic_cast<CNormalLogical&>(*rhs.mpItem));
+
+            if (!result)
+              {
+                result = !(dynamic_cast<CNormalLogical&>(*rhs.mpItem) < dynamic_cast<CNormalLogical&>(*this->mpItem));
+
+                if (result)
+                  {
+                    result = (rhs.mExp < this->mExp);
+                  }
+              }
+
             break;
           case CNormalItemPower::INVALID:
             result = false;
             break;
-          }
-      }
-    return result;
-  }
+        }
+    }
+
+  return result;
+}
 
 std::ostream & operator<< (std::ostream &os, const CNormalItemPower & d)
 {
@@ -289,32 +349,35 @@ std::ostream & operator<< (std::ostream &os, const CNormalItemPower & d)
 }
 
 std::string CNormalItemPower::toString() const
-  {
-    std::ostringstream os;
-    if (this->mItemType == CNormalItemPower::ITEM || this->mItemType == CNormalItemPower::FUNCTION || this->mItemType == CNormalItemPower::CALL || (this->mItemType == CNormalItemPower::POWER && this->mExp == 1.0))
-      {
-        os << this->mpItem->toString();
-      }
-    else
-      {
-        os << "(" << this->mpItem->toString() << ")";
-      }
-    if (this->mExp != 1.0)
-      {
-        os << "^" << this->mExp;
-      }
-    return os.str();
-  }
+{
+  std::ostringstream os;
+
+  if (this->mItemType == CNormalItemPower::ITEM || this->mItemType == CNormalItemPower::LOGICAL || this->mItemType == CNormalItemPower::FUNCTION || this->mItemType == CNormalItemPower::CALL || (this->mItemType == CNormalItemPower::POWER && this->mExp == 1.0))
+    {
+      os << this->mpItem->toString();
+    }
+  else
+    {
+      os << "(" << this->mpItem->toString() << ")";
+    }
+
+  if (this->mExp != 1.0)
+    {
+      os << "^" << this->mExp;
+    }
+
+  return os.str();
+}
 
 CNormalBase * CNormalItemPower::copy() const
-  {
-    return new CNormalItemPower(*this);
-  }
+{
+  return new CNormalItemPower(*this);
+}
 
 CNormalItemPower::ItemType CNormalItemPower::getItemType() const
-  {
-    return this->mItemType;
-  }
+{
+  return this->mItemType;
+}
 
 bool CNormalItemPower::simplify()
 {
