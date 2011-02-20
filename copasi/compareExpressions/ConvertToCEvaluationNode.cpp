@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.37.2.3 $
+//   $Revision: 1.37.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/20 14:42:10 $
+//   $Date: 2011/02/20 19:34:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -533,7 +533,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
           pItemPower->setExp(1.0);
         }
     }
-  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CALL)
+  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CALL || CEvaluationNode::type(node->getType()) == CEvaluationNode::DELAY)
     {
       CNormalCall* pCall = createCall(node);
       assert(pCall != NULL);
@@ -1058,7 +1058,9 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
       pTmp2 = pTmp;
     }
 
-  switch (CEvaluationNode::type(node->getType()))
+  CEvaluationNode::Type type = CEvaluationNode::type(node->getType());
+
+  switch (type)
     {
       case CEvaluationNode::NUMBER:
       case CEvaluationNode::OPERATOR:
@@ -1068,6 +1070,7 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
       case CEvaluationNode::LOGICAL:
       case CEvaluationNode::FUNCTION:
       case CEvaluationNode::CALL:
+      case CEvaluationNode::DELAY:
         pFrac = createFraction(pTmp2);
         break;
       default:
