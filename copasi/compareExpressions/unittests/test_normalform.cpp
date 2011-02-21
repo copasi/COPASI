@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.39.4.1 $
+//   $Revision: 1.39.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/16 15:47:40 $
+//   $Date: 2011/02/21 16:56:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10251,3 +10251,239 @@ void test_normalform::test_bug_8()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "F");
 }
+
+void test_normalform::test_bug_9()
+{
+  // (A*(-(B/C)+D))/(E*(1+(B/F)+(D/E))) -> (-A*B*F+A*C*D)/(B*C*E+C*D*F+C*E*F)
+  std::string infix("(A*(-(B/C)+D))/(E*(1+(B/F)+(D/E)))");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  const CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  std::string s = pFraction->toString();
+  const CNormalSum* pNumerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+  const std::set<CNormalProduct*, compareProducts>* pProducts = &pNumerator->getProducts();
+  CPPUNIT_ASSERT(pProducts->size() == 2);
+  // -A*B*F
+  const CNormalProduct* pProduct = *(pProducts->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == -1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 3);
+  // A
+  std::set<CNormalItemPower*, compareItemPowers >::const_iterator itemPowersIt = pProduct->getItemPowers().begin();
+  const CNormalItemPower* pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "A");
+  // B
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "B");
+  // F
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "F");
+  // A*C*D*F
+  pProduct = *(++(pProducts->begin()));
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 4);
+  // A
+  itemPowersIt = pProduct->getItemPowers().begin();
+  pItemPower = *itemPowersIt;
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "A");
+  // C
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "C");
+  // D
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "D");
+  // F
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "F");
+
+  // denominator
+  const CNormalSum* pDenominator = &pFraction->getDenominator();
+  CPPUNIT_ASSERT(pDenominator->getFractions().size() == 0);
+  pProducts = &pDenominator->getProducts();
+  CPPUNIT_ASSERT(pProducts->size() == 3);
+  pProduct = *(pProducts->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 3);
+  // B*C*E
+  itemPowersIt = pProduct->getItemPowers().begin();
+  // B
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "B");
+  // C
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "C");
+  // E
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "E");
+
+  // C*D*F
+  pProduct = *(++(pProducts->begin()));
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 3);
+  // C
+  itemPowersIt = pProduct->getItemPowers().begin();
+  pItemPower = *itemPowersIt;
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "C");
+  // D
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "D");
+  // F
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "F");
+
+  // C*E*F
+  pProduct = *(++(++(pProducts->begin())));
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 3);
+  // C
+  itemPowersIt = pProduct->getItemPowers().begin();
+  pItemPower = *itemPowersIt;
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "C");
+  // E
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "E");
+  // F
+  ++itemPowersIt;
+  pItemPower = *(itemPowersIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "F");
+}
+
+void test_normalform::test_bug_10()
+{
+  // P*A*(f1*B/J+3*e1*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+3*h1*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+g1*C^3*N/(E*G*I*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+j1*C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+3*i1*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+3*k1*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))))/((K+A)*(1+B/J+3*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+3*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*l1)+C^3*N/(E*G*I*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*n1)+3*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*m1)+3*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*o1)))
+  // numerator
+  std::string numerator("P*A*(f1*B/J+3*e1*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+3*h1*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+g1*C^3*N/(E*G*I*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+j1*C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+3*i1*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+3*k1*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))))");
+  // denominator
+  std::string denominator("((K+A)*(1+B/J+3*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+3*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*l1)+C^3*N/(E*G*I*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*n1)+3*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*m1)+3*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*o1)))");
+  // complete
+  std::string complete("P*A*(f1*B/J+3*e1*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+3*h1*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+g1*C^3*N/(E*G*I*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+j1*C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+3*i1*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+3*k1*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))))/((K+A)*(1+B/J+3*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+3*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*l1)+C^3*N/(E*G*I*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*n1)+3*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*m1)+3*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*o1)))");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(numerator);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  const CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  delete pFraction;
+  pTree->setInfix(denominator);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  delete pFraction;
+
+}
+

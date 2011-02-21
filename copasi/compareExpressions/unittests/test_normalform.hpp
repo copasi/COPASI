@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.18.12.4 $
+//   $Revision: 1.18.12.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/16 15:47:40 $
+//   $Date: 2011/02/21 16:56:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -134,6 +134,8 @@ class test_normalform : public CppUnit::TestFixture
   CPPUNIT_TEST(test_bug_6);
   CPPUNIT_TEST(test_bug_7);
   CPPUNIT_TEST(test_bug_8);
+  CPPUNIT_TEST(test_bug_9);
+  //CPPUNIT_TEST(test_bug_10);
 
   CPPUNIT_TEST_SUITE_END();
 
@@ -270,6 +272,12 @@ public:
 
   // (A/F)^3/(A/F) -> A^2/F^2
   void test_bug_8();
+
+  // (A*(-(B/C)+D))/(E*(1+(B/F)+(D/E))) -> (-A*B*F+A*C*D)/(B*C*E+C*D*F+C*E*F)
+  void test_bug_9();
+
+  // very nasty equation from reaction vdead in Biomodels 217
+  void test_bug_10();
 
 
   // PI < A
