@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.73.2.3 $
+//   $Revision: 1.73.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/07 15:39:47 $
+//   $Date: 2011/02/22 14:20:40 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,6 +51,7 @@ class CEventAssignment;
 class CReaction;
 class CEvaluationTree;
 class CFunction;
+class CExpression;
 class CFunctionParameter;
 class CCopasiXMLParser;
 class CReportDefinitionVector;
@@ -151,6 +152,18 @@ public:
    * A map of new function to old keys  parameter definitions
    */
   std::map< size_t, std::string > mFunctionParameterKeyMap;
+
+  /**
+   * Pointer to the currently processed expression. This is only needed for old files
+   * containing the objective function as part of the list of function definitions
+   */
+  CExpression * mpExpression;
+
+  /**
+   * A map of a key to the infix of the objective function. This is only needed for old files
+   * containing the objective function as part of the list of function definitions
+   */
+  std::map< std::string, CExpression * > mKey2ObjectiveFunction;
 
   /**
    * Pointer to the currently processed reaction.
