@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.6 $
+//   $Revision: 1.223.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/22 14:20:40 $
+//   $Author: gauges $
+//   $Date: 2011/02/22 15:42:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -753,6 +753,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
   while (mpCurrentHandler == NULL)
     {
       mCurrentElement++; /* We should always be on the next element */
+      CEvaluationTree* pEvaluationTree = NULL;
 
       switch (mCurrentElement)
         {
@@ -778,7 +779,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
             mCommon.mFunctionParameterKeyMap.clear();
             mExistingFunctionIndex.clear();
 
-            CEvaluationTree * pEvaluationTree = CEvaluationTree::create(Type);
+            pEvaluationTree = CEvaluationTree::create(Type);
 
             if (Type == CEvaluationTree::Expression)
               {
