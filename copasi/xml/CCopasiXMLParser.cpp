@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.7 $
+//   $Revision: 1.223.2.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/02/22 15:42:46 $
+//   $Author: shoops $
+//   $Date: 2011/02/22 19:24:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -8540,10 +8540,25 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
 
             if (pParameter != NULL)
               {
-                std::string Infix = mCommon.mKey2ObjectiveFunction[*pParameter->getValue().pSTRING]->getInfix();
-                pProblem->setValue("ObjectiveExpression", Infix);
+                if (mCommon.mKey2ObjectiveFunction.find(*pParameter->getValue().pSTRING) !=
+                    mCommon.mKey2ObjectiveFunction.end())
+                  {
+                    std::string Infix = mCommon.mKey2ObjectiveFunction[*pParameter->getValue().pSTRING]->getInfix();
+                    pProblem->setValue("ObjectiveExpression", Infix);
+                  }
+
                 pProblem->remove(pParameter);
               }
+
+            std::map< std::string, CExpression * >::iterator it = mCommon.mKey2ObjectiveFunction.begin();
+            std::map< std::string, CExpression * >::iterator end = mCommon.mKey2ObjectiveFunction.end();
+
+            for (; it != end; ++it)
+              {
+                pdelete(it->second);
+              }
+
+            mCommon.mKey2ObjectiveFunction.clear();
           }
 
         mCommon.pCurrentTask->getProblem()->elevateChildren();
