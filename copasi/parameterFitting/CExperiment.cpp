@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.69.2.2 $
+//   $Revision: 1.69.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:55 $
+//   $Date: 2011/02/22 19:17:45 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -926,11 +926,11 @@ bool CExperiment::calculateWeights()
             break;
 
           case MEAN:
-            DefaultWeight = fabs(mMeans[i]);
+            DefaultWeight = mMeans[i] * mMeans[i];
             break;
 
           case MEAN_SQUARE:
-            DefaultWeight = sqrt(MeanSquares[i]);
+            DefaultWeight = MeanSquares[i];
             break;
         }
 
@@ -940,7 +940,8 @@ bool CExperiment::calculateWeights()
   // We have to calculate the default weights
   for (i = 0; i < DependentCount; i++)
     mDefaultWeight[i] =
-      (MinWeight + sqrt(std::numeric_limits< C_FLOAT64 >::epsilon())) / (mDefaultWeight[i] + sqrt(std::numeric_limits< C_FLOAT64 >::epsilon()));
+      (MinWeight + sqrt(std::numeric_limits< C_FLOAT64 >::epsilon()))
+      / (mDefaultWeight[i] + sqrt(std::numeric_limits< C_FLOAT64 >::epsilon()));
 
   return true;
 }
