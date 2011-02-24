@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.59.2.3 $
+//   $Revision: 1.59.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/02 16:29:27 $
+//   $Date: 2011/02/24 14:45:23 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -441,7 +441,8 @@ bool TaskWidget::commonRunTask()
 
 void TaskWidget::slotFinishThread()
 {
-  if (!mpTaskThread->success())
+  if (!mpTaskThread->success() &&
+      CCopasiMessage::size() != 0)
     {
       CQMessageBox::critical(this, "Calculation Error",
                              CCopasiMessage::getAllMessageText().c_str(),
