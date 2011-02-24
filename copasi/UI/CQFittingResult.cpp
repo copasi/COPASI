@@ -6,7 +6,7 @@
 //   $Date: 2010/03/21 15:21:13 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -34,6 +34,7 @@
 #include "parameterFitting/CExperiment.h"
 #include "report/CCopasiRootContainer.h"
 #include "commandline/CLocaleString.h"
+#include "model/CModel.h"
 
 #include "UI/qtUtilities.h"
 
@@ -598,4 +599,24 @@ void CQFittingResult::slotSave(void)
 
   file << std::endl;
 #endif // COPASI_CROSSVALIDATION
+}
+
+void CQFittingResult::slotUpdateModel()
+{
+  // Loop over the optimization items
+  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
+  std::vector<COptItem * >::const_iterator it = Items.begin();
+  std::vector<COptItem * >::const_iterator end = Items.end();
+
+  const C_FLOAT64 * pTmp;
+
+  pTmp = mpProblem->getSolutionVariables().array();
+
+  for (; it != end; ++it, pTmp++)
+    {
+      (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+      (*it)->setStartValue(*pTmp);
+    }
+
+  mpProblem->getModel()->updateInitialValues();
 }
