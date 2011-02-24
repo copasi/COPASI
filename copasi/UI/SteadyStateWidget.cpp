@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.126.2.1 $
+//   $Revision: 1.126.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:57:48 $
+//   $Date: 2011/02/24 14:48:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -114,13 +114,46 @@ bool SteadyStateWidget::runTask()
 
 bool SteadyStateWidget::taskFinishedEvent()
 {
-  bool success = true;
+  bool success = false;
 
-  CQSteadyStateResult *pResult = dynamic_cast< CQSteadyStateResult * >(mpListView->findWidgetFromId(211));
+  CSteadyStateTask* pSteadyStateTask = dynamic_cast<CSteadyStateTask *>(mpObject);
 
-  if (pResult) pResult->loadResult();
+  if (pSteadyStateTask == NULL)
+    return success;
 
-  if (success && isShown()) mpListView->switchToOtherWidget(211, ""); //change to the results window
+  switch (pSteadyStateTask->getResult())
+    {
+      case CSteadyStateMethod::found:
+      case CSteadyStateMethod::foundEquilibrium:
+        success = true;
+        break;
+
+      case CSteadyStateMethod::foundNegative:
+
+        if (mpMethod != NULL)
+          {
+            const CCopasiParameter *pParm = mpMethod->getParameter("Accept Negative Concentrations");
+
+            if (pParm != NULL)
+              {
+                success = *pParm->getValue().pBOOL;
+              }
+          }
+
+        break;
+
+      default:
+        break;
+    }
+
+  CQSteadyStateResult *pResult =
+    dynamic_cast< CQSteadyStateResult * >(mpListView->findWidgetFromId(211));
+
+  if (pResult)
+    pResult->loadResult();
+
+  if (success && isShown())
+    mpListView->switchToOtherWidget(211, ""); //change to the results window
 
   return success;
 }
