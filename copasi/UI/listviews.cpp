@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.9 $
+//   $Revision: 1.290.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:57 $
+//   $Date: 2011/02/24 17:45:28 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -690,6 +690,8 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (newWidget == currentWidget)
     if (itemKey == lastKey) return; //do nothing
+
+  emit signalFolderChanged(index);
 
   // leave old widget
   if (currentWidget)

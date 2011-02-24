@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.12 $
+//   $Revision: 1.289.2.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/08 17:08:03 $
+//   $Date: 2011/02/24 17:45:28 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -288,7 +288,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   mpListView = new ListViews(this);
 
-  connect(mpListView->mpTreeView, SIGNAL(pressed(const QModelIndex &)), this, SLOT(listViewsFolderChanged(const QModelIndex &)));
+  connect(mpListView, SIGNAL(signalFolderChanged(const QModelIndex &)), this, SLOT(listViewsFolderChanged(const QModelIndex &)));
 
   mpDataModelGUI->registerListView(mpListView);
   mpListView->show();
@@ -313,7 +313,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpAutoSaveTimer = new QTimer(this);
   mpAutoSaveTimer->start(AutoSaveInterval); // every 10 minutes
 
-  // We need to disable autosave to avoid race conditions.
+  // TODO CRITICAL We need to disable autosave to avoid race conditions.
   // connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
   // mpDataModelGUI->notify(ListViews::FUNCTION, ListViews::ADD, "");
 
