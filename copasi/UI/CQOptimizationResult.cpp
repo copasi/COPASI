@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.9.4.2 $
+//   $Revision: 1.9.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:50 $
+//   $Date: 2011/02/24 18:30:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,6 +28,7 @@
 #include "UI/qtUtilities.h"
 #include "CQOptimizationResult.h"
 #include "commandline/CLocaleString.h"
+#include "model/CModel.h"
 
 /*
  *  Constructs a CQOptimizationResult which is a child of 'parent', with the
@@ -237,4 +238,6 @@ void CQOptimizationResult::slotUpdateModel()
       (*(*it)->COptItem::getUpdateMethod())(*pTmp);
       (*it)->setStartValue(*pTmp);
     }
+
+  mpProblem->getModel()->updateInitialValues();
 }
