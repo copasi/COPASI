@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.8.2.1 $
+//   $Revision: 1.8.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:27 $
+//   $Author: gauges $
+//   $Date: 2011/02/27 17:49:57 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -67,7 +67,7 @@ public:
    * idSet should contain all sbml IDs that are used in the currently exported
    * model (including the layouts, but not the objects inside the layout).
    */
-  void exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*> & copasimodelmap,
+  void exportToSBML(ListOf * lol, std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                     const std::map<std::string, const SBase*>& idMap) const;
 
 #ifdef USE_CRENDER_EXTENSION

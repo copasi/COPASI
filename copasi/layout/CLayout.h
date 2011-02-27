@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.9.2.1 $
+//   $Revision: 1.9.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:26 $
+//   $Author: gauges $
+//   $Date: 2011/02/27 17:49:57 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -192,7 +192,7 @@ public:
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object
    */
-  void exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+  void exportToSBML(Layout * layout, const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                     std::map<std::string, const SBase*>& sbmlIDs
 #ifdef USE_CRENDER_EXTENSION
                     , const std::map<std::string, std::string>& globalKeyToIdMap

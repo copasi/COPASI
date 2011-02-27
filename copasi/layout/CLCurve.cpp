@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:26 $
+//   $Author: gauges $
+//   $Date: 2011/02/27 17:49:56 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,7 +46,7 @@ CLLineSegment::CLLineSegment(const LineSegment & ls)
     }
 }
 
-void CLLineSegment::exportToSBMLBezier(CubicBezier * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CLLineSegment::exportToSBMLBezier(CubicBezier * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const
 {
   if (!c) return;
 
@@ -59,7 +59,7 @@ void CLLineSegment::exportToSBMLBezier(CubicBezier * c, const std::map<CCopasiOb
 }
 
 void CLLineSegment::exportToSBMLLineSegment(LineSegment * l,
-    const std::map<CCopasiObject*, SBase*> & /* copasimodelmap */) const
+    const std::map<const CCopasiObject*, SBase*> & /* copasimodelmap */) const
 {
   if (!l) return;
 
@@ -153,7 +153,7 @@ std::vector <CLPoint> CLCurve::getListOfPoints() const
   return ret;
 }
 
-void CLCurve::exportToSBML(Curve * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CLCurve::exportToSBML(Curve * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const
 {
   if (!c) return;
 

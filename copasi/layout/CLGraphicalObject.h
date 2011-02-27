@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2011/02/27 17:49:57 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -135,7 +135,7 @@ public:
    * corresponding sbml object
    */
   virtual void exportToSBML(GraphicalObject * sbmlobject,
-                            const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs) const;
 
 #ifdef USE_CRENDER_EXTENSION

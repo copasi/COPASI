@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.4.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/01/24 11:33:17 $
+//   $Date: 2011/02/27 17:49:56 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -66,7 +71,7 @@ CLMetabGlyph & CLMetabGlyph::operator= (const CLMetabGlyph & rhs)
 }
 
 void CLMetabGlyph::exportToSBML(SpeciesGlyph * g,
-                                const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                                const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                                 std::map<std::string, const SBase*>& sbmlIDs) const
 {
   if (!g) return;
@@ -79,7 +84,7 @@ void CLMetabGlyph::exportToSBML(SpeciesGlyph * g,
 
   if (tmp)
     {
-      std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+      std::map<const CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
 
       if (it != copasimodelmap.end())
         {
@@ -138,7 +143,7 @@ CLCompartmentGlyph & CLCompartmentGlyph::operator= (const CLCompartmentGlyph & r
 }
 
 void CLCompartmentGlyph::exportToSBML(CompartmentGlyph * cg,
-                                      const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                                      const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                                       std::map<std::string, const SBase*>& sbmlIDs) const
 {
   if (!cg) return;
@@ -151,7 +156,7 @@ void CLCompartmentGlyph::exportToSBML(CompartmentGlyph * cg,
 
   if (tmp)
     {
-      std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+      std::map<const CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
 
       if (it != copasimodelmap.end())
         {
@@ -256,7 +261,7 @@ CLGraphicalObject* CLTextGlyph::getGraphicalObject() const
 }
 
 void CLTextGlyph::exportToSBML(TextGlyph * g,
-                               const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                               const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                                std::map<std::string, const SBase*>& sbmlIDs) const
 {
   if (!g) return;
@@ -269,7 +274,7 @@ void CLTextGlyph::exportToSBML(TextGlyph * g,
 
   if (tmp)
     {
-      std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+      std::map<const CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
 
       if (it != copasimodelmap.end())
         {

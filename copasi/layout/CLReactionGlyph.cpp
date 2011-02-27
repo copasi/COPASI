@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.21.4.1 $
+//   $Revision: 1.21.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:28 $
+//   $Author: gauges $
+//   $Date: 2011/02/27 17:49:57 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -121,7 +121,7 @@ CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
 }
 
 void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g,
-    const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+    const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
     std::map<std::string, const SBase*>& sbmlIDs,
     const std::map<const CLBase*, const SBase*> & layoutmap) const
 {
@@ -255,7 +255,7 @@ void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)
 }
 
 void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
-                                   const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                                   const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                                    std::map<std::string, const SBase*>& sbmlIDs,
                                    std::map<const CLBase*, const SBase*> & layoutmap) const
 {
@@ -269,7 +269,7 @@ void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
 
   if (tmp)
     {
-      std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+      std::map<const CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
 
       if (it != copasimodelmap.end())
         {
@@ -289,7 +289,7 @@ void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
       CLMetabReferenceGlyph * tmp = mvMetabReferences[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       SpeciesReferenceGlyph * pG;

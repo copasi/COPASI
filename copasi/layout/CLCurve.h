@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.16.2.2 $
+//   $Revision: 1.16.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 21:44:56 $
+//   $Author: gauges $
+//   $Date: 2011/02/27 17:49:56 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -121,14 +121,14 @@ public:
    * corresponding sbml object. This is only guaranteed to work if
    * isBezier() is true.
    */
-  void exportToSBMLBezier(CubicBezier * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBMLBezier(CubicBezier * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
 
   /**
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object. This is only guaranteed to work if
    * isBezier() is false.
    */
-  void exportToSBMLLineSegment(LineSegment * l, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBMLLineSegment(LineSegment * l, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
 
   /**
     * insert operator
@@ -233,7 +233,7 @@ public:
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object
    */
-  void exportToSBML(Curve * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBML(Curve * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
 
   /**
    * Calculates the bounding box for the curve.

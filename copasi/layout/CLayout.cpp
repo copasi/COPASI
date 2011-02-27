@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.19.2.2 $
+//   $Revision: 1.19.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:26 $
+//   $Author: gauges $
+//   $Date: 2011/02/27 17:49:57 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -251,7 +251,7 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
   os << id1 << " -> " << id2 << tmp << "\n"; //[label=\"" << label << "\"] \n";
 }
 
-void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                            std::map<std::string, const SBase*>& sbmlIDs
 #ifdef USE_CRENDER_EXTENSION
                            , const std::map<std::string, std::string>& globalKeyToIdMap
@@ -293,7 +293,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLCompartmentGlyph * tmp = mvCompartments[i];
 
       //check if the compartment glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       CompartmentGlyph * pCG;
@@ -320,7 +320,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLMetabGlyph * tmp = mvMetabs[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       SpeciesGlyph * pG;
@@ -347,7 +347,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLReactionGlyph * tmp = mvReactions[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       ReactionGlyph * pG;
@@ -377,7 +377,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLTextGlyph * tmp = mvLabels[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       TextGlyph * pG;
@@ -404,7 +404,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLGraphicalObject * tmp = mvGraphicalObjects[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       GraphicalObject * pG;
