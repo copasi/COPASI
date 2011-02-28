@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120.2.8 $ 
+#   $Revision: 1.120.2.9 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/01/25 18:43:53 $ 
+#   $Date: 2011/02/28 13:09:11 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120.2.8 $ $Author: shoops $ $Date: 2011/01/25 18:43:53 $  
+# $Revision: 1.120.2.9 $ $Author: shoops $ $Date: 2011/02/28 13:09:11 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -464,9 +464,8 @@ contains(STATIC_LINKAGE, yes) {
     !isEmpty(QWT3D_PATH){
       LIBS += -L$${QWT3D_PATH}/lib/
       INCLUDEPATH += $${QWT3D_PATH}/include
-    } else {
-      LIBS += -lqwtplot3d
     }
+    LIBS += -lqwtplot3d
     
     LIBS += -lSM
   } else {
@@ -640,9 +639,9 @@ contains(BUILD_OS, Linux) {
     !isEmpty(QWT3D_PATH){
       LIBS += -L$${QWT3D_PATH}/lib/
       INCLUDEPATH += $${QWT3D_PATH}/include
-    } else {
-      LIBS += -lqwtplot3d
     }
+    LIBS += -lqwtplot3d
+
 # only needed for the class CLSimpleImageTexturizer which is only
 # needed if we want to create bitmaps from layouts in the backend
 #contains(DEFINES,USE_CRENDER_EXTENSION) {           
