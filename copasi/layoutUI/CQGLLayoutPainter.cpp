@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.5.2.6 $
+//   $Revision: 1.5.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:02:01 $
+//   $Author: gauges $
+//   $Date: 2011/02/28 15:07:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1194,6 +1194,7 @@ double CQGLLayoutPainter::getAspect() const
  */
 GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, bool drawSelection)
 {
+  this->makeCurrent();
   GLubyte* pImageData = NULL;
   const char* extensionsString = (const char*)glGetString(GL_EXTENSIONS);
 
@@ -1225,7 +1226,8 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
           GLint chunk_size = 0;
           glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &chunk_size);
 
-          //chunk_size=200;
+          chunk_size /= 8;
+
           if (chunk_size > 0)
             {
               // create the framebuffer object, the render buffer objects and bind them
@@ -1544,6 +1546,7 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
   assert(glBindRenderbufferEXTPtr != NULL);
   assert(glRenderbufferStorageEXTPtr != NULL);
   assert(glFramebufferRenderbufferEXTPtr != NULL);
+  this->makeCurrent();
 
   // create the framebuffer object, the render buffer objects and bind them
   if (fbo == 0)
@@ -1643,6 +1646,13 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
   // remember the old values
   if (fail == false)
     {
+      bool visible = this->isVisible();
+
+      if (visible)
+        {
+          this->setVisible(false);
+        }
+
       double origX = this->getCurrentPositionX();
       double origY = this->getCurrentPositionY();
       double origWidth = this->mViewportWidth;
@@ -1709,6 +1719,11 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
       this->setAspect(origAspect);
       this->setCurrentPosition(origX, origY);
       this->resizeGL(origWidth, origHeight);
+
+      if (visible)
+        {
+          this->setVisible(true);
+        }
     }
 
   // issue the error message and reset the state
