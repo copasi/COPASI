@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.21.4.2 $
+//   $Revision: 1.21.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/27 17:49:57 $
+//   $Date: 2011/02/28 15:05:54 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,7 +76,7 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
 {}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
-    const std::map<std::string, std::string> & /*modelmap*/,
+    const std::map<std::string, std::string> & modelmap,
     std::map<std::string, std::string> & layoutmap,
     const CCopasiContainer * pParent)
     : CLGraphicalObject(sbml, layoutmap, pParent),
@@ -84,7 +84,15 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     mCurve(), //initialized in the body below
     mRole((Role)sbml.getRole())
 {
-  //TODO problem: how to translate the sbml species reference id to a copasi key
+  //get the copasi key corresponding to the sbml id for the species reference
+  if (sbml.getSpeciesReferenceId() != "")
+    {
+      std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getSpeciesReferenceId());
+
+      if (it != modelmap.end())
+        setModelObjectKey(it->second);
+    }
+
 
   //get the copasi key corresponding to the sbml id for the species glyph
   if (sbml.getSpeciesGlyphId() != "")
