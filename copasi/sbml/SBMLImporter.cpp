@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.19 $
+//   $Revision: 1.263.2.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/07 15:39:49 $
+//   $Date: 2011/02/28 14:51:08 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1495,7 +1495,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
-  while (copasiCompartment->getMetabolites().getIndex(name + appendix) != static_cast<unsigned C_INT32>(-1))
+  while (copasiCompartment->getMetabolites().getIndex(name + appendix) != C_INVALID_INDEX)
     {
       numberStream.str("");
       numberStream << "_" << counter;
@@ -3675,8 +3675,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
-  while (copasiModel->getModelValues().getIndex(name + appendix) != static_cast < unsigned C_INT32
-         >(-1))
+  while (copasiModel->getModelValues().getIndex(name + appendix) != C_INVALID_INDEX)
     {
       numberStream.str("");
       numberStream << "_" << counter;
