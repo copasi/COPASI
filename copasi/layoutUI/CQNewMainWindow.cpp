@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.14 $
+//   $Revision: 1.1.2.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/24 17:04:38 $
+//   $Author: gauges $
+//   $Date: 2011/02/28 15:08:30 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -707,7 +707,7 @@ void CQNewMainWindow::slotScreenshot()
       if (pDialog->exec() == QDialog::Accepted)
         {
           // ask for the filename
-          QString fileName = QFileDialog::getSaveFileName(this, QString("Export to"), "", "PNG (*.png);;All files (*.*)");
+          QString fileName = QFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*.*)"));
 
           if (!fileName.isEmpty())
             {
@@ -1006,7 +1006,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
   assert(this->mpLayoutViewer != NULL && this->mpLayoutViewer->getPainter() != NULL);
   std::set<const CCopasiObject*>& highlighted = this->mpLayoutViewer->getPainter()->getHighlightedModelObjects();
 
-  // if the action is checked, we need to dd all the reactions of the flux mode
+  // if the action is checked, we need to add all the reactions of the flux mode
   // to the highlighted objects
   if (pAction->isChecked())
     {
