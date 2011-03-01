@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.160.2.4 $
+//   $Revision: 1.160.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/14 13:34:25 $
+//   $Author: gauges $
+//   $Date: 2011/03/01 16:18:56 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,9 +21,13 @@
 // All rights reserved.
 
 #include <QAction>
+#include <QCoreApplication>
+#include <QFileInfo>
+#include <QGLFramebufferObject>
 #include <QString>
 #include <QBitmap>
 #include <QPainter>
+#include <QProgressDialog>
 #include <QRect>
 #include <QPoint>
 #include <QPixmap>
@@ -2145,9 +2149,14 @@ bool CQGLNetworkPainter::createDataSets()
   return loadDataSuccessful;
 }
 
-size_t CQGLNetworkPainter::getNumberOfSteps()
+size_t CQGLNetworkPainter::getNumberOfSteps() const
 {
   return mDataSets.size();
+}
+
+size_t CQGLNetworkPainter::getCurrentStep() const
+{
+  return this->stepShown;
 }
 
 void CQGLNetworkPainter::runAnimation()
@@ -3121,3 +3130,334 @@ void CQGLNetworkPainter::setScaleMode(CVisParameters::SCALING_MODE scaleMode)
 {
   this->mScaleMode = scaleMode;
 }
+
+#ifdef FRAMEBUFFER_SCREENSHOTS
+/**
+ * New method for creating a bitmap from the animation window.
+ * This method uses QPainter, QImage and QGLFrameBufferObject to draw
+ * into a multisample buffer if availabel and if not, it will be single sample.
+ * This way the implementation should work on more computers.
+ * The image is rendered in tiles of size 128x128 which should be OK for even small
+ * frame buffers and it is a multiple of 2 which is compliant with older versions of OpenGL.
+ *
+ * The methods get the region to be drawn and the size of the final image as parameters.
+ * In addition to that, the user can specify a vectir of frame numbers to be rendered.
+ * If no frame number is given, nothing is rendered.
+ * If a frame number is outside the range of valid frame numbers, the last frame is rendered.
+ * If the rendering was successfull, true is returned, otherwise false is returned.
+ */
+bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, const QString& filename, const std::vector<size_t> frames)
+{
+  bool result = true;
+
+  if (!filename.isEmpty() && !frames.empty())
+    {
+      // set busy cursor
+      QCursor oldCursor = this->cursor();
+      this->setCursor(Qt::WaitCursor);
+      // create a progress bar
+      QProgressDialog* pProgress = new QProgressDialog("image export", "Cancel", 0, 100, this);
+      QImage* pImage = NULL;
+      // make the OpenGL context current
+      this->makeCurrent();
+      // draw tiles of size 128x128
+      const unsigned int tileSize = 128;
+      unsigned int numColumns = imageWidth / tileSize;
+      unsigned int numRows = imageHeight / tileSize;
+      //  save state
+      double oldZoom = this->mCurrentZoom;
+      this->mCurrentZoom = 1.0;
+      double oldX = this->mCurrentPositionX;
+      double oldY = this->mCurrentPositionY;
+      GLint oldViewport[4];
+      bool frameSet = false;
+      // remember the current step
+      size_t oldStep = this->stepShown;
+      glMatrixMode(GL_PROJECTION);
+      glPushMatrix();
+      glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+      glPushMatrix();
+      glGetIntegerv(GL_VIEWPORT, oldViewport);
+      // create QGLFrameBufferObject and QPainter that draws into the framebuffer
+      QGLFramebufferObject fbo(tileSize, tileSize, QGLFramebufferObject::CombinedDepthStencil);
+      //QPainter fbopainter;
+      fbo.bind();
+
+      // create an instance of QImage and a QPainter that draws into the image
+      if (fbo.isValid() && fbo.isBound())
+        {
+          try
+            {
+              pImage = new QImage(imageWidth, imageHeight, QImage::Format_RGB888);
+            }
+          catch (...)
+            {
+              pImage = NULL;
+              result = false;
+            }
+
+          if (pImage->isNull())
+            {
+              delete pImage;
+              pImage = NULL;
+              result = false;
+            }
+
+          if (pImage != NULL)
+            {
+              QPainter p;
+
+              // set the viewport
+              glViewport(0, 0, (GLint)tileSize, (GLint)tileSize);
+              //
+              std::vector<size_t>::const_iterator it = frames.begin(), endit = frames.end();
+              std::set<size_t> s;
+              // cap frame
+              size_t frame;
+
+              while (it != endit)
+                {
+
+                  frame = *it;
+
+                  if (frame >= mDataSets.size())
+                    {
+                      if (this->mDataSets.empty())
+                        {
+                          frame = 0;
+                        }
+                      else
+                        {
+                          frame = this->mDataSets.size();
+                        }
+                    }
+
+                  s.insert(frame);
+                  ++it;
+                }
+
+              pProgress->setMaximum(s.size());
+              pProgress->show();
+              // loop over the frames
+              std::set<size_t>::const_iterator sit = s.begin(), sendit = s.end();
+              unsigned int step = 0;
+
+              while (sit != sendit)
+                {
+                  // the tile size doesn't change because the texture
+                  // in the framebuffer should by a multiple of 2
+                  // When we copy the pixels for the potential stripes on the right
+                  // and at the bottom, we have to consider this
+                  GLdouble xPos = (GLdouble)x, yPos = (GLdouble)y, w = (GLdouble)(width * (double)tileSize / (double)imageWidth), h = (GLdouble)height * (double)tileSize / (double)imageHeight;
+
+                  if (pProgress->wasCanceled())
+                    {
+                      break;
+                    }
+
+                  // for each iteration, we need to reset the frameSet flag
+                  frameSet = false;
+                  p.begin(pImage);
+                  frame = *sit;
+                  // loop overs the rows and columns and render the tiles
+                  unsigned int i, j;
+
+                  for (i = 0; i < numRows; ++i, yPos += h, xPos = (GLdouble)x)
+                    {
+                      for (j = 0; j < numColumns; ++j)
+                        {
+                          // set the projection
+                          glMatrixMode(GL_PROJECTION);    // Select The Projection Matrix
+                          glLoadIdentity();             // Reset The Projection Matrix
+                          gluOrtho2D((GLdouble)xPos,
+                                     (GLdouble)(xPos + w),
+                                     (GLdouble)(yPos + h),
+                                     (GLdouble)yPos); // y: 0.0 is bottom left instead of top left as in SBML
+                          glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+                          // create the tile
+                          // If the correct frame has already been set, we only need to redraw, otherwise we
+                          // need to update the frames
+                          if (!frameSet)
+                            {
+                              this->showStep(frame);
+                              frameSet = true;
+                            }
+                          else
+                            {
+                              this->drawGraph();
+                            }
+
+                          // render it into the image
+                          p.drawImage(QPoint(j*tileSize, i*tileSize), fbo.toImage());
+                          xPos += w;
+                        }
+
+                      if (imageWidth % tileSize != 0)
+                        {
+                          // there is a stripe on the right
+                          // set the projection
+                          glMatrixMode(GL_PROJECTION);    // Select The Projection Matrix
+                          glLoadIdentity();             // Reset The Projection Matrix
+                          gluOrtho2D((GLdouble)xPos,
+                                     (GLdouble)(xPos + w),
+                                     (GLdouble)(yPos + h),
+                                     (GLdouble)yPos); // y: 0.0 is bottom left instead of top left as in SBML
+                          glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+                          // create the tile
+                          if (!frameSet)
+                            {
+                              this->showStep(frame);
+                              frameSet = true;
+                            }
+                          else
+                            {
+                              this->drawGraph();
+                            }
+
+                          // render part of tile into the image
+                          p.drawImage(QPoint(j*tileSize, i*tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(imageWidth % tileSize, tileSize)));
+                        }
+                    }
+
+                  if ((imageHeight % tileSize) != 0)
+                    {
+                      // create the stripe at the bottom
+                      for (j = 0; j < numColumns; ++j, xPos += w)
+                        {
+                          // set the projection
+                          glMatrixMode(GL_PROJECTION);    // Select The Projection Matrix
+                          glLoadIdentity();             // Reset The Projection Matrix
+                          gluOrtho2D((GLdouble)xPos,
+                                     (GLdouble)(xPos + w),
+                                     (GLdouble)(yPos + h),
+                                     (GLdouble)yPos); // y: 0.0 is bottom left instead of top left as in SBML
+                          glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+                          // create the tile
+                          if (!frameSet)
+                            {
+                              this->showStep(frame);
+                              frameSet = true;
+                            }
+                          else
+                            {
+                              this->drawGraph();
+                            }
+
+                          // render part of tile into the image
+                          p.drawImage(QPoint(j*tileSize, i*tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(tileSize, imageHeight % tileSize)));
+                        }
+
+                      if (imageWidth % tileSize != 0)
+                        {
+                          // there is a stripe on the right
+                          // set the projection
+                          glMatrixMode(GL_PROJECTION);    // Select The Projection Matrix
+                          glLoadIdentity();             // Reset The Projection Matrix
+                          gluOrtho2D((GLdouble)xPos,
+                                     (GLdouble)(xPos + w),
+                                     (GLdouble)(yPos + h),
+                                     (GLdouble)yPos); // y: 0.0 is bottom left instead of top left as in SBML
+                          glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+                          // create the tile
+                          if (!frameSet)
+                            {
+                              this->showStep(frame);
+                              frameSet = true;
+                            }
+                          else
+                            {
+                              this->drawGraph();
+                            }
+
+                          // render part of tile into the image
+                          p.drawImage(QPoint(j*tileSize, i*tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(imageWidth % tileSize, imageHeight % tileSize)));
+                        }
+                    }
+
+                  p.end();
+                  // create a new temporary filename
+                  QString tmpfilename;
+
+                  if (frames.size() > 1)
+                    {
+                      // add the frame number to the frame name
+                      QFileInfo info(filename);
+                      QString completeBaseName = info.completeBaseName();
+                      QString suffix = info.suffix();
+                      QString path = info.path();
+                      assert(suffix == "png" || suffix == "PNG");
+                      tmpfilename = path;
+                      tmpfilename.append("/");
+                      tmpfilename.append(completeBaseName);
+                      // check how many decimals we need
+                      // the largest number should be at the end of s
+                      int length = ceil(log10(*s.rbegin()) + 1);
+                      tmpfilename.append(QString("%1").arg((uint)frame, (int)length, (int)10, QLatin1Char('0')));
+                      tmpfilename.append(".");
+                      tmpfilename.append(suffix);
+                    }
+                  else
+                    {
+                      tmpfilename = filename;
+                    }
+
+                  // save the image
+                  pImage->save(tmpfilename, "PNG");
+                  ++sit;
+                  ++step;
+                  pProgress->setValue(step);
+                  QCoreApplication::processEvents();
+                }
+
+              fbo.release();
+              // Reset the state
+              // First we have to return to the old step
+              this->mCurrentZoom = oldZoom;
+              this->mCurrentPositionX = oldX;
+              this->mCurrentPositionY = oldY;
+              // reset the projection
+              glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
+              glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+              glPopMatrix();
+              glMatrixMode(GL_PROJECTION);
+              glPopMatrix();
+
+              if (oldStep != frame)
+                {
+                  this->setVisible(false);
+                  this->showStep(oldStep);
+                  this->setVisible(true);
+                  this->resizeGL(oldViewport[2], oldViewport[3]);
+                }
+              else
+                {
+                  this->resizeGL(oldViewport[2], oldViewport[3]);
+                }
+
+              delete pImage;
+            }
+          else
+            {
+              fbo.release();
+            }
+        }
+      else
+        {
+          result = false;
+        }
+
+      // reset cursor
+      this->setCursor(oldCursor);
+      pProgress->close();
+      delete pProgress;
+    }
+  else
+    {
+      result = false;
+    }
+
+  // return the result;
+  return result;
+}
+
+#endif // FRAMEBUFFER_SCREENSHOTS

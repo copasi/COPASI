@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.102.2.3 $
+//   $Revision: 1.102.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/14 13:34:25 $
+//   $Author: gauges $
+//   $Date: 2011/03/01 16:18:56 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -656,6 +656,44 @@ void CQLayoutMainWindow::saveImage()
 //  qDebug() << "mCurrentPlace = " << mCurrentPlace;
 #endif
 
+#ifdef FRAMEBUFFER_SCREENSHOTS
+  // get the parameters
+  CQGLNetworkPainter* pPainter = this->mpGLViewport->getPainter();
+  assert(pPainter != NULL);
+
+  if (pPainter != NULL)
+    {
+      size_t step = pPainter->getCurrentStep();
+      double x = pPainter->getCurrentPositionX();
+      double y = pPainter->getCurrentPositionY();
+      unsigned int imageWidth = pPainter->width();
+      unsigned int imageHeight = pPainter->height();
+      double zoomFactor = pPainter->getZoomFactor();
+      double width = (double)imageWidth / zoomFactor;
+      double height = (double)imageHeight / zoomFactor;
+      std::vector<size_t> v;
+      v.push_back(step);
+      // TODO use more sophisticated dialog
+      // TODO use a nicer default for the title, maybe based on the model name
+      QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", "untitled.png",
+                         "PNG Files (*.png)", "Choose a filename to save the image(s) under");
+
+      if (!filename.isNull() && !filename.isEmpty())
+        {
+          mCurrentPlace = filename;
+          bool result = pPainter->export_bitmap(x, y, width, height, imageWidth, imageHeight, filename, v);
+
+          if (result == false)
+            {
+              CQMessageBox::warning(this, "Error creating image",
+                                    "The image could not be created.",
+                                    QMessageBox::Ok, QMessageBox::Ok);
+              return;
+            }
+        }
+    }
+
+#else
   QImage img = mpGLViewport->getPainter()->getImage();
 //  QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
   QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", "untitled.png",
@@ -664,8 +702,11 @@ void CQLayoutMainWindow::saveImage()
   if (!filename.isNull())
     {
       img.save(filename, "PNG");
+
       mCurrentPlace = filename;
     }
+
+#endif // FRAMEBUFFER_SCREENSHOTS
 }
 
 void CQLayoutMainWindow::pauseAnimation()
