@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.13 $
+//   $Revision: 1.289.2.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/24 17:45:28 $
+//   $Date: 2011/03/01 12:58:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,12 +189,11 @@ CopasiUI3Window * CopasiUI3Window::create()
 
 #ifdef COPASI_SBW_INTEGRATION
 
-  if (pWindow != NULL)
+  if (pWindow != NULL &&
+      COptions::compareValue("SBWRegister", true))
     {
       pWindow->sbwConnect();
-
-      if (COptions::compareValue("SBWRegister", true))
-        pWindow->sbwRegister();
+      pWindow->sbwRegister();
     }
 
 #endif // COPASI_SBW_INTEGRATION
@@ -683,6 +682,10 @@ void CopasiUI3Window::slotProcessCommandline()
     {
       newDoc();
     }
+
+#ifdef COPASI_SBW_INTEGRATION
+  sbwConnect();
+#endif // COPASI_SBW_INTEGRATION
 }
 
 void CopasiUI3Window::slotFileOpen(QString file)
