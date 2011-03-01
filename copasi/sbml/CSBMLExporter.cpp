@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.5 $
+//   $Revision: 1.84.2.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/02/27 17:50:38 $
+//   $Author: shoops $
+//   $Date: 2011/03/01 12:24:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,8 +77,13 @@
 #include "layout/CListOfLayouts.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "utilities/CVersion.h"
-#include "sbmlunit/CUnitInterfaceSBML.h"
 #include "commandline/CLocaleString.h"
+
+#define USE_SBMLUNIT
+
+#ifdef USE_SBMLUNIT
+# include "sbmlunit/CUnitInterfaceSBML.h"
+#endif // USE_SBMLUNIT
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false)
 {}
@@ -2687,7 +2692,7 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
     dataModel.getListOfLayouts()->exportToSBML(this->mpSBMLDocument->getModel()->getListOfLayouts(),
         this->mCOPASI2SBMLMap, mIdMap);
 
-#ifdef COPASI_DEBUG
+#ifdef USE_SBMLUNIT
 
   if (this->mpSBMLDocument != NULL)
     {
@@ -2733,7 +2738,7 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
         }
     }
 
-#endif /* COPASI_DEBUG */
+#endif // USE_SBMLUNIT
 
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();
