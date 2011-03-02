@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.20 $
+//   $Revision: 1.263.2.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/28 14:51:08 $
+//   $Date: 2011/03/02 20:18:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,7 +93,7 @@
 C_FLOAT64 SBMLImporter::round(const C_FLOAT64 & x)
 {
   return
-    fabs(x) < 0.0 ? -floor(-x + 0.5) : floor(x + 0.5);
+    x < 0.0 ? -floor(-x + 0.5) : floor(x + 0.5);
 }
 
 // static
