@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-//   $Revision: 1.38.4.1 $
+//   $Revision: 1.38.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:13:21 $
+//   $Date: 2011/03/02 18:11:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -152,15 +152,13 @@ public:
    * @param size_t rows
    * @param size_t cols
    */
-  virtual void resize(size_t rows, size_t cols)
+  virtual void resize(size_t rows, size_t cols, const bool & copy = false)
   {
     if (rows * cols != mRows * mCols)
       {
-        if (mArray)
-          {
-            delete [] mArray;
-            mArray = NULL;
-          }
+        size_t OldSize = mRows * mCols;
+        CType * OldArray = mArray;
+        mArray = NULL;
 
         if (rows && cols)
           {
@@ -181,6 +179,18 @@ public:
 
                 CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, rows * cols * sizeof(CType));
               }
+
+            if (copy &&
+                mArray != NULL &&
+                OldArray != NULL)
+              {
+                memcpy(mArray, OldArray, std::min(rows * cols, OldSize) * sizeof(CType));
+              }
+          }
+
+        if (OldArray)
+          {
+            delete [] OldArray;
           }
       }
 
@@ -189,7 +199,7 @@ public:
   }
 
   /**
-   * Assignement operator
+   * Assignment operator
    * @param const CMatrix <CType> & rhs
    * @return CMatrix <CType> & lhs
    */
@@ -204,7 +214,7 @@ public:
   }
 
   /**
-   * Assignement operator
+   * Assignment operator
    * @param const CType & value
    * @return CMatrix <CType> & lhs
    */
