@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/Attic/mathematics.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.7.38.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:34:21 $
+   $Date: 2011/03/02 20:17:47 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,6 +35,10 @@ static inline double acosh(double value)
 
 static inline double atanh(double value)
 {return (.5 * log((1.0 + value) / (1.0 - value)));}
+
+static inline double round(double value)
+{return  value < 0.0 ? -floor(-value + 0.5) : floor(value + 0.5);}
+
 #endif // WIN32
 
 #endif // COPASI_mathematics
