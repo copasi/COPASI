@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.22.2.3 $
+//   $Revision: 1.22.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:01 $
+//   $Date: 2011/03/02 18:27:31 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -419,7 +419,6 @@ std::vector< Refresh * > CMathModel::buildDependendRefreshList(const std::set< c
   // on the particle number and compartment volume, we will miss all particle numbers of changed
   // species which do not directly appear in any calculation.
 
-  // First ODEs and species particle numbers
   CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities();
   CModelEntity *const* ppEndEntity = ppEntity + mpModel->getStateTemplate().size();
 
@@ -429,19 +428,18 @@ std::vector< Refresh * > CMathModel::buildDependendRefreshList(const std::set< c
     {
       switch ((*ppEntity)->getStatus())
         {
+            // First rates of all entities depending on ODEs and species depending on reactions.
           case CModelEntity::ODE:
-          case CModelEntity::FIXED:
+          case CModelEntity::REACTIONS:
 
             if ((*ppEntity)->getRateReference()->dependsOn(changedObjects, changedObjects))
               {
                 RequiredObjects.insert((*ppEntity)->getRateReference());
               }
 
-            pSpecies = dynamic_cast< const CMetab * >(*ppEntity);
-
             // The break statement is intentionally missing since we need to check
-            // the particle values.
-          case CModelEntity::REACTIONS:
+            // the particle values of species for the above and for fixed.
+          case CModelEntity::FIXED:
             pSpecies = dynamic_cast< const CMetab * >(*ppEntity);
 
             if (pSpecies != NULL &&
