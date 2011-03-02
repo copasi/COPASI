@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.15 $
+//   $Revision: 1.1.2.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/28 15:08:30 $
+//   $Date: 2011/03/02 17:42:52 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -702,7 +702,7 @@ void CQNewMainWindow::slotScreenshot()
       double width = pPainter->getCurrentWidth();
       double height = pPainter->getCurrentHeight();
       CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
-          x, y, width, height, this);
+          x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
 
       if (pDialog->exec() == QDialog::Accepted)
         {

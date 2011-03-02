@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQScreenshotOptionsDialog.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Date: 2011/03/02 17:42:52 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,11 +16,26 @@
 
 #include "ui_CQScreenshotDialog.h"
 
+#include <set>
+
 #include <QDialog>
+#include <QRegExp>
+#include <QValidator>
+
 
 class CQScreenshotOptionsDialog : public QDialog, private Ui::screenshot_option_dialog
 {
   Q_OBJECT
+
+public:
+  enum FRAME_OPTION
+  {
+    UNSET,
+    CURRENT_FRAME,
+    ALL_FRAMES,
+    USER_DEFINED_FRAMES
+  };
+
 
 protected:
   // values needed by the dialog
@@ -42,7 +57,11 @@ protected:
   // the height of the current view
   double mCurrentHeight;
 
-  // values set by the user
+  // stores the value of which frames are to be exported.
+  FRAME_OPTION mFrameOption;
+
+  // store the frames to export
+  std::set<size_t> mFrames;
 
   // the part of the layout to use for the screenshot
   double mX;
@@ -56,9 +75,15 @@ protected:
   // to be drawn in the screenshot or not
   bool mDrawSelectionDecorations;
 
+  // whether to draw the options for the frame selection or not
+  int mLastFrame;
+
+
+
 public:
   CQScreenshotOptionsDialog(double layoutX, double layoutY, double layoutWidth, double layoutHeight,
                             double currentX, double currentY, double currentWidth, double currentHeight,
+                            unsigned int imageWidth, unsigned int imageHeight, int lastFrame = -1,
                             QWidget* pParent = NULL);
 
   /*
@@ -97,12 +122,74 @@ public:
    */
   bool isSetDrawSelectionDecoration() const;
 
+  /**
+   * Returns which frames are to be exported.
+   * For a dialog that does not display the frames option, this will
+   * return UNSET.
+   * For dialogs with the frame option, possible values are CURRENT_FRAME,
+   * ALL_FRAMES, USER_DEFINED_FRAMES.
+   */
+  FRAME_OPTION getFrameOption() const;
+
+  /**
+   * Returns the set of frames.
+   */
+  const std::set<size_t>& getFrameSet() const;
+
 protected slots:
   // if ok is pressed
   virtual void accept();
 
   // if a radio button is clicked
-  void slot_custom_area_toggled(bool toggled);
+  void slotDisplayButtonClicked(QAbstractButton* pButton);
+
+  // if a radio button in the frame options widget is clicked
+  void slotFrameButtonClicked(QAbstractButton* pButton);
+
+  // called when the image width is changed
+  void slotImageWidthChanged(int w);
+
+  // called when the image height is changed
+  void slotImageHeightChanged(int h);
+
+  // called when the width is changed
+  void slotWidthChanged(const QString& wt);
+
+  // called when the height is changed
+  void slotHeightChanged(const QString& ht);
+
+  // called when the x value is changed
+  void slotXChanged(const QString& xt);
+
+  // called when the y value is changed
+  void slotYChanged(const QString& yt);
+
+  // called when the frames text is changed
+  void slotFramesTextChanged(const QString& yt);
+
+
+  // called when the draw selection item checkbox is toggled
+  void slotDrawSelectionToggled(bool v);
 };
+
+class CQFrameInputValidator : public QValidator
+{
+protected:
+  static const QString ValidRegExpString;
+  static const QString IntermediateRegExpString;
+  static const QString ClosedRangeGroupRegExpString;
+
+
+  QRegExp mValidationRegExp;
+  QRegExp mIntermediateRegExp;
+  QRegExp mClosedRangeGroupRegExp;
+
+public:
+  CQFrameInputValidator(QObject* pParent = NULL);
+
+  virtual QValidator::State validate(QString& input, int & pos) const;
+};
+
+
 
 #endif // CQScreenshotOptionsDialog_H__
