@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_expression_comparison.cpp,v $
-//   $Revision: 1.6.4.1 $
+//   $Revision: 1.6.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/16 15:47:40 $
+//   $Date: 2011/03/03 14:49:20 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -244,7 +244,7 @@ void test_expression_comparison::test_reversible_hill()
       std::string s1 = firstFraction->toString();
       // I do seem to get the expected term below
       //((-1) * Phalve * Vf * product * (Phalve * substrate + Shalve * product)^(h) + Keq * Phalve * Vf * substrate * (Phalve * substrate + Shalve * product)^(h))/(Keq * Phalve * substrate * (Phalve)^(h) * (Shalve)^(h) + Keq * Shalve * product * (Phalve)^(h) * (Shalve)^(h))
-      std::cout << "numerator 1: " << s1 << std::endl;
+      //std::cout << "numerator 1: " << s1 << std::endl;
       //std::cout << "<p>Normalizing second tree.</p>" << std::endl;
       CNormalBase * secondBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(secondTree->getRoot()));
       CPPUNIT_ASSERT(secondBase != NULL);
@@ -253,7 +253,7 @@ void test_expression_comparison::test_reversible_hill()
       std::string s2 = secondFraction->toString();
       // the normalization of the numerator leads to the same result I got when I did it manually
       // "((-1) * Vf * product * (Phalve * substrate + Shalve * product)^(h) + Keq * Vf * substrate * (Phalve * substrate + Shalve * product)^(h))/(Keq * Phalve * Shalve * substrate + Keq * Shalve^2 * product)"
-      std::cout << "numerator 2: " << s2 << std::endl;
+      //std::cout << "numerator 2: " << s2 << std::endl;
 
       // denominator
       delete secondBase;
@@ -274,7 +274,7 @@ void test_expression_comparison::test_reversible_hill()
       s1 = firstFraction->toString();
       // the results of the normalization of the first denominator is the same I get when I do it manually
       // "((Phalve)^(h) * (Shalve)^(h) + (Phalve * substrate + Shalve * product)^(h))/((Phalve)^(h) * (Shalve)^(h))"
-      std::cout << "denominator 1: " << s1 << std::endl;
+      //std::cout << "denominator 1: " << s1 << std::endl;
       //std::cout << "<p>Normalizing second tree.</p>" << std::endl;
       secondBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(secondTree->getRoot()));
       CPPUNIT_ASSERT(secondBase != NULL);
@@ -283,7 +283,7 @@ void test_expression_comparison::test_reversible_hill()
       s2 = secondFraction->toString();
       // the results of the normalization of the second denominator is the same I get when I do it manually
       // "((Phalve)^(h) * (Shalve)^(h) + (Phalve * substrate + Shalve * product)^(h))/(Phalve * Shalve)"
-      std::cout << "denominator 2: " << s2 << std::endl;
+      //std::cout << "denominator 2: " << s2 << std::endl;
 
       // complete infix
       delete secondBase;
@@ -302,14 +302,14 @@ void test_expression_comparison::test_reversible_hill()
       firstFraction = dynamic_cast<CNormalFraction*>(firstBase);
       CPPUNIT_ASSERT(firstFraction != NULL);
       s1 = firstFraction->toString();
-      std::cout << "infix 1: " << s1 << std::endl;
+      //std::cout << "infix 1: " << s1 << std::endl;
       //std::cout << "<p>Normalizing second tree.</p>" << std::endl;
       secondBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(secondTree->getRoot()));
       CPPUNIT_ASSERT(secondBase != NULL);
       secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
       CPPUNIT_ASSERT(secondFraction != NULL);
       s2 = secondFraction->toString();
-      std::cout << "infix 2: " << s2 << std::endl;
+      //std::cout << "infix 2: " << s2 << std::endl;
       //std::cout << "<p>first: " << std::endl;
       //std::cout << "first: " << *firstFraction << std::endl;
       //std::cout << "<p>second: " << std::endl;
