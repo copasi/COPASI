@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.62.2.3 $
+//   $Revision: 1.62.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/01/25 21:28:51 $
+//   $Author: jpahle $
+//   $Date: 2011/03/03 21:43:21 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1736,6 +1736,13 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  if (pTP->getModel()->getTotSteps() < 1)
+    {
+      //at least one reaction necessary
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
+      return false;
+    }
+
   //check for rules
   size_t i, imax = pTP->getModel()->getNumModelValues();
 
@@ -1767,7 +1774,16 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
           CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
           return false;
         }
+
+      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pTP->getModel()->getMetabolites()[i]->isUsed())
+          {
+            //used assignment for species found
+            CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 24);
+            return false;
+          }
     }
+
 
   imax = pTP->getModel()->getCompartments().size();
 
