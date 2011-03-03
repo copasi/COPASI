@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.37.2.4 $
+//   $Revision: 1.37.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/20 19:34:33 $
+//   $Date: 2011/03/03 14:44:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1050,7 +1050,7 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
       pTmp = pTmp2;
     }
 
-  pTmp2 = CNormalTranslation::evaluateNumbers(pTmp);
+  pTmp2 = CNormalTranslation::newEvaluateNumbers(pTmp);
 
   if (pTmp != NULL)
     {

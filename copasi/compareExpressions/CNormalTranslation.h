@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.23.4.3 $
+//   $Revision: 1.23.4.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/16 15:47:39 $
+//   $Date: 2011/03/03 14:44:29 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -200,7 +200,13 @@ public:
   /**
    * This method evaluates operators acting on two numbers
    */
-  static CEvaluationNode* evaluateNumbers(const CEvaluationNode* pOrig);
+  // obsolete recursive version
+  //static CEvaluationNode* evaluateNumbers(const CEvaluationNode* pOrig);
+
+  /**
+   * This method evaluates operators acting on two numbers
+   */
+  static CEvaluationNode* newEvaluateNumbers(const CEvaluationNode* pOrig);
 
   /**
    * Neutral element for an addition chain.
@@ -341,7 +347,15 @@ protected:
   /**
    * This method does all the canceling on a given node and its children.
    */
-  static CEvaluationNode* cancel(const CEvaluationNode* pOrig);
+  // obsolete recursive version
+  //static CEvaluationNode* cancel(const CEvaluationNode* pOrig);
+
+  /**
+   * New non-recursive cancel method.
+   * This method does all the canceling on a given node and its children.
+   * If no canceling was done, NULL is returned.
+   */
+  static CEvaluationNode* newCancel(const CEvaluationNode* pOrig);
 
   /**
    * This method elminates subexpressions from an expression
@@ -380,5 +394,27 @@ protected:
   static void printPointers(const CEvaluationNode* pNode, const char* indent = "");
 
 };
+
+
+class CEvaluationNodeDepthFirstIterator
+{
+protected:
+  CEvaluationNode* mpNode;
+
+public:
+
+  CEvaluationNodeDepthFirstIterator(CEvaluationNode* pRoot);
+
+  CEvaluationNodeDepthFirstIterator& operator++();
+
+  bool isValid() const;
+
+  CEvaluationNode*& operator*();
+
+  CEvaluationNode*& operator->();
+
+  CEvaluationNodeDepthFirstIterator& operator=(CEvaluationNode* pNode);
+};
+
 
 #endif // COPASI_CNormalTranslation_H__
