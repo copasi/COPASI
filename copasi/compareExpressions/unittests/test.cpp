@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test.cpp,v $
-//   $Revision: 1.17.4.2 $
+//   $Revision: 1.17.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/16 15:47:39 $
+//   $Date: 2011/03/03 14:48:37 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,22 +27,26 @@
 
 #include "copasi.h"
 
+#include "test_depth_first_iterator.h"
 #include "test_node_conversion.hpp"
 #include "test_expression_comparison.hpp"
 #include "test_normalform.hpp"
 #include "test_cnormallogical.hpp"
 #include "test_simplify.h"
 #include "test_compare_utilities.h"
+#include "test_biomodels217_expression.h"
 
 int main(int /*argc*/, char ** /*argv*/)
 {
   CppUnit::TextUi::TestRunner runner;
+  runner.addTest(test_depth_first_iterator::suite());
   runner.addTest(test_cnormallogical::suite());
   runner.addTest(test_normalform::suite());
   runner.addTest(test_node_conversion::suite());
   runner.addTest(test_simplify::suite());
   runner.addTest(test_expression_comparison::suite());
   runner.addTest(test_compare_utilities::suite());
+  //runner.addTest(test_biomodels217_expression::suite());
   runner.run();
   return 0;
 }
