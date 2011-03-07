@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.188.2.2 $
+//   $Revision: 1.188.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:01 $
+//   $Date: 2011/03/07 17:13:02 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,6 +39,11 @@
 #include "copasi/utilities/CVector.h"
 #include "copasi/utilities/CMatrix.h"
 #include "copasi/report/CCopasiContainer.h"
+
+#ifdef TST_DEPENCYGRAPH
+# define ObjectType CCopasiObject
+# include "copasi/math/CMathDependencyGraph.h"
+#endif // TST_DEPENCYGRAPH
 
 //class CCompartment;
 class CProcessReport;
@@ -256,6 +261,10 @@ public:
    * @return bool success
    */
   bool forceCompile(CProcessReport* pProcessReport);
+
+#ifdef TST_DEPENCYGRAPH
+  bool buildDependencyGraphs();
+#endif // TST_DEPENCYGRAPH
 
   /**
    * Compile the default initial value dependencies, which is that the
@@ -1270,6 +1279,11 @@ private:
    * are up to date after a call to updateSimulatedValues
    */
   std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
+
+#ifdef TST_DEPENCYGRAPH
+  CMathDependencyGraph mInitialDependencies;
+  CMathDependencyGraph mTransientDependencies;
+#endif // TST_DEPENCYGRAPH
 
   /**
    * The volume unit used in the Model

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.395.2.2 $
+//   $Revision: 1.395.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:01 $
+//   $Date: 2011/03/07 17:13:02 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,6 +39,8 @@
 #include "copasi.h"
 
 // #define DEBUG_MATRIX
+
+// #define TST_DEPENCYGRAPH
 
 #include "CCompartment.h"
 #include "CMetab.h"
@@ -479,8 +481,72 @@ bool CModel::compile()
 
   //writeDependenciesToDotFile();
 
+#ifdef TST_DEPENCYGRAPH
+  buildDependencyGraphs();
+#endif // TST_DEPENCYGRAPH
+
   return true;
 }
+
+#ifdef TST_DEPENCYGRAPH
+bool CModel::buildDependencyGraphs()
+{
+  mInitialDependencies.clear();
+  mTransientDependencies.clear();
+
+  // The initial values of the model entities
+  CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
+  CModelEntity **ppEntityEnd = mStateTemplate.endFixed();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      CMetab * pSpecies = dynamic_cast< CMetab * >(*ppEntity);
+
+      mInitialDependencies.addObject((*ppEntity)->getInitialValueReference());
+      mTransientDependencies.addObject((*ppEntity)->getValueReference());
+
+      if (pSpecies != NULL)
+        {
+          mInitialDependencies.addObject(pSpecies->getInitialConcentrationReference());
+          mTransientDependencies.addObject(pSpecies->getConcentrationReference());
+        }
+
+      switch ((*ppEntity)->getStatus())
+        {
+          case CModelEntity::ODE:
+          case CModelEntity::REACTIONS:
+            mTransientDependencies.addObject((*ppEntity)->getRateReference());
+            break;
+
+          default:
+            break;
+        }
+    }
+
+  CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
+  CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
+
+  for (; itMoiety != endMoiety; ++itMoiety)
+    {
+      mInitialDependencies.addObject((*itMoiety)->getInitialValueReference());
+      // TODO This needs to be added in the mathematical model for the context event.
+      // mTransientDependencies.addObject((*itMoiety)->getValueReference());
+      mTransientDependencies.addObject((*itMoiety)->getDependentNumberReference());
+    }
+
+  std::ofstream File;
+
+  File.open("InitialDependencies.dot");
+  mInitialDependencies.exportDOTFormat(File, "InitialDependencies");
+  File.close();
+
+  File.open("SimulationDependencies.dot");
+  mTransientDependencies.exportDOTFormat(File, "SimulationDependencies");
+  File.close();
+
+  return true;
+}
+#endif // TST_DEPENCYGRAPH
 
 void CModel::compileDefaultMetabInitialValueDependencies()
 {
