@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/03/25 14:12:44 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:55 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,13 +22,11 @@
 
 #include "qpushbutton.h"
 #include "qcheckbox.h"
-#include "q3hbox.h"
-#include "q3vbox.h"
 #include "qlayout.h"
 #include <qcombobox.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
@@ -58,12 +56,12 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
     mExpertModeEnabled(true)
 {
   setWindowFlags(this->windowFlags() | Qt::WDestructiveClose);
-  mpMainLayout = new Q3VBoxLayout(this);
+  mpMainLayout = new QVBoxLayout(this);
 
   mpSelectionWidget = new CCopasiSelectionWidget(this);
   mpMainLayout->addWidget(mpSelectionWidget);
 
-  mpButtonBox = new Q3HBoxLayout(mpMainLayout);
+  mpButtonBox = new QHBoxLayout(mpMainLayout);
 
   mpOKButton = new QPushButton(this, "OK");
   mpOKButton->setText("OK");
@@ -99,7 +97,7 @@ CCopasiSelectionDialog::~CCopasiSelectionDialog()
 }
 
 void CCopasiSelectionDialog::setModel(const CModel* pModel,
-                                      const CCopasiSimpleSelectionTree::ObjectClasses & classes)
+                                      const CQSimpleSelectionTree::ObjectClasses & classes)
 {
   this->mpSelectionWidget->populateTree(pModel, classes);
 }
@@ -150,7 +148,7 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
 
 const CCopasiObject *
 CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
-                                        const CCopasiSimpleSelectionTree::ObjectClasses & classes,
+                                        const CQSimpleSelectionTree::ObjectClasses & classes,
                                         const CCopasiObject * pCurrentObject)
 {
   std::vector< const CCopasiObject * > Selection;
@@ -189,7 +187,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
 }
 
 std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
-    const CCopasiSimpleSelectionTree::ObjectClasses & classes,
+    const CQSimpleSelectionTree::ObjectClasses & classes,
     const std::vector< const CCopasiObject * > * pCurrentSelection)
 {
   std::vector< const CCopasiObject * > Selection;
@@ -208,7 +206,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   else
     //    return Selection;
     {
-      if (classes == CCopasiSimpleSelectionTree::AnyObject)
+      if (classes == CQSimpleSelectionTree::AnyObject)
         {
           std::vector<const CCopasiObject *> newSelection;
 
@@ -288,7 +286,10 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
           if (value)
             {
               index[0] = pDialog->mpCBRow->currentItem();
-              index[1] = pDialog->mpCBColumn->currentItem();
+
+              if (index.size() > 1)
+                index[1] = pDialog->mpCBColumn->currentItem();
+
               returnVector[0] = pArrayAnnotation->addElementReference(index);
             }
 
@@ -308,8 +309,8 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
           return returnVector;
         }
 
-      int minRows, maxRows, minCols, maxCols;
-      int i, j;
+      size_t minRows, maxRows, minCols, maxCols;
+      size_t i, j;
 
       if (pDialog->mpCBRow->currentItem())
         {
@@ -343,7 +344,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
             {
               for (j = minCols; j < maxCols; ++j)
                 {
-                  returnVector.push_back(pArrayAnnotation->addElementReference(i, j));
+                  returnVector.push_back(pArrayAnnotation->addElementReference((int) i, (int) j));
                 }
             }
         }
@@ -352,7 +353,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
         {
           for (i = minRows; i < maxRows; ++i)
             {
-              returnVector.push_back(pArrayAnnotation->addElementReference(i));
+              returnVector.push_back(pArrayAnnotation->addElementReference((int) i));
             }
         }
 

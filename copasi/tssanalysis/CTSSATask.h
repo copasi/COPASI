@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Date: 2011/03/07 19:34:36 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -40,9 +45,9 @@ class CTSSATask : public CCopasiTask
   //Attributes
 public:
   /**
-   * The methods which can be selected for preforming this task.
+   * The methods which can be selected for performing this task.
    */
-  static const unsigned C_INT32 ValidMethods[];
+  static const unsigned int ValidMethods[];
 
 private:
 
@@ -130,7 +135,7 @@ public:
   bool processStep(const C_FLOAT64 & nextTime);
 
   /**
-   * Perform neccessary cleaup procedures
+   * Perform necessary cleanup procedures
    */
   virtual bool restore();
 
@@ -140,6 +145,14 @@ public:
    * @return bool success
    */
   virtual bool setMethodType(const int & type);
+
+  /**
+   * Create a method of the specified type to solve the task.
+   * It is the duty of the caller to release the CCopasiMethod.
+   * @param const CCopasiMethod::SubType & type
+   * @return CCopasiMethod *
+   */
+  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Retrieves a pointer to current state of the integration.

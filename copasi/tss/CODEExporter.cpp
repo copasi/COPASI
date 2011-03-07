@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:28 $
+//   $Date: 2011/03/07 19:34:15 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,6 +51,7 @@
 #include "function/CEvaluationNodeFunction.h"
 #include "utilities/CCopasiTree.h"
 #include "utilities/CCopasiMessage.h"
+#include "commandline/CLocaleString.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -77,7 +78,7 @@ bool CODEExporter::exportMathModel(const CCopasiDataModel * pDataModel, std::str
           If yes, write if overwrite is true,
           else create an appropriate  CCopasiMessage. */
 
-  std::ifstream testInfile(utf8ToLocale(mmasciiFilename).c_str(), std::ios::in);
+  std::ifstream testInfile(CLocaleString::fromUtf8(mmasciiFilename).c_str(), std::ios::in);
 
   if (testInfile && !overwriteFile)
     {
@@ -86,7 +87,7 @@ bool CODEExporter::exportMathModel(const CCopasiDataModel * pDataModel, std::str
       return false;
     }
 
-  std::ofstream outFile(utf8ToLocale(mmasciiFilename).c_str(), std::ios::out);
+  std::ofstream outFile(CLocaleString::fromUtf8(mmasciiFilename).c_str(), std::ios::out);
 
   /* translate Copasi data names in exporter syntax */
 
@@ -129,7 +130,7 @@ bool CODEExporter::exportMathModel(const CCopasiDataModel * pDataModel, std::str
 void CODEExporter::exportObjectNodesFromModel(const CCopasiDataModel* pDataModel)
 {
 
-  unsigned int i, imax;
+  size_t i, imax;
 
   imax = pDataModel->getModel()->getListOfSimulatedRefreshes().size();
 
@@ -334,7 +335,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
 
   std::ostringstream result;
   const std::vector<CEvaluationNode*>& objectNodes = pExpression->getNodeList();
-  unsigned j, jMax = objectNodes.size();
+  size_t j, jMax = objectNodes.size();
   assert(pDataModel != NULL);
 
   for (j = 0; j < jMax; ++j)
@@ -433,11 +434,11 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
   std::string result;
 
   CExpression* tmpExpression;
-  tmpExpression = new CExpression(*pExpression);
+  tmpExpression = new CExpression(*pExpression, pDataModel);
   assert(pDataModel != NULL);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmpExpression->getNodeList();
-  unsigned j, jMax = objectNodes.size();
+  size_t j, jMax = objectNodes.size();
 
   for (j = 0; j < jMax; ++j)
     {
@@ -598,7 +599,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
 
 bool CODEExporter::preprocess(const CModel* copasiModel)
 {
-  unsigned C_INT32 i, j;
+  size_t i, j;
 
   setReservedNames();
 
@@ -607,7 +608,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
   NameMap[timeKey] = translateTimeVariableName();
 
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
-  unsigned C_INT32 metabs_size = metabs.size();
+  size_t metabs_size = metabs.size();
 
   for (i = 0; i < metabs_size; i++)
     {
@@ -634,7 +635,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
       }
     }
 
-  unsigned C_INT32 comps_size = copasiModel->getCompartments().size();
+  size_t comps_size = copasiModel->getCompartments().size();
   const CCopasiVector< CCompartment > & comps = copasiModel->getCompartments();
 
   for (i = 0; i < comps_size; i++)
@@ -651,7 +652,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
         }
     }
 
-  unsigned C_INT32 modvals_size = copasiModel->getModelValues().size();
+  size_t modvals_size = copasiModel->getModelValues().size();
   const CCopasiVector< CModelValue > & modvals = copasiModel->getModelValues();
 
   for (i = 0; i < modvals_size; i++)
@@ -668,13 +669,13 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
         }
     }
 
-  unsigned C_INT32 reacs_size = copasiModel->getReactions().size();
+  size_t reacs_size = copasiModel->getReactions().size();
 
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
 
   for (i = 0; i < reacs_size; ++i)
     {
-      unsigned C_INT32 params_size;
+      size_t params_size;
 
       params_size = reacs[i]->getParameters().size();
 
@@ -697,11 +698,11 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
   const CModel::CLinkMatrixView & L = copasiModel->getL();
 
-  unsigned C_INT32 metabs_size = metabs.size();
-  unsigned C_INT32 indep_size = copasiModel->getNumIndependentReactionMetabs();
-  unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
+  size_t metabs_size = metabs.size();
+  size_t indep_size = copasiModel->getNumIndependentReactionMetabs();
+  size_t ode_size = copasiModel->getNumODEMetabs();
 
-  unsigned C_INT32 i, j;
+  size_t i, j;
   C_FLOAT64 value;
 
   for (i = 0; i < metabs_size; i++)
@@ -826,9 +827,9 @@ bool CODEExporter::exportMetabolitesConcentrations(const CModel* copasiModel)
 
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
 
-  unsigned C_INT32 metabs_size = metabs.size();
+  size_t metabs_size = metabs.size();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < metabs_size; i++)
     {
@@ -867,8 +868,8 @@ bool CODEExporter::exportCompartments(const CModel* copasiModel)
 {
   const CCopasiVector< CCompartment > & comps = copasiModel->getCompartments();
 
-  unsigned C_INT32 comps_size = comps.size();
-  unsigned C_INT32 i;
+  size_t comps_size = comps.size();
+  size_t i;
 
   for (i = 0; i < comps_size; i++)
     {
@@ -923,8 +924,8 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
 {
   const CCopasiVector< CModelValue > & modvals = copasiModel->getModelValues();
 
-  unsigned C_INT32 modvals_size = modvals.size();
-  unsigned C_INT32 i;
+  size_t modvals_size = modvals.size();
+  size_t i;
 
   for (i = 0; i < modvals_size; i++)
     {
@@ -978,13 +979,13 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
 
-  unsigned C_INT32 reacs_size = reacs.size();
-  unsigned C_INT32 indep_size = copasiModel->getNumIndependentReactionMetabs();
-  unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
+  size_t reacs_size = reacs.size();
+  size_t indep_size = copasiModel->getNumIndependentReactionMetabs();
+  size_t ode_size = copasiModel->getNumODEMetabs();
 
   const CMatrix< C_FLOAT64 > & redStoi = copasiModel->getRedStoi();
 
-  unsigned C_INT32 i, j;
+  size_t i, j;
 
   for (i = 0; i < reacs_size; ++i)
     {
@@ -993,7 +994,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
       std::string name = reac->getObjectName();
 
-      unsigned C_INT32 params_size = reac->getParameters().size();
+      size_t params_size = reac->getParameters().size();
 
       for (j = 0; j < params_size; ++j)
         {
@@ -1051,11 +1052,11 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 bool CODEExporter::exportODEs(const CModel* copasiModel)
 {
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
-  unsigned C_INT32 indep_size = copasiModel->getNumIndependentReactionMetabs();
-  unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
-  unsigned C_INT32 metabs_size = metabs.size();
+  size_t indep_size = copasiModel->getNumIndependentReactionMetabs();
+  size_t ode_size = copasiModel->getNumODEMetabs();
+  size_t metabs_size = metabs.size();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < indep_size; ++i)
     {
@@ -1164,7 +1165,7 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
           if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::VARIABLE)
             {
 
-              unsigned C_INT32 index;
+              size_t index;
               CFunctionParameter::Role role;
               std::string tmpname;
               std::string name;
@@ -1216,7 +1217,7 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
           ++treeIt;
         }
 
-      unsigned C_INT32 index = 0;
+      size_t index = 0;
 
       if (!exportSingleFunction(tmpfunc->getRoot(), reac, index)) return false;
 
@@ -1230,8 +1231,8 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
       const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
       CCopasiObject * obj;
 
-      unsigned C_INT32 substrs_size = substrs.size(), prods_size = prods.size();
-      unsigned C_INT32 k, m, mult;
+      size_t substrs_size = substrs.size(), prods_size = prods.size();
+      size_t k, m, mult;
 
       CChemEqElement* substr;
       CChemEqElement* prod;
@@ -1256,7 +1257,7 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
       for (k = 0; k < substrs_size; ++k)
         {
           substr = substrs[k];
-          mult = (unsigned C_INT32) substr->getMultiplicity();
+          mult = (size_t) substr->getMultiplicity();
 
           expression << "*" << NameMap[substr->getMetaboliteKey()];
 
@@ -1287,7 +1288,7 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
           for (k = 0; k < prods_size; ++k)
             {
               prod = prods[k];
-              mult = (unsigned C_INT32) prod->getMultiplicity();
+              mult = (size_t) prod->getMultiplicity();
 
               expression << "*" << NameMap[prod->getMetaboliteKey()];
 
@@ -1315,7 +1316,7 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
   return true;
 }
 
-bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const CReaction *reac, unsigned C_INT32 &index)
+bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const CReaction *reac, size_t &index)
 {
   if (pNode)
     {
@@ -1348,7 +1349,7 @@ bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const CReaction 
 
               CODEExporter::modifyTreeForMassAction(tmpfunc);
 
-              unsigned C_INT32 i, vindex;
+              size_t i, vindex;
               CEvaluationNode* tmproot = tmpfunc->getRoot();
               CCopasiTree<CEvaluationNode>::iterator iIt, newIt = tmproot;
 
@@ -1425,10 +1426,10 @@ bool CODEExporter::exportKineticFunctionGroup(const CModel * /* copasiModel */)
 std::string CODEExporter::KineticFunction2ODEmember(const CReaction * /* reac */)
 {return " ";}
 
-std::string CODEExporter::exportTitleString(const unsigned C_INT32 /* tmp */)
+std::string CODEExporter::exportTitleString(const size_t /* tmp */)
 {return " ";}
 
-std::string CODEExporter::exportClosingString(const unsigned C_INT32 /* tmp */)
+std::string CODEExporter::exportClosingString(const size_t /* tmp */)
 {return " ";}
 
 /**
@@ -1529,7 +1530,7 @@ void CODEExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvalu
         std::vector<CEvaluationNode *>::const_iterator it = vector.begin();
         std::vector<CEvaluationNode *>::const_iterator end = vector.end();
 
-        unsigned C_INT32 i = 0;
+        size_t i = 0;
 
         while (it != end)
           {

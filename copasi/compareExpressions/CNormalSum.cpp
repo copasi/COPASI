@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/16 09:51:52 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:26:19 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -645,6 +645,7 @@ bool CNormalSum::simplify()
   std::vector<CNormalBase*> newProducts;
   // go through all products and check the denominators
   CNormalProduct* pTmpProduct;
+  CNormalBase* pTmpProduct2;
 
   while (it != endit)
     {
@@ -660,11 +661,21 @@ bool CNormalSum::simplify()
         {
           if (((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().checkDenominatorOne())
             {
-              newProducts.push_back(((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().getNumerator().copy());
+              // this copy returns a CNormalSum
+              // in order to keep the factor, we have to multiply
+              // the sum with the factor
+              pTmpProduct2 = ((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().getNumerator().copy();
+              dynamic_cast<CNormalSum*>(pTmpProduct2)->multiply(pTmpProduct->getFactor());
+              newProducts.push_back(pTmpProduct2);
             }
           else
             {
-              newProducts.push_back(((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().copy());
+              // this copy returns a fraction
+              // so in order to retain the factor, we need to multiply the fraction with
+              // a factor
+              pTmpProduct2 = ((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().copy();
+              dynamic_cast<CNormalFraction*>(pTmpProduct2)->multiply(pTmpProduct->getFactor());
+              newProducts.push_back(pTmpProduct2);
             }
 
           delete pTmpProduct;

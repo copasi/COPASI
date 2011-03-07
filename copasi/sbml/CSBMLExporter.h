@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/04/19 12:53:50 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:32:37 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -629,6 +629,20 @@ protected:
    * This is what this method does.
    */
   void assignSBMLIdsToReactions(CModel* pModel);
+
+  /**
+   * This method goes through all compartments and events and checks if
+   * there is an assignment to a volume.
+   */
+  bool hasVolumeAssignment(const CCopasiDataModel& dataModel);
+
+
+  /**
+   * This method multiplies a given expression by the given object.
+   * The caller is responsible for freeing the memory for the new expression.
+   */
+  static CEvaluationNode* multiplyByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject);
+
 };
 
 #endif // CSBLExporter_H__

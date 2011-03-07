@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionDB.i,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
+//   $Date: 2011/03/07 19:25:43 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -26,7 +26,7 @@
 
 %}
 
-%ignore CFunctionDB::load;
+%ignore CFunctionDB::load(CReadConfig& configbuffer);
 %ignore CFunctionDB::listDependentTrees;
 %ignore CFunctionDB::appendDependentFunctions;
 

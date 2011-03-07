@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:59:38 $
+//   $Date: 2011/03/07 19:28:46 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -122,7 +122,7 @@ public:
    * this is needed for resolving the reference to the metab glyph.
    */
   virtual void exportToSBML(SpeciesReferenceGlyph * g,
-                            const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs,
                             const std::map<const CLBase*, const SBase*> & layoutmap) const;
 
@@ -183,7 +183,7 @@ public:
    * the exported metab reference glyphs will be added.
    */
   virtual void exportToSBML(ReactionGlyph * g,
-                            const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs,
                             std::map<const CLBase*, const SBase*> & layoutmap) const;
 

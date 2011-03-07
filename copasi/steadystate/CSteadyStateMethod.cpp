@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:26 $
+//   $Date: 2011/03/07 19:33:41 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,7 +42,7 @@
 #include "model/CCompartment.h"
 
 CSteadyStateMethod *
-CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType)
+CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType)
 {
   CSteadyStateMethod * pMethod = NULL;
 
@@ -142,7 +142,7 @@ CSteadyStateMethod::process(CState * pState,
 
   mpSteadyState = pState;
   mpJacobianX = & jacobianX;
-  mpProgressHandler = handler;
+  mpCallBack = handler;
 
   return processInternal();
 }
@@ -182,7 +182,7 @@ bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
 {
   const CCopasiVectorNS < CReaction > & Reaction =
     mpProblem->getModel()->getReactions();
-  unsigned C_INT32 i, imax = Reaction.size();
+  size_t i, imax = Reaction.size();
 
   for (i = 0; i < imax; i++)
     if (Reaction[i]->getFlux() / Reaction[i]->getLargestCompartment().getValue() > resolution)

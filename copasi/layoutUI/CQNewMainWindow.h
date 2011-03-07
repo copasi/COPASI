@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:15 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,6 +18,7 @@
 #include <QString>
 #include <QIcon>
 #include <string>
+#include <vector>
 
 class CCopasiDataModel;
 class CLayout;
@@ -28,9 +29,11 @@ class QAction;
 class QActionGroup;
 class QCloseEvent;
 class QComboBox;
+class QLabel;
 class QMenu;
 class QStackedWidget;
 class QToolBar;
+class CFluxMode;
 
 class CQNewMainWindow : public QMainWindow
 {
@@ -52,10 +55,12 @@ protected:
 
   void resetView();
 
+public slots:
+  void slotLayoutChanged(int index);
+
 private slots:
   void slotResetView();
   void slotRenderInfoChanged(int index);
-  void slotLayoutChanged(int index);
   void slotZoomChanged(int index);
   void slotZoomMenuItemActivated(QAction*);
 
@@ -96,6 +101,33 @@ private slots:
    */
   void setStatusMessage(const QString& message, int timeout);
 
+#ifdef COPASI_DEBUG
+  /**
+   * Is called when the menu entry for toggling highlighting
+   * of elementary modes is toggled.
+   */
+  void toggleHighlightSlot(bool checked);
+
+  /**
+   * Checks for calculated elementary modes.
+   */
+  void checkForElementaryModesSlot();
+
+  /**
+   * Checks which elementary mode has been toggled and updates the
+   * highlighted objects list.
+   */
+  void elementaryModeTriggeredSlot(QAction* pAction);
+
+  /**
+   * This slot is triggered when the user wants to change
+   * the fog or the highlighting color, depending on the current
+   * highlighting mode.
+   */
+  void changeColorSlot(bool);
+
+#endif // COPASI_DEBUG
+
 private:
   enum DISPLAY_MODE
   {
@@ -120,6 +152,9 @@ private:
   QMenu *mpOptionsMenu;
   QMenu *mpHelpMenu;
   QMenu *mpZoomMenu;
+#ifdef COPASI_DEBUG
+  QMenu *mpElementaryModesMenu;
+#endif // COPASI_DEBUG
   QToolBar *mpFileToolBar;
   QToolBar *mpSelectionToolBar;
   QAction *mpSwitchModeAct;
@@ -137,6 +172,7 @@ private:
   CQLayoutMainWindow* mpAnimationWindow;
   CCopasiDataModel* mpDataModel;
   QComboBox* mpLayoutDropdown;
+  QLabel* mpRenderLabel;
   QComboBox* mpRenderDropdown;
   QComboBox* mpZoomDropdown;
   CLayout* mpCurrentLayout;
@@ -150,6 +186,22 @@ private:
 
   QIcon mGraphIcon;
   QIcon mAnimationIcon;
+#ifdef COPASI_DEBUG
+  // It does not make sense to update
+  // the elementary flux modes menu each time
+  // because that will delete the information about
+  // selected modes.
+  // We have to remember the modes and only update if necessary.
+  std::vector<const CFluxMode*> mFluxModes;
+
+  // we need two icons for the fog and
+  // the highlight color
+  QPixmap* mpFogColorPixmap;
+  QPixmap* mpHighlightColorPixmap;
+  QAction* mpHighlightModeAction;
+  QAction* mpChangeColorAction;
+#endif // COPASI_DEBUG
+
 };
 
 #endif /* CQNEWMAINWINDOW_H__ */

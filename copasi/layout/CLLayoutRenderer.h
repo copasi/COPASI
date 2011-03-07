@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/21 17:43:50 $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,7 +58,7 @@ class CLTextGlyph;
 class CLTransform;
 class CModel;
 struct CLTextureSpec;
-class CLTextTextureSpec;
+struct CLTextTextureSpec;
 
 class CLLayoutRenderer
 {
@@ -181,6 +181,32 @@ protected:
 
   // a class that can create a texture from a jpeg or png image file
   CLImageTexturizer* mpImageTexturizer;
+
+#ifdef COPASI_DEBUG
+  std::set<const CCopasiObject*> mHighlightedModelObjects;
+
+  // flag that determines whether non-highlighted objects
+  // are placed in a fog or if highlighted objects are highlighted
+  // with a special color.
+  bool mHighlight;
+
+  // color value for highlighting
+  GLfloat mHighlightColor[4];
+
+  // color value for the fog
+  GLfloat mFogColor[4];
+
+  // stores whether the OpenGL functions we need
+  // to allocate dynamically have been initialized
+  bool mGLFunctionsInitialized;
+
+  // have a function pointer to the glFogCoordf function
+  // in the renderer
+  // Maybe all this dynamic function initialization should
+  // be moved to some global place
+  void(*mpGlFogCoordfEXT)(GLfloat);
+#endif // COPASI_DEBUG
+
 
 public:
   /**
@@ -440,6 +466,67 @@ public:
    */
   void setImageTexturizer(CLImageTexturizer* pTexturizer);
 
+#ifdef COPASI_DEBUG
+  // the following methods are used to highlight elements in the diagram
+  // based on their association to model elements
+
+  /**
+   * Sets the list of model objects that are to be highlighted in the diagram.
+   */
+  void setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects);
+
+  /**
+   * Returns a const reference to the set of highlighted model objects.
+   */
+  const std::set<const CCopasiObject*>& getHighlightedModelObjects() const;
+
+  /**
+   * Returns a reference to the set of highlighted model objects.
+   */
+  std::set<const CCopasiObject*>& getHighlightedModelObjects();
+
+  /**
+   * Sets the highlight color.
+   */
+  void setHighlightColor(const GLfloat c[4]);
+
+  /**
+   * Returns a const pointer to the highlight color.
+   * The array has a size of 4 elements.
+   */
+  const GLfloat* getHighlightColor() const;
+
+  /**
+   * Sets the fog color.
+   */
+  void setFogColor(const GLfloat c[4]);
+
+  /**
+   * Returns a const pointer to the fog color.
+   * The array has a size of 4 elements.
+   */
+  const GLfloat* getFogColor() const;
+
+
+  /**
+   * Toggles the flag that determines if highlighted objects
+   * are actually highlighted or if the rest is fogged out.
+   */
+  void toggleHighlightFlag();
+
+  /**
+   * Toggles the flag that determines if highlighted objects
+   * are actually highlighted or if the rest is fogged out.
+   */
+  void setHighlightFlag(bool flag);
+
+  /**
+   * Returns the highlight flag.
+   */
+  bool getHighlightFlag() const;
+
+#endif // COPASI_DEBUG
+
 protected:
   /**
   * Extracts the group attributes from the outermost group of a style.
@@ -652,7 +739,7 @@ protected:
   /**
    * Draw a set of datapoints with the current attributes using the given bounding box.
    */
-  void draw_datapoints(GLdouble* pData, unsigned int numPoints, const CLBoundingBox* pBB, bool doTesselation = false, float xOffset = 0.0, float yOffset = 0.0, float zOffset = 0.0);
+  void draw_datapoints(GLdouble* pData, size_t numPoints, const CLBoundingBox* pBB, bool doTesselation = false, float xOffset = 0.0, float yOffset = 0.0, float zOffset = 0.0);
 
   /**
    * Maps the given arrow head to the given line segment.
@@ -707,7 +794,7 @@ protected:
   /**
    * Method to draw a line made up of a set of points.
    */
-  void draw_line(unsigned int numPoints, GLdouble* pData);
+  void draw_line(size_t numPoints, GLdouble* pData);
 
   static void createGLMatrix(const double* const matrix, GLdouble* glMatrix);
 
@@ -725,7 +812,7 @@ protected:
    * This is needed if we need to apply line stippling for OpenGL < 2.0
    * where texture sizes have to be a power of 2.
    */
-  void segment_data(double length, double ratio, unsigned int numPoints, GLdouble* pData, std::vector<simple_point>& v);
+  void segment_data(double length, double ratio, size_t numPoints, GLdouble* pData, std::vector<simple_point>& v);
 
   /**
    * This method goes through all layout objects and checks them if they
@@ -848,6 +935,14 @@ protected:
    * draws the selection box if there is one
    */
   void draw_selection_box() const;
+
+  /**
+   * The glFogCoordf function is part of OpenGL 1.4 and may not be available on
+   * all implementations, so we need to query for this dynamically.
+   */
+  void initialize_gl_extension_functions();
+
+  void * MyNSGLGetProcAddress(const char *name);
 };
 
 #endif // CLLAYOUTRENDERER_H__

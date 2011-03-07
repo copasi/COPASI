@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:13 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:32:02 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -63,7 +63,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
     mpHandler(pHandler)
 {
   this->resize(640, 480);
-  this->setCaption(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
+  this->setWindowTitle(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
 
   // set up the GUI - the toolbar
   createActions();
@@ -78,32 +78,32 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
 void PlotWindow::createActions()
 {
   printButton = new QToolButton;
-  printButton -> setTextLabel("Print Plot");
+  printButton -> setToolTip("Print Plot");
   printButton -> setText("Print");
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
 
   print2Button = new QToolButton;
-  print2Button -> setTextLabel("Print Image");
+  print2Button -> setToolTip("Print Image");
   print2Button -> setText("Save Image");
   connect(print2Button, SIGNAL(clicked()), this, SLOT(printAsImage()));
 
   saveButton = new QToolButton;
-  saveButton -> setTextLabel("Save Data");
+  saveButton -> setToolTip("Save Data");
   saveButton -> setText("Save Data");
   connect(saveButton, SIGNAL(clicked()), this, SLOT(slotSaveData()));
 
   zoomButton = new QToolButton;
-  zoomButton->setTextLabel("Zoom out");
+  zoomButton->setToolTip("Zoom out");
   zoomButton->setText("Zoom out");
   connect(zoomButton, SIGNAL(clicked()), this, SLOT(slotZoomOut()));
 
   mpSelectAll = new QToolButton;
-  mpSelectAll->setTextLabel("Show all curves");
+  mpSelectAll->setToolTip("Show all curves");
   mpSelectAll->setText("Show All");
   connect(mpSelectAll, SIGNAL(clicked()), this, SLOT(slotSelectAll()));
 
   mpDeselectAll = new QToolButton;
-  mpDeselectAll->setTextLabel("Hide all curves");
+  mpDeselectAll->setToolTip("Hide all curves");
   mpDeselectAll->setText("Hide All");
   connect(mpDeselectAll, SIGNAL(clicked()), this, SLOT(slotDeselectAll()));
 }
@@ -124,7 +124,9 @@ void PlotWindow::createToolBar()
 
   plotTools->addSeparator();
 
-  QAction* closeAct = new QAction("Close", Qt::CTRL + Qt::Key_W, this, "close");
+  QAction* closeAct = new QAction("Close", this);
+  closeAct->setObjectName("close");
+  closeAct->setShortcut(Qt::CTRL + Qt::Key_W);
   connect(closeAct, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
   plotTools->addAction(closeAct);
 
@@ -135,7 +137,7 @@ void PlotWindow::createToolBar()
 
 bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 {
-  this->setCaption(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
+  this->setWindowTitle(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
   return mpPlot->initFromSpec(ptrSpec);
 }
 
@@ -238,7 +240,9 @@ void PlotWindow::printPlot()
   printer.setCreator("Copasi");
   printer.setOrientation(QPrinter::Landscape);
 
-  if (printer.setup())
+  QPrintDialog dialog(&printer);
+
+  if (dialog.exec())
     mpPlot->print(printer, PrintFilter());
 }
 

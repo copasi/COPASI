@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.64 $
+#   $Revision: 1.65 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/09/22 13:22:54 $
+#   $Date: 2011/03/07 19:24:16 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.64 $ $Author: shoops $ $Date: 2010/09/22 13:22:54 $
+# $Revision: 1.65 $ $Author: shoops $ $Date: 2011/03/07 19:24:16 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -45,6 +45,7 @@ COPASISE_DIRS += elementaryFluxModes
 COPASISE_DIRS += function
 COPASISE_DIRS += layout
 COPASISE_DIRS += lyap
+COPASISE_DIRS += math
 COPASISE_DIRS += model
 COPASISE_DIRS += moieties
 COPASISE_DIRS += MIRIAM
@@ -148,13 +149,19 @@ DISTFILES += \
         copasiversion.h \
         copasi.pro \
         lapack.h \
-        mathematics.h
+        mathematics.h \
+        app.pri \
+        common.pri \
+        lib.pri \
+        srcDistribution.pri 
+
+include(srcDistribution.pri)
 
 src_distribution.commands = \
   rm -rf ../copasi_src/copasi; \
   $(CHK_DIR_EXISTS) ../copasi_src || $(MKDIR) ../copasi_src; \
   $(CHK_DIR_EXISTS) ../copasi_src/copasi || $(MKDIR) ../copasi_src/copasi; \
-  cp $$DISTFILES ../copasi_src/copasi/; \
+  cp $${DISTFILES} ../copasi_src/copasi/; \
   $$join(DISTDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
 
 QMAKE_EXTRA_UNIX_TARGETS += src_distribution

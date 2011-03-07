@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:50:55 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:54 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,7 +34,7 @@
 #endif
 
 QString getParameterValue(const CCopasiParameterGroup * group,
-                          const unsigned C_INT32 & index,
+                          const size_t & index,
                           CCopasiParameter::Type * type)
 {
   if (index >= group->size())
@@ -95,7 +100,7 @@ QString getParameterValue(const CCopasiParameterGroup * group,
 {return getParameterValue(group, group->getIndex(name), type);}
 
 bool setParameterValue(CCopasiParameterGroup * group,
-                       const unsigned C_INT32 & index,
+                       const size_t & index,
                        const QString & value)
 {
   if (index >= group->size())
@@ -208,7 +213,7 @@ C_INT32 checkSelection(const QString & file)
 void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl)
 {
   qsl.clear();
-  C_INT32 i, imax = vs.size();
+  size_t i, imax = vs.size();
 
   for (i = 0; i < imax; ++i) qsl += FROM_UTF8(vs[i]);
 }

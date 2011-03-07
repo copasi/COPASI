@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:37 $
+//   $Date: 2011/03/07 19:34:13 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,7 +59,7 @@ bool ble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
 
-const unsigned C_INT32 CTrajectoryTask::ValidMethods[] =
+const unsigned int CTrajectoryTask::ValidMethods[] =
 {
   CCopasiMethod::deterministic,
   CCopasiMethod::stochastic,
@@ -85,9 +85,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     mpCurrentTime(NULL)
 {
   mpProblem = new CTrajectoryProblem(this);
-  mpMethod =
-    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::deterministic,
-        (CTrajectoryProblem *) mpProblem);
+  mpMethod = createMethod(CCopasiMethod::deterministic);
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
@@ -112,9 +110,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mpProblem =
     new CTrajectoryProblem(*static_cast< CTrajectoryProblem * >(src.mpProblem), this);
 
-  mpMethod =
-    CTrajectoryMethod::createTrajectoryMethod(src.mpMethod->getSubType(),
-        static_cast< CTrajectoryProblem *>(mpProblem));
+  mpMethod = createMethod(src.mpMethod->getSubType());
   * mpMethod = * src.mpMethod;
 
   mpMethod->elevateChildren();
@@ -149,7 +145,7 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   ((CTrajectoryProblem *) mpProblem)->load(configBuffer);
 
   pdelete(mpMethod);
-  mpMethod = CTrajectoryMethod::createTrajectoryMethod();
+  mpMethod = CTrajectoryMethod::createMethod();
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
@@ -215,7 +211,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   //*****
 
-  //unsigned C_INT32 FailCounter = 0;
+  //size_t FailCounter = 0;
 
   C_FLOAT64 Duration = mpTrajectoryProblem->getDuration();
   C_FLOAT64 StepSize = mpTrajectoryProblem->getStepSize();
@@ -266,15 +262,14 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 handlerFactor = 100.0 / Duration;
 
   C_FLOAT64 Percentage = 0;
-  unsigned C_INT32 hProcess;
+  size_t hProcess;
 
   if (mpCallBack)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
       hProcess = mpCallBack->addItem("Completion",
-                                     CCopasiParameter::DOUBLE,
-                                     &Percentage,
+                                     Percentage,
                                      &hundred);
     }
 
@@ -374,6 +369,11 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
       if (StateChanged)
         {
+          if (mpTrajectoryProblem->getOutputEvent())
+            {
+              output(COutputInterface::DURING);
+            }
+
           *mpCurrentState = pModel->getState();
           mpTrajectoryMethod->stateChanged();
           StateChanged = false;
@@ -388,11 +388,22 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             pModel->setState(*mpCurrentState);
             pModel->updateSimulatedValues(mUpdateMoieties);
 
+            if (*mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
+                mpTrajectoryProblem->getOutputEvent())
+              {
+                output(COutputInterface::DURING);
+              }
+
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
               return true;
+
+            if (StateChanged && mpTrajectoryProblem->getOutputEvent())
+              {
+                output(COutputInterface::DURING);
+              }
 
             break;
 
@@ -402,10 +413,38 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
             pModel->processRoots(*mpCurrentTime, true, mpTrajectoryMethod->getRoots());
 
+            if (*mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
+                mpTrajectoryProblem->getOutputEvent())
+              {
+                output(COutputInterface::DURING);
+              }
+
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
             pModel->processRoots(*mpCurrentTime, false, mpTrajectoryMethod->getRoots());
+
+            // If the root happens to coincide with end of the step we have to return and
+            // inform the integrator of eventual state changes.
+            if (fabs(*mpCurrentTime - endTime) < Tolerance)
+              {
+                if (StateChanged)
+                  {
+                    *mpCurrentState = pModel->getState();
+                    mpTrajectoryMethod->stateChanged();
+                    StateChanged = false;
+                  }
+
+                return true;
+              }
+
+            if (mpTrajectoryProblem->getOutputEvent() &&
+                (StateChanged ||
+                 *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
+              {
+                output(COutputInterface::DURING);
+              }
+
             break;
 
           case CTrajectoryMethod::FAILURE:
@@ -446,9 +485,7 @@ bool CTrajectoryTask::setMethodType(const int & type)
   if (mpMethod->getSubType() == Type) return true;
 
   pdelete(mpMethod);
-  mpMethod =
-    CTrajectoryMethod::createTrajectoryMethod(Type,
-        (CTrajectoryProblem *) mpProblem);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
@@ -459,6 +496,14 @@ bool CTrajectoryTask::setMethodType(const int & type)
     mUpdateMoieties = false;
 
   return true;
+}
+
+// virtual
+CCopasiMethod * CTrajectoryTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CTrajectoryMethod::createMethod(Type);
 }
 
 CState * CTrajectoryTask::getState()

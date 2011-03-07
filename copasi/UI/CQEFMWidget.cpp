@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:14 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -41,8 +41,6 @@ CQEFMWidget::CQEFMWidget(QWidget* parent, const char* name)
 
   mpHeaderWidget->setTaskName("Elementary Flux Modes");
   mpHeaderWidget->mpUpdateModel->hide();
-
-  addMethodSelectionBox(CEFMTask::ValidMethods, 0);
 
   verticalLayout->insertWidget(0, mpHeaderWidget);
   verticalLayout->addWidget(mpBtnWidget);

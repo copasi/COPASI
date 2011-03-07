@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:36:24 $
+//   $Date: 2011/03/07 19:34:13 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -40,7 +45,7 @@ C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time), C_FLO
     }
   else
     {
-      C_INT32 reaction_index = mPQ.topIndex();
+      size_t reaction_index = mPQ.topIndex();
       updateSystemState(reaction_index);
       updatePriorityQueue(reaction_index, steptime);
       //printDebugInfo();
@@ -58,7 +63,8 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
   C_FLOAT64 time;
 
   mPQ.clear();
-  for (unsigned C_INT32 i = 0; i < mpModel->getReactions().size(); i++)
+
+  for (size_t i = 0; i < mpModel->getReactions().size(); i++)
     {
       time = start_time + generateReactionTime(i);
       mPQ.pushPair(i, time);
@@ -67,7 +73,7 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
   mPQ.buildHeap();
 }
 
-void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time)
+void CStochNextReactionMethod::updatePriorityQueue(size_t reaction_index, C_FLOAT64 time)
 {
   //first the new time for the currently fired reaction
   C_FLOAT64 new_time = time + generateReactionTime(reaction_index);
@@ -79,15 +85,17 @@ void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLO
   // we do not know the exact dependencies
   if (mHasAssignments)
     {
-      unsigned C_INT32 i;
+      size_t i;
+
       for (i = 0; i < mNumReactions; ++i)
         {
-          if (i != (unsigned C_INT32)reaction_index)
+          if (i != reaction_index)
             {
               if (mAmu[i] == mAmuOld[i])
                 continue;
 
               C_FLOAT64 new_time;
+
               if (mAmuOld[i] > 0)
                 {
                   new_time = time + (mAmuOld[i] / mAmu[i]) * (mPQ.getKey(i) - time);
@@ -103,13 +111,14 @@ void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLO
     }
   else
     {
-      const std::set<unsigned C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
-      std::set<unsigned C_INT32>::const_iterator di;
+      const std::set<size_t> & dep_nodes = mDG.getDependents(reaction_index);
+      std::set<size_t>::const_iterator di;
+
       for (di = dep_nodes.begin(); di != dep_nodes.end(); ++di)
         {
-          if (*di != (unsigned C_INT32) reaction_index)
+          if (*di != reaction_index)
             {
-              C_INT32 index = *di;
+              size_t index = *di;
               C_FLOAT64 new_time;
 
               if (mAmuOld[index] > 0)

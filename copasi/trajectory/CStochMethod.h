@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:14 $
+//   $Date: 2011/03/07 19:34:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,7 +38,7 @@ class CTrajectoryProblem;
 class CStochBalance
 {
 public:
-  C_INT32 mIndex;
+  size_t mIndex;
   C_INT32 mMultiplicity;
 };
 
@@ -47,8 +47,7 @@ class CRandom;
 class CStochMethod : public CTrajectoryMethod
 {
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
 protected:
 
@@ -102,13 +101,13 @@ protected:
    * @return mFail
    * @see mFail
    */
-  C_INT32 calculateAmu(C_INT32 reaction_index);
+  C_INT32 calculateAmu(size_t reaction_index);
 
   /**
    * Generate the index of a putative reaction.
    * @return The reaction index
    */
-  C_INT32 generateReactionIndex();
+  size_t generateReactionIndex();
 
   /**
    * Generate the putative time taken before any reaction takes place
@@ -120,14 +119,14 @@ protected:
    * Generate the putative time taken before a special reaction takes place
    * @return The time before the reaction
    */
-  C_FLOAT64 generateReactionTime(C_INT32 reaction_index);
+  C_FLOAT64 generateReactionTime(size_t reaction_index);
 
   /**
    * Update the particle numbers according to which reaction ocurred
    * @return mFail
    * @see mFail
    */
-  C_INT32 updateSystemState(C_INT32 reaction_index);
+  C_INT32 updateSystemState(size_t reaction_index);
 
   /**
   * Set up the dependency graph and the balances
@@ -149,7 +148,7 @@ private:
    * @param reaction_index The index of the reaction being executed.
    * @return The set of metabolites depended on.
    */
-  std::set<std::string> *getDependsOn(C_INT32 reaction_index);
+  std::set<std::string> *getDependsOn(size_t reaction_index);
 
   /**
    * Get the set of metabolites which change number when a given
@@ -157,12 +156,12 @@ private:
    * @param reaction_index The index of the reaction being executed.
    * @return The set of affected metabolites.
    */
-  std::set<std::string> *getAffects(C_INT32 reaction_index);
+  std::set<std::string> *getAffects(size_t reaction_index);
 
   /**
   * max number of single stochastic steps to do in one step()
   */
-  C_INT32 mMaxSteps;
+  size_t mMaxSteps;
 
   /**
   * maximal increase of a particle number in one step.
@@ -267,12 +266,12 @@ protected:
    */
   std::vector <C_INT64> mNumbers;
 
-  unsigned C_INT32 mNumReactions;
+  size_t mNumReactions;
 
   /**
    * index of first metab in a CState
    */
-  unsigned C_INT32 mFirstMetabIndex;
+  size_t mFirstMetabIndex;
 
   /**
    * tests if the model contains a global value with an assignment rule that is

@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
- $Revision: 1.17 $
+ $Revision: 1.18 $
  $Name:  $
- $Author: gauges $
- $Date: 2009/07/28 07:33:35 $
+ $Author: shoops $
+ $Date: 2011/03/07 19:38:00 $
  End CVS Header */
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -32,12 +37,13 @@ class CCopasiObject;
 class QLabel;
 class CCopasiParameterGroup;
 class QToolButton;
+class DataModelGUI;
 
 class CopasiSlider: public QFrame
 {
   Q_OBJECT
 public:
-  CopasiSlider(CSlider* pSlider, QWidget* parent = 0);
+  CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent = 0);
   virtual ~CopasiSlider();
 
   CSlider::Type type() const;
@@ -56,7 +62,7 @@ public:
   C_FLOAT64 minValue() const;
   C_FLOAT64 maxValue() const;
   C_FLOAT64 originalValue() const;
-  void updateValue(bool modifyRange);
+  void updateValue(bool modifyRange, bool updateDependencies);
   CCopasiObject* object() const;
   void setObject(CCopasiObject* object);
   CSlider* getCSlider() const;
@@ -85,6 +91,7 @@ protected:
   QToolButton* mpCloseButton;
   QToolButton* mpEditButton;
   bool mValueOutOfRange;
+  DataModelGUI * mpDM;
 
   int calculatePositionFromValue(C_FLOAT64 value);
   C_FLOAT64 calculateValueFromPosition(int position);

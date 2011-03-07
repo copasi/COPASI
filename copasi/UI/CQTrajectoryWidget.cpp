@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:15 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,7 @@
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CQValidator.h"
 #include "UI/CQMessageBox.h"
@@ -72,11 +73,13 @@ void CQTrajectoryWidget::init()
   mpHeaderWidget->setTaskName("Time Course");
 
   verticalLayout->insertWidget(0, mpHeaderWidget);  // header
-  verticalLayout->insertSpacing(1, 14);       // space between header and body
-  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
+  // verticalLayout->insertSpacing(1, 14);       // space between header and body
 
-  addMethodSelectionBox(CTrajectoryTask::ValidMethods, 0);
-  addMethodParameterTable(1);
+  mpMethodWidget->setValidMethods(CTrajectoryTask::ValidMethods);
+  mpMethodWidget->enableMethodParameter(true);
+  verticalLayout->addWidget(mpMethodWidget);
+
+  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   slotOutputDelay(false);
 
@@ -256,6 +259,12 @@ bool CQTrajectoryWidget::saveTask()
       mChanged = true;
     }
 
+  if (trajectoryproblem->getOutputEvent() != mpCheckOutputEvent->isChecked())
+    {
+      trajectoryproblem->setOutputEvent(mpCheckOutputEvent->isChecked());
+      mChanged = true;
+    }
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -302,6 +311,8 @@ bool CQTrajectoryWidget::loadTask()
 
   mpEditDelay->setText(QString::number(trajectoryproblem->getOutputStartTime()));
 
+  mpCheckOutputEvent->setChecked(trajectoryproblem->getOutputEvent());
+
   //store time series checkbox
   mpCheckSave->setChecked(trajectoryproblem->timeSeriesRequested());
 
@@ -318,7 +329,7 @@ bool CQTrajectoryWidget::loadTask()
 
 CCopasiMethod * CQTrajectoryWidget::createMethod(const CCopasiMethod::SubType & type)
 {
-  return CTrajectoryMethod::createTrajectoryMethod(type);
+  return CTrajectoryMethod::createMethod(type);
 }
 
 bool CQTrajectoryWidget::runTask()

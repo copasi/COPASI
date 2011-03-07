@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/10 16:12:14 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:56 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,6 +25,7 @@
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
+#include "UI/CQTaskMethodWidget.h"
 #include "UI/CQFittingItemWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CQExperimentData.h"
@@ -94,7 +95,7 @@ bool CQFittingWidget::saveTask()
 
   std::string Name;
   CExperiment * pExperiment;
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   std::set<CExperiment *> DealtWith;
 
@@ -203,6 +204,18 @@ bool CQFittingWidget::saveTask()
 
 #endif // COPASI_CROSSVALIDATION
 
+  if (mpCheckRandomize->isChecked() != pProblem->getRandomizeStartValues())
+    {
+      mChanged = true;
+      pProblem->setRandomizeStartValues(mpCheckRandomize->isChecked());
+    }
+
+  if (mpCheckStatistics->isChecked() != pProblem->getCalculateStatistics())
+    {
+      mChanged = true;
+      pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
+    }
+
   mChanged |= mpParameters->save(&ExperimentMap, &CrossValidationMap);
   mChanged |= mpConstraints->save(&ExperimentMap, &CrossValidationMap);
 
@@ -235,7 +248,7 @@ bool CQFittingWidget::loadTask()
   mpExperimentSet = new CExperimentSet(*pExperimentSet);
 
   mExperimentKeyMap.clear();
-  unsigned C_INT32 i, imax = mpExperimentSet->getExperimentCount();
+  size_t i, imax = mpExperimentSet->getExperimentCount();
 
   for (i = 0; i < imax; i++)
     mExperimentKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
@@ -255,6 +268,9 @@ bool CQFittingWidget::loadTask()
       mpCrossValidationSet->getExperiment(i)->CCopasiParameter::getKey();
 
 #endif // COPASI_CROSSVALIDATION
+
+  mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
+  mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
   mpParameters->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
@@ -315,25 +331,20 @@ void CQFittingWidget::init()
 {
   mpHeaderWidget->setTaskName("Parameter Estimation");
 
-  vboxLayout->insertWidget(0, mpHeaderWidget);
-  vboxLayout->insertSpacing(1, 14);      // space between header and body
-  vboxLayout->addWidget(mpBtnWidget);
+  verticalLayout->insertWidget(0, mpHeaderWidget);
+  // verticalLayout->insertSpacing(1, 14);      // space between header and body
 
-  addMethodSelectionBox(CFitTask::ValidMethods, 0);
-  addMethodParameterTable(1);
+  mpMethodWidget->setValidMethods(CFitTask::ValidMethods);
+  mpMethodWidget->enableMethodParameter(true);
+  verticalLayout->addWidget(mpMethodWidget);
 
-//  mpParameterPageLayout = new Q3HBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
-  mpParameterPageLayout = new QHBoxLayout(mpParametersPage);
-  mpParameters = new CQFittingItemWidget(mpParametersPage);
+  verticalLayout->addWidget(mpBtnWidget);
+
+
   mpParameters->setItemType(CQFittingItemWidget::FIT_ITEM);
-  mpParameterPageLayout->addWidget(mpParameters);
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
 
-//  mpConstraintPageLayout = new Q3HBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
-  mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage);
-  mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
   mpConstraints->setItemType(CQFittingItemWidget::FIT_CONSTRAINT);
-  mpConstraintPageLayout->addWidget(mpConstraints);
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 
   mpCurrentList = mpParameters;
@@ -348,13 +359,13 @@ void CQFittingWidget::init()
 void CQFittingWidget::slotParameterNumberChanged(int number)
 {
   QString TabLabel = "Parameters (" + QString::number(number) + ")";
-  mpTabWidget->setTabLabel(mpParametersPage, TabLabel);
+  mpTabWidget->setTabLabel(mpParameters, TabLabel);
 }
 
 void CQFittingWidget::slotConstraintNumberChanged(int number)
 {
   QString TabLabel = "Constraints (" + QString::number(number) + ")";
-  mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
+  mpTabWidget->setTabLabel(mpConstraints, TabLabel);
 }
 
 void CQFittingWidget::destroy()

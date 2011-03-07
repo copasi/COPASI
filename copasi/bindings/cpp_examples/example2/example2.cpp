@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example2/example2.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/03/04 08:16:15 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:25:43 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -37,10 +42,12 @@ int main(int argc, char** argv)
   // create a new datamodel
   CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
   assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+
   // the only argument to the main routine should be the name of a CPS file
   if (argc == 2)
     {
       std::string filename = argv[1];
+
       try
         {
           // load the model without progress report
@@ -52,15 +59,17 @@ int main(int argc, char** argv)
           CCopasiRootContainer::destroy();
           return 1;
         }
+
       CModel* pModel = pDataModel->getModel();
       assert(pModel != NULL);
       std::cout << "Model statistics for model \"" << pModel->getObjectName() << "\"." << std::endl;
 
       // output number and names of all compartments
-      unsigned int i, iMax = pModel->getCompartments().size();
+      size_t i, iMax = pModel->getCompartments().size();
       std::cout << "Number of Compartments: " << iMax << std::endl;
       std::cout << "Compartments: " << std::endl;
-      for (i = 0;i < iMax;++i)
+
+      for (i = 0; i < iMax; ++i)
         {
           CCompartment* pCompartment = pModel->getCompartments()[i];
           assert(pCompartment != NULL);
@@ -71,7 +80,8 @@ int main(int argc, char** argv)
       iMax = pModel->getMetabolites().size();
       std::cout << "Number of Metabolites: " << iMax << std::endl;
       std::cout << "Metabolites: " << std::endl;
-      for (i = 0;i < iMax;++i)
+
+      for (i = 0; i < iMax; ++i)
         {
           CMetab* pMetab = pModel->getMetabolites()[i];
           assert(pMetab != NULL);
@@ -82,7 +92,8 @@ int main(int argc, char** argv)
       iMax = pModel->getReactions().size();
       std::cout << "Number of Reactions: " << iMax << std::endl;
       std::cout << "Reactions: " << std::endl;
-      for (i = 0;i < iMax;++i)
+
+      for (i = 0; i < iMax; ++i)
         {
           CReaction* pReaction = pModel->getReactions()[i];
           assert(pReaction != NULL);

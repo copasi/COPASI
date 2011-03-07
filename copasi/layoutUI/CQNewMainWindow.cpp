@@ -1,11 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:15 $
 // End CVS Header
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +16,15 @@
 #include <copasi/model/CModel.h>
 #include <copasi/layout/CLayout.h>
 #include <copasi/layout/CListOfLayouts.h>
+#ifdef COPASI_DEBUG
+#include <copasi/elementaryFluxModes/CEFMTask.h>
+#include <copasi/elementaryFluxModes/CEFMProblem.h>
+#include <copasi/elementaryFluxModes/CFluxMode.h>
+#include <copasi/model/CReaction.h>
+#include <copasi/model/CChemEq.h>
+#include <copasi/model/CChemEqElement.h>
+#include <copasi/model/CMetab.h>
+#endif // COPASI_DEBUG
 
 // local includes
 #include "CQGLLayoutPainter.h"
@@ -27,10 +37,13 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QCloseEvent>
+#include <QColor>
+#include <QColorDialog>
 #include <QComboBox>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QImage>
 #include <QLabel>
 #include <QPixmap>
@@ -39,6 +52,7 @@
 #include <QStackedWidget>
 #include <QStatusBar>
 #include <QToolBar>
+#include <QVBoxLayout>
 
 #include "CQGLLayoutViewer.h"
 #include "CQLayoutMainWindow.h"
@@ -71,6 +85,12 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
     mCurDir(""),
     mGraphIcon(QPixmap(graph_xpm)),
     mAnimationIcon(QPixmap(film_strip_xpm))
+#ifdef COPASI_DEBUG
+    , mpFogColorPixmap(new QPixmap(32, 32))
+    , mpHighlightColorPixmap(new QPixmap(32, 32))
+    , mpHighlightModeAction(NULL)
+    , mpChangeColorAction(NULL)
+#endif // COPASI_DEBUG
 {
   // first we load the default styles if they don't already exist
   if (DEFAULT_STYLES == NULL)
@@ -94,8 +114,20 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   createStatusBar();
 
   setUnifiedTitleAndToolBarOnMac(true);
+  this->addGlobalRenderInfoItemsToList();
   this->addDefaultRenderInfoItemsToList();
   this->updateLayoutList();
+#ifdef COPASI_DEBUG
+  // fill the two pixmaps with the current fog and highlight color
+  // We have to do that after the call to updateLayoutList because before that call
+  // the rnederer does not exist yet.
+  const GLfloat* c = this->mpLayoutViewer->getPainter()->getFogColor();
+  this->mpFogColorPixmap->fill(QColor((int)(c[0]*255.0), (int)(c[1]*255.0), (int)(c[2]*255.0), (int)(c[3]*255.0)));
+  c = this->mpLayoutViewer->getPainter()->getHighlightColor();
+  this->mpHighlightColorPixmap->fill(QColor((int)(c[0]*255.0), (int)(c[1]*255.0), (int)(c[2]*255.0), (int)(c[3]*255.0)));
+  this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
+#endif // COPASI_DEBUG
+
 }
 
 void CQNewMainWindow::createActions()
@@ -151,8 +183,6 @@ void CQNewMainWindow::createMenus()
   mpFileMenu = menuBar()->addMenu(tr("&File"));
   mpFileMenu->addAction(mpSwitchModeAct);
   mpFileMenu->addSeparator();
-  mpFileMenu->addAction(mpScreenshotAct);
-  mpFileMenu->addSeparator();
   mpFileMenu->addAction(mpCloseAct);
 
   // play menu
@@ -166,7 +196,7 @@ void CQNewMainWindow::createMenus()
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getStepForwardAction());
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getStepBackwardAction());
   this->mpPlayMenu->addSeparator();
-  this->mpLoopItemAction = this->mpPlayMenu->addAction("loop animation");
+  this->mpLoopItemAction = this->mpPlayMenu->addAction(tr("loop animation"));
   this->mpLoopItemAction->setCheckable(true);
   this->mpLoopItemAction->setChecked(false);
   connect(this->mpLoopItemAction, SIGNAL(toggled(bool)) , this->mpAnimationWindow, SLOT(slotLoopActivated(bool)));
@@ -175,8 +205,8 @@ void CQNewMainWindow::createMenus()
 
   // view menu
   mpViewMenu = menuBar()->addMenu(tr("View"));
-  mpViewMenu->addAction("Reset View", this, SLOT(slotResetView()));
-  this->mpZoomMenu = this->mpViewMenu->addMenu("Zoom");
+  mpViewMenu->addAction(tr("Reset View"), this, SLOT(slotResetView()));
+  this->mpZoomMenu = this->mpViewMenu->addMenu(tr("Zoom"));
   this->mpZoomActionGroup = new QActionGroup(this);
   QAction* pAction = this->mpZoomActionGroup->addAction("1%");
   pAction->setCheckable(true);
@@ -215,13 +245,28 @@ void CQNewMainWindow::createMenus()
   pAction->setCheckable(true);
   connect(this->mpZoomActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomMenuItemActivated(QAction*)));
   this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
+#ifdef COPASI_DEBUG
+  this->mpViewMenu->addSeparator();
+  this->mpHighlightModeAction = this->mpViewMenu->addAction(tr("highlight"));
+  this->mpHighlightModeAction->setCheckable(true);
+  this->mpHighlightModeAction->setChecked(true);
+  this->mpHighlightModeAction->setToolTip(tr("determines whether selected elements are highlighted or if unselected items are toned down."));
+  connect(this->mpHighlightModeAction, SIGNAL(toggled(bool)), this, SLOT(toggleHighlightSlot(bool)));
+  this->mpChangeColorAction = this->mpViewMenu->addAction(tr("highlight color ..."));
+  connect(this->mpChangeColorAction, SIGNAL(triggered(bool)), this, SLOT(changeColorSlot(bool)));
+  this->mpChangeColorAction->setToolTip(tr("depending on the highlight mode lets you select the color for highlighting or down toning elements"));
+  this->mpElementaryModesMenu = this->mpViewMenu->addMenu("ElementaryModes");
+  this->mpElementaryModesMenu->setToolTip(tr("displays a list of elementary modes if any have been calculated and lets you select one or more that are emphasized in the layout displayed"));
+  this->mpElementaryModesMenu->addAction(tr("none"));
+  connect(this->mpElementaryModesMenu, SIGNAL(aboutToShow()), this, SLOT(checkForElementaryModesSlot()));
+#endif // COPASI_DEBUG
   this->mpViewMenu->addSeparator();
   this->mpViewMenu->addAction(this->mpScreenshotAct);
 
   // options menu
   mpOptionsMenu = menuBar()->addMenu(tr("Options"));
   mpOptionsMenu->setVisible(false);
-  QMenu* pM = this->mpOptionsMenu->addMenu("Shape of Label");
+  QMenu* pM = this->mpOptionsMenu->addMenu(tr("Shape of Label"));
   pM->addAction(this->mpRectangularShape);
   pM->addAction(this->mpCircularShape);
   this->mpOptionsMenu->addAction(this->mpMimaNodeSizes);
@@ -243,27 +288,36 @@ void CQNewMainWindow::createToolBars()
 
   // add a toolbar for the selection widgets
   mpSelectionToolBar = addToolBar(tr("Select"));
-  QFrame* pFrame = new QFrame;
-  QHBoxLayout* pLayout = new QHBoxLayout;
-  QLabel* pLabel = new QLabel("Layout: ");
+  QFrame* pFrame1 = new QFrame;
+  QVBoxLayout* pLayout = new QVBoxLayout;
+  pLayout->setSpacing(3);
+  QLabel* pLabel = new QLabel(tr("Layout:"));
   pLayout->addWidget(pLabel);
   this->mpLayoutDropdown = new QComboBox;
-  this->mpLayoutDropdown->setMinimumWidth(80);
-  this->mpLayoutDropdown->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+  this->mpLayoutDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+  pFrame1->setLayout(pLayout);
   pLayout->addWidget(this->mpLayoutDropdown);
-  pLabel = new QLabel("Render Information: ");
-  pLayout->addWidget(pLabel);
+
+  QFrame* pFrame2 = new QFrame;
+  pLayout = new QVBoxLayout;
+  pLayout->setSpacing(3);
+  pFrame2->setLayout(pLayout);
+  this->mpRenderLabel = new QLabel(tr("Render Information:"));
+  pLayout->addWidget(this->mpRenderLabel);
   this->mpRenderDropdown = new QComboBox;
-  this->mpRenderDropdown->setMinimumWidth(80);
-  this->mpRenderDropdown->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+  this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
   pLayout->addWidget(this->mpRenderDropdown);
-  pLabel = new QLabel("Zoom Factor: ");
+
+
+  QFrame* pFrame3 = new QFrame;
+  pLayout = new QVBoxLayout;
+  pLayout->setSpacing(3);
+  pFrame3->setLayout(pLayout);
+  pLabel = new QLabel(tr("Zoom Factor:"));
   pLayout->addWidget(pLabel);
   this->mpZoomDropdown = new QComboBox;
-  this->mpZoomDropdown->setMinimumWidth(50);
-  this->mpZoomDropdown->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+  this->mpZoomDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
   pLayout->addWidget(this->mpZoomDropdown);
-  pFrame->setLayout(pLayout);
   // fill the zoom factor box
   unsigned int i, iMax = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
   int defaultIndex = -1;
@@ -281,7 +335,9 @@ void CQNewMainWindow::createToolBars()
   // set 100% as the default zoom factor
   assert(defaultIndex != -1);
   this->mpZoomDropdown->setCurrentIndex(defaultIndex);
-  this->mpSelectionToolBar->addWidget(pFrame);
+  this->mpSelectionToolBar->addWidget(pFrame1);
+  this->mpSelectionToolBar->addWidget(pFrame2);
+  this->mpSelectionToolBar->addWidget(pFrame3);
   // connect the combobox signals
   connect(this->mpLayoutDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotLayoutChanged(int)));
   connect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
@@ -330,6 +386,8 @@ void CQNewMainWindow::resetView()
 void CQNewMainWindow::slotResetView()
 {
   this->resetView();
+  // if we are not in animation mode, we have to repaint
+  this->mpLayoutViewer->setZoomFactor(1.0);
   this->mpAnimationWindow->slotResetView();
 }
 
@@ -359,16 +417,18 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
       return;
     }
 
-  unsigned int numLocalRenderInfo = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
-  unsigned int numFileRenderInfo = numLocalRenderInfo + this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
+  size_t Index = (size_t) index;
 
-  if ((unsigned int)index >= numLocalRenderInfo)
+  size_t numLocalRenderInfo = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
+  size_t numFileRenderInfo = numLocalRenderInfo + this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
+
+  if (Index >= numLocalRenderInfo)
     {
       // it is a global render information or a default render info
-      if ((unsigned int)index >= numFileRenderInfo)
+      if (Index >= numFileRenderInfo)
         {
           // it must be a default render information
-          pRenderInfo = getDefaultStyle(index - numFileRenderInfo);
+          pRenderInfo = getDefaultStyle(Index - numFileRenderInfo);
 
           if (pRenderInfo != this->mpCurrentRenderInformation)
             {
@@ -378,7 +438,7 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
         }
       else
         {
-          pRenderInfo = this->mpDataModel->getListOfLayouts()->getRenderInformation(index - numLocalRenderInfo);
+          pRenderInfo = this->mpDataModel->getListOfLayouts()->getRenderInformation(Index - numLocalRenderInfo);
 
           if (pRenderInfo != this->mpCurrentRenderInformation)
             {
@@ -390,7 +450,7 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
   else
     {
       // it is a local render information
-      pRenderInfo = this->mpCurrentLayout->getRenderInformation(index);
+      pRenderInfo = this->mpCurrentLayout->getRenderInformation(Index);
 
       if (pRenderInfo != this->mpCurrentRenderInformation)
         {
@@ -405,9 +465,9 @@ void CQNewMainWindow::updateRenderInformationList()
   // disconnect the slot
   disconnect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
   // remove the local render information items
-  unsigned int num = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() + getNumDefaultStyles();
+  size_t num = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() + getNumDefaultStyles();
 
-  while ((unsigned int)this->mpRenderDropdown->count() > num)
+  while ((size_t) this->mpRenderDropdown->count() > num)
     {
       this->mpRenderDropdown->removeItem(0);
     }
@@ -416,7 +476,7 @@ void CQNewMainWindow::updateRenderInformationList()
   if (this->mpCurrentLayout)
     {
       num = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
-      unsigned int i;
+      size_t i;
       CLRenderInformationBase* pTmpRenderInfo = NULL;
 
       for (i = num; i > 0; --i)
@@ -441,7 +501,7 @@ void CQNewMainWindow::updateRenderInformationList()
   if (dynamic_cast<const CLGlobalRenderInformation*>(this->mpCurrentRenderInformation))
     {
       // find the correct index
-      unsigned int i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
+      size_t i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -466,11 +526,11 @@ void CQNewMainWindow::updateRenderInformationList()
             }
 
           assert(i != iMax);
-          this->mpRenderDropdown->setCurrentIndex(num + i);
+          this->mpRenderDropdown->setCurrentIndex((int)(num + i));
         }
       else
         {
-          this->mpRenderDropdown->setCurrentIndex(num + i);
+          this->mpRenderDropdown->setCurrentIndex((int)(num + i));
         }
     }
   else
@@ -495,7 +555,7 @@ void CQNewMainWindow::updateRenderInformationList()
             {
               // take the first global render information
               this->mpCurrentRenderInformation = this->mpDataModel->getListOfLayouts()->getRenderInformation(0);
-              this->mpRenderDropdown->setCurrentIndex(num);
+              this->mpRenderDropdown->setCurrentIndex((int) num);
             }
           else if (getNumDefaultStyles() > 0)
             {
@@ -521,7 +581,7 @@ void CQNewMainWindow::addGlobalRenderInfoItemsToList()
   // disconnect the slot
   disconnect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
   this->mpRenderDropdown->clear();
-  int i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
+  size_t i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
   CLRenderInformationBase* pTmpRenderInfo = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -547,7 +607,7 @@ void CQNewMainWindow::addDefaultRenderInfoItemsToList()
 {
   // disconnect the slot
   disconnect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
-  int i, iMax = getNumDefaultStyles();
+  size_t i, iMax = getNumDefaultStyles();
   CLRenderInformationBase* pTmpRenderInfo = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -576,7 +636,7 @@ void CQNewMainWindow::slotZoomChanged(int index)
   this->mpAnimationWindow->setZoomFactor(this->mpZoomDropdown->currentText());
 
   // also set the zoom factor in the menu
-  if (index < this->mpZoomActionGroup->actions().size())
+  if ((int) index < this->mpZoomActionGroup->actions().size())
     {
       this->mpZoomActionGroup->actions().at(index)->setChecked(true);
     }
@@ -642,12 +702,12 @@ void CQNewMainWindow::slotScreenshot()
       double width = pPainter->getCurrentWidth();
       double height = pPainter->getCurrentHeight();
       CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
-          x, y, width, height, this);
+          x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
 
       if (pDialog->exec() == QDialog::Accepted)
         {
           // ask for the filename
-          QString fileName = QFileDialog::getSaveFileName(this, QString("Export to"), "", "PNG (*.png);;All files (*.*)");
+          QString fileName = QFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*.*)"));
 
           if (!fileName.isEmpty())
             {
@@ -739,7 +799,7 @@ void CQNewMainWindow::updateLayoutList()
   disconnect(this->mpLayoutDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotLayoutChanged(int)));
   this->mpLayoutDropdown->clear();
   const CLayout* pTmpLayout = NULL;
-  unsigned int i, iMax = this->mpDataModel->getListOfLayouts()->size();
+  size_t i, iMax = this->mpDataModel->getListOfLayouts()->size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -789,6 +849,11 @@ void CQNewMainWindow::switchMode()
         this->setAnimationToolbar();
         this->setAnimationMenu();
         this->mpWidgetStack->setCurrentIndex(1);
+#ifdef COPASI_DEBUG
+        this->mpElementaryModesMenu->setEnabled(false);
+        this->mpHighlightModeAction->setEnabled(false);
+        this->mpChangeColorAction->setEnabled(false);
+#endif // COPASI_DEBUG
         break;
       case CQNewMainWindow::ANIMATION_MODE:
         disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
@@ -800,6 +865,11 @@ void CQNewMainWindow::switchMode()
         this->setGraphToolbar();
         this->setGraphMenu();
         this->mpWidgetStack->setCurrentIndex(0);
+#ifdef COPASI_DEBUG
+        this->mpElementaryModesMenu->setEnabled(true);
+        this->mpHighlightModeAction->setEnabled(true);
+        this->mpChangeColorAction->setEnabled(true);
+#endif // COPASI_DEBUG
         break;
     }
 }
@@ -811,6 +881,7 @@ void CQNewMainWindow::setAnimationToolbar()
   // add load data action
   this->mpLoadDataAct->setVisible(true);
   // hide the render information box
+  this->mpRenderLabel->hide();
   this->mpRenderDropdown->hide();
 }
 
@@ -821,6 +892,7 @@ void CQNewMainWindow::setGraphToolbar()
   // add revert curve action
   this->mpRevertCurveAct->setVisible(true);
   // show the render information box
+  this->mpRenderLabel->show();
   this->mpRenderDropdown->show();
 }
 
@@ -840,3 +912,368 @@ void CQNewMainWindow::setStatusMessage(const QString& message, int timeout)
 {
   this->statusBar()->showMessage(message, timeout);
 }
+
+
+#ifdef COPASI_DEBUG
+/**
+ * Checks for calculated elementary modes.
+ */
+void CQNewMainWindow::checkForElementaryModesSlot()
+{
+  bool fluxModesChanged = false;
+
+  if (this->mpDataModel != NULL)
+    {
+      const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
+      assert(pTaskList != NULL);
+
+      if (pTaskList != NULL)
+        {
+          // get the metabolic control analysis task object
+          const CEFMTask* pTask = dynamic_cast<const CEFMTask*>((*pTaskList)["Elementary Flux Modes"]);
+
+          if (pTask != NULL)
+            {
+              const CEFMProblem* pProblem = dynamic_cast<const CEFMProblem*>(pTask->getProblem());
+
+              if (pProblem != NULL && !pProblem->getFluxModes().empty())
+                {
+                  const std::vector< CFluxMode >& fluxModes = pProblem->getFluxModes();
+                  size_t iMax = fluxModes.size();
+
+                  if (this->mFluxModes.size() != iMax)
+                    {
+                      fluxModesChanged = true;
+                    }
+                  else
+                    {
+                      unsigned int i = 0;
+
+                      while (i < iMax && fluxModesChanged == false)
+                        {
+                          if (&(fluxModes[i]) != this->mFluxModes[i])
+                            {
+                              fluxModesChanged = true;
+                            }
+
+                          ++i;
+                        }
+                    }
+
+                  if (fluxModesChanged)
+                    {
+                      this->mpElementaryModesMenu->clear();
+                      this->mFluxModes.clear();
+
+                      if (fluxModes.empty())
+                        {
+                          this->mpElementaryModesMenu->addAction("None");
+                          disconnect(this->mpElementaryModesMenu, SIGNAL(triggered(QAction*)), this, SLOT(elementaryModeTriggeredSlot(QAction*)));
+                        }
+                      else
+                        {
+                          unsigned int i = 0;
+                          const CFluxMode* pFluxMode = NULL;
+
+                          while (i < iMax)
+                            {
+                              pFluxMode = &(fluxModes[i]);
+                              this->mFluxModes.push_back(pFluxMode);
+                              std::string desc = pTask->getFluxModeDescription(*pFluxMode);
+                              QAction* pAction = this->mpElementaryModesMenu->addAction(QString(desc.c_str()));
+                              pAction->setCheckable(true);
+                              ++i;
+                            }
+
+                          connect(this->mpElementaryModesMenu, SIGNAL(triggered(QAction*)), this, SLOT(elementaryModeTriggeredSlot(QAction*)));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Checks which elementary mode has been toggled and updates the
+ * highlighted objects list.
+ */
+void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
+{
+  // determine the index of the flux mode
+  unsigned int index = this->mpElementaryModesMenu->actions().indexOf(pAction);
+  // get the set of currently highlighted objects
+  assert(this->mpLayoutViewer != NULL && this->mpLayoutViewer->getPainter() != NULL);
+  std::set<const CCopasiObject*>& highlighted = this->mpLayoutViewer->getPainter()->getHighlightedModelObjects();
+
+  // if the action is checked, we need to add all the reactions of the flux mode
+  // to the highlighted objects
+  if (pAction->isChecked())
+    {
+      const CFluxMode* pFlux = this->mFluxModes[index];
+      CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
+      const CReaction* pReaction = NULL;
+      assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
+      const CModel* pModel = this->mpDataModel->getModel();
+
+      while (it != endit)
+        {
+          assert(pModel->getReactions().size() > it->first);
+          pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
+          assert(pReaction != NULL);
+          highlighted.insert(pReaction);
+          // now we need to add the arrows and species
+          const CChemEq& chemEq = pReaction->getChemEq();
+          const CCopasiVector<CChemEqElement>& substrates = chemEq.getSubstrates();
+          CCopasiVector<CChemEqElement>::const_iterator it2 = substrates.begin(), endit2 = substrates.end();
+
+          while (it2 != endit2)
+            {
+              assert((*it2) != NULL);
+              highlighted.insert(*it2);
+              assert((*it2)->getMetabolite() != NULL);
+              highlighted.insert((*it2)->getMetabolite());
+              ++it2;
+            }
+
+          const CCopasiVector<CChemEqElement>& products = chemEq.getProducts();
+
+          it2 = products.begin();
+
+          endit2 = products.end();
+
+          while (it2 != endit2)
+            {
+              assert((*it2) != NULL);
+              highlighted.insert(*it2);
+              assert((*it2)->getMetabolite() != NULL);
+              highlighted.insert((*it2)->getMetabolite());
+              ++it2;
+            }
+
+          ++it;
+        }
+    }
+  // if the node is unchecked, we need to remove all the reactions from the
+  // highlighted objects, but only those that are not part of another selected flux mode
+  else
+    {
+      // we first need to find all objects that belong to other flux modes
+      const QList<QAction*>& actions = this->mpElementaryModesMenu->actions();
+      QList<QAction*>::const_iterator ait = actions.begin(), aendit = actions.end();
+      unsigned int i;
+      const CFluxMode* pFlux = NULL;
+      std::set<const CCopasiObject*> remaining;
+
+      while (ait != aendit)
+        {
+          if ((*ait)->isChecked())
+            {
+              i = actions.indexOf(*ait);
+              assert(i < this->mFluxModes.size());
+              pFlux = this->mFluxModes[i];
+              CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
+              const CReaction* pReaction = NULL;
+              assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
+              const CModel* pModel = this->mpDataModel->getModel();
+
+              while (it != endit)
+                {
+                  assert(pModel->getReactions().size() > it->first);
+                  pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
+                  assert(pReaction != NULL);
+                  remaining.insert(pReaction);
+                  // now we need to add the arrows and species
+                  const CChemEq& chemEq = pReaction->getChemEq();
+                  const CCopasiVector<CChemEqElement>& substrates = chemEq.getSubstrates();
+                  CCopasiVector<CChemEqElement>::const_iterator it2 = substrates.begin(), endit2 = substrates.end();
+
+                  while (it2 != endit2)
+                    {
+                      remaining.insert(*it2);
+                      remaining.insert((*it2)->getMetabolite());
+                      ++it2;
+                    }
+
+                  const CCopasiVector<CChemEqElement>& products = chemEq.getProducts();
+
+                  it2 = products.begin();
+
+                  endit2 = products.end();
+
+                  while (it2 != endit2)
+                    {
+                      highlighted.insert(*it2);
+                      highlighted.insert((*it2)->getMetabolite());
+                      ++it2;
+                    }
+
+                  ++it;
+                }
+
+            }
+
+          ++ait;
+        }
+
+      // now we remove all object from the unselected flux
+      // that are not in remaining
+      pFlux = this->mFluxModes[index];
+      CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
+      const CReaction* pReaction = NULL;
+      assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
+      const CModel* pModel = this->mpDataModel->getModel();
+
+      while (it != endit)
+        {
+          assert(pModel->getReactions().size() > it->first);
+          pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
+          assert(pReaction != NULL);
+
+          if (remaining.find(pReaction) == remaining.end())
+            {
+              highlighted.erase(highlighted.find(pReaction));
+            }
+
+          // now we need to add the arrows and species
+          const CChemEq& chemEq = pReaction->getChemEq();
+          const CCopasiVector<CChemEqElement>& substrates = chemEq.getSubstrates();
+          CCopasiVector<CChemEqElement>::const_iterator it2 = substrates.begin(), endit2 = substrates.end();
+          std::set<const CCopasiObject*>::iterator pos;
+
+          while (it2 != endit2)
+            {
+              pos = highlighted.find(*it2);
+
+              if (remaining.find((*it2)) == remaining.end() && pos != highlighted.end())
+                {
+                  highlighted.erase(pos);
+                }
+
+              pos = highlighted.find((*it2)->getMetabolite());
+
+              if (remaining.find((*it2)->getMetabolite()) == remaining.end() && pos != highlighted.end())
+                {
+                  highlighted.erase(pos);
+                }
+
+              ++it2;
+            }
+
+          const CCopasiVector<CChemEqElement>& products = chemEq.getProducts();
+
+          it2 = products.begin();
+
+          endit2 = products.end();
+
+          while (it2 != endit2)
+            {
+              pos = highlighted.find((*it2));
+
+              if (remaining.find((*it2)) == remaining.end() && pos != highlighted.end())
+                {
+                  highlighted.erase(pos);
+                }
+
+              pos = highlighted.find((*it2)->getMetabolite());
+
+              if (remaining.find((*it2)->getMetabolite()) == remaining.end() && pos != highlighted.end())
+                {
+                  highlighted.erase(pos);
+                }
+
+              ++it2;
+            }
+
+          ++it;
+        }
+
+    }
+
+  // redraw the GL window
+  if (this->mMode == GRAPH_MODE)
+    {
+      this->mpLayoutViewer->getPainter()->update();
+    }
+}
+
+/**
+ * Is called when the menu entry for toggling highlighting
+ * of elementary modes is toggled.
+ */
+void CQNewMainWindow::toggleHighlightSlot(bool checked)
+{
+  this->mpLayoutViewer->getPainter()->setHighlightFlag(checked);
+
+  // update the icon and the text
+  if (checked)
+    {
+      this->mpChangeColorAction->setText(tr("highlight color ..."));
+      this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
+    }
+  else
+    {
+      this->mpChangeColorAction->setText(tr("fog color ..."));
+      this->mpChangeColorAction->setIcon(QIcon(*this->mpFogColorPixmap));
+    }
+
+  // we need to redraw the gl window
+  if (this->mMode == GRAPH_MODE)
+    {
+      this->mpLayoutViewer->getPainter()->update();
+    }
+}
+
+
+/**
+ * This slot is triggered when the user wants to change
+ * the fog or the highlighting color, depending on the current
+ * highlighting mode.
+ */
+void CQNewMainWindow::changeColorSlot(bool)
+{
+  // find the correct color for the current mode
+  const GLfloat* c = NULL;
+
+  if (this->mpHighlightModeAction->isChecked())
+    {
+      c = this->mpLayoutViewer->getPainter()->getHighlightColor();
+    }
+  else
+    {
+      c = this->mpLayoutViewer->getPainter()->getFogColor();
+    }
+
+  // open a color selection dialog
+  QColorDialog* pDialog = new QColorDialog(QColor((int)(c[0]*255.0), (int)(c[1]*255.0), (int)(c[2]*255.0), (int)(c[3]*255.0)), this);
+
+  if (pDialog->exec() == QDialog::Accepted)
+    {
+      // the dialog has been closed with the OK button
+      // so we need to get the new color
+      QColor color = pDialog->selectedColor();
+      GLfloat newColor[4] = {((GLfloat)color.red()) / 255.0, ((GLfloat)color.green()) / 255.0, ((GLfloat)color.blue()) / 255.0, ((GLfloat)color.alpha()) / 255.0};
+
+      // update the pixmap and the icon for the mpHighlightModeAction
+      if (this->mpHighlightModeAction->isChecked())
+        {
+          this->mpLayoutViewer->getPainter()->setHighlightColor(newColor);
+          this->mpHighlightColorPixmap->fill(color);
+          this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
+        }
+      else
+        {
+          this->mpLayoutViewer->getPainter()->setFogColor(newColor);
+          this->mpFogColorPixmap->fill(color);
+          this->mpChangeColorAction->setIcon(QIcon(*this->mpFogColorPixmap));
+        }
+
+      // redraw the GL window
+      if (this->mMode == GRAPH_MODE)
+        {
+          this->mpLayoutViewer->getPainter()->update();
+        }
+    }
+}
+#endif // COPASI_DEBUG
+

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:50:40 $
+//   $Date: 2011/03/07 19:34:13 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -126,7 +126,7 @@ void CLsodaMethod::initializeParameter()
           else
             {
               const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
-              unsigned C_INT32 i, imax;
+              size_t i, imax;
               C_FLOAT64 Volume = DBL_MAX;
 
               for (i = 0, imax = Compartment.size(); i < imax; i++)
@@ -198,8 +198,11 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
   C_INT ITOL = 2; // mRtol scalar, mAtol vector
   C_INT one = 1;
-  C_INT DSize = mDWork.size();
-  C_INT ISize = mIWork.size();
+  C_INT DSize = (C_INT) mDWork.size();
+  C_INT ISize = (C_INT) mIWork.size();
+
+  // The return status of the integrator.
+  Status Status = NORMAL;
 
   if (mRoots.size() > 0)
     {
@@ -247,6 +250,19 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
             break;
 
+          case 3:
+
+            // If mLsodaStatus == 3 we have found a root. This needs to be indicated to
+            // the caller as it is not sufficient to rely on the fact that T < TOUT
+            if (mLsodaStatus == 3)
+              {
+                // It is sufficient to switch to 2. Eventual state changes due to events
+                // are indicated via the method stateChanged()
+                mLsodaStatus = 2;
+                Status = ROOT;
+              }
+
+            // We do have to continue to check the root masking state.
           default:
 
             switch (mRootMasking)
@@ -286,6 +302,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                       mRootMasking = DISCRETE;
                     }
 
+                  // We have to restart the integrator
                   mLsodaStatus = 1;
                 }
               }
@@ -317,24 +334,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
   // Why did we ignore this error?
   // if (mLsodaStatus == -1) mLsodaStatus = 2;
 
-  // The status of the integrator.
-  Status Status = NORMAL;
-
   if ((mLsodaStatus <= 0))
     {
       Status = FAILURE;
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
-    }
-
-  // If mLsodaStatus == 3 we have found a root. This needs to be indicated to
-  // the caller as it is not sufficient to rely on the fact that T < TOUT
-
-  if (mLsodaStatus == 3)
-    {
-      // It is sufficient to switch to 2. Eventual state changes due to events
-      // are indicated via the method stateChanged()
-      mLsodaStatus = 2;
-      Status = ROOT;
     }
 
   mMethodState.setTime(mTime);
@@ -360,15 +363,15 @@ void CLsodaMethod::start(const CState * initialState)
   mTargetTime = mTime;
   mRootCounter = 0;
 
-  mNumRoots = mpModel->getNumRoots();
+  mNumRoots = (C_INT) mpModel->getNumRoots();
   mRoots.resize(mNumRoots);
   destroyRootMask();
   mRootMasking = NONE;
 
   if (*mpReducedModel)
-    mData.dim = mMethodState.getNumIndependent();
+    mData.dim = (C_INT) mMethodState.getNumIndependent();
   else
-    mData.dim = mMethodState.getNumIndependent() + mpModel->getNumDependentReactionMetabs();
+    mData.dim = (C_INT)(mMethodState.getNumIndependent() + mpModel->getNumDependentReactionMetabs());
 
   // When we have roots we need to add an artificial ODE dDummy/dt = 1
   if (mData.dim == 0 && mNumRoots != 0)

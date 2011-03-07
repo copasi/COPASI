@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/lib.pri,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.6 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/16 18:55:46 $ 
+#   $Date: 2011/03/07 19:29:38 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -17,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2010/03/16 18:55:46 $  
+# $Revision: 1.6 $ $Author: shoops $ $Date: 2011/03/07 19:29:38 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -64,6 +64,9 @@ win32 {
   DESTDIR = .
 }
 
+
+include(../srcDistribution.pri)
+
 !equals(TEMPLATE, subdirs) {
   # Copy the sources for the tar ball
   src_distribution.commands =   \
@@ -74,6 +77,6 @@ win32 {
       $(MKDIR) ../../../copasi_src/copasi/libs; \
     $(CHK_DIR_EXISTS) ../../../copasi_src/copasi/libs/$$SRC_TARGET || \
       $(MKDIR) ../../../copasi_src/copasi/libs/$$SRC_TARGET; \
-    $(COPY_FILE) --parents $(SOURCES) $(HEADERS) $(FORMS) $(DIST) \
+    $(COPY_FILE) --parents $${SOURCES} $${HEADERS} $${FORMS} $${FORMS3} $${DISTFILES} \
       ../../../copasi_src/copasi/libs/$$SRC_TARGET/
 }

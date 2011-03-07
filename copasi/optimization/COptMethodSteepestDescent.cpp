@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:31 $
+//   $Date: 2011/03/07 19:31:27 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -50,7 +55,7 @@ bool COptMethodSteepestDescent::optimise()
 {
   if (!initialize()) return false;
 
-  unsigned C_INT32 i, k;
+  size_t i, k;
   C_FLOAT64 tmp, x0, alpha, mn, mx, fmn, fmx;
   bool calc_grad;
 
@@ -207,7 +212,7 @@ bool COptMethodSteepestDescent::initialize()
 
 void COptMethodSteepestDescent::gradient()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   C_FLOAT64 y;
   C_FLOAT64 x;
@@ -234,7 +239,7 @@ void COptMethodSteepestDescent::gradient()
 
 C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 {
-  for (unsigned C_INT32 i = 0; i < mVariableSize; i++)
+  for (size_t i = 0; i < mVariableSize; i++)
     (*(*mpSetCalculateVariable)[i])(mIndividual[i] + x * mGradient[i]);
 
   return evaluate();

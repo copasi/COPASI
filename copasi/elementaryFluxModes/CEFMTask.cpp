@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: heilmand $
-//   $Date: 2010/08/02 15:12:41 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:27:36 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,7 +44,7 @@
 #include "model/CChemEqInterface.h"
 #include "utilities/CCopasiProblem.h"
 
-const unsigned C_INT32 CEFMTask::ValidMethods[] =
+const unsigned int CEFMTask::ValidMethods[] =
 {
   CCopasiMethod::EFMAlgorithm,
 #ifdef COPASI_DEBUG
@@ -119,10 +119,19 @@ bool CEFMTask::setMethodType(const int & type)
 
   pdelete(mpMethod);
 
-  mpMethod = CEFMMethod::createMethod(Type);
+  mpMethod = createMethod(Type);
+
   this->add(mpMethod, true);
 
   return true;
+}
+
+// virtual
+CCopasiMethod * CEFMTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CEFMMethod::createMethod(Type);
 }
 
 std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const

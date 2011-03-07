@@ -54,10 +54,10 @@ BEGIN {
       if ($0 !~ ".*Begin CVS Header.*") {
         printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
         printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
-        printf "'$CommentStart'   $Revision: 1.15 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Revision: 1.16 $ '$CommentEnd'\n"
         printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
         printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
-        printf "'$CommentStart'   $Date: 2010/04/27 16:00:44 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Date: 2011/03/07 19:36:18 $ '$CommentEnd'\n"
         printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
         printf "\n"
         EmptyLine = 1
@@ -76,10 +76,14 @@ BEGIN {
     } 
 
     if (Copyright == 0 && CVSHeader == 2 && $0 !~ ".* End CVS Header.*") {
-      if ($0 ~ "Copyright \\(C\\) 2010 by Pedro Mendes") {
+      if ($0 ~ "Copyright \\(C\\) 2011.* by Pedro Mendes") {
+        Copyright = 2
+      } else if ($0 ~ "Copyright \\(C\\) 2010 by Pedro Mendes") {
+        printf "'$CommentStart' Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+        PrintLine = 0
         Copyright = 2
       } else if ($0 ~ "Copyright \\(C\\) 2008 by Pedro Mendes") {
-        printf "'$CommentStart' Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+        printf "'$CommentStart' Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
         printf "'$CommentStart' Properties, Inc., University of Heidelberg, and The University '$CommentEnd'\n"
         printf "'$CommentStart' of Manchester. '$CommentEnd'\n"
         printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
@@ -87,7 +91,7 @@ BEGIN {
         EmptyLine = 1
         Copyright = 2
       } else if ($0 ~ "Copyright.*by Pedro Mendes") {
-        printf "'$CommentStart' Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+        printf "'$CommentStart' Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
         printf "'$CommentStart' Properties, Inc., University of Heidelberg, and The University '$CommentEnd'\n"
         printf "'$CommentStart' of Manchester. '$CommentEnd'\n"
         printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
@@ -100,7 +104,7 @@ BEGIN {
         Copyright = 2
         IgnoreOldCopyright = 1
       } else if ($0 !~ "^$") {
-        printf "'$CommentStart' Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+        printf "'$CommentStart' Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
         printf "'$CommentStart' Properties, Inc., University of Heidelberg, and The University '$CommentEnd'\n"
         printf "'$CommentStart' of Manchester. '$CommentEnd'\n"
         printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 02:12:24 $
+//   $Date: 2011/03/07 19:31:27 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,11 +27,11 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
-unsigned C_INT32 CMoietiesTask::ValidMethods[] =
-  {
-    CCopasiMethod::Householder,
-    CCopasiMethod::unset
-  };
+const unsigned int CMoietiesTask::ValidMethods[] =
+{
+  CCopasiMethod::Householder,
+  CCopasiMethod::unset
+};
 
 CMoietiesTask::CMoietiesTask(const CCopasiTask::Type & type,
                              const CCopasiContainer * pParent):
@@ -46,19 +51,23 @@ CMoietiesTask::CMoietiesTask(const CMoietiesTask & src,
   this->add(mpMethod, true);
 }
 
+// virtual
 CMoietiesTask::~CMoietiesTask()
 {}
 
+// virtual
 bool CMoietiesTask::setCallBack(CProcessReport * pCallBack)
 {
   bool success = CCopasiTask::setCallBack(pCallBack);
 
   if (!mpProblem->setCallBack(pCallBack)) success = false;
+
   if (!mpMethod->setCallBack(pCallBack)) success = false;
 
   return success;
 }
 
+// virtual
 bool CMoietiesTask::initialize(const OutputFlag & of,
                                COutputHandler * pOutputHandler,
                                std::ostream * pOstream)
@@ -78,6 +87,7 @@ bool CMoietiesTask::initialize(const OutputFlag & of,
   return success;
 }
 
+// virtual
 bool CMoietiesTask::process(const bool & /* useInitialValues */)
 {
   bool success = true;
@@ -91,16 +101,31 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
   return success;
 }
 
+// virtual
+bool CMoietiesTask::restore()
+{
+  mpProblem->getModel()->updateInitialValues();
+  return true;
+}
+
 bool CMoietiesTask::setMethodType(const int & type)
 {
   CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
 
   if (mpMethod->getSubType() == Type) return true;
 
-  pdelete (mpMethod);
+  pdelete(mpMethod);
 
-  mpMethod = CMoietiesMethod::createMethod(Type);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   return true;
+}
+
+// virtual
+CCopasiMethod * CMoietiesTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CMoietiesMethod::createMethod(Type);
 }

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/08 17:22:54 $
+//   $Date: 2011/03/07 19:33:42 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -232,7 +237,7 @@ void CEigen::cleanup()
 void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
 {
   assert(matrix.numRows() == matrix.numCols());
-  mN = matrix.numRows();
+  mN = (C_INT) matrix.numRows();
   initialize();
 
   if (!mN) return;
@@ -450,16 +455,17 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   mResolution = resolution;
 
   // sort the eigenvalues
-  CVector<unsigned C_INT32> Pivot;
-  sortWithPivot(mR.array(), mR.array() + mR.size(), Pivot);
+  CVector<size_t> Pivot;
+
+  sortWithPivot(mR.array(), mR.array() + mR.size(), CompareDoubleWithNaN(), Pivot);
 
   // The sort order is ascending however we need descending
-  unsigned C_INT32 *pTo = Pivot.array();
-  unsigned C_INT32 *pFrom = pTo + mN - 1;
+  size_t *pTo = Pivot.array();
+  size_t *pFrom = pTo + mN - 1;
 
   for (; pTo < pFrom; ++pTo, --pFrom)
     {
-      unsigned C_INT32 Tmp = *pFrom;
+      size_t Tmp = *pFrom;
       *pFrom = *pTo;
       *pTo = Tmp;
     }

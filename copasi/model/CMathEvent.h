@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2011/03/07 19:30:50 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -139,9 +144,9 @@ public:
 
   /**
    * Retrieve the order in which this event shall be processed
-   * @return const unsigned C_INT32 & order
+   * @return const size_t & order
    */
-  const unsigned C_INT32 & getOrder() const;
+  const size_t & getOrder() const;
 
   /**
    * Calculate the execution time
@@ -161,7 +166,7 @@ private:
    * The order in which the event is processed in case of simultaneous
    * assignments
    */
-  unsigned C_INT32 mOrder;
+  size_t mOrder;
 
   /**
    * Boolean value indicating whether the event involves a delay.

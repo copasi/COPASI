@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:51 $
+//   $Date: 2011/03/07 19:30:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -99,17 +99,13 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mpValue(NULL),
     mpIValue(NULL),
     mRate(src.mRate),
-    mpExpression(new CExpression(*src.mpExpression)),
-    mpInitialExpression(new CExpression(*src.mpInitialExpression)),
+    mpExpression(src.mpExpression ? new CExpression(*src.mpExpression, this) : NULL),
+    mpInitialExpression(src.mpInitialExpression ? new CExpression(*src.mpInitialExpression, this) : NULL),
     mStatus(FIXED),
     mUsed(false),
     mpModel(NULL)
 {
   initObjects();
-
-  if (mpExpression != NULL) this->mpExpression->setObjectParent(this);
-
-  if (mpInitialExpression != NULL) this->mpInitialExpression->setObjectParent(this);
 
   setStatus(src.mStatus);
 
@@ -166,7 +162,7 @@ bool CModelEntity::compile()
         assert(pDataModel != NULL);
         mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
         mpInitialExpression->setObjectName("InitialExpression");
-        mpInitialExpression->setObjectParent(this);
+        add(mpInitialExpression, true);
         break;
 
       case ODE:
@@ -259,20 +255,36 @@ const CExpression* CModelEntity::getExpressionPtr() const
 
 bool CModelEntity::setExpressionPtr(CExpression* pExpression)
 {
-  if (pExpression == mpExpression) return false;
-
   if (isFixed()) return false;
 
-  if (mpExpression)
-    pdelete(mpExpression);
+  if (pExpression == mpExpression) return true;
 
+  if (pExpression == NULL) return false;
+
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
+  CExpression * pOld = mpExpression;
   mpExpression = pExpression;
-  mpExpression->setObjectParent(this);
 
-  if (mpModel)
-    mpModel->setCompileFlag(true);
+  mpExpression->setObjectName("Expression");
+  add(mpExpression, true);
 
-  return compile();
+  if (compile())
+    {
+      pdelete(pOld);
+      return true;
+    }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpExpression);
+  mpExpression->setObjectParent(NULL);
+  mpExpression = pOld;
+
+  return false;
 }
 
 CExpression* CModelEntity::getInitialExpressionPtr()
@@ -287,21 +299,36 @@ const CExpression* CModelEntity::getInitialExpressionPtr() const
 
 bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 {
-  if (pExpression == mpInitialExpression) return false;
-
   if (mStatus == ASSIGNMENT) return false;
 
-  if (mpModel)
-    mpModel->setCompileFlag(true);
+  if (pExpression == mpInitialExpression) return true;
 
-  if (mpInitialExpression)
-    pdelete(mpInitialExpression);
+  if (pExpression == NULL) return false;
 
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
+  CExpression * pOld = mpInitialExpression;
   mpInitialExpression = pExpression;
-  mpInitialExpression->setObjectParent(this);
-  mpInitialExpression->setObjectName("InitialExpression");
 
-  return compile();
+  mpInitialExpression->setObjectName("InitialExpression");
+  add(mpInitialExpression, true);
+
+  if (compile())
+    {
+      pdelete(pOld);
+      return true;
+    }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpInitialExpression);
+  mpInitialExpression->setObjectParent(NULL);
+  mpInitialExpression = pOld;
+
+  return false;
 }
 
 bool CModelEntity::setInitialExpression(const std::string & expression)
@@ -313,8 +340,7 @@ bool CModelEntity::setInitialExpression(const std::string & expression)
 
   if (mpInitialExpression == NULL)
     {
-      mpInitialExpression = new CExpression("", this);
-      mpInitialExpression->setObjectName("InitialExpression");
+      mpInitialExpression = new CExpression("InitialExpression", this);
     }
 
   if (!mpInitialExpression->setInfix(expression)) return false;
@@ -413,7 +439,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             pDataModel = getObjectDataModel();
             mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
             mpInitialExpression->setObjectName("InitialExpression");
-            mpInitialExpression->setObjectParent(this);
+            add(mpInitialExpression, true);
 
             mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
             mpValueReference->setRefresh(this, &CModelEntity::calculate);

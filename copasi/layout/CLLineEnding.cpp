@@ -1,18 +1,24 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLineEnding.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:05 $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <sstream>
 #include <assert.h>
+
+#define USE_LAYOUT 1
+
+#ifdef USE_CRENDER_EXTENSION
+#define USE_RENDER 1
+#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/layout/render/LineEnding.h>
 

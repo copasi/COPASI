@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example7/example7.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/08/31 19:34:31 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:25:45 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -138,7 +143,7 @@ int main()
   // and COPASI should have determined that the formula string contained 2 parameters (temp and substrate)
   CFunctionParameters& variables = pFunction->getVariables();
   // per default the usage of those parameters will be set to VARIABLE
-  unsigned C_INT32 index = pFunction->getVariableIndex("temp");
+  size_t index = pFunction->getVariableIndex("temp");
   assert(index != C_INVALID_INDEX);
   CFunctionParameter* pParam = variables[index];
   assert(pParam->getUsage() == CFunctionParameter::VARIABLE);

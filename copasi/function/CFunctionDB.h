@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:24 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:28:17 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -48,7 +53,7 @@ private:
   /**
    *  Vector of the currently loaded functions
    */
-  CCopasiVectorN < CEvaluationTree > mLoadedFunctions;
+  CCopasiVectorN < CFunction > mLoadedFunctions;
 
   // Operations
 
@@ -106,17 +111,17 @@ public:
 
   /**
    * Add the function to the database
-   * @param CEvaluationTree * pFunction
+   * @param CFunction * pFunction
    * @param const bool & adopt (default = false)
    * @return bool success
    */
-  bool add(CEvaluationTree * pFunction, const bool & adopt);
+  bool add(CFunction * pFunction, const bool & adopt);
 
   /**
    * Add the function to the database, if necessary adapt the name so it
    * is unique.
    */
-  void addAndAdaptName(CEvaluationTree * pFunction);
+  void addAndAdaptName(CFunction * pFunction);
 
 #ifdef FFFF
   /**
@@ -128,7 +133,7 @@ public:
   CEvaluationTree* createFunction(const std::string &name, const CEvaluationTree::Type & type = CEvaluationTree::Function);
 #endif // FFFF
 
-  bool removeFunction(unsigned C_INT32 index);
+  bool removeFunction(size_t index);
 
   bool removeFunction(const std::string &key);
 
@@ -158,22 +163,22 @@ public:
 
   /**
    *  Retrieves the vector of loaded functions.
-   *  @return "CCopasiVectorNS < CKinFunction > &" loadedFunctions
+   *  @return "CCopasiVectorNS < CFunction > &" loadedFunctions
    */
-  CCopasiVectorN < CEvaluationTree > & loadedFunctions();
+  CCopasiVectorN < CFunction > & loadedFunctions();
 
   /**
    *  Retrieves the vector of functions that are suitable for a
    *  number of substrates, products and reversibility status.
    *  Note: The returns CCopasiVector has to be deleted after use!
-   *  @param "const unsigned C_INT32" noSubstrates the number of substrates
-   *  @param "const unsigned C_INT32" noProducts the number of products
+   *  @param "const size_t" noSubstrates the number of substrates
+   *  @param "const size_t" noProducts the number of products
    *  @param "const TriLogic" reversible the reversibility status
    *  @return "std::vector<CFunction*> " suitableFunctions
    */
   std::vector<CFunction*>
-  suitableFunctions(const unsigned C_INT32 noSubstrates,
-                    const unsigned C_INT32 noProducts,
+  suitableFunctions(const size_t noSubstrates,
+                    const size_t noProducts,
                     const TriLogic reversibility);
 
   /**
@@ -198,7 +203,7 @@ public:
    * Retrieves a list of all functions used in the model
    * @return std::vector< CEvaluationTree * > usedFunctions
    */
-  std::vector< CEvaluationTree * > getUsedFunctions(const CModel* pModel) const;
+  std::vector< CFunction * > getUsedFunctions(const CModel* pModel) const;
 };
 
 #endif // COPASI_CFunctionDB

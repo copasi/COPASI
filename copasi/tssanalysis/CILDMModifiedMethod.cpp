@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 14:48:23 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:34:36 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1047,11 +1047,13 @@ void CILDMModifiedMethod::createAnnotationsM()
  *    - dimension description could consists of arrays of CommonNames
  **/
 //void CILDMModifiedMethod::setAnnotationM(int step)
-bool CILDMModifiedMethod::setAnnotationM(int step)
+bool CILDMModifiedMethod::setAnnotationM(size_t step)
 {
   if (step == 0) return false;
 
   if (mVec_mVslow.size() == 0) return false;
+
+  if (step > mVec_SlowModes.size()) return false;
 
   step -= 1;
   double timeScale;
@@ -1147,13 +1149,11 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
   C_INT32 stepNumber;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CTSSATask* pTask =
-    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+  assert(getObjectDataModel() != NULL);
 
-  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
+  //stepNumber = pProblem->getStepNumber();
+  stepNumber = mVec_SlowModes.size();
 
-  stepNumber = pProblem->getStepNumber();
 
   for (istep = 0; istep < stepNumber; istep++)
     {

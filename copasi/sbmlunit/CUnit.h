@@ -5,7 +5,8 @@
 //   $Author: shoops $
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -62,7 +63,7 @@ public:
    * Once we know the frame index the ID is unique.
    */
   ///apply symbolic exponent to the unit
-  void applyExponent(const std::string& id, int frame);
+  void applyExponent(const std::string& id, size_t frame);
 
   /**
    * This method applies a symbol as a reverse exponent to the unit. The result is
@@ -70,7 +71,7 @@ public:
    * See applyExponent(std::string id, int frame)
    */
   ///apply inverse of symbolic exponent to the unit
-  void applyInverseExponent(const std::string& id, int frame);
+  void applyInverseExponent(const std::string& id, size_t frame);
 
   static bool isEqual(const CUnit & unit1, const CUnit & unit2);
 
@@ -92,9 +93,9 @@ private:
   {
   public:
     std::string mID;
-    int mFrame;
+    size_t mFrame;
     SymbolicExponent(): mID(), mFrame(0) {};
-    SymbolicExponent(std::string id, int frame): mID(id), mFrame(frame) {};
+    SymbolicExponent(std::string id, size_t frame): mID(id), mFrame(frame) {};
     bool isEqual(const SymbolicExponent & se) const {return mID == se.mID && mFrame == se.mFrame;};
     //bool isEmpty() const {return (mID=="")&&(mFrame==0)};
   };

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:30:25 $
+//   $Date: 2011/03/07 19:30:51 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -39,19 +44,29 @@ class CMoiety : public CCopasiContainer
   // Attributes
 private:
   /**
+   * The default conversion factor used if the moiety is not part of a model
+   */
+  static const C_FLOAT64 DefaultFactor;
+
+  /**
    * The key of the moiety
    */
   std::string mKey; //By G
 
   /**
-   *  Number of Particles of Moietiy.
+   *  Number of Particles of Moiety.
    */
   C_FLOAT64 mNumber;
 
   /**
-   *  Initial Number of Particles of Moietiy.
+   *  Initial Number of Particles of Moiety.
    */
   C_FLOAT64 mINumber;
+
+  /**
+   *  The total Amount of the Moiety.
+   */
+  C_FLOAT64 mIAmount;
 
   /**
    *  Vector of linear dependent CChemEqElement
@@ -77,6 +92,11 @@ private:
    */
   CCopasiObjectReference<C_FLOAT64> *mpDNumberReference;
 
+  /**
+   * A pointer to the conversion factor between the particle number and the amount.
+   */
+  const C_FLOAT64 * mpConversionFactor;
+
   // Operations
 public:
   /**
@@ -99,14 +119,6 @@ public:
    *  Destructor
    */
   ~CMoiety();
-
-  /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   *  This saves the data in Gepasi 3.21 file format
-   *  @param pconfigbuffer reference to a CWriteConfig object.
-   *  @return Fail
-   */
-  //    C_INT32 saveOld(CWriteConfig & configBuffer);
 
   /**
    * Add a metabolite to a moiety
@@ -160,6 +172,12 @@ public:
   const C_FLOAT64 & getDependentNumber() const;
 
   /**
+   * Retrieve the object for the dependent particle number
+   * @return CCopasiObject * dependentNumberReference
+   */
+  CCopasiObject * getDependentNumberReference() const;
+
+  /**
    *
    */
   C_FLOAT64 getNumber() const;
@@ -171,22 +189,45 @@ public:
   virtual const std::string & getKey() const; //By G
 
   /**
+   * Sets the parent of the moiety;
+   * @param const CCopasiContainer * pParent
+   * @return bool success
+   */
+  virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+  /**
    * Refreshes the value of the dependent number
    */
   void refreshDependentNumber();
 
   /**
    * Retrieve the infix expression, which can be used to calculate the
-   * total ammount.
+   * total amount.
    * @return std::string expression
    */
   std::string getExpression() const;
+
+  /**
+   * Retrieve the total amount
+   * @return const C_FLOAT64 & amount
+   */
+  const C_FLOAT64 & getAmount() const;
+
+  /**
+   * Refresh the total amount
+   */
+  void refreshAmount();
 
 private:
   /**
    * Initialize the contained CCopasiObjects
    */
   void initObjects();
+
+  /**
+   * Initialize the number to amount conversion factor
+   */
+  void initConversionFactor();
 };
 
 #endif // COPASI_CMoiety

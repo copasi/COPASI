@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:54 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,24 +38,18 @@
 //class CMathModel;
 class QTimer;
 class CMIRIAMResources;
+class CQThread;
+class CProgressBar;
 
 class DataModelGUI : public QAbstractItemModel
 {
   Q_OBJECT
 private:
-  IndexedTree mTree; // create the  object of the tree
-
-  //CMathModel * mpMathModel;
-  //bool mMathModelUpdateScheduled;
-
-  QApplication *mpApp;
-
-  COutputHandlerPlot mOutputHandlerPlot;
-
   void linkDataModelToGUI();
 
-  void setObjectNumber(IndexedNode *node, unsigned int noOfObjects);
+  IndexedNode* getItem(const QModelIndex &index) const;
 
+  QString getNameWithObjectNo(const IndexedNode *node) const;
 
 public:
   DataModelGUI(QObject* parent);
@@ -70,24 +64,44 @@ public:
   void updateEvents();
   void updateReportDefinitions();
   void updatePlots();
+  void updateAllEntities();
 
   const IndexedNode * getRootNode() const;
   const IndexedNode * getNode(int id);
 
-  bool loadModel(const std::string & fileName);
   bool createModel();
-  bool saveModel(const std::string & fileName, bool overwriteFile = false);
+  void loadModel(const std::string & fileName);
+  void saveModel(const std::string & fileName, bool overwriteFile = false);
+
 #ifdef WITH_MERGEMODEL
   bool addModel(const std::string & fileName);
 #endif
 
-  bool updateMIRIAM(CMIRIAMResources & miriamResources);
+  void importSBML(const std::string & fileName);
+  void exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
+  void importSBMLFromString(const std::string & sbmlDocumentText);
+  void exportSBMLToString(std::string & sbmlDocumentText);
+  void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
 
-  bool importSBMLFromString(const std::string & sbmlDocumentText);
-  bool importSBML(const std::string & fileName);
-  std::string exportSBMLToString();
-  bool exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
-  bool exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
+  void loadModelRun();
+  void saveModelRun();
+  void importSBMLRun();
+  void exportSBMLRun();
+  void importSBMLFromStringRun();
+  void exportSBMLToStringRun();
+  void exportMathModelRun();
+
+public slots:
+  void loadModelFinished();
+  void saveModelFinished();
+  void importSBMLFinished();
+  void exportSBMLFinished();
+  void importSBMLFromStringFinished();
+  void exportSBMLToStringFinished();
+  void exportMathModelFinished();
+
+public:
+  bool updateMIRIAM(CMIRIAMResources & miriamResources);
 
   COutputDefinitionVector & getPlotDefinitionList();
 
@@ -105,12 +119,57 @@ public:
   QModelIndex index(int row, int column,
                     const QModelIndex &parent = QModelIndex()) const;
   QModelIndex parent(const QModelIndex &index) const;
-  int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  int columnCount(const QModelIndex &parent = QModelIndex()) const;
-  QModelIndex findIndexFromId(int id);
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  QModelIndex findIndexFromId(size_t id);
   QModelIndex findIndexFromKey(const std::string& key);
-  void emitDataChanged();
+  size_t getId(const QModelIndex &index) const;
+  std::string getKey(const QModelIndex &index) const;
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+
+  void registerListView(ListViews * pListView);
+  void deregisterListView(ListViews * pListView);
+
+  void refreshInitialValues();
+  void buildChangedObjects();
+  void setFramework(int framework);
+  void updateMIRIAMResourceContents();
+  void commit();
+
+
+protected:
+  bool insertRow(int parentId, const std::string &key);
+  bool removeRow(const std::string &key);
+
+private:
+  void threadFinished();
+
+signals:
+  void updateCompleteView();
+  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  void finished(bool success);
+
+private:
+  IndexedTree mTree; // create the  object of the tree
+  QApplication *mpApp;
+  COutputHandlerPlot mOutputHandlerPlot;
+  std::set< ListViews * > mListViews;
+  int mFramework;
+  std::vector< Refresh * > mUpdateVector;
+  std::set< const CCopasiObject * > mChangedObjects;
+
+  CQThread * mpThread;
+  CProgressBar * mpProgressBar;
+  bool mSuccess;
+  std::string mSBMLImportString;
+  std::string * mpSBMLExportString;
+  std::string mFileName;
+  bool mOverWrite;
+  int mSBMLLevel;
+  int mSBMLVersion;
+  bool mSBMLExportIncomplete;
+  bool mSBMLExportCOPASIMIRIAM;
+  std::string mExportFormat;
 };
 
 #endif

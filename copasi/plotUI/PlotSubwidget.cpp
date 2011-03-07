@@ -6,7 +6,7 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -97,7 +97,7 @@ void PlotSubwidget::addCurve2D()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
-  pBrowser->setModel(pDataModel->getModel(), CCopasiSimpleSelectionTree::NumericValues);
+  pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
   if (pBrowser->exec() == QDialog::Rejected)
     {
@@ -111,7 +111,7 @@ void PlotSubwidget::addCurve2D()
     }
 
   std::vector<CCopasiObjectName> objects1, objects2;
-  unsigned C_INT32 i;
+  size_t i;
   std::vector<CCopasiObjectName>::const_iterator sit;
   const CArrayAnnotation *pArray;
 
@@ -216,7 +216,7 @@ void PlotSubwidget::addCurve2D()
     }
   else
     {
-      unsigned C_INT32 imax;
+      size_t imax;
 
       if (objects1.size() > objects2.size())
         imax = objects2.size();
@@ -232,7 +232,7 @@ void PlotSubwidget::addCurve2D()
         }
     }
 
-  tabs->setCurrentPage(storeTab);
+  tabs->setCurrentIndex(storeTab);
 }
 
 void PlotSubwidget::addHisto1DTab(const std::string & title,
@@ -255,14 +255,14 @@ void PlotSubwidget::addHisto1D()
 {
   C_INT32 storeTab = tabs->count();
   addHisto1DTab("Histogram", CPlotDataChannelSpec(CCopasiObjectName("")), 1.0);
-  tabs->setCurrentPage(storeTab);
+  tabs->setCurrentIndex(storeTab);
 }
 
 void PlotSubwidget::createHistograms(std::vector<const CCopasiObject* >objects, const C_FLOAT64 & incr)
 {
   C_INT32 storeTab = tabs->count();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 1; i < objects.size(); ++i)
     {
@@ -273,14 +273,14 @@ void PlotSubwidget::createHistograms(std::vector<const CCopasiObject* >objects, 
       //         lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
     }
 
-  tabs->setCurrentPage(storeTab);
+  tabs->setCurrentIndex(storeTab);
 }
 
 //-----------------------------------------------------------------------------
 
 void PlotSubwidget::removeCurve()
 {
-  delete tabs->currentPage();
+  delete tabs->currentWidget();
 }
 
 //-----------------------------------------------------------------------------
@@ -296,7 +296,7 @@ void PlotSubwidget::commitPlot()
 
 void PlotSubwidget::deletePlot()
 {
-  unsigned C_INT32 Index, Size;
+  size_t Index, Size;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -312,6 +312,7 @@ void PlotSubwidget::deletePlot()
   Index =
     pDataModel->getPlotDefinitionList()->CCopasiVector<CPlotSpecification>::getIndex(pspec);
   pDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
+  std::string deletedKey = mKey;
 
   Size = pDataModel->getPlotDefinitionList()->size();
 
@@ -321,7 +322,7 @@ void PlotSubwidget::deletePlot()
     enter("");
 
   //ListViews::
-  protectedNotify(ListViews::PLOT, ListViews::DELETE, mKey);
+  protectedNotify(ListViews::PLOT, ListViews::DELETE, deletedKey);
 }
 
 //-----------------------------------------------------------------------------
@@ -345,9 +346,10 @@ void PlotSubwidget::addPlot()
       name += TO_UTF8(QString::number(i));
     }
 
-  protectedNotify(ListViews::PLOT, ListViews::ADD);
-
-  enter(pPl->CCopasiParameter::getKey());
+  std::string key = pPl->CCopasiParameter::getKey();
+  protectedNotify(ListViews::PLOT, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 //-----------------------------------------------------------------------------
@@ -383,14 +385,14 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
         fatalError();
     }
 
-  C_INT32 oldIndex = tabs->currentPageIndex();
+  C_INT32 oldIndex = tabs->currentIndex();
 
   //clear tabWidget
-  while (tabs->currentPage()) delete tabs->currentPage();
+  while (tabs->currentWidget()) delete tabs->currentWidget();
 
   //reconstruct tabWidget from curve specs
   const CCopasiVector<CPlotItem> & curves = pspec->getItems();
-  unsigned C_INT32 i, imax = curves.size();
+  size_t i, imax = curves.size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -413,7 +415,7 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
         }
     }
 
-  tabs->setCurrentPage(oldIndex);
+  tabs->setCurrentIndex(oldIndex);
 
   return true; //TODO really check
 }
@@ -442,12 +444,12 @@ bool PlotSubwidget::saveToPlotSpec()
 
   //curves
   CPlotItem* item;
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
   imax = tabs->count();
 
   for (i = 0; i < imax; ++i)
     {
-      Curve2DWidget* tmpCurve2D = dynamic_cast<Curve2DWidget*>(tabs->page(i));
+      Curve2DWidget* tmpCurve2D = dynamic_cast<Curve2DWidget*>(tabs->widget((int) i));
 
       if (tmpCurve2D)
         {
@@ -455,7 +457,7 @@ bool PlotSubwidget::saveToPlotSpec()
           tmpCurve2D->SaveToCurveSpec(item);
         }
 
-      HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->page(i));
+      HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->widget((int) i));
 
       if (tmpHisto)
         {
@@ -501,7 +503,7 @@ bool PlotSubwidget::enterProtected()
 
 bool PlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates || !isShown()) return true;
+  if (mIgnoreUpdates || isHidden()) return true;
 
   switch (objectType)
     {//TODO: check list:

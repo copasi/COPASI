@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/BezierCurve.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 10:13:58 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:16 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,7 +34,7 @@ BezierCurve::BezierCurve()
   init();
 }
 
-BezierCurve::BezierCurve(C_INT32 numberOfStepsOnCurve)
+BezierCurve::BezierCurve(size_t numberOfStepsOnCurve)
 {
   steps = numberOfStepsOnCurve;
   t = 1.0 / steps;
@@ -51,17 +56,19 @@ std::vector<CLPoint> BezierCurve::curvePts(const std::vector<CLPoint>& pts)
   C_FLOAT64 t = 0.0;
 
   C_INT32 i;
-  C_INT32 n = pts.size() - 1;
+  C_INT32 n = (C_INT32) pts.size() - 1;
 
   while (t <= 1.0000001)
     {
       x = 0.0;
       y = 0.0;
-      for (i = 0;i <= n;i++)
+
+      for (i = 0; i <= n; i++)
         {
           x += bernstein(i, n, t) * pts[i].getX();
           y += bernstein(i, n, t) * pts[i].getY();
         }
+
       points.push_back(CLPoint(x, y));
       t += dt;
     }
@@ -73,8 +80,8 @@ C_FLOAT64 BezierCurve::bernstein(C_INT32 i, C_INT32 n, C_FLOAT64 t)
 {
 
   // first compute n over i
-  C_FLOAT64 top = multiplyFromTo (n - i + 1, n);
-  C_FLOAT64 bottom = multiplyFromTo (1, i);
+  C_FLOAT64 top = multiplyFromTo(n - i + 1, n);
+  C_FLOAT64 bottom = multiplyFromTo(1, i);
 
   return (top / bottom * pow(t, (C_FLOAT64)i) * pow(1.0 - t, (C_FLOAT64)n - i));
 }
@@ -85,9 +92,9 @@ CLPoint BezierCurve::bezierPt(C_FLOAT64 t, std::vector<CLPoint> pts)
   C_FLOAT64 x = 0.0;
   C_FLOAT64 y = 0.0;
 
-  C_INT32 n = pts.size() - 1;
+  C_INT32 n = (C_INT32) pts.size() - 1;
 
-  for (i = 0;i <= n;i++)
+  for (i = 0; i <= n; i++)
     {
       x += bernstein(i, n, t) * pts[i].getX();
       y += bernstein(i, n, t) * pts[i].getY();

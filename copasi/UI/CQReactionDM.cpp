@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:59 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -24,15 +29,14 @@
 #include "CQReactionDM.h"
 #include "qtUtilities.h"
 
-CQReactionDM::CQReactionDM(QObject *parent)
-    : CQBaseDataModel(parent)
-
-{
-}
+CQReactionDM::CQReactionDM(QObject *parent):
+    CQBaseDataModel(parent),
+    mNewEquation()
+{}
 
 int CQReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions().size() + 1;
 }
 int CQReactionDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -68,7 +72,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_REACTIONS:
                 return QVariant(QString("New Reaction"));
               default:
@@ -88,7 +92,15 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(pRea->getObjectName())));
 
               case COL_EQUATION:
-                return QVariant(QString(FROM_UTF8(CChemEqInterface::getChemEqString((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *pRea, false))));
+
+                if (mNewEquation.isEmpty())
+                  {
+                    return QVariant(QString(FROM_UTF8(CChemEqInterface::getChemEqString((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *pRea, false))));
+                  }
+                else
+                  {
+                    return QVariant(mNewEquation);
+                  }
 
               case COL_RATE_LAW:
 
@@ -195,7 +207,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
         pRea->setObjectName(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
     }
 
   return true;
@@ -204,9 +216,12 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
 void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, const QVariant &value)
 {
   std::string objKey = pRea->getKey();
-  QString equation = value.toString();
+  mNewEquation = value.toString();
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL) return;
 
@@ -216,17 +231,18 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
   CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   ri.initFromReaction(objKey);
 
-  if (TO_UTF8(equation) != ri.getChemEqString())
+  if (TO_UTF8(mNewEquation) != ri.getChemEqString())
     {
       //first check if the string is a valid equation
-      if (!CChemEqInterface::isValidEq(TO_UTF8(equation)))
+      if (!CChemEqInterface::isValidEq(TO_UTF8(mNewEquation)))
         {
+          mNewEquation = "";
           return;
         }
       else
         {
           //tell the reaction interface
-          ri.setChemEqString(TO_UTF8(equation), "");
+          ri.setChemEqString(TO_UTF8(mNewEquation), "");
         }
     }
 
@@ -253,7 +269,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
       Objects.remove(Objects.length() - 2, 2);
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, pModel, ObjectType,
+        CQMessageBox::confirmDelete(NULL, ObjectType,
                                     Objects, DeletedObjects);
 
       switch (choice)
@@ -266,6 +282,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
             break;
 
           default:
+            mNewEquation = "";
             return;
             break;
         }
@@ -279,6 +296,8 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
     {
       ri.setFunctionWithEmptyMapping("");
       emit notifyGUI(ListViews::REACTION, ListViews::DELETE, objKey);
+      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+      mNewEquation = "";
       return;
     }
 
@@ -290,12 +309,18 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 
   //(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->compile();
   //this tells the gui what it needs to know.
-  if (createdObjects)
-    emit notifyGUI(ListViews::MODEL, ListViews::CHANGE, "");
-  else
+  if (createdObjects ||
+      DeletedParameters.size() != 0)
     {
-      if (createdMetabs) emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, "");
+      std::cout << "CQReactionDM::setEquation (3): " << index.row() << std::endl;
+      emit notifyGUI(ListViews::MODEL, ListViews::CHANGE, "");
     }
+  else if (createdMetabs)
+    {
+      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, "");
+    }
+
+  mNewEquation = "";
 }
 
 bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
@@ -304,11 +329,11 @@ bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+      CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::REACTION, ListViews::ADD, "");
 
   return true;
 }
@@ -322,11 +347,13 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeReaction(position);
+      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");
 
   return true;
 }
@@ -336,7 +363,10 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -358,18 +388,18 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CReaction * pReaction = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getReactions().CCopasiVector< CReaction >::getIndex(pReaction);
 
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "reaction",
+            CQMessageBox::confirmDelete(NULL, "reaction",
                                         FROM_UTF8(pReaction->getObjectName()),
                                         pReaction->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

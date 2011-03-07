@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Date: 2011/03/07 19:37:48 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -27,29 +32,22 @@ Contact: Please contact lixu1@vt.edu.
 #ifndef OBJECTBROWSERWIDGET_H
 #define OBJECTBROWSERWIDGET_H
 
-#include <qvariant.h>
-#include <qwidget.h>
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-#include <Q3Frame>
+#include <QWidget>
 #include <vector>
 
 template <class CType> class CCopasiVector;
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QSpacerItem;
 class QPushButton;
-class Q3ListView;
-class Q3ListViewItem;
-class Q3TextEdit;
+class QTreeWidget;
+class QTreeWidgetItem;
+class QTextEdit;
 class ObjectBrowserItem;
 class ObjectList;
-class Q3Frame;
+class QFrame;
 class CCopasiContainer;
 class CCopasiObject;
 class CopasiUI3Window;
@@ -58,57 +56,57 @@ class QPixmap;
 enum pageIndex {LISTVIEWPAGE = 0, SELECTEDITEMPAGE};
 
 class ObjectBrowserWidget : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, int state = 0);
-    virtual ~ObjectBrowserWidget();
+public:
+  ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, int state = 0);
+  virtual ~ObjectBrowserWidget();
 
-    ObjectList* objectItemList;
-    ObjectList* refreshList;
+  ObjectList* objectItemList;
+  ObjectList* refreshList;
 
-    Q3GridLayout* ObjectBrowserLayout;
-    QPushButton* clearButton;
-    QPushButton* toggleViewButton;
-    QPushButton* commitButton;
-    Q3ListView* ObjectListView;
-    Q3Frame* Line1;
-    QSpacerItem* spacer;
-    Q3TextEdit* ObjectItemText;
+  QGridLayout* ObjectBrowserLayout;
+  QPushButton* clearButton;
+  QPushButton* toggleViewButton;
+  QPushButton* commitButton;
+  QTreeWidget* ObjectListView;
+  QFrame* Line1;
+  QSpacerItem* spacer;
+  QTextEdit* ObjectItemText;
 
-    void eXport(ObjectBrowserItem* pCurrent, std::vector< const CCopasiObject * > * outputVector);
-    void removeDuplicate(ObjectList* objectItemList);
-    void setCheck(ObjectBrowserItem* pCurrent);
-    void setUncheck(ObjectBrowserItem* pCurrent);
-    void clickToReverseCheck(ObjectBrowserItem* pCurrent);
-    void setCheckMark(ObjectBrowserItem* pCurrent);
+  void eXport(ObjectBrowserItem* pCurrent, std::vector< const CCopasiObject * > * outputVector);
+  void removeDuplicate(ObjectList* objectItemList);
+  void setCheck(ObjectBrowserItem* pCurrent);
+  void setUncheck(ObjectBrowserItem* pCurrent);
+  void clickToReverseCheck(ObjectBrowserItem* pCurrent);
+  void setCheckMark(ObjectBrowserItem* pCurrent);
 
-    void loadData();
-    void loadChild(ObjectBrowserItem* parent, const CCopasiContainer * copaParent, bool nField);
-    void loadField(ObjectBrowserItem* parent, CCopasiVector<CCopasiObject>* copaParent);
+  void loadData();
+  void loadChild(ObjectBrowserItem* parent, const CCopasiContainer * copaParent, bool nField);
+  void loadField(ObjectBrowserItem* parent, CCopasiVector<CCopasiObject>* copaParent);
 
-    CCopasiObject* getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name);
-    void setOutputVector(std::vector< const CCopasiObject * > * pObjectVector);
-    void selectObjects(std::vector< const CCopasiObject * > * pObjectVector);
-    void updateUI();
-    void loadUI();
+  CCopasiObject* getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name);
+  void setOutputVector(std::vector< const CCopasiObject * > * pObjectVector);
+  void selectObjects(std::vector< const CCopasiObject * > * pObjectVector);
+  void updateUI();
+  void loadUI();
 
-    void swap(int, int, ObjectBrowserItem**);
-    int partition(int, int, int, ObjectBrowserItem**);
-    void quick_sort(int, int, ObjectBrowserItem**);
+  void swap(int, int, ObjectBrowserItem**);
+  int partition(int, int, int, ObjectBrowserItem**);
+  void quick_sort(int, int, ObjectBrowserItem**);
 
-  public slots:
-    virtual void clearClicked();
-    virtual void toggleViewClicked();
-    virtual void commitClicked();
-    virtual void listviewChecked(Q3ListViewItem*);
+public slots:
+  virtual void clearClicked();
+  virtual void toggleViewClicked();
+  virtual void commitClicked();
+  virtual void listviewChecked(QTreeWidgetItem*, int);
 
-  private:
-    std::vector< const CCopasiObject * > * mOutputObjectVector;
-    pageIndex currentPage;
-    void selectObjects(ObjectBrowserItem* browserItem, const CCopasiObject * selectObject);
-    void updateSelectedItemsView();
-    void cleanup();
-  };
+private:
+  std::vector< const CCopasiObject * > * mOutputObjectVector;
+  pageIndex currentPage;
+  void selectObjects(ObjectBrowserItem* browserItem, const CCopasiObject * selectObject);
+  void updateSelectedItemsView();
+  void cleanup();
+};
 #endif // OBJECTBROWSERWIDGET_H

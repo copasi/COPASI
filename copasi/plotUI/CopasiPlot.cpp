@@ -1,21 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 17:40:50 $
+//   $Date: 2011/03/07 19:32:02 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 17:40:50 $
+//   $Date: 2011/03/07 19:32:02 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@
 #include "UI/qtUtilities.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
+#include "commandline/CLocaleString.h"
 
 #define ActivitySize 8
 
@@ -571,7 +572,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   if (mpZoomer) mpZoomer->setEnabled(false);
 
-  unsigned C_INT32 k, kmax = mpPlotSpecification->getItems().size();
+  size_t k, kmax = mpPlotSpecification->getItems().size();
 
   setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
 
@@ -688,11 +689,11 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
 {
   clearBuffers();
 
-  unsigned C_INT32 i, imax;
-  unsigned C_INT32 j, jmax;
+  size_t i, imax;
+  size_t j, jmax;
 
   std::pair< std::set< const CCopasiObject * >::iterator, bool > Inserted;
-  std::pair< Activity, unsigned C_INT32 > DataIndex;
+  std::pair< Activity, size_t > DataIndex;
   std::vector< std::set < const CCopasiObject * > > ActivityObjects;
 
   ActivityObjects.resize(ActivitySize);
@@ -803,7 +804,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
     }
 
   // We need to set the curve data here!
-  unsigned C_INT32 k = 0;
+  size_t k = 0;
   std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
   std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
 
@@ -840,7 +841,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
 
 void CopasiPlot::output(const Activity & activity)
 {
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
   C_INT32 ItemActivity;
 
   if (mHaveBefore && (activity == COutputInterface::BEFORE)) mDataBefore++;
@@ -851,7 +852,7 @@ void CopasiPlot::output(const Activity & activity)
     if (ItemActivity & activity && mData[ItemActivity].size())
       {
         std::vector< CVector< double > * > & data = mData[ItemActivity];
-        unsigned C_INT32 & ndata = mDataSize[ItemActivity];
+        size_t & ndata = mDataSize[ItemActivity];
 
         if ((imax = data.size()) != 0)
           {
@@ -876,7 +877,7 @@ void CopasiPlot::output(const Activity & activity)
 
 void CopasiPlot::separate(const Activity & activity)
 {
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
   C_INT32 ItemActivity;
 
   if (mHaveBefore && (activity == COutputInterface::BEFORE)) mDataBefore++;
@@ -889,7 +890,7 @@ void CopasiPlot::separate(const Activity & activity)
     if (ItemActivity & activity && mData[ItemActivity].size())
       {
         std::vector< CVector< double > * > & data = mData[ItemActivity];
-        unsigned C_INT32 & ndata = mDataSize[ItemActivity];
+        size_t & ndata = mDataSize[ItemActivity];
 
         if ((imax = data.size()) != 0)
           {
@@ -924,7 +925,7 @@ void CopasiPlot::finish()
     }
 }
 
-void CopasiPlot::updateCurves(const unsigned C_INT32 & activity)
+void CopasiPlot::updateCurves(const size_t & activity)
 {
   if (activity == C_INVALID_INDEX)
     {
@@ -936,18 +937,18 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity)
       return;
     }
 
-  unsigned C_INT32 k = 0;
+  size_t k = 0;
   std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
   std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
 
   for (; itCurves != endCurves; ++itCurves, ++k)
-    if ((unsigned C_INT32)(*itCurves)->getActivity() == activity)
+    if ((size_t)(*itCurves)->getActivity() == activity)
       {
         (*itCurves)->setDataSize(mDataSize[activity]);
       }
 }
 
-void CopasiPlot::resizeCurveData(const unsigned C_INT32 & activity)
+void CopasiPlot::resizeCurveData(const size_t & activity)
 {
   QMutexLocker Locker(&mMutex);
 
@@ -955,20 +956,20 @@ void CopasiPlot::resizeCurveData(const unsigned C_INT32 & activity)
   std::vector< CVector< double > * >::iterator it = data.begin();
   std::vector< CVector< double > * >::iterator end = data.end();
 
-  unsigned C_INT32 newSize = 2 * (*it)->size();
+  size_t newSize = 2 * (*it)->size();
 
   for (; it != end; ++it)
     (*it)->resize(newSize, true);
 
   // Tell the curves that the location of the data has changed
   // otherwise repaint events could crash
-  unsigned C_INT32 k = 0;
+  size_t k = 0;
   std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
   std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
 
   for (; itCurves != endCurves; ++itCurves, ++k)
     {
-      if ((unsigned C_INT32)(*itCurves)->getActivity() == activity)
+      if ((size_t)(*itCurves)->getActivity() == activity)
         {
           std::vector< CVector< double > * > & data = mData[activity];
 
@@ -1029,7 +1030,7 @@ bool CopasiPlot::saveData(const std::string & filename)
   // No data
   if (ItemActivity == ActivitySize) return true;
 
-  std::ofstream fs(utf8ToLocale(filename).c_str());
+  std::ofstream fs(CLocaleString::fromUtf8(filename).c_str());
 
   if (!fs.good()) return false;
 
@@ -1052,20 +1053,20 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   fs << "\n";
 
-  unsigned C_INT32 i, imax = mObjects.size();
+  size_t i, imax = mObjects.size();
   std::vector< CVector< double > * > Data;
   Data.resize(imax);
 
   std::vector< CVector< double > * >::const_iterator itData;
   std::vector< CVector< double > * >::const_iterator endData = Data.end();
 
-  std::vector< unsigned C_INT32 > Offset;
-  std::vector< unsigned C_INT32 >::const_iterator itOffset;
+  std::vector< size_t > Offset;
+  std::vector< size_t >::const_iterator itOffset;
 
   Offset.resize(imax);
 
-  std::map< Activity, std::map< const CCopasiObject *, unsigned C_INT32 > >::iterator itActivity;
-  std::map< const CCopasiObject *, unsigned C_INT32 >::iterator itObject;
+  std::map< Activity, std::map< const CCopasiObject *, size_t > >::iterator itActivity;
+  std::map< const CCopasiObject *, size_t >::iterator itObject;
 
   if (mDataBefore)
     {
@@ -1301,8 +1302,8 @@ void CopasiPlot::clearBuffers()
 {
   mObjects.clear();
 
-  unsigned C_INT32 Activity;
-  unsigned C_INT32 i, imax;
+  size_t Activity;
+  size_t i, imax;
 
   for (Activity = 0; Activity < ActivitySize; Activity++)
     {

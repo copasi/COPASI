@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:38 $
+//   $Date: 2011/03/07 19:34:13 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,8 +46,7 @@
 #include "model/CCompartment.h"
 
 CTrajectoryMethod *
-CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-    CTrajectoryProblem * /* pProblem */)
+CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
 {
   CTrajectoryMethod * pMethod = NULL;
 

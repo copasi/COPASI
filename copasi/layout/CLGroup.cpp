@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGroup.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 14:00:26 $
+//   $Date: 2011/03/07 19:28:46 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,6 +14,12 @@
 #include <limits>
 #include <sstream>
 #include <assert.h>
+
+#define USE_LAYOUT 1
+
+#ifdef USE_CRENDER_EXTENSION
+#define USE_RENDER 1
+#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/layout/render/Group.h>
 #include <sbml/layout/render/Rectangle.h>
@@ -78,7 +84,7 @@ CLGroup::CLGroup(const CLGroup& source, CCopasiContainer* pParent):
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderGroup", this);
   // copy the elements
-  unsigned int i, iMax = source.mElements.size();
+  size_t i, iMax = source.mElements.size();
   CCopasiObject* pChild = NULL;
 
   for (i = 0; i < iMax; ++i)
@@ -189,12 +195,12 @@ CLGroup::CLGroup(const Group& source, CCopasiContainer* pParent):
         break;
     }
 
-  unsigned int i, iMax = source.getNumElements();
+  size_t i, iMax = source.getNumElements();
   const Transformation2D* pChild = NULL;
 
   for (i = 0; i < iMax; ++i)
     {
-      pChild = dynamic_cast<const Transformation2D*>(source.getElement(i));
+      pChild = dynamic_cast<const Transformation2D*>(source.getElement((unsigned int) i));
 
       if (dynamic_cast<const Rectangle*>(pChild))
         {
@@ -373,7 +379,7 @@ const std::string& CLGroup::getEndHead() const
 /**
  * Returns the number of elements in the group.
  */
-unsigned int CLGroup::getNumElements() const
+size_t CLGroup::getNumElements() const
 {
   return this->mElements.size();
 }
@@ -398,7 +404,7 @@ CCopasiVector<CCopasiObject>* CLGroup::getListOfElements()
  * Returns element with index n.
  * If there is no such element, NULL is returned.
  */
-CCopasiObject* CLGroup::getElement(unsigned int n)
+CCopasiObject* CLGroup::getElement(size_t n)
 {
   if (n < this->mElements.size())
     {
@@ -414,7 +420,7 @@ CCopasiObject* CLGroup::getElement(unsigned int n)
  * Returns element with index n.
  * If there is no such element, NULL is returned.
  */
-const CCopasiObject* CLGroup::getElement(unsigned int n) const
+const CCopasiObject* CLGroup::getElement(size_t n) const
 {
   if (n < this->mElements.size())
     {
@@ -590,7 +596,7 @@ void CLGroup::importOldCurve(const XMLNode& node)
 {
     const XMLAttributes& curveAttributes=node.getAttributes();
     const XMLNode* child;
-    unsigned int n=0,nMax = node.getNumChildren();
+    size_t n=0,nMax = node.getNumChildren();
     const XMLNode* pOrigAnnotation=NULL;
     const XMLNode* pOrigNotes=NULL;
     while(n<nMax)
@@ -599,7 +605,7 @@ void CLGroup::importOldCurve(const XMLNode& node)
   std::string childName=child->getName();
   if(childName=="listOfCurveSegments")
   {
-     unsigned int i,iMax=child->getNumChildren();
+     size_t i,iMax=child->getNumChildren();
      const XMLNode* child2=NULL;
      CLRenderPoint start;
      CLRenderPoint end;
@@ -632,7 +638,7 @@ void CLGroup::importOldCurve(const XMLNode& node)
       {
         continue;
       }
-      unsigned int j,jMax=child2->getNumChildren();
+      size_t j,jMax=child2->getNumChildren();
       for(j=0;j<jMax;++j)
       {
         const XMLNode* child3=&child2->getChild(j);
@@ -853,7 +859,8 @@ Group* CLGroup::toSBML(unsigned int level, unsigned int version) const
         break;
     }
 
-  unsigned int i, iMax = this->mElements.size();
+  size_t i, iMax = this->mElements.size();
+  int result;
 
   for (i = 0; i < iMax; ++i)
     {
@@ -889,7 +896,8 @@ Group* CLGroup::toSBML(unsigned int level, unsigned int version) const
           pChild = static_cast<const CLGroup*>(pObject)->toSBML(level, version);
         }
 
-      pGroup->addChildElement(pChild);
+      result = pGroup->addChildElement(pChild);
+      assert(result == LIBSBML_OPERATION_SUCCESS);
       delete pChild;
     }
 

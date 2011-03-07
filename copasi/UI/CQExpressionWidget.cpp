@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 17:33:03 $
+//   $Date: 2011/03/07 19:37:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,21 +37,34 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
 #include "function/CFunctionDB.h"
+#include "function/CMassAction.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
 #include "qtUtilities.h"
 #include "report/CCopasiRootContainer.h"
 
-#include <QtDebug>
+#define DEBUG_UI
+
+#ifdef DEBUG_UI
+std::ostream &operator<<(std::ostream &os, const QTextCursor & d)
+{
+  os << "Position:        " << d.position() << std::endl;
+  os << "Selection Start: " << d.selectionStart() << std::endl;
+  os << "Selection End:   " << d.selectionEnd() << std::endl;
+  os << "Anchor:          " << d.anchor() << std::endl;
+  os << "Selected Text:   " << TO_UTF8(d.selectedText()) << std::endl;
+
+  return os;
+}
+#endif // DEBUG_UI
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : QSyntaxHighlighter(ew),
-    COPASIObjectPattern("<[^<]*>")
+    mObjectDisplayPattern(CQExpressionWidget::DisplayPattern)
 {
   // COPASI object format
-  COPASIObjectFormat.setForeground(QColor(100, 0, 200));
-  //COPASIObjectPattern = QRegExp("<[^<]*>");
+  mObjectDisplayFormat.setForeground(QColor(100, 0, 200));
 }
 
 CQExpressionHighlighter::~CQExpressionHighlighter()
@@ -59,13 +72,13 @@ CQExpressionHighlighter::~CQExpressionHighlighter()
 
 void CQExpressionHighlighter::highlightBlock(const QString &text)
 {
-  int index = COPASIObjectPattern.indexIn(text);
+  int index = mObjectDisplayPattern.indexIn(text);
 
   while (index >= 0)
     {
-      int length = COPASIObjectPattern.matchedLength();
-      setFormat(index, length, COPASIObjectFormat);
-      index = COPASIObjectPattern.indexIn(text, index + length);
+      int length = mObjectDisplayPattern.matchedLength();
+      setFormat(index, length, mObjectDisplayFormat);
+      index = mObjectDisplayPattern.indexIn(text, index + length);
     }
 }
 
@@ -149,8 +162,12 @@ QValidator::State CQValidatorFunction::validate(QString & input, int & pos) cons
 
   if (pExpressionWidget != NULL)
     {
-      if (const_cast< CFunction * >(&mFunction)->setInfix(pExpressionWidget->getExpression()) &&
-          const_cast< CFunction * >(&mFunction)->compile())
+      std::string Infix = pExpressionWidget->getFunction();
+
+      if (Infix == CMassAction::Infix[0] ||
+          Infix == CMassAction::Infix[1] ||
+          (const_cast< CFunction * >(&mFunction)->setInfix(Infix) &&
+           const_cast< CFunction * >(&mFunction)->compile()))
         {
           QString Input = (*mpContainer.*mRetrieve)();
           CurrentState = CQValidator< QTextEdit >::validate(input, pos);
@@ -176,25 +193,23 @@ CFunction * CQValidatorFunction::getFunction()
 
 //***********************************************************************
 
+// static
+const char CQExpressionWidget::InfixPattern[] = "<(CN=([^\\\\>]|\\\\.)*)>";
+
+// static
+const char CQExpressionWidget::DisplayPattern[] = "\\{(([^\\\\\\}]|\\\\.)*)\\}";
+
+
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
     : QTextEdit(parent, name),
     mpValidatorExpression(NULL),
     mpValidatorFunction(NULL),
-    mOldPar(0),
-    mOldPos(0),
     mObjectClasses(TransientExpression),
-    mpCurrentObject(NULL),
-    mNewName(""),
-    mMove(None),
-    mAction(NoAction)
+    mpCurrentObject(NULL)
 {
-#ifdef DEBUG_UI
-  qDebug() << "in constructor CQEW";
-#endif
-
   setTabChangesFocus(true);
 
-  expressionHighlighter = new CQExpressionHighlighter(this);
+  mpExpressionHighlighter = new CQExpressionHighlighter(this);
 
   int h, s, v;
 
@@ -205,13 +220,6 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
 
   mChangedColor.setHsv(240, s, v);
 
-  mAnchorPos = -1;
-  mOldPos = -1;
-
-  connect(this, SIGNAL(cursorPositionChanged()),
-          this, SLOT(slotCursorPositionChanged()));
-  connect(this, SIGNAL(selectionChanged()),
-          this, SLOT(slotSelectionChanged()));
   connect(this, SIGNAL(textChanged()),
           this, SLOT(slotTextChanged()));
 }
@@ -235,345 +243,234 @@ void CQExpressionWidget::writeMathML(std::ostream & out) const
     mpValidatorExpression->getExpression()->writeMathML(out, false, 0);
   else if (mpValidatorFunction != NULL)
     {
-      std::vector<std::vector<std::string> > params;
-      mpValidatorFunction->getFunction()->createListOfParametersForMathML(params);
-      mpValidatorFunction->getFunction()->writeMathML(out, params, true, false, 0);
+      std::string Infix = getFunction();
+
+      if (Infix == CMassAction::Infix[0])
+        {
+          CMassAction Function(TriTrue, NULL);
+          std::vector<std::vector<std::string> > params;
+
+          Function.createListOfParametersForMathML(params);
+          Function.writeMathML(out, params, true, false, 0);
+        }
+      else if (Infix == CMassAction::Infix[1])
+        {
+          CMassAction Function(TriFalse, NULL);
+          std::vector<std::vector<std::string> > params;
+
+          Function.createListOfParametersForMathML(params);
+          Function.writeMathML(out, params, true, false, 0);
+        }
+      else
+        {
+          std::vector<std::vector<std::string> > params;
+          mpValidatorFunction->getFunction()->createListOfParametersForMathML(params);
+          mpValidatorFunction->getFunction()->writeMathML(out, params, true, false, 0);
+        }
     }
 
   return;
 }
 
-void CQExpressionWidget::mousePressEvent(QMouseEvent * e)
+void CQExpressionWidget::mouseReleaseEvent(QMouseEvent * e)
 {
-  QTextCursor tc = cursorForPosition(e->pos());
+  QTextEdit::mouseReleaseEvent(e);
 
-  mCursor.setPosition(tc.position());
+  mCursor = textCursor();
 
-#ifdef DEBUG_UI
-  qDebug() << "- CQExpressionWidget::mousePressEvent - ";
+  int Left;
+  int Right;
 
-  qDebug() << "Cursor position on mousePressEvent of mCursor = " << mCursor.position();
-  qDebug() << "Cursor position on mousePressEvent of tc = " << tc.position();
-#endif
+  if (objectBoundaries(mCursor.selectionStart(), Left, Right))
+    {
+      // Move the selection start out of the object.
+      mCursor.setPosition(mCursor.selectionEnd());
+      mCursor.setPosition(Left, QTextCursor::KeepAnchor);
 
-  mMove = CQExpressionWidget::Mouse;
+      setTextCursor(mCursor);
+    }
 
-  QTextEdit::mousePressEvent(e);
+  if (objectBoundaries(mCursor.selectionEnd(), Left, Right))
+    {
+      // Move the selection end out of the object.
+      mCursor.setPosition(mCursor.selectionStart());
+      mCursor.setPosition(Right, QTextCursor::KeepAnchor);
 
-  mCursor.setPosition(cursorForPosition(e->pos()).position());
-#ifdef DEBUG_UI
-  qDebug() << "Updated Cursor position on mousePressEvent = " << mCursor.position();
-#endif
+      setTextCursor(mCursor);
+    }
+}
+
+void CQExpressionWidget::dropEvent(QDropEvent * e)
+{
+  QString SelectedText = textCursor().selectedText();
+
+  QTextEdit::dropEvent(e);
+
+  int Left;
+  int Right;
+
+  if (objectBoundaries(textCursor().position() - SelectedText.length(), Left, Right))
+    {
+      mCursor = textCursor();
+
+      // Remove the inserted text.
+      mCursor.setPosition(mCursor.position() - SelectedText.length(), QTextCursor::KeepAnchor);
+      mCursor.removeSelectedText();
+
+      int CurrentPosition = mCursor.position();
+
+      // Determine the insertion point
+      objectBoundaries(mCursor.position(), Left, Right);
+
+      if (CurrentPosition - Left < Right - CurrentPosition)
+        {
+          mCursor.setPosition(Left);
+        }
+      else
+        {
+          mCursor.setPosition(Right);
+        }
+
+      mCursor.insertText(SelectedText);
+      setTextCursor(mCursor);
+    }
 }
 
 void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 {
-#ifdef DEBUG_UI
-  qDebug() << "- CQExpressionWidget::keyPressEvent - ";
-#endif
-
-  // in case of clicking Return/Enter key
-  if (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter)
-    {
-#ifdef DEBUG_UI
-      qDebug() << "R E T U R N / E N T E R is just typed --> not allowed";
-#endif
-      return;
-    }
-
-  // in case of deleting character by backspace
-  if (e->key() == Qt::Key_Backspace)
-    {
-#ifdef DEBUG_UI
-      qDebug() << "B A C K S P A C E is just typed";
-
-      qDebug() << "selectedText = " << mCursor.selectedText();
-#endif
-
-      if (mCursor.selectedText().isEmpty())
-        {
-          mCursor.setPosition(textCursor().position());
-#ifdef DEBUG_UI
-          qDebug() << "position = " << mCursor.position();
-#endif
-          mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-#ifdef DEBUG_UI
-          qDebug() << "selectedText = " << mCursor.selectedText();
-          qDebug() << "position = " << mCursor.position();
-#endif
-
-          if (mCursor.selectedText() == ">")
-            {
-              // select the whole object
-              QTextDocument *doc = document();
-              QTextCursor cursor = doc->find("<", mCursor, QTextDocument::FindBackward);
-#ifdef DEBUG_UI
-              qDebug() << "------> cursor.position of '<' = " << cursor.position();
-              qDebug() << "selectedText = " << cursor.selectedText();
-#endif
-              mCursor.setPosition(cursor.position() - 1, QTextCursor::KeepAnchor);
-            }
-        }
-
-      // delete the selected object one or just the character
-      mCursor.deleteChar();
-
-      return;
-    }
-
-  // in case of deleting character by delete
-  if (e->key() == Qt::Key_Delete)
-    {
-#ifdef DEBUG_UI
-      qDebug() << "D E L E T E is just typed";
-      qDebug() << "selectedText = " << mCursor.selectedText();
-#endif
-
-      if (mCursor.selectedText().isEmpty())
-        {
-          mCursor.setPosition(textCursor().position());
-#ifdef DEBUG_UI
-          qDebug() << "position = " << mCursor.position();
-#endif
-          mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-#ifdef DEBUG_UI
-          qDebug() << "selectedText = " << mCursor.selectedText();
-          qDebug() << "position = " << mCursor.position();
-#endif
-
-          if (mCursor.selectedText() == "<")
-            {
-              // select the whole object
-              QTextDocument *doc = document();
-              QTextCursor cursor = doc->find(">", mCursor);
-#ifdef DEBUG_UI
-              qDebug() << "------> cursor.position of '>' = " << cursor.position();
-              qDebug() << "selectedText = " << cursor.selectedText();
-#endif
-              mCursor.setPosition(cursor.position(), QTextCursor::KeepAnchor);
-            }
-        }
-
-      // delete the selected object one or just the character
-      mCursor.deleteChar();
-
-      return;
-    }
-
-#ifdef DEBUG_UI
-  qDebug() << "e->text() = " << e->text();
-#endif
-
-  if (e->key() == Qt::Key_Shift)
-    {
-#ifdef DEBUG_UI
-      qDebug() << "S H I F T is just pressed";
-#endif
-    }
+  int Left;
+  int Right;
 
   if (e == QKeySequence::SelectNextChar)
     {
-#ifdef DEBUG_UI
-      qDebug() << "SelectNextChar is just pressed";
-#endif
-      mAction = CQExpressionWidget::SelectToRight;
+      mCursor = textCursor();
+      mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
 
-#ifdef DEBUG_UI
-      QTextCursor tc = textCursor();
-      qDebug() << "Cursor position = " << tc.position();
-
-      qDebug() << "Updated Cursor position = " << mCursor.position();
-
-      qDebug() << "selection start = " << mCursor.selectionStart();
-      qDebug() << "selection end = " << mCursor.selectionEnd();
-      qDebug() << "Cursor position = " << mCursor.position();
-      qDebug() << "selectedText = " << mCursor.selectedText();
-
-      qDebug() << "-x-x-x-x-x-";
-#endif
-    }
-
-  else if (e == QKeySequence::SelectPreviousChar)
-    {
-#ifdef DEBUG_UI
-      qDebug() << "SelectPreviousChar is just pressed";
-#endif
-      mAction = CQExpressionWidget::SelectToLeft;
-    }
-
-  else if (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right)
-    {
-#ifdef DEBUG_UI
-      qDebug() << "M O V I N G";
-
-      qDebug() << "Cursor position = " << mCursor.position();
-#endif
-
-      // in case of moving cursor one character to left
-      if (e->key() == Qt::Key_Left)
+      if (objectBoundaries(mCursor.position(), Left, Right))
         {
-#ifdef DEBUG_UI
-          qDebug() << "L E F T is just typed";
-#endif
-          mMove = CQExpressionWidget::Left;
+          mCursor.setPosition(Right - 1, QTextCursor::KeepAnchor);
+          setTextCursor(mCursor);
         }
 
-      // in case of moving cursor one character to right
-      if (e->key() == Qt::Key_Right)
-        {
-#ifdef DEBUG_UI
-          qDebug() << "R I G H T is just typed";
-#endif
-          mMove = CQExpressionWidget::Right;
-        }
+      QTextEdit::keyPressEvent(e);
 
-      setTextCursor(mCursor);
+      return;
     }
-  else
+
+  if (e == QKeySequence::SelectPreviousChar)
     {
-      if (!e->text().isEmpty())
+      mCursor = textCursor();
+      mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+
+      if (objectBoundaries(mCursor.position(), Left, Right))
         {
-          // in case of typing a character
-          // filter "<" and ">" - these characters are not allowed to manually type
-#ifdef DEBUG_UI
-          qDebug() << "T Y P I N G";
-#endif
-
-          if (e->text() == "<") return;
-
-          if (e->text() == ">") return;
-
-          // set format original
-          QTextCharFormat f;
-          f.setForeground(QColor(0, 0, 0));
-
-          setCurrentCharFormat(f);
+          mCursor.setPosition(Left + 1, QTextCursor::KeepAnchor);
+          setTextCursor(mCursor);
         }
+
+      QTextEdit::keyPressEvent(e);
+
+      return;
     }
 
-#ifdef DEBUG_UI
-  QColor color = textColor();
-  qDebug() << "clor text: red = " << color.red() << " - green = " << color.green() << " - blue = " << color.blue();
-#endif
+  switch (e->key())
+    {
+      case Qt::Key_Backspace:
+        mCursor = textCursor();
 
-  // This will lead to emitting signal cursorPositionChanged()
+        if (mCursor.selectedText().isEmpty())
+          {
+            mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+
+            if (objectBoundaries(mCursor.position(), Left, Right))
+              {
+                mCursor.setPosition(Left + 1, QTextCursor::KeepAnchor);
+                mCursor.deleteChar();
+                setTextCursor(mCursor);
+              }
+          }
+
+        // delete the selected object or just the character
+        QTextEdit::keyPressEvent(e);
+
+        return;
+        break;
+
+      case Qt::Key_Delete:
+        mCursor = textCursor();
+
+        if (mCursor.selectedText().isEmpty())
+          {
+            mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+
+            if (objectBoundaries(mCursor.position(), Left, Right))
+              {
+                mCursor.setPosition(Right - 1, QTextCursor::KeepAnchor);
+                mCursor.deleteChar();
+                setTextCursor(mCursor);
+              }
+          }
+
+        // delete the selected object or just the character
+        QTextEdit::keyPressEvent(e);
+
+        return;
+        break;
+
+      case Qt::Key_Left:
+        mCursor = textCursor();
+
+        // We check whether the new position is in an object.
+        mCursor.movePosition(QTextCursor::PreviousCharacter);
+
+        if (objectBoundaries(mCursor.position(), Left, Right))
+          {
+            mCursor.setPosition(Left + 1, QTextCursor::KeepAnchor);
+            setTextCursor(mCursor);
+          }
+
+        QTextEdit::keyPressEvent(e);
+
+        return;
+        break;
+
+      case Qt::Key_Right:
+        mCursor = textCursor();
+
+        // We check whether the new position is in an object.
+        mCursor.movePosition(QTextCursor::NextCharacter);
+
+        if (objectBoundaries(mCursor.position(), Left, Right))
+          {
+            mCursor.setPosition(Right - 1, QTextCursor::KeepAnchor);
+            setTextCursor(mCursor);
+          }
+
+        QTextEdit::keyPressEvent(e);
+
+        return;
+        break;
+
+      case Qt::Key_BraceLeft:
+      case Qt::Key_BraceRight:
+        e->ignore();
+        return;
+        break;
+    }
+
+  if (!e->text().isEmpty())
+    {
+      // set format original
+      QTextCharFormat f;
+      f.setForeground(QColor(0, 0, 0));
+
+      setCurrentCharFormat(f);
+      QTextEdit::keyPressEvent(e);
+
+      return;
+    }
+
   QTextEdit::keyPressEvent(e);
-
-  if (e == QKeySequence::Undo)
-    {
-#ifdef DEBUG_UI
-      qDebug() << "U N D O is just pressed";
-#endif
-
-      // update cursor position, especially useful for undo/redo action
-      mCursor.setPosition(textCursor().position());
-#ifdef DEBUG_UI
-      qDebug() << "Updated Cursor position = " << mCursor.position();
-#endif
-    }
-}
-
-void CQExpressionWidget::slotSelectionChanged()
-{
-#ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEW text() = " << text();
-  qDebug() << "- on CQExpressionWidget::slotSelectionChanged - ";
-
-  QTextCursor tc = textCursor();
-  int currentCursorPosition = tc.position();
-  qDebug() << "Cursor position = " << currentCursorPosition;
-#endif
-
-  mCursor =  textCursor();
-#ifdef DEBUG_UI
-  qDebug() << "selection start = " << mCursor.selectionStart();
-  qDebug() << "selection end = " << mCursor.selectionEnd();
-  qDebug() << "Cursor position = " << mCursor.position();
-  qDebug() << "selectedText = " << mCursor.selectedText();
-  qDebug() << "anchr pos = " << mCursor.anchor();
-#endif
-
-  int startPos = mCursor.selectionStart();
-  int endPos = mCursor.selectionEnd();
-  int curPos = mCursor.position();  // it can be startPos or endPos
-
-  QTextDocument *dc = document();
-  QChar ch = dc->characterAt(curPos);
-#ifdef DEBUG_UI
-  qDebug() << "*** last character = " << ch;
-#endif
-
-  if (isInObject(curPos))
-    {
-      // current cursor position, either startPos or endPos, is in object
-#ifdef DEBUG_UI
-      qDebug() << "-x- in object -x-";
-#endif
-
-      QTextDocument *doc = document();
-
-      if (curPos == startPos)
-        {
-          // selection is done from right to left, ie. endPos is fix.
-          QChar ch = doc->characterAt(curPos);
-#ifdef DEBUG_UI
-          qDebug() << "last character = " << ch;
-#endif
-
-          if (ch == '>')
-            {
-              // this is the first character of object will be met in such a selection way
-              QTextCursor cursor1 = doc->find("<", curPos, QTextDocument::FindBackward);
-#ifdef DEBUG_UI
-              qDebug() << "------> cursor.position of '<' = " << cursor1.position();
-#endif
-              // '-1' because the cursor should be before character '<'
-              mOldPos = cursor1.position() - 1;
-            }
-        }
-
-      if (curPos == endPos)
-        {
-          // selection is done from left to right, ie. startPos is fix.
-          QChar ch = doc->characterAt(curPos - 1);
-#ifdef DEBUG_UI
-          qDebug() << "last character = " << ch;
-#endif
-
-          if (ch == '<')
-            {
-              // this is the first character of object will be met in such a selection way
-              QTextCursor cursor1 = doc->find(">", curPos);
-#ifdef DEBUG_UI
-              qDebug() << "------> cursor.position of '>' = " << cursor1.position();
-#endif
-              // '-1' because the cursor should be before character '<'
-              mOldPos = cursor1.position();
-            }
-        }
-    }
-  else
-    {
-      mOldPos = curPos; // just update if cursor is not in object
-#ifdef DEBUG_UI
-      qDebug() << "-x- out of object -x-";
-#endif
-    }
-
-  mMove = CQExpressionWidget::None;
-#ifdef DEBUG_UI
-  qDebug() << "Cursor position on end of slotSelectionChanged = " << mCursor.position();
-#endif
-
-  if (mMove == CQExpressionWidget::Mouse)
-    mCursor.setPosition(mOldPos, QTextCursor::KeepAnchor);
-
-  if (startPos == endPos) // no selection
-    mCursor.setPosition(mOldPos);
-  else            // keep selection
-    mCursor.setPosition(mOldPos, QTextCursor::KeepAnchor);
-
-  setTextCursor(mCursor);
 }
 
 /**
@@ -590,185 +487,37 @@ void CQExpressionWidget::slotTextChanged()
   else
     return;
 
-#ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEW slotTextChanged => " << toPlainText();
-
-  qDebug() << "position = " << mCursor.position();
-  qDebug() << "----------------------------------";
-#endif
-
   int pos = 0;
   QString Input = text();
   setPaletteBackgroundColor(QColor(255, 0, 0));
-#ifdef DEBUG_UI
-  qDebug() << "bool = " << (mpValidatorExpression->validate(Input, pos) == QValidator::Acceptable);
-#endif
+
   emit valid(pValidator->validate(Input, pos) == QValidator::Acceptable);
 }
 
-//void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)
-void CQExpressionWidget::slotCursorPositionChanged()
+bool CQExpressionWidget::objectBoundaries(const int & position, int & left, int & right) const
 {
-#ifdef DEBUG_UI
-  qDebug() << "----------------------------------";
-  qDebug() << "- Need implementaion on CQExpressionWidget::slotCursorPositionChanged - ";
+  static QRegExp ObjectDisplayPattern(CQExpressionWidget::DisplayPattern);
 
-  qDebug() << "selectedText = " << mCursor.selectedText();
+  int Index = ObjectDisplayPattern.indexIn(text());
 
-  qDebug() << "----------------------------------";
-#endif
-
-  int currentCursorPosition = mCursor.position();
-  bool inObject = isInObject(currentCursorPosition - 1); // '-1' means candidate as the cursor is not moved yet
-
-  QTextDocument *doc = document();
-  QTextCursor cursor1, cursor2;
-#ifdef DEBUG_UI
-  qDebug() << "ABC cursor position = " << mCursor.position();
-#endif
-
-  if (inObject)
+  while (0 <= Index && Index <= position)
     {
-#ifdef DEBUG_UI
-      qDebug() << "in O B J E C T";
-#endif
-      cursor1 = doc->find("<", mCursor.position() + 1, QTextDocument::FindBackward);
-#ifdef DEBUG_UI
-      qDebug() << "cursor position = " << mCursor.position();
-      qDebug() << "------> cursor.position of '<' = " << cursor1.position();
-      qDebug() << "selectedText = " << cursor1.selectedText();
-#endif
-      cursor2 = doc->find(">", mCursor.position() - 1);
-#ifdef DEBUG_UI
-      qDebug() << "cursor position = " << mCursor.position();
-      qDebug() << "------> cursor.position of '>' = " << cursor2.position();
-      qDebug() << "selectedText = " << cursor2.selectedText();
-#endif
+      left = Index;
+      Index += ObjectDisplayPattern.matchedLength();
+      right = Index;
+
+      if (left < position && position < right)
+        {
+          return true;
+        }
+
+      Index = ObjectDisplayPattern.indexIn(text(), Index);
     }
 
-#ifdef DEBUG_UI
-  else
-    qDebug() << "out of O B J E C T";
+  left = -1;
+  right = -1;
 
-#endif
-
-  switch (mMove)
-    {
-      case CQExpressionWidget::Left:
-#ifdef DEBUG_UI
-        qDebug() << "MOVE TO LEFT";
-#endif
-
-        if (inObject)
-          mCursor.setPosition(cursor1.position() - 1);
-        else
-          mCursor.setPosition(currentCursorPosition - 1);
-
-        mMove = CQExpressionWidget::None;
-        setTextCursor(mCursor);
-        break;
-      case CQExpressionWidget::Right:
-#ifdef DEBUG_UI
-        qDebug() << "MOVE TO RIGHT";
-#endif
-
-        if (inObject)
-          mCursor.setPosition(cursor2.position());
-        else
-          mCursor.setPosition(currentCursorPosition + 1);
-
-        mMove = CQExpressionWidget::None;
-        setTextCursor(mCursor);
-        break;
-      case CQExpressionWidget::Mouse:
-#ifdef DEBUG_UI
-        qDebug() << "MOUSE";
-#endif
-
-        if (inObject)
-          {
-#ifdef DEBUG_UI
-            qDebug() << "currentCursorPosition = " << currentCursorPosition;
-#endif
-
-            if (currentCursorPosition - cursor1.position() < cursor2.position() - currentCursorPosition)
-              mCursor.setPosition(cursor1.position() - 1);
-            else
-              mCursor.setPosition(cursor2.position());
-
-            setTextCursor(mCursor);
-          }
-
-        break;
-      default:
-        break;
-    }
-
-  switch (mAction)
-    {
-      case CQExpressionWidget::SelectToLeft:
-#ifdef DEBUG_UI
-        qDebug() << "- Select Previous Character -";
-#endif
-
-        if (inObject)
-          mCursor.setPosition(cursor1.position() - 1, QTextCursor::KeepAnchor);
-        else
-          mCursor.setPosition(currentCursorPosition - 1, QTextCursor::KeepAnchor);
-
-        mAction = CQExpressionWidget::NoAction;
-        setTextCursor(mCursor);
-        break;
-      case CQExpressionWidget::SelectToRight:
-#ifdef DEBUG_UI
-        qDebug() << "- Select Next Character -";
-#endif
-
-        if (inObject)
-          mCursor.setPosition(cursor2.position(), QTextCursor::KeepAnchor);
-        else
-          mCursor.setPosition(currentCursorPosition + 1, QTextCursor::KeepAnchor);
-
-        mAction = CQExpressionWidget::NoAction;
-        setTextCursor(mCursor);
-        break;
-      default:
-        break;
-    }
-
-#ifdef DEBUG_UI
-  qDebug() << "------> cursor position now = " << mCursor.position();
-#endif
-}
-
-bool CQExpressionWidget::isInObject(int curPos)
-{
-#ifdef DEBUG_UI
-  qDebug() << "- on CQExpressionWidget::isInObject - ";
-#endif
-
-  QColor color = textColor();
-#ifdef DEBUG_UI
-  qDebug() << "OOO red text = " << color.red() << " - green = " << color.green() << " - blue = " << color.blue();
-#endif
-
-  if (color == QColor(0, 0, 0)) return false;
-
-  QTextDocument *doc = document();
-
-  QChar ch = doc->characterAt(curPos - 1); // previous character
-#ifdef DEBUG_UI
-  qDebug() << "cursor position = " << curPos;
-  qDebug() << "[right] character = " << doc->characterAt(curPos);
-  qDebug() << "left character = " << ch;
-#endif
-
-  if (ch == '>') return false;
-
-#ifdef DEBUG_UI
-  qDebug() << "-- in Object --";
-#endif
-  return true;
+  return false;
 }
 
 void CQExpressionWidget::setFunction(const std::string & function)
@@ -808,9 +557,6 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   // Reset the parse list.
   mParseList.clear();
 
-  // clear the text edit
-  clear();
-
   mCursor = textCursor();
 
   CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
@@ -821,127 +567,151 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   containers.push_back(pDataModel);
   containers.push_back(pFunDB);
 
-  std::string Expression = expression;
-  std::string out_str = "";
+  const QString Infix(FROM_UTF8(expression));
+  QString Display;
 
-  unsigned C_INT32 i = 0;
+  QRegExp InfixObjectPattern(CQExpressionWidget::InfixPattern);
 
-  QTextCharFormat f1;
-  f1.setForeground(QColor(0, 0, 0));
+  int Index = 0;
+  QString::const_iterator it = Infix.begin();
+  QString::const_iterator end;
 
-  QTextCharFormat f = expressionHighlighter->COPASIObjectFormat;
-  QColor color2 = f.foreground().color();
-
-  setCurrentCharFormat(f1);
-
-  while (i < Expression.length())
+  while (true)
     {
-      if (Expression[i] == '<')
+      Index = InfixObjectPattern.indexIn(Infix, Index);
+
+      if (Index < 0)
         {
-          i++;
-          std::string objectName = "";
-
-          while (Expression[i] != '>' && i < Expression.length())
-            {
-              if (Expression[i] == '\\')
-                objectName += Expression[i++];
-
-              objectName += Expression[i];
-              i++;
-            }
-
-          CCopasiObjectName temp_CN(objectName);
-          CCopasiObject* temp_object = pDataModel->ObjectFromName(containers, temp_CN);
-
-          if (temp_object != NULL)
-            {
-              std::string DisplayName = temp_object->getObjectDisplayName();
-              mParseList[DisplayName] = temp_object;
-
-              // We need to escape >
-              std::string::size_type pos = DisplayName.find_first_of("\\>");
-
-              while (pos != std::string::npos)
-                {
-                  DisplayName.insert(pos, "\\");
-                  pos += 2;
-                  pos = DisplayName.find_first_of("\\>", pos);
-                }
-
-              setCurrentCharFormat(f);
-              insertPlainText(FROM_UTF8("<" + DisplayName + ">"));
-              setCurrentCharFormat(f1);
-            }
-
-          continue;
+          end = Infix.end();
         }
-
-      else if (Expression[i] == '>')
-        {
-          //do nothing
-        }
-
       else
         {
-          out_str = Expression[i];
-          insertPlainText(FROM_UTF8(out_str));
+          end = Infix.begin() + Index;
         }
 
-      i++;
+      // Copy the non-object part
+      for (; it != end; ++it)
+        {
+          Display.append(*it);
+        }
+
+      if (InfixObjectPattern.matchedLength() < 0)
+        break;
+
+      Index += InfixObjectPattern.matchedLength();
+      it += InfixObjectPattern.matchedLength();
+
+      CCopasiObjectName InfixName(TO_UTF8(InfixObjectPattern.cap(1)));
+      CCopasiObject * pObject = pDataModel->ObjectFromName(containers, InfixName);
+
+      if (pObject != NULL)
+        {
+          std::string DisplayName = pObject->getObjectDisplayName();
+
+          // We need to escape '\' and '}'
+          std::string::size_type pos = DisplayName.find_first_of("\\}");
+
+          while (pos != std::string::npos)
+            {
+              DisplayName.insert(pos, "\\");
+              pos += 2;
+              pos = DisplayName.find_first_of("\\}", pos);
+            }
+
+          mParseList[DisplayName] = pObject;
+
+          Display += '{' + FROM_UTF8(DisplayName) + '}';
+        }
+      else
+        {
+          std::string DisplayName = InfixName;
+
+          // We need to escape '\' and '}'
+          std::string::size_type pos = DisplayName.find_first_of("\\}");
+
+          while (pos != std::string::npos)
+            {
+              DisplayName.insert(pos, "\\");
+              pos += 2;
+              pos = DisplayName.find_first_of("\\}", pos);
+            }
+
+          Display += '{' + FROM_UTF8(DisplayName) + '}';
+        }
     }
 
-  setCurrentCharFormat(f);
-
+  setText(Display);
   mpValidatorExpression->saved();
-
-#ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEW text() = " << text();
-#endif
 
   return;
 }
 
 std::string CQExpressionWidget::getExpression() const
 {
-  std::string DisplayName = "";
-  std::string InfixCN = "";
+  QString Infix;
+  const QString Display(text());
 
-  std::string InfixDispayName = TO_UTF8(text());
-  std::map< std::string, const CCopasiObject *>::const_iterator it;
+  QRegExp DisplayObjectPattern(CQExpressionWidget::DisplayPattern);
 
-  unsigned int i;
+  int Index = 0;
+  QString::const_iterator it = Display.begin();
+  QString::const_iterator end;
 
-  for (i = 0; i < InfixDispayName.length(); i++)
+
+  while (true)
     {
-      InfixCN += InfixDispayName[i];
-      DisplayName = "";
+      Index = DisplayObjectPattern.indexIn(Display, Index);
 
-      if (InfixDispayName[i] == '<')
+      if (Index < 0)
         {
-          i++;
+          end = Display.end();
+        }
+      else
+        {
+          end = Display.begin() + Index;
+        }
 
-          while (i < InfixDispayName.length() && InfixDispayName[i] != '>')
+      // Copy the non-object part
+      for (; it != end; ++it)
+        {
+          Infix.append(*it);
+        }
+
+      if (DisplayObjectPattern.matchedLength() < 0)
+        break;
+
+      Index += DisplayObjectPattern.matchedLength();
+      it += DisplayObjectPattern.matchedLength();
+
+      std::string DisplayName(TO_UTF8(DisplayObjectPattern.cap(1)));
+      std::map< std::string, const CCopasiObject *>::const_iterator itObject = mParseList.find(DisplayName);
+
+      if (itObject != mParseList.end())
+        Infix += "<" + FROM_UTF8(itObject->second->getCN()) + ">";
+      else
+        {
+          Infix += "<";
+
+          // We need to escape '\'
+          std::string CN = TO_UTF8(DisplayObjectPattern.cap(1));
+          std::string::const_iterator it = CN.begin();
+          std::string::const_iterator end = CN.end();
+
+          for (; it < end; ++it)
             {
-              if (InfixDispayName[i] == '\\') // '\' is an escape character.
-                i++;
+              if (*it == '\\')
+                {
+                  ++it;
+                }
 
-              DisplayName += InfixDispayName[i++];
+              Infix += *it;
             }
 
-          it = mParseList.find(DisplayName);
-
-          if (it != mParseList.end())
-            InfixCN += it->second->getCN() + ">";
-          else
-            InfixCN = InfixCN.substr(0, InfixCN.length() - 1);
+          Infix += ">";
         }
     }
 
-#ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEW text() = " << text();
-#endif
-
-  return InfixCN;
+  return TO_UTF8(Infix);
 }
 
 void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionType & expressionType)
@@ -978,7 +748,7 @@ void CQExpressionWidget::slotSelectObject()
   if (pObject)
     {
       // Check whether the object is valid
-      if (!CCopasiSimpleSelectionTree::filter(mObjectClasses, pObject))
+      if (!CQSimpleSelectionTree::filter(mObjectClasses, pObject))
         {
           CQMessageBox::critical(this, "Invalid Selection",
                                  "The use of the selected object is not allowed in this type of expression.");
@@ -986,29 +756,27 @@ void CQExpressionWidget::slotSelectObject()
         }
 
       std::string Insert = pObject->getObjectDisplayName();
-      mParseList[Insert] = pObject;
 
       // We need to escape >
-      std::string::size_type pos = Insert.find_first_of("\\>");
+      std::string::size_type pos = Insert.find_first_of("}");
 
       while (pos != std::string::npos)
         {
           Insert.insert(pos, "\\");
           pos += 2;
-          pos = Insert.find_first_of("\\>", pos);
+          pos = Insert.find_first_of("}", pos);
         }
+
+      mParseList[Insert] = pObject;
 
       QTextCharFormat f1;
       f1.setForeground(QColor(0, 0, 0));
 
-      QTextCharFormat f = expressionHighlighter->COPASIObjectFormat;
+      QTextCharFormat f = mpExpressionHighlighter->mObjectDisplayFormat;
       QColor color2 = f.foreground().color();
-#ifdef DEBUG_UI
-      qDebug() << "NEW red = " << color2.red() << " - green = " << color2.green() << " - blue = " << color2.blue();
-#endif
 
       setCurrentCharFormat(f);
-      insertPlainText(FROM_UTF8("<" + Insert + ">"));
+      insertPlainText(FROM_UTF8("{" + Insert + "}"));
       setCurrentCharFormat(f1);
     }
 }

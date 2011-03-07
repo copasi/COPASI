@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajAdaptiveSA.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:38 $
+//   $Date: 2011/03/07 19:34:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,8 +36,7 @@ class CRandom;
 class CTrajAdaptiveSA : public CTrajectoryMethod
 {
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
 private:
   class CReactionDependencies
@@ -255,9 +254,7 @@ private:
   /**
    *   The Ordered reaction
    */
-  C_INT32 mFirstReactionSpeciesIndex;
-
-  C_INT32 isFirstTau;
+  size_t mFirstReactionSpeciesIndex;
 
 #ifdef ANALYZ_HYBRID
   /**
@@ -297,7 +294,7 @@ protected:
   /**
    * The index of the next reaction which fires
    */
-  unsigned C_INT32 mNextReactionIndex;
+  size_t mNextReactionIndex;
 
   /**
    * A boolean flag indicating whether correction for higher order reactions need to be applied

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Date: 2011/03/07 19:37:52 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,7 +22,10 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QStyle>
+#include <QApplication>
+#include <QThread>
 
+#include "copasiui3window.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
@@ -69,6 +77,12 @@ QMessageBox::StandardButton CQMessageBox::information(QWidget *parent, const QSt
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    return defaultButton;
+
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Information, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
   StandardButton choice = (StandardButton) pMessageBox->exec();
@@ -81,6 +95,12 @@ QMessageBox::StandardButton CQMessageBox::question(QWidget *parent, const QStrin
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    return defaultButton;
+
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Question, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
   StandardButton choice = (StandardButton) pMessageBox->exec();
@@ -94,6 +114,12 @@ QMessageBox::StandardButton CQMessageBox::warning(QWidget *parent, const QString
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    return defaultButton;
+
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Warning, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
   StandardButton choice = (StandardButton) pMessageBox->exec();
@@ -107,6 +133,12 @@ QMessageBox::StandardButton CQMessageBox::critical(QWidget *parent, const QStrin
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    return defaultButton;
+
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Critical, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
   StandardButton choice = (StandardButton) pMessageBox->exec();
@@ -116,17 +148,33 @@ QMessageBox::StandardButton CQMessageBox::critical(QWidget *parent, const QStrin
 }
 
 // static
-QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent, CModel * pModel,
+QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
     const QString &objectType, const QString &objects,
     const std::set< const CCopasiObject * > & deletedObjects)
 {
-  if (pModel == NULL)
-    return QMessageBox::Cancel;
+  if (deletedObjects.size() == 0)
+    return QMessageBox::Ok;
 
-  CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
+  // Determine the affected data model
+  const CCopasiDataModel * pDataModel = (*deletedObjects.begin())->getObjectDataModel();
 
-  if (pFunctionDB == NULL)
-    return QMessageBox::Cancel;
+  // Determine the affected function DB
+  CFunctionDB * pFunctionDB =
+    dynamic_cast< CFunctionDB * >((*deletedObjects.begin())->getObjectAncestor("FunctionDB"));
+
+  if (pDataModel == NULL &&
+      pFunctionDB == NULL)
+    return QMessageBox::Ok;
+
+  if (pFunctionDB != NULL)
+    {
+      // TODO In case a function is deleted we need to loop through all data models
+      pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+    }
+  else
+    {
+      pFunctionDB = CCopasiRootContainer::getFunctionList();
+    }
 
   QString msg =
     QString("Do you want to delete the listed %1?\n  %2\n").arg(objectType, objects);
@@ -137,106 +185,141 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent, CModel 
   std::set< const CCopasiObject * > Values;
   std::set< const CCopasiObject * > Compartments;
   std::set< const CCopasiObject * > Events;
+  std::set< const CCopasiObject * > Tasks;
 
-  bool Used = pFunctionDB->appendDependentFunctions(deletedObjects, Functions);
+  bool Used = false;
 
-  if (Functions.size() > 0)
+  if (pFunctionDB != NULL)
     {
-      msg.append("Following functions(s) reference above and will be deleted:\n  ");
+      Used |= pFunctionDB->appendDependentFunctions(deletedObjects, Functions);
 
-      std::set< const CCopasiObject * >::const_iterator it = Functions.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Functions.end();
-
-      for (; it != end; ++it)
+      if (Functions.size() > 0)
         {
-          msg.append(FROM_UTF8((*it)->getObjectName()));
-          msg.append("\n  ");
-        }
+          msg.append("Following functions(s) reference above and will be deleted:\n  ");
 
-      msg.remove(msg.length() - 2, 2);
+          std::set< const CCopasiObject * >::const_iterator it = Functions.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Functions.end();
+
+          for (; it != end; ++it)
+            {
+              msg.append(FROM_UTF8((*it)->getObjectName()));
+              msg.append("\n  ");
+            }
+
+          msg.remove(msg.length() - 2, 2);
+        }
     }
 
-  Used |= pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites,
-          Compartments, Values, Events);
+  const CModel * pModel = NULL;
 
-  if (Reactions.size() > 0)
+  if (pDataModel != NULL)
     {
-      msg.append("Following reactions(s) reference above and will be deleted:\n  ");
+      pModel = pDataModel->getModel();
 
-      std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
+      // We need to check the tasks
+      Used |= pDataModel->appendDependentTasks(deletedObjects, Tasks);
 
-      for (; it != end; ++it)
+      if (Tasks.size() > 0)
         {
-          msg.append(FROM_UTF8((*it)->getObjectName()));
-          msg.append("\n  ");
-        }
+          msg.append("Following task(s) reference above and will be modified:\n  ");
 
-      msg.remove(msg.length() - 2, 2);
+          std::set< const CCopasiObject * >::const_iterator it = Tasks.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Tasks.end();
+
+          for (; it != end; ++it)
+            {
+              msg.append(FROM_UTF8((*it)->getObjectName()));
+              msg.append("\n  ");
+            }
+
+          msg.remove(msg.length() - 2, 2);
+        }
     }
 
-  if (Metabolites.size() > 0)
+  if (pModel != NULL)
     {
-      msg.append("Following species reference above and will be deleted:\n  ");
+      Used |= pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites,
+              Compartments, Values, Events);
 
-      std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
-
-      for (; it != end; ++it)
+      if (Reactions.size() > 0)
         {
-          msg.append(FROM_UTF8((*it)->getObjectName()));
-          msg.append("\n  ");
+          msg.append("Following reactions(s) reference above and will be deleted:\n  ");
+
+          std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
+
+          for (; it != end; ++it)
+            {
+              msg.append(FROM_UTF8((*it)->getObjectName()));
+              msg.append("\n  ");
+            }
+
+          msg.remove(msg.length() - 2, 2);
         }
 
-      msg.remove(msg.length() - 2, 2);
-    }
-
-  if (Values.size() > 0)
-    {
-      msg.append("Following global quantities reference above and will be deleted:\n  ");
-
-      std::set< const CCopasiObject * >::const_iterator it = Values.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Values.end();
-
-      for (; it != end; ++it)
+      if (Metabolites.size() > 0)
         {
-          msg.append(FROM_UTF8((*it)->getObjectName()));
-          msg.append("\n  ");
+          msg.append("Following species reference above and will be deleted:\n  ");
+
+          std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
+
+          for (; it != end; ++it)
+            {
+              msg.append(FROM_UTF8((*it)->getObjectName()));
+              msg.append("\n  ");
+            }
+
+          msg.remove(msg.length() - 2, 2);
         }
 
-      msg.remove(msg.length() - 2, 2);
-    }
-
-  if (Compartments.size() > 0)
-    {
-      msg.append("Following compartment(s) reference above and will be deleted:\n  ");
-
-      std::set< const CCopasiObject * >::const_iterator it = Compartments.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Compartments.end();
-
-      for (; it != end; ++it)
+      if (Values.size() > 0)
         {
-          msg.append(FROM_UTF8((*it)->getObjectName()));
-          msg.append("\n  ");
+          msg.append("Following global quantities reference above and will be deleted:\n  ");
+
+          std::set< const CCopasiObject * >::const_iterator it = Values.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Values.end();
+
+          for (; it != end; ++it)
+            {
+              msg.append(FROM_UTF8((*it)->getObjectName()));
+              msg.append("\n  ");
+            }
+
+          msg.remove(msg.length() - 2, 2);
         }
 
-      msg.remove(msg.length() - 2, 2);
-    }
-
-  if (Events.size() > 0)
-    {
-      msg.append("Following event(s) reference above and will be deleted:\n  ");
-
-      std::set< const CCopasiObject * >::const_iterator it = Events.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Events.end();
-
-      for (; it != end; ++it)
+      if (Compartments.size() > 0)
         {
-          msg.append(FROM_UTF8((*it)->getObjectName()));
-          msg.append("\n  ");
+          msg.append("Following compartment(s) reference above and will be deleted:\n  ");
+
+          std::set< const CCopasiObject * >::const_iterator it = Compartments.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Compartments.end();
+
+          for (; it != end; ++it)
+            {
+              msg.append(FROM_UTF8((*it)->getObjectName()));
+              msg.append("\n  ");
+            }
+
+          msg.remove(msg.length() - 2, 2);
         }
 
-      msg.remove(msg.length() - 2, 2);
+      if (Events.size() > 0)
+        {
+          msg.append("Following event(s) reference above and will be deleted:\n  ");
+
+          std::set< const CCopasiObject * >::const_iterator it = Events.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Events.end();
+
+          for (; it != end; ++it)
+            {
+              msg.append(FROM_UTF8((*it)->getObjectName()));
+              msg.append("\n  ");
+            }
+
+          msg.remove(msg.length() - 2, 2);
+        }
     }
 
   StandardButton choice = QMessageBox::Ok;

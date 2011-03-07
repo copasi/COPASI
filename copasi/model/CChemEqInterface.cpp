@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:00:59 $
+//   $Date: 2011/03/07 19:30:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -47,7 +47,7 @@ CChemEqInterface::~CChemEqInterface()
 std::string CChemEqInterface::getChemEqString(bool expanded) const
 {
   std::string ChemicalEquation;
-  unsigned C_INT32 j;
+  size_t j;
 
   if ((mSubstrateNames.size() == 0) && (mProductNames.size() == 0) && (mModifierNames.size() == 0))
     return "";
@@ -287,7 +287,7 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
 {
   bool ret = true;
   const CCopasiVector<CChemEqElement> * elements;
-  C_INT32 i, imax;
+  size_t i, imax;
 
   elements = &ce.getSubstrates();
   imax = elements->size();
@@ -380,7 +380,7 @@ bool CChemEqInterface::writeToChemEq(CChemEq & ce) const
 {
   bool ret = true;
   std::string metabkey;
-  C_INT32 i, imax;
+  size_t i, imax;
 
   ce.cleanup();
 
@@ -509,7 +509,7 @@ std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 m
     }
 }
 
-unsigned C_INT32 CChemEqInterface::getMolecularity(CFunctionParameter::Role role) const
+size_t CChemEqInterface::getMolecularity(CFunctionParameter::Role role) const
 {
   const std::vector<C_FLOAT64> * tmpVector = NULL;
 
@@ -521,15 +521,15 @@ unsigned C_INT32 CChemEqInterface::getMolecularity(CFunctionParameter::Role role
     tmpVector = &mModifierMult;
   else fatalError();
 
-  C_INT32 ccc, i, imax = tmpVector->size();
+  size_t ccc, i, imax = tmpVector->size();
   ccc = 0;
 
   for (i = 0; i < imax; ++i)
     {
-      if ((*tmpVector)[i] != (C_FLOAT64)(C_INT32)(*tmpVector)[i])
+      if ((*tmpVector)[i] != floor((*tmpVector)[i] + 0.5))
         return C_INVALID_INDEX;
 
-      ccc += (C_INT32)floor((*tmpVector)[i]);
+      ccc += (size_t) floor((*tmpVector)[i]);
     }
 
   return ccc;

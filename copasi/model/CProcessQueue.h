@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/09 21:15:15 $
+//   $Date: 2011/03/07 19:30:49 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -48,15 +53,15 @@ private:
      * Specific constructor
      * @param const C_FLOAT64 & executionTime
      * @param const bool & equality
-     * @param const unsigned C_INT32 & order
-     * @param const unsigned C_INT32 & eventId
-     * @param const unsigned C_INT32 & cascadingLevel
+     * @param const size_t & order
+     * @param const size_t & eventId
+     * @param const size_t & cascadingLevel
      */
     CKey(const C_FLOAT64 & executionTime,
          const bool & equality,
-         const unsigned C_INT32 & order,
-         const unsigned C_INT32 & eventId,
-         const unsigned C_INT32 & cascadingLevel);
+         const size_t & order,
+         const size_t & eventId,
+         const size_t & cascadingLevel);
 
     /**
      * Destructor
@@ -72,9 +77,9 @@ private:
 
     /**
      * Retrieve the event id
-     * @return const unsigned C_INT32 & eventId
+     * @return const size_t & eventId
      */
-    inline const unsigned C_INT32 & getEventId() const {return mEventId;}
+    inline const size_t & getEventId() const {return mEventId;}
 
     /**
      * Retrieve the execution time.
@@ -92,7 +97,7 @@ private:
     /**
      * Cascading level
      */
-    unsigned C_INT32 mCascadingLevel;
+    size_t mCascadingLevel;
 
     /**
      * A Boolean value indication whether we have equality or inequality.
@@ -103,12 +108,12 @@ private:
     /**
      * The order in which simultaneous event assignments are processed.
      */
-    unsigned C_INT32 mOrder;
+    size_t mOrder;
 
     /**
      * The event Id is used for creating atomic sets of assignments.
      */
-    unsigned C_INT32 mEventId;
+    size_t mEventId;
   };
 
   class CAction
@@ -156,9 +161,9 @@ private:
 
     /**
      * Process the entry
-     * @param const unsigned C_INT32 & eventId
+     * @param const size_t & eventId
      */
-    void process(const unsigned C_INT32 & eventId);
+    void process(const size_t & eventId);
 
     /**
      * Retrieve the event id
@@ -205,7 +210,7 @@ public:
   typedef range(*resolveSimultaneousAssignments)(const std::multimap< CKey, CAction > & /* assignments */,
       const C_FLOAT64 & /* time */,
       const bool & /* equality */,
-      const unsigned C_INT32 & /* cascadingLevel */);
+      const size_t & /* cascadingLevel */);
 
   // Operations
 public:
@@ -228,8 +233,8 @@ public:
    * Add an assignment to the process queue.
    * @param const C_FLOAT64 & executionTime
    * @param const bool & equality
-   * @param const unsigned C_INT32 & order
-   * @param const unsigned C_INT32 & eventId
+   * @param const size_t & order
+   * @param const size_t & eventId
    * @param C_FLOAT64 * pTarget
    * @param const C_FLOAT64 & value
    * @param CMathEvent * pEvent
@@ -237,8 +242,8 @@ public:
    */
   bool addAssignment(const C_FLOAT64 & executionTime,
                      const bool & equality,
-                     const unsigned C_INT32 & order,
-                     const unsigned C_INT32 & eventId,
+                     const size_t & order,
+                     const size_t & eventId,
                      C_FLOAT64 * pTarget,
                      const C_FLOAT64 & value,
                      CMathEvent * pEvent);
@@ -247,8 +252,8 @@ public:
    * Add a calculation to the process queue.
    * @param const C_FLOAT64 & executionTime
    * @param const bool & equality
-   * @param const unsigned C_INT32 & order
-   * @param const unsigned C_INT32 & eventId
+   * @param const size_t & order
+   * @param const size_t & eventId
    * @param C_FLOAT64 * pTarget
    * @param CMathExpression * pExpression
    * @param CMathEvent * pEvent
@@ -256,8 +261,8 @@ public:
    */
   bool addCalculation(const C_FLOAT64 & executionTime,
                       const bool & equality,
-                      const unsigned C_INT32 & order,
-                      const unsigned C_INT32 & eventId,
+                      const size_t & order,
+                      const size_t & eventId,
                       C_FLOAT64 * pTarget,
                       CMathExpression * pExpression,
                       CMathEvent * pEvent);
@@ -281,9 +286,9 @@ public:
 
   /**
    * Create a unique eventId
-   * @return const unsigned C_INT32 & eventId;
+   * @return const size_t & eventId;
    */
-  const unsigned C_INT32 & createEventId();
+  const size_t & createEventId();
 
   /**
    * Retrieve the next execution time scheduled in the process queue
@@ -300,9 +305,9 @@ public:
 private:
   /**
    * Destroy a unique eventId
-   * @@param const unsigned C_INT32 & eventId;
+   * @@param const size_t & eventId;
    */
-  void destroyEventId(const unsigned C_INT32 & eventId);
+  void destroyEventId(const size_t & eventId);
 
   /**
    * Retrieve the currently pending calculations
@@ -358,12 +363,12 @@ private:
   /**
    * The limit of execution steps allowed for call to process
    */
-  unsigned C_INT32 mExecutionLimit;
+  size_t mExecutionLimit;
 
   /**
    * A counter of the execution steps for the current process
    */
-  unsigned C_INT32 mExecutionCounter;
+  size_t mExecutionCounter;
 
   /**
    * The current time
@@ -378,7 +383,7 @@ private:
   /**
    * The cascading level of events
    */
-  unsigned C_INT32 mCascadingLevel;
+  size_t mCascadingLevel;
 
   /**
    * A flag indicating that simultaneous assignments have been found.
@@ -388,7 +393,7 @@ private:
   /**
    * A set of currently active event ids
    */
-  std::set< unsigned C_INT32 > mEventIdSet;
+  std::set< size_t > mEventIdSet;
 
   /**
    * A pointer to the math model the process queue belongs to.

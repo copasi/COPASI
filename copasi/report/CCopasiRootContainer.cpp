@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/22 13:21:10 $
+//   $Date: 2011/03/07 19:32:38 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,6 +38,8 @@ extern CCopasiRootContainer * pRootContainer;
  */
 CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
     CCopasiContainer("Root", NULL, "CN", CCopasiObject::Root),
+    mKeyFactory(),
+    mpUnknownResource(NULL),
     mpFunctionList(NULL),
     mpConfiguration(NULL),
     mpDataModelList(NULL),
@@ -55,6 +57,8 @@ CCopasiRootContainer::~CCopasiRootContainer()
       mpConfiguration->save();
     }
 
+  pdelete(mpUnknownResource);
+
   pdelete(mpConfiguration);
   // delete the function list
   pdelete(mpFunctionList);
@@ -67,7 +71,7 @@ CCopasiRootContainer::~CCopasiRootContainer()
 /**
  * This method creates the only root container.
  */
-void CCopasiRootContainer::init(int argc, char** argv, const bool & withGUI)
+void CCopasiRootContainer::init(int argc, char *argv[], const bool & withGUI)
 {
   COptions::init(argc, argv);
 
@@ -92,6 +96,10 @@ void CCopasiRootContainer::destroy()
 
 void CCopasiRootContainer::initializeChildren()
 {
+  mpUnknownResource = new CMIRIAMResource("Unknown Resource");
+  mpUnknownResource->setMIRIAMDisplayName("-- select --");
+  mpUnknownResource->setMIRIAMURI("urn:miriam:unknown");
+
   mpFunctionList = new CFunctionDB("FunctionDB", this);
   mpFunctionList->load();
 
@@ -100,12 +108,9 @@ void CCopasiRootContainer::initializeChildren()
   mpConfiguration = new CConfigurationFile;
   mpConfiguration->load();
 
-  mpUndefined = new CFunction("undefined");
+  mpUndefined = new CFunction("undefined", this);
   mpUndefined->setInfix("nan");
   mpUndefined->compile();
-
-  mKeyFactory.remove(mpUndefined->getKey());
-  mKeyFactory.addFix("UndefinedFunction_0", mpUndefined);
 }
 
 // static
@@ -151,6 +156,13 @@ CKeyFactory* CCopasiRootContainer::getKeyFactory()
 {
   return &pRootContainer->mKeyFactory;
 }
+
+// static
+const CMIRIAMResource & CCopasiRootContainer::getUnknownMiriamResource()
+{
+  return *pRootContainer->mpUnknownResource;
+}
+
 
 // static
 bool CCopasiRootContainer::removeDatamodel(const CCopasiDataModel * pDatamodel)

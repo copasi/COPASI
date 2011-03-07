@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQQtImageTexturizer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 14:01:16 $
+//   $Date: 2011/03/07 19:29:16 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,7 +21,7 @@
 #else
 # include "GL/gl.h"
 # include "GL/glu.h"
-# include "GL/glext.h"
+# include "copasi/GL/glext.h"
 # ifndef _WIN32
 #  define GLX_GLXEXT_PROTOTYPES
 #  include "GL/glx.h"
@@ -29,8 +29,10 @@
 #endif // __APPLE__
 
 #include "CQQtImageTexturizer.h"
-#include <copasi/layout/utility_classes.h>
-#include <copasi/utilities/CCopasiMessage.h>
+#include "copasi/layout/utility_classes.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/UI/qtUtilities.h"
 
 // virtual
 CLTextureSpec* CQQtImageTexturizer::operator()(const std::string& filename, const std::string& basedir)
@@ -66,7 +68,8 @@ CLTextureSpec* CQQtImageTexturizer::operator()(const std::string& filename, cons
 CLTextureSpec* CQQtImageTexturizer::create_texture_for_image(const std::string& filename, const char* format)
 {
   CLTextureSpec* pResult = NULL;
-  QImage image(QString().fromAscii(filename.c_str()), format);
+  // use UTF8 strings for filenames since this seems to be safer across platforms
+  QImage image(FROM_UTF8(filename), format);
 
   if (!image.isNull())
     {

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dScale.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 15:17:50 $
+//   $Date: 2011/03/07 19:24:50 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -48,6 +53,7 @@ void ValueScale::calculate()
   // first tic
   if (mstart_p < start_p || mstop_p > stop_p)
     return;
+
   majors_p.push_back(mstart_p);
 
   // remaining tics
@@ -55,13 +61,18 @@ void ValueScale::calculate()
     {
       double t = double(i) / majorintervals_p;
       runningval = mstart_p + t * interval;
+
       if (runningval > stop_p)
         break;
+
       if (isPracticallyZero(mstart_p, -t*interval)) // prevent rounding errors near 0
         runningval = 0.0;
+
       majors_p.push_back(runningval);
     }
-  majorintervals_p = majors_p.size();
+
+  majorintervals_p = (int) majors_p.size();
+
   if (majorintervals_p)
     --majorintervals_p;
 
@@ -76,10 +87,12 @@ void ValueScale::calculate()
   //  |_____________|_____ _ _ _
 
   double step = (majors_p[1] - majors_p[0]) / minorintervals_p;
+
   if (isPracticallyZero(step))
     return;
 
   runningval = mstart_p - step;
+
   while (runningval > start_p)
     {
       minors_p.push_back(runningval);
@@ -92,6 +105,7 @@ void ValueScale::calculate()
   for (i = 0; i != majorintervals_p; ++i)
     {
       runningval = majors_p[i] + step;
+
       for (j = 0; j != minorintervals_p; ++j)
         {
           minors_p.push_back(runningval);
@@ -103,6 +117,7 @@ void ValueScale::calculate()
   // _ _ _|_____________|
 
   runningval = mstop_p + step;
+
   while (runningval < stop_p)
     {
       minors_p.push_back(runningval);
@@ -111,13 +126,14 @@ void ValueScale::calculate()
 }
 
 QString ValueScale::ticLabel(unsigned int idx) const
-  {
-    if (idx < majors_p.size())
-      {
-        return QString::number(majors_p[idx]);
-      }
-    return QString("");
-  }
+{
+  if (idx < majors_p.size())
+    {
+      return QString::number(majors_p[idx]);
+    }
+
+  return QString("");
+}
 
 RowScale::RowScale(const std::vector<std::string> * vos, int showRow)
     : ValueScale(),
@@ -126,30 +142,31 @@ RowScale::RowScale(const std::vector<std::string> * vos, int showRow)
 {}
 
 QString RowScale::ticLabel(unsigned int idx) const
-  {
-    if (!mpRowsDes) return QString("");
-    if ((mpRowsDes->size() - 1) < idx) return QString("");
+{
+  if (!mpRowsDes) return QString("");
 
-    if (showRow == (unsigned int) - 1)
-      {
-        std::string a;
-        a = (*mpRowsDes)[idx];
-        return (QString(a.c_str()));
-      }
-    else
-      {
-        if (showRow == idx)
-          {
-            std::string a;
-            a = (*mpRowsDes)[idx];
-            return (QString(a.c_str()));
-          }
-        else
-          {
-            return QString("");
-          }
-      }
-  }
+  if ((mpRowsDes->size() - 1) < idx) return QString("");
+
+  if (showRow == (unsigned int) - 1)
+    {
+      std::string a;
+      a = (*mpRowsDes)[idx];
+      return (QString(a.c_str()));
+    }
+  else
+    {
+      if (showRow == idx)
+        {
+          std::string a;
+          a = (*mpRowsDes)[idx];
+          return (QString(a.c_str()));
+        }
+      else
+        {
+          return QString("");
+        }
+    }
+}
 
 ColumnScale::ColumnScale(const std::vector<std::string> * vos, int showColumn)
     : ValueScale(),
@@ -158,27 +175,28 @@ ColumnScale::ColumnScale(const std::vector<std::string> * vos, int showColumn)
 {}
 
 QString ColumnScale::ticLabel(unsigned int idx) const
-  {
-    if (!mpColumnsDes) return QString("");
-    if ((mpColumnsDes->size() - 1) < idx) return QString("");
+{
+  if (!mpColumnsDes) return QString("");
 
-    if (showColumn == (unsigned int) - 1)
-      {
-        std::string a;
-        a = (*mpColumnsDes)[idx];
-        return (QString(a.c_str()));
-      }
-    else
-      {
-        if (showColumn == idx)
-          {
-            std::string a;
-            a = (*mpColumnsDes)[idx];
-            return (QString(a.c_str()));
-          }
-        else
-          {
-            return QString("");
-          }
-      }
-  }
+  if ((mpColumnsDes->size() - 1) < idx) return QString("");
+
+  if (showColumn == (unsigned int) - 1)
+    {
+      std::string a;
+      a = (*mpColumnsDes)[idx];
+      return (QString(a.c_str()));
+    }
+  else
+    {
+      if (showColumn == idx)
+        {
+          std::string a;
+          a = (*mpColumnsDes)[idx];
+          return (QString(a.c_str()));
+        }
+      else
+        {
+          return QString("");
+        }
+    }
+}

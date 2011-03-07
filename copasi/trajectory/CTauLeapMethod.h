@@ -1,12 +1,12 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.15 $
+ $Revision: 1.16 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/09/13 15:03:20 $
+ $Date: 2011/03/07 19:34:14 $
  End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -47,8 +47,7 @@ class CRandom;
 class CTauLeapMethod : public CTrajectoryMethod
 {
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
   class CReactionDependencies
   {
@@ -230,7 +229,7 @@ protected:
   /**
    *   Number of reactions.
    */
-  unsigned C_INT32 mNumReactions;
+  size_t mNumReactions;
 
   /**
    * A vector containing dependency information to minimize the required updates.
@@ -240,7 +239,7 @@ protected:
   /**
    *   Number of variable metabolites.
    */
-  unsigned C_INT32 mNumReactionSpecies;
+  size_t mNumReactionSpecies;
 
   /**
    * A vector of reaction propensities

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:20 $
+//   $Date: 2011/03/07 19:37:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,6 +44,7 @@
 #include "qtUtilities.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "CCopasiSelectionDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -148,10 +149,12 @@ void SensitivitiesWidget::init()
   mpHeaderWidget->setTaskName("Sensitivities");
 
   verticalLayout->insertWidget(0, mpHeaderWidget);  // header
-  verticalLayout->insertSpacing(1, 14);      // space between header and body
-  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
+  // verticalLayout->insertSpacing(1, 14);      // space between header and body
 
-  addMethodParameterTable(0);
+  mpMethodWidget->enableMethodParameter(true);
+  verticalLayout->addWidget(mpMethodWidget);
+
+  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   // icons
   QImage img0;
@@ -266,7 +269,7 @@ bool SensitivitiesWidget::saveTask()
 }
 
 CCopasiMethod * SensitivitiesWidget::createMethod(const CCopasiMethod::SubType & type)
-{return CSensMethod::createSensMethod(type);}
+{return CSensMethod::createMethod(type);}
 
 bool SensitivitiesWidget::runTask()
 {
@@ -484,9 +487,9 @@ SensitivitiesWidget::slotChooseSingleFunction()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CCopasiSimpleSelectionTree::Variables |
-                                            CCopasiSimpleSelectionTree::ObservedValues |
-                                            CCopasiSimpleSelectionTree::ObservedConstants);
+                                            CQSimpleSelectionTree::Variables |
+                                            CQSimpleSelectionTree::ObservedValues |
+                                            CQSimpleSelectionTree::ObservedConstants);
 
   if (pObject)
     {
@@ -502,8 +505,8 @@ SensitivitiesWidget::slotChooseSingleVariable()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CCopasiSimpleSelectionTree::InitialTime |
-                                            CCopasiSimpleSelectionTree::Parameters);
+                                            CQSimpleSelectionTree::InitialTime |
+                                            CQSimpleSelectionTree::Parameters);
 
   if (pObject)
     {
@@ -519,8 +522,8 @@ SensitivitiesWidget::slotChooseSingleVariable2()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CCopasiSimpleSelectionTree::InitialTime |
-                                            CCopasiSimpleSelectionTree::Parameters);
+                                            CQSimpleSelectionTree::InitialTime |
+                                            CQSimpleSelectionTree::Parameters);
 
   if (pObject)
     {

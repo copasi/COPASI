@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/26 22:08:51 $
+//   $Date: 2011/03/07 19:28:18 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -231,11 +236,11 @@ CEvaluationTree * CFunctionDB::createFunction(const std::string & name, const CE
 }
 #endif // FFFF
 
-bool CFunctionDB::add(CEvaluationTree * pFunction,
+bool CFunctionDB::add(CFunction * pFunction,
                       const bool & adopt)
 {return mLoadedFunctions.add(pFunction, adopt);}
 
-void CFunctionDB::addAndAdaptName(CEvaluationTree * pFunction)
+void CFunctionDB::addAndAdaptName(CFunction * pFunction)
 {
   if (!pFunction) return;
 
@@ -258,11 +263,22 @@ void CFunctionDB::addAndAdaptName(CEvaluationTree * pFunction)
   this->add(pFunction, true);
 }
 
-bool CFunctionDB::removeFunction(unsigned C_INT32 index)
+bool CFunctionDB::removeFunction(size_t index)
 {
   if (index == C_INVALID_INDEX) return false;
 
-  mLoadedFunctions.CCopasiVector<CEvaluationTree>::remove(index);
+  // We need to delete all dependent objects in all data models.
+  CCopasiVector< CCopasiDataModel >::iterator it = CCopasiRootContainer::getDatamodelList()->begin();
+  CCopasiVector< CCopasiDataModel >::iterator end = CCopasiRootContainer::getDatamodelList()->end();
+
+  std::set< const CCopasiObject * > DeletedObjects = mLoadedFunctions[index]->getDeletedObjects();
+
+  for (; it != end; ++it)
+    {
+      (*it)->getModel()->removeDependentModelObjects(DeletedObjects);
+    }
+
+  mLoadedFunctions.CCopasiVector<CFunction>::remove(index);
 
   return true;
 }
@@ -273,19 +289,17 @@ bool CFunctionDB::removeFunction(const std::string &key)
 
   if (!func) return false;
 
-  unsigned C_INT32 index =
-    mLoadedFunctions.CCopasiVector<CEvaluationTree>::getIndex(func);
+  size_t index =
+    mLoadedFunctions.CCopasiVector<CFunction>::getIndex(func);
 
   if (index == C_INVALID_INDEX) return false;
 
-  mLoadedFunctions.CCopasiVector<CEvaluationTree>::remove(index);
-
-  return true;
+  return removeFunction(index);
 }
 
 CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
 {
-  unsigned C_INT32 index = mLoadedFunctions.getIndex(functionName);
+  size_t index = mLoadedFunctions.getIndex(functionName);
 
   if (index != C_INVALID_INDEX)
     return mLoadedFunctions[index];
@@ -295,7 +309,7 @@ CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
 
 CEvaluationTree * CFunctionDB::findLoadFunction(const std::string & functionName)
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < mLoadedFunctions.size(); i++)
     if (functionName == mLoadedFunctions[i]->getObjectName())
@@ -304,18 +318,18 @@ CEvaluationTree * CFunctionDB::findLoadFunction(const std::string & functionName
   return NULL;
 }
 
-CCopasiVectorN < CEvaluationTree > & CFunctionDB::loadedFunctions()
+CCopasiVectorN < CFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
 std::vector<CFunction*>
-CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
-                               const unsigned C_INT32 noProducts,
+CFunctionDB::suitableFunctions(const size_t noSubstrates,
+                               const size_t noProducts,
                                const TriLogic reversibility)
 {
   std::vector<CFunction*> ret;
   CFunction *pFunction;
 
-  unsigned C_INT32 i, imax = mLoadedFunctions.size();
+  size_t i, imax = mLoadedFunctions.size();
 
   for (i = 0; i < imax; i++)
     {
@@ -358,13 +372,14 @@ bool CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > can
     std::set< const CCopasiObject * > & dependentFunctions) const
 {
   size_t Size = dependentFunctions.size();
+  CCallParameters< C_FLOAT64 > CallParmeters;
 
-  CCopasiVectorN< CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
-  CCopasiVectorN< CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+  CCopasiVectorN< CFunction >::const_iterator it = mLoadedFunctions.begin();
+  CCopasiVectorN< CFunction >::const_iterator end = mLoadedFunctions.end();
 
   for (; it != end; ++it)
     if (candidates.find(*it) == candidates.end() &&
-        (*it)->dependsOn(candidates))
+        (*it)->CEvaluationTree::dependsOn(candidates))
       dependentFunctions.insert((*it));
 
   return Size < dependentFunctions.size();
@@ -375,8 +390,8 @@ CFunctionDB::listDependentTrees(const std::string & name) const
 {
   std::set<std::string> List;
 
-  CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
-  CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+  CCopasiVectorN < CFunction >::const_iterator it = mLoadedFunctions.begin();
+  CCopasiVectorN < CFunction >::const_iterator end = mLoadedFunctions.end();
 
   for (; it != end; ++it)
     if ((*it)->dependsOnTree(name))
@@ -385,11 +400,11 @@ CFunctionDB::listDependentTrees(const std::string & name) const
   return List;
 }
 
-std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions(const CModel* pModel) const
+std::vector< CFunction * > CFunctionDB::getUsedFunctions(const CModel* pModel) const
 {
-  std::vector< CEvaluationTree * > UsedFunctions;
-  CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
-  CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+  std::vector< CFunction * > UsedFunctions;
+  CCopasiVectorN < CFunction >::const_iterator it = mLoadedFunctions.begin();
+  CCopasiVectorN < CFunction >::const_iterator end = mLoadedFunctions.end();
 
   for (; it != end; ++it)
     {
@@ -436,7 +451,7 @@ std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions(const CModel* pMo
         }
     }
 
-  CEvaluationTree::completeEvaluationTreeList(UsedFunctions);
+  CFunction::completeFunctionList(UsedFunctions);
 
   return UsedFunctions;
 }

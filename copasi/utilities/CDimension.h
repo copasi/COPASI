@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
- $Revision: 1.9 $
+ $Revision: 1.10 $
  $Name:  $
- $Author: ssahle $
- $Date: 2009/05/08 22:38:18 $
+ $Author: shoops $
+ $Date: 2011/03/07 19:34:55 $
  End CVS Header */
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -158,8 +163,8 @@ public:
    */
   void setChemicalEquation(const CChemEq* eq);
 
-  void setMolecularitiesForMassAction(const unsigned C_INT32 & m1,
-                                      const unsigned C_INT32 & m2);
+  void setMolecularitiesForMassAction(const size_t & m1,
+                                      const size_t & m2);
 
 private:
 
@@ -185,7 +190,7 @@ private:
   void findDimensionsMassAction();
 
   ///find dim for one parameter
-  void findDimension(unsigned C_INT32 index);
+  void findDimension(size_t index);
 
   CDimension findDimension(const CEvaluationNode * node,
                            const CEvaluationNode * requestingNode = NULL);

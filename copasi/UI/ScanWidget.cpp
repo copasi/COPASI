@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.215 $
+//   $Revision: 1.216 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:16 $
+//   $Date: 2011/03/07 19:37:53 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -47,7 +47,7 @@
 
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskBtnWidget.h"
-#include "CCopasiSimpleSelectionTree.h"
+#include "CQSimpleSelectionTree.h"
 #include "CCopasiSelectionDialog.h"
 
 #include "report/CKeyFactory.h"
@@ -77,6 +77,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
   mpHeaderWidget->setTaskName("Parameter Scan");
 
   ScanWidgetLayout->addWidget(mpHeaderWidget, 0, 0);
+
+  mpBtnWidget->verticalLayout->removeItem(mpBtnWidget->verticalSpacer);
   ScanWidgetLayout->addWidget(mpBtnWidget, 3, 0);
 
   //*****************
@@ -111,13 +113,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
 
   //*****************************
 
-//  Layout24 = new Q3HBoxLayout(0, 0, 6, "Layout24");
-  Layout24 = new QHBoxLayout(0, 0, 6, "Layout24");
-
   scrollview = new CScanContainerWidget(this);
-  Layout24->addWidget(scrollview);
-
-  ScanWidgetLayout->addLayout(Layout24, 2, 0);
+  ScanWidgetLayout->addWidget(scrollview, 2, 0);
 
   // tab order
   /*setTabOrder(taskName, sExecutable);
@@ -167,7 +164,7 @@ bool ScanWidget::loadTask()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
-  unsigned C_INT32 i, imax = scanProblem->getNumberOfScanItems();
+  size_t i, imax = scanProblem->getNumberOfScanItems();
 
   for (i = 0; i < imax; ++i)
     {
@@ -259,8 +256,8 @@ bool ScanWidget::slotAddItem()
         //+++
       case CScanProblem::SCAN_LINEAR:
       {
-        CCopasiSimpleSelectionTree::ObjectClasses Classes = CCopasiSimpleSelectionTree::InitialTime |
-            CCopasiSimpleSelectionTree::Parameters;
+        CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
+            CQSimpleSelectionTree::Parameters;
 
         std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
 
@@ -292,8 +289,8 @@ bool ScanWidget::slotAddItem()
 
       case CScanProblem::SCAN_RANDOM:
       {
-        CCopasiSimpleSelectionTree::ObjectClasses Classes = CCopasiSimpleSelectionTree::InitialTime |
-            CCopasiSimpleSelectionTree::Parameters;
+        CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
+            CQSimpleSelectionTree::Parameters;
 
         std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
 
@@ -346,7 +343,7 @@ bool ScanWidget::saveTask()
 
   const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
 
-  unsigned C_INT32 i, imax = widgetList.size();
+  size_t i, imax = widgetList.size();
 
   for (i = 0; i < imax; ++i)
     {

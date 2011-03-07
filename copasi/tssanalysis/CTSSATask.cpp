@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:31:00 $
+//   $Date: 2011/03/07 19:34:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,7 +58,7 @@ bool tble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 bool tbl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
 
-const unsigned C_INT32 CTSSATask::ValidMethods[] =
+const unsigned int CTSSATask::ValidMethods[] =
 {
   CCopasiMethod::tssILDM,
   CCopasiMethod::tssILDMModified,
@@ -78,9 +78,7 @@ CTSSATask::CTSSATask(const CCopasiContainer * pParent):
     mpCurrentTime(NULL)
 {
   mpProblem = new CTSSAProblem(this);
-  mpMethod =
-    CTSSAMethod::createTSSAMethod(CCopasiMethod::tssILDM,
-                                  (CTSSAProblem *) mpProblem);
+  mpMethod = createMethod(CCopasiMethod::tssILDM);
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
 }
@@ -98,9 +96,7 @@ CTSSATask::CTSSATask(const CTSSATask & src,
   mpProblem =
     new CTSSAProblem(*static_cast< CTSSAProblem * >(src.mpProblem), this);
 
-  mpMethod =
-    CTSSAMethod::createTSSAMethod(src.mpMethod->getSubType(),
-                                  static_cast< CTSSAProblem *>(mpProblem));
+  mpMethod = createMethod(src.mpMethod->getSubType());
   * mpMethod = * src.mpMethod;
   mpMethod->elevateChildren();
 
@@ -188,7 +184,7 @@ bool CTSSATask::process(const bool & useInitialValues)
       L = &tfl;
     }
 
-  unsigned C_INT32 StepCounter = 1;
+  size_t StepCounter = 1;
 
   C_FLOAT64 outputStartTime = mpTSSAProblem->getOutputStartTime();
 
@@ -204,15 +200,14 @@ bool CTSSATask::process(const bool & useInitialValues)
   C_FLOAT64 handlerFactor = 100.0 / mpTSSAProblem->getDuration();
 
   C_FLOAT64 Percentage = 0;
-  unsigned C_INT32 hProcess;
+  size_t hProcess;
 
   if (mpCallBack)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
       hProcess = mpCallBack->addItem("Completion",
-                                     CCopasiParameter::DOUBLE,
-                                     &Percentage,
+                                     Percentage,
                                      &hundred);
     }
 
@@ -375,13 +370,19 @@ bool CTSSATask::setMethodType(const int & type)
   if (mpMethod->getSubType() == Type) return true;
 
   pdelete(mpMethod);
-  mpMethod =
-    CTSSAMethod::createTSSAMethod(Type,
-                                  (CTSSAProblem *) mpProblem);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
 
   return true;
+}
+
+// virtual
+CCopasiMethod * CTSSATask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CTSSAMethod::createMethod(Type);
 }
 
 CState * CTSSATask::getState()

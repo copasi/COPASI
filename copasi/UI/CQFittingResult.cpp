@@ -5,7 +5,8 @@
 //   $Author: shoops $
 //   $Date: 2010/03/21 15:21:13 $
 // End CVS Header
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,6 +33,8 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
 #include "report/CCopasiRootContainer.h"
+#include "commandline/CLocaleString.h"
+#include "model/CModel.h"
 
 #include "UI/qtUtilities.h"
 
@@ -66,7 +69,7 @@ void CQFittingResult::languageChange()
 
 void CQFittingResult::init()
 {
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   // Set up the parameters table
   mpParameters->setNumCols(mpParameters->numCols() + 1);
@@ -85,7 +88,7 @@ void CQFittingResult::init()
   mpParameters->setReadOnly(true);
 
   for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
-    mpParameters->adjustColumn(i);
+    mpParameters->adjustColumn((int) i);
 
   // Set up the experiments table
   mpExperiments->setNumCols(mpExperiments->numCols() + 1);
@@ -104,7 +107,7 @@ void CQFittingResult::init()
   mpExperiments->setReadOnly(true);
 
   for (i = 0, imax = mpExperiments->numCols(); i != imax; i++)
-    mpExperiments->adjustColumn(i);
+    mpExperiments->adjustColumn((int) i);
 
   // Set up the experiments table
   mpValues->setNumCols(mpValues->numCols() + 1);
@@ -123,7 +126,7 @@ void CQFittingResult::init()
   mpValues->setReadOnly(true);
 
   for (i = 0, imax = mpValues->numCols(); i != imax; i++)
-    mpValues->adjustColumn(i);
+    mpValues->adjustColumn((int) i);
 
   mpCorrelations->setLegendEnabled(false);
   mpFisherInformation->setLegendEnabled(false);
@@ -205,7 +208,28 @@ bool CQFittingResult::enterProtected()
 
   mpMain->load(mpProblem);
 
-  unsigned C_INT32 i, imax;
+  if (mpProblem->getCalculateStatistics())
+    {
+      mpTabWidget->setTabEnabled(mpExperiments, true);
+      mpTabWidget->setTabEnabled(mpValues, true);
+      mpTabWidget->setTabEnabled(mpCorrelations, true);
+      mpTabWidget->setTabEnabled(mpFisherInformation, true);
+    }
+  else
+    {
+      mpTabWidget->setTabEnabled(mpExperiments, false);
+      mpTabWidget->setTabEnabled(mpValues, false);
+      mpTabWidget->setTabEnabled(mpCorrelations, false);
+      mpTabWidget->setTabEnabled(mpFisherInformation, false);
+
+#ifdef COPASI_CROSSVALIDATION
+      mpTabWidget->setTabEnabled(mpCrossValidations, false);
+      mpTabWidget->setTabEnabled(mpCrossValidationValues, false);
+#endif // COPASI_CROSSVALIDATION
+
+    }
+
+  size_t i, imax;
 
   // Loop over the optimization items
   const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
@@ -218,7 +242,7 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpParameters->setNumRows(imax);
+  mpParameters->setNumRows((int) imax);
 
   for (i = 0; i != imax; i++)
     {
@@ -233,21 +257,21 @@ bool CQFittingResult::enterProtected()
           if (Experiments != "")
             Experiments = "; {" + Experiments + "}";
 
-          mpParameters->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName() + Experiments));
+          mpParameters->setText((int) i, 0, FROM_UTF8(pObject->getObjectDisplayName() + Experiments));
         }
       else
-        mpParameters->setText(i, 0, "Not Found");
+        mpParameters->setText((int) i, 0, "Not Found");
 
       const C_FLOAT64 & Solution = Solutions[i];
-      mpParameters->setText(i, 1, QString::number(Solution));
+      mpParameters->setText((int) i, 1, QString::number(Solution));
       const C_FLOAT64 & StdDeviation = StdDeviations[i];
-      mpParameters->setText(i, 2, QString::number(StdDeviation));
-      mpParameters->setText(i, 3, QString::number(fabs(100.0 * StdDeviation / Solution)));
-      mpParameters->setText(i, 4, QString::number(Gradients[i]));
+      mpParameters->setText((int) i, 2, QString::number(StdDeviation));
+      mpParameters->setText((int) i, 3, QString::number(fabs(100.0 * StdDeviation / Solution)));
+      mpParameters->setText((int) i, 4, QString::number(Gradients[i]));
     }
 
   for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
-    mpParameters->adjustColumn(i);
+    mpParameters->adjustColumn((int) i);
 
   // Loop over the experiments
   const CExperimentSet & Experiments = mpProblem->getExperiementSet();
@@ -257,21 +281,21 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpExperiments->setNumRows(imax);
+  mpExperiments->setNumRows((int) imax);
 
   for (i = 0; i != imax; i++)
     {
       const CExperiment & Experiment = * Experiments.getExperiment(i);
-      mpExperiments->setText(i, 0, FROM_UTF8(Experiment.getObjectName()));
-      mpExperiments->setText(i, 1, QString::number(Experiment.getObjectiveValue()));
-      mpExperiments->setText(i, 2, QString::number(Experiment.getRMS()));
+      mpExperiments->setText((int) i, 0, FROM_UTF8(Experiment.getObjectName()));
+      mpExperiments->setText((int) i, 1, QString::number(Experiment.getObjectiveValue()));
+      mpExperiments->setText((int) i, 2, QString::number(Experiment.getRMS()));
 
-      mpExperiments->setText(i, 3, QString::number(Experiment.getErrorMean()));
-      mpExperiments->setText(i, 4, QString::number(Experiment.getErrorMeanSD()));
+      mpExperiments->setText((int) i, 3, QString::number(Experiment.getErrorMean()));
+      mpExperiments->setText((int) i, 4, QString::number(Experiment.getErrorMeanSD()));
     }
 
   for (i = 0, imax = mpExperiments->numCols(); i != imax; i++)
-    mpExperiments->adjustColumn(i);
+    mpExperiments->adjustColumn((int) i);
 
   // Loop over the dependent objects
   imax = Experiments.getDependentObjects().size();
@@ -279,26 +303,26 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpValues->setNumRows(imax);
+  mpValues->setNumRows((int) imax);
 
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject * pObject = Experiments.getDependentObjects()[i];
 
       if (pObject)
-        mpValues->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
+        mpValues->setText((int) i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
       else
-        mpValues->setText(i, 0, "Not Found");
+        mpValues->setText((int) i, 0, "Not Found");
 
-      mpValues->setText(i, 1, QString::number(Experiments.getDependentObjectiveValues()[i]));
-      mpValues->setText(i, 2, QString::number(Experiments.getDependentRMS()[i]));
+      mpValues->setText((int) i, 1, QString::number(Experiments.getDependentObjectiveValues()[i]));
+      mpValues->setText((int) i, 2, QString::number(Experiments.getDependentRMS()[i]));
 
-      mpValues->setText(i, 3, QString::number(Experiments.getDependentErrorMean()[i]));
-      mpValues->setText(i, 4, QString::number(Experiments.getDependentErrorMeanSD()[i]));
+      mpValues->setText((int) i, 3, QString::number(Experiments.getDependentErrorMean()[i]));
+      mpValues->setText((int) i, 4, QString::number(Experiments.getDependentErrorMeanSD()[i]));
     }
 
   for (i = 0, imax = mpValues->numCols(); i != imax; i++)
-    mpValues->adjustColumn(i);
+    mpValues->adjustColumn((int) i);
 
   // Fill correlation matrix
   imax = Items.size();
@@ -401,11 +425,11 @@ void CQFittingResult::slotSave(void)
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail()) return;
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   // The global result and statistics
   file << "Objective Value\tRoot Mean Square\tStandard Deviation" << std::endl;
@@ -575,4 +599,24 @@ void CQFittingResult::slotSave(void)
 
   file << std::endl;
 #endif // COPASI_CROSSVALIDATION
+}
+
+void CQFittingResult::slotUpdateModel()
+{
+  // Loop over the optimization items
+  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
+  std::vector<COptItem * >::const_iterator it = Items.begin();
+  std::vector<COptItem * >::const_iterator end = Items.end();
+
+  const C_FLOAT64 * pTmp;
+
+  pTmp = mpProblem->getSolutionVariables().array();
+
+  for (; it != end; ++it, pTmp++)
+    {
+      (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+      (*it)->setStartValue(*pTmp);
+    }
+
+  mpProblem->getModel()->updateInitialValues();
 }

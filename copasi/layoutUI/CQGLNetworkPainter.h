@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:15 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -23,6 +28,7 @@
 // #include <GL/glut.h>
 // #include <GL/gl.h>
 #include <QColor>
+#include <QDialog> // for CQSimpleProgressDialog
 #include <QFont>
 #include <QImage>
 
@@ -55,6 +61,7 @@ class CQLayoutMainWindow;
 class QResizeEvent;
 class QContextMenuEvent;
 class QAction;
+class QProgressBar;
 
 class CQGLNetworkPainter : public QGLWidget
 {
@@ -88,7 +95,8 @@ public:
 
   bool createDataSets();
   bool mDataPresentP; // shows, whether time series data has been load before
-  C_INT32 getNumberOfSteps();
+  size_t getNumberOfSteps() const;
+  size_t getCurrentStep() const;
   bool isCircleMode();
 
   void setNodeSize(std::string key, C_FLOAT64 val);
@@ -97,14 +105,14 @@ public:
   std::string getNodeNameEntry(int i);
   std::string getNameForNodeKey(std::string key);
 
-  int getNumberOfNodeEntries() {return viewerNodes.size();}
-  CDataEntity* getDataSetAt(C_INT32 stepNumber);
+  size_t getNumberOfNodeEntries() {return viewerNodes.size();}
+  CDataEntity* getDataSetAt(size_t stepNumber);
 
   void mapLabelsToRectangles();
   void mapLabelsToCircles();
 
   void runAnimation();
-  void showStep(C_INT32 i);
+  void showStep(size_t i);
 
   void rescaleDataSets(CVisParameters::SCALING_MODE scaleMode);
   void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, CVisParameters::SCALING_MODE scaleMode);
@@ -132,6 +140,24 @@ public:
    */
   void setScaleMode(CVisParameters::SCALING_MODE scaleMode);
 
+#ifdef FRAMEBUFFER_SCREENSHOTS
+  /**
+   * New method for creating a bitmap from the animation window.
+   * This method uses QPainter, QImage and QGLFrameBufferObject to draw
+   * into a multisample buffer if availabel and if not, it will be single sample.
+   * This way the implementation should work on more computers.
+   * The image is rendered in tiles of size 128x128 which should be OK for even small
+   * frame buffers and it is a multiple of 2 which is compliant with older versions of OpenGL.
+   *
+   * The methods get the region to be drawn and the size of the final image as parameters.
+   * In addition to that, the user can specify a vectir of frame numbers to be rendered.
+   * If no frame number is given, nothing is rendered.
+   * If a frame number is outside the range of valid frame numbers, the last frame is rendered.
+   * If the rendering was successfull, true is returned, otherwise false is returned.
+   */
+  bool export_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, const QString& filename, const std::vector<size_t> frames);
+#endif // FRAMEBUFFER_SCREENSHOTS
+
 private slots:
   void zoomIn();
   void zoomOut();
@@ -141,7 +167,7 @@ public slots:
   void triggerAnimationStep();
 
 signals:
-  void stepChanged(C_INT32);
+  void stepChanged(int);
   void endOfAnimationReached();
   void signalZoomIn();
   void signalZoomOut();
@@ -225,7 +251,7 @@ private:
 
   void drawColorLegend();
 
-  C_INT32 stepShown;
+  size_t stepShown;
   QTimer *regularTimer;
   CQLayoutMainWindow *pParentLayoutWindow;
 

@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.152 $
+#   $Revision: 1.153 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/03/16 18:55:48 $
+#   $Date: 2011/03/07 19:27:12 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,12 +21,12 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.152 $ $Author: shoops $ $Date: 2010/03/16 18:55:48 $
+# $Revision: 1.153 $ $Author: shoops $ $Date: 2011/03/07 19:27:12 $
 ######################################################################
 
 TEMPLATE = app
-
 SRC_TARGET = CopasiUI
+DISTFILES = CopasiUI.pro
 
 # Input
 HEADERS += resource.h
@@ -83,6 +83,7 @@ contains(BUILD_OS, Linux) {
     dynamic_LIBS -= -lpthread
 
     dynamic_LIBS += -lQt3Support \
+                    -lQtWebKit \
                     -lQtSvg \
                     -lQtSql \
                     -lQtNetwork \
@@ -168,4 +169,6 @@ QT += xml  opengl qt3support
 
 #The following line is for implementing QtSvg module
 QT += svg
+QT += webkit
 
+include(../srcDistribution.pri)

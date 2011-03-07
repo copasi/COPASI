@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:29 $
+   $Date: 2011/03/07 19:32:04 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,164 +28,164 @@ class CExperiment;
  *
  */
 class CExperimentFileInfo
+{
+private:
+  /**
+   *
+   */
+  class CExperimentInfo
   {
-  private:
-    /**
-     *
-     */
-    class CExperimentInfo
-      {
-        // Operations
-      private:
-        /**
-         *
-         */
-        CExperimentInfo();
-
-      public:
-        /**
-         *
-         */
-        CExperimentInfo(CExperiment & Experiment);
-
-        /**
-         *
-         */
-        ~CExperimentInfo();
-
-        // Attributes
-      public:
-        /**
-         *
-         */
-        CExperiment * pExperiment;
-
-        /**
-         *
-         */
-        unsigned C_INT32 First;
-
-        /**
-         *
-         */
-        unsigned C_INT32 Last;
-      };
-
     // Operations
   private:
     /**
      *
      */
-    CExperimentFileInfo();
+    CExperimentInfo();
 
   public:
     /**
      *
      */
-    CExperimentFileInfo(CExperimentSet & set);
+    CExperimentInfo(CExperiment & Experiment);
 
     /**
      *
      */
-    ~CExperimentFileInfo();
-
-    /**
-     *
-     */
-    bool setFileName(const std::string & fileName);
-
-    /**
-     *
-     */
-    const std::string & getFileName() const;
-
-    /**
-     *
-     */
-    bool sync();
-
-    /**
-     *
-     */
-    bool validate() const;
-
-    /**
-     *
-     */
-    bool validateFirst(const unsigned C_INT32 & index,
-                       const unsigned C_INT32 & value);
-
-    /**
-     *
-     */
-    bool validateLast(const unsigned C_INT32 & index,
-                      const unsigned C_INT32 & value);
-
-    /**
-     *
-     */
-    bool validateHeader(const unsigned C_INT32 & index,
-                        const unsigned C_INT32 & value);
-
-    /**
-     *
-     */
-    std::vector< std::string > getExperimentNames() const;
-
-    /**
-     *
-     */
-    CExperiment * getExperiment(const std::string & name);
-
-    /**
-     *
-     */
-    bool getFirstUnusedSection(unsigned C_INT32 & First,
-                               unsigned C_INT32 & Last);
-
-    /**
-     *
-     */
-    bool getNextUnusedSection(unsigned C_INT32 & First,
-                              unsigned C_INT32 & Last);
-
-    /**
-     *
-     */
-    bool adjustForEmptyLines(unsigned C_INT32 & First,
-                             unsigned C_INT32 & Last);
+    ~CExperimentInfo();
 
     // Attributes
-  private:
+  public:
     /**
      *
      */
-    CExperimentSet * mpSet;
+    CExperiment * pExperiment;
 
     /**
      *
      */
-    std::string mFileName;
+    size_t First;
 
     /**
      *
      */
-    std::vector< CExperimentInfo * > mList;
-
-    /**
-     *
-     */
-    unsigned C_INT32 mLines;
-
-    /**
-     *
-     */
-    unsigned C_INT32 mUsedEnd;
-
-    /**
-     *
-     */
-    std::vector< unsigned C_INT32 > mEmptyLines;
+    size_t Last;
   };
+
+  // Operations
+private:
+  /**
+   *
+   */
+  CExperimentFileInfo();
+
+public:
+  /**
+   *
+   */
+  CExperimentFileInfo(CExperimentSet & set);
+
+  /**
+   *
+   */
+  ~CExperimentFileInfo();
+
+  /**
+   *
+   */
+  bool setFileName(const std::string & fileName);
+
+  /**
+   *
+   */
+  const std::string & getFileName() const;
+
+  /**
+   *
+   */
+  bool sync();
+
+  /**
+   *
+   */
+  bool validate() const;
+
+  /**
+   *
+   */
+  bool validateFirst(const size_t & index,
+                     const size_t & value);
+
+  /**
+   *
+   */
+  bool validateLast(const size_t & index,
+                    const size_t & value);
+
+  /**
+   *
+   */
+  bool validateHeader(const size_t & index,
+                      const size_t & value);
+
+  /**
+   *
+   */
+  std::vector< std::string > getExperimentNames() const;
+
+  /**
+   *
+   */
+  CExperiment * getExperiment(const std::string & name);
+
+  /**
+   *
+   */
+  bool getFirstUnusedSection(size_t & First,
+                             size_t & Last);
+
+  /**
+   *
+   */
+  bool getNextUnusedSection(size_t & First,
+                            size_t & Last);
+
+  /**
+   *
+   */
+  bool adjustForEmptyLines(size_t & First,
+                           size_t & Last);
+
+  // Attributes
+private:
+  /**
+   *
+   */
+  CExperimentSet * mpSet;
+
+  /**
+   *
+   */
+  std::string mFileName;
+
+  /**
+   *
+   */
+  std::vector< CExperimentInfo * > mList;
+
+  /**
+   *
+   */
+  size_t mLines;
+
+  /**
+   *
+   */
+  size_t mUsedEnd;
+
+  /**
+   *
+   */
+  std::vector< size_t > mEmptyLines;
+};
 
 #endif // COPASI_CExperimentFileInfo

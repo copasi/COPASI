@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:00:07 $
+//   $Date: 2011/03/07 19:30:19 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -145,7 +145,7 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
 
   // It is possible that the graph is still corrupt due secondary errors.
   // Another parse and write should take care of this.
-  unsigned C_INT32 Size = CCopasiMessage::size();
+  size_t Size = CCopasiMessage::size();
 
   pGraph = CRDFParser::graphFromXml(XML);
 
@@ -216,7 +216,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
 {
   CRDFPredicate::Path CurrentPath = triplet.pObject->getPath();
 
-  unsigned C_INT32 SubPathIndex = C_INVALID_INDEX;
+  size_t SubPathIndex = C_INVALID_INDEX;
 
   while (SubPathIndex == C_INVALID_INDEX && SubPathIndex > 0)
     {

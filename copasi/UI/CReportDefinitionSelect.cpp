@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:57 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,6 +48,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "CQMessageBox.h"
 #include "CReportDefinitionSelect.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiException.h"
@@ -176,10 +177,10 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setReportDefinition((*(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList())[0]); //first one report definition
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(TO_UTF8(targetEdit->text()));
-      pListView->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
+      pListView->getDataModel()->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
 
       if (CQMessageBox::question(NULL, "No Report Definition Defined",
-                                 "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
+                                 "No report definition defined, COPASI has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
                                  QMessageBox::Ok | QMessageBox::No, QMessageBox::Ok) == QMessageBox::Ok)
         jumpToReportDefinitionEdit();
 

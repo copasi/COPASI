@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:36:08 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:16 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,7 +32,6 @@
 #include <QPushButton>
 #include <QSplitter>
 #include <QVBoxLayout>
-#include <QFileDialog>
 #include <QToolBar>
 #include <qwt_slider.h>
 #include <QGridLayout>
@@ -56,6 +55,9 @@
 #include "NodeSizePanel.h"
 #include "ParaPanel.h"
 #include "CQPlayerControlWidget.h"
+#ifdef FRAMEBUFFER_SCREENSHOTS
+#include "CQScreenshotOptionsDialog.h"
+#endif // FRAMEBUFFER_SCREENSHOTS
 #ifndef USE_CRENDER_EXTENSION
 #include "load_data.xpm"
 #endif // USE_CRENDER_EXTENSION
@@ -302,9 +304,9 @@ void CQLayoutMainWindow::setStepsPerSecond(C_INT16 val)
     }
 }
 
-C_INT32 CQLayoutMainWindow::getCurrentStep()
+size_t CQLayoutMainWindow::getCurrentStep()
 {
-  return (C_INT32) this->mpTimeSlider->value();
+  return (size_t) this->mpTimeSlider->value();
 }
 
 CVisParameters::SCALING_MODE CQLayoutMainWindow::getScalingMode()
@@ -542,7 +544,7 @@ void CQLayoutMainWindow::loadData()
       this->mpTimeSlider->setEnabled(true);
       this->mDataPresent = true;
       mpParaPanel->enableStepNumberChoice();
-      int maxVal = mpGLViewport->getPainter()->getNumberOfSteps();
+      size_t maxVal = mpGLViewport->getPainter()->getNumberOfSteps();
       this->mpTimeSlider->setRange(0, maxVal - 1);
       this->mpControlWidget->setNumSteps(maxVal);
       mpGLViewport->getPainter()->updateGL();
@@ -573,7 +575,7 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
   int i = 0;
   std::string key, name;
   C_FLOAT64 val;
-  mpValTable->setNumRows(dataSet.getNumberOfElements());
+  mpValTable->setNumRows((int) dataSet.getNumberOfElements());
   mpValTable->setNumCols(2);
   disconnect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 
@@ -656,16 +658,104 @@ void CQLayoutMainWindow::saveImage()
 //  qDebug() << "mCurrentPlace = " << mCurrentPlace;
 #endif
 
+#ifdef FRAMEBUFFER_SCREENSHOTS
+  // get the parameters
+  CQGLNetworkPainter* pPainter = this->mpGLViewport->getPainter();
+  assert(pPainter != NULL);
+
+  if (pPainter != NULL)
+    {
+      size_t step = pPainter->getCurrentStep();
+      size_t lastFrame = pPainter->getNumberOfSteps();
+      double x = pPainter->getCurrentPositionX();
+      double y = pPainter->getCurrentPositionY();
+      double layoutX = pPainter->getGraphMin().getX();
+      double layoutY = pPainter->getGraphMin().getY();
+      double layoutWidth = pPainter->getGraphMax().getX() - layoutX;
+      double layoutHeight = pPainter->getGraphMax().getY() - layoutY;
+      unsigned int imageWidth = pPainter->width();
+      unsigned int imageHeight = pPainter->height();
+      double zoomFactor = pPainter->getZoomFactor();
+      double width = (double)imageWidth / zoomFactor;
+      double height = (double)imageHeight / zoomFactor;
+      // use more sophisticated dialog
+      CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
+          x, y, width, height, pPainter->width() , pPainter->height(), lastFrame, this);
+
+      if (pDialog->exec() == QDialog::Accepted)
+        {
+          // ask for the filename
+          // TODO use a nicer default filename
+          QString fileName = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", QString("untitled.png"), QString("PNG (*.png);;All files (*.*)"), QString("Choose a filename to save the image(s) under"));
+
+          if (!fileName.isEmpty() && !fileName.isNull())
+            {
+              // get the frames
+              std::vector<size_t> v;
+
+              switch (pDialog->getFrameOption())
+                {
+                  case CQScreenshotOptionsDialog::ALL_FRAMES:
+
+                    // add all frames from 1 to lastFrame
+                    if (lastFrame != 0)
+                      {
+                        for (size_t i = 1; i <= lastFrame; ++i)
+                          {
+                            v.push_back(i);
+                          }
+                      }
+                    else
+                      {
+                        v.push_back(step);
+                      }
+
+                    break;
+                  case CQScreenshotOptionsDialog::USER_DEFINED_FRAMES:
+                    v.insert(v.begin(), pDialog->getFrameSet().begin(), pDialog->getFrameSet().end());
+
+                    if (v.empty())
+                      {
+                        CQMessageBox::warning(this, "No frames selected",
+                                              "The frame selection was invalid.\nExporting current frame.",
+                                              QMessageBox::Ok, QMessageBox::Ok);
+                        v.push_back(step);
+                      }
+
+                    break;
+                  default:
+                    v.push_back(step);
+                    break;
+                }
+
+              bool result = pPainter->export_bitmap(pDialog->getX(), pDialog->getY(), pDialog->getWidth(), pDialog->getHeight(), pDialog->getImageWidth(), pDialog->getImageHeight(), fileName, v);
+
+              if (result == false)
+                {
+                  CQMessageBox::warning(this, "Error creating image",
+                                        "The image could not be created.",
+                                        QMessageBox::Ok, QMessageBox::Ok);
+                  return;
+                }
+            }
+        }
+
+      delete pDialog;
+    }
+
+#else
   QImage img = mpGLViewport->getPainter()->getImage();
-//  QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
   QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", "untitled.png",
                      "PNG Files (*.png)", "Choose a filename to save the image under");
 
   if (!filename.isNull())
     {
       img.save(filename, "PNG");
+
       mCurrentPlace = filename;
     }
+
+#endif // FRAMEBUFFER_SCREENSHOTS
 }
 
 void CQLayoutMainWindow::pauseAnimation()
@@ -704,7 +794,7 @@ void CQLayoutMainWindow::showStep(double i)
     }
 }
 
-void CQLayoutMainWindow::changeStepValue(C_INT32 i)
+void CQLayoutMainWindow::changeStepValue(int i)
 {
   mpTimeSlider->setValue(i);
 }
@@ -1027,7 +1117,7 @@ void CQLayoutMainWindow::stepForwardAnimation()
 {
   // raise step by one if possible and continue animation
   // go to last step and redisplay
-  C_INT32 currentStep = this->getCurrentStep();
+  size_t currentStep = this->getCurrentStep();
   ++currentStep;
 
   if (currentStep < this->mpGLViewport->getPainter()->getNumberOfSteps())
@@ -1044,7 +1134,7 @@ void CQLayoutMainWindow::stepForwardAnimation()
 void CQLayoutMainWindow::stepBackwardAnimation()
 {
   // lower step by one if possible and redisplay
-  C_INT32 currentStep = this->getCurrentStep();
+  size_t currentStep = this->getCurrentStep();
 
   if (currentStep > 0)
     {

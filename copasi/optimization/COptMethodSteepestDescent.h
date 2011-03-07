@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2009/04/24 12:48:15 $
+   $Author: shoops $
+   $Date: 2011/03/07 19:31:27 $
    End CVS Header */
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -125,7 +130,7 @@ private :
   /**
    * number of parameters
    */
-  unsigned C_INT32 mVariableSize;
+  size_t mVariableSize;
 
   /**
    * A vector of parameters of the current individual

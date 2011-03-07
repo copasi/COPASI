@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 11:56:37 $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,6 +24,10 @@
 #include "copasi.h"
 
 #define USE_LAYOUT 1
+
+#ifdef USE_CRENDER_EXTENSION
+#define USE_RENDER 1
+#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/ListOf.h>
 #include <sbml/layout/Layout.h>
@@ -60,12 +64,12 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
   //TODO: store map
 }
 
-void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*> & copasimodelmap,
+void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                                   const std::map<std::string, const SBase*>& idMap) const
 {
   if (!lol) return;
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 #ifdef USE_CRENDER_EXTENSION
   // the global render information has to be handled first, because we might need
   // some of the maps for the export of the local render information in the layout
@@ -99,7 +103,8 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
     }
 
   // fix the references
-  SBMLDocumentLoader::convertRenderInformationReferencesKeys<GlobalRenderInformation>(*pLoL, keyToIdMap);
+  // we need to pass the ListOfGlobalRenderInformation objects as the first argument
+  SBMLDocumentLoader::convertRenderInformationReferencesKeys<GlobalRenderInformation>(*(pLoL->getListOfGlobalRenderInformation()), keyToIdMap);
   // fix the color ids, gradient ids and line ending ids.
   /*
   std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;
@@ -146,7 +151,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
       CLayout * tmp = (*this)[i];
 
       //check if the layout exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       Layout * pLayout;
@@ -177,11 +182,11 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
   //check if a something needs to be deleted from the SBML data structures
   for (i = lol->size(); i > 0; --i)
     {
-      SBase* object = lol->get(i - 1);
+      SBase* object = lol->get((unsigned int) i - 1);
 
       if (writtenToSBML.find(object) == writtenToSBML.end())
         {
-          lol->remove(i - 1);
+          lol->remove((unsigned int) i - 1);
           pdelete(object);
 
           //TODO: delete from map
@@ -206,7 +211,7 @@ void CListOfLayouts::addGlobalRenderInformation(CLGlobalRenderInformation * pRen
  *  Returns a pointer to the global render information object with the given index.
  *  If the index is invalid, NULL is returned.
  */
-CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(unsigned C_INT32 index)
+CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(size_t index)
 {
   if (index < this->mvGlobalRenderInformationObjects.size())
     {
@@ -220,7 +225,7 @@ CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(unsigned C_INT32
  *  Returns a const pointer to the global render information object with the given index.
  *  If the index is invalid, NULL is returned.
  */
-const CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(unsigned C_INT32 index) const
+const CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(size_t index) const
 {
   if (index < this->mvGlobalRenderInformationObjects.size())
     {

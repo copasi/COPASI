@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:01:00 $
+//   $Date: 2011/03/07 19:30:18 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,7 +32,7 @@ CQCreatorDM::CQCreatorDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
 
 int CQCreatorDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpMIRIAMInfo->getCreators().size() + 1;
+  return (int) mpMIRIAMInfo->getCreators().size() + 1;
 }
 int CQCreatorDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -52,7 +52,7 @@ QVariant CQCreatorDM::data(const QModelIndex &index, int role) const
       if (isDefaultRow(index))
         {
           if (index.column() == COL_ROW_NUMBER)
-            return QVariant(index.row() + 1);
+            return QVariant(QString(""));
           else
             return QVariant(QString(""));
         }
@@ -199,15 +199,15 @@ bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CCreator * pCreator = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         mpMIRIAMInfo->getCreators().CCopasiVector< CCreator >::getIndex(pCreator);
 
       if (delRow != C_INVALID_INDEX)
         {
           if (askEveryItem)
             {
-              QString givenName = data(this->index(delRow, COL_GIVEN_NAME), Qt::DisplayRole).toString();
-              QString familyName = data(this->index(delRow, COL_FAMILY_NAME), Qt::DisplayRole).toString();
+              QString givenName = data(this->index((int) delRow, COL_GIVEN_NAME), Qt::DisplayRole).toString();
+              QString familyName = data(this->index((int) delRow, COL_FAMILY_NAME), Qt::DisplayRole).toString();
               QString msg = "Do you want to delete author '";
 
               if (!givenName.isNull())
@@ -231,11 +231,11 @@ bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
           if (choice == QMessageBox::NoToAll)
             {return retVal;}
           else if (choice == QMessageBox::Yes)
-            {retVal = removeRow(delRow);}
+            {retVal = removeRow((int) delRow);}
           else if (choice == QMessageBox::YesToAll)
             {
               askEveryItem = false;
-              retVal = removeRow(delRow);
+              retVal = removeRow((int) delRow);
             }
         }
     }

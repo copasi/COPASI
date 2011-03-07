@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/19 18:18:58 $
+//   $Date: 2011/03/07 19:28:17 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -115,7 +115,7 @@ public:
   virtual void writeMathML(std::ostream & out,
                            const std::vector<std::vector<std::string> > & env,
                            bool expand = true,
-                           unsigned C_INT32 l = 0) const;
+                           size_t l = 0) const;
 
   /**
    * Compile a node;

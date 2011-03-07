@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/03/07 19:31:27 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -189,10 +189,10 @@ bool COptMethodNelderMead::optimise()
   abstol = reltol = 0.0;
 
   // test convergence every iteration
-  unsigned C_INT32 konvge;
+  size_t konvge;
   konvge = 1;
 
-  unsigned C_INT32 iBest, iWorst;
+  size_t iBest, iWorst;
 
   // double zero, half, one, delta;
   C_FLOAT64 ccoeff, rcoeff, ecoeff;
@@ -213,7 +213,7 @@ bool COptMethodNelderMead::optimise()
   C_FLOAT64 small;
   C_FLOAT64 factor = 0.8;
 
-  unsigned C_INT32 jcount, np1, i, j;
+  size_t jcount, np1, i, j;
 
   bool ok, reflok, extnok, contok, quit, found;  /* boolean variables */
 
@@ -424,7 +424,7 @@ First:
                  if there is one   > ystar then reduce the size of the extension
                  if there are many > ystar then retain the reflection as is.  */
 
-              unsigned C_INT32 L = 0;
+              size_t L = 0;
 
               for (i = 0; i < np1; ++i)
                 if (mValue[i] > mEvaluationValue)
@@ -642,8 +642,7 @@ bool COptMethodNelderMead::initialize()
   if (mpCallBack)
     mhIteration =
       mpCallBack->addItem("Current Iteration",
-                          CCopasiParameter::UINT,
-                          & mIteration,
+                          mIteration,
                           & mIterationLimit);
 
   mVariableSize = mpOptItem->size();

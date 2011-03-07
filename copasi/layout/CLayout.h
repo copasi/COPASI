@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:28:48 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -155,13 +155,13 @@ public:
    * Returns a const pointer to the local render information with the given index or NULL
    * if the index is invalid.
    */
-  const CLLocalRenderInformation* getRenderInformation(unsigned C_INT32 index) const;
+  const CLLocalRenderInformation* getRenderInformation(size_t index) const;
 
   /**
    * Returns a pointer to the local render information with the given index or NULL
    * if the index is invalid.
    */
-  CLLocalRenderInformation* getRenderInformation(unsigned C_INT32 index);
+  CLLocalRenderInformation* getRenderInformation(size_t index);
 
   /**
    *  add local render information to layout. The layout takes ownership of the object.
@@ -192,7 +192,7 @@ public:
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object
    */
-  void exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+  void exportToSBML(Layout * layout, const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                     std::map<std::string, const SBase*>& sbmlIDs
 #ifdef USE_CRENDER_EXTENSION
                     , const std::map<std::string, std::string>& globalKeyToIdMap

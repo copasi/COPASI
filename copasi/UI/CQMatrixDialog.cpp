@@ -1,41 +1,59 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMatrixDialog.ui.h,v $
-//   $Revision: 1.3 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.cpp,v $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/03/25 14:01:30 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+#include "CQMatrixDialog.h"
 
-/****************************************************************************
- ** ui.h extension file, included from the uic-generated form implementation.
- **
- ** If you want to add, delete, or rename functions or slots, use
- ** Qt Designer to update this file, preserving your code.
- **
- ** You should not define a constructor or destructor in this file.
- ** Instead, write your code in functions called init() and destroy().
- ** These will automatically be called by the form's constructor and
- ** destructor.
- *****************************************************************************/
-
+#include <qvariant.h>
+#include "utilities/CAnnotatedMatrix.h"
 #include "qtUtilities.h"
+
+/*
+ *  Constructs a CQMatrixDialog as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  true to construct a modal dialog.
+ */
+CQMatrixDialog::CQMatrixDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+    : QDialog(parent, name, modal, fl)
+{
+  setupUi(this);
+
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+CQMatrixDialog::~CQMatrixDialog()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void CQMatrixDialog::languageChange()
+{
+  retranslateUi(this);
+}
 
 void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
 {
-  int i;
+  size_t i;
 
   mpLabelRow->setText("Rows : " + FROM_UTF8(tmp->getDimensionDescription(0)));
-  int nRows = tmp->size()[0];
+  size_t nRows = tmp->size()[0];
 
   if (!single)
     mpCBRow->insertItem("ALL");
@@ -63,7 +81,7 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
       mpCBColumn->show();
 
       mpLabelColumn->setText("Columns : " + FROM_UTF8(tmp->getDimensionDescription(1)));
-      int nCols = tmp->size()[1];
+      size_t nCols = tmp->size()[1];
 
       if (!single)
         mpCBColumn->insertItem("ALL");
@@ -85,7 +103,7 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
           mpCBDim3->show();
 
           mpLabelDim3->setText("Dimension : " + FROM_UTF8(tmp->getDimensionDescription(2)));
-          int nDims = tmp->size()[2];
+          size_t nDims = tmp->size()[2];
 
           if (!single)
             mpCBDim3->insertItem("ALL");

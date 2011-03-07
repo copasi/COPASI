@@ -1,15 +1,22 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 14:00:49 $
+//   $Date: 2011/03/07 19:29:16 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+#ifdef __APPLE__
+// this should make sure g++ on apple does not load
+// the glext from the 10.4 sdk so that we can load the one provided with COPASI
+#define GL_GLEXT_LEGACY
+#endif
+
 
 // SBML includes
 #include <copasi/model/CModel.h>
@@ -40,6 +47,11 @@
 #include <limits>
 #include <functional>
 #include <algorithm>
+#ifdef __APPLE__
+#include <string>
+#include <stdlib.h>
+#include <mach-o/dyld.h>
+#endif // __APPLE__
 
 // opengl includes
 #ifdef _WIN32
@@ -50,16 +62,18 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
+#undef GL_GLEXT_LEGACY
+#include <copasi/GL/glext.h>
 #else
 #define GLX_GLXEXT_LEGACY
 #include <GL/gl.h>
 #include <GL/glu.h>
 // I am including a new glext with the source code
-#include <GL/glext.h>
+#include <copasi/GL/glext.h>
 #ifndef _WIN32
 #include <GL/glx.h>
 #endif // _WIN32
-// somehow glx defines a macro called CursorShape whcih clashes with the Qt enum of the same name
+// somehow glx defines a macro called CursorShape which clashes with the Qt enum of the same name
 #undef CursorShape
 #endif // __APPLE__
 
@@ -144,13 +158,16 @@ void CQGLLayoutPainter::resizeGL(int w, int h)
 
 void CQGLLayoutPainter::paintGL()
 {
-  if (this->mpRenderer)
+  if (this->isVisible())
     {
-      this->resizeGL(this->width(), this->height());
-    }
+      if (this->mpRenderer)
+        {
+          this->resizeGL(this->width(), this->height());
+        }
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
-  draw();
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
+      draw();
+    }
 }
 
 void CQGLLayoutPainter::draw()
@@ -180,8 +197,12 @@ void CQGLLayoutPainter::setZoomFactor(double zoom)
     {
       this->mpRenderer->setZoomFactor(zoom);
       this->mCurrentZoom = zoom;
-      this->resizeGL(this->width(), this->height());
-      this->updateGL();
+
+      if (this->isVisible())
+        {
+          this->resizeGL(this->width(), this->height());
+          this->updateGL();
+        }
     }
 }
 
@@ -218,7 +239,7 @@ void CQGLLayoutPainter::update()
 {
   // only update if we have a renderer, otherwise we might call OpenGL
   // functions before OpenGL has been initialized
-  if (this->mpRenderer)
+  if (this->mpRenderer && this->isVisible())
     {
       this->resizeGL(this->width(), this->height());
       this->updateGL();
@@ -342,10 +363,14 @@ void CQGLLayoutPainter::update(const CCopasiDataModel* pDatamodel, CLayout* pLay
   this->mMinX -= MARGIN;
   this->mMinY -= MARGIN;
   this->setCurrentPosition(this->mMinX, this->mMinY);
+
   // call resize to set the correct viewport
-  this->resizeGL(this->width(), this->height());
-  // draw the layout
-  this->updateGL();
+  if (this->isVisible())
+    {
+      this->resizeGL(this->width(), this->height());
+      // draw the layout
+      this->updateGL();
+    }
 }
 
 void CQGLLayoutPainter::change_style(const CLRenderInformationBase* pRenderInfo, bool defaultStyle)
@@ -361,7 +386,10 @@ void CQGLLayoutPainter::change_style(const CLRenderInformationBase* pRenderInfo,
       this->mpRenderer->change_style(dynamic_cast<const CLGlobalRenderInformation*>(pRenderInfo), defaultStyle);
     }
 
-  this->updateGL();
+  if (this->isVisible())
+    {
+      this->updateGL();
+    }
 }
 
 void CQGLLayoutPainter::mousePressEvent(QMouseEvent* pMouseEvent)
@@ -502,7 +530,12 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
               }
 
             this->mState = CQGLLayoutPainter::STATE_NORMAL;
-            this->updateGL();
+
+            if (this->isVisible())
+              {
+                this->updateGL();
+              }
+
             break;
           case CQGLLayoutPainter::STATE_DRAG:
 
@@ -537,7 +570,11 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                   }
 
                 emit documentChanged();
-                this->updateGL();
+
+                if (this->isVisible())
+                  {
+                    this->updateGL();
+                  }
               }
 
             this->mState = CQGLLayoutPainter::STATE_NORMAL;
@@ -565,7 +602,12 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                             if (this->mpRenderer->isSelected(*it))
                               {
                                 this->mpRenderer->removeFromSelection(*it);
-                                this->updateGL();
+
+                                if (this->isVisible())
+                                  {
+                                    this->updateGL();
+                                  }
+
                                 break;
                               }
 
@@ -585,7 +627,12 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                             if (!this->mpRenderer->isSelected(*it))
                               {
                                 this->mpRenderer->addToSelection(*it);
-                                this->updateGL();
+
+                                if (this->isVisible())
+                                  {
+                                    this->updateGL();
+                                  }
+
                                 break;
                               }
 
@@ -621,7 +668,11 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
 
                         this->mpRenderer->clearSelection();
                         this->mpRenderer->addToSelection(pObject);
-                        this->updateGL();
+
+                        if (this->isVisible())
+                          {
+                            this->updateGL();
+                          }
                       }
                   }
                 else
@@ -629,7 +680,11 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                     if (!this->mpRenderer->getSelection().empty())
                       {
                         this->mpRenderer->clearSelection();
-                        this->updateGL();
+
+                        if (this->isVisible())
+                          {
+                            this->updateGL();
+                          }
                       }
                   }
 
@@ -686,7 +741,11 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
             std::pair<double, double> coords2 = this->mpRenderer->convert_to_model_space(maxX, maxY);
             CLBoundingBox bb(CLPoint(coords1.first, coords1.second), CLDimensions(coords2.first - coords1.first, coords2.second - coords1.second));
             this->mpRenderer->setSelectionBox(&bb);
-            this->updateGL();
+
+            if (this->isVisible())
+              {
+                this->updateGL();
+              }
           }
 
         break;
@@ -721,7 +780,10 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
             // there is no need to emit the changed signal here
             // since the user (normally) releases the mouse button
             // before anything that can react to the change takes effect
-            this->updateGL();
+            if (this->isVisible())
+              {
+                this->updateGL();
+              }
           }
 
         break;
@@ -764,7 +826,7 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
 
                 if (pCurve != NULL)
                   {
-                    unsigned int i, iMax = pCurve->getNumCurveSegments();
+                    size_t i, iMax = pCurve->getNumCurveSegments();
                     CLLineSegment* pLS = NULL;
                     std::pair<double, double> coords = this->mpRenderer->convert_to_model_space(this->mMousePressPosition.x(), this->mMousePressPosition.y());
                     CLPoint pressPoint(coords.first, coords.second);
@@ -849,7 +911,11 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
                     std::pair<double, double> coords2 = this->mpRenderer->convert_to_model_space(maxX, maxY);
                     CLBoundingBox bb(CLPoint(coords1.first, coords1.second), CLDimensions(coords2.first - coords1.first, coords2.second - coords1.second));
                     this->mpRenderer->setSelectionBox(&bb);
-                    this->updateGL();
+
+                    if (this->isVisible())
+                      {
+                        this->updateGL();
+                      }
                   }
               }
           }
@@ -920,7 +986,7 @@ void CQGLLayoutPainter::update_status_and_cursor()
 
                     if (pCurve != NULL)
                       {
-                        unsigned int i, iMax = pCurve->getNumCurveSegments();
+                        size_t i, iMax = pCurve->getNumCurveSegments();
                         std::pair<double, double> coords = this->mpRenderer->convert_to_model_space(this->mMouseCurrentPosition.x(), this->mMouseCurrentPosition.y());
                         CLPoint currentPoint(coords.first, coords.second);
                         // we only need to consider the basepoints of cubic beziers since the method
@@ -1019,14 +1085,22 @@ void CQGLLayoutPainter::revertCurve()
           const CLCurve* pCurve = this->mpRenderer->revert_curve(&static_cast<const CLMetabReferenceGlyph*>(*selection.begin())->getCurve());
           static_cast<CLMetabReferenceGlyph*>(*selection.begin())->setCurve(*pCurve);
           delete pCurve;
-          this->updateGL();
+
+          if (this->isVisible())
+            {
+              this->updateGL();
+            }
         }
       else if (dynamic_cast<const CLReactionGlyph*>(*selection.begin()) && static_cast<const CLReactionGlyph*>(*selection.begin())->getCurve().getNumCurveSegments() != 0)
         {
           const CLCurve* pCurve = this->mpRenderer->revert_curve(&static_cast<const CLReactionGlyph*>(*selection.begin())->getCurve());
           static_cast<CLReactionGlyph*>(*selection.begin())->setCurve(*pCurve);
           delete pCurve;
-          this->updateGL();
+
+          if (this->isVisible())
+            {
+              this->updateGL();
+            }
         }
     }
 }
@@ -1120,6 +1194,7 @@ double CQGLLayoutPainter::getAspect() const
  */
 GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, bool drawSelection)
 {
+  this->makeCurrent();
   GLubyte* pImageData = NULL;
   const char* extensionsString = (const char*)glGetString(GL_EXTENSIONS);
 
@@ -1148,10 +1223,11 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
           //
           size /= 4;
           // if the image size is larger than a certain size, we have to subdivide the drawing into smaller bits.
-          int chunk_size = 0;
+          GLint chunk_size = 0;
           glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &chunk_size);
 
-          //chunk_size=200;
+          chunk_size /= 8;
+
           if (chunk_size > 0)
             {
               // create the framebuffer object, the render buffer objects and bind them
@@ -1160,7 +1236,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
               GLuint* rbuffers = NULL;
               GLuint* multisampleBuffers = NULL;
               bool multisample_supported = false;
-              int samples = 0;
+              GLint samples = 0;
 
               if (std::string(extensionsString).find("GL_EXT_framebuffer_multisample") != std::string::npos)
                 {
@@ -1180,9 +1256,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
 
               // if we are not on an apple, we have to initialize the functions
               // for the OpenGL extensions
-#ifndef __APPLE__
               this->initialize_extension_functions();
-#endif // __APPLE__
 
               if (imageWidth > (unsigned int)chunk_size || imageHeight > (unsigned int)chunk_size)
                 {
@@ -1207,7 +1281,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                   unsigned int ySteps = imageHeight / chunk_size;
                   unsigned int restX = imageWidth % chunk_size;
                   unsigned int restY = imageHeight % chunk_size;
-                  unsigned int i, j;
+                  unsigned int i = 0, j = 0;
                   int k;
                   double xModelStep = chunk_size * width / imageWidth;
                   double yModelStep = chunk_size * height / imageHeight;
@@ -1411,9 +1485,8 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
               // for the OpenGL extensions again because we can not reuse them
               // for the next export sicne they are context dependent and the context might have changed
               // This is not absolutly necessary, but it might help finding problems.
-#ifndef __APPLE__
               this->clear_extension_functions();
-#endif // __APPLE__
+
               // if the stored selection is not empty, we have to restore the selection
               if (!selection.empty())
                 {
@@ -1466,7 +1539,6 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
  */
 bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, GLuint& fbo, GLuint& multiFBO, GLuint** rbuffers, GLuint** multiRBuffers, GLubyte** pImageData, GLuint samples)
 {
-#ifndef __APPLE__
   // make sure all the functions that we need are actually initialized
   assert(glGenFramebuffersEXTPtr != NULL);
   assert(glGenRenderbuffersEXTPtr != NULL);
@@ -1474,115 +1546,82 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
   assert(glBindRenderbufferEXTPtr != NULL);
   assert(glRenderbufferStorageEXTPtr != NULL);
   assert(glFramebufferRenderbufferEXTPtr != NULL);
-#endif // __APPLE__
+  this->makeCurrent();
+
   // create the framebuffer object, the render buffer objects and bind them
   if (fbo == 0)
     {
+      //std::cout << "Frame buffer object must be created." << std::endl;
       // create the framebuffer object
-#ifdef __APPLE__
-      glGenFramebuffersEXT(1, &fbo);
-#else
       (*glGenFramebuffersEXTPtr)(1, &fbo);
-#endif // __APPLE__
       assert(fbo != 0);
-#ifdef __APPLE__
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
-#else
       (*glBindFramebufferEXTPtr)(GL_FRAMEBUFFER_EXT, fbo);
-#endif // __APPLE__
+      //std::cout << "Bound framebuffer object: " << fbo << std::endl;
     }
 
   if ((*rbuffers) == NULL)
     {
+      //std::cout << "The render buffers need to be created." << std::endl;
       // create the render buffers and create storage for them
       (*rbuffers) = new GLuint[2];
-#ifdef __APPLE__
-      glGenRenderbuffersEXT(2, (*rbuffers));
-#else
       (*glGenRenderbuffersEXTPtr)(2, (*rbuffers));
-#endif // __APPLE__
       assert((*rbuffers)[0] != 0);
       assert((*rbuffers)[1] != 0);
-#ifdef __APPLE__
-      glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
-      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA, imageWidth, imageHeight);
-      glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
-      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
-#else
       (*glBindRenderbufferEXTPtr)(GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
+      //std::cout << "render color buffer: " << (*rbuffers)[0] << std::endl;
       (*glRenderbufferStorageEXTPtr)(GL_RENDERBUFFER_EXT, GL_RGBA, imageWidth, imageHeight);
       (*glBindRenderbufferEXTPtr)(GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
+      //std::cout << "render depth buffer: " << (*rbuffers)[1] << std::endl;
       (*glRenderbufferStorageEXTPtr)(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
-#endif // __APPLE__
     }
 
-#ifdef __APPLE__
   // attach the color buffer
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
-  // attach the depth buffer
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
-#else
-  // attach the color buffer
+  //std::cout << "attaching color buffer: " << (*rbuffers)[0] << std::endl;
   (*glFramebufferRenderbufferEXTPtr)(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[0]);
   // attach the depth buffer
+  //std::cout << "attaching depth buffer: " << (*rbuffers)[1] << std::endl;
   (*glFramebufferRenderbufferEXTPtr)(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*rbuffers)[1]);
-#endif // __APPLE__
 
   if (samples > 1)
     {
-#ifndef __APPLE__
+      //std::cout << "We are doing multismpling." << std::endl;
       // make sure all the functions that we need are actually initialized
       assert(glRenderbufferStorageMultisampleEXTPtr != NULL);
       assert(glBlitFramebufferEXTPtr != NULL);
-#endif // __APPLE__
+
       // create the framebuffer and render buffers for multisampling
       if (multiFBO == 0)
         {
-#ifdef __APPLE__
-          glGenFramebuffersEXT(1, &multiFBO);
-          assert(multiFBO != 0);
-          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, multiFBO);
-#else
+          // std::cout << "Usinging multisample FBO." << std::endl;
           (*glGenFramebuffersEXTPtr)(1, &multiFBO);
           assert(multiFBO != 0);
+          //std::cout << "generated multisample fbo: " << multiFBO << std::endl;
           (*glBindFramebufferEXTPtr)(GL_FRAMEBUFFER_EXT, multiFBO);
-#endif // __APPLE__
         }
 
       if ((*multiRBuffers) == NULL)
         {
+          //std::cout << "generating multisample buffers." << std::endl;
           // create the render buffers and create storage for them
           (*multiRBuffers) = new GLuint[2];
-#ifdef __APPLE__
-          glGenRenderbuffersEXT(2, (*multiRBuffers));
-          assert((*multiRBuffers)[0] != 0);
-          assert((*multiRBuffers)[1] != 0);
-          glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
-          glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, samples, GL_RGBA, imageWidth, imageHeight);
-          glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
-          glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, samples, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
-#else
           (*glGenRenderbuffersEXTPtr)(2, (*multiRBuffers));
+          //std::cout << "created multisamplebuffers: " << (*multiRBuffers)[0] << " " << (*multiRBuffers)[1] << std::endl;
           assert((*multiRBuffers)[0] != 0);
           assert((*multiRBuffers)[1] != 0);
           (*glBindRenderbufferEXTPtr)(GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
           (*glRenderbufferStorageMultisampleEXTPtr)(GL_RENDERBUFFER_EXT, samples, GL_RGBA, imageWidth, imageHeight);
+          //std::cout << "Bound multisample color buffer: " << (*multiRBuffers)[0] << std::endl;
           (*glBindRenderbufferEXTPtr)(GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
           (*glRenderbufferStorageMultisampleEXTPtr)(GL_RENDERBUFFER_EXT, samples, GL_DEPTH_COMPONENT, imageWidth, imageHeight);
-#endif // __APPLE__
+          //std::cout << "Bound multisample depth buffer: " << (*multiRBuffers)[1] << std::endl;
         }
 
-#ifdef __APPLE__
       // attach the color buffer
-      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
-      // attach the depth buffer
-      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
-#else
-      // attach the color buffer
+      //std::cout << "attaching multisample color buffer: " << (*multiRBuffers)[0] << std::endl;
       (*glFramebufferRenderbufferEXTPtr)(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[0]);
       // attach the depth buffer
+      //std::cout << "attaching multisample depth buffer: " << (*multiRBuffers)[1] << std::endl;
       (*glFramebufferRenderbufferEXTPtr)(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, (*multiRBuffers)[1]);
-#endif // __APPLE__
     }
 
   // remember if we have to go on
@@ -1607,52 +1646,58 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
   // remember the old values
   if (fail == false)
     {
+      bool visible = this->isVisible();
+
+      if (visible)
+        {
+          this->setVisible(false);
+        }
+
       double origX = this->getCurrentPositionX();
       double origY = this->getCurrentPositionY();
       double origWidth = this->mViewportWidth;
       double origHeight = this->mViewportHeight;
       double origZoom = this->getZoomFactor();
       double origAspect = this->getAspect();
-      double zoom = imageHeight / height;
-      double aspect = imageWidth / (width * zoom);
+      double zoom = (double)imageHeight / height;
+      double aspect = (double)imageWidth / (width * zoom);
       this->setZoomFactor(zoom);
       this->setAspect(aspect);
       this->setCurrentPosition(x, y);
       this->resizeGL(imageWidth, imageHeight);
       // now we should be able to actually draw the image
-      this->paintGL();
+      assert(this->mpRenderer != NULL);
+
+      if (this->mpRenderer != NULL)
+        {
+          this->mpRenderer->draw_layout();
+        }
 
       // now we need to get the pixels back from the render buffer
       if (samples > 1)
         {
           // we need to blit the image from the multisample buffer to the normal buffer
-#ifdef __APPLE__
-          glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, multiFBO);
-          glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, fbo);
-#else
           (*glBindFramebufferEXTPtr)(GL_READ_FRAMEBUFFER_EXT, multiFBO);
+          //std::cout << "Bound buffer for reading: " << multiFBO << std::endl;
           (*glBindFramebufferEXTPtr)(GL_DRAW_FRAMEBUFFER_EXT, fbo);
-#endif // __APPLE__
+          //std::cout << "Bound buffer for drawing: " << fbo << std::endl;
           // check the status
           fail = !this->check_fbo_status(messageHeader, message);
 
           if (fail == false)
             {
-#ifdef __APPLE__
-              glBlitFramebufferEXT(0, 0, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-              // now we need to bind the blit buffer in order to read from it
-              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
-#else
+              //std::cout << "blitting data from read buffer into draw buffer" << std::endl;
               (*glBlitFramebufferEXTPtr)(0, 0, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
               // now we need to bind the blit buffer in order to read from it
+              //std::cout << "Binding framebuffer to read pixels: " << fbo << std::endl;
               (*glBindFramebufferEXTPtr)(GL_FRAMEBUFFER_EXT, fbo);
-#endif // __APPLE__
               fail = !this->check_fbo_status(messageHeader, message);
             }
         }
 
       if (fail == false)
         {
+          //std::cout << "reading pixels from read buffer." << std::endl;
           glReadPixels(0, 0, imageWidth, imageHeight, GL_RGBA, GL_UNSIGNED_BYTE, *pImageData);
           // the picture is flipped horizontally, so we have to turn it around
           GLubyte* pTmpData = new GLubyte[imageWidth*4];
@@ -1674,6 +1719,11 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
       this->setAspect(origAspect);
       this->setCurrentPosition(origX, origY);
       this->resizeGL(origWidth, origHeight);
+
+      if (visible)
+        {
+          this->setVisible(true);
+        }
     }
 
   // issue the error message and reset the state
@@ -1691,7 +1741,6 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
  */
 void CQGLLayoutPainter::destroy_buffers(GLuint& fbo, GLuint* rbuffers, GLuint& multiFBO, GLuint* multiRBuffers)
 {
-#ifndef __APPLE__
   // make sure all the functions that we need are actually initialized
   assert(glDeleteFramebuffersEXTPtr != NULL);
   assert(glDeleteRenderbuffersEXTPtr != NULL);
@@ -1702,15 +1751,6 @@ void CQGLLayoutPainter::destroy_buffers(GLuint& fbo, GLuint* rbuffers, GLuint& m
 
   (*glDeleteFramebuffersEXTPtr)(1, &fbo);
   (*glDeleteFramebuffersEXTPtr)(1, &multiFBO);
-#else
-
-  if (rbuffers != NULL) glDeleteRenderbuffersEXT(2, rbuffers);
-
-  if (multiRBuffers != NULL) glDeleteRenderbuffersEXT(2, multiRBuffers);
-
-  glDeleteFramebuffersEXT(1, &fbo);
-  glDeleteFramebuffersEXT(1, &multiFBO);
-#endif // __APPLE__
   fbo = 0;
   multiFBO = 0;
 }
@@ -1725,13 +1765,9 @@ bool CQGLLayoutPainter::check_fbo_status(QString& messageHeader, QString& messag
 {
   bool success = false;
   messageHeader = tr("Error creating image");
-#ifndef __APPLE__
   // make sure all the functions that we need are actually initialized
   assert(glCheckFramebufferStatusEXTPtr != NULL);
   GLenum status = (*glCheckFramebufferStatusEXTPtr)(GL_FRAMEBUFFER_EXT);
-#else
-  GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-#endif // __APPLE__
 
   switch (status)
     {
@@ -1759,7 +1795,6 @@ bool CQGLLayoutPainter::check_fbo_status(QString& messageHeader, QString& messag
   return success;
 }
 
-#ifndef __APPLE__
 
 /**
  * On non apple systems, we need to get the pointers to extension functions.
@@ -1791,6 +1826,19 @@ void CQGLLayoutPainter::initialize_extension_functions()
   glFramebufferRenderbufferEXTPtr = (PFNGLFRAMEBUFFERRENDERBUFFEREXT)glXGetProcAddressARB((const GLubyte*)"glFramebufferRenderbufferEXT");
   glRenderbufferStorageMultisampleEXTPtr = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXT)glXGetProcAddressARB((const GLubyte*)"glRenderbufferStorageMultisampleEXT");
   glBlitFramebufferEXTPtr = (PFNGLBLITFRAMEBUFFEREXT)glXGetProcAddressARB((const GLubyte*)"glBlitFramebufferEXT");
+#else
+  glCheckFramebufferStatusEXTPtr = (PFNGLCHECKFRAMEBUFFERSTATUSEXT)MyNSGLGetProcAddress("glCheckFramebufferStatusEXT");
+  glGenFramebuffersEXTPtr = (PFNGLGENFRAMEBUFFERSEXT)MyNSGLGetProcAddress("glGenFramebuffersEXT");
+  glGenRenderbuffersEXTPtr = (PFNGLGENRENDERBUFFERSEXT)MyNSGLGetProcAddress("glGenRenderbuffersEXT");
+  glDeleteFramebuffersEXTPtr = (PFNGLDELETEFRAMEBUFFERSEXT)MyNSGLGetProcAddress("glDeleteFramebuffersEXT");
+  glDeleteRenderbuffersEXTPtr = (PFNGLDELETERENDERBUFFERSEXT)MyNSGLGetProcAddress("glDeleteRenderbuffersEXT");
+  glBindFramebufferEXTPtr = (PFNGLBINDFRAMEBUFFEREXT)MyNSGLGetProcAddress("glBindFramebufferEXT");
+  glBindRenderbufferEXTPtr = (PFNGLBINDRENDERBUFFEREXT)MyNSGLGetProcAddress("glBindRenderbufferEXT");
+  glRenderbufferStorageEXTPtr = (PFNGLRENDERBUFFERSTORAGEEXT)MyNSGLGetProcAddress("glRenderbufferStorageEXT");
+  glFramebufferRenderbufferEXTPtr = (PFNGLFRAMEBUFFERRENDERBUFFEREXT)MyNSGLGetProcAddress("glFramebufferRenderbufferEXT");
+  glRenderbufferStorageMultisampleEXTPtr = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXT)MyNSGLGetProcAddress("glRenderbufferStorageMultisampleEXT");
+  glBlitFramebufferEXTPtr = (PFNGLBLITFRAMEBUFFEREXT)MyNSGLGetProcAddress("glBlitFramebufferEXT");
+
 #endif // __APPLE__
 #endif // _WIN32
 }
@@ -1813,4 +1861,120 @@ void CQGLLayoutPainter::clear_extension_functions()
   glBlitFramebufferEXTPtr = NULL;
 }
 
+#ifdef __APPLE__
+void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
+{
+  NSSymbol symbol;
+  char *symbolName;
+  symbolName = (char*)malloc(strlen(name) + 2);
+
+  strcpy(symbolName + 1, name);
+
+  symbolName[0] = '_';
+  symbol = NULL;
+
+  if (NSIsSymbolNameDefined(symbolName))
+    {
+      symbol = NSLookupAndBindSymbol(symbolName);
+    }
+
+  free(symbolName);
+
+  return symbol ? NSAddressOfSymbol(symbol) : NULL;
+}
+
 #endif // __APPLE__
+
+#ifdef COPASI_DEBUG
+// the following methods are used to highlight elements in the diagram
+// based on their association to model elements
+
+/**
+ * Sets the list of model objects that are to be highlighted in the diagram.
+ */
+void CQGLLayoutPainter::setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects)
+{
+  this->mpRenderer->setHighlightedModelObjects(highlightedObjects);
+}
+
+/**
+ * Returns a const reference to the set of highlighted model objects.
+ */
+const std::set<const CCopasiObject*>& CQGLLayoutPainter::getHighlightedModelObjects() const
+{
+  return this->mpRenderer->getHighlightedModelObjects();
+}
+
+/**
+ * Returns a reference to the set of highlighted model objects.
+ */
+std::set<const CCopasiObject*>& CQGLLayoutPainter::getHighlightedModelObjects()
+{
+  return this->mpRenderer->getHighlightedModelObjects();
+}
+
+/**
+ * Sets the highlight color.
+ */
+void CQGLLayoutPainter::setHighlightColor(const GLfloat c[4])
+{
+  this->mpRenderer->setHighlightColor(c);
+}
+
+/**
+ * Returns a const pointer to the highlight color.
+ * The array has a size of 4 elements.
+ */
+const GLfloat* CQGLLayoutPainter::getHighlightColor() const
+{
+  return this->mpRenderer->getHighlightColor();
+}
+
+/**
+ * Sets the fog color.
+ */
+void CQGLLayoutPainter::setFogColor(const GLfloat c[4])
+{
+  this->mpRenderer->setFogColor(c);
+}
+
+/**
+ * Returns a const pointer to the fog color.
+ * The array has a size of 4 elements.
+ */
+const GLfloat* CQGLLayoutPainter::getFogColor() const
+{
+  return this->mpRenderer->getFogColor();
+}
+
+
+/**
+ * Toggles the flag that determines if highlighted objects
+ * are actually highlighted or if the rest is fogged out.
+ */
+void CQGLLayoutPainter::toggleHighlightFlag()
+{
+  this->mpRenderer->toggleHighlightFlag();
+}
+
+/**
+ * Toggles the flag that determines if highlighted objects
+ * are actually highlighted or if the rest is fogged out.
+ */
+void CQGLLayoutPainter::setHighlightFlag(bool flag)
+{
+  this->mpRenderer->setHighlightFlag(flag);
+}
+
+/**
+ * Returns the highlight flag.
+ */
+bool CQGLLayoutPainter::getHighlightFlag() const
+{
+  return this->mpRenderer->getHighlightFlag();
+}
+
+#endif // COPASI_DEBUG
+
+
+

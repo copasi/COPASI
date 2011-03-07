@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2011/03/07 19:30:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -227,6 +227,13 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
                               const bool & equality,
                               const CVector< C_INT > & foundRoots)
 {
+  // Apply all needed refresh calls to calculate the current root values.
+  std::vector< Refresh * >::const_iterator itRefresh = mRootRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mRootRefreshes.end();
+
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
   assert(foundRoots.size() == mRootIndex2Event.size());
 
   // All events associated with the found roots need to be evaluated whether they fire.
@@ -239,6 +246,20 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
   CMathEvent * pProcessEvent = NULL;
 
   CMathTrigger::CRootFinder **ppRootFinder = mRootIndex2RootFinder.array();
+
+  // We reevaluate the state of the non found roots, which should be save.
+  while (pFoundRoot != pFoundRootEnd)
+    {
+      if (*pFoundRoot < 1)
+        {
+          (*ppRootFinder)->calculateInitialTrue();
+        }
+
+      ++pFoundRoot; ++ppRootFinder;
+    }
+
+  pFoundRoot = foundRoots.array();
+  ppRootFinder = mRootIndex2RootFinder.array();
 
   // We go through the list of roots and process the events
   // which need to be checked whether they fire.
@@ -328,7 +349,7 @@ size_t CMathModel::getNumRoots() const
 
 void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
 {
-  unsigned C_INT32 NumCols =
+  size_t NumCols =
     mpModel->getStateTemplate().getNumIndependent() + mpModel->getNumDependentReactionMetabs() + 1;
 
   CVector< C_FLOAT64 > Rates(NumCols);
@@ -347,8 +368,8 @@ void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives
   // Now calculate derivatives of all metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
-  C_INT N = mRootValues.size();
-  C_INT K = NumCols;
+  C_INT N = (C_INT) mRootValues.size();
+  C_INT K = (C_INT) NumCols;
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
@@ -398,7 +419,6 @@ std::vector< Refresh * > CMathModel::buildDependendRefreshList(const std::set< c
   // on the particle number and compartment volume, we will miss all particle numbers of changed
   // species which do not directly appear in any calculation.
 
-  // First ODEs and species particle numbers
   CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities();
   CModelEntity *const* ppEndEntity = ppEntity + mpModel->getStateTemplate().size();
 
@@ -408,19 +428,18 @@ std::vector< Refresh * > CMathModel::buildDependendRefreshList(const std::set< c
     {
       switch ((*ppEntity)->getStatus())
         {
+            // First rates of all entities depending on ODEs and species depending on reactions.
           case CModelEntity::ODE:
-          case CModelEntity::FIXED:
+          case CModelEntity::REACTIONS:
 
             if ((*ppEntity)->getRateReference()->dependsOn(changedObjects, changedObjects))
               {
                 RequiredObjects.insert((*ppEntity)->getRateReference());
               }
 
-            pSpecies = dynamic_cast< const CMetab * >(*ppEntity);
-
             // The break statement is intentionally missing since we need to check
-            // the particle values.
-          case CModelEntity::REACTIONS:
+            // the particle values of species for the above and for fixed.
+          case CModelEntity::FIXED:
             pSpecies = dynamic_cast< const CMetab * >(*ppEntity);
 
             if (pSpecies != NULL &&
@@ -478,17 +497,25 @@ bool CMathModel::determineInitialRoots(CVector< C_INT > & foundRoots)
   for (; ppRootFinder != ppEndRootFinder;
        ++ppRootFinder, ++pRootValue, ++pDerivative, ++pFoundRoot)
     {
-      if (!(*ppRootFinder)->isEquality() &&
-          **pRootValue == 0.0 &&
-          *pDerivative > 0.0)
+      if (**pRootValue == 0.0)
         {
-          *pFoundRoot = 1.0;
-          Found = true;
+          if (!(*ppRootFinder)->isEquality() &&
+              *pDerivative > 0.0)
+            {
+              *pFoundRoot = 1;
+              Found = true;
+
+              continue;
+            }
+
+          if ((*ppRootFinder)->isEquality() &&
+              *pDerivative < 0.0)
+            {
+              (*ppRootFinder)->toggle(true);
+            }
         }
-      else
-        {
-          *pFoundRoot = 0.0;
-        }
+
+      *pFoundRoot = 0;
     }
 
   return Found;
@@ -499,13 +526,13 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
 {
   CState State = mpModel->getState();
 
-  unsigned C_INT32 NumRows = mRootValues.size();
+  size_t NumRows = mRootValues.size();
 
   // Partial derivatives with respect to time and all variables determined by ODEs and reactions.
-  unsigned C_INT32 NumCols =
+  size_t NumCols =
     State.getNumIndependent() + mpModel->getNumDependentReactionMetabs() + 1;
 
-  unsigned C_INT32 Col = 0;
+  size_t Col = 0;
 
   jacobian.resize(NumRows, NumCols);
 

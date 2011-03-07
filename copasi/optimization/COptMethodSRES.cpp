@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/03/07 19:31:26 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -99,7 +99,7 @@ bool COptMethodSRES::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   return Continue;
 }
 
-bool COptMethodSRES::swap(unsigned C_INT32 from, unsigned C_INT32 to)
+bool COptMethodSRES::swap(size_t from, size_t to)
 {
   CVector< C_FLOAT64 > * pTmp = mIndividual[to];
   mIndividual[to] = mIndividual[from];
@@ -124,8 +124,8 @@ bool COptMethodSRES::replicate()
 {
   bool Continue = true;
 
-  unsigned C_INT32 Parent;
-  unsigned C_INT32 i, j;
+  size_t Parent;
+  size_t i, j;
 
   std::vector< CVector < C_FLOAT64 > * >::iterator itSrc = mIndividual.begin();
   std::vector< CVector < C_FLOAT64 > * >::iterator endSrc = itSrc + mPopulationSize;
@@ -178,7 +178,7 @@ bool COptMethodSRES::mutate()
   C_FLOAT64 * pValue = mValue.array() + mPopulationSize;
 
   bool Continue = true;
-  unsigned C_INT32 i, j;
+  size_t i, j;
   C_FLOAT64 v1;
 
   // Mutate each new individual
@@ -198,7 +198,7 @@ bool COptMethodSRES::mutate()
 
           COptItem & OptItem = *(*mpOptItem)[j];
 
-          unsigned C_INT32 l = C_INVALID_INDEX;
+          size_t l = C_INVALID_INDEX;
 
           try
             {
@@ -241,10 +241,10 @@ bool COptMethodSRES::mutate()
 // select mPopulationSize individuals
 void COptMethodSRES::select()
 {
-  unsigned C_INT32 i, j;
-  unsigned C_INT32 TotalPopulation = mIndividual.size();
+  size_t i, j;
+  size_t TotalPopulation = mIndividual.size();
   bool wasSwapped;
-  unsigned C_INT32 sweepNum = TotalPopulation;  // This is default based on paper
+  size_t sweepNum = TotalPopulation;  // This is default based on paper
 
   // Selection Method for Stochastic Ranking
   // stochastic ranking "bubble sort"
@@ -283,9 +283,9 @@ void COptMethodSRES::select()
 }
 
 // check the best individual at this generation
-unsigned C_INT32 COptMethodSRES::fittest()
+size_t COptMethodSRES::fittest()
 {
-  unsigned C_INT32 i, BestIndex = C_INVALID_INDEX;
+  size_t i, BestIndex = C_INVALID_INDEX;
   C_FLOAT64 BestValue = DBL_MAX;
 
   for (i = 0; i < mPopulationSize; i++)
@@ -299,10 +299,10 @@ unsigned C_INT32 COptMethodSRES::fittest()
 }
 
 // Initialize the population
-bool COptMethodSRES::creation(unsigned C_INT32 first)
+bool COptMethodSRES::creation(size_t first)
 {
-  unsigned C_INT32 i;
-  unsigned C_INT32 j;
+  size_t i;
+  size_t j;
 
   C_FLOAT64 mn;
   C_FLOAT64 mx;
@@ -508,7 +508,7 @@ bool COptMethodSRES::initialize()
 {
   cleanup();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   if (!COptMethod::initialize()) return false;
 
@@ -518,8 +518,7 @@ bool COptMethodSRES::initialize()
   if (mpCallBack)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
-                          CCopasiParameter::UINT,
-                          & mGeneration,
+                          mGeneration,
                           & mGenerations);
 
   mGeneration++;
@@ -588,7 +587,7 @@ bool COptMethodSRES::initialize()
 
 bool COptMethodSRES::cleanup()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   pdelete(mpRandom);
 
@@ -602,7 +601,7 @@ bool COptMethodSRES::cleanup()
 }
 
 // evaluate the distance of parameters and constraints to boundaries
-C_FLOAT64 COptMethodSRES::phi(C_INT32 indivNum)
+C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
@@ -644,12 +643,12 @@ C_FLOAT64 COptMethodSRES::phi(C_INT32 indivNum)
 bool COptMethodSRES::optimise()
 {
   bool Continue = true;
-  unsigned C_INT32 BestIndex = C_INVALID_INDEX;
+  size_t BestIndex = C_INVALID_INDEX;
 
 #ifdef RANDOMIZE
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
-  unsigned C_INT32 Stalled10, Stalled20, Stalled40, Stalled80;
+  size_t Stalled10, Stalled20, Stalled40, Stalled80;
   Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
 #endif // RANDOMIZE
 
@@ -696,22 +695,22 @@ bool COptMethodSRES::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled80 > 80)
         {
-          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.2));
+          Continue = creation((size_t)(mPopulationSize * 0.2));
           Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
         }
       else if (Stalled40 > 40)
         {
-          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.6));
+          Continue = creation((size_t)(mPopulationSize * 0.6));
           Stalled10 = Stalled20 = Stalled40 = 0;
         }
       else if (Stalled20 > 20)
         {
-          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.8));
+          Continue = creation((size_t)(mPopulationSize * 0.8));
           Stalled10 = Stalled20 = 0;
         }
       else if (Stalled10 > 10)
         {
-          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.9));
+          Continue = creation((size_t)(mPopulationSize * 0.9));
           Stalled10 = 0;
         }
 

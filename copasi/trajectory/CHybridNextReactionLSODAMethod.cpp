@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionLSODAMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/15 12:38:24 $
+   $Author: shoops $
+   $Date: 2011/03/07 19:34:13 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,13 +48,14 @@ CHybridNextReactionLSODAMethod::CHybridNextReactionLSODAMethod(const CCopasiCont
  */
 C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
 {
-  C_INT32 rIndex = 0;
+  size_t rIndex = 0;
   C_FLOAT64 ds = 0.0;
 
   // if there are stochastic reactions
   if (mPQ.size() != 0) // there is at least one stochastic reaction
     {
       getStochTimeAndIndex(ds, rIndex);
+
       if (ds <= endTime) // ds is an absolute time value!
         {
           // if there are deterministic reactions
@@ -57,35 +63,43 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
             {
               integrateDeterministicPart(ds - currentTime);
             }
+
           fireReaction(rIndex);
           mpCurrentState->setTime(ds);
+
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
               partitionSystem();
               mStepsAfterPartitionSystem = 0;
             }
+
           updatePriorityQueue(rIndex, ds);
         }
       else
         {
           ds = endTime;
+
           // if there are deterministic reactions
           if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(endTime - currentTime);
             }
+
           mpCurrentState->setTime(ds);
+
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
               partitionSystem();
               mStepsAfterPartitionSystem = 0;
             }
-          updatePriorityQueue(-1, endTime);
+
+          updatePriorityQueue(C_INVALID_INDEX, endTime);
         }
     }
   else // there is no stochastic reaction
     {
       ds = currentTime + mStepsize;
+
       if (ds <= endTime)
         {
           // if there are deterministic reactions
@@ -93,31 +107,39 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
             {
               integrateDeterministicPart(mStepsize);
             }
+
           mpCurrentState->setTime(ds);
+
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
               partitionSystem();
               mStepsAfterPartitionSystem = 0;
             }
-          updatePriorityQueue(-1, ds);
+
+          updatePriorityQueue(C_INVALID_INDEX, ds);
         }
       else
         {
           ds = endTime;
+
           // if there are deterministic reactions
           if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(endTime - currentTime);
             }
+
           mpCurrentState->setTime(ds);
+
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
               partitionSystem();
               mStepsAfterPartitionSystem = 0;
             }
-          updatePriorityQueue(-1, endTime);
+
+          updatePriorityQueue(C_INVALID_INDEX, endTime);
         }
     }
+
   //deprecated:  outputDebug(mOutputFile, 1);  // DEBUG
   //deprecated:  outputData(mOutputFile, 1);  // DEBUG
   return ds;

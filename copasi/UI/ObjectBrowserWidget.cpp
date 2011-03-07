@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/10 15:14:44 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:55 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -24,22 +29,15 @@ Comment : Copasi Object Browser:
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
-#include <qmessagebox.h>
-#include <qvariant.h>
-#include <q3header.h>
-#include <q3listview.h>
-#include <q3textedit.h>
-#include <q3listbox.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include <q3simplerichtext.h>
-#include <q3frame.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
+#include <QHeaderView>
+#include <QTreeWidget>
+#include <QTextEdit>
+#include <QPushButton>
+#include <QPixmap>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QFrame>
 
 #include "copasi.h"
 
@@ -85,23 +83,26 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
     setName("ObjectBrowser");
 
   if (state == 0)
-    ObjectBrowserLayout = new Q3GridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
+    ObjectBrowserLayout = new QGridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
   else
-    ObjectBrowserLayout = new Q3GridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
+    ObjectBrowserLayout = new QGridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
 
   ObjectBrowserLayout->setAutoAdd(false);
-  ObjectListView = new Q3ListView(this, "ObjectListView");
+  ObjectListView = new QTreeWidget(this);
+  ObjectListView->setObjectName("ObjectListView");
   //  ObjectListView->addColumn(trUtf8("Object Browser"));
-  ObjectListView->addColumn(trUtf8("Name"));
-  ObjectListView->addColumn(trUtf8("Type"));
-  ObjectListView->header()->setClickEnabled(false, ObjectListView->header()->count() - 1);
+  QStringList strList;
+  strList << trUtf8("Name") << trUtf8("Type");
+  ObjectListView->setHeaderLabels(strList);
+  //ObjectListView->header()->setClickEnabled(false, ObjectListView->header()->count() - 1);
   ObjectListView->setAcceptDrops(false);
-  ObjectListView->setResizeMode(Q3ListView::LastColumn);
-  ObjectListView->setTreeStepSize(19);
-  //  ObjectListView->setSorting(-1);
-  ObjectListView->setSelectionMode(Q3ListView::NoSelection);
+  ObjectListView->setSortingEnabled(true);
+  ObjectListView->sortByColumn(0, Qt::AscendingOrder);
+  ObjectListView->header()->setResizeMode(QHeaderView::ResizeToContents);
+  ObjectListView->setSelectionMode(QAbstractItemView::NoSelection);
 
-  ObjectItemText = new Q3TextEdit(this, "ObjectItemText");
+  ObjectItemText = new QTextEdit(this);
+  ObjectItemText->setObjectName("ObjectItemText");
   ObjectItemText ->hide();
 
   ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 3);
@@ -109,10 +110,10 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
 
   if (state != 0)
     {
-      Line1 = new Q3Frame(this, "Line1");
-      Line1->setFrameShape(Q3Frame::HLine);
-      Line1->setFrameShadow(Q3Frame::Sunken);
-      Line1->setFrameShape(Q3Frame::HLine);
+      Line1 = new QFrame(this, "Line1");
+      Line1->setFrameShape(QFrame::HLine);
+      Line1->setFrameShadow(QFrame::Sunken);
+      Line1->setFrameShape(QFrame::HLine);
 
       ObjectBrowserLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
 
@@ -142,7 +143,7 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
       setTabOrder(toggleViewButton, commitButton);
     }
 
-  connect(ObjectListView, SIGNAL(clicked(Q3ListViewItem*)), this, SLOT(listviewChecked(Q3ListViewItem*)));
+  connect(ObjectListView, SIGNAL(itemClicked(QTreeWidgetItem *, int)), this, SLOT(listviewChecked(QTreeWidgetItem*, int)));
 
   pObjectAll = new QPixmap((const char**)ptrObjectAll);
   pObjectNone = new QPixmap((const char**)ptrObjectNone);
@@ -168,15 +169,15 @@ void ObjectBrowserWidget::cleanup()
 
 void ObjectBrowserWidget::clearClicked()
 {
-  if (!ObjectListView->firstChild()) return;
+  if (!refreshList->getRoot()) return;
 
-  ObjectBrowserItem* root = static_cast< ObjectBrowserItem * >(ObjectListView->firstChild());
+  ObjectBrowserItem* root = static_cast< ObjectBrowserItem * >(refreshList->getRoot()->pItem);
   setUncheck(root);
   updateUI();
   //  qWarning("ObjectBrowser::clearClicked(): Not implemented yet!");
 }
 
-void ObjectBrowserWidget::listviewChecked(Q3ListViewItem* pCurrent)
+void ObjectBrowserWidget::listviewChecked(QTreeWidgetItem* pCurrent, int C_UNUSED(column))
 {
   //  if ((pCurrent == NULL)||((static_cast< ObjectBrowserItem * >(pCurrent))->getType() == FIELDATTR))
   if ((pCurrent == NULL) || (pCurrent->text(0) == "Select by attribute"))
@@ -204,7 +205,7 @@ void ObjectBrowserWidget::clickToReverseCheck(ObjectBrowserItem* pCurrent)
       if (pCurrent->isChecked())
         pCurrent->reverseChecked();
 
-      setUncheck(static_cast< ObjectBrowserItem * >(pCurrent->firstChild()));
+      setUncheck(static_cast< ObjectBrowserItem * >(pCurrent->child(0)));
       return;
     }
 
@@ -212,7 +213,7 @@ void ObjectBrowserWidget::clickToReverseCheck(ObjectBrowserItem* pCurrent)
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
 
-  setCheck(static_cast< ObjectBrowserItem * >(pCurrent->firstChild()));
+  setCheck(static_cast< ObjectBrowserItem * >(pCurrent->child(0)));
   return;
 }
 
@@ -226,8 +227,8 @@ void ObjectBrowserWidget::setUncheck(ObjectBrowserItem* pCurrent)
   if (pCurrent->isChecked())
     pCurrent->reverseChecked();
 
-  if (pCurrent->firstChild() != NULL)
-    setUncheck(static_cast< ObjectBrowserItem * >(pCurrent->firstChild()));
+  if (pCurrent->child(0) != NULL)
+    setUncheck(static_cast< ObjectBrowserItem * >(pCurrent->child(0)));
 
   if (pCurrent->nextSibling() != NULL)
     setUncheck(static_cast< ObjectBrowserItem * >(pCurrent->nextSibling()));
@@ -243,8 +244,8 @@ void ObjectBrowserWidget::setCheck(ObjectBrowserItem* pCurrent)
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
 
-  if (pCurrent->firstChild() != NULL)
-    setCheck(static_cast< ObjectBrowserItem * >(pCurrent->firstChild()));
+  if (pCurrent->child(0) != NULL)
+    setCheck(static_cast< ObjectBrowserItem * >(pCurrent->child(0)));
 
   if (pCurrent->nextSibling() != NULL)
     setCheck(static_cast< ObjectBrowserItem * >(pCurrent->nextSibling()));
@@ -294,7 +295,7 @@ void ObjectBrowserWidget::updateSelectedItemsView()
       //     ObjectItemText->setColor(blue);
       if ((*outputVector)[i])
         {
-          ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectDisplayName()), -1);
+          ObjectItemText->append(FROM_UTF8((*outputVector)[i]->getObjectDisplayName()));
           //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN()., -1);
           //ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectType()), -1);
         }
@@ -341,9 +342,9 @@ void ObjectBrowserWidget::eXport(ObjectBrowserItem* pCurrent, std::vector< const
 {
   if (!outputVector) return;
 
-  if (pCurrent->firstChild())
+  if (pCurrent->child(0))
     {
-      ObjectBrowserItem* pChild = static_cast< ObjectBrowserItem * >(pCurrent->firstChild());
+      ObjectBrowserItem* pChild = static_cast< ObjectBrowserItem * >(pCurrent->child(0));
 
       for (; pChild != NULL; pChild = static_cast< ObjectBrowserItem * >(pChild->nextSibling()))
         if (pChild->getType() != FIELDATTR)
@@ -430,7 +431,7 @@ void ObjectBrowserWidget::loadData()
   itemRoot->setObjectType(CONTAINERATTR);
   //  itemRoot->setText(0, FROM_UTF8(root->getObjectName()));
   itemRoot->setText(0, QString("COPASI"));
-  itemRoot->setOpen(true);
+  itemRoot->setExpanded(true);
   loadChild(itemRoot, root, true);
   removeDuplicate(objectItemList);
   loadUI();
@@ -496,7 +497,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
           ObjectBrowserItem* fieldChild = new ObjectBrowserItem(parent, NULL, NULL, objectItemList);
           fieldChild->setObjectType(FIELDATTR);
           fieldChild->setText(0, "Select by attribute");
-          fieldChild->setSelectable(false);
+          //fieldChild->setSelectable(false);
           loadField(fieldChild, const_cast<CCopasiVector < CCopasiObject > *>(static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)));
           fieldChild->attachKey();
           last = fieldChild;
@@ -674,20 +675,20 @@ void ObjectBrowserWidget::setCheckMark(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent->text(0) == "Select by attribute")
     {
-      pCurrent->setPixmap(0, NULL);
+      pCurrent->setIcon(0, QIcon());
       return;
     }
 
   switch (pCurrent->nUserChecked())
     {
       case NOCHECKED:
-        pCurrent->setPixmap(0, *pObjectNone);
+        pCurrent->setIcon(0, QIcon(*pObjectNone));
         break;
       case ALLCHECKED:
-        pCurrent->setPixmap(0, *pObjectAll);
+        pCurrent->setIcon(0, QIcon(*pObjectAll));
         break;
       case PARTCHECKED:
-        pCurrent->setPixmap(0, *pObjectParts);
+        pCurrent->setIcon(0, QIcon(*pObjectParts));
         break;
     }
 }
@@ -746,9 +747,9 @@ void ObjectBrowserWidget::selectObjects(ObjectBrowserItem* browserItem,
   ObjectBrowserItem* pCurrent;
   pCurrent = browserItem;
 
-  if (pCurrent->firstChild())
+  if (pCurrent->child(0))
     {
-      ObjectBrowserItem* pChild = static_cast< ObjectBrowserItem * >(pCurrent->firstChild());
+      ObjectBrowserItem* pChild = static_cast< ObjectBrowserItem * >(pCurrent->child(0));
 
       for (; pChild != NULL; pChild = static_cast< ObjectBrowserItem * >(pChild->nextSibling()))
         if (pChild->getType() != FIELDATTR)
@@ -771,7 +772,7 @@ void ObjectBrowserWidget::selectObjects(ObjectBrowserItem* browserItem,
                 }
 
               pCurrent->getObject()->mChecked = ALLCHECKED;
-              setCheck(static_cast< ObjectBrowserItem * >(pCurrent->firstChild()));
+              setCheck(static_cast< ObjectBrowserItem * >(pCurrent->child(0)));
             }
 
           // else skip current item

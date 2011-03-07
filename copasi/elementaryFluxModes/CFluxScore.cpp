@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:30:00 $
+//   $Date: 2011/03/07 19:27:36 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -28,13 +33,13 @@
 #include "copasi.h"
 #include "CFluxScore.h"
 
-CFluxScore::CFluxScore(){CONSTRUCTOR_TRACE;}
+CFluxScore::CFluxScore() {CONSTRUCTOR_TRACE;}
 
 CFluxScore::CFluxScore(const std::vector < C_FLOAT64 > & fluxMode)
 {
   CONSTRUCTOR_TRACE;
   unsigned char Remainder = fluxMode.size() % (CHAR_BIT * sizeof(unsigned char));
-  unsigned char imax = fluxMode.size() / (CHAR_BIT * sizeof(unsigned char));
+  size_t imax = fluxMode.size() / (CHAR_BIT * sizeof(unsigned char));
   unsigned char k, kmax = CHAR_BIT * sizeof(unsigned char);
 
   // Size the scoring vector.
@@ -77,20 +82,20 @@ CFluxScore::CFluxScore(const std::vector < C_FLOAT64 > & fluxMode)
     }
 }
 
-CFluxScore::~CFluxScore(){DESTRUCTOR_TRACE;}
+CFluxScore::~CFluxScore() {DESTRUCTOR_TRACE;}
 
 bool CFluxScore::operator <(const CFluxScore & rhs) const
-  {
-    const unsigned char * pScoreLhs = mScore.array();
-    const unsigned char * pScoreRhs = rhs.mScore.array();
-    const unsigned char * pScoreEnd = pScoreLhs + mScore.size();
+{
+  const unsigned char * pScoreLhs = mScore.array();
+  const unsigned char * pScoreRhs = rhs.mScore.array();
+  const unsigned char * pScoreEnd = pScoreLhs + mScore.size();
 
-    for (; pScoreLhs != pScoreEnd; ++pScoreLhs, ++pScoreRhs)
-      if (*pScoreLhs != (*pScoreLhs & *pScoreRhs))
-        return false;
+  for (; pScoreLhs != pScoreEnd; ++pScoreLhs, ++pScoreRhs)
+    if (*pScoreLhs != (*pScoreLhs & *pScoreRhs))
+      return false;
 
-    return true;
-  }
+  return true;
+}
 
 std::ostream & operator << (std::ostream & os, const CFluxScore & A)
 {

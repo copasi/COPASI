@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/tex.pro,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 19:03:27 $ 
+#   $Date: 2011/03/07 19:33:43 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -17,6 +17,7 @@
 # All rights reserved. 
 
 LIB = tex
+DISTFILES = tex.pro
 
 # Input
 HEADERS += CMathMLToTeX.h \
@@ -29,6 +30,7 @@ include(../lib.pri)
 CONFIG += qt 
 
 include(../common.pri)
+include(../srcDistribution.pri)
 
 #The following line was inserted by qt3to4
 QT += xml

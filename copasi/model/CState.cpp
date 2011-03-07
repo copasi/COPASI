@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2011/03/07 19:30:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -78,7 +78,7 @@ void CStateTemplate::add(CModelEntity * entity)
 
 void CStateTemplate::remove(CModelEntity * entity)
 {
-  std::map< CModelEntity *, unsigned C_INT32 >::iterator it =
+  std::map< CModelEntity *, size_t >::iterator it =
     mIndexMap.find(entity);
 
   if (it == mIndexMap.end())
@@ -103,15 +103,15 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
   memcpy(mpEntities + 1, entitiesX.array(), sizeof(CModelEntity *) * entitiesX.size());
   mInsert = entitiesX.size() + 1;
 
-  std::map< CModelEntity *, unsigned C_INT32 >::iterator found;
+  std::map< CModelEntity *, size_t >::iterator found;
   CVector<C_FLOAT64> InitialValues(entitiesX.size());
   CVector<C_FLOAT64> CurrentValues(entitiesX.size());
 
   CModelEntity *const*it = entitiesX.array();
   CModelEntity *const*end = it + entitiesX.size();
 
-  unsigned C_INT32 i;
-  unsigned C_INT32 Independent, Dependent, Fixed;
+  size_t i;
+  size_t Independent, Dependent, Fixed;
   Independent = Dependent = Fixed = 0;
 
   for (i = 1; it != end; ++it, i++)
@@ -188,7 +188,7 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
 void CStateTemplate::setUserOrder(const CVector< CModelEntity * > & entities)
 {
   mUserOrder.resize(entities.size() + 1);
-  unsigned C_INT32 * pUserOrder = mUserOrder.array();
+  size_t * pUserOrder = mUserOrder.array();
   *pUserOrder++ = 0; // for time
 
   CModelEntity *const *it = entities.array();
@@ -197,7 +197,7 @@ void CStateTemplate::setUserOrder(const CVector< CModelEntity * > & entities)
   while (it != end) *pUserOrder++ = getIndex(*it++);
 }
 
-const CVector<unsigned C_INT32> & CStateTemplate::getUserOrder() const
+const CVector<size_t> & CStateTemplate::getUserOrder() const
 {return mUserOrder;}
 
 CModelEntity ** CStateTemplate::getEntities() {return mpEntities;}
@@ -218,18 +218,18 @@ CModelEntity *const* CStateTemplate::endDependent() const {return mpBeginFixed;}
 CModelEntity *const* CStateTemplate::beginFixed() const {return mpBeginFixed;}
 CModelEntity *const* CStateTemplate::endFixed() const {return mpEnd;}
 
-unsigned C_INT32 CStateTemplate::getNumIndependent() const
+size_t CStateTemplate::getNumIndependent() const
 {return mpBeginDependent - mpBeginIndependent;}
-unsigned C_INT32 CStateTemplate::getNumDependent() const
+size_t CStateTemplate::getNumDependent() const
 {return mpBeginFixed - mpBeginDependent;}
-unsigned C_INT32 CStateTemplate::getNumVariable() const
+size_t CStateTemplate::getNumVariable() const
 {return mpBeginFixed - mpBeginIndependent;}
-unsigned C_INT32 CStateTemplate::getNumFixed() const
+size_t CStateTemplate::getNumFixed() const
 {return mpEnd - mpBeginFixed;}
 
-unsigned C_INT32 CStateTemplate::getIndex(const CModelEntity * entity) const
+size_t CStateTemplate::getIndex(const CModelEntity * entity) const
 {
-  std::map< CModelEntity *, unsigned C_INT32 >::const_iterator found =
+  std::map< CModelEntity *, size_t >::const_iterator found =
     mIndexMap.find(const_cast< CModelEntity * >(entity));
 
   if (found != mIndexMap.end())
@@ -238,12 +238,12 @@ unsigned C_INT32 CStateTemplate::getIndex(const CModelEntity * entity) const
   return C_INVALID_INDEX;
 }
 
-const unsigned C_INT32 & CStateTemplate::size() const
+const size_t & CStateTemplate::size() const
 {return mInsert;}
 
 void CStateTemplate::resize()
 {
-  unsigned C_INT32 OldSize = mSize;
+  size_t OldSize = mSize;
 
   if (mSize)
     mSize *= 2;
@@ -338,16 +338,16 @@ const C_FLOAT64 * CState::endDependent() const {return mpBeginFixed;}
 const C_FLOAT64 * CState::beginFixed() const {return mpBeginFixed;}
 const C_FLOAT64 * CState::endFixed() const {return mpEnd;}
 
-unsigned C_INT32 CState::getNumIndependent() const
+size_t CState::getNumIndependent() const
 {return mpBeginDependent - mpBeginIndependent;}
-unsigned C_INT32 CState::getNumDependent() const
+size_t CState::getNumDependent() const
 {return mpBeginFixed - mpBeginDependent;}
-unsigned C_INT32 CState::getNumVariable() const
+size_t CState::getNumVariable() const
 {return mpBeginFixed - mpBeginIndependent;}
-unsigned C_INT32 CState::getNumFixed() const
+size_t CState::getNumFixed() const
 {return mpEnd - mpBeginFixed;}
 
-C_FLOAT64 * CState::resize(const unsigned C_INT32 & size)
+C_FLOAT64 * CState::resize(const size_t & size)
 {
   if (mSize != size)
     {
@@ -370,9 +370,9 @@ C_FLOAT64 * CState::resize(const unsigned C_INT32 & size)
   return mpValues;
 }
 
-void CState::updateIterator(const unsigned C_INT32 & numIndependent,
-                            const unsigned C_INT32 & numDependent,
-                            const unsigned C_INT32 & numFixed)
+void CState::updateIterator(const size_t & numIndependent,
+                            const size_t & numDependent,
+                            const size_t & numFixed)
 {
   mpBeginIndependent = mpValues + 1; // One for Time
   mpBeginDependent = mpBeginIndependent + numIndependent;

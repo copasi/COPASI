@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:51 $
+//   $Date: 2011/03/07 19:30:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -223,17 +223,17 @@ public:
 
   /**
    * Sets a parameter mapping for the indexed parameter.
-   * @param const C_INT32 & index
+   * @param const size_t & index
    * @param const std::string & key
    */
-  void setParameterMapping(const C_INT32 & index, const std::string & key);
+  void setParameterMapping(const size_t & index, const std::string & key);
 
   /**
    * Add a parameter mapping for the indexed parameter.
-   * @param const C_INT32 & index
+   * @param const size_t & index
    * @param const std::string & key
    */
-  void addParameterMapping(const C_INT32 & index, const std::string & key);
+  void addParameterMapping(const size_t & index, const std::string & key);
 
   /**
    * Sets a parameter mapping for the named parameter.
@@ -259,15 +259,15 @@ public:
 
   /**
    * Clear the parameter mapping for the named parameter.
-   * @param const C_INT32 & index
+   * @param const size_t & index
    */
   void clearParameterMapping(const std::string & parameterName);
 
   /**
    * Clear the parameter mapping for the indexed parameter.
-   * @param const C_INT32 & index
+   * @param const size_t & index
    */
-  void clearParameterMapping(const C_INT32 & index);
+  void clearParameterMapping(const size_t & index);
 
   /**
    * Retrieve the mappings of kinetic function parameters.
@@ -292,10 +292,10 @@ public:
 
   /**
    * Check whether the indexed parameter is a local parameter.
-   * @param const C_INT32 & index
+   * @param const size_t & index
    * @return bool isLocal
    */
-  bool isLocalParameter(const C_INT32 & index) const;
+  bool isLocalParameter(const size_t & index) const;
 
   /**
    * Check whether the named parameter is a local parameter.
@@ -303,6 +303,13 @@ public:
    * @return bool isLocal
    */
   bool isLocalParameter(const std::string & parameterName) const;
+
+  /**
+   * We are hiding local reaction parameter which are covered by global quantities.
+   * @param const CCopasiObjectName & cn
+   * @return const CCopasiObject * pObject
+   */
+  virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
   /**
    *  Gets the description of what parameters the function expects.
@@ -362,9 +369,9 @@ public:
 
   /**
    *  Retrieves the number of compartments the reaction is acting in.
-   *  @return "unsigned C_INT32" the compartment number
+   *  @return "size_t" the compartment number
    */
-  unsigned C_INT32 getCompartmentNumber() const;
+  size_t getCompartmentNumber() const;
 
   /**
    *  get the largest (smallest) compartment that the reaction touches.
@@ -416,7 +423,7 @@ private:
    * Used for loading Gepasi files. Loads the mapping for one role
    */
   bool loadOneRole(CReadConfig & configbuffer,
-                   CFunctionParameter::Role role, unsigned C_INT32 n,
+                   CFunctionParameter::Role role, C_INT32 n,
                    const std::string & prefix);
 
   /**

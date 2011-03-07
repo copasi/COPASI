@@ -1,10 +1,15 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-  $Revision: 1.13 $
+  $Revision: 1.14 $
   $Name:  $
   $Author: shoops $
-  $Date: 2009/10/27 16:52:48 $
+  $Date: 2011/03/07 19:32:38 $
   End CVS Header */
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -77,13 +82,13 @@ std::string CCopasiObjectName::getObjectName() const
   return CCopasiObjectName::unescape(tmp.substr(0, tmp.findEx("[")));
 }
 
-unsigned C_INT32
-CCopasiObjectName::getElementIndex(const unsigned C_INT32 & pos) const
+size_t
+CCopasiObjectName::getElementIndex(const size_t & pos) const
 {
   std::string Index = getElementName(pos);
   std::stringstream tmp(Index);
 
-  unsigned C_INT32 index = C_INVALID_INDEX;
+  size_t index = C_INVALID_INDEX;
 
   tmp >> index;
 
@@ -96,13 +101,13 @@ CCopasiObjectName::getElementIndex(const unsigned C_INT32 & pos) const
   return index;
 }
 
-std::string CCopasiObjectName::getElementName(const unsigned C_INT32 & pos,
+std::string CCopasiObjectName::getElementName(const size_t & pos,
     const bool & unescape) const
 {
   CCopasiObjectName Primary = getPrimary();
 
   std::string::size_type open = findEx("[");
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < pos && open != std::string::npos; i++)
     open = findEx("[", open + 1);

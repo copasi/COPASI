@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
-$Revision: 1.51 $
+$Revision: 1.52 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/19 19:53:31 $
+$Date: 2011/03/07 19:37:52 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@ object browser item update
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
+#include <QTreeWidget>
 #include "ObjectBrowserItem.h"
 
 #include "report/CCopasiObject.h"
@@ -50,16 +51,18 @@ CBrowserObject::CBrowserObject()
 CBrowserObject::~CBrowserObject()
 {
   ObjectListItem* currentItem = referenceList->getRoot();
+
   for (; currentItem != NULL; currentItem = currentItem->pNext)
     currentItem->pItem->setBrowserObject(NULL);
+
   pdelete(referenceList);
 }
 
 /**
  *   Constructs a new ObjectBrowserItem
  */
-ObjectBrowserItem::ObjectBrowserItem (Q3ListView * parent, ObjectBrowserItem * after, const CCopasiObject* mObject, ObjectList* pList)
-    : Q3ListViewItem(parent, after)
+ObjectBrowserItem::ObjectBrowserItem(QTreeWidget * parent, ObjectBrowserItem * after, const CCopasiObject* mObject, ObjectList* pList)
+    : QTreeWidgetItem(parent, after)
 {
   if (mObject != NULL)
     {
@@ -97,11 +100,12 @@ ObjectBrowserItem::ObjectBrowserItem (Q3ListView * parent, ObjectBrowserItem * a
 
   if (pList)
     pList->insert(this);
+
   mKey = " ";
 }
 
-ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , const CCopasiObject* mObject, ObjectList* pList)
-    : Q3ListViewItem(parent, after)
+ObjectBrowserItem::ObjectBrowserItem(ObjectBrowserItem * parent, ObjectBrowserItem * after , const CCopasiObject* mObject, ObjectList* pList)
+    : QTreeWidgetItem(parent, after)
 {
   if (mObject != NULL)
     {
@@ -139,6 +143,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
 
   if (pList)
     pList->insert(this);
+
   mKey = " ";
 }
 
@@ -150,27 +155,34 @@ void ObjectBrowserItem::attachKey()
 int ObjectBrowserItem::nUserChecked()
 {
   int condition;
-  if (firstChild())
+
+  if (child(0))
     {
-      ObjectBrowserItem* pChild = (ObjectBrowserItem *)firstChild();
+      ObjectBrowserItem* pChild = (ObjectBrowserItem *)child(0);
       condition = pChild->nUserChecked();
 
       for (; pChild != NULL; pChild = (ObjectBrowserItem *)pChild->nextSibling())
         {
           switch (pChild->nUserChecked())
             {
-            case ALLCHECKED:
-              if (condition == NOCHECKED)
-                condition = PARTCHECKED;
-              break;
-            case PARTCHECKED:
-              if (condition == NOCHECKED || condition == ALLCHECKED)
-                condition = PARTCHECKED;
-              break;
-            case NOCHECKED:
-              if (condition == ALLCHECKED)
-                condition = PARTCHECKED;
-              break;
+              case ALLCHECKED:
+
+                if (condition == NOCHECKED)
+                  condition = PARTCHECKED;
+
+                break;
+              case PARTCHECKED:
+
+                if (condition == NOCHECKED || condition == ALLCHECKED)
+                  condition = PARTCHECKED;
+
+                break;
+              case NOCHECKED:
+
+                if (condition == ALLCHECKED)
+                  condition = PARTCHECKED;
+
+                break;
             }
         }
     }
@@ -181,18 +193,35 @@ int ObjectBrowserItem::nUserChecked()
       else
         condition = NOCHECKED;
     }
+
   return condition;
 }
 
 bool ObjectBrowserItem::isChecked() const
-  {
-    return pBrowserObject->mChecked;
-  }
+{
+  return pBrowserObject->mChecked;
+}
 
 void ObjectBrowserItem::reverseChecked()
 {
   pBrowserObject->mChecked = !pBrowserObject->mChecked;
 }
+
+QTreeWidgetItem* ObjectBrowserItem::nextSibling()
+{
+  if (this->parent() == NULL)
+    return NULL;
+  else
+    {
+      int indexOfThisChild = this->parent()->indexOfChild(this);
+
+      if (this->parent()->child(indexOfThisChild + 1))
+        return this->parent()->child(indexOfThisChild + 1);
+    }
+
+  return NULL;
+}
+
 
 ObjectList::ObjectList()
 {
@@ -205,15 +234,19 @@ void ObjectList::insert(ObjectBrowserItem* pItem)
 {
   int i = 0;
   ObjectListItem* pNewItem = new ObjectListItem(pItem, NULL, NULL);
+
   if (length == 0)
     {
       root = pNewItem;
       length++;
       return;
     }
+
   ObjectListItem* pCurrent = root;
+
   for (; i < length - 1; i++)
     pCurrent = pCurrent->pNext;
+
   pCurrent->pNext = pNewItem;
   pNewItem->pLast = pCurrent;
   length++;
@@ -227,11 +260,14 @@ ObjectListItem* ObjectList::getRoot()
 ObjectBrowserItem* ObjectList::pop()
 {
   if (length == 0) return NULL;
+
   ObjectBrowserItem* returnValue = root->pItem;
   ObjectListItem* delNode = root;
   root = root->pNext;
+
   if (root)
     root->pLast = NULL;
+
   length--;
   pdelete(delNode);
   return returnValue;
@@ -242,12 +278,15 @@ void ObjectList::delDuplicate()
 {
   ObjectListItem* objectLast = getRoot();
   ObjectListItem* objectNext = (objectLast != NULL) ? objectLast->pNext : NULL;
+
   for (; objectNext != NULL; objectNext = objectNext->pNext)
     {
       if (objectLast->pItem->key(0, 0) == objectNext->pItem->key(0, 0)) //delete the current item
         {
           objectLast->pNext = objectNext->pNext;
+
           if (objectNext->pNext) objectNext->pNext->pLast = objectLast;
+
           pdelete(objectNext);
           length--;
           objectNext = objectLast;
@@ -261,8 +300,10 @@ void ObjectList::sortList()
 {
   if (len() <= 1) //sorted
     return;
+
   ObjectListItem* pHead = getRoot();
   ObjectListItem* pTail = pHead->pNext;
+
   for (; pHead->pNext != NULL; pHead = pHead->pNext)
     {
       for (pTail = pHead->pNext; pTail != NULL; pTail = pTail->pNext)
@@ -296,11 +337,13 @@ bool ObjectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the 
     }
 
   ObjectListItem* pHead = getRoot();
+
   for (; (pHead != NULL) && (pItem->key(0, 0) > pHead->pItem->key(0, 0)); pHead = pHead->pNext)
-;
+    ;
 
   if (pHead && (pHead->pItem->key(0, 0) == pItem->key(0, 0))) //duplicate key
     return false;
+
   //else insert
 
   if (pHead == NULL) //insert at the end of the list
@@ -322,19 +365,25 @@ void ObjectList::createBucketIndex(int max)
   quickIndex = new bool[max];
   pointerList = new ObjectBrowserItem * [max];
   int i = 0;
+
   for (; i < max; i++)
     quickIndex[i] = false;
+
   int tmpIndex;
   ObjectListItem* pDel;
+
   for (ObjectListItem* pHead = getRoot(); pHead != NULL;)
     {
       tmpIndex = pHead->pItem->key(0, 0).toInt() - KEYBASE;
+
       if (quickIndex[tmpIndex]) //delete
         {
           pDel = pHead;
           if (pHead->pLast) pHead->pLast->pNext = pHead->pNext; else root = pHead->pNext;
+
           if (pHead->pNext)
             pHead->pNext->pLast = pHead->pLast;
+
           pHead = pHead->pNext;
           pdelete(pDel);
           length--;
@@ -363,6 +412,7 @@ ObjectBrowserItem* ObjectList::bucketPop(int& cursor)
         cursor++;
         return pointerList[cursor - 1];
       }
+
   //nothing avaiable in list
   return NULL;
 }
@@ -371,6 +421,8 @@ void ObjectList::destroyBucket()
 {
   delete[] quickIndex;
   delete[] pointerList;
+
   for (ObjectBrowserItem* pHead = pop(); pHead != NULL; pHead = pop());
+
   index_length = 0;
 }

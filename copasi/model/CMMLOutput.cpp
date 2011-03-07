@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:00:59 $
+//   $Date: 2011/03/07 19:30:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,7 +36,7 @@ CMMLOutput::CMMLOutput()
 
 void CMMLOutput::writeLHS(std::ostream & out,
                           const std::string & metabName,
-                          const std::string & compName, unsigned C_INT32 l)
+                          const std::string & compName, size_t l)
 {
   out << SPC(l + 0) << "<mfrac>" << std::endl;
   out << SPC(l + 1) << "<mrow>" << std::endl;
@@ -61,7 +61,7 @@ void CMMLOutput::writeLHS(std::ostream & out,
 void CMMLOutput::writeRHS(std::ostream & out,
                           const CMetab* pMetab, const CReaction* pReac,
                           bool numbers, bool expand, bool expandFull,
-                          unsigned C_INT32 l)
+                          size_t l)
 {
   if (!pMetab)
     {
@@ -79,7 +79,7 @@ void CMMLOutput::writeRHS(std::ostream & out,
 
   C_FLOAT64 balance = 0;
 
-  unsigned C_INT32 i, imax = balances.size();
+  size_t i, imax = balances.size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -147,8 +147,8 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
   assert(pReac->getFunction());
 
   const CFunctionParameters & functionParams = pReac->getFunctionParameters();
-  unsigned C_INT32 j, jmax;
-  unsigned C_INT32 i, imax = functionParams.size();
+  size_t j, jmax;
+  size_t i, imax = functionParams.size();
   params.resize(imax);
 
   for (i = 0; i < imax; ++i)
@@ -230,7 +230,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
 }
 
 void CMMLOutput::writeLHS_ModelValue(std::ostream & out,
-                                     const std::string & valueName, unsigned C_INT32 l)
+                                     const std::string & valueName, size_t l)
 {
   out << SPC(l + 0) << "<mfrac>" << std::endl;
   out << SPC(l + 1) << "<mrow>" << std::endl;
@@ -245,7 +245,7 @@ void CMMLOutput::writeLHS_ModelValue(std::ostream & out,
 
 void CMMLOutput::writeRHS_ModelEntity(std::ostream & out,
                                       const CModelEntity* pEntity,
-                                      bool expandFull, unsigned C_INT32 l)
+                                      bool expandFull, size_t l)
 {
   if (!pEntity)
     {
@@ -271,11 +271,11 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
   bool hasContents = false;
   //mml.str("");
 
-  unsigned C_INT32 l = 0;
+  size_t l = 0;
   mml << SPC(l) << "<mtable>" << std::endl;
 
   //write equations for compartments
-  C_INT32 i, imax = model->getCompartments().size();
+  size_t i, imax = model->getCompartments().size();
 
   for (i = 0; i < imax; i++)
     {
@@ -504,12 +504,12 @@ std::set<std::string> CMMLOutput::listReactionsForMetab(const CModel* model,
 {
   std::set<std::string> Keys;
   const CCopasiVectorN<CReaction> & Reactions = model->getReactions();
-  C_INT32 j, jmax = Reactions.size();
+  size_t j, jmax = Reactions.size();
 
   for (j = 0; j < jmax; j++)
     {
       const CCopasiVector <CChemEqElement> &Balances = Reactions[j]->getChemEq().getBalances();
-      C_INT32 i, imax = Balances.size();
+      size_t i, imax = Balances.size();
 
       for (i = 0; i < imax; i++)
         if (key == Balances[i]->getMetaboliteKey() && Balances[i]->getMultiplicity() != 0)

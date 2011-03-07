@@ -1,12 +1,12 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.h,v $
-  $Revision: 1.13 $
+  $Revision: 1.14 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/02/15 18:17:01 $
+  $Date: 2011/03/07 19:32:38 $
   End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,19 +46,19 @@ private:
   class HashTable
   {
   private:
-    unsigned C_INT32 mBeyond;
-    unsigned C_INT32 mSize;
+    size_t mBeyond;
+    size_t mSize;
     CVector< CCopasiObject * > mTable;
-    std::stack< unsigned C_INT32 > mFree;
+    std::stack< size_t > mFree;
 
   public:
     HashTable();
     HashTable(const HashTable & src);
     ~HashTable();
-    unsigned C_INT32 add(CCopasiObject * pObject);
-    bool addFix(const unsigned C_INT32 & index, CCopasiObject * pObject);
-    CCopasiObject * get(const unsigned C_INT32 & index);
-    bool remove(const unsigned C_INT32 & index);
+    size_t add(CCopasiObject * pObject);
+    bool addFix(const size_t & index, CCopasiObject * pObject);
+    CCopasiObject * get(const size_t & index);
+    bool remove(const size_t & index);
   };
 
   class CDecisionVector : private CVector< bool >

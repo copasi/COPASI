@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLStyle.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/16 18:28:06 $
+//   $Date: 2011/03/07 19:28:46 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -79,7 +79,7 @@ public:
   /**
    * Returns the number of roles in the role list.
    */
-  unsigned int getNumRoles() const;
+  size_t getNumRoles() const;
 
   /**
    * Adds an role to the role list.
@@ -119,7 +119,7 @@ public:
   /**
    * Returns the number of types in the type list.
    */
-  unsigned int getNumTypes() const;
+  size_t getNumTypes() const;
 
   /**
    * Adds a type to the type list.

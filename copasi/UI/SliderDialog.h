@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37 $
+$Revision: 1.38 $
 $Name:  $
-$Author: gauges $
-$Date: 2009/07/27 11:07:30 $
+$Author: shoops $
+$Date: 2011/03/07 19:37:53 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,35 +49,25 @@ public:
   SliderDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
   virtual ~SliderDialog();
   void addSlider(CSlider* slider);
-  void setCurrentFolderId(C_INT32 id);
+  void setCurrentFolderId(size_t id);
   void setParentWindow(CopasiUI3Window* pPW);
 
+  // sets the framework on the sliders dialog
+  // This leads to changed sliders for metabolites
+  // Because depending on the framework, we only allow sliders
+  // for amount or concentration, but not both for the same metabolite
+  void setFramework(int index);
+
 protected:
-  CopasiUI3Window* mpParentWindow;
-  QPushButton* mpRunTaskButton;
-  QPushButton* mpNewSliderButton;
-  QCheckBox* mpAutoRunCheckBox;
-  QCheckBox* mpAutoModifyRangesCheckBox;
-  QScrollArea* mpScrollView;
-  QFrame* mpSliderBox;
-  QMenu* mpContextMenu;
-  CopasiSlider* mpCurrSlider;
-  std::map<C_INT32 , std::vector< QWidget* > > mSliderMap;
-  std::map < C_INT32 , void(SliderDialog::*)() > mTaskMap;
-  C_INT32 mCurrentFolderId;
-
-  C_INT32 mapFolderId2EntryId(C_INT32 folderId) const;
-
-  bool mSliderValueChanged;
-  bool mSliderPressed;
+  size_t mapFolderId2EntryId(size_t folderId) const;
 
   void init();
 
-  static C_INT32 numMappings;
-  static C_INT32 folderMappings[][2];
-  //    static C_INT32 knownTaskIDs[];
+  static size_t numMappings;
+  static size_t folderMappings[][2];
+  //    static size_t knownTaskIDs[];
   //    static const char* knownTaskNames[];
-  //    static C_INT32 numKnownTasks;
+  //    static size_t numKnownTasks;
 
   virtual void contextMenuEvent(QContextMenuEvent* e);
 
@@ -87,7 +77,7 @@ protected:
   virtual void runMCATask();
   virtual void closeEvent(QCloseEvent* e);
 
-  virtual CCopasiTask* getTaskForFolderId(C_INT32 folderId);
+  virtual CCopasiTask* getTaskForFolderId(size_t folderId);
   virtual void updateAllSliders();
   std::vector<CSlider*>* getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const;
   CopasiSlider* findCopasiSliderForCSlider(CSlider* pCSlider);
@@ -99,6 +89,11 @@ protected:
   void setCurrentSlider(CopasiSlider* pSlider);
   virtual bool eventFilter(QObject*, QEvent* event);
   bool sliderObjectChanged(CSlider* pSlider) const;
+
+  // This method check if the given object is a reference to the initial amount or the initial concentration
+  // of a metabolite. Then it checks the current framework and the metabolite if a slider to the object
+  // is actually allowed and if it isn't, it will return the correct object
+  const CCopasiObject* determineCorrectObjectForSlider(const CCopasiObject* pObject);
 
 protected slots:
   void removeSlider(CopasiSlider* slider);
@@ -113,6 +108,25 @@ protected slots:
   void sliderPressed();
   void resetValue();
   void setDefault();
+
+protected:
+  CopasiUI3Window* mpParentWindow;
+  QPushButton* mpRunTaskButton;
+  QPushButton* mpNewSliderButton;
+  QCheckBox* mpAutoRunCheckBox;
+  QCheckBox* mpAutoModifyRangesCheckBox;
+  QScrollArea* mpScrollView;
+  QFrame* mpSliderBox;
+  QMenu* mpContextMenu;
+  CopasiSlider* mpCurrSlider;
+  std::map< size_t, std::vector< QWidget* > > mSliderMap;
+  std::map < size_t, void(SliderDialog::*)() > mTaskMap;
+  size_t mCurrentFolderId;
+  bool mSliderValueChanged;
+  bool mSliderPressed;
+  int mFramework;
+
+
 };
 
 #endif

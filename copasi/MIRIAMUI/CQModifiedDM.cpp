@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:01:00 $
+//   $Date: 2011/03/07 19:30:17 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,7 +33,7 @@ CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
 
 int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpMIRIAMInfo->getModifications().size() + 1;
+  return (int) mpMIRIAMInfo->getModifications().size() + 1;
 }
 int CQModifiedDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -53,7 +53,7 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
       if (isDefaultRow(index))
         {
           if (index.column() == COL_ROW_NUMBER)
-            return QVariant(index.row() + 1);
+            return QVariant(QString(""));
           else if (index.column() == COL_DATE_MODIFIED)
             {
               if (role == Qt::DisplayRole)
@@ -190,14 +190,14 @@ bool CQModifiedDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CModification * pModified = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         mpMIRIAMInfo->getModifications().CCopasiVector< CModification >::getIndex(pModified);
 
       if (delRow != C_INVALID_INDEX)
         {
           if (askEveryItem)
             {
-              QString dateModified = data(this->index(delRow, COL_DATE_MODIFIED), Qt::DisplayRole).toString();
+              QString dateModified = data(this->index((int) delRow, COL_DATE_MODIFIED), Qt::DisplayRole).toString();
               QString msg = "Do you want to delete Date/Time Modified '";
 
               if (!dateModified.isNull())
@@ -216,12 +216,12 @@ bool CQModifiedDM::removeRows(QModelIndexList rows, const QModelIndex&)
             {return retVal;}
           else if (choice == QMessageBox::Yes)
             {
-              retVal = removeRow(delRow);
+              retVal = removeRow((int) delRow);
             }
           else if (choice == QMessageBox::YesToAll)
             {
               askEveryItem = false;
-              retVal = removeRow(delRow);
+              retVal = removeRow((int) delRow);
             }
         }
     }

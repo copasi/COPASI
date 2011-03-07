@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/31 14:30:13 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:52 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -43,8 +48,8 @@ CSlider* SliderSettingsDialog::getSlider()
 
 void SliderSettingsDialog::setSlider(CSlider * slider)
 {
-  unsigned int i;
-  unsigned int iMax = mDefinedSliders.size();
+  size_t i;
+  size_t iMax = mDefinedSliders.size();
   bool found = false;
 
   for (i = 0; i < iMax; ++i)
@@ -353,8 +358,8 @@ void SliderSettingsDialog::browseButtonPressed()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CCopasiSimpleSelectionTree::InitialTime |
-                                            CCopasiSimpleSelectionTree::Parameters);
+                                            CQSimpleSelectionTree::InitialTime |
+                                            CQSimpleSelectionTree::Parameters);
 
   if (pObject)
     {
@@ -406,7 +411,7 @@ void SliderSettingsDialog::browseButtonPressed()
         return;
 
       // Check whether a slider with the object already exists
-      unsigned C_INT32 i, iMax = mDefinedSliders.size();
+      size_t i, iMax = mDefinedSliders.size();
 
       for (i = 0; i < iMax; ++i)
         if (mDefinedSliders[i]->getSliderObject() == pObject)

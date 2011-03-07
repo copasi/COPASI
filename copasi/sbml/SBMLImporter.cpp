@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.264 $
+//   $Revision: 1.265 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/22 16:15:41 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:32:36 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -77,6 +77,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "MIRIAM/CRDFGraphConverter.h"
 #include "compareExpressions/CEvaluationNodeNormalizer.h"
+#include "commandline/CLocaleString.h"
 
 #include "SBMLImporter.h"
 #include "SBMLUtils.h"
@@ -92,7 +93,7 @@
 C_FLOAT64 SBMLImporter::round(const C_FLOAT64 & x)
 {
   return
-    fabs(x) < 0.0 ? -floor(-x + 0.5) : floor(x + 0.5);
+    x < 0.0 ? -floor(-x + 0.5) : floor(x + 0.5);
 }
 
 // static
@@ -124,6 +125,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setTimeUnit(CModel::s);
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
+
+  unsigned C_INT32 step = 0, totalSteps;
+  size_t hStep;
+
+  mImportStep = 1;
+
+  if (mpImportHandler && !mpImportHandler->progressItem(mhImportStep)) return false;
+
   SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
   UnitDefinition *pSubstanceUnits = NULL;
   UnitDefinition *pTimeUnits = NULL;
@@ -597,21 +606,19 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 #endif // LIBSBML_VERSION
   /* import the functions */
   unsigned int counter;
-  CCopasiVectorN< CEvaluationTree >* functions = &(this->functionDB->loadedFunctions());
+  CCopasiVectorN< CFunction >* functions = &(this->functionDB->loadedFunctions());
 
-  unsigned int num = (*functions).size();
-  unsigned C_INT32 step = 0, totalSteps, hStep;
+  size_t num = (*functions).size();
 
   if (mpImportHandler)
     {
-      mImportStep = 1;
+      mImportStep = 2;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing function definitions",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -645,10 +652,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing compartments...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -709,10 +715,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing species...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -787,10 +792,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing global parameters...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -874,15 +878,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (mpImportHandler)
     {
       mpImportHandler->finishItem(hStep);
-      mImportStep = 7;
+      mImportStep = 6;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing reactions...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -975,6 +978,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   // import the initial assignments
   // we do this after the reactions since intial assignments can reference reaction ids.
+  if (mpImportHandler)
+    {
+      mpImportHandler->finishItem(hStep);
+      mImportStep = 7;
+
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+    }
+
   importInitialAssignments(sbmlModel, copasi2sbmlmap, this->mpCopasiModel);
 
   // import all rules
@@ -991,15 +1002,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (mpImportHandler)
     {
       mpImportHandler->finishItem(hStep);
-      mImportStep = 6;
+      mImportStep = 8;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
 
       step = 0;
-      totalSteps = num;
+      totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing global parameters...",
-                                       CCopasiParameter::UINT,
-                                       & step,
+                                       step,
                                        &totalSteps);
     }
 
@@ -1054,6 +1064,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // events should be imported after reactions because we use the mSBMLSpeciesReferenceIds to determine if an
   // event assignment changes a species reference (stoichiometry
   // Since COPASI does not support this, we need to ignore the event assignment
+  if (mpImportHandler)
+    {
+      mpImportHandler->finishItem(hStep);
+      mImportStep = 9;
+
+      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+
+    }
+
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
 
   this->mpCopasiModel->setCompileFlag();
@@ -1075,14 +1094,33 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Event assignment", "event assignment");
     }
 
-#endif // LIBSBML_VERSION
+#if LIBSBML_VERSION >= 40200
+
+  if (this->mEventPrioritiesIgnored == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 98);
+    }
+
+  if (this->mInitialTriggerValues == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 97);
+    }
+
+  if (this->mNonPersistentTriggerFound == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 99);
+    }
+
+#endif // LIBSBML_VERSION >= 40200
+
+#endif // LIBSBML_VERSION >= 40100
 
 
 
   if (mpImportHandler)
     {
       mpImportHandler->finishItem(hStep);
-      mImportStep = 8;
+      mImportStep = 10;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
     }
@@ -1161,7 +1199,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
       // function definition
       // if we don't do this, two functions might have the same SBML id during
       // export which makes the exporter code so much more difficult
-      unsigned int i, iMax = this->functionDB->loadedFunctions().size();
+      size_t i, iMax = this->functionDB->loadedFunctions().size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -1392,8 +1430,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
-  while (copasiModel->getCompartments().getIndex(name + appendix) != static_cast < unsigned C_INT32
-         >(-1))
+  while (copasiModel->getCompartments().getIndex(name + appendix) != C_INVALID_INDEX)
     {
       numberStream.str("");
       numberStream << "_" << counter;
@@ -1458,7 +1495,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
-  while (copasiCompartment->getMetabolites().getIndex(name + appendix) != static_cast<unsigned C_INT32>(-1))
+  while (copasiCompartment->getMetabolites().getIndex(name + appendix) != C_INVALID_INDEX)
     {
       numberStream.str("");
       numberStream << "_" << counter;
@@ -1689,7 +1726,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           assert(pChemEqElement != NULL);
-          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement->getKey()));
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement));
         }
     }
 
@@ -1796,7 +1833,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           assert(pChemEqElement != NULL);
-          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement->getKey()));
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), pChemEqElement));
         }
     }
 
@@ -1868,24 +1905,25 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
    * either a mapping or a value
    */
   const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
-  const ListOfParameters* pParamList = NULL;
-#if LIBSBML_VERSION >= 40100
-
-  if (this->mLevel > 2)
-    {
-      pParamList = kLaw->getListOfLocalParameters();
-    }
-  else
-    {
-#endif // LIBSBML_VERSION
-      pParamList = kLaw->getListOfParameters();
-#if LIBSBML_VERSION >= 40100
-    }
-
-#endif // LIBSBML_VERSION
 
   if (kLaw != NULL)
     {
+      const ListOfParameters* pParamList = NULL;
+#if LIBSBML_VERSION >= 40100
+
+      if (this->mLevel > 2)
+        {
+          pParamList = kLaw->getListOfLocalParameters();
+        }
+      else
+        {
+#endif // LIBSBML_VERSION
+          pParamList = kLaw->getListOfParameters();
+#if LIBSBML_VERSION >= 40100
+        }
+
+#endif // LIBSBML_VERSION
+
       for (counter = 0; counter < pParamList->size(); ++counter)
         {
           const Parameter* pSBMLParameter = pParamList->get(counter);
@@ -2113,7 +2151,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                           // do the mapping
                           CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
-                          unsigned int i, iMax = v->size();
+                          size_t i, iMax = v->size();
 
                           for (i = 0; i < iMax; ++i)
                             {
@@ -2143,7 +2181,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                               std::map<std::string, std::string > arguments;
                               const CFunctionParameters& funParams = tree->getVariables();
                               const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
-                              unsigned int i, iMax = funParams.size();
+                              size_t i, iMax = funParams.size();
 
                               for (i = 0; (i < iMax) && pTmpNode; ++i)
                                 {
@@ -2167,7 +2205,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   // have to find the function in the
                                   // functiondb
                                   CFunction* pNonconstFun = NULL;
-                                  CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
+                                  CCopasiVectorN<CFunction>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
 
                                   while (it != endit)
                                     {
@@ -2225,7 +2263,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                           // do the mapping
                           CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
-                          unsigned int i, iMax = v->size();
+                          size_t i, iMax = v->size();
 
                           for (i = 0; i < iMax; ++i)
                             {
@@ -2253,7 +2291,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   // have to find the function in the
                                   // functiondb
                                   CFunction* pNonconstFun = NULL;
-                                  CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
+                                  CCopasiVectorN<CFunction>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
 
                                   while (it != endit)
                                     {
@@ -2426,11 +2464,18 @@ SBMLImporter::SBMLImporter():
   this->mSBMLIdModelValueMap.clear();
   this->mRuleForSpeciesReferenceIgnored = false;
   this->mEventAssignmentForSpeciesReferenceIgnored = false;
-#endif // LIBSBML_VERSION
+#if LIBSBML_VERSION >= 40200
+  this->mEventPrioritiesIgnored = false;
+  this->mInitialTriggerValues = false;
+  this->mNonPersistentTriggerFound = false;
+#endif // LIBSBML_VERSION >= 40200
+
+#endif // LIBSBML_VERSION >= 40100
 
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
   this->mIgnoredSBMLMessages.insert(10513);
+  this->mIgnoredSBMLMessages.insert(10522);
   this->mIgnoredSBMLMessages.insert(10533);
   this->mIgnoredSBMLMessages.insert(10541);
   this->mIgnoredSBMLMessages.insert(10551);
@@ -2498,7 +2543,7 @@ CModel* SBMLImporter::readSBML(std::string filename,
                                CCopasiDataModel* pDataModel)
 {
   // convert filename to the locale encoding
-  std::ifstream file(utf8ToLocale(filename).c_str());
+  std::ifstream file(CLocaleString::fromUtf8(filename).c_str());
 
   if (!file)
     {
@@ -2548,16 +2593,43 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       if (mpImportHandler)
         {
           mpImportHandler->setName("Importing SBML file...");
-          mTotalSteps = 8;
+          mTotalSteps = 11;
           mhImportStep = mpImportHandler->addItem("Step",
-                                                  CCopasiParameter::UINT,
-                                                  & mImportStep,
+                                                  mImportStep,
                                                   &mTotalSteps);
         }
 
+      unsigned C_INT32 step, totalSteps;
+      size_t hStep;
+
+      if (this->mpImportHandler != 0)
+        {
+          step = 0;
+          totalSteps = 1;
+          hStep = mpImportHandler->addItem("Reading SBML file...",
+                                           step,
+                                           &totalSteps);
+        }
+
+
       SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
 
-      if (sbmlDoc->checkConsistency() != 0)
+      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
+      if (this->mpImportHandler != 0)
+        {
+          step = 0;
+          totalSteps = 1;
+          hStep = mpImportHandler->addItem("Checking consitency...",
+                                           step,
+                                           &totalSteps);
+        }
+
+      bool checkResult = sbmlDoc->checkConsistency();
+
+      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
+      if (checkResult != 0)
         {
           int fatal = -1;
           unsigned int i, iMax = sbmlDoc->getNumErrors();
@@ -2565,6 +2637,15 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           for (i = 0; (i < iMax) && (fatal == -1); ++i)
             {
               const XMLError* pSBMLError = sbmlDoc->getError(i);
+#if LIBSBML_VERSION >= 40200
+
+              // we check if the model contained a required package
+              if (sbmlDoc->getLevel() > 2 && pSBMLError->getErrorId() == 99107)
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                }
+
+#endif // LIBSBML_VERSION
               CCopasiMessage::Type messageType = CCopasiMessage::RAW;
 
               switch (pSBMLError->getSeverity())
@@ -2640,6 +2721,28 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               return NULL;
             }
         }
+
+#if LIBSBML_VERSION >= 40200
+      else
+        {
+          if (sbmlDoc->getLevel() > 2)
+            {
+              // we check if the model contained a required package
+              unsigned int i, iMax = sbmlDoc->getNumErrors();
+
+              for (i = 0; i < iMax ; ++i)
+                {
+                  const XMLError* pSBMLError = sbmlDoc->getError(i);
+
+                  if (pSBMLError->getErrorId() == 99107)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                    }
+                }
+            }
+        }
+
+#endif // LIBSBML_VERSION
 
       // TODO we need some code that check for required packages that we can't handle.
       // TODO Since the current libsbml does not support this yet, we will have to wait for
@@ -3572,8 +3675,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
-  while (copasiModel->getModelValues().getIndex(name + appendix) != static_cast < unsigned C_INT32
-         >(-1))
+  while (copasiModel->getModelValues().getIndex(name + appendix) != C_INVALID_INDEX)
     {
       numberStream.str("");
       numberStream << "_" << counter;
@@ -4188,7 +4290,7 @@ CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const 
                                         pCopasiReaction->getChemEq().getSubstrates().size(),
                                         pCopasiReaction->getChemEq().getProducts().size(),
                                         pCopasiReaction->isReversible() ? TriTrue : TriFalse);
-  unsigned int i, iMax = functions.size();
+  size_t i, iMax = functions.size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -4215,7 +4317,7 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
 
   if (funParams1.size() == funParams2.size())
     {
-      unsigned int i, iMax = funParams1.size();
+      size_t i, iMax = funParams1.size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -4330,7 +4432,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
             {
               CChemEq tmpEq;
               const CCopasiVector<CChemEqElement>* metabolites = &chemicalEquation.getSubstrates();
-              unsigned int i, iMax = metabolites->size();
+              size_t i, iMax = metabolites->size();
               result = (iMax > 0);
 
               if (result)
@@ -4410,7 +4512,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
       std::vector<const CEvaluationNode*> arguments;
       std::map<const CMetab*, C_FLOAT64> multiplicityMap;
       this->separateProductArguments(pRootNode, arguments);
-      unsigned int numParameters = 0, i, iMax = arguments.size();
+      size_t numParameters = 0, i, iMax = arguments.size();
       v = new std::vector<CEvaluationNodeObject*>;
 
       if (iMax != 0)
@@ -4548,7 +4650,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
       if (result)
         {
           const CCopasiVector<CChemEqElement>& metabolites = chemicalEquation.getSubstrates();
-          unsigned i, iMax = metabolites.size();
+          size_t i, iMax = metabolites.size();
 
           // all metabolites must occur in the muliplicityMap so they have to have the same size
           // and a mass action must have at least one metabolite
@@ -4603,7 +4705,7 @@ CEvaluationTree* SBMLImporter::createExpressionFromFunction(const CFunction* pFu
   if (pFunParams.size() == functionArgumentCNs.size())
     {
       std::map<std::string , std::string> variable2CNMap;
-      unsigned int i, iMax = pFunParams.size();
+      size_t i, iMax = pFunParams.size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -4687,7 +4789,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
 
   const CCopasiVector<CChemEqElement>* pV = &pChemEq.getSubstrates();
 
-  unsigned int i, iMax = pV->size();
+  size_t i, iMax = pV->size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -4710,7 +4812,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
       v[(*pV)[i]] = CChemEq::MODIFIER;
     }
 
-  unsigned int parameterIndex = 0;
+  size_t parameterIndex = 0;
 
   while (pChildNode)
     {
@@ -4830,9 +4932,9 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
       const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
 
-      unsigned int i, iMax = metabolites->size();
+      size_t i, iMax = metabolites->size();
 
-      unsigned int j, jMax;
+      size_t j, jMax;
 
       for (i = 0; i < iMax; ++i)
         for (j = 0, jMax = static_cast<int>(fabs((*metabolites)[i]->getMultiplicity())); j < jMax; j++)
@@ -4867,7 +4969,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
     }
   else
     {
-      unsigned int i, iMax = pCopasiReaction->getFunction()->getVariables().size();
+      size_t i, iMax = pCopasiReaction->getFunction()->getVariables().size();
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
 
       for (i = 0; i < iMax; ++i)
@@ -5082,16 +5184,17 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 {
   if (pTmpFunctionDB)
     {
-      unsigned C_INT32 step, totalSteps, hStep;
-      unsigned C_INT32 i, iMax = this->mpCopasiModel->getReactions().size();
+      unsigned C_INT32 step, totalSteps;
+      size_t hStep;
+      size_t i, iMax = this->mpCopasiModel->getReactions().size();
 
       if (mpImportHandler)
         {
           step = 0;
-          totalSteps = iMax + this->mpCopasiModel->getCompartments().size() + this->mpCopasiModel->getMetabolites().size() + this->mpCopasiModel->getModelValues().size();
+          totalSteps =
+            (unsigned C_INT32)(iMax + this->mpCopasiModel->getCompartments().size() + this->mpCopasiModel->getMetabolites().size() + this->mpCopasiModel->getModelValues().size());
           hStep = mpImportHandler->addItem("Searching used functions...",
-                                           CCopasiParameter::UINT,
-                                           & step,
+                                           step,
                                            &totalSteps);
         }
 
@@ -5224,7 +5327,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
             }
 
           // handle all assignments
-          unsigned int j, jMax = pEvent->getAssignments().size();
+          size_t j, jMax = pEvent->getAssignments().size();
 
           for (j = 0; j < jMax; ++j)
             {
@@ -5251,10 +5354,9 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
         {
           mpImportHandler->finishItem(hStep);
           step = 0;
-          totalSteps = pTmpFunctionDB->loadedFunctions().size();
+          totalSteps = (unsigned C_INT32) pTmpFunctionDB->loadedFunctions().size();
           hStep = mpImportHandler->addItem("Removing unused functions...",
-                                           CCopasiParameter::UINT,
-                                           & step,
+                                           step,
                                            &totalSteps);
         }
 
@@ -5342,7 +5444,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*,
   // this is just there to make sure we don't accidentaly move the code
   // for the import of rules before the code that imports reactions
   // because this would lead to the species id set being empty
-  assert(pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty());
+  assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));
 #endif // LIBSBML_VERSION
   SBMLTypeCode_t type = sbmlRule->getTypeCode();
 
@@ -5694,38 +5796,19 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
 
       if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
         {
-          // divide the expression by the volume
-          // check if the top level node is a multiplication and one
-          // of the children is the volume of the compartment the species
-          // is in. If this is the case, just drop the mutliplication
-          // instead of dividing
-          bool multiplication = false;
 
-          if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
-              (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
+          CEvaluationNode* pOrigNode = pExpression->getRoot();
+          assert(pOrigNode != NULL);
+          CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
+          assert(pNode != NULL);
+
+          if (pNode != NULL)
             {
-              const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
-              const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-
-              if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                {
-                  pExpression->setRoot(pChild2->copyBranch());
-                  multiplication = true;
-                }
-              else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                {
-                  pExpression->setRoot(pChild1->copyBranch());
-                  multiplication = true;
-                }
+              pExpression->setRoot(pNode);
             }
-
-          if (multiplication == false)
+          else
             {
-              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-              pOperatorNode->addChild(pVolumeNode);
-              pExpression->setRoot(pOperatorNode);
+              fatalError();
             }
         }
 
@@ -5738,7 +5821,19 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
     }
 
   pME->setStatus(status);
-  pME->setExpressionPtr(pExpression);
+  bool result = pME->setExpressionPtr(pExpression);
+
+  if (result == false)
+    {
+      if (pME->getExpressionPtr() != pExpression)
+        {
+          delete pExpression;
+        }
+
+      pME->setStatus(CModelValue::FIXED);
+      std::string m = "Some error occured while importing the rule for object with id \"" + rule->getVariable() + "\".";
+      CCopasiMessage(CCopasiMessage::RAW, m.c_str());
+    }
 }
 
 void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
@@ -6996,6 +7091,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         }
 
       delete pUdef2;
+      delete pUdef;
     }
 
   if (inconsistentUnits)
@@ -7173,6 +7269,9 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
   // delete the units we created
   delete pTimeUnits;
+  delete pDimensionlessUnits;
+  delete pLengthUnits;
+  delete pAreaUnits;
 }
 
 /**
@@ -7216,6 +7315,8 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
                 }
             }
 
+          // we have to reset i to 0
+          i = 0;
 #endif // LIBSBML_VERSION
           const Unit *pU1, *pU2;
 
@@ -7690,6 +7791,18 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
       ++it;
     }
 
+  unsigned C_INT32 step, totalSteps;
+  size_t hStep;
+
+  if (this->mpImportHandler != 0)
+    {
+      step = 0;
+      totalSteps = iMax;
+      hStep = mpImportHandler->addItem("Importing initial assignments...",
+                                       step,
+                                       &totalSteps);
+    }
+
   for (i = 0; i < iMax; ++i)
     {
       const InitialAssignment* pInitialAssignment = pSBMLModel->getInitialAssignment(i);
@@ -7714,6 +7827,8 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                   // check for references to species references in the expression because we don't support them yet
                   if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
                     {
+                      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
                       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
                     }
 
@@ -7739,8 +7854,11 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                         {
                           // store the expression for the stoichiometry in the stoichiometric expression map
                           // this has been tested and should work
-                          this->mStoichiometricExpressionMap.insert(std::make_pair(pMath, pChemEqElement->getKey()));
+                          this->mStoichiometricExpressionMap.insert(std::make_pair(pMath, pChemEqElement));
+
                           // go to the next iteration
+                          if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
+
                           continue;
                         }
 
@@ -7761,20 +7879,55 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
 
                           if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
                             {
+                              CEvaluationNode* pOrigNode = pExpression->getRoot();
+                              assert(pOrigNode != NULL);
                               // divide the expression by the volume
-                              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-                              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-                              pOperatorNode->addChild(pVolumeNode);
-                              pExpression->setRoot(pOperatorNode);
+                              CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getInitialValueReference());
+                              assert(pNode != NULL);
+
+                              if (pNode != NULL)
+                                {
+                                  pExpression->setRoot(pNode);
+                                }
+                              else
+                                {
+                                  fatalError();
+                                }
                             }
 
-                          pMetab->setInitialExpressionPtr(pExpression);
+                          bool r = pMetab->setInitialExpressionPtr(pExpression);
+
+                          if (r == false)
+                            {
+                              if (pMetab->getInitialExpressionPtr() != pExpression)
+                                {
+                                  delete pExpression;
+                                }
+
+                              CCopasiMessage(CCopasiMessage::RAW, "Some error occured while importing the initial expression for species with id \"", pInitialAssignment->getSymbol().c_str(), "\".");
+                            }
                         }
                       else if (dynamic_cast<CCompartment*>(pos->second) != NULL || dynamic_cast<CModelValue*>(pos->second) != NULL)
                         {
                           CModelEntity* pME = dynamic_cast<CModelEntity*>(pos->second);
-                          pME->setInitialExpressionPtr(pExpression);
+                          bool r = pME->setInitialExpressionPtr(pExpression);
+
+                          if (r == false)
+                            {
+                              if (pME->getInitialExpressionPtr() != pExpression)
+                                {
+                                  delete pExpression;
+                                }
+
+                              if (dynamic_cast<CCompartment*>(pos->second))
+                                {
+                                  CCopasiMessage(CCopasiMessage::RAW, "Some error occured while importing the initial expression for compartment with id \"", pInitialAssignment->getSymbol().c_str(), "\".");
+                                }
+                              else
+                                {
+                                  CCopasiMessage(CCopasiMessage::RAW, "Some error occured while importing the initial expression for parameter with id \"", pInitialAssignment->getSymbol().c_str(), "\".");
+                                }
+                            }
                         }
                       else
                         {
@@ -7796,6 +7949,8 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                           os << "\n" << text.substr(text.find("\n") + 1);
                         }
 
+                      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
                       CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                     }
                 }
@@ -7805,22 +7960,22 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
               CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57 , "InitialAssignment", symbol.c_str());
             }
         }
+
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
     }
 }
 
 void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   bool warningDone = false;
-  std::map<const ASTNode*, std::string>::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
+  std::map<const ASTNode*, CChemEqElement* >::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(this->mpCopasiModel);
 
   while (it != end)
     {
-      CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(it->second);
-      assert(pObject != NULL);
-      CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pObject);
-      assert(pChemEqElement != NULL);
+      assert(it->second != NULL);
+      CChemEqElement* pChemEqElement = it->second;
       ConverterASTNode* pNode = new ConverterASTNode(*it->first);
       this->preprocessNode(pNode, pSBMLModel, copasi2sbmlmap);
       this->replaceObjectNames(pNode, copasi2sbmlmap, true);
@@ -7853,7 +8008,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
 
               while (iit != iendit)
                 {
-                  if ((*iit)->getKey() == it->second)
+                  if ((*iit) == pChemEqElement)
                     {
                       break;
                     }
@@ -8321,9 +8476,21 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
   // this is just there to make sure we don't accidentaly move the code
   // for the import of events before the code that imports reactions
   // because this would lead to the species id set being empty
-  assert(pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty());
+  assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));
 #endif // LIBSBML_VERSION
   unsigned int i, iMax = pSBMLModel->getNumEvents();
+  unsigned C_INT32 step, totalSteps;
+  size_t hStep;
+
+  if (this->mpImportHandler != 0)
+    {
+      step = 0;
+      totalSteps = iMax;
+      hStep = mpImportHandler->addItem("Importing initial assignments...",
+                                       step,
+                                       &totalSteps);
+    }
+
 
   for (i = 0; i < iMax; ++i)
     {
@@ -8346,14 +8513,28 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
               os << "\n" << text.substr(text.find("\n") + 1);
             }
 
+          if (mpImportHandler) mpImportHandler->finishItem(hStep);
+
           CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
+
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
     }
 }
 
 void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (pEvent == NULL) return;
+
+#if LIBSBML_VERSION >= 40200
+
+  // create a warning if the priority is set
+  if (pEvent->isSetPriority())
+    {
+      this->mEventPrioritiesIgnored = true;
+    }
+
+#endif // LIBSBML_VERSION >= 40200
 
   /* Check if the name of the reaction is unique. */
   std::string eventName = "Event";
@@ -8390,6 +8571,28 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   // import the trigger
   const Trigger* pTrigger = pEvent->getTrigger();
   assert(pTrigger != NULL);
+
+#if LIBSBML_VERSION >= 40200
+
+  // create a warning if the initialValue is set
+  // We only need to consider the case where the initial value is false
+  // because that would enable the trigger to fire at t=0 which we can't handle yet.
+  if (pTrigger->isSetInitialValue() && pTrigger->getInitialValue() == false)
+    {
+      this->mInitialTriggerValues = true;
+    }
+
+  // create a warning if the persistent flag is set to false
+  // We only need to consider the case where the flag is set to false
+  // because that would mean that we have to recheck the trigger after it fired
+  if (pTrigger->isSetPersistent() && pTrigger->getPersistent() == false)
+    {
+      this->mNonPersistentTriggerFound = true;
+    }
+
+#endif // LIBSBML_VERSION >= 40200
+
+
 
   if (!pTrigger->isSetMath())
     {
@@ -8467,9 +8670,9 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
         {
           // it has exactly the same meaning as the delayAssignment flag in
           // COPASI, just a different name
-          if (pEvent->isSetUseValuesFromTriggerTime())
+          if (pEvent->getUseValuesFromTriggerTime() == true)
             {
-              pCOPASIEvent->setDelayAssignment(pEvent->getUseValuesFromTriggerTime());
+              pCOPASIEvent->setDelayAssignment(true);
             }
           else
             {
@@ -8595,40 +8798,24 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
               // of the children is the volume of the compartment the species
               // is in. If this is the case, just drop the multiplication
               // instead of dividing
-              bool multiplication = false;
               const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);
               assert(pMetab != NULL);
               const CCompartment* pCompartment = pMetab->getCompartment();
 
               if (pCompartment->getDimensionality() != 0)
                 {
+                  CEvaluationNode* pOrigNode = pExpression->getRoot();
+                  assert(pOrigNode != NULL);
+                  CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
+                  assert(pNode != NULL);
 
-                  if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
-                      (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
+                  if (pNode != NULL)
                     {
-                      const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
-                      const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-
-                      if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                        {
-
-                          pExpression->setRoot(pChild2->copyBranch());
-                          multiplication = true;
-                        }
-                      else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
-                        {
-                          pExpression->setRoot(pChild1->copyBranch());
-                          multiplication = true;
-                        }
+                      pExpression->setRoot(pNode);
                     }
-
-                  if (multiplication == false)
+                  else
                     {
-                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-                      pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-                      pOperatorNode->addChild(pVolumeNode);
-                      pExpression->setRoot(pOperatorNode);
+                      fatalError();
                     }
                 }
             }
@@ -9238,6 +9425,58 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<s
         }
     }
 }
-
-
 #endif // LIBSBML_VERSION
+
+/**
+ * This method divides the given expression by the given object and returns a new expression.
+ * The caller is responsible for freeing the memory for the new expression.
+ */
+CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject)
+{
+  bool reverse = false;
+  CEvaluationNode* pResult = NULL;
+  assert(pOrigNode != NULL);
+  assert(pObject != NULL);
+
+  if (pOrigNode != NULL && pObject != NULL)
+    {
+      // first we check if this is thie reverse operation with the object
+      // if so, we just drop the reverse operaqtion, otherwise we apply the operation with the
+      // object
+      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
+          (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::MULTIPLY)
+        {
+          // either child can be the object
+          const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild());
+
+          if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+            {
+
+              pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+              reverse = true;
+            }
+
+          if (reverse == false)
+            {
+              pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+
+              if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+                {
+
+                  pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+                  reverse = true;
+                }
+            }
+        }
+
+      if (reverse == false)
+        {
+          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ">");
+          pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+          pResult->addChild(pOrigNode->copyBranch());
+          pResult->addChild(pVolumeNode);
+        }
+    }
+
+  return pResult;
+}

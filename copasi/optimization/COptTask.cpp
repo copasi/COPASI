@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/08 23:32:59 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:31:26 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -39,24 +44,24 @@
 //#include "steadystate/CSteadyStateProblem.h"
 //#include "utilities/COutputHandler.h"
 
-unsigned C_INT32 COptTask::ValidMethods[] =
-  {
-    CCopasiMethod::Statistics,
-    CCopasiMethod::GeneticAlgorithm,
-    CCopasiMethod::GeneticAlgorithmSR,
-    CCopasiMethod::HookeJeeves,
-    CCopasiMethod::LevenbergMarquardt,
-    CCopasiMethod::EvolutionaryProgram,
-    CCopasiMethod::RandomSearch,
-    CCopasiMethod::NelderMead,
-    CCopasiMethod::ParticleSwarm,
-    CCopasiMethod::Praxis,
-    CCopasiMethod::TruncatedNewton,
-    CCopasiMethod::SimulatedAnnealing,
-    CCopasiMethod::SRES,
-    CCopasiMethod::SteepestDescent,
-    CCopasiMethod::unset
-  };
+const unsigned int COptTask::ValidMethods[] =
+{
+  CCopasiMethod::Statistics,
+  CCopasiMethod::GeneticAlgorithm,
+  CCopasiMethod::GeneticAlgorithmSR,
+  CCopasiMethod::HookeJeeves,
+  CCopasiMethod::LevenbergMarquardt,
+  CCopasiMethod::EvolutionaryProgram,
+  CCopasiMethod::RandomSearch,
+  CCopasiMethod::NelderMead,
+  CCopasiMethod::ParticleSwarm,
+  CCopasiMethod::Praxis,
+  CCopasiMethod::TruncatedNewton,
+  CCopasiMethod::SimulatedAnnealing,
+  CCopasiMethod::SRES,
+  CCopasiMethod::SteepestDescent,
+  CCopasiMethod::unset
+};
 
 COptTask::COptTask(const CCopasiTask::Type & type,
                    const CCopasiContainer * pParent):
@@ -73,7 +78,7 @@ COptTask::COptTask(const COptTask & src,
                    const CCopasiContainer * pParent):
     CCopasiTask(src, pParent)
 {
-  mpProblem = new COptProblem(* (COptProblem *) src.mpProblem, this);
+  mpProblem = new COptProblem(*(COptProblem *) src.mpProblem, this);
   mpMethod = COptMethod::createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
   //  mpMethod->setObjectParent(this);
@@ -83,13 +88,14 @@ COptTask::COptTask(const COptTask & src,
 COptTask::~COptTask()
 {cleanup();}
 
-void COptTask::cleanup(){}
+void COptTask::cleanup() {}
 
 bool COptTask::setCallBack(CProcessReport * pCallBack)
 {
   bool success = CCopasiTask::setCallBack(pCallBack);
 
   if (!mpProblem->setCallBack(pCallBack)) success = false;
+
   if (!mpMethod->setCallBack(pCallBack)) success = false;
 
   return success;
@@ -113,6 +119,7 @@ bool COptTask::initialize(const OutputFlag & of,
   if (!pProblem->initializeSubtaskBeforeOutput()) success = false;
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+
   //if (!mReport.open(pOstream)) success = false;
   //if (!mReport.compile()) success = false;
 
@@ -150,10 +157,18 @@ bool COptTask::setMethodType(const int & type)
 
   if (mpMethod->getSubType() == Type) return true;
 
-  pdelete (mpMethod);
+  pdelete(mpMethod);
 
-  mpMethod = COptMethod::createMethod(Type);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   return true;
+}
+
+// virtual
+CCopasiMethod * COptTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return COptMethod::createMethod(Type);
 }

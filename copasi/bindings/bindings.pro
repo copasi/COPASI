@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/bindings.pro,v $ 
-#   $Revision: 1.8 $ 
+#   $Revision: 1.9 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2010/10/14 13:51:02 $ 
+#   $Author: shoops $ 
+#   $Date: 2011/03/07 19:25:42 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,6 +21,7 @@
 # All rights reserved. 
 
 TEMPLATE = subdirs
+DISTFILES = bindings.pro
 
 include(../common.pri)
 
@@ -50,3 +51,4 @@ contains(ENABLE_PERL,yes){
 }
 
 
+QMAKE_EXTRA_UNIX_TARGETS += src_distribution

@@ -6,6 +6,11 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -30,14 +35,14 @@ void Expression2PresentationMML::writeMathML(std::ostream & out) const
 
 #define SPC(level) std::string(level, ' ')
 
-void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* node, unsigned int l) const
+void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* node, size_t l) const
 {
   ASTNodeType_t type = node->getType();
 
   //piecewise
   if (type == AST_FUNCTION_PIECEWISE)
     {
-      unsigned int i;
+      size_t i;
       out << SPC(l) << "<mrow>" << std::endl;
       out << SPC(l + 1) << "<mo> {</mo>" << std::endl;
       out << SPC(l + 1) << "<mtable>" << std::endl;
@@ -46,7 +51,7 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
         {
           out << SPC(l + 2) << "<mtr>" << std::endl;
           out << SPC(l + 3) << "<mtd>" << std::endl;
-          writeMathML(out, node->getChild(0 + i*2), l + 3);
+          writeMathML(out, node->getChild((unsigned int)(0 + i*2)), l + 3);
           out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
           out << SPC(l + 3) << "</mtd>" << std::endl;
 
@@ -55,7 +60,7 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
           if (1 + i*2 >= node->getNumChildren())
             out << SPC(l + 3) << "<mo> else </mo>" << std::endl;
           else
-            writeMathML(out, node->getChild(1 + i*2), l + 3);
+            writeMathML(out, node->getChild((unsigned int)(1 + i*2)), l + 3);
 
           out << SPC(l + 3) << "</mtd>" << std::endl;
           out << SPC(l + 2) << "</mtr>" << std::endl;
@@ -83,8 +88,8 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
       return;
     }
 
-  unsigned int i;
-  unsigned int tmp;
+  size_t i;
+  size_t tmp;
   bool flag;
 
   switch (type)
@@ -101,7 +106,7 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
             if (i)
               out << SPC(l + 1) << "<mo>" << "+" << "</mo>" << std::endl;
 
-            writeMathML(out, node->getChild(i), l + 1);
+            writeMathML(out, node->getChild((unsigned int) i), l + 1);
           }
 
         out << SPC(l) << "</mrow>" << std::endl;
@@ -120,13 +125,13 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
         out << SPC(l + 1) << "<mo>" << "-" << "</mo>" << std::endl;
 
         tmp = node->getNumChildren() - 1; //the last child
-        flag = (node->getChild(tmp)->getType() == AST_PLUS)
-               || (node->getChild(tmp)->getType() == AST_MINUS);
+        flag = (node->getChild((unsigned int) tmp)->getType() == AST_PLUS)
+               || (node->getChild((unsigned int) tmp)->getType() == AST_MINUS);
 
         //      || ((node->getChild(tmp)->getType() == AST_FUNCTION) && expand)); // a function call
         if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-        writeMathML(out, node->getChild(tmp), l + 2);
+        writeMathML(out, node->getChild((unsigned int) tmp), l + 2);
 
         if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
 
@@ -142,13 +147,13 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
               out << SPC(l + 1) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
 
             //do we need "()" ?
-            flag = (node->getChild(i)->getType() == AST_PLUS)
-                   || (node->getChild(i)->getType() == AST_MINUS);
+            flag = (node->getChild((unsigned int) i)->getType() == AST_PLUS)
+                   || (node->getChild((unsigned int) i)->getType() == AST_MINUS);
 
             //      || ((node->getChild(i)->getType() == AST_FUNCTION) && expand)); // a function call
             if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-            writeMathML(out, node->getChild(i), l + 1);
+            writeMathML(out, node->getChild((unsigned int) i), l + 1);
 
             if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
           }
@@ -251,7 +256,7 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
 
             if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-            writeMathML(out, node->getChild(i), l + 1);
+            writeMathML(out, node->getChild((unsigned int) i), l + 1);
 
             if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
           }
@@ -272,7 +277,7 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
     }
 }
 
-void Expression2PresentationMML::writeMathMLFunction(std::ostream & out, const ASTNode* node, unsigned int l) const
+void Expression2PresentationMML::writeMathMLFunction(std::ostream & out, const ASTNode* node, size_t l) const
 {
   out << SPC(l) << "<mrow>" << std::endl;
 
@@ -282,14 +287,14 @@ void Expression2PresentationMML::writeMathMLFunction(std::ostream & out, const A
   out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
   out << SPC(l + 2) << "<mrow>" << std::endl;
 
-  unsigned int i;
+  size_t i;
 
   for (i = 0; i < node->getNumChildren(); ++i)
     {
       if (i)
         out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
 
-      writeMathML(out, node->getChild(i), l + 3);
+      writeMathML(out, node->getChild((unsigned int) i), l + 3);
     }
 
   out << SPC(l + 2) << "</mrow>" << std::endl;
@@ -299,7 +304,7 @@ void Expression2PresentationMML::writeMathMLFunction(std::ostream & out, const A
   out << SPC(l) << "</mrow>" << std::endl;
 }
 
-void Expression2PresentationMML::writeMathMLName(std::ostream & out, const ASTNode* node, unsigned int l) const
+void Expression2PresentationMML::writeMathMLName(std::ostream & out, const ASTNode* node, size_t l) const
 {
 
   if (!mpModel)
@@ -373,7 +378,7 @@ void Expression2PresentationMML::writeMathMLName(std::ostream & out, const ASTNo
   out << SPC(l) << "<mi>" << node->getName() << "</mi>" << std::endl;
 }
 
-void Expression2PresentationMML::writeMathMLNumber(std::ostream & out, const ASTNode* node, unsigned int l) const
+void Expression2PresentationMML::writeMathMLNumber(std::ostream & out, const ASTNode* node, size_t l) const
 {
   if (node->isInteger())
     out << SPC(l) << "<mn>" << node->getInteger() << "</mn>" << std::endl;

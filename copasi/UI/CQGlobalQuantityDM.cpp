@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:38:00 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -46,7 +52,7 @@ const std::vector< unsigned C_INT32 >& CQGlobalQuantityDM::getItemToType()
 
 int CQGlobalQuantityDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues().size() + 1;
 }
 int CQGlobalQuantityDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -89,7 +95,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_GQ:
                 return QVariant(QString("New Quantity"));
               case COL_TYPE_GQ:
@@ -119,7 +125,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
               case COL_INITIAL_GQ:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(pGQ->getInitialValue()));
+                  return QVariant(QString::number(pGQ->getInitialValue(), 'g', 10));
                 else
                   return QVariant(pGQ->getInitialValue());
               }
@@ -228,7 +234,7 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
         pGQ->setObjectName(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, pGQ->getKey());
     }
 
   return true;
@@ -240,11 +246,11 @@ bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
+      CModelValue *pGQ = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGQ->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, "");
 
   return true;
 }
@@ -258,11 +264,13 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeModelValue(position);
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, "");
 
   return true;
 }
@@ -272,7 +280,10 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -294,18 +305,18 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CModelValue * pGQ = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
 
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "quantity",
+            CQMessageBox::confirmDelete(NULL, "quantity",
                                         FROM_UTF8(pGQ->getObjectName()),
                                         pGQ->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

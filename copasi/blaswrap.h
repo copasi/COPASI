@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/13 13:31:09 $
+//   $Date: 2011/03/07 19:24:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,7 +27,7 @@
 #endif // max
 
 extern "C"
-  {
+{
 #ifdef USE_MKL
 # include "mkl_blas.h"
 #  define daxpy_ daxpy
@@ -35,6 +40,17 @@ extern "C"
 #endif // USE_MKL
 
 #if (defined USE_CLAPACK || defined USE_LAPACK)
+
+# if (defined WIN32 && defined USE_LAPACK)
+#  define daxpy_ DAXPY
+#  define dcopy_ DCOPY
+#  define ddot_ DDOT
+#  define dgemm_ DGEMM
+#  define dnrm2_ DNRM2
+#  define dscal_ DSCAL
+#  define idamax_ IDAMAX
+# endif // WIN32 && USE_LAPACK
+
 # ifdef USE_CLAPACK
 #  define daxpy_ f2c_daxpy
 #  define dcopy_ f2c_dcopy
@@ -44,6 +60,7 @@ extern "C"
 #  define dscal_ f2c_dscal
 #  define idamax_ f2c_idamax
 # endif // USE_CLAPACK
+
 # include "f2c.h"
 # include "blas.h"
 #endif // USE_CLAPACK || USE_LAPACK
@@ -51,26 +68,26 @@ extern "C"
 #ifdef USE_SUNPERF
 # include "sunperf.h"
 #endif // USE_SUNPERF
-  }
+}
 
 #ifdef Darwin
 # define vector
 # include "Accelerate.h"
 # define daxpy_(N, ALPHA, X, INCX, Y, INCY) \
-    cblas_daxpy(*N, *ALPHA, X, *INCX, Y, *INCY)
+  cblas_daxpy(*N, *ALPHA, X, *INCX, Y, *INCY)
 # define dcopy_(N, X, INCX, Y, INCY) \
-    cblas_dcopy(*N, X, *INCX, Y, *INCY)
+  cblas_dcopy(*N, X, *INCX, Y, *INCY)
 # define ddot_(N, X, INCX, Y, INCY) \
-    cblas_ddot(*N, X, *INCX, Y, *INCY)
+  cblas_ddot(*N, X, *INCX, Y, *INCY)
 # define dgemm_(TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC) \
-    cblas_dgemm(CblasColMajor, \
-                (*TRANSA == 'N' ? CblasNoTrans: CblasTrans), \
-                (*TRANSB == 'N' ? CblasNoTrans: CblasTrans), \
-                *M, *N, *K, *ALPHA, A, *LDA, B, *LDB, *BETA, C, *LDC)
+  cblas_dgemm(CblasColMajor, \
+              (*TRANSA == 'N' ? CblasNoTrans: CblasTrans), \
+              (*TRANSB == 'N' ? CblasNoTrans: CblasTrans), \
+              *M, *N, *K, *ALPHA, A, *LDA, B, *LDB, *BETA, C, *LDC)
 # define dscal_(N, ALPHA, X, INCX) cblas_dscal(*N, *ALPHA, X *INCX)
 # define dnrm2_(N, X, INCX) cblas_dnrm2(*N, X, *INCX)
 # define idamax_(N, X, INCX) \
-    cblas_idamax(*N, X, *INCX)
+  cblas_idamax(*N, X, *INCX)
 # undef vector
 # define vector vector
 using std::isnan;
@@ -85,8 +102,10 @@ using std::isnan;
 #endif // max
 
 #ifdef WIN32
+#if _MSC_VER < 1600
 # define min _cpp_min
 # define max _cpp_max
+#endif
 #endif // WIN32
 
 #endif // __BLAS_H

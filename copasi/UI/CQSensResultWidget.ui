@@ -8,7 +8,7 @@
 <comment>   $Date: 2010/03/21 15:21:13 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -134,7 +134,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
-   <header>copasiWidget.h</header>
+   <header>copasi/UI/copasiWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

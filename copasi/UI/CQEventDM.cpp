@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:57 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,7 +34,7 @@ CQEventDM::CQEventDM(QObject *parent)
 
 int CQEventDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents().size() + 1;
 }
 int CQEventDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -65,7 +70,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_EVENTS:
                 return QVariant(QString("New Event"));
               case COL_ORDER_EVENTS:
@@ -128,8 +133,10 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
               {
                 if (pEvent->getDelayExpression() == "")
                   return QVariant(QString("No"));
+                else if (pEvent->getDelayAssignment())
+                  return QVariant(QString("Assignment"));
                 else
-                  return QVariant(QString("Yes"));
+                  return QVariant(QString("Calculation"));
               }
 
               case COL_DELAY_EXPRESSION_EVENTS:
@@ -208,7 +215,7 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
         pEvent->setObjectName(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, pEvent->getKey());
     }
 
   return true;
@@ -220,11 +227,12 @@ bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
+      CEvent *pEvent =
+        (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
+      emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::EVENT, ListViews::ADD, "");
 
   return true;
 }
@@ -238,11 +246,12 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(position);
+      emit notifyGUI(ListViews::EVENT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::EVENT, ListViews::DELETE, "");
 
   return true;
 }
@@ -252,7 +261,10 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -274,19 +286,19 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CEvent * pEvent = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getEvents().CCopasiVector< CEvent >::getIndex(pEvent);
 
       if (delRow != C_INVALID_INDEX)
         {
           std::set< const CCopasiObject * > deletedObjects;
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "event",
+            CQMessageBox::confirmDelete(NULL, "event",
                                         FROM_UTF8(pEvent->getObjectName()),
                                         deletedObjects);
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

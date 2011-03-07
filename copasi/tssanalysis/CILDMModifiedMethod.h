@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 14:48:16 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:34:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -41,8 +41,7 @@ class CState;
 class CILDMModifiedMethod : public CTSSAMethod
 {
   friend CTSSAMethod *
-  CTSSAMethod::createTSSAMethod(CCopasiMethod::SubType subType,
-                                CTSSAProblem * pProblem);
+  CTSSAMethod::createMethod(CCopasiMethod::SubType subType);
 
   // Operations
 private:
@@ -67,7 +66,7 @@ public:
   ~CILDMModifiedMethod();
 
   /**
-   * Intialize the method parameter
+   * Initialize the method parameter
    */
   virtual void initializeParameter();
 
@@ -180,7 +179,7 @@ public:
   * set the desription of CArayAnnotation for both dimensions
   **/
   //void setAnnotationM(int step);
-  bool setAnnotationM(int step);
+  virtual bool setAnnotationM(size_t step);
 
   /**
    *  print of the standart report sequence for ILDM Method

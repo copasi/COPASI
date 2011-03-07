@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.10 $
+#   $Revision: 1.11 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/09/07 16:33:27 $
+#   $Date: 2011/03/07 19:32:02 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -17,10 +17,11 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.10 $ $Author: shoops $ $Date: 2010/09/07 16:33:27 $
+# $Revision: 1.11 $ $Author: shoops $ $Date: 2011/03/07 19:32:02 $
 ######################################################################
 
 LIB = plotUI
+DISTFILES = plotUI.pro
 
 HEADERS += CopasiPlot.h \
            COutputHandlerPlot.h \
@@ -51,10 +52,10 @@ include(../lib.pri)
 CONFIG += qt
 
 include(../common.pri)
-
+include(../srcDistribution.pri)
 
 #The following line was inserted by qt3to4
 QT +=  opengl 
 
 #The following line is for implementing QtSvg module
-QT += svg qt3support
+QT += svg

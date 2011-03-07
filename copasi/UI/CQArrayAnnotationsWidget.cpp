@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/06/30 09:39:55 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -205,13 +205,13 @@ void CQArrayAnnotationsWidget::initSelectionTable()
   mpSelectionTable->setColumnReadOnly(0, true);
   mpSelectionTable->setColumnReadOnly(1, false);
 
-  C_INT32 i, imax = mpArray->dimensionality();
+  size_t i, imax = mpArray->dimensionality();
   mpSelectionTable->setNumRows(0);
-  mpSelectionTable->setNumRows(imax);
+  mpSelectionTable->setNumRows((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      mpSelectionTable->setText(i, 0, FROM_UTF8(mpArray->getDimensionDescription(i)));
+      mpSelectionTable->setText((int) i, 0, FROM_UTF8(mpArray->getDimensionDescription(i)));
 
       //combo box
       QStringList combolist;
@@ -219,15 +219,15 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       combolist.prepend("In columns");
       combolist.prepend("In rows");
 
-      mpSelectionTable->setItem(i, 1, new Q3ComboTableItem(mpSelectionTable, combolist));
+      mpSelectionTable->setItem((int) i, 1, new Q3ComboTableItem(mpSelectionTable, combolist));
       //mpSelectionTable->adjustRow(i);
 
       //set first combobox to "In rows", second to "In columns" and all other to the
       //first object in the annotations list
       if (i < 2)
-        setCurrentItem(i, i);
+        setCurrentItem((int) i, (int) i);
       else
-        setCurrentItem(i, 2);
+        setCurrentItem((int) i, 2);
     }
 
   mpSelectionTable->adjustColumn(0);
@@ -243,12 +243,12 @@ void CQArrayAnnotationsWidget::storeCurrentCombos()
   qDebug() << "-- in storeCurrentCombos -- \n";
 #endif
 
-  C_INT32 i, imax = mpArray->dimensionality();
+  size_t i, imax = mpArray->dimensionality();
   combos.resize(imax);
 
   for (i = 0; i < imax; ++i)
     {
-      C_INT32 tmp = currentItem(i);
+      int tmp = currentItem((int) i);
 
       if (tmp >= 2)
         combos[i] = 2;
@@ -341,32 +341,32 @@ void CQArrayAnnotationsWidget::selectionTableChanged(int row, int col)
   if (newValue == 0) //new value is "row"
     {
       //find out which line was "row" before
-      C_INT32 i, imax = mpArray->dimensionality();
+      size_t i, imax = mpArray->dimensionality();
 
       for (i = 0; i < imax; ++i)
         if (combos[i] == 0)
-          setCurrentItem(i, combos[row]);
+          setCurrentItem((int) i, combos[row]);
     }
 
   if (newValue == 1) //new value is "column"
     {
       //find out which line was "col" before
-      C_INT32 i, imax = mpArray->dimensionality();
+      size_t i, imax = mpArray->dimensionality();
 
       for (i = 0; i < imax; ++i)
         if (combos[i] == 1)
-          setCurrentItem(i, combos[row]);
+          setCurrentItem((int) i, combos[row]);
     }
 
   if (newValue >= 2) //new value is neither "col" nor "row"
     {
       //find a line which was neither "col" nor "row"  before
-      C_INT32 i, imax = mpArray->dimensionality();
+      size_t i, imax = mpArray->dimensionality();
 
       for (i = 0; i < imax; ++i)
         if (combos[i] >= 2)
           {
-            setCurrentItem(i, combos[row]);
+            setCurrentItem((int) i, combos[row]);
             break;
           }
     }
@@ -375,12 +375,12 @@ finish:
   //call fillTable()
   {
     CCopasiAbstractArray::index_type index; index.resize(mpArray->dimensionality());
-    C_INT32 rowindex = 0, colindex = 0;
-    C_INT32 i, imax = mpArray->dimensionality();
+    size_t rowindex = 0, colindex = 0;
+    size_t i, imax = mpArray->dimensionality();
 
     for (i = 0; i < imax; ++i)
       {
-        C_INT32 tmp = currentItem(i);
+        int tmp = currentItem((int) i);
 
         //set index
         if (tmp < 2)  //row or column
@@ -403,7 +403,7 @@ finish:
   storeCurrentCombos();
 }
 
-void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_INT32 colIndex,
+void CQArrayAnnotationsWidget::fillTable(size_t rowIndex, size_t colIndex,
     CCopasiAbstractArray::index_type & index)
 {
 #ifdef DEBUG_UI
@@ -415,25 +415,25 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
   assert(rowIndex < index.size());
   assert(colIndex < index.size());
 
-  mpContentTable->setNumCols(mpArray->size()[colIndex]);
-  mpContentTable->setNumRows(mpArray->size()[rowIndex]);
+  mpContentTable->setNumCols((int) mpArray->size()[colIndex]);
+  mpContentTable->setNumRows((int) mpArray->size()[rowIndex]);
 
   std::vector<std::string> rowdescr = mpArray->getAnnotationsString(rowIndex);
   std::vector<std::string> coldescr = mpArray->getAnnotationsString(colIndex);
 
-  unsigned C_INT32 i, imax = mpArray->size()[rowIndex];
-  unsigned C_INT32 j, jmax = mpArray->size()[colIndex];
+  size_t i, imax = mpArray->size()[rowIndex];
+  size_t j, jmax = mpArray->size()[colIndex];
 
   //annotations
   for (i = 0; i < imax; ++i)
     {
-      mpContentTable->verticalHeader()->setLabel(i, FROM_UTF8(rowdescr[i]));
+      mpContentTable->verticalHeader()->setLabel((int) i, FROM_UTF8(rowdescr[i]));
     }
 
   for (j = 0; j < jmax; ++j)
     {
       // :TODO: This is a hack we need a smarter way possibly using getObjctDisplayName.
-      mpContentTable->horizontalHeader()->setLabel(j, FROM_UTF8(coldescr[j]).replace("; {", "\n{"));
+      mpContentTable->horizontalHeader()->setLabel((int) j, FROM_UTF8(coldescr[j]).replace("; {", "\n{"));
 #ifdef DEBUG_UI
       qDebug() << "text on col " << j << " = " << FROM_UTF8(coldescr[j]).replace("; {", "\n{");
 #endif
@@ -464,13 +464,13 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
 
         if (!mpColorScale)
           {
-            mpContentTable->setText(i, j, QString::number((*mpArray->array())[index]));
+            mpContentTable->setText((int) i, (int) j, QString::number((*mpArray->array())[index]));
           }
         else
           {
             C_FLOAT64 number = (*mpArray->array())[index];
             QColor color = mpColorScale->getColor(number);
-            mpContentTable->setItem(i, j, new ColorTableItem(mpContentTable, Q3TableItem::Never, color,
+            mpContentTable->setItem((int) i, (int) j, new ColorTableItem(mpContentTable, Q3TableItem::Never, color,
                                     QString::number(number)));
           }
       }
@@ -486,7 +486,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
     fillBarChart();
 }
 
-void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
+void CQArrayAnnotationsWidget::fillTable(size_t rowIndex,
     CCopasiAbstractArray::index_type & index)
 {
 #ifdef DEBUG_UI
@@ -498,11 +498,11 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
   assert(rowIndex < index.size());
 
   mpContentTable->setNumCols(1);
-  mpContentTable->setNumRows(mpArray->size()[rowIndex]);
+  mpContentTable->setNumRows((int) mpArray->size()[rowIndex]);
 
   mpContentTable->horizontalHeader()->setLabel(0, "");
 
-  unsigned C_INT32 i, imax = mpArray->size()[rowIndex];
+  size_t i, imax = mpArray->size()[rowIndex];
 
   //automatic color scaling
   if (mAutomaticColorScaling)
@@ -524,17 +524,17 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
   for (i = 0; i < imax; ++i)
     {
       index[rowIndex] = i;
-      mpContentTable->verticalHeader()->setLabel(i, FROM_UTF8(rowdescr[i]));
+      mpContentTable->verticalHeader()->setLabel((int) i, FROM_UTF8(rowdescr[i]));
 
       if (!mpColorScale)
         {
-          mpContentTable->setText(i, 0, QString::number((*mpArray->array())[index]));
+          mpContentTable->setText((int) i, 0, QString::number((*mpArray->array())[index]));
         }
       else
         {
           C_FLOAT64 number = (*mpArray->array())[index];
           QColor color = mpColorScale->getColor(number);
-          mpContentTable->setItem(i, 0, new ColorTableItem(mpContentTable, Q3TableItem::Never, color,
+          mpContentTable->setItem((int) i, 0, new ColorTableItem(mpContentTable, Q3TableItem::Never, color,
                                   QString::number(number)));
         }
     }
@@ -886,12 +886,12 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mOneDimensional)
     assert(mColIndex < mIndex.size());
 
-  mpContentTable->setNumRows(mpArray->size()[mRowIndex]);
+  mpContentTable->setNumRows((int) mpArray->size()[mRowIndex]);
 
   if (mOneDimensional)
     mpContentTable->setNumCols(1);
   else
-    mpContentTable->setNumCols(mpArray->size()[mColIndex]);
+    mpContentTable->setNumCols((int) mpArray->size()[mColIndex]);
 
 //  mpContentTable->horizontalHeader()->setLabel(0, "");  --> ???
 
@@ -900,8 +900,8 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mOneDimensional)
     std::vector<std::string> coldescr = mpArray->getAnnotationsString(mColIndex);
 
-  unsigned C_INT32 i, imax = mpArray->size()[mRowIndex];
-  unsigned C_INT32 j, jmax;
+  size_t i, imax = mpArray->size()[mRowIndex];
+  size_t j, jmax;
 
   if (mOneDimensional)
     jmax = 1;
@@ -911,8 +911,8 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (jmax > 0 && imax > 0)
     {
       //create a new array data, witch holds the hole numeric data
-      unsigned C_INT32 columns = jmax;
-      unsigned C_INT32 rows = imax;
+      size_t columns = jmax;
+      size_t rows = imax;
       data = new double * [columns];
 
       for (i = 0; i < columns; ++i)
@@ -985,7 +985,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
 
       for (i = 0; i < 100; i++)
         {
-          mColors.push_back(i);
+          mColors.push_back((int) i);
           mColors[i] = mpColorScale->getColor(minZ + i * step);
         }
 
@@ -1009,7 +1009,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
           else
             mpPlot3d->setDescriptions(&mpArray->getAnnotationsString(mColIndex), &mpArray->getAnnotationsString(mRowIndex));
 
-          mpPlot3d->setData(data, columns, rows, holeSection);
+          mpPlot3d->setData(data, (int) columns, (int) rows, holeSection);
           enableBarChart(true);
         }
     }

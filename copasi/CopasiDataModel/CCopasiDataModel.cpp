@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.152 $
+//   $Revision: 1.153 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/22 13:24:49 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:27:11 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,6 +31,7 @@
 #include "copasi/report/CCopasiTimer.h"
 #include "commandline/COptions.h"
 #include "commandline/CConfigurationFile.h"
+#include "commandline/CLocaleString.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
 #include "optimization/COptTask.h"
@@ -104,17 +105,12 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
 CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     CCopasiContainer("Root", NULL, "CN", CCopasiObject::DataModel),
     COutputHandler(),
-    mpModel(NULL),
-    mpTaskList(NULL),
-    mpReportDefinitionList(NULL),
-    mpPlotDefinitionList(NULL),
-    mpListOfLayouts(NULL),
+    mData(),
+    mOldData(),
     mWithGUI(withGUI),
-    mpGUI(NULL),
     mChanged(false),
     mAutoSaveNeeded(false),
     mRenameHandler(this),
-    mpCurrentSBMLDocument(NULL),
     mSBMLFileName(""),
 #ifdef USE_CRENDER_EXTENSION
     mReferenceDir(""),
@@ -122,7 +118,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
 
-  newModel(NULL, NULL);
+  newModel(NULL, NULL, NULL, true);
   CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the constructor should this be called?
   new CCopasiTimer(CCopasiTimer::WALL, this);
   new CCopasiTimer(CCopasiTimer::CPU, this);
@@ -134,22 +130,17 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
                                    bool withGUI):
     CCopasiContainer(name, pParent, type, CCopasiObject::DataModel),
     COutputHandler(),
-    mpModel(NULL),
-    mpTaskList(NULL),
-    mpReportDefinitionList(NULL),
-    mpPlotDefinitionList(NULL),
-    mpListOfLayouts(NULL),
+    mData(),
+    mOldData(),
     mWithGUI(withGUI),
-    mpGUI(NULL),
     mChanged(false),
     mAutoSaveNeeded(false),
     mRenameHandler(this),
-    mpCurrentSBMLDocument(NULL),
     mSBMLFileName(""),
     pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
-  newModel(NULL, NULL);
-  CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the contructor should this be called?
+  newModel(NULL, NULL, NULL, true);
+  CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the constructor should this be called?
   new CCopasiTimer(CCopasiTimer::WALL, this);
   new CCopasiTimer(CCopasiTimer::CPU, this);
 }
@@ -157,17 +148,12 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
 CCopasiDataModel::~CCopasiDataModel()
 {
   CCopasiObject::setRenameHandler(NULL);
-  pdelete(mpModel);
-  pdelete(mpTaskList);
-  pdelete(mpReportDefinitionList);
-  pdelete(mpPlotDefinitionList);
-  pdelete(mpListOfLayouts);
-  pdelete(mpGUI);
-  pdelete(mpCurrentSBMLDocument);
   pdelete(pOldMetabolites);
 }
 
-bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* pProcessReport)
+bool CCopasiDataModel::loadModel(const std::string & fileName,
+                                 CProcessReport* pProcessReport,
+                                 const bool & deleteOldData)
 {
   CCopasiMessage::clearDeque();
 
@@ -180,7 +166,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       !CDirEntry::makePathAbsolute(FileName, PWD))
     FileName = CDirEntry::fileName(FileName);
 
-  std::ifstream File(utf8ToLocale(FileName).c_str());
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
 
   if (File.fail())
     {
@@ -205,11 +191,11 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           return false;
         }
 
-      newModel(NULL, NULL);
-      mpModel->load(inbuf);
+      newModel(NULL, NULL, NULL, deleteOldData);
+      mData.pModel->load(inbuf);
 
-      dynamic_cast<CSteadyStateTask *>((*mpTaskList)["Steady-State"])->load(inbuf);
-      dynamic_cast<CTrajectoryTask *>((*mpTaskList)["Time-Course"])->load(inbuf);
+      dynamic_cast<CSteadyStateTask *>((*mData.pTaskList)["Steady-State"])->load(inbuf);
+      dynamic_cast<CTrajectoryTask *>((*mData.pTaskList)["Time-Course"])->load(inbuf);
 
       mSaveFileName = CDirEntry::dirName(FileName)
                       + CDirEntry::Separator
@@ -228,7 +214,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 #endif // USE_CRENDER_EXTENSION
       mSBMLFileName = "";
 
-      pdelete(mpCurrentSBMLDocument);
+      pdelete(mData.pCurrentSBMLDocument);
 
       this->mCopasi2SBMLMap.clear();
     }
@@ -288,27 +274,27 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           throw;
         }
 
-      newModel(XML.getModel(), pProcessReport);
+      newModel(XML.getModel(), pProcessReport, NULL, deleteOldData);
 
-      pdelete(mpCurrentSBMLDocument);
+      pdelete(mData.pCurrentSBMLDocument);
 
       this->mCopasi2SBMLMap.clear();
 
       if (XML.getTaskList())
         {
-          pdelete(mpTaskList);
-          mpTaskList = XML.getTaskList();
-          mpTaskList->setObjectName("TaskList");
-          add(mpTaskList, true);
+          pdelete(mData.pTaskList);
+          mData.pTaskList = XML.getTaskList();
+          mData.pTaskList->setObjectName("TaskList");
+          add(mData.pTaskList, true);
           addDefaultTasks();
 
           // We need to initialize all the task so that results are available
 
           // We suppress all errors and warnings
-          unsigned C_INT32 Size = CCopasiMessage::size();
+          size_t Size = CCopasiMessage::size();
 
-          CCopasiVectorN< CCopasiTask >::iterator it = mpTaskList->begin();
-          CCopasiVectorN< CCopasiTask >::iterator end = mpTaskList->end();
+          CCopasiVectorN< CCopasiTask >::iterator it = mData.pTaskList->begin();
+          CCopasiVectorN< CCopasiTask >::iterator end = mData.pTaskList->end();
 
           for (; it != end; ++it)
             {
@@ -328,34 +314,34 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 
       if (XML.getReportList())
         {
-          pdelete(mpReportDefinitionList);
-          mpReportDefinitionList = XML.getReportList();
-          add(mpReportDefinitionList, true);
+          pdelete(mData.pReportDefinitionList);
+          mData.pReportDefinitionList = XML.getReportList();
+          add(mData.pReportDefinitionList, true);
           addDefaultReports();
         }
 
       if (XML.getPlotList())
         {
-          pdelete(mpPlotDefinitionList);
-          mpPlotDefinitionList = XML.getPlotList();
-          add(mpPlotDefinitionList, true);
+          pdelete(mData.pPlotDefinitionList);
+          mData.pPlotDefinitionList = XML.getPlotList();
+          add(mData.pPlotDefinitionList, true);
         }
 
       //TODO: layouts
       if (XML.getLayoutList())
         {
-          pdelete(mpListOfLayouts);
-          mpListOfLayouts = XML.getLayoutList();
-          add(mpListOfLayouts, true);
+          pdelete(mData.pListOfLayouts);
+          mData.pListOfLayouts = XML.getLayoutList();
+          add(mData.pListOfLayouts, true);
         }
 
       // for debugging create a template layout
-      //mpListOfLayouts->add(CLayoutInitializer::createLayoutFromCModel(mpModel), true);
+      //mpListOfLayouts->add(CLayoutInitializer::createLayoutFromCModel(mData.pModel), true);
 
       if (mWithGUI)
         {
-          pdelete(mpGUI);
-          mpGUI = pGUI;
+          pdelete(mData.pGUI);
+          mData.pGUI = pGUI;
         }
 
       mSaveFileName = CDirEntry::normalize(FileName);
@@ -370,10 +356,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       return false;
     }
 
-  if (mpModel)
+  if (mData.pModel)
     {
-      mpModel->compileIfNecessary(pProcessReport);
-      mpModel->updateInitialValues();
+      mData.pModel->compileIfNecessary(pProcessReport);
+      mData.pModel->updateInitialValues();
     }
 
   changed(false);
@@ -417,7 +403,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
 
   try
     {
-      if (!mpModel->compileIfNecessary(pProcessReport))
+      if (!mData.pModel->compileIfNecessary(pProcessReport))
         return false;
     }
 
@@ -428,12 +414,12 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
 
   CCopasiXML XML;
 
-  XML.setModel(mpModel);
-  XML.setTaskList(mpTaskList);
-  XML.setReportList(mpReportDefinitionList);
-  XML.setPlotList(mpPlotDefinitionList);
-  XML.setGUI(mpGUI);
-  XML.setLayoutList(*mpListOfLayouts);
+  XML.setModel(mData.pModel);
+  XML.setTaskList(mData.pTaskList);
+  XML.setReportList(mData.pReportDefinitionList);
+  XML.setPlotList(mData.pPlotDefinitionList);
+  XML.setGUI(mData.pGUI);
+  XML.setLayoutList(*mData.pListOfLayouts);
   XML.setDatamodel(this);
   bool success = true;
 
@@ -520,16 +506,19 @@ bool CCopasiDataModel::autoSave()
   return true;
 }
 
-bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport, CListOfLayouts * pLol)
+bool CCopasiDataModel::newModel(CModel * pModel,
+                                CProcessReport* pProcessReport,
+                                CListOfLayouts * pLol,
+                                const bool & deleteOldData)
 {
   //deal with the CModel
-  pdelete(mpModel);
+  mOldData = mData;
 
   if (pModel)
-    mpModel = pModel;
+    mData.pModel = pModel;
   else
     {
-      mpModel = new CModel(this);
+      mData.pModel = new CModel(this);
       mSaveFileName = "";
       mSBMLFileName = "";
 #ifdef USE_CRENDER_EXTENSION
@@ -537,32 +526,49 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport,
       mReferenceDir = "";
 #endif // USE_CRENDER_EXTENSION
 
-      pdelete(mpCurrentSBMLDocument);
+      mData.pCurrentSBMLDocument = NULL;
 
       this->mCopasi2SBMLMap.clear();
     }
 
   //now do the same for the ListOfLayouts
-  pdelete(mpListOfLayouts);
-
   if (pLol)
-    mpListOfLayouts = pLol;
+    mData.pListOfLayouts = pLol;
   else
-    mpListOfLayouts = new CListOfLayouts("ListOflayouts", this);
+    mData.pListOfLayouts = new CListOfLayouts("ListOflayouts", this);
 
-  pdelete(mpTaskList);
-  mpTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", this);
+  mData.pTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", this);
+  mData.pReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", this);
+  mData.pPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", this);
+
+  if (mWithGUI)
+    {
+      mData.pGUI = new SCopasiXMLGUI("GUI", this);
+    }
+  else
+    {
+      mData.pGUI = NULL;
+    }
+
+  hideOldData();
+
+  if (mData.pModel)
+    {
+      mData.pModel->compileIfNecessary(pProcessReport);
+      mData.pModel->updateInitialValues();
+    }
 
   // We have at least one task of every type
   addDefaultTasks();
+  addDefaultReports();
 
   // We need to initialize all the task so that results are available
 
   // We suppress all errors and warnings
-  unsigned C_INT32 Size = CCopasiMessage::size();
+  size_t Size = CCopasiMessage::size();
 
-  CCopasiVectorN< CCopasiTask >::iterator it = mpTaskList->begin();
-  CCopasiVectorN< CCopasiTask >::iterator end = mpTaskList->end();
+  CCopasiVectorN< CCopasiTask >::iterator it = mData.pTaskList->begin();
+  CCopasiVectorN< CCopasiTask >::iterator end = mData.pTaskList->end();
 
   for (; it != end; ++it)
     {
@@ -579,31 +585,19 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport,
   while (CCopasiMessage::size() > Size)
     CCopasiMessage::getLastMessage();
 
-  pdelete(mpReportDefinitionList);
-  mpReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", this);
-  addDefaultReports();
-
-  pdelete(mpPlotDefinitionList);
-  mpPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", this);
-
-  if (mWithGUI)
-    {
-      pdelete(mpGUI);
-      mpGUI = new SCopasiXMLGUI("GUI", this);
-    }
-
-  if (mpModel)
-    {
-      mpModel->compileIfNecessary(pProcessReport);
-      mpModel->updateInitialValues();
-    }
-
   changed(false);
+
+  if (deleteOldData)
+    {
+      CCopasiDataModel::deleteOldData();
+    }
 
   return true;
 }
 
-bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText, CProcessReport* pImportHandler)
+bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
+    CProcessReport* pImportHandler,
+    const bool & deleteOldData)
 {
   CCopasiMessage::clearDeque();
 
@@ -637,15 +631,17 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
       return false;
     }
 
-  pdelete(mpCurrentSBMLDocument);
+  pdelete(mData.pCurrentSBMLDocument);
 
-  mpCurrentSBMLDocument = pSBMLDocument;
+  mData.pCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
 
-  return newModel(pModel, pImportHandler, pLol);
+  return newModel(pModel, pImportHandler, pLol, deleteOldData);
 }
 
-bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* pImportHandler)
+bool CCopasiDataModel::importSBML(const std::string & fileName,
+                                  CProcessReport* pImportHandler,
+                                  const bool & deleteOldData)
 {
   CCopasiMessage::clearDeque();
 
@@ -658,7 +654,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
       !CDirEntry::makePathAbsolute(FileName, PWD))
     FileName = CDirEntry::fileName(FileName);
 
-  std::ifstream File(utf8ToLocale(FileName).c_str());
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
 
   SBMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
@@ -706,11 +702,11 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 #endif // USE_CRENDER_EXTENSION
   mSBMLFileName = CDirEntry::normalize(FileName);
 
-  pdelete(mpCurrentSBMLDocument);
+  pdelete(mData.pCurrentSBMLDocument);
 
-  mpCurrentSBMLDocument = pSBMLDocument;
+  mData.pCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
-  return newModel(pModel, pImportHandler, pLol);
+  return newModel(pModel, pImportHandler, pLol, deleteOldData);
 }
 
 std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandler*/, int sbmlLevel, int sbmlVersion)
@@ -723,14 +719,14 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
   // if we export an L2 model to L3 or vice versa, we have to throw away any prior information
   // about the current sbml document because libsbml does not support the conversion
   // so we need to make sure that all model elements are created from scratch from the corresponding COPASI elements
-  if (this->mpCurrentSBMLDocument != NULL &&
-      ((this->mpCurrentSBMLDocument->getLevel() > 2 && sbmlLevel < 3) ||
-       (this->mpCurrentSBMLDocument->getLevel() < 3 && sbmlLevel > 2)
+  if (this->mData.pCurrentSBMLDocument != NULL &&
+      ((this->mData.pCurrentSBMLDocument->getLevel() > 2 && sbmlLevel < 3) ||
+       (this->mData.pCurrentSBMLDocument->getLevel() < 3 && sbmlLevel > 2)
       )
      )
     {
-      pOrigSBMLDocument = this->mpCurrentSBMLDocument;
-      this->mpCurrentSBMLDocument = NULL;
+      pOrigSBMLDocument = this->mData.pCurrentSBMLDocument;
+      this->mData.pCurrentSBMLDocument = NULL;
     }
 
 #endif // LIBSBML_VERSION
@@ -750,16 +746,16 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
   // This is actual vital to get around Bug 1086 as well.
   // Once I have a Level 1 model, all calls to setName on an
   // SBML object in that model also resets the id, which does not work with the current exporter
-  if ((sbmlLevel != 1 || mpCurrentSBMLDocument == NULL) && pOrigSBMLDocument == NULL)
+  if ((sbmlLevel != 1 || mData.pCurrentSBMLDocument == NULL) && pOrigSBMLDocument == NULL)
     {
-      if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
+      if (mData.pCurrentSBMLDocument != exporter.getSBMLDocument())
         {
-          pdelete(mpCurrentSBMLDocument);
+          pdelete(mData.pCurrentSBMLDocument);
         }
 
       // disown the SBML Document from the exporter so we don't have to copy it
       exporter.disownSBMLDocument();
-      mpCurrentSBMLDocument = exporter.getSBMLDocument();
+      mData.pCurrentSBMLDocument = exporter.getSBMLDocument();
       // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
       // since the objects
       this->mCopasi2SBMLMap.clear();
@@ -776,7 +772,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
   // we have to reset it
   else if (pOrigSBMLDocument != NULL)
     {
-      this->mpCurrentSBMLDocument = pOrigSBMLDocument;
+      this->mData.pCurrentSBMLDocument = pOrigSBMLDocument;
     }
 
 
@@ -819,7 +815,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
   try
     {
-      if (!mpModel->compileIfNecessary(pExportHandler))
+      if (!mData.pModel->compileIfNecessary(pExportHandler))
         return false;
     }
 
@@ -837,14 +833,14 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   // if we export an L2 model to L3 or vice versa, we have to throw away any prior information
   // about the current sbml document because libsbml does not support the conversion
   // so we need to make sure that all model elements are created from scratch from the corresponding COPASI elements
-  if (this->mpCurrentSBMLDocument != NULL &&
-      ((this->mpCurrentSBMLDocument->getLevel() > 2 && sbmlLevel < 3) ||
-       (this->mpCurrentSBMLDocument->getLevel() < 3 && sbmlLevel > 2)
+  if (this->mData.pCurrentSBMLDocument != NULL &&
+      ((this->mData.pCurrentSBMLDocument->getLevel() > 2 && sbmlLevel < 3) ||
+       (this->mData.pCurrentSBMLDocument->getLevel() < 3 && sbmlLevel > 2)
       )
      )
     {
-      pOrigSBMLDocument = this->mpCurrentSBMLDocument;
-      this->mpCurrentSBMLDocument = NULL;
+      pOrigSBMLDocument = this->mData.pCurrentSBMLDocument;
+      this->mData.pCurrentSBMLDocument = NULL;
     }
 
 #endif // LIBSBML_VERSION
@@ -859,15 +855,15 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   // This is actual vital to get around Bug 1086 as well.
   // Once I have a Level 1 model, all calls to setName on an
   // SBML object in that model also resets the id, which does not work with the current exporter
-  if ((sbmlLevel != 1 || mpCurrentSBMLDocument == NULL) && pOrigSBMLDocument == NULL)
+  if ((sbmlLevel != 1 || mData.pCurrentSBMLDocument == NULL) && pOrigSBMLDocument == NULL)
     {
 
-      if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
-        pdelete(mpCurrentSBMLDocument);
+      if (mData.pCurrentSBMLDocument != exporter.getSBMLDocument())
+        pdelete(mData.pCurrentSBMLDocument);
 
       // disown the SBML Document from the exporter so we don't have to copy it
       exporter.disownSBMLDocument();
-      mpCurrentSBMLDocument = exporter.getSBMLDocument();
+      mData.pCurrentSBMLDocument = exporter.getSBMLDocument();
       // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
       // since the objects
       this->mCopasi2SBMLMap.clear();
@@ -884,7 +880,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   // we have to reset it
   else if (pOrigSBMLDocument != NULL)
     {
-      this->mpCurrentSBMLDocument = pOrigSBMLDocument;
+      this->mData.pCurrentSBMLDocument = pOrigSBMLDocument;
     }
 
   mSBMLFileName = FileName;
@@ -919,7 +915,7 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
   try
     {
-      if (!mpModel->compileIfNecessary(pProcessReport))
+      if (!mData.pModel->compileIfNecessary(pProcessReport))
         return false;
     }
 
@@ -928,8 +924,8 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
       return false;
     }
 
-  CCopasiVector< CModelValue >::const_iterator it = mpModel->getModelValues().begin();
-  CCopasiVector< CModelValue >::const_iterator end = mpModel->getModelValues().end();
+  CCopasiVector< CModelValue >::const_iterator it = mData.pModel->getModelValues().begin();
+  CCopasiVector< CModelValue >::const_iterator end = mData.pModel->getModelValues().end();
 
   for (; it != end; ++it)
     if ((*it)->isUsed()) break;
@@ -961,17 +957,28 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
   return false;
 }
 
+void CCopasiDataModel::deleteOldData()
+{
+  pdelete(mOldData.pModel);
+  pdelete(mOldData.pTaskList);
+  pdelete(mOldData.pReportDefinitionList);
+  pdelete(mOldData.pPlotDefinitionList);
+  pdelete(mOldData.pListOfLayouts);
+  pdelete(mOldData.pGUI);
+  pdelete(mOldData.pCurrentSBMLDocument);
+}
+
 const CModel * CCopasiDataModel::getModel() const
-{return mpModel;}
+{return mData.pModel;}
 
 CModel * CCopasiDataModel::getModel()
-{return mpModel;}
+{return mData.pModel;}
 
 CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList()
-{return mpTaskList;}
+{return mData.pTaskList;}
 
 const CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList() const
-{return mpTaskList;}
+{return mData.pTaskList;}
 
 CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 {
@@ -980,59 +987,59 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
   switch (taskType)
     {
       case CCopasiTask::steadyState:
-        pTask = new CSteadyStateTask(mpTaskList);
+        pTask = new CSteadyStateTask(mData.pTaskList);
         break;
 
       case CCopasiTask::timeCourse:
-        pTask = new CTrajectoryTask(mpTaskList);
+        pTask = new CTrajectoryTask(mData.pTaskList);
         break;
 
       case CCopasiTask::scan:
-        pTask = new CScanTask(mpTaskList);
+        pTask = new CScanTask(mData.pTaskList);
         break;
 
       case CCopasiTask::fluxMode:
-        pTask = new CEFMTask(mpTaskList);
+        pTask = new CEFMTask(mData.pTaskList);
         break;
 
       case CCopasiTask::optimization:
-        pTask = new COptTask(taskType, mpTaskList);
+        pTask = new COptTask(taskType, mData.pTaskList);
         break;
 
       case CCopasiTask::parameterFitting:
-        pTask = new CFitTask(taskType, mpTaskList);
+        pTask = new CFitTask(taskType, mData.pTaskList);
         break;
 
       case CCopasiTask::mca:
-        pTask = new CMCATask(mpTaskList);
+        pTask = new CMCATask(mData.pTaskList);
         static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
         break;
 
       case CCopasiTask::lyap:
-        pTask = new CLyapTask(mpTaskList);
+        pTask = new CLyapTask(mData.pTaskList);
         break;
 
 #ifdef COPASI_TSS
       case CCopasiTask::tss:
-        pTask = new CTSSTask(mpTaskList);
+        pTask = new CTSSTask(mData.pTaskList);
         break;
 #endif // COPASI_TSS
 
       case CCopasiTask::sens:
-        pTask = new CSensTask(mpTaskList);
+        pTask = new CSensTask(mData.pTaskList);
         break;
 
       case CCopasiTask::tssAnalysis:
-        pTask = new CTSSATask(mpTaskList);
+        pTask = new CTSSATask(mData.pTaskList);
         break;
 
       case CCopasiTask::moieties:
-        pTask = new CMoietiesTask(taskType, mpTaskList);
+        pTask = new CMoietiesTask(taskType, mData.pTaskList);
         break;
 
 #ifdef COPASI_NONLIN_DYN
       case CCopasiTask::crosssection:
-        pTask = new CCrossSectionTask(mpTaskList);
+        pTask = new CCrossSectionTask(mData.pTaskList);
         break;
 #endif
 
@@ -1040,39 +1047,54 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         return pTask;
     }
 
-  pTask->getProblem()->setModel(mpModel);
-  mpTaskList->add(pTask);
+  pTask->getProblem()->setModel(mData.pModel);
+  mData.pTaskList->add(pTask);
 
   return pTask;
 }
 
 bool CCopasiDataModel::addDefaultTasks()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
-    if (mpTaskList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
+    if (mData.pTaskList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
       addTask((CCopasiTask::Type) i);
 
   return true;
 }
 
-std::set<std::string> CCopasiDataModel::listTaskDependentOnReport(const std::string & key)
+bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > candidates,
+    std::set< const CCopasiObject * > & dependentTasks) const
 {
-  std::set<std::string> TaskKeys;
+  size_t Size = dependentTasks.size();
 
-  CReportDefinition * pReportDefinition
-  = dynamic_cast< CReportDefinition * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  std::set< const CCopasiObject * >::const_iterator it = candidates.begin();
+  std::set< const CCopasiObject * >::const_iterator end = candidates.end();
 
-  if (!pReportDefinition) return TaskKeys;
+  CCopasiVectorN< CCopasiTask >::const_iterator itTask = mData.pTaskList->begin();
+  CCopasiVectorN< CCopasiTask >::const_iterator endTask = mData.pTaskList->end();
 
-  unsigned C_INT32 i, imax = mpTaskList->size();
 
-  for (i = 0; i < imax; i++)
-    if (pReportDefinition == (*mpTaskList)[i]->getReport().getReportDefinition())
-      TaskKeys.insert((*mpTaskList)[i]->getKey());
+  for (; it != end; ++it)
+    {
+      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(*it);
 
-  return TaskKeys;
+      if (pReportDefinition == NULL)
+        continue;
+
+      itTask = mData.pTaskList->begin();
+
+      for (; itTask != endTask; ++itTask)
+        {
+          if ((*itTask)->getReport().getReportDefinition() == pReportDefinition)
+            {
+              dependentTasks.insert(*itTask);
+            }
+        }
+    }
+
+  return Size < dependentTasks.size();
 }
 
 CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskType)
@@ -1236,19 +1258,19 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         return pReport;
     }
 
-  if (pReport) mpReportDefinitionList->add(pReport, true);
+  if (pReport) mData.pReportDefinitionList->add(pReport, true);
 
   return pReport;
 }
 
 bool CCopasiDataModel::addDefaultReports()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
     {
       //try to create the report if it doesn't exist
-      if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
+      if (mData.pReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
         {
           addReport((CCopasiTask::Type) i);
         }
@@ -1256,14 +1278,14 @@ bool CCopasiDataModel::addDefaultReports()
       //see if the report exists now
       CReportDefinition* pReportDef = NULL;
 
-      if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
-        pReportDef = (*mpReportDefinitionList)[CCopasiTask::TypeName[i]];
+      if (mData.pReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
+        pReportDef = (*mData.pReportDefinitionList)[CCopasiTask::TypeName[i]];
 
       //see if the task exists
       CCopasiTask* pTask = NULL;
 
-      if (mpTaskList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
-        pTask = (*mpTaskList)[CCopasiTask::TypeName[i]];
+      if (mData.pTaskList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
+        pTask = (*mData.pTaskList)[CCopasiTask::TypeName[i]];
 
       if (pTask && pReportDef) //task and report definition exist
         {
@@ -1282,19 +1304,19 @@ bool CCopasiDataModel::addDefaultReports()
 }
 
 CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
-{return mpReportDefinitionList;}
+{return mData.pReportDefinitionList;}
 
 COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList()
-{return mpPlotDefinitionList;}
+{return mData.pPlotDefinitionList;}
 
 const CListOfLayouts * CCopasiDataModel::getListOfLayouts() const
-{return mpListOfLayouts;}
+{return mData.pListOfLayouts;}
 
 CListOfLayouts * CCopasiDataModel::getListOfLayouts()
-{return mpListOfLayouts;}
+{return mData.pListOfLayouts;}
 
 SCopasiXMLGUI * CCopasiDataModel::getGUI()
-{return mpGUI;}
+{return mData.pGUI;}
 
 const std::string & CCopasiDataModel::getFileName() const
 {return mSaveFileName;}
@@ -1310,7 +1332,7 @@ void CCopasiDataModel::changed(const bool & changed)
 
 SBMLDocument* CCopasiDataModel::getCurrentSBMLDocument()
 {
-  return this->mpCurrentSBMLDocument;
+  return this->mData.pCurrentSBMLDocument;
 }
 
 bool CCopasiDataModel::setSBMLFileName(const std::string & fileName)
@@ -1335,7 +1357,7 @@ std::map<CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
 void CCopasiDataModel::removeSBMLIdFromFunctions()
 {
   CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
-  unsigned int i, iMax = pFunDB->loadedFunctions().size();
+  size_t i, iMax = pFunDB->loadedFunctions().size();
 
   for (i = 0; i < iMax; ++i)
     {
@@ -1352,13 +1374,13 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
     return false;
 
   //Check if Layout with that name exists
-  unsigned C_INT32 index =
-    mpListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
+  size_t index =
+    mData.pListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mpListOfLayouts->CCopasiVector< CLayout >::remove(index);
+  mData.pListOfLayouts->CCopasiVector< CLayout >::remove(index);
 
   return true;
 }
@@ -1369,7 +1391,7 @@ const CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopas
   const CCopasiObject * pObject = NULL;
   const CCopasiContainer* pContainer;
   CCopasiObjectName ContainerName;
-  unsigned C_INT32 containerIndex;
+  size_t containerIndex;
   std::string::size_type pos;
 
   //favor to search the list of container first
@@ -1419,3 +1441,102 @@ const std::string& CCopasiDataModel::getReferenceDirectory() const
   return this->mReferenceDir;
 }
 #endif // USE_CRENDER_EXTENSION
+
+CCopasiDataModel::CData::CData():
+    pModel(NULL),
+    pTaskList(NULL),
+    pReportDefinitionList(NULL),
+    pPlotDefinitionList(NULL),
+    pListOfLayouts(NULL),
+    pGUI(NULL),
+    pCurrentSBMLDocument(NULL)
+{}
+
+CCopasiDataModel::CData::CData(const CData & src):
+    pModel(src.pModel),
+    pTaskList(src.pTaskList),
+    pReportDefinitionList(src.pReportDefinitionList),
+    pPlotDefinitionList(src.pPlotDefinitionList),
+    pListOfLayouts(src.pListOfLayouts),
+    pGUI(src.pGUI),
+    pCurrentSBMLDocument(src.pCurrentSBMLDocument)
+{}
+
+CCopasiDataModel::CData::~CData()
+{}
+
+CCopasiDataModel::CData & CCopasiDataModel::CData::operator = (const CData & rhs)
+{
+  pModel = rhs.pModel;
+  pTaskList = rhs.pTaskList;
+  pReportDefinitionList = rhs.pReportDefinitionList;
+  pPlotDefinitionList = rhs.pPlotDefinitionList;
+  pListOfLayouts = rhs.pListOfLayouts;
+  pGUI = rhs.pGUI;
+  pCurrentSBMLDocument = rhs.pCurrentSBMLDocument;
+
+  return *this;
+}
+
+void CCopasiDataModel::hideOldData()
+{
+  if (mOldData.pModel != NULL &&
+      mOldData.pModel != mData.pModel)
+    {
+      mOldData.pModel->setObjectParent(NULL);
+      remove(mOldData.pModel);
+    }
+  else
+    mOldData.pModel = NULL;
+
+  if (mOldData.pTaskList != NULL &&
+      mOldData.pTaskList != mData.pTaskList)
+    {
+      mOldData.pTaskList->setObjectParent(NULL);
+      remove(mOldData.pTaskList);
+    }
+  else
+    mOldData.pTaskList = NULL;
+
+  if (mOldData.pReportDefinitionList != NULL &&
+      mOldData.pReportDefinitionList != mData.pReportDefinitionList)
+    {
+      mOldData.pReportDefinitionList->setObjectParent(NULL);
+      remove(mOldData.pReportDefinitionList);
+    }
+  else
+    mOldData.pReportDefinitionList = NULL;
+
+  if (mOldData.pPlotDefinitionList != NULL &&
+      mOldData.pPlotDefinitionList != mData.pPlotDefinitionList)
+    {
+      mOldData.pPlotDefinitionList->setObjectParent(NULL);
+      remove(mOldData.pPlotDefinitionList);
+    }
+  else
+    mOldData.pPlotDefinitionList = NULL;
+
+  if (mOldData.pListOfLayouts != NULL &&
+      mOldData.pListOfLayouts != mData.pListOfLayouts)
+    {
+      mOldData.pListOfLayouts->setObjectParent(NULL);
+      remove(mOldData.pListOfLayouts);
+    }
+  else
+    mOldData.pListOfLayouts = NULL;
+
+  if (mOldData.pGUI != NULL &&
+      mOldData.pGUI != mData.pGUI)
+    {
+      mOldData.pGUI->setObjectParent(NULL);
+      remove(mOldData.pGUI);
+    }
+  else
+    mOldData.pGUI = NULL;
+
+  if (mOldData.pCurrentSBMLDocument == mData.pCurrentSBMLDocument)
+    mOldData.pCurrentSBMLDocument = NULL;
+
+}
+
+

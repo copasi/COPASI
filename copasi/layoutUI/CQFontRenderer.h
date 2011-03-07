@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:16 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,14 +44,14 @@ public:
    * The caller is responsible to free the memory of the TextureSpec object
    * and of the pData in the TextureSpec.
    */
-  virtual CLTextTextureSpec* operator()(const std::string& family, double fontSize, const std::string& text, CLText::FONT_WEIGHT weight = CLText::WEIGHT_NORMAL, CLText::FONT_STYLE style = CLText::STYLE_NORMAL, double zoomFactor = 1.0);
+  virtual std::pair<CLTextTextureSpec*, GLubyte*> operator()(const std::string& family, double fontSize, const std::string& text, CLText::FONT_WEIGHT weight = CLText::WEIGHT_NORMAL, CLText::FONT_STYLE style = CLText::STYLE_NORMAL, double zoomFactor = 1.0);
 
   /**
    * static method that creates a texture with a static FontRenderer
    * object.
    * This method can be used as a callback.
    */
-  static CLTextTextureSpec* createTexture(const std::string& family, double fontSize, const std::string& text, CLText::FONT_WEIGHT weight = CLText::WEIGHT_NORMAL, CLText::FONT_STYLE style = CLText::STYLE_NORMAL, double zoomFactor = 1.0);
+  static std::pair<CLTextTextureSpec*, GLubyte*> createTexture(const std::string& family, double fontSize, const std::string& text, CLText::FONT_WEIGHT weight = CLText::WEIGHT_NORMAL, CLText::FONT_STYLE style = CLText::STYLE_NORMAL, double zoomFactor = 1.0);
 
   /**
    * Returns the size for a font given a font, a text and a zoom factor.
@@ -74,7 +74,7 @@ protected:
    * The caller has to free the memory for the TextureSpec object and the
    * pData in the TextureSpec object.
    */
-  CLTextTextureSpec* getTexture(QFont& font, const std::string& text, double zoomFactor);
+  std::pair<CLTextTextureSpec*, GLubyte*> getTexture(QFont& font, const std::string& text, double zoomFactor);
 
   /**
    * Finds the font families that fit the given family name.

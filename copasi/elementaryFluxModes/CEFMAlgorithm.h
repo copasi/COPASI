@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.h,v $
-$Revision: 1.18 $
+$Revision: 1.19 $
 $Name:  $
-$Author: heilmand $
-$Date: 2010/08/02 15:12:05 $
+$Author: shoops $
+$Date: 2011/03/07 19:27:36 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,7 +124,7 @@ private:
   /**
    * Calculate number of combinations for an index
    */
-  double calculateCombinations(unsigned C_INT32 index);
+  double calculateCombinations(size_t index);
 
   // Attributes
 protected:
@@ -141,7 +141,7 @@ protected:
   /**
    * The number of reversible reactions.
    */
-  unsigned C_INT32 mReversible;
+  size_t mReversible;
 
   /**
    * A pointer to the current tableau matrix
@@ -166,12 +166,12 @@ protected:
   /**
    * Handle to the process report item "Current Step"
    */
-  unsigned C_INT32 mhSteps;
+  size_t mhSteps;
 
   /**
    * Vector set containing all step indexes for iteration when calculating flux modes.
    */
-  std::vector<unsigned C_INT32> mIndexSet;
+  std::vector<size_t> mIndexSet;
 
 };
 

@@ -1,15 +1,15 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.ui,v $ </comment>
-<comment>   $Revision: 1.10 $ </comment>
+<comment>   $Revision: 1.11 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2009/07/27 16:50:00 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2011/03/07 19:37:56 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
+<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
  <comment> All rights reserved. </comment>
@@ -19,14 +19,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
-    <height>456</height>
+    <width>527</width>
+    <height>207</height>
    </rect>
   </property>
   <property name="caption" stdset="0" >
    <string>Fitting</string>
   </property>
-  <layout class="QVBoxLayout" name="vboxLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" >
      <item>
@@ -62,13 +62,34 @@
     </layout>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+     <item>
+      <widget class="QCheckBox" name="mpCheckRandomize" >
+       <property name="text" >
+        <string>Randomize Start Values</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mpCheckStatistics" >
+       <property name="text" >
+        <string>Calculate Statistics</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QTabWidget" name="mpTabWidget" >
-     <widget class="QWidget" name="mpParametersPage" >
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="CQFittingItemWidget" name="mpParameters" >
       <attribute name="title" >
        <string>Parameters (0)</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="mpConstraintsPage" >
+     <widget class="CQFittingItemWidget" name="mpConstraints" >
       <attribute name="title" >
        <string>Constraints (0)</string>
       </attribute>
@@ -83,6 +104,12 @@
    <class>TaskWidget</class>
    <extends>QWidget</extends>
    <header>TaskWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CQFittingItemWidget</class>
+   <extends>QWidget</extends>
+   <header>copasi/UI/CQFittingItemWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

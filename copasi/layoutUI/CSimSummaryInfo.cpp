@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CSimSummaryInfo.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/05/11 10:39:29 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -20,7 +25,7 @@ CSimSummaryInfo::CSimSummaryInfo()
   mMaxOverallConcentration = 0.0;
 }
 
-CSimSummaryInfo::CSimSummaryInfo(C_INT32 steps, C_INT32 numReactants, C_FLOAT32 time)
+CSimSummaryInfo::CSimSummaryInfo(size_t steps, size_t numReactants, C_FLOAT32 time)
 {
   mNumberOfSteps = steps;
   mNumberOfReactants = numReactants;
@@ -43,6 +48,7 @@ void CSimSummaryInfo::storeMin(std::string ndKey, C_FLOAT64 minR)
 C_FLOAT64 CSimSummaryInfo::getMaxForSpecies(std::string ndKey)
 {
   std::map<std::string, C_FLOAT64>::const_iterator iter = maxMap.find(ndKey);
+
   if (iter != maxMap.end())
     return (*iter).second;
   else
@@ -52,6 +58,7 @@ C_FLOAT64 CSimSummaryInfo::getMaxForSpecies(std::string ndKey)
 C_FLOAT64 CSimSummaryInfo::getMinForSpecies(std::string ndKey)
 {
   std::map<std::string, C_FLOAT64>::const_iterator iter = minMap.find(ndKey);
+
   if (iter != minMap.end())
     return (*iter).second;
   else
@@ -68,6 +75,7 @@ std::ostream & operator<<(std::ostream &os, const CSimSummaryInfo & inf)
 
   std::map<std::string, C_FLOAT64>::const_iterator iter = inf.maxMap.begin();
   std::map<std::string, C_FLOAT64>::const_iterator iter2 = inf.minMap.begin();
+
   while ((iter != inf.maxMap.end()) && (iter2 != inf.minMap.end()))
     {
       os << " node: " << iter->first << " : [" << iter2->second;

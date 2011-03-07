@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLDefaultStyles.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,13 +30,13 @@ CCopasiVector<CLGlobalRenderInformation>* getDefaultStyles();
 /**
  * This method returns the number of global styles.
  */
-unsigned int getNumDefaultStyles();
+size_t getNumDefaultStyles();
 
 /**
  * This method returns the default render information object with
  * the requested index. If the index isinvalid, NULL is returned.
  */
-CLGlobalRenderInformation* getDefaultStyle(unsigned int index);
+CLGlobalRenderInformation* getDefaultStyle(size_t index);
 
 /**
  * This method is used to initialize the default styles.

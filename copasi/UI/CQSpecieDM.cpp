@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/02 16:44:09 $
+//   $Date: 2011/03/07 19:37:54 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,7 +59,7 @@ const std::vector< unsigned C_INT32 >& CQSpecieDM::getItemToType()
 
 int CQSpecieDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites().size() + 1;
 }
 int CQSpecieDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -130,7 +130,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_SPECIES:
                 return QVariant(QString("New Species"));
               case COL_COMPARTMENT:
@@ -185,7 +185,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_ICONCENTRATION:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(mpSpecies->getInitialConcentration()));
+                  return QVariant(QString::number(mpSpecies->getInitialConcentration(), 'g', 10));
                 else
                   return QVariant(mpSpecies->getInitialConcentration());
               }
@@ -193,7 +193,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_INUMBER:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(mpSpecies->getInitialValue()));
+                  return QVariant(QString::number(mpSpecies->getInitialValue(), 'g', 10));
                 else
                   return QVariant(mpSpecies->getInitialValue());
               }
@@ -399,8 +399,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
                       mpSpecies->setValue(Factor * this->index(index.row(), COL_NUMBER).data().toDouble());
                     }
 
-                  emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");
-                  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+                  emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, mpSpecies->getKey());
+                  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pCompartment->getKey());
                 }
             }
         }
@@ -438,8 +438,10 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
       if (defaultRow && this->index(index.row(), COL_NAME_SPECIES).data().toString() == "species")
         mpSpecies->setObjectName(TO_UTF8(createNewName("species", COL_NAME_SPECIES)));
 
+      //Save Key
+      std::string key = mpSpecies->getKey();
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
     }
 
   return true;
@@ -458,10 +460,10 @@ bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
     {
       mpSpecies =
         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createMetabolite(TO_UTF8(createNewName("species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, mpSpecies->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, "");
 
   return true;
 }
@@ -475,11 +477,13 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeMetabolite(position);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, "");
 
   return true;
 }
@@ -489,7 +493,10 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -511,18 +518,18 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CMetab * pSpecie = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getMetabolites().CCopasiVector< CMetab >::getIndex(pSpecie);
 
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "species",
+            CQMessageBox::confirmDelete(NULL, "species",
                                         FROM_UTF8(pSpecie->getObjectName()),
                                         pSpecie->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

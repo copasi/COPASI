@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 14:47:36 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:34:36 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,8 +37,7 @@ class CState;
 class CCSPMethod : public CTSSAMethod
 {
   friend CTSSAMethod *
-  CTSSAMethod::createTSSAMethod(CCopasiMethod::SubType subType,
-                                CTSSAProblem * pProblem);
+  CTSSAMethod::createMethod(CCopasiMethod::SubType subType);
 
 public:
 
@@ -52,7 +51,7 @@ public:
   CMatrix<C_FLOAT64> mI;
 
   /**
-   *  A value related to a mesure of the time scale separation of the fast and slow modes
+   *  A value related to a measure of the time scale separation of the fast and slow modes
    */
   C_FLOAT64 mEps;
 
@@ -133,8 +132,8 @@ public:
   CMatrix<C_FLOAT64> mParticipationIndexNormedColumn;
 
   /**
-   * Importance Index: is a mesure of relative importance of the contribution of r-th elementary
-   * reaction to the current reaction rate of i-th spiecies
+   * Importance Index: is a measure of relative importance of the contribution of r-th elementary
+   * reaction to the current reaction rate of i-th species
    **/
 
   CMatrix<C_FLOAT64> mImportanceIndex;
@@ -414,7 +413,7 @@ public:
   * set the desription of CArayAnnotation for both dimensions
   **/
   //void setAnnotationM(int step);
-  bool setAnnotationM(int step);
+  virtual bool setAnnotationM(size_t step);
 
   /**
    *  print of the standart report sequence for ILDM Method

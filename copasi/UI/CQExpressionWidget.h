@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:18 $
+//   $Date: 2011/03/07 19:37:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,7 +32,7 @@
 #include <vector>
 
 #include "UI/CQValidator.h"
-#include "UI/CCopasiSimpleSelectionTree.h"
+#include "UI/CQSimpleSelectionTree.h"
 
 #include "function/CExpression.h"
 #include "function/CFunction.h"
@@ -53,8 +53,8 @@ protected:
   void highlightBlock(const QString &text);
 
 public:
-  QTextCharFormat COPASIObjectFormat;
-  QRegExp COPASIObjectPattern;
+  QTextCharFormat mObjectDisplayFormat;
+  QRegExp mObjectDisplayPattern;
 };
 
 /**
@@ -126,6 +126,9 @@ class CQExpressionWidget: public QTextEdit
 {
   Q_OBJECT
 public:
+  static const char InfixPattern[];
+  static const char DisplayPattern[];
+
   CQExpressionWidget(QWidget * parent = 0, const char * name = 0);
 
   ~CQExpressionWidget();
@@ -143,78 +146,63 @@ private:
   CQValidatorFunction * mpValidatorFunction;
 
 protected:
-  int mOldPar;
-  int mOldPos;
-
-  int mOldPar1;
-  int mOldPos1;
-  int mOldPar2;
-  int mOldPos2;
-
   /**
    * Function to indicate whether we are dealing with an INITIAL or TRANSIENT expression
    */
-  CCopasiSimpleSelectionTree::ObjectClasses mObjectClasses;
+  CQSimpleSelectionTree::ObjectClasses mObjectClasses;
 
   std::map< std::string, const CCopasiObject * > mParseList;
   const CCopasiObject * mpCurrentObject;
-  QString mNewName;
-
   QColor mSavedColor;
   QColor mChangedColor;
 
   /**
-   * Function to control key press event
+   * Function to handle key press events.
    */
   virtual void keyPressEvent(QKeyEvent * e);
 
   /**
-   * Function to control mouse press event
+   * Function to handle mouse release events.
    */
-  virtual void mousePressEvent(QMouseEvent * e);
+  virtual void mouseReleaseEvent(QMouseEvent * e);
 
   /**
-   * Function to check whether the given cursor position is in object
+   * Function to handle drag leave events.
    */
-  bool isInObject(int pos);
+  virtual void dropEvent(QDropEvent * e);
 
   /**
-   * return anchor position -> new 16.09.09
+   * Function to check whether the given cursor position is in an object.
+   * If the position is within an object left and right mark the boundaries.
+   * @param const int & position
+   * @param int & left
+   * @param int & right
+   * @return bool isInObject
    */
-  int mAnchorPos;
+  bool objectBoundaries(const int & position, int & left, int & right) const;
 
 public:
-  /**
-   * Enumeration of movement type
-   */
-  enum MoveType {None, Left, Right, Mouse, Unknown };
-
-  /**
-   * Enumeration of action type
-   */
-  enum ActionType {NoAction, SelectToLeft, SelectToRight, Undo };
-
   /**
    * Enumeration of expression type
    */
   enum ExpressionType
   {
-    InitialExpression = CCopasiSimpleSelectionTree::InitialTime |
-    CCopasiSimpleSelectionTree::Parameters |
-    CCopasiSimpleSelectionTree::ObservedConstants,
-    TransientExpression = CCopasiSimpleSelectionTree::InitialTime |
-    CCopasiSimpleSelectionTree::Parameters |
-    CCopasiSimpleSelectionTree::ObservedConstants |
-    CCopasiSimpleSelectionTree::Time |
-    CCopasiSimpleSelectionTree::Variables |
-    CCopasiSimpleSelectionTree::ObservedValues,
-    ObjectiveFunctions = CCopasiSimpleSelectionTree::InitialTime |
-    CCopasiSimpleSelectionTree::Parameters |
-    CCopasiSimpleSelectionTree::ObservedConstants |
-    CCopasiSimpleSelectionTree::Time |
-    CCopasiSimpleSelectionTree::Variables |
-    CCopasiSimpleSelectionTree::ObservedValues |
-    CCopasiSimpleSelectionTree::Results
+    InitialExpression = CQSimpleSelectionTree::InitialTime |
+    CQSimpleSelectionTree::Parameters |
+    CQSimpleSelectionTree::ObservedConstants,
+    TransientExpression = CQSimpleSelectionTree::InitialTime |
+    CQSimpleSelectionTree::Parameters |
+    CQSimpleSelectionTree::ObservedConstants |
+    CQSimpleSelectionTree::Time |
+    CQSimpleSelectionTree::Variables |
+    CQSimpleSelectionTree::ObservedValues,
+    ObjectiveFunctions = CQSimpleSelectionTree::InitialTime |
+    CQSimpleSelectionTree::Parameters |
+    CQSimpleSelectionTree::ObservedConstants |
+    CQSimpleSelectionTree::Time |
+    CQSimpleSelectionTree::Variables |
+    CQSimpleSelectionTree::ObservedValues |
+    CQSimpleSelectionTree::Results
   };
 
   /**
@@ -259,17 +247,6 @@ public:
    */
   bool isValid();
 
-protected slots:
-  /**
-   * Slot for being activated whenever the cursor is moved
-   */
-  void slotCursorPositionChanged();
-
-  /**
-   * Slot for being activated whenever the selection is changed
-   */
-  void slotSelectionChanged();
-
 public slots:
   /**
    * Slot for being activated whenever the text on Expression Widget is changed
@@ -288,9 +265,7 @@ signals:
   void valid(bool valid);
 
 private:
-  CQExpressionHighlighter *expressionHighlighter;
-  MoveType mMove;
-  ActionType mAction;
+  CQExpressionHighlighter *mpExpressionHighlighter;
   QTextCursor mCursor;
 };
 

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:26 $
+//   $Date: 2011/03/07 19:33:41 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,7 +40,7 @@ class CTrajectoryTask;
 class CNewtonMethod : public CSteadyStateMethod
 {
   friend CSteadyStateMethod *
-  CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType);
+  CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType);
 
   // Attributes
 private:
@@ -63,11 +63,11 @@ private:
   bool mAcceptNegative;
   bool mForceNewton;
   bool mKeepProtocol;
-  C_INT32 mIterationLimit;
+  unsigned C_INT32 mIterationLimit;
   C_FLOAT64 mMaxDurationForward;
   C_FLOAT64 mMaxDurationBackward;
 
-  C_INT mDimension;
+  size_t mDimension;
   C_FLOAT64 * mpX;
   CVector< C_FLOAT64 > mAtol;
   CVector< C_FLOAT64 > mH;

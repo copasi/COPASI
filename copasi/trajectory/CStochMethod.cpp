@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:14 $
+//   $Date: 2011/03/07 19:34:13 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -122,8 +122,8 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
   //mpProblem->getModel()->setState(mpCurrentState); //?
 
   // check for possible overflows:
-  unsigned C_INT32 i;
-  unsigned C_INT32 imax;
+  size_t i;
+  size_t imax;
 
   // :TODO: Bug 774: This assumes that the number of variable metabs is the number
   // of metabs determined by reaction. In addition they are expected at the beginning of the
@@ -139,18 +139,19 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
   C_FLOAT64 time = mpCurrentState->getTime();
   C_FLOAT64 endtime = time + deltaT;
 
-  for (i = 0; ((i < (unsigned C_INT32) mMaxSteps) && (time < endtime)); i++)
+  size_t Steps = 0;
+
+  while (time < endtime)
     {
       time = doSingleStep(time, endtime);
+
+      if (++Steps > mMaxSteps)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
+        }
     }
 
   mpCurrentState->setTime(time);
-
-  if ((i >= (unsigned C_INT32) mMaxSteps) && (!mMaxStepsReached))
-    {
-      mMaxStepsReached = true; //only report this message once
-      CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
-    }
 
   // get back the particle numbers:
 
@@ -187,7 +188,7 @@ void CStochMethod::start(const CState * initialState)
 
   mHasAssignments = modelHasAssignments(mpModel);
 
-  unsigned C_INT32 i;
+  size_t i;
 
   //initialize the vector of ints that contains the particle numbers
   //for the discrete simulation. This also floors all particle numbers in the model.
@@ -196,7 +197,7 @@ void CStochMethod::start(const CState * initialState)
   for (i = 0; i < mNumbers.size(); ++i)
     {
       mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
-      mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
+      mpModel->getMetabolitesX()[i]->setValue((C_FLOAT64) mNumbers[i]);
       mpModel->getMetabolitesX()[i]->refreshConcentration();
     }
 
@@ -230,7 +231,7 @@ C_INT32 CStochMethod::updatePropensities()
   //mA0Old = mA0;
   mA0 = 0;
 
-  for (unsigned C_INT32 i = 0; i < mNumReactions; i++)
+  for (size_t i = 0; i < mNumReactions; i++)
     {
       mAmuOld[i] = mAmu[i];
       calculateAmu(i);
@@ -240,7 +241,7 @@ C_INT32 CStochMethod::updatePropensities()
   return 0;
 }
 
-C_INT32 CStochMethod::calculateAmu(C_INT32 index)
+C_INT32 CStochMethod::calculateAmu(size_t index)
 {
   if (!mDoCorrection)
     {
@@ -252,7 +253,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // We calculate this in one go, as there are fewer steps to
   // perform and we eliminate some possible rounding errors.
   C_FLOAT64 amu = 1; // initially
-  //C_INT32 total_substrates = 0;
+  //size_t total_substrates = 0;
   C_INT32 num_ident = 0;
   C_INT64 number = 0;
   C_INT64 lower_bound;
@@ -267,7 +268,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
 
   int flag = 0;
 
-  for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
+  for (size_t i = 0; i < substrates.size(); i++)
     {
       num_ident = substrates[i].mMultiplicity;
 
@@ -313,7 +314,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   return 0;
 }
 
-C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
+C_INT32 CStochMethod::updateSystemState(size_t rxn)
 {
   // Change the particle numbers according to which step took place.
   // First, get the vector of balances in the reaction we've got.
@@ -331,7 +332,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
     {
       mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
       pTmpMetab = mpModel->getMetabolitesX()[bi->mIndex];
-      pTmpMetab->setValue(mNumbers[bi->mIndex]);
+      pTmpMetab->setValue((C_FLOAT64) mNumbers[bi->mIndex]);
       pTmpMetab->refreshConcentration();
     }
 
@@ -346,14 +347,14 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
       //particle numbers need to be copied to the vector of integers.
       //(the integer values may be used to calculate the propensities for
       //higher order kinetics).
-      unsigned C_INT32 i, imax = mNumbers.size();
+      size_t i, imax = mNumbers.size();
 
       for (i = 0; i < imax; ++i)
         {
           if (mpModel->getMetabolitesX()[i]->getStatus() == CModelEntity::ASSIGNMENT)
             {
               mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
-              mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
+              mpModel->getMetabolitesX()[i]->setValue((C_FLOAT64) mNumbers[i]);
               mpModel->getMetabolitesX()[i]->refreshConcentration();
             }
         }
@@ -363,10 +364,10 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
     }
   else
     {
-      const std::set<unsigned C_INT32> & dep_nodes = mDG.getDependents(rxn);
+      const std::set<size_t> & dep_nodes = mDG.getDependents(rxn);
 
-      std::set<unsigned C_INT32>::const_iterator it;
-      unsigned int ii;
+      std::set<size_t>::const_iterator it;
+      size_t ii;
 
       for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
         {
@@ -384,11 +385,11 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   return 0;
 }
 
-C_INT32 CStochMethod::generateReactionIndex()
+size_t CStochMethod::generateReactionIndex()
 {
   C_FLOAT64 rand1 = mpRandomGenerator->getRandomOO() * mA0;
   C_FLOAT64 sum = 0;
-  unsigned C_INT32 index = 0;
+  size_t index = 0;
 
   while (index < (mpModel->getReactions().size() - 1))
     {
@@ -411,7 +412,7 @@ C_FLOAT64 CStochMethod::generateReactionTime()
   return - 1 * log(rand2) / mA0;
 }
 
-C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
+C_FLOAT64 CStochMethod::generateReactionTime(size_t reaction_index)
 {
   if (mAmu[reaction_index] == 0) return std::numeric_limits<C_FLOAT64>::infinity();
 
@@ -424,7 +425,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
   mDG.clear();
   std::vector< std::set<std::string>* > DependsOn;
   std::vector< std::set<std::string>* > Affects;
-  unsigned C_INT32 i, j;
+  size_t i, j;
   // Do for each reaction:
 
   for (i = 0; i < mNumReactions; i++)
@@ -529,12 +530,12 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
 }
 
-std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
+std::set<std::string> *CStochMethod::getDependsOn(size_t reaction_index)
 {
   std::set<std::string> *retset = new std::set<std::string>;
 
-  unsigned C_INT32 i, imax = mpModel->getReactions()[reaction_index]->getFunctionParameters().size();
-  unsigned C_INT32 j, jmax;
+  size_t i, imax = mpModel->getReactions()[reaction_index]->getFunctionParameters().size();
+  size_t j, jmax;
 
   for (i = 0; i < imax; ++i)
     {
@@ -555,7 +556,7 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
   return retset;
 }
 
-std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
+std::set<std::string> *CStochMethod::getAffects(size_t reaction_index)
 {
   std::set<std::string> *retset = new std::set<std::string>;
 
@@ -563,7 +564,7 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
   const CCopasiVector<CChemEqElement> & balances = mpModel->getReactions()[reaction_index]->getChemEq().getBalances();
 
-  for (unsigned C_INT32 i = 0; i < balances.size(); i++)
+  for (size_t i = 0; i < balances.size(); i++)
     {
       if (!balances[i]->getMetabolite()) continue;
 
@@ -599,7 +600,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   //check for rules
-  C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+  size_t i, imax = pTP->getModel()->getNumModelValues();
 
   for (i = 0; i < imax; ++i)
     {
@@ -673,7 +674,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
 //static
 bool CStochMethod::modelHasAssignments(const CModel* pModel)
 {
-  C_INT32 i, imax = pModel->getNumModelValues();
+  size_t i, imax = pModel->getNumModelValues();
 
   for (i = 0; i < imax; ++i)
     {

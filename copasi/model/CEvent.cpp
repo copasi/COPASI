@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:36:58 $
+//   $Date: 2011/03/07 19:30:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,6 +73,11 @@ CEventAssignment::CEventAssignment(const CEventAssignment & src,
 CEventAssignment::~CEventAssignment()
 {
   pdelete(mpExpression);
+
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
 }
 
 bool CEventAssignment::setObjectParent(const CCopasiContainer * pParent)
@@ -172,23 +177,39 @@ bool CEventAssignment::setExpression(const std::string & expression)
   return mpExpression->setInfix(expression);
 }
 
-void CEventAssignment::setExpressionPtr(CExpression * pExpression)
+bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
 {
+  if (pExpression == mpExpression) return true;
+
+  if (pExpression == mpExpression) return true;
+
+  if (pExpression == NULL) return false;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
-  pdelete(mpExpression);
+  CExpression * pOld = mpExpression;
+  mpExpression = pExpression;
 
-  if (pExpression != NULL)
+  mpExpression->setObjectName("Expression");
+  add(mpExpression, true);
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(mpModel);
+
+  if (mpExpression->compile(listOfContainer))
     {
-      mpExpression = pExpression;
-      mpExpression->setObjectParent(this);
-      mpExpression->setObjectName("Expression");
-
-      mpExpression->compile();
+      pdelete(pOld);
+      return true;
     }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpExpression);
+  mpExpression->setObjectParent(NULL);
+  mpExpression = pOld;
+  return false;
 }
 
 std::string CEventAssignment::getExpression() const
@@ -235,8 +256,8 @@ CEvent::CEvent(const CEvent & src,
     mOrder(src.mOrder),
     mAssignments(src.mAssignments, this),
     mDelayAssignment(src.mDelayAssignment),
-    mpTriggerExpression(src.mpTriggerExpression == NULL ? NULL : new CExpression(*src.mpTriggerExpression)),
-    mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression))
+    mpTriggerExpression(src.mpTriggerExpression != NULL ? new CExpression(*src.mpTriggerExpression, this) : NULL),
+    mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL)
 {
   initObjects();
 
@@ -305,7 +326,7 @@ void CEvent::initObjects()
     }
 }
 
-void CEvent::setOrder(const unsigned C_INT32 & order, const bool & correctOther)
+void CEvent::setOrder(const size_t & order, const bool & correctOther)
 {
   if (mOrder != order &&
       mpModel != NULL)
@@ -324,7 +345,7 @@ void CEvent::setOrder(const unsigned C_INT32 & order, const bool & correctOther)
   mOrder = order;
 }
 
-const unsigned C_INT32 & CEvent::getOrder() const
+const size_t & CEvent::getOrder() const
 {
   return mOrder;
 }
@@ -411,21 +432,37 @@ bool CEvent::setTriggerExpression(const std::string & expression)
   return mpTriggerExpression->setInfix(expression);
 }
 
-void CEvent::setTriggerExpressionPtr(CExpression * pExpression)
+bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
 {
+  if (pExpression == mpTriggerExpression) return true;
+
+  if (pExpression == NULL) return false;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
-  pdelete(mpTriggerExpression);
+  CExpression * pOld = mpTriggerExpression;
+  mpTriggerExpression = pExpression;
 
-  if (pExpression)
+  mpTriggerExpression->setObjectName("Expression");
+  add(mpTriggerExpression, true);
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(mpModel);
+
+  if (mpTriggerExpression->compile(listOfContainer))
     {
-      mpTriggerExpression = pExpression;
-      pExpression->setObjectParent(this);
-      mpTriggerExpression->compile();
+      pdelete(pOld);
+      return true;
     }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpTriggerExpression);
+  mpTriggerExpression->setObjectParent(NULL);
+  mpTriggerExpression = pOld;
+  return false;
 }
 
 std::string CEvent::getTriggerExpression() const
@@ -462,21 +499,37 @@ bool CEvent::setDelayExpression(const std::string & expression)
   return mpDelayExpression->setInfix(expression);
 }
 
-void CEvent::setDelayExpressionPtr(CExpression * pExpression)
+bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
 {
+  if (pExpression == mpDelayExpression) return true;
+
+  if (pExpression == NULL) return false;
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
-  pdelete(mpDelayExpression);
+  CExpression * pOld = mpDelayExpression;
+  mpDelayExpression = pExpression;
 
-  if (pExpression)
+  mpDelayExpression->setObjectName("Expression");
+  add(mpDelayExpression, true);
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(mpModel);
+
+  if (mpDelayExpression->compile(listOfContainer))
     {
-      mpDelayExpression = pExpression;
-      this->mpDelayExpression->setObjectParent(this);
-      mpDelayExpression->compile();
+      pdelete(pOld);
+      return true;
     }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpDelayExpression);
+  mpDelayExpression->setObjectParent(NULL);
+  mpDelayExpression = pOld;
+  return false;
 }
 
 std::string CEvent::getDelayExpression() const

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-$Revision: 1.34 $
+$Revision: 1.35 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/19 19:51:19 $
+$Date: 2011/03/07 19:32:38 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,71 +38,71 @@ End CVS Header */
 #include "report/CCopasiObject.h"
 
 class CCopasiContainer: public CCopasiObject
-  {
-    //Attributes
-  public:
+{
+  //Attributes
+public:
 
-    static const std::vector< CCopasiContainer * > EmptyList;
+  static const std::vector< CCopasiContainer * > EmptyList;
 
-    typedef std::multimap< const std::string, CCopasiObject * > objectMap;
+  typedef std::multimap< const std::string, CCopasiObject * > objectMap;
 
-  protected:
-    objectMap mObjects;
+protected:
+  objectMap mObjects;
 
-  private:
-    // Operations
-    CCopasiContainer();
+private:
+  // Operations
+  CCopasiContainer();
 
-  public:
-    CCopasiContainer(const std::string & name,
-                     const CCopasiContainer * pParent = NULL,
-                     const std::string & type = "CN",
-                     const unsigned C_INT32 & flag = CCopasiObject::Container);
+public:
+  CCopasiContainer(const std::string & name,
+                   const CCopasiContainer * pParent = NULL,
+                   const std::string & type = "CN",
+                   const unsigned C_INT32 & flag = CCopasiObject::Container);
 
-    CCopasiContainer(const CCopasiContainer & src,
-                     const CCopasiContainer * pParent = NULL);
+  CCopasiContainer(const CCopasiContainer & src,
+                   const CCopasiContainer * pParent = NULL);
 
-    virtual ~CCopasiContainer();
+  virtual ~CCopasiContainer();
 
-    virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
+  virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
-    virtual const CCopasiObject * getValueObject() const;
+  virtual const CCopasiObject * getValueObject() const;
 
-    virtual const objectMap & getObjects() const;
+  virtual const objectMap & getObjects() const;
 
-    virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
+  virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
 
-    virtual bool remove(CCopasiObject * pObject);
+  virtual bool remove(CCopasiObject * pObject);
 
-    /**
-     * Retrieve the units of the object.
-     * @return std::string units
-     */
-    virtual std::string getUnits() const;
+  /**
+   * Retrieve the units of the object.
+   * @return std::string units
+   */
+  virtual std::string getUnits() const;
 
-    /**
-     * Retrieve the units of the child object.
-     * @return std::string units
-     */
-    virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  /**
+   * Retrieve the units of the child object.
+   * @return std::string units
+   */
+  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
-  protected:
-    void initObjects();
+protected:
+  void initObjects();
 
-    template <class CType> CCopasiObject * addObjectReference(const std::string & name,
-        CType & reference,
-        const unsigned C_INT32 & flag = 0)
-    {return createReference(name, this, reference, flag);}
+  template <class CType> CCopasiObject * addObjectReference(const std::string & name,
+      CType & reference,
+      const unsigned C_INT32 & flag = 0)
+  {return createReference(name, this, reference, flag);}
 
-    template <class CType> CCopasiObject * addVectorReference(const std::string & name,
-        CType & reference,
-        const unsigned C_INT32 & flag = 0)
-    {return createVectorReference(name, this, reference, flag);}
+  template <class CType> CCopasiObject * addVectorReference(const std::string & name,
+      CType & reference,
+      const unsigned C_INT32 & flag = 0)
+  {return createVectorReference(name, this, reference, flag);}
 
-    template <class CType> CCopasiObject * addMatrixReference(const std::string & name,
-        CType & reference,
-        const unsigned C_INT32 & flag = 0)
-    {return createMatrixReference(name, this, reference, flag);}
-  };
+  template <class CType> CCopasiObject * addMatrixReference(const std::string & name,
+      CType & reference,
+      const unsigned C_INT32 & flag = 0)
+  {return createMatrixReference(name, this, reference, flag);}
+};
 
 #endif // COPASI_CCopasiContainer

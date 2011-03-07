@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:28:46 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -67,7 +67,7 @@ public:
    * idSet should contain all sbml IDs that are used in the currently exported
    * model (including the layouts, but not the objects inside the layout).
    */
-  void exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*> & copasimodelmap,
+  void exportToSBML(ListOf * lol, std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                     const std::map<std::string, const SBase*>& idMap) const;
 
 #ifdef USE_CRENDER_EXTENSION
@@ -88,13 +88,13 @@ public:
    *  Returns a pointer to the global render information object with the given index.
    *  If the index is invalid, NULL is returned.
    */
-  CLGlobalRenderInformation* getRenderInformation(unsigned C_INT32 index);
+  CLGlobalRenderInformation* getRenderInformation(size_t index);
 
   /**
    *  Returns a const pointer to the global render information object with the given index.
    *  If the index is invalid, NULL is returned.
    */
-  const CLGlobalRenderInformation* getRenderInformation(unsigned C_INT32 index) const;
+  const CLGlobalRenderInformation* getRenderInformation(size_t index) const;
 
 #endif /* USE_CRENDER_EXTENSION */
 };

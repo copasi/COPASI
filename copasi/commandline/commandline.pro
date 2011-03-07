@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/commandline.pro,v $
-#   $Revision: 1.16 $
+#   $Revision: 1.17 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/07/16 18:57:32 $
+#   $Date: 2011/03/07 19:26:18 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -17,17 +17,20 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.16 $ $Author: shoops $ $Date: 2010/07/16 18:57:32 $
+# $Revision: 1.17 $ $Author: shoops $ $Date: 2011/03/07 19:26:18 $
 ######################################################################
 
 LIB = commandline
+DISTFILES = commandline.pro
 
 #Input
 HEADERS += CConfigurationFile.h \
+           CLocaleString.h \
            COptionParser.h \
            COptions.h
 
 SOURCES += CConfigurationFile.cpp \
+           CLocaleString.cpp \
            COptionParser.cpp \
            COptions.cpp
 
@@ -49,3 +52,5 @@ contains(BUILD_PARSER, yes) {
 
 DISTFILES += \
              COptionParser.xml
+
+include(../srcDistribution.pri)

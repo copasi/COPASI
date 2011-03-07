@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:20 $
+//   $Date: 2011/03/07 19:32:03 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -153,7 +158,7 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
 {
   os << * static_cast<const COptItem *>(&o) << std::endl;
 
-  unsigned C_INT32 i, imax = o.mpGrpAffectedExperiments->size();
+  size_t i, imax = o.mpGrpAffectedExperiments->size();
 
   os << "    Affected Experiments:" << std::endl << "      ";
 
@@ -202,7 +207,7 @@ UpdateMethod * CFitItem::getUpdateMethod() const
 
 bool CFitItem::addExperiment(const std::string & key)
 {
-  unsigned C_INT32 i, imax = mpGrpAffectedExperiments->size();
+  size_t i, imax = mpGrpAffectedExperiments->size();
 
   for (i = 0; i < imax; i++)
     if (*mpGrpAffectedExperiments->getValue(i).pKEY == key) return false; // The key already exists.
@@ -210,7 +215,7 @@ bool CFitItem::addExperiment(const std::string & key)
   return mpGrpAffectedExperiments->addParameter("Experiment Key", CCopasiParameter::KEY, key);
 }
 
-const std::string & CFitItem::getExperiment(const unsigned C_INT32 & index) const
+const std::string & CFitItem::getExperiment(const size_t & index) const
 {
   static const std::string Empty("");
 
@@ -220,16 +225,16 @@ const std::string & CFitItem::getExperiment(const unsigned C_INT32 & index) cons
   return Empty;
 }
 
-bool CFitItem::removeExperiment(const unsigned C_INT32 & index)
+bool CFitItem::removeExperiment(const size_t & index)
 {return mpGrpAffectedExperiments->removeParameter(index);}
 
-unsigned C_INT32 CFitItem::getExperimentCount() const
+size_t CFitItem::getExperimentCount() const
 {return mpGrpAffectedExperiments->size();}
 
 std::string CFitItem::getExperiments() const
 {
   std::string Experiments;
-  unsigned C_INT32 i, imax = mpGrpAffectedExperiments->size();
+  size_t i, imax = mpGrpAffectedExperiments->size();
   const CCopasiObject * pObject;
 
   for (i = 0; i < imax; i++)
@@ -248,7 +253,7 @@ std::string CFitItem::getExperiments() const
 #ifdef COPASI_CROSSVALIDATION
 bool CFitItem::addCrossValidation(const std::string & key)
 {
-  unsigned C_INT32 i, imax = mpGrpAffectedCrossValidations->size();
+  size_t i, imax = mpGrpAffectedCrossValidations->size();
 
   for (i = 0; i < imax; i++)
     if (*mpGrpAffectedCrossValidations->getValue(i).pKEY == key) return false; // The key already exists.
@@ -256,7 +261,7 @@ bool CFitItem::addCrossValidation(const std::string & key)
   return mpGrpAffectedCrossValidations->addParameter("Experiment Key", CCopasiParameter::KEY, key);
 }
 
-const std::string & CFitItem::getCrossValidation(const unsigned C_INT32 & index) const
+const std::string & CFitItem::getCrossValidation(const size_t & index) const
 {
   static const std::string Empty("");
 
@@ -266,16 +271,16 @@ const std::string & CFitItem::getCrossValidation(const unsigned C_INT32 & index)
   return Empty;
 }
 
-bool CFitItem::removeCrossValidation(const unsigned C_INT32 & index)
+bool CFitItem::removeCrossValidation(const size_t & index)
 {return mpGrpAffectedCrossValidations->removeParameter(index);}
 
-unsigned C_INT32 CFitItem::getCrossValidationCount() const
+size_t CFitItem::getCrossValidationCount() const
 {return mpGrpAffectedCrossValidations->size();}
 
 std::string CFitItem::getCrossValidations() const
 {
   std::string CrossValidations;
-  unsigned C_INT32 i, imax = mpGrpAffectedCrossValidations->size();
+  size_t i, imax = mpGrpAffectedCrossValidations->size();
   const CCopasiObject * pObject;
 
   for (i = 0; i < imax; i++)

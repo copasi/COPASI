@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:31:00 $
+//   $Date: 2011/03/07 19:30:20 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -83,7 +83,7 @@ void CLyapTask::cleanup()
 
 void CLyapTask::initObjects()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   mExponents.resize(LYAP_NUM_REF);
 
@@ -138,7 +138,7 @@ bool CLyapTask::initialize(const OutputFlag & of,
 
   bool success = mpMethod->isValidProblem(mpProblem);
 
-  unsigned C_INT32 nnn;
+  size_t nnn;
 
   if (mpLyapProblem->getExponentNumber() > LYAP_NUM_REF)
     nnn = mpLyapProblem->getExponentNumber();
@@ -150,7 +150,7 @@ bool CLyapTask::initialize(const OutputFlag & of,
 
   //update object references because the object may have been
   //moved by the resize above
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < LYAP_NUM_REF; ++i)
     {
@@ -180,8 +180,7 @@ bool CLyapTask::process(const bool & useInitialValues)
       mpCallBack->setName("performing lyapunov exponent calculation...");
       C_FLOAT64 hundred = 100;
       mhProcess = mpCallBack->addItem("Completion",
-                                      CCopasiParameter::DOUBLE,
-                                      &mPercentage,
+                                      mPercentage,
                                       &hundred);
     }
 
@@ -244,15 +243,19 @@ bool CLyapTask::setMethodType(const int & type)
   if (mpMethod->getSubType() == Type) return true;
 
   pdelete(mpMethod);
-  mpMethod =
-    CLyapMethod::createMethod(Type);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   return true;
 }
 
-//const CTimeSeries & CLyapTask::getTimeSeries() const
-//{return mTimeSeries;}
+// virtual
+CCopasiMethod * CLyapTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CLyapMethod::createMethod(Type);
+}
 
 bool CLyapTask::methodCallback(const C_FLOAT64 & percentage, bool onlyProgress)
 {
@@ -324,12 +327,12 @@ bool CLyapTask::resultHasDivergence() const
   return mResultHasDivergence;
 }
 
-unsigned C_INT32 CLyapTask::modelVariablesInResult() const
+size_t CLyapTask::modelVariablesInResult() const
 {
   return mModelVariablesInResult;
 }
 
-unsigned C_INT32 CLyapTask::numberOfExponentsCalculated() const
+size_t CLyapTask::numberOfExponentsCalculated() const
 {
   return mNumExponentsCalculated;
 }

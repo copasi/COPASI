@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:59:37 $
+//   $Date: 2011/03/07 19:30:20 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,7 +73,7 @@ private:
 
   //for the progress bar
   C_FLOAT64 mPercentage;
-  unsigned C_INT32 mhProcess;
+  size_t mhProcess;
 
   //for updating the references
   std::vector<CCopasiObjectReference<C_FLOAT64> *> mvExpRef;
@@ -81,8 +81,8 @@ private:
 
   bool mResultAvailable;
   bool mResultHasDivergence;
-  unsigned C_INT32 mModelVariablesInResult;
-  unsigned C_INT32 mNumExponentsCalculated;
+  size_t mModelVariablesInResult;
+  size_t mNumExponentsCalculated;
 
 public:
   /**
@@ -149,9 +149,9 @@ public:
    * how many independent variables had the model at the time of the
    * last calculation?
    */
-  unsigned C_INT32 modelVariablesInResult() const;
+  size_t modelVariablesInResult() const;
 
-  unsigned C_INT32 numberOfExponentsCalculated() const;
+  size_t numberOfExponentsCalculated() const;
 
   /**
    * Set the method type applied to solve the task
@@ -159,6 +159,14 @@ public:
    * @return bool success
    */
   virtual bool setMethodType(const int & type);
+
+  /**
+   * Create a method of the specified type to solve the task.
+   * It is the duty of the caller to release the CCopasiMethod.
+   * @param const CCopasiMethod::SubType & type
+   * @return CCopasiMethod *
+   */
+  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * This is called by the method to generate the output and update the progress

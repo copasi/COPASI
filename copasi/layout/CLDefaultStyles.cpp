@@ -1,17 +1,23 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLDefaultStyles.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/10 11:50:10 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include "CLDefaultStyles.h"
+
+#define USE_LAYOUT 1
+
+#ifdef USE_CRENDER_EXTENSION
+#define USE_RENDER 1
+#endif // USE_CRENDER_EXTENSION
 
 // render includes
 #include <sbml/layout/render/GlobalRenderInformation.h>
@@ -130,19 +136,19 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      <style id=\"textGlyphStyle\" typeList=\"TEXTGLYPH\">\n"
                                     "        <g stroke=\"textColor\" stroke-width=\"1.0\" font-size=\"20\" text-anchor=\"middle\" font-family=\"sans\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"product sideproduct\">\n"
+                                    "      <style  id=\"productStyle\" roleList=\"product sideproduct\">\n"
                                     "        <g stroke=\"speciesReferenceColor\" stroke-width=\"2.0\" endHead=\"TransitionHead\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"substrate sidesubstrate\" typeList=\"REACTIONGLYPH SPECIESREFERENCEGLYPH\">\n"
+                                    "      <style id=\"substrateStyle\" roleList=\"substrate sidesubstrate\" typeList=\"REACTIONGLYPH SPECIESREFERENCEGLYPH\">\n"
                                     "        <g stroke=\"speciesReferenceColor\" stroke-width=\"2.0\" endHead=\"none\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"activator\">\n"
+                                    "      <style id=\"activatorStyle\" roleList=\"activator\">\n"
                                     "        <g stroke=\"speciesReferenceColor\" stroke-width=\"2.0\" endHead=\"ActivationHead\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"inhibitor\">\n"
+                                    "      <style id=\"inhibitorStyle\" roleList=\"inhibitor\">\n"
                                     "        <g stroke=\"speciesReferenceColor\" stroke-width=\"2.0\" endHead=\"InhibitionHead\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"modifier\">\n"
+                                    "      <style id=\"modifierStyle\" roleList=\"modifier\">\n"
                                     "        <g stroke=\"speciesReferenceColor\" stroke-width=\"2.0\" endHead=\"ModulationHead\"/>\n"
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
@@ -344,32 +350,32 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </lineEnding>\n"
                                     "    </listOfLineEndings>\n"
                                     "    <listOfStyles>\n"
-                                    "      <style typeList=\"COMPARTMENTGLYPH\">\n"
+                                    "      <style id=\"compartmentGlyphStyle\" typeList=\"COMPARTMENTGLYPH\">\n"
                                     "        <g>\n"
                                     "          <rectangle stroke=\"FrameColor\" stroke-width=\"1.0\" fill=\"CompartmentGlyphGradient\" x=\"0%\" y=\"0%\" width=\"100%\" height=\"100%\" rx=\"10\" ry=\"10\"/>\n"
                                     "        </g>\n"
                                     "      </style>\n"
-                                    "      <style typeList=\"SPECIESGLYPH\">\n"
+                                    "      <style id=\"speciesGlyphStyle\" typeList=\"SPECIESGLYPH\">\n"
                                     "        <g>\n"
                                     "          <rectangle stroke=\"FrameColor\" stroke-width=\"1.0\" fill=\"SpeciesGlyphGradient\" x=\"0%\" y=\"0%\" width=\"100%\" height=\"100%\" rx=\"10\" ry=\"10\"/>\n"
                                     "        </g>\n"
                                     "      </style>\n"
-                                    "      <style typeList=\"TEXTGLYPH\">\n"
+                                    "      <style id=\"textGlyphStyle\" typeList=\"TEXTGLYPH\">\n"
                                     "        <g stroke=\"TextColor\" font-family=\"sans-serif\" font-size=\"70%\" text-anchor=\"middle\" vtext-anchor=\"middle\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"product sideproduct\">\n"
+                                    "      <style id=\"productStyle\" roleList=\"product sideproduct\">\n"
                                     "        <g stroke=\"SpeciesReferenceColor\" stroke-width=\"2.0\" endHead=\"TransitionHead\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"substrate sidesubstrate\" typeList=\"REACTIONGLYPH SPECIESREFERENCEGLYPH\">\n"
+                                    "      <style id=\"substrateStyle\" roleList=\"substrate sidesubstrate\" typeList=\"REACTIONGLYPH SPECIESREFERENCEGLYPH\">\n"
                                     "        <g stroke=\"SpeciesReferenceColor\" stroke-width=\"2.0\" endHead=\"none\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"activator\">\n"
+                                    "      <style id=\"activatorStyle\" roleList=\"activator\">\n"
                                     "        <g stroke=\"SpeciesReferenceColor\" stroke-width=\"2.0\" endHead=\"ActivationHead\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"inhibitor\">\n"
+                                    "      <style id=\"inhibitorStyle\" roleList=\"inhibitor\">\n"
                                     "        <g stroke=\"SpeciesReferenceColor\" stroke-width=\"2.0\" endHead=\"InhibitionHead\"/>\n"
                                     "      </style>\n"
-                                    "      <style roleList=\"modifier\">\n"
+                                    "      <style id=\"modifierStyle\" roleList=\"modifier\">\n"
                                     "        <g stroke=\"SpeciesReferenceColor\" stroke-width=\"2.0\" endHead=\"ModulationHead\"/>\n"
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
@@ -500,9 +506,9 @@ CCopasiVector<CLGlobalRenderInformation>* getDefaultStyles()
 /**
  * This method returns the number of global styles.
  */
-unsigned int getNumDefaultStyles()
+size_t getNumDefaultStyles()
 {
-  unsigned int result = 0;
+  size_t result = 0;
 
   if (!DEFAULT_STYLES)
     {
@@ -521,7 +527,7 @@ unsigned int getNumDefaultStyles()
  * This method returns the default render information object with
  * the requested index. If the index isinvalid, NULL is returned.
  */
-CLGlobalRenderInformation* getDefaultStyle(unsigned int index)
+CLGlobalRenderInformation* getDefaultStyle(size_t index)
 {
   if (!DEFAULT_STYLES)
     {
@@ -550,12 +556,12 @@ CCopasiVector<CLGlobalRenderInformation>* loadDefaultStyles()
   ListOfGlobalRenderInformation* pRI = new ListOfGlobalRenderInformation();
   pRI->parseXML(XMLNode(stream));
   // convert the SBML objects to COPASI objects
-  unsigned int i, iMax = pRI->size();
+  size_t i, iMax = pRI->size();
   CCopasiVector<CLGlobalRenderInformation>* pResult = new CCopasiVector<CLGlobalRenderInformation>;
 
   for (i = 0; i < iMax; ++i)
     {
-      pResult->add(new CLGlobalRenderInformation(*static_cast<const GlobalRenderInformation*>(pRI->get(i))));
+      pResult->add(new CLGlobalRenderInformation(*static_cast<const GlobalRenderInformation*>(pRI->get((unsigned int) i))));
     }
 
   return pResult;

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMReactionDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/10/01 22:21:52 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:46 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -28,8 +33,8 @@ class CQEFMReactionDM : public CQBaseDataModel
 
 public:
   CQEFMReactionDM(QObject *parent = 0);
-  int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;
   QVariant data(const QModelIndex &index, int role) const;
   QVariant headerData(int section, Qt::Orientation orientation,
@@ -50,10 +55,10 @@ private:
   const CEFMTask * mpTask;
 
   std::vector< CFluxMode >::const_iterator mBeginModes;
-  int mModesSize;
+  size_t mModesSize;
 
   std::vector< const CReaction * >::const_iterator mBeginReactions;
-  int mReactionsSize;
+  size_t mReactionsSize;
 };
 
 #endif //CQEFMReactionDM_H

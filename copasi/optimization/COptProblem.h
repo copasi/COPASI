@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 13:17:52 $
+//   $Date: 2011/03/07 19:31:25 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -148,9 +153,9 @@ public:
 
   /**
    * Retrieve the size of the variable vectors.
-   * @result unsigned C_INT32 VariableSize
+   * @result size_t VariableSize
    */
-  unsigned C_INT32 getVariableSize() const;
+  size_t getVariableSize() const;
 
   /**
    * Retrieve the list of optimization parameters.
@@ -202,16 +207,16 @@ public:
 
   /**
    * Retrieve the 'index' optimization item.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return COptItem optItem
    */
-  COptItem & getOptItem(const unsigned C_INT32 & index);
+  COptItem & getOptItem(const size_t & index);
 
   /**
    * Retrieve the number of optimization items.
-   * @return const unsigned C_INT32 size
+   * @return const size_t size
    */
-  unsigned C_INT32 getOptItemSize() const;
+  size_t getOptItemSize() const;
 
   /**
    * Add an optimization item to the problem.
@@ -222,19 +227,19 @@ public:
 
   /**
    * Remove an optimization items.
-   * @param const unsigned C_INT32 & index
+   * @param const size_t & index
    * @return bool success
    */
-  bool removeOptItem(const unsigned C_INT32 & index);
+  bool removeOptItem(const size_t & index);
 
   /**
    * Swap two optimization items.
-   * @param const unsigned C_INT32 & iFrom
-   * @param const unsigned C_INT32 & iTo
+   * @param const size_t & iFrom
+   * @param const size_t & iTo
    * @return bool success
    */
-  bool swapOptItem(const unsigned C_INT32 & iFrom,
-                   const unsigned C_INT32 & iTo);
+  bool swapOptItem(const size_t & iFrom,
+                   const size_t & iTo);
 
   /**
    * Set optimization function
@@ -273,6 +278,30 @@ public:
    * @return const bool & maximize
    */
   const bool & maximize() const;
+
+  /**
+   * Set whether we have to randomize start values
+   * @param const bool & randomize
+   */
+  void setRandomizeStartValues(const bool & randomize);
+
+  /**
+   * Retrieve whether we have to calculate statistics
+   * @return const bool & randomize
+   */
+  const bool & getRandomizeStartValues() const;
+
+  /**
+   * Set whether we have to calculate statistics
+   * @param const bool & calculate
+   */
+  void setCalculateStatistics(const bool & calculate);
+
+  /**
+   * Retrieve whether we have to calculate statistics
+   * @return const bool & maximize
+   */
+  const bool & getCalculateStatistics() const;
 
   /**
    * Retrieve the objective function.
@@ -325,7 +354,7 @@ protected:
   /**
    * A static value containing Infinity.
    */
-  C_FLOAT64 mInfinity;
+  C_FLOAT64 mWorstValue;
 
   /**
    * A pointer to the value of the CCopasiParameter holding the CN for the subtask
@@ -347,6 +376,16 @@ protected:
    * A pointer to the value of the CCopasiParameter holding Maximize
    */
   bool * mpParmMaximize;
+
+  /**
+   * A pointer to the value of the CCopasiParameter holding Randomize Start Values
+   */
+  bool * mpParmRandomizeStartValues;
+
+  /**
+   * A pointer to the value of the CCopasiParameter holding Calculate Statistics
+   */
+  bool * mpParmCalculateStatistics;
 
   /**
    * A pointer to the value of the CCopasiParameterGroup holding the OptimizationItems
@@ -449,12 +488,12 @@ protected:
   /**
    * Handle of "Best Value" process report item
    */
-  unsigned C_INT32 mhSolutionValue;
+  size_t mhSolutionValue;
 
   /**
    * Handle of "Function Evaluations" process report item
    */
-  unsigned C_INT32 mhCounter;
+  size_t mhCounter;
 
   /**
    * Indicates whether the results shall be stored. The default

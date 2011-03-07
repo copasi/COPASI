@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:38:35 $
+//   $Date: 2011/03/07 19:34:55 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -26,51 +31,54 @@ CIndexedPriorityQueue::~CIndexedPriorityQueue()
 {}
 
 C_FLOAT64 CIndexedPriorityQueue::topKey() const
-  {
-    return mHeap[0].mKey;
-  }
+{
+  return mHeap[0].mKey;
+}
 
-C_INT32 CIndexedPriorityQueue::topIndex() const
-  {
-    return mHeap[0].mIndex;
-  }
+size_t CIndexedPriorityQueue::topIndex() const
+{
+  return mHeap[0].mIndex;
+}
 
 // juergen: added 26 July, 2002
-C_INT32 CIndexedPriorityQueue::removeStochReaction(const C_INT32 index)
+size_t CIndexedPriorityQueue::removeStochReaction(const size_t index)
 {
-  C_INT32 t;
+  size_t t;
 
   // check if index is valid
-  if ((index < 0) || (index >= (C_INT32) mIndexPointer.size())) return - 1;
+  if (index >= mIndexPointer.size()) return C_INVALID_INDEX;
 
-  if ((mIndexPointer[index] != -1) && (mIndexPointer[index] != (C_INT32) (mHeap.size() - 1))) // if the node with the given index exists in the tree
+  if ((mIndexPointer[index] != C_INVALID_INDEX) && (mIndexPointer[index] != (mHeap.size() - 1))) // if the node with the given index exists in the tree
     {// remove the node with the given index from the tree
       swapNodes(t = mIndexPointer[index], mHeap.size() - 1);
       mHeap.pop_back();
       mIndexPointer[index] = -1;
       heapify(t);
     }
-  else if (mIndexPointer[index] == (C_INT32) (mHeap.size() - 1)) // last node in the heap
+  else if (mIndexPointer[index] == (mHeap.size() - 1)) // last node in the heap
     {
       mHeap.pop_back();
       mIndexPointer[index] = -1;
     }
+
   return 0;
 }
 
 // juergen: added 26 July, 2002
-C_INT32 CIndexedPriorityQueue::insertStochReaction(const C_INT32 index, const C_FLOAT64 key)
+size_t CIndexedPriorityQueue::insertStochReaction(const size_t index, const C_FLOAT64 key)
 {
-  C_INT32 pos;
+  size_t pos;
 
   // check if index is valid
-  if ((index < 0) || (index >= (C_INT32) mIndexPointer.size())) return - 1;
+  if (index >= mIndexPointer.size()) return - 1;
+
   // first the node is inserted at the end of the heap
   mIndexPointer[index] = mHeap.size();
   PQNode heap_node(index, key);
   mHeap.push_back(heap_node);
   // bubble the node up the tree to the right position !
   pos = mIndexPointer[index];
+
   while ((pos > 0) && (mHeap[parent(pos)].mKey > key))
     {
       swapNodes(pos, parent(pos));
@@ -81,16 +89,17 @@ C_INT32 CIndexedPriorityQueue::insertStochReaction(const C_INT32 index, const C_
 }
 
 // juergen: added 26 July, 2002
-void CIndexedPriorityQueue::initializeIndexPointer(const C_INT32 numberOfReactions)
+void CIndexedPriorityQueue::initializeIndexPointer(const size_t numberOfReactions)
 {
-  C_INT32 i;
+  size_t i;
+
   for (i = 0; i < numberOfReactions; i++)
     {
-      mIndexPointer.push_back(-1);
+      mIndexPointer.push_back(C_INVALID_INDEX);
     }
 }
 
-C_INT32 CIndexedPriorityQueue::pushPair(const C_INT32 index, const C_FLOAT64 key)
+size_t CIndexedPriorityQueue::pushPair(const size_t index, const C_FLOAT64 key)
 {
   // Add an element to the priority queue. This merely pushes an item onto
   // the back of the vector corresponding to the heap, and pushes the index
@@ -106,17 +115,18 @@ C_INT32 CIndexedPriorityQueue::pushPair(const C_INT32 index, const C_FLOAT64 key
       CCopasiMessage(CCopasiMessage::ERROR, "Error inserting pair into priority queue");
       return - 1;
     }
+
   PQNode heap_node(index, key);
   mHeap.push_back(heap_node);
   // at first, position == index
-  C_INT32 position = index; // for clarity
+  size_t position = index; // for clarity
   mIndexPointer.push_back(position);
   return 0;
 }
 
 void CIndexedPriorityQueue::buildHeap()
 {
-  for (C_INT32 i = mHeap.size() / 2 - 1; i >= 0; i--)
+  for (size_t i = mHeap.size() / 2 - 1; i != C_INVALID_INDEX; i--)
     {
       heapify(i);
     }
@@ -125,21 +135,21 @@ void CIndexedPriorityQueue::buildHeap()
 void CIndexedPriorityQueue::clear()
 {mHeap.clear(); mIndexPointer.clear();}
 
-void CIndexedPriorityQueue::updateNode(const C_INT32 index, const C_FLOAT64 new_key)
+void CIndexedPriorityQueue::updateNode(const size_t index, const C_FLOAT64 new_key)
 {
-  C_INT32 pos = mIndexPointer[index];
+  size_t pos = mIndexPointer[index];
   //    cout << "Setting heap at " << pos << " to be " << new_key << endl;
   mHeap[pos].mKey = new_key;
   updateAux(pos);
 }
 
-void CIndexedPriorityQueue::swapNodes(const C_INT32 pos1, const C_INT32 pos2)
+void CIndexedPriorityQueue::swapNodes(const size_t pos1, const size_t pos2)
 {
   //    cout << "Swapping node " << pos1 << "(" << mHeap[pos1].mKey << ") with node ";
   //    cout << pos2 << "(" << mHeap[pos2].mKey << ")\n";
   C_FLOAT64 tempkey = mHeap[pos1].mKey;
-  C_INT32 index1 = mHeap[pos1].mIndex;
-  C_INT32 index2 = mHeap[pos2].mIndex;
+  size_t index1 = mHeap[pos1].mIndex;
+  size_t index2 = mHeap[pos2].mIndex;
   // Put the contents of the node at pos2 into the node at pos1
   mHeap[pos1].mIndex = index2;
   mHeap[pos1].mKey = mHeap[pos2].mKey;
@@ -151,20 +161,23 @@ void CIndexedPriorityQueue::swapNodes(const C_INT32 pos1, const C_INT32 pos2)
   mIndexPointer[index2] = pos1;
 }
 
-void CIndexedPriorityQueue::heapify(const C_INT32 current)
+void CIndexedPriorityQueue::heapify(const size_t current)
 {
-  C_INT32 left = leftChild(current);
-  C_INT32 right = rightChild(current);
-  C_INT32 highest_priority = current;
+  size_t left = leftChild(current);
+  size_t right = rightChild(current);
+  size_t highest_priority = current;
+
   //    cout << "Heapifying " << current << "(Currently " << mHeap[current].mKey << ")" << endl;
   if ((static_cast<unsigned int>(left) < mHeap.size()) && (mHeap[left].mKey < mHeap[current].mKey))
     {
       highest_priority = left;
     }
+
   if ((static_cast<unsigned int>(right) < mHeap.size()) && (mHeap[right].mKey < mHeap[highest_priority].mKey))
     {
       highest_priority = right;
     }
+
   if (highest_priority != current)
     {
       swapNodes(current, highest_priority);
@@ -172,32 +185,38 @@ void CIndexedPriorityQueue::heapify(const C_INT32 current)
     }
 }
 
-void CIndexedPriorityQueue::updateAux(const C_INT32 pos)
+void CIndexedPriorityQueue::updateAux(const size_t pos)
 {
-  C_INT32 parent_pos = parent(pos);
+  size_t parent_pos = parent(pos);
   C_FLOAT64 keyval = mHeap[pos].mKey;
-  if ((parent_pos >= 0) && (keyval < mHeap[parent_pos].mKey))
+
+  if (parent_pos != C_INVALID_INDEX &&
+      keyval < mHeap[parent_pos].mKey)
     {
       swapNodes(pos, parent_pos);
       updateAux(parent_pos);
     }
   else
     {
-      C_INT32 left = leftChild(pos);
-      C_INT32 right = rightChild(pos);
+      size_t left = leftChild(pos);
+      size_t right = rightChild(pos);
       C_FLOAT64 min = 0.0;
-      C_INT32 min_pos = 0;
-      if (static_cast<unsigned int>(left) < mHeap.size())
+      size_t min_pos = 0;
+
+      if (left < mHeap.size())
         {
           min = mHeap[left].mKey;
           min_pos = left;
         }
+
       C_FLOAT64 val; // = mHeap[right].mKey; //!!!
-      if ((static_cast<unsigned int>(right) < mHeap.size()) && ((val = mHeap[right].mKey) < min))
+
+      if ((right < mHeap.size()) && ((val = mHeap[right].mKey) < min))
         {
           min = val;
           min_pos = right;
         }
+
       if ((min_pos > 0) && (keyval > min))
         {
           //            swapNodes(mHeap[pos].mIndex, min_pos);
@@ -217,6 +236,7 @@ int main(int argc, char **argv)
       cout << "Usage: " << argv[0] << " <number of pairs to generate>" << endl;
       return - 1;
     }
+
   int count = atoi(argv[1]);
   cout << "Creating priority queue of size " << count << endl;
   std::vector<C_FLOAT64> invec;
@@ -224,6 +244,7 @@ int main(int argc, char **argv)
   CRandom *rand = new CRandom(1);
   C_FLOAT64 rndval;
   cout << "Input vector:\n";
+
   for (int i = 0; i < count; i++)
     {
       rndval = rand->getUniformRandom();
@@ -231,15 +252,19 @@ int main(int argc, char **argv)
       cout << "element " << i << ":" << rndval << endl;
       pq.pushPair(i, invec[i]);
     }
+
   cout << "Building heap\n";
   pq.buildHeap();
   cout << "Done building heap\n";
   // Display the priority queue
   cout << "\nPriority Queue:\n";
+
   for (int i = 0; i < count; i++)
     {
       cout << "Queue: ";
+
       for (int j = 0; j < count; j++) cout << " " << j << "-" << pq[j];
+
       cout << endl;
       cout << "Position: " << i;
       cout << " Index = " << pq.topIndex();
@@ -260,17 +285,21 @@ std::ostream & operator<<(std::ostream &os, const PQNode & d)
 
 std::ostream & operator<<(std::ostream &os, const CIndexedPriorityQueue & d)
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   os << "PQ: " << std::endl;
 
   std::vector <PQNode>::const_iterator it;
   os << "  mHeap: " << std::endl;
+
   for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
     os << *it << std::endl;
+
   os << "  mIndexPointer: " << std::endl;
+
   for (i = 0; i < d.mIndexPointer.size(); i++)
     os << d.mIndexPointer[i] << " ";
+
   os << std::endl;
 
   os << std::endl;

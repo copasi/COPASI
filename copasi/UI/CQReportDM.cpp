@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:51 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -30,7 +36,7 @@ CQReportDM::CQReportDM(QObject *parent)
 
 int CQReportDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size() + 1;
 }
 int CQReportDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -66,7 +72,7 @@ QVariant CQReportDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_REPORTS:
                 return QVariant(QString("New Report"));
               default:
@@ -137,7 +143,7 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
         pRepDef->setObjectName(TO_UTF8(createNewName("report", COL_NAME_REPORTS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::REPORT, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::REPORT, ListViews::CHANGE, pRepDef->getKey());
     }
 
   return true;
@@ -149,11 +155,12 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(createNewName("report", COL_NAME_REPORTS)), "");
+      CReportDefinition *pRepDef =
+        (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(createNewName("report", COL_NAME_REPORTS)), "");
+      emit notifyGUI(ListViews::REPORT, ListViews::ADD, pRepDef->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::REPORT, ListViews::ADD, "");
 
   return true;
 }
@@ -163,15 +170,47 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex&)
   if (rows <= 0)
     return true;
 
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+
+  if (pDataModel == NULL)
+    return false;
+
+  CCopasiVector< CReportDefinition > * pReportList = pDataModel->getReportDefinitionList();
+
+  if (pReportList == NULL)
+    return false;
+
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->CCopasiVector< CReportDefinition >::remove(position);
+      CReportDefinition * pReport = (*pReportList)[position];
+
+      if (pReport == NULL)
+        continue;
+
+      std::set< const CCopasiObject * > Tasks;
+      std::set< const CCopasiObject * > DeletedObjects;
+      DeletedObjects.insert(pReport);
+
+      if (pDataModel->appendDependentTasks(DeletedObjects, Tasks))
+        {
+          std::set< const CCopasiObject * >::iterator it = Tasks.begin();
+          std::set< const CCopasiObject * >::iterator end = Tasks.end();
+
+          for (; it != end; ++it)
+            {
+              const CCopasiTask * pTask = static_cast< const CCopasiTask *>(*it);
+              const_cast< CCopasiTask * >(pTask)->getReport().setReportDefinition(NULL);
+            }
+        }
+
+      std::string deletedKey = pReport->getKey();
+      pReportList->remove(pReport);
+      emit notifyGUI(ListViews::REPORT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::REPORT, ListViews::DELETE, "");
 
   return true;
 }
@@ -184,69 +223,44 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
-  if (!pDataModel->getModel())
+  CCopasiVector< CReportDefinition > * pReportList = pDataModel->getReportDefinitionList();
+
+  if (pReportList == NULL)
     return false;
 
-//Build the list of pointers to items to be deleted
-//before actually deleting any item.
-  QList <CReportDefinition *> pRepDefs;
+  QList< CReportDefinition * > Reports;
+
   QModelIndexList::const_iterator i;
-  std::set< std::string > TaskKeys;
-  std::set< std::string >::const_iterator it;
-  std::set< std::string >::const_iterator end;
-  CReportDefinition * pRepDef = NULL;
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && pDataModel->getReportDefinitionList()->operator[]((*i).row()))
+      if (!isDefaultRow(*i) && (*pReportList)[(*i).row()])
+        Reports.append((*pReportList)[(*i).row()]);
+    }
+
+  QList< CReportDefinition * >::const_iterator j;
+
+  for (j = Reports.begin(); j != Reports.end(); ++j)
+    {
+      CReportDefinition * pReport = *j;
+
+      size_t delRow = pReportList->getIndex(pReport);
+
+      if (delRow != C_INVALID_INDEX)
         {
-          pRepDef = pDataModel->getReportDefinitionList()->operator[]((*i).row());
-          pRepDefs.append(pRepDef);
+          std::set< const CCopasiObject * > DeletedObjects;
+          DeletedObjects.insert(pReport);
 
-          //check where the reports are used...
-          std::set< std::string > Keys =
-            pDataModel->listTaskDependentOnReport(pRepDef->getKey());
+          QMessageBox::StandardButton choice =
+            CQMessageBox::confirmDelete(NULL, "report",
+                                        FROM_UTF8(pReport->getObjectName()),
+                                        DeletedObjects);
 
-          for (it = Keys.begin(), end = Keys.end(); it != end; ++it)
-            TaskKeys.insert(*it);
+          if (choice == QMessageBox::Ok)
+            {
+              removeRow((int) delRow);
+            }
         }
-    }
-
-  if (TaskKeys.size() > 0)
-    {
-      std::set< std::string >::const_iterator it = TaskKeys.begin();
-      std::set< std::string >::const_iterator end = TaskKeys.end();
-
-      CCopasiTask * pTask;
-      QString msg = "The following tasks are effected:\n";
-
-      for (it = TaskKeys.begin(), end = TaskKeys.end(); it != end; ++it)
-        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(*it))))
-          msg += FROM_UTF8(pTask->getObjectName()) + ", ";
-
-      msg = msg.remove(msg.length() - 2, 2);
-
-      if (CQMessageBox::question(NULL,
-                                 "CONFIRM DELETE",
-                                 msg,
-                                 QMessageBox::Ok | QMessageBox::Cancel,
-                                 QMessageBox::Cancel) == QMessageBox::Cancel)
-        return false;
-
-      for (it = TaskKeys.begin(); it != end; ++it)
-        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(*it))))
-          pTask->getReport().setReportDefinition(NULL);
-    }
-
-  QList <CReportDefinition *>::const_iterator j;
-
-  for (j = pRepDefs.begin(); j != pRepDefs.end(); ++j)
-    {
-      pRepDef = *j;
-
-      unsigned C_INT32 delRow =
-        pDataModel->getReportDefinitionList()->CCopasiVector< CReportDefinition >::getIndex(pRepDef);
-      removeRow(delRow);
     }
 
   return true;

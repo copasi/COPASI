@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/10 14:54:39 $
+//   $Date: 2011/03/07 19:34:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,8 +52,7 @@ class CRandom;
 class CTrajectoryMethodDsaLsodar : public CLsodaMethod
 {
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
   /* PUBLIC METHODS **********************************************************/
   class CReactionDependencies
@@ -394,7 +393,7 @@ protected:
   /**
    * Index of the first species determined by reactions in CState
    */
-  unsigned C_INT32 mFirstReactionSpeciesIndex;
+  size_t mFirstReactionSpeciesIndex;
 
 
   bool mMaxStepsReached;
@@ -402,7 +401,7 @@ protected:
   /**
    *   Number of elementary steps after the last partitioning.
    */
-  unsigned C_INT32 mStepsAfterPartitionSystem;
+  size_t mStepsAfterPartitionSystem;
 
   /**
    * The particle and reaction numbers
@@ -417,7 +416,7 @@ protected:
   /**
    * The index of the next reaction which fires
    */
-  unsigned C_INT32 mNextReactionIndex;
+  size_t mNextReactionIndex;
 
   /**
    * A boolean flag indicating whether correction for higher order reactions need to be applied

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:35:58 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:45 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,7 +52,7 @@ std::vector<const CCopasiObject*> CQLayoutsWidget::getObjects() const
   CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
   std::vector<const CCopasiObject*> ret;
 
-  C_INT32 i, imax = pListOfLayouts->size();
+  size_t i, imax = pListOfLayouts->size();
 
   for (i = 0; i < imax; ++i)
     ret.push_back((*pListOfLayouts)[i]);
@@ -65,7 +65,7 @@ void CQLayoutsWidget::init()
   this->btnNew->hide();
   mOT = ListViews::LAYOUT;
   numCols = 3;
-  table->setNumCols(numCols);
+  table->setNumCols((int) numCols);
 
   //Setting table headers
   Q3Header *tableHeader = table->horizontalHeader();
@@ -79,17 +79,17 @@ void CQLayoutsWidget::updateHeaderUnits()
   // no units, so we do nothing
 }
 
-void CQLayoutsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
+void CQLayoutsWidget::tableLineFromObject(const CCopasiObject* obj, size_t row)
 {
   if (!obj) return;
 
   const CLayout * pLayout = static_cast< const CLayout * >(obj);
 
   // Name
-  table->setText(row, COL_NAME, FROM_UTF8(pLayout->getObjectName()));
-  CQShowLayoutButton* pButton = new CQShowLayoutButton(row, NULL);
+  table->setText((int) row, COL_NAME, FROM_UTF8(pLayout->getObjectName()));
+  CQShowLayoutButton* pButton = new CQShowLayoutButton((int) row, NULL);
   pButton->setText("Show");
-  table->setCellWidget(row, COL_SHOW, pButton);
+  table->setCellWidget((int) row, COL_SHOW, pButton);
   connect(pButton, SIGNAL(signal_show(int)), this, SLOT(slot_show(int)));
 #ifdef USE_CRENDER_EXTENSION
   std::map<std::string, CQNewMainWindow*>::iterator pos = this->mLayoutWindowMap.find(obj->getKey());
@@ -107,14 +107,14 @@ void CQLayoutsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
     }
 }
 
-void CQLayoutsWidget::tableLineToObject(unsigned C_INT32 /*row*/, CCopasiObject* /*obj*/)
+void CQLayoutsWidget::tableLineToObject(size_t /*row*/, CCopasiObject* /*obj*/)
 {
   // I don't know what this is supposed to do, but right now it does nothing
   //if (!obj) return;
   //CLayout * pLayout = static_cast< CLayout * >(obj);
 }
 
-void CQLayoutsWidget::defaultTableLineContent(unsigned C_INT32 /*row*/, unsigned C_INT32 /*exc*/)
+void CQLayoutsWidget::defaultTableLineContent(size_t /*row*/, size_t /*exc*/)
 {
   // nothin to do here
 }
@@ -151,7 +151,7 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   QString layoutList = "Are you sure you want to delete listed LAYOUT(S) ?\n";
 
-  unsigned C_INT32 i, imax = keys.size();
+  size_t i, imax = keys.size();
 
   for (i = 0; i < imax; i++) //all compartments
     {
@@ -202,7 +202,7 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
     }
 }
 
-void CQLayoutsWidget::valueChanged(unsigned C_INT32 /*row*/, unsigned C_INT32 /*col*/)
+void CQLayoutsWidget::valueChanged(size_t /*row*/, size_t /*col*/)
 {
   /*
    * Does nothing at the moment.
@@ -288,6 +288,9 @@ void CQLayoutsWidget::slot_show(int row)
             }
           else
             {
+#ifdef USE_CRENDER_EXTENSION
+              pos->second->slotLayoutChanged(row);
+#endif // USE_CRENDER_EXTENSION
               pos->second->show();
               pos->second->showNormal();
               pos->second->setActiveWindow();
@@ -302,6 +305,7 @@ void CQLayoutsWidget::slot_show(int row)
         {
 #ifdef USE_CRENDER_EXTENSION
           CQNewMainWindow* pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+          pWin->slotLayoutChanged(row);
 #else
           CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout);
 #endif // USE_CRENDER_EXTENSION

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/15 18:18:35 $
+//   $Date: 2011/03/07 19:30:19 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -47,7 +47,7 @@ const CLyapValidSubTypes CLyapMethod::ValidSubTypes;
 //static
 bool CLyapMethod::isValidSubType(const CCopasiMethod::SubType & subType)
 {
-  unsigned C_INT32 i, imax = CLyapMethod::ValidSubTypes.size();
+  size_t i, imax = CLyapMethod::ValidSubTypes.size();
 
   for (i = 0; i < imax; i++)
     if (CLyapMethod::ValidSubTypes[i] == subType) return true;
@@ -156,7 +156,7 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  unsigned C_INT32 tmp = pLP->getModel()->getState().getNumIndependent();
+  unsigned C_INT32 tmp = (unsigned C_INT32) pLP->getModel()->getState().getNumIndependent();
 
   if (pLP->getExponentNumber() > tmp)
     {

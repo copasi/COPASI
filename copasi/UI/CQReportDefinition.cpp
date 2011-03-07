@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/04/15 15:57:54 $
+//   $Date: 2011/03/07 19:37:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -165,8 +165,8 @@ void CQReportDefinition::btnItemClicked()
   if (!pModel) return;
 
   std::vector< const CCopasiObject * > SelectedVector =
-    //    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::NO_RESTRICTION);
-    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::AnyObject);
+    //    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::NO_RESTRICTION);
+    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::AnyObject);
 
   if (SelectedVector.size() != 0)
     {
@@ -331,51 +331,58 @@ void CQReportDefinition::chkTitleClicked()
 
 void CQReportDefinition::btnDeleteReportClicked()
 {
-  unsigned C_INT32 Index, Size;
+  if (mpDataModel == NULL)
+    return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  std::set< std::string > TaskKeys =
-    pDataModel->listTaskDependentOnReport(mKey);
+  std::set< const CCopasiObject * > Tasks;
+  std::set< const CCopasiObject * > DeletedObjects;
+  DeletedObjects.insert(mpObject);
 
-  if (TaskKeys.size() > 0)
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(this, "report",
+                                FROM_UTF8(mpObject->getObjectName()),
+                                DeletedObjects);
+
+  switch (choice)
     {
-      std::set< std::string >::const_iterator it = TaskKeys.begin();
-      std::set< std::string >::const_iterator end = TaskKeys.end();
+      case QMessageBox::Ok:
+      {
+        CCopasiVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
 
-      CCopasiTask * pTask;
-      QString msg = "The following tasks are effected:\n";
+        if (pReportList == NULL)
+          return;
 
-      for (; it != end; ++it)
-        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(*it))))
-          msg += FROM_UTF8(pTask->getObjectName()) + ", ";
+        if (mpDataModel->appendDependentTasks(DeletedObjects, Tasks))
+          {
+            std::set< const CCopasiObject * >::iterator it = Tasks.begin();
+            std::set< const CCopasiObject * >::iterator end = Tasks.end();
 
-      msg = msg.remove(msg.length() - 2, 2);
+            for (; it != end; ++it)
+              {
+                const CCopasiTask * pTask = static_cast< const CCopasiTask *>(*it);
+                const_cast< CCopasiTask * >(pTask)->getReport().setReportDefinition(NULL);
+              }
+          }
 
-      if (CQMessageBox::question(this,
-                                 "CONFIRM DELETE",
-                                 msg,
-                                 QMessageBox::Ok | QMessageBox::Cancel,
-                                 QMessageBox::Cancel) == QMessageBox::Cancel)
-        return;
+        size_t Index = pReportList->getIndex(mpObject);
+        std::string DeletedKey = mpObject->getKey();
 
-      for (it = TaskKeys.begin(); it != end; ++it)
-        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(*it))))
-          pTask->getReport().setReportDefinition(NULL);
+        pReportList->remove(Index);
+
+        size_t Size = pReportList->size();
+
+
+        if (Size > 0)
+          enter((*pReportList)[std::min(Index, Size - 1)]->getKey());
+        else
+          enter("");
+
+        protectedNotify(ListViews::REPORT, ListViews::DELETE, DeletedKey);
+      }
+
+      default:
+        break;
     }
-
-  Index = pDataModel->getReportDefinitionList()->CCopasiVector<CReportDefinition>::getIndex(mpReportDefinition);
-  pDataModel->getReportDefinitionList()->removeReportDefinition(mKey);
-
-  Size = pDataModel->getReportDefinitionList()->size();
-
-  if (Size > 0)
-    enter((*pDataModel->getReportDefinitionList())[std::min(Index, Size - 1)]->getKey());
-  else
-    enter("");
-
-  protectedNotify(ListViews::REPORT, ListViews::DELETE, mKey);
 }
 
 void CQReportDefinition::btnNewReportClicked()
@@ -395,8 +402,10 @@ void CQReportDefinition::btnNewReportClicked()
       Name += TO_UTF8(QString::number(i));
     }
 
-  protectedNotify(ListViews::REPORT, ListViews::ADD);
-  enter(pRep->getKey());
+  std::string key = pRep->getKey();
+  protectedNotify(ListViews::REPORT, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 void CQReportDefinition::btnRevertClicked()
@@ -419,7 +428,15 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
 }
 
 bool CQReportDefinition::leave()
-{return save();}
+{
+  mpBtnCommit->setFocus();
+
+  save();
+
+  mpNotes->leave();
+
+  return true;
+}
 
 bool CQReportDefinition::enterProtected()
 {
@@ -431,7 +448,11 @@ bool CQReportDefinition::enterProtected()
       return false;
     }
 
-  return load();
+  load();
+
+  mpNotes->enter(mKey);
+
+  return true;
 }
 
 bool CQReportDefinition::load()
@@ -446,8 +467,6 @@ bool CQReportDefinition::load()
 
   mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
   mpTaskBox->setCurrentItem(mpReportDefinition->getTaskType());
-  mpCommentEdit->setText(FROM_UTF8(mpReportDefinition->getComment()));
-  mOldComment = mpCommentEdit->text();
 
   //separator
   if (mpReportDefinition->getSeparator().getStaticString() == "\t")
@@ -530,64 +549,6 @@ bool CQReportDefinition::save()
     }
 
   mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentItem());
-
-  if (mOldComment != mpCommentEdit->text())
-    {
-      std::string Richtext = TO_UTF8(mpCommentEdit->toHtml());
-      std::string::size_type pos = 0;
-
-      // We do not need a html document we need only the xhtml element.
-      if (Richtext.find("<!DOCTYPE", 0) != std::string::npos)
-        {
-          pos = Richtext.find('>', 0);
-          Richtext.erase(0, pos + 1);
-        }
-
-      // remove leading white spaces
-      pos = Richtext.find_first_not_of("\x0a\x0d\t ");
-
-      if (pos != 0) Richtext.erase(0, pos);
-
-      // remove trailing white sp ace
-      pos = Richtext.find_last_not_of("\x0a\x0d\t ");
-
-      if (pos < Richtext.length())
-        Richtext = Richtext.substr(0, pos + 1);
-
-      // Fix <hr> to <hr /> to have proper xhtml.
-      pos = 0;
-
-      while ((pos = Richtext.find("<hr>", pos)) != std::string::npos)
-        {
-          pos += 3;
-          Richtext.insert(pos, " /");
-        }
-
-      std::ostringstream xhtml;
-
-      if (Richtext == "")
-        {
-          xhtml << "<body xmlns=\"http://www.w3.org/1999/xhtml\" />";
-        }
-      else if (Richtext[0] == '<')
-        {
-          std::string::size_type pos = Richtext.find('>');
-          std::string FirstElement = Richtext.substr(0, pos);
-
-          if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos)
-            FirstElement += " xmlns=\"http://www.w3.org/1999/xhtml\"";
-
-          xhtml << FirstElement << Richtext.substr(pos);
-        }
-      else
-        {
-          xhtml << "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
-          xhtml << CCopasiXMLInterface::encode(Richtext);
-          xhtml << "</body>";
-        }
-
-      mpReportDefinition->setComment(xhtml.str());
-    }
 
   CCopasiReportSeparator Separator;
 

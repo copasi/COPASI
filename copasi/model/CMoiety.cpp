@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/08 17:22:54 $
+//   $Date: 2011/03/07 19:30:49 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,6 +26,7 @@
 
 #include "copasi.h"
 #include "CMoiety.h"
+#include "CModel.h"
 #include "CCompartment.h"
 #include "CMetabNameInterface.h"
 
@@ -33,13 +39,21 @@
 #include "utilities/utility.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
+// static
+const C_FLOAT64 CMoiety::DefaultFactor(1.0);
+
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
     mNumber(0),
     mINumber(0),
-    mEquation()
+    mIAmount(0),
+    mEquation(),
+    mpINumberReference(NULL),
+    mpNumberReference(NULL),
+    mpDNumberReference(NULL),
+    mpConversionFactor(&CMoiety::DefaultFactor)
 {
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -51,7 +65,12 @@ CMoiety::CMoiety(const CMoiety & src,
     mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
-    mEquation(src.mEquation)
+    mIAmount(src.mIAmount),
+    mEquation(src.mEquation),
+    mpINumberReference(NULL),
+    mpNumberReference(NULL),
+    mpDNumberReference(NULL),
+    mpConversionFactor(src.mpConversionFactor)
 {
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -78,6 +97,10 @@ void CMoiety::initObjects()
   mpDNumberReference =
     static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("DependentValue", mNumber, CCopasiObject::ValueDbl));
   mpDNumberReference->addDirectDependency(this);
+
+  CCopasiObject * pObject = addObjectReference("Amount", mIAmount, CCopasiObject::ValueDbl);
+  pObject->setRefresh(this, &CMoiety::refreshAmount);
+  pObject->addDirectDependency(mpNumberReference);
 
   return;
 }
@@ -118,7 +141,6 @@ void CMoiety::refreshDependentNumber()
   for (; it != end; ++it)
     mNumber -= it->first * it->second->getValue();
 
-  mNumber = std::max(0.0, mNumber);
   return;
 }
 
@@ -131,7 +153,18 @@ const C_FLOAT64 & CMoiety::dependentNumber()
 const C_FLOAT64 & CMoiety::getDependentNumber() const
 {return mNumber;}
 
+CCopasiObject * CMoiety::getDependentNumberReference() const
+{return mpDNumberReference;}
+
 const std::string & CMoiety::getKey() const {return mKey;} //By G
+
+bool CMoiety::setObjectParent(const CCopasiContainer * pParent)
+{
+  bool success = CCopasiContainer::setObjectParent(pParent);
+  initConversionFactor();
+
+  return success;
+}
 
 std::string CMoiety::getDescription(const CModel * model) const
 {
@@ -220,4 +253,28 @@ std::string CMoiety::getExpression() const
     }
 
   return Infix;
+}
+
+const C_FLOAT64 & CMoiety::getAmount() const
+{
+  return mIAmount;
+}
+
+void CMoiety::refreshAmount()
+{
+  mIAmount = mINumber * *mpConversionFactor;
+}
+
+void CMoiety::initConversionFactor()
+{
+  const CModel * pModel = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    {
+      mpConversionFactor = &pModel->getNumber2QuantityFactor();
+    }
+  else
+    {
+      mpConversionFactor = &DefaultFactor;
+    }
 }

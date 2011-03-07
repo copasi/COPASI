@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:59:38 $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -121,14 +121,14 @@ public:
    * corresponding sbml object. This is only guaranteed to work if
    * isBezier() is true.
    */
-  void exportToSBMLBezier(CubicBezier * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBMLBezier(CubicBezier * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
 
   /**
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object. This is only guaranteed to work if
    * isBezier() is false.
    */
-  void exportToSBMLLineSegment(LineSegment * l, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBMLLineSegment(LineSegment * l, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
 
   /**
     * insert operator
@@ -161,19 +161,19 @@ public:
 
   const std::vector<CLLineSegment> & getCurveSegments() const {return mvCurveSegments;};
 
-  const CLLineSegment* getSegmentAt(C_INT32 i) const
+  const CLLineSegment* getSegmentAt(size_t i) const
   {
-    if ((i >= 0) && ((unsigned C_INT32)i < mvCurveSegments.size()))return &(mvCurveSegments[i]);
+    if (i < mvCurveSegments.size())return &(mvCurveSegments[i]);
     else return NULL;
   }
 
-  CLLineSegment* getSegmentAt(C_INT32 i)
+  CLLineSegment* getSegmentAt(size_t i)
   {
-    if ((i >= 0) && ((unsigned C_INT32)i < mvCurveSegments.size()))return &(mvCurveSegments[i]);
+    if (i < mvCurveSegments.size())return &(mvCurveSegments[i]);
     else return NULL;
   }
 
-  C_INT32 getNumCurveSegments() const {return mvCurveSegments.size();};
+  size_t getNumCurveSegments() const {return mvCurveSegments.size();};
 
   void clear();
 
@@ -233,7 +233,7 @@ public:
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object
    */
-  void exportToSBML(Curve * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBML(Curve * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
 
   /**
    * Calculates the bounding box for the curve.

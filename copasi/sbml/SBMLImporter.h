@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/22 16:15:41 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:32:37 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,14 +81,14 @@ protected:
   std::set<std::string> mDivisionByCompartmentReactions;
   CProcessReport* mpImportHandler;
   unsigned C_INT32 mImportStep;
-  unsigned C_INT32 mhImportStep;
+  size_t mhImportStep;
   unsigned C_INT32 mTotalSteps;
   std::map<Species*, Compartment*> mSubstanceOnlySpecies;
   std::set<std::string> mFastReactions;
   std::set<std::string> mReactionsWithReplacedLocalParameters;
   std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
   std::vector<std::string> mIgnoredParameterUnits;
-  std::map<const ASTNode*, std::string > mStoichiometricExpressionMap;
+  std::map<const ASTNode*, CChemEqElement* > mStoichiometricExpressionMap;
   bool mDelayFound;
   std::set<const Parameter*> mPotentialAvogadroNumbers;
   bool mAvogadroCreated;
@@ -119,8 +119,13 @@ protected:
 
   bool mRuleForSpeciesReferenceIgnored;
   bool mEventAssignmentForSpeciesReferenceIgnored;
+#if LIBSBML_VERSION >= 40200
+  bool mEventPrioritiesIgnored;
+  bool mInitialTriggerValues;
+  bool mNonPersistentTriggerFound;
+#endif // LIBSBML_VERSION >= 40200
 
-#endif // LIBSBML_VERSION
+#endif // LIBSBML_VERSION >= 40100
 
   /**
    * Creates and returns a COPASI CModel from the SBMLDocument given as argument.
@@ -687,6 +692,14 @@ public:
    * This is e.g. used to check if expression in L2V1 contain references to reaction ids.
    */
   std::string findIdInASTTree(const ASTNode* pMath, const std::set<std::string>& reactionIds);
+
+  /**
+   * This method divides the given expression by the given object and returns a new expression.
+   * The caller is responsible for freeing the memory for the new expression.
+   */
+  static CEvaluationNode* divideByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject);
+
+
 
 #if LIBSBML_VERSION >= 40100
   /**

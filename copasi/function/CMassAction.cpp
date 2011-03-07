@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 00:51:57 $
+//   $Date: 2011/03/07 19:28:18 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,13 +23,17 @@
 /**
  * CMassAction
  *
- * Created for Copasi by Stefan Hoops
+ * Created for COPASI by Stefan Hoops
  * (C) Stefan Hoops 2001
  */
 
 #include "copasi.h"
 #include "CMassAction.h"
 #include "utilities/utility.h"
+
+// static
+const char * CMassAction::Infix[] =
+  {"k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>", "k1*PRODUCT<substrate_i>"};
 
 CMassAction::CMassAction(const std::string & name,
                          const CCopasiContainer * pParent):
@@ -50,26 +59,25 @@ CMassAction::CMassAction(const TriLogic & reversible,
     CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
 
   if (reversible == TriTrue)
-    setInfix("k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>");
+    setInfix(Infix[0]);
   else
-    setInfix("k1*PRODUCT<substrate_i>");
+    setInfix(Infix[1]);
 }
 
 CMassAction::~CMassAction() {DESTRUCTOR_TRACE;}
 
 const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
-  CCallParameters<C_FLOAT64>::const_iterator Factor;
-  CCallParameters<C_FLOAT64>::const_iterator End;
+  CCallParameters<C_FLOAT64>::const_iterator pCallParameters = callParameters.begin();
+
+  CCallParameters<C_FLOAT64>::const_iterator Factor = (pCallParameters + 1)->vector->begin();
+  CCallParameters<C_FLOAT64>::const_iterator End = (pCallParameters + 1)->vector->end();
 
   mValue = 0.0;
 
-  Factor = callParameters[1].vector->begin();
-  End = callParameters[1].vector->end();
-
   if (Factor != End)
     {
-      mValue = *callParameters[0].value   // k1
+      mValue = *(pCallParameters + 0)->value   // k1
                * *(Factor++)->value;      // first substrate.
 
       while (Factor != End)
@@ -81,12 +89,12 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
 
   C_FLOAT64 Products = 0.0;
 
-  Factor = callParameters[3].vector->begin();
-  End = callParameters[3].vector->end();
+  Factor = (pCallParameters + 3)->vector->begin();
+  End = (pCallParameters + 3)->vector->end();
 
   if (Factor != End)
     {
-      Products = *callParameters[2].value // k2
+      Products = *(pCallParameters + 2)->value // k2
                  * *(Factor++)->value;    // first product.
 
       while (Factor != End)
@@ -165,7 +173,7 @@ void CMassAction::writeMathML(std::ostream & out,
                               const std::vector<std::vector<std::string> > & env,
                               bool /* expand */,
                               bool /* fullExpand */,
-                              unsigned C_INT32 l) const
+                              size_t l) const
 {
   bool rev = (isReversible() == TriTrue);
 
@@ -176,7 +184,7 @@ void CMassAction::writeMathML(std::ostream & out,
 
   out << SPC(l + 1) << env[0][0] << std::endl;
 
-  unsigned i, imax = env[1].size();
+  size_t i, imax = env[1].size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -189,7 +197,7 @@ void CMassAction::writeMathML(std::ostream & out,
       out << SPC(l + 1) << "<mo>-</mo>" << std::endl;
       out << SPC(l + 1) << env[2][0] << std::endl;
 
-      unsigned i, imax = env[3].size();
+      size_t i, imax = env[3].size();
 
       for (i = 0; i < imax; ++i)
         {

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example9/example9.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:56:00 $
+//   $Date: 2011/03/07 19:25:44 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -203,30 +203,30 @@ int main()
       // first the array annotation can tell us how many dimensions it has.
       // Since the matrix is a 2D array, it should have 2 dimensions
       assert(pAJ->dimensionality() == 2);
-      // since the matrix has a dimensionality of 2, the inde for the underlaying abstract array
-      // object is a vector with two unsigned int elements
+      // since the matrix has a dimensionality of 2, the index for the underlying abstract array
+      // object is a vector with two size_t elements
       // First element is the index for the outer dimension and the second element is the index
       // for the inner dimension
-      std::vector<unsigned int> index(2);
+      std::vector<size_t> index(2);
       // since the rows and columns have the same annotation for the jacobian, it doesn't matter
       // for which dimension we get the annotations
       const std::vector<std::string>& annotations = pAJ->getAnnotationsString(1);
       std::cout << "Jacobian Matrix: " << std::endl << std::endl;
       std::cout << std::setw(5) << " ";
 
-      for (unsigned int i = 0; i < annotations.size(); ++i)
+      for (size_t i = 0; i < annotations.size(); ++i)
         {
           std::cout << std::setw(5) << annotations[i];
         }
 
       std::cout << std::endl;
 
-      for (unsigned int i = 0; i < annotations.size(); ++i)
+      for (size_t i = 0; i < annotations.size(); ++i)
         {
           std::cout << std::setw(5) << annotations[i];
           index[0] = i;
 
-          for (unsigned int j = 0; j < annotations.size(); ++j)
+          for (size_t j = 0; j < annotations.size(); ++j)
             {
               index[1] = j;
               std::cout << std::setw(5) << std::setprecision(3) << (*pAJ->array())[index];

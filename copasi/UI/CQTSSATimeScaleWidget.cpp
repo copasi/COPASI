@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/06/28 11:59:11 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:53 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -74,7 +74,7 @@ void CQTSSATimeScaleWidget::paintTimeScale(CVector< C_FLOAT64> vector)
 
       if (vector.size() != mpPaintWidget->mVector.size())
         {
-          mpSlider->setRange(0, (vector.size() - 1));
+          mpSlider->setRange(0, (int)(vector.size() - 1));
           mpSlider->setValue(mpSlider->minValue());
         }
 
@@ -112,9 +112,6 @@ PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   if (!name)
     setName("PaintWidget");
-
-  std::cout << "Constructor for Paint Widget " << std::endl;
-
 }
 
 /*

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentSelection.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/06/09 16:04:29 $
+//   $Date: 2011/03/07 19:37:46 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -62,11 +62,11 @@ void CQExperimentSelection::slotBtnOK()
   QCheckBox * pCheckBox;
   bool AllChecked = true;
   bool NoneChecked = true;
-  unsigned C_INT32 i, imax = mpTable->numRows();
+  size_t i, imax = mpTable->numRows();
 
   for (i = 0; i < imax; i++)
     {
-      pCheckBox = static_cast<QCheckBox *>(mpTable->cellWidget(i, 0));
+      pCheckBox = static_cast<QCheckBox *>(mpTable->cellWidget((int) i, 0));
 
       if (pCheckBox->isChecked())
         {
@@ -90,18 +90,18 @@ void CQExperimentSelection::slotBtnCancel()
 
 void CQExperimentSelection::slotBtnAll()
 {
-  unsigned C_INT32 i, imax = mpTable->numRows();
+  size_t i, imax = mpTable->numRows();
 
   for (i = 0; i < imax; i++)
-    static_cast<QCheckBox *>(mpTable->cellWidget(i, 0))->setChecked(true);
+    static_cast<QCheckBox *>(mpTable->cellWidget((int) i, 0))->setChecked(true);
 }
 
 void CQExperimentSelection::slotBtnNone()
 {
-  unsigned C_INT32 i, imax = mpTable->numRows();
+  size_t i, imax = mpTable->numRows();
 
   for (i = 0; i < imax; i++)
-    static_cast<QCheckBox *>(mpTable->cellWidget(i, 0))->setChecked(false);
+    static_cast<QCheckBox *>(mpTable->cellWidget((int) i, 0))->setChecked(false);
 }
 
 void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExperimentSet)
@@ -111,9 +111,9 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
   QCheckBox * pCheckBox;
   QString Name;
 
-  unsigned C_INT32 i, imax = pExperimentSet->getExperimentCount();
-  unsigned C_INT32 j, jmax = mpBox->count();
-  mpTable->setNumRows(imax);
+  size_t i, imax = pExperimentSet->getExperimentCount();
+  size_t j, jmax = mpBox->count();
+  mpTable->setNumRows((int) imax);
   bool All = (jmax == 0);
 
   for (i = 0; i < imax; i++)
@@ -126,13 +126,13 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
         pCheckBox->setChecked(true);
       else
         for (j = 0; j < jmax; j++)
-          if (mpBox->text(j) == Name)
+          if (mpBox->text((int) j) == Name)
             {
               pCheckBox->setChecked(true);
               break;
             }
 
-      mpTable->setCellWidget(i, 0, pCheckBox);
+      mpTable->setCellWidget((int) i, 0, pCheckBox);
     }
 }
 

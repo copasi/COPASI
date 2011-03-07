@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/08/05 09:27:43 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:46 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,12 +34,22 @@
 #include "copasi.h"
 
 #include "CopasiSlider.h"
+#include "listviews.h"
 #include "qtUtilities.h"
+#include "DataModelGUI.h"
 
 #include "icons/closeSlider.xpm"
 #include "icons/editSlider.xpm"
 
-CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QFrame(parent), mpCSlider(pSlider) , mpQSlider(NULL), mpLabel(NULL), mpCloseButton(NULL), mpEditButton(NULL), mValueOutOfRange(false)
+CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent):
+    QFrame(parent),
+    mpCSlider(pSlider),
+    mpQSlider(NULL),
+    mpLabel(NULL),
+    mpCloseButton(NULL),
+    mpEditButton(NULL),
+    mValueOutOfRange(false),
+    mpDM(pDM)
 {
   this->setLayout(new QHBoxLayout);
   this->setFrameShape(QFrame::Box);
@@ -110,6 +125,8 @@ void CopasiSlider::updateSliderData()
               this->mpQSlider->setEnabled(true);
             }
         }
+
+      this->update();
     }
 }
 
@@ -120,11 +137,31 @@ C_FLOAT64 CopasiSlider::value() const
 
 void CopasiSlider::setValue(C_FLOAT64 value)
 {
-  this->mpCSlider->setSliderValue(value);
 
+  // we set the value ourselves so that listviews can do the
+  // update of the dependent values as well as taking the framework into
+  // consideration
+
+  // first we set the slider value without actually writing to the underlying object
+  this->mpCSlider->setSliderValue(value, false);
   /* reget value in case it was outside range and got set to minValue or
    * maxValue */
   value = this->mpCSlider->getSliderValue();
+
+  // now we handle writing to the object ourselves
+  CCopasiObject* pObject = this->object();
+
+  if (pObject == NULL) return;
+
+  if (pObject->isValueDbl())
+    pObject->setObjectValue(value);
+  else if (pObject->isValueInt())
+    pObject->setObjectValue((C_INT32) floor(value + 0.5));
+  else if (pObject->isValueBool())
+    pObject->setObjectValue(value != 0.0);
+
+  // recalculate all other dependent values
+  mpDM->refreshInitialValues();
 
   this->mpQSlider->setValue(this->calculatePositionFromValue(value));
 
@@ -237,7 +274,6 @@ void CopasiSlider::sliderValueChanged(int value)
   this->mpCSlider->setSliderValue(this->calculateValueFromPosition(value), false);
 
   this->updateLabel();
-  // this->mpCSlider->writeToObject();
 
   emit valueChanged(this->mpCSlider->getSliderValue());
 }
@@ -262,7 +298,7 @@ void CopasiSlider::setType(CSlider::Type type)
   this->mpCSlider->setSliderType(type);
 }
 
-void CopasiSlider::updateValue(bool modifyRange)
+void CopasiSlider::updateValue(bool modifyRange, bool updateDependencies)
 {
   double value = this->mpCSlider->getSliderValue();
   double maxValue = this->mpCSlider->getMaxValue();
@@ -281,7 +317,24 @@ void CopasiSlider::updateValue(bool modifyRange)
         }
     }
 
-  this->mpCSlider->writeToObject();
+  // now we handle writing to the object ourselves
+  CCopasiObject* pObject = this->object();
+
+  if (pObject == NULL) return;
+
+  if (pObject->isValueDbl())
+    pObject->setObjectValue(value);
+  else if (pObject->isValueInt())
+    pObject->setObjectValue((C_INT32) floor(value + 0.5));
+  else if (pObject->isValueBool())
+    pObject->setObjectValue(value != 0.0);
+
+  // recalculate all other dependent values
+  if (updateDependencies)
+    {
+      mpDM->refreshInitialValues();
+    }
+
 }
 
 void CopasiSlider::closeButtonClicked()

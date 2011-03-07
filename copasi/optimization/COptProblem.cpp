@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.116 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/03/07 19:31:27 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,10 +59,12 @@
 COptProblem::COptProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     CCopasiProblem(type, pParent),
-    mInfinity(0.0),
+    mWorstValue(0.0),
     mpParmSubtaskCN(NULL),
     mpParmObjectiveExpression(NULL),
     mpParmMaximize(NULL),
+    mpParmRandomizeStartValues(NULL),
+    mpParmCalculateStatistics(NULL),
     mpGrpItems(NULL),
     mpGrpConstraints(NULL),
     mpOptItems(NULL),
@@ -96,10 +98,12 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
 COptProblem::COptProblem(const COptProblem& src,
                          const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
-    mInfinity(src.mInfinity),
+    mWorstValue(src.mWorstValue),
     mpParmSubtaskCN(NULL),
     mpParmObjectiveExpression(NULL),
     mpParmMaximize(NULL),
+    mpParmRandomizeStartValues(NULL),
+    mpParmCalculateStatistics(NULL),
     mpGrpItems(NULL),
     mpGrpConstraints(NULL),
     mpOptItems(NULL),
@@ -141,6 +145,10 @@ void COptProblem::initializeParameter()
     assertParameter("ObjectiveExpression", CCopasiParameter::EXPRESSION, std::string(""))->getValue().pEXPRESSION;
   mpParmMaximize =
     assertParameter("Maximize", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
+  mpParmRandomizeStartValues =
+    assertParameter("Randomize Start Values", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
+  mpParmCalculateStatistics =
+    assertParameter("Calculate Statistics", CCopasiParameter::BOOL, true)-> getValue().pBOOL;
 
   mpGrpItems = assertGroup("OptimizationItemList");
   mpGrpConstraints = assertGroup("OptimizationConstraintList");
@@ -256,18 +264,16 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
   if (pCallBack)
     {
-      // We need to reset mSolutionValue here since initialize is called later during the process
+      // We need to reset mSolutionValue to correctly initialize the progress item.
       mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
-                            CCopasiParameter::DOUBLE,
-                            & mSolutionValue);
-      // We need to reset mCounter here since initialize is called later during the process
+                            mSolutionValue);
+      // We need to reset mCounter to correctly initialize the progress item.
       mCounter = 0;
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
-                            CCopasiParameter::UINT,
-                            & mCounter);
+                            mCounter);
     }
 
   return true;
@@ -307,7 +313,7 @@ bool COptProblem::initializeSubtaskBeforeOutput()
 
 bool COptProblem::initialize()
 {
-  mInfinity = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+  mWorstValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
 
   if (!mpModel) return false;
 
@@ -321,7 +327,7 @@ bool COptProblem::initialize()
   mConstraintCounter = 0;
   mFailedConstraintCounter = 0;
 
-  mSolutionValue = mInfinity;
+  mSolutionValue = mWorstValue;
 
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(mpModel);
@@ -339,8 +345,8 @@ bool COptProblem::initialize()
   if (mpSubtask != NULL)
     ContainerList.push_back(mpSubtask);
 
-  unsigned C_INT32 i;
-  unsigned C_INT32 Size = mpOptItems->size();
+  size_t i;
+  size_t Size = mpOptItems->size();
 
   mUpdateMethods.resize(Size);
   mSolutionVariables.resize(Size);
@@ -367,6 +373,11 @@ bool COptProblem::initialize()
       mUpdateMethods[i] = (*it)->getUpdateMethod();
       changedObjects.insert((*it)->getObject());
       mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
+
+      if (*mpParmRandomizeStartValues)
+        {
+          (*it)->setStartValue((*it)->getRandomValue());
+        }
     }
 
   changedObjects.erase(NULL);
@@ -408,11 +419,14 @@ bool COptProblem::restore(const bool & updateModel)
 {
   bool success = true;
 
+  if (mpSubtask != NULL)
+    success &= mpSubtask->restore();
+
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
   C_FLOAT64 * pTmp;
 
-  if (updateModel && mSolutionValue != mInfinity)
+  if (updateModel && mSolutionValue != mWorstValue)
     {
       // Set the model values and start values to the solution values
       pTmp = mSolutionVariables.array();
@@ -528,13 +542,11 @@ bool COptProblem::calculate()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mFailedCounter++;
       success = false;
     }
 
   catch (...)
     {
-      mFailedCounter++;
       success = false;
     }
 
@@ -547,18 +559,21 @@ bool COptProblem::calculate()
     }
 
   if (!success || isnan(mCalculateValue))
-    mCalculateValue = *mpParmMaximize ? -mInfinity : mInfinity;
+    {
+      mFailedCounter++;
+      mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
+    }
 
   if (mpCallBack) return mpCallBack->progressItem(mhCounter);
 
-  return success;
+  return true;
 }
 
 bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
 {
   // Set the current values to the solution values.
-  unsigned C_INT32 i, imax = mSolutionVariables.size();
+  size_t i, imax = mSolutionVariables.size();
 
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -567,40 +582,6 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
-  calculate();
-
-  if (mSolutionValue == mInfinity)
-    return false;
-
-  mHaveStatistics = true;
-
-  C_FLOAT64 Current;
-  C_FLOAT64 Delta;
-
-  // Calculate the gradient
-  for (i = 0; i < imax; i++)
-    {
-      Current = mSolutionVariables[i];
-
-      if (fabs(Current) > resolution)
-        {
-          (*mUpdateMethods[i])(Current *(1.0 + factor));
-          Delta = 1.0 / (Current * factor);
-        }
-      else
-        {
-          (*mUpdateMethods[i])(resolution);
-          Delta = 1.0 / resolution;
-        }
-
-      calculate();
-
-      mGradient[i] = ((*mpParmMaximize ? -mCalculateValue : mCalculateValue) - mSolutionValue) * Delta;
-
-      // Restore the value
-      (*mUpdateMethods[i])(Current);
-    }
-
   // This is necessary so that the result can be displayed.
   mStoreResults = true;
   calculate();
@@ -608,6 +589,46 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // Make sure the timer is accurate.
   (*mCPUTime.getRefresh())();
+
+  if (mSolutionValue == mWorstValue)
+    return false;
+
+  if (*mpParmCalculateStatistics)
+    {
+      mHaveStatistics = true;
+
+      C_FLOAT64 Current;
+      C_FLOAT64 Delta;
+
+      // Calculate the gradient
+      for (i = 0; i < imax; i++)
+        {
+          Current = mSolutionVariables[i];
+
+          if (fabs(Current) > resolution)
+            {
+              (*mUpdateMethods[i])(Current *(1.0 + factor));
+              Delta = 1.0 / (Current * factor);
+            }
+          else
+            {
+              (*mUpdateMethods[i])(resolution);
+              Delta = 1.0 / resolution;
+            }
+
+          calculate();
+
+          mGradient[i] = ((*mpParmMaximize ? -mCalculateValue : mCalculateValue) - mSolutionValue) * Delta;
+
+          // Restore the value
+          (*mUpdateMethods[i])(Current);
+        }
+
+      calculate();
+
+      // Make sure the timer is accurate.
+      (*mCPUTime.getRefresh())();
+    }
 
   return true;
 }
@@ -627,18 +648,24 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
   mSolutionValue = *mpParmMaximize ? -value : value;
   mSolutionVariables = variables;
 
-  if (mpCallBack) return mpCallBack->progressItem(mhSolutionValue);
+  bool Continue = true;
 
-  return true;
+  if (value == -std::numeric_limits< C_FLOAT64 >::infinity())
+    Continue = false;
+
+  if (mpCallBack)
+    Continue &= mpCallBack->progressItem(mhSolutionValue);
+
+  return Continue;
 }
 
 const C_FLOAT64 & COptProblem::getSolutionValue() const
 {return mSolutionValue;}
 
-COptItem & COptProblem::getOptItem(const unsigned C_INT32 & index)
+COptItem & COptProblem::getOptItem(const size_t & index)
 {return *(*mpOptItems)[index];}
 
-unsigned C_INT32 COptProblem::getOptItemSize() const
+size_t COptProblem::getOptItemSize() const
 {return mpGrpItems->size();}
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
@@ -654,11 +681,11 @@ COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
   return *pItem;
 }
 
-bool COptProblem::removeOptItem(const unsigned C_INT32 & index)
+bool COptProblem::removeOptItem(const size_t & index)
 {return mpGrpItems->removeParameter(index);}
 
-bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
-                              const unsigned C_INT32 & iTo)
+bool COptProblem::swapOptItem(const size_t & iFrom,
+                              const size_t & iTo)
 {return mpGrpItems->swap(iFrom, iTo);}
 
 const std::vector< COptItem * > & COptProblem::getOptItemList() const
@@ -700,7 +727,7 @@ bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
 
   if (pTasks)
     {
-      unsigned C_INT32 i, imax = pTasks->size();
+      size_t i, imax = pTasks->size();
 
       for (i = 0; i < imax; i++)
         if ((*pTasks)[i]->getType() == subtaskType)
@@ -732,6 +759,18 @@ void COptProblem::setMaximize(const bool & maximize)
 
 const bool & COptProblem::maximize() const
 {return *mpParmMaximize;}
+
+void COptProblem::setRandomizeStartValues(const bool & randomize)
+{*mpParmRandomizeStartValues = randomize;}
+
+const bool & COptProblem::getRandomizeStartValues() const
+{return *mpParmRandomizeStartValues;}
+
+void COptProblem::setCalculateStatistics(const bool & calculate)
+{*mpParmCalculateStatistics = calculate;}
+
+const bool & COptProblem::getCalculateStatistics() const
+{return *mpParmCalculateStatistics;}
 
 const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
 {return mCounter;}
@@ -767,7 +806,7 @@ void COptProblem::printResult(std::ostream * ostream) const
   std::vector< COptItem * >::const_iterator endItem =
     mpOptItems->end();
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; itItem != endItem; ++itItem, i++)
     {

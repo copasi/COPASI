@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:48 $
+//   $Date: 2011/03/07 19:32:38 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -523,7 +528,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         if (pFitProblem == NULL) return NULL;
 
         const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
-        unsigned C_INT32 i, imax = ExperimentSet.getExperimentCount();
+        size_t i, imax = ExperimentSet.getExperimentCount();
 
         std::vector< std::string > ChannelX;
         std::vector< std::string > Names;
@@ -608,7 +613,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         if (pFitProblem == NULL) return NULL;
 
         const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
-        unsigned C_INT32 i, imax = ExperimentSet.getExperimentCount();
+        size_t i, imax = ExperimentSet.getExperimentCount();
 
         for (i = 0; i < imax; i++)
           {
@@ -685,7 +690,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         if (pFitProblem == NULL) return NULL;
 
         const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
-        unsigned C_INT32 i, imax = ExperimentSet.getExperimentCount();
+        size_t i, imax = ExperimentSet.getExperimentCount();
 
         std::map< const CCopasiObject *, CPlotSpecification * > PlotSpecMap;
         std::map< const CCopasiObject *, CPlotSpecification * >::iterator Found;

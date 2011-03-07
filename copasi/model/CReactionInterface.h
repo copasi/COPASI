@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:17:54 $
+//   $Date: 2011/03/07 19:30:50 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -166,22 +171,22 @@ public:
 
   //query information about the function variables
 
-  C_INT32 size() const
+  size_t size() const
   {if (mpFunction) return mpParameters->size(); else return 0;};
 
-  bool isVector(unsigned C_INT32 index) const
+  bool isVector(size_t index) const
   {
     if (mpFunction) return ((*mpParameters)[index]->getType() == CFunctionParameter::VFLOAT64);
     else return (false);
   }
 
-  CFunctionParameter::Role getUsage(unsigned C_INT32 index) const
+  CFunctionParameter::Role getUsage(size_t index) const
   {
     if (mpFunction) return (*mpParameters)[index]->getUsage();
     else return CFunctionParameter::VARIABLE;
   }
 
-  std::string getParameterName(unsigned C_INT32 index) const
+  std::string getParameterName(size_t index) const
   {
     if (mpFunction) return (*mpParameters)[index]->getObjectName();
     else return emptyString;
@@ -189,46 +194,46 @@ public:
 
   // set/get the mapping
 
-  void setMapping(unsigned C_INT32 index, std::string mn);
+  void setMapping(size_t index, std::string mn);
 
-  void removeMapping(unsigned C_INT32 index, std::string mn);
+  void removeMapping(size_t index, std::string mn);
 
-  const std::vector< std::string > & getMappings(unsigned C_INT32 index) const
+  const std::vector< std::string > & getMappings(size_t index) const
   {return mNameMap[index];}
 
-  const std::string & getMapping(unsigned C_INT32 index) const
+  const std::string & getMapping(size_t index) const
   {
     assert(!isVector(index));
     return mNameMap[index][0];
   }
 
-  void setLocalValue(unsigned C_INT32 index, C_FLOAT64 value)
+  void setLocalValue(size_t index, C_FLOAT64 value)
   {
     mValues[index] = value;
     mIsLocal[index] = true;
   }
 
-  void setLocal(unsigned C_INT32 index)
+  void setLocal(size_t index)
   {
     mIsLocal[index] = true;
   }
 
-  const C_FLOAT64 & getLocalValue(unsigned C_INT32 index) const {return mValues[index];}
+  const C_FLOAT64 & getLocalValue(size_t index) const {return mValues[index];}
 
-  bool isLocalValue(unsigned C_INT32 index) const {return mIsLocal[index];};
+  bool isLocalValue(size_t index) const {return mIsLocal[index];};
 
   /**
    *  associate the function parameter referenced by "index" with the global
    *  parameter named pn. Only valid if the role for this function parameter is "PARAMETER".
    *  returns success
    */
-  //bool setGlobalParameter(unsigned C_INT32 index, std::string pn);
+  //bool setGlobalParameter(size_t index, std::string pn);
 
-  //const std::string & getGlobalParameter(unsigned C_INT32 index) const;
+  //const std::string & getGlobalParameter(size_t index) const;
 
-  //bool setCompartment(unsigned C_INT32 index, std::string pn);
+  //bool setCompartment(size_t index, std::string pn);
 
-  //const std::string & getCompartment(unsigned C_INT32 index) const;
+  //const std::string & getCompartment(size_t index) const;
 
   void initFromReaction(const std::string & key);
   void initFromReaction(const C_INT32 index);
@@ -267,7 +272,7 @@ public:
    * Compartments and global parameters can only be chosen from those
    * existing in the model.
    */
-  bool isLocked(unsigned C_INT32 index) const;
+  bool isLocked(size_t index) const;
   bool isLocked(CFunctionParameter::Role usage) const;
 
   /**

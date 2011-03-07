@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:04 $
+//   $Date: 2011/03/07 19:34:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,11 +38,14 @@
 /* DEFINE ********************************************************************/
 
 #ifdef WIN32
+#if _MSC_VER < 1600
 #define min _cpp_min
 #define max _cpp_max
+#endif // _MSC_VER
 #endif // WIN32
 
 #include <limits.h>
+#include <iterator>
 
 #include "mathematics.h" // pow(), floor()
 
@@ -198,8 +201,8 @@ CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT)
   //  mpProblem->getModel()->setState(mpCurrentState); // is that correct?
 
   // check for possible overflows
-  unsigned C_INT32 i;
-  unsigned C_INT32 imax;
+  size_t i;
+  size_t imax;
 
   // :TODO: Bug 774: This assumes that the number of variable metabs is the number
   // of metabs determined by reaction. In addition they are expected at the beginning of the
@@ -361,7 +364,7 @@ void CHybridMethod::integrateDeterministicPart(C_FLOAT64 dt)
   // find the set union of all reactions, which depend on one of the deterministic reactions. The propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
   for (react = mFirstReactionFlag; react != NULL; react = react->mpNext)
     {
-      const std::set <unsigned C_INT32> & dependents = mDG.getDependents(react->mIndex);
+      const std::set <size_t> & dependents = mDG.getDependents(react->mIndex);
       std::copy(dependents.begin(), dependents.end(),
                 std::inserter(mUpdateSet, mUpdateSet.begin()));
     }
@@ -379,7 +382,7 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
 {
   C_FLOAT64 integrationTime = 0.0;
   CHybridStochFlag * react = NULL;
-  unsigned C_INT32 i;
+  size_t i;
 
   while ((dt - integrationTime) > mStepsize)
     {
@@ -404,7 +407,7 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
   // find the set union of all reactions, which depend on one of the deterministic reactions. The propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
   for (react = mFirstReactionFlag; react != NULL; react = react->mpNext)
     {
-      const std::set <unsigned C_INT32> & dependents = mDG.getDependents(react->mIndex);
+      const std::set <size_t> & dependents = mDG.getDependents(react->mIndex);
       std::copy(dependents.begin(), dependents.end(),
                 std::inserter(mUpdateSet, mUpdateSet.begin()));
     }
@@ -422,7 +425,7 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
  */
 void CHybridMethod::rungeKutta(C_FLOAT64 dt)
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   /* save current state */
   getState(currentState);
@@ -499,8 +502,8 @@ void CHybridMethod::rungeKutta(C_FLOAT64 dt)
  */
 void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
 {
-  unsigned C_INT32 i;
-  C_INT32 bal = 0;
+  size_t i;
+  size_t bal = 0;
   CHybridStochFlag * j;
 
   // Calculate all the needed kinetic functions of the deterministic reactions
@@ -512,14 +515,14 @@ void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
   // For each metabolite add up the contributions of the det. reactions
   // the number of rows in mStoi equals the number of non-fixed metabolites!
   //  for (i=0; i<mNumVariableMetabs; i++)
-  for (i = 0; i < (unsigned C_INT32) mStoi.numRows(); i++)
+  for (i = 0; i < mStoi.numRows(); i++)
     {
       deriv[i] = 0.0;
 
       for (j = mFirstReactionFlag; j != NULL; j = j->mpNext)
         {
           // juergen: +0.5 to get a rounding out of the static_cast
-          bal = static_cast<C_INT32>(floor(mStoi[i][j->mIndex] + 0.5));
+          bal = static_cast<size_t>(floor(mStoi[i][j->mIndex] + 0.5));
           deriv[i] += bal * (*mpReactions)[j->mIndex]->getParticleFlux(); //  balance * flux;
         }
     }
@@ -539,7 +542,7 @@ void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
  */
 void CHybridMethod::getState(std::vector <C_FLOAT64> & target)
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < mNumVariableMetabs; i++)
     {
@@ -559,7 +562,7 @@ void CHybridMethod::getState(std::vector <C_FLOAT64> & target)
  */
 void CHybridMethod::setState(std::vector <C_FLOAT64> & source)
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < mNumVariableMetabs; i++)
     {
@@ -579,10 +582,10 @@ void CHybridMethod::setState(std::vector <C_FLOAT64> & source)
  *
  *   @param ds A reference to a C_FLOAT64. The putative reaction time for the
  *             first stochastic reaction is written into this variable.
- *   @param rIndex A reference to a C_INT32. The index of the first
+ *   @param rIndex A reference to a size_t. The index of the first
  *                 stochastic reaction is written into this variable.
  */
-void CHybridMethod::getStochTimeAndIndex(C_FLOAT64 & ds, C_INT32 & rIndex)
+void CHybridMethod::getStochTimeAndIndex(C_FLOAT64 & ds, size_t & rIndex)
 {
   ds = mPQ.topKey();
   rIndex = mPQ.topIndex();
@@ -592,11 +595,11 @@ void CHybridMethod::getStochTimeAndIndex(C_FLOAT64 & ds, C_INT32 & rIndex)
 /**
  *   Executes the specified reaction in the system once.
  *
- *   @param rIndex A C_INT32 specifying the index of the reaction, which
+ *   @param rIndex A size_t specifying the index of the reaction, which
  *                 will be fired.
  *   @param time   The current time
  */
-void CHybridMethod::fireReaction(C_INT32 rIndex)
+void CHybridMethod::fireReaction(size_t rIndex)
 {
   // Change the particle numbers according to which step took place.
   // First, get the vector of balances in the reaction we've got.
@@ -605,7 +608,7 @@ void CHybridMethod::fireReaction(C_INT32 rIndex)
   // multiplicity to calculate a new value for the associated
   // metabolite. Finally, update the metabolite.
 
-  unsigned C_INT32 i;
+  size_t i;
   C_FLOAT64 newNumber;
   CMetab * pMetab;
 
@@ -619,7 +622,7 @@ void CHybridMethod::fireReaction(C_INT32 rIndex)
     }
 
   // insert all dependent reactions into the mUpdateSet
-  const std::set <unsigned C_INT32> & dependents = mDG.getDependents(rIndex);
+  const std::set <size_t> & dependents = mDG.getDependents(rIndex);
   std::copy(dependents.begin(), dependents.end(),
             std::inserter(mUpdateSet, mUpdateSet.begin()));
 
@@ -629,15 +632,15 @@ void CHybridMethod::fireReaction(C_INT32 rIndex)
 /**
  *   Updates the priority queue.
  *
- *   @param rIndex A C_INT32 giving the index of the fired reaction (-1, if no
+ *   @param rIndex A size_t giving the index of the fired reaction (-1, if no
  *                 stochastic reaction has fired)
  *   @param time A C_FLOAT64 holding the current time
  */
-void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
+void CHybridMethod::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
 {
   C_FLOAT64 newTime;
-  C_INT32 index;
-  std::set <C_INT32>::iterator iter, iterEnd;
+  size_t index;
+  std::set <size_t>::iterator iter, iterEnd;
 
   //if the model contains assignments we use a less efficient loop over all (stochastic) reactions to capture all changes
   // we do not know the exact dependencies. TODO: this should be changed later in order to get a more efficient update scheme
@@ -645,7 +648,7 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
     {
       mpModel->updateSimulatedValues(false);
 
-      for (index = 0; index < (C_INT32)mpReactions->size(); index++)
+      for (index = 0; index < mpReactions->size(); index++)
         {
           if (mReactionFlags[index].mpPrev == NULL) // Reaction is stochastic!
             {
@@ -674,7 +677,7 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
     }
 
   // draw new random number and update the reaction just fired
-  if ((rIndex != -1) && (mReactionFlags[rIndex].mpPrev == NULL))
+  if ((rIndex != C_INVALID_INDEX) && (mReactionFlags[rIndex].mpPrev == NULL))
     {// reaction is stochastic
       newTime = time + generateReactionTime(rIndex);
       mPQ.updateNode(rIndex, newTime);
@@ -685,7 +688,7 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
   return;
 }
 
-C_FLOAT64 CHybridMethod::generateReactionTime(C_INT32 rIndex)
+C_FLOAT64 CHybridMethod::generateReactionTime(size_t rIndex)
 {
   if (mAmu[rIndex] == 0) return std::numeric_limits<C_FLOAT64>::infinity();
 
@@ -696,9 +699,9 @@ C_FLOAT64 CHybridMethod::generateReactionTime(C_INT32 rIndex)
 /**
  *   Calculates an amu value for a given reaction.
  *
- *   @param rIndex A C_INT32 specifying the reaction to be updated
+ *   @param rIndex A size_t specifying the reaction to be updated
  */
-void CHybridMethod::calculateAmu(C_INT32 rIndex)
+void CHybridMethod::calculateAmu(size_t rIndex)
 {
   if (!mDoCorrection)
     {
@@ -710,8 +713,8 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   // We calculate this in one go, as there are fewer steps to
   // perform and we eliminate some possible rounding errors.
   C_FLOAT64 amu = 1; // initially
-  //C_INT32 total_substrates = 0;
-  C_INT32 num_ident = 0;
+  //size_t total_substrates = 0;
+  size_t num_ident = 0;
   C_INT64 number = 0;
   C_INT64 lower_bound;
   // substrate_factor - The substrates, raised to their multiplicities,
@@ -725,7 +728,7 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
 
   int flag = 0;
 
-  for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
+  for (size_t i = 0; i < substrates.size(); i++)
     {
       num_ident = substrates[i].mMultiplicity;
 
@@ -777,9 +780,9 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
  *   priority queue. The corresponding amu and amu_old must be set prior to
  *   the call of this method.
  *
- *   @param rIndex A C_INT32 specifying the index of the reaction
+ *   @param rIndex A size_t specifying the index of the reaction
  */
-void CHybridMethod::updateTauMu(C_INT32 rIndex, C_FLOAT64 time)
+void CHybridMethod::updateTauMu(size_t rIndex, C_FLOAT64 time)
 {
   C_FLOAT64 newTime;
 
@@ -815,10 +818,10 @@ C_INT32 CHybridMethod::checkModel(CModel * model)
 {
   CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
   CMatrix <C_FLOAT64> mStoi = model->getStoiReordered();
-  C_INT32 i, multInt, numReactions = mpReactions->size();
-  unsigned C_INT32 j;
+  size_t i, multInt, numReactions = mpReactions->size();
+  size_t j;
   C_FLOAT64 multFloat;
-  //  C_INT32 metabSize = mpMetabolites->size();
+  //  size_t metabSize = mpMetabolites->size();
 
   for (i = 0; i < numReactions; i++) // for every reaction
     {
@@ -835,7 +838,7 @@ C_INT32 CHybridMethod::checkModel(CModel * model)
       for (j = 0; j < mStoi.numRows(); j++)
         {
           multFloat = mStoi[j][i];
-          multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
+          multInt = static_cast<size_t>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
 
           if ((multFloat - multInt) > INT_EPSILON) return - 3; // INT_EPSILON in CHybridMethod.h
         }
@@ -852,10 +855,10 @@ C_INT32 CHybridMethod::checkModel(CModel * model)
  */
 void CHybridMethod::setupBalances()
 {
-  unsigned C_INT32 i, j;
+  size_t i, j;
   CHybridBalance newElement;
-  C_INT32 maxBalance = 0;
-  unsigned C_INT32 numReactions;
+  size_t maxBalance = 0;
+  size_t numReactions;
 
   numReactions = mpReactions->size();
   mLocalBalances.clear();
@@ -872,8 +875,8 @@ void CHybridMethod::setupBalances()
         {
           newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
-          // + 0.5 to get a rounding out of the static_cast to C_INT32!
-          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
+          // + 0.5 to get a rounding out of the static_cast to size_t!
+          newElement.mMultiplicity = static_cast<size_t>(floor((*balances)[j]->getMultiplicity() + 0.5));
 
           if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
             {
@@ -889,8 +892,8 @@ void CHybridMethod::setupBalances()
         {
           newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
-          // + 0.5 to get a rounding out of the static_cast to C_INT32!
-          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
+          // + 0.5 to get a rounding out of the static_cast to size_t!
+          newElement.mMultiplicity = static_cast<size_t>(floor((*balances)[j]->getMultiplicity() + 0.5));
 
           mLocalSubstrates[i].push_back(newElement); // element is copied for the push_back
         }
@@ -910,8 +913,8 @@ void CHybridMethod::setupDependencyGraph()
   mDG.clear();
   std::vector< std::set<std::string>* > DependsOn;
   std::vector< std::set<std::string>* > Affects;
-  unsigned C_INT32 numReactions = mpReactions->size();
-  unsigned C_INT32 i, j;
+  size_t numReactions = mpReactions->size();
+  size_t i, j;
 
   // Do for each reaction:
   for (i = 0; i < numReactions; i++)
@@ -973,8 +976,8 @@ void CHybridMethod::setupDependencyGraph()
  */
 void CHybridMethod::setupMetab2React()
 {
-  unsigned C_INT32 i, j;
-  C_INT32 metaboliteIndex;
+  size_t i, j;
+  size_t metaboliteIndex;
 
   // Resize mMetab2React and create an initial set for each metabolite
   mMetab2React.clear();
@@ -1002,9 +1005,9 @@ void CHybridMethod::setupMetab2React()
  */
 void CHybridMethod::setupMetab2ReactPlusModifier()
 {
-  std::vector< std::set<C_INT32>* > participatesIn;
-  unsigned C_INT32 numReactions = mpReactions->size();
-  unsigned C_INT32 i;
+  std::vector< std::set<size_t>* > participatesIn;
+  size_t numReactions = mpReactions->size();
+  size_t i;
 
   // Resize mMetab2React and create an initial set for each metabolite
   mMetab2React.resize(mpMetabolites->size());
@@ -1019,7 +1022,7 @@ void CHybridMethod::setupMetab2ReactPlusModifier()
   for (i = 0; i < numReactions; i++)
     {
       // Get the set of metabolites which take part in this reaction
-      std::set<C_INT32>::iterator iter = participatesIn[i]->begin();
+      std::set<size_t>::iterator iter = participatesIn[i]->begin();
 
       for (; iter != participatesIn[i]->end(); iter++)
         mMetab2React[*iter].insert(i);
@@ -1039,7 +1042,7 @@ void CHybridMethod::setupMetab2ReactPlusModifier()
  */
 void CHybridMethod::setupMetab2ReactComplete()
 {
-  unsigned C_INT32 i, j;
+  size_t i, j;
 
   // Resize mMetab2React and create an initial set for each metabolite
   mMetab2React.resize(mpMetabolites->size());
@@ -1064,7 +1067,7 @@ void CHybridMethod::setupMetab2ReactComplete()
  */
 void CHybridMethod::setupPartition()
 {
-  unsigned C_INT32 i, j;
+  size_t i, j;
   CHybridStochFlag * prevFlag;
   C_FLOAT64 averageStochLimit = (mUpperStochLimit + mLowerStochLimit) / 2;
 
@@ -1144,7 +1147,7 @@ void CHybridMethod::setupPartition()
  */
 void CHybridMethod::setupPriorityQueue(C_FLOAT64 startTime)
 {
-  unsigned C_INT32 i;
+  size_t i;
   C_FLOAT64 time;
 
   mPQ.clear();
@@ -1171,8 +1174,8 @@ void CHybridMethod::setupPriorityQueue(C_FLOAT64 startTime)
  */
 void CHybridMethod::partitionSystem()
 {
-  unsigned C_INT32 i;
-  std::set <C_INT32>::iterator iter, iterEnd;
+  size_t i;
+  std::set <size_t>::iterator iter, iterEnd;
   C_FLOAT64 key;
 
   for (i = 0; i < mNumVariableMetabs; i++)
@@ -1228,10 +1231,10 @@ void CHybridMethod::partitionSystem()
  *   Inserts a new deterministic reaction into the linked list in the
  *   array mReactionFlags.
  *
- *   @param rIndex A C_INT32 giving the index of the reaction to be inserted
+ *   @param rIndex A size_t giving the index of the reaction to be inserted
  *                 into the list of deterministic reactions.
  */
-void CHybridMethod::insertDeterministicReaction(C_INT32 rIndex)
+void CHybridMethod::insertDeterministicReaction(size_t rIndex)
 {
   if (mReactionFlags[rIndex].mpPrev == NULL)
     // reaction is stochastic (avoids double insertions)
@@ -1263,10 +1266,10 @@ void CHybridMethod::insertDeterministicReaction(C_INT32 rIndex)
  *   Removes a deterministic reaction from the linked list in the
  *   array mReactionFlags.
  *
- *   @param rIndex A C_INT32 giving the index of the reaction to be removed
+ *   @param rIndex A size_t giving the index of the reaction to be removed
  *                 from the list of deterministic reactions.
  */
-void CHybridMethod::removeDeterministicReaction(C_INT32 rIndex)
+void CHybridMethod::removeDeterministicReaction(size_t rIndex)
 {
   if (mReactionFlags[rIndex].mpPrev != NULL)
     // reaction is deterministic
@@ -1305,12 +1308,12 @@ void CHybridMethod::removeDeterministicReaction(C_INT32 rIndex)
  *   @param rIndex The index of the reaction being executed.
  *   @return The set of metabolites depended on.
  */
-std::set<std::string> *CHybridMethod::getDependsOn(C_INT32 rIndex)
+std::set<std::string> *CHybridMethod::getDependsOn(size_t rIndex)
 {
   std::set<std::string> *retset = new std::set<std::string>;
 
-  unsigned C_INT32 i, imax = (*mpReactions)[rIndex]->getFunctionParameters().size();
-  unsigned C_INT32 j, jmax;
+  size_t i, imax = (*mpReactions)[rIndex]->getFunctionParameters().size();
+  size_t j, jmax;
 
   for (i = 0; i < imax; ++i)
     {
@@ -1338,9 +1341,9 @@ std::set<std::string> *CHybridMethod::getDependsOn(C_INT32 rIndex)
  *   @param rIndex The index of the reaction being executed.
  *   @return The set of affected metabolites.
  */
-std::set<std::string> *CHybridMethod::getAffects(C_INT32 rIndex)
+std::set<std::string> *CHybridMethod::getAffects(size_t rIndex)
 {
-  unsigned C_INT32 i;
+  size_t i;
   std::set<std::string> *retset = new std::set<std::string>;
 
   // Get the balances  associated with the reaction at this index
@@ -1364,9 +1367,9 @@ std::set<std::string> *CHybridMethod::getAffects(C_INT32 rIndex)
  *   @param rIndex The index of the reaction being executed.
  *   @return The set of participating metabolites.
  */
-std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 /* rIndex */)
+std::set<size_t> *CHybridMethod::getParticipatesIn(size_t /* rIndex */)
 {
-  std::set<C_INT32> *retset = new std::set<C_INT32>;
+  std::set<size_t> *retset = new std::set<size_t>;
   return retset;
 }
 
@@ -1375,8 +1378,8 @@ std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 /* rIndex */)
  */
 void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
 {
-  static C_INT32 counter = 0;
-  unsigned C_INT32 i;
+  static unsigned C_INT32 counter = 0;
+  size_t i;
 
   switch (mode)
     {
@@ -1416,10 +1419,10 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
 /**
  *   Prints out various data on standard output for debugging purposes.
  */
-void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
+void CHybridMethod::outputDebug(std::ostream & os, size_t level)
 {
-  unsigned C_INT32 i, j;
-  std::set <C_INT32>::iterator iter, iterEnd;
+  size_t i, j;
+  std::set <size_t>::iterator iter, iterEnd;
 
   os << "outputDebug(" << level << ") *********************************************** BEGIN" << std::endl;
 
@@ -1445,9 +1448,9 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
         os << "mStoi: " << std::endl;
 
-        for (i = 0; i < (unsigned C_INT32) mStoi.numRows(); i++)
+        for (i = 0; i < mStoi.numRows(); i++)
           {
-            for (j = 0; j < (unsigned C_INT32) mStoi.numCols(); j++)
+            for (j = 0; j < mStoi.numCols(); j++)
               os << mStoi[i][j] << " ";
 
             os << std::endl;
@@ -1733,8 +1736,15 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  if (pTP->getModel()->getTotSteps() < 1)
+    {
+      //at least one reaction necessary
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
+      return false;
+    }
+
   //check for rules
-  C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+  size_t i, imax = pTP->getModel()->getNumModelValues();
 
   for (i = 0; i < imax; ++i)
     {
@@ -1764,7 +1774,16 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
           CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
           return false;
         }
+
+      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pTP->getModel()->getMetabolites()[i]->isUsed())
+          {
+            //used assignment for species found
+            CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 24);
+            return false;
+          }
     }
+
 
   imax = pTP->getModel()->getCompartments().size();
 
@@ -1837,7 +1856,7 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
 //static
 bool CHybridMethod::modelHasAssignments(const CModel* pModel)
 {
-  C_INT32 i, imax = pModel->getNumModelValues();
+  size_t i, imax = pModel->getNumModelValues();
 
   for (i = 0; i < imax; ++i)
     {

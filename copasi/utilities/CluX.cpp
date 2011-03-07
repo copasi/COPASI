@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/09/02 14:31:13 $
+   $Date: 2011/03/07 19:34:54 $
    End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,20 +37,20 @@
 // #define DEBUG_MATRIX
 
 bool LUfactor(CMatrix< C_FLOAT64 > & A,
-              CVector< unsigned C_INT32 > & row,
-              CVector< unsigned C_INT32 > & col,
+              CVector< size_t > & row,
+              CVector< size_t > & col,
               CProcessReport * cb)
 {
-  unsigned C_INT32 Rows = A.numRows();
-  unsigned C_INT32 Cols = A.numCols();
-  unsigned C_INT32 Dim = std::min(Rows, Cols);
+  size_t Rows = A.numRows();
+  size_t Cols = A.numCols();
+  size_t Dim = std::min(Rows, Cols);
 
   if (row.size() != Rows) row.resize(Rows);
 
   if (col.size() != Cols) col.resize(Cols);
 
-  unsigned C_INT32 i = 0, j = 0, k = 0;
-  unsigned C_INT32 rowP = 0, colP = Cols - 1;
+  size_t i = 0, j = 0, k = 0;
+  size_t rowP = 0, colP = Cols - 1;
 
   for (i = 0; i < Rows; i++)
     row[i] = i;
@@ -61,12 +61,11 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
   C_FLOAT64 Work = .5 * Dim * (Dim - 1);
   C_FLOAT64 Completion = 0;
 
-  unsigned C_INT32 hProcess;
+  size_t hProcess;
 
   if (cb)
     hProcess = cb->addItem("LU decomposition...",
-                           CCopasiParameter::DOUBLE,
-                           &Completion,
+                           Completion,
                            &Work);
 
   C_FLOAT64 tmp;
@@ -176,7 +175,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
           // x is the column vector A(i+1:M,i)
           // y is row vector A(i,i+1:N)
 
-          unsigned C_INT32 ii, jj;
+          size_t ii, jj;
 
           pTmp1 = &A(i + 1, i);
           pTmp3 = &A(i + 1, i + 1);
@@ -208,11 +207,11 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
 
 #ifdef XXXX
 bool LUfactor(CMatrix< C_FLOAT64 > & A,
-              CVector< unsigned C_INT32 > & row,
-              CVector< unsigned C_INT32 > & col,
+              CVector< size_t > & row,
+              CVector< size_t > & col,
               CProcessReport * cb)
 {
-  CVector< unsigned C_INT32 > lCol;
+  CVector< size_t > lCol;
 
   C_INT Rows = A.numRows();
   C_INT Cols = A.numCols();
@@ -225,8 +224,8 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
 
   if (lCol.size() != Rows) lCol.resize(Cols);
 
-  unsigned C_INT32 i = 0, j = 0, k = 0;
-  unsigned C_INT32 ip, jp = Cols - 1;
+  size_t i = 0, j = 0, k = 0;
+  size_t ip, jp = Cols - 1;
 
   for (i = 0; i < Rows; i++)
     {
@@ -258,14 +257,14 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
   C_FLOAT64 tmp;
   C_FLOAT64 * pTmp1;
   C_FLOAT64 * pTmp2;
-  unsigned C_INT32 Delta;
+  size_t Delta;
 
   C_INT subRows = Rows;
   C_INT subCols = Cols;
 
-  unsigned C_INT32 iTop = 0;
-  unsigned C_INT32 jTop = 0;
-  unsigned C_INT32 LastCols = Cols;
+  size_t iTop = 0;
+  size_t jTop = 0;
+  size_t LastCols = Cols;
 
   while (true)
     {

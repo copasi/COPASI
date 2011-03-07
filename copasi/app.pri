@@ -6,7 +6,7 @@
 #   $Date: 2010/02/03 17:59:26 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -29,6 +29,7 @@ macx:debug {
     COPASI_LIBS_SE += layout
     COPASI_LIBS_SE += lyap
     COPASI_LIBS_SE += MIRIAM
+    COPASI_LIBS_SE += math
     COPASI_LIBS_SE += model
     COPASI_LIBS_SE += moieties
     COPASI_LIBS_SE += odepack++

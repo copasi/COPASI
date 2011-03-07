@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 14:52:57 $
+//   $Date: 2011/03/07 19:37:55 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,36 +43,27 @@ class CProgressBar : public CQProgressDialog, public CProcessReport
 {
   Q_OBJECT
 public:
+  static CProgressBar * create(QWidget* parent = 0,
+                               const char* name = 0,
+                               bool modal = false,
+                               Qt::WFlags fl = 0);
+
+private:
   CProgressBar(QWidget* parent = 0,
                const char* name = 0,
                bool modal = false,
                Qt::WFlags fl = 0);
 
+public:
   virtual ~CProgressBar();
-
-  /**
-   * Add a process report item to to the list of reporting items.
-   * The return value is the handle of the item and can be used to
-   * indicate process, finish, or reset the item. If the method fails
-   * C_INVALID_INDEX is returned.
-   * @param const std::string & name
-   * @param const CCopasiParameter::Type & type
-   * @param const void * pValue
-   * @param const void * pEndValue = NULL
-   * @return unsigned C_INT32 handle
-   */
-  virtual unsigned C_INT32 addItem(const std::string & name,
-                                   const CCopasiParameter::Type & type,
-                                   const void * pValue,
-                                   const void * pEndValue = NULL);
 
   /**
    * Report process on item handle. If the return value is false the calling
    * process must halt execution and return.
-   * @param const unsigned C_INT32 & handle
+   * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool progressItem(const unsigned C_INT32 & handle);
+  virtual bool progressItem(const size_t & handle);
 
   /**
    * Check whether processing shall proceed. If the return value is false
@@ -88,10 +79,10 @@ public:
    * but not as part of a continuous process. If you run multiple processes
    * call reset between them. If the return value is false the calling
    * process must halt execution and return.
-   * @param const unsigned C_INT32 & handle
+   * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool resetItem(const unsigned C_INT32 & handle);
+  virtual bool resetItem(const size_t & handle);
 
   /**
    * Indicate that all items are finished reporting. All item handles loose
@@ -105,10 +96,10 @@ public:
    * Indicate that item handle is finished reporting. The handle of that
    * item is no longer valid after the call. If the return value is false
    * the calling process must halt execution and return.
-   * @param const unsigned C_INT32 & handle
+   * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool finishItem(const unsigned C_INT32 & handle);
+  virtual bool finishItem(const size_t & handle);
 
   /**
    * Set the name of the process.
@@ -117,7 +108,24 @@ public:
    */
   virtual bool setName(const std::string & name);
 
+  /**
+   * Add a process report item to to the list of reporting items.
+   * The return value is the handle of the item and can be used to
+   * indicate process, finish, or reset the item. If the method fails
+   * C_INVALID_INDEX is returned.
+   * @param const std::string & name
+   * @param const CCopasiParameter::Type & type
+   * @param const void * pValue
+   * @param const void * pEndValue = NULL
+   * @return size_t handle
+   */
 protected:
+  virtual size_t addItem(const std::string & name,
+                         const CCopasiParameter::Type & type,
+                         const void * pValue,
+                         const void * pEndValue = NULL);
+
+
   virtual void closeEvent(QCloseEvent *e);
 
   bool mSlotFinished;
@@ -126,7 +134,7 @@ protected:
   QWaitCondition mWaitSlot;
   QWaitCondition mWaitPause;
 
-  unsigned C_INT32 mLastHItem;
+  size_t mLastHItem;
 
 private:
   CVector< CQProgressItem * > mProgressItemList;
@@ -138,20 +146,20 @@ private:
   QThread * mpMainThread;
 
 signals:
-  void signalAddItem(const unsigned int handle);
+  void signalAddItem(const int handle);
   void signalSetName(QString name);
   void signalProgressAll();
-  void signalFinishItem(const unsigned int handle);
+  void signalFinishItem(const int handle);
 
 protected slots:
 
-  virtual void slotAddItem(const unsigned int handle);
+  virtual void slotAddItem(const int handle);
 
   virtual void slotSetName(QString name);
 
   virtual void slotProgressAll();
 
-  virtual void slotFinishItem(const unsigned int handle);
+  virtual void slotFinishItem(const int handle);
 
   virtual void btnStopPressed();
 

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/03/07 19:31:26 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -74,10 +74,10 @@ bool COptMethodHookeJeeves::optimise()
 
   C_FLOAT64 newf, steplength, tmp;
   bool Keep;
-  unsigned C_INT32 iadj;
+  size_t iadj;
 
   // initial point is first guess
-  unsigned C_INT32 i;
+  size_t i;
 
   // initialise the guess vector
   for (i = 0; i < mVariableSize; i++)
@@ -247,8 +247,7 @@ bool COptMethodHookeJeeves::initialize()
   if (mpCallBack)
     mhIteration =
       mpCallBack->addItem("Current Iteration",
-                          CCopasiParameter::UINT,
-                          & mIteration,
+                          mIteration,
                           & mIterationLimit);
 
   mVariableSize = mpOptItem->size();
@@ -296,7 +295,7 @@ bool COptMethodHookeJeeves::evaluate()
 C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 {
   C_FLOAT64 minf = mBestValue;
-  unsigned C_INT32 i;
+  size_t i;
 
   mIndividual = mNew;
 

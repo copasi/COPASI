@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Date: 2011/03/07 19:37:54 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,10 +22,8 @@
 
 #include "ObjectBrowserDialog.h"
 #include "qpushbutton.h"
-#include "qlayout.h"
-#include "q3frame.h"
-//Added by qt3to4:
-#include <Q3GridLayout>
+#include <QLayout>
+#include <QGridLayout>
 #include <QCloseEvent>
 
 #include "copasi.h"
@@ -47,17 +50,17 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
     //    mparent(NULL)
 {
   this->setWindowFlags(windowFlags() | Qt::WDestructiveClose);
-  ObjectBrowserDialogLayout = new Q3GridLayout(this, 3, 4, 11, 6, "ObjectBrowserDialogLayout");
+  ObjectBrowserDialogLayout = new QGridLayout(this, 3, 4, 11, 6, "ObjectBrowserDialogLayout");
   ObjectBrowserDialogLayout->setAutoAdd(false);
 
   //  objectBrowserWidget = new ObjectBrowserWidget(this, NULL, 0, 1);
   objectBrowserWidget = new ObjectBrowserWidget(this);
   ObjectBrowserDialogLayout->addMultiCellWidget(objectBrowserWidget, 0, 0, 0, 3);
 
-  Line1 = new Q3Frame(this, "Line1");
-  Line1->setFrameShape(Q3Frame::HLine);
-  Line1->setFrameShadow(Q3Frame::Sunken);
-  Line1->setFrameShape(Q3Frame::HLine);
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setFrameShadow(QFrame::Sunken);
+  Line1->setFrameShape(QFrame::HLine);
   ObjectBrowserDialogLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
 
   //  spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -109,6 +112,7 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
 
   if (!name)
     setName("ObjectBrowser");
+
   resize(420, 460);
   setCaption(trUtf8("Object Browser"));
 }
@@ -130,6 +134,7 @@ void ObjectBrowserDialog::closeEvent(QCloseEvent* e)
   //the code to notify the parent window explicitly is now only called if the
   //dialog is closed by the user, not if it is deleted.
   CopasiUI3Window* uiWindowParent = dynamic_cast<CopasiUI3Window*>(this->parent());
+
   if (uiWindowParent)
     {
       uiWindowParent->slotObjectBrowserDialogWasClosed();
@@ -165,6 +170,7 @@ void ObjectBrowserDialog::toggleViewClicked()
     toggleViewButton->setText("Tree View");
   else
     toggleViewButton->setText("Selected Items");
+
   objectBrowserWidget->toggleViewClicked();
 }
 

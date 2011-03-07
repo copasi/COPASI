@@ -6,6 +6,11 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -41,11 +46,13 @@
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
 #include "report/CCopasiRootContainer.h"
+#include "commandline/CLocaleString.h"
 
 #define COL_SPECIES  0
-#define COL_AMOUNT   1
-#define COL_BTN      2
-#define COL_EQUATION 3
+#define COL_NUMBER   1
+#define COL_AMOUNT   2
+#define COL_BTN      3
+#define COL_EQUATION 4
 
 static const unsigned char ToolBtn_data[] =
 {
@@ -107,10 +114,12 @@ void CQMoietiesTaskResult::init()
   mpToolBtnMap = NULL;
 
   // Initialize the moieties tab
-  mpMoieties->setNumCols(4);
+  mpMoieties->setNumCols(5);
 
   Q3Header * pHeader = mpMoieties->horizontalHeader();
   pHeader->setLabel(COL_SPECIES, "Dependent Species");
+
+  pHeader->setLabel(COL_NUMBER, "Total Particle Number");
   pHeader->setLabel(COL_AMOUNT, "Total Amount");
   pHeader->setLabel(COL_BTN, "");
   pHeader->setLabel(COL_EQUATION, "Expression");
@@ -186,10 +195,17 @@ void CQMoietiesTaskResult::load()
 
   if (pModel == NULL) return;
 
-  // TODO
+  // Set the units for the amount column
+  QString AmountUnits = FROM_UTF8(pModel->getQuantityUnitsDisplayString());
+
+  if (!AmountUnits.isEmpty())
+    AmountUnits = "\n(" + AmountUnits + ")";
+
+  mpMoieties->horizontalHeader()->setLabel(COL_AMOUNT, "Total Amount" + AmountUnits);
+
   // Fill the moieties table
 
-  // We need to rebuild the tool buton signal mapper
+  // We need to rebuild the tool button signal mapper
   pdelete(mpToolBtnMap);
   mpToolBtnMap = new QSignalMapper(this);
   connect(mpToolBtnMap, SIGNAL(mapped(int)), this, SLOT(slotCreateGlobalQuantity(int)));
@@ -204,7 +220,9 @@ void CQMoietiesTaskResult::load()
   for (; it != end; ++it, i++)
     {
       mpMoieties->setText(i, COL_SPECIES, FROM_UTF8((*it)->getObjectName()));
-      mpMoieties->setText(i, COL_AMOUNT, QString::number((*it)->getNumber()));
+      mpMoieties->setText(i, COL_NUMBER, QString::number((*it)->getNumber()));
+      (*it)->refreshAmount();
+      mpMoieties->setText(i, COL_AMOUNT, QString::number((*it)->getAmount()));
 
       pBtn = new QToolButton(mpMoieties);
       pBtn->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, pBtn->sizePolicy().hasHeightForWidth()));
@@ -272,7 +290,7 @@ void CQMoietiesTaskResult::slotSave(void)
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail())
     return;
@@ -305,4 +323,23 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(int row)
 
   pMV->setInitialExpression(pMoiety->getExpression());
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD);
+}
+
+// virtual
+void CQMoietiesTaskResult::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  switch (mFramework)
+    {
+      case 0: // Concentration
+        mpMoieties->showColumn(COL_AMOUNT);
+        mpMoieties->hideColumn(COL_NUMBER);
+        break;
+
+      case 1: // Particle Number
+        mpMoieties->hideColumn(COL_AMOUNT);
+        mpMoieties->showColumn(COL_NUMBER);
+        break;
+    }
 }

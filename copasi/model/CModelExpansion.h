@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/15 16:38:59 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:30:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,11 +55,14 @@ public:
     std::string key;
   };
 
-  CompartmentInfo copyCompartment(const CCompartment* source);
+  std::vector<CompartmentInfo> copyCompartment(const CCompartment* source, unsigned int numCopies = 1);
+
 protected:
 
 
   CompartmentInfo ci;
+
+  void initializeNameSets();
 
   /**
    * determine whether the one of the substrate, products, or modifiers of the reaction
@@ -78,12 +81,17 @@ protected:
   bool  copyEvents(std::string copyname);
 
   std::string copyExpression(const CExpression *pExpression);
-  std::string testName(const std::string & mname);
-  void  nameInSet(const std::string & mname);
+  std::string testName(const std::string & mname, std::set<std::string>& nameSet);
+  void  nameInSet(const std::string & mname, std::set<std::string>& nameSet);
 
   CModel * mpModel;
 
-  std::set<std::string> NameSet;
+  // we use several sets for the entities that need to have unique names
+  // This will speed up processing for large models
+  std::set<std::string> mCompartmentNameSet;
+  std::set<std::string> mReactionNameSet;
+  std::set<std::string> mModelValueNameSet;
+  std::set<std::string> mEventNameSet;
 
   std::string name;
 };

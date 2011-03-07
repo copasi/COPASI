@@ -65,7 +65,7 @@ for X in range(0,NUM_STEPS+1):
             MEAN[Y]=MEAN[Y]+DELTA/(Z+1)
 
             # This uses the new mean, i.e., not DELTA * DELTA
-            SD[Y]=SD[Y]+DELTA*(v-MEAN[Y]);
+            SD[Y]=SD[Y]+DELTA*(v-MEAN[Y])
     
     for Y in range(0,NUMCOLUMNS-1):
         COLUMNS[Y+1] = str(MEAN[Y])

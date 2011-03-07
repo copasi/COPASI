@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.155 $
+//   $Revision: 1.156 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/01/20 14:34:56 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:34:54 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -116,6 +116,7 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a species with an ODE rule.\nStochastic simulation is not possible."},
   {MCTrajectoryMethod + 21, "CTrajectoryMethod (21): The model contains a compartment with an ODE rule.\nStochastic simulation is not possible."},
   {MCTrajectoryMethod + 23, "CTrajectoryMethod (23): The model contains events. Stochastic simulation is not possible with this version of COPASI."},
+  {MCTrajectoryMethod + 24, "CTrajectoryMethod (24): The model contains a species with an assignment. Hybrid simulation is not possible with this version of COPASI."},
 
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
@@ -260,6 +261,10 @@ const MESSAGES Messages[] =
   {MCSBML + 93, "SBML (93): The model uses units on numbers which COPASI currently can't handle. Please be aware that the display of units in COPASI might therefore be incorrect,"},
   {MCSBML + 94, "SBML (94): %s for species reference found in model. Only initial assignments to species references are currently supported in COPASI. The %s has been ignored. The results produced by this model might therefore not be what you expect."},
   {MCSBML + 95, "SBML (95): The model uses species reference ids in mathematical expressions. This model can currently not be imported by COPASI."},
+  {MCSBML + 96, "SBML (96): Model can't be imported because it requires a package that is unkonwn to COPASI."},
+  {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\"."},
+  {MCSBML + 98, "SBML (98): COPASI can't handle event priorities yet, COPASI removed all priorities."},
+  {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
@@ -293,6 +298,7 @@ const MESSAGES Messages[] =
   {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report of task '%s'."},
   {MCCopasiTask + 6, "CCopasiTask (6): Requested output object:\n '%s'\n not found. It will be ignored."},
   {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
+  {MCCopasiTask + 8, "CCopasiTask (8): '%d' Function Evaluations out of '%d' failed."},
 
   {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
    "Therefore, the calculation of a steady state using the Newton method is not very meaningful."},

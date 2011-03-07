@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/02 14:47:27 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:34:36 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,7 +51,7 @@ protected:
   /**
    *  A pointer to the current state. This is set from outside
    *  with the setState() method and never changed anywhere else.
-   *  It´s used to report the results
+   *  Itï¿½s used to report the results
    *  to the calling TSSATask
    */
   CState * mpCurrentState;
@@ -86,9 +86,7 @@ public:
    * appropriate simulation method.
    */
   static CTSSAMethod *
-  createTSSAMethod(CCopasiMethod::SubType subType
-                   = CCopasiMethod::unset,
-                   CTSSAProblem * pProblem = NULL);
+  createMethod(CCopasiMethod::SubType subType = CCopasiMethod::unset);
 
   /**
    * Copy constructor.
@@ -114,7 +112,7 @@ public:
   {return mapTableToName[name];}
 
   //virtual void setAnnotationM(int s) = 0;
-  virtual bool setAnnotationM(int s) = 0;
+  virtual bool setAnnotationM(size_t s) = 0;
 
   /**
    *  Set a pointer to the current state.
@@ -456,7 +454,7 @@ public:
   /**
     *vectors contain whole data for all calculationsteps
     **/
-  std::vector< int > mVec_SlowModes;
+  std::vector< C_INT > mVec_SlowModes;
   std::vector< C_FLOAT64 > mCurrentTime;
   std::vector< CVector<C_FLOAT64> > mVec_TimeScale;
 

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/14 22:18:57 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:34:55 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,17 +84,17 @@ public:
   /**
    * The methods which can be selected for performing this task.
    */
-  static const unsigned C_INT32 ValidMethods[];
+  static const unsigned int ValidMethods[];
 
   /**
    * Check whether the given method is in the list of valid methods
    * This list must end with CCopasiMethod::unset
-   * @param const unsigned C_INT32 & method
-   * @param const unsigned C_INT32 * validMethods
+   * @param const unsigned int & method
+   * @param const unsigned int * validMethods
    * @return bool isValid
    */
-  static bool isValidMethod(const unsigned C_INT32 & method,
-                            const unsigned C_INT32 * validMethods);
+  static bool isValidMethod(const unsigned int & method,
+                            const unsigned int * validMethods);
 
   enum eOutputFlagBase
   {
@@ -328,7 +328,7 @@ public:
   void setUpdateModel(const bool & updateModel);
 
   /**
-   * Check whether the task must update the modle
+   * Check whether the task must update the model
    * @return const bool & updateModel
    */
   const bool & isUpdateModel() const;
@@ -336,7 +336,7 @@ public:
   /**
    * Set the call back of the task
    * @param CProcessReport * pCallBack
-   * @result bool succes
+   * @result bool success
    */
   virtual bool setCallBack(CProcessReport * pCallBack);
 
@@ -344,7 +344,7 @@ public:
 
   /**
    * Resizes result matrices and updates array annotations for a specific task.
-   * For now this will be hardcoded in the respective derived classes.
+   * For now this will be hard coded in the respective derived classes.
    * We may introduce a more generic mechanism for this in the future.
    * This is used when we need to know about the data structures of a task result
    * without actually performing the task, e.g. when selecting objects for output.
@@ -374,7 +374,7 @@ public:
   virtual bool process(const bool & useInitialValues);
 
   /**
-   * Perform neccessary cleaup procedures
+   * Perform necessary cleanup procedures
    */
   virtual bool restore();
 
@@ -394,6 +394,14 @@ public:
    * @return bool success
    */
   virtual bool setMethodType(const int & type);
+
+  /**
+   * Create a method of the specified type to solve the task.
+   * It is the duty of the caller to release the CCopasiMethod.
+   * @param const CCopasiMethod::SubType & type
+   * @return CCopasiMethod *
+   */
+  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Retrieve the method
@@ -441,7 +449,7 @@ public:
   virtual void output(const COutputInterface::Activity & activity);
 
   /**
-   * Introduce an additional seperator into the ouput
+   * Introduce an additional separator into the output
    * @param const Activity & activity
    */
   virtual void separate(const COutputInterface::Activity & activity);

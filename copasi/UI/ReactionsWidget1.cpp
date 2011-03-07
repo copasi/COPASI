@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205 $
+//   $Revision: 1.206 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:43 $
+//   $Date: 2011/03/07 19:37:46 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,6 +54,8 @@
 #include "ChemEqValidator.h"
 #include "FunctionWidget1.h"
 #include "CQMessageBox.h"
+#include "CTabWidget.h"
+
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -264,7 +266,7 @@ bool ReactionsWidget1::saveToReaction()
 
   if (pModel == NULL) return false;
 
-  unsigned C_INT32 ReactionIndex = pModel->getReactions().getIndex(mpRi->getReactionName());
+  size_t ReactionIndex = pModel->getReactions().getIndex(mpRi->getReactionName());
 
   // Before we save any changes we must check whether any local reaction parameters,
   // which are used in any mathematical expression in the model are removed.
@@ -289,7 +291,7 @@ bool ReactionsWidget1::saveToReaction()
       Objects.remove(Objects.length() - 2, 2);
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, pModel, ObjectType,
+        CQMessageBox::confirmDelete(NULL, ObjectType,
                                     Objects, DeletedObjects);
 
       switch (choice)
@@ -299,6 +301,7 @@ bool ReactionsWidget1::saveToReaction()
             for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
               pModel->removeLocalReactionParameter((*itParameter)->getKey());
 
+            protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
             break;
 
           default:
@@ -313,16 +316,31 @@ bool ReactionsWidget1::saveToReaction()
 
   if (reac == NULL)
     {
-      unsigned C_INT32 size = pModel->getReactions().size();
+      size_t size = pModel->getReactions().size();
 
       mpRi->setFunctionWithEmptyMapping("");
 
-      if (size > 0)
-        enter(pModel->getReactions()[std::min(ReactionIndex, size - 1)]->getKey());
-      else
-        enter("");
+      std::string deletedKey = mKey;
 
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
+      QObject *pParent = parent();
+      CTabWidget * pTabWidget = NULL;
+
+      while (pParent != NULL &&
+             (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+        {
+          pParent = pParent->parent();
+        }
+
+      if (pTabWidget != NULL)
+        {
+          if (size > 0)
+            pTabWidget->enter(pModel->getReactions()[std::min(ReactionIndex, size - 1)]->getKey());
+          else
+            pTabWidget->enter("");
+        }
+
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
       return true;
     }
 
@@ -445,7 +463,7 @@ void ReactionsWidget1::slotBtnNewClicked()
   slotBtnOKClicked();
 
   std::string name = "reaction";
-  int i = 0;
+  size_t i = 0;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -457,9 +475,10 @@ void ReactionsWidget1::slotBtnNewClicked()
       name += TO_UTF8(QString::number(i));
     }
 
-  protectedNotify(ListViews::REACTION, ListViews::ADD);
-  enter(pDataModel->getModel()->getReactions()[name]->getKey());
-  //pListView->switchToOtherWidget(mKeys[row]);
+  std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
+  protectedNotify(ListViews::REACTION, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 // Just added 5/18/04
@@ -479,7 +498,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
   if (pReaction == NULL) return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, pModel, "reaction",
+    CQMessageBox::confirmDelete(NULL, "reaction",
                                 FROM_UTF8(pReaction->getObjectName()),
                                 pReaction->getDeletedObjects());
 
@@ -487,21 +506,36 @@ void ReactionsWidget1::slotBtnDeleteClicked()
     {
       case QMessageBox::Ok:                                                     // Yes or Enter
       {
-        unsigned C_INT32 index
+        size_t index
         = pDataModel->getModel()->getReactions().getIndex(mpRi->getReactionName());
 
         pDataModel->getModel()->removeReaction(mKey);
-        unsigned C_INT32 size
+        std::string deletedKey = mKey;
+
+        size_t size
         = pDataModel->getModel()->getReactions().size();
 
         mpRi->setFunctionWithEmptyMapping("");
 
-        if (size > 0)
-          enter(pDataModel->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
 
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (size > 0)
+              pTabWidget->enter(pDataModel->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
+
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
       default:                                                     // No or Escape
@@ -559,27 +593,29 @@ void ReactionsWidget1::FillWidgetFromRI()
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
+  size_t Index = index;
+
   // setValue
-  if (mpRi->getUsage(index) == CFunctionParameter::PARAMETER)
+  if (mpRi->getUsage(Index) == CFunctionParameter::PARAMETER)
     {
       if (sub != 0) return;
 
-      if (mpRi->isLocalValue(index))
-        mpRi->setLocalValue(index, newValue.toDouble()); // TODO: check
+      if (mpRi->isLocalValue(Index))
+        mpRi->setLocalValue(Index, newValue.toDouble()); // TODO: check
       else
-        mpRi->setMapping(index, TO_UTF8(newValue));
+        mpRi->setMapping(Index, TO_UTF8(newValue));
     }
-  else if (mpRi->getUsage(index) == CFunctionParameter::VOLUME)
+  else if (mpRi->getUsage(Index) == CFunctionParameter::VOLUME)
     {
       if (sub != 0) return;
 
-      mpRi->setMapping(index, TO_UTF8(newValue));
+      mpRi->setMapping(Index, TO_UTF8(newValue));
     }
   else
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mpRi->setMapping(index, TO_UTF8(table->text(table->mIndex2Line[index], 3)));
+          mpRi->setMapping((int) Index, TO_UTF8(table->text((int) table->mIndex2Line[index], 3)));
         }
     }
 
@@ -612,8 +648,8 @@ void ReactionsWidget1::slotNewFunction()
 
   std::string name = std::string("Rate Law for ") + TO_UTF8(LineEdit1->text());
   std::string nname = name;
-  int i = 0;
-  CCopasiVectorN<CEvaluationTree>& FunctionList
+  size_t i = 0;
+  CCopasiVectorN<CFunction>& FunctionList
   = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
@@ -625,7 +661,7 @@ void ReactionsWidget1::slotNewFunction()
     }
 
   CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(nname), true);
-  protectedNotify(ListViews::FUNCTION, ListViews::ADD);
+  protectedNotify(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
 
   mpListView->switchToOtherWidget(0, pFunc->getKey());
 }
@@ -695,7 +731,7 @@ void ReactionsWidget1::setFramework(int framework)
         TextLabel8->setText("Flux" + Units);
 
         if (pReaction != NULL)
-          LineEdit3->setText(QString::number(pReaction->getFlux()));
+          LineEdit3->setText(QString::number(pReaction->getFlux(), 'g', 10));
 
         break;
 
@@ -710,7 +746,7 @@ void ReactionsWidget1::setFramework(int framework)
         TextLabel8->setText("Particle Flux" + Units);
 
         if (pReaction != NULL)
-          LineEdit3->setText(QString::number(pReaction->getParticleFlux()));
+          LineEdit3->setText(QString::number(pReaction->getParticleFlux(), 'g', 10));
 
         break;
     }

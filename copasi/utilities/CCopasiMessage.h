@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:29:11 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:34:54 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,7 +31,7 @@
 #include <string>
 #include <deque>
 
-typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;}
+typedef struct MESSAGES {size_t No; const char * Text;}
 Message;
 
 #define MCopasiBase              5000
@@ -52,27 +52,27 @@ Message;
 #define MCConfiguration          MCopasiBase + 1500
 #define MCOptimization           MCopasiBase + 1600
 #define MCSBML                   MCopasiBase + 1700
-#define MCTrajectoryProblem      MCopasiBase + 1800
-#define MCDirEntry               MCopasiBase + 1900
-#define MCFunction               MCopasiBase + 2000
-#define MCMathML                 MCopasiBase + 2100
-#define MCEvaluationNodeObject   MCopasiBase + 2200
-#define MCCopasiTask             MCopasiBase + 2300
-#define MCSteadyState            MCopasiBase + 2400
-#define MCFitting                MCopasiBase + 2500
-#define MCObject                 MCopasiBase + 2600
-#define MCLyap                   MCopasiBase + 2700
-#define MCODEExporter            MCopasiBase + 2800
-#define MCRegistration           MCopasiBase + 2900
-#define MCTSSAMethod             MCopasiBase + 3000
-#define MCTSSAProblem            MCopasiBase + 3100
-#define MCEigen                  MCopasiBase + 3200
-#define MCMiriam                 MCopasiBase + 3300
-#define MCMathModel              MCopasiBase + 3400
-#define MCModelMerging           MCopasiBase + 3500
-#define MCModelExpansion         MCopasiBase + 3600
-#define MCEFMAnalysis            MCopasiBase + 3700
-#define MCLayout                 MCopasiBase + 3800
+#define MCTrajectoryProblem      MCopasiBase + 2800
+#define MCDirEntry               MCopasiBase + 2900
+#define MCFunction               MCopasiBase + 3000
+#define MCMathML                 MCopasiBase + 3100
+#define MCEvaluationNodeObject   MCopasiBase + 3200
+#define MCCopasiTask             MCopasiBase + 3300
+#define MCSteadyState            MCopasiBase + 3400
+#define MCFitting                MCopasiBase + 3500
+#define MCObject                 MCopasiBase + 3600
+#define MCLyap                   MCopasiBase + 3700
+#define MCODEExporter            MCopasiBase + 3800
+#define MCRegistration           MCopasiBase + 3900
+#define MCTSSAMethod             MCopasiBase + 4000
+#define MCTSSAProblem            MCopasiBase + 4100
+#define MCEigen                  MCopasiBase + 4200
+#define MCMiriam                 MCopasiBase + 4300
+#define MCMathModel              MCopasiBase + 4400
+#define MCModelMerging           MCopasiBase + 4500
+#define MCModelExpansion         MCopasiBase + 4600
+#define MCEFMAnalysis            MCopasiBase + 4700
+#define MCLayout                 MCopasiBase + 4800
 
 /**
  *  This throws an exception with information where the error occurred.
@@ -121,7 +121,7 @@ private:
   /**
    * Message Number
    */
-  unsigned C_INT32 mNumber;
+  size_t mNumber;
 
 #ifndef WIN32
   /**
@@ -185,9 +185,9 @@ public:
 
   /**
    * Retrieve the size of the dequeue
-   * @return unsigned C_INT32 size
+   * @return size_t size
    */
-  static unsigned C_INT32 size();
+  static size_t size();
 
   /**
    * Retrieve highest severity of the messages in the dequeue.
@@ -197,10 +197,10 @@ public:
 
   /**
    * Check whether a message with the given number is in the dequeue
-   * @param const unsigned C_INT32 & number
+   * @param const size_t & number
    * @return bool found
    */
-  static bool checkForMessage(const unsigned C_INT32 & number);
+  static bool checkForMessage(const size_t & number);
 
   /**
    *  Default constructor.
@@ -227,10 +227,10 @@ public:
    *  Specified constructor.
    *  This creates a formated message.
    *  @param CCopasiMessage::Type type (RAW|TRACE|WARNING|ERROR)
-   *  @param unsigned C_INT32 number (message number see message.h)
+   *  @param size_t number (message number see message.h)
    *  @param ... arguments like in printf
    */
-  CCopasiMessage(Type type, unsigned C_INT32 number, ...);
+  CCopasiMessage(Type type, size_t number, ...);
 
   /**
    *  Destructor.
@@ -256,9 +256,9 @@ public:
 
   /**
    *  Retrieves the number of the message.
-   *  @return "const unsigned C_INT32 &" mNumber
+   *  @return "const size_t &" mNumber
    */
-  const unsigned C_INT32 & getNumber() const;
+  const size_t & getNumber() const;
 
 private:
   /**

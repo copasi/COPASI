@@ -1,136 +1,159 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<?xml version="1.0" encoding="utf-8"?>
+<ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/objectdebug.ui,v $ </comment>
-<comment>   $Revision: 1.6 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2007/08/12 18:11:37 $ </comment>
+<comment>   $Revision: 1.7.4.1 $ </comment>
+<comment>   $Name: Build-33 $ </comment>
+<comment>   $Author: aekamal $ </comment>
+<comment>   $Date: 2011/01/24 17:00:16 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>ObjectDebug</class>
-<comment> All rights reserved. </comment>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>ObjectDebug</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>517</width>
-            <height>486</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Copasi Object Tree</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QPushButton" row="1" column="3">
-            <property name="name">
-                <cstring>UpdateButton</cstring>
-            </property>
-            <property name="text">
-                <string>update</string>
-            </property>
-        </widget>
-        <widget class="QListView" row="0" column="0" rowspan="1" colspan="4">
-            <column>
-                <property name="text">
-                    <string>Column 1</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-        <item>
-            <property name="text">
-                <string>New Item</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
-        </item>
-            <property name="name">
-                <cstring>ListOfObjects</cstring>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="1" column="2">
-            <property name="name">
-                <cstring>pushButton2</cstring>
-            </property>
-            <property name="text">
-                <string>write Dependencies</string>
-            </property>
-        </widget>
-        <spacer row="1" column="0">
-            <property name="name">
-                <cstring>spacer5</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>90</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QPushButton" row="1" column="1">
-            <property name="name">
-                <cstring>ButtonModelCheck</cstring>
-            </property>
-            <property name="text">
-                <string>check model</string>
-            </property>
-        </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>UpdateButton</sender>
-        <signal>clicked()</signal>
-        <receiver>ObjectDebug</receiver>
-        <slot>update()</slot>
-    </connection>
-    <connection>
-        <sender>pushButton2</sender>
-        <signal>clicked()</signal>
-        <receiver>ObjectDebug</receiver>
-        <slot>writeDot()</slot>
-    </connection>
-    <connection>
-        <sender>ButtonModelCheck</sender>
-        <signal>clicked()</signal>
-        <receiver>ObjectDebug</receiver>
-        <slot>checkModel()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="global" impldecl="in declaration">iostream</include>
-    <include location="local" impldecl="in implementation">objectdebug.ui.h</include>
-</includes>
-<slots>
-    <slot specifier="non virtual">update()</slot>
-    <slot>writeDot()</slot>
-    <slot>checkModel()</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, const void * ptr )</function>
-    <function access="private" specifier="non virtual">init()</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+ <comment> All rights reserved. </comment>
+ <class>ObjectDebug</class>
+ <widget class="QDialog" name="ObjectDebug">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>517</width>
+    <height>486</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Copasi Object Tree</string>
+  </property>
+  <layout class="QGridLayout">
+   <item row="1" column="3">
+    <widget class="QPushButton" name="UpdateButton">
+     <property name="text">
+      <string>update</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="4">
+    <widget class="Q3ListView" name="ListOfObjects">
+     <column>
+      <property name="text">
+       <string>Column 1</string>
+      </property>
+      <property name="clickable">
+       <bool>true</bool>
+      </property>
+      <property name="resizable">
+       <bool>true</bool>
+      </property>
+     </column>
+     <item>
+      <property name="text">
+       <string>New Item</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pushButton2">
+     <property name="text">
+      <string>write Dependencies</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <spacer name="spacer5">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>90</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="ButtonModelCheck">
+     <property name="text">
+      <string>check model</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3ListView</class>
+   <extends>Q3Frame</extends>
+   <header>q3listview.h</header>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="global">iostream</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>UpdateButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ObjectDebug</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton2</sender>
+   <signal>clicked()</signal>
+   <receiver>ObjectDebug</receiver>
+   <slot>writeDot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ButtonModelCheck</sender>
+   <signal>clicked()</signal>
+   <receiver>ObjectDebug</receiver>
+   <slot>checkModel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

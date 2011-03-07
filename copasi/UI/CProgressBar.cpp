@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 14:52:57 $
+//   $Date: 2011/03/07 19:37:53 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,6 +42,23 @@
 
 extern QApplication *pApp;
 
+// static
+CProgressBar * CProgressBar::create(QWidget* parent, const char* name,
+                                    bool modal, Qt::WFlags fl)
+{
+  QWidget * pMainWidget = qApp->mainWidget();
+
+  if (pMainWidget != NULL &&
+      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+    {
+      return NULL;
+    }
+  else
+    {
+      return new CProgressBar(parent, name, modal, fl);
+    }
+}
+
 CProgressBar::CProgressBar(QWidget* parent, const char* name,
                            bool modal, Qt::WFlags fl):
     CQProgressDialog(parent, name, modal, fl | Qt::WStyle_Minimize),
@@ -59,11 +76,11 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
     {
       mpMainThread = static_cast< CopasiUI3Window * >(mpMainWidget)->getMainThread();
       mpMainWidget->setEnabled(false);
-      qApp->processEvents();
+      QCoreApplication::processEvents();
     }
 
-  connect(this, SIGNAL(signalAddItem(const unsigned int)),
-          this, SLOT(slotAddItem(const unsigned int)));
+  connect(this, SIGNAL(signalAddItem(const int)),
+          this, SLOT(slotAddItem(const int)));
 
   connect(this, SIGNAL(signalSetName(QString)),
           this, SLOT(slotSetName(QString)));
@@ -71,35 +88,28 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
   connect(this, SIGNAL(signalProgressAll()),
           this, SLOT(slotProgressAll()));
 
-  connect(this, SIGNAL(signalFinishItem(const unsigned int)),
-          this, SLOT(slotFinishItem(const unsigned int)));
+  connect(this, SIGNAL(signalFinishItem(const int)),
+          this, SLOT(slotFinishItem(const int)));
 }
 
 CProgressBar::~CProgressBar()
 {
   finish();
 
-  // We need to activate the user interface again.
-  if (mpMainWidget != NULL)
-    {
-      mpMainWidget->setEnabled(true);
-      qApp->processEvents();
-    }
-
-  unsigned C_INT32 i, imax = mProgressItemList.size();
+  size_t i, imax = mProgressItemList.size();
 
   for (i = 0; i < imax; i++)
     pdelete(mProgressItemList[i]);
 }
 
 
-unsigned C_INT32 CProgressBar::addItem(const std::string & name,
-                                       const CCopasiParameter::Type & type,
-                                       const void * pValue,
-                                       const void * pEndValue)
+size_t CProgressBar::addItem(const std::string & name,
+                             const CCopasiParameter::Type & type,
+                             const void * pValue,
+                             const void * pEndValue)
 
 {
-  unsigned C_INT32 hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
+  size_t hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
 
   if (mpMainThread != NULL &&
       QThread::currentThread() != mpMainThread)
@@ -107,7 +117,7 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
       QMutexLocker Locker(&mMutex);
       mSlotFinished = false;
 
-      emit signalAddItem(hItem);
+      emit signalAddItem((int) hItem);
 
       if (!mSlotFinished)
         {
@@ -116,22 +126,25 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
     }
   else
     {
-      slotAddItem(hItem);
+      slotAddItem((int) hItem);
+      QCoreApplication::processEvents();
     }
 
   return hItem;
 }
 
 
-void CProgressBar::slotAddItem(const unsigned int handle)
+void CProgressBar::slotAddItem(const int handle)
 {
-  if (handle == C_INVALID_INDEX) return;
+  size_t Handle = (size_t) handle;
+
+  if (Handle == C_INVALID_INDEX) return;
 
   QMutexLocker Locker(&mMutex);
 
-  if (handle >= mProgressItemList.size()) // we need to resize
+  if (Handle >= mProgressItemList.size()) // we need to resize
     {
-      unsigned C_INT32 i, imax = mProgressItemList.size();
+      size_t i, imax = mProgressItemList.size();
 
       mProgressItemList.resize(2 * imax, true); // Note, imax is never zero
 
@@ -141,26 +154,26 @@ void CProgressBar::slotAddItem(const unsigned int handle)
       while (i < imax) mProgressItemList[i++] = NULL;
     }
 
-  if (mProcessReportItemList[handle]->hasEndValue())
-    mProgressItemList[handle] = new CQProgressItemBar(static_cast<CQProgressDialog *>(this));
+  if (mProcessReportItemList[Handle]->hasEndValue())
+    mProgressItemList[Handle] = new CQProgressItemBar(static_cast<CQProgressDialog *>(this));
   else
-    mProgressItemList[handle] = new CQProgressItemText(static_cast<CQProgressDialog *>(this));
+    mProgressItemList[Handle] = new CQProgressItemText(static_cast<CQProgressDialog *>(this));
 
-  mProgressItemList[handle]->initFromProcessReportItem(mProcessReportItemList[handle]);
-  insertProgressItem(mProgressItemList[handle]);
+  mProgressItemList[Handle]->initFromProcessReportItem(mProcessReportItemList[Handle]);
+  insertProgressItem(mProgressItemList[Handle]);
 
   mSlotFinished = true;
   mWaitSlot.wakeAll();
 }
 
-bool CProgressBar::resetItem(const unsigned C_INT32 & handle)
+bool CProgressBar::resetItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
   return (mProgressItemList[handle]->reset() && mProceed);
 }
 
-bool CProgressBar::progressItem(const unsigned C_INT32 & handle)
+bool CProgressBar::progressItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
@@ -192,6 +205,7 @@ bool CProgressBar::progressItem(const unsigned C_INT32 & handle)
   else
     {
       slotProgressAll();
+      QCoreApplication::processEvents();
     }
 
   return mProceed;
@@ -199,7 +213,7 @@ bool CProgressBar::progressItem(const unsigned C_INT32 & handle)
 
 void CProgressBar::slotProgressAll()
 {
-  unsigned C_INT32 hItem, hmax = mProgressItemList.size();
+  size_t hItem, hmax = mProgressItemList.size();
 
   QMutexLocker Locker(&mMutex);
 
@@ -229,13 +243,23 @@ bool CProgressBar::finish()
         }
     }
 
+  // We need to activate the user interface again.
+  if (mpMainWidget != NULL)
+    {
+      mpMainWidget->setEnabled(true);
+
+      if (mpMainThread == NULL ||
+          QThread::currentThread() == mpMainThread)
+        QCoreApplication::processEvents();
+    }
+
   CProcessReport::finish();
   done(1);
 
   return mProceed;
 }
 
-bool CProgressBar::finishItem(const unsigned C_INT32 & handle)
+bool CProgressBar::finishItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
@@ -245,7 +269,7 @@ bool CProgressBar::finishItem(const unsigned C_INT32 & handle)
       QMutexLocker Locker(&mMutex);
       mSlotFinished = false;
 
-      emit signalFinishItem(handle);
+      emit signalFinishItem((int) handle);
 
       if (!mSlotFinished)
         {
@@ -254,22 +278,25 @@ bool CProgressBar::finishItem(const unsigned C_INT32 & handle)
     }
   else
     {
-      slotFinishItem(handle);
+      slotFinishItem((int) handle);
+      QCoreApplication::processEvents();
     }
 
   return (CProcessReport::finishItem(handle) && mProceed);
 }
 
-void CProgressBar::slotFinishItem(const unsigned int handle)
+void CProgressBar::slotFinishItem(const int handle)
 {
-  if (isValidHandle(handle) &&
-      mProgressItemList[handle] != NULL)
+  size_t Handle = (size_t) handle;
+
+  if (isValidHandle(Handle) &&
+      mProgressItemList[Handle] != NULL)
     {
       QMutexLocker Locker(&mMutex);
 
-      removeProgressItem(mProgressItemList[handle]);
-      mProgressItemList[handle]->deleteLater();
-      mProgressItemList[handle] = NULL;
+      removeProgressItem(mProgressItemList[Handle]);
+      mProgressItemList[Handle]->deleteLater();
+      mProgressItemList[Handle] = NULL;
     }
 
   mSlotFinished = true;
@@ -300,6 +327,7 @@ bool CProgressBar::setName(const std::string & name)
   else
     {
       slotSetName(FROM_UTF8(name));
+      QCoreApplication::processEvents();
     }
 
   return true;

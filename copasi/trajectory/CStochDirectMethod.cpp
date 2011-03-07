@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:05:40 $
+//   $Date: 2011/03/07 19:34:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -329,7 +329,7 @@ void CStochDirectMethod::start(const CState * initialState)
   mReactionDependencies.resize(mNumReactions);
   mAmu.resize(mNumReactions, true);
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < mNumReactions; i++)
     {
@@ -514,7 +514,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
   return mNextReactionTime - curTime;
 }
 
-void CStochDirectMethod::calculateAmu(const C_INT32 & index)
+void CStochDirectMethod::calculateAmu(const size_t & index)
 {
   CReactionDependencies & Dependencies = mReactionDependencies[index];
   C_FLOAT64 & Amu = mAmu[index];

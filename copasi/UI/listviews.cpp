@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290 $
+//   $Revision: 1.291 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 13:39:23 $
+//   $Date: 2011/03/07 19:37:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,6 +39,7 @@
 #include "DataModelGUI.h"
 #include "CQMessageBox.h"
 
+#include "CQModelWidget.h"
 #include "CQCompartmentsWidget.h"
 #include "CQCompartment.h"
 #include "CQEventsWidget.h"
@@ -52,7 +53,6 @@
 #include "CQLyapResultWidget.h"
 #include "CQSpeciesWidget.h"
 #include "CQSpeciesDetail.h"
-#include "CQModelWidget.h"
 #include "CQGlobalQuantitiesWidget.h"
 #include "CQModelValue.h"
 #include "CQEFMWidget.h"
@@ -126,7 +126,12 @@
 ListViews::ListViews(QWidget *parent, const char *name):
 
     QSplitter(Qt::Horizontal, parent, name),
+    mpDataModelGUI(NULL),
     mpMathModel(NULL),
+    currentWidget(NULL),
+    lastKey(),
+    mSaveObjectKey(),
+    mSaveFolderID(C_INVALID_INDEX),
     mpCMCAResultWidget(NULL),
     mpCQMCAWidget(NULL),
     mpCompartmentsWidget(NULL),
@@ -201,6 +206,9 @@ ListViews::ListViews(QWidget *parent, const char *name):
   currentWidget = defaultWidget; // keeps track of the currentWidget in use
   lastKey = "";
 
+  mSaveObjectKey = "";
+  mSaveFolderID = -1;
+
   // establishes the communication between the mpTreeView clicked and the routine called....
   connect(mpTreeView, SIGNAL(pressed(const QModelIndex &)),
           this, SLOT(slotFolderChanged(const QModelIndex &)));
@@ -216,6 +224,11 @@ ListViews::~ListViews()
   //TODO clean up
 }
 
+void ListViews::slotUpdateCompleteView()
+{
+  restoreCurrentItem();
+}
+
 /************************ListViews::setDataModel(DataModel<Folder>* dm)----------->
  **
  ** Parameters:- DataModel<Folder>* :- pointer to the data model to be used by all the
@@ -224,15 +237,34 @@ ListViews::~ListViews()
  ** Description:-This method is used to set the datamodel to be used by the
  ** listview class to extract the data from the data-model
  ************************************************************************************/
-void ListViews::setDataModel(DataModelGUI* dm)
+void ListViews::setDataModel(DataModelGUI* pDM)
 {
-  mpDataModelGUI = dm;
+  //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
+  if (mpDataModelGUI != NULL)
+    {
+      disconnect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
+      disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
+                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string&)));
+    }
+
+  mpDataModelGUI = pDM;
+
+  //update the tree nodes with single widgets.
+  mpDataModelGUI->updateAllEntities();
 
   mpTreeView->setModel(NULL);
   mpTreeView->setModel(mpDataModelGUI);
   mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
 
   ConstructNodeWidgets();
+
+  //Now Connect updateCompleteView() and notifyView() from DataModelGUI
+  if (mpDataModelGUI != NULL)
+    {
+      connect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
+      connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
+              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string&)));
+    }
 }
 
 
@@ -448,21 +480,22 @@ void ListViews::ConstructNodeWidgets()
  */
 CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
 {
-  if (!index.isValid())
+  if (!index.isValid() || !mpDataModelGUI)
     return NULL;
 
-  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
   // first try ID
-  C_INT32 id = pNode->getId();
+  size_t id = mpDataModelGUI->getId(index);
   CopasiWidget* pWidget = findWidgetFromId(id);
 
   if (pWidget != NULL)
     return pWidget;
 
   // then try parent id:
-  if (!pNode->parent()) return NULL;
+  QModelIndex parentIndex = mpDataModelGUI->parent(index);
 
-  id = pNode->parent()->getId();
+  if (!parentIndex.isValid()) return NULL;
+
+  id = mpDataModelGUI->getId(parentIndex);
 
   switch (id)
     {
@@ -496,7 +529,7 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
   return NULL;
 }
 
-CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
+CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
 {
   switch (id)
     {
@@ -644,7 +677,7 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 {
   bool changeWidget = true;
 
-  if (!index.isValid()) return;
+  if (!index.isValid() || !mpDataModelGUI) return;
 
   mpTreeView->setCurrentIndex(index);
 
@@ -653,12 +686,12 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (!newWidget) return; //do nothing
 
-  const IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
-
-  std::string itemKey = pNode->getObjectKey();
+  std::string itemKey = mpDataModelGUI->getKey(index);
 
   if (newWidget == currentWidget)
     if (itemKey == lastKey) return; //do nothing
+
+  emit signalFolderChanged(index);
 
   // leave old widget
   if (currentWidget)
@@ -716,18 +749,17 @@ void ListViews::storeCurrentItem()
   //save the id and object key of the current ListViewItem
   QModelIndex index = mpTreeView->currentIndex();
 
-  if (!index.isValid())
+  if (!index.isValid() || !mpDataModelGUI)
     return;
 
-  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
+  mSaveObjectKey = mpDataModelGUI->getKey(index);
+  mSaveFolderID = mpDataModelGUI->getId(index);
 
-  mSaveObjectKey = pNode->getObjectKey();
-  mSaveFolderID = pNode->getId();
-
-  while (mSaveFolderID == -1)
+  while (mSaveObjectKey == "" && mSaveFolderID == C_INVALID_INDEX)
     {
-      pNode = pNode->parent();
-      mSaveFolderID = pNode->getId();
+      index = mpDataModelGUI->parent(index);
+      mSaveObjectKey = mpDataModelGUI->getKey(index);
+      mSaveFolderID = mpDataModelGUI->getId(index);
     }
 }
 
@@ -736,20 +768,22 @@ void ListViews::restoreCurrentItem()
   //reset the item from the saved values
   if (!mpDataModelGUI) return;
 
+  if (mSaveObjectKey == "" && mSaveFolderID == C_INVALID_INDEX) return;
+
   QModelIndex index;
 
   //First try restoring with the key.
   if (mSaveObjectKey.length() > 0)
     index = mpDataModelGUI->findIndexFromKey(mSaveObjectKey);
 
-  //if not successfull then try the ID.
+  //if not successful then try the ID.
   if (!index.isValid())
-    index = mpDataModelGUI->findIndexFromId(mSaveFolderID);
+    index = mpDataModelGUI->findIndexFromId((int) mSaveFolderID);
 
   if (index.isValid())
     {
       //Build Map with expanded values of all nodes without children.
-      QMap<int, bool> isExpandedMap;
+      QMap<size_t, bool> isExpandedMap;
       buildExpandedMap(isExpandedMap, mpDataModelGUI->getNode(0));
 
       //Refresh View
@@ -757,7 +791,7 @@ void ListViews::restoreCurrentItem()
       mpTreeView->setModel(mpDataModelGUI);
 
       //Set Nodes to original expanded value
-      QMap<int, bool>::iterator it, itEnd = isExpandedMap.end();
+      QMap<size_t, bool>::iterator it, itEnd = isExpandedMap.end();
 
       for (it = isExpandedMap.begin(); it != itEnd; ++it)
         {
@@ -770,12 +804,12 @@ void ListViews::restoreCurrentItem()
     }
 }
 
-void ListViews::buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNode *startNode)
+void ListViews::buildExpandedMap(QMap<size_t, bool> &isExpandedMap, const IndexedNode *startNode)
 {
-  if (startNode->childCount() == 0 || startNode->getId() == -1)
+  if (startNode->childCount() == 0 || startNode->getId() == C_INVALID_INDEX)
     return;
 
-  QModelIndex index = mpDataModelGUI->findIndexFromId(startNode->getId());
+  QModelIndex index = mpDataModelGUI->findIndexFromId((int) startNode->getId());
 
   if (index.isValid() && mpTreeView->isExpanded(index))
     isExpandedMap[startNode->getId()] = mpTreeView->isExpanded(index);
@@ -789,258 +823,21 @@ void ListViews::buildExpandedMap(QMap<int, bool> &isExpandedMap, const IndexedNo
     }
 }
 
-int ListViews::getCurrentItemId()
+size_t ListViews::getCurrentItemId()
 {
   QModelIndex index = mpTreeView->currentIndex();
 
-  if (!index.isValid())
-    return -1;
+  if (!index.isValid() || !mpDataModelGUI)
+    return C_INVALID_INDEX;
 
-  IndexedNode* pNode = static_cast<IndexedNode*>(index.internalPointer());
-  return pNode->getId();
-}
-
-
-//*******************************************************************************
-
-bool ListViews::updateDataModelAndListviews(ObjectType objectType,
-    Action action, const std::string & key) //static
-{
-  bool success = true;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  //maintain the "changed" flag
-  switch (objectType)
-    {
-      case METABOLITE:
-
-        switch (action)
-          {
-            case CHANGE:
-              break;
-            case RENAME:
-              break;
-            case ADD:
-              break;
-            case DELETE:
-
-              // check if it was the last metabolite, if yes,
-              // make the metabolite table the current widget
-              if (mpDataModelGUI)
-                {
-                  unsigned int numMetabolites = pDataModel->getModel()->getMetabolites().size();
-
-                  if (numMetabolites == 0)
-                    {
-                      switchToOtherWidget(112, "");
-                    }
-                }
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-      case COMPARTMENT:
-
-        switch (action)
-          {
-            case CHANGE:
-              break;
-            case RENAME:
-              break;
-            case ADD:
-              break;
-            case DELETE:
-
-              // check if it was the last compartment, if yes,
-              // make the compartment table the current widget
-              if (mpDataModelGUI)
-                {
-                  unsigned int numCompartments = pDataModel->getModel()->getCompartments().size();
-
-                  if (numCompartments == 0)
-                    {
-                      switchToOtherWidget(111, "");
-                    }
-                }
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-      case REACTION:
-
-        switch (action)
-          {
-            case CHANGE:
-              break;
-            case RENAME:
-              break;
-            case ADD:
-              break;
-            case DELETE:
-
-              // check if it was the last reaction, if yes,
-              // make the reaction table the current widget
-              if (mpDataModelGUI)
-                {
-                  unsigned int numReactions = pDataModel->getModel()->getReactions().size();
-
-                  if (numReactions == 0)
-                    {
-                      switchToOtherWidget(114, "");
-                    }
-                }
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-
-      case MODELVALUE:
-
-        switch (action)
-          {
-            case CHANGE:
-              break;
-            case RENAME:
-              break;
-            case ADD:
-              break;
-            case DELETE:
-
-              // check if it was the last value, if yes,
-              // make the model value table the current widget
-              if (mpDataModelGUI)
-                {
-                  unsigned int numValues = pDataModel->getModel()->getNumModelValues();
-
-                  if (numValues == 0)
-                    {
-                      switchToOtherWidget(115, "");
-                    }
-                }
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-        //case FUNCTION:
-
-      case PLOT:
-
-        switch (action)
-          {
-            case DELETE:
-
-              if (mpDataModelGUI)
-                {
-                  unsigned int numPlots = (pDataModel->getPlotDefinitionList())->size();
-
-                  if (numPlots == 0)
-                    {
-                      switchToOtherWidget(42, "");
-                    }
-                }
-
-              break;
-            case CHANGE:
-            case ADD:
-            case RENAME:
-              break;
-          }
-
-        if (mpDataModelGUI) pDataModel->changed();
-
-        break;
-
-      case REPORT:
-
-        switch (action)
-          {
-            case DELETE:
-
-              if (mpDataModelGUI)
-
-                {
-                  unsigned int numReports = ((pDataModel)->getReportDefinitionList())->size();
-
-                  if (numReports == 0)
-                    {
-                      switchToOtherWidget(43, "");
-                    }
-                }
-
-              pDataModel->changed();
-
-              break;
-            default :
-              ;
-          }
-
-        break;
-
-      case MODEL:
-
-        switch (action)
-          {
-            case CHANGE:
-            case RENAME:
-
-              if (mpDataModelGUI) pDataModel->changed();
-
-              break;
-            case ADD:
-            case DELETE:
-
-              if (mpDataModelGUI) setDataModel(mpDataModelGUI);
-
-              break;
-            default:
-              break;
-          }
-
-        break;
-
-      default:
-        break;
-    }
-
-  storeCurrentItem();
-  mpDataModelGUI->notify(objectType, action, key);
-  //item may point to an invalid ListViewItem now
-  restoreCurrentItem();
-
-  return success;
+  return mpDataModelGUI->getId(index);
 }
 
 //**************************************************************************************+***
 
 //static members **************************
 
-// static
-DataModelGUI* ListViews::mpDataModelGUI;
-
-// static
-std::set< const CCopasiObject * > ListViews::mChangedObjects;
-
-// static
-std::vector< Refresh * > ListViews::mUpdateVector;
-
-// static
-int ListViews::mFramework;
-
-bool ListViews::notify(ObjectType objectType, Action action, const std::string & key)
+bool ListViews::slotNotify(ObjectType objectType, Action action, const std::string & key)
 {
   if (objectType != MODEL &&
       objectType != STATE &&
@@ -1060,13 +857,6 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
     {
       mpLayoutsWidget->deleteLayoutWindows();
     }
-
-  // update all initial value
-  if (action != RENAME)
-    refreshInitialValues();
-
-  //update the datamodel and the listviews trees
-  if (!updateDataModelAndListviews(objectType, action, key)) success = false;
 
   if (!updateCurrentWidget(objectType, action, key)) success = false;
 
@@ -1088,13 +878,10 @@ bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const 
 CopasiWidget* ListViews::getCurrentWidget()
 {return this->currentWidget;}
 
-bool ListViews::commit()
+void ListViews::commit()
 {
-  bool success = true;
-
-  if (currentWidget && !currentWidget->leave()) success = false;
-
-  return success;
+  if (currentWidget != NULL)
+    currentWidget->leave();
 }
 
 void ListViews::notifyChildWidgets(ObjectType objectType,
@@ -1111,19 +898,6 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
         {
           pCopasiWidget->update(objectType, action, key);
         }
-    }
-}
-
-void ListViews::setChildWidgetsFramework(int framework)
-{
-  QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
-  QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets
-  CopasiWidget * pCopasiWidget;
-
-  while (it.hasNext())
-    {
-      if ((pCopasiWidget = it.next()) != NULL)
-        pCopasiWidget->setFramework(framework);
     }
 }
 
@@ -1144,116 +918,17 @@ void ListViews::updateMIRIAMResourceContents()
 
 void ListViews::setFramework(int framework)
 {
-  mFramework = framework;
-  setChildWidgetsFramework(framework);
-}
+  QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
+  QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets
+  CopasiWidget * pCopasiWidget;
 
-// static
-void ListViews::buildChangedObjects()
-{
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  pModel->compileIfNecessary(NULL);
-
-  mChangedObjects.clear();
-
-  CModelEntity ** ppEntity = pModel->getStateTemplate().getEntities();
-  CModelEntity ** ppEntityEnd = pModel->getStateTemplate().endFixed();
-
-  CMetab * pMetab;
-  std::set< const CCopasiObject * > Objects;
-
-  // The objects which are changed are all initial values of of all model entities including
-  // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
-  // This is basically all the parameters in the parameter overview whose value is editable.
-
-  // :TODO: Theoretically, it is possible that also task parameters influence the initial
-  // state of a model but that is currently not handled.
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
+  while (it.hasNext())
     {
-      // If we have an initial expression we have no initial values
-      if ((*ppEntity)->getInitialExpression() != "" ||
-          (*ppEntity)->getStatus() == CModelEntity::ASSIGNMENT)
-        continue;
-
-      // Metabolites have two initial values
-      if (mFramework == 0 &&
-          (pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
-        {
-          // The concentration is assumed to be fix accept when this would lead to circular dependencies,
-          // for the parent's compartment's initial volume.
-          if (pMetab->isInitialConcentrationChangeAllowed() &&
-              !isnan(pMetab->getInitialConcentration()))
-            mChangedObjects.insert(pMetab->getInitialConcentrationReference());
-          else
-            mChangedObjects.insert(pMetab->getInitialValueReference());
-        }
-      else
-        mChangedObjects.insert((*ppEntity)->getInitialValueReference());
-    }
-
-  // The reaction parameters
-  CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
-  unsigned C_INT32 i, imax;
-
-  for (; itReaction != endReaction; ++itReaction)
-    {
-      const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
-
-      for (i = 0, imax = Group.size(); i < imax; i++)
-        mChangedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
-    }
-
-  // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
-  // and link matrices.
-  const CArrayAnnotation * pMatrix = NULL;
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Stoichiometry(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Reduced stoichiometry(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Link matrix(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  try
-    {
-      mUpdateVector = pModel->buildInitialRefreshSequence(mChangedObjects);
-    }
-
-  catch (...)
-    {
-      QString Message = "Error while updating the initial values!\n\n";
-      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-
-      CQMessageBox::critical(NULL, QString("COPASI Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
-      CCopasiMessage::clearDeque();
-
-      mUpdateVector.clear();
-      return;
+      if ((pCopasiWidget = it.next()) != NULL)
+        pCopasiWidget->setFramework(framework);
     }
 }
 
-// static
-void ListViews::refreshInitialValues()
-{
-  buildChangedObjects();
-
-  std::vector< Refresh * >::iterator it = mUpdateVector.begin();
-  std::vector< Refresh * >::iterator end = mUpdateVector.end();
-
-  for (; it != end; ++it)
-    (**it)();
-}
 
 CQTrajectoryWidget* ListViews::getTrajectoryWidget()
 {
@@ -1274,3 +949,4 @@ CQMCAWidget* ListViews::getMCAWidget()
 {
   return mpCQMCAWidget;
 }
+

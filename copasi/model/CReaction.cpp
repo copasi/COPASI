@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.192 $
+//   $Revision: 1.193 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:51 $
+//   $Date: 2011/03/07 19:30:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -283,7 +283,7 @@ void CReaction::setParameterValue(const std::string & parameterName,
 
   //first find index
   CFunctionParameter::DataType Type;
-  unsigned C_INT32 index = mMap.findParameterByName(parameterName, Type);
+  size_t index = mMap.findParameterByName(parameterName, Type);
 
   if (index == C_INVALID_INDEX) return;
 
@@ -306,7 +306,7 @@ const CCopasiParameterGroup & CReaction::getParameters() const
 CCopasiParameterGroup & CReaction::getParameters()
 {return mParameters;}
 
-void CReaction::setParameterMapping(const C_INT32 & index, const std::string & key)
+void CReaction::setParameterMapping(const size_t & index, const std::string & key)
 {
   if (!mpFunction) fatalError();
 
@@ -315,7 +315,7 @@ void CReaction::setParameterMapping(const C_INT32 & index, const std::string & k
   mMetabKeyMap[index][0] = key;
 }
 
-void CReaction::addParameterMapping(const C_INT32 & index, const std::string & key)
+void CReaction::addParameterMapping(const size_t & index, const std::string & key)
 {
   if (!mpFunction) fatalError();
 
@@ -329,7 +329,7 @@ void CReaction::setParameterMapping(const std::string & parameterName, const std
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  unsigned C_INT32 index;
+  size_t index;
   index = mMap.findParameterByName(parameterName, type);
 
   if (C_INVALID_INDEX == index)
@@ -345,7 +345,7 @@ void CReaction::addParameterMapping(const std::string & parameterName, const std
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  unsigned C_INT32 index;
+  size_t index;
   index = mMap.findParameterByName(parameterName, type);
 
   if (C_INVALID_INDEX == index)
@@ -362,7 +362,7 @@ void CReaction::setParameterMappingVector(const std::string & parameterName,
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  unsigned C_INT32 index;
+  size_t index;
   index = mMap.findParameterByName(parameterName, type);
 
   if (C_INVALID_INDEX == index)
@@ -378,7 +378,7 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  unsigned C_INT32 index;
+  size_t index;
   index = mMap.findParameterByName(parameterName, type);
 
   if (C_INVALID_INDEX == index)
@@ -389,7 +389,7 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
   mMetabKeyMap[index].clear();
 }
 
-void CReaction::clearParameterMapping(const C_INT32 & index)
+void CReaction::clearParameterMapping(const size_t & index)
 {
   if (!mpFunction) fatalError();
 
@@ -403,7 +403,7 @@ const std::vector<std::string> & CReaction::getParameterMapping(const std::strin
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  unsigned C_INT32 index;
+  size_t index;
   index = mMap.findParameterByName(parameterName, type);
 
   if (C_INVALID_INDEX == index)
@@ -414,9 +414,9 @@ const std::vector<std::string> & CReaction::getParameterMapping(const std::strin
   return mMetabKeyMap[index];
 }
 
-bool CReaction::isLocalParameter(const C_INT32 & index) const
+bool CReaction::isLocalParameter(const size_t & index) const
 {
-  unsigned C_INT32 i, imax = mParameters.size();
+  size_t i, imax = mParameters.size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -432,7 +432,7 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  unsigned C_INT32 index;
+  size_t index;
   index = mMap.findParameterByName(parameterName, type);
 
   if (C_INVALID_INDEX == index)
@@ -444,13 +444,43 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
 }
 //***********************************************************************************************
 
+// virtual
+const CCopasiObject * CReaction::getObject(const CCopasiObjectName & cn) const
+{
+  const CCopasiObject * pObject = CCopasiContainer::getObject(cn);
+
+  if (pObject == NULL) return pObject;
+
+  const CCopasiContainer * pParent = pObject->getObjectParent();
+
+  while (pParent != this)
+    {
+      if (pParent->getObjectParent() == &mParameters)
+        {
+          if (isLocalParameter(pParent->getObjectName()))
+            {
+              return pObject;
+            }
+          else
+            {
+              return NULL;
+            }
+        }
+
+      pParent = pParent->getObjectParent();
+    }
+
+  return pObject;
+}
+
+
 void CReaction::initializeParameters()
 {
   if (!mpFunction) fatalError();
 
-  unsigned C_INT32 i;
-  unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER);
-  unsigned C_INT32 pos;
+  size_t i;
+  size_t imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER);
+  size_t pos;
   std::string name;
 
   /* We have to be more intelligent here because during an XML load we have
@@ -498,8 +528,8 @@ void CReaction::initializeMetaboliteKeyMap()
 {
   if (!mpFunction) fatalError();
 
-  unsigned C_INT32 i;
-  unsigned C_INT32 imax = mMap.getFunctionParameters().size();
+  size_t i;
+  size_t imax = mMap.getFunctionParameters().size();
 
   mMetabKeyMap.resize(imax);
 
@@ -544,8 +574,8 @@ void CReaction::compile()
           mpParticleFluxReference->clearRefresh();
         }
 
-      unsigned C_INT32 i, j, jmax;
-      unsigned C_INT32 imax = mMap.getFunctionParameters().size();
+      size_t i, j, jmax;
+      size_t imax = mMap.getFunctionParameters().size();
       std::string paramName;
 
       for (i = 0; i < imax; ++i)
@@ -597,14 +627,16 @@ void CReaction::compile()
 }
 
 bool CReaction::loadOneRole(CReadConfig & configbuffer,
-                            CFunctionParameter::Role role, unsigned C_INT32 n,
+                            CFunctionParameter::Role role, C_INT32 n,
                             const std::string & prefix)
 {
   const CModel * pModel
   = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
   const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
 
-  unsigned C_INT32 i, imax, pos;
+  size_t pos;
+
+  C_INT32 i, imax;
   C_INT32 index;
   std::string name, parName, metabName;
   const CFunctionParameter* pParameter;
@@ -695,7 +727,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 
 C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 {
-  unsigned C_INT32 SubstrateSize, ProductSize, ModifierSize, ParameterSize;
+  C_INT32 SubstrateSize, ProductSize, ModifierSize, ParameterSize;
 
   configbuffer.getVariable("Substrates", "C_INT32", &SubstrateSize);
   configbuffer.getVariable("Products", "C_INT32", &ProductSize);
@@ -722,7 +754,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       fatalError();
     }
 
-  unsigned C_INT32 i, pos;
+  size_t i, pos;
   std::string name;
   const CFunctionParameter* pParameter;
   C_FLOAT64 value;
@@ -799,7 +831,7 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 * pXi,
     return 0.0;
 }
 
-unsigned C_INT32 CReaction::getCompartmentNumber() const
+size_t CReaction::getCompartmentNumber() const
 {return mChemEq.getCompartmentNumber();}
 
 const CCompartment & CReaction::getLargestCompartment() const
@@ -844,7 +876,7 @@ void CReaction::setScalingFactor()
         {mScalingFactor = & mChemEq.CheckAndGetFunctionCompartment()->getVolume();}
       catch (CCopasiException Exc)
         {
-          unsigned C_INT32 nr = Exc.getMessage().getNumber();
+          size_t nr = Exc.getMessage().getNumber();
 
           if ((MCChemEq + 2 == nr) || (MCChemEq + 3 == nr))
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getObjectName().c_str());
@@ -928,7 +960,7 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   os << d.mParameters;
 
   os << "   key map:" << std::endl;
-  unsigned C_INT32 i, j;
+  size_t i, j;
 
   for (i = 0; i < d.mMetabKeyMap.size(); ++i)
     {
@@ -979,7 +1011,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                      "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
                     };
 
-                  unsigned C_INT32 j, jmax = 12;
+                  size_t j, jmax = 12;
 
                   for (j = 0; j < jmax; j++)
                     if (id == Reserved[j]) break;
@@ -1707,7 +1739,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
   CEvaluationNodeObject* pObjectNode = NULL;
   const std::string paraName = static_cast<const std::string>(pVariableNode->getData());
   CFunctionParameter::DataType type;
-  unsigned C_INT32 index = this->getFunction()->getVariables().findParameterByName(paraName, type);
+  size_t index = this->getFunction()->getVariables().findParameterByName(paraName, type);
 
   if (index == C_INVALID_INDEX)
     {

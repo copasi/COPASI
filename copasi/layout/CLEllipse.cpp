@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLEllipse.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/17 14:00:24 $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,7 +59,7 @@ CLEllipse::CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const C
     CCopasiObject("Ellipse", pParent),
     mCX(cx),
     mCY(cy),
-    mCZ(0.0),
+    mCZ(CLRelAbsVector(0.0, 50.0)),
     mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("Ellipse", this);
@@ -248,6 +248,7 @@ void CLEllipse::setCenter2D(const CLRelAbsVector& cx, const CLRelAbsVector& cy)
 {
   this->mCX = cx;
   this->mCY = cy;
+  this->mCZ = CLRelAbsVector(0.0, 50.0);
 }
 
 /**

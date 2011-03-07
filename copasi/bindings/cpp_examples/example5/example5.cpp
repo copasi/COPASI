@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:20 $
+//   $Date: 2011/03/07 19:25:44 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -175,7 +181,7 @@ int main()
   pReport->setTaskType(CCopasiTask::optimization);
   // we don't want a table
   pReport->setIsTable(false);
-  // the entries in the output should be seperated by a ", "
+  // the entries in the output should be separated by a ", "
   pReport->setSeparator(CCopasiReportSeparator(", "));
 
   // we need a handle to the header and the body
@@ -190,7 +196,7 @@ int main()
   pHeader->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
   pHeader->push_back(CRegisteredObjectName(CCopasiStaticString("initial value of F").getCN()));
   // in the report body we write the best value of the objective function and
-  // the initial value of the fixed parameter separated by a komma
+  // the initial value of the fixed parameter separated by a comma
   pBody->push_back(CRegisteredObjectName(pOptProblem->getObject(CCopasiObjectName("Reference=Best Value"))->getCN()));
   pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
   pBody->push_back(CRegisteredObjectName(pFixedModelValue->getObject(CCopasiObjectName("Reference=InitialValue"))->getCN()));

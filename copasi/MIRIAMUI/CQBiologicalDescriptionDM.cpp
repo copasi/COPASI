@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQBiologicalDescriptionDM.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:01:00 $
+//   $Date: 2011/03/07 19:30:17 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,7 +32,7 @@ CQBiologicalDescriptionDM::CQBiologicalDescriptionDM(CMIRIAMInfo* MIRIAMInfo, QO
 
 int CQBiologicalDescriptionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpMIRIAMInfo->getBiologicalDescriptions().size() + 1;
+  return (int) mpMIRIAMInfo->getBiologicalDescriptions().size() + 1;
 }
 int CQBiologicalDescriptionDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -54,7 +54,7 @@ QVariant CQBiologicalDescriptionDM::data(const QModelIndex &index, int role) con
           if (index.column() == COL_RELATIONSHIP || index.column() == COL_RESOURCE_BD)
             return QVariant(QString("-- select --"));
           else if (index.column() == COL_ROW_NUMBER)
-            return QVariant(index.row() + 1);
+            return QVariant(QString(""));
           else
             return QVariant(QString(""));
         }
@@ -193,7 +193,7 @@ bool CQBiologicalDescriptionDM::removeRows(QModelIndexList rows, const QModelInd
     {
       CBiologicalDescription * pBiologicalDescription = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         mpMIRIAMInfo->getBiologicalDescriptions().CCopasiVector< CBiologicalDescription >::getIndex(pBiologicalDescription);
 
       if (delRow != C_INVALID_INDEX)
@@ -201,8 +201,8 @@ bool CQBiologicalDescriptionDM::removeRows(QModelIndexList rows, const QModelInd
           if (askEveryItem)
             {
 
-              QString resource = data(this->index(delRow, COL_RESOURCE_BD), Qt::DisplayRole).toString();
-              QString Id = data(this->index(delRow, COL_ID_BD), Qt::DisplayRole).toString();
+              QString resource = data(this->index((int) delRow, COL_RESOURCE_BD), Qt::DisplayRole).toString();
+              QString Id = data(this->index((int) delRow, COL_ID_BD), Qt::DisplayRole).toString();
 
               QString msg = "Do you want to delete Description '";
 
@@ -227,11 +227,11 @@ bool CQBiologicalDescriptionDM::removeRows(QModelIndexList rows, const QModelInd
           if (choice == QMessageBox::NoToAll)
             {return retVal;}
           else if (choice == QMessageBox::Yes)
-            {retVal = removeRow(delRow);}
+            {retVal = removeRow((int) delRow);}
           else if (choice == QMessageBox::YesToAll)
             {
               askEveryItem = false;
-              retVal = removeRow(delRow);
+              retVal = removeRow((int) delRow);
             }
         }
     }

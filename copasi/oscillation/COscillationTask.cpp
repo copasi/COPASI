@@ -1,10 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/oscillation/COscillationTask.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/11 16:47:54 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:32:04 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -21,11 +27,11 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
-unsigned C_INT32 COscillationTask::ValidMethods[] =
-  {
-    CCopasiMethod::oscillationIntegrate,
-    CCopasiMethod::unset
-  };
+const unsigned int COscillationTask::ValidMethods[] =
+{
+  CCopasiMethod::oscillationIntegrate,
+  CCopasiMethod::unset
+};
 
 COscillationTask::COscillationTask(const CCopasiTask::Type & type,
                                    const CCopasiContainer * pParent):
@@ -41,7 +47,7 @@ COscillationTask::COscillationTask(const COscillationTask & src,
                                    const CCopasiContainer * pParent):
     CCopasiTask(src, pParent)
 {
-  mpProblem = new COscillationProblem(* (COscillationProblem *) src.mpProblem, this);
+  mpProblem = new COscillationProblem(*(COscillationProblem *) src.mpProblem, this);
   mpMethod = COscillationMethod::createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
   ((COscillationMethod *) mpMethod)->setProblem((COscillationProblem *) mpProblem);
@@ -50,13 +56,14 @@ COscillationTask::COscillationTask(const COscillationTask & src,
 COscillationTask::~COscillationTask()
 {cleanup();}
 
-void COscillationTask::cleanup(){}
+void COscillationTask::cleanup() {}
 
 bool COscillationTask::setCallBack(CProcessReport * pCallBack)
 {
   bool success = CCopasiTask::setCallBack(pCallBack);
 
   if (!mpProblem->setCallBack(pCallBack)) success = false;
+
   if (!mpMethod->setCallBack(pCallBack)) success = false;
 
   return success;
@@ -75,6 +82,7 @@ bool COscillationTask::initialize(const OutputFlag & of,
   bool success = true;
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+
   //if (!mReport.open(pOstream)) success = false;
   //if (!mReport.compile()) success = false;
 
@@ -110,10 +118,18 @@ bool COscillationTask::setMethodType(const int & type)
 
   if (mpMethod->getSubType() == Type) return true;
 
-  pdelete (mpMethod);
+  pdelete(mpMethod);
 
-  mpMethod = COscillationMethod::createMethod(Type);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   return true;
+}
+
+// virtual
+CCopasiMethod * COscillationTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return COscillationMethod::createMethod(Type);
 }

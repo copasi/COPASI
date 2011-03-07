@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CScanProblem.i,v $ 
-//   $Revision: 1.4 $ 
+//   $Revision: 1.5 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
+//   $Date: 2011/03/07 19:25:43 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -32,8 +32,8 @@
 
 %newobject CScanProblem::createScanItem(CScanProblem::Type type, unsigned C_INT32 steps = 5, const CCopasiObject* obj = NULL);
 
-%ignore CScanProblem::getScanItemType(unsigned C_INT32 index);
-%ignore CScanProblem::getScanItem(unsigned C_INT32 index) const;
+%ignore CScanProblem::getScanItemType(size_t index);
+%ignore CScanProblem::getScanItem(size_t index) const;
 %ignore CScanProblem::load;
 
 %include "scan/CScanProblem.h"

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/BezierCurve.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 10:14:14 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:16 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -30,20 +35,20 @@
 #include "copasi/layout/CLBase.h"
 
 class BezierCurve
-  {
-  public:
-    BezierCurve();
-    BezierCurve(C_INT32 numberOfStepsOnCurve);
-    std::vector<CLPoint> curvePts(const std::vector<CLPoint>& pts);
+{
+public:
+  BezierCurve();
+  BezierCurve(size_t numberOfStepsOnCurve);
+  std::vector<CLPoint> curvePts(const std::vector<CLPoint>& pts);
 
-  private:
-    C_FLOAT64 t;
-    C_INT32 steps;
-    C_FLOAT64 dt;
+private:
+  C_FLOAT64 t;
+  size_t steps;
+  C_FLOAT64 dt;
 
-    C_FLOAT64 bernstein(C_INT32 i, C_INT32 n, C_FLOAT64 t);
-    CLPoint bezierPt(C_FLOAT64 t, std::vector<CLPoint> pts);
-    C_FLOAT64 multiplyFromTo(C_INT32 n1, C_INT32 n2);
-    void init();
-  };
+  C_FLOAT64 bernstein(C_INT32 i, C_INT32 n, C_FLOAT64 t);
+  CLPoint bezierPt(C_FLOAT64 t, std::vector<CLPoint> pts);
+  C_FLOAT64 multiplyFromTo(C_INT32 n1, C_INT32 n2);
+  void init();
+};
 #endif

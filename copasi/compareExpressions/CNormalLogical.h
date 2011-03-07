@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/16 09:51:52 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:26:19 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,6 +49,9 @@ public:
     {
       bool result = false;
 
+      // the compiler warnings about broken strict aliasing rules
+      // that are issued by e.g. gcc 4.4.5 on linux are bogus
+      // see GCC Bug 39390
       if (lhs.second == rhs.second)
         {
           result = ((*lhs.first) < (*rhs.first));

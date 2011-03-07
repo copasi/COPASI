@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/model.pro,v $
-#   $Revision: 1.34 $
+#   $Revision: 1.35 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/08/12 15:21:35 $
+#   $Date: 2011/03/07 19:30:51 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,10 +21,11 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.34 $ $Author: shoops $ $Date: 2010/08/12 15:21:35 $
+# $Revision: 1.35 $ $Author: shoops $ $Date: 2011/03/07 19:30:51 $
 ######################################################################
 
 LIB = model
+DISTFILES = model.pro
 
 # Input
 HEADERS += CAnnotation.h \
@@ -97,3 +98,4 @@ DISTFILES += CChemEqParser_lex.cpp \
              
 include(../lib.pri)
 include(../common.pri)
+include(../srcDistribution.pri)

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:29 $
+//   $Date: 2011/03/07 19:34:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -123,7 +123,7 @@ void CILDMMethod::step(const double & deltaT)
   Stoichiom = mpModel -> getRedStoi();
 
   // const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
-  C_INT32 reacs_size = mpModel -> getRedStoi().size();
+  C_INT reacs_size = (C_INT) mpModel->getRedStoi().size();
   reacs_size = reacs_size / dim; //TODO what is this?
 
   /* the vector mY is the current state of the system*/
@@ -1102,9 +1102,9 @@ void CILDMMethod::setVectors(int slowMode)
 
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
-  unsigned C_INT32 i;
+  size_t i;
 
-  for (i = 0; i < (unsigned C_INT32) mData.dim; i++)
+  for (i = 0; i < (size_t) mData.dim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
   mVec_mVslowMetab.push_back(mCurrentStep);
@@ -1137,7 +1137,7 @@ void CILDMMethod::setVectors(int slowMode)
 
   /* temporary tabs */
 
-  C_INT reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpModel->getReactions().size();
 
   mVec_mTMP1.push_back(mCurrentStep);
   mVec_mTMP1[mCurrentStep].resize(reacs_size, mData.dim);
@@ -1293,11 +1293,13 @@ void CILDMMethod::createAnnotationsM()
  *    - dimension description could consists of arrays of CommonNames
  **/
 //void CILDMMethod::setAnnotationM(int step)
-bool CILDMMethod::setAnnotationM(int step)
+bool CILDMMethod::setAnnotationM(size_t step)
 {
   if (step == 0) return false;
 
   if (mVec_mVslow.size() == 0) return false;
+
+  if (step > mVec_SlowModes.size()) return false;
 
   step -= 1;
   double timeScale;
@@ -1305,7 +1307,7 @@ bool CILDMMethod::setAnnotationM(int step)
   std::stringstream sstr;
   sstr.str("");
   sstr.clear();
-  C_INT32 i;
+  C_INT i;
 
   mVslowPrint.resize(mData.dim, mData.dim);
   mVslowPrint = mVec_mVslow[step];
@@ -1385,7 +1387,7 @@ bool CILDMMethod::setAnnotationM(int step)
 
   mReacSlowSpacePrint.resize(mReacSlowSpace.size(), 1);
 
-  for (i = 0; i < (C_INT32) mReacSlowSpace.size(); i++)
+  for (i = 0; i < (C_INT) mReacSlowSpace.size(); i++)
     mReacSlowSpacePrint(i, 0) = mVec_mReacSlowSpace[step][i];
 
   pReacSlowSpacePrintAnn->resize();
@@ -1397,7 +1399,7 @@ bool CILDMMethod::setAnnotationM(int step)
 
   /* temporary tabs */
 
-  C_INT reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpModel->getReactions().size();
 
   mTMP1Print.resize(reacs_size, mData.dim);
   mTMP1Print = mVec_mTMP1[step];
@@ -1408,7 +1410,7 @@ bool CILDMMethod::setAnnotationM(int step)
     {
       timeScale = mVec_TimeScale[step][i];
 
-      if (i < (C_INT) mVec_SlowModes[step])
+      if (i < mVec_SlowModes[step])
         sstr << "Slow: ";
       else
         sstr << "Fast: ";
@@ -1431,7 +1433,7 @@ bool CILDMMethod::setAnnotationM(int step)
     {
       timeScale = mVec_TimeScale[step][i];
 
-      if (i < (C_INT) mVec_SlowModes[step])
+      if (i < mVec_SlowModes[step])
         sstr << "Slow: ";
       else
         sstr << "Fast: ";
@@ -1464,13 +1466,10 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
   this->print(&os);
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CTSSATask* pTask =
-    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+  assert(getObjectDataModel() != NULL);
 
-  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
-
-  stepNumber = pProblem->getStepNumber();
+  //stepNumber = pProblem->getStepNumber();
+  stepNumber = mVec_SlowModes.size();
 
   for (istep = 0; istep < stepNumber; istep++)
     {

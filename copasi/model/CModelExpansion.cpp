@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/04/13 11:59:37 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:30:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,11 +29,13 @@
 CModelExpansion::CModelExpansion(CModel* pModel)
     : mpModel(pModel)
 {
+  this->initializeNameSets();
 }
 
 void CModelExpansion::setModel(CModel* pModel)
 {
   mpModel = pModel;
+  this->initializeNameSets();
 }
 
 void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::string  > listOfMetabolites,  int  mult, bool diff)
@@ -45,7 +47,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
 
   ci.keyMap[mpModel->getKey()] = "";
 
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   imax = mpModel->getCompartments().size();
 
@@ -54,7 +56,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
       const CCompartment* sourceComp = mpModel->getCompartments()[i];
 
       ci.keyMap[sourceComp->getKey()] = "";
-      nameInSet(sourceComp->getObjectName());
+      //nameInSet(sourceComp->getObjectName());
     }
 
   imax = mpModel->getMetabolites().size();
@@ -72,7 +74,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
     {
       CReaction * sourceReac = mpModel->getReactions()[i];
 
-      nameInSet(sourceReac->getObjectName());
+      //nameInSet(sourceReac->getObjectName());
     }
 
   imax = mpModel->getModelValues().size();
@@ -82,7 +84,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
       const CModelValue* sourceModVal = mpModel->getModelValues()[i];
 
       ci.keyMap[sourceModVal->getKey()] = "";
-      nameInSet(sourceModVal->getObjectName());
+      //nameInSet(sourceModVal->getObjectName());
 
     }
 
@@ -92,7 +94,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
     {
       const CEvent* sourceEvent = mpModel->getEvents()[i];
 
-      nameInSet(sourceEvent->getObjectName());
+      //nameInSet(sourceEvent->getObjectName());
     }
 
   bool progress;
@@ -119,7 +121,9 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
       newname << "copy_" << m;
       name = newname.str();
 
-      ci = copyCompartment(source);
+      std::vector<CModelExpansion::CompartmentInfo> v = copyCompartment(source, 1);
+      assert(v.size() == 1);
+      ci = v[0];
 
       progress  =     copyCompartmentsExpressions(source)
                       &&  copyMetabolitesExpressions(source)
@@ -136,7 +140,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
       std::ostringstream k;
       k << "k{diffusion}";
 
-      std::string newparam = testName(k.str());
+      std::string newparam = testName(k.str(), this->mModelValueNameSet);
 
       CModelValue* modval = mpModel->createModelValue(newparam, 1.);
       modval->setStatus(CModelValue::FIXED);
@@ -149,7 +153,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
               std::ostringstream reacname;
               reacname <<  "diffusion" << m << "_" << i;
 
-              CReaction* reac = mpModel->createReaction(testName(reacname.str()));
+              CReaction* reac = mpModel->createReaction(testName(reacname.str(), this->mReactionNameSet));
 
               if (!reac) continue;
 
@@ -185,16 +189,17 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
  **      or  modify the name
  **/
 
-std::string CModelExpansion::testName(const std::string & mname)
+std::string CModelExpansion::testName(const std::string & mname, std::set<std::string>& nameSet)
 {
-  std::locale C("C");
-  char ch;
+  //std::locale C("C");
+  //char ch;
 
-  std::ostringstream newname, tmp;
+  std::ostringstream newname;
 
-  unsigned C_INT32 name_size = mname.size();
-  unsigned C_INT32 i;
+  //size_t name_size = mname.size();
+  //size_t i;
 
+  /*
   for (i = 0; i < name_size; i++)
     {
       ch = mname[i];
@@ -204,156 +209,194 @@ std::string CModelExpansion::testName(const std::string & mname)
       else
         tmp << ch;
     }
+  */
 
-  if (NameSet.find(tmp.str()) == NameSet.end())
+  newname << mname;
+  std::set<std::string>::const_iterator end = nameSet.end();
+  unsigned int index = 1;
+
+  while (nameSet.find(newname.str()) != end)
     {
-      NameSet.insert(tmp.str());
-
-      return mname;
+      newname.str(mname);
+      newname << "_" << index;
+      ++index;
     }
-  else
-    {
-      newname << mname << "_";
 
-      return testName(newname.str());
-    }
+  nameSet.insert(newname.str());
+  return newname.str();
 }
 
-void CModelExpansion::nameInSet(const std::string & mname)
+void CModelExpansion::nameInSet(const std::string & mname, std::set<std::string>& nameSet)
 {
-  std::locale C("C");
-  char ch;
+  //std::locale C("C");
+  //char ch;
 
-  std::ostringstream newname, tmp;
+  //std::ostringstream newname, tmp;
 
-  unsigned C_INT32 name_size = mname.size();
-  unsigned C_INT32 i;
+  //size_t name_size = mname.size();
+  //size_t i;
 
-  for (i = 0; i < name_size; i++)
-    {
-      ch = mname[i];
+  //for (i = 0; i < name_size; i++)
+  //  {
+  //    ch = mname[i];
+  //
+  //    if (std::isalpha(ch, C) && std::islower(ch, C))
+  //      tmp << (char) toupper(ch);
+  //    else
+  //      tmp << ch;
+  //  }
 
-      if (std::isalpha(ch, C) && std::islower(ch, C))
-        tmp << (char) toupper(ch);
-      else
-        tmp << ch;
-    }
-
-  NameSet.insert(tmp.str());
+  nameSet.insert(mname);
 
   return;
 }
 
-CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompartment* source)
+std::vector<CModelExpansion::CompartmentInfo> CModelExpansion::copyCompartment(const CCompartment* source, unsigned int numCopies)
 {
-  CompartmentInfo ret;
+  std::vector<CModelExpansion::CompartmentInfo> ret;
 
-  if (!mpModel) return ret;
+  if (!mpModel || !source || numCopies == 0) return ret;
 
-  if (!source) return ret;
+  unsigned int num = 0;
+  // we make a set that contains all reactions that involve the given compartment
+  std::set<const CReaction*> relevantReactions;
+  size_t i = 0, iMax = this->mpModel->getReactions().size();
+  const CReaction* pReact = NULL;
 
-  //create new compartment
-  CCompartment* newComp = mpModel->createCompartment(testName(name), source->getInitialValue());
-
-  if (!newComp) return ret;
-
-  ret.key = newComp->getKey();
-
-  newComp->setDimensionality(source->getDimensionality());
-
-  ret.keyMap[source->getKey()] = newComp->getKey();
-
-  //create copies of the metabs
-  unsigned C_INT32 i, imax = source->getMetabolites().size();
-
-  for (i = 0; i < imax; ++i)
+  while (i < iMax)
     {
-      CMetab* pSourceMetab = source->getMetabolites()[i];
-      CMetab* pNewMetab = mpModel->createMetabolite(pSourceMetab->getObjectName(), newComp->getObjectName(), pSourceMetab->getInitialConcentration());
+      pReact = this->mpModel->getReactions()[i];
 
-      if (!pNewMetab)
-        continue; //TODO error handling, should not happen
+      if (reactionInvolvesCompartment(pReact, source))
+        {
+          relevantReactions.insert(pReact);
+        }
 
-      pNewMetab->setStatus(pSourceMetab->getStatus());
-
-      ret.keyMap[pSourceMetab->getKey()] = pNewMetab->getKey();
+      ++i;
     }
 
-  newComp->setStatus(source->getStatus());
-
-  //create copies of the relevant reactions
-  imax = mpModel->getReactions().size();
-
-  for (i = 0; i < imax; ++i)
+  while (num < numCopies)
     {
-      CReaction * pReac = mpModel->getReactions()[i];
+      CompartmentInfo info;
+      //create new compartment
+      CCompartment* newComp = mpModel->createCompartment(testName(name, this->mCompartmentNameSet), source->getInitialValue());
 
-      if (reactionInvolvesCompartment(pReac, source))
+      if (!newComp)
         {
+          ret.clear();
+          return ret;
+        }
+
+      info.key = newComp->getKey();
+
+      newComp->setDimensionality(source->getDimensionality());
+
+      info.keyMap[source->getKey()] = newComp->getKey();
+
+      //create copies of the metabs
+      size_t i, imax = source->getMetabolites().size();
+
+      for (i = 0; i < imax; ++i)
+        {
+          CMetab* pSourceMetab = source->getMetabolites()[i];
+          CMetab* pNewMetab = mpModel->createMetabolite(pSourceMetab->getObjectName(), newComp->getObjectName(), pSourceMetab->getInitialConcentration());
+
+          if (!pNewMetab)
+            continue; //TODO error handling, should not happen
+
+          pNewMetab->setStatus(pSourceMetab->getStatus());
+
+          info.keyMap[pSourceMetab->getKey()] = pNewMetab->getKey();
+        }
+
+      newComp->setStatus(source->getStatus());
+
+      //create copies of the relevant reactions
+      std::set<const CReaction*>::const_iterator reactIt = relevantReactions.begin(), reactEndit = relevantReactions.end();
+      imax = mpModel->getReactions().size();
+
+      while (reactIt != reactEndit)
+        {
+          pReact = *reactIt;
 
           std::ostringstream newname;
-          newname << pReac->getObjectName() <<  "{" << newComp->getObjectName()  << "}";
+          newname << pReact->getObjectName() <<  "{" << newComp->getObjectName()  << "}";
 
-          CReaction* pNewReac = mpModel->createReaction(testName(newname.str()));
+          CReaction* pNewReac = mpModel->createReaction(testName(newname.str(), this->mReactionNameSet));
 
           if (!pNewReac)
-            continue; //should not happen TODO: error handling
+            {
+              ret.clear();
+              return ret; //should not happen TODO: error handling
+            }
 
           //copy the chemical equation. If the involved metabs are among those that
           //were copied with the compartment, replace them. Otherwise keep the original metab
-          pNewReac->setReversible(pReac->isReversible());
+          pNewReac->setReversible(pReact->isReversible());
           std::map<std::string, std::string>::const_iterator mapIt;
           std::string targetKey;
-          unsigned C_INT32 j, jmax = pReac->getChemEq().getSubstrates().size();
+          size_t j, jmax = pReact->getChemEq().getSubstrates().size();
 
           for (j = 0; j < jmax; ++j)
             {
-              const CChemEqElement * sourceElement = pReac->getChemEq().getSubstrates()[j];
+              const CChemEqElement * sourceElement = pReact->getChemEq().getSubstrates()[j];
               //check if the metab is in the map. If yes, translate it, otherwise not.
-              mapIt = ret.keyMap.find(sourceElement->getMetaboliteKey());
+              mapIt = info.keyMap.find(sourceElement->getMetaboliteKey());
 
-              if (mapIt == ret.keyMap.end())
-                targetKey = sourceElement->getMetaboliteKey();
+              if (mapIt == info.keyMap.end())
+                {
+                  targetKey = sourceElement->getMetaboliteKey();
+                }
               else
-                targetKey = mapIt->second;
+                {
+                  targetKey = mapIt->second;
+                }
 
               pNewReac->addSubstrate(targetKey, sourceElement->getMultiplicity());
             }
 
-          jmax = pReac->getChemEq().getProducts().size();
+          jmax = pReact->getChemEq().getProducts().size();
 
           for (j = 0; j < jmax; ++j)
             {
-              const CChemEqElement * sourceElement = pReac->getChemEq().getProducts()[j];
+              const CChemEqElement * sourceElement = pReact->getChemEq().getProducts()[j];
               //check if the metab is in the map. If yes, translate it, otherwise not.
-              mapIt = ret.keyMap.find(sourceElement->getMetaboliteKey());
+              mapIt = info.keyMap.find(sourceElement->getMetaboliteKey());
 
-              if (mapIt == ret.keyMap.end())
-                targetKey = sourceElement->getMetaboliteKey();
+              if (mapIt == info.keyMap.end())
+                {
+                  targetKey = sourceElement->getMetaboliteKey();
+                }
               else
-                targetKey = mapIt->second;
+                {
+                  targetKey = mapIt->second;
+                }
 
               pNewReac->addProduct(targetKey, sourceElement->getMultiplicity());
             }
 
-          jmax = pReac->getChemEq().getModifiers().size();
+          jmax = pReact->getChemEq().getModifiers().size();
 
           for (j = 0; j < jmax; ++j)
             {
-              const CChemEqElement * sourceElement = pReac->getChemEq().getModifiers()[j];
+              const CChemEqElement * sourceElement = pReact->getChemEq().getModifiers()[j];
               //check if the metab is in the map. If yes, translate it, otherwise not.
-              mapIt = ret.keyMap.find(sourceElement->getMetaboliteKey());
+              mapIt = info.keyMap.find(sourceElement->getMetaboliteKey());
 
-              if (mapIt == ret.keyMap.end())
-                targetKey = sourceElement->getMetaboliteKey();
+              if (mapIt == info.keyMap.end())
+                {
+                  targetKey = sourceElement->getMetaboliteKey();
+                }
               else
-                targetKey = mapIt->second;
+                {
+                  targetKey = mapIt->second;
+                }
 
               pNewReac->addModifier(targetKey);
             }
 
           //set the kinetic function
-          pNewReac->setFunction(const_cast<CFunction*>(pReac->getFunction()));
+          pNewReac->setFunction(const_cast<CFunction*>(pReact->getFunction()));
 
           //mapping and local parameters
           for (j = 0; j < pNewReac->getFunctionParameters().size(); ++j)
@@ -369,50 +412,68 @@ CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompart
 
                     //we assume that only SUBSTRATE, PRODUCT, MODIFIER can be vectors
                     if (isVector)
-                      pNewReac->clearParameterMapping(j);
-
-                    unsigned C_INT32 k;
-
-                    for (k = 0; k < pReac->getParameterMappings()[j].size(); ++k)
                       {
-                        mapIt = ret.keyMap.find(pReac->getParameterMappings()[j][k]);
+                        pNewReac->clearParameterMapping(j);
+                      }
 
-                        if (mapIt == ret.keyMap.end())
-                          targetKey = pReac->getParameterMappings()[j][k];
+                    size_t k;
+
+                    for (k = 0; k < pReact->getParameterMappings()[j].size(); ++k)
+                      {
+                        mapIt = info.keyMap.find(pReact->getParameterMappings()[j][k]);
+
+                        if (mapIt == info.keyMap.end())
+                          {
+                            targetKey = pReact->getParameterMappings()[j][k];
+                          }
                         else
-                          targetKey = mapIt->second;
+                          {
+                            targetKey = mapIt->second;
+                          }
 
                         if (isVector)
-                          pNewReac->addParameterMapping(j, targetKey);
+                          {
+                            pNewReac->addParameterMapping(j, targetKey);
+                          }
                         else
-                          pNewReac->setParameterMapping(j, targetKey);
+                          {
+                            pNewReac->setParameterMapping(j, targetKey);
+                          }
                       }
                   }
                   break;
 
                   case CFunctionParameter::TIME:
                     //just copy the key
-                    pNewReac->setParameterMapping(j, pReac->getParameterMappings()[j][0]);
+                    pNewReac->setParameterMapping(j, pReact->getParameterMappings()[j][0]);
                     break;
 
                   case CFunctionParameter::VOLUME:
 
                     //translate the compartment key if necessary
-                    if (pReac->getParameterMappings()[j][0] == source->getKey())
-                      pNewReac->setParameterMapping(j, newComp->getKey());
+                    if (pReact->getParameterMappings()[j][0] == source->getKey())
+                      {
+                        pNewReac->setParameterMapping(j, newComp->getKey());
+                      }
                     else
-                      pNewReac->setParameterMapping(j, pReac->getParameterMappings()[j][0]);
+                      {
+                        pNewReac->setParameterMapping(j, pReact->getParameterMappings()[j][0]);
+                      }
 
                     //TODO: this needs to be adapted when sets of compartments will be copied
                     break;
 
                   case CFunctionParameter::PARAMETER:
 
-                    if (pReac->isLocalParameter(j))
-                      pNewReac->setParameterValue(pNewReac->getFunctionParameters()[j]->getObjectName(),
-                                                  pReac->getParameterValue(pNewReac->getFunctionParameters()[j]->getObjectName()));
+                    if (pReact->isLocalParameter(j))
+                      {
+                        pNewReac->setParameterValue(pNewReac->getFunctionParameters()[j]->getObjectName(),
+                                                    pReact->getParameterValue(pNewReac->getFunctionParameters()[j]->getObjectName()));
+                      }
                     else
-                      pNewReac->setParameterMapping(j, pReac->getParameterMappings()[j][0]);
+                      {
+                        pNewReac->setParameterMapping(j, pReact->getParameterMappings()[j][0]);
+                      }
 
                     break;
 
@@ -421,7 +482,12 @@ CModelExpansion::CompartmentInfo CModelExpansion::copyCompartment(const CCompart
                     break;
                 }
             }
+
+          ++reactIt;
         }
+
+      ret.push_back(info);
+      ++num;
     }
 
   return ret;
@@ -434,7 +500,7 @@ bool CModelExpansion::reactionInvolvesCompartment(const CReaction * reac, const 
 
   if (!comp) return false;
 
-  unsigned C_INT32 i, imax = reac->getChemEq().getSubstrates().size();
+  size_t i, imax = reac->getChemEq().getSubstrates().size();
 
   for (i = 0; i < imax; ++i)
     if (reac->getChemEq().getSubstrates()[i]->getMetabolite()->getCompartment() == comp)
@@ -459,7 +525,7 @@ bool CModelExpansion::copyModelValuesExpressions(std::string copyname)
 {
   bool info = false;
 
-  unsigned C_INT32 i, imax = mpModel->getModelValues().size();
+  size_t i, imax = mpModel->getModelValues().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -483,7 +549,7 @@ bool CModelExpansion::copyModelValuesExpressions(std::string copyname)
               std::ostringstream newname;
               newname << source->getObjectName() << "{" << copyname << "}";
 
-              newModVal = mpModel->createModelValue(testName(newname.str()), source->getInitialValue());
+              newModVal = mpModel->createModelValue(testName(newname.str(), this->mModelValueNameSet), source->getInitialValue());
               newModVal->setStatus(source->getStatus());
               newModVal->setExpression(newInfix);
 
@@ -504,7 +570,7 @@ bool CModelExpansion::copyModelValuesExpressions(std::string copyname)
                 std::ostringstream newname;
                 newname << source->getObjectName() << "{" << copyname << "}";
 
-                newModVal = mpModel->createModelValue(testName(newname.str()), source->getInitialValue());
+                newModVal = mpModel->createModelValue(testName(newname.str(), this->mModelValueNameSet), source->getInitialValue());
                 newModVal->setStatus(source->getStatus());
 
                 const CExpression* tmpExpression = source->getExpressionPtr();
@@ -528,7 +594,7 @@ bool CModelExpansion::copyMetabolitesExpressions(const CCompartment* source)
 {
   bool info = false;
 
-  unsigned C_INT32 i, imax = source->getMetabolites().size();
+  size_t i, imax = source->getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -603,7 +669,7 @@ std::string CModelExpansion::copyExpression(const CExpression * pExpression)
   tmp = new CExpression(*pExpression, mpModel);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  unsigned j, jmax = objectNodes.size();
+  size_t j, jmax = objectNodes.size();
 
   for (j = 0; j < jmax; ++j)
     {
@@ -653,7 +719,7 @@ bool CModelExpansion::copyEvents(std::string copyname)
 
   bool info = false;
 
-  unsigned C_INT32 i, imax = mpModel->getEvents().size();
+  size_t i, imax = mpModel->getEvents().size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -685,7 +751,7 @@ bool CModelExpansion::copyEvents(std::string copyname)
               std::ostringstream newname;
               newname << sourceEvent->getObjectName() << "{" << copyname << "}";
 
-              newEvent = mpModel->createEvent(testName(newname.str()));
+              newEvent = mpModel->createEvent(testName(newname.str(), this->mEventNameSet));
               newEvent->setTriggerExpression(trigger);
             }
         }
@@ -708,7 +774,7 @@ bool CModelExpansion::copyEvents(std::string copyname)
                   std::ostringstream newname;
                   newname << sourceEvent->getObjectName() << "{" << copyname << "}";
 
-                  newEvent = mpModel->createEvent(testName(newname.str()));
+                  newEvent = mpModel->createEvent(testName(newname.str(), this->mEventNameSet));
                   newEvent->setTriggerExpression(trigger);
                 }
             }
@@ -728,7 +794,7 @@ bool CModelExpansion::copyEvents(std::string copyname)
 
       bool identic = true;
 
-      unsigned C_INT32 j, jmax = sourceEvent->getAssignments().size();
+      size_t j, jmax = sourceEvent->getAssignments().size();
 
       for (j = 0; j < jmax; ++j)
         {
@@ -768,7 +834,7 @@ bool CModelExpansion::copyEvents(std::string copyname)
         {
           std::ostringstream newname;
           newname << sourceEvent->getObjectName() << "{" << copyname << "}";
-          newEvent = mpModel->createEvent(testName(newname.str()));
+          newEvent = mpModel->createEvent(testName(newname.str(), this->mEventNameSet));
           newEvent->setTriggerExpression(trigger);
           newEvent->setDelayExpression(delay);
           newEvent->setDelayAssignment(sourceEvent->getDelayAssignment());
@@ -797,3 +863,43 @@ bool CModelExpansion::copyEvents(std::string copyname)
 
   return true;
 }
+
+void CModelExpansion::initializeNameSets()
+{
+  this->mCompartmentNameSet.clear();
+  this->mReactionNameSet.clear();
+  this->mModelValueNameSet.clear();
+  this->mEventNameSet.clear();
+
+  if (this->mpModel != NULL)
+    {
+      size_t i, iMax = this->mpModel->getCompartments().size();
+
+      for (i = 0; i < iMax; ++i)
+        {
+          this->mCompartmentNameSet.insert(this->mpModel->getCompartments()[i]->getObjectName());
+        }
+
+      iMax = this->mpModel->getReactions().size();
+
+      for (i = 0; i < iMax; ++i)
+        {
+          this->mReactionNameSet.insert(this->mpModel->getReactions()[i]->getObjectName());
+        }
+
+      iMax = this->mpModel->getModelValues().size();
+
+      for (i = 0; i < iMax; ++i)
+        {
+          this->mModelValueNameSet.insert(this->mpModel->getModelValues()[i]->getObjectName());
+        }
+
+      iMax = this->mpModel->getEvents().size();
+
+      for (i = 0; i < iMax; ++i)
+        {
+          this->mEventNameSet.insert(this->mpModel->getEvents()[i]->getObjectName());
+        }
+    }
+}
+

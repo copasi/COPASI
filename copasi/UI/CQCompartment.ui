@@ -2,13 +2,13 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.ui,v $ </comment>
-<comment>   $Revision: 1.15 $ </comment>
+<comment>   $Revision: 1.16 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2010/07/16 19:05:16 $ </comment>
+<comment>   $Date: 2011/03/07 19:38:01 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -433,7 +433,7 @@
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
-   <header>copasiWidget.h</header>
+   <header>copasi/UI/copasiWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -461,7 +461,6 @@
  </tabstops>
  <includes>
   <include location="global" >string</include>
-  <include location="local" >copasiWidget.h</include>
  </includes>
  <resources/>
  <connections>

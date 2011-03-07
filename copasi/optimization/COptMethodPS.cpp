@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
+//   $Date: 2011/03/07 19:31:26 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -111,7 +111,7 @@ const C_FLOAT64 & COptMethodPS::evaluate()
 }
 
 // move an individual
-bool COptMethodPS::move(const unsigned C_INT32 & index)
+bool COptMethodPS::move(const size_t & index)
 {
   const C_FLOAT64 w = 1 / (2 * log(2.0));
   const C_FLOAT64 c = 0.5 + log(2.0);
@@ -128,10 +128,10 @@ bool COptMethodPS::move(const unsigned C_INT32 & index)
   C_FLOAT64 * pBestInformantPosition = mBestPositions[index];
   C_FLOAT64 BestInformantValue = mBestValues[index];
 
-  std::set< unsigned C_INT32 >::const_iterator itInformant = mInformants[index].begin();
-  std::set< unsigned C_INT32 >::const_iterator endInformant = mInformants[index].end();
+  std::set< size_t >::const_iterator itInformant = mInformants[index].begin();
+  std::set< size_t >::const_iterator endInformant = mInformants[index].end();
 
-  unsigned C_INT32 i = mNumInformed + mNumInformedMin;
+  size_t i = mNumInformed + mNumInformedMin;
 
   for (; i && itInformant != endInformant; --i, ++itInformant)
     if (mBestValues[*itInformant] < BestInformantValue)
@@ -198,7 +198,7 @@ bool COptMethodPS::move(const unsigned C_INT32 & index)
 }
 
 // initialise an individual
-bool COptMethodPS::create(const unsigned C_INT32 & index)
+bool COptMethodPS::create(const size_t & index)
 {
   C_FLOAT64 * pIndividual = mIndividuals[index].array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
@@ -343,8 +343,7 @@ bool COptMethodPS::initialize()
   if (mpCallBack)
     mhIteration =
       mpCallBack->addItem("Iteration Limit",
-                          CCopasiParameter::UINT,
-                          & mIteration,
+                          mIteration,
                           & mIterationLimit);
 
   mSwarmSize = * getValue("Swarm Size").pUINT;
@@ -359,7 +358,7 @@ bool COptMethodPS::initialize()
 
   mIndividuals.resize(mSwarmSize);
 
-  unsigned C_INT32 i;
+  size_t i;
 
   for (i = 0; i < mSwarmSize; i++)
     mIndividuals[i].resize(mVariableSize);
@@ -369,7 +368,7 @@ bool COptMethodPS::initialize()
   mBestValues.resize(mSwarmSize);
   mBestPositions.resize(mSwarmSize, mVariableSize);
 
-  mNumInformedMin = std::max<unsigned C_INT32>(mSwarmSize / 10, 5) - 1;
+  mNumInformedMin = std::max<size_t>(mSwarmSize / 10, 5) - 1;
   mNumInformed = mNumInformedMin;
 
   mShuffle.resize(mSwarmSize);
@@ -399,16 +398,16 @@ void COptMethodPS::buildInformants()
   mInformants.clear();
   mInformants.resize(mSwarmSize);
 
-  unsigned C_INT32 i, j;
-  unsigned C_INT32 * pShuffle;
-  unsigned C_INT32 * pEnd = mShuffle.array() + mSwarmSize;
+  size_t i, j;
+  size_t * pShuffle;
+  size_t * pEnd = mShuffle.array() + mSwarmSize;
 
   for (pShuffle = mShuffle.array(); pShuffle != pEnd; pShuffle++)
     {
       j = mpRandom->getRandomU(mSwarmSize - 1);
 
       // swap j and i
-      unsigned C_INT32 tmp = mShuffle[j];
+      size_t tmp = mShuffle[j];
       mShuffle[j] = *pShuffle;
       *pShuffle = tmp;
     }
@@ -447,7 +446,7 @@ bool COptMethodPS::reachedStdDeviation()
 
   C_FLOAT64 Mean = 0.0;
   C_FLOAT64 Variance = 0.0;
-  unsigned C_INT32 N = 0;
+  size_t N = 0;
 
   for (; pValue != pEnd; ++pValue)
     {
@@ -466,7 +465,7 @@ bool COptMethodPS::reachedStdDeviation()
   if (Variance > mVariance)
     return false;
 
-  // The variance of the function value is smaller than requiered. We now
+  // The variance of the function value is smaller than required. We now
   // Check the variance of the flock positions.
   CVector< C_FLOAT64 > FirstMoments(mVariableSize);
   CVector< C_FLOAT64 > SecondMoments(mVariableSize);
@@ -508,7 +507,7 @@ bool COptMethodPS::reachedStdDeviation()
 
 bool COptMethodPS::optimise()
 {
-  unsigned C_INT32 i;
+  size_t i;
 
   if (!initialize())
     {

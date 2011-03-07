@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/05 21:28:02 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:30:51 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,37 +36,37 @@ class CReaction;
  * This class handles the output of the differential equations as presentation MathML
  */
 class CMMLOutput
-  {
+{
 
-  public:
-    CMMLOutput();
+public:
+  CMMLOutput();
 
-    static void writeDifferentialEquations(std::ostream & mml, CModel * model, bool localParameterNumbers, bool expand, bool expandFull);
+  static void writeDifferentialEquations(std::ostream & mml, CModel * model, bool localParameterNumbers, bool expand, bool expandFull);
 
-  private:
-    static void writeLHS(std::ostream & out, const std::string & metabName,
-                         const std::string & compName, unsigned C_INT32 l);
+private:
+  static void writeLHS(std::ostream & out, const std::string & metabName,
+                       const std::string & compName, size_t l);
 
-    static void writeRHS(std::ostream & out, const CMetab* pMetab, const CReaction* pReac,
-                         bool numbers, bool expand, bool expandFull,
-                         unsigned C_INT32 l);
+  static void writeRHS(std::ostream & out, const CMetab* pMetab, const CReaction* pReac,
+                       bool numbers, bool expand, bool expandFull,
+                       size_t l);
 
-    //list keys of all reactions that have the metab in their balances
-    static std::set<std::string> listReactionsForMetab(const CModel* model,
-        const std::string & key);
+  //list keys of all reactions that have the metab in their balances
+  static std::set<std::string> listReactionsForMetab(const CModel* model,
+      const std::string & key);
 
-    static void createParameterMapping(const CReaction* pReac,
-                                       std::vector<std::vector<std::string> > & params,
-                                       bool numbers);
+  static void createParameterMapping(const CReaction* pReac,
+                                     std::vector<std::vector<std::string> > & params,
+                                     bool numbers);
 
-    static void writeLHS_ModelValue(std::ostream & out,
-                                    const std::string & valueName, unsigned C_INT32 l);
+  static void writeLHS_ModelValue(std::ostream & out,
+                                  const std::string & valueName, size_t l);
 
-    static void writeRHS_ModelEntity(std::ostream & out,
-                                     const CModelEntity* pEntity,
-                                     bool expandFull, unsigned C_INT32 l);
+  static void writeRHS_ModelEntity(std::ostream & out,
+                                   const CModelEntity* pEntity,
+                                   bool expandFull, size_t l);
 
-    //std::ostringstream mml;
-  };
+  //std::ostringstream mml;
+};
 
 #endif

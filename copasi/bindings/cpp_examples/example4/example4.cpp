@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example4/example4.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/03/05 13:51:28 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:25:44 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -13,7 +18,7 @@
 
 /**
  * This is an example on how to import an sbml model from a string
- * create a report for a time course simulation 
+ * create a report for a time course simulation
  * and run a scan for a stochastic time course simulation
  */
 
@@ -47,6 +52,7 @@ int main()
   // create a new datamodel
   CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
   assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+
   // the only argument to the main routine should be the name of an SBML file
   try
     {
@@ -59,6 +65,7 @@ int main()
       CCopasiRootContainer::destroy();
       return 1;
     }
+
   CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
   // create a report with the correct filename and all the species against
@@ -84,11 +91,13 @@ int main()
   pHeader->push_back(CCopasiStaticString("time").getCN());
   pHeader->push_back(pReport->getSeparator().getCN());
 
-  unsigned int i, iMax = pModel->getMetabolites().size();
-  for (i = 0;i < iMax;++i)
+  size_t i, iMax = pModel->getMetabolites().size();
+
+  for (i = 0; i < iMax; ++i)
     {
       CMetab* pMetab = pModel->getMetabolites()[i];
       assert(pMetab != NULL);
+
       // we don't want output for FIXED metabolites right now
       if (pMetab->getStatus() != CModelEntity::FIXED)
         {
@@ -105,6 +114,7 @@ int main()
           pHeader->push_back(pReport->getSeparator().getCN());
         }
     }
+
   if (iMax > 0)
     {
       // delete the last separator
@@ -113,6 +123,7 @@ int main()
         {
           pBody->erase(--pBody->end());
         }
+
       if ((*pHeader->rbegin()) == pReport->getSeparator().getCN())
         {
           pHeader->erase(--pHeader->end());
@@ -124,6 +135,7 @@ int main()
 
   // get the trajectory task object
   CTrajectoryTask* pTrajectoryTask = dynamic_cast<CTrajectoryTask*>(TaskList["Time-Course"]);
+
   // if there isn't one
   if (pTrajectoryTask == NULL)
     {
@@ -161,6 +173,7 @@ int main()
 
   // now we set up the scan
   CScanTask* pScanTask = dynamic_cast<CScanTask*>(TaskList["Scan"]);
+
   if (pScanTask == NULL)
     {
       // create a new scan task
@@ -178,7 +191,7 @@ int main()
   // set the model for the problem
   pScanProblem->setModel(pDataModel->getModel());
 
-  // actiavate the task so that is is run
+  // Activate the task so that is is run
   // if the model is saved and passed to CopasiSE
   pScanTask->setScheduled(true);
 
@@ -216,15 +229,18 @@ int main()
   catch (...)
     {
       std::cerr << "Error. Running the scan failed." << std::endl;
+
       // check if there are additional error messages
       if (CCopasiMessage::size() > 0)
         {
           // print the messages in chronological order
           std::cerr << CCopasiMessage::getAllMessageText(true);
         }
+
       CCopasiRootContainer::destroy();
       return 1;
     }
+
   // restore the state of the trajectory
   pScanTask->restore();
 

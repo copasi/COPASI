@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000068.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:33:09 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -255,7 +255,7 @@ void test000068::test_bug1068()
   // and reimport the exported model
   // This will also lead to a Level 2 Version 1 model since we convert all Level 1 model to
   //  Level 2 Version 1 on import, but we can at least test if the export worked.
-  pCOPASIDATAMODEL->newModel(NULL, NULL, NULL);
+  pCOPASIDATAMODEL->newModel(NULL, NULL, NULL, true);
   CPPUNIT_ASSERT(pCOPASIDATAMODEL->importSBMLFromString(s));
   // check the sbml model
   const SBMLDocument* pDocument = pCOPASIDATAMODEL->getCurrentSBMLDocument();

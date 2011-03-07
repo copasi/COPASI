@@ -6,7 +6,7 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -128,7 +128,7 @@ void CUnit::applyExponent(double exp)
     }
 }
 
-void CUnit::applyExponent(const std::string& id, int frame)
+void CUnit::applyExponent(const std::string& id, size_t frame)
 {
   if (isDimensionless())
     return;
@@ -146,7 +146,7 @@ void CUnit::applyExponent(const std::string& id, int frame)
     }
 }
 
-void CUnit::applyInverseExponent(const std::string& id, int frame)
+void CUnit::applyInverseExponent(const std::string& id, size_t frame)
 {
   if (isDimensionless())
     return;

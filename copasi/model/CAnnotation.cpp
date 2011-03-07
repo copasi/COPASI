@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CAnnotation.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:21:35 $
+//   $Date: 2011/03/07 19:30:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,12 +26,14 @@
 
 CAnnotation::CAnnotation():
     mNotes(),
-    mMiriamAnnotation()
+    mMiriamAnnotation(),
+    mXMLId()
 {}
 
 CAnnotation::CAnnotation(const CAnnotation & src):
     mNotes(src.mNotes),
-    mMiriamAnnotation(src.mMiriamAnnotation)
+    mMiriamAnnotation(src.mMiriamAnnotation),
+    mXMLId(src.mXMLId)
 {}
 
 CAnnotation::~CAnnotation()
@@ -42,6 +44,7 @@ void CAnnotation::setMiriamAnnotation(const std::string & miriamAnnotation,
                                       const std::string & oldId)
 {
   mMiriamAnnotation = miriamAnnotation;
+  mXMLId = newId;
   CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, newId, oldId);
 }
 
@@ -55,5 +58,16 @@ void CAnnotation::setNotes(const std::string & notes)
 const std::string & CAnnotation::getNotes() const
 {
   return mNotes;
+}
+
+bool CAnnotation::operator == (const CAnnotation & rhs) const
+{
+  if (mNotes != rhs.mNotes)
+    return false;
+
+  std::string TmpAnnotation = mMiriamAnnotation;
+  CRDFUtilities::fixLocalFileAboutReference(TmpAnnotation, rhs.mXMLId, mXMLId);
+
+  return (TmpAnnotation == rhs.mMiriamAnnotation);
 }
 

@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/function.pro,v $
-#   $Revision: 1.31 $
+#   $Revision: 1.32 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/07/16 18:59:37 $
+#   $Date: 2011/03/07 19:28:18 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,10 +21,11 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.31 $ $Author: shoops $ $Date: 2010/07/16 18:59:37 $
+# $Revision: 1.32 $ $Author: shoops $ $Date: 2011/03/07 19:28:18 $
 ######################################################################
 
 LIB = function
+DISTFILES = function.pro
 
 # Input
 HEADERS += \
@@ -103,3 +104,4 @@ DISTFILES += CEvaluationParser.ypp \
              
 include(../lib.pri)
 include(../common.pri)
+include(../srcDistribution.pri)

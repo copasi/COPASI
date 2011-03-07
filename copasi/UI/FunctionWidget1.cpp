@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.174 $
+//   $Revision: 1.175 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Date: 2011/03/07 19:37:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,6 +27,7 @@
 #include "CQMessageBox.h"
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
+#include "CTabWidget.h"
 
 #include "tex/CMathMLToTeX.h"
 
@@ -105,7 +106,7 @@ bool FunctionWidget1::loadParameterTable()
   QColor timeColor(210, 210, 210);
   QColor color;
 
-  unsigned C_INT32 i, j;
+  size_t i, j;
   CFunctionParameters & params = mpFunction->getVariables();
 
   // list of usages for combobox
@@ -146,7 +147,7 @@ bool FunctionWidget1::loadParameterTable()
   QString qUsage;
 
   //C_INT32 noOffunctParams = functParam.size();
-  Table1->setRowCount(params.size());
+  Table1->setRowCount((int) params.size());
 
   for (j = 0; j < params.size(); j++)
     {
@@ -195,29 +196,29 @@ bool FunctionWidget1::loadParameterTable()
       if (!params[j]->isUsed())
         Name += " (unused)";
 
-      if (Table1->item(j, COL_NAME) == NULL)
+      if (Table1->item((int) j, COL_NAME) == NULL)
         {
           QTableWidgetItem *newItem = new QTableWidgetItem(Name);
           newItem->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-          Table1->setItem(j, COL_NAME, newItem);
+          Table1->setItem((int) j, COL_NAME, newItem);
         }
       else
-        Table1->item(j, COL_NAME)->setText(Name);
+        Table1->item((int) j, COL_NAME)->setText(Name);
 
-      Table1->item(j, COL_NAME)->setBackground(QBrush(color));
+      Table1->item((int) j, COL_NAME)->setBackground(QBrush(color));
 
       // col. 1 (description)
       QTableWidgetItem *newItem2 = new QTableWidgetItem();
       newItem2->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-      Table1->setItem(j, COL_USAGE, newItem2);
-      Table1->item(j, COL_USAGE)->setBackground(QBrush(color));
+      Table1->setItem((int) j, COL_USAGE, newItem2);
+      Table1->item((int) j, COL_USAGE)->setBackground(QBrush(color));
 
       QComboBox *comboItem = new QComboBox(Table1);
       comboItem->addItems(Usages);
       comboItem->setCurrentIndex(comboItem->findText(qUsage));
       comboItem->setDisabled(mReadOnly);
 
-      Table1->setCellWidget(j, COL_USAGE, comboItem);
+      Table1->setCellWidget((int) j, COL_USAGE, comboItem);
 
       // connection between comboItem and its parent, Table1
       connect(comboItem, SIGNAL(activated(const QString &)), this, SLOT(slotTableValueChanged(const QString &)));
@@ -226,16 +227,16 @@ bool FunctionWidget1::loadParameterTable()
       //col. 2 (units)
       QString strUnit = FROM_UTF8(units[j]);
 
-      if (Table1->item(j, COL_UNIT) == NULL)
+      if (Table1->item((int) j, COL_UNIT) == NULL)
         {
           QTableWidgetItem *newItem = new QTableWidgetItem(strUnit);
           newItem->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-          Table1->setItem(j, COL_UNIT, newItem);
+          Table1->setItem((int) j, COL_UNIT, newItem);
         }
       else
-        Table1->item(j, COL_UNIT)->setText(strUnit);
+        Table1->item((int) j, COL_UNIT)->setText(strUnit);
 
-      Table1->item(j, COL_UNIT)->setBackground(QBrush(color));
+      Table1->item((int) j, COL_UNIT)->setBackground(QBrush(color));
     }
 
   Table1->horizontalHeader()->setStretchLastSection(true);
@@ -332,7 +333,7 @@ bool FunctionWidget1::loadUsageTable()
   if (stringlist.size() == 0)
     stringlist.push_back("None");
 
-  unsigned C_INT32 row;
+  size_t row;
 
   QString Restrictions("");
   QString Separator("");
@@ -388,9 +389,9 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
 
   /* Insert line breaks in the function description */
   std::string desc = mpFunction->getInfix();
-  int l = 0;
-  int n = 0;
-  int len = desc.length();
+  size_t l = 0;
+  size_t n = 0;
+  size_t len = desc.length();
 
   while (len - l > 65)
     {
@@ -459,8 +460,8 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
   CFunctionParameters &functParam = target->getVariables();
   const CFunctionParameters &pfunctParam = src->getVariables();
   CFunctionParameter::DataType Type;
-  unsigned C_INT32 index;
-  unsigned C_INT32 i, j;
+  size_t index;
+  size_t i, j;
 
   if (src->getInfix() != target->getInfix())
     target->setInfix(src->getInfix());
@@ -891,7 +892,7 @@ void FunctionWidget1::slotNewButtonClicked()
   std::string name = "function";
   int i = 0;
   CFunction* pFunc;
-  CCopasiVectorN<CEvaluationTree>& FunctionList
+  CCopasiVectorN<CFunction>& FunctionList
   = CCopasiRootContainer::getFunctionList()->loadedFunctions();
 
   while (FunctionList.getIndex(name) != C_INVALID_INDEX)
@@ -903,19 +904,15 @@ void FunctionWidget1::slotNewButtonClicked()
 
   CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
 
-  protectedNotify(ListViews::FUNCTION, ListViews::ADD);
-  enter(pFunc->getKey());
+  std::string key = pFunc->getKey();
+  protectedNotify(ListViews::FUNCTION, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 //! Slot for being activated whenever Delete button is clicked
 void FunctionWidget1::slotDeleteButtonClicked()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-
-  if (pModel == NULL)
-    return;
-
   CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
 
   if (pFunctionDB == NULL)
@@ -927,7 +924,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
     return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, pModel, "function",
+    CQMessageBox::confirmDelete(NULL, "function",
                                 FROM_UTF8(pFunction->getObjectName()),
                                 pFunction->getDeletedObjects());
 
@@ -936,21 +933,34 @@ void FunctionWidget1::slotDeleteButtonClicked()
     {
       case QMessageBox::Ok:                                                    // Yes or Enter
       {
-        unsigned C_INT32 index =
+        size_t index =
           CCopasiRootContainer::getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
         CCopasiRootContainer::getFunctionList()->removeFunction(mKey);
+        std::string deletedKey = mKey;
 
-        unsigned C_INT32 size =
+        size_t size =
           CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
 
-        if (size > 0)
-          enter(CCopasiRootContainer::getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
 
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, mKey);
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
 
+        if (pTabWidget != NULL)
+          {
+            if (size > 0)
+              pTabWidget->enter(CCopasiRootContainer::getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
+
+        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
 

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 17:35:02 $
+//   $Date: 2011/03/07 19:37:57 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -102,9 +102,9 @@ void CQFunctionsWidget::deleteSelectedFunctions()
 
   for (i = 0; i < imax; i++)
     {
-      if (pSelectionModel->isRowSelected(i, QModelIndex()))
+      if (pSelectionModel->isRowSelected((int) i, QModelIndex()))
         {
-          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index(i, 0)));
+          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index((int) i, 0)));
         }
     }
 
@@ -211,7 +211,9 @@ void CQFunctionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
 
   if (mpFunctionDM->isDefaultRow(index))
-    return;
+    {
+      slotBtnNewClicked();
+    }
 
   std::string key = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()]->getKey();
 

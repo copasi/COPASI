@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/10/01 19:58:29 $
+   $Date: 2011/03/07 19:27:36 $
    End CVS Header */
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -103,9 +108,9 @@ public:
 
   /**
    *  Retrieves the size of the mode
-   *  @return "unsigned C_INT32" size
+   *  @return "size_t" size
    */
-  unsigned C_INT32 size() const;
+  size_t size() const;
 
   /**
    * Determine whether the current mode is the reversed mode

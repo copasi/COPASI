@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/05/01 14:35:04 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,6 +21,10 @@
 // All rights reserved.
 
 #define USE_LAYOUT 1
+
+#ifdef USE_CRENDER_EXTENSION
+#define USE_RENDER 1
+#endif // USE_CRENDER_EXTENSION
 
 #include "iostream"
 #include "sbml/layout/Layout.h"
@@ -126,7 +130,7 @@ void CLayout::addGraphicalObject(CLGraphicalObject * glyph)
 
 std::ostream & operator<<(std::ostream &os, const CLayout & l)
 {
-  C_INT32 i, imax;
+  size_t i, imax;
 
   os << "Layout  \"" << l.getObjectName() << "\" " << l.mDimensions << "\n\n";
 
@@ -191,7 +195,7 @@ void CLayout::exportToDotFile(std::ostream & os) const
   os << "digraph G {\n";
 
   //species glyphs
-  unsigned C_INT32 i, imax = mvMetabs.size();
+  size_t i, imax = mvMetabs.size();
 
   for (i = 0; i < imax; ++i)
     {
@@ -207,7 +211,7 @@ void CLayout::exportToDotFile(std::ostream & os) const
       writeDotNode(os, mvReactions[i]->getKey() + "_P", "", 1);
       writeDotEdge(os, mvReactions[i]->getKey() + "_S", mvReactions[i]->getKey() + "_P", 1);
 
-      unsigned C_INT j, jmax = mvReactions[i]->getListOfMetabReferenceGlyphs().size();
+      size_t j, jmax = mvReactions[i]->getListOfMetabReferenceGlyphs().size();
 
       for (j = 0; j < jmax; ++j)
         {
@@ -247,7 +251,7 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
   os << id1 << " -> " << id2 << tmp << "\n"; //[label=\"" << label << "\"] \n";
 }
 
-void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                            std::map<std::string, const SBase*>& sbmlIDs
 #ifdef USE_CRENDER_EXTENSION
                            , const std::map<std::string, std::string>& globalKeyToIdMap
@@ -282,14 +286,14 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
   std::map<const CLBase*, const SBase*> layoutmap;
 
   //Compartment glyphs
-  unsigned C_INT32 i, imax = mvCompartments.size();
+  size_t i, imax = mvCompartments.size();
 
   for (i = 0; i < imax; ++i)
     {
       CLCompartmentGlyph * tmp = mvCompartments[i];
 
       //check if the compartment glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       CompartmentGlyph * pCG;
@@ -316,7 +320,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLMetabGlyph * tmp = mvMetabs[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       SpeciesGlyph * pG;
@@ -343,7 +347,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLReactionGlyph * tmp = mvReactions[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       ReactionGlyph * pG;
@@ -373,7 +377,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLTextGlyph * tmp = mvLabels[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       TextGlyph * pG;
@@ -400,7 +404,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       CLGraphicalObject * tmp = mvGraphicalObjects[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       GraphicalObject * pG;
@@ -478,11 +482,11 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
           ++layoutMapIt;
         }
 
-      unsigned int j, jMax = pLRI->getNumStyles();
+      size_t j, jMax = pLRI->getNumStyles();
 
       for (j = 0; j < jMax; ++j)
         {
-          SBMLDocumentLoader::convertLayoutObjectKeys(*(pLRI->getStyle(j)), layoutObjectKeyToIdMap);
+          SBMLDocumentLoader::convertLayoutObjectKeys(*(pLRI->getStyle((unsigned int) j)), layoutObjectKeyToIdMap);
         }
 
       layout->getListOfLocalRenderInformation()->appendAndOwn(pLRI);
@@ -540,7 +544,7 @@ void CLayout::addLocalRenderInformation(CLLocalRenderInformation * pRenderInfo)
  * Returns a const pointer to the local render information with the given index or NULL
  * if the index is invalid.
  */
-const CLLocalRenderInformation* CLayout::getRenderInformation(unsigned C_INT32 index) const
+const CLLocalRenderInformation* CLayout::getRenderInformation(size_t index) const
 {
   if (index >= this->mvLocalRenderInformationObjects.size()) return NULL;
 
@@ -551,7 +555,7 @@ const CLLocalRenderInformation* CLayout::getRenderInformation(unsigned C_INT32 i
  * Returns a pointer to the local render information with the given index or NULL
  * if the index is invalid.
  */
-CLLocalRenderInformation* CLayout::getRenderInformation(unsigned C_INT32 index)
+CLLocalRenderInformation* CLayout::getRenderInformation(size_t index)
 {
   if (index >= this->mvLocalRenderInformationObjects.size()) return NULL;
 
@@ -578,7 +582,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
   const CLBoundingBox* pBB;
   const CLPoint* pP = NULL;
   const CLDimensions* pDim;
-  unsigned int i, iMax = this->getListOfCompartmentGlyphs().size();
+  size_t i, iMax = this->getListOfCompartmentGlyphs().size();
   double x, y, x2, y2;
 
   for (i = 0; i < iMax; ++i)
@@ -655,7 +659,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
   const CLMetabReferenceGlyph* pSRG = NULL;
 
-  unsigned int j, jMax;
+  size_t j, jMax;
 
   iMax = this->getListOfReactionGlyphs().size();
 

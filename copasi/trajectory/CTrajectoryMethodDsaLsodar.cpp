@@ -1,35 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:20:02 $
+//   $Date: 2011/03/07 19:34:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/12 15:20:02 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
@@ -37,21 +16,15 @@
  *
  *   This class implements an hybrid algorithm for the simulation of a
  *   biochemical system over time.
- *
- *   File name: CTrajectoryMethodDsaLsodar.cpp
- *   Author: Juergen Pahle
- *   Email: juergen.pahle@eml-r.villa-bosch.de
- *
- *   Last change: 14, December 2004
- *
- *   (C) European Media Lab 2003.
  */
 
 /* DEFINE ********************************************************************/
 
 #ifdef WIN32
+#if _MSC_VER < 1600
 #define min _cpp_min
 #define max _cpp_max
+#endif // _MSC_VER
 #endif // WIN32
 
 #include <limits.h>
@@ -252,8 +225,10 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CState & state)
           *pLowSpecies = true;
           PartitionChanged = true;
 
+          mStochasticSpecies[Index] = true;
+
           std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range
-          = mSpeciesToReactions.equal_range(Index);
+          = mSpeciesToReactions.equal_range(Index + mFirstReactionSpeciesIndex);
 
           for (; Range.first != Range.second; ++Range.first)
             {
@@ -264,6 +239,8 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CState & state)
         {
           *pLowSpecies = false;
           PartitionChanged = true;
+
+          mStochasticSpecies[Index] = true;
 
           std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range
           = mSpeciesToReactions.equal_range(Index);
@@ -293,7 +270,7 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CState & state)
 
   for (; pLow != pLowEnd; ++pLow, ++ppStochastic, ++ppDeterministic)
     {
-      if (pLow != 0)
+      if (*pLow != 0)
         {
           mHasStochastic = true;
 
@@ -319,7 +296,7 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CState & state)
 
   if (PartitionChanged)
     {
-      determineStochasticSpecies();
+      // determineStochasticSpecies();
     }
 
   return PartitionChanged;
@@ -440,7 +417,8 @@ bool CTrajectoryMethodDsaLsodar::elevateChildren()
 // virtual
 void CTrajectoryMethodDsaLsodar::stateChanged()
 {
-
+  *mpCurrentState = mMethodState;
+  CLsodaMethod::stateChanged();
 }
 
 // virtual
@@ -452,21 +430,20 @@ CTrajectoryMethod::Status CTrajectoryMethodDsaLsodar::step(const double & deltaT
 
   C_FLOAT64 Tolerance = 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + DBL_MIN);
 
-  unsigned C_INT32 Steps;
+  size_t Steps = 0;
 
-  for (Steps = 0; (Steps <  *mpMaxSteps) && (fabs(Time - EndTime) > Tolerance); Steps++)
+  while (fabs(Time - EndTime) > Tolerance)
     {
       Time += doSingleStep(Time, EndTime);
+
+      if (++Steps > *mpMaxSteps)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
+        }
     }
 
+  mMethodState.setTime(EndTime); // make sure the end time is exactly the time reach to next interval
   *mpCurrentState = mMethodState;
-
-  // TODO CRITICAL This must be an error and the integration must be aborted.
-  if (Steps >= *mpMaxSteps && !mMaxStepsReached)
-    {
-      mMaxStepsReached = true; //only report this message once
-      CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
-    }
 
   return NORMAL;
 }
@@ -497,13 +474,15 @@ C_FLOAT64 CTrajectoryMethodDsaLsodar::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 
               CReactionDependencies **ppStochastic = mPartition.mStochasticReactions.array();
 
               // Only consider stochastic reactions
-              for (; (sum < rand) && (pAmu != endAmu); ++pAmu, ++mNextReactionIndex, ++ppStochastic)
+              for (; (sum <= rand) && (pAmu != endAmu); ++pAmu, ++mNextReactionIndex, ++ppStochastic)
                 {
                   if (*ppStochastic != NULL)
                     {
                       sum += *pAmu;
                     }
                 }
+
+              assert(mNextReactionIndex > 0);
 
               mNextReactionIndex--;
             }
@@ -692,7 +671,7 @@ void CTrajectoryMethodDsaLsodar::start(const CState * initialState)
           size_t SpeciesIndex = StateTemplate.getIndex(pMetab);
 
           itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          itDependencies->mMethodSubstrates[Index] = mMethodState.beginIndependent() + SpeciesIndex;
+          itDependencies->mMethodSubstrates[Index] = pMethodStateValue + SpeciesIndex;
           itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
 
           if (pMetab->getStatus() == CModelEntity::REACTIONS)
@@ -700,6 +679,7 @@ void CTrajectoryMethodDsaLsodar::start(const CState * initialState)
               SpeciesIndexSet.insert(SpeciesIndex);
             }
         }
+
 
       itDependencies->mSpeciesIndex.resize(SpeciesIndexSet.size());
       size_t * pSpeciesIndex = itDependencies->mSpeciesIndex.array();
@@ -792,7 +772,7 @@ void CTrajectoryMethodDsaLsodar::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /*
 }
 
 // virtual
-void CTrajectoryMethodDsaLsodar::evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, C_FLOAT64 * r)
+void CTrajectoryMethodDsaLsodar::evalR(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */, const C_INT * /* nr */, C_FLOAT64 * /* r */)
 {
 
 }
@@ -815,10 +795,6 @@ void CTrajectoryMethodDsaLsodar::cleanup()
 
 void CTrajectoryMethodDsaLsodar::integrateDeterministicPart(const C_FLOAT64 & deltaT)
 {
-  mLsodaStatus = 1;
-  destroyRootMask();
-  mRootMasking = NONE;
-
   CLsodaMethod::step(deltaT);
 
   mpModel->setState(mMethodState);
@@ -832,7 +808,7 @@ void CTrajectoryMethodDsaLsodar::integrateDeterministicPart(const C_FLOAT64 & de
 /**
  *   Executes the specified reaction in the system once.
  *
- *   @param index A C_INT32 specifying the index of the reaction, which
+ *   @param index A size_t specifying the index of the reaction, which
  *                 will be fired.
  *   @param time   The current time
  */
@@ -893,6 +869,12 @@ void CTrajectoryMethodDsaLsodar::fireReaction(const size_t & index)
           mA0 += *pAmu;
         }
     }
+
+  mTime = mMethodState.getTime();
+  mLsodaStatus = 1;
+
+  destroyRootMask();
+  mRootMasking = NONE;
 
   return;
 }
@@ -978,6 +960,9 @@ void CTrajectoryMethodDsaLsodar::calculatePropensities()
         }
     }
 
+  mpModel->setState(mMethodState);
+  mpModel->updateSimulatedValues(false); //for assignments
+
   // calculate the total propensity
   C_FLOAT64 * pAmu = mAmu.array();
   C_FLOAT64 * endAmu = pAmu + mNumReactions;
@@ -992,6 +977,7 @@ void CTrajectoryMethodDsaLsodar::calculatePropensities()
       if (*ppStochastic != NULL)
         {
           mA0 += *pAmu;
+          assert(mA0 >= 0.0);
         }
     }
 
@@ -1015,7 +1001,7 @@ bool CTrajectoryMethodDsaLsodar::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   //check for rules
-  C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+  size_t i, imax = pTP->getModel()->getNumModelValues();
 
   for (i = 0; i < imax; ++i)
     {

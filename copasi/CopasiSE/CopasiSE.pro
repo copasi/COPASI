@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
-#   $Revision: 1.42 $
+#   $Revision: 1.43 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/07/16 18:57:31 $
+#   $Date: 2011/03/07 19:27:11 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,12 +21,12 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.42 $ $Author: shoops $ $Date: 2010/07/16 18:57:31 $
+# $Revision: 1.43 $ $Author: shoops $ $Date: 2011/03/07 19:27:11 $
 ######################################################################
 
 TEMPLATE = app
-
 SRC_TARGET = CopasiSE
+DISTFILES = CopasiSE.pro
 
 CONFIG -= qt
 
@@ -117,3 +117,5 @@ release {
 
   INSTALLS += distribution
 }
+
+include(../srcDistribution.pri)

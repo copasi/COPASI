@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:29:04 $
+//   $Date: 2011/03/07 19:24:16 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -100,8 +100,10 @@
 # define strdup _strdup       // they just have a different name for this guy
 # define isnan _isnan         // they just have a different name for this guy
 # define finite _finite       // they just have a different name for this guy
+#if _MSC_VER < 1600
 # define min _cpp_min         // they just have a different name for this guy
 # define max _cpp_max         // they just have a different name for this guy
+#endif // _MSC_VER
 # define abs64 _abs64
 #else
 # define C_INT64 long long int
@@ -144,10 +146,16 @@ enum TriLogic
   TriTrue = 1
 };
 
-/* This is necessary to link with Intel MKL 721 under Visual C++ 8 */
-// #if defined COPASI_MAIN && defined USE_MKL && defined _MSC_VER && _MSC_VER > 1200 && defined _DLL
-// extern "C" {FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};}
-// #endif
+/* This is necessary to link with Intel MKL or LAPACK compiled with Intel under Visual C++ 8 */
+#if defined COPASI_MAIN && defined _MSC_VER && _MSC_VER > 1200 && defined _DLL
+extern "C"
+{
+  FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};
+  int __argc = 0;
+  char ** __argv = NULL;
+}
+
+#endif
 
 #ifdef COPASI_MAIN
 class CCopasiRootContainer;
@@ -228,5 +236,5 @@ extern std::ofstream DebugFile;
 // suppress unused parameter warnings
 #define C_UNUSED(p)
 #define COPASI_DEPRECATED
-#define C_INVALID_INDEX (std::numeric_limits< unsigned C_INT32 >::max())
+#define C_INVALID_INDEX (std::numeric_limits< size_t >::max())
 #endif // COPASI_copasi

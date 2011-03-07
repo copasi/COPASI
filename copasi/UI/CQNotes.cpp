@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 13:38:20 $
+//   $Date: 2011/03/07 19:37:56 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,11 +33,13 @@
 #include "model/CEvent.h"
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
+#include "report/CReportDefinition.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
 CQValidatorXML::CQValidatorXML(QPlainTextEdit * parent, const char * name):
-    CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name)
+    CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name),
+    mIsFreeText(true)
 {}
 
 // virtual
@@ -45,16 +47,62 @@ QValidator::State CQValidatorXML::validate(QString & input, int & pos) const
 {
   QXmlSimpleReader Validator;
   QXmlInputSource Input;
+  CQNotesContentHandler ContentHandler;
+
+  Validator.setContentHandler(&ContentHandler);
 
   // We like to allow free text and therefore wrap the text to create valid XML.
   Input.setData("<ValidateXML>" + input + "</ValidateXML>");
 
   if (Validator.parse(Input))
-    return CQValidator< QPlainTextEdit >::validate(input, pos);
+    {
+      mIsFreeText = ContentHandler.isFreeText();
+      return CQValidator< QPlainTextEdit >::validate(input, pos);
+    }
 
+  mIsFreeText = true;
   setColor(Invalid);
   return Intermediate;
 }
+
+const bool & CQValidatorXML::isFreeText() const
+{
+  return mIsFreeText;
+}
+
+CQNotesContentHandler::CQNotesContentHandler():
+    QXmlDefaultHandler(),
+    mIsFreeText(true)
+{}
+
+CQNotesContentHandler:: ~CQNotesContentHandler()
+{}
+
+// virtual
+bool CQNotesContentHandler::startDocument()
+{
+  mIsFreeText = true;
+
+  return true;
+}
+
+// virtual
+bool CQNotesContentHandler::startElement(const QString & /* namespaceURI */,
+    const QString & localName,
+    const QString & /* qName */,
+    const QXmlAttributes & /* atts */)
+{
+  if (localName != "ValidateXML")
+    mIsFreeText = false;
+
+  return true;
+}
+
+const bool & CQNotesContentHandler::isFreeText() const
+{
+  return mIsFreeText;
+}
+
 
 CQNotes::CQNotes(QWidget* parent, const char* name) :
     CopasiWidget(parent, name),
@@ -80,12 +128,30 @@ CQNotes::~CQNotes()
 {}
 
 // virtual
-bool CQNotes::update(ListViews::ObjectType /* objectType */, ListViews::Action action, const std::string & key)
+bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (key == mKey &&
-      action == ListViews::CHANGE)
+  if (key == mKey)
     {
-      load();
+      switch (action)
+        {
+          case ListViews::CHANGE:
+            load();
+            break;
+
+          case ListViews::DELETE:
+            mpObject = NULL;
+            mKey = "";
+            break;
+
+          default:
+            break;
+        }
+    }
+
+  if (objectType == ListViews::MODEL &&
+      action == ListViews::DELETE)
+    {
+      mEditMode = false;
     }
 
   return true;
@@ -95,7 +161,18 @@ bool CQNotes::update(ListViews::ObjectType /* objectType */, ListViews::Action a
 bool CQNotes::leave()
 {
   mpBtnToggleEdit->setFocus();
-  save();
+
+  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+
+  if (mpObject != NULL)
+    {
+      save();
+    }
+  else
+    {
+      mKey = "";
+      mpDataModel = NULL;
+    }
 
   return true;
 }
@@ -135,6 +212,29 @@ void CQNotes::slotValidateXML()
   int pos = 0;
 
   mValidity = mpValidatorXML->validate(Input, pos);
+
+  if (mpValidatorXML->isFreeText())
+    {
+      mEditMode = true;
+      mpBtnToggleEdit->hide();
+    }
+  else
+    {
+      mpBtnToggleEdit->show();
+    }
+
+  if (mEditMode)
+    {
+      mpWebView->hide();
+      mpEdit->show();
+      mpBtnToggleEdit->setIcon(CQIcons::getIcon(CQIcons::View));
+    }
+  else
+    {
+      mpEdit->hide();
+      mpWebView->show();
+      mpBtnToggleEdit->setIcon(CQIcons::getIcon(CQIcons::Edit));
+    }
 }
 
 void CQNotes::load()
@@ -151,6 +251,8 @@ void CQNotes::load()
         pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
         pNotes = &static_cast< CFunction * >(mpObject)->getNotes();
+      else if (dynamic_cast< CReportDefinition * >(mpObject))
+        pNotes = & static_cast< CReportDefinition * >(mpObject)->getComment();
 
       if (pNotes != NULL)
         {
@@ -159,6 +261,12 @@ void CQNotes::load()
           mpWebView->setHtml(FROM_UTF8(*pNotes));
           mpEdit->setPlainText(FROM_UTF8(*pNotes));
           mpValidatorXML->saved();
+          slotValidateXML();
+
+          if (!mpValidatorXML->isFreeText() && mEditMode)
+            {
+              slotToggleMode();
+            }
 
           mValidity = QValidator::Acceptable;
         }
@@ -184,18 +292,30 @@ void CQNotes::save()
         pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
         pNotes = &static_cast< CFunction * >(mpObject)->getNotes();
+      else if (dynamic_cast< CReportDefinition * >(mpObject))
+        pNotes = & static_cast< CReportDefinition * >(mpObject)->getComment();
 
       if (pNotes &&
           mpEdit->toPlainText() != FROM_UTF8(*pNotes))
         {
+          std::string PlainText = TO_UTF8(mpEdit->toPlainText());
+
+          if (!mpValidatorXML->isFreeText() && PlainText[0] != '<')
+            {
+              // We wrap the XHTML in a body element if it does not start with an XML element.
+              PlainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + PlainText + "</body>";
+            }
+
           if (dynamic_cast< CModelEntity * >(mpObject))
-            static_cast< CModelEntity * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
+            static_cast< CModelEntity * >(mpObject)->setNotes(PlainText);
           else if (dynamic_cast< CEvent * >(mpObject))
-            static_cast< CEvent * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
+            static_cast< CEvent * >(mpObject)->setNotes(PlainText);
           else if (dynamic_cast< CReaction * >(mpObject))
-            static_cast< CReaction * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
+            static_cast< CReaction * >(mpObject)->setNotes(PlainText);
           else if (dynamic_cast< CFunction * >(mpObject))
-            static_cast< CFunction * >(mpObject)->setNotes(TO_UTF8(mpEdit->toPlainText()));
+            static_cast< CFunction * >(mpObject)->setNotes(PlainText);
+          else if (dynamic_cast< CReportDefinition * >(mpObject))
+            static_cast< CReportDefinition * >(mpObject)->setComment(PlainText);
 
           mChanged = true;
         }

@@ -6,7 +6,7 @@
 //   $Date: 2010/04/27 16:00:44 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,6 +23,7 @@
 #include "report/CCopasiRootContainer.h"
 
 #include "utilities/CAnnotatedMatrix.h"
+#include "commandline/CLocaleString.h"
 
 const CArrayAnnotation * pResult;
 
@@ -74,7 +75,7 @@ void CQTSSAResultSubWidget::saveDataToFile()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail()) return;
 
@@ -160,10 +161,12 @@ void CQTSSAResultSubWidget::slotTimeOrStepChanged()
   int s = mpSlider->value();
 
   if (mpButton1->isChecked())
-    if (s > 1)
-      mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
-    else
-      mpLabel->setNum(0);
+    {
+      if (s > 1)
+        mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
+      else
+        mpLabel->setNum(0);
+    }
 
   if (mpButton2->isChecked())
     mpLabel->setNum(s);
@@ -306,7 +309,7 @@ void CQTSSAResultSubWidget::changeInterval()
   else
     {
 
-      mpSlider->setDisabled(true);
+      //mpSlider->setDisabled(true);
       mpArrayWidget->setArrayAnnotation(NULL);
       mpTimeScaleWidget->clearWidget();
 

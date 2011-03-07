@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/02 14:30:55 $
+//   $Date: 2011/03/07 19:33:11 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,7 +51,7 @@ CScanTask::CScanTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::scan, pParent)
 {
   mpProblem = new CScanProblem(this);
-  mpMethod = CScanMethod::createMethod();
+  mpMethod = createMethod(CCopasiMethod::scanMethod);
   this->add(mpMethod, true);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
@@ -61,13 +61,21 @@ CScanTask::CScanTask(const CScanTask & src,
     CCopasiTask(src, pParent)
 {
   mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
-  mpMethod = CScanMethod::createMethod();
+  mpMethod = createMethod(CCopasiMethod::scanMethod);
   this->add(mpMethod, true);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
 CScanTask::~CScanTask()
 {cleanup();}
+
+// virtual
+CCopasiMethod * CScanTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CScanMethod::createMethod(Type);
+}
 
 void CScanTask::cleanup()
 {}
@@ -139,10 +147,9 @@ bool CScanTask::process(const bool & useInitialValues)
     {
       mpCallBack->setName("performing parameter scan...");
 
-      unsigned C_INT32 totalSteps = pMethod->getTotalNumberOfSteps();
+      unsigned C_INT32 totalSteps = (unsigned C_INT32) pMethod->getTotalNumberOfSteps();
       mhProgress = mpCallBack->addItem("Number of Steps",
-                                       CCopasiParameter::UINT,
-                                       &mProgress,
+                                       mProgress,
                                        &totalSteps);
 
       if (mpSubtask)

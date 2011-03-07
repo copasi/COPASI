@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:27 $
+//   $Date: 2011/03/07 19:33:41 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -56,11 +56,10 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
     mEigenValuesX("Eigenvalues of reduced system Jacobian", this)
 {
   mpProblem = new CSteadyStateProblem(this);
-  mpMethod =
-    CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::Newton);
+
+  mpMethod = createMethod(CCopasiMethod::Newton);
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
-  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+
   initObjects();
 }
 
@@ -77,17 +76,24 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
 {
   mpProblem =
     new CSteadyStateProblem(*(CSteadyStateProblem *) src.mpProblem, this);
-  mpMethod =
-    CSteadyStateMethod::createSteadyStateMethod(src.mpMethod->getSubType());
+
+  mpMethod = createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
-  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+
   initObjects();
 }
 
 CSteadyStateTask::~CSteadyStateTask()
 {
   pdelete(mpSteadyState);
+}
+
+// virtual
+CCopasiMethod * CSteadyStateTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CSteadyStateMethod::createMethod(Type);
 }
 
 void CSteadyStateTask::cleanup()
@@ -171,21 +177,21 @@ bool CSteadyStateTask::updateMatrices()
   const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
 
   // init Jacobians
-  unsigned C_INT32 sizeX = stateTemplate.getNumIndependent();
+  size_t sizeX = stateTemplate.getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
-  unsigned C_INT32 size = sizeX + stateTemplate.getNumDependent();
+  size_t size = sizeX + stateTemplate.getNumDependent();
   mJacobian.resize(size, size);
 
   // Jacobian Annotations
 
   mpJacobianAnn->resize();
   CModelEntity *const* ppEntities = stateTemplate.getEntities();
-  const unsigned C_INT32 * pUserOrder = stateTemplate.getUserOrder().array();
-  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + stateTemplate.getUserOrder().size();
+  const size_t * pUserOrder = stateTemplate.getUserOrder().array();
+  const size_t * pUserOrderEnd = pUserOrder + stateTemplate.getUserOrder().size();
 
   pUserOrder++; // We skip the time which is the first.
 
-  unsigned C_INT32 i, imax = size;
+  size_t i, imax = size;
 
   for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
     {
@@ -241,9 +247,9 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
 #ifdef xxxx
   // init Jacobians
-  unsigned C_INT32 sizeX = mpSteadyState->getNumIndependent();
+  size_t sizeX = mpSteadyState->getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
-  unsigned C_INT32 size = sizeX + mpSteadyState->getNumDependent();
+  size_t size = sizeX + mpSteadyState->getNumDependent();
   mJacobian.resize(size, size);
 
   //jacobian annotations
@@ -251,12 +257,12 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   mpJacobianAnn->resize();
   CModelEntity **ppEntities = StateTemplate.getEntities();
-  const unsigned C_INT32 * pUserOrder = StateTemplate.getUserOrder().array();
-  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + StateTemplate.getUserOrder().size();
+  const size_t * pUserOrder = StateTemplate.getUserOrder().array();
+  const size_t * pUserOrderEnd = pUserOrder + StateTemplate.getUserOrder().size();
 
   pUserOrder++; // We skip the time which is the first.
 
-  unsigned C_INT32 i, imax = size;
+  size_t i, imax = size;
 
   for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
     {
@@ -480,7 +486,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   const CCopasiVector<CMetab> & Metabolites = pModel->getMetabolites();
   const CMetab * pMetab;
 
-  unsigned C_INT32 i, imax = Metabolites.size();
+  size_t i, imax = Metabolites.size();
 
   os << "Species" << "\t";
   os << "Concentration";

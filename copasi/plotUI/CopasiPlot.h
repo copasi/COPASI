@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/07 17:40:50 $
+//   $Date: 2011/03/07 19:32:02 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -252,12 +252,12 @@ private:
    * Tell the curves where the data is located. It must be called
    * after reallocating the memory for the curve data.
    */
-  void updateCurves(const unsigned C_INT32 & activity);
+  void updateCurves(const size_t & activity);
 
   /**
    * Resize the curve data
    */
-  void resizeCurveData(const unsigned C_INT32 & activity);
+  void resizeCurveData(const size_t & activity);
 
   /**
    * Redraw the plot
@@ -326,18 +326,18 @@ private:
   /**
    * Vector of actual data lines in the local buffers
    */
-  std::vector< unsigned C_INT32 > mDataSize;
+  std::vector< size_t > mDataSize;
 
   /**
    * Map curve and channel to index pair indicating where the data is stored.
    */
-  std::vector< std::vector< std::pair < Activity, unsigned C_INT32 > > > mDataIndex;
+  std::vector< std::vector< std::pair < Activity, size_t > > > mDataIndex;
 
   /**
    * Map activity and object to index indicating where data is stored within
    * the current activity.
    */
-  std::map< Activity, std::map< const CCopasiObject *, unsigned C_INT32 > > mObjectIndex;
+  std::map< Activity, std::map< const CCopasiObject *, size_t > > mObjectIndex;
 
   /**
    * The list of curves
@@ -357,22 +357,22 @@ private:
   /**
    * Map of curve to the index to the corresponding histogram.
    */
-  std::vector<C_INT32> mHistoIndices;
+  std::vector<size_t> mHistoIndices;
 
   /**
    * Count of data lines recorded during activity BEFORE.
    */
-  unsigned C_INT32 mDataBefore;
+  size_t mDataBefore;
 
   /**
    * Count of data lines recorded during activity DURING.
    */
-  unsigned C_INT32 mDataDuring;
+  size_t mDataDuring;
 
   /**
    * Count of data lines recorded during activity AFTER.
    */
-  unsigned C_INT32 mDataAfter;
+  size_t mDataAfter;
 
   /**
    * Flag indicating whether there are any curves recording

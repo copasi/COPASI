@@ -1,12 +1,12 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.53 $
+ $Revision: 1.54 $
  $Name:  $
  $Author: shoops $
- $Date: 2010/02/09 22:20:29 $
+ $Date: 2011/03/07 19:35:35 $
  End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,9 +23,9 @@
 /**
  * CCopasiXMLInterface class.
  * The class CCopasiXMLInterface is the interface to various XML document
- * containing Copasi relevant informtion.
+ * containing COPASI relevant information.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  */
 
 #include <fstream>
@@ -48,6 +48,7 @@
 #include "utilities/CCopasiVector.h"
 #include "utilities/CSlider.h"
 #include "utilities/CDirEntry.h"
+#include "commandline/CLocaleString.h"
 
 SCopasiXMLGUI::SCopasiXMLGUI(const std::string & name,
                              const CCopasiContainer * pParent,
@@ -240,6 +241,8 @@ CCopasiXMLInterface::DBL::operator const C_FLOAT64 & () const
 
 std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & dbl)
 {
+  os.precision(16);
+
   if (isnan(dbl.mValue))
     os << "NaN";
   else if (finite(dbl.mValue))
@@ -260,7 +263,7 @@ std::string CCopasiXMLInterface::utf8(const std::string & str)
      Since every string within COPASI is treated as latin1 and input
      is only obtained through QT and Expat which will provide latin1
      encoded strings the below should suffice. */
-  unsigned C_INT32 i, imax;
+  size_t i, imax;
 
   for (i = 0, imax = str.length(); i < imax; i++)
     {
@@ -291,7 +294,7 @@ bool CCopasiXMLInterface::load(const std::string & fileName,
 {
   mFilename = relativeTo;
 
-  std::ifstream is(utf8ToLocale(fileName).c_str());
+  std::ifstream is(CLocaleString::fromUtf8(fileName).c_str());
 
   if (is.fail()) return false;
 
@@ -303,7 +306,7 @@ bool CCopasiXMLInterface::save(const std::string & fileName,
 {
   mFilename = relativeTo;
 
-  std::ofstream os(utf8ToLocale(fileName).c_str());
+  std::ofstream os(CLocaleString::fromUtf8(fileName).c_str());
 
   if (os.fail()) return false;
 
@@ -333,14 +336,7 @@ bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
     }
   else
     {
-      CXMLAttributeList Attributes;
-      Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
-
-      startSaveElement("body", Attributes);
-
       saveData(xhtml);
-
-      endSaveElement("body");
     }
 
   return true;
@@ -529,7 +525,7 @@ bool CXMLAttributeList::erase()
   return true;
 }
 
-unsigned C_INT32 CXMLAttributeList::size() {return mAttributeList.size() / 2;}
+size_t CXMLAttributeList::size() {return mAttributeList.size() / 2;}
 
 bool CXMLAttributeList::add(const std::string & name, const C_FLOAT64 & value)
 {
@@ -538,26 +534,26 @@ bool CXMLAttributeList::add(const std::string & name, const C_FLOAT64 & value)
              CCopasiXMLInterface::attribute);
 }
 
-bool CXMLAttributeList::setName(const unsigned C_INT32 & index,
+bool CXMLAttributeList::setName(const size_t & index,
                                 const std::string & name)
 {
   mAttributeList[2 * index] = name;
   return true;
 }
 
-const std::string & CXMLAttributeList::getName(const unsigned C_INT32 & index) const
+const std::string & CXMLAttributeList::getName(const size_t & index) const
 {return mAttributeList[2 * index];}
 
-const std::string & CXMLAttributeList::getValue(const unsigned C_INT32 & index) const
+const std::string & CXMLAttributeList::getValue(const size_t & index) const
 {return mAttributeList[2 * index + 1];}
 
-bool CXMLAttributeList::skip(const unsigned C_INT32 & index)
+bool CXMLAttributeList::skip(const size_t & index)
 {
   mSaveList[index] = false;
   return true;
 }
 
-std::string CXMLAttributeList::getAttribute(const unsigned C_INT32 & index) const
+std::string CXMLAttributeList::getAttribute(const size_t & index) const
 {
   if (mSaveList[index])
     return " " + mAttributeList[2 * index] + "=\"" + mAttributeList[2 * index + 1] + "\"";

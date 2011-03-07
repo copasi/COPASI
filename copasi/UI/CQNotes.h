@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 17:33:04 $
+//   $Date: 2011/03/07 19:37:54 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,6 +16,7 @@
 
 #include <QWidget>
 #include <QVariant>
+#include <QXmlDefaultHandler>
 
 #include "copasi/UI/ui_CQNotes.h"
 #include "copasi/UI/CQValidator.h"
@@ -27,6 +28,34 @@ public:
   CQValidatorXML(QPlainTextEdit * parent, const char * name = 0);
 
   virtual State validate(QString & input, int & pos) const;
+
+  const bool & isFreeText() const;
+
+private:
+  // Attributes
+  mutable bool mIsFreeText;
+};
+
+class CQNotesContentHandler : public QXmlDefaultHandler
+{
+public:
+  // Operations
+  CQNotesContentHandler();
+
+  ~CQNotesContentHandler();
+
+  virtual bool startDocument();
+
+  virtual bool startElement(const QString & namespaceURI,
+                            const QString & localName,
+                            const QString & qName,
+                            const QXmlAttributes & atts);
+
+  const bool & isFreeText() const;
+
+private:
+  // Attributes
+  bool mIsFreeText;
 };
 
 class CQNotes : public CopasiWidget, public Ui::CQNotes

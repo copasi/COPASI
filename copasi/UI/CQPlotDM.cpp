@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/09/16 07:05:53 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:55 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,7 +35,7 @@ CQPlotDM::CQPlotDM(QObject *parent)
 
 int CQPlotDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size() + 1;
 }
 int CQPlotDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -47,8 +47,10 @@ Qt::ItemFlags CQPlotDM::flags(const QModelIndex &index) const
   if (!index.isValid())
     return Qt::ItemIsEnabled;
 
-  if (index.column() == COL_NAME_PLOTS || index.column() == COL_ACTIVE_PLOTS)
+  if (index.column() == COL_NAME_PLOTS)
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+  else if (index.column() == COL_ACTIVE_PLOTS)
+    return QAbstractItemModel::flags(index) | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
   else
     return QAbstractItemModel::flags(index);
 }
@@ -71,11 +73,16 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_PLOTS:
                 return QVariant(QString("New Plot"));
               case COL_ACTIVE_PLOTS:
-                return QVariant(true);
+
+                if (role == Qt::DisplayRole)
+                  return QVariant();
+                else
+                  return QVariant(true);
+
               default:
                 return QVariant(QString(""));
             }
@@ -96,10 +103,16 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
                 return QVariant((unsigned int)pPS->getItems().size());
 
               case COL_ACTIVE_PLOTS:
-                return QVariant(pPS->isActive());
+
+                if (role == Qt::DisplayRole)
+                  return QVariant();
+                else
+                  return QVariant(pPS->isActive());
             }
         }
     }
+  else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
+    return index.data(Qt::EditRole).toBool() ? QVariant(Qt::Checked) : QVariant(Qt::Unchecked);
 
   return QVariant();
 }
@@ -186,8 +199,13 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
       if (changed)
         {
           emit dataChanged(index, index);
-          emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, "");
+          emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getKey());
         }
+    }
+  else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
+    {
+      QVariant data = value.toInt() == Qt::Checked ? QVariant(true) : QVariant(false);
+      return setData(index, data, Qt::EditRole);
     }
 
   return true;
@@ -199,11 +217,11 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec(TO_UTF8(createNewName("plot", COL_NAME_PLOTS)), CPlotItem::plot2d);
+      CPlotSpecification *pPS = (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec(TO_UTF8(createNewName("plot", COL_NAME_PLOTS)), CPlotItem::plot2d);
+      emit notifyGUI(ListViews::PLOT, ListViews::ADD, pPS->CCopasiParameter::getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::PLOT, ListViews::ADD, "");
 
   return true;
 }
@@ -217,11 +235,14 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      CPlotSpecification* pPS =
+        (CPlotSpecification*)(*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->operator[](position);
+      std::string deletedKey = pPS->CCopasiParameter::getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->CCopasiVector< CPlotSpecification >::remove(position);
+      emit notifyGUI(ListViews::PLOT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::PLOT, ListViews::DELETE, "");
 
   return true;
 }
@@ -258,9 +279,9 @@ bool CQPlotDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       pPS = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pDataModel->getPlotDefinitionList()->CCopasiVector< CPlotSpecification >::getIndex(pPS);
-      removeRow(delRow);
+      removeRow((int) delRow);
     }
 
   return true;

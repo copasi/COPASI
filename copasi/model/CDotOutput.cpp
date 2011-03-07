@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:47 $
+//   $Date: 2011/03/07 19:30:51 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -57,7 +62,7 @@ void CDotOutput::writeDependencies(std::ostream & os, const CModel* pModel, cons
   os << "}" << std::endl;
 }
 
-void CDotOutput::findObjectsWithUpdateMethod(const CCopasiObject * obj, std::set<const CCopasiObject*> & objectSet, unsigned int recursion) const
+void CDotOutput::findObjectsWithUpdateMethod(const CCopasiObject * obj, std::set<const CCopasiObject*> & objectSet, size_t recursion) const
 {
   if (!obj) return;
 
@@ -148,13 +153,13 @@ void CDotOutput::writeObjectNode(std::ostream & os, const CCopasiObject * ptr, c
 
   std::ostringstream oss;
 
-  if (od.mSimulatedRefreshesIndex != -1)
+  if (od.mSimulatedRefreshesIndex != C_INVALID_INDEX)
     oss << "SR=" << od.mSimulatedRefreshesIndex << " ";
 
-  if (od.mNonSimulatedRefreshesIndex != -1)
+  if (od.mNonSimulatedRefreshesIndex != C_INVALID_INDEX)
     oss << "NSR=" << od.mNonSimulatedRefreshesIndex << " ";
 
-  if (od.mConstantRefreshesIndex != -1)
+  if (od.mConstantRefreshesIndex != C_INVALID_INDEX)
     oss << "CR=" << od.mConstantRefreshesIndex << " ";
 
   os << "\"" << ptr->getObjectDisplayName() << "\" [shape=plaintext, color=blue, " << std::endl;
@@ -198,7 +203,7 @@ void CDotOutput::updateObjectNodesFromModel(const CModel* model)
       mObjects[*it].mInUpToDateList = true;
     }
 
-  unsigned int i, imax;
+  size_t i, imax;
 
   imax = model->getListOfSimulatedRefreshes().size();
 

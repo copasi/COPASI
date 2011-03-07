@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/09 15:53:15 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:33:42 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -37,9 +42,10 @@ CSensTask::CSensTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::sens, pParent)
 {
   mpProblem = new CSensProblem(this);
-  mpMethod = CSensMethod::createSensMethod(CCopasiMethod::sensMethod);
+
+  mpMethod = createMethod(CCopasiMethod::sensMethod);
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
+
 }
 
 CSensTask::CSensTask(const CSensTask & src,
@@ -47,15 +53,22 @@ CSensTask::CSensTask(const CSensTask & src,
     CCopasiTask(src, pParent)
 {
   mpProblem =
-    new CSensProblem(* (CSensProblem *) src.mpProblem, this);
-  mpMethod =
-    CSensMethod::createSensMethod(src.mpMethod->getSubType());
+    new CSensProblem(*(CSensProblem *) src.mpProblem, this);
+
+  mpMethod = createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
 }
 
 CSensTask::~CSensTask()
 {}
+
+// virtual
+CCopasiMethod * CSensTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CSensMethod::createMethod(Type);
+}
 
 void CSensTask::cleanup()
 {}
@@ -124,6 +137,20 @@ bool CSensTask::process(const bool & useInitialValues)
   mReport.output(COutputInterface::AFTER);
 
   return (success);
+}
+
+// virtual
+bool CSensTask::restore()
+{
+  bool success = true;
+
+  CSensMethod* pMethod =
+    dynamic_cast<CSensMethod *>(mpMethod);
+
+  if (pMethod != NULL)
+    pMethod->restore(mUpdateModel);
+
+  return success;
 }
 
 std::ostream &operator<<(std::ostream &os, const CSensTask & /* A */)

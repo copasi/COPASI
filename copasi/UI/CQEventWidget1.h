@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:17 $
+//   $Date: 2011/03/07 19:37:48 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,7 +55,7 @@ private:
   bool mChanged;
   CEvent *mpEvent;
   std::string mAssignmentKey;
-  unsigned C_INT32 mCurrentTarget;
+  size_t mCurrentTarget;
   CCopasiVector< CEventAssignment > mAssignments;
 
   void init();

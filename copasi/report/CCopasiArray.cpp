@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiArray.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/23 06:22:25 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:32:38 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -27,41 +32,45 @@ void CCopasiArray::resize(const index_type & sizes)
   mSizes = sizes;
   mFactors.resize(mDim);
 
-  unsigned int tmpDataSize = 1;
+  size_t tmpDataSize = 1;
   index_type::const_reverse_iterator it, itEnd = sizes.rend();
   index_type::reverse_iterator itFaktor;
+
   for (it = sizes.rbegin(), itFaktor = mFactors.rbegin(); it != itEnd; ++it, ++itFaktor)
     {
       *itFaktor = tmpDataSize;
       tmpDataSize *= *it;
     }
+
   mData.resize(tmpDataSize);
 }
 
-CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & index)
+CCopasiArray::data_type & CCopasiArray::operator[](const index_type & index)
 {
 #ifdef COPASI_DEBUG
   assert(index.size() == mDim);
 #endif
 
-  unsigned int tmpindex = 0;
+  size_t tmpindex = 0;
   index_type::const_iterator itIndex, it, itEnd = mFactors.end();
+
   for (itIndex = index.begin(), it = mFactors.begin(); it != itEnd; ++it, ++itIndex)
     tmpindex += *itIndex * *it;
 
   return mData[tmpindex];
 }
 
-const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & index) const
-  {
+const CCopasiArray::data_type & CCopasiArray::operator[](const index_type & index) const
+{
 #ifdef COPASI_DEBUG
-    assert(index.size() == mDim);
+  assert(index.size() == mDim);
 #endif
 
-    unsigned int tmpindex = 0;
-    index_type::const_iterator itIndex, it, itEnd = mFactors.end();
-    for (itIndex = index.begin(), it = mFactors.begin(); it != itEnd; ++it, ++itIndex)
-      tmpindex += *itIndex * *it;
+  size_t tmpindex = 0;
+  index_type::const_iterator itIndex, it, itEnd = mFactors.end();
 
-    return mData[tmpindex];
-  }
+  for (itIndex = index.begin(), it = mFactors.begin(); it != itEnd; ++it, ++itIndex)
+    tmpindex += *itIndex * *it;
+
+  return mData[tmpindex];
+}

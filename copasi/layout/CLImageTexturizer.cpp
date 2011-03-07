@@ -1,46 +1,27 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLImageTexturizer.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:28:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <fstream>
 
 #include "CLImageTexturizer.h"
 
+#include <copasi/utilities/CDirEntry.h>
+#include <copasi/utilities/utility.h>
+
 std::string CLImageTexturizer::to_absolute_path(const std::string& filename, const std::string& basedir)
 {
-  // check if the filename is a relative filename
-  // if yes, we extend it with mBaseDir
-  // otherwise we just return the original string
-  // we make this simple
-  std::ifstream file((basedir + "/" + filename).c_str());
+  // first convert to UTF8 because CDirEntry expects UTF8
+  std::string Path = filename;
+  CDirEntry::makePathAbsolute(Path, basedir);
 
-  if (!file)
-    {
-      // this is not totally correct since, but rather simple
-      // TODO come up with a better way to determine f a filename is relative
-      // TODO or absolute
-      file.open(filename.c_str());
-
-      if (!file)
-        {
-          return "";
-        }
-      else
-        {
-          return filename;
-        }
-    }
-  else
-    {
-      return basedir + "/" + filename;
-    }
+  return Path;
 }

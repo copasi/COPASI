@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2011/03/07 19:30:49 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -44,6 +49,7 @@ CMetabNameInterface::~CMetabNameInterface()
 std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key)
 {
   CMetab * metab = dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
+
   if (metab)
     return getDisplayName(model, *metab);
   else
@@ -60,12 +66,14 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
     const std::string & compartment)
 {
   std::string DefaultCompartment;
+
   if (model->getCompartments().size() == 0)
     DefaultCompartment = "compartment";
   else
     DefaultCompartment = model->getCompartments()[0]->getObjectName();
 
   std::string Metabolite = quote(metabolite, "{}");
+
   if (isNumber(Metabolite))
     Metabolite = "\"" + Metabolite + "\"";
 
@@ -76,6 +84,7 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
     return Metabolite;
 
   std::string Compartment = quote(compartment, "{}");
+
   if (isNumber(Compartment))
     Compartment = "\"" + Compartment + "\"";
 
@@ -87,6 +96,7 @@ std::string CMetabNameInterface::getMetaboliteKey(const CModel* model,
     const std::string & compartment)
 {
   CMetab * metab = getMetabolite(model, metabolite, compartment);
+
   if (metab)
     return metab->getKey();
   else
@@ -97,16 +107,18 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
     const std::string & metabolite,
     const std::string & compartment)
 {
-  unsigned C_INT32 Index;
+  size_t Index;
 
   if (compartment != "")
     {
       Index = model->getCompartments().getIndex(compartment);
+
       if (Index != C_INVALID_INDEX)
         {
           CCompartment *pCompartment = model->getCompartments()[Index];
 
           Index = pCompartment->getMetabolites().getIndex(metabolite);
+
           if (Index != C_INVALID_INDEX)
             return pCompartment->getMetabolites()[Index];
         }
@@ -125,13 +137,14 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
 bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
 {
   bool unique = true;
-  unsigned C_INT32 i;
+  size_t i;
   const CCopasiVector< CMetab > & metabs = model->getMetabolites();
   std::string metabName;
 
   for (i = 0; i < metabs.size(); i++)
     {
       metabName = metabs[i]->getObjectName();
+
       if (metabName == name)
         {
           if (unique)
@@ -150,7 +163,8 @@ bool CMetabNameInterface::doesExist(const CModel* model,
 {
   if (compartment != "")
     {
-      unsigned C_INT32 Index = model->getCompartments().getIndex(compartment);
+      size_t Index = model->getCompartments().getIndex(compartment);
+
       if (Index == C_INVALID_INDEX) return false;
 
       Index = model->getCompartments()[Index]->getMetabolites().getIndex(metabolite);

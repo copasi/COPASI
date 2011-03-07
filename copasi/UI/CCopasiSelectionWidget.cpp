@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2011/03/07 19:37:53 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,12 +26,12 @@
 
 #include "CCopasiSelectionWidget.h"
 #include "ObjectBrowserWidget.h"
-#include "CCopasiSimpleSelectionTree.h"
+#include "CQSimpleSelectionTree.h"
 
 CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent , const char* name , Qt::WFlags fl): Q3WidgetStack(parent, name, fl), mpSimpleTree(NULL), mpObjectBrowser(NULL), mpOutputVector(NULL),
     mSingleSelect(false), mExpertMode(false)
 {
-  this->mpSimpleTree = new CCopasiSimpleSelectionTree(this);
+  this->mpSimpleTree = new CQSimpleSelectionTree(this);
   this->addWidget(this->mpSimpleTree);
   this->setSingleSelection(false);
   this->setExpertMode(false);
@@ -39,7 +44,7 @@ CCopasiSelectionWidget::~CCopasiSelectionWidget()
 }
 
 void CCopasiSelectionWidget::populateTree(const CModel * model,
-    const CCopasiSimpleSelectionTree::ObjectClasses & classes)
+    const CQSimpleSelectionTree::ObjectClasses & classes)
 {
   this->mpSimpleTree->populateTree(model, classes);
 }
@@ -67,7 +72,7 @@ void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
 
   if (this->mSingleSelect)
     {
-      this->mpSimpleTree->setSelectionMode(Q3ListView::Single);
+      this->mpSimpleTree->setSelectionMode(QAbstractItemView::SingleSelection);
 
       if (this->mpObjectBrowser)
         {
@@ -80,7 +85,7 @@ void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
     }
   else
     {
-      this->mpSimpleTree->setSelectionMode(Q3ListView::Extended);
+      this->mpSimpleTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
       if (this->mpObjectBrowser)
         {

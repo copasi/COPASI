@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:15 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -89,14 +89,14 @@ void CQPlayerControlWidget::createActions()
   connect(this->mpStepBackwardAction, SIGNAL(triggered()), this, SLOT(slot_step_backward_clicked()));
 }
 
-void CQPlayerControlWidget::setNumSteps(unsigned int numSteps)
+void CQPlayerControlWidget::setNumSteps(size_t numSteps)
 {
   this->mNumSteps = numSteps;
   this->updateButtons();
   this->updateActions();
 }
 
-void CQPlayerControlWidget::setCurrentStep(unsigned int currentStep)
+void CQPlayerControlWidget::setCurrentStep(size_t currentStep)
 {
   if (currentStep < this->mNumSteps)
     {

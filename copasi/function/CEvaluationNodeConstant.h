@@ -1,10 +1,15 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-  $Revision: 1.22 $
+  $Revision: 1.23 $
   $Name:  $
   $Author: shoops $
-  $Date: 2009/07/30 21:08:33 $
+  $Date: 2011/03/07 19:28:18 $
   End CVS Header */
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -124,7 +129,7 @@ public:
   virtual void writeMathML(std::ostream & out,
                            const std::vector<std::vector<std::string> > & env,
                            bool expand = true,
-                           unsigned C_INT32 l = 0) const;
+                           size_t l = 0) const;
 };
 
 #endif // COPASI_CEvaluationNodeConstant

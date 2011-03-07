@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-$Revision: 1.28 $
+$Revision: 1.29 $
 $Name:  $
-$Author: gauges $
-$Date: 2010/09/07 09:16:21 $
+$Author: shoops $
+$Date: 2011/03/07 19:27:35 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,8 +136,8 @@ bool CEFMAlgorithm::initialize()
   /* ModelStoi is the transpose of the models stoichiometry matrix */
   const CTransposeView< CMatrix< C_FLOAT64 > > ModelStoi(mpModel->getStoi());
 
-  unsigned C_INT32 row, numRows = ModelStoi.numRows();
-  unsigned C_INT32 col, numCols = ModelStoi.numCols();
+  size_t row, numRows = ModelStoi.numRows();
+  size_t col, numCols = ModelStoi.numCols();
 
   /* Size the stoichiometry matrix passed to the algorithm */
   mStoi.resize(numRows);
@@ -157,9 +157,9 @@ bool CEFMAlgorithm::initialize()
 
   /* Reversible reaction counter */
   mReversible = 0;
-  unsigned C_INT32 Insert;
-  unsigned C_INT32 InsertReversible = 0;
-  unsigned C_INT32 InsertIrreversible = numRows - 1;
+  size_t Insert;
+  size_t InsertReversible = 0;
+  size_t InsertIrreversible = numRows - 1;
 
   /* Build the transpose of the stoichiometry matrix, */
 
@@ -183,13 +183,12 @@ bool CEFMAlgorithm::initialize()
     }
 
   mStep = 0;
-  mMaxStep = numCols;
+  mMaxStep = (unsigned C_INT32) numCols;
 
   if (mpCallBack)
     mhSteps =
       mpCallBack->addItem("Current Step",
-                          CCopasiParameter::UINT,
-                          & mStep,
+                          mStep,
                           & mMaxStep);
 
   return true;
@@ -264,16 +263,16 @@ void CEFMAlgorithm::calculateNextTableau()
 
   bool Continue = true;
 
-  unsigned C_INT32 Counter, MaxCounter, hCounter;
+  unsigned C_INT32 Counter, MaxCounter;
+  size_t hCounter;
 
   Counter = 0;
-  MaxCounter = mpCurrentTableau->size();
+  MaxCounter = (unsigned C_INT32) mpCurrentTableau->size();
 
   if (mpCallBack)
     hCounter =
       mpCallBack->addItem("Current Line",
-                          CCopasiParameter::UINT,
-                          & Counter,
+                          Counter,
                           & MaxCounter);
 
   while (a != mpCurrentTableau->end() && Continue)
@@ -392,14 +391,14 @@ bool CEFMAlgorithm::findMinimalCombinationIndex()
 {
   double minCombine = std::numeric_limits<double>::infinity();
   double combine = 0;
-  unsigned C_INT32 minIndex = 0;
-  unsigned C_INT32 counter;
+  size_t minIndex = 0;
+  size_t counter;
 
   if (mIndexSet.size() == 0)
     return false;
   else if (mIndexSet.size() == 1)
     {
-      mStep = mIndexSet[0];
+      mStep = (unsigned C_INT32) mIndexSet[0];
       mIndexSet.pop_back();
       return true;
     }
@@ -418,18 +417,17 @@ bool CEFMAlgorithm::findMinimalCombinationIndex()
         break;
     }
 
-  mStep = mIndexSet[minIndex];
+  mStep = (unsigned C_INT32) mIndexSet[minIndex];
   mIndexSet.erase(mIndexSet.begin() + minIndex);
 
   return true;
 }
 
-double CEFMAlgorithm::calculateCombinations(unsigned C_INT32 index)
+double CEFMAlgorithm::calculateCombinations(size_t index)
 {
   double posIrr = 0;
   double negIrr = 0;
   double rev = 0;
-  unsigned int row;
 
   //Reversible reactions
   std::list< const CTableauLine * >::const_iterator it = mpCurrentTableau->begin();

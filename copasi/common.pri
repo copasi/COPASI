@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120 $ 
+#   $Revision: 1.121 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/08/12 20:48:52 $ 
+#   $Date: 2011/03/07 19:24:16 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120 $ $Author: shoops $ $Date: 2010/08/12 20:48:52 $  
+# $Revision: 1.121 $ $Author: shoops $ $Date: 2011/03/07 19:24:16 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -206,9 +206,18 @@ contains(BUILD_OS, WIN32) {
   CONFIG += debug_and_release
 
   win32-icc: {
-     !build_pass: message("Using Intel Compiler.")
-     DEFINES += COPASI_ICC
-     DEFINES += _CRT_SECURE_NO_WARNINGS
+    !build_pass: message("Using Intel Compiler.")
+  }
+
+  !contains(QMAKE_HOST.arch, x86_64) {
+    !build_pass: message("x86 build")
+    COPASI_ARCH = 32
+    QMAKE_LFLAGS += /MACHINE:X86
+  } else {
+    !build_pass: message("x86_64 build")
+    COPASI_ARCH = 64
+    QMAKE_CFLAGS += /Wp64
+    QMAKE_LFLAGS += /MACHINE:X64
   }
 
   !isEmpty(INTELRD_PATH) {
@@ -219,7 +228,8 @@ contains(BUILD_OS, WIN32) {
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
   DEFINES -= UNICODE
-   
+  DEFINES += _CRT_SECURE_NO_WARNINGS
+  
   #Release code optimization
   QMAKE_CFLAGS_RELEASE   -= -O1
   QMAKE_CFLAGS_RELEASE   *= -O2
@@ -277,21 +287,42 @@ contains(BUILD_OS, WIN32) {
     }
   }    
 
+  LIBS += shell32.lib
+
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     QMAKE_CXXFLAGS += -I\""$${MKL_PATH}"\include\"
-    QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\ia32\lib\"
-    QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\ia32\"
-    LIBS += mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib
-    LIBS += libiomp5mt.lib
-  } else {
-    !isEmpty(CLAPACK_PATH) {
-      DEFINES += USE_CLAPACK
-      QMAKE_CXXFLAGS   += -I\""$${CLAPACK_PATH}"\include\"
-      QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}"\lib\"
-      LIBS += clapack.lib
+
+    contains(COPASI_ARCH, 32) {
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\ia32\lib\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\ia32\"
+      LIBS += mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib -Qopenmp libguide.lib
     } else {
-      error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\em64t\lib\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\intel64\"
+      LIBS += mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib -Qopenmp libguide.lib
+    }
+  } else {
+    !isEmpty(LAPACK_PATH) {
+      DEFINES += USE_LAPACK
+      QMAKE_CXXFLAGS   += -I\""$${LAPACK_PATH}"\include\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${LAPACK_PATH}\lib\\$${COPASI_ARCH}"\"
+      debug {
+        LIBS += blasD.lib lapackD.lib
+      }
+      release {
+        LIBS += blas.lib lapack.lib
+      }
+    } else {
+      !isEmpty(CLAPACK_PATH) {
+        DEFINES += USE_CLAPACK
+        QMAKE_CXXFLAGS   += -I\""$${CLAPACK_PATH}"\include\"
+        QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}"\lib\"
+        QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}\lib\\$${COPASI_ARCH}"\"
+        LIBS += clapack.lib
+      } else {
+        error( "Either MKL_PATH, LPACK_PATH, or CLAPACK_PATH must be specified" )
+      }
     }
   }
 
@@ -305,6 +336,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\StaticLibs\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\bin\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}\lib\\$${COPASI_ARCH}"\"
   } else {
     error( "EXPAT_PATH must be specified" )
   }
@@ -314,6 +346,7 @@ contains(BUILD_OS, WIN32) {
   !isEmpty(SBML_PATH) {
     QMAKE_CXXFLAGS += -I\""$${SBML_PATH}"\include\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"\lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}\lib\\$${COPASI_ARCH}"\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"\bin\"
   } else {
     error( "SBML_PATH must be specified" )
@@ -325,6 +358,7 @@ contains(BUILD_OS, WIN32) {
   !isEmpty(RAPTOR_PATH) {
     QMAKE_CXXFLAGS += -I\""$${RAPTOR_PATH}"\include\"
     QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}"\lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}\lib\\$${COPASI_ARCH}"\"
   } else {
     error( "RAPTOR_PATH must be specified" )
   }
@@ -335,6 +369,7 @@ contains(BUILD_OS, WIN32) {
     !isEmpty(SBW_PATH){
       QMAKE_CXXFLAGS += -I\""$${SBW_PATH}"\include\"
       QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}"\lib\"
+      QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}\lib\\$${COPASI_ARCH}"\"
       
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES *= WIN32
@@ -429,9 +464,8 @@ contains(STATIC_LINKAGE, yes) {
     !isEmpty(QWT3D_PATH){
       LIBS += -L$${QWT3D_PATH}/lib/
       INCLUDEPATH += $${QWT3D_PATH}/include
-    } else {
-      LIBS += -lqwtplot3d
     }
+    LIBS += -lqwtplot3d
     
     LIBS += -lSM
   } else {
@@ -441,6 +475,20 @@ contains(STATIC_LINKAGE, yes) {
 }
  
 contains(BUILD_OS, Linux) {
+
+  TARGET_64 = $$system($CC -dM -E - < /dev/null | grep -q __x86_64__ && echo true)
+
+  contains(TARGET_64, true) {
+    message("Creating 64 bit binaries.")
+  }
+
+  INTEL_COMPILER = $$system($CC -dM -E - < /dev/null | grep -q __INTEL_COMPILER && echo true)
+
+  contains(INTEL_COMPILER, true) {
+    message("Linking statically against Intel libraries.")
+    QMAKE_LFLAGS *= -static-intel
+  }
+  
   release {
     contains(TEMPLATE, app) {
       QMAKE_POST_LINK = strip $(TARGET)
@@ -452,7 +500,7 @@ contains(BUILD_OS, Linux) {
   }
   else {
     contains(STATIC_LINKAGE, yes) {
-      QMAKE_LFLAGS += -static
+      QMAKE_LFLAGS *= -static
     }
     else {
       QMAKE_LFLAGS -= -static
@@ -526,13 +574,22 @@ contains(BUILD_OS, Linux) {
     DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
 
-    LIBS += $${MKL_PATH}/lib/32/libmkl_solver.a \
-            -Wl,--start-group \
-              $${MKL_PATH}/lib/32/libmkl_intel.a \
-              $${MKL_PATH}/lib/32/libmkl_sequential.a \
-              $${MKL_PATH}/lib/32/libmkl_core.a \
-            -Wl,--end-group \
-            -lpthread
+    contains(TARGET_64, true) {
+      LIBS += -Wl,--start-group \
+                $${MKL_PATH}/lib/em64t/libmkl_intel_lp64.a \
+                $${MKL_PATH}/lib/em64t/libmkl_sequential.a \
+                $${MKL_PATH}/lib/em64t/libmkl_core.a \
+              -Wl,--end-group \
+              -lpthread
+    } else {
+      LIBS += $${MKL_PATH}/lib/32/libmkl_solver.a \
+              -Wl,--start-group \
+                $${MKL_PATH}/lib/32/libmkl_intel.a \
+                $${MKL_PATH}/lib/32/libmkl_sequential.a \
+                $${MKL_PATH}/lib/32/libmkl_core.a \
+              -Wl,--end-group \
+              -lpthread
+    }
 
   } else {
     !isEmpty(CLAPACK_PATH) {
@@ -582,9 +639,9 @@ contains(BUILD_OS, Linux) {
     !isEmpty(QWT3D_PATH){
       LIBS += -L$${QWT3D_PATH}/lib/
       INCLUDEPATH += $${QWT3D_PATH}/include
-    } else {
-      LIBS += -lqwtplot3d
     }
+    LIBS += -lqwtplot3d
+
 # only needed for the class CLSimpleImageTexturizer which is only
 # needed if we want to create bitmaps from layouts in the backend
 #contains(DEFINES,USE_CRENDER_EXTENSION) {           
@@ -598,21 +655,6 @@ DEP1.target   = depend
 DEP1.depends  = qmake
 
 QMAKE_EXTRA_UNIX_TARGETS += DEP1
-
-!equals(TEMPLATE, subdirs) {
-  # Copy the sources for the tar ball
-  src_distribution.depends = Makefile
-  src_distribution.commands =   \
-    $(CHK_DIR_EXISTS) ../../copasi_src || $(MKDIR) ../../copasi_src; \
-    $(CHK_DIR_EXISTS) ../../copasi_src/copasi || \
-      $(MKDIR) ../../copasi_src/copasi; \
-    $(CHK_DIR_EXISTS) ../../copasi_src/copasi/$$SRC_TARGET || \
-      $(MKDIR) ../../copasi_src/copasi/$$SRC_TARGET; \
-    $(COPY_FILE) --parents $${SOURCES} $${HEADERS} $${FORMS} $${FORMS3} $(DIST) \
-      ../../copasi_src/copasi/$$SRC_TARGET/
-
-  QMAKE_EXTRA_UNIX_TARGETS += src_distribution
-}
 
 # addSubdirs(subdirs,deps): Adds directories to the project that depend on
 # other directories

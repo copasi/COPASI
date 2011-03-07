@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:11 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:33:11 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -37,114 +42,114 @@ class CTrajectory;
 class CRandom;
 
 class CScanItem
-  {
-  protected:
-    unsigned C_INT32 mNumSteps;
+{
+protected:
+  size_t mNumSteps;
 
-    // C_FLOAT64 * mpValue;
-    CCopasiObject * mpValue;
+  // C_FLOAT64 * mpValue;
+  CCopasiObject * mpValue;
 
-    C_FLOAT64 mStoreValue;
+  C_FLOAT64 mStoreValue;
 
-    unsigned C_INT32 mIndex;
+  size_t mIndex;
 
-    bool mFlagFinished;
+  bool mFlagFinished;
 
-  public:
-    static
-    CScanItem* createScanItemFromParameterGroup(CCopasiParameterGroup* si,
-        CRandom* rg,
-        CScanTask* st);
+public:
+  static
+  CScanItem* createScanItemFromParameterGroup(CCopasiParameterGroup* si,
+      CRandom* rg,
+      CScanTask* st);
 
-    unsigned C_INT32 getNumSteps() const;
+  size_t getNumSteps() const;
 
-    void restoreValue() const;
+  void restoreValue() const;
 
-    void storeValue();
+  void storeValue();
 
-    virtual void reset();
+  virtual void reset();
 
-    virtual void step() = 0;
+  virtual void step() = 0;
 
-    virtual bool isFinished() const;
+  virtual bool isFinished() const;
 
-    virtual bool isNesting() const {return true;};
+  virtual bool isNesting() const {return true;};
 
-    virtual ~CScanItem(){};
+  virtual ~CScanItem() {};
 
-    /**
-     * perform checks. This is used in the method::isValidProblem() method.
-     * It returns false for an invalid ScanItem and generates a CCopasiMessage
-     */
-    virtual bool isValidScanItem();
+  /**
+   * perform checks. This is used in the method::isValidProblem() method.
+   * It returns false for an invalid ScanItem and generates a CCopasiMessage
+   */
+  virtual bool isValidScanItem();
 
-    /**
-     * Retrieve the object which is scanned by the item.
-     * @return const CCopasiObject * object
-     */
-    const CCopasiObject * getObject() const;
+  /**
+   * Retrieve the object which is scanned by the item.
+   * @return const CCopasiObject * object
+   */
+  const CCopasiObject * getObject() const;
 
-  protected:
+protected:
 
-    CScanItem(CCopasiParameterGroup* si);
+  CScanItem(CCopasiParameterGroup* si);
 
-    //initObject();
+  //initObject();
 
-  private:
-    CScanItem() {};
-  };
+private:
+  CScanItem() {};
+};
 
 //***********************************+
 
 class CScanItemRepeat: public CScanItem
-  {
-  public:
-    CScanItemRepeat(CCopasiParameterGroup* si);
-    void step();
+{
+public:
+  CScanItemRepeat(CCopasiParameterGroup* si);
+  void step();
 
-    virtual ~CScanItemRepeat(){};
-  };
+  virtual ~CScanItemRepeat() {};
+};
 
 //***********************************+
 
 class CScanItemLinear: public CScanItem
-  {
-  private:
-    C_FLOAT64 mMin, mMax, mFaktor;
-    bool mLog;
-  public:
-    CScanItemLinear(CCopasiParameterGroup* si);
-    void step();
+{
+private:
+  C_FLOAT64 mMin, mMax, mFaktor;
+  bool mLog;
+public:
+  CScanItemLinear(CCopasiParameterGroup* si);
+  void step();
 
-    virtual ~CScanItemLinear(){};
+  virtual ~CScanItemLinear() {};
 
-    virtual bool isValidScanItem();
-  };
+  virtual bool isValidScanItem();
+};
 
 //***********************************+
 
 class CScanItemRandom: public CScanItem
-  {
-  private:
-    C_FLOAT64 mMin, mMax, mFaktor;
-    CRandom* mRg;
-    unsigned C_INT32 mRandomType;
-    bool mLog;
-  public:
-    CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg);
-    virtual ~CScanItemRandom(){};
+{
+private:
+  C_FLOAT64 mMin, mMax, mFaktor;
+  CRandom* mRg;
+  unsigned C_INT32 mRandomType;
+  bool mLog;
+public:
+  CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg);
+  virtual ~CScanItemRandom() {};
 
-    void step();
-    virtual bool isNesting() const {return false;};
-    virtual bool isValidScanItem();
-  };
+  void step();
+  virtual bool isNesting() const {return false;};
+  virtual bool isValidScanItem();
+};
 
 //***********************************+
 
 /*class CScanItemBreak: public CScanItem
   {
   private:
-    unsigned C_INT32 mPlotB, mReportB;
+    size_t mPlotB, mReportB;
     CScanTask* mST;
   public:
     CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st);
@@ -156,122 +161,121 @@ class CScanItemRandom: public CScanItem
 //*******************************************+
 
 class CScanMethod : public CCopasiMethod
-  {
-  protected:
-    /**
-     *  A pointer to the trajectory problem.
-     */
-    CScanProblem * mpProblem;
+{
+protected:
+  /**
+   *  A pointer to the trajectory problem.
+   */
+  CScanProblem * mpProblem;
 
-    /**
-     *  A pointer to the scan Task.
-     */
-    CScanTask * mpTask;
+  /**
+   *  A pointer to the scan Task.
+   */
+  CScanTask * mpTask;
 
-    /**
-     * A pointer to the random number generator
-     */
-    CRandom * mpRandomGenerator;
+  /**
+   * A pointer to the random number generator
+   */
+  CRandom * mpRandomGenerator;
 
-    std::vector<CScanItem*> mScanItems;
+  std::vector<CScanItem*> mScanItems;
 
-    std::vector< Refresh * > mInitialRefreshes;
+  std::vector< Refresh * > mInitialRefreshes;
 
-    unsigned C_INT32 mTotalSteps;
+  size_t mTotalSteps;
 
-    /**
-     * the index of the last item that has several subitems,
-     * also the last item that need to generate output separators
-     */
-    C_INT32 mLastNestingItem;
+  /**
+   * the index of the last item that has several subitems,
+   * also the last item that need to generate output separators
+   */
+  size_t mLastNestingItem;
 
-    /**
-     *
-     */
-    //unsigned C_INT32 mVariableSize;
+  /**
+   *
+   */
+  //size_t mVariableSize;
 
-    /**
-     *
-     */
-    //C_FLOAT64 * mpVariables;
+  /**
+   *
+   */
+  //C_FLOAT64 * mpVariables;
 
-    // Operations
-  private:
-    /**
-     * Default constructor.
-     */
-    CScanMethod();
+  // Operations
+private:
+  /**
+   * Default constructor.
+   */
+  CScanMethod();
 
-  protected:
-    /**
-     * Specific constructor.
-     * @param CCopasiMethod::SubType subType
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CScanMethod(CCopasiMethod::SubType subType,
-                const CCopasiContainer * pParent = NULL);
+protected:
+  /**
+   * Specific constructor.
+   * @param CCopasiMethod::SubType subType
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CScanMethod(CCopasiMethod::SubType subType,
+              const CCopasiContainer * pParent = NULL);
 
-  public:
-    /**
-     * Create a trajectory method.
-     * Note: the returned object has to be released after use with delete
-     */
+public:
+  /**
+   * Create a trajectory method.
+   * Note: the returned object has to be released after use with delete
+   */
+  static CScanMethod * createMethod(CCopasiMethod::SubType subType = CCopasiMethod::scanMethod);
 
-    static CScanMethod * createMethod();
+  /**
+   *  Copy constructor.
+   *  @param "const CTrajectoryMethod &" src
+   */
+  //CScanMethod(const CScanMethod & src,
+  //            const CCopasiContainer * pParent = NULL);
 
-    /**
-     *  Copy constructor.
-     *  @param "const CTrajectoryMethod &" src
-     */
-    //CScanMethod(const CScanMethod & src,
-    //            const CCopasiContainer * pParent = NULL);
+  /**
+   *  Destructor.
+   */
+  ~CScanMethod();
 
-    /**
-     *  Destructor.
-     */
-    ~CScanMethod();
+  /**
+   *  Set a pointer to the problem.
+   *  This method is used by CTrajectory
+   *  @param "CTrajectoryProblem *" problem
+   */
+  void setProblem(CScanProblem * problem);
 
-    /**
-     *  Set a pointer to the problem.
-     *  This method is used by CTrajectory
-     *  @param "CTrajectoryProblem *" problem
-     */
-    void setProblem(CScanProblem * problem);
+  bool init();
 
-    bool init();
+  bool scan();
 
-    bool scan();
+  size_t getTotalNumberOfSteps() const {return mTotalSteps;};
 
-    unsigned C_INT32 getTotalNumberOfSteps() const {return mTotalSteps;};
+  /**
+   *  The main scan method.
+   */
+  //void scan(size_t s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
 
-    /**
-     *  The main scan method.
-     */
-    //void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
+  /**
+   * Check if the method is suitable for this problem
+   * @return bool suitability of the method
+   */
+  virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
-    /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
-     */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
+private:
 
-  private:
+  bool cleanupScanItems();
 
-    bool cleanupScanItems();
+  bool loop(size_t level);
 
-    bool loop(unsigned C_INT32 level);
+  bool calculate();
 
-    bool calculate();
-
-    /**
-     *  Set the value of the scan parameter based on the distribution
-     *  @param unsigned C_INT32 i where to start in the distribution
-     *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
-     *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
-     */
-    //void setScanParameterValue(unsigned C_INT32 i,
-    //                           unsigned C_INT32 first,
-    //                           unsigned C_INT32 last);
-  };
+  /**
+   *  Set the value of the scan parameter based on the distribution
+   *  @param size_t i where to start in the distribution
+   *  @param size_t first first parameter in the set of Master/Slaves
+   *  @param size_t last last parameter in the set of Master/Slaves
+   */
+  //void setScanParameterValue(size_t i,
+  //                           size_t first,
+  //                           size_t last);
+};
 
 #endif // COPASI_CTrajectoryMethod

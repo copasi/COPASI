@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 17:26:02 $
+//   $Date: 2011/03/07 19:34:54 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -44,8 +49,8 @@ bool CSparseMatrixElement::compareCol(const CSparseMatrixElement * pLhs,
 {return pLhs->mCol < pRhs->mCol;}
 
 CSparseMatrixElement::CSparseMatrixElement(CSparseMatrix & matrix,
-    const unsigned C_INT32 & row,
-    const unsigned C_INT32 & col,
+    const size_t & row,
+    const size_t & col,
     const C_FLOAT64 & value):
     mMatrix(matrix),
     mRow(row),
@@ -73,13 +78,13 @@ const C_FLOAT64 & CSparseMatrixElement::operator = (const C_FLOAT64 & value)
 CSparseMatrixElement::operator const C_FLOAT64 & () const
 {return mValue;}
 
-const unsigned C_INT32 & CSparseMatrixElement::row() const {return mRow;}
-const unsigned C_INT32 & CSparseMatrixElement::col() const {return mCol;}
+const size_t & CSparseMatrixElement::row() const {return mRow;}
+const size_t & CSparseMatrixElement::col() const {return mCol;}
 
 // ---------- CSparseMatrix
 
-CSparseMatrix::CSparseMatrix(const unsigned C_INT32 & rows,
-                             const unsigned C_INT32 & cols):
+CSparseMatrix::CSparseMatrix(const size_t & rows,
+                             const size_t & cols):
     mThreshold(std::numeric_limits< C_FLOAT64 >::epsilon()),
     mNumRows(0),
     mNumCols(0),
@@ -121,9 +126,9 @@ void CSparseMatrix::cleanup()
       delete *itElement;
 }
 
-bool CSparseMatrix::resize(const unsigned C_INT32 & rows, const unsigned C_INT32 & cols)
+bool CSparseMatrix::resize(const size_t & rows, const size_t & cols)
 {
-  unsigned C_INT32 i;
+  size_t i;
   mNumRows = rows;
   mNumCols = cols;
 
@@ -143,15 +148,15 @@ bool CSparseMatrix::resize(const unsigned C_INT32 & rows, const unsigned C_INT32
   return true;
 }
 
-const unsigned C_INT32 & CSparseMatrix::numRows() const
+const size_t & CSparseMatrix::numRows() const
 {return mNumRows;}
 
-const unsigned C_INT32 & CSparseMatrix::numCols() const
+const size_t & CSparseMatrix::numCols() const
 {return mNumCols;}
 
-unsigned C_INT32 CSparseMatrix::numNonZeros() const
+size_t CSparseMatrix::numNonZeros() const
 {
-  unsigned C_INT32 NonZeros = 0;
+  size_t NonZeros = 0;
 
   std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itRow;
   std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endRow;
@@ -179,10 +184,10 @@ CSparseMatrix & CSparseMatrix::operator = (const CCompressedColumnFormat & ccf)
   resize(ccf.numRows(), ccf.numCols());
 
   const C_FLOAT64 * pValue = ccf.getValues();
-  const unsigned C_INT32 * pRowIndex = ccf.getRowIndex();
-  const unsigned C_INT32 * pColumnStart = ccf.getColumnStart() + 1;
+  const size_t * pRowIndex = ccf.getRowIndex();
+  const size_t * pColumnStart = ccf.getColumnStart() + 1;
 
-  unsigned C_INT32 i, j, k;
+  size_t i, j, k;
   CSparseMatrixElement * pElement;
 
   for (j = 0, i = 0; j < mNumCols; j++, pColumnStart++)
@@ -205,7 +210,7 @@ CSparseMatrix & CSparseMatrix::operator = (const CCompressedColumnFormat & ccf)
 
 CSparseMatrix & CSparseMatrix::operator = (const CMatrix< C_FLOAT64 > & matrix)
 {
-  unsigned C_INT32 i, j;
+  size_t i, j;
   CSparseMatrixElement * pElement;
 
   resize(matrix.numRows(), matrix.numCols());
@@ -232,7 +237,7 @@ CSparseMatrix::operator const CMatrix< C_FLOAT64 > () const
   M.resize(mNumRows, mNumCols);
 
   C_FLOAT64 * pTmp = M.array();
-  unsigned C_INT32 i;
+  size_t i;
 
   std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itRow;
   std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endRow;
@@ -282,8 +287,8 @@ bool CSparseMatrix::setTreshold(const C_FLOAT64 & threshold)
 const C_FLOAT64 & CSparseMatrix::getTreshold() const
 {return mThreshold;}
 
-CSparseMatrixElement & CSparseMatrix::operator()(const unsigned C_INT32 & row,
-    const unsigned C_INT32 & col)
+CSparseMatrixElement & CSparseMatrix::operator()(const size_t & row,
+    const size_t & col)
 {
   mSearchRow = row;
   mSearchCol = col;
@@ -297,8 +302,8 @@ CSparseMatrixElement & CSparseMatrix::operator()(const unsigned C_INT32 & row,
   return mElement;
 }
 
-const CSparseMatrixElement & CSparseMatrix::operator()(const unsigned C_INT32 & row,
-    const unsigned C_INT32 & col) const
+const CSparseMatrixElement & CSparseMatrix::operator()(const size_t & row,
+    const size_t & col) const
 {
   const_cast<CSparseMatrix *>(this)->mSearchRow = row;
   const_cast<CSparseMatrix *>(this)->mSearchCol = col;
@@ -312,8 +317,8 @@ const CSparseMatrixElement & CSparseMatrix::operator()(const unsigned C_INT32 & 
   return mElement;
 }
 
-bool CSparseMatrix::insert(const unsigned C_INT32 & row,
-                           const unsigned C_INT32 & col,
+bool CSparseMatrix::insert(const size_t & row,
+                           const size_t & col,
                            const C_FLOAT64 & value)
 {
   mSearchRow = row;
@@ -334,8 +339,8 @@ bool CSparseMatrix::insert(const unsigned C_INT32 & row,
   return true;
 }
 
-bool CSparseMatrix::remove(const unsigned C_INT32 & row,
-                           const unsigned C_INT32 & col)
+bool CSparseMatrix::remove(const size_t & row,
+                           const size_t & col)
 {
   mSearchRow = row;
   mSearchCol = col;
@@ -359,7 +364,7 @@ std::ostream &operator<<(std::ostream &os, const CSparseMatrix & A)
 {
   os << "Matrix(" << A.mNumRows << "x" << A.mNumCols << ")" << std::endl;
 
-  unsigned C_INT32 i;
+  size_t i;
 
   std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itRow;
   std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endRow;
@@ -390,7 +395,7 @@ std::ostream &operator<<(std::ostream &os, const CSparseMatrix & A)
 // ---------- CCompressedColumnFormat
 
 CCompressedColumnFormat::const_row_iterator::const_row_iterator(const CCompressedColumnFormat * pMatrix,
-    const unsigned C_INT32 & rowIndex):
+    const size_t & rowIndex):
     mpMatrix(pMatrix),
     mRowIndex(rowIndex),
     mpRowIndex(NULL),
@@ -444,7 +449,7 @@ CCompressedColumnFormat::const_row_iterator & CCompressedColumnFormat::const_row
 
 CCompressedColumnFormat::const_row_iterator & CCompressedColumnFormat::const_row_iterator::operator++()
 {
-  const unsigned C_INT32 * pRowIndexEnd = mpMatrix->getRowIndex() + mpMatrix->numNonZeros();
+  const size_t * pRowIndexEnd = mpMatrix->getRowIndex() + mpMatrix->numNonZeros();
 
   mpRowIndex++; // We need to make at least one step forward.
 
@@ -452,7 +457,7 @@ CCompressedColumnFormat::const_row_iterator & CCompressedColumnFormat::const_row
 
   if (mpRowIndex != pRowIndexEnd)
     {
-      unsigned C_INT32 index = mpRowIndex - mpMatrix->getRowIndex();
+      size_t index = mpRowIndex - mpMatrix->getRowIndex();
       mpCurrent = mpMatrix->getValues() + index;
 
       while (*mpColumnIndex <= index) mpColumnIndex++;
@@ -465,24 +470,24 @@ CCompressedColumnFormat::const_row_iterator & CCompressedColumnFormat::const_row
   return *this;
 }
 
-const unsigned C_INT32 & CCompressedColumnFormat::const_row_iterator::getColumnIndex() const
+const size_t & CCompressedColumnFormat::const_row_iterator::getColumnIndex() const
 {return mColumnIndex;}
 
 CCompressedColumnFormat::CCompressedColumnFormat():
     mNumRows(0),
     mNumCols(0),
-    mpColumnStart(new unsigned C_INT32[1]),
+    mpColumnStart(new size_t[1]),
     mpRowIndex(NULL),
     mpValue(NULL)
 {mpColumnStart[mNumCols] = 0;}
 
-CCompressedColumnFormat::CCompressedColumnFormat(const unsigned C_INT32 & rows,
-    const unsigned C_INT32 & columns,
-    const unsigned C_INT32 & nonZeros):
+CCompressedColumnFormat::CCompressedColumnFormat(const size_t & rows,
+    const size_t & columns,
+    const size_t & nonZeros):
     mNumRows(rows),
     mNumCols(columns),
-    mpColumnStart(new unsigned C_INT32[columns + 1]),
-    mpRowIndex(nonZeros ? new unsigned C_INT32[nonZeros] : NULL),
+    mpColumnStart(new size_t[columns + 1]),
+    mpRowIndex(nonZeros ? new size_t[nonZeros] : NULL),
     mpValue(nonZeros ? new C_FLOAT64[nonZeros] : NULL)
 {mpColumnStart[mNumCols] = nonZeros;}
 
@@ -501,13 +506,13 @@ CCompressedColumnFormat::~CCompressedColumnFormat()
   pdelete(mpColumnStart);
 }
 
-unsigned C_INT32 CCompressedColumnFormat::numRows() const
+size_t CCompressedColumnFormat::numRows() const
 {return mNumRows;}
 
-unsigned C_INT32 CCompressedColumnFormat::numCols() const
+size_t CCompressedColumnFormat::numCols() const
 {return mNumCols;}
 
-unsigned C_INT32 CCompressedColumnFormat::numNonZeros() const
+size_t CCompressedColumnFormat::numNonZeros() const
 {return mpColumnStart[mNumCols];}
 
 const C_FLOAT64 * CCompressedColumnFormat::getValues() const
@@ -516,16 +521,16 @@ const C_FLOAT64 * CCompressedColumnFormat::getValues() const
 C_FLOAT64 * CCompressedColumnFormat::getValues()
 {return mpValue;}
 
-const unsigned C_INT32 * CCompressedColumnFormat::getRowIndex() const
+const size_t * CCompressedColumnFormat::getRowIndex() const
 {return mpRowIndex;}
 
-unsigned C_INT32 * CCompressedColumnFormat::getRowIndex()
+size_t * CCompressedColumnFormat::getRowIndex()
 {return mpRowIndex;}
 
-const unsigned C_INT32 * CCompressedColumnFormat::getColumnStart() const
+const size_t * CCompressedColumnFormat::getColumnStart() const
 {return mpColumnStart;}
 
-unsigned C_INT32 * CCompressedColumnFormat::getColumnStart()
+size_t * CCompressedColumnFormat::getColumnStart()
 {return mpColumnStart;}
 
 CCompressedColumnFormat & CCompressedColumnFormat::operator = (const CSparseMatrix & matrix)
@@ -537,12 +542,12 @@ CCompressedColumnFormat & CCompressedColumnFormat::operator = (const CSparseMatr
   mNumRows = matrix.numRows();
   mNumCols = matrix.numCols();
 
-  mpColumnStart = new unsigned C_INT32[mNumCols + 1];
+  mpColumnStart = new size_t[mNumCols + 1];
   mpColumnStart[mNumCols] = matrix.numNonZeros();
 
   if (mpColumnStart[mNumCols])
     {
-      mpRowIndex = new unsigned C_INT32[mpColumnStart[mNumCols]];
+      mpRowIndex = new size_t[mpColumnStart[mNumCols]];
       mpValue = new C_FLOAT64[mpColumnStart[mNumCols]];
     }
   else
@@ -551,8 +556,8 @@ CCompressedColumnFormat & CCompressedColumnFormat::operator = (const CSparseMatr
       mpValue = NULL;
     }
 
-  unsigned C_INT32 k = 0;
-  unsigned C_INT32 i;
+  size_t k = 0;
+  size_t i;
 
   std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itCol;
   std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endCol;
@@ -560,7 +565,7 @@ CCompressedColumnFormat & CCompressedColumnFormat::operator = (const CSparseMatr
   std::vector< CSparseMatrixElement * >::const_iterator itElement;
   std::vector< CSparseMatrixElement * >::const_iterator endElement;
 
-  unsigned C_INT32 * pRowIndex = mpRowIndex;
+  size_t * pRowIndex = mpRowIndex;
   C_FLOAT64 * pValue = mpValue;
 
   for (i = 0, itCol = matrix.getColumns().begin(), endCol = matrix.getColumns().end();
@@ -579,9 +584,9 @@ CCompressedColumnFormat & CCompressedColumnFormat::operator = (const CSparseMatr
   return *this;
 }
 
-CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::beginRow(const unsigned C_INT32 & row) const
+CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::beginRow(const size_t & row) const
 {return const_row_iterator(this, row);}
-CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::endRow(const unsigned C_INT32 & /* row */) const
+CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::endRow(const size_t & /* row */) const
 {return const_row_iterator(this);}
 
 // ---------- SparseMatrixTest
@@ -590,15 +595,15 @@ CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::endRow(cons
 #include "randomGenerator/CRandom.h"
 #include "report/CCopasiTimer.h"
 
-bool SparseMatrixTest(const unsigned C_INT32 & size,
+bool SparseMatrixTest(const size_t & size,
                       const C_FLOAT64 & sparseness,
                       const unsigned C_INT32 & seed,
                       const bool & RMP,
-                      const bool & DGEMM,
+                      const bool & dgemmFlag,
                       const bool & SMP,
                       const bool & CCMP)
 {
-  unsigned C_INT32 i, j, l, loop = 1;
+  size_t i, j, l, loop = 1;
   CRandom * pRandom =
     CRandom::createGenerator(CRandom::mt19937, seed);
 
@@ -635,17 +640,17 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
 
   std::cout << "Memory requirements for sparseness:\t" << Sparseness << std::endl;
 
-  tmp = sizeof(CMatrix< C_FLOAT64 >) + size * size * sizeof(C_FLOAT64);
+  tmp = (C_FLOAT64) sizeof(CMatrix< C_FLOAT64 >) + size * size * sizeof(C_FLOAT64);
   std::cout << "Matrix(" << size << "x" << size << "):\t" << tmp << std::endl;
 
-  C_FLOAT64 tmp2 = sizeof(CSparseMatrix)
+  C_FLOAT64 tmp2 = (C_FLOAT64) sizeof(CSparseMatrix)
                    + 2 * size * sizeof(std::vector<CSparseMatrixElement *>)
                    + 2 * size * sizeof(C_FLOAT64)
                    + S.numNonZeros() * sizeof(CSparseMatrixElement);
   std::cout << "Sparse(" << size << "x" << size << "):\t" << tmp2 << std::endl;
   std::cout << "Sparse/Matrix:\t" << tmp2 / tmp << std::endl;
 
-  tmp2 = sizeof(CCompressedColumnFormat)
+  tmp2 = (C_FLOAT64) sizeof(CCompressedColumnFormat)
          + 2 * C.numNonZeros() * sizeof(C_FLOAT64)
          + (size + 1) * sizeof(C_FLOAT64);
   std::cout << "CompressedColumnFormat(" << size << "x" << size << "):\t" << tmp2 << std::endl;
@@ -667,8 +672,8 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
           const C_FLOAT64 *pEnd1, *pEnd2, *pEnd4;
           C_FLOAT64 *pTmp3;
 
-          unsigned C_INT32 LDA = M.numCols();
-          unsigned C_INT32 LDB = MM.numCols();
+          size_t LDA = M.numCols();
+          size_t LDB = MM.numCols();
 
           pTmp1 = M.array();
           pEnd1 = pTmp1 + M.numRows() * LDA;
@@ -696,7 +701,7 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
       std::cout << std::endl;
     }
 
-  if (DGEMM)
+  if (dgemmFlag)
     {
       CPU.start();
       WALL.start();
@@ -706,9 +711,9 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
           CMatrix< C_FLOAT64 > dgemmR(M.numRows(), MM.numCols());
           char T = 'N';
 
-          C_INT m = MM.numCols(); /* LDA, LDC */
-          C_INT n = M.numRows();
-          C_INT k = M.numCols();  /* LDB */
+          C_INT m = (C_INT) MM.numCols(); /* LDA, LDC */
+          C_INT n = (C_INT) M.numRows();
+          C_INT k = (C_INT) M.numCols();  /* LDB */
 
           C_FLOAT64 Alpha = 1.0;
           C_FLOAT64 Beta = 0.0;
@@ -815,11 +820,11 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
           CSparseMatrix TmpR(C.numRows(), CC.numCols());
           CCompressedColumnFormat CR(C.numRows(), CC.numCols(), 0);
           C_FLOAT64 Tmp;
-          unsigned C_INT32 imax = CR.numRows();
-          unsigned C_INT32 jmax = CR.numCols();
+          size_t imax = CR.numRows();
+          size_t jmax = CR.numCols();
           C_FLOAT64 * pColElement, * pEndColElement;
-          unsigned C_INT32 * pColElementRow, * pEndColElementRow;
-          unsigned C_INT32 * pColStart;
+          size_t * pColElementRow, * pEndColElementRow;
+          size_t * pColStart;
           CCompressedColumnFormat::const_row_iterator itRowElement;
           CCompressedColumnFormat::const_row_iterator endRowElement = C.endRow(0);
 

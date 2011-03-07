@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: heilmand $
-//   $Date: 2010/08/02 15:12:05 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:27:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,12 +39,12 @@ CTableauMatrix::CTableauMatrix():
 {}
 
 CTableauMatrix::CTableauMatrix(const std::vector< std::vector< C_FLOAT64 > > & stoi,
-                               C_INT32 reversibleNumber):
+                               size_t reversibleNumber):
     mLine(),
     mFirstIrreversible(mLine.end())
 {
-  unsigned C_INT32 ReactionCounter = 0;
-  unsigned C_INT32 ReactionNumber = stoi.size();
+  size_t ReactionCounter = 0;
+  size_t ReactionNumber = stoi.size();
 
   for (std::vector< std::vector< C_FLOAT64 > >::const_iterator Reaction = stoi.begin();
        Reaction < stoi.end();
@@ -70,7 +70,7 @@ CTableauMatrix::~CTableauMatrix()
     pdelete(*i);
 }
 
-unsigned C_INT32 CTableauMatrix::size() const
+size_t CTableauMatrix::size() const
 {return mLine.size();}
 
 std::list< const CTableauLine * >::iterator CTableauMatrix::begin()

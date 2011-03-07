@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:59 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,6 +30,7 @@
 #include "UI/qtUtilities.h"
 
 #include "CQCompartment.h"
+#include "CTabWidget.h"
 
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the
@@ -112,8 +113,10 @@ void CQCompartment::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  enter(mpCompartment->getKey());
-  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD);
+  std::string key = mpCompartment->getKey();
+  enter(key);
+  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 void CQCompartment::slotBtnDelete()
@@ -128,7 +131,7 @@ void CQCompartment::slotBtnDelete()
   if (mpCompartment == NULL) return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, pModel, "compartment",
+    CQMessageBox::confirmDelete(this, "compartment",
                                 FROM_UTF8(mpCompartment->getObjectName()),
                                 mpCompartment->getDeletedObjects());
 
@@ -136,19 +139,34 @@ void CQCompartment::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        unsigned C_INT32 Index =
+        size_t Index =
           pDataModel->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
         pDataModel->getModel()->removeCompartment(mKey);
+        std::string deletedKey = mKey;
+        //std::string moveToKey = "";
 
-        unsigned C_INT32 Size =
+        size_t Size =
           pDataModel->getModel()->getCompartments().size();
 
-        if (Size > 0)
-          enter(pDataModel->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
 
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (Size > 0)
+              pTabWidget->enter(pDataModel->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
+
+        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
         break;
       }
 
@@ -375,10 +393,10 @@ void CQCompartment::load()
   mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
 
   // Transient Volume
-  mpEditCurrentVolume->setText(QString::number(mpCompartment->getValue()));
+  mpEditCurrentVolume->setText(QString::number(mpCompartment->getValue(), 'g', 10));
 
   // Concentration Rate
-  mpEditRate->setText(QString::number(mpCompartment->getRate()));
+  mpEditRate->setText(QString::number(mpCompartment->getRate(), 'g', 10));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpCompartment->getExpression());

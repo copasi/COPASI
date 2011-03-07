@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/22 13:21:46 $
+//   $Date: 2011/03/07 19:27:12 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,7 +46,7 @@
 # include "UI/qtUtilities.h"
 #endif // Darwin
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
 

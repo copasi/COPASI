@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:38:35 $
+//   $Date: 2011/03/07 19:34:54 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -93,11 +98,12 @@ CCopasiMessage CCopasiMessage::getLastMessage()
 std::string CCopasiMessage::getAllMessageText(const bool & chronological)
 {
   std::string Text = "";
-  CCopasiMessage (*getMessage)() = chronological ? getFirstMessage : getLastMessage;
+  CCopasiMessage(*getMessage)() = chronological ? getFirstMessage : getLastMessage;
 
   while (!mMessageDeque.empty())
     {
       if (Text != "") Text += "\n";
+
       Text += getMessage().getText();
     }
 
@@ -110,7 +116,7 @@ void CCopasiMessage::clearDeque()
   return;
 }
 
-unsigned C_INT32 CCopasiMessage::size()
+size_t CCopasiMessage::size()
 {
   return mMessageDeque.size();
 }
@@ -127,7 +133,7 @@ CCopasiMessage::Type CCopasiMessage::getHighestSeverity()
   return HighestSeverity;
 }
 
-bool CCopasiMessage::checkForMessage(const unsigned C_INT32 & number)
+bool CCopasiMessage::checkForMessage(const size_t & number)
 {
   std::deque< CCopasiMessage >::const_iterator it = mMessageDeque.begin();
   std::deque< CCopasiMessage >::const_iterator end = mMessageDeque.end();
@@ -186,7 +192,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
 }
 
 CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
-                               unsigned C_INT32 number, ...)
+                               size_t number, ...)
 {
   C_INT32 i = 0;
 
@@ -235,70 +241,70 @@ void CCopasiMessage::handler(const bool & /* _throw */)
 
   switch (mType)
     {
-    case RAW:
-      mText = "";
-      break;
+      case RAW:
+        mText = "";
+        break;
 
-    case TRACE:
-      mText = ">TRACE ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case TRACE:
+        mText = ">TRACE ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case COMMANDLINE:
-    case WARNING:
-      mText = ">WARNING ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case COMMANDLINE:
+      case WARNING:
+        mText = ">WARNING ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case ERROR:
-      mText = ">ERROR ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case ERROR:
+        mText = ">ERROR ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case EXCEPTION:
-      mText = ">EXCEPTION ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case EXCEPTION:
+        mText = ">EXCEPTION ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case RAW_FILTERED:
-      mText = ">RAW(filtered) ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case RAW_FILTERED:
+        mText = ">RAW(filtered) ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case TRACE_FILTERED:
-      mText = ">TRACE(filtered) ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case TRACE_FILTERED:
+        mText = ">TRACE(filtered) ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case COMMANDLINE_FILTERED:
-      mText = ">COMMANDLINE(filtered) ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case COMMANDLINE_FILTERED:
+        mText = ">COMMANDLINE(filtered) ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case WARNING_FILTERED:
-      mText = ">WARNING(filtered) ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case WARNING_FILTERED:
+        mText = ">WARNING(filtered) ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case ERROR_FILTERED:
-      mText = ">ERROR(filtered) ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case ERROR_FILTERED:
+        mText = ">ERROR(filtered) ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
 
-    case EXCEPTION_FILTERED:
-      mText = ">EXCEPTION(filtered) ";
-      mText += LocalTimeStamp();
-      mText += "<\n";
-      break;
+      case EXCEPTION_FILTERED:
+        mText = ">EXCEPTION(filtered) ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
     }
 
   mText += Text;
@@ -328,7 +334,7 @@ void CCopasiMessage::handler(const bool & /* _throw */)
 }
 
 // overload assignment operator
-CCopasiMessage &CCopasiMessage::operator=(const CCopasiMessage &RHS)
+CCopasiMessage &CCopasiMessage::operator=(const CCopasiMessage & RHS)
 {
   mText = RHS.mText;
   mType = RHS.mType;
@@ -339,7 +345,7 @@ CCopasiMessage &CCopasiMessage::operator=(const CCopasiMessage &RHS)
 CCopasiMessage::~CCopasiMessage(void) {}
 const std::string & CCopasiMessage::getText(void) const {return mText;}
 const CCopasiMessage::Type & CCopasiMessage::getType(void) const {return mType;}
-const unsigned C_INT32 & CCopasiMessage::getNumber(void) const {return mNumber;}
+const size_t & CCopasiMessage::getNumber(void) const {return mNumber;}
 
 void CCopasiMessage::lineBreak()
 {

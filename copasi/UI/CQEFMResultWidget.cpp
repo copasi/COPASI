@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:43 $
+//   $Date: 2011/03/07 19:38:00 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,6 +29,7 @@
 #include "elementaryFluxModes/CEFMTask.h"
 #include "elementaryFluxModes/CFluxMode.h"
 #include "utilities/utility.h"
+#include "commandline/CLocaleString.h"
 
 CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
     CopasiWidget(parent, name),
@@ -229,7 +230,7 @@ void CQEFMResultWidget::slotSave()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail())
     return;

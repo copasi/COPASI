@@ -1,33 +1,61 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.42 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/07/02 08:48:46 $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/Attic/objectdebug.cpp,v $
+//   $Revision: 1.12.2.2 $
+//   $Name: Build-33 $
+//   $Author: aekamal $
+//   $Date: 2011/01/24 17:00:16 $
 // End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
 // All rights reserved.
 
-/****************************************************************************
- ** ui.h extension file, included from the uic-generated form implementation.
- **
- ** If you wish to add, delete or rename functions or slots use
- ** Qt Designer which will update this file, preserving your code. Create an
- ** init() function in place of a constructor, and a destroy() function in
- ** place of a destructor.
- *****************************************************************************/
+#include "objectdebug.h"
 
+#include <qvariant.h>
+#include <q3textedit.h>
+#include <sstream>
 #include "copasi.h"
-
+#include "model/CModelAnalyzer.h"
+#include "model/CDotOutput.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "UI/qtUtilities.h"
-
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiRootContainer.h"
+/*
+ *  Constructs a ObjectDebug as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  true to construct a modal dialog.
+ */
+ObjectDebug::ObjectDebug(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+    : QDialog(parent, name, modal, fl)
+{
+  setupUi(this);
+
+  init();
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+ObjectDebug::~ObjectDebug()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void ObjectDebug::languageChange()
+{
+  retranslateUi(this);
+}
 
 class MyListViewItemWithPtr : public Q3ListViewItem
 {
@@ -177,8 +205,6 @@ void ObjectDebug::init()
   ListOfObjects->setAllColumnsShowFocus(true);
 }
 
-#include "model/CDotOutput.h"
-
 void ObjectDebug::writeDot()
 {
 
@@ -188,11 +214,6 @@ void ObjectDebug::writeDot()
   assert(pDataModel != NULL);
   dot.simpleCall(pDataModel->getModel());
 }
-
-#include "model/CModelAnalyzer.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include <q3textedit.h>
-#include <sstream>
 
 void ObjectDebug::checkModel()
 {

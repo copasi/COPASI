@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2011/03/07 19:37:47 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -41,6 +46,7 @@
 #include "utilities/CDimension.h"
 #include "CopasiFileDialog.h"
 #include "CQMessageBox.h"
+#include "commandline/CLocaleString.h"
 
 #define COL_NAME 0
 #define COL_STATUS 1
@@ -275,7 +281,7 @@ void ParametersWidget::savePressed()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail()) return;
 
@@ -294,7 +300,7 @@ bool ParametersWidget::loadFromModel()
 
   listView->clear();
 
-  unsigned C_INT32 i, imax, j, jmax;
+  size_t i, imax, j, jmax;
   QString unit;
 
   //Time

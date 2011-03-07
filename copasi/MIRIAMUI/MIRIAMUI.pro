@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $
-#   $Revision: 1.21 $
+#   $Revision: 1.22 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/07/16 19:01:00 $
+#   $Date: 2011/03/07 19:30:17 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -17,6 +17,7 @@
 # All rights reserved.
 
 LIB = MIRIAMUI
+DISTFILES = MIRIAMUI.pro
 
 HEADERS += CQMiriamWidget.h
 HEADERS += CQCreatorDM.h
@@ -43,5 +44,4 @@ include(../lib.pri)
 CONFIG += qt
 
 include(../common.pri)
-
-QT += qt3support
+include(../srcDistribution.pri)

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:53 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -47,7 +52,7 @@ const std::vector< unsigned C_INT32 >& CQCompartmentDM::getItemToType()
 
 int CQCompartmentDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments().size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments().size() + 1;
 }
 int CQCompartmentDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -90,7 +95,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
           switch (index.column())
             {
               case COL_ROW_NUMBER:
-                return QVariant(index.row() + 1);
+                return QVariant(QString(""));
               case COL_NAME_COMPARTMENTS:
                 return QVariant(QString("New Compartment"));
               case COL_TYPE_COMPARTMENTS:
@@ -120,7 +125,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_IVOLUME:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(pComp->getInitialValue()));
+                  return QVariant(QString::number(pComp->getInitialValue(), 'g', 10));
                 else
                   return QVariant(pComp->getInitialValue());
               }
@@ -258,7 +263,7 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
         pComp->setObjectName(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pComp->getKey());
     }
 
   return true;
@@ -270,11 +275,11 @@ bool CQCompartmentDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
+      CCompartment * pComp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, "");
 
   return true;
 }
@@ -288,11 +293,14 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
+      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[position]->getKey();
       (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeCompartment(position);
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+
     }
 
   endRemoveRows();
-  emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, "");
 
   return true;
 }
@@ -302,7 +310,10 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return false;
@@ -324,18 +335,18 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       CCompartment * pCompartment = *j;
 
-      unsigned C_INT32 delRow =
+      size_t delRow =
         pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
 
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, pModel, "compartment",
+            CQMessageBox::confirmDelete(NULL, "compartment",
                                         FROM_UTF8(pCompartment->getObjectName()),
                                         pCompartment->getDeletedObjects());
 
           if (choice == QMessageBox::Ok)
-            removeRow(delRow);
+            removeRow((int) delRow);
         }
     }
 

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 13:54:11 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:29:15 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -101,7 +101,7 @@ public:
   CVisParameters::SCALING_MODE getScalingMode();
   CVisParameters::MAPPING_MODE getMappingMode();
   C_INT16 getFontSize();
-  C_INT32 getCurrentStep();
+  size_t getCurrentStep();
   void addItemInAnimation(std::string s);
   void removeItemInAnimation(std::string s);
 
@@ -149,7 +149,7 @@ public slots:
   void slotLoopActivated(bool checked);
 
 public slots:
-  void changeStepValue(C_INT32 i);
+  void changeStepValue(int i);
   void endOfAnimationReached();
 
 private:

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:02:21 $
+//   $Date: 2011/03/07 19:32:04 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -48,7 +53,7 @@ CFitTask::CFitTask(const CFitTask & src,
     COptTask(src, pParent)
 {
   pdelete(mpProblem);
-  mpProblem = new CFitProblem(* (CFitProblem *) src.mpProblem, this);
+  mpProblem = new CFitProblem(*(CFitProblem *) src.mpProblem, this);
   pdelete(mpMethod);
   mpMethod = CFitMethod::createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
@@ -59,13 +64,14 @@ CFitTask::CFitTask(const CFitTask & src,
 CFitTask::~CFitTask()
 {cleanup();}
 
-void CFitTask::cleanup(){}
+void CFitTask::cleanup() {}
 
 bool CFitTask::setCallBack(CProcessReport * pCallBack)
 {
   bool success = CCopasiTask::setCallBack(pCallBack);
 
   if (!mpProblem->setCallBack(pCallBack)) success = false;
+
   if (!mpMethod->setCallBack(pCallBack)) success = false;
 
   return success;
@@ -112,10 +118,18 @@ bool CFitTask::setMethodType(const int & type)
 
   if (mpMethod->getSubType() == Type) return true;
 
-  pdelete (mpMethod);
+  pdelete(mpMethod);
 
-  mpMethod = CFitMethod::createMethod(Type);
+  mpMethod = createMethod(Type);
   this->add(mpMethod, true);
 
   return true;
+}
+
+// virtual
+CCopasiMethod * CFitTask::createMethod(const int & type) const
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  return CFitMethod::createMethod(Type);
 }

@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauLine.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: heilmand $
-   $Date: 2010/08/02 15:12:05 $
+   $Author: shoops $
+   $Date: 2011/03/07 19:27:35 $
    End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -112,8 +112,8 @@ void CTableauLine::truncate()
  */
 std::ostream & operator << (std::ostream & os, const CTableauLine & l)
 {
-  unsigned C_INT32 i, imax = l.mReaction.size();
-  unsigned C_INT32 j, jmax = l.mFluxMode.size();
+  size_t i, imax = l.mReaction.size();
+  size_t j, jmax = l.mFluxMode.size();
 
   if (l.isReversible())
     os << "reversible:  ";

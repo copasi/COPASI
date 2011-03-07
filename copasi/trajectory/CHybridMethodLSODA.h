@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/20 18:24:25 $
+//   $Date: 2011/03/07 19:34:13 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -92,7 +97,7 @@ class CDependencyGraph;
 class CHybridLSODAStochFlag
 {
 public:
-  C_INT32 mIndex;
+  size_t mIndex;
   C_INT32 mValue;
   CHybridLSODAStochFlag * mpPrev;
   CHybridLSODAStochFlag * mpNext;
@@ -108,7 +113,7 @@ public:
 class CHybridLSODABalance
 {
 public:
-  C_INT32 mIndex;
+  size_t mIndex;
   C_INT32 mMultiplicity;
   CMetab * mpMetabolite;
 
@@ -120,8 +125,7 @@ class CHybridMethodLSODA : public CTrajectoryMethod
 {
 
   friend CTrajectoryMethod *
-  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-      CTrajectoryProblem * pProblem);
+  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
   /* PUBLIC METHODS **********************************************************/
 
@@ -283,51 +287,51 @@ protected:
    *
    *   @param ds A reference to a C_FLOAT64. The putative reaction time for
    *             the first stochastic reaction is written into this variable.
-   *   @param rIndex A reference to a C_INT32. The index of the first
+   *   @param rIndex A reference to a size_t. The index of the first
    *                 stochastic reaction is written into this variable.
    */
-  void getStochTimeAndIndex(C_FLOAT64 & ds, C_INT32 & rIndex);
+  void getStochTimeAndIndex(C_FLOAT64 & ds, size_t & rIndex);
 
   /**
    *   Executes the specified reaction in the system once.
    *
-   *   @param rIndex A C_INT32 specifying the index of the reaction, which
+   *   @param rIndex A size_t specifying the index of the reaction, which
    *                 will be fired.
    */
-  void fireReaction(C_INT32 rIndex);
+  void fireReaction(size_t rIndex);
 
   /**
    *   Updates the priority queue.
    *
-   *   @param rIndex A C_INT32 giving the index of the fired reaction
+   *   @param rIndex A size_t giving the index of the fired reaction
    *   @param time A C_FLOAT64 holding the time taken by this reaction
    */
-  void updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time);
+  void updatePriorityQueue(size_t rIndex, C_FLOAT64 time);
 
   /**
    *   Generates a putative reaction time for the given reaction.
    *
-   *   @param rIndex A C_INT32 specifying the index of the reaction
+   *   @param rIndex A size_t specifying the index of the reaction
    *   @return A C_FLOAT64 holding the calculated reaction time
    */
-  C_FLOAT64 generateReactionTime(C_INT32 rIndex);
+  C_FLOAT64 generateReactionTime(size_t rIndex);
 
   /**
    *   Calculates an amu value for a given reaction.
    *
-   *   @param rIndex A C_INT32 specifying the reaction to be updated
+   *   @param rIndex A size_t specifying the reaction to be updated
    */
-  void calculateAmu(C_INT32 rIndex);
+  void calculateAmu(size_t rIndex);
 
   /**
    *   Updates the putative reaction time of a stochastic reaction in the
    *   priority queue. The corresponding amu and amu_old must be set prior to
    *   the call of this method.
    *
-   *   @param rIndex A C_INT32 specifying the index of the reaction
+   *   @param rIndex A size_t specifying the index of the reaction
    *   @param time A C_FLOAT64 specifying the current time
    */
-  void updateTauMu(C_INT32 rIndex, C_FLOAT64 time);
+  void updateTauMu(size_t rIndex, C_FLOAT64 time);
 
   /* TESTING THE MODEL AND SETTING UP THINGS *********************************/
 
@@ -406,19 +410,19 @@ protected:
    *   Inserts a new deterministic reaction into the linked list in the
    *   vector mReactionFlags.
    *
-   *   @param rIndex A C_INT32 giving the index of the reaction to be
+   *   @param rIndex A size_t giving the index of the reaction to be
    *                 inserted into the list of deterministic reactions.
    */
-  void insertDeterministicReaction(C_INT32 rIndex);
+  void insertDeterministicReaction(size_t rIndex);
 
   /**
    *   Removes a deterministic reaction from the linked list in the
    *   vector mReactionFlags.
    *
-   *   @param rIndex A C_INT32 giving the index of the reaction to be
+   *   @param rIndex A size_t giving the index of the reaction to be
    *                 removed from the list of deterministic reactions.
    */
-  void removeDeterministicReaction(C_INT32 rIndex);
+  void removeDeterministicReaction(size_t rIndex);
 
   /**
    *   Gets the set of metabolites on which a given reaction depends.
@@ -426,7 +430,7 @@ protected:
    *   @param rIndex The index of the reaction being executed.
    *   @return The set of metabolites depended on.
    */
-  std::set <std::string> *getDependsOn(C_INT32 rIndex);
+  std::set <std::string> *getDependsOn(size_t rIndex);
 
   /**
    *   Gets the set of metabolites which change number when a given
@@ -435,7 +439,7 @@ protected:
    *   @param rIndex The index of the reaction being executed.
    *   @return The set of affected metabolites.
    */
-  std::set <std::string> *getAffects(C_INT32 rIndex);
+  std::set <std::string> *getAffects(size_t rIndex);
 
   /**
    *   Gets the set of metabolites, which participate in the given
@@ -444,7 +448,7 @@ protected:
    *   @param rIndex The index of the reaction being executed.
    *   @return The set of participating metabolites.
    */
-  std::set <C_INT32> *getParticipatesIn(C_INT32 rIndex);
+  std::set <size_t> *getParticipatesIn(size_t rIndex);
 
   /**
    *   Prints out data on standard output.
@@ -454,7 +458,7 @@ protected:
   /**
    *   Prints out various data on standard output for debugging purposes.
    */
-  void outputDebug(std::ostream & os, C_INT32 level);
+  void outputDebug(std::ostream & os, size_t level);
 
   /* PRIVATE METHODS *********************************************************/
 
@@ -490,12 +494,12 @@ protected:
   /**
    *   Dimension of the system. Total number of metabolites.
    */
-  unsigned C_INT32 mNumVariableMetabs;
+  size_t mNumVariableMetabs;
 
   /**
    *   index of the first metab in CState
    */
-  unsigned C_INT32 mFirstMetabIndex;
+  size_t mFirstMetabIndex;
 
   /**
    *   Max number of doSingleStep() per step()
@@ -602,7 +606,7 @@ protected:
   /**
    *   Vector of relations between metabolites to reactions.
    */
-  std::vector <std::set <C_INT32> > mMetab2React;
+  std::vector <std::set <size_t> > mMetab2React;
 
   /**
    *   The propensities of the stochastic reactions.
@@ -613,7 +617,7 @@ protected:
   /**
    *   Set of the reactions, which must be updated.
    */
-  std::set <C_INT32> mUpdateSet;
+  std::set <size_t> mUpdateSet;
 
   /**
    *   The random number generator.
@@ -724,7 +728,7 @@ protected:
   /**
    *   Output counter.
    */
-  C_INT32 mOutputCounter;
+  size_t mOutputCounter;
 
   /**
    *  Indicates whether the model has global quantities with assignment rules.

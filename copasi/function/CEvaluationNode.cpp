@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/19 18:17:09 $
+//   $Date: 2011/03/07 19:28:19 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,8 +27,8 @@
 #include "sbml/ConverterASTNode.h"
 #include "sbml/util/List.h"
 
-CEvaluationNode::CPrecedence::CPrecedence(const unsigned C_INT32 & left,
-    const unsigned C_INT32 & right):
+CEvaluationNode::CPrecedence::CPrecedence(const size_t & left,
+    const size_t & right):
     left(left),
     right(right)
 {}
@@ -236,7 +236,7 @@ const C_FLOAT64 * CEvaluationNode::getValuePointer() const
 void CEvaluationNode::writeMathML(std::ostream & /* out */,
                                   const std::vector<std::vector<std::string> > & /* env */,
                                   bool /* expand */,
-                                  unsigned C_INT32 /* l */) const
+                                  size_t /* l */) const
 {}
 
 void CEvaluationNode::printRecursively(std::ostream & os, int indent) const

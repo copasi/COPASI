@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/01/29 21:59:25 $
+//   $Date: 2011/03/07 19:27:36 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,8 +22,8 @@
 #include "CStepMatrixColumn.h"
 
 CZeroSet::CIndex::CIndex(const size_t & index):
-    mIndex(index / (CHAR_BIT * sizeof(unsigned C_INT32))),
-    mBit(1 << (index % (CHAR_BIT * sizeof(unsigned C_INT32)))),
+    mIndex(index / (CHAR_BIT * sizeof(size_t))),
+    mBit(1 << (index % (CHAR_BIT * sizeof(size_t)))),
     mNotBit(C_INVALID_INDEX - mBit)
 {}
 
@@ -57,8 +62,8 @@ CZeroSet::CIndex & CZeroSet::CIndex::operator = (const CZeroSet::CIndex & rhs)
 
 CZeroSet::CIndex & CZeroSet::CIndex::operator = (const size_t & index)
 {
-  mIndex = index / (CHAR_BIT * sizeof(unsigned C_INT32));
-  mBit = 1 << (index % (CHAR_BIT * sizeof(unsigned C_INT32)));
+  mIndex = index / (CHAR_BIT * sizeof(size_t));
+  mBit = ((size_t) 1) << (index % (CHAR_BIT * sizeof(size_t)));
   mNotBit = C_INVALID_INDEX - mBit;
 
   return *this;
@@ -73,8 +78,8 @@ bool CZeroSet::CIndex::operator < (const CZeroSet::CIndex & rhs) const
 }
 
 CZeroSet::CZeroSet(const size_t & size):
-    mBitSet(size / (CHAR_BIT * sizeof(unsigned C_INT32)) + 1),
-    mIgnoredBits(mBitSet.size() * CHAR_BIT * sizeof(unsigned C_INT32) - size),
+    mBitSet(size / (CHAR_BIT * sizeof(size_t)) + 1),
+    mIgnoredBits(mBitSet.size() * CHAR_BIT * sizeof(size_t) - size),
     mNumberSetBits(size)
 {
   mBitSet = C_INVALID_INDEX;
@@ -108,18 +113,18 @@ bool CZeroSet::isExtremeRay(const std::vector< CStepMatrixColumn * > & columns) 
 
 std::ostream & operator << (std::ostream & os, const CZeroSet & set)
 {
-  const unsigned C_INT32 * pIt = set.mBitSet.array();
-  const unsigned C_INT32 * pEnd = pIt + set.mBitSet.size();
+  const size_t * pIt = set.mBitSet.array();
+  const size_t * pEnd = pIt + set.mBitSet.size();
 
   size_t CurrentBit = 0;
-  size_t LastBit = set.mBitSet.size() * CHAR_BIT * sizeof(unsigned C_INT32) - set.mIgnoredBits;
+  size_t LastBit = set.mBitSet.size() * CHAR_BIT * sizeof(size_t) - set.mIgnoredBits;
 
   os << ' ';
 
   for (; pIt != pEnd; ++pIt)
     {
       for (size_t i = 0;
-           i < CHAR_BIT * sizeof(unsigned C_INT32) && CurrentBit < LastBit;
+           i < CHAR_BIT * sizeof(size_t) && CurrentBit < LastBit;
            ++i, ++CurrentBit)
         {
           if ((*pIt >> i) & 1)

@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.17 $ 
+#   $Revision: 1.18 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 18:57:32 $ 
+#   $Date: 2011/03/07 19:26:44 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -90,19 +90,23 @@ contains(BUILD_OS, Darwin){
 
 
 # Input
-HEADERS +=  test_expression_comparison.hpp \
+HEADERS +=  test_depth_first_iterator.h \
+            test_expression_comparison.hpp \
             test_node_conversion.hpp \
             test_cnormallogical.hpp \
             test_normalform.hpp \
             test_simplify.h \
-            test_compare_utilities.h
+            test_compare_utilities.h \
+            test_biomodels217_expression.h
 
 SOURCES += test.cpp \
+           test_depth_first_iterator.cpp \ 
            test_expression_comparison.cpp \
            test_node_conversion.cpp \
            test_cnormallogical.cpp \
            test_normalform.cpp \
            test_simplify.cpp \
-           test_compare_utilities.cpp
+           test_compare_utilities.cpp \
+           test_biomodels217_expression.cpp
 
 

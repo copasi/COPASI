@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 18:08:01 $
+//   $Date: 2011/03/07 19:30:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -116,8 +116,9 @@ public:
   /**
    * Set the expression from an expression pointer. CEventAssignment takes ownership.
    * @param CExpression* pExpression
+   * @return bool success
    */
-  void setExpressionPtr(CExpression * pExpression);
+  bool setExpressionPtr(CExpression * pExpression);
 
   /**
    * Retrieve the expression as a string.
@@ -221,15 +222,15 @@ public:
 
   /**
    * Set the order in which the event is executed for simultaneous events.
-   * @param const unsigned C_INT32 & order
+   * @param const size_t & order
    * const bool & correctOther = true
    */
-  void setOrder(const unsigned C_INT32 & order, const bool & correctOther = true);
+  void setOrder(const size_t & order, const bool & correctOther = true);
 
   /**
    * Retrieve the order in which the events is executed for simultaneous events
    */
-  const unsigned C_INT32 & getOrder() const;
+  const size_t & getOrder() const;
 
   /**
    * Sets the SBMLId.
@@ -265,8 +266,9 @@ public:
   /**
    * Set the expression of trigger from an expression.
    * @param CExpression* pExpression
+   * @return bool success
    */
-  void setTriggerExpressionPtr(CExpression * pExpression);
+  bool setTriggerExpressionPtr(CExpression * pExpression);
 
   /**
    * Retrieve the expression of trigger as a string.
@@ -297,8 +299,9 @@ public:
   /**
    * Set the expression of delay from an expression.
    * @param CExpression* pExpression
+   * @return bool success
    */
-  void setDelayExpressionPtr(CExpression* pExpression);
+  bool setDelayExpressionPtr(CExpression* pExpression);
 
   /**
    * Retrieve the expression of the delay as a string.
@@ -357,7 +360,7 @@ private:
   /**
    * The order in which the event is executed for simultaneous events.
    */
-  unsigned C_INT32 mOrder;
+  size_t mOrder;
 
   /**
    * A vector assignments expressions which specify the changes made by the event.

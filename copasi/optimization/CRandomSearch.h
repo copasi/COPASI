@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Date: 2011/03/07 19:31:26 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,93 +36,93 @@ class COptMethod;
 /** @dia:pos 48.05,34.05 */
 /** @dia:route COptMethod; v,46.9608,16.35,33,59.1652,34.05 */
 class CRandomSearch : public COptMethod
-  {
-    friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
+{
+  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
 
-    // Operations
-  private:
-    /**
-     * Default Constructor
-     */
-    CRandomSearch();
+  // Operations
+private:
+  /**
+   * Default Constructor
+   */
+  CRandomSearch();
 
-    /**
-        * Initialize arrays and pointer.
-        * @return bool success
-        */
-    virtual bool initialize();
+  /**
+      * Initialize arrays and pointer.
+      * @return bool success
+      */
+  virtual bool initialize();
 
-    /**
-     * Initialize contained objects.
-     */
-    void initObjects();
+  /**
+   * Initialize contained objects.
+   */
+  void initObjects();
 
-    /**
-     * Evaluate the fitness of one individual
-     * @param const CVector< C_FLOAT64 > & individual
-     * @return bool continue
-     */
-    bool evaluate(const CVector< C_FLOAT64 > & individual);
+  /**
+   * Evaluate the fitness of one individual
+   * @param const CVector< C_FLOAT64 > & individual
+   * @return bool continue
+   */
+  bool evaluate(const CVector< C_FLOAT64 > & individual);
 
-    /**
-     * Find the best individual at this generation
-     * @return unsigned C_INT32 fittest
-     */
-    unsigned C_INT32 fittest();
+  /**
+   * Find the best individual at this generation
+   * @return size_t fittest
+   */
+  size_t fittest();
 
-    /**
-     * number of iterations
-     */
-    unsigned C_INT32 mIterations;
+  /**
+   * number of iterations
+   */
+  unsigned C_INT32 mIterations;
 
-    /**
-     * The current iteration
-     */
-    unsigned C_INT32 mCurrentIteration;
+  /**
+   * The current iteration
+   */
+  unsigned C_INT32 mCurrentIteration;
 
-    /**
-     * a vector of the number of individuals.
-     */
-    CVector<C_FLOAT64> mIndividual;
+  /**
+   * a vector of the number of individuals.
+   */
+  CVector<C_FLOAT64> mIndividual;
 
-    /**
-     * array of values of objective function f/ individuals
-     */
-    C_FLOAT64 mValue;
+  /**
+   * array of values of objective function f/ individuals
+   */
+  C_FLOAT64 mValue;
 
-    /**
-     * a pointer to the randomnumber generator.
-     */
-    CRandom * mpRandom;
+  /**
+   * a pointer to the randomnumber generator.
+   */
+  CRandom * mpRandom;
 
-    /**
-     * *** Perhaps this is actually not needed ****number of parameters
-     */
-    unsigned C_INT32 mVariableSize;
+  /**
+   * *** Perhaps this is actually not needed ****number of parameters
+   */
+  size_t mVariableSize;
 
-    /**
-     * The best value found so far.
-     */
-    C_FLOAT64 mBestValue;
+  /**
+   * The best value found so far.
+   */
+  C_FLOAT64 mBestValue;
 
-  public:
-    /**
-     * Copy Constructor
-     * @param const CRandomSearch & src
-     */
-    CRandomSearch(const CRandomSearch & src);
+public:
+  /**
+   * Copy Constructor
+   * @param const CRandomSearch & src
+   */
+  CRandomSearch(const CRandomSearch & src);
 
-    /**
-     * Destructor
-     */
-    virtual ~CRandomSearch();
+  /**
+   * Destructor
+   */
+  virtual ~CRandomSearch();
 
-    /**
-     * Execute the optimization algorithm calling simulation routine
-     * when needed. It is noted that this procedure can give feedback
-     * of its progress by the callback function set with SetCallback.
-     */
-    virtual bool optimise();
-  };
+  /**
+   * Execute the optimization algorithm calling simulation routine
+   * when needed. It is noted that this procedure can give feedback
+   * of its progress by the callback function set with SetCallback.
+   */
+  virtual bool optimise();
+};
 
 #endif  // COPASI_CRandomSearch

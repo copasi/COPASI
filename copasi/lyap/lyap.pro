@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/lyap.pro,v $ 
-#   $Revision: 1.8 $ 
+#   $Revision: 1.9 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 18:59:37 $ 
+#   $Date: 2011/03/07 19:30:20 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -17,10 +17,11 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2010/07/16 18:59:37 $
+# $Revision: 1.9 $ $Author: shoops $ $Date: 2011/03/07 19:30:20 $
 ######################################################################
 
 LIB = lyap
+DISTFILES = lyap.pro
 
 # Input
 HEADERS += CLyapWolfMethod.h \
@@ -37,3 +38,4 @@ SOURCES += CLyapWolfMethod.cpp \
 
 include(../lib.pri)
 include(../common.pri)
+include(../srcDistribution.pri)

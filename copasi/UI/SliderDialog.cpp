@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/11/13 08:35:50 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:59 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -28,6 +33,7 @@
 #include <QScrollArea>
 
 #include "SliderDialog.h"
+#include "DataModelGUI.h"
 #include "copasiui3window.h"
 #include "CQTrajectoryWidget.h"
 #include "SteadyStateWidget.h"
@@ -36,6 +42,7 @@
 #include "SliderSettingsDialog.h"
 #include "CQMessageBox.h"
 #include "CopasiSlider.h"
+#include "listviews.h"
 #include "mathematics.h"
 #include "qtUtilities.h"
 #include "xml/CCopasiXMLInterface.h"
@@ -52,14 +59,14 @@
 #include "model/CModel.h"
 #include "CCopasiSelectionDialog.h"
 
-C_INT32 SliderDialog::numMappings = 7;
-C_INT32 SliderDialog::folderMappings[][2] =
+size_t SliderDialog::numMappings = 7;
+size_t SliderDialog::folderMappings[][2] =
 {
   {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}
 };
 
-//C_INT32 SliderDialog::numKnownTasks = 4;
-//C_INT32 SliderDialog::[] = {21, 23, 24, 31};
+//size_t SliderDialog::numKnownTasks = 4;
+//size_t SliderDialog::[] = {21, 23, 24, 31};
 //const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
@@ -73,9 +80,12 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
     mpSliderBox(NULL),
     mpContextMenu(NULL),
     mpCurrSlider(NULL),
+    mSliderMap(),
+    mTaskMap(),
     mCurrentFolderId(0),
     mSliderValueChanged(false),
-    mSliderPressed(false)
+    mSliderPressed(false),
+    mFramework(0)
 {
   QVBoxLayout* pMainLayout = new QVBoxLayout(this);
   this->setLayout(pMainLayout);
@@ -134,7 +144,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   this->mpContextMenu->insertItem("Reset Value", this, SLOT(resetValue()));
   this->mpContextMenu->insertItem("Set new default value", this, SLOT(setDefault()));
 
-  this->mSliderMap[ -1].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
+  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
 
   this->mTaskMap[23] = &SliderDialog::runTimeCourse;
   this->mTaskMap[21] = &SliderDialog::runSteadyStateTask;
@@ -143,7 +153,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
-  this->setCurrentFolderId(-1);
+  this->setCurrentFolderId(C_INVALID_INDEX);
   init();
 }
 
@@ -196,8 +206,8 @@ void SliderDialog::createNewSlider()
 {
   // allow the user to create more than one slider
   std::vector<const CCopasiObject*> objects = CCopasiSelectionDialog::getObjectVector(this,
-      CCopasiSimpleSelectionTree::InitialTime |
-      CCopasiSimpleSelectionTree::Parameters);
+      CQSimpleSelectionTree::InitialTime |
+      CQSimpleSelectionTree::Parameters);
   std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
   std::vector<const CCopasiObject*>::const_iterator it = objects.begin(), endit = objects.end();
   bool yesToAll = false;
@@ -210,15 +220,19 @@ void SliderDialog::createNewSlider()
 
   if (!object) return;
 
+  CCopasiObject* pTmpObject = NULL;
+
   while (it != endit)
     {
       // create a new slider
       assert((*it) != NULL);
+      pTmpObject = const_cast<CCopasiObject*>(determineCorrectObjectForSlider(*it));
+
       CSlider* pCSlider = new CSlider("slider", (*CCopasiRootContainer::getDatamodelList())[0]);
 
       if (pCSlider)
         {
-          pCSlider->setSliderObject(const_cast< CCopasiObject * >(*it));
+          pCSlider->setSliderObject(pTmpObject);
           pCSlider->setAssociatedEntityKey(object->getKey());
           // check if a slider for that object already exists and if so, prompt
           // the user what to do
@@ -301,7 +315,7 @@ void SliderDialog::removeSlider()
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       CCopasiVector<CSlider>* pSliderList = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI()->getSliderList();
-      unsigned int i, maxCount = pSliderList->size();
+      size_t i, maxCount = pSliderList->size();
 
       for (i = 0; i < maxCount; ++i)
         {
@@ -384,7 +398,7 @@ SliderDialog::~SliderDialog()
   delete mpAutoModifyRangesCheckBox;
   delete mpSliderBox;
   delete mpScrollView;
-  unsigned int i, j, maxWidgets, maxVectors = mSliderMap.size();
+  size_t i, j, maxWidgets, maxVectors = mSliderMap.size();
 
   for (i = 0; i < maxVectors; ++i)
     {
@@ -403,6 +417,9 @@ void SliderDialog::init()
 
 void SliderDialog::addSlider(CSlider* pSlider)
 {
+  if (mpParentWindow == NULL)
+    return;
+
   // check if there already is a slider for this  object
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI();
@@ -417,7 +434,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
 
   if (!tmp)
     {
-      setCurrentSlider(new CopasiSlider(pSlider, mpSliderBox));
+      setCurrentSlider(new CopasiSlider(pSlider, mpParentWindow->getDataModel(), mpSliderBox));
       mpCurrSlider->installEventFilter(this);
       mpCurrSlider->setHidden(true);
       mpCurrSlider->updateSliderData();
@@ -442,7 +459,7 @@ CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI();
   assert(pGUI);
-  unsigned i, maxCount = pGUI->getSliderList()->size();
+  size_t i, maxCount = pGUI->getSliderList()->size();
 
   for (i = 0; i < maxCount; ++i)
     {
@@ -462,7 +479,7 @@ CopasiSlider* SliderDialog::findCopasiSliderForCSlider(CSlider* pCSlider)
 {
   CopasiSlider* pResult = NULL;
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
-  unsigned int i, maxCount = v.size();
+  size_t i, maxCount = v.size();
   CopasiSlider* pTmpSlider;
 
   for (i = 0; i < maxCount; ++i)
@@ -481,13 +498,13 @@ CopasiSlider* SliderDialog::findCopasiSliderForCSlider(CSlider* pCSlider)
   return pResult;
 }
 
-void SliderDialog::setCurrentFolderId(C_INT32 id)
+void SliderDialog::setCurrentFolderId(size_t id)
 {
   id = mapFolderId2EntryId(id);
 
   if (id == mCurrentFolderId) return;
 
-  if (id == -1)
+  if (id == C_INVALID_INDEX)
     {
       setEnabled(false);
     }
@@ -505,14 +522,17 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
 
 void SliderDialog::fillSliderBox()
 {
+  if (mpParentWindow == NULL)
+    return;
+
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
 
-  if (mCurrentFolderId != -1)
+  if (mCurrentFolderId != C_INVALID_INDEX)
     {
       std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
       // maybe other program parts have added or deleted some sliders
       assert(pVector);
-      unsigned int i, j, maxSliders, maxWidgets;
+      size_t i, j, maxSliders, maxWidgets;
       maxWidgets = v.size();
       maxSliders = pVector->size();
 
@@ -543,7 +563,7 @@ void SliderDialog::fillSliderBox()
 
           if (!found)
             {
-              setCurrentSlider(new CopasiSlider((*pVector)[i], mpSliderBox));
+              setCurrentSlider(new CopasiSlider((*pVector)[i], mpParentWindow->getDataModel(), mpSliderBox));
               connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
               connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
               connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
@@ -592,7 +612,7 @@ void SliderDialog::fillSliderBox()
     }
 
   v = mSliderMap[mCurrentFolderId];
-  unsigned int i, maxCount = v.size();
+  size_t i, maxCount = v.size();
 
   for (i = maxCount; i != 0; --i)
     {
@@ -603,6 +623,33 @@ void SliderDialog::fillSliderBox()
 
       if (mpCurrSlider)
         {
+          // check if the slider value is determined by an expression
+          CModelEntity* pME = dynamic_cast<CModelEntity*>(this->mpCurrSlider->object()->getObjectParent());
+
+          if (pME != NULL)
+            {
+              if (!pME->getInitialExpression().empty())
+                {
+                  // we have to disable the slider widget and set a tooltip
+                  // that explains why this slider is disabled
+                  if (this->mpCurrSlider->isEnabled())
+                    {
+                      this->mpCurrSlider->setEnabled(false);
+                      this->mpCurrSlider->setToolTip("This value is determined by an initial expression.");
+                    }
+                }
+              else
+                {
+                  // if the slider is disabled, we have to enable it and delete the tooltip
+                  if (!this->mpCurrSlider->isEnabled())
+                    {
+                      this->mpCurrSlider->setEnabled(true);
+                      this->mpCurrSlider->setToolTip("");
+                    }
+
+                }
+            }
+
           mpCurrSlider->updateSliderData();
         }
 
@@ -610,10 +657,10 @@ void SliderDialog::fillSliderBox()
     }
 }
 
-C_INT32 SliderDialog::mapFolderId2EntryId(C_INT32 folderId) const
+size_t SliderDialog::mapFolderId2EntryId(size_t folderId) const
 {
-  C_INT32 id = -1;
-  int counter;
+  size_t id = C_INVALID_INDEX;
+  size_t counter;
 
   for (counter = 0; counter < SliderDialog::numMappings; ++counter)
     {
@@ -629,7 +676,8 @@ C_INT32 SliderDialog::mapFolderId2EntryId(C_INT32 folderId) const
 
 void SliderDialog::runTask()
 {
-  if (mTaskMap.find(mCurrentFolderId) != mTaskMap.end())
+  if (mpParentWindow != NULL &&
+      mTaskMap.find(mCurrentFolderId) != mTaskMap.end())
     {
       setEnabled(false);
       updateAllSliders();
@@ -718,7 +766,7 @@ void SliderDialog::closeEvent(QCloseEvent* e)
     }
 }
 
-CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
+CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
 {
   folderId = mapFolderId2EntryId(folderId);
   CCopasiTask* task = NULL;
@@ -748,11 +796,22 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
 
 void SliderDialog::updateAllSliders()
 {
-  if (mCurrentFolderId == -1) return;
+  // this method might not always do what we want
+  // e.g. if we change a volume via a slider, the initial amount/concentrations
+  // of the species are updated automatically, but if there is a slider for the
+  // automatically updated value and we changed that value as well together with
+  // the volume, the change of amount/concentration is probably lost depending on
+  // the order of the sliders
+  // We need to do this in two rounds, first we set all the new values
+  //
+  // To solve this, I added a new argument to updateValue that determines if the call also updates the dependencies.
+  // Here we do not let the updateValue call update the dependencies, but we take care of this ourselves
+  // with a call to ListView::refreshInitialValues
+  if (mCurrentFolderId == C_INVALID_INDEX) return;
 
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
-  unsigned int i, maxCount = v.size();
+  size_t i, maxCount = v.size();
 
   for (i = 0; i < maxCount; ++i)
     {
@@ -760,7 +819,25 @@ void SliderDialog::updateAllSliders()
 
       if (pCopasiSlider)
         {
-          pCopasiSlider->updateValue(autoModify);
+          pCopasiSlider->updateValue(autoModify, false);
+        }
+    }
+
+  if (maxCount > 0)
+    {
+      if (mpParentWindow != NULL)
+        mpParentWindow->getDataModel()->refreshInitialValues();
+
+      // now we need to go through the slider again and make sure that
+      // they actually display the updated values
+      for (i = 0; i < maxCount; ++i)
+        {
+          CopasiSlider* pCopasiSlider = dynamic_cast<CopasiSlider*>(v[i]);
+
+          if (pCopasiSlider)
+            {
+              pCopasiSlider->updateSliderData();
+            }
         }
     }
 }
@@ -788,7 +865,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
   CCopasiVector<CSlider>* pSliderList = pGUI->getSliderList();
   assert(pSliderList);
   // go through the list in reverse so that items can be deleted
-  unsigned int i, iMax = pSliderList->size();
+  size_t i, iMax = pSliderList->size();
   bool issueWarning = false;
 
   for (i = iMax; i > 0; --i)
@@ -827,7 +904,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
 void SliderDialog::clearSliderBox()
 {
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
-  unsigned int i, maxCount = v.size();
+  size_t i, maxCount = v.size();
 
   for (i = 0; i < maxCount; ++i)
     {
@@ -844,7 +921,14 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
   if (!object) return NULL;
 
   std::vector<CSlider*>* pVector = new std::vector<CSlider*>();
-  pVector = getCSlidersForObject(object, pVector);
+
+  try
+    {
+      pVector = getCSlidersForObject(object, pVector);
+    }
+
+  catch (...) {}
+
   return pVector;
 }
 
@@ -885,3 +969,123 @@ void SliderDialog::setParentWindow(CopasiUI3Window* pPW)
 {
   mpParentWindow = pPW;
 }
+
+// This method check if the given object is a reference to the initial amount or the initial concentration
+// of a metabolite. Then it checks the current framework and the metabolite if a slider to the object
+// is actually allowed and if it isn't, it will return the correct object
+const CCopasiObject* SliderDialog::determineCorrectObjectForSlider(const CCopasiObject* pObject)
+{
+  const CCopasiObject* pResult = NULL;
+
+  if (pObject == NULL)
+    {
+      pResult = NULL;
+    }
+  else
+    {
+      CMetab* pMetab = dynamic_cast<CMetab*>((pObject)->getObjectParent());
+      // we just assume the object is correct for the framework
+      // this saves some additional test later on
+      pResult = pObject;
+
+      if (pMetab != NULL)
+        {
+          // now we have to check if the framework is the concentrations framework
+          // and if we are actually allowed to change the concentration on a metabolite
+          if (mFramework == 0)
+            {
+              // we are in the concentrations framework
+              //
+              // sometimes it is not allowed to change the concentration of a metabolite
+              // because it would change the volume of the compartment
+              if (pMetab->isInitialConcentrationChangeAllowed() && pObject == pMetab->getInitialValueReference())
+                {
+                  // if the current object is for the concentration, we return a new object to the amount
+                  pResult = pMetab->getInitialConcentrationReference();
+                  assert(pResult != NULL);
+                }
+            }
+          else
+            {
+              // we are in the particle number framework
+              // if the object is for the amount, we leave it, otherwise we
+              // return a new object for the amount
+              if (pObject == pMetab->getInitialConcentrationReference())
+                {
+                  pResult = pMetab->getInitialValueReference();
+                  assert(pResult != NULL);
+                }
+
+            }
+        }
+    }
+
+  return pResult;
+}
+
+// sets the framework on the sliders dialog
+// This leads to changed sliders for metabolites
+// Because depending on the framework, we only allow sliders
+// for amount or concentration, but not both for the same metabolite
+void SliderDialog::setFramework(int framework)
+{
+  mFramework = framework;
+
+  bool changed = false;
+  // we go through the sliders and check if the slider for species amount
+  // or concentration are still appropriate for the framework that has been set
+  std::map<size_t, std::vector<QWidget*> >::iterator it = this->mSliderMap.begin(), endit = this->mSliderMap.end();
+  std::vector<QWidget*>::iterator it2, endit2;
+  CCopasiObject *pObject = NULL, *pTmpObject = NULL;
+  CopasiSlider* pSlider = NULL;
+
+  while (it != endit)
+    {
+      it2 = it->second.begin();
+      endit2 = it->second.end();
+
+      while (it2 != endit2)
+        {
+          pSlider = dynamic_cast<CopasiSlider*>(*it2);
+
+          if (pSlider != NULL)
+            {
+              pObject = pSlider->object();
+              assert(pObject != NULL);
+
+              if (pObject != NULL)
+                {
+                  pTmpObject = const_cast<CCopasiObject*>(this->determineCorrectObjectForSlider(pObject));
+
+                  if (pTmpObject != pObject)
+                    {
+                      // we have to recalculate the range
+                      double oldMin = pSlider->minValue();
+                      double oldMax = pSlider->maxValue();
+                      double oldValue = pSlider->value();
+                      // we have to set the new object on the slider
+                      pSlider->setObject(pTmpObject);
+                      double newValue =  pSlider->value();
+                      double newMin = (oldMin / oldValue) * newValue;
+                      double newMax = (oldMax / oldValue) * newValue;
+                      pSlider->setMinValue(newMin);
+                      pSlider->setMaxValue(newMax);
+                      changed = true;
+                    }
+                }
+            }
+
+          ++it2;
+        }
+
+      ++it;
+    }
+
+  // we don't care if the change was for the current
+  // task, we justm update if there was any change at all
+  if (changed == true)
+    {
+      this->update();
+    }
+}
+

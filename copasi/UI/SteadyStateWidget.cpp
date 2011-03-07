@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.126 $
+//   $Revision: 1.127 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/08 13:39:58 $
+//   $Date: 2011/03/07 19:38:01 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,6 +46,7 @@
 #include "listviews.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
 #include "CQSteadyStateResult.h"
 
@@ -89,10 +90,12 @@ void SteadyStateWidget::init()
   mpHeaderWidget->setTaskName("Steady State");
 
   SteadyStateWidgetLayout->insertWidget(0, mpHeaderWidget); // header
-  SteadyStateWidgetLayout->insertSpacing(1, 14);      // space between header and body
-  SteadyStateWidgetLayout->addWidget(mpBtnWidget);      // 'footer'
+  // SteadyStateWidgetLayout->insertSpacing(1, 14);      // space between header and body
 
-  addMethodParameterTable(0);
+  mpMethodWidget->enableMethodParameter(true);
+  SteadyStateWidgetLayout->addWidget(mpMethodWidget);
+
+  SteadyStateWidgetLayout->addWidget(mpBtnWidget);      // 'footer'
 }
 
 CCopasiMethod * SteadyStateWidget::createMethod(const CCopasiMethod::SubType & /*type*/)
@@ -111,13 +114,46 @@ bool SteadyStateWidget::runTask()
 
 bool SteadyStateWidget::taskFinishedEvent()
 {
-  bool success = true;
+  bool success = false;
 
-  CQSteadyStateResult *pResult = dynamic_cast< CQSteadyStateResult * >(mpListView->findWidgetFromId(211));
+  CSteadyStateTask* pSteadyStateTask = dynamic_cast<CSteadyStateTask *>(mpObject);
 
-  if (pResult) pResult->loadResult();
+  if (pSteadyStateTask == NULL)
+    return success;
 
-  if (success && isShown()) mpListView->switchToOtherWidget(211, ""); //change to the results window
+  switch (pSteadyStateTask->getResult())
+    {
+      case CSteadyStateMethod::found:
+      case CSteadyStateMethod::foundEquilibrium:
+        success = true;
+        break;
+
+      case CSteadyStateMethod::foundNegative:
+
+        if (mpMethod != NULL)
+          {
+            const CCopasiParameter *pParm = mpMethod->getParameter("Accept Negative Concentrations");
+
+            if (pParm != NULL)
+              {
+                success = *pParm->getValue().pBOOL;
+              }
+          }
+
+        break;
+
+      default:
+        break;
+    }
+
+  CQSteadyStateResult *pResult =
+    dynamic_cast< CQSteadyStateResult * >(mpListView->findWidgetFromId(211));
+
+  if (pResult)
+    pResult->loadResult();
+
+  if (success && isShown())
+    mpListView->switchToOtherWidget(211, ""); //change to the results window
 
   return success;
 }

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/28 18:13:02 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:46 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -42,13 +47,9 @@ public slots:
 
 protected:
   CQFittingItemWidget * mpCurrentList;
-  CQFittingItemWidget * mpConstraints;
-  CQFittingItemWidget * mpParameters;
   QColor mChangedColor;
   QColor mSavedColor;
   bool mTypeChanged;
-  QHBoxLayout * mpConstraintPageLayout;
-  QHBoxLayout * mpParameterPageLayout;
 
   std::map< std::string, C_INT32 > mSubtaskMap;
 

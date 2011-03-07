@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:03:26 $
+//   $Date: 2011/03/07 19:33:42 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,6 +37,12 @@
 
 //TODO: put all matrix resizing and annotations creation in one place, so
 // that it has to be done only once if several MCA are calculated (e.g. in a scan)
+
+// static
+CMCAMethod * CMCAMethod::createMethod(CCopasiMethod::SubType /* subType */)
+{
+  return new CMCAMethod();
+}
 
 /**
  * Default constructor
@@ -193,10 +199,10 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   CCopasiVector<CReaction> & reacs = mpModel->getReactions();
   const CVector< C_FLOAT64 > & ParticleFlux = mpModel->getParticleFlux();
 
-  unsigned C_INT32 numReacs = reacs.size();
+  size_t numReacs = reacs.size();
 
   // We need the number of metabolites determined by reactions.
-  unsigned C_INT32 numMetabs =
+  size_t numMetabs =
     mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
 
   //   mUnscaledElasticities.resize(numReacs, numMetabs);
@@ -208,7 +214,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   //   mUnscaledElasticitiesAnn->setCopasiVector(0, &reacs);
   //   mUnscaledElasticitiesAnn->setCopasiVector(1, &metabs);
 
-  unsigned C_INT32 j;
+  size_t j;
 
   C_FLOAT64 Store, InvDelta;
   C_FLOAT64 X1, X2;
@@ -277,7 +283,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   assert(mpModel);
 
   C_INT32 i, j, k;
-  //unsigned C_INT32 dim;
+  //size_t dim;
   C_INT info;
 
   CMatrix<C_FLOAT64> aux1, aux2;
@@ -286,10 +292,10 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
 
   char T = 'N';
-  C_INT M = mpModel->getNumIndependentReactionMetabs(); /* LDA, LDC */
-  C_INT N = mUnscaledElasticities.numRows();
-  C_INT K = mpModel->getNumDependentReactionMetabs();
-  C_INT LD = mUnscaledElasticities.numCols();
+  C_INT M = (C_INT) mpModel->getNumIndependentReactionMetabs(); /* LDA, LDC */
+  C_INT N = (C_INT) mUnscaledElasticities.numRows();
+  C_INT K = (C_INT) mpModel->getNumDependentReactionMetabs();
+  C_INT LD = (C_INT) mUnscaledElasticities.numCols();
 
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 1.0;
@@ -375,7 +381,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 void CMCAMethod::calculateUnscaledFluxCC(int condition)
 {
   assert(mpModel);
-  unsigned C_INT32 i, j, k;
+  size_t i, j, k;
 
   //  mUnscaledFluxCC.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
 
@@ -408,7 +414,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 {
   assert(mpModel);
   // The number of metabs determined by reaction.
-  unsigned C_INT32 numSpeciesReaction =
+  size_t numSpeciesReaction =
     mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
   CCopasiVector< CMetab > & metabs = mpModel->getMetabolitesX();
   CCopasiVector< CMetab >::const_iterator itSpecies = metabs.begin();
@@ -418,7 +424,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   CCopasiVector< CReaction >::const_iterator itReaction;
   CCopasiVector< CReaction >::const_iterator endReaction = reacs.end();
 
-  unsigned C_INT32 col;
+  size_t col;
 
   // Scale Elasticities
   //  mScaledElasticities.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
@@ -426,7 +432,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   C_FLOAT64 * pUnscaled;
   C_FLOAT64 * pScaled;
 
-  // Reactions are rows, species are columnss
+  // Reactions are rows, species are columns
   for (col = 0; itSpecies != endSpecies; ++itSpecies, col++)
     {
       C_FLOAT64 VolumeInv = 1.0 / (*itSpecies)->getCompartment()->getValue();
@@ -455,11 +461,14 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   //   mScaledElasticitiesAnn->setCopasiVector(1, &metabs);
 
   //if we are not in a steady state we cannot calculate CCs
-  if (mSSStatus != CSteadyStateMethod::found) return;
+  if (mSSStatus != CSteadyStateMethod::found ||
+      condition != MCA_OK)
+    {
+      mScaledConcCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mScaledFluxCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-  // if previous calcutations failed return now
-  if (condition != MCA_OK)
-    return;
+      return;
+    }
 
   // Scale ConcCC
   // Reactions are columns, species are rows
@@ -518,7 +527,7 @@ void CMCAMethod::setModel(CModel* model)
  * @param ss_solution refer to steady-state solution
  * @param refer to the resolution
  */
-int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode C_UNUSED(status), C_FLOAT64 res)
+int CMCAMethod::CalculateMCA(C_FLOAT64 res)
 {
   assert(mpModel);
   int ret = MCA_OK;
@@ -529,6 +538,12 @@ int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode C_UNUSED(status), C_
     {
       ret = calculateUnscaledConcentrationCC();
       calculateUnscaledFluxCC(ret);
+    }
+  else
+    {
+      mUnscaledConcCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mUnscaledFluxCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
     }
 
   scaleMCA(ret, res);
@@ -557,7 +572,7 @@ bool CMCAMethod::process()
   // if not, calculate TimeMCA only
   if (1 /*mIsSteadyState*/)
     {
-      CalculateMCA(mSSStatus, mSteadyStateResolution);
+      CalculateMCA(mSteadyStateResolution);
     }
   else
     {
@@ -566,11 +581,6 @@ bool CMCAMethod::process()
 
   return true;
 }
-
-/*bool CMCAMethod::isSteadyState() const
-  {
-    return this->mIsSteadyState;
-  }*/
 
 void CMCAMethod::setSteadyStateStatus(CSteadyStateMethod::ReturnCode SSStatus)
 {
@@ -612,7 +622,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
     return false;
 
   // Check if the model contains an ODE.
-  unsigned C_INT32 NumODE =
+  size_t NumODE =
     pModel->getStateTemplate().endIndependent() - pModel->getStateTemplate().beginIndependent();
 
   if (pModel->getNumIndependentReactionMetabs() < NumODE)

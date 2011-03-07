@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/22 13:21:46 $
+//   $Date: 2011/03/07 19:27:11 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
 
 #ifdef XXXX
       CCallParameters<C_FLOAT64> Variables(20);
-      unsigned C_INT32 j, i, imax = Variables.size();
+      size_t j, i, imax = Variables.size();
       CRandom * pRandom = CRandom::createGenerator();
 
       for (i = 0; i < imax; i++)
@@ -332,16 +332,18 @@ int main(int argc, char *argv[])
 
           if (it == end) // Create a usage message
             {
-              std::string Help = "--help";
-              const char * Argv[2];
-              Argv[0] = argv[0];
-              Argv[1] = Help.c_str();
+              std::string Self;
+              COptions::getValue("Self", Self);
+
+              char * Argv[2];
+              Argv[0] = strdup(Self.c_str());
+              Argv[1] = strdup("--help");
 
               copasi::COptionParser Parser;
 
               try
                 {
-                  Parser.parse(2, (char **) Argv);
+                  Parser.parse(2, Argv);
                 }
 
               catch (copasi::autoexcept &e)
@@ -447,7 +449,7 @@ int main(int argc, char *argv[])
                 }
 
               CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
-              unsigned C_INT32 i, imax = TaskList.size();
+              size_t i, imax = TaskList.size();
 
               for (i = 0; i < imax; i++)
                 if (TaskList[i]->isScheduled())
@@ -552,7 +554,7 @@ int validate()
   assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
-  unsigned C_INT32 i, imax = TaskList.size();
+  size_t i, imax = TaskList.size();
 
   for (i = 0; i < imax; i++)
     if (TaskList[i]->isScheduled())

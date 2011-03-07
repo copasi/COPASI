@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/30 17:45:57 $
+//   $Date: 2011/03/07 19:37:50 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,6 +22,7 @@
 
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
+#include "CTabWidget.h"
 
 #include "model/CModel.h"
 #include "model/CModelValue.h"
@@ -89,8 +95,10 @@ void CQModelValue::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  enter(mpModelValue->getKey());
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD);
+  std::string key = mpModelValue->getKey();
+  enter(key);
+  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 void CQModelValue::slotBtnDelete()
@@ -107,7 +115,7 @@ void CQModelValue::slotBtnDelete()
     return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, pModel, "species",
+    CQMessageBox::confirmDelete(this, "quantity",
                                 FROM_UTF8(mpModelValue->getObjectName()),
                                 mpModelValue->getDeletedObjects());
 
@@ -115,22 +123,37 @@ void CQModelValue::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        unsigned C_INT32 index =
+        size_t index =
           static_cast<CCopasiVector< CModelValue > *>(&pDataModel->getModel()->getModelValues())->getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
         pDataModel->getModel()->removeModelValue(mKey);
-        unsigned C_INT32 size =
+        std::string deletedKey = mKey;
+
+        size_t size =
           pDataModel->getModel()->getModelValues().size();
 
         mpModelValue = NULL;
 
-        if (size > 0)
-          enter(pDataModel->getModel()->getModelValues()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
+
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (size > 0)
+              pTabWidget->enter(pDataModel->getModel()->getModelValues()[std::min(index, size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
 
 #undef DELETE
-        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
 
@@ -295,13 +318,13 @@ void CQModelValue::load()
   mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
 
   // Initial Value
-  mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
+  mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue(), 'g', 10));
 
   // Current Value
-  mpEditCurrentValue->setText(QString::number(mpModelValue->getValue()));
+  mpEditCurrentValue->setText(QString::number(mpModelValue->getValue(), 'g', 10));
 
   // Rate
-  mpEditRate->setText(QString::number(mpModelValue->getRate()));
+  mpEditRate->setText(QString::number(mpModelValue->getRate(), 'g', 10));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());
@@ -372,7 +395,7 @@ void CQModelValue::save()
     }
 
   // set initial value
-  if (QString::number(mpModelValue->getInitialValue()) != mpEditInitialValue->text() &&
+  if (QString::number(mpModelValue->getInitialValue(), 'g', 10) != mpEditInitialValue->text() &&
       mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
     {
       mpModelValue->setInitialValue(mpEditInitialValue->text().toDouble());

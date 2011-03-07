@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 15:25:52 $
+//   $Date: 2011/03/07 19:28:19 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -185,6 +185,13 @@ bool CEvaluationTree::setInfix(const std::string & infix)
 const std::string & CEvaluationTree::getInfix() const
 {return mInfix;}
 
+bool CEvaluationTree::operator == (const CEvaluationTree & rhs) const
+{
+  return (mInfix == rhs.mInfix &&
+          mType == rhs.mType &&
+          *static_cast< const CAnnotation * >(this) == rhs);
+}
+
 std::string::size_type CEvaluationTree::getErrorPosition() const
 {return mErrorPosition;}
 
@@ -196,10 +203,10 @@ const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
   return *mpNodeList;
 }
 
-unsigned C_INT32 CEvaluationTree::getVariableIndex(const std::string & /*name*/) const
+size_t CEvaluationTree::getVariableIndex(const std::string & /*name*/) const
 {return C_INVALID_INDEX;}
 
-const C_FLOAT64 & CEvaluationTree::getVariableValue(const unsigned C_INT32 & /*index*/) const
+const C_FLOAT64 & CEvaluationTree::getVariableValue(const size_t & /*index*/) const
 {
   static C_FLOAT64 Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   return Value;
@@ -512,43 +519,6 @@ void CEvaluationTree::setSBMLId(const std::string& id)
 const std::string& CEvaluationTree::getSBMLId() const
 {
   return this->mSBMLId;
-}
-
-bool CEvaluationTree::completeEvaluationTreeList(std::vector< CEvaluationTree * > & list,
-    const unsigned C_INT32 & added)
-{
-  unsigned Added = 0;
-
-  unsigned C_INT32 i, imax = list.size();
-  unsigned C_INT32 Index;
-
-  CEvaluationTree * pTree;
-  std::vector< CEvaluationNode * >::const_iterator it;
-  std::vector< CEvaluationNode * >::const_iterator end;
-
-  CCopasiVectorN< CEvaluationTree > & Functions =
-    CCopasiRootContainer::getFunctionList()->loadedFunctions();
-
-  for (i = (added) ? imax - added : 0; i < imax; i++)
-    {
-      pTree = list[i];
-
-      for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
-        {
-          if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
-              (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
-              list.end() == std::find(list.begin(), list.end(), Functions[Index]))
-            {
-              list.push_back(Functions[Index]);
-              Added++;
-            }
-        }
-    }
-
-  if (Added)
-    return completeEvaluationTreeList(list, Added);
-  else
-    return true;
 }
 
 bool CEvaluationTree::hasCircularDependency() const

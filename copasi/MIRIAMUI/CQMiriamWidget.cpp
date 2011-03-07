@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/11/06 16:02:39 $
+//   $Date: 2011/03/07 19:30:17 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -72,8 +77,8 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
 
-  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<QTableView*>::const_iterator end = mWidgets.end();
+  std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
+  std::vector<CQTableView*>::const_iterator end = mWidgets.end();
 
   std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
   std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
@@ -106,19 +111,8 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
  */
 CQMiriamWidget::~CQMiriamWidget()
 {
-  pdelete(mpCreatorPDM);
-  pdelete(mpReferencePDM);
-  pdelete(mpBiologicalDescriptionPDM);
-  pdelete(mpModifiedPDM);
-  pdelete(mpCreatorDM);
-  pdelete(mpReferenceDM);
-  pdelete(mpBiologicalDescriptionDM);
-  pdelete(mpModifiedDM);
-  pdelete(mpResourceDelegate1);
-  pdelete(mpResourceDelegate2);
-  pdelete(mpPredicateDelegate);
+  // no need to delete child widgets or objects, Qt does it all for us
   pdelete(mpMIRIAMInfo);
-  // no need to delete child widgets, Qt does it all for us
 }
 
 /*
@@ -298,11 +292,14 @@ void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
 
 bool CQMiriamWidget::enterProtected()
 {
+  if (mKey == "")
+    return false;
+
   mpMIRIAMInfo->load(mKey);
 
   //Set Models for the 4 TableViews
-  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<QTableView*>::const_iterator end = mWidgets.end();
+  std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
+  std::vector<CQTableView*>::const_iterator end = mWidgets.end();
 
   std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
   std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
@@ -352,7 +349,7 @@ void CQMiriamWidget::updateResourcesList()
   mResources.push_back("-- select --");
   mReferences.push_back("-- select --");
 
-  unsigned C_INT32 i, imax = pResource->getResourceList().size();
+  size_t i, imax = pResource->getResourceList().size();
 
   for (i = 0; i < imax; i++)
     if (pResource->getMIRIAMResource(i).getMIRIAMCitation())
@@ -371,8 +368,8 @@ void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQMiriamWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft), const QModelIndex& C_UNUSED(bottomRight))
 {
-  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<QTableView*>::const_iterator end = mWidgets.end();
+  std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
+  std::vector<CQTableView*>::const_iterator end = mWidgets.end();
 
   for (; it != end; it++)
     (*it)->resizeColumnsToContents();
@@ -382,7 +379,7 @@ void CQMiriamWidget::slotCopyEvent()
 {
   CQSortFilterProxyModel* pProxyModel = NULL;
   CQBaseDataModel* pBaseDM = NULL;
-  QTableView* pTbl = NULL;
+  CQTableView* pTbl = NULL;
 
   if (mpTblAuthors->hasFocus())
     {

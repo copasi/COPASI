@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/13 16:15:33 $
+//   $Date: 2011/03/07 19:35:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -50,6 +50,8 @@ class CEvent;
 class CEventAssignment;
 class CReaction;
 class CEvaluationTree;
+class CFunction;
+class CExpression;
 class CFunctionParameter;
 class CCopasiXMLParser;
 class CReportDefinitionVector;
@@ -124,12 +126,12 @@ public:
    * Pointer to a vector of functions which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CEvaluationTree > * pFunctionList;
+  CCopasiVectorN< CFunction > * pFunctionList;
 
   /**
    * Pointer to the currently processed function.
    */
-  CEvaluationTree * pFunction;
+  CFunction * pFunction;
 
   /**
    * Pointer to the currently processed function.
@@ -144,7 +146,24 @@ public:
   /**
    * Indicates whether the current function was already in the list;
    */
-  bool mExistingFunction;
+  bool mPredefinedFunction;
+
+  /**
+   * A map of new function to old keys  parameter definitions
+   */
+  std::map< size_t, std::string > mFunctionParameterKeyMap;
+
+  /**
+   * Pointer to the currently processed expression. This is only needed for old files
+   * containing the objective function as part of the list of function definitions
+   */
+  CExpression * mpExpression;
+
+  /**
+   * A map of a key to the infix of the objective function. This is only needed for old files
+   * containing the objective function as part of the list of function definitions
+   */
+  std::map< std::string, CExpression * > mKey2ObjectiveFunction;
 
   /**
    * Pointer to the currently processed reaction.
@@ -285,7 +304,7 @@ public:
    * A map that stores a vector of pairs of header,body or footer addresses
    *  with the index together with the key to the reference.
    */
-  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > > > reportReferenceMap;
+  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, size_t > > > reportReferenceMap;
 
   SCopasiXMLGUI * pGUI;
 
@@ -381,7 +400,7 @@ private:
     /**
      * The line number the unknown element was encountered.
      */
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
     // Operations
   public:
@@ -1508,6 +1527,50 @@ private:
     virtual void end(const XML_Char *pszName);
   };
 
+  class ListOfAssignmentsElement:
+      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  {
+    // Attributes
+  private:
+    /**
+     * Enum of invoked parsers
+     */
+    enum Element
+    {
+      ListOfAssignments = 0,
+      Assignment
+    };
+
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    ListOfAssignmentsElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+    /**
+     * Destructor
+     */
+    virtual ~ListOfAssignmentsElement();
+
+    /**
+     * Start element handler
+     * @param const XML_Char *pszName
+     * @param const XML_Char **papszAttrs
+     */
+    virtual void start(const XML_Char *pszName,
+                       const XML_Char **papszAttrs);
+
+    /**
+     * End element handler
+     * @param const XML_Char *pszName
+     */
+    virtual void end(const XML_Char *pszName);
+
+    //        std::vector<std::pair<std::string, std::string> > mAssignments;
+  };
+
   class EventElement:
       public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
@@ -1530,6 +1593,8 @@ private:
      * The key in the CopasiML file
      */
     std::string mKey;
+
+    ListOfAssignmentsElement * mpListOfAssignmentsElementHandler;
 
     // Operations
   public:
@@ -1576,7 +1641,7 @@ private:
     /**
      * A set of event orders used to enforce uniqueness
      */
-    std::set< unsigned C_INT32 > mEventOrders;
+    std::set< size_t > mEventOrders;
 
     // Operations
   public:
@@ -1654,50 +1719,6 @@ private:
     virtual void end(const XML_Char *pszName);
   };
 
-  class ListOfAssignmentsElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
-  {
-    // Attributes
-  private:
-    /**
-     * Enum of invoked parsers
-     */
-    enum Element
-    {
-      ListOfAssignments = 0,
-      Assignment
-    };
-
-    // Operations
-  public:
-    /**
-     * Constructor
-     */
-    ListOfAssignmentsElement(CCopasiXMLParser & parser,
-                             SCopasiXMLParserCommon & common);
-
-    /**
-     * Destructor
-     */
-    virtual ~ListOfAssignmentsElement();
-
-    /**
-     * Start element handler
-     * @param const XML_Char *pszName
-     * @param const XML_Char **papszAttrs
-     */
-    virtual void start(const XML_Char *pszName,
-                       const XML_Char **papszAttrs);
-
-    /**
-     * End element handler
-     * @param const XML_Char *pszName
-     */
-    virtual void end(const XML_Char *pszName);
-
-    //        std::vector<std::pair<std::string, std::string> > mAssignments;
-  };
-
   class CommentElement:
       public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
@@ -1720,7 +1741,7 @@ private:
     /**
      * The level of nested xhtml elements.
      */
-    unsigned C_INT32 mLevel;
+    size_t mLevel;
 
     /**
      * Information whether an element is empty
@@ -1892,7 +1913,7 @@ private:
     /**
      * The line number the unknown parameter was encountered.
      */
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
     // Operations
   public:
@@ -2023,7 +2044,7 @@ private:
     /**
      * The line number the unknown parameter was encountered.
      */
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
     // Operations
   public:
@@ -2331,7 +2352,7 @@ private:
     /**
      * The line number the unknown parameter was encountered.
      */
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
     // Operations
   public:
@@ -3025,6 +3046,11 @@ private:
      */
     std::string mKey;
 
+    /**
+     * The index of a function with the same name
+     */
+    std::set< size_t > mExistingFunctionIndex;
+
     // Operations
   public:
     /**
@@ -3074,7 +3100,7 @@ private:
     /**
      * The level of nested xhtml elements.
      */
-    unsigned C_INT32 mLevel;
+    size_t mLevel;
 
     /**
      * Information whether an element is empty
@@ -3256,7 +3282,7 @@ private:
       BasePoint2
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     CurveElement(CCopasiXMLParser & parser,
@@ -3281,7 +3307,7 @@ private:
       Dimensions
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     CompartmentGlyphElement(CCopasiXMLParser & parser,
@@ -3327,7 +3353,7 @@ private:
       Dimensions
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     MetaboliteGlyphElement(CCopasiXMLParser & parser,
@@ -3374,7 +3400,7 @@ private:
       Curve
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     MetaboliteReferenceGlyphElement(CCopasiXMLParser & parser,
@@ -3422,7 +3448,7 @@ private:
       ListOfMetaboliteReferenceGlyphs
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     ReactionGlyphElement(CCopasiXMLParser & parser,
@@ -3468,7 +3494,7 @@ private:
       Dimensions
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     TextGlyphElement(CCopasiXMLParser & parser,
@@ -3514,7 +3540,7 @@ private:
       Dimensions
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     AdditionalGOElement(CCopasiXMLParser & parser,
@@ -3566,7 +3592,7 @@ private:
 #endif // USE_CRENDER_EXTENSION
     };
 
-    unsigned C_INT32 mLineNumber;
+    size_t mLineNumber;
 
   public:
     LayoutElement(CCopasiXMLParser & parser,
@@ -4818,9 +4844,9 @@ public:
 
   /**
    * Set the list of loaded functions
-   * @param CCopasiVectorN< CEvaluationTree > * pFunctionList
+   * @param CCopasiVectorN< CFunction > * pFunctionList
    */
-  void setFunctionList(CCopasiVectorN< CEvaluationTree > * pFunctionList);
+  void setFunctionList(CCopasiVectorN< CFunction > * pFunctionList);
 
 #ifdef XXXX
   /**

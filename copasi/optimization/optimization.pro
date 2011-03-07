@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/optimization.pro,v $
-#   $Revision: 1.35 $
+#   $Revision: 1.36 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/07/16 19:01:58 $
+#   $Date: 2011/03/07 19:31:26 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,10 +21,11 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.35 $ $Author: shoops $ $Date: 2010/07/16 19:01:58 $
+# $Revision: 1.36 $ $Author: shoops $ $Date: 2011/03/07 19:31:26 $
 ######################################################################
 
 LIB = optimization
+DISTFILES = optimization.pro
 
 # Input
 HEADERS += COptItem.h \
@@ -73,3 +74,4 @@ SOURCES += COptItem.cpp \
 
 include(../lib.pri)
 include(../common.pri)
+include(../srcDistribution.pri)

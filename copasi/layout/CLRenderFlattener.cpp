@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderFlattener.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:28:46 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,10 +18,12 @@
 #include <string>
 #include <assert.h>
 #include <typeinfo>
+#include <algorithm>
 
 #include <copasi/layout/CLLocalStyle.h>
 #include <copasi/layout/CLGlobalStyle.h>
 #include <copasi/layout/CLRenderInformationBase.h>
+#include <copasi/utilities/CCopasiMessage.h>
 
 /**
  * static method that takes a const reference to a global render
@@ -71,13 +73,20 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
       // do nothing
     }
 
-  // create a list of referenced renderinformaiton objects
-  std::list<const CLRenderInformationBase*> referenceChain;
+  // create a list of referenced render information objects
+  std::vector< const CLRenderInformationBase * > referenceChain;
   const CLRenderInformationBase* pCurrent = &renderInformation;
   const CLRenderInformationBase* pNext = NULL;
 
   while (pCurrent != NULL)
     {
+      // check for reference loops in reference chain
+      if (std::find(referenceChain.begin(), referenceChain.end(), pCurrent) != referenceChain.end())
+        {
+          // we have a loop
+          CCopasiMessage(CCopasiMessage::EXCEPTION, "Fatal Error. Found a loop in the referenceRenderInformation attribute chain of the render information");
+        }
+
       referenceChain.push_back(pCurrent);
       std::string referenceKey = pCurrent->getReferenceRenderInformationKey();
 
@@ -86,7 +95,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
         {
           if (local && localList.size() != 0)
             {
-              unsigned j, jMax = localList.size();
+              size_t j = 0, jMax = localList.size();
 
               while (j < jMax)
                 {
@@ -103,7 +112,7 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
           // search the global list if necessary
           if (!pNext && globalList.size() != 0)
             {
-              unsigned j, jMax = globalList.size();
+              size_t j = 0, jMax = globalList.size();
 
               while (j < jMax)
                 {
@@ -142,8 +151,8 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
   std::map<std::string, const CLColorDefinition*> colors;
   std::map<std::string, const CLLineEnding*> lineEndings;
   std::map<std::string, const CLGradientBase*> gradients;
-  std::list<const CLRenderInformationBase*>::const_iterator it = referenceChain.begin(), endit = referenceChain.end();
-  unsigned int i, iMax;
+  std::vector< const CLRenderInformationBase * >::const_iterator it = referenceChain.begin(), endit = referenceChain.end();
+  size_t i, iMax;
   const CLColorDefinition* pColorDefinition = NULL;
   const CLGradientBase* pGradientBase = NULL;
   const CLLineEnding* pLineEnding = NULL;

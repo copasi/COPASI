@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:04 $
+//   $Date: 2011/03/07 19:32:38 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -146,9 +146,7 @@ public:
   virtual bool isEqual(Refresh *const rhs) const
   {
     const RefreshTemplate< CClass > * pRhs =
-      dynamic_cast< RefreshTemplate< CClass > * >(rhs);
-
-    if (!pRhs) return false;
+      static_cast< RefreshTemplate< CClass > * >(rhs);
 
     return (mpInstance == pRhs->mpInstance && mMethod == pRhs->mMethod);
   }
@@ -166,6 +164,9 @@ class CCopasiObject
 
   typedef CCopasiObject referenceType;
 
+public:
+  typedef std::set< const CCopasiObject * > List;
+
   //Attributes
 protected:
   enum Flag
@@ -177,16 +178,17 @@ protected:
     Reference = 0x10,
     ValueBool = 0x20,
     ValueInt = 0x40,
-    ValueDbl = 0x80,
-    NonUniqueName = 0x100,
-    StaticString = 0x200,
-    ValueString = 0x400,
-    Separator = 0x800,
-    ModelEntity = 0x1000,
-    Array = 0x2000,
-    DataModel = 0x4000,
-    Root = 0x8000,
-    Gui = 0x10000
+    ValueInt64 = 0x80,
+    ValueDbl = 0x100,
+    NonUniqueName = 0x200,
+    StaticString = 0x400,
+    ValueString = 0x800,
+    Separator = 0x1000,
+    ModelEntity = 0x2000,
+    Array = 0x4000,
+    DataModel = 0x8000,
+    Root = 0x10000,
+    Gui = 0x20000
   };
 
 private:
@@ -203,7 +205,7 @@ private:
    * A list of all objects the object depends on directly, i.e, the
    * objects which are used to calculate the object.
    */
-  std::set< const CCopasiObject * > mDependencies;
+  List mDependencies;
 
 private:
 
@@ -282,17 +284,17 @@ public:
 
   /**
    * Set the direct dependencies
-   * @param const std::set< const CCopasiObject * > & directDependencies
+   * @param const List & directDependencies
    */
-  void setDirectDependencies(const std::set< const CCopasiObject * > & directDependencies);
+  void setDirectDependencies(const List & directDependencies);
 
   /**
    * Retrieve the list of direct dependencies
-   * @param const std::set< const CCopasiObject * > & context (default empty set)
-   * @return const std::set< const CCopasiObject * > & directDependencies
+   * @param const List & context (default empty set)
+   * @return const List & directDependencies
    */
-  virtual const std::set< const CCopasiObject * > &
-  getDirectDependencies(const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
+  virtual const List &
+  getDirectDependencies(const List & context = List()) const;
 
   /**
    * Clear the list of direct dependencies.
@@ -312,51 +314,66 @@ public:
   void removeDirectDependency(const CCopasiObject * pObject);
 
   /**
+   * Retrieve the prerequisites, i.e., the objects which need to be evaluated
+   * before this.
+   * @return const List & prerequisites
+   */
+  const List & getPrerequisites() const;
+
+  /**
+   * Check whether a given object is a prerequisite for a context.
+   * @param const CCopasiObject * pObject
+   * @param const List & context
+   * @return bool isPrerequisiteForContext
+   */
+  bool isPrerequisiteForContext(const CCopasiObject * pObject, const List & context) const;
+
+  /**
    * If called with an empty set of dependencies it retrieves the complete list
    * of all dependencies (including all indirect) of the current object.
    * If called with a non empty set it will only add any dependency and all its
    * dependencies to the list if the dependency is not already among the dependencies
-   * @param std::set< const CCopasiObject * > & dependencies
-   * @param const std::set< const CCopasiObject * > & context
+   * @param List & dependencies
+   * @param const List & context
    */
-  void getAllDependencies(std::set< const CCopasiObject * > & dependencies,
-                          const std::set< const CCopasiObject * > & context) const;
+  void getAllDependencies(List & dependencies,
+                          const List & context) const;
 
   /**
    * Check whether the current object depends on any objects in the candidates.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param const std::set< const CCopasiObject * > & context (default: empty set)
+   * @param List candidates
+   * @param const List & context (default: empty set)
    * @return bool dependsOn
    */
-  bool dependsOn(std::set< const CCopasiObject * > candidates,
-                 const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
+  bool dependsOn(List candidates,
+                 const List & context = List()) const;
 
   /**
    * If called with an empty set it will check whether the current object and all its
    * dependencies (including all indirect) form a circular dependency.
    * If called with a non empty set it check whether the candidates plus the current object
    * and all its dependencies form a circular dependency.
-   * @param std::set< const CCopasiObject * > & dependencies
-   * @param std::set< const CCopasiObject * > & verified
-   * @param const std::set< const CCopasiObject * > & context
+   * @param List & dependencies
+   * @param List & verified
+   * @param const List & context
    * @return bool hasCircularDependencies
    */
-  bool hasCircularDependencies(std::set< const CCopasiObject * > & candidates,
-                               std::set< const CCopasiObject * > & verified,
-                               const std::set< const CCopasiObject * > & context) const;
+  bool hasCircularDependencies(List & candidates,
+                               List & verified,
+                               const List & context) const;
 
   /**
    * Build the update sequence for the given list of objects. The resulting sequence
    * takes the dependencies of the objects in consideration. If circular dependencies
    * are detected an exception is thrown
-   * @param std::set< const CCopasiObject * > & objects
-   * @param const std::set< const CCopasiObject * > & uptoDateObjects
-   * @param const std::set< const CCopasiObject * > & context (default: empty set)
+   * @param List & objects
+   * @param const List & uptoDateObjects
+   * @param const List & context (default: empty set)
    * @return std::vector< Refresh * > updateSequence
    */
-  static std::vector< Refresh * > buildUpdateSequence(const std::set< const CCopasiObject * > & objects,
-      const std::set< const CCopasiObject * > & uptoDateObjects,
-      const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >());
+  static std::vector< Refresh * > buildUpdateSequence(const List & objects,
+      const List & uptoDateObjects,
+      const List & context = List());
 
   /**
    * Retrieve the units of the object.
@@ -387,6 +404,7 @@ public:
 
   bool isValueBool() const;
   bool isValueInt() const;
+  bool isValueInt64() const;
   bool isValueDbl() const;
   bool isNonUniqueName() const;
   bool isStaticString() const;
@@ -506,21 +524,21 @@ createMatrixReference(const std::string & name,
  * their dependencies
  * @param ForwardAccessIterator begin
  * @param ForwardAccessIterator end
- * @param const std::set< const CCopasiObject * > & context
+ * @param const List & context
  * @return std::list< const CCopasiObject * >
  */
 template <typename ForwardAccessIterator>
 std::list< const CCopasiObject * > sortObjectsByDependency(ForwardAccessIterator begin,
     ForwardAccessIterator end,
-    const std::set< const CCopasiObject * > & context)
+    const CCopasiObject::List & context)
 {
   std::list< const CCopasiObject * > SortedList;
   std::list< const CCopasiObject * >::iterator itList;
   std::list< const CCopasiObject * >::iterator endList;
 
-  std::set< const CCopasiObject * > AllDependencies;
-  std::list< std::set< const CCopasiObject * > > DependencyList;
-  std::list< std::set< const CCopasiObject * > >::iterator itDependencies;
+  CCopasiObject::List AllDependencies;
+  std::list< CCopasiObject::List > DependencyList;
+  std::list< CCopasiObject::List >::iterator itDependencies;
 
   for (; begin != end; ++begin)
     {

@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/10/01 19:58:29 $
+   $Date: 2011/03/07 19:27:36 $
    End CVS Header */
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -45,9 +50,9 @@ CFluxMode::CFluxMode(const std::map< size_t, C_FLOAT64 > & reactions,
 CFluxMode::CFluxMode(const CTableauLine * line)
 {
   const std::vector< C_FLOAT64 > & FluxMode = line->getFluxMode();
-  unsigned C_INT32 i, imax = FluxMode.size();
+  size_t i, imax = FluxMode.size();
 
-  std::pair< unsigned C_INT32, C_FLOAT64 > Entry;
+  std::pair< size_t, C_FLOAT64 > Entry;
 
   for (i = 0; i < imax; i++)
     if (FluxMode[i])
@@ -76,7 +81,7 @@ bool CFluxMode::isReversible() const
   return mReversible;
 }
 
-unsigned C_INT32 CFluxMode::size() const
+size_t CFluxMode::size() const
 {
   return mReactions.size();
 }

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 18:08:02 $
+//   $Date: 2011/03/07 19:30:19 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -432,7 +432,11 @@ void CMIRIAMInfo::load(const std::string& key)
     mpRDFGraph = new CRDFGraph;
 
   // We make sure that we always have an about node.
-  mTriplet.pObject = mpRDFGraph->createAboutNode(pCopasiObject->getKey());
+
+  if (pCopasiObject != NULL)
+    mTriplet.pObject = mpRDFGraph->createAboutNode(pCopasiObject->getKey());
+  else
+    mTriplet.pObject = mpRDFGraph->createAboutNode("");
 
   // Load the created date if set;
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();

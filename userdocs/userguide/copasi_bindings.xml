@@ -1,13 +1,13 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.9 $ -->
+<!--   $Revision: 1.10 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2010/07/16 19:08:10 $ -->
+<!--   $Date: 2011/03/07 19:39:21 $ -->
 <!-- End CVS Header -->
 
-<!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -2018,6 +2018,21 @@ public CFunctionStdVector suitableFunctions(long noSubstrates,
  * Removes the function definition with the given key.
  */
 public boolean removeFunction(String key);
+
+
+/**
+ * Removes all functions from the function database.
+ * You should only call this method if you do not have a model loaded 
+ * that uses the functions.
+ */
+public void cleanup();
+
+/**
+ * Loads the builtin functions into the function database.
+ * Calling this after calling cleanup will basically reinstantiate 
+ * the function database.
+ */
+public void load(); 
 </programlisting>
 <programlisting condition="CPP">
 /**
@@ -2051,6 +2066,20 @@ std::vector&lt;CFunction*&gt; suitableFunctions(const unsigned C_INT32 noSubstra
  * Removes the function definition with the given key.
  */
 bool removeFunction(const std::string&amp; key);
+
+/**
+ * Removes all functions from the function database.
+ * You should only call this method if you do not have a model loaded 
+ * that uses the functions.
+ */
+void cleanup();
+
+/**
+ * Loads the builtin functions into the function database.
+ * Calling this after calling cleanup will basically reinstantiate 
+ * the function database.
+ */
+void load(); 
 </programlisting>
 <programlisting condition="PYTHON">
 # 
@@ -2084,7 +2113,24 @@ FUNCTION_VECTOR=suitableFunctions(NUMBER_OF_SUBSTRATES,
 # Removes the function definition with the given key.
 # 
 SUCCESS=removeFunction(FUNCTION_KEY_STRING)
+
+#
+# Removes all functions from the function database.
+#  You should only call this method if you do not have a model loaded 
+#  that uses the functions.
+#
+cleanup()
+
+#  
+#  Loads the builtin functions into the function database.
+#  Calling this after calling cleanup will basically reinstantiate 
+#  the function database.
+#  
+load() 
 </programlisting>
+</para>
+<para>
+<caution>Since COPASI uses only a single function database, this database will keep growing as you load or import models. As one of our users noticed, this will eventually lead to a severe slowdown while importing SBML models. In order to get around this problem, you can restore the function database to it's initial state once in a while by calling cleanup and then load on the function database object. However, you should only do this while there is no model loaded that uses these functions. So it is best to first remove all instances of <emphasis>CCopasiDataModel</emphasis> (see removeDataModel from <emphasis>CCopasiRootContainer</emphasis>).</caution>
 </para>
 
 <para>

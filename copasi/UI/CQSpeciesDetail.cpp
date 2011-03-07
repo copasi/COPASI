@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/25 18:43:42 $
+//   $Date: 2011/03/07 19:37:54 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -14,6 +19,7 @@
 #include "CQSpeciesDetail.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
+#include "CTabWidget.h"
 
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
@@ -196,8 +202,8 @@ void CQSpeciesDetail::setFramework(int framework)
         if (mpMetab != NULL)
           {
             mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
-            mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
-            mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
+            mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
+            mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
           }
         else
           {
@@ -228,8 +234,8 @@ void CQSpeciesDetail::setFramework(int framework)
 
         if (mpMetab != NULL)
           {
-            mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
-            mpEditRate->setText(QString::number(mpMetab->getRate()));
+            mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
+            mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
           }
         else
           {
@@ -247,6 +253,7 @@ bool CQSpeciesDetail::enterProtected()
 
   if (!mpMetab)
     {
+
       mpListView->switchToOtherWidget(112, "");
       return false;
     }
@@ -284,7 +291,7 @@ void CQSpeciesDetail::load()
   mpComboBoxCompartment->clear();
 
   mpComboBoxCompartment->setDuplicatesEnabled(false);
-  unsigned C_INT32 m;
+  size_t m;
 
   for (m = 0; m < Compartments.size(); m++)
     {
@@ -306,8 +313,8 @@ void CQSpeciesDetail::load()
 
   mInitialNumberLastChanged = true;
 
-  // Transistion Time
-  mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime()));
+  // Transition Time
+  mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime(), 'g', 10));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getExpression());
@@ -473,7 +480,7 @@ void CQSpeciesDetail::loadReactionTable()
   std::set< const CCopasiObject * > Reactions;
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
 
-  mpReactionTable->setRowCount(Reactions.size());
+  mpReactionTable->setRowCount((int) Reactions.size());
 
   std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
   std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
@@ -511,7 +518,7 @@ void CQSpeciesDetail::slotBtnDelete()
   if (pModel == NULL) return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, pModel, "species",
+    CQMessageBox::confirmDelete(this, "species",
                                 FROM_UTF8(mpMetab->getObjectName()),
                                 mpMetab->getDeletedObjects());
 
@@ -519,21 +526,35 @@ void CQSpeciesDetail::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        unsigned C_INT32 index =
+        size_t index =
           pModel->getMetabolites().getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
         pModel->removeMetabolite(mKey);
+        std::string deletedKey = mKey;
 
-        unsigned C_INT32 size =
+        size_t size =
           pModel->getMetabolites().size();
 
-        if (size > 0)
-          enter(pModel->getMetabolites()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+        QObject *pParent = parent();
+        CTabWidget * pTabWidget = NULL;
+
+        while (pParent != NULL &&
+               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+          {
+            pParent = pParent->parent();
+          }
+
+        if (pTabWidget != NULL)
+          {
+            if (size > 0)
+              pTabWidget->enter(pModel->getMetabolites()[std::min(index, size - 1)]->getKey());
+            else
+              pTabWidget->enter("");
+          }
 
 #undef DELETE
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         //TODO notify about reactions
         break;
       }
@@ -580,8 +601,10 @@ void CQSpeciesDetail::slotBtnNew()
         break;
     }
 
-  enter(mpMetab->getKey());
-  protectedNotify(ListViews::METABOLITE, ListViews::ADD);
+  std::string key = mpMetab->getKey();
+  enter(key);
+  protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 void CQSpeciesDetail::slotBtnRevert()

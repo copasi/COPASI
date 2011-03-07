@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/07/05 13:22:44 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:56 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -106,9 +106,9 @@ protected slots:
 
 protected:
 
-  void fillTable(unsigned C_INT32 rowIndex, unsigned C_INT32 colIndex,
+  void fillTable(size_t rowIndex, size_t colIndex,
                  CCopasiAbstractArray::index_type & index);
-  void fillTable(unsigned C_INT32 rowIndex,
+  void fillTable(size_t rowIndex,
                  CCopasiAbstractArray::index_type & index);
   void fillTable();
 
@@ -172,8 +172,8 @@ protected:
   CColorScale* mpColorScale;
   bool mAutomaticColorScaling;
 
-  unsigned C_INT32 mRowIndex;
-  unsigned C_INT32 mColIndex;
+  size_t mRowIndex;
+  size_t mColIndex;
   CCopasiAbstractArray::index_type mIndex;
   bool mBarChartFilled;
   bool mOneDimensional;

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternMethod.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/09/07 09:16:21 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:27:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -164,13 +164,12 @@ bool CBitPatternMethod::initialize()
   //mpStepMatrix = new CStepMatrix(KernelMatrix);
 
   mProgressCounter = 0;
-  mProgressCounterMax = mpStepMatrix->getNumUnconvertedRows();
+  mProgressCounterMax = (unsigned C_INT32) mpStepMatrix->getNumUnconvertedRows();
 
   if (mpCallBack)
     mhProgressCounter =
       mpCallBack->addItem("Current Step",
-                          CCopasiParameter::UINT,
-                          & mProgressCounter,
+                          mProgressCounter,
                           & mProgressCounterMax);
 
   return true;
@@ -204,13 +203,12 @@ bool CBitPatternMethod::calculate()
           // Process each step.
           // Iterate over all combinations and add/remove columns to the step matrix
           mProgressCounter2 = 0;
-          mProgressCounter2Max = PositiveColumns.size() * NegativeColumns.size();
+          mProgressCounter2Max = (unsigned C_INT32)(PositiveColumns.size() * NegativeColumns.size());
 
           if (mpCallBack)
             mhProgressCounter2 =
               mpCallBack->addItem("Combinations",
-                                  CCopasiParameter::UINT,
-                                  & mProgressCounter2,
+                                  mProgressCounter2,
                                   & mProgressCounter2Max);
 
           for (unsigned int i = 0; i < NegativeColumns.size(); i++)
@@ -239,7 +237,7 @@ bool CBitPatternMethod::calculate()
             }
         }
 
-      mProgressCounter = mProgressCounterMax - mpStepMatrix->getNumUnconvertedRows();
+      mProgressCounter = mProgressCounterMax - (unsigned C_INT32) mpStepMatrix->getNumUnconvertedRows();
 
       if (mpCallBack)
         Continue &= mpCallBack->progressItem(mhProgressCounter);
@@ -386,7 +384,7 @@ void CBitPatternMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
 
   size_t NumSpecies = Stoi.numRows();
 
-  C_INT32 Dim = std::min(NumExpandedReactions, NumSpecies);
+  size_t Dim = std::min(NumExpandedReactions, NumSpecies);
 
   if (Dim == 0)
     {
@@ -417,14 +415,14 @@ void CBitPatternMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
           // TODO We should check the we have integer stoichiometry.
           if (itReactionExpansion->second == false)
             {
-              *pExpandedStoiTranspose = -floor(*pStoi + 0.5);
+              *pExpandedStoiTranspose = (C_INT64) - floor(*pStoi + 0.5);
 
               // Advance the iterators
               ++itReactionExpansion;
               pExpandedStoiTranspose += NumSpecies;
             }
 
-          *pExpandedStoiTranspose = floor(*pStoi + 0.5);
+          *pExpandedStoiTranspose = (C_INT64) floor(*pStoi + 0.5);
         }
     }
 
@@ -441,13 +439,13 @@ void CBitPatternMethod::buildFluxModes()
   CStepMatrix::const_iterator end = mpStepMatrix->end();
 
   CVector< size_t > Indexes;
-  C_INT NumSpecies = mExpandedStoiTranspose.numCols();
+  size_t NumSpecies = mExpandedStoiTranspose.numCols();
 
   for (; it != end; ++it)
     {
       getUnsetBitIndexes(*it, Indexes);
 
-      C_INT NumReactions = Indexes.size();
+      size_t NumReactions = Indexes.size();
 
       // Remove trivial modes, i.e., reversible reactions
       if (NumReactions == 2 &&
@@ -506,7 +504,7 @@ void CBitPatternMethod::buildFluxModes()
               std::pair< size_t, bool > & ReactionForward = mReactionForward[*pIndex];
 
               Reactions[ReactionForward.first] =
-                (ReactionForward.second == true) ? *pFluxMultiplier : -*pFluxMultiplier;
+                (C_FLOAT64)((ReactionForward.second == true) ? *pFluxMultiplier : -*pFluxMultiplier);
 
               if (!(*mpReorderedReactions)[ReactionForward.first]->isReversible())
                 {
@@ -541,11 +539,11 @@ void CBitPatternMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
 
   for (; pColumn < pColumnEnd; ++pColumn)
     {
-      unsigned C_INT32 Multiplier = 1;
-      unsigned C_INT32 m00, m01, m10, m11;
-      unsigned C_INT32 maxden = 10000000;
+      size_t Multiplier = 1;
+      size_t m00, m01, m10, m11;
+      size_t maxden = 10000000;
       C_INT32 GCD1, GCD2;
-      unsigned C_INT32 ai;
+      size_t ai;
 
       C_FLOAT64 x;
 
@@ -583,9 +581,9 @@ void CBitPatternMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
           m01 = m10 = 0;
 
           /* loop finding terms until denom gets too big */
-          while (m10 *(ai = (unsigned C_INT32) x) + m11 <= maxden)
+          while (m10 *(ai = (size_t) x) + m11 <= maxden)
             {
-              C_INT32 t;
+              size_t t;
               t = m00 * ai + m01;
               m01 = m00;
               m00 = t;
@@ -941,8 +939,8 @@ CMatrix<C_INT64> CBitPatternMethod::performRankTest(CStepMatrixColumn * pInterse
 
   getAllUnsetBitIndexes(pIntersectColumn, Indexes);
 
-  C_INT NumReactions = Indexes.size();
-  C_INT NumSpecies = mExpandedStoiTranspose.numCols();
+  size_t NumReactions = Indexes.size();
+  size_t NumSpecies = mExpandedStoiTranspose.numCols();
 
   // Build the stoichiometry matrix reduced to the reactions participating in the current mode.
   CMatrix< C_INT64 > A(NumReactions, NumSpecies);

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/clapackwrap.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/22 19:57:23 $
+//   $Date: 2011/03/07 19:24:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -19,8 +24,8 @@
 #endif // max
 
 extern "C"
-  {
-#ifdef USE_MKL
+{
+#if (defined USE_MKL || (defined WIN32 && defined USE_LAPACK))
 # define cbdsqr_ CBDSQR
 # define cgbbrd_ CGBBRD
 # define cgbcon_ CGBCON
@@ -1238,8 +1243,10 @@ extern "C"
 # define zunmtr_ ZUNMTR
 # define zupgtr_ ZUPGTR
 # define zupmtr_ ZUPMTR
-# include "mkl_lapack.h"
-#endif // USE_MKL
+# ifdef  USE_MKL
+#  include "mkl_lapack.h"
+# endif // USE_MKL
+#endif // USE_MKL || (WIN32 && USE_LAPACK)
 
 #if (defined USE_CLAPACK || defined USE_LAPACK)
 # include "f2c.h"
@@ -1249,7 +1256,7 @@ extern "C"
 #ifdef USE_SUNPERF
 # include "sunperf.h"
 #endif // USE_SUNPERF
-  }
+}
 
 #ifdef Darwin
 # include "Accelerate.h"
@@ -1265,6 +1272,8 @@ using std::isnan;
 #endif // max
 
 #ifdef WIN32
+#if _MSC_VER < 1600
 # define min _cpp_min
 # define max _cpp_max
+#endif // _MSC_VER
 #endif // WIN32

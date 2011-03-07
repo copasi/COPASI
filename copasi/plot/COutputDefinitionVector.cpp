@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/COutputDefinitionVector.cpp,v $
- $Revision: 1.4 $
+ $Revision: 1.5 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/02/19 19:51:20 $
+ $Date: 2011/03/07 19:32:04 $
  End CVS Header */
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -43,7 +48,8 @@ const std::string& COutputDefinitionVector::getKey()
 CPlotSpecification* COutputDefinitionVector::createPlotSpec(const std::string & name,
     CPlotItem::Type type)
 {
-  unsigned C_INT32 i;
+  size_t i;
+
   for (i = 0; i < size(); i++)
     if ((*this)[i]->getObjectName() == name)
       return NULL; // duplicate name
@@ -59,7 +65,8 @@ bool COutputDefinitionVector::removePlotSpec(const std::string & key)
 {
   CPlotSpecification* pPl =
     dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(key));
-  unsigned C_INT32 index = this->CCopasiVector<CPlotSpecification>::getIndex(pPl);
+  size_t index = this->CCopasiVector<CPlotSpecification>::getIndex(pPl);
+
   if (index == C_INVALID_INDEX)
     return false;
 

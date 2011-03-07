@@ -5,7 +5,8 @@
 //   $Author: shoops $
 //   $Date: 2010/03/21 15:21:13 $
 // End CVS Header
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,6 +39,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "steadystate/CMCATask.h"
 #include "UI/CopasiFileDialog.h"
+#include "commandline/CLocaleString.h"
 
 /*
  *  Constructs a CMCAResultSubwidget as a child of 'parent', with the
@@ -297,7 +299,7 @@ void CMCAResultSubwidget::slotSave()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
 
   if (file.fail())
     return;

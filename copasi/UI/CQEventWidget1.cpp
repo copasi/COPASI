@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:16 $
+//   $Date: 2011/03/07 19:37:59 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,6 +27,7 @@
 #include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
 #include "CQIcons.h"
+#include "CTabWidget.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
@@ -82,21 +83,34 @@ void CQEventWidget1::slotBtnDeleteClicked()
   if (pModel == NULL)
     return;
 
-  unsigned C_INT32 index =
+  size_t index =
     pDataModel->getModel()->getEvents().CCopasiVector< CEvent >::getIndex(mpEvent);
 
   pDataModel->getModel()->removeEvent(mKey);
+  std::string deletedKey = mKey;
 
-  unsigned C_INT32 size = pDataModel->getModel()->getEvents().size();
+  size_t Size = pDataModel->getModel()->getEvents().size();
 
   mpEvent = NULL;
 
-  if (size > 0)
-    enter(pDataModel->getModel()->getEvents()[std::min(index, size - 1)]->getKey());
-  else
-    enter("");
+  QObject *pParent = parent();
+  CTabWidget * pTabWidget = NULL;
 
-  protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
+  while (pParent != NULL &&
+         (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
+    {
+      pParent = pParent->parent();
+    }
+
+  if (pTabWidget != NULL)
+    {
+      if (Size > 0)
+        pTabWidget->enter(pDataModel->getModel()->getEvents()[std::min(index, Size - 1)]->getKey());
+      else
+        pTabWidget->enter("");
+    }
+
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, deletedKey);
 }
 
 /// Slot to create a new event; activated whenever the New button is clicked
@@ -120,8 +134,10 @@ void CQEventWidget1::slotBtnNewClicked()
       name += TO_UTF8(QString::number(i));
     }
 
-  protectedNotify(ListViews::EVENT, ListViews::ADD);
-  enter((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey());
+  std::string key = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey();
+  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(-1, key);
 }
 
 /*! Slot to go back to the previous values of the active event widget whenever the Revert button is clicked */
@@ -151,7 +167,7 @@ void CQEventWidget1::init()
   mpExpressionDelay->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mExpressionTriggerValid = false;
-  //  mpExpressionTrigger->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+  //  mpExpressionTrigger->mpExpressionWidget->setExpressionType(CQSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
   mExpressionEAValid = false;
   mpExpressionEA->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
@@ -173,8 +189,8 @@ void CQEventWidget1::init()
  */
 void CQEventWidget1::slotAddTarget()
 {
-  CCopasiSimpleSelectionTree::ObjectClasses Classes =
-    CCopasiSimpleSelectionTree::Variables;
+  CQSimpleSelectionTree::ObjectClasses Classes =
+    CQSimpleSelectionTree::EventTarget;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
@@ -188,7 +204,7 @@ void CQEventWidget1::slotAddTarget()
   mAssignments.add(new CEventAssignment(pME->getKey()), true);
   mpLBTarget->addItem(FROM_UTF8(pME->getObjectDisplayName()));
 
-  mpLBTarget->setCurrentRow(mAssignments.size() - 1);
+  mpLBTarget->setCurrentRow((int)(mAssignments.size() - 1));
 }
 
 /*! Slot to remove the active target from the appearance
@@ -199,9 +215,9 @@ void CQEventWidget1::slotDeleteTarget()
   if (mCurrentTarget > mAssignments.size() - 1 ||
       mAssignments.size() == 0) return;
 
-  unsigned C_INT32 ToBeDeleted = mCurrentTarget;
+  size_t ToBeDeleted = mCurrentTarget;
 
-  QListWidgetItem * pItem = mpLBTarget->takeItem(ToBeDeleted);
+  QListWidgetItem * pItem = mpLBTarget->takeItem((int) ToBeDeleted);
   pdelete(pItem);
 
   mAssignments.remove(ToBeDeleted);
@@ -224,8 +240,8 @@ bool CQEventWidget1::loadFromEvent()
   mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
 
   // *** Order
-  mpSpinOrder->setRange(1, pModel->getEvents().size());
-  mpSpinOrder->setValue(mpEvent->getOrder());
+  mpSpinOrder->setRange(1, (int) pModel->getEvents().size());
+  mpSpinOrder->setValue((int) mpEvent->getOrder());
 
   // *** Expression of Trigger
   mpExpressionTrigger->mpExpressionWidget->setExpression(mpEvent->getTriggerExpression());
@@ -294,7 +310,7 @@ bool CQEventWidget1::loadFromEvent()
   mpLBTarget->clear();
   mpLBTarget->insertItems(0, Targets);
 
-  int NewTarget = mCurrentTarget;
+  size_t NewTarget = mCurrentTarget;
 
   if (mCurrentTarget == C_INVALID_INDEX &&
       mAssignments.size() > 0)
@@ -302,7 +318,7 @@ bool CQEventWidget1::loadFromEvent()
       NewTarget = 0;
     }
 
-  mpLBTarget->setCurrentRow(NewTarget);
+  mpLBTarget->setCurrentRow((int) NewTarget);
 
   mChanged = false;
 
@@ -341,7 +357,7 @@ void CQEventWidget1::saveToEvent()
     }
 
   // Order
-  if (mpEvent->getOrder() != (unsigned C_INT32) mpSpinOrder->value())
+  if (mpEvent->getOrder() != (size_t) mpSpinOrder->value())
     {
       mpEvent->setOrder(mpSpinOrder->value());
       mChanged = true;
@@ -384,7 +400,7 @@ void CQEventWidget1::saveToEvent()
   CCopasiVector< CEventAssignment >::const_iterator end = mAssignments.end();
 
   CCopasiVectorN< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
-  unsigned C_INT32 Found;
+  size_t Found;
 
   // We first update all assignments.
   for (; it != end; ++it)
@@ -407,7 +423,13 @@ void CQEventWidget1::saveToEvent()
   CCopasiVectorN< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
   CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
 
-  C_INT32 DeleteCount = OldAssignments.size() - mAssignments.size();
+  size_t DeleteCount = 0;
+
+  if (OldAssignments.size() > mAssignments.size())
+    {
+      DeleteCount = OldAssignments.size() - mAssignments.size();
+    }
+
   std::vector< std::string > ToBeDeleted;
 
   for (; itOld != endOld && DeleteCount > 0; ++itOld)
@@ -481,8 +503,8 @@ void CQEventWidget1::slotSelectObject()
   if (mCurrentTarget == C_INVALID_INDEX)
     return slotAddTarget();
 
-  CCopasiSimpleSelectionTree::ObjectClasses Classes =
-    CCopasiSimpleSelectionTree::Variables;
+  CQSimpleSelectionTree::ObjectClasses Classes =
+    CQSimpleSelectionTree::EventTarget;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
@@ -496,17 +518,17 @@ void CQEventWidget1::slotSelectObject()
   if (mAssignments[mCurrentTarget]->setTargetKey(pME->getKey()))
     {
       // If the target key change was successfull we need to update the label.
-      mpLBTarget->item(mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
+      mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
     }
 }
 
 /// Slot to actualize the assignment expression widget of event assignment according to the target
 void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 {
-  unsigned C_INT32 NewTarget = (unsigned C_INT32) index;
+  size_t NewTarget = (size_t) index;
 
-  if ((unsigned C_INT32) index != C_INVALID_INDEX &&
-      (unsigned C_INT32) index >= mAssignments.size())
+  if (NewTarget != C_INVALID_INDEX &&
+      NewTarget >= mAssignments.size())
     {
       NewTarget = mAssignments.size() - 1;
     }

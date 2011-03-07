@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:53:26 $
+//   $Date: 2011/03/07 19:33:11 $
 // End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -95,12 +100,12 @@ void CScanProblem::load(CReadConfig & C_UNUSED(configBuffer),
                         CReadConfig::Mode C_UNUSED(mode))
 {}
 
-unsigned C_INT32 CScanProblem::getNumberOfScanItems() const
+size_t CScanProblem::getNumberOfScanItems() const
 {
   return mpScanItems->size();
 }
 
-const CCopasiParameterGroup* CScanProblem::getScanItem(unsigned C_INT32 index) const
+const CCopasiParameterGroup* CScanProblem::getScanItem(size_t index) const
 {
   CCopasiParameter* tmp = mpScanItems->getParameter(index);
 
@@ -113,7 +118,7 @@ const CCopasiParameterGroup* CScanProblem::getScanItem(unsigned C_INT32 index) c
   return (CCopasiParameterGroup*)tmp;
 }
 
-CCopasiParameterGroup* CScanProblem::getScanItem(unsigned C_INT32 index)
+CCopasiParameterGroup* CScanProblem::getScanItem(size_t index)
 {
   CCopasiParameter* tmp = mpScanItems->getParameter(index);
 
@@ -126,9 +131,9 @@ CCopasiParameterGroup* CScanProblem::getScanItem(unsigned C_INT32 index)
   return (CCopasiParameterGroup*)tmp;
 }
 
-//CScanProblem::Type CScanProblem::getScanItemType(unsigned C_INT32 index);
+//CScanProblem::Type CScanProblem::getScanItemType(size_t index);
 
-CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, unsigned C_INT32 steps, const CCopasiObject* obj)
+CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, size_t steps, const CCopasiObject* obj)
 {
   CCopasiParameterGroup* tmp;
   mpScanItems->addGroup("ScanItem");

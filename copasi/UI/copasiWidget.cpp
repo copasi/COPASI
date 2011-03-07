@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/08/27 21:08:53 $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,19 +28,30 @@
 
 #include "copasiWidget.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "copasiui3window.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
 
 CopasiWidget::CopasiWidget(QWidget * parent, const char * name, Qt::WFlags f)
     : QWidget(parent, name, f),
-    mpListView(static_cast<ListViews *>(parent)),
+    mpListView(NULL),
     mKey(),
     mpObject(NULL),
     mpDataModel(NULL),
     mIgnoreUpdates(false),
     mFramework(0)
-{}
+{
+  QObject *pParent = parent;
+
+  while (pParent != NULL &&
+         (mpListView = dynamic_cast< ListViews * >(pParent)) == NULL)
+    {
+      pParent = pParent->parent();
+    }
+
+  assert(mpListView != NULL);
+}
 
 bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {return true;}
@@ -80,7 +91,7 @@ bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::
   if (!mIgnoreUpdates)
     {
       mIgnoreUpdates = true;
-      mpListView->notify(objectType, action, key);
+      mpListView->getDataModel()->notify(objectType, action, key);
       notifyRun = true;
     }
 
