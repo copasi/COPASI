@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.45.4.8 $
+//   $Revision: 1.45.4.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/03 14:44:30 $
+//   $Date: 2011/03/07 19:20:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1944,7 +1944,16 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
 
                             if (it == multiplicationNumberNodes.end())
                               {
-                                newMultiplications.push_back(const_cast<CEvaluationNode*>(*it2));
+
+                                CEvaluationNode* pTmpNode = const_cast<CEvaluationNode*>(*it2);
+
+                                // to reuse the nodes, we have to remove them from their original parent
+                                if (pTmpNode->getParent() != NULL)
+                                  {
+                                    pTmpNode->getParent()->removeChild(pTmpNode);
+                                  }
+
+                                newMultiplications.push_back(pTmpNode);
                               }
                             else
                               {
@@ -1966,7 +1975,15 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
 
                             if (it == divisionNumberNodes.end())
                               {
-                                newDivisions.push_back(const_cast<CEvaluationNode*>(*it2));
+                                CEvaluationNode* pTmpNode = const_cast<CEvaluationNode*>(*it2);
+
+                                // to reuse the nodes, we have to remove them from their original parent
+                                if (pTmpNode->getParent() != NULL)
+                                  {
+                                    pTmpNode->getParent()->removeChild(pTmpNode);
+                                  }
+
+                                newDivisions.push_back(const_cast<CEvaluationNode*>(pTmpNode));
                               }
                             else
                               {
@@ -1991,7 +2008,7 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
                         if (!newDivisions.empty())
                           {
                             CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-                            pTmpNode->addChild(pResult);
+                            pTmpNode->addChild(pTmpOrig);
                             pTmpOrig = pTmpNode;
                             pTmpNode = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, newDivisions);
                             pTmpOrig->addChild(pTmpNode);
@@ -2247,6 +2264,7 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
         {
           ++dfi;
         }
+
     }
 
   if (modified == false)
@@ -3066,6 +3084,8 @@ CEvaluationNode* CNormalTranslation::expandPowerNodes(const CEvaluationNode* pOr
  * The methods get a vector of multiplication elements and a vector of division
  * elements and tries to find elements with the same power base in those two vectors.
  * e.g. A^3 and A^x would have the same power base A.
+ *
+ * The nodes in the match are copies of the original nodes
  */
 std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector<const CEvaluationNode*>& multiplications, const std::vector<const CEvaluationNode*>& divisions)
 {
@@ -4195,9 +4215,6 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                     // decide if matches were found
                     // if we are working on a copy, we can go and delete those elements, that are no longer needed (e.g. all but the first entry for each match element)
                     // remember to delete the entries in negAdditions and negSubtractions
-                    multiplications.clear();
-                    divisions.clear();
-
                     if (collected.size() != (multiplications.size() + divisions.size()))
                       {
                         std::vector<CEvaluationNode*> numeratorChain;
@@ -6498,4 +6515,29 @@ CEvaluationNodeDepthFirstIterator& CEvaluationNodeDepthFirstIterator::operator=(
 {
   this->mpNode = pNode;
   return *this;
+}
+
+
+bool CNormalTranslation::has_duplicate_nodes(const CEvaluationNode* pNode)
+{
+  bool result = false;
+  CEvaluationNodeDepthFirstIterator it(const_cast<CEvaluationNode*>(pNode));
+  std::set<const CEvaluationNode*> s;
+
+  while (it.isValid())
+    {
+      if (s.find(*it) == s.end())
+        {
+          s.insert(*it);
+        }
+      else
+        {
+          result = true;
+          break;
+        }
+
+      ++it;
+    }
+
+  return result;
 }

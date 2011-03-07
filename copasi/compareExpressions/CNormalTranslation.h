@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.23.4.4 $
+//   $Revision: 1.23.4.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/03 14:44:29 $
+//   $Date: 2011/03/07 19:20:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,9 @@ struct product_match : public summ_match
 class CNormalTranslation
 {
 public:
+  static bool has_duplicate_nodes(const CEvaluationNode* pNode);
+
+
   /**
    * Simplify an evaluation tree given by the root node by creating a new simplified tree from the original one.
    * The tree itself is actually not created!
