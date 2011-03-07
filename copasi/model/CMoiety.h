@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-//   $Revision: 1.33.4.1 $
+//   $Revision: 1.33.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/22 18:37:28 $
+//   $Date: 2011/03/07 17:05:34 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -170,6 +170,12 @@ public:
    * @return const C_FLOAT64 & dependentNumber
    */
   const C_FLOAT64 & getDependentNumber() const;
+
+  /**
+   * Retrieve the object for the dependent particle number
+   * @return CCopasiObject * dependentNumberReference
+   */
+  CCopasiObject * getDependentNumberReference() const;
 
   /**
    *
