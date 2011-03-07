@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.102.2.4 $
+//   $Revision: 1.102.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/01 16:18:56 $
+//   $Date: 2011/03/07 14:35:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,6 @@
 #include <QPushButton>
 #include <QSplitter>
 #include <QVBoxLayout>
-#include <QFileDialog>
 #include <QToolBar>
 #include <qwt_slider.h>
 #include <QGridLayout>
@@ -56,6 +55,9 @@
 #include "NodeSizePanel.h"
 #include "ParaPanel.h"
 #include "CQPlayerControlWidget.h"
+#ifdef FRAMEBUFFER_SCREENSHOTS
+#include "CQScreenshotOptionsDialog.h"
+#endif // FRAMEBUFFER_SCREENSHOTS
 #ifndef USE_CRENDER_EXTENSION
 #include "load_data.xpm"
 #endif // USE_CRENDER_EXTENSION
@@ -664,38 +666,85 @@ void CQLayoutMainWindow::saveImage()
   if (pPainter != NULL)
     {
       size_t step = pPainter->getCurrentStep();
+      size_t lastFrame = pPainter->getNumberOfSteps();
       double x = pPainter->getCurrentPositionX();
       double y = pPainter->getCurrentPositionY();
+      double layoutX = pPainter->getGraphMin().getX();
+      double layoutY = pPainter->getGraphMin().getY();
+      double layoutWidth = pPainter->getGraphMax().getX() - layoutX;
+      double layoutHeight = pPainter->getGraphMax().getY() - layoutY;
       unsigned int imageWidth = pPainter->width();
       unsigned int imageHeight = pPainter->height();
       double zoomFactor = pPainter->getZoomFactor();
       double width = (double)imageWidth / zoomFactor;
       double height = (double)imageHeight / zoomFactor;
-      std::vector<size_t> v;
-      v.push_back(step);
-      // TODO use more sophisticated dialog
-      // TODO use a nicer default for the title, maybe based on the model name
-      QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", "untitled.png",
-                         "PNG Files (*.png)", "Choose a filename to save the image(s) under");
+      // use more sophisticated dialog
+      CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
+          x, y, width, height, pPainter->width() , pPainter->height(), lastFrame, this);
 
-      if (!filename.isNull() && !filename.isEmpty())
+      if (pDialog->exec() == QDialog::Accepted)
         {
-          mCurrentPlace = filename;
-          bool result = pPainter->export_bitmap(x, y, width, height, imageWidth, imageHeight, filename, v);
+          // ask for the filename
+          // TODO use a nicer default filename
+          QString fileName = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", QString("untitled.png"), QString("PNG (*.png);;All files (*.*)"), QString("Choose a filename to save the image(s) under"));
 
-          if (result == false)
+          if (!fileName.isEmpty() && !fileName.isNull())
             {
-              CQMessageBox::warning(this, "Error creating image",
-                                    "The image could not be created.",
-                                    QMessageBox::Ok, QMessageBox::Ok);
-              return;
+              // get the frames
+              std::vector<size_t> v;
+
+              switch (pDialog->getFrameOption())
+                {
+                  case CQScreenshotOptionsDialog::ALL_FRAMES:
+
+                    // add all frames from 1 to lastFrame
+                    if (lastFrame != 0)
+                      {
+                        for (size_t i = 1; i <= lastFrame; ++i)
+                          {
+                            v.push_back(i);
+                          }
+                      }
+                    else
+                      {
+                        v.push_back(step);
+                      }
+
+                    break;
+                  case CQScreenshotOptionsDialog::USER_DEFINED_FRAMES:
+                    v.insert(v.begin(), pDialog->getFrameSet().begin(), pDialog->getFrameSet().end());
+
+                    if (v.empty())
+                      {
+                        CQMessageBox::warning(this, "No frames selected",
+                                              "The frame selection was invalid.\nExporting current frame.",
+                                              QMessageBox::Ok, QMessageBox::Ok);
+                        v.push_back(step);
+                      }
+
+                    break;
+                  default:
+                    v.push_back(step);
+                    break;
+                }
+
+              bool result = pPainter->export_bitmap(pDialog->getX(), pDialog->getY(), pDialog->getWidth(), pDialog->getHeight(), pDialog->getImageWidth(), pDialog->getImageHeight(), fileName, v);
+
+              if (result == false)
+                {
+                  CQMessageBox::warning(this, "Error creating image",
+                                        "The image could not be created.",
+                                        QMessageBox::Ok, QMessageBox::Ok);
+                  return;
+                }
             }
         }
+
+      delete pDialog;
     }
 
 #else
   QImage img = mpGLViewport->getPainter()->getImage();
-//  QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
   QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", "untitled.png",
                      "PNG Files (*.png)", "Choose a filename to save the image under");
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQScreenshotOptionsDialog.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/02 17:42:52 $
+//   $Date: 2011/03/07 14:35:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,11 @@ protected:
   // whether to draw the options for the frame selection or not
   int mLastFrame;
 
+  // color for background highlighting in
+  // the frames input field
+  QColor mDefaultColor;
+  QColor mHighlightColor;
+  bool mFramesEditHighlighted;
 
 
 public:
@@ -164,8 +169,11 @@ protected slots:
   // called when the y value is changed
   void slotYChanged(const QString& yt);
 
-  // called when the frames text is changed
-  void slotFramesTextChanged(const QString& yt);
+  // called when the frames text is finished
+  void slotFramesTextEditingFinished();
+
+  // called when the frames text is edited
+  void slotFramesTextEdited(const QString& text);
 
 
   // called when the draw selection item checkbox is toggled

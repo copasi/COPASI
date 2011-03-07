@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQScreenshotOptionsDialog.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/02 20:18:30 $
+//   $Author: gauges $
+//   $Date: 2011/03/07 14:35:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,9 @@
 
 #include "CQScreenshotOptionsDialog.h"
 
+#include <QColor>
 #include <QDoubleValidator>
+#include <QPalette>
 
 #include <iostream>
 #include <assert.h>
@@ -41,9 +43,18 @@ CQScreenshotOptionsDialog::CQScreenshotOptionsDialog(double layoutX, double layo
     mImageWidth(imageWidth),
     mImageHeight(imageHeight),
     mDrawSelectionDecorations(false),
-    mLastFrame(lastFrame)
+    mLastFrame(lastFrame),
+    mFramesEditHighlighted(false)
 {
   setupUi(this);
+  QPalette palette = this->mpFramesEdit->palette();
+  this->mDefaultColor = palette.color(this->mpFramesEdit->backgroundRole());
+  this->mHighlightColor = QColor(224, 128, 128);
+  // we disable the edit window after we get the background color
+  // otherwise we save the background for the disabled state
+  this->mpFramesEdit->setEnabled(false);
+
+
   // check if we need to display the frame options, if yes make them visible and enable them
   this->mpFramesWidget->setEnabled(this->mLastFrame > 0);
   this->mpFramesWidget->setVisible(this->mLastFrame > 0);
@@ -131,7 +142,8 @@ CQScreenshotOptionsDialog::CQScreenshotOptionsDialog(double layoutX, double layo
   connect(this->mpXLineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotXChanged(const QString&)));
   connect(this->mpYLineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotYChanged(const QString&)));
   connect(this->mpDrawSelectionCheckbox, SIGNAL(toggled(bool)), this, SLOT(slotDrawSelectionToggled(bool)));
-  connect(this->mpFramesEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotFramesTextChanged(const QString&)));
+  connect(this->mpFramesEdit, SIGNAL(textEdited(const QString&)), this, SLOT(slotFramesTextEdited(const QString&)));
+  connect(this->mpFramesEdit, SIGNAL(editingFinished()), this, SLOT(slotFramesTextEditingFinished()));
 }
 
 /*
@@ -421,39 +433,71 @@ void CQScreenshotOptionsDialog::slotDrawSelectionToggled(bool v)
 }
 
 // called when the frames text is changed
-void CQScreenshotOptionsDialog::slotFramesTextChanged(const QString& yt)
+void CQScreenshotOptionsDialog::slotFramesTextEdited(const QString& /*text*/)
 {
-  const QString complete("^([ \\t\\n\\r]*[0-9]+[ \\t\\n\\r]*(-[ \\t\\n\\r]*(?:[0-9]+[ \\t\\n\\r]*)?)?|[ \\t\\n\\r]*-[ \\t\\n\\r]*[0-9]+[ \\t\\n\\r]*)(?:,([ \\t\\n\\r]*[0-9]+[ \\t\\n\\r]*(-[ \\t\\n\\r]*([0-9]+[ \\t\\n\\r]*)?)?|[ \\t\\n\\r]*-[ \\t\\n\\r]*[0-9]+[ \\t\\n\\r]*))*$");
-  QRegExp completeRegExp(complete);
-  const QString number("^[ \\t\\n\\r]*([0-9]+)[ \\t\\n\\r]*$");
+  if (this->mpFramesEdit->hasAcceptableInput() && this->mFramesEditHighlighted == true)
+    {
+      // set background to normal
+      QPalette palette = this->mpFramesEdit->palette();
+      palette.setColor(this->mpFramesEdit->backgroundRole(), this->mDefaultColor);
+      this->mpFramesEdit->setPalette(palette);
+      this->mFramesEditHighlighted = false;
+    }
+  else if (!this->mpFramesEdit->hasAcceptableInput() && this->mFramesEditHighlighted == false)
+    {
+      // set background to red
+      QPalette palette = this->mpFramesEdit->palette();
+      palette.setColor(this->mpFramesEdit->backgroundRole(), this->mHighlightColor);
+      this->mpFramesEdit->setPalette(palette);
+      this->mFramesEditHighlighted = true;
+    }
+}
+
+// called when the frames text is changed
+void CQScreenshotOptionsDialog::slotFramesTextEditingFinished()
+{
+  QString yt = this->mpFramesEdit->text();
+  // the [0-9] are used instead of \\d because I only want these digits and not any symbol of any alphabet that counts as a digit
+  //const QString complete("^(\\s*[0-9]+\\s*(-\\s*(?:[0-9]+\\s*)?)?|\\s*-\\s*[0-9]+\\s*)(?:,(\\s*[0-9]+\\s*(?:-\\s*([0-9]+\\s*)?)?|\\s*-\\s*[0-9]+\\s*))*$");
+  //QRegExp completeRegExp(complete);
+  //completeRegExp.setPatternSyntax(QRegExp::RegExp2);
+  const QString number("^[0-9]+$");
   QRegExp numberRegExp(number);
-  const QString closed("^[ \\t\\n\\t]*([0-9]+)[ \\t\\r\\n]*-[ \\t\\n\\r]*([0-9]+)[ \\t\\n\\r]*$");
+  numberRegExp.setPatternSyntax(QRegExp::RegExp2);
+  const QString closed("^([0-9]+)\\s*-\\s*([0-9]+)$");
   QRegExp closedRegExp(closed);
-  const QString start("^[ \\t\\n\\r]*([0-9]+)[ \\t\\n\\r]*-[ \\t\\n\\r]*$");
+  closedRegExp.setPatternSyntax(QRegExp::RegExp2);
+  const QString start("^([0-9]+)\\s*-$");
   QRegExp startRegExp(start);
-  const QString end("^[ \\t\\n\\r]*-[ \\t\\n\\r]*([0-9]+)[ \\t\\n\\r]*$");
+  startRegExp.setPatternSyntax(QRegExp::RegExp2);
+  const QString end("^-\\s*([0-9]+)$");
   QRegExp endRegExp(end);
+  endRegExp.setPatternSyntax(QRegExp::RegExp2);
   // split the input into groups and parse the groups
-  bool match = completeRegExp.exactMatch(yt);
-  assert(match == true);
+  //bool match = completeRegExp.exactMatch(yt);
+  //assert(match == true);
 
-  if (!match) return;
+  //if (!match) return;
 
-  QStringList l = completeRegExp.capturedTexts();
+  //QStringList l = completeRegExp.capturedTexts();
+  QStringList l = yt.split(QString(","), QString::SkipEmptyParts);
   int i, iMax = l.size();
   assert(iMax != 0);
   this->mFrames.clear();
+  QString s1, s2;
 
   for (i = 0; i < iMax; ++i)
     {
+      s1 = l[i].trimmed();
+
       // check if it is a number, a closed range or one of
       // the two possible open ranges
-      if (numberRegExp.exactMatch(l[i]))
+      if (numberRegExp.exactMatch(s1))
         {
           QStringList l2 = numberRegExp.capturedTexts();
           assert(l2.size() == 1);
 
-          if (l2.size() != 0)
+          if (l2.size() > 0)
             {
               unsigned int n = l2[0].toUInt();
 
@@ -463,15 +507,15 @@ void CQScreenshotOptionsDialog::slotFramesTextChanged(const QString& yt)
                 }
             }
         }
-      else if (closedRegExp.exactMatch(l[i]))
+      else if (closedRegExp.exactMatch(s1))
         {
           QStringList l2 = closedRegExp.capturedTexts();
-          assert(l2.size() == 2);
+          assert(l2.size() == 3);
 
-          if (l2.size() > 1)
+          if (l2.size() > 2)
             {
-              unsigned int n1 = l2[0].toUInt();
-              unsigned int n2 = l2[1].toUInt();
+              unsigned int n1 = l2[1].toUInt();
+              unsigned int n2 = l2[2].toUInt();
               assert(n1 <= n2);
 
               if (this->mLastFrame > 0 && n1 <= (unsigned int)this->mLastFrame)
@@ -486,14 +530,14 @@ void CQScreenshotOptionsDialog::slotFramesTextChanged(const QString& yt)
                 }
             }
         }
-      else if (startRegExp.exactMatch(l[i]))
+      else if (startRegExp.exactMatch(s1))
         {
           QStringList l2 = startRegExp.capturedTexts();
-          assert(l2.size() == 1);
+          assert(l2.size() == 2);
 
-          if (l2.size() != 0)
+          if (l2.size() > 1)
             {
-              unsigned int n = l2[0].toUInt();
+              unsigned int n = l2[1].toUInt();
 
               if (this->mLastFrame > 0 && n <= (unsigned int)this->mLastFrame)
                 {
@@ -506,14 +550,14 @@ void CQScreenshotOptionsDialog::slotFramesTextChanged(const QString& yt)
                 }
             }
         }
-      else if (endRegExp.exactMatch(l[i]))
+      else if (endRegExp.exactMatch(s1))
         {
           QStringList l2 = endRegExp.capturedTexts();
-          assert(l2.size() == 1);
+          assert(l2.size() == 2);
 
-          if (l2.size() != 0)
+          if (l2.size() > 1)
             {
-              unsigned int n = l2[0].toUInt();
+              unsigned int n = l2[1].toUInt();
 
               if (this->mLastFrame > 0 && n <= (unsigned int)this->mLastFrame)
                 {
@@ -528,7 +572,9 @@ void CQScreenshotOptionsDialog::slotFramesTextChanged(const QString& yt)
         }
       else
         {
-          assert(false);
+          // it be an empty string
+          this->mFrames.clear();
+          return;
         }
     }
 }
@@ -537,9 +583,10 @@ void CQScreenshotOptionsDialog::slotFramesTextChanged(const QString& yt)
 
 // --------- Validator ------
 
-const QString CQFrameInputValidator::ValidRegExpString("^([ \\t\\n\\r]*[0-9]+[ \\t\\n\\r]*(-[ \\t\\n\\r]*(?:[0-9]+[ \\t\\n\\r]*)?)?|[ \\t\\n\\r]*-[ \\t\\n\\r]*[0-9]+[ \\t\\n\\r]*)(?:,([ \\t\\n\\r]*[0-9]+[ \\t\\n\\r]*(-[ \\t\\n\\r]*([0-9]+[ \\t\\n\\r]*)?)?|[ \\t\\n\\r]*-[ \\t\\n\\r]*[0-9]+[ \\t\\n\\r]*))*$");
-const QString CQFrameInputValidator::IntermediateRegExpString("^(?:[,- \\n\\t\\r]|[0-9])*$");
-const QString CQFrameInputValidator::ClosedRangeGroupRegExpString("^[ \\t\\n\\t]*([0-9]+)[ \\t\\r\\n]*-[ \\t\\n\\r]*([0-9]+)[ \\t\\n\\r]*$");
+// the [0-9] are used instead of \\d because I only want these digits and not any symbol of any alphabet that counts as a digit
+const QString CQFrameInputValidator::ValidRegExpString("^(\\s*[0-9]+\\s*(-\\s*(?:[0-9]+\\s*)?)?|\\s*-\\s*[0-9]+\\s*)(?:,(\\s*[0-9]+\\s*(-\\s*([0-9]+\\s*)?)?|\\s*-\\s*[0-9]+\\s*))*$");
+const QString CQFrameInputValidator::IntermediateRegExpString("^(?:,|-|[0-9]|\\s)*$");
+const QString CQFrameInputValidator::ClosedRangeGroupRegExpString("^\\s*([0-9]+)\\s*-\\s*([0-9]+)\\s*$");
 
 
 CQFrameInputValidator::CQFrameInputValidator(QObject* pParent):
@@ -548,6 +595,9 @@ CQFrameInputValidator::CQFrameInputValidator(QObject* pParent):
     , mIntermediateRegExp(IntermediateRegExpString)
     , mClosedRangeGroupRegExp(ClosedRangeGroupRegExpString)
 {
+  this->mValidationRegExp.setPatternSyntax(QRegExp::RegExp2);
+  this->mIntermediateRegExp.setPatternSyntax(QRegExp::RegExp2);
+  this->mClosedRangeGroupRegExp.setPatternSyntax(QRegExp::RegExp2);
 }
 
 QValidator::State CQFrameInputValidator::validate(QString& input, int & /*pos*/) const
@@ -566,11 +616,11 @@ QValidator::State CQFrameInputValidator::validate(QString& input, int & /*pos*/)
             {
               // check if the numbers are ascending
               QStringList l2 = this->mClosedRangeGroupRegExp.capturedTexts();
-              assert(l2.size() == 2);
+              assert(l2.size() == 3);
 
-              if (l2.size() != 2 || (l2.size() == 2 && l2[0].toUInt() > l2[1].toUInt()))
+              if (l2.size() != 3 || (l2.size() == 3 && l2[1].toUInt() > l2[2].toUInt()))
                 {
-                  state = QValidator::Invalid;
+                  state = QValidator::Intermediate;
                 }
             }
         }
