@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.34.2.5 $
+//   $Revision: 1.34.2.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 21:44:50 $
+//   $Author: ssahle $
+//   $Date: 2011/03/08 15:32:46 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -128,6 +128,10 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool /* first */)
     {
       success = mpSubTask->process(/*first*/true);
       mCounter++;
+    }
+  else
+    {
+      success = true; // doing nothing should never fail.
     }
 
   mpProblem->getModel()->updateSimulatedValues(true);
