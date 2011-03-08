@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.193 $
+//   $Revision: 1.194 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/03/08 16:10:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -748,7 +748,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
   // Construct parameters
   if (mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER)
-      != ParameterSize)
+      != (size_t) ParameterSize)
     {
       // no. of parameters not matching function definition.
       fatalError();
@@ -759,7 +759,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   const CFunctionParameter* pParameter;
   C_FLOAT64 value;
 
-  for (i = 0, pos = 0; i < ParameterSize; i++)
+  for (i = 0, pos = 0; i < (size_t) ParameterSize; i++)
     {
       name = StringPrint("Param%d", i);
       configbuffer.getVariable(name, "C_FLOAT64", &value);
