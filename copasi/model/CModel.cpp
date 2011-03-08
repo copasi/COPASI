@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.395.2.3 $
+//   $Revision: 1.395.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 17:13:02 $
+//   $Date: 2011/03/08 15:01:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1863,6 +1863,8 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & derivationFactor,
                                const C_FLOAT64 & /* resolution */)
 {
+  C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
+
   size_t Dim =
     mCurrentState.getNumIndependent() + MNumMetabolitesReactionDependent;
   //Dim now contains the number of entities with ODEs + number of metabs depending on reactions.
@@ -1894,19 +1896,19 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
       Store = *pX;
 
       // We only need to make sure that we do not have an underflow problem
-      if (fabs(Store) < 100 * DBL_MIN)
+      if (fabs(Store) < DerivationFactor)
         {
           X1 = 0.0;
 
           if (Store < 0.0)
-            X2 = -200.0 * DBL_MIN;
+            X2 = -2.0 * DerivationFactor;
           else
-            X2 = 200.0 * DBL_MIN;;
+            X2 = 2.0 * DerivationFactor;
         }
       else
         {
-          X1 = Store * (1.0 + derivationFactor);
-          X2 = Store * (1.0 - derivationFactor);
+          X1 = Store * (1.0 + DerivationFactor);
+          X2 = Store * (1.0 - DerivationFactor);
         }
 
       InvDelta = 1.0 / (X2 - X1);
@@ -1989,14 +1991,14 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
       Store = *pX;
 
       // We only need to make sure that we do not have an underflow problem
-      if (fabs(Store) < 100 * DBL_MIN)
+      if (fabs(Store) < DerivationFactor)
         {
           X1 = 0.0;
 
           if (Store < 0.0)
-            X2 = -200.0 * DBL_MIN;
+            X2 = -2.0 * DerivationFactor;
           else
-            X2 = 200.0 * DBL_MIN;;
+            X2 = 2.0 * DerivationFactor;;
         }
       else
         {
