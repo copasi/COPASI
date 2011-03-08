@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.12.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/08/18 17:33:03 $
+   $Date: 2011/03/08 15:15:53 $
    End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -212,7 +212,7 @@ public:
 
   virtual State validate(QString & input, int & pos) const;
 
-  void setRange(const C_INT32 & lowerBound, const C_INT32 & upperBound);
+  void setRange(const int & lowerBound, const int & upperBound);
 
   //Attributes
 protected:
