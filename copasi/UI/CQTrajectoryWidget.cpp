@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:51 $
+//   $Date: 2011/03/09 18:50:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,11 +87,11 @@ void CQTrajectoryWidget::init()
   mpEditDuration->setValidator(mpValidatorDuration);
 
   mpValidatorIntervalSize = new CQValidatorDouble(mpEditIntervalSize);
-  mpValidatorIntervalSize->setRange(0, DBL_MAX);
+  mpValidatorIntervalSize->setRange(0, std::numeric_limits< double >::max());
   mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
 
   mpValidatorIntervals = new CQValidatorInt(mpEditIntervals);
-  mpValidatorIntervals->setRange(0, LONG_MAX);
+  mpValidatorIntervals->setRange(0, std::numeric_limits< int >::max());
   mpEditIntervals->setValidator(mpValidatorIntervals);
 
   mpValidatorDelay = new CQValidatorDouble(mpEditDelay);

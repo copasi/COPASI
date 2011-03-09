@@ -1,9 +1,10 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:53 $
+//   $Date: 2011/03/09 18:50:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,14 +193,11 @@ bool CProgressBar::progressItem(const size_t & handle)
   if (mpMainThread != NULL &&
       QThread::currentThread() != mpMainThread)
     {
-      QMutexLocker Locker(&mMutex);
-      mSlotFinished = false;
-
-      emit signalProgressAll();
-
-      if (!mSlotFinished)
+      if (mSlotFinished)
         {
-          mWaitSlot.wait(&mMutex);
+          mSlotFinished = false;
+
+          emit signalProgressAll();
         }
     }
   else
