@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:51 $
+//   $Date: 2011/03/09 13:52:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -545,4 +545,106 @@ std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel * pM
     }
 
   return EventTargets;
+}
+
+// static
+std::vector< const CModelEntity * > CObjectLists::getFixedEntities(const CModel * pModel)
+{
+  std::vector< const CModelEntity * > FixedEntities;
+  std::set< const CModelEntity * > EventTargets = getEventTargets(pModel);
+
+  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
+
+  CModelEntity *const* ppEntities = StateTemplate.beginFixed();
+  CModelEntity *const* ppEntitiesEnd = StateTemplate.endFixed();
+
+  for (; ppEntities != ppEntitiesEnd; ++ppEntities)
+    {
+      if (EventTargets.find(*ppEntities) == EventTargets.end())
+        {
+          FixedEntities.push_back(*ppEntities);
+        }
+    }
+
+  return FixedEntities;
+}
+
+// static
+std::vector< const CModelEntity * > CObjectLists::getFixedEventTargetEntities(const CModel * pModel)
+{
+  std::vector< const CModelEntity * > FixedEventTargetEntities;
+  std::set< const CModelEntity * > EventTargets = getEventTargets(pModel);
+
+  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
+
+  CModelEntity *const* ppEntities = StateTemplate.beginFixed();
+  CModelEntity *const* ppEntitiesEnd = StateTemplate.endFixed();
+
+  for (; ppEntities != ppEntitiesEnd; ++ppEntities)
+    {
+      if (EventTargets.find(*ppEntities) != EventTargets.end())
+        {
+          FixedEventTargetEntities.push_back(*ppEntities);
+        }
+    }
+
+  return FixedEventTargetEntities;
+}
+
+
+// static
+std::vector< const CModelEntity * > CObjectLists::getODEEntities(const CModel * pModel)
+{
+  std::vector< const CModelEntity * > ODEEntities;
+
+  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
+
+  CModelEntity *const* ppEntities = StateTemplate.beginIndependent();
+  CModelEntity *const* ppEntitiesEnd = StateTemplate.endIndependent();
+
+  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::ODE; ++ppEntities)
+    {
+      ODEEntities.push_back(*ppEntities);
+    }
+
+  return ODEEntities;
+}
+
+// static
+std::vector< const CMetab * > CObjectLists::getReactionSpecies(const CModel * pModel)
+{
+  std::vector< const CMetab * > ReactionSpecies;
+
+  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
+
+  CModelEntity *const* ppEntities = StateTemplate.beginIndependent();
+  CModelEntity *const* ppEntitiesEnd = StateTemplate.endDependent();
+
+  for (; ppEntities != ppEntitiesEnd; ++ppEntities)
+    {
+      if ((*ppEntities)->getStatus() != CModelEntity::REACTIONS)
+        continue;
+
+      ReactionSpecies.push_back(static_cast< const CMetab * >(*ppEntities));
+    }
+
+  return ReactionSpecies;
+}
+
+// static
+std::vector< const CModelEntity * > CObjectLists::getAssignmentEntities(const CModel * pModel)
+{
+  std::vector< const CModelEntity * > AssignmentEntities;
+
+  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
+
+  CModelEntity *const* ppEntities = StateTemplate.beginFixed();
+  CModelEntity *const* ppEntitiesEnd = StateTemplate.endFixed();
+
+  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::ASSIGNMENT; ++ppEntities)
+    {
+      AssignmentEntities.push_back(*ppEntities);
+    }
+
+  return AssignmentEntities;
 }

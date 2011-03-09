@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/03 19:09:00 $
+//   $Date: 2011/03/09 13:52:43 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -24,6 +29,7 @@
 class CCopasiObject;
 class CModel;
 class CModelEntity;
+class CMetab;
 
 class CObjectLists
 {
@@ -101,7 +107,24 @@ private:
 
   static
   std::set< const CModelEntity * > getEventTargets(const CModel * pModel);
-  //TODO: method to select a subset of lists for a specific application (output or parameter)
+
+public:
+  static
+  std::vector< const CModelEntity * > getFixedEntities(const CModel * pModel);
+
+  static
+  std::vector< const CModelEntity * > getFixedEventTargetEntities(const CModel * pModel);
+
+  static
+  std::vector< const CModelEntity * > getODEEntities(const CModel * pModel);
+
+  static
+  std::vector< const CMetab * > getReactionSpecies(const CModel * pModel);
+
+  static
+  std::vector< const CModelEntity * > getAssignmentEntities(const CModel * pModel);
+
+//TODO: method to select a subset of lists for a specific application (output or parameter)
 
   //TODO: display names
 };
