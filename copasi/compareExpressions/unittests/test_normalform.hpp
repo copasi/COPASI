@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:44 $
+//   $Author: gauges $
+//   $Date: 2011/03/09 21:27:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,6 +136,7 @@ class test_normalform : public CppUnit::TestFixture
   CPPUNIT_TEST(test_bug_8);
   CPPUNIT_TEST(test_bug_9);
   //CPPUNIT_TEST(test_bug_10);
+  CPPUNIT_TEST(test_bug_11);
 
   CPPUNIT_TEST_SUITE_END();
 
@@ -279,6 +280,8 @@ public:
   // very nasty equation from reaction vdead in Biomodels 217
   void test_bug_10();
 
+  //  "Kd*Kms*Vr*a*product*-1+(Kms*Modifier*Vr*b*product*-1+(Kd*Kmp*Vf*a*substrate+Kmp*Modifier*Vf*b*substrate))"
+  void test_bug_11();
 
   // PI < A
   bool check_LogicalItemA(const CNormalLogicalItem* pLogicalItem);

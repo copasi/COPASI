@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/09 13:41:56 $
+//   $Date: 2011/03/09 21:27:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,11 +27,12 @@
 # pragma warning (disable: 4355)
 #endif  // WIN32
 
-#include <sstream>
-#include <string>
-#include <set>
-#include <vector>
+#include <algorithm>
 #include <iostream>
+#include <set>
+#include <string>
+#include <sstream>
+#include <vector>
 
 #include "copasi.h"
 
@@ -590,6 +591,7 @@ CEvaluationNode* CNormalTranslation::simplify(const CEvaluationNode* pOrig)
           infix = pResult->getInfix(); //base->toString();
         }
 
+      //std::cout << "infix: " << infix << std::endl;
       pTmp = pResult;
     }
 
@@ -2588,57 +2590,11 @@ void CNormalTranslation::order(const CEvaluationNode* pRoot, std::list<const CEv
  */
 void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEvaluationNode*>& additions, std::vector<CEvaluationNode*>& subtractions, bool minus)
 {
+  //std::string s=pRoot->getInfix();
   std::vector<const CEvaluationNode*> tmpAdditions, tmpSubtractions;
   CNormalTranslation::splitSum(pRoot, tmpAdditions, tmpSubtractions, minus);
-  unsigned int i, iMax = tmpAdditions.size();
-  additions.reserve(iMax);
   std::list<const CEvaluationNode*> orderList;
   CNormalTranslation::order(pRoot, orderList);
-  // now we convert the list into a map so that we can search faster
-  std::map<const CEvaluationNode*, unsigned int> orderMap;
-  std::list<const CEvaluationNode*>::const_iterator orderIt = orderList.begin(), orderEndit = orderList.end();
-  unsigned int index = 0;
-
-  while (orderIt != orderEndit)
-    {
-      orderMap.insert(std::pair<const CEvaluationNode*, unsigned int>((*orderIt), index));
-      ++orderIt;
-      ++index;
-    }
-
-  std::map<const CEvaluationNode*, unsigned int>::iterator orderPos;
-  CEvaluationNode* pNewNode = NULL;
-  const CEvaluationNode* pOrigNode = NULL;
-
-  for (i = 0; i < iMax; ++i)
-    {
-      pOrigNode = tmpAdditions[i];
-      assert(pOrigNode != NULL);
-      pNewNode = pOrigNode->copyBranch();
-      assert(pNewNode != NULL);
-      orderPos = orderMap.find(pOrigNode);
-      assert(orderPos != orderMap.end());
-      orderMap.insert(std::pair<const CEvaluationNode*, unsigned int>(pNewNode, orderPos->second));
-      orderMap.erase(orderPos);
-      additions.push_back(pNewNode);
-    }
-
-  iMax = tmpSubtractions.size();
-  subtractions.reserve(iMax);
-
-  for (i = 0; i < iMax; ++i)
-    {
-      pOrigNode = tmpSubtractions[i];
-      assert(pOrigNode != NULL);
-      pNewNode = pOrigNode->copyBranch();
-      assert(pNewNode != NULL);
-      orderPos = orderMap.find(pOrigNode);
-      assert(orderPos != orderMap.end());
-      orderMap.insert(std::pair<const CEvaluationNode*, unsigned int>(pNewNode, orderPos->second));
-      orderMap.erase(orderPos);
-      subtractions.push_back(pNewNode);
-    }
-
 
   // TODO the code below was part of the old splitSum method that has largely
   // TODO been replaced by the new method that doesn't copy the nodes and is
@@ -2653,302 +2609,149 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEva
   // likewise check for negative numbers in substractions and add them to
   // additions
   // do the same for multiplications with a negative number
-  std::vector<CEvaluationNode*>::iterator it = additions.begin(), endit = additions.end();
-  unsigned int order;
+  std::list<const CEvaluationNode*>::const_iterator orderIt = orderList.begin(), orderEndit = orderList.end();
+  const CEvaluationNode* pCurrentNode = NULL;
+  bool isMinus = false;
 
-  while (it != endit)
+  while (orderIt != orderEndit)
     {
-      if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER && (*it)->value() < 0.0)
+      pCurrentNode = NULL;
+      isMinus = false;
+
+      if (std::find(tmpAdditions.begin(), tmpAdditions.end(), *orderIt) == tmpAdditions.end())
         {
-          std::ostringstream os;
-          os.precision(18);
-          os << (*it)->value() * -1.0;
-          CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
-          // we have to insert the node in the right place
-          // we need to find the element in additions that has a larger order
-          // than our current element
-          order = orderMap.find(*it)->second;
-          std::vector<CEvaluationNode*>::iterator iit = subtractions.begin(), iendit = subtractions.end();
-
-          while (iit != iendit && order > orderMap.find(*iit)->second)
+          if (std::find(tmpSubtractions.begin(), tmpSubtractions.end(), *orderIt) != tmpSubtractions.end())
             {
-              ++iit;
-            }
-
-          subtractions.insert(iit, pTmpNumber);
-          delete *it;
-          it = additions.erase(it);
-          endit = additions.end();
-          continue;
-        }
-      else if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType((*it)->getType()) == CEvaluationNodeOperator::MULTIPLY)
-        {
-          // actually there should be code that tests if both are negative
-          // numbers
-          if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() < 0.0))
-            {
-              if (fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value()) - 1.0 < ZERO)
-                {
-                  // we have to insert the node in the right place
-                  // we need to find the element in additions that has a larger order
-                  // than our current element
-                  order = orderMap.find(*it)->second;
-                  std::vector<CEvaluationNode*>::iterator iit = subtractions.begin(), iendit = subtractions.end();
-
-                  while (iit != iendit && order > orderMap.find(*iit)->second)
-                    {
-                      ++iit;
-                    }
-
-                  subtractions.insert(iit, dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
-                  delete *it;
-                  it = additions.erase(it);
-                  endit = additions.end();
-                  continue;
-                }
-              else
-                {
-                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  std::ostringstream os;
-                  os.precision(18);
-                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() * -1.0;
-                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
-                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
-                  // we have to insert the node in the right place
-                  // we need to find the element in additions that has a larger order
-                  // than our current element
-                  order = orderMap.find(*it)->second;
-                  std::vector<CEvaluationNode*>::iterator iit = subtractions.begin(), iendit = subtractions.end();
-
-                  std::map<const CEvaluationNode*, unsigned int>::const_iterator pos;
-
-                  if (iit != endit)
-                    {
-                      pos = orderMap.find(*iit);
-                      assert(pos != orderMap.end());
-                    }
-
-                  while (iit != iendit && order > orderMap.find(*iit)->second)
-                    {
-                      ++iit;
-
-                      if (iit != endit)
-                        {
-                          pos = orderMap.find(*iit);
-                          assert(pos != orderMap.end());
-                        }
-                    }
-
-                  subtractions.insert(iit, pTmp);
-                  delete *it;
-                  it = additions.erase(it);
-                  endit = additions.end();
-                  continue;
-                }
-            }
-          else if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() < 0.0)
-            {
-              if (fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value()) - 1.0 < ZERO)
-                {
-                  // we have to insert the node in the right place
-                  // we need to find the element in additions that has a larger order
-                  // than our current element
-                  order = orderMap.find(*it)->second;
-                  std::vector<CEvaluationNode*>::iterator iit = subtractions.begin(), iendit = subtractions.end();
-                  std::map<const CEvaluationNode*, unsigned int>::const_iterator pos;
-
-                  if (iit != iendit)
-                    {
-                      pos = orderMap.find(*iit);
-                      assert(pos != orderMap.end());
-                    }
-
-                  while (iit != iendit && order > pos->second)
-                    {
-                      ++iit;
-
-                      if (iit != endit)
-                        {
-                          pos = orderMap.find(*iit);
-                          assert(pos != orderMap.end());
-                        }
-                    }
-
-                  subtractions.insert(iit, dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
-                  delete *it;
-                  it = additions.erase(it);
-                  endit = additions.end();
-                  continue;
-                }
-              else
-                {
-                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
-                  std::ostringstream os;
-                  os.precision(18);
-                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() * -1.0;
-                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
-                  // we have to insert the node in the right place
-                  // we need to find the element in additions that has a larger order
-                  // than our current element
-                  order = orderMap.find(*it)->second;
-                  std::vector<CEvaluationNode*>::iterator iit = subtractions.begin(), iendit = subtractions.end();
-
-                  while (iit != iendit && order > orderMap.find(*iit)->second)
-                    {
-                      ++iit;
-                    }
-
-                  subtractions.insert(iit, pTmp);
-                  delete *it;
-                  it = additions.erase(it);
-                  endit = additions.end();
-                  continue;
-                }
-            }
-          else
-            {
-              ++it;
+              isMinus = true;
+              pCurrentNode = *orderIt;
+              assert(pCurrentNode != NULL);
             }
         }
       else
         {
-          ++it;
+          pCurrentNode = *orderIt;
+          assert(pCurrentNode != NULL);
         }
-    }
 
-  it = subtractions.begin();
-  endit = subtractions.end();
-
-  while (it != endit)
-    {
-      if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>(*it)->value() < 0.0)
+      if (pCurrentNode != NULL)
         {
-          std::ostringstream os;
-          os.precision(18);
-          os << (*it)->value() * -1.0;
-          CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
-          // we have to insert the node in the right place
-          // we need to find the element in additions that has a larger order
-          // than our current element
-          order = orderMap.find(*it)->second;
-          std::vector<CEvaluationNode*>::iterator iit = additions.begin(), iendit = additions.end();
-
-          while (iit != iendit && order > orderMap.find(*iit)->second)
+          //
+          if (CEvaluationNode::type(pCurrentNode->getType()) == CEvaluationNode::NUMBER && pCurrentNode->value() < 0.0)
             {
-              ++iit;
-            }
+              std::ostringstream os;
+              os.precision(18);
+              os << pCurrentNode->value() * -1.0;
+              CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
 
-          additions.insert(iit, pTmpNumber);
-          delete *it;
-          it = subtractions.erase(it);
-          endit = subtractions.end();
-          continue;
-        }
-      else if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType((*it)->getType()) == CEvaluationNodeOperator::MULTIPLY)
-        {
-          // actually there should be code that tests if both are negative
-          // numbers
-          if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() < 0.0))
-            {
-              if (fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value()) - 1.0 < ZERO)
+              if (isMinus == true)
                 {
-                  // we have to insert the node in the right place
-                  // we need to find the element in additions that has a larger order
-                  // than our current element
-                  order = orderMap.find(*it)->second;
-                  std::vector<CEvaluationNode*>::iterator iit = additions.begin(), iendit = additions.end();
-
-                  while (iit != iendit && order > orderMap.find(*iit)->second)
-                    {
-                      ++iit;
-                    }
-
-                  additions.insert(iit, dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
-                  delete *it;
-                  it = subtractions.erase(it);
-                  endit = subtractions.end();
-                  continue;
+                  additions.push_back(pTmpNumber);
                 }
               else
                 {
-                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  std::ostringstream os;
-                  os.precision(18);
-                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() * -1.0;
-                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
-                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
-                  // we need to find the element in additions that has a larger order
-                  // than our current element
-                  order = orderMap.find(*it)->second;
-                  std::vector<CEvaluationNode*>::iterator iit = additions.begin(), iendit = additions.end();
-
-                  while (iit != iendit && order > orderMap.find(*iit)->second)
-                    {
-                      ++iit;
-                    }
-
-                  additions.insert(iit, pTmp);
-                  delete *it;
-                  it = subtractions.erase(it);
-                  endit = subtractions.end();
-                  continue;
+                  subtractions.push_back(pTmpNumber);
                 }
             }
-          else if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() < 0.0)
+          else if (CEvaluationNode::type(pCurrentNode->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pCurrentNode->getType()) == CEvaluationNodeOperator::MULTIPLY)
             {
-              if (fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value()) - 1.0 < ZERO)
+              // actually there should be code that tests if both are negative
+              // numbers
+              if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pCurrentNode->getChild())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>(pCurrentNode->getChild())->value() < 0.0))
                 {
-                  // we need to find the element in additions that has a larger order
-                  // than our current element
-                  order = orderMap.find(*it)->second;
-                  std::vector<CEvaluationNode*>::iterator iit = additions.begin(), iendit = additions.end();
-
-                  while (iit != iendit && order > orderMap.find(*iit)->second)
+                  if (fabs(dynamic_cast<const CEvaluationNodeNumber*>(pCurrentNode->getChild())->value()) - 1.0 < ZERO)
                     {
-                      ++iit;
-                    }
+                      CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pCurrentNode->getChild()->getSibling())->copyBranch();
+                      assert(pTmpNode != NULL);
 
-                  additions.insert(iit, dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
-                  delete *it;
-                  it = subtractions.erase(it);
-                  endit = subtractions.end();
-                  continue;
+                      if (isMinus == true)
+                        {
+                          additions.push_back(pTmpNode);
+                        }
+                      else
+                        {
+                          subtractions.push_back(pTmpNode);
+                        }
+                    }
+                  else
+                    {
+                      CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                      std::ostringstream os;
+                      os.precision(18);
+                      os << static_cast<const CEvaluationNodeNumber*>(pCurrentNode->getChild())->value() * -1.0;
+                      pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
+                      pTmp->addChild(dynamic_cast<const CEvaluationNode*>(pCurrentNode->getChild()->getSibling())->copyBranch());
+
+                      if (isMinus == true)
+                        {
+                          additions.push_back(pTmp);
+                        }
+                      else
+                        {
+                          subtractions.push_back(pTmp);
+                        }
+                    }
+                }
+              else if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pCurrentNode->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>(pCurrentNode->getChild()->getSibling())->value() < 0.0)
+                {
+                  if (fabs(dynamic_cast<const CEvaluationNodeNumber*>(pCurrentNode->getChild()->getSibling())->value()) - 1.0 < ZERO)
+                    {
+                      CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pCurrentNode->getChild())->copyBranch();
+                      assert(pTmpNode != NULL);
+
+                      if (isMinus == true)
+                        {
+                          additions.push_back(pTmpNode);
+                        }
+                      else
+                        {
+                          subtractions.push_back(pTmpNode);
+                        }
+                    }
+                  else
+                    {
+                      CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                      pTmp->addChild(dynamic_cast<const CEvaluationNode*>(pCurrentNode->getChild())->copyBranch());
+                      std::ostringstream os;
+                      os.precision(18);
+                      os << static_cast<const CEvaluationNodeNumber*>(pCurrentNode->getChild()->getSibling())->value() * -1.0;
+                      pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
+
+                      if (isMinus == true)
+                        {
+                          additions.push_back(pTmp);
+                        }
+                      else
+                        {
+                          subtractions.push_back(pTmp);
+                        }
+                    }
                 }
               else
                 {
-                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
-                  std::ostringstream os;
-                  os.precision(18);
-                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() * -1.0;
-                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
-                  // we need to find the element in additions that has a larger order
-                  // than our current element
-                  order = orderMap.find(*it)->second;
-                  std::vector<CEvaluationNode*>::iterator iit = additions.begin(), iendit = additions.end();
-
-                  while (iit != iendit && order > orderMap.find(*iit)->second)
+                  if (isMinus == true)
                     {
-                      ++iit;
+                      subtractions.push_back(pCurrentNode->copyBranch());
                     }
-
-                  additions.insert(iit, pTmp);
-                  delete *it;
-                  it = subtractions.erase(it);
-                  endit = subtractions.end();
-                  continue;
+                  else
+                    {
+                      additions.push_back(pCurrentNode->copyBranch());
+                    }
                 }
             }
           else
             {
-              ++it;
+              if (isMinus == true)
+                {
+                  subtractions.push_back(pCurrentNode->copyBranch());
+                }
+              else
+                {
+                  additions.push_back(pCurrentNode->copyBranch());
+                }
             }
         }
-      else
-        {
-          ++it;
-        }
+
+      ++orderIt;
     }
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:44 $
+//   $Author: gauges $
+//   $Date: 2011/03/09 21:27:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -10485,5 +10485,18 @@ void test_normalform::test_bug_10()
   CPPUNIT_ASSERT(pFraction != NULL);
   delete pFraction;
 
+}
+
+void test_normalform::test_bug_11()
+{
+  //  "A*-1+B*-1"
+  std::string s("A*-1+B*-1");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(s);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  const CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  delete pFraction;
 }
 
