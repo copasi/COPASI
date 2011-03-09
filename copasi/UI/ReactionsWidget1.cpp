@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.9 $
+//   $Revision: 1.205.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/07 15:39:45 $
+//   $Date: 2011/03/09 17:16:02 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -381,13 +381,16 @@ bool ReactionsWidget1::saveToReaction()
     {
       if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
 
-      protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
+      // :TODO Bug 322: This should only be called when actual changes have been saved.
+      if (this->isShown())
+        protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
     }
 
   //TODO: detect rename events (mpRi->writeBackToReaction has to do this)
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  if (this->isShown())
+    (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   return true;
 }
