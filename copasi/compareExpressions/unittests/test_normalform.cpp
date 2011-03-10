@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/09 21:27:09 $
+//   $Date: 2011/03/10 08:29:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -10472,18 +10472,19 @@ void test_normalform::test_bug_10()
   // complete
   std::string complete("P*A*(f1*B/J+3*e1*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+3*h1*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+g1*C^3*N/(E*G*I*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+j1*C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+3*i1*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+3*k1*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))))/((K+A)*(1+B/J+3*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))+3*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*l1)+C^3*N/(E*G*I*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))+C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*n1)+3*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*m1)+3*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*o1)))");
   CEvaluationTree* pTree = new CEvaluationTree();
-  pTree->setInfix(numerator);
+  pTree->setInfix(complete);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
   const CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   delete pFraction;
-  pTree->setInfix(denominator);
-  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
-  delete pTree;
-  CPPUNIT_ASSERT(pFraction != NULL);
-  delete pFraction;
+  //pTree=new CEvaluationTree();
+  //pTree->setInfix(denominator);
+  //CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  //pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  //delete pTree;
+  //CPPUNIT_ASSERT(pFraction != NULL);
+  //delete pFraction;
 
 }
 
