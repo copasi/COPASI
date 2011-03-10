@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/09 21:27:08 $
+//   $Date: 2011/03/10 14:23:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2593,6 +2593,9 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEva
   //std::string s=pRoot->getInfix();
   std::vector<const CEvaluationNode*> tmpAdditions, tmpSubtractions;
   CNormalTranslation::splitSum(pRoot, tmpAdditions, tmpSubtractions, minus);
+  std::set<const CEvaluationNode*> tmpAdditionsS, tmpSubtractionsS;
+  tmpAdditionsS.insert(tmpAdditions.begin(), tmpAdditions.end());
+  tmpSubtractionsS.insert(tmpSubtractions.begin(), tmpSubtractions.end());
   std::list<const CEvaluationNode*> orderList;
   CNormalTranslation::order(pRoot, orderList);
 
@@ -2618,9 +2621,9 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEva
       pCurrentNode = NULL;
       isMinus = false;
 
-      if (std::find(tmpAdditions.begin(), tmpAdditions.end(), *orderIt) == tmpAdditions.end())
+      if (tmpAdditionsS.find(*orderIt) == tmpAdditionsS.end())
         {
-          if (std::find(tmpSubtractions.begin(), tmpSubtractions.end(), *orderIt) != tmpSubtractions.end())
+          if (tmpSubtractionsS.find(*orderIt) != tmpSubtractionsS.end())
             {
               isMinus = true;
               pCurrentNode = *orderIt;
@@ -2951,10 +2954,20 @@ std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector
       // if not, add the base
       // if yes, add the exponent to the vector associated with the base
       //
-      pBase2 = createNormalRepresentation(pBase);
-      base2String = pBase2->toString();
-      delete pBase2;
-      pBase2 = NULL;
+      // we only need to create the infix through a normal base if the
+      // object is complex
+      if (pBase->getChild() != NULL)
+        {
+          pBase2 = createNormalRepresentation(pBase);
+          base2String = pBase2->toString();
+          delete pBase2;
+          pBase2 = NULL;
+        }
+      else
+        {
+          base2String = pBase->getInfix();
+        }
+
       infixPos = infixMap.find(base2String);
 
       if (infixPos != infixMap.end())
@@ -3033,10 +3046,17 @@ std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector
       // check if a base with the same infix is already in the map.
       // if not, add the base
       // if yes, add the exponent to the vector associated with the base
-      pBase2 = createNormalRepresentation(pBase);
-      base2String = pBase2->toString();
-      delete pBase2;
-      pBase2 = NULL;
+      if (pBase->getChild() != NULL)
+        {
+          pBase2 = createNormalRepresentation(pBase);
+          base2String = pBase2->toString();
+          delete pBase2;
+          pBase2 = NULL;
+        }
+      else
+        {
+          base2String = pBase->getInfix();
+        }
 
       infixPos = infixMap.find(base2String);
 
@@ -3240,10 +3260,18 @@ std::vector<summ_match> CNormalTranslation::matchSummands(const std::vector<cons
       // check if a node with the same infix is already in the map.
       // if not, add the base
       // if yes, add the exponent to the vector associated with the base
-      pBase2 = createNormalRepresentation(pNode);
-      base2String = pBase2->toString();
-      delete pBase2;
-      pBase2 = NULL;
+      if (pNode->getChild() != NULL)
+        {
+          pBase2 = createNormalRepresentation(pNode);
+          base2String = pBase2->toString();
+          delete pBase2;
+          pBase2 = NULL;
+        }
+      else
+        {
+          base2String = pNode->getInfix();
+        }
+
       infixPos = infixMap.find(base2String);
 
       if (infixPos != infixMap.end())
@@ -3305,10 +3333,18 @@ std::vector<summ_match> CNormalTranslation::matchSummands(const std::vector<cons
       // check if a node with the same infix is already in the map.
       // if not, add the node
       // if yes, add the 1 to the vector associated with the base
-      pBase2 = createNormalRepresentation(pNode);
-      base2String = pBase2->toString();
-      delete pBase2;
-      pBase2 = NULL;
+      if (pNode->getChild() != NULL)
+        {
+          pBase2 = createNormalRepresentation(pNode);
+          base2String = pBase2->toString();
+          delete pBase2;
+          pBase2 = NULL;
+        }
+      else
+        {
+          base2String = pNode->getInfix();
+        }
+
       infixPos = infixMap.find(base2String);
 
       if (infixPos != infixMap.end())
@@ -3596,8 +3632,20 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       // check if a node with the same infix is already in the map.
       // if not, add the base
       // if yes, add the exponent to the vector associated with the base
-      CNormalFraction* pBase2 = createNormalRepresentation(pNode);
-      std::string base2String = pBase2->toString();
+      std::string base2String;
+
+      if (pNode->getChild() != NULL)
+        {
+          CNormalFraction* pBase2 = createNormalRepresentation(pNode);
+          base2String = pBase2->toString();
+          delete pBase2;
+          pBase2 = NULL;
+        }
+      else
+        {
+          base2String = pNode->getInfix();
+        }
+
       std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
 
       while (mapIt != mapEndit)
@@ -3611,7 +3659,6 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
           ++mapIt;
         }
 
-      delete pBase2;
 
       if (mapIt == mapEndit)
         {
@@ -3663,8 +3710,18 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       // if not, add the node
       // if yes, add the 1 to the vector associated with the base
       std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
-      CNormalFraction* pBase2 = createNormalRepresentation(pNode);
-      std::string base2String = pBase2->toString();
+      std::string base2String;
+
+      if (pNode->getChild() != NULL)
+        {
+          CNormalFraction* pBase2 = createNormalRepresentation(pNode);
+          base2String = pBase2->toString();
+          delete pBase2;
+        }
+      else
+        {
+          base2String = pNode->getInfix();
+        }
 
       while (mapIt != mapEndit)
         {
@@ -3677,7 +3734,6 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
           ++mapIt;
         }
 
-      delete pBase2;
 
       if (mapIt == mapEndit)
         {
@@ -4029,7 +4085,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                 pTmpOrig = dynamic_cast<CEvaluationNode*>(dfi->getParent());
 
                 // if there is no parent or if the parent is not a multiplication or division, we try to evaluate numbers
-                if (pTmpOrig == NULL || type != CEvaluationNode::OPERATOR || (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pTmpOrig->getType())) != CEvaluationNodeOperator::MULTIPLY && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pTmpOrig->getType())) != CEvaluationNodeOperator::DIVIDE))
+                if (pTmpOrig == NULL || CEvaluationNode::type(pTmpOrig->getType()) != CEvaluationNode::OPERATOR || (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pTmpOrig->getType())) != CEvaluationNodeOperator::MULTIPLY && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pTmpOrig->getType())) != CEvaluationNodeOperator::DIVIDE))
                   {
                     // do the canceling
                     std::vector<const CEvaluationNode*> multiplications, divisions;
@@ -4189,7 +4245,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                 pTmpOrig = dynamic_cast<CEvaluationNode*>(dfi->getParent());
 
                 // if there is no parent or if the parent is not an addition or subtraction, we try to evaluate numbers
-                if (pTmpOrig == NULL || type != CEvaluationNode::OPERATOR || ((((CEvaluationNodeOperator::SubType)CEvaluationNodeOperator::subType(pTmpOrig->getType())) != CEvaluationNodeOperator::PLUS && ((CEvaluationNodeOperator::SubType)CEvaluationNodeOperator::subType(pTmpOrig->getType())) != CEvaluationNodeOperator::MINUS)))
+                if (pTmpOrig == NULL || CEvaluationNode::type(pTmpOrig->getType()) != CEvaluationNode::OPERATOR || ((((CEvaluationNodeOperator::SubType)CEvaluationNodeOperator::subType(pTmpOrig->getType())) != CEvaluationNodeOperator::PLUS && ((CEvaluationNodeOperator::SubType)CEvaluationNodeOperator::subType(pTmpOrig->getType())) != CEvaluationNodeOperator::MINUS)))
                   {
                     // do the canceling
                     // we are in a sum
