@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.121 $ 
+#   $Revision: 1.122 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2011/03/07 19:24:16 $ 
+#   $Author: gauges $ 
+#   $Date: 2011/03/11 21:23:26 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.121 $ $Author: shoops $ $Date: 2011/03/07 19:24:16 $  
+# $Revision: 1.122 $ $Author: gauges $ $Date: 2011/03/11 21:23:26 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -79,6 +79,7 @@ DEFINES += WITH_CSPMETHOD
 
 # enable this to build support for the render extension
 # DEFINES += USE_CRENDER_EXTENSION
+# DEFINES += COPASI_AUTOLAYOUT
 
 debug {
   DEFINES += COPASI_DEBUG
