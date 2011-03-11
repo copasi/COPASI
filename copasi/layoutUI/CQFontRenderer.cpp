@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:29:16 $
+//   $Author: gauges $
+//   $Date: 2011/03/11 21:21:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@ std::pair<CLTextTextureSpec*, GLubyte*> CQFontRenderer::operator()(const std::st
 }
 
 /**
- * Returns the font that matches the given FontSpc.
+ * Returns the font that matches the given FontSpec.
  */
 QFont CQFontRenderer::getFont(const CLFontSpec& spec)
 {

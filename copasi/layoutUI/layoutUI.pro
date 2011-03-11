@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.35 $
+#   $Revision: 1.36 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/03/07 19:29:15 $
+#   $Author: gauges $
+#   $Date: 2011/03/11 21:21:15 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -92,6 +92,11 @@ HEADERS += CQFontRenderer.h \
            CQScreenshotOptionsDialog.h
 }
 
+contains(DEFINES,COPASI_AUTOLAYOUT) {
+HEADERS += CQAutolayoutWizard.h
+}
+
+
 contains(DEFINES,USE_CRENDER_EXTENSION) {           
 SOURCES += CQFontRenderer.cpp \
            CQGLLayoutPainter.cpp \
@@ -100,6 +105,11 @@ SOURCES += CQFontRenderer.cpp \
            CQQtImageTexturizer.cpp \
            CQScreenshotOptionsDialog.cpp
 }
+
+contains(DEFINES,COPASI_AUTOLAYOUT) {
+SOURCES += CQAutolayoutWizard.cpp
+}
+
 
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {           

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CCopasiSpringLayout.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/11/26 16:37:18 $
+//   $Author: gauges $
+//   $Date: 2011/03/11 21:21:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,11 +20,13 @@
 #include "math.h"
 
 
-
-class CLBase;
+#include "CLBase.h"
 class CLayout;
+class CLGraphicalObject;
 class CLCompartmentGlyph;
 class CLMetabGlyph;
+class CLReactionGlyph;
+class CLMetabReferenceGlyph;
 
 /**
  * This class defines how a layout optimization algorithm will see a COPASI
@@ -71,10 +73,10 @@ public:
 
 
   /**
-   * if the reaction in single compartment, set compartment index,
-   * otherwise set it to -1
+   * if all participants of a reaction are in a single compartment return the compartment
+   * glyph, otherwise return NULL
    */
-  //void updateCompartmentInReactionNode(ReactionNode & r);
+  CLCompartmentGlyph* findCompartmentForReactionNode(CLReactionGlyph & r);
 
 protected:
 
@@ -87,6 +89,9 @@ protected:
 
   ///create variables for the position of a species glyph
   void addSpeciesVariables(CLMetabGlyph* mg);
+
+  ///create variables for the position of a reaction glyph
+  void addReactionVariables(CLReactionGlyph* rg);
 
   static inline double distance(const double & x1, const double & y1,
                                 const double & x2, const double & y2)
@@ -110,14 +115,20 @@ protected:
   }
 
   double potSpeciesSpecies(const CLMetabGlyph & a, const CLMetabGlyph & b) const;
-  //double potSpeciesReaction(const SpeciesNode & a, const ReactionNode & b) const;
-  //double potReactionReaction(const ReactionNode & a, const ReactionNode & b) const;
-  //double potEdge(const Edge & e, const ReactionNode & r) const;
-  //double potReaction(const ReactionNode & r) const;
+  double potSpeciesReaction(const CLMetabGlyph & a, const CLReactionGlyph & b) const;
+  double potReactionReaction(const CLReactionGlyph & a, const CLReactionGlyph & b) const;
+  double potEdge(const CLMetabReferenceGlyph & e, const CLReactionGlyph & r) const;
+  //double potReaction(const CLReactionGlyph & r) const;
   double potSpeciesCompartment(const CLMetabGlyph & s, const CLCompartmentGlyph & c) const;
-  //double potReactionCompartment(const ReactionNode & r, const CompartmentNode & c) const;
-  //double potCompartmentCompartment(const CompartmentNode & c1, const CompartmentNode & c2) const;
+  double potReactionCompartment(const CLReactionGlyph & r, const CLCompartmentGlyph & c) const;
+  //double potCompartmentCompartment(const CLCompartmentGlyph & c1, const CLCompartmentGlyph & c2) const;
 
+  /**
+   * calculate a point just outside the bounding box of a given graphical object
+   * on the line between the center of the object and the point p.
+   * d specifies the distance from the border of the object.
+   */
+  CLPoint borderProjection(CLGraphicalObject* go, const CLPoint & p, double d);
 
   CLayout* mpLayout;
 
@@ -129,7 +140,8 @@ protected:
     enum Update_Enum
     {
       COMPARTMENT_4V,
-      SPECIES_2V
+      SPECIES_2V,
+      REACTION_2V
     };
 
     UpdateAction(Update_Enum action, CLBase* target, int index1 = -1, int index2 = -1, int index3 = -1, int index4 = -1)
@@ -152,7 +164,22 @@ protected:
   ///this is the list of all update actions that have to be performed during setState();
   std::vector<UpdateAction> mUpdateActions;
 
+  ///this map contains information about the compartment glyph a given glyph is located in
   std::map<CLBase*, CLCompartmentGlyph*> mCompartmentMap;
+
+  /**
+   * this struct describes a constant relation between two graphical objects.
+   * It can be used to specify that a text glyph always has a certain position relativ to another object
+   */
+  struct CoordinateRelation
+  {
+    const CLGraphicalObject * source;
+    CLGraphicalObject * target;
+    CLPoint diff;
+  };
+
+  /// a list of fixed positon relations between objects. Should be constructed in initFromLayout()
+  std::vector<CoordinateRelation> mFixedRelations;
 };
 
 #endif // CCopasiSpringLayout_H

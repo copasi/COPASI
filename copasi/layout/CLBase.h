@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Date: 2011/03/11 21:21:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -115,6 +115,45 @@ public:
     result &= mZ == rhs.mZ;
 #endif // USE_CRENDER_EXTENSION
     return result;
+  };
+
+  CLPoint operator-(const CLPoint & rhs) const
+  {
+    return CLPoint(this->mX - rhs.mX,
+                   this->mY - rhs.mY
+#ifdef USE_CRENDER_EXTENSION
+                   , this->mZ - rhs.mZ
+#endif // USE_CRENDER_EXTENSION
+                  );
+  };
+
+  CLPoint operator+(const CLPoint & rhs) const
+  {
+    return CLPoint(this->mX + rhs.mX,
+                   this->mY + rhs.mY
+#ifdef USE_CRENDER_EXTENSION
+                   , this->mZ + rhs.mZ
+#endif // USE_CRENDER_EXTENSION
+                  );
+  };
+
+  CLPoint operator*(const double & rhs) const
+  {
+    return CLPoint(this->mX*rhs,
+                   this->mY*rhs
+#ifdef USE_CRENDER_EXTENSION
+                   , this->mZ*rhs
+#endif // USE_CRENDER_EXTENSION
+                  );
+  };
+
+  C_FLOAT64 dot(const CLPoint & rhs) const
+  {
+    return this->mX*rhs.mX + this->mY*rhs.mY
+#ifdef USE_CRENDER_EXTENSION
+           + this->mZ*rhs.mZ
+#endif // USE_CRENDER_EXTENSION
+           ;
   };
 
   // sort columnwise, point p1 is < point p2 if x-component is <, if x es are equal, check for y

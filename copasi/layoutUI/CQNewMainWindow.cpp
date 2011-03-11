@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:29:15 $
+//   $Author: gauges $
+//   $Date: 2011/03/11 21:21:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,11 +11,36 @@
 // of Manchester.
 // All rights reserved.
 
+// Qt includes
+#include <QAbstractEventDispatcher>
+#include <QAction>
+#include <QActionGroup>
+#include <QCloseEvent>
+#include <QColor>
+#include <QColorDialog>
+#include <QComboBox>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QImage>
+#include <QLabel>
+#include <QPixmap>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QStackedWidget>
+#include <QStatusBar>
+#include <QToolBar>
+#include <QVBoxLayout>
+
+#include <string.h>
+
 // SBML includes
 #include <copasi/CopasiDataModel/CCopasiDataModel.h>
 #include <copasi/model/CModel.h>
 #include <copasi/layout/CLayout.h>
 #include <copasi/layout/CListOfLayouts.h>
+
 #ifdef COPASI_DEBUG
 #include <copasi/elementaryFluxModes/CEFMTask.h>
 #include <copasi/elementaryFluxModes/CEFMProblem.h>
@@ -25,6 +50,19 @@
 #include <copasi/model/CChemEqElement.h>
 #include <copasi/model/CMetab.h>
 #endif // COPASI_DEBUG
+
+#ifdef COPASI_AUTOLAYOUT
+#include "copasi/model/CModel.h"
+#include "copasi/layout/CCopasiSpringLayout.h"
+#include "copasi/layout/CLayoutEngine.h"
+#include "copasi/layout/CLayout.h"
+#include "copasi/layout/CLGlyphs.h"
+#include "copasi/layout/CLBase.h"
+#include "copasi/layout/CLCurve.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/report/CKeyFactory.h"
+#endif // COPASI_AUTOLAYOUT
 
 // local includes
 #include "CQGLLayoutPainter.h"
@@ -66,6 +104,10 @@
 #include "film_strip.xpm"
 #include "graph.xpm"
 #include "load_data.xpm"
+#ifdef COPASI_AUTOLAYOUT
+#include "layout_start.xpm"
+#include "layout_stop.xpm"
+#endif // COPASI_AUTOLAYOUT
 
 const char* const CQNewMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "30%", "40%", "50%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
@@ -91,6 +133,10 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
     , mpHighlightModeAction(NULL)
     , mpChangeColorAction(NULL)
 #endif // COPASI_DEBUG
+#ifdef COPASI_AUTOLAYOUT
+    , mStopLayout(false)
+    , mpStopLayoutAction(NULL)
+#endif //  COPASI_AUTOLAYOUT
 {
   // first we load the default styles if they don't already exist
   if (DEFAULT_STYLES == NULL)
@@ -176,6 +222,12 @@ void CQNewMainWindow::createActions()
   mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
   mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
   connect(mpSFontSize, SIGNAL(activated()), this->mpAnimationWindow, SLOT(changeFontSize()));
+#ifdef COPASI_AUTOLAYOUT
+  this->mpStopLayoutAction = new QAction(QPixmap(layout_start_xpm), tr("Stop"), this);
+  this->mpStopLayoutAction->setEnabled(true);
+  this->mpStopLayoutAction->setToolTip("run spring layout algorithm");
+  connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
+#endif // COPASI_AUTOLAYOUT
 }
 
 void CQNewMainWindow::createMenus()
@@ -285,6 +337,10 @@ void CQNewMainWindow::createToolBars()
   this->mpFileToolBar->addAction(this->mpLoadDataAct);
   this->mpLoadDataAct->setVisible(false);
   this->mpFileToolBar->addAction(this->mpScreenshotAct);
+#ifdef COPASI_AUTOLAYOUT
+  this->mpFileToolBar->addSeparator();
+  this->mpFileToolBar->addAction(this->mpStopLayoutAction);
+#endif // COPASI_AUTOLAYOUT
 
   // add a toolbar for the selection widgets
   mpSelectionToolBar = addToolBar(tr("Select"));
@@ -1276,4 +1332,684 @@ void CQNewMainWindow::changeColorSlot(bool)
     }
 }
 #endif // COPASI_DEBUG
+
+#ifdef COPASI_AUTOLAYOUT
+void CQNewMainWindow::redrawNow()
+{
+  this->mpLayoutViewer->getPainter()->update();
+}
+
+/**
+ * Creates a CLMetabGlyph for the given CMetab object.
+ * If the creation failed, NULL is returned.
+ */
+CLMetabGlyph* CQNewMainWindow::createMetabGlyph(const std::string& modelobjectkey, double width, double height)
+{
+  CLMetabGlyph* pResult = new CLMetabGlyph;
+  pResult->setDimensions(CLDimensions(width, height));
+  pResult->setModelObjectKey(modelobjectkey);
+  return pResult;
+}
+
+/**
+ * Creates a CLCompartmentGlyph for the given size and position
+ */
+CLCompartmentGlyph* CQNewMainWindow::createCompartmentGlyph(const std::string& modelobjectkey, double x, double y, double width, double height)
+{
+  CLCompartmentGlyph* pResult = new CLCompartmentGlyph;
+  pResult->setPosition(CLPoint(x, y));
+  pResult->setDimensions(CLDimensions(width, height));
+  pResult->setModelObjectKey(modelobjectkey);
+  return pResult;
+}
+
+/**
+ * Creates a new reaction glyph with the given size.
+ */
+CLReactionGlyph* CQNewMainWindow::createReactionGlyph(const std::string& modelobjectkey, double x, double y, double length)
+{
+  CLReactionGlyph* pResult = new CLReactionGlyph;
+  //pResult->setPosition(CLPoint(x,y));
+  //pResult->setDimensions(CLDimensions(width, height));
+  pResult->setModelObjectKey(modelobjectkey);
+  pResult->getCurve().addCurveSegment(CLLineSegment(CLPoint(x, y), CLPoint(x + length, y)));
+  return pResult;
+}
+
+
+
+/**
+ * Creates a CLTextGlyph for the given graphical object keys and size.
+ */
+CLTextGlyph* CQNewMainWindow::createTextGlyph(const std::string& modelobjectkey, const std::string& objectkey, double width, double height)
+{
+  CLTextGlyph* pResult = new CLTextGlyph;
+  pResult->setDimensions(CLDimensions(width, height));
+  pResult->setGraphicalObjectKey(objectkey);
+  pResult->setModelObjectKey(modelobjectkey);
+  return pResult;
+}
+
+/**
+ * Creates a CLMetabReferenceGlyph for the given endpoints.
+ */
+CLMetabReferenceGlyph* CQNewMainWindow::createMetabReferenceGlyph(const std::string& modelobjectkey, const std::string& metabglyphkey, CLMetabReferenceGlyph::Role role, double x1, double y1, double x2, double y2)
+{
+  CLMetabReferenceGlyph* pResult = new CLMetabReferenceGlyph;
+  pResult->setModelObjectKey(modelobjectkey);
+  pResult->setMetabGlyphKey(metabglyphkey);
+  pResult->setRole(role);
+  // set the curve
+  pResult->getCurve().addCurveSegment(CLLineSegment(CLPoint(x1, y1), CLPoint(x2, y2)));
+  return pResult;
+}
+
+
+/**
+ * This method creates a random layout using the elements
+ * in the compartments, reactions, species and side species
+ * containers.
+ */
+void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& compartments,
+    const std::set<const CReaction*>& reactions,
+    const std::set<const CMetab*>& metabs,
+    const std::set<const CMetab*>& sideMetabs
+                                        )
+{
+  const double REACTION_SIZE = 20.0;
+  std::set<CLMetabGlyph*> duplicateNodes;
+
+  // we need a multimap that stores the association between a metabolite and it's glyph
+  std::map<const CMetab*, CLMetabGlyph*> metabGlyphMap;
+
+  QFont font = QFont("Helvetica", 20);
+  QFontMetrics metrics = QFontMetrics(font);
+  QRect textBounds;
+
+  // create a species glyph for each species in metabs
+  std::set<const CMetab*>::const_iterator metabIt = metabs.begin(), metabEndit = metabs.end();
+  CLMetabGlyph* pMetabGlyph = NULL;
+  CLTextGlyph* pTextGlyph = NULL;
+  double width = 0.0;
+  double height = 0.0;
+  double totalarea = 0.0;
+  // store the area for each compartment in a map
+  std::map<const CCompartment*, double> areaMap;
+  // a map that associated text glpyhs with metab glyphs
+  // we need this to later place the text glyph
+  // on top of the metab glyph
+  std::map<CLMetabGlyph*, CLTextGlyph*> textGlyphMap;
+  // we need to store which compartment contains which metabolite glyphs
+  std::map<const CCompartment*, std::set<CLMetabGlyph*> > compmetmap;
+
+  while (metabIt != metabEndit)
+    {
+      textBounds = metrics.boundingRect((*metabIt)->getObjectName().c_str());
+      width = (double)textBounds.width();
+      height = (double)textBounds.height();
+
+      if (width < height)
+        {
+          width = height;
+        }
+
+      // make the metab glyph 120% the size of the text
+      pMetabGlyph = CQNewMainWindow::createMetabGlyph((*metabIt)->getKey(), width * 1.2, height * 1.2);
+      assert(pMetabGlyph != NULL);
+      metabGlyphMap[*metabIt] = pMetabGlyph;
+      this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+      pTextGlyph = CQNewMainWindow::createTextGlyph((*metabIt)->getKey(), pMetabGlyph->getKey(), width, height);
+      assert(pTextGlyph != NULL);
+      this->mpCurrentLayout->addTextGlyph(pTextGlyph);
+      textGlyphMap[pMetabGlyph] = pTextGlyph;
+      totalarea += width * height * 1.2 * 1.2;
+
+      if (areaMap.find((*metabIt)->getCompartment()) != areaMap.end())
+        {
+          areaMap[(*metabIt)->getCompartment()] += width * height * 1.2 * 1.2;
+        }
+      else
+        {
+          areaMap[(*metabIt)->getCompartment()] = width * height * 1.2 * 1.2;
+        }
+
+      if (compmetmap.find((*metabIt)->getCompartment()) != compmetmap.end())
+        {
+          compmetmap[(*metabIt)->getCompartment()].insert(pMetabGlyph);
+        }
+      else
+        {
+          std::set<CLMetabGlyph*> s;
+          s.insert(pMetabGlyph);
+          compmetmap[(*metabIt)->getCompartment()] = s;
+        }
+
+      ++metabIt;
+    }
+
+  // now we need a random number generator
+  CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
+
+  // we increase the total area by a factor of 6
+  totalarea *= 6;
+  double totalsidelength = sqrt(totalarea);
+  // create a compartment glyph for each compartment in compartments
+  std::map<const CCompartment*, CLBoundingBox> compartmentAreaMap;
+
+  if (!compartments.empty())
+    {
+      double compartmentarea = 0.0;
+      std::set<const CCompartment*>::iterator compIt = compartments.begin(), compEndit = compartments.end();
+      CLCompartmentGlyph* pCompartmentGlyph = NULL;
+      // position variables
+      double boundX, boundY;
+      double x, y;
+
+      // we need to remember the compartment glyph positions and sizes
+      // so that we can later place the reaction in the correct area
+      while (compIt != compEndit)
+        {
+          if (areaMap.find(*compIt) != areaMap.end())
+            {
+              compartmentarea = areaMap[*compIt];
+              // we increase the size by a factor of 5
+              compartmentarea *= 5.0;
+              // this space has been filled
+              totalarea -= compartmentarea;
+            }
+          else
+            {
+              compartmentarea = 2500.0;
+            }
+
+          double sidelength = sqrt(compartmentarea);
+          // position the compartment somwehere within the total area
+          // so that is will be completely within the total area
+          boundX = totalsidelength - sidelength;
+          boundY = boundX;
+          x = boundX * pRandom->getRandomCC();
+          y = boundY * pRandom->getRandomCC();
+          pCompartmentGlyph = CQNewMainWindow::createCompartmentGlyph((*compIt)->getKey(), x, y, sidelength, sidelength);
+          this->mpCurrentLayout->addCompartmentGlyph(pCompartmentGlyph);
+          // we need to store the areas and the positions of the compartments as well as the values for the "external"
+          // space so that we can later place the reactions within the appropriate space
+          compartmentAreaMap[*compIt] = pCompartmentGlyph->getBoundingBox();
+
+          // we leave 5% space from the border of the compartment
+          x += sidelength * 0.05;
+          y += sidelength * 0.05;
+          sidelength *= 0.95;
+
+          // now we know the size of the compartment
+          // and we can place the species glyphs within that area
+          if (compmetmap.find(*compIt) != compmetmap.end())
+            {
+              std::set<CLMetabGlyph*>::iterator gIt = compmetmap[*compIt].begin(), gEndit = compmetmap[*compIt].end();
+
+              while (gIt != gEndit)
+                {
+                  // place the metab glyph and the associated text glyph
+                  double xPos = x + pRandom->getRandomCC() * sidelength - (*gIt)->getDimensions().getWidth();
+                  double yPos = y + pRandom->getRandomCC() * sidelength - (*gIt)->getDimensions().getHeight();
+                  (*gIt)->setPosition(CLPoint(xPos, yPos));
+                  pTextGlyph = textGlyphMap[*gIt];
+                  assert(pTextGlyph != NULL);
+                  pTextGlyph->setPosition(CLPoint(xPos + ((*gIt)->getDimensions().getWidth() - pTextGlyph->getDimensions().getWidth())*0.5, yPos + ((*gIt)->getDimensions().getHeight() - pTextGlyph->getDimensions().getHeight())*0.5));
+                  // if we remove the species that have already been placed, we can
+                  // later determine which elements are not layed out in a compartment
+                  textGlyphMap.erase(textGlyphMap.find(*gIt));
+                  ++gIt;
+                }
+            }
+
+          ++compIt;
+        }
+
+    }
+
+  // now we calculate the remaining area and place the rest of the species glyphs
+  // (those that remain in the textGlyphMap)
+  // we place the remaining species glyphs in a sidelength * sidelength area
+  double externalsidelength = sqrt(5 * totalarea);
+  std::map<CLMetabGlyph*, CLTextGlyph*>::iterator gIt = textGlyphMap.begin(), gEndit = textGlyphMap.end();
+  // we place these items beneath the other compartments
+  double x = totalsidelength;
+
+  while (gIt != gEndit)
+    {
+      double xPos = x + pRandom->getRandomCC() * (externalsidelength - gIt->first->getDimensions().getWidth());
+      double yPos = pRandom->getRandomCC() * (externalsidelength - gIt->first->getDimensions().getHeight());
+      gIt->first->setPosition(CLPoint(xPos, yPos));
+      xPos += 0.5 * (gIt->first->getDimensions().getWidth() - gIt->second->getDimensions().getWidth());
+      yPos += 0.5 * (gIt->first->getDimensions().getHeight() - gIt->second->getDimensions().getHeight());
+      gIt->second->setPosition(CLPoint(xPos, yPos));
+      ++gIt;
+    }
+
+  //
+  //
+  // create a reaction glyph for each reaction in reactions
+  // species that appear in sideMetabs are duplicated for each reaction
+  // we store the end iterator for the side species set because we need it many times
+  std::set<const CMetab*>::const_iterator sideSpeciesEnd = sideMetabs.end();
+  std::set<const CReaction*>::iterator reactIt = reactions.begin(), reactEndit = reactions.end();
+
+  while (reactIt != reactEndit)
+    {
+      // right now a reaction will be represented by a line with REACTION_SIZE length
+      // and the species references will be connected to middle of
+      // the left and right side of the box
+      // substrates will be left and products will be right.
+      //
+      // If the reaction is a single compartment reaction, we place it inside the compartments area,
+      // else we place it in the outside area
+      double xPos = 0.0;
+      double yPos = 0.0;
+
+      if ((*reactIt)->getCompartmentNumber() > 1)
+        {
+          // put it in the "external" space
+          xPos = x + pRandom->getRandomCC() * (externalsidelength - 20.0);
+          yPos = pRandom->getRandomCC() * externalsidelength - 20.0;
+        }
+      else
+        {
+          // we need the compartment bounding box
+          assert((*reactIt)->getChemEq().getSubstrates().size() > 0 || (*reactIt)->getChemEq().getProducts().size());
+          const CCompartment* pCompartment = NULL;
+
+          if ((*reactIt)->getChemEq().getProducts().size() == 0)
+            {
+              pCompartment = (*reactIt)->getChemEq().getSubstrates()[0]->getMetabolite()->getCompartment();
+            }
+          else
+            {
+              pCompartment = (*reactIt)->getChemEq().getProducts()[0]->getMetabolite()->getCompartment();
+            }
+
+          std::map<const CCompartment*, CLBoundingBox>::const_iterator pos = compartmentAreaMap.find(pCompartment);
+
+          if (pos != compartmentAreaMap.end())
+            {
+              // put it in the compartment
+              xPos = pos->second.getPosition().getX() + pRandom->getRandomCC() * (pos->second.getDimensions().getWidth() - 20.0);
+              yPos = pos->second.getPosition().getY() + pRandom->getRandomCC() * (pos->second.getDimensions().getHeight() - 20.0);
+            }
+          else
+            {
+              // put it in the "external" space
+              xPos = x + pRandom->getRandomCC() * (externalsidelength - 20.0);
+              yPos = pRandom->getRandomCC() * (externalsidelength - 20.0);
+            }
+        }
+
+      CLReactionGlyph* pReactionGlyph = CQNewMainWindow::createReactionGlyph((*reactIt)->getKey(), xPos, yPos, REACTION_SIZE);
+      this->mpCurrentLayout->addReactionGlyph(pReactionGlyph);
+      // create the species reference glyph and duplicate side elements
+      //
+      // if the same species occurs several times as substrate and or product in a reaction
+      // we make a copy even it is not in the list of side species
+      std::map<const CMetab*, const CLMetabGlyph*> linkedElements;
+      const CCopasiVector < CChemEqElement >& substrates = (*reactIt)->getChemEq().getSubstrates();
+      CCopasiVector<CChemEqElement>::const_iterator sIt = substrates.begin(), sEndit = substrates.end();
+      const CMetab* pMetab = NULL;
+
+      while (sIt != sEndit)
+        {
+          // check is the species reference is to be created at all
+          pMetab = (*sIt)->getMetabolite();
+          assert(pMetab != NULL);
+
+          if (metabs.find(pMetab) != metabs.end())
+            {
+              CLMetabGlyph* pMetabGlyph = NULL;
+
+              // check if a reference to this species already has been created
+              if (linkedElements.find(pMetab) != linkedElements.end())
+                {
+                  // we make a copy without putting the original in the duplicatedNodes set
+                  // becasue it might be used in another reaction as well, so we don't need
+                  // to delete it
+                  // also copy the corresponding text glyph
+                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  assert(pTextGlyph != NULL);
+                  pTextGlyph = new CLTextGlyph(*pTextGlyph);
+                  pMetabGlyph = new CLMetabGlyph(*(linkedElements.find(pMetab)->second));
+                  this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+                  pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+                  this->mpCurrentLayout->addTextGlyph(pTextGlyph);
+                }
+              else
+                {
+                  // is the species is in the side species map, so we have to duplicate the species glyph
+                  // and put the original node in the duplicatedNodes set
+                  //
+                  // first we have to find the original species
+                  pMetabGlyph = metabGlyphMap[pMetab];
+                  CLMetabReferenceGlyph::Role role = CLMetabReferenceGlyph::SUBSTRATE;
+
+                  if (sideMetabs.find(pMetab) != sideSpeciesEnd)
+                    {
+                      // we make a copy and place the original in the duplicateNodesList
+                      duplicateNodes.insert(pMetabGlyph);
+                      // also copy the corresponding text glyph
+                      pTextGlyph = textGlyphMap[pMetabGlyph];
+                      assert(pTextGlyph != NULL);
+                      pTextGlyph = new CLTextGlyph(*pTextGlyph);
+                      pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
+                      this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+                      pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+                      this->mpCurrentLayout->addTextGlyph(pTextGlyph);
+                      role = CLMetabReferenceGlyph::SIDESUBSTRATE;
+                      // TODO maybe change the position of the copy, but this is not really
+                      // TODO necessary
+                    }
+
+                  // create the species reference glyph
+                  // connect it to the middle of the left side of the reaction
+                  double metabX = pMetabGlyph->getPosition().getX();
+                  double metabY = pMetabGlyph->getPosition().getY();
+
+                  if (metabX < xPos)
+                    {
+                      // the metabolite is to the left, so
+                      // we attach at the right side
+                      metabX += pMetabGlyph->getDimensions().getWidth();
+                    }
+
+                  if (metabY < yPos)
+                    {
+                      // the metabolite is above, so we attach to the bottom
+                      metabY += pMetabGlyph->getDimensions().getHeight();
+                    }
+
+                  // create a species reference edge from the reaction (xPos,yPos+5) to metabX,metabY
+                  CLMetabReferenceGlyph* pRefGlyph = CQNewMainWindow::createMetabReferenceGlyph((*sIt)->getKey(), pMetabGlyph->getKey(), role, xPos, yPos, metabX, metabY);
+                  pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+                }
+            }
+
+          ++sIt;
+        }
+
+      const CCopasiVector < CChemEqElement >& products = (*reactIt)->getChemEq().getProducts();
+
+      sIt = products.begin();
+
+      sEndit = products.end();
+
+      while (sIt != sEndit)
+        {
+          // check if the species reference is to be created at all
+          pMetab = (*sIt)->getMetabolite();
+          assert(pMetab != NULL);
+
+          if (metabs.find(pMetab) != metabs.end())
+            {
+              CLMetabGlyph* pMetabGlyph = NULL;
+
+              // check if a reference to this species already has been created
+              if (linkedElements.find(pMetab) != linkedElements.end())
+                {
+                  // we make a copy without putting the original in the duplicatedNodes set
+                  // becasue it might be used in another reaction as well, so we don't need
+                  // to delete it
+                  // also copy the corresponding text glyph
+                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  assert(pTextGlyph != NULL);
+                  pTextGlyph = new CLTextGlyph(*pTextGlyph);
+                  pMetabGlyph = new CLMetabGlyph(*(linkedElements.find(pMetab)->second));
+                  this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+                  pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+                  this->mpCurrentLayout->addTextGlyph(pTextGlyph);
+                }
+              else
+                {
+                  // is the species is in the side species map, so we have to duplicate the species glyph
+                  // and put the original node in the duplicatedNodes set
+                  //
+                  // first we have to find the original species
+                  pMetabGlyph = metabGlyphMap[pMetab];
+                  CLMetabReferenceGlyph::Role role = CLMetabReferenceGlyph::PRODUCT;
+
+                  if (sideMetabs.find(pMetab) != sideSpeciesEnd)
+                    {
+                      // we make a copy and place the original in the duplicateNodesList
+                      duplicateNodes.insert(pMetabGlyph);
+                      // also copy the corresponding text glyph
+                      pTextGlyph = textGlyphMap[pMetabGlyph];
+                      assert(pTextGlyph != NULL);
+                      pTextGlyph = new CLTextGlyph(*pTextGlyph);
+                      pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
+                      this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+                      pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+                      this->mpCurrentLayout->addTextGlyph(pTextGlyph);
+                      role = CLMetabReferenceGlyph::SIDEPRODUCT;
+                      // TODO maybe change the position of the copy, but this is not really
+                      // TODO necessary
+                    }
+
+                  // create the species reference glyph
+                  // connect it to the middle of the left side of the reaction
+                  double metabX = pMetabGlyph->getPosition().getX();
+                  double metabY = pMetabGlyph->getPosition().getY();
+
+                  if (metabX < xPos + 10)
+                    {
+                      // the metabolite is to the left, so
+                      // we attach at the right side
+                      metabX += pMetabGlyph->getDimensions().getWidth();
+                    }
+
+                  if (metabY < yPos)
+                    {
+                      // the metabolite is above, so we attach to the bottom
+                      metabY += pMetabGlyph->getDimensions().getHeight();
+                    }
+
+                  // create a species reference edge from the reaction (xPos,yPos+5) to metabX,metabY
+                  CLMetabReferenceGlyph* pRefGlyph = CQNewMainWindow::createMetabReferenceGlyph((*sIt)->getKey(), pMetabGlyph->getKey(), role, xPos + REACTION_SIZE, yPos, metabX, metabY);
+                  pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+                }
+            }
+
+          ++sIt;
+        }
+
+      // is a modifier is also substrate or product in a reaction, don't duplicate it for the modifier
+      // but just add an edge to the exisiting node
+      const CCopasiVector < CChemEqElement >& modifiers = (*reactIt)->getChemEq().getModifiers();
+      sIt = modifiers.begin();
+      sEndit = modifiers.end();
+
+      while (sIt != sEndit)
+        {
+          // check if the species reference is to be created at all
+          pMetab = (*sIt)->getMetabolite();
+          assert(pMetab != NULL);
+
+          if (metabs.find(pMetab) != metabs.end())
+            {
+              CLMetabGlyph* pMetabGlyph = NULL;
+
+              // is the species is in the side species map, so we have to duplicate the species glyph
+              // and put the original node in the duplicatedNodes set
+              //
+              // first we have to find the original species
+              pMetabGlyph = metabGlyphMap[pMetab];
+              CLMetabReferenceGlyph::Role role = CLMetabReferenceGlyph::MODIFIER;
+
+              if (sideMetabs.find(pMetab) != sideSpeciesEnd)
+                {
+                  // we make a copy and place the original in the duplicateNodesList
+                  duplicateNodes.insert(pMetabGlyph);
+                  // also copy the corresponding text glyph
+                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  assert(pTextGlyph != NULL);
+                  pTextGlyph = new CLTextGlyph(*pTextGlyph);
+                  pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
+                  pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+                  this->mpCurrentLayout->addTextGlyph(pTextGlyph);
+                  this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+                  // TODO maybe change the position of the copy, but this is not really
+                  // TODO necessary
+
+                }
+
+              // create the species reference glyph
+              // connect it to the middle of the left side of the reaction
+              double metabX = pMetabGlyph->getPosition().getX();
+              double metabY = pMetabGlyph->getPosition().getY();
+
+              if (metabX < xPos + 5)
+                {
+                  // the metabolite is to the left, so
+                  // we attach at the right side
+                  metabX += pMetabGlyph->getDimensions().getWidth();
+                }
+
+              // create a species reference edge from the reaction (xPos,yPos+5) to metabX,metabY
+              CLMetabReferenceGlyph* pRefGlyph = CQNewMainWindow::createMetabReferenceGlyph((*sIt)->getKey(), pMetabGlyph->getKey(), role, metabX, metabY, xPos + 0.5 * REACTION_SIZE, yPos);
+              pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+            }
+
+          ++sIt;
+        }
+
+      ++reactIt;
+    }
+
+  //
+  // delete the duplicated nodes again
+  std::set<CLMetabGlyph*>::iterator duplicateIt = duplicateNodes.begin(), duplicateEndit = duplicateNodes.end();
+  CCopasiVector<CLMetabGlyph>& metabGlyphs = this->mpCurrentLayout->getListOfMetaboliteGlyphs();
+  CCopasiVector<CLTextGlyph>& textGlyphs = this->mpCurrentLayout->getListOfTextGlyphs();
+  bool r = false;
+
+  while (duplicateIt != duplicateEndit)
+    {
+      pMetabGlyph = *duplicateIt;
+      pTextGlyph = textGlyphMap[pMetabGlyph];
+      assert(pTextGlyph != NULL);
+      // the glyph has to be in there
+      r = textGlyphs.remove(pTextGlyph);
+      assert(r == true);
+
+      if (r == true)
+        {
+          delete pTextGlyph;
+        }
+
+      r = metabGlyphs.remove(pMetabGlyph);
+      // the glyph has to be in there
+      assert(r == true);
+
+      // TODO this check is only to work around a bug
+      // TODO I haven't fixed yet.
+      // TODO I prefer a memory leak over a crash
+      if (r == true)
+        {
+          delete pMetabGlyph;
+        }
+
+      ++duplicateIt;
+    }
+
+  duplicateNodes.clear();
+
+  delete pRandom;
+  // determine and set the layout dimensions
+  CLBoundingBox box = this->mpCurrentLayout->calculateBoundingBox();
+  this->mpCurrentLayout->setDimensions(CLDimensions(box.getDimensions().getWidth() + 30.0, box.getDimensions().getHeight() + 30.0));
+}
+
+/**
+ * Creates a spring layout.
+ * The method takes the number of iterations for the
+ * layout algorithm and an update interval which tells the algorithm
+ * how often to update the display.
+ * A value of -1 means that the update of the display is only done once
+ * at the end.
+ */
+void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
+{
+  // reset the stop flag
+  this->mStopLayout = false;
+  disconnect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
+  this->mpStopLayoutAction->setToolTip("stop spring layout algorithm");
+  connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotStopClicked()));
+  // enable the stop button
+  this->mpStopLayoutAction->setEnabled(true);
+  this->mpStopLayoutAction->setIcon(QPixmap(layout_stop_xpm));
+
+  // now we create the random layout
+  if (updateInterval < 0) updateInterval = -1;
+
+  bool doUpdate = (updateInterval != -1);
+
+  if (numIterations > 0 && this->mpCurrentLayout != NULL &&
+      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() > 0 || this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() > 0))
+    {
+      // create the spring layout
+      CCopasiSpringLayout l(this->mpCurrentLayout);
+      l.createVariables();
+      CLayoutEngine le(&l, false);
+      QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
+      int i = 0;
+
+      for (; (i < numIterations) && (this->mStopLayout) == false; ++i)
+        {
+          le.step();
+
+          if (doUpdate && (i % updateInterval == 0))
+            {
+              l.finalizeState(); //makes the layout ready for drawing;
+              // redraw
+              this->redrawNow();
+            }
+
+          if (pDispatcher->hasPendingEvents())
+            {
+              pDispatcher->processEvents(QEventLoop::AllEvents);
+            }
+        }
+
+      // redraw the layout
+      l.finalizeState(); //makes the layout ready for drawing;
+
+      if (!doUpdate || (i % updateInterval != 0))
+        {
+          this->redrawNow();
+        }
+    }
+
+  // disable the stop button
+  //this->mpStopLayoutAction->setEnabled(false);
+  disconnect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotStopClicked()));
+  connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
+  this->mpStopLayoutAction->setIcon(QPixmap(layout_start_xpm));
+  this->mpStopLayoutAction->setToolTip("run spring layout algorithm");
+}
+
+/**
+ * This slot is called when the stop button is presed.
+ * It notifies the layout method to stop the spring layout iterations.
+ */
+void CQNewMainWindow::slotStopClicked()
+{
+  this->mStopLayout = true;
+}
+
+void CQNewMainWindow::slotRunSpringLayout()
+{
+  this->createSpringLayout(1000, 1);
+}
+
+void CQNewMainWindow::closeEvent(QCloseEvent * event)
+{
+  this->slotStopClicked();
+  this->QMainWindow::closeEvent(event);
+}
+#endif // COPASI_AUTOLAYOUT
+
 

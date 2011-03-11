@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:28:48 $
+//   $Author: gauges $
+//   $Date: 2011/03/11 21:21:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,6 +101,10 @@ public:
   const CCopasiVector<CLMetabGlyph> & getListOfMetaboliteGlyphs() const
   {return mvMetabs;};
 
+  CCopasiVector<CLMetabGlyph> & getListOfMetaboliteGlyphs()
+  {return mvMetabs;};
+
+
   /**
    *  add Glyph to layout. The layout takes ownership of the glyph.
    */
@@ -119,6 +123,9 @@ public:
   //*******************
 
   const CCopasiVector<CLTextGlyph> & getListOfTextGlyphs() const
+  {return mvLabels;};
+
+  CCopasiVector<CLTextGlyph> & getListOfTextGlyphs()
   {return mvLabels;};
 
   /**
@@ -168,6 +175,7 @@ public:
    */
   void addLocalRenderInformation(CLLocalRenderInformation* pRenderInfo);
 
+#endif /* USE_CRENDER_EXTENSION */
   /**
    * This methods calculates the bounding box of the layout.
    * It traverses all layout objects and looks for the minimal and maximal x
@@ -177,7 +185,6 @@ public:
    * values plus the corresponding dimension.
    */
   CLBoundingBox calculateBoundingBox() const;
-#endif /* USE_CRENDER_EXTENSION */
 
   virtual void scale(const double & scaleFactor) {this->mDimensions.scale(scaleFactor);}
   /**

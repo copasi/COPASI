@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:58 $
+//   $Author: gauges $
+//   $Date: 2011/03/11 21:21:13 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@ class CQNewMainWindow;
 #else
 class CQLayoutMainWindow;
 #endif // USE_CRENDER_EXTENSION
+class CLayout;
 
 class CQLayoutsWidget : public CopasiTableWidget
 {
@@ -43,6 +44,18 @@ public:
   void deleteLayoutWindows();
 
 protected:
+#ifdef COPASI_AUTOLAYOUT
+  /**
+   * This creates a new layout window.
+   */
+#ifdef USE_CRENDER_EXTENSION
+  CQNewMainWindow* createLayoutWindow(int row, CLayout* pLayout);
+#else
+  CQLayoutMainWindow* createLayoutWindow(int row, CLayout* pLayout);
+#endif // USE_CRENDER_EXTENSION
+
+#endif // COPASI_AUTOLAYOUT
+
   /**
    * shows units for the quantities
    */
@@ -108,9 +121,20 @@ protected:
   std::map<std::string, CQLayoutMainWindow*> mLayoutWindowMap;
 #endif // USE_CRENDER_EXTENSION
 
+#ifdef COPASI_AUTOLAYOUT
+#ifdef USE_CRENDER_EXTENSION
+  virtual bool enterProtected();
+#endif // USE_CRENDER_EXTENSION
+#endif // COPASI_AUTOLAYOUT
+
 protected slots:
   void slotDoubleClicked(int row, int col, int m, const QPoint & n);
   void slot_show(int row);
+#ifdef COPASI_AUTOLAYOUT
+#ifdef USE_CRENDER_EXTENSION
+  void slotBtnNewClicked();
+#endif // USE_CRENDER_EXTENSION
+#endif // COPASI_AUTOLAYOUT
 };
 
 class CQShowLayoutButton : public QToolButton

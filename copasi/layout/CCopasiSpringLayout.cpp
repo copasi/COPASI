@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CCopasiSpringLayout.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/11/26 16:37:18 $
+//   $Author: gauges $
+//   $Date: 2011/03/11 21:21:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,6 +14,7 @@
 #include <iostream>
 #include "CCopasiSpringLayout.h"
 #include "CLGlyphs.h"
+#include "CLReactionGlyph.h"
 #include "CLayout.h"
 #include "model/CCompartment.h"
 #include "model/CMetab.h"
@@ -87,7 +88,7 @@ bool CCopasiSpringLayout::initFromLayout(CLayout* layout)
   //store the compartment glyph for each species glyph (if it exists)
   unsigned int i;
 
-  for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size() - 1; ++i)
+  for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size() ; ++i)
     {
       CMetab* metab = dynamic_cast<CMetab*>(mpLayout->getListOfMetaboliteGlyphs()[i]->getModelObject());
       CLCompartmentGlyph*  tmp = NULL;
@@ -107,9 +108,102 @@ bool CCopasiSpringLayout::initFromLayout(CLayout* layout)
       mCompartmentMap[mpLayout->getListOfMetaboliteGlyphs()[i]] = tmp;
     }
 
+  //store the compartment glyph for each reaction glyph (if it exists)
+  for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() ; ++i)
+    {
+      mCompartmentMap[mpLayout->getListOfReactionGlyphs()[i]] = findCompartmentForReactionNode(*mpLayout->getListOfReactionGlyphs()[i]);
+    }
+
+  //create the list of constant positional relations
+  //we assume that text glyphs are always moved with the glyph they refer to.
+  //(i.e. the are not layed out independently)
+  mFixedRelations.clear();
+
+  for (i = 0; i < mpLayout->getListOfTextGlyphs().size(); ++i)
+    {
+      CoordinateRelation tmp;
+      tmp.target = mpLayout->getListOfTextGlyphs()[i];
+      tmp.source = mpLayout->getListOfTextGlyphs()[i]->getGraphicalObject();
+
+      if (tmp.source)
+        {
+          tmp.diff = tmp.target->getPosition() - tmp.source->getPosition();
+          mFixedRelations.push_back(tmp);
+        }
+    }
 
   return true;
 
+}
+
+
+CLCompartmentGlyph* CCopasiSpringLayout::findCompartmentForReactionNode(CLReactionGlyph & r)
+{
+  CLCompartmentGlyph*  pCG = NULL;
+
+  //r.compartmentIndex = mSpeciesNodes[r.getEdges()[0].sindex].compartmentIndex;
+  unsigned int i;
+
+  for (i = 0; i < r.getListOfMetabReferenceGlyphs().size(); ++i)
+    {
+      std::map<CLBase*, CLCompartmentGlyph*>::const_iterator mapIt = mCompartmentMap.find(r.getListOfMetabReferenceGlyphs()[i]->getMetabGlyph());
+
+      if (mapIt == mCompartmentMap.end())
+        {
+          //there is no information in the map. Should not happen.
+          std::cout << "No compartment info for a species glyph!!!" << std::endl;
+          continue;
+        }
+
+      if (! mapIt->second)
+        continue; //the species glyph is not linked to a compartment
+
+      if (!pCG) //this is the first compartment
+        {
+          pCG = mapIt->second;
+          continue;
+        }
+
+      if (pCG != mapIt->second) //there are at least two different compartments
+        {
+          pCG = NULL;
+          break;
+        }
+
+
+    }
+
+  return pCG;
+}
+
+
+
+bool CCopasiSpringLayout::createVariables()
+{
+  //delete current variables
+  mInitialState.clear();
+  mVarDescription.clear();
+  mMassVector.clear();
+
+  unsigned int i;
+
+  // add variables for the coordinates of all metabs
+  for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size() ; ++i)
+    {
+      addSpeciesVariables(mpLayout->getListOfMetaboliteGlyphs()[i]);
+    }
+
+  // add variables for the coordinates of all reaction glyphs
+  for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() ; ++i)
+    {
+      addReactionVariables(mpLayout->getListOfReactionGlyphs()[i]);
+    }
+
+  // add variables for text glyphs that are not fixed to anything.
+  //TODO
+
+  std::cout << "Number of variables for auto layout: " << mInitialState.size() << std::endl;
+  return true;
 }
 
 void CCopasiSpringLayout::addCompartmentVariables(CLCompartmentGlyph* cg)
@@ -170,49 +264,46 @@ void CCopasiSpringLayout::addSpeciesVariables(CLMetabGlyph* mg)
   mUpdateActions.push_back(UpdateAction(UpdateAction::SPECIES_2V, mg, first_index, first_index + 1));
 }
 
-/*
-
-void CCopasiSpringLayout::addReactionNodeWithVariables(const double & xpos, const double & ypos)
+void CCopasiSpringLayout::addReactionVariables(CLReactionGlyph* rg)
 {
-  ReactionNode tmpnode(this);
+  if (!rg)
+    return;
 
   VariableDescription desc;
-  desc.isAngle=false;
+  desc.isAngle = false;
 
-  tmpnode.x=xpos;
-  tmpnode.a = mInitialState.size();
-  mInitialState.push_back(tmpnode.x);
-  mVarDescription.push_back(desc);
-  mMassVector.push_back(1.0);
+  int first_index = mInitialState.size();
 
-  tmpnode.y=ypos;
-  tmpnode.b = mInitialState.size();
-  mInitialState.push_back(tmpnode.y);
-  mVarDescription.push_back(desc);
-  mMassVector.push_back(1.0);
+  C_FLOAT64 xxx, yyy;
 
-  tmpnode.compartmentIndex=-1;
-
-  mReactionNodes.push_back(tmpnode);
-}
-
-void CCopasiSpringLayout::updateCompartmentInReactionNode(ReactionNode & r)
-{
-  if (r.getEdges().size()==0)
-    r.compartmentIndex = -1;
+  //first look if the glyph is described by a curve
+  if (rg->getCurve().getNumCurveSegments())
+    {
+      unsigned int numsegs = rg->getCurve().getNumCurveSegments();
+      xxx = 0.5 * (rg->getCurve().getCurveSegments()[0].getStart().getX()
+                   + rg->getCurve().getCurveSegments()[numsegs-1].getEnd().getX());
+      yyy = 0.5 * (rg->getCurve().getCurveSegments()[0].getStart().getY()
+                   + rg->getCurve().getCurveSegments()[numsegs-1].getEnd().getY());
+    }
   else
-  {
-    r.compartmentIndex = mSpeciesNodes[r.getEdges()[0].sindex].compartmentIndex;
-    int i;
-    for (i=1; i<r.getEdges().size(); ++i)
-      if (mSpeciesNodes[r.getEdges()[i].sindex].compartmentIndex != r.compartmentIndex)
-      {
-        r.compartmentIndex = -1;
-        break;
-      }
-  }
+    {
+      xxx = rg->getX() + 0.5 * rg->getWidth();
+      yyy = rg->getY() + 0.5 * rg->getHeight();
+    }
+
+  //x position
+  mInitialState.push_back(xxx);
+  mVarDescription.push_back(desc);
+  mMassVector.push_back(1.0);
+
+  //y position
+  mInitialState.push_back(yyy);
+  mVarDescription.push_back(desc);
+  mMassVector.push_back(1.0);
+
+  mUpdateActions.push_back(UpdateAction(UpdateAction::REACTION_2V, rg, first_index, first_index + 1));
 }
-*/
+
 
 bool CCopasiSpringLayout::setState(const std::vector<double> & vars)
 {
@@ -237,15 +328,157 @@ bool CCopasiSpringLayout::setState(const std::vector<double> & vars)
             ((CLMetabGlyph*)(it->mpTarget))->setY(vars[it->mIndex2]);
             break;
 
+          case UpdateAction::REACTION_2V:
+            ((CLReactionGlyph*)(it->mpTarget))->setX(vars[it->mIndex1]);
+            ((CLReactionGlyph*)(it->mpTarget))->setY(vars[it->mIndex2]);
+            break;
+
           default:
             std::cout << "Unknown Action!!!" << std::endl;
             break;
         };
     }
 
+  //If we assume that the position of the dependent (text) glyphs can have an influence
+  //on the layout we need to update them here.
+  //Currently we assume that is not the case and the update will be done in finalizeState();
+
   return true;
 }
 
+void CCopasiSpringLayout::finalizeState()
+{
+  unsigned int i;
+
+  //update the positions of the dependent glyphs
+  //this can be done here since we assume that those glyphs
+  //do not affect the layout.
+  std::vector<CoordinateRelation>::const_iterator it, itEnd = mFixedRelations.end();
+
+  for (it = mFixedRelations.begin(); it != itEnd; ++it)
+    it->target->setPosition(it->source->getPosition() + it->diff);
+
+  //for now, only create curves for the reaction glyphs
+  for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() ; ++i)
+    {
+      CLReactionGlyph* pRG = mpLayout->getListOfReactionGlyphs()[i];
+
+      //Determine the average position of substrates and products, giving less weight to side reactants
+      CLPoint s, p;
+      double s_c = 0; double p_c = 0;
+      unsigned int j, jmax = pRG->getListOfMetabReferenceGlyphs().size();
+
+      for (j = 0; j < jmax; ++j)
+        {
+          if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SUBSTRATE)
+            {
+              s_c += 1.0;
+              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition();
+            }
+
+          if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDESUBSTRATE)
+            {
+              s_c += 0.1;
+              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition() * 0.1;
+            }
+
+          if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::PRODUCT)
+            {
+              p_c += 1.0;
+              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition();
+            }
+
+          if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
+            {
+              p_c += 0.1;
+              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition() * 0.1;
+            }
+        }
+
+      if (s_c > 0)
+        s = s * (1 / s_c);
+      else
+        s = pRG->getPosition();
+
+      if (p_c > 0)
+        p = p * (1 / p_c);
+      else
+        p = pRG->getPosition();
+
+      CLPoint dir = p - s; //overall direction of reaction
+
+      if (dir.getX() == 0 and dir.getY() == 0)
+        dir = CLPoint(1, 0);
+
+      CLPoint reaction_s = pRG->getPosition() - (dir * 0.1);
+      CLPoint reaction_p = pRG->getPosition() + (dir * 0.1);
+
+      pRG->getCurve().clear();
+      pRG->getCurve().addCurveSegment(CLLineSegment(reaction_s, reaction_p));
+
+      for (j = 0; j < jmax; ++j)
+        {
+          //here we need to generate the curves for the MetabReferenceGlyphs.
+          //we will need to consider the size of the glyphs, role of the metab in the reaction, etc.
+          //For now, only a primitive implementation: TODO: improve
+          CLMetabReferenceGlyph* pMRG = pRG->getListOfMetabReferenceGlyphs()[j];
+          CLPoint reactionPoint;
+          double direction;
+
+          switch (pMRG->getRole())
+            {
+              case CLMetabReferenceGlyph::SUBSTRATE :
+              case CLMetabReferenceGlyph::SIDESUBSTRATE :
+                reactionPoint = reaction_s;
+                direction = -0.1;
+                break;
+              case CLMetabReferenceGlyph::PRODUCT :
+              case CLMetabReferenceGlyph::SIDEPRODUCT :
+                reactionPoint = reaction_p;
+                direction = 0.1;
+                break;
+              default:
+                reactionPoint = pRG->getPosition();
+            }
+
+          CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * (direction * 1.5), 5);
+
+          pMRG->getCurve().clear();
+          pMRG->getCurve().addCurveSegment(CLLineSegment(reactionPoint,
+                                           metabPoint,
+                                           reactionPoint + dir*direction,
+                                           (reactionPoint + dir*(direction*1.5) + metabPoint)*0.5));
+
+        }
+    }
+
+  //rearrange the text boxes
+  //TODO
+
+  //calculate bounding box for the layout, or recenter the layout
+  //for (i = 0; i < mpLayout->getListOfSpeciesGlyphs().size() ; ++i)
+}
+
+CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoint & p, double d)
+{
+  CLPoint center = CLPoint(go->getX() + 0.5 * go->getWidth(), go->getY() + 0.5 * go->getHeight());
+  CLPoint diff = p - center;
+
+  CLPoint ret;
+
+  if (fabs(diff.getX()) * fabs(go->getHeight())*0.5 + d > fabs(diff.getY()) * fabs(go->getWidth())*0.5 + d)
+    {
+      double f = (fabs(go->getWidth()) * 0.5 + d) / fabs(diff.getX());
+      ret = center + diff * f;
+    }
+  else
+    {
+      double f = (fabs(go->getHeight()) * 0.5 + d) / fabs(diff.getY());
+      ret = center + diff * f;
+    }
+
+  return ret;
+}
 
 
 //*************************************
@@ -267,35 +500,46 @@ double CCopasiSpringLayout::potSpeciesSpecies(const CLMetabGlyph & a, const CLMe
   //  return 0;
 }
 
-/*
-double CCopasiSpringLayout::potSpeciesReaction(const SpeciesNode & a, const ReactionNode & b) const
+
+double CCopasiSpringLayout::potSpeciesReaction(const CLMetabGlyph & a, const CLReactionGlyph & b) const
 {
-  double tmp = bound_distance(a.x, a.y, b.x, b.y, 200);
-  if (tmp<1) tmp=1;
-  return a.charge*b.charge/tmp;
+  double tmp = bound_distance(a.getX() + a.getWidth() / 2, a.getY() + a.getHeight() / 2,
+                              b.getX() + b.getWidth() / 2, b.getY() + b.getHeight() / 2, 200);
+
+  if (tmp < 1) tmp = 1;
+
+  return /*a.charge*b.charge*/ 1 / tmp; //TODO: reintroduce the charge
 }
 
-double CCopasiSpringLayout::potReactionReaction(const ReactionNode & a, const ReactionNode & b) const
+double CCopasiSpringLayout::potReactionReaction(const CLReactionGlyph & a, const CLReactionGlyph & b) const
 {
-  double tmp = bound_distance(a.x, a.y, b.x, b.y, 200);
-  if (tmp<1) tmp=1;
-  return a.charge*b.charge/tmp;
+  double tmp = bound_distance(a.getX() + a.getWidth() / 2, a.getY() + a.getHeight() / 2,
+                              b.getX() + b.getWidth() / 2, b.getY() + b.getHeight() / 2, 200);
+
+  if (tmp < 1) tmp = 1;
+
+  return /*a.charge*b.charge*/ 1 / tmp; //TODO: reintroduce the charge
 }
 
-double CCopasiSpringLayout::potEdge(const Edge & e, const ReactionNode & r) const
+
+double CCopasiSpringLayout::potEdge(const CLMetabReferenceGlyph & e, const CLReactionGlyph & r) const
 {
-  double dist=70;
-  if (e.role==Edge::SIDESUBSTRATE || e.role==Edge::SIDEPRODUCT)
-    dist=40;
+  double dist = 70;
 
-  const SpeciesNode & sn = mSpeciesNodes[e.sindex];
-  double tmp = distance(sn.x, sn.y, r.x, r.y);
+  if (e.getRole() == CLMetabReferenceGlyph::SIDESUBSTRATE || e.getRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
+    dist = 40;
 
-  if (e.role==Edge::MODIFIER)
-    return 0.3*pow(tmp-dist, 2);
+  const CLMetabGlyph * pMG = e.getMetabGlyph();
+  double tmp = distance(pMG->getX() + pMG->getWidth() / 2, pMG->getY() + pMG->getHeight() / 2,
+                        r.getX() + r.getWidth() / 2, r.getY() + r.getHeight() / 2);
+
+  if (e.getRole() == CLMetabReferenceGlyph::MODIFIER)
+    return 0.3*pow(tmp - dist, 2);
   else
-    return pow(tmp-dist, 2);
+    return pow(tmp - dist, 2);
 }
+
+/*
 
 double CCopasiSpringLayout::potReaction(const ReactionNode & r) const
 {
@@ -360,22 +604,27 @@ double CCopasiSpringLayout::potSpeciesCompartment(const CLMetabGlyph & s, const 
   return tmp /**s.charge*/; //TODO reintroduce charge
 }
 
-/*
-double CCopasiSpringLayout::potReactionCompartment(const ReactionNode & r, const CompartmentNode & c) const
+
+double CCopasiSpringLayout::potReactionCompartment(const CLReactionGlyph & r, const CLCompartmentGlyph & c) const
 {
-  double tmp=0;
-  double dist=fabs(r.x-c.x);
-  if (dist > (0.5*c.w-50))
-    tmp+=pow(dist-0.5*c.w+50,2);
+  double tmp = 0;
+  double dist = fabs((r.getX() + 0.5 * r.getWidth()) - (c.getX() + 0.5 * c.getWidth()));
 
-  dist=fabs(r.y-c.y);
-  if (dist > (0.5*c.h-50))
-    tmp+=pow(dist-0.5*c.h+50,2);
+  if (dist > (0.5*c.getWidth() - 50))
+    tmp += pow(dist - 0.5 * c.getWidth() + 50, 2);
 
-  return tmp*r.charge;
+  dist = fabs((r.getY() + 0.5 * r.getHeight()) - (c.getY() + 0.5 * c.getHeight()));
+
+  if (dist > (0.5*c.getHeight() - 50))
+    tmp += pow(dist - 0.5 * c.getHeight() + 50, 2);
+
+  return tmp /**s.charge*/; //TODO reintroduce charge
+
 }
 
-double CCopasiSpringLayout::potCompartmentCompartment(const CompartmentNode & c1, const CompartmentNode & c2) const
+/*
+
+double CCopasiSpringLayout::potCompartmentCompartment(const CLCompartmentGlyph & c1, const CLCompartmentGlyph & c2) const
 {
   double tmp=0;
   double distx=fabs(c1.x-c2.x) - (0.5*c1.w + 0.5*c2.w+20);
@@ -405,34 +654,38 @@ double CCopasiSpringLayout::getPotential()
           tmp += 100000 * potSpeciesSpecies(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfMetaboliteGlyphs()[j]);
       }
 
+  //repulsion between species nodes and reaction nodes
+  for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size(); ++i)
+    for (j = 0; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
+      {
+        tmp += 100000 * potSpeciesReaction(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
+      }
+
+  //repulsion between reaction nodes
+  for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() - 1; ++i)
+    for (j = i + 1; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
+      {
+        if (i != j)
+          tmp += 100000 * potReactionReaction(*mpLayout->getListOfReactionGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
+      }
+
+  //spring force for species references
+  for (i = 0; i < mpLayout->getListOfReactionGlyphs().size(); ++i)
+    {
+      CLReactionGlyph* pRG = mpLayout->getListOfReactionGlyphs()[i];
+
+      for (j = 0; j < pRG->getListOfMetabReferenceGlyphs().size(); ++j)
+        {
+          tmp += 0.5 * potEdge(*pRG->getListOfMetabReferenceGlyphs()[j], *pRG);
+        }
+    }
+
   /*
-    //repulsion between species nodes and reaction nodes
-    for (i=0; i<mSpeciesNodes.size(); ++i)
-    for (j=0; j<mReactionNodes.size(); ++j)
-      {
-        tmp += 100000*potSpeciesReaction(mSpeciesNodes[i], mReactionNodes[j]);
-      }
-
-    //repulsion between reaction nodes
-    for (i=0; i<mReactionNodes.size()-1; ++i)
-    for (j=i+1; j<mReactionNodes.size(); ++j)
-      {
-        if (i!=j)
-          tmp += 100000*potReactionReaction(mReactionNodes[i], mReactionNodes[j]);
-      }
-
-    //spring force for species references
-    for (i=0; i<mReactionNodes.size(); ++i)
-      for (j=0; j<mReactionNodes[i].getEdges().size(); ++j)
-      {
-        tmp += 0.5* potEdge(mReactionNodes[i].getEdges()[j], mReactionNodes[i]);
-      }
-
-    //forces at reaction nodes
-    for (i=0; i<mReactionNodes.size(); ++i)
-      {
-        tmp += 3000* potReaction(mReactionNodes[i]);
-      }
+      //forces at reaction nodes
+      for (i=0; i<mReactionNodes.size(); ++i)
+        {
+          tmp += 3000* potReaction(mReactionNodes[i]);
+        }
   */
 
   //force to keep species in compartment
@@ -454,37 +707,47 @@ double CCopasiSpringLayout::getPotential()
         tmp += 0.2 * potSpeciesCompartment(*tmpMG, *tmpCG);
     }
 
+  //force to keep reaction nodes in compartment
+  for (i = 0; i < mpLayout->getListOfReactionGlyphs().size(); ++i)
+    {
+      CLReactionGlyph* tmpRG = mpLayout->getListOfReactionGlyphs()[i];
+      std::map<CLBase*, CLCompartmentGlyph*>::const_iterator mapIt = mCompartmentMap.find(tmpRG);
 
+      if (mapIt == mCompartmentMap.end())
+        {
+          //there is no information in the map. Should not happen.
+          std::cout << "No compartment info for a reaction glyph!!!" << std::endl;
+          continue;
+        }
 
+      CLCompartmentGlyph* tmpCG = mapIt->second;
+
+      if (tmpCG) //the reaction glyph is inside a compartment glyph
+        tmp += 0.2 * potReactionCompartment(*tmpRG, *tmpCG);
+    }
 
   /*
-  //force to keep reaction nodes in compartment
-  for (i=0; i<mReactionNodes.size(); ++i)
-    {
-      if (mReactionNodes[i].compartmentIndex >=0)
-        tmp += 0.2*potReactionCompartment(mReactionNodes[i], mCompartmentNodes[mReactionNodes[i].compartmentIndex]);
-    }
 
-  //force to shrink compartments
-  for (i=0; i<mCompartmentNodes.size(); ++i)
-    {
-      tmp += 0.2*(fabs(mCompartmentNodes[i].w-100)+fabs(mCompartmentNodes[i].h-100));
-    }
+    //force to shrink compartments
+    for (i=0; i<mCompartmentNodes.size(); ++i)
+      {
+        tmp += 0.2*(fabs(mCompartmentNodes[i].w-100)+fabs(mCompartmentNodes[i].h-100));
+      }
 
-  //repulsion between compartments
-  for (i=0; i<mCompartmentNodes.size(); ++i)
-  for (j=0; j<mCompartmentNodes.size(); ++j)
-    {
-      if (i!=j)
-        tmp += 100*potCompartmentCompartment(mCompartmentNodes[i], mCompartmentNodes[j]);
-    }
+    //repulsion between compartments
+    for (i=0; i<mCompartmentNodes.size(); ++i)
+    for (j=0; j<mCompartmentNodes.size(); ++j)
+      {
+        if (i!=j)
+          tmp += 100*potCompartmentCompartment(mCompartmentNodes[i], mCompartmentNodes[j]);
+      }
 
-  //centering force
-  for (i=0; i<mCompartmentNodes.size(); ++i)
-    {
-      tmp += 10*(fabs(mCompartmentNodes[i].x)+fabs(mCompartmentNodes[i].y));
-    }
-  */
+    //centering force
+    for (i=0; i<mCompartmentNodes.size(); ++i)
+      {
+        tmp += 10*(fabs(mCompartmentNodes[i].x)+fabs(mCompartmentNodes[i].y));
+      }
+    */
   return tmp;
 }
 

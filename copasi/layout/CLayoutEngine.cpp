@@ -1,16 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutEngine.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/11/26 23:20:12 $
+//   $Author: gauges $
+//   $Date: 2011/03/11 21:21:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
+#include <math.h>
 #include <iostream>
 #include "copasi.h"
 #include "CLayoutEngine.h"
@@ -20,7 +21,7 @@
 
 CLayoutEngine::CLayoutEngine(CAbstractLayoutInterface * l, bool so)
     : mpLayout(l),
-    mSecondOrder(so)
+    mSecondOrder(false)
 {
   if (!mpLayout) return;
 
@@ -76,7 +77,7 @@ void CLayoutEngine::calcRHS(std::vector<double> & state, double* rhs)
     {
       if (mSecondOrder)
         {
-          rhs[i+imax] = (forces[i] * 0.04 - state[i+imax] * 0.1) / mpLayout->getMassVector()[i];
+          rhs[i+imax] = (forces[i] * 0.04 - state[i+imax] * 0.05) / mpLayout->getMassVector()[i];
           rhs[i] = state[i+imax];
         }
       else
@@ -138,44 +139,93 @@ void CLayoutEngine::step()
 {
   if (!mpLayout) return;
 
-  const double dt = 2;
+  unsigned int i, imax = mVariables.size();
+
+  //Euler
+
+  mpLayout->setState(mVariables);
+  double pot = mpLayout->getPotential();
+
+  calcRHS(mVariables, &mRhs[0]);
+
+  double dt = 3;
+
+  for (i = 0; i < imax; ++i)
+    {
+      mVariables[i] += mRhs[i] * dt;
+    }
+
+
+  double newpot;
+
+  for (;;)
+    {
+      mpLayout->setState(mVariables);
+      newpot = mpLayout->getPotential();
+
+      if (newpot < pot) break;
+
+      if (dt < 1e-3) break;
+
+      //step back
+      dt *= 0.5;
+
+      for (i = 0; i < imax; ++i)
+        {
+          mVariables[i] -= mRhs[i] * dt;
+        }
+
+    }
+
+  std::cout << dt << "   " << newpot << std::endl;
+
+}
+
+void CLayoutEngine::stepIntegration()
+{
+  if (!mpLayout) return;
+
+  const double dt = 0.2;
 
 
   unsigned int i, imax = mVariables.size();
 
   //Euler
-  calcRHS(mVariables, &mRhs[0]);
+  /*calcRHS(mVariables, &mRhs[0]);
 
   for (i = 0; i < imax; ++i)
     {
       mVariables[i] += mRhs[i] * 0.05;
-    }
+    }*/
 
   //RK4
-  /* calcRHS(mVariables, mRhs);
+  calcRHS(mVariables, &mRhs[0]);
 
-   for (i=0; i<imax; ++i)
-   {
-     mVar2[i]=mVariables[i]+mRhs[i]*0.5*dt;
-   }
-   calcRHS(mVar2, mRhsA);
+  for (i = 0; i < imax; ++i)
+    {
+      mVar2[i] = mVariables[i] + mRhs[i] * 0.5 * dt;
+    }
 
-   for (i=0; i<imax; ++i)
-   {
-     mVar2[i]=mVariables[i]+mRhsA[i]*0.5*dt;
-   }
-   calcRHS(mVar2, mRhsB);
+  calcRHS(mVar2, &mRhsA[0]);
 
-   for (i=0; i<imax; ++i)
-   {
-     mVar2[i]=mVariables[i]+mRhsB[i]*dt;
-   }
-   calcRHS(mVar2, mRhsC);
+  for (i = 0; i < imax; ++i)
+    {
+      mVar2[i] = mVariables[i] + mRhsA[i] * 0.5 * dt;
+    }
 
-   for (i=0; i<imax; ++i)
-   {
-     mVariables[i]+= dt/6*(mRhs[i]+2*mRhsA[i]+2*mRhsB[i]+mRhsC[i]);
-   }*/
+  calcRHS(mVar2, &mRhsB[0]);
+
+  for (i = 0; i < imax; ++i)
+    {
+      mVar2[i] = mVariables[i] + mRhsB[i] * dt;
+    }
+
+  calcRHS(mVar2, &mRhsC[0]);
+
+  for (i = 0; i < imax; ++i)
+    {
+      mVariables[i] += dt / 6 * (mRhs[i] + 2 * mRhsA[i] + 2 * mRhsB[i] + mRhsC[i]);
+    }
 
   //LSODA
   /*

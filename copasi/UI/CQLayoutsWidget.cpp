@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:45 $
+//   $Author: gauges $
+//   $Date: 2011/03/11 21:21:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #include "qtUtilities.h"
 #include "copasi/layout/CLayout.h"
 #include "copasi/layout/CListOfLayouts.h"
+#include "copasi/model/CModel.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -41,6 +42,9 @@
 #else
 #include "copasi/layoutUI/CQLayoutMainWindow.h"
 #endif // USE_CRENDER_EXTENSION
+#ifdef COPASI_AUTOLAYOUT
+#include "copasi/layoutUI/CQAutolayoutWizard.h"
+#endif // COPASI_AUTOLAYOUT
 
 #define COL_MARK         0
 #define COL_NAME         1
@@ -62,6 +66,10 @@ std::vector<const CCopasiObject*> CQLayoutsWidget::getObjects() const
 
 void CQLayoutsWidget::init()
 {
+#ifdef COPASI_AUTOLAYOUT
+  this->btnNew->setText("layout wizard ...");
+  this->btnNew->setEnabled(false);
+#endif // COPASI_AUTOLAYOUT
   this->btnNew->hide();
   mOT = ListViews::LAYOUT;
   numCols = 3;
@@ -263,6 +271,101 @@ void CQLayoutsWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 
   this->slot_show(row);
 }
+
+#ifdef COPASI_AUTOLAYOUT
+/**
+ * This creates a new layout window and return a pointer to it.
+ * In case of an error, NULL is returned.
+ */
+#ifdef USE_CRENDER_EXTENSION
+CQNewMainWindow* CQLayoutsWidget::createLayoutWindow(int row, CLayout* pLayout)
+#else
+CQLayoutMainWindow* CQLayoutsWidget::createLayoutWindow(int row, CLayout* pLayout)
+#endif // USE_CRENDER_EXTENSION
+{
+
+  if (pLayout == NULL || row < 0) return NULL;
+
+#ifdef USE_CRENDER_EXTENSION
+  CQNewMainWindow* pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+  pWin->slotLayoutChanged(row);
+#else
+  CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout);
+#endif // USE_CRENDER_EXTENSION
+  pWin->setWindowTitle(pLayout->getObjectName().c_str());
+  pWin->resize(900, 600);
+  this->mLayoutWindowMap[pLayout->getKey()] = pWin;
+  return pWin;
+}
+
+#ifdef USE_CRENDER_EXTENSION
+void CQLayoutsWidget::slotBtnNewClicked()
+{
+  CLayout* pLayout = new CLayout("COPASI autolayout");
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  const CModel* pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+  CQAutolayoutWizard* pWizard = new CQAutolayoutWizard(*pModel);
+
+  if (pWizard->exec() == QDialog::Accepted)
+    {
+      // add the layout to the datamodel
+      std::map<std::string, std::string> m;
+      pDataModel->getListOfLayouts()->addLayout(pLayout, m);
+      // update the table
+      fillTable();
+      CQNewMainWindow* pWin = this->createLayoutWindow(pDataModel->getListOfLayouts()->size() - 1, pLayout);
+      assert(pWin != NULL);
+
+      if (pWin != NULL)
+        {
+          // create the random layout
+          pWin->createRandomLayout(pWizard->getSelectedCompartments(), pWizard->getSelectedReactions(), pWizard->getSelectedMetabolites(), pWizard->getSideMetabolites());
+          pWin->updateRenderer();
+          // show the new layout
+          pWin->show();
+          pWin->redrawNow();
+          // now we create the spring layout
+          pWin->createSpringLayout(1000, 1);
+        }
+
+    }
+  else
+    {
+      delete pLayout;
+    }
+}
+
+/**
+ * This is called when the widget is displayed.
+ * Here we need to make sure that the button for
+ * the layout wizard is disabled if there are no model
+ * elements.
+ */
+bool CQLayoutsWidget::enterProtected()
+{
+  // check if we have at least a copartment
+  // that we can lay out.
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+
+  if (pDataModel != NULL && pDataModel->getModel() != NULL &&
+      pDataModel->getModel()->getCompartments().size() > 0
+     )
+    {
+      this->btnNew->setEnabled(true);
+    }
+  else
+    {
+      this->btnNew->setEnabled(false);
+    }
+
+  // call the method of the base class
+  return this->CopasiTableWidget::enterProtected();
+}
+
+#endif // USE_CRENDER_EXTENSION
+
+#endif // COPASI_AUTOLAYOUT
 
 void CQLayoutsWidget::slot_show(int row)
 {

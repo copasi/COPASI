@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $
-#   $Revision: 1.14 $
+#   $Revision: 1.15 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/03/07 19:28:47 $
+#   $Author: gauges $
+#   $Date: 2011/03/11 21:21:14 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -36,6 +36,13 @@ HEADERS += CLayout.h \
            CListOfLayouts.h \
            CLReactionGlyph.h \
            SBMLDocumentLoader.h 
+
+contains(DEFINES,COPASI_AUTOLAYOUT) {
+HEADERS += CAbstractLayoutInterface.h
+HEADERS += CCopasiSpringLayout.h
+HEADERS += CLayoutEngine.h
+}
+
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {           
 HEADERS += CLColorDefinition.h \
@@ -86,6 +93,12 @@ SOURCES += CLayout.cpp \
            CListOfLayouts.cpp \
            CLReactionGlyph.cpp \
            SBMLDocumentLoader.cpp
+
+contains(DEFINES,COPASI_AUTOLAYOUT) {
+SOURCES += CAbstractLayoutInterface.cpp
+SOURCES += CCopasiSpringLayout.cpp
+SOURCES += CLayoutEngine.cpp
+}
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {
 SOURCES += CLColorDefinition.cpp \
