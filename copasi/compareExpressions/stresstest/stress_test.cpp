@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:45 $
+//   $Author: gauges $
+//   $Date: 2011/03/13 17:41:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -286,7 +286,7 @@ void stress_test::run(const std::vector<std::string>& filenames)
   std::set<double>::reverse_iterator timeIt = mProcessTimes.rbegin(), timeEndit = mProcessTimes.rend();
   unsigned int num = 0;
 
-  while ((*timeIt) > 600 && timeIt != timeEndit)
+  while (timeIt != timeEndit && (*timeIt) > 600)
     {
       ++num;
       ++timeIt;
@@ -298,7 +298,7 @@ void stress_test::run(const std::vector<std::string>& filenames)
       num = 0;
     }
 
-  while ((*timeIt) > 60 && timeIt != timeEndit)
+  while (timeIt != timeEndit && (*timeIt) > 60)
     {
       ++num;
       ++timeIt;
@@ -309,7 +309,7 @@ void stress_test::run(const std::vector<std::string>& filenames)
       std::cout << "Number of expression taking more than 1 minute: " << num << std::endl;
     }
 
-  while ((*timeIt) > 10 && timeIt != timeEndit)
+  while (timeIt != timeEndit && (*timeIt) > 10)
     {
       ++num;
       ++timeIt;
@@ -320,7 +320,7 @@ void stress_test::run(const std::vector<std::string>& filenames)
       std::cout << "Number of expression taking more than 10 seconds: " << num << std::endl;
     }
 
-  while ((*timeIt) > 1 && timeIt != timeEndit)
+  while (timeIt != timeEndit && (*timeIt) > 1)
     {
       ++num;
       ++timeIt;
@@ -331,7 +331,7 @@ void stress_test::run(const std::vector<std::string>& filenames)
       std::cout << "Number of expression taking more than 1 second: " << num << std::endl;
     }
 
-  while ((*timeIt) > 0.1 && timeIt != timeEndit)
+  while (timeIt != timeEndit && (*timeIt) > 0.1)
     {
       ++num;
       ++timeIt;
@@ -342,7 +342,7 @@ void stress_test::run(const std::vector<std::string>& filenames)
       std::cout << "Number of expression taking more than 1/10 seconds: " << num << std::endl;
     }
 
-  while ((*timeIt) > 0.01 && timeIt != timeEndit)
+  while (timeIt != timeEndit && (*timeIt) > 0.01)
     {
       ++num;
       ++timeIt;
