@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:19 $
+//   $Author: gauges $
+//   $Date: 2011/03/13 17:40:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,10 +160,10 @@ bool CNormalSum::add(const CNormalProduct& product)
       return true;
     }
 
-  std::set<CNormalProduct*, compareProducts >::iterator it;
+  std::set<CNormalProduct*, compareProducts >::iterator it = mProducts.begin();
   std::set<CNormalProduct*, compareProducts >::iterator itEnd = mProducts.end();
 
-  for (it = mProducts.begin(); it != itEnd; ++it)
+  while (it != itEnd)
     {
       if ((*it)->checkSamePowerList(product))
         {
@@ -172,15 +172,20 @@ bool CNormalSum::add(const CNormalProduct& product)
           // if this results in a 0, remove the item
           if (fabs((*it)->getFactor()) < 1.0E-100)
             {
-              mProducts.erase(*it);
+              //unsigned int count=this->mProducts.size();
+              mProducts.erase(it);
+              //assert(count == this->mProducts.size()+1);
             }
 
           return true;
         }
+
+      ++it;
     }
 
   CNormalProduct* tmp = new CNormalProduct(product);
-  mProducts.insert(tmp);
+  /*bool result=*/mProducts.insert(tmp).second;
+  //assert(result == true);
   return true;
 }
 
@@ -888,4 +893,22 @@ CNormalSum* CNormalSum::createUnitSum()
   pSum->add(*pTmpProduct);
   delete pTmpProduct;
   return pSum;
+}
+
+void CNormalSum::printProducts(const CNormalSum* pSum)
+{
+  std::set<CNormalProduct*, compareProducts >::const_iterator it = pSum->mProducts.begin();
+  std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = pSum->mProducts.end();
+  std::cout << "products: " << std::endl;
+
+  while (it != itEnd)
+    {
+      std::cout << (*it)->toString() << std::endl;
+      ++it;
+    }
+
+  std::cout << std::endl;
+  std::cout << std::endl;
+  std::cout << std::endl;
+
 }

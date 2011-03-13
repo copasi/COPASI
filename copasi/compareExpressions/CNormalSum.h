@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:19 $
+//   $Author: gauges $
+//   $Date: 2011/03/13 17:40:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,6 +188,8 @@ public:
   static CNormalSum* createUnitSum();
 
   friend std::ostream & operator<< (std::ostream &os, const CNormalSum & d);
+
+  static void printProducts(const CNormalSum* pSum);
 };
 
 #endif // COPASI_CNormalSum_H__
