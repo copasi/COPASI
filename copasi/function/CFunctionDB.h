@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:17 $
+//   $Date: 2011/03/14 19:19:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,18 +148,18 @@ public:
    *  Search for a function among the loaded functions. If no
    *  function is found NULL is returned
    *  @param "const string" &functionName
-   *  @return CEvaluationTree *
+   *  @return CFunction *
    */
-  CEvaluationTree * findFunction(const std::string & functionName);
+  CFunction * findFunction(const std::string & functionName);
 
   /**
    *  Search for a function among the loaded functions. If no
    *  function is found the database is searched and the apropriate
    *  function is loaded.
    *  @param "const string" &functionName
-   *  @return CEvaluationTree * function (NULL if function is not found)
+   *  @return CFunction * function (NULL if function is not found)
    */
-  CEvaluationTree * findLoadFunction(const std::string & functionName);
+  CFunction * findLoadFunction(const std::string & functionName);
 
   /**
    *  Retrieves the vector of loaded functions.

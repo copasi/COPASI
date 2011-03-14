@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/09 13:52:43 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,39 +94,24 @@ public:
   static const std::string ListTypeName[];
 
   static
-  std::vector<CCopasiObject*> getListOfObjects(ListType t, const CModel* model);
+  std::vector< CCopasiObject * > getListOfObjects(ListType t, const CModel* model);
 
   static
-  std::vector<const CCopasiObject*> getListOfConstObjects(ListType t, const CModel* model);
+  std::vector< const CCopasiObject * > getListOfConstObjects(ListType t, const CModel* model);
 
   static
   bool existsFixedMetab(const CModel* model);
 
-private:
-  typedef std::vector<const CCopasiObject*> ObjectList;
-
+  /**
+   * Create a set of all entities which are event targets
+   * @return std::set< const CModelEntity * > eventTargets
+   */
   static
-  std::set< const CModelEntity * > getEventTargets(const CModel * pModel);
-
-public:
-  static
-  std::vector< const CModelEntity * > getFixedEntities(const CModel * pModel);
-
-  static
-  std::vector< const CModelEntity * > getFixedEventTargetEntities(const CModel * pModel);
-
-  static
-  std::vector< const CModelEntity * > getODEEntities(const CModel * pModel);
-
-  static
-  std::vector< const CMetab * > getReactionSpecies(const CModel * pModel);
-
-  static
-  std::vector< const CModelEntity * > getAssignmentEntities(const CModel * pModel);
-
-//TODO: method to select a subset of lists for a specific application (output or parameter)
-
+  std::set< const CModelEntity * > getEventTargets(const CModel* pModel);
   //TODO: display names
+
+private:
+  typedef std::vector< const CCopasiObject * > ObjectList;
 };
 
 #endif

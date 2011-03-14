@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.153 $
+//   $Revision: 1.154 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/02 19:41:21 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -240,7 +240,7 @@ void CMetab::setStatus(const CModelEntity::Status & status)
   const CCopasiObject * pVolumeReference = NULL;
 
   if (mpCompartment)
-    pVolumeReference = mpCompartment->getObject(CCopasiObjectName("Reference=Volume"));
+    pVolumeReference = mpCompartment->getValueReference();
 
   switch (getStatus())
     {
@@ -755,6 +755,9 @@ CCopasiObject * CMetab::getInitialConcentrationReference() const
 CConcentrationReference * CMetab::getConcentrationReference() const
 {return mpConcReference;}
 
+CCopasiObject * CMetab::getConcentrationRateReference() const
+{return mpConcRateReference;}
+
 C_FLOAT64 CMetab::getConcentrationRate() const
 {
   const_cast<CMetab *>(this)->refreshConcentrationRate();
@@ -876,6 +879,9 @@ void CMetab::setDependentOn(const CMoiety * pMoiety)
 
 bool CMetab::isDependent() const
 {return mpMoiety != NULL;}
+
+const CMoiety * CMetab::getMoiety() const
+{return mpMoiety;}
 
 //******************* CMetabOld ***************************************************
 

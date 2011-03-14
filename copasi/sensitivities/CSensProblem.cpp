@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:42 $
+//   $Date: 2011/03/14 19:20:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ const CCopasiObjectName & CSensItem::getSingleObjectCN() const
 
 std::string CSensItem::getSingleObjectDisplayName(const CCopasiDataModel* pDataModel) const
 {
-  const CCopasiObject* tmpObject = pDataModel->getObject(mSingleObjectCN);
+  const CCopasiObject* tmpObject = pDataModel->getDataObject(mSingleObjectCN);
 
   if (tmpObject)
     return tmpObject->getObjectDisplayName();
@@ -101,7 +101,7 @@ std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CCopasiDataModel*
 
   if (isSingleObject())
     {
-      CCopasiObject * tmpObject = const_cast<CCopasiObject *>(pDataModel->getObject(getSingleObjectCN()));
+      CCopasiObject * tmpObject = pDataModel->getDataObject(getSingleObjectCN());
 
       if (!tmpObject) {return ret;}  //return empty list
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.194 $
+//   $Revision: 1.195 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/08 16:10:36 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,14 +137,6 @@ void CReaction::cleanup()
 bool CReaction::setObjectParent(const CCopasiContainer * pParent)
 {
   bool success = CCopasiContainer::setObjectParent(pParent);
-
-  CCopasiObject * pObject;
-
-  pObject =
-    const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Flux")));
-
-  pObject =
-    const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=ParticleFlux")));
 
   return success;
 }
@@ -445,9 +437,10 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
 //***********************************************************************************************
 
 // virtual
-const CCopasiObject * CReaction::getObject(const CCopasiObjectName & cn) const
+const CCopasiObjectInterface * CReaction::getObject(const CCopasiObjectName & cn) const
 {
-  const CCopasiObject * pObject = CCopasiContainer::getObject(cn);
+  const CCopasiObject * pObject =
+    static_cast< const CCopasiObject * >(CCopasiContainer::getObject(cn));
 
   if (pObject == NULL) return pObject;
 
@@ -855,7 +848,7 @@ void CReaction::setScalingFactor()
 
       std::set< const CCopasiObject * > Dependencies = mpFluxReference->getDirectDependencies();
 
-      Dependencies.insert(pCompartment->getObject(CCopasiObjectName("Reference=Volume")));
+      Dependencies.insert(pCompartment->getValueReference());
 
       mpFluxReference->setDirectDependencies(Dependencies);
       mpParticleFluxReference->setDirectDependencies(Dependencies);
@@ -924,7 +917,7 @@ std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
   for (; it != end ; ++it)
     {
       if (isLocalParameter((*it)->getObjectName()))
-        Deleted.insert((*it)->getObject(CCopasiObjectName("Reference=Value")));
+        Deleted.insert((*it)->getValueReference());
     }
 
   return Deleted;

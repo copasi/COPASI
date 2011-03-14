@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -681,7 +681,8 @@ std::string CModelExpansion::copyExpression(const CExpression * pExpression)
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject = mpModel->getObjectDataModel()->getObject(cn);
+          const CCopasiObject* mObject =
+            static_cast< const CCopasiObject * >(mpModel->getObjectDataModel()->getObject(cn));
 
           assert(mObject != NULL);
 

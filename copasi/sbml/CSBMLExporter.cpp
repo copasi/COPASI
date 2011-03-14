@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:37 $
+//   $Date: 2011/03/14 19:20:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -4422,7 +4422,7 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
 
       if (pObjectNode != NULL)
         {
-          const CCopasiObject* pObject = dataModel.getObject(pObjectNode->getObjectCN());
+          const CCopasiObject* pObject = dataModel.getDataObject(pObjectNode->getObjectCN());
 
           if (!pObject)
             {
@@ -6110,7 +6110,7 @@ void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiData
   if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CALL)
     {
       std::string funName = dynamic_cast<const CEvaluationNodeCall*>(pNode)->getData();
-      CEvaluationTree* pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
+      CFunction* pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
       assert(pFun != NULL);
 
       if (pFun == NULL) fatalError();
@@ -6486,7 +6486,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
   for (i = 0; i < iMax; ++i)
     {
-      const CEvaluationTree* pFun = CCopasiRootContainer::getFunctionList()->loadedFunctions()[i];
+      const CFunction* pFun = CCopasiRootContainer::getFunctionList()->loadedFunctions()[i];
       id = pFun->getSBMLId();
 
       if (!id.empty())

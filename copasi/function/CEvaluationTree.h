@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:17 $
+//   $Date: 2011/03/14 19:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ class ASTNode;
 template <class CType> class CCopasiVectorN;
 
 class CEvaluationTree:
-    public CCopasiContainer, public CAnnotation
+    public CCopasiContainer
 {
 public:
   /**
@@ -57,13 +57,6 @@ public:
    *  The string representation of valid types of a function
    */
   static const char * XMLType[];
-
-  /**
-   * The id of the corresponding function in an SBML file.
-   * This value is either set upon importing an SBML file,
-   * or when the object is first exported to an SBML file.
-   */
-  std::string mSBMLId;
 
   // Operations
 public:
@@ -122,12 +115,6 @@ protected:
   void setType(const CEvaluationTree::Type & type);
 
 public:
-  /**
-   * Retrieves the key of the EvaluationTree
-   * @return const std::string & key
-   */
-  const std::string & getKey() const;
-
   /**
    * Sets the root node of the tree.
    * @param CEvaluationNode* root node of the tree
@@ -236,16 +223,6 @@ public:
   bool updateTree();
 
   /**
-   * Sets the SBMLId.
-   */
-  void setSBMLId(const std::string& id);
-
-  /**
-   * Returns a reference to the SBML Id.
-   */
-  const std::string& getSBMLId() const;
-
-  /**
    * Check whether the the tree has circular dependencies.
    * @return bool hasCircularDependency
    */
@@ -261,9 +238,9 @@ public:
 
   /**
    * Retrieve the list of deleted objects.
-   * @return std::set< const CCopasiObject * > deletedObjects
+   * @return CCopasiObject::ObjectSet deletedObjects
    */
-  std::set< const CCopasiObject * > getDeletedObjects() const;
+  CCopasiObject::ObjectSet getDeletedObjects() const;
 
   /**
    * Check whether the evaluation tree calls any tree in the list
@@ -302,7 +279,7 @@ private:
   /**
    * The key of the function
    */
-  std::string mKey;
+  // std::string mKey;
 
 protected:
   /**

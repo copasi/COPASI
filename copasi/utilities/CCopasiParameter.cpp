@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:54 $
+//   $Date: 2011/03/14 19:20:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,8 @@ CCopasiParameter::CCopasiParameter():
     mKey(CCopasiRootContainer::getKeyFactory()->add("Parameter", this)),
     mType(INVALID),
     mSize(0),
-    mValue()
+    mValue(),
+    mpValueReference(NULL)
 {mValue.pVOID = NULL;}
 
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
@@ -84,8 +85,11 @@ CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
     mKey(CCopasiRootContainer::getKeyFactory()->add(src.getObjectType(), this)),
     mType(src.mType),
     mSize(0),
-    mValue(createValue(src.mValue))
-{}
+    mValue(),
+    mpValueReference(NULL)
+{
+  createValue(src.mValue);
+}
 
 CCopasiParameter::CCopasiParameter(const std::string & name,
                                    const CCopasiParameter::Type & type,
@@ -101,7 +105,8 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
     mKey(CCopasiRootContainer::getKeyFactory()->add(objectType, this)),
     mType(type),
     mSize(0),
-    mValue()
+    mValue(),
+    mpValueReference(NULL)
 {
   CCopasiParameter::Value value;
   value.pVOID = const_cast<void *>(pValue);
@@ -248,6 +253,11 @@ bool CCopasiParameter::setValue(const std::vector< CCopasiParameter * > & /* val
 const CCopasiParameter::Value & CCopasiParameter::getValue() const {return mValue;}
 
 CCopasiParameter::Value & CCopasiParameter::getValue() {return mValue;}
+
+CCopasiObject * CCopasiParameter::getValueReference() const
+{
+  return mpValueReference;
+}
 
 const CCopasiParameter::Type & CCopasiParameter::getType() const
 {return mType;}
@@ -416,7 +426,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
         if (value.pDOUBLE) * mValue.pDOUBLE = * value.pDOUBLE;
 
         mSize = sizeof(C_FLOAT64);
-        addObjectReference("Value", * mValue.pDOUBLE, CCopasiObject::ValueDbl);
+        mpValueReference = addObjectReference("Value", * mValue.pDOUBLE, CCopasiObject::ValueDbl);
         break;
 
       case CCopasiParameter::INT:
@@ -425,7 +435,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
         if (value.pINT) * mValue.pINT = * value.pINT;
 
         mSize = sizeof(C_INT32);
-        addObjectReference("Value", * mValue.pINT, CCopasiObject::ValueInt);
+        mpValueReference = addObjectReference("Value", * mValue.pINT, CCopasiObject::ValueInt);
         break;
 
       case CCopasiParameter::UINT:
@@ -434,7 +444,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
         if (value.pUINT) * mValue.pUINT = * value.pUINT;
 
         mSize = sizeof(unsigned C_INT32);
-        addObjectReference("Value", * mValue.pUINT, CCopasiObject::ValueInt);
+        mpValueReference = addObjectReference("Value", * mValue.pUINT, CCopasiObject::ValueInt);
         break;
 
       case CCopasiParameter::BOOL:
@@ -443,7 +453,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
         if (value.pBOOL) * mValue.pBOOL = * value.pBOOL;
 
         mSize = sizeof(bool);
-        addObjectReference("Value", * mValue.pBOOL, CCopasiObject::ValueBool);
+        mpValueReference = addObjectReference("Value", * mValue.pBOOL, CCopasiObject::ValueBool);
         break;
 
       case CCopasiParameter::STRING:
@@ -457,7 +467,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
           mValue.pSTRING = new std::string;
 
         mSize = sizeof(std::string);
-        addObjectReference("Value", * mValue.pSTRING, CCopasiObject::ValueString);
+        mpValueReference = addObjectReference("Value", * mValue.pSTRING, CCopasiObject::ValueString);
         break;
 
       case CCopasiParameter::CN:
@@ -468,7 +478,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
           mValue.pCN = new CRegisteredObjectName;
 
         mSize = sizeof(CRegisteredObjectName);
-        addObjectReference("Value", * mValue.pCN, CCopasiObject::ValueString);
+        mpValueReference = addObjectReference("Value", * mValue.pCN, CCopasiObject::ValueString);
         break;
 
       case CCopasiParameter::GROUP:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:38 $
+//   $Date: 2011/03/14 19:20:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -396,12 +396,12 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
   objectList.clear();
 
   unsigned C_INT32 i;
-  CCopasiObject* pSelected;
+  CCopasiObject * pSelected;
   CReportDefinition * pReportDefinition;
 
   for (i = 0; i < nameVector->size(); i++)
     {
-      pSelected = const_cast<CCopasiObject *>(mpDataModel->ObjectFromName(*pListOfContainer, (*nameVector)[i]));
+      pSelected = mpDataModel->ObjectFromName(*pListOfContainer, (*nameVector)[i]);
 
       if (!pSelected)
         {

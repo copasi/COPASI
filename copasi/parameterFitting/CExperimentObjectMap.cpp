@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-$Revision: 1.20 $
+$Revision: 1.21 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:32:03 $
+$Date: 2011/03/14 19:20:01 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -433,7 +433,7 @@ C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultWeight() const
 
   const CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
-  const CCopasiObject * pObject = pDataModel->getObject(*mpObjectCN);
+  const CCopasiObject * pObject = pDataModel->getDataObject(*mpObjectCN);
 
   if (pObject == NULL)
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();

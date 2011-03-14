@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
+//   $Date: 2011/03/14 19:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,7 +127,7 @@ public:
   const std::vector< CCopasiContainer * > & getListOfContainer() const;
 
   /**
-   * This method performa an infix update if a referenced object has been renamed
+   * This method performs an infix update if a referenced object has been renamed
    * @return bool success
    */
   bool updateInfix();

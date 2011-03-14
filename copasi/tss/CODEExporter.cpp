@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:15 $
+//   $Date: 2011/03/14 19:20:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -448,7 +448,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
           assert(pObjectNode);
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* pObject = pDataModel->getObject(cn);
+          const CCopasiObject* pObject = pDataModel->getDataObject(cn);
           assert(pObject);
           std::string objectName = pObject->getObjectName();
 

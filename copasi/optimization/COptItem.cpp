@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2011/03/14 19:20:01 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -118,7 +118,7 @@ bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
   const CCopasiDataModel * pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
-  const CCopasiObject * pObject = pDataModel->getObject(objectCN);
+  const CCopasiObject * pObject = pDataModel->getDataObject(objectCN);
 
   if (pObject == NULL || !pObject->isValueDbl())
     {
@@ -210,7 +210,7 @@ const C_FLOAT64 & COptItem::getStartValue() const
     {
       const CCopasiDataModel* pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
-      const CCopasiObject * pObject = pDataModel->getObject(getObjectCN());
+      const CCopasiObject * pObject = pDataModel->getDataObject(getObjectCN());
 
       if (pObject != NULL &&
           pObject->getValuePointer() != NULL)

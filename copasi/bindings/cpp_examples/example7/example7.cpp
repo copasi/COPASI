@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example7/example7.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:25:45 $
+//   $Date: 2011/03/14 19:21:27 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ int main()
   // create a compartment with the name cell and an initial volume of 5.0
   // microliter
   CCompartment* pCompartment = pModel->createCompartment("cell", 5.0);
-  const CCopasiObject* pObject = pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"));
+  const CCopasiObject* pObject = pCompartment->getValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pCompartment != NULL);
@@ -80,7 +80,7 @@ int main()
   // the metabolite belongs to the compartment we created and is is to be
   // fixed
   CMetab* pS = pModel->createMetabolite("S", pCompartment->getObjectName(), 10.0, CMetab::FIXED);
-  pObject = pS->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+  pObject = pS->getInitialConcentrationReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pCompartment != NULL);
@@ -90,7 +90,7 @@ int main()
   // concentration of 0. This metabolite is to be changed by reactions
   CMetab* pP = pModel->createMetabolite("P", pCompartment->getObjectName(), 0.0, CMetab::REACTIONS);
   assert(pP != NULL);
-  pObject = pP->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+  pObject = pP->getInitialConcentrationReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getMetabolites().size() == 2);
@@ -115,7 +115,7 @@ int main()
   // set the status to FIXED
   pMV->setStatus(CModelValue::FIXED);
   assert(pMV != NULL);
-  pObject = pMV->getObject(CCopasiObjectName("Reference=InitialValue"));
+  pObject = pMV->getInitialValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getModelValues().size() == 1);

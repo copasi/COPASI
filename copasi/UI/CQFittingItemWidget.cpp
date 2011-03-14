@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:51 $
+//   $Date: 2011/03/14 19:20:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1199,7 +1199,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   if (pItem->getLowerBound() == "-inf" ||
       isNumber(pItem->getLowerBound()))
     Item += FROM_UTF8(pItem->getLowerBound());
-  else if ((pObject = mpDataModel->getObject(pItem->getLowerBound())))
+  else if ((pObject = mpDataModel->getDataObject(pItem->getLowerBound())))
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
     Item += "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1207,7 +1207,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   // Insert less than character
   Item += FROM_UTF8(std::string(" \xe2\x89\xa4 "));
 
-  pObject = mpDataModel->getObject(pItem->getObjectCN());
+  pObject = mpDataModel->getDataObject(pItem->getObjectCN());
 
   if (pObject)
     Item += FROM_UTF8(pObject->getObjectDisplayName());
@@ -1229,7 +1229,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   if (pItem->getUpperBound() == "inf" ||
       isNumber(pItem->getUpperBound()))
     Item += FROM_UTF8(pItem->getUpperBound());
-  else if ((pObject = mpDataModel->getObject(pItem->getUpperBound())))
+  else if ((pObject = mpDataModel->getDataObject(pItem->getUpperBound())))
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
     Item += "Not found: " + FROM_UTF8(pItem->getUpperBound());
@@ -1314,7 +1314,7 @@ void CQFittingItemWidget::loadSelection()
 
       COptItem * pItem = (*mpItemsCopy)[*it];
 
-      const CCopasiObject *pObject = mpDataModel->getObject(pItem->getObjectCN());
+      const CCopasiObject *pObject = mpDataModel->getDataObject(pItem->getObjectCN());
 
       if (pObject)
         {
@@ -1340,7 +1340,7 @@ void CQFittingItemWidget::loadSelection()
       if (pItem->getLowerBound() == "-inf" ||
           isNumber(pItem->getLowerBound()))
         Value = FROM_UTF8(pItem->getLowerBound());
-      else if ((mpLowerObject = mpDataModel->getObject(pItem->getLowerBound())))
+      else if ((mpLowerObject = mpDataModel->getDataObject(pItem->getLowerBound())))
         Value = FROM_UTF8(mpLowerObject->getObjectDisplayName());
       else
         Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1353,7 +1353,7 @@ void CQFittingItemWidget::loadSelection()
       if (pItem->getUpperBound() == "inf" ||
           isNumber(pItem->getUpperBound()))
         Value = FROM_UTF8(pItem->getUpperBound());
-      else if ((mpUpperObject = mpDataModel->getObject(pItem->getUpperBound())))
+      else if ((mpUpperObject = mpDataModel->getDataObject(pItem->getUpperBound())))
         Value = FROM_UTF8(mpUpperObject->getObjectDisplayName());
       else
         Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
@@ -1411,7 +1411,7 @@ void CQFittingItemWidget::loadSelection()
         {
           pItem = (*mpItemsCopy)[*it];
 
-          const CCopasiObject *pObject = mpDataModel->getObject(pItem->getObjectCN());
+          const CCopasiObject *pObject = mpDataModel->getDataObject(pItem->getObjectCN());
 
           if (pObject)
             Value = FROM_UTF8(pObject->getObjectDisplayName());
@@ -1432,7 +1432,7 @@ void CQFittingItemWidget::loadSelection()
           if (pItem->getLowerBound() == "-inf" ||
               isNumber(pItem->getLowerBound()))
             Value = FROM_UTF8(pItem->getLowerBound());
-          else if ((pObject = mpDataModel->getObject(pItem->getLowerBound())))
+          else if ((pObject = mpDataModel->getDataObject(pItem->getLowerBound())))
             Value = FROM_UTF8(pObject->getObjectDisplayName());
           else
             Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1446,7 +1446,7 @@ void CQFittingItemWidget::loadSelection()
           if (pItem->getUpperBound() == "inf" ||
               isNumber(pItem->getUpperBound()))
             Value = FROM_UTF8(pItem->getUpperBound());
-          else if ((pObject = mpDataModel->getObject(pItem->getUpperBound())))
+          else if ((pObject = mpDataModel->getDataObject(pItem->getUpperBound())))
             Value = FROM_UTF8(pObject->getObjectDisplayName());
           else
             Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());

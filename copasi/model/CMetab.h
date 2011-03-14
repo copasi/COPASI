@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/02 19:41:21 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -247,6 +247,12 @@ public:
   CConcentrationReference * getConcentrationReference() const;
 
   /**
+   * Retrieve object referencing the concentration
+   * @return CCopasiObject * concentrationRateReference
+   */
+  CCopasiObject * getConcentrationRateReference() const;
+
+  /**
    * Refresh the initial value
    */
   virtual void refreshInitialValue();
@@ -311,6 +317,12 @@ public:
    * @return bool dependent
    */
   bool isDependent() const;
+
+  /**
+   * Retrieve a pointer to the moiety the species depends on
+   * @return const CMoiety * pMoiety;
+   */
+  const CMoiety * getMoiety() const;
 
   /**
    * ostream operator

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:55 $
+//   $Date: 2011/03/14 19:20:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,7 +260,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
       CCopasiAbstractArray::index_type index;
       index.resize(0);
       returnVector.resize(1);
-      returnVector[0] = pArrayAnnotation->addElementReference(index);
+      returnVector[0] = static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference(index));
       return returnVector;
     }
 
@@ -290,7 +290,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
               if (index.size() > 1)
                 index[1] = pDialog->mpCBColumn->currentItem();
 
-              returnVector[0] = pArrayAnnotation->addElementReference(index);
+              returnVector[0] = static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference(index));
             }
 
           return returnVector;
@@ -344,7 +344,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
             {
               for (j = minCols; j < maxCols; ++j)
                 {
-                  returnVector.push_back(pArrayAnnotation->addElementReference((int) i, (int) j));
+                  returnVector.push_back(static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference((int) i, (int) j)));
                 }
             }
         }
@@ -353,7 +353,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
         {
           for (i = minRows; i < maxRows; ++i)
             {
-              returnVector.push_back(pArrayAnnotation->addElementReference((int) i));
+              returnVector.push_back(static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference((int) i)));
             }
         }
 

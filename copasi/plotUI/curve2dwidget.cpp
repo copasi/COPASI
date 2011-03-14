@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:02 $
+//   $Date: 2011/03/14 19:20:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,10 +70,10 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   mpObjectX = mpObjectY = NULL;
 
   if (curve->getChannels().size() >= 1)
-    mpObjectX = pDataModel->getObject(curve->getChannels()[0]);
+    mpObjectX = pDataModel->getDataObject(curve->getChannels()[0]);
 
   if (curve->getChannels().size() >= 2)
-    mpObjectY = pDataModel->getObject(curve->getChannels()[1]);
+    mpObjectY = pDataModel->getDataObject(curve->getChannels()[1]);
 
   if (mpObjectX)
     mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));

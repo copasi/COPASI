@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:38 $
+//   $Date: 2011/03/14 19:20:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -391,10 +391,10 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
   bool isReport = (id >= 1000);
   C_INT32 idMod = id % 1000;
 
-  const CCopasiObject* pTime = pModel->getObject(CCopasiObjectName("Reference=Time"));
+  const CCopasiObject * pTime = pModel->getValueReference();
 
-  std::vector<const CCopasiObject*> data1, tmpdata;
-  const CCopasiObject* data2 = NULL;
+  std::vector<const CCopasiObject *> data1, tmpdata;
+  const CCopasiObject * data2 = NULL;
 
   switch (idMod)
     {
@@ -544,24 +544,26 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
             if (it == end) continue;
 
-            data2 = (*it)->getObject(CCopasiObjectName("Reference=Independent Value"));
+            data2 =
+              static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Independent Value")));
 
             for (; it != end; ++it)
               {
                 std::string Name = (*it)->getObjectName();
-                const CCopasiObject * pObject = pDataModel->getObject(Name);
+                const CCopasiObject * pObject =
+                  dynamic_cast< const CCopasiObject * >(pDataModel->getObject(Name));
 
                 if (pObject != NULL)
                   Name = pObject->getObjectDisplayName();
 
                 Name = pExperiment->getObjectName() + "," + Name;
 
-                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Measured Value")));
+                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Measured Value)");
                 LineTypes.push_back(2);
 
-                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Fitted Value")));
+                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Fitted Value)");
 
@@ -570,7 +572,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 else
                   LineTypes.push_back(2);
 
-                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Weighted Error")));
+                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Weighted Error)");
                 LineTypes.push_back(2);
@@ -625,14 +627,14 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
             if (it == end) continue;
 
-            data2 = (*it)->getObject(CCopasiObjectName("Reference=Independent Value"));
+            data2 = static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Independent Value")));
             data1.clear();
 
             for (; it != end; ++it)
               {
-                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Measured Value")));
-                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Fitted Value")));
-                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Weighted Error")));
+                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))));
+                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))));
+                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))));
               }
 
             pPlotSpecification =
@@ -655,7 +657,8 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 while (itItem != endItem)
                   {
                     std::string Name = (*it++)->getObjectName();
-                    const CCopasiObject * pObject = pDataModel->getObject(Name);
+                    const CCopasiObject * pObject =
+                      dynamic_cast< const CCopasiObject * >(pDataModel->getObject(Name));
 
                     if (pObject != NULL)
                       Name = pObject->getObjectDisplayName();
@@ -718,7 +721,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             for (; it != end; ++it)
               {
                 const CCopasiObject * pObject =
-                  pDataModel->getObject((*it)->getObjectName());
+                  dynamic_cast< const CCopasiObject * >(pDataModel->getObject((*it)->getObjectName()));
 
                 if (pObject == NULL) continue;
 
@@ -784,9 +787,9 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
         //        const C_FLOAT64 & SolutionValue = pFitProblem->getSolutionValue();
 
-        data2 = pFitProblem->getObject(CCopasiObjectName("Reference=Function Evaluations"));
+        data2 = static_cast< const CCopasiObject * >(pFitProblem->getObject(CCopasiObjectName("Reference=Function Evaluations")));
         data1.clear();
-        data1.push_back(pFitProblem->getObject(CCopasiObjectName("Reference=Best Value")));
+        data1.push_back(static_cast< const CCopasiObject * >(pFitProblem->getObject(CCopasiObjectName("Reference=Best Value"))));
 
         pPlotSpecification =
           createPlot("Progress of Fit" , data2, data1, getItem(id).mTaskType, pDataModel);
@@ -837,14 +840,14 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
 //static
 CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
-    const CCopasiObject* x,
-    const std::vector<const CCopasiObject*> & y,
+    const CCopasiObject * x,
+    const std::vector<const CCopasiObject *> & y,
     const CCopasiTask::Type & /* taskType */,
     CCopasiDataModel* pDataModel)
 {
   if (!x) return NULL;
 
-  std::vector<const CCopasiObject*>::const_iterator it, itEnd = y.end();
+  std::vector<const CCopasiObject *>::const_iterator it, itEnd = y.end();
 
   //create plot with unique name
   unsigned C_INT32 i = 0;
@@ -876,7 +879,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
       if (!(*it)) continue;
 
       name2 = (*it)->getCN();
-      itemTitle = (*it)->getObjectDisplayName();
+      itemTitle = static_cast< const CCopasiObject *>(*it)->getObjectDisplayName();
 
       plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
       plItem->addChannel(name1);
@@ -888,12 +891,12 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
 //static
 CReportDefinition* COutputAssistant::createTable(const std::string & name,
-    const std::vector<const CCopasiObject*> & d,
+    const std::vector<const CCopasiObject *> & d,
     const std::string & comment,
     const CCopasiTask::Type & taskType,
     CCopasiDataModel* pDataModel)
 {
-  std::vector<const CCopasiObject*>::const_iterator it, itEnd = d.end();
+  std::vector<const CCopasiObject * >::const_iterator it, itEnd = d.end();
 
   //create plot with unique name
   unsigned C_INT32 i = 0;

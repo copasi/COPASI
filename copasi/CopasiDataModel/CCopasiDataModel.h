@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:27:11 $
+//   $Date: 2011/03/14 19:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,20 +168,29 @@ public:
   std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
 
   /**
+   * Retrieve the object with the given CN
    * @param const std::vector< CCopasiContainer * > &listOfContainer
-   * @param const CCopasiObjectName& objName
+   * @param const CCopasiObjectName& CN
+   * @return CCopasiObjectInterface * pObject
+   */
+  CCopasiObjectInterface * ObjectFromCN(const std::vector< CCopasiContainer * > & listOfContainer,
+                                        const CCopasiObjectName & CN) const;
+
+  /**
+   * Retrieve the data object with the given CN
+   * @param const std::vector< CCopasiContainer * > &listOfContainer
+   * @param const CCopasiObjectName& CN
    * @return CCopasiObject * pObject
    */
   CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-                                 const CCopasiObjectName & objName);
+                                 const CCopasiObjectName & CN) const;
 
   /**
-   * @param const std::vector< CCopasiContainer * > &listOfContainer
-   * @param const CCopasiObjectName& objName
+   * Retrieve the data object with the given CN
+   * @param const CCopasiObjectName & CN
    * @return CCopasiObject * pObject
    */
-  const CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-                                       const CCopasiObjectName & objName) const;
+  CCopasiObject * getDataObject(const CCopasiObjectName & CN) const;
 
 #ifdef USE_CRENDER_EXTENSION
   const std::string& getReferenceDirectory() const;

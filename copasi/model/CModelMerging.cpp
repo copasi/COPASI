@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,7 +190,8 @@ bool CModelAdd::copyEventAssignmentExpression(const CEventAssignment * sourceAss
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+          const CCopasiObject* mObject =
+            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
@@ -245,7 +246,8 @@ bool CModelAdd::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEven
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+          const CCopasiObject* mObject =
+            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
@@ -300,7 +302,8 @@ bool CModelAdd::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEv
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+          const CCopasiObject* mObject =
+            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
@@ -355,7 +358,8 @@ bool CModelAdd::copyExpression(const CModelEntity * sourceEntity, CModelEntity *
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+          const CCopasiObject* mObject =
+            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
@@ -410,7 +414,8 @@ bool CModelAdd::copyInitialExpression(const CModelEntity * sourceEntity, CModelE
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+          const CCopasiObject* mObject =
+            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
@@ -1231,7 +1236,8 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject = mpModel->getObjectDataModel()->getObject(cn);
+          const CCopasiObject* mObject =
+            static_cast< const CCopasiObject * >(mpModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 

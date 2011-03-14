@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.265 $
+//   $Revision: 1.266 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:36 $
+//   $Date: 2011/03/14 19:20:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -626,7 +626,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   for (counter = 0; counter < num; ++counter)
     {
-      CEvaluationTree* tree = (*functions)[counter];
+      CFunction* tree = (*functions)[counter];
 
       if (!tree->getSBMLId().empty())
         {
@@ -1203,7 +1203,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
 
       for (i = 0; i < iMax; ++i)
         {
-          CEvaluationTree* pFun = this->functionDB->loadedFunctions()[i];
+          CFunction* pFun = this->functionDB->loadedFunctions()[i];
 
           if (pFun->getSBMLId() == sbmlId)
             {
@@ -3810,7 +3810,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
 
                     if (sbmlId == pNode->getName())
                       {
-                        pNode->setName(dynamic_cast<CModelValue*>(it->first)->getObject(CCopasiObjectName("Reference=Value"))->getCN().c_str());
+                        pNode->setName(dynamic_cast<CModelValue*>(it->first)->getValueReference()->getCN().c_str());
                         found = true;
                       }
 
@@ -3858,8 +3858,8 @@ void SBMLImporter::printMap(const std::map<CCopasiObject*, SBase*> & copasi2sbml
 void SBMLImporter::restoreFunctionDB()
 {
   // set all the old sbml ids
-  std::map<CEvaluationTree*, std::string>::iterator it = this->sbmlIdMap.begin();
-  std::map<CEvaluationTree*, std::string>::iterator endIt = this->sbmlIdMap.end();
+  std::map<CFunction*, std::string>::iterator it = this->sbmlIdMap.begin();
+  std::map<CFunction*, std::string>::iterator endIt = this->sbmlIdMap.end();
 
   while (it != endIt)
     {
@@ -6311,7 +6311,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
               if (pLocalParameter != NULL)
                 {
                   // it is a local parameter and it is being used
-                  changedObjects.insert(pLocalParameter->getObject(CCopasiObjectName("Reference=Value")));
+                  changedObjects.insert(pLocalParameter->getValueReference());
                 }
 
               ++keyIt;
@@ -8456,7 +8456,7 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pNode, const CModel* 
   if (pNode->getType() == AST_NAME_TIME)
     {
       pNode->setType(AST_NAME);
-      const CCopasiObject* pReference = pCopasiModel->getObject(CCopasiObjectName("Reference=Initial Time"));
+      const CCopasiObject* pReference = pCopasiModel->getInitialValueReference();
       assert(pReference);
       pNode->setName(pReference->getCN().c_str());
     }
@@ -8473,7 +8473,7 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pNode, const CModel* 
 void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
 #if LIBSBML_VERSION >= 40100
-  // this is just there to make sure we don't accidentaly move the code
+  // this is just there to make sure we don't accidentally move the code
   // for the import of events before the code that imports reactions
   // because this would lead to the species id set being empty
   assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));

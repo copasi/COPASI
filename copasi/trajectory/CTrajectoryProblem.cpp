@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:13 $
+//   $Date: 2011/03/14 19:20:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,17 +111,14 @@ bool CTrajectoryProblem::elevateChildren()
 
 void CTrajectoryProblem::initObjects()
 {
-  const_cast<CCopasiObject *>(getParameter("StepNumber")
-                              ->getObject(CCopasiObjectName("Reference=Value")))
+  getParameter("StepNumber")->getValueReference()
   ->setUpdateMethod(this,
                     (void (CTrajectoryProblem::*)(const C_INT32 &)) &CTrajectoryProblem::setStepNumber);
 
-  const_cast<CCopasiObject *>(getParameter("StepSize")
-                              ->getObject(CCopasiObjectName("Reference=Value")))
+  getParameter("StepSize")->getValueReference()
   ->setUpdateMethod(this, &CTrajectoryProblem::setStepSize);
 
-  const_cast<CCopasiObject *>(getParameter("Duration")
-                              ->getObject(CCopasiObjectName("Reference=Value")))
+  getParameter("Duration")->getValueReference()
   ->setUpdateMethod(this, &CTrajectoryProblem::setDuration);
 }
 

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/27 16:52:48 $
+//   $Date: 2011/03/14 19:20:00 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -74,7 +79,7 @@ CCopasiContainer::~CCopasiContainer()
       }
 }
 
-const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) const
+const CCopasiObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & cn) const
 {
   if (cn == "")
     {
@@ -108,7 +113,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
         return NULL;
     }
 
-  const CCopasiObject * pObject = NULL;
+  const CCopasiObjectInterface * pObject = NULL;
 
   if (it->second->isNameVector() || it->second->isVector())
     {

@@ -1,10 +1,10 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.207 $
-//   $Revision: 1.207 $
+//   $Revision: 1.208 $
+//   $Revision: 1.208 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/09 18:50:08 $
+//   $Date: 2011/03/14 19:20:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -286,7 +286,7 @@ bool ReactionsWidget1::saveToReaction()
       for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
         {
           Objects.append(FROM_UTF8((*itParameter)->getObjectName()) + ", ");
-          DeletedObjects.insert((*itParameter)->getObject(CCopasiObjectName("Reference=Value")));
+          DeletedObjects.insert(static_cast< const CCopasiObject * >((*itParameter)->getObject(CCopasiObjectName("Reference=Value"))));
         }
 
       Objects.remove(Objects.length() - 2, 2);

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:32 $
+//   $Date: 2011/03/14 19:20:45 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -104,17 +109,14 @@ bool CTSSAProblem::elevateChildren()
 
 void CTSSAProblem::initObjects()
 {
-  const_cast<CCopasiObject *>(getParameter("StepNumber")
-                              ->getObject(CCopasiObjectName("Reference=Value")))
+  getParameter("StepNumber")->getValueReference()
   ->setUpdateMethod(this,
                     (void (CTSSAProblem::*)(const C_INT32 &)) &CTSSAProblem::setStepNumber);
 
-  const_cast<CCopasiObject *>(getParameter("StepSize")
-                              ->getObject(CCopasiObjectName("Reference=Value")))
+  getParameter("StepSize")->getValueReference()
   ->setUpdateMethod(this, &CTSSAProblem::setStepSize);
 
-  const_cast<CCopasiObject *>(getParameter("Duration")
-                              ->getObject(CCopasiObjectName("Reference=Value")))
+  getParameter("Duration")->getValueReference()
   ->setUpdateMethod(this, &CTSSAProblem::setDuration);
 }
 

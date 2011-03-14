@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
+//   $Date: 2011/03/14 19:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,10 +116,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
                                  const CCopasiContainer * pParent,
                                  const CEvaluationTree::Type & type):
     CCopasiContainer(name, pParent, "Function"),
-    CAnnotation(),
-    mSBMLId(""),
     mType(type),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
@@ -135,10 +132,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
 CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
                                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    CAnnotation(src),
-    mSBMLId(src.mSBMLId),
     mType(src.mType),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
@@ -147,7 +141,6 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mValue(src.mValue),
     mBooleanRequired(src.mBooleanRequired)
 {
-  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
   initObjects();
   setInfix(src.mInfix);
 }
@@ -155,7 +148,6 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
 CEvaluationTree::~CEvaluationTree()
 {
   CEvaluationLexer::freeNodeList(mpNodeList);
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const CEvaluationTree::Type & CEvaluationTree::getType() const
@@ -165,9 +157,6 @@ void CEvaluationTree::setType(const CEvaluationTree::Type & type)
 {
   mType = type;
 }
-
-const std::string & CEvaluationTree::getKey() const
-{return mKey;}
 
 bool CEvaluationTree::setInfix(const std::string & infix)
 {
@@ -187,9 +176,7 @@ const std::string & CEvaluationTree::getInfix() const
 
 bool CEvaluationTree::operator == (const CEvaluationTree & rhs) const
 {
-  return (mInfix == rhs.mInfix &&
-          mType == rhs.mType &&
-          *static_cast< const CAnnotation * >(this) == rhs);
+  return (mInfix == rhs.mInfix && mType == rhs.mType);
 }
 
 std::string::size_type CEvaluationTree::getErrorPosition() const
@@ -496,12 +483,12 @@ void CEvaluationTree::initObjects()
   pObject->setDirectDependencies(Self);
 }
 
-std::set< const CCopasiObject * > CEvaluationTree::getDeletedObjects() const
+CCopasiObject::ObjectSet CEvaluationTree::getDeletedObjects() const
 {
-  std::set< const CCopasiObject * > Deleted;
+  CCopasiObject::ObjectSet Deleted;
 
   Deleted.insert(this);
-  Deleted.insert(getObject(CCopasiObjectName("Reference=Value")));
+  Deleted.insert(static_cast< const CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value"))));
 
   return Deleted;
 }
@@ -509,16 +496,6 @@ std::set< const CCopasiObject * > CEvaluationTree::getDeletedObjects() const
 ASTNode* CEvaluationTree::toAST(const CCopasiDataModel* pDataModel) const
 {
   return this->mpRoot->toAST(pDataModel);
-}
-
-void CEvaluationTree::setSBMLId(const std::string& id)
-{
-  this->mSBMLId = id;
-}
-
-const std::string& CEvaluationTree::getSBMLId() const
-{
-  return this->mSBMLId;
 }
 
 bool CEvaluationTree::hasCircularDependency() const

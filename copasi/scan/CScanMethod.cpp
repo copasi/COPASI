@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:11 $
+//   $Date: 2011/03/14 19:20:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ CScanItem::CScanItem(CCopasiParameterGroup* si)
   std::string tmpString = * si->getValue("Object").pCN;
   CCopasiDataModel* pDataModel = si->getObjectDataModel();
   assert(pDataModel != NULL);
-  const CCopasiObject * tmpObject = pDataModel->getObject(tmpString);
+  const CCopasiObject * tmpObject = pDataModel->getDataObject(tmpString);
 
   if (!tmpObject) {mpValue = NULL; return;}
 

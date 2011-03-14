@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:55 $
+//   $Date: 2011/03/14 19:20:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,7 +144,7 @@ const std::vector<std::string> & CArrayAnnotation::getAnnotationsString(size_t d
 
       for (i = 0; i < imax; ++i)
         {
-          const CCopasiObject * obj = pDataModel->getObject(mAnnotationsCN[d][i]);
+          const CCopasiObject * obj = pDataModel->getDataObject(mAnnotationsCN[d][i]);
 
           if (obj)
             mAnnotationsString[d][i] =
@@ -248,7 +248,7 @@ void CArrayAnnotation::resize()
     resizeOneDimension(i);
 }
 
-const CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index) const
+const CCopasiObjectInterface * CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index) const
 {
   //generate the index string
   std::string tmp;
@@ -267,7 +267,7 @@ const CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray:
   return this->getObject(indexString.str());
 }
 
-const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
+const CCopasiObjectInterface * CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
 {
   CCopasiAbstractArray::index_type index;
   index.push_back(u);
@@ -275,7 +275,7 @@ const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
   return addElementReference(index);
 }
 
-const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u) const
+const CCopasiObjectInterface * CArrayAnnotation::addElementReference(C_INT32 u) const
 {
   CCopasiAbstractArray::index_type index;
   index.push_back(u);
@@ -294,7 +294,7 @@ void CArrayAnnotation::appendElementReferences(std::set< const CCopasiObject * >
   return;
 }
 
-const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
+const CCopasiObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
 {
   if (cn == "")
     {

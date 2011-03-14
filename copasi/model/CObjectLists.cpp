@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/09 13:52:43 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -258,7 +258,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         for (; itMetab != endMetab; ++itMetab)
           if ((*itMetab)->getStatus() == CModelEntity::ODE ||
               (*itMetab)->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
+            ret.push_back((*itMetab)->getConcentrationRateReference());
 
         break; //not possible at the moment
 
@@ -276,7 +276,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         for (; itMetab != endMetab; ++itMetab)
           if ((*itMetab)->getStatus() == CModelEntity::ODE ||
               (*itMetab)->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime")));
+            ret.push_back(static_cast< const CCopasiObject * >((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime"))));
 
         break;
 
@@ -291,14 +291,14 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case REACTION_CONC_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back((*itReaction)->getObject(CCopasiObjectName("Reference=Flux")));
+          ret.push_back(static_cast< const CCopasiObject * >((*itReaction)->getObject(CCopasiObjectName("Reference=Flux"))));
 
         break;
 
       case REACTION_PART_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back((*itReaction)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+          ret.push_back(static_cast< const CCopasiObject * >((*itReaction)->getObject(CCopasiObjectName("Reference=ParticleFlux"))));
 
         break;
 
@@ -458,7 +458,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
                       (CCopasiRootContainer::getKeyFactory()->get((*itReaction)->getParameterMappings()[j][0]));
 
                     if (par)
-                      ret.push_back(par->getObject(CCopasiObjectName("Reference=Value")));
+                      ret.push_back(par);
                   }
           }
       }
@@ -516,7 +516,7 @@ bool CObjectLists::existsFixedMetab(const CModel* pModel)
 }
 
 // static
-std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel * pModel)
+std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel* pModel)
 {
   std::set< const CModelEntity * > EventTargets;
 
@@ -545,106 +545,4 @@ std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel * pM
     }
 
   return EventTargets;
-}
-
-// static
-std::vector< const CModelEntity * > CObjectLists::getFixedEntities(const CModel * pModel)
-{
-  std::vector< const CModelEntity * > FixedEntities;
-  std::set< const CModelEntity * > EventTargets = getEventTargets(pModel);
-
-  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
-
-  CModelEntity *const* ppEntities = StateTemplate.beginFixed();
-  CModelEntity *const* ppEntitiesEnd = StateTemplate.endFixed();
-
-  for (; ppEntities != ppEntitiesEnd; ++ppEntities)
-    {
-      if (EventTargets.find(*ppEntities) == EventTargets.end())
-        {
-          FixedEntities.push_back(*ppEntities);
-        }
-    }
-
-  return FixedEntities;
-}
-
-// static
-std::vector< const CModelEntity * > CObjectLists::getFixedEventTargetEntities(const CModel * pModel)
-{
-  std::vector< const CModelEntity * > FixedEventTargetEntities;
-  std::set< const CModelEntity * > EventTargets = getEventTargets(pModel);
-
-  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
-
-  CModelEntity *const* ppEntities = StateTemplate.beginFixed();
-  CModelEntity *const* ppEntitiesEnd = StateTemplate.endFixed();
-
-  for (; ppEntities != ppEntitiesEnd; ++ppEntities)
-    {
-      if (EventTargets.find(*ppEntities) != EventTargets.end())
-        {
-          FixedEventTargetEntities.push_back(*ppEntities);
-        }
-    }
-
-  return FixedEventTargetEntities;
-}
-
-
-// static
-std::vector< const CModelEntity * > CObjectLists::getODEEntities(const CModel * pModel)
-{
-  std::vector< const CModelEntity * > ODEEntities;
-
-  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
-
-  CModelEntity *const* ppEntities = StateTemplate.beginIndependent();
-  CModelEntity *const* ppEntitiesEnd = StateTemplate.endIndependent();
-
-  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::ODE; ++ppEntities)
-    {
-      ODEEntities.push_back(*ppEntities);
-    }
-
-  return ODEEntities;
-}
-
-// static
-std::vector< const CMetab * > CObjectLists::getReactionSpecies(const CModel * pModel)
-{
-  std::vector< const CMetab * > ReactionSpecies;
-
-  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
-
-  CModelEntity *const* ppEntities = StateTemplate.beginIndependent();
-  CModelEntity *const* ppEntitiesEnd = StateTemplate.endDependent();
-
-  for (; ppEntities != ppEntitiesEnd; ++ppEntities)
-    {
-      if ((*ppEntities)->getStatus() != CModelEntity::REACTIONS)
-        continue;
-
-      ReactionSpecies.push_back(static_cast< const CMetab * >(*ppEntities));
-    }
-
-  return ReactionSpecies;
-}
-
-// static
-std::vector< const CModelEntity * > CObjectLists::getAssignmentEntities(const CModel * pModel)
-{
-  std::vector< const CModelEntity * > AssignmentEntities;
-
-  const CStateTemplate & StateTemplate = pModel->getStateTemplate();
-
-  CModelEntity *const* ppEntities = StateTemplate.beginFixed();
-  CModelEntity *const* ppEntitiesEnd = StateTemplate.endFixed();
-
-  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::ASSIGNMENT; ++ppEntities)
-    {
-      AssignmentEntities.push_back(*ppEntities);
-    }
-
-  return AssignmentEntities;
 }

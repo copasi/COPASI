@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:59 $
+//   $Date: 2011/03/14 19:20:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1148,7 +1148,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       if (ObjectMap.getObjectCN(i) != "")
         {
-          pObject = pDataModel->getObject(ObjectMap.getObjectCN(i));
+          pObject = pDataModel->getDataObject(ObjectMap.getObjectCN(i));
 
           if (pObject)
             mpTable->setText((int) i, COL_OBJECT, FROM_UTF8(pObject->getObjectDisplayName()));
@@ -1216,7 +1216,7 @@ void CQExperimentData::slotTypeChanged(int row)
 
         if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::InitialTime |
                                            CQSimpleSelectionTree::Parameters,
-                                           pDataModel->getObject(CN)))
+                                           pDataModel->getDataObject(CN)))
           slotModelObject(row);
 
         BtnEnabled = true;
@@ -1226,7 +1226,7 @@ void CQExperimentData::slotTypeChanged(int row)
 
         if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::Variables |
                                            CQSimpleSelectionTree::ObservedValues,
-                                           pDataModel->getObject(CN)))
+                                           pDataModel->getDataObject(CN)))
           slotModelObject(row);
 
         BtnEnabled = true;

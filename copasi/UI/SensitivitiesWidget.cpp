@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:51 $
+//   $Date: 2011/03/14 19:20:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -330,7 +330,7 @@ bool SensitivitiesWidget::loadTask()
   if (tmp.isSingleObject())
     {
       FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-      mpSingleFunction = pDataModel->getObject(tmp.getSingleObjectCN());
+      mpSingleFunction = pDataModel->getDataObject(tmp.getSingleObjectCN());
 
       if (mpSingleFunction)
         FunctionLineEdit->setText(FROM_UTF8(mpSingleFunction->getObjectDisplayName()));
@@ -349,7 +349,7 @@ bool SensitivitiesWidget::loadTask()
       if (tmp.isSingleObject())
         {
           VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-          mpSingleVariable = pDataModel->getObject(tmp.getSingleObjectCN());
+          mpSingleVariable = pDataModel->getDataObject(tmp.getSingleObjectCN());
 
           if (mpSingleVariable)
             VariableLineEdit->setText(FROM_UTF8(mpSingleVariable->getObjectDisplayName()));
@@ -371,7 +371,7 @@ bool SensitivitiesWidget::loadTask()
       if (tmp.isSingleObject())
         {
           Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-          mpSingleVariable2 = pDataModel->getObject(tmp.getSingleObjectCN());
+          mpSingleVariable2 = pDataModel->getDataObject(tmp.getSingleObjectCN());
 
           if (mpSingleVariable2)
             Variable2LineEdit->setText(FROM_UTF8(mpSingleVariable2->getObjectDisplayName()));

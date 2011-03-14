@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:25:45 $
+//   $Date: 2011/03/14 19:21:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -314,7 +314,7 @@ int main()
 
   CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
-  const CCopasiObject* pTimeReference = pModel->getObject(CCopasiObjectName("Reference=Time"));
+  const CCopasiObject* pTimeReference = pModel->getValueReference();
   assert(pTimeReference != NULL);
   pObjectMap->setObjectCN(0, pTimeReference->getCN());
 
@@ -323,21 +323,21 @@ int main()
   pObjectMap->setRole(1, CExperiment::dependent);
   CMetab* pMetab = metabVector[0];
   assert(pMetab != NULL);
-  const CCopasiObject* pParticleReference = pMetab->getObject(CCopasiObjectName("Reference=Concentration"));
+  const CCopasiObject* pParticleReference = pMetab->getConcentrationReference();
   assert(pParticleReference != NULL);
   pObjectMap->setObjectCN(1, pParticleReference->getCN());
 
   pObjectMap->setRole(2, CExperiment::dependent);
   pMetab = metabVector[1];
   assert(pMetab != NULL);
-  pParticleReference = pMetab->getObject(CCopasiObjectName("Reference=Concentration"));
+  pParticleReference = pMetab->getConcentrationReference();
   assert(pParticleReference != NULL);
   pObjectMap->setObjectCN(2, pParticleReference->getCN());
 
   pObjectMap->setRole(3, CExperiment::dependent);
   pMetab = metabVector[2];
   assert(pMetab != NULL);
-  pParticleReference = pMetab->getObject(CCopasiObjectName("Reference=Concentration"));
+  pParticleReference = pMetab->getConcentrationReference();
   assert(pParticleReference != NULL);
   pObjectMap->setObjectCN(3, pParticleReference->getCN());
 
@@ -362,7 +362,7 @@ int main()
   assert(pOptimizationItemGroup != NULL);
 
   // define a CFitItem
-  const CCopasiObject* pParameterReference = pParameter->getObject(CCopasiObjectName("Reference=Value"));
+  const CCopasiObject* pParameterReference = pParameter->getValueReference();
   assert(pParameterReference != NULL);
   CFitItem* pFitItem1 = new CFitItem(pDataModel);
   pFitItem1->setObjectCN(pParameterReference->getCN());
@@ -380,7 +380,7 @@ int main()
   assert(pParameter != NULL);
 
   // define a CFitItem
-  pParameterReference = pParameter->getObject(CCopasiObjectName("Reference=Value"));
+  pParameterReference = pParameter->getValueReference();
   assert(pParameterReference != NULL);
   CFitItem* pFitItem2 = new CFitItem(pDataModel);
   pFitItem2->setObjectCN(pParameterReference->getCN());

@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/Attic/objectdebug.cpp,v $
-//   $Revision: 1.12.2.2 $
-//   $Name: Build-33 $
-//   $Author: aekamal $
-//   $Date: 2011/01/24 17:00:16 $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/objectdebug.cpp,v $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2011/03/07 19:37:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, const void * ptr)
   const CCopasiObject* testObj = NULL;
 
   if (pDM)
-    testObj = pDM->getObject(cn);
+    testObj = pDM->getDataObject(cn);
 
   //assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 

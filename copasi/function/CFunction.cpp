@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
+//   $Date: 2011/03/14 19:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,9 @@ CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CEvaluationTree::Type & type):
     CEvaluationTree(name, pParent, type),
+    CAnnotation(),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
+    mSBMLId(""),
     mVariables("Function Parameters", this),
     mpCallParameters(NULL),
     mReversible(TriUnspecified)
@@ -42,15 +45,34 @@ CFunction::CFunction(const std::string & name,
 CFunction::CFunction(const CFunction & src,
                      const CCopasiContainer * pParent):
     CEvaluationTree(src, pParent),
+    CAnnotation(src),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
+    mSBMLId(src.mSBMLId),
     mVariables(src.mVariables, this),
     mpCallParameters(NULL),
     mReversible(src.mReversible)
 {
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
   compile();
 }
 
 CFunction::~CFunction()
-{}
+{
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+}
+
+const std::string & CFunction::getKey() const
+{return mKey;}
+
+void CFunction::setSBMLId(const std::string& id)
+{
+  this->mSBMLId = id;
+}
+
+const std::string& CFunction::getSBMLId() const
+{
+  return this->mSBMLId;
+}
 
 bool CFunction::setInfix(const std::string & infix)
 {
@@ -93,7 +115,10 @@ bool CFunction::setInfix(const std::string & infix)
 
 bool CFunction::operator == (const CFunction & rhs) const
 {
-  if (!(*static_cast<const CEvaluationTree *>(this) == rhs))
+  if (!(*static_cast< const CEvaluationTree * >(this) == rhs))
+    return false;
+
+  if (!(*static_cast< const CAnnotation * >(this) == rhs))
     return false;
 
   if (!(mVariables == rhs.mVariables))

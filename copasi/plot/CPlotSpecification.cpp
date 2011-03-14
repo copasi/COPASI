@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/03/07 19:32:04 $
+   $Date: 2011/03/14 19:20:01 $
    End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,13 +108,13 @@ bool CPlotSpecification::createDefaultPlot(const CModel* model)
   CPlotDataChannelSpec name2;
   const CCopasiObject * tmp;
 
-  CPlotDataChannelSpec name1 = model->getObject(CCopasiObjectName("Reference=Time"))->getCN();
+  CPlotDataChannelSpec name1 = model->getValueReference()->getCN();
 
   size_t i, imax = model->getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
     {
-      tmp = model->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));
+      tmp = model->getMetabolites()[i]->getConcentrationReference();
       name2 = tmp->getCN();
       itemTitle = tmp->getObjectDisplayName();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
- $Revision: 1.31 $
+ $Revision: 1.32 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:34:55 $
+ $Date: 2011/03/14 19:20:42 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,6 +110,11 @@ protected:
    */
   Value mValue;
 
+  /**
+   * A pointer to the object reference for  the value
+   */
+  mutable CCopasiObject * mpValueReference;
+
   // Operations
 
 private:
@@ -192,6 +197,12 @@ public:
    * @return CCopasiParameter::Value & Value
    */
   Value & getValue();
+
+  /**
+   * Retrieve the object which represents the value of the parameter
+   * @return CCopasiObject * pValueReference
+   */
+  CCopasiObject * getValueReference() const;
 
   /**
    * Retrieve the type of the parameter.

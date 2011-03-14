@@ -247,7 +247,7 @@ bool CQFittingResult::enterProtected()
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
-        pDataModel->getObject(Items[i]->getObjectCN());
+        pDataModel->getDataObject(Items[i]->getObjectCN());
 
       if (pObject)
         {
@@ -466,7 +466,7 @@ void CQFittingResult::slotSave(void)
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
-        pDataModel->getObject(Items[i]->getObjectCN());
+        pDataModel->getDataObject(Items[i]->getObjectCN());
 
       if (pObject)
         {

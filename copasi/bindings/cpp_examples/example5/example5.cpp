@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:25:44 $
+//   $Date: 2011/03/14 19:21:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,14 +70,14 @@ int main()
   pVariableModelValue->setStatus(CModelEntity::ASSIGNMENT);
   // we create a very simple assignment that is easy on the optimization
   // a parabole with the minimum at x=6 should do just fine
-  std::string s = pFixedModelValue->getObject(CCopasiObjectName("Reference=Value"))->getCN();
+  std::string s = pFixedModelValue->getValueReference()->getCN();
   s = "(<" + s + "> - 6.0)^2";
   pVariableModelValue->setExpression(s);
   // now we compile the model and tell COPASI which values have changed so
   // that COPASI can update the values that depend on those
   std::set<const CCopasiObject*> changedObjects;
-  changedObjects.insert(pFixedModelValue->getObject(CCopasiObjectName("Reference=InitialValue")));
-  changedObjects.insert(pVariableModelValue->getObject(CCopasiObjectName("Reference=InitialValue")));
+  changedObjects.insert(pFixedModelValue->getInitialValueReference());
+  changedObjects.insert(pVariableModelValue->getInitialValueReference());
   // finally compile the model
   // compile needs to be done before updating all initial values for
   // the model with the refresh sequence

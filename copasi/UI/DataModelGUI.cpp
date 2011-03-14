@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:49 $
+//   $Date: 2011/03/14 19:20:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1410,7 +1410,7 @@ void DataModelGUI::buildChangedObjects()
       const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
 
       for (i = 0, imax = Group.size(); i < imax; i++)
-        mChangedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
+        mChangedObjects.insert(static_cast< const CCopasiObject * >(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value"))));
     }
 
   // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,

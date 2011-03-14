@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
+//   $Date: 2011/03/14 19:19:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,7 +297,7 @@ bool CFunctionDB::removeFunction(const std::string &key)
   return removeFunction(index);
 }
 
-CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
+CFunction * CFunctionDB::findFunction(const std::string & functionName)
 {
   size_t index = mLoadedFunctions.getIndex(functionName);
 
@@ -307,7 +307,7 @@ CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
     return NULL;
 }
 
-CEvaluationTree * CFunctionDB::findLoadFunction(const std::string & functionName)
+CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
 {
   size_t i;
 

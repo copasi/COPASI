@@ -198,9 +198,9 @@ void PlotSubwidget::addCurve2D()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addCurveTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addCurveTab(pDataModel->getDataObject(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getObject(objects1[0])->getObjectDisplayName(),
+                      + pDataModel->getDataObject(objects1[0])->getObjectDisplayName(),
                       objects1[0], objects2[i]);
         }
     }
@@ -208,9 +208,9 @@ void PlotSubwidget::addCurve2D()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addCurveTab(pDataModel->getObject(objects2[0])->getObjectDisplayName()
+          addCurveTab(pDataModel->getDataObject(objects2[0])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getObject(objects1[i])->getObjectDisplayName(),
+                      + pDataModel->getDataObject(objects1[i])->getObjectDisplayName(),
                       objects1[i], objects2[0]);
         }
     }
@@ -225,9 +225,9 @@ void PlotSubwidget::addCurve2D()
 
       for (i = 0; i < imax; ++i)
         {
-          addCurveTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addCurveTab(pDataModel->getDataObject(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getObject(objects1[i])->getObjectDisplayName() ,
+                      + pDataModel->getDataObject(objects1[i])->getObjectDisplayName() ,
                       objects1[i], objects2[i]);
         }
     }

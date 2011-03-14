@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.397 $
+//   $Revision: 1.398 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/09 18:50:09 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1255,17 +1255,17 @@ bool CModel::buildStateTemplate()
   for (; itMetab != endMetab; ++itMetab)
     *ppEntity++ = *itMetab;
 
-  itValue = mValues.begin();
-
-  for (; itValue != endValue; ++itValue)
-    if ((*itValue)->isFixed())
-      *ppEntity++ = *itValue;
-
   itCompartment = mCompartments.begin();
 
   for (; itCompartment != endCompartment; ++itCompartment)
     if ((*itCompartment)->isFixed())
       *ppEntity++ = *itCompartment;
+
+  itValue = mValues.begin();
+
+  for (; itValue != endValue; ++itValue)
+    if ((*itValue)->isFixed())
+      *ppEntity++ = *itValue;
 
   mStateTemplate.reorder(Entities);
   mReorderNeeded = false;
@@ -1343,7 +1343,7 @@ bool CModel::buildInitialSequence()
   // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
   // and link matrix.
 
-  std::set< const CCopasiObject * > Objects;
+  CCopasiObject::ObjectSet Objects;
 
   // The initial values of the model entities
   CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
@@ -1367,7 +1367,7 @@ bool CModel::buildInitialSequence()
       const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
 
       for (i = 0, imax = Group.size(); i < imax; i++)
-        Objects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
+        Objects.insert(Group.getParameter(i)->getValueReference());
     }
 
   // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
@@ -1616,7 +1616,7 @@ bool CModel::buildNonSimulatedSequence()
 {
   bool success = true;
 
-  std::set< const CCopasiObject * > Objects;
+  CCopasiObject::ObjectSet Objects;
 
   // Compartments
   CCopasiVector< CCompartment >::iterator itComp = mCompartments.begin();
@@ -1650,8 +1650,8 @@ bool CModel::buildNonSimulatedSequence()
         {
           case REACTIONS:
           case ODE:
-            Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime")));
-            Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
+            Objects.insert(static_cast< const CCopasiObject *>((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime"))));
+            Objects.insert((*itMetab)->getConcentrationRateReference());
             Objects.insert((*itMetab)->getRateReference());
             break;
 
@@ -1666,7 +1666,7 @@ bool CModel::buildNonSimulatedSequence()
 
   for (; itStep != endStep; ++itStep)
     {
-      Objects.insert((*itStep)->getObject(CCopasiObjectName("Reference=Flux")));
+      Objects.insert(static_cast< const CCopasiObject * >((*itStep)->getObject(CCopasiObjectName("Reference=Flux"))));
       Objects.insert((*itStep)->getParticleFluxReference());
     }
 
@@ -2266,7 +2266,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
           for (it = dependentReactions.begin(); it != itEnd; ++it)
             if (DeletedObjects.find(*it) == DeletedObjects.end())
               {
-                std::set< const CCopasiObject * > AdditionalObjects =
+                CCopasiObject::ObjectSet AdditionalObjects =
                   static_cast< const CReaction * >(*it)->getDeletedObjects();
 
                 std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
@@ -2286,7 +2286,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
           for (it = dependentMetabolites.begin(); it != itEnd; ++it)
             if (DeletedObjects.find(*it) == DeletedObjects.end())
               {
-                std::set< const CCopasiObject * > AdditionalObjects =
+                CCopasiObject::ObjectSet AdditionalObjects =
                   static_cast< const CMetab * >(*it)->getDeletedObjects();
 
                 std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
@@ -2306,7 +2306,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
           for (it = dependentModelValues.begin(); it != itEnd; ++it)
             if (DeletedObjects.find(*it) == DeletedObjects.end())
               {
-                std::set< const CCopasiObject * > AdditionalObjects =
+                CCopasiObject::ObjectSet AdditionalObjects =
                   static_cast< const CModelValue * >(*it)->getDeletedObjects();
 
                 std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
@@ -2326,7 +2326,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
           for (it = dependentCompartments.begin(); it != itEnd; ++it)
             if (DeletedObjects.find(*it) == DeletedObjects.end())
               {
-                std::set< const CCopasiObject * > AdditionalObjects =
+                CCopasiObject::ObjectSet AdditionalObjects =
                   static_cast< const CCompartment * >(*it)->getDeletedObjects();
 
                 std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
@@ -2355,8 +2355,8 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
   CCopasiVectorN< CReaction >::const_iterator it = mSteps.begin();
   CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
 
-  std::set< const CCopasiObject * >::const_iterator itSet;
-  std::set< const CCopasiObject * >::const_iterator endSet;
+  CCopasiObject::ObjectSet::const_iterator itSet;
+  CCopasiObject::ObjectSet::const_iterator endSet;
 
   for (; it != end; ++it)
     if (candidates.find(*it) == candidates.end())
@@ -2366,11 +2366,11 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
         // We need to ignore our own local reaction parameters.
         CCopasiParameterGroup::index_iterator itParameter = (*it)->getParameters().beginIndex();
         CCopasiParameterGroup::index_iterator endParameter = (*it)->getParameters().endIndex();
-        std::set< const CCopasiObject * >::iterator itIgnored;
+        CCopasiObject::ObjectSet::iterator itIgnored;
 
         for (; itParameter != endParameter; ++itParameter)
           {
-            if ((itIgnored = candidates.find((*itParameter)->getObject(CCopasiObjectName("Reference=Value")))) != candidates.end())
+            if ((itIgnored = candidates.find((*itParameter)->getValueReference())) != candidates.end())
               {
                 Ignored.insert(*itIgnored);
                 candidates.erase(itIgnored);
@@ -2383,7 +2383,7 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
             continue;
           }
 
-        std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
+        CCopasiObject::ObjectSet DeletedObjects = (*it)->getDeletedObjects();
         itSet = DeletedObjects.begin();
         endSet = DeletedObjects.end();
 
@@ -2418,8 +2418,8 @@ bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
   CCopasiVectorN< CMetab >::const_iterator it;
   CCopasiVectorN< CMetab >::const_iterator end;
 
-  std::set< const CCopasiObject * >::const_iterator itSet;
-  std::set< const CCopasiObject * >::const_iterator endSet;
+  CCopasiObject::ObjectSet::const_iterator itSet;
+  CCopasiObject::ObjectSet::const_iterator endSet;
 
   for (; itComp != endComp; ++itComp)
     {
@@ -2431,7 +2431,7 @@ bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
           dependents.insert((*it));
         else if (candidates.find(*it) == candidates.end())
           {
-            if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
+            if (candidates.find(static_cast< const CCopasiObject * >((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume")))) != candidates.end() ||
                 (*it)->dependsOn(candidates))
               {
                 dependents.insert((*it));
@@ -2442,9 +2442,9 @@ bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
 
             if ((*it)->getStatus() == REACTIONS)
               {
-                DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=Rate")));
-                DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=ParticleNumberRate")));
-                DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=TransitionTime")));
+                DeletedObjects.erase((*it)->getRateReference());
+                DeletedObjects.erase((*it)->getConcentrationRateReference());
+                DeletedObjects.erase(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=TransitionTime"))));
               }
 
             itSet = DeletedObjects.begin();
@@ -2774,7 +2774,7 @@ bool CModel::removeLocalReactionParameter(const std::string & key,
   if (recursive)
     {
       std::set< const CCopasiObject * > DeletedObjects;
-      DeletedObjects.insert(pParameter->getObject(CCopasiObjectName("Reference=Value")));
+      DeletedObjects.insert(pParameter->getValueReference());
 
       removeDependentModelObjects(DeletedObjects);
     }
@@ -3735,7 +3735,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
           const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
 
           for (i = 0, imax = Group.size(); i < imax; i++)
-            changedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
+            changedObjects.insert(Group.getParameter(i));
         }
 
       // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,

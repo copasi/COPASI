@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.131 $
+//   $Revision: 1.132 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:35:35 $
+//   $Date: 2011/03/14 19:20:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -952,8 +952,7 @@ bool CCopasiXML::saveFunctionList()
 
   for (i = 0; i < imax; i++)
     {
-      pEvaluationTree = (*mpFunctionList)[i];
-      pFunction = dynamic_cast<CFunction *>(pEvaluationTree);
+      pFunction = (*mpFunctionList)[i];
 
       Attributes.erase();
       Attributes.add("key", pEvaluationTree->getKey());
@@ -983,22 +982,22 @@ bool CCopasiXML::saveFunctionList()
 
       startSaveElement("Function", Attributes);
 
-      if (pEvaluationTree->getMiriamAnnotation() != "")
+      if (pFunction->getMiriamAnnotation() != "")
         {
           startSaveElement("MiriamAnnotation");
-          *mpOstream << pEvaluationTree->getMiriamAnnotation() << std::endl;
+          *mpOstream << pFunction->getMiriamAnnotation() << std::endl;
           endSaveElement("MiriamAnnotation");
         }
 
-      if (pEvaluationTree->getNotes() != "")
+      if (pFunction->getNotes() != "")
         {
           startSaveElement("Comment");
-          saveXhtml(pEvaluationTree->getNotes());
+          saveXhtml(pFunction->getNotes());
           endSaveElement("Comment");
         }
 
       startSaveElement("Expression");
-      saveData(pEvaluationTree->getInfix());
+      saveData(pFunction->getInfix());
       endSaveElement("Expression");
 
       if (pFunction)

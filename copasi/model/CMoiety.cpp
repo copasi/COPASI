@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:49 $
+//   $Date: 2011/03/14 19:19:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,6 +152,9 @@ const C_FLOAT64 & CMoiety::dependentNumber()
 
 const C_FLOAT64 & CMoiety::getDependentNumber() const
 {return mNumber;}
+
+CCopasiObject * CMoiety::getTotalNumberReference() const
+{return mpNumberReference;}
 
 CCopasiObject * CMoiety::getDependentNumberReference() const
 {return mpDNumberReference;}

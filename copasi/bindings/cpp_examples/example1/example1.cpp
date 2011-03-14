@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example1/example1.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/03/04 08:16:14 $
+//   $Author: shoops $
+//   $Date: 2011/03/14 19:21:27 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -67,7 +72,7 @@ int main()
   // create a compartment with the name cell and an initial volume of 5.0
   // microliter
   CCompartment* pCompartment = pModel->createCompartment("cell", 5.0);
-  const CCopasiObject* pObject = pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"));
+  const CCopasiObject* pObject = pCompartment->getInitialValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pCompartment != NULL);
@@ -77,7 +82,7 @@ int main()
   // the metabolite belongs to the compartment we created and is is to be
   // fixed
   CMetab* pGlucose = pModel->createMetabolite("glucose", pCompartment->getObjectName(), 10.0, CMetab::FIXED);
-  pObject = pGlucose->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+  pObject = pGlucose->getInitialValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pCompartment != NULL);
@@ -87,21 +92,21 @@ int main()
   // concentration of 0. This metabolite is to be changed by reactions
   CMetab* pG6P = pModel->createMetabolite("glucose-6-phosphate", pCompartment->getObjectName(), 0.0, CMetab::REACTIONS);
   assert(pG6P != NULL);
-  pObject = pG6P->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+  pObject = pG6P->getInitialValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getMetabolites().size() == 2);
   // another metabolite for ATP, also fixed
   CMetab* pATP = pModel->createMetabolite("ATP", pCompartment->getObjectName(), 10.0, CMetab::FIXED);
   assert(pATP != NULL);
-  pObject = pATP->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+  pObject = pATP->getInitialConcentrationReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getMetabolites().size() == 3);
   // and one for ADP
   CMetab* pADP = pModel->createMetabolite("ADP", pCompartment->getObjectName(), 0.0, CMetab::REACTIONS);
   assert(pADP != NULL);
-  pObject = pADP->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+  pObject = pADP->getInitialConcentrationReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getMetabolites().size() == 4);
@@ -136,6 +141,7 @@ int main()
   std::vector<CFunction*> suitableFunctions = pFunDB->suitableFunctions(2, 2, TriFalse);
   assert(!suitableFunctions.empty());
   std::vector<CFunction*>::iterator it = suitableFunctions.begin(), endit = suitableFunctions.end();
+
   while (it != endit)
     {
       // we just assume that the only suitable function with Constant in
@@ -144,8 +150,10 @@ int main()
         {
           break;
         }
+
       ++it;
     }
+
   if (it != endit)
     {
       // we set the function
@@ -164,7 +172,7 @@ int main()
       assert(pReaction->isLocalParameter(pParameter->getObjectName()));
       // now we set the value of the parameter to 0.5
       pParameter->setValue(0.5);
-      pObject = pParameter->getObject(CCopasiObjectName("Reference=Value"));
+      pObject = pParameter->getValueReference();
       assert(pObject != NULL);
       changedObjects.insert(pObject);
     }
@@ -173,6 +181,7 @@ int main()
       std::cerr << "Error. Could not find irreversible michaelis menten." << std::endl;
       return 1;
     }
+
   // now we also create a separate reaction for the backwards reaction and
   // set the kinetic law to irreversible mass action
   // now we create a reaction
@@ -213,7 +222,7 @@ int main()
   // it gets the name rateConstant and an initial value of 1.56
   CModelValue* pModelValue = pModel->createModelValue("rateConstant", 1.56);
   assert(pModelValue != NULL);
-  pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  pObject = pModelValue->getInitialValueReference();;
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getModelValues().size() == 1);
@@ -241,6 +250,7 @@ int main()
   // initial values are updated according to their dependencies
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator it2 = refreshes.begin(), endit2 = refreshes.end();
+
   while (it2 != endit2)
     {
       // call each refresh

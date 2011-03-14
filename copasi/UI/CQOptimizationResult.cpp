@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:53 $
+//   $Date: 2011/03/14 19:20:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,7 +134,7 @@ bool CQOptimizationResult::enterProtected()
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
-        pDataModel->getObject(Items[i]->getObjectCN());
+        pDataModel->getDataObject(Items[i]->getObjectCN());
 
       if (pObject)
         mpParameters->setText((int) i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
@@ -209,7 +209,7 @@ void CQOptimizationResult::slotSave(void)
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
-        pDataModel->getObject(Items[i]->getObjectCN());
+        pDataModel->getDataObject(Items[i]->getObjectCN());
 
       if (pObject)
         file << pObject->getObjectDisplayName() << "\t";

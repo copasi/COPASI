@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:53 $
+//   $Date: 2011/03/14 19:20:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -355,9 +355,9 @@ public:
   /**
    * Retrieve a the CCopasiObject with the given name.
    * @param const CCopasiObjectName &name
-   * @return const CCopasiObject * object
+   * @return const CCopasiObjectInterface * object
    */
-  virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
+  virtual const CCopasiObjectInterface * getObject(const CCopasiObjectName &name) const
   {
     size_t Index = name.getElementIndex();
 
@@ -726,9 +726,9 @@ public:
   /**
    * Retrieve a pointer to the named object.
    * @param const std::string & name
-   * @return const CCopasiObject * pObject
+   * @return const CCopasiObjectInterface * pObject
    */
-  virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
+  virtual const CCopasiObjectInterface * getObject(const CCopasiObjectName &name) const
   {
     size_t Index = getIndex(name.getElementName(0));
 

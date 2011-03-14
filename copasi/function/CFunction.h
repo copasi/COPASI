@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
+//   $Date: 2011/03/14 19:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@
  editing and displaying (with help of MathML) the function to calculating the function value.
  */
 class CFunction:
-    public CEvaluationTree
+    public CEvaluationTree, public CAnnotation
 {
   // Operations
 public:
@@ -61,6 +61,22 @@ public:
    * Destructor
    */
   virtual ~CFunction();
+
+  /**
+   * Retrieves the key of the EvaluationTree
+   * @return const std::string & key
+   */
+  const std::string & getKey() const;
+
+  /**
+   * Sets the SBMLId.
+   */
+  void setSBMLId(const std::string& id);
+
+  /**
+   * Returns a reference to the SBML Id.
+   */
+  const std::string& getSBMLId() const;
 
   /**
    * Function to set the infix description of the tree and compile it.
@@ -179,6 +195,18 @@ protected:
 
   // Attributes
 private:
+
+  /**
+   * The unique key of the functions
+   */
+  std::string mKey;
+
+  /**
+   * The id of the corresponding function in an SBML file.
+   * This value is either set upon importing an SBML file,
+   * or when the object is first exported to an SBML file.
+   */
+  std::string mSBMLId;
 
   /**
    * The description of the variables of the function.

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:49 $
+//   $Date: 2011/03/14 19:20:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,7 +117,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   QTreeWidgetItem * pItem;
 
   // find all kinds of time
-  pObject = pModel->getObject(CCopasiObjectName("Reference=Time"));
+  pObject = pModel->getValueReference();
 
   if (filter(classes, pObject))
     {
@@ -125,7 +125,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = pModel->getObject(CCopasiObjectName("Reference=Initial Time"));
+  pObject = pModel->getInitialValueReference();
 
   if (filter(classes, pObject))
     {
@@ -133,7 +133,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = pModel->getObjectDataModel()->getObject(CCopasiObjectName("Timer=CPU Time"));
+  pObject = pModel->getObjectDataModel()->getDataObject(CCopasiObjectName("Timer=CPU Time"));
 
   if (filter(classes, pObject))
     {
@@ -141,7 +141,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = pModel->getObjectDataModel()->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
+  pObject = pModel->getObjectDataModel()->getDataObject(CCopasiObjectName("Timer=Wall Clock Time"));
 
   if (filter(classes, pObject))
     {
@@ -172,7 +172,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
             }
         }
 
-      pObject = metab->getObject(CCopasiObjectName("Reference=InitialParticleNumber"));
+      pObject = metab->getInitialValueReference();
 
       if (filter(classes, pObject))
         {
@@ -180,7 +180,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
           treeItems[pItem] = pObject;
         }
 
-      pObject = metab->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+      pObject = metab->getValueReference();
 
       if (filter(classes, pObject))
         {
@@ -190,7 +190,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
       if (metab->getStatus() != CModelEntity::ASSIGNMENT)
         {
-          pObject = metab->getObject(CCopasiObjectName("Reference=ParticleNumberRate"));
+          pObject = metab->getRateReference();
 
           if (filter(classes, pObject))
             {
@@ -200,7 +200,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
         }
 
       name = "[" + name + "]"; // Concentration
-      pObject = metab->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+      pObject = metab->getInitialConcentrationReference();
 
       if (filter(classes, pObject))
         {
@@ -208,7 +208,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
           treeItems[pItem] = pObject;
         }
 
-      pObject = metab->getObject(CCopasiObjectName("Reference=Concentration"));
+      pObject = metab->getConcentrationReference();
 
       if (filter(classes, pObject))
         {
@@ -218,7 +218,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
       if (metab->getStatus() != CModelEntity::ASSIGNMENT)
         {
-          pObject = metab->getObject(CCopasiObjectName("Reference=Rate"));
+          pObject = metab->getConcentrationRateReference();
 
           if (filter(classes, pObject))
             {
@@ -245,7 +245,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       const CReaction* react = reactions[counter - 1];
       std::string name = "flux(" + react->getObjectName() + ")";
 
-      pObject = react->getObject(CCopasiObjectName("Reference=Flux"));
+      pObject = static_cast< const CCopasiObject * >(react->getObject(CCopasiObjectName("Reference=Flux")));
 
       if (filter(classes, pObject))
         {
@@ -253,7 +253,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
           treeItems[pItem] = pObject;
         }
 
-      pObject = react->getObject(CCopasiObjectName("Reference=ParticleFlux"));
+      pObject = static_cast< const CCopasiObject * >(react->getObject(CCopasiObjectName("Reference=ParticleFlux")));
 
       if (filter(classes, pObject))
         {
@@ -277,7 +277,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
           if (!react->isLocalParameter(pParameter->getObjectName()))
             continue;
 
-          pObject = pParameter->getObject(CCopasiObjectName("Reference=Value"));
+          pObject = static_cast< const CCopasiObject * >(pParameter->getObject(CCopasiObjectName("Reference=Value")));
 
           if (filter(classes, pObject))
             {
@@ -304,7 +304,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       const CModelEntity* object = objects[counter - 1];
       std::string name = object->getObjectName();
 
-      pObject = object->getObject(CCopasiObjectName("Reference=InitialValue"));
+      pObject = object->getInitialValueReference();
 
       if (filter(classes, pObject))
         {
@@ -312,7 +312,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
           treeItems[pItem] = pObject;
         }
 
-      pObject = object->getObject(CCopasiObjectName("Reference=Value"));
+      pObject = object->getValueReference();
 
       if (filter(classes, pObject))
         {
@@ -322,7 +322,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
       if (object->getStatus() != CModelEntity::ASSIGNMENT)
         {
-          pObject = object->getObject(CCopasiObjectName("Reference=Rate"));
+          pObject = object->getRateReference();
 
           if (filter(classes, pObject))
             {
@@ -346,7 +346,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       const CModelEntity* object = objects2[counter - 1];
       std::string name = object->getObjectName();
 
-      pObject = object->getObject(CCopasiObjectName("Reference=InitialVolume"));
+      pObject = object->getInitialValueReference();
 
       if (filter(classes, pObject))
         {
@@ -354,7 +354,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
           treeItems[pItem] = pObject;
         }
 
-      pObject = object->getObject(CCopasiObjectName("Reference=Volume"));
+      pObject = object->getValueReference();
 
       if (filter(classes, pObject))
         {
@@ -364,7 +364,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
       if (object->getStatus() != CModelEntity::ASSIGNMENT)
         {
-          pObject = object->getObject(CCopasiObjectName("Reference=Rate"));
+          pObject = object->getRateReference();
 
           if (filter(classes, pObject))
             {
@@ -379,7 +379,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
   removeEmptySubTree(&mpCompartmentSubtree);
 
-  pObject = pModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"));
+  pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Avogadro Constant")));
 
   if (filter(classes, pObject))
     {
@@ -387,7 +387,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
+  pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor")));
 
   if (filter(classes, pObject))
     {
@@ -400,7 +400,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
   if (StoiMatrix.array())
     {
-      pObject = pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
+      pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -414,7 +414,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
   if (RedStoiMatrix.array())
     {
-      pObject = pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"));
+      pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -428,7 +428,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
   if (LinkMatrix.array())
     {
-      pObject = pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)"));
+      pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)")));
 
       if (filter(classes, pObject))
         {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
+//   $Date: 2011/03/14 19:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,11 +54,11 @@ CExpression::~CExpression() {}
 
 void CExpression::initObjects()
 {
-  CCopasiObject * pObject =
-    const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value")));
+  CCopasiObjectInterface * pObject =
+    const_cast< CCopasiObjectInterface * >(getObject(CCopasiObjectName("Reference=Value")));
   assert(pObject != NULL);
 
-  pObject->setRefresh(this, &CExpression::refresh);
+  static_cast< CCopasiObject * >(pObject)->setRefresh(this, &CExpression::refresh);
 }
 
 void CExpression::setBooleanRequired(const bool & booleanRequired)
@@ -132,7 +132,7 @@ const CCopasiObject * CExpression::getNodeObject(const CCopasiObjectName & CN) c
     return pDataModel->ObjectFromName(*mpListOfContainer, CN);
   else
     {
-      return pDataModel->getObject(CN);
+      return pDataModel->getDataObject(CN);
     }
 }
 
@@ -219,7 +219,7 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
 
   CEvaluationNodeObject * pNode;
   const CCopasiObject * pObject;
-  const CCopasiObject * pObjectParent;
+  const CCopasiContainer * pObjectParent;
   const CModelEntity * pEntity;
   const CMetab * pMetab;
 
@@ -229,7 +229,7 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
         {
           assert(pDataModel != NULL);
 
-          if ((pObject = pDataModel->getObject(pNode->getObjectCN())) != NULL &&
+          if ((pObject = static_cast< const CCopasiObject * >(pDataModel->getObject(pNode->getObjectCN()))) != NULL &&
               (pObjectParent = pObject->getObjectParent()) != NULL &&
               (pEntity = dynamic_cast<const CModelEntity * >(pObjectParent)) != NULL)
             {
