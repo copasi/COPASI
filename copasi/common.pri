@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.122 $ 
+#   $Revision: 1.123 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/03/11 21:23:26 $ 
+#   $Date: 2011/03/14 16:26:38 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.122 $ $Author: gauges $ $Date: 2011/03/11 21:23:26 $  
+# $Revision: 1.123 $ $Author: gauges $ $Date: 2011/03/14 16:26:38 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -78,8 +78,20 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 DEFINES += WITH_CSPMETHOD
 
 # enable this to build support for the render extension
+# this should be enabled since it has been tested enough
 # DEFINES += USE_CRENDER_EXTENSION
+
+# enable this to build with Svens layout generation code.
+# This allows users to create new layouts for their models.
+# This is not finished yet and should not be enabled per default 
 # DEFINES += COPASI_AUTOLAYOUT
+#
+# This enables the code for displaying elementary mode analysis results 
+# in the graph.
+# This needs some more testing, but it should be quite stable.
+# Since this depends heavily on the existence of layouts, I would only enable it
+# once the autolayout has been finished.
+# DEFINES += ELEMENTARY_MODE_DISPLAY
 
 debug {
   DEFINES += COPASI_DEBUG
