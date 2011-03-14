@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:29:16 $
+//   $Author: gauges $
+//   $Date: 2011/03/14 16:24:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1885,32 +1885,32 @@ void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
 
 #endif // __APPLE__
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 // the following methods are used to highlight elements in the diagram
 // based on their association to model elements
 
 /**
  * Sets the list of model objects that are to be highlighted in the diagram.
  */
-void CQGLLayoutPainter::setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects)
+void CQGLLayoutPainter::setHighlightedObjects(const std::set<const CLGraphicalObject*>& highlightedObjects)
 {
-  this->mpRenderer->setHighlightedModelObjects(highlightedObjects);
+  this->mpRenderer->setHighlightedObjects(highlightedObjects);
 }
 
 /**
  * Returns a const reference to the set of highlighted model objects.
  */
-const std::set<const CCopasiObject*>& CQGLLayoutPainter::getHighlightedModelObjects() const
+const std::set<const CLGraphicalObject*>& CQGLLayoutPainter::getHighlightedObjects() const
 {
-  return this->mpRenderer->getHighlightedModelObjects();
+  return this->mpRenderer->getHighlightedObjects();
 }
 
 /**
  * Returns a reference to the set of highlighted model objects.
  */
-std::set<const CCopasiObject*>& CQGLLayoutPainter::getHighlightedModelObjects()
+std::set<const CLGraphicalObject*>& CQGLLayoutPainter::getHighlightedObjects()
 {
-  return this->mpRenderer->getHighlightedModelObjects();
+  return this->mpRenderer->getHighlightedObjects();
 }
 
 /**
@@ -1974,7 +1974,7 @@ bool CQGLLayoutPainter::getHighlightFlag() const
   return this->mpRenderer->getHighlightFlag();
 }
 
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 
 

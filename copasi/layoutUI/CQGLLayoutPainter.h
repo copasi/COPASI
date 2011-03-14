@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:29:15 $
+//   $Author: gauges $
+//   $Date: 2011/03/14 16:24:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,24 +137,24 @@ public:
    */
   void setSelection(const std::set<CLGraphicalObject*>& selection);
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   // the following methods are used to highlight elements in the diagram
   // based on their association to model elements
 
   /**
    * Sets the list of model objects that are to be highlighted in the diagram.
    */
-  void setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects);
+  void setHighlightedObjects(const std::set<const CLGraphicalObject*>& highlightedObjects);
 
   /**
    * Returns a const reference to the set of highlighted model objects.
    */
-  const std::set<const CCopasiObject*>& getHighlightedModelObjects() const;
+  const std::set<const CLGraphicalObject*>& getHighlightedObjects() const;
 
   /**
    * Returns a reference to the set of highlighted model objects.
    */
-  std::set<const CCopasiObject*>& getHighlightedModelObjects();
+  std::set<const CLGraphicalObject*>& getHighlightedObjects();
 
   /**
    * Sets the highlight color.
@@ -196,7 +196,7 @@ public:
    */
   bool getHighlightFlag() const;
 
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 
   /**

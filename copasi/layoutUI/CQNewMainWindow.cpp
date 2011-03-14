@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/11 21:21:15 $
+//   $Date: 2011/03/14 16:24:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@
 #include <copasi/layout/CLayout.h>
 #include <copasi/layout/CListOfLayouts.h>
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 #include <copasi/elementaryFluxModes/CEFMTask.h>
 #include <copasi/elementaryFluxModes/CEFMProblem.h>
 #include <copasi/elementaryFluxModes/CFluxMode.h>
@@ -49,7 +49,7 @@
 #include <copasi/model/CChemEq.h>
 #include <copasi/model/CChemEqElement.h>
 #include <copasi/model/CMetab.h>
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
 #include "copasi/model/CModel.h"
@@ -127,12 +127,12 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
     mCurDir(""),
     mGraphIcon(QPixmap(graph_xpm)),
     mAnimationIcon(QPixmap(film_strip_xpm))
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
     , mpFogColorPixmap(new QPixmap(32, 32))
     , mpHighlightColorPixmap(new QPixmap(32, 32))
     , mpHighlightModeAction(NULL)
     , mpChangeColorAction(NULL)
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 #ifdef COPASI_AUTOLAYOUT
     , mStopLayout(false)
     , mpStopLayoutAction(NULL)
@@ -163,7 +163,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   this->addGlobalRenderInfoItemsToList();
   this->addDefaultRenderInfoItemsToList();
   this->updateLayoutList();
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   // fill the two pixmaps with the current fog and highlight color
   // We have to do that after the call to updateLayoutList because before that call
   // the rnederer does not exist yet.
@@ -172,7 +172,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   c = this->mpLayoutViewer->getPainter()->getHighlightColor();
   this->mpHighlightColorPixmap->fill(QColor((int)(c[0]*255.0), (int)(c[1]*255.0), (int)(c[2]*255.0), (int)(c[3]*255.0)));
   this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 }
 
@@ -297,7 +297,7 @@ void CQNewMainWindow::createMenus()
   pAction->setCheckable(true);
   connect(this->mpZoomActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomMenuItemActivated(QAction*)));
   this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   this->mpViewMenu->addSeparator();
   this->mpHighlightModeAction = this->mpViewMenu->addAction(tr("highlight"));
   this->mpHighlightModeAction->setCheckable(true);
@@ -311,7 +311,7 @@ void CQNewMainWindow::createMenus()
   this->mpElementaryModesMenu->setToolTip(tr("displays a list of elementary modes if any have been calculated and lets you select one or more that are emphasized in the layout displayed"));
   this->mpElementaryModesMenu->addAction(tr("none"));
   connect(this->mpElementaryModesMenu, SIGNAL(aboutToShow()), this, SLOT(checkForElementaryModesSlot()));
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
   this->mpViewMenu->addSeparator();
   this->mpViewMenu->addAction(this->mpScreenshotAct);
 
@@ -905,11 +905,11 @@ void CQNewMainWindow::switchMode()
         this->setAnimationToolbar();
         this->setAnimationMenu();
         this->mpWidgetStack->setCurrentIndex(1);
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
         this->mpElementaryModesMenu->setEnabled(false);
         this->mpHighlightModeAction->setEnabled(false);
         this->mpChangeColorAction->setEnabled(false);
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
         break;
       case CQNewMainWindow::ANIMATION_MODE:
         disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
@@ -921,11 +921,11 @@ void CQNewMainWindow::switchMode()
         this->setGraphToolbar();
         this->setGraphMenu();
         this->mpWidgetStack->setCurrentIndex(0);
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
         this->mpElementaryModesMenu->setEnabled(true);
         this->mpHighlightModeAction->setEnabled(true);
         this->mpChangeColorAction->setEnabled(true);
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
         break;
     }
 }
@@ -970,7 +970,7 @@ void CQNewMainWindow::setStatusMessage(const QString& message, int timeout)
 }
 
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 /**
  * Checks for calculated elementary modes.
  */
@@ -1056,14 +1056,16 @@ void CQNewMainWindow::checkForElementaryModesSlot()
  */
 void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
 {
+  CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
+
+  if (pPainter == NULL) return;
+
   // determine the index of the flux mode
   unsigned int index = this->mpElementaryModesMenu->actions().indexOf(pAction);
-  // get the set of currently highlighted objects
-  assert(this->mpLayoutViewer != NULL && this->mpLayoutViewer->getPainter() != NULL);
-  std::set<const CCopasiObject*>& highlighted = this->mpLayoutViewer->getPainter()->getHighlightedModelObjects();
-
   // if the action is checked, we need to add all the reactions of the flux mode
   // to the highlighted objects
+  unsigned int mask = CQNewMainWindow::REACTION_GLYPH | CQNewMainWindow::ROLE_SUBSTRATE | CQNewMainWindow::ROLE_PRODUCT | CQNewMainWindow::ROLE_SIDESUBSTRATE | CQNewMainWindow::ROLE_SIDEPRODUCT | CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS;
+
   if (pAction->isChecked())
     {
       const CFluxMode* pFlux = this->mFluxModes[index];
@@ -1077,36 +1079,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
           assert(pModel->getReactions().size() > it->first);
           pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
           assert(pReaction != NULL);
-          highlighted.insert(pReaction);
-          // now we need to add the arrows and species
-          const CChemEq& chemEq = pReaction->getChemEq();
-          const CCopasiVector<CChemEqElement>& substrates = chemEq.getSubstrates();
-          CCopasiVector<CChemEqElement>::const_iterator it2 = substrates.begin(), endit2 = substrates.end();
-
-          while (it2 != endit2)
-            {
-              assert((*it2) != NULL);
-              highlighted.insert(*it2);
-              assert((*it2)->getMetabolite() != NULL);
-              highlighted.insert((*it2)->getMetabolite());
-              ++it2;
-            }
-
-          const CCopasiVector<CChemEqElement>& products = chemEq.getProducts();
-
-          it2 = products.begin();
-
-          endit2 = products.end();
-
-          while (it2 != endit2)
-            {
-              assert((*it2) != NULL);
-              highlighted.insert(*it2);
-              assert((*it2)->getMetabolite() != NULL);
-              highlighted.insert((*it2)->getMetabolite());
-              ++it2;
-            }
-
+          this->selectReaction(pReaction, mask, pPainter->getHighlightedObjects());
           ++it;
         }
     }
@@ -1119,8 +1092,13 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
       QList<QAction*>::const_iterator ait = actions.begin(), aendit = actions.end();
       unsigned int i;
       const CFluxMode* pFlux = NULL;
-      std::set<const CCopasiObject*> remaining;
 
+      // we remove all highlighted objects
+      std::set<const CLGraphicalObject*> s = pPainter->getHighlightedObjects();
+      s.clear();
+      this->mHighlightedReactions.clear();
+
+      // and readd the ones that remain
       while (ait != aendit)
         {
           if ((*ait)->isChecked())
@@ -1138,111 +1116,14 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
                   assert(pModel->getReactions().size() > it->first);
                   pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
                   assert(pReaction != NULL);
-                  remaining.insert(pReaction);
-                  // now we need to add the arrows and species
-                  const CChemEq& chemEq = pReaction->getChemEq();
-                  const CCopasiVector<CChemEqElement>& substrates = chemEq.getSubstrates();
-                  CCopasiVector<CChemEqElement>::const_iterator it2 = substrates.begin(), endit2 = substrates.end();
-
-                  while (it2 != endit2)
-                    {
-                      remaining.insert(*it2);
-                      remaining.insert((*it2)->getMetabolite());
-                      ++it2;
-                    }
-
-                  const CCopasiVector<CChemEqElement>& products = chemEq.getProducts();
-
-                  it2 = products.begin();
-
-                  endit2 = products.end();
-
-                  while (it2 != endit2)
-                    {
-                      highlighted.insert(*it2);
-                      highlighted.insert((*it2)->getMetabolite());
-                      ++it2;
-                    }
-
+                  this->selectReaction(pReaction, mask, s);
                   ++it;
                 }
-
             }
 
           ++ait;
         }
 
-      // now we remove all object from the unselected flux
-      // that are not in remaining
-      pFlux = this->mFluxModes[index];
-      CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
-      const CReaction* pReaction = NULL;
-      assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-      const CModel* pModel = this->mpDataModel->getModel();
-
-      while (it != endit)
-        {
-          assert(pModel->getReactions().size() > it->first);
-          pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
-          assert(pReaction != NULL);
-
-          if (remaining.find(pReaction) == remaining.end())
-            {
-              highlighted.erase(highlighted.find(pReaction));
-            }
-
-          // now we need to add the arrows and species
-          const CChemEq& chemEq = pReaction->getChemEq();
-          const CCopasiVector<CChemEqElement>& substrates = chemEq.getSubstrates();
-          CCopasiVector<CChemEqElement>::const_iterator it2 = substrates.begin(), endit2 = substrates.end();
-          std::set<const CCopasiObject*>::iterator pos;
-
-          while (it2 != endit2)
-            {
-              pos = highlighted.find(*it2);
-
-              if (remaining.find((*it2)) == remaining.end() && pos != highlighted.end())
-                {
-                  highlighted.erase(pos);
-                }
-
-              pos = highlighted.find((*it2)->getMetabolite());
-
-              if (remaining.find((*it2)->getMetabolite()) == remaining.end() && pos != highlighted.end())
-                {
-                  highlighted.erase(pos);
-                }
-
-              ++it2;
-            }
-
-          const CCopasiVector<CChemEqElement>& products = chemEq.getProducts();
-
-          it2 = products.begin();
-
-          endit2 = products.end();
-
-          while (it2 != endit2)
-            {
-              pos = highlighted.find((*it2));
-
-              if (remaining.find((*it2)) == remaining.end() && pos != highlighted.end())
-                {
-                  highlighted.erase(pos);
-                }
-
-              pos = highlighted.find((*it2)->getMetabolite());
-
-              if (remaining.find((*it2)->getMetabolite()) == remaining.end() && pos != highlighted.end())
-                {
-                  highlighted.erase(pos);
-                }
-
-              ++it2;
-            }
-
-          ++it;
-        }
 
     }
 
@@ -1252,6 +1133,215 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
       this->mpLayoutViewer->getPainter()->update();
     }
 }
+
+/**
+ * Selects the given reaction object by selecting all
+ * corresponding CLReactionGlyph objects in the current layout.
+ * The mask determines which parts of the reaction are selected.
+ * With this, it can be specified that only the reaction glyph itself
+ * or the reaction glyph plus several of the associated metab reference glyphs
+ * are selected.
+ * The graphical objects selected by this method are inserted into the
+ * set given as the third element.
+ */
+void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int selectionMask, std::set<const CLGraphicalObject*>& s)
+{
+  // we need a reaction and something to select in that
+  // reaction
+  if (pReaction != NULL && selectionMask != 0 && this->mpCurrentLayout != NULL)
+    {
+      CQNewMainWindow::REACTION_SELECTION_ITEM item;
+      item.mReactionKey = pReaction->getKey();
+      item.mSelectionMask = selectionMask;
+      this->mHighlightedReactions.insert(item);
+      // go through the metabolite glyphs and select
+      // all metabolite glyphs that are associated
+      const CCopasiVector<CLReactionGlyph>& v = this->mpCurrentLayout->getListOfReactionGlyphs();
+      CCopasiVector<CLReactionGlyph>::const_iterator it = v.begin(), endit = v.end();
+
+      while (it != endit)
+        {
+          if ((*it)->getModelObject() == pReaction)
+            {
+              if (selectionMask & CQNewMainWindow::REACTION_GLYPH)
+                {
+                  s.insert((*it));
+                }
+
+              const CCopasiVector<CLMetabReferenceGlyph>& mrgv = (*it)->getListOfMetabReferenceGlyphs();
+
+              CCopasiVector<CLMetabReferenceGlyph>::const_iterator it2 = mrgv.begin(), endit2 = mrgv.end();
+
+              std::string key;
+
+              const CCopasiObject* pObject = NULL;
+
+              while (it2 != endit2)
+                {
+                  // check the role
+                  switch ((*it2)->getRole())
+                    {
+                      case CLMetabReferenceGlyph::UNDEFINED:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_UNSPECIFIED)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+
+                          }
+
+                        break;
+                      case CLMetabReferenceGlyph::SUBSTRATE:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_SUBSTRATE)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+                      case CLMetabReferenceGlyph::PRODUCT:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_PRODUCT)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+                      case CLMetabReferenceGlyph::SIDESUBSTRATE:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_SIDESUBSTRATE)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+                      case CLMetabReferenceGlyph::SIDEPRODUCT:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_SIDEPRODUCT)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+                      case CLMetabReferenceGlyph::MODIFIER:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_MODIFIER)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+                      case CLMetabReferenceGlyph::ACTIVATOR:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_ACTIVATOR)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+                      case CLMetabReferenceGlyph::INHIBITOR:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_INHIBITOR)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+                    }
+
+                  ++it2;
+                }
+            }
+
+          ++it;
+        }
+    }
+}
+
+
+/**
+ * Selected the given metabolite object by selecting all
+ * corresponding CLMetabGlyph objects in the current layout.
+ * The graphical objects selected by this method are inserted into the
+ * set given as the third element.
+ */
+void CQNewMainWindow::selectMetabolite(const CMetab* pMetab, std::set<const CLGraphicalObject*>& s)
+{
+  if (pMetab != NULL && this->mpCurrentLayout != NULL)
+    {
+      this->mHighlightedMetabolites.insert(pMetab->getKey());
+      // go through the metabolite glyphs and select
+      // all metabolite glyphs that are associated
+      const CCopasiVector<CLMetabGlyph>& v = this->mpCurrentLayout->getListOfMetaboliteGlyphs();
+      CCopasiVector<CLMetabGlyph>::const_iterator it = v.begin(), endit = v.end();
+
+      while (it != endit)
+        {
+          if ((*it)->getModelObject() == pMetab)
+            {
+              s.insert((*it));
+            }
+
+          ++it;
+        }
+    }
+}
+
 
 /**
  * Is called when the menu entry for toggling highlighting
@@ -1331,7 +1421,7 @@ void CQNewMainWindow::changeColorSlot(bool)
         }
     }
 }
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
 void CQNewMainWindow::redrawNow()

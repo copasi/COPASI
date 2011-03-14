@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:28:47 $
+//   $Author: gauges $
+//   $Date: 2011/03/14 16:24:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,8 +182,8 @@ protected:
   // a class that can create a texture from a jpeg or png image file
   CLImageTexturizer* mpImageTexturizer;
 
-#ifdef COPASI_DEBUG
-  std::set<const CCopasiObject*> mHighlightedModelObjects;
+#ifdef ELEMENTARY_MODE_DISPLAY
+  std::set<const CLGraphicalObject*> mHighlightedObjects;
 
   // flag that determines whether non-highlighted objects
   // are placed in a fog or if highlighted objects are highlighted
@@ -205,7 +205,7 @@ protected:
   // Maybe all this dynamic function initialization should
   // be moved to some global place
   void(*mpGlFogCoordfEXT)(GLfloat);
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 
 public:
@@ -466,24 +466,24 @@ public:
    */
   void setImageTexturizer(CLImageTexturizer* pTexturizer);
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   // the following methods are used to highlight elements in the diagram
   // based on their association to model elements
 
   /**
    * Sets the list of model objects that are to be highlighted in the diagram.
    */
-  void setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects);
+  void setHighlightedObjects(const std::set<const CLGraphicalObject*>& highlightedObjects);
 
   /**
    * Returns a const reference to the set of highlighted model objects.
    */
-  const std::set<const CCopasiObject*>& getHighlightedModelObjects() const;
+  const std::set<const CLGraphicalObject*>& getHighlightedObjects() const;
 
   /**
    * Returns a reference to the set of highlighted model objects.
    */
-  std::set<const CCopasiObject*>& getHighlightedModelObjects();
+  std::set<const CLGraphicalObject*>& getHighlightedObjects();
 
   /**
    * Sets the highlight color.
@@ -525,7 +525,7 @@ public:
    */
   bool getHighlightFlag() const;
 
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 protected:
   /**
@@ -942,7 +942,9 @@ protected:
    */
   void initialize_gl_extension_functions();
 
+#ifdef __APPLE__
   void * MyNSGLGetProcAddress(const char *name);
+#endif // __APPLE__  
 };
 
 #endif // CLLAYOUTRENDERER_H__

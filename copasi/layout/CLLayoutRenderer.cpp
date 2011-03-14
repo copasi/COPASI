@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:28:47 $
+//   $Author: gauges $
+//   $Date: 2011/03/14 16:24:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,11 +66,9 @@
 
 
 #ifdef __APPLE__
-#ifdef COPASI_DEBUG
 #include <string>
 #include <stdlib.h>
 #include <mach-o/dyld.h>
-#endif // COPASI_DEBUG
 # include "OpenGL/gl.h"
 # include "OpenGL/glu.h"
 #else
@@ -121,13 +119,13 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
     mDeduceSpeciesReferenceRoles(false),
     mpSelectionBox(NULL),
     mpImageTexturizer(NULL)
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
     , mHighlight(true)
     , mGLFunctionsInitialized(false)
     , mpGlFogCoordfEXT(NULL)
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 {
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   this->mHighlightColor[0] = 0.5;
   this->mHighlightColor[1] = 0.0;
   this->mHighlightColor[2] = 0.0;
@@ -136,7 +134,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
   this->mFogColor[1] = 0.5;
   this->mFogColor[2] = 0.5;
   this->mFogColor[3] = 1.0;
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
   this->change_style(pRenderInformation);
 }
 
@@ -159,13 +157,13 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
     mpFontRenderer(NULL),
     mDeduceSpeciesReferenceRoles(false),
     mpSelectionBox(NULL)
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
     , mHighlight(true)
     , mGLFunctionsInitialized(false)
     , mpGlFogCoordfEXT(NULL)
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 {
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   this->mHighlightColor[0] = 0.5;
   this->mHighlightColor[0] = 0.0;
   this->mHighlightColor[0] = 0.0;
@@ -175,7 +173,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
   this->mFogColor[2] = 0.5;
   this->mFogColor[3] = 1.0;
   this->initialize_gl_extension_functions();
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
   this->change_style(pRenderInformation);
 }
 
@@ -949,7 +947,7 @@ void CLLayoutRenderer::draw_layout()
   // first we need to clear the screen
   // with the background color
   glDisable(GL_POLYGON_SMOOTH);
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 
   if (this->mGLFunctionsInitialized == false)
     {
@@ -973,7 +971,7 @@ void CLLayoutRenderer::draw_layout()
   glEnable(GL_FOG);
   GLfloat highlight = (GLfloat)this->mHighlight;
   GLfloat notHighlight = (GLfloat)(!this->mHighlight);
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
   if (this->mpResolver)
     {
@@ -983,7 +981,7 @@ void CLLayoutRenderer::draw_layout()
       GLfloat green = (GLfloat)(pBackgroundColor->getGreen() / 255.0);
       GLfloat blue = (GLfloat)(pBackgroundColor->getBlue() / 255.0);
       GLfloat alpha = (GLfloat)(pBackgroundColor->getAlpha() / 255.0);
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 
       if (this->mHighlight == false)
         {
@@ -994,7 +992,7 @@ void CLLayoutRenderer::draw_layout()
           alpha = (GLfloat)((alpha + this->mFogColor[3]) * 0.5);
         }
 
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
       glClearColor((GLclampf)red,
                    (GLclampf)green,
                    (GLclampf)blue,
@@ -1011,20 +1009,19 @@ void CLLayoutRenderer::draw_layout()
       const CLTextGlyph* pTG = NULL;
       std::vector<const CLGraphicalObject*>::iterator it = this->mDrawables.begin(), endit = this->mDrawables.end();
       const CCopasiObject* pModelObject = NULL;
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 // this is needed to highlight or fog certain elements in the diagram
-      std::set<const CCopasiObject*>::const_iterator end = this->mHighlightedModelObjects.end();
-#endif // COPASI_DEBUG      
+      std::set<const CLGraphicalObject*>::const_iterator end = this->mHighlightedObjects.end();
+#endif // ELEMENTARY_MODE_DISPLAY      
 
       while (it != endit)
         {
-#ifdef COPASI_DEBUG
-// this is needed to highlight or fog certain elements in the diagram
-          pModelObject = (*it)->getModelObject();
+#ifdef ELEMENTARY_MODE_DISPLAY
 
+// this is needed to highlight or fog certain elements in the diagram
           if (this->mpGlFogCoordfEXT != NULL)
             {
-              if (pModelObject != NULL && this->mHighlightedModelObjects.find(pModelObject) != end)
+              if (pModelObject != NULL && this->mHighlightedObjects.find(*it) != end)
                 {
                   (*(this->mpGlFogCoordfEXT))(highlight);
                 }
@@ -1034,7 +1031,7 @@ void CLLayoutRenderer::draw_layout()
                 }
             }
 
-#endif //COPASI_DEBUG
+#endif //ELEMENTARY_MODE_DISPLAY
           pRG = dynamic_cast<const CLReactionGlyph*>(*it);
           pSRG = dynamic_cast<const CLMetabReferenceGlyph*>(*it);
           pTG = dynamic_cast<const CLTextGlyph*>(*it);
@@ -6719,30 +6716,30 @@ void CLLayoutRenderer::setImageTexturizer(CLImageTexturizer* pTexturizer)
   this->mpImageTexturizer = pTexturizer;
 }
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 
 /**
  * Sets the list of model objects that are to be highlighted in the diagram.
  */
-void CLLayoutRenderer::setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects)
+void CLLayoutRenderer::setHighlightedObjects(const std::set<const CLGraphicalObject*>& highlightedObjects)
 {
-  this->mHighlightedModelObjects = highlightedObjects;
+  this->mHighlightedObjects = highlightedObjects;
 }
 
 /**
  * Returns a const reference to the set of highlighted model objects.
  */
-const std::set<const CCopasiObject*>& CLLayoutRenderer::getHighlightedModelObjects() const
+const std::set<const CLGraphicalObject*>& CLLayoutRenderer::getHighlightedObjects() const
 {
-  return this->mHighlightedModelObjects;
+  return this->mHighlightedObjects;
 }
 
 /**
  * Returns a reference to the set of highlighted model objects.
  */
-std::set<const CCopasiObject*>& CLLayoutRenderer::getHighlightedModelObjects()
+std::set<const CLGraphicalObject*>& CLLayoutRenderer::getHighlightedObjects()
 {
-  return this->mHighlightedModelObjects;
+  return this->mHighlightedObjects;
 }
 
 
@@ -6838,6 +6835,8 @@ void CLLayoutRenderer::initialize_gl_extension_functions()
   mGLFunctionsInitialized = true;
 }
 
+#endif // ELEMENTARY_MODE_DISPLAY
+
 #ifdef __APPLE__
 void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
 {
@@ -6864,7 +6863,5 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
   return symbol ? NSAddressOfSymbol(symbol) : NULL;
 }
 #endif // __APPLE__
-
-#endif // COPASI_DEBUG
 
 

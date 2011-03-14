@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/11 21:21:15 $
+//   $Date: 2011/03/14 16:24:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,24 @@ class CQNewMainWindow : public QMainWindow
   Q_OBJECT
 
 public:
+#ifdef ELEMENTARY_MODE_DISPLAY
+  enum REACTION_SELECTION_BITS
+  {
+    ROLE_UNSPECIFIED          =   1 // metab reference glyphs without role
+    , ROLE_SUBSTRATE            =   2
+    , ROLE_SIDESUBSTRATE        =   4
+    , ROLE_PRODUCT              =   8
+    , ROLE_SIDEPRODUCT          =  16
+    , ROLE_MODIFIER             =  32
+    , ROLE_ACTIVATOR            =  64
+    , ROLE_INHIBITOR            = 128
+    , REACTION_GLYPH            = 256 // the reaction glyph itself
+    , ASSOCIATED_SPECIES_GLYPHS = 512
+  };
+
+#endif // ELEMENTARY_MODE_DISPLAY
+
+
   CQNewMainWindow(CCopasiDataModel* pDatamodel);
 
   void updateRenderer();
@@ -117,7 +135,29 @@ private slots:
    */
   void setStatusMessage(const QString& message, int timeout);
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
+  /**
+   * Selects the given reaction object by selecting all
+   * corresponding CLReactionGlyph objects in the current layout.
+   * The mask determines which parts of the reaction are selected.
+   * With this, it can be specified that only the reaction glyph itself
+   * or the reaction glyph plus several of the associated metab reference glyphs
+   * are selected.
+   * The graphical objects selected by this method are inserted into the
+   * set given as the third element.
+   */
+  void selectReaction(const CReaction* pReaction, unsigned int selectionMask, std::set<const CLGraphicalObject*>& s);
+
+
+  /**
+   * Selected the given metabolite object by selecting all
+   * corresponding CLMetabGlyph objects in the current layout.
+   * The graphical objects selected by this method are inserted into the
+   * set given as the third element.
+   */
+  void selectMetabolite(const CMetab* pMetab, std::set<const CLGraphicalObject*>& s);
+
+
   /**
    * Is called when the menu entry for toggling highlighting
    * of elementary modes is toggled.
@@ -142,7 +182,7 @@ private slots:
    */
   void changeColorSlot(bool);
 
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
   virtual void closeEvent(QCloseEvent * event);
@@ -208,9 +248,9 @@ private:
   QMenu *mpOptionsMenu;
   QMenu *mpHelpMenu;
   QMenu *mpZoomMenu;
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   QMenu *mpElementaryModesMenu;
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
   QToolBar *mpFileToolBar;
   QToolBar *mpSelectionToolBar;
   QAction *mpSwitchModeAct;
@@ -242,7 +282,31 @@ private:
 
   QIcon mGraphIcon;
   QIcon mAnimationIcon;
-#ifdef COPASI_DEBUG
+
+#ifdef ELEMENTARY_MODE_DISPLAY
+  struct REACTION_SELECTION_ITEM
+  {
+    std::string mReactionKey;
+    unsigned int mSelectionMask;
+
+    bool operator<(const REACTION_SELECTION_ITEM& other) const
+    {
+      // The reaction key needs to be unique.
+      // There should be no two entries with the same key.
+      bool result = (this->mReactionKey < other.mReactionKey);
+      return result;
+    }
+
+  };
+
+  // we need to store the highlighted reactions and the
+  // highlighted metabolites in two different structures
+  // because the reaction highlighting mechanism is a bit
+  // more complicated
+  std::set<std::string> mHighlightedMetabolites;
+  std::set<REACTION_SELECTION_ITEM> mHighlightedReactions;
+
+
   // It does not make sense to update
   // the elementary flux modes menu each time
   // because that will delete the information about
@@ -256,7 +320,7 @@ private:
   QPixmap* mpHighlightColorPixmap;
   QAction* mpHighlightModeAction;
   QAction* mpChangeColorAction;
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
   // a flag that determines if the iterations
