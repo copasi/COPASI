@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-  $Revision: 1.19 $
+  $Revision: 1.20 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/03/07 19:28:18 $
+  $Date: 2011/03/14 19:18:22 $
   End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,7 +90,7 @@ public:
    * @return const C_FLOAT64 & value
    */
   virtual inline const C_FLOAT64 & value() const
-  {return *const_cast<C_FLOAT64 *>(&mValue) = *mpValue;}
+  {return mValue = *mpValue;}
 
   /**
    * Retrieve the value of the node. This method is superseded

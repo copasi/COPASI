@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:17 $
+//   $Date: 2011/03/14 19:18:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -233,7 +233,7 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
   node->setType(AST_NAME);
   // since I can not get the model in which this node is located, I just
   // assume that it will always be the current global model.
-  const CCopasiObject* object = pDataModel->getObject(mRegisteredObjectCN);
+  const CCopasiObject* object = pDataModel->getDataObject(mRegisteredObjectCN);
   assert(object);
 
   // if it is a reference, we get the parent of the reference

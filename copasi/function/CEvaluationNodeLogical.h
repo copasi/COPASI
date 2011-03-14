@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.h,v $
-  $Revision: 1.15 $
+  $Revision: 1.16 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/03/07 19:28:19 $
+  $Date: 2011/03/14 19:18:21 $
   End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,51 +85,49 @@ public:
    */
   virtual inline const C_FLOAT64 & value() const
   {
-    C_FLOAT64 &Value = *const_cast<C_FLOAT64 *>(&mValue);
-
     switch (mType & 0x00FFFFFF)
       {
         case OR:
-          Value = (mpLeft->value() != 0.0 ||
-                   mpRight->value() != 0.0) ? 1.0 : 0.0;
+          mValue = (mpLeft->value() != 0.0 ||
+                    mpRight->value() != 0.0) ? 1.0 : 0.0;
           break;
 
         case XOR:
-          Value = ((mpLeft->value() != 0.0 && mpRight->value() == 0.0) ||
-                   (mpLeft->value() == 0.0 && mpRight->value() != 0.0)) ? 1.0 : 0.0;
+          mValue = ((mpLeft->value() != 0.0 && mpRight->value() == 0.0) ||
+                    (mpLeft->value() == 0.0 && mpRight->value() != 0.0)) ? 1.0 : 0.0;
           break;
 
         case AND:
-          Value = (mpLeft->value() != 0.0 &&
-                   mpRight->value() != 0.0) ? 1.0 : 0.0;
+          mValue = (mpLeft->value() != 0.0 &&
+                    mpRight->value() != 0.0) ? 1.0 : 0.0;
           break;
 
         case EQ:
-          Value = (mpLeft->value() == mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->value() == mpRight->value()) ? 1.0 : 0.0;
           break;
 
         case NE:
-          Value = (mpLeft->value() != mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->value() != mpRight->value()) ? 1.0 : 0.0;
           break;
 
         case GT:
-          Value = (mpLeft->value() > mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->value() > mpRight->value()) ? 1.0 : 0.0;
           break;
 
         case GE:
-          Value = (mpLeft->value() >= mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->value() >= mpRight->value()) ? 1.0 : 0.0;
           break;
 
         case LT:
-          Value = (mpLeft->value() < mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->value() < mpRight->value()) ? 1.0 : 0.0;
           break;
 
         case LE:
-          Value = (mpLeft->value() <= mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->value() <= mpRight->value()) ? 1.0 : 0.0;
           break;
       }
 
-    return Value;
+    return mValue;
   }
 
   /**

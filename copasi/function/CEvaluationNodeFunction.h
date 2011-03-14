@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
+//   $Date: 2011/03/14 19:18:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,17 +122,16 @@ public:
   {
     if (mpFunction)
       {
-        *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction)(mpArg1->value());
+        mValue = (*mpFunction)(mpArg1->value());
       }
     else if (mpFunction2)
       {
-        *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction2)(mpArg1->value(), mpArg2->value());
+        mValue = (*mpFunction2)(mpArg1->value(), mpArg2->value());
       }
     else if (mpFunction4)
       {
-        *const_cast<C_FLOAT64 *>(&mValue) =
-          (*mpFunction4)(mpArg1->value(), mpArg2->value(),
-                         mpArg3->value(), mpArg4->value());
+        mValue = (*mpFunction4)(mpArg1->value(), mpArg2->value(),
+                                mpArg3->value(), mpArg4->value());
       }
 
     return mValue;

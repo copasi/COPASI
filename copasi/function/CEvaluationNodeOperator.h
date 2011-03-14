@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
+//   $Date: 2011/03/14 19:18:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,39 +81,37 @@ public:
    */
   virtual inline const C_FLOAT64 & value() const
   {
-    C_FLOAT64 &Value = *const_cast<C_FLOAT64 *>(&mValue);
-
     switch (mType & 0x00FFFFFF)
       {
         case POWER:
-          Value = pow(mpLeft->value(), mpRight->value());
+          mValue = pow(mpLeft->value(), mpRight->value());
           break;
 
         case MULTIPLY:
-          Value = mpLeft->value() * mpRight->value();
+          mValue = mpLeft->value() * mpRight->value();
           break;
 
         case DIVIDE:
-          Value = mpLeft->value() / mpRight->value();
+          mValue = mpLeft->value() / mpRight->value();
           break;
 
         case MODULUS:
-          Value = (C_FLOAT64)(((C_INT32) mpLeft->value()) % ((C_INT32) mpRight->value()));
+          mValue = (C_FLOAT64)(((C_INT32) mpLeft->value()) % ((C_INT32) mpRight->value()));
           break;
 
         case PLUS:
-          Value = mpLeft->value() + mpRight->value();
+          mValue = mpLeft->value() + mpRight->value();
           break;
 
         case MINUS:
-          Value = mpLeft->value() - mpRight->value();
+          mValue = mpLeft->value() - mpRight->value();
           break;
 
         default:
           break;
       }
 
-    return Value;
+    return mValue;
   }
 
   /**

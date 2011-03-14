@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
+//   $Date: 2011/03/14 19:18:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ bool CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
 }
 
 const C_FLOAT64 & CEvaluationNodeVariable::value() const
-{return *const_cast<C_FLOAT64 *>(&mValue) = mpTree->getVariableValue(mIndex);}
+{return mValue = mpTree->getVariableValue(mIndex);}
 
 size_t CEvaluationNodeVariable::getIndex() const
 {return mIndex;}

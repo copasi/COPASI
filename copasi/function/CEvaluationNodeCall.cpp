@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
+//   $Date: 2011/03/14 19:18:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,8 +90,6 @@ CEvaluationNodeCall::~CEvaluationNodeCall() {}
 
 const C_FLOAT64 & CEvaluationNodeCall::value() const
 {
-  C_FLOAT64 &Value = *const_cast<C_FLOAT64 *>(&mValue);
-
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
@@ -101,14 +99,14 @@ const C_FLOAT64 & CEvaluationNodeCall::value() const
 
         for (; it != end; ++it)(*it)->value();
       }
-      return Value = mpFunction->calcValue(*mpCallParameters);
+      return mValue = mpFunction->calcValue(*mpCallParameters);
       break;
 
       case EXPRESSION:
-        return Value = mpExpression->calcValue();
+        return mValue = mpExpression->calcValue();
         break;
       default:
-        return Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         break;
     }
 }
@@ -346,7 +344,7 @@ ASTNode* CEvaluationNodeCall::toAST(const CCopasiDataModel* pDataModel) const
 
   pNode = new ASTNode(AST_FUNCTION);
   const std::string funName = this->getData();
-  CEvaluationTree* pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
+  CFunction * pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
   assert(pFun != NULL);
 
   if (pFun == NULL || pFun->getSBMLId().empty()) fatalError();
