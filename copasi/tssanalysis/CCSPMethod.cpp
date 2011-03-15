@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.19.2.5 $
+//   $Revision: 1.19.2.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/16 18:33:45 $
+//   $Author: nsimus $
+//   $Date: 2011/03/15 09:01:43 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -333,7 +333,7 @@ void CCSPMethod::findTimeScaleSeparation(C_INT & n, C_INT & k, CVector< C_FLOAT6
 #endif
 
 /* find  the number of candidates to  fast  according to the time-scale separation ratio */
-void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 > & eigen, C_INT & /* info */)
+void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 > & eigen, C_INT &  info)
 {
 
   C_INT i;
@@ -363,8 +363,9 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
             }
           else
             {
-              if (tmp < 0) // info = 1;
-                break;
+              if (tmp < 0) info = 1;
+
+              break;
             }
         }
       else
