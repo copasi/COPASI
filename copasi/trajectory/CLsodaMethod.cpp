@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.62.2.2 $
+//   $Revision: 1.62.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:06:53 $
+//   $Date: 2011/03/15 14:15:38 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -227,6 +227,13 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
               &mNumRoots, // 19. number of constraint functions g(i)
               mRoots.array()); // 20. integer array of length NG for output of root information
 
+      // There exist situations where LSODAR reports status = 3, which are actually status = -33
+      if (mLsodaStatus == 3 && mRootCounter > 0.99 * *mpMaxInternalSteps)
+        {
+          mLsodaStatus = -33;
+          mRootCounter = 0;
+        }
+
       switch (mLsodaStatus)
         {
           case -33:
@@ -334,14 +341,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
   // Why did we ignore this error?
   // if (mLsodaStatus == -1) mLsodaStatus = 2;
 
+  mMethodState.setTime(mTime);
+  *mpCurrentState = mMethodState;
+
   if ((mLsodaStatus <= 0))
     {
       Status = FAILURE;
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
     }
-
-  mMethodState.setTime(mTime);
-  *mpCurrentState = mMethodState;
 
   return Status;
 }
@@ -498,19 +505,30 @@ void CLsodaMethod::createRootMask()
 {
   size_t NumRoots = mRoots.size();
   mRootMask.resize(NumRoots);
+  CVector< C_FLOAT64 > RootValues;
+  RootValues.resize(NumRoots);
   CVector< C_FLOAT64 > RootDerivatives;
   RootDerivatives.resize(NumRoots);
 
   mpModel->setState(mMethodState);
+
+  if (*mpReducedModel)
+    {
+      mpModel->updateSimulatedValues(*mpReducedModel);
+    }
+
+  mpModel->evaluateRoots(RootValues, true);
   mpModel->calculateRootDerivatives(RootDerivatives);
 
   bool *pMask = mRootMask.array();
   bool *pMaskEnd = pMask + mRootMask.size();
+  C_FLOAT64 * pRootValue = RootValues.array();
   C_FLOAT64 * pRootDerivative = RootDerivatives.array();
 
-  for (; pMask != pMaskEnd; ++pMask, ++pRootDerivative)
+  for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative)
     {
-      *pMask = (fabs(*pRootDerivative) < *mpAbsoluteTolerance) ? true : false;
+      *pMask = (fabs(*pRootDerivative) < *mpAbsoluteTolerance ||
+                fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min()) ? true : false;
     }
 
   mRootMasking = ALL;
