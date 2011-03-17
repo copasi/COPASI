@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.8 $
+//   $Revision: 1.115.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/01 17:50:34 $
+//   $Date: 2011/03/17 13:51:56 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -426,6 +426,8 @@ bool COptProblem::restore(const bool & updateModel)
   std::vector<COptItem * >::iterator end = mpOptItems->end();
   C_FLOAT64 * pTmp;
 
+  std::set< const CCopasiObject * > ChangedObjects;
+
   if (updateModel && mSolutionValue != mWorstValue)
     {
       // Set the model values and start values to the solution values
@@ -435,6 +437,8 @@ bool COptProblem::restore(const bool & updateModel)
         {
           (*(*it)->COptItem::getUpdateMethod())(*pTmp);
           (*it)->setStartValue(*pTmp);
+
+          ChangedObjects.insert((*it)->getObject());
         }
     }
   else
@@ -443,8 +447,22 @@ bool COptProblem::restore(const bool & updateModel)
       pTmp = mOriginalVariables.array();
 
       for (; it != end; ++it, pTmp++)
-        if (!isnan(*pTmp))
-          (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+        {
+          if (!isnan(*pTmp))
+            (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+
+          ChangedObjects.insert((*it)->getObject());
+        }
+    }
+
+  // WSe need to update the dependent initial values
+  std::vector< Refresh * > UpdateSequence = mpModel->buildInitialRefreshSequence(ChangedObjects);
+  std::vector< Refresh * >::iterator itUpdate = UpdateSequence.begin();
+  std::vector< Refresh * >::iterator endUpdate = UpdateSequence.end();
+
+  for (; itUpdate != endUpdate; ++itUpdate)
+    {
+      (**itUpdate)();
     }
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
