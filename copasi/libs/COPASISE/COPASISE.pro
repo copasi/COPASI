@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $
-#   $Revision: 1.32 $
+#   $Revision: 1.33 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/03/07 19:29:38 $
+#   $Date: 2011/03/21 15:46:21 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -49,6 +49,7 @@ COPASI_LIBS += function
 COPASI_LIBS += layout
 COPASI_LIBS += lyap
 COPASI_LIBS += MIRIAM
+COPASI_LIBS += math
 COPASI_LIBS += model
 COPASI_LIBS += moieties
 COPASI_LIBS += odepack++

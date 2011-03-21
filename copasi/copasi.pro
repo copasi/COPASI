@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.66 $
+#   $Revision: 1.67 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2011/03/09 09:21:32 $
+#   $Author: shoops $
+#   $Date: 2011/03/21 15:46:21 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.66 $ $Author: gauges $ $Date: 2011/03/09 09:21:32 $
+# $Revision: 1.67 $ $Author: shoops $ $Date: 2011/03/21 15:46:21 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -45,7 +45,7 @@ COPASISE_DIRS += elementaryFluxModes
 COPASISE_DIRS += function
 COPASISE_DIRS += layout
 COPASISE_DIRS += lyap
-#COPASISE_DIRS += math
+COPASISE_DIRS += math
 COPASISE_DIRS += model
 COPASISE_DIRS += moieties
 COPASISE_DIRS += MIRIAM

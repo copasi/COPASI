@@ -29,7 +29,7 @@ macx:debug {
     COPASI_LIBS_SE += layout
     COPASI_LIBS_SE += lyap
     COPASI_LIBS_SE += MIRIAM
-#    COPASI_LIBS_SE += math
+    COPASI_LIBS_SE += math
     COPASI_LIBS_SE += model
     COPASI_LIBS_SE += moieties
     COPASI_LIBS_SE += odepack++
