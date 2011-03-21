@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.h,v $
- $Revision: 1.30 $
+ $Revision: 1.31 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/01/07 19:00:14 $
+ $Date: 2011/03/21 15:48:16 $
  End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -34,88 +39,88 @@ class CMetab;
 template <class CType> class CCopasiVectorN;
 
 class CChemEqElement : public CCopasiContainer
-  {
-    //  Attributes
+{
+  //  Attributes
 
-  private:
-    /**
-     * The name of the metabolite the element
-     */
-    std::string mMetaboliteKey;
+private:
+  /**
+   * The name of the metabolite the element
+   */
+  std::string mMetaboliteKey;
 
-    /**
-     * The multiplicity of the metabolite
-     */
-    C_FLOAT64 mMultiplicity;
+  /**
+   * The multiplicity of the metabolite
+   */
+  C_FLOAT64 mMultiplicity;
 
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CChemEqElement(const std::string & name = "Chem Eq Element",
-                   const CCopasiContainer * pParent = NULL);
+public:
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CChemEqElement(const std::string & name = "Chem Eq Element",
+                 const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Copy constructor
-     * @param "const CChemEqElement &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CChemEqElement(const CChemEqElement & src,
-                   const CCopasiContainer * pParent = NULL);
+  /**
+   * Copy constructor
+   * @param "const CChemEqElement &" src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CChemEqElement(const CChemEqElement & src,
+                 const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Destructor
-     */
-    ~CChemEqElement();
+  /**
+   * Destructor
+   */
+  ~CChemEqElement();
 
-    /**
-     * cleanup
-     */
-    void cleanup();
+  /**
+   * cleanup
+   */
+  void cleanup();
 
-    /**
-     * Set the multiplicity of the element.
-     * @param "const C_FLOAT64" multiplicity
-     */
-    void setMultiplicity(const C_FLOAT64 multiplicity);
+  /**
+   * Set the multiplicity of the element.
+   * @param "const C_FLOAT64" multiplicity
+   */
+  void setMultiplicity(const C_FLOAT64 multiplicity);
 
-    /**
-     * Add to the multiplicity of the element.
-     * @param "const C_FLOAT64" multiplicity (default = 1.0)
-     */
-    void addToMultiplicity(const C_FLOAT64 multiplicity = 1.0);
+  /**
+   * Add to the multiplicity of the element.
+   * @param "const C_FLOAT64" multiplicity (default = 1.0)
+   */
+  void addToMultiplicity(const C_FLOAT64 multiplicity = 1.0);
 
-    /**
-     * Retrieves the multiplicity of the element.
-     * @return C_FLOAT64 multiplicity
-     */
-    C_FLOAT64 getMultiplicity() const;
+  /**
+   * Retrieves the multiplicity of the element.
+   * @return const C_FLOAT64 & multiplicity
+   */
+  const C_FLOAT64 & getMultiplicity() const;
 
-    /**
-     * Set the metabolite of the element.
-     * @param CMetab * metabolite
-     */
-    void setMetabolite(const std::string & key);
+  /**
+   * Set the metabolite of the element.
+   * @param CMetab * metabolite
+   */
+  void setMetabolite(const std::string & key);
 
-    /**
-     * Retrieves the metabolite of the element.
-     * @return "CMetab *" metabolite
-     */
-    const CMetab * getMetabolite() const;
+  /**
+   * Retrieves the metabolite of the element.
+   * @return "CMetab *" metabolite
+   */
+  const CMetab * getMetabolite() const;
 
-    /**
-     * Retrieve the key of the species
-     * @return const std::string & speciesKey
-     */
-    const std::string & getMetaboliteKey() const;
+  /**
+   * Retrieve the key of the species
+   * @return const std::string & speciesKey
+   */
+  const std::string & getMetaboliteKey() const;
 
-    friend std::ostream & operator<<(std::ostream &os,
-                                     const CChemEqElement & d);
+  friend std::ostream & operator<<(std::ostream &os,
+                                   const CChemEqElement & d);
 
-  private:
-    void initObjects();
-  };
+private:
+  void initObjects();
+};
 
 #endif // COPASI_CChemEqElement

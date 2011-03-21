@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:00 $
+//   $Date: 2011/03/21 15:48:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@ const CRenameHandler * CCopasiObject::smpRenameHandler = NULL;
 UpdateMethod CCopasiObject::mDefaultUpdateMethod;
 
 CCopasiObject::CCopasiObject():
-    CCopasiObjectInterface(),
+    CObjectInterface(),
     mObjectName("No Name"),
     mObjectType("Unknown Type"),
     mpObjectParent(NULL),
@@ -66,7 +66,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
                              const CCopasiContainer * pParent,
                              const std::string & type,
                              const unsigned C_INT32 & flag):
-    CCopasiObjectInterface(),
+    CObjectInterface(),
     mObjectName((name == "") ? "No Name" : name),
     mObjectType(type),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
@@ -80,7 +80,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
                              const CCopasiContainer * pParent):
-    CCopasiObjectInterface(),
+    CObjectInterface(),
     mObjectName(src.mObjectName),
     mObjectType(src.mObjectType),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
@@ -134,7 +134,7 @@ CCopasiObjectName CCopasiObject::getCN() const
   return CN;
 }
 
-const CCopasiObjectInterface *
+const CObjectInterface *
 CCopasiObject::getObject(const CCopasiObjectName & cn) const
 {
   if (cn == "")
@@ -260,13 +260,13 @@ void CCopasiObject::clearDirectDependencies()
   mDependencies.clear();
 }
 
-void CCopasiObject::setDirectDependencies(const CCopasiObject::ObjectSet & directDependencies)
+void CCopasiObject::setDirectDependencies(const CCopasiObject::DataObjectSet & directDependencies)
 {
   mDependencies = directDependencies;
 }
 
-const CCopasiObject::ObjectSet &
-CCopasiObject::getDirectDependencies(const CCopasiObject::ObjectSet & /* context */) const
+const CCopasiObject::DataObjectSet &
+CCopasiObject::getDirectDependencies(const CCopasiObject::DataObjectSet & /* context */) const
 {
   return mDependencies;
 }
@@ -283,29 +283,38 @@ void CCopasiObject::removeDirectDependency(const CCopasiObject * pObject)
   return;
 }
 
-const CCopasiObject::ObjectSet & CCopasiObject::getPrerequisites() const
+const CObjectInterface::ObjectSet & CCopasiObject::getPrerequisites() const
 {
-  return mDependencies;
+  return * reinterpret_cast< const CObjectInterface::ObjectSet * >(&mDependencies);
 }
 
-bool CCopasiObject::isPrerequisiteForContext(const CCopasiObject * pObject,
-    const CCopasiObject::ObjectSet & context) const
+bool CCopasiObject::isPrerequisiteForContext(const CObjectInterface * pObject,
+    const CMath::SimulationContextFlag & /* context */,
+    const CObjectInterface::ObjectSet & changedObjects) const
 {
-  const CCopasiObject::ObjectSet & Prerequisites = getDirectDependencies(context);
+  // If the object is among the changed objects it does not depend on anything else.
+  if (changedObjects.find(this) != changedObjects.end())
+    return false;
 
-  if (Prerequisites.find(pObject) != Prerequisites.end())
-    return true;
+#ifdef COPASI_DEBUG
+  const CObjectInterface::ObjectSet & Prerequisites = getPrerequisites();
 
-  return false;
+  // This method should only be called for objects which are prerequisites.
+  // We check for this only in debug mode.
+  assert(Prerequisites.find(pObject) != Prerequisites.end());
+#endif // COPASI_DEBUG
+
+  return true;
 }
 
-void CCopasiObject::getAllDependencies(CCopasiObject::ObjectSet & dependencies,
-                                       const CCopasiObject::ObjectSet & context) const
+void CCopasiObject::getAllDependencies(CCopasiObject::DataObjectSet & dependencies,
+                                       const CCopasiObject::DataObjectSet & context) const
 {
-  CCopasiObject::ObjectSet::const_iterator it = getDirectDependencies(context).begin();
-  CCopasiObject::ObjectSet::const_iterator end = getDirectDependencies(context).end();
+  const CCopasiObject::DataObjectSet & DirectDependencies = getDirectDependencies(context);
+  CCopasiObject::DataObjectSet::const_iterator it = DirectDependencies.begin();
+  CCopasiObject::DataObjectSet::const_iterator end = DirectDependencies.end();
 
-  std::pair<CCopasiObject::ObjectSet::iterator, bool> Inserted;
+  std::pair<CCopasiObject::DataObjectSet::iterator, bool> Inserted;
 
   for (; it != end; ++it)
     {
@@ -321,26 +330,27 @@ void CCopasiObject::getAllDependencies(CCopasiObject::ObjectSet & dependencies,
     }
 }
 
-bool CCopasiObject::dependsOn(CCopasiObject::ObjectSet candidates,
-                              const CCopasiObject::ObjectSet & context) const
+bool CCopasiObject::dependsOn(CCopasiObject::DataObjectSet candidates,
+                              const CCopasiObject::DataObjectSet & context) const
 {
-  CCopasiObject::ObjectSet verified;
+  CCopasiObject::DataObjectSet verified;
   return hasCircularDependencies(candidates, verified, context);
 }
 
-bool CCopasiObject::hasCircularDependencies(CCopasiObject::ObjectSet & candidates,
-    CCopasiObject::ObjectSet & verified,
-    const CCopasiObject::ObjectSet & context) const
+bool CCopasiObject::hasCircularDependencies(CCopasiObject::DataObjectSet & candidates,
+    CCopasiObject::DataObjectSet & verified,
+    const CCopasiObject::DataObjectSet & context) const
 {
   bool hasCircularDependencies = false;
 
   if (verified.count(this) != 0)
     return hasCircularDependencies;
 
-  CCopasiObject::ObjectSet::const_iterator it = getDirectDependencies(context).begin();
-  CCopasiObject::ObjectSet::const_iterator end = getDirectDependencies(context).end();
+  const CCopasiObject::DataObjectSet & DirectDependencies = getDirectDependencies(context);
+  CCopasiObject::DataObjectSet::const_iterator it = DirectDependencies.begin();
+  CCopasiObject::DataObjectSet::const_iterator end = DirectDependencies.end();
 
-  std::pair<CCopasiObject::ObjectSet::iterator, bool> Inserted;
+  std::pair<CCopasiObject::DataObjectSet::iterator, bool> Inserted;
 
   // Dual purpose insert
   Inserted = candidates.insert(this);
@@ -368,16 +378,16 @@ bool CCopasiObject::hasCircularDependencies(CCopasiObject::ObjectSet & candidate
 
 //static
 std::vector< Refresh * >
-CCopasiObject::buildUpdateSequence(const CCopasiObject::ObjectSet & objects,
-                                   const CCopasiObject::ObjectSet & uptoDateObjects,
-                                   const CCopasiObject::ObjectSet & context)
+CCopasiObject::buildUpdateSequence(const CCopasiObject::DataObjectSet & objects,
+                                   const CCopasiObject::DataObjectSet & uptoDateObjects,
+                                   const CCopasiObject::DataObjectSet & context)
 {
-  CCopasiObject::ObjectSet DependencySet;
-  CCopasiObject::ObjectSet VerifiedSet;
+  CCopasiObject::DataObjectSet DependencySet;
+  CCopasiObject::DataObjectSet VerifiedSet;
 
-  CCopasiObject::ObjectSet::const_iterator itSet;
-  CCopasiObject::ObjectSet::const_iterator endSet = objects.end();
-  std::pair<CCopasiObject::ObjectSet::iterator, bool> InsertedObject;
+  CCopasiObject::DataObjectSet::const_iterator itSet;
+  CCopasiObject::DataObjectSet::const_iterator endSet = objects.end();
+  std::pair<CCopasiObject::DataObjectSet::iterator, bool> InsertedObject;
 
   assert(objects.count(NULL) == 0);
 
@@ -413,7 +423,7 @@ CCopasiObject::buildUpdateSequence(const CCopasiObject::ObjectSet & objects,
       ++itSet;
 
   // Build the list of all up to date objects
-  CCopasiObject::ObjectSet UpToDateSet;
+  CCopasiObject::DataObjectSet UpToDateSet;
 
   for (itSet = uptoDateObjects.begin(), endSet = uptoDateObjects.end(); itSet != endSet; ++itSet)
     {
@@ -467,8 +477,8 @@ bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs
 {
   if (lhs != rhs)
     {
-      CCopasiObject::ObjectSet Candidates;
-      CCopasiObject::ObjectSet VerifiedSet;
+      CCopasiObject::DataObjectSet Candidates;
+      CCopasiObject::DataObjectSet VerifiedSet;
 
       Candidates.insert(lhs);
 

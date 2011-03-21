@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:37 $
+//   $Date: 2011/03/21 15:48:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,113 @@ class CCompartment;
 class CReadConfig;
 class CMetabOld;
 class CModel;
-class CConcentrationReference;
+
+class CConcentrationReference : public CCopasiObjectReference< C_FLOAT64 >
+{
+private:
+  /**
+   * Hidden default constructor
+   */
+  CConcentrationReference();
+
+public:
+  /**
+   * Specific constructor
+   * @param const std::string & name
+   * @param const CCopasiContainer * pParent,
+   * @param C_FLOAT64 & reference,
+   */
+  CConcentrationReference(const std::string & name,
+                          const CCopasiContainer * pParent,
+                          C_FLOAT64 & reference);
+
+  /**
+   * Copy constructor
+   * @param const CConcentrationReference & src
+   * @param const CCopasiContainer * pParent,
+   */
+  CConcentrationReference(const CConcentrationReference & src,
+                          const CCopasiContainer * pParent);
+
+  /**
+   * Destructor
+   */
+  ~CConcentrationReference();
+
+  /**
+   * Retrieve the list of direct dependencies
+   * @param const CCopasiObject::DataObjectSet & context (default empty set)
+   * @return const CCopasiObject::DataObjectSet & directDependencies
+   */
+  virtual const DataObjectSet & getDirectDependencies(const DataObjectSet & context = DataObjectSet()) const;
+
+  /**
+   * Retrieve the refresh call which calculates the concentration based on state values needed
+   * when applying the initial state.
+   * @return Refresh * applyInitialValueRefresh
+   */
+  Refresh * getApplyInitialValueRefresh() const;
+
+  // Attributes
+private:
+  /**
+   * The list of direct dependencies when the values is in the changed context,
+   * i.e., it is always empty
+   */
+  static DataObjectSet EmptyDependencies;
+
+  /**
+   * The refresh call needed when applying initial values.
+   */
+  Refresh * mpApplyInitialValuesRefresh;
+};
+
+class CParticleReference : public CCopasiObjectReference< C_FLOAT64 >
+{
+  /**
+   * Hidden default constructor
+   */
+  CParticleReference();
+
+public:
+  /**
+   * Specific constructor
+   * @param const std::string & name
+   * @param const CCopasiContainer * pParent,
+   * @param C_FLOAT64 & reference,
+   */
+  CParticleReference(const std::string & name,
+                     const CCopasiContainer * pParent,
+                     C_FLOAT64 & reference);
+
+  /**
+   * Copy constructor
+   * @param const CParticleReference & src
+   * @param const CCopasiContainer * pParent,
+   */
+  CParticleReference(const CParticleReference & src,
+                     const CCopasiContainer * pParent);
+
+  /**
+   * Destructor
+   */
+  ~CParticleReference();
+
+  /**
+   * Retrieve the list of direct dependencies
+   * @param const CCopasiObject::DataObjectSet & context (default empty set)
+   * @return const CCopasiObject::DataObjectSet & directDependencies
+   */
+  virtual const DataObjectSet & getDirectDependencies(const DataObjectSet & context = DataObjectSet()) const;
+
+  // Attributes
+private:
+  /**
+   * The list of direct dependencies when the values is in the changed context,
+   * i.e., it is always empty
+   */
+  static DataObjectSet EmptyDependencies;
+};
 
 class CMetab : public CModelEntity
 {
@@ -105,6 +211,8 @@ private:
   const CMoiety * mpMoiety;
 
   std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > > mRateVector;
+
+  bool mIsInitialConcentrationChangeAllowed;
 
 protected:
   CCopasiObjectReference<C_FLOAT64> *mpIConcReference;
@@ -192,16 +300,20 @@ public:
 
   /**
    * Compile the initial particle number and initial concentration dependencies.
-   * @param const bool & updateConcentration
    * @return bool success
    */
-  bool compileInitialValueDependencies(const bool & updateConcentration);
+  bool compileInitialValueDependencies();
+
+  /**
+   * Determine whether changing the initial concentration is allowed
+   */
+  void compileIsInitialConcentrationChangeAllowed();
 
   /**
    * Check whether changing the initial concentration is allowed
-   * @return bool allowed
+   * @return const bool & allowed
    */
-  bool isInitialConcentrationChangeAllowed();
+  const bool & isInitialConcentrationChangeAllowed() const;
 
   /**
    * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
@@ -210,9 +322,9 @@ public:
 
   /**
    * Retrieve the list of deleted numeric child objects;
-   * @return std::set< const CCopasiObject * > deletedObjects
+   * @return CCopasiObject::DataObjectSet deletedObjects
    */
-  virtual std::set< const CCopasiObject * > getDeletedObjects() const;
+  virtual DataObjectSet getDeletedObjects() const;
 
   /**
    *
@@ -397,100 +509,6 @@ public:
   C_INT32 load(CReadConfig & configbuffer);
 
   C_INT32 getIndex() const;
-};
-
-class CConcentrationReference : public CCopasiObjectReference< C_FLOAT64 >
-{
-public:
-  /**
-   * Default constructor
-   * @param const CCopasiContainer * pParent,
-   * @param C_FLOAT64 & reference,
-   */
-  CConcentrationReference(const CCopasiContainer * pParent,
-                          C_FLOAT64 & reference);
-
-  /**
-   * Copy constructor
-   * @param const CConcentrationReference & src
-   * @param const CCopasiContainer * pParent,
-   */
-  CConcentrationReference(const CConcentrationReference & src,
-                          const CCopasiContainer * pParent);
-
-  /**
-   * Destructor
-   */
-  ~CConcentrationReference();
-
-  /**
-   * Retrieve the list of direct dependencies
-   * @param const std::set< const CCopasiObject * > & context (default empty set)
-   * @return const std::set< const CCopasiObject * > & directDependencies
-   */
-  virtual const std::set< const CCopasiObject * > &
-  getDirectDependencies(const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
-
-  /**
-   * Retrieve the refresh call which calculates the concentration based on state values needed
-   * when applying the initial state.
-   * @return Refresh * applyInitialValueRefresh
-   */
-  Refresh * getApplyInitialValueRefresh() const;
-
-  // Attributes
-private:
-  /**
-   * The list of direct dependencies when the values is in the changed context,
-   * i.e., it is always empty
-   */
-  static std::set< const CCopasiObject * > EmptyDependencies;
-
-  /**
-   * The refresh call needed when applying initial values.
-   */
-  Refresh * mpApplyInitialValuesRefresh;
-};
-
-class CParticleReference : public CCopasiObjectReference< C_FLOAT64 >
-{
-public:
-  /**
-   * Default constructor
-   * @param const CCopasiContainer * pParent,
-   * @param C_FLOAT64 & reference,
-   */
-  CParticleReference(const CCopasiContainer * pParent,
-                     C_FLOAT64 & reference);
-
-  /**
-   * Copy constructor
-   * @param const CParticleReference & src
-   * @param const CCopasiContainer * pParent,
-   */
-  CParticleReference(const CParticleReference & src,
-                     const CCopasiContainer * pParent);
-
-  /**
-   * Destructor
-   */
-  ~CParticleReference();
-
-  /**
-   * Retrieve the list of direct dependencies
-   * @param const std::set< const CCopasiObject * > & context (default empty set)
-   * @return const std::set< const CCopasiObject * > & directDependencies
-   */
-  virtual const std::set< const CCopasiObject * > &
-  getDirectDependencies(const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
-
-  // Attributes
-private:
-  /**
-   * The list of direct dependencies when the values is in the changed context,
-   * i.e., it is always empty
-   */
-  static std::set< const CCopasiObject * > EmptyDependencies;
 };
 
 #endif // COPASI_CMetab

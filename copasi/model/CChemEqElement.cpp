@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.cpp,v $
- $Revision: 1.33 $
+ $Revision: 1.34 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/02/19 19:50:46 $
+ $Date: 2011/03/21 15:48:15 $
  End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -68,6 +73,7 @@ void CChemEqElement::setMetabolite(const std::string & key)
 {
   mMetaboliteKey = key;
   CMetab* tmp = dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(mMetaboliteKey));
+
   if (tmp)
     this->setObjectName("ChEqEl_" + tmp->getObjectName());
   else
@@ -78,7 +84,7 @@ const std::string & CChemEqElement::getMetaboliteKey() const
 {return mMetaboliteKey;}
 
 const CMetab * CChemEqElement::getMetabolite() const
-  {return dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(mMetaboliteKey));}
+{return dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(mMetaboliteKey));}
 
 void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity = multiplicity;}
@@ -86,10 +92,10 @@ void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity += multiplicity;}
 
-C_FLOAT64 CChemEqElement::getMultiplicity() const
-  {
-    return mMultiplicity;
-  }
+const C_FLOAT64 & CChemEqElement::getMultiplicity() const
+{
+  return mMultiplicity;
+}
 
 std::ostream & operator<<(std::ostream &os, const CChemEqElement & d)
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:25 $
+//   $Date: 2011/03/21 15:48:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,10 +41,28 @@
 #include "report/CCopasiRootContainer.h"
 
 const std::string CEvaluationTree::TypeName[] =
-  {"userdefined", "predefined", "predefined", "userdefined", "userdefined", "userdefined", ""};
+{
+  "userdefined",
+  "predefined",
+  "predefined",
+  "userdefined",
+  "userdefined",
+  "userdefined",
+  "internal",
+  ""
+};
 
 const char* CEvaluationTree::XMLType[] =
-  {"Function", "MassAction", "PreDefined", "UserDefined", "Expression", "Boolean", NULL};
+{
+  "Function",
+  "MassAction",
+  "PreDefined",
+  "UserDefined",
+  "Expression",
+  "Boolean",
+  "MathExpression",
+  NULL
+};
 
 CEvaluationTree *
 CEvaluationTree::create(CEvaluationTree::Type type)
@@ -483,9 +501,9 @@ void CEvaluationTree::initObjects()
   pObject->setDirectDependencies(Self);
 }
 
-CCopasiObject::ObjectSet CEvaluationTree::getDeletedObjects() const
+CCopasiObject::DataObjectSet CEvaluationTree::getDeletedObjects() const
 {
-  CCopasiObject::ObjectSet Deleted;
+  CCopasiObject::DataObjectSet Deleted;
 
   Deleted.insert(this);
   Deleted.insert(static_cast< const CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value"))));

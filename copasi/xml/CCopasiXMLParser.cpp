@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.225 $
+//   $Revision: 1.226 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:43 $
+//   $Date: 2011/03/21 15:48:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -378,7 +378,7 @@ const CCopasiParameterGroup * CCopasiXMLParser::getCurrentGroup() const
 
 const CCopasiObject * CCopasiXMLParser::getObjectFromName(const std::string & cn) const
 {
-  const CCopasiObjectInterface * pObject = NULL;
+  const CObjectInterface * pObject = NULL;
   CCopasiObjectName CN = CCopasiObjectName(cn).getRemainder();
 
   if (mCommon.pModel &&

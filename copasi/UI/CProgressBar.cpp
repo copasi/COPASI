@@ -1,10 +1,10 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.35 $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/09 18:50:08 $
+//   $Date: 2011/03/21 15:48:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,7 +222,6 @@ void CProgressBar::slotProgressAll()
     }
 
   mSlotFinished = true;
-  mWaitSlot.wakeAll();
 }
 
 bool CProgressBar::finish()

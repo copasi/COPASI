@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.398 $
+//   $Revision: 1.399 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:37 $
+//   $Date: 2011/03/21 15:48:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -464,6 +464,14 @@ bool CModel::compile()
 
   if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
 
+  CCopasiVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
+  CCopasiVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
+
+  for (; itSpecies != endSpecies; ++itSpecies)
+    {
+      (*itSpecies)->compileIsInitialConcentrationChangeAllowed();
+    }
+
   //update annotations
   updateMatrixAnnotations();
 
@@ -548,19 +556,6 @@ bool CModel::buildDependencyGraphs()
 }
 #endif // TST_DEPENCYGRAPH
 
-void CModel::compileDefaultMetabInitialValueDependencies()
-{
-  CCopasiVector< CMetab >::iterator it = mMetabolites.begin();
-  CCopasiVector< CMetab >::iterator end = mMetabolites.end();
-
-  for (; it != end; ++it)
-    (*it)->compileInitialValueDependencies(true);
-
-  mBuildInitialSequence = true;
-
-  return;
-}
-
 void CModel::setCompileFlag(bool flag)
 {
   mCompileIsNecessary = flag;
@@ -568,24 +563,20 @@ void CModel::setCompileFlag(bool flag)
 
 bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
 {
-  if (!mCompileIsNecessary)
+  if (mCompileIsNecessary)
     {
-      compileDefaultMetabInitialValueDependencies();
+      mpCompileHandler = pProcessReport;
 
-      return true;
+      try
+        {
+          compile();
+        }
+
+      catch (...)
+        {}
+
+      mpCompileHandler = NULL;
     }
-
-  mpCompileHandler = pProcessReport;
-
-  try
-    {
-      compile();
-    }
-
-  catch (...)
-    {}
-
-  mpCompileHandler = NULL;
 
   return true;
 }
@@ -1343,7 +1334,7 @@ bool CModel::buildInitialSequence()
   // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
   // and link matrix.
 
-  CCopasiObject::ObjectSet Objects;
+  CCopasiObject::DataObjectSet Objects;
 
   // The initial values of the model entities
   CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
@@ -1616,7 +1607,7 @@ bool CModel::buildNonSimulatedSequence()
 {
   bool success = true;
 
-  CCopasiObject::ObjectSet Objects;
+  CCopasiObject::DataObjectSet Objects;
 
   // Compartments
   CCopasiVector< CCompartment >::iterator itComp = mCompartments.begin();
@@ -2266,7 +2257,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
           for (it = dependentReactions.begin(); it != itEnd; ++it)
             if (DeletedObjects.find(*it) == DeletedObjects.end())
               {
-                CCopasiObject::ObjectSet AdditionalObjects =
+                CCopasiObject::DataObjectSet AdditionalObjects =
                   static_cast< const CReaction * >(*it)->getDeletedObjects();
 
                 std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
@@ -2286,7 +2277,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
           for (it = dependentMetabolites.begin(); it != itEnd; ++it)
             if (DeletedObjects.find(*it) == DeletedObjects.end())
               {
-                CCopasiObject::ObjectSet AdditionalObjects =
+                CCopasiObject::DataObjectSet AdditionalObjects =
                   static_cast< const CMetab * >(*it)->getDeletedObjects();
 
                 std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
@@ -2306,7 +2297,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
           for (it = dependentModelValues.begin(); it != itEnd; ++it)
             if (DeletedObjects.find(*it) == DeletedObjects.end())
               {
-                CCopasiObject::ObjectSet AdditionalObjects =
+                CCopasiObject::DataObjectSet AdditionalObjects =
                   static_cast< const CModelValue * >(*it)->getDeletedObjects();
 
                 std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
@@ -2326,7 +2317,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
           for (it = dependentCompartments.begin(); it != itEnd; ++it)
             if (DeletedObjects.find(*it) == DeletedObjects.end())
               {
-                CCopasiObject::ObjectSet AdditionalObjects =
+                CCopasiObject::DataObjectSet AdditionalObjects =
                   static_cast< const CCompartment * >(*it)->getDeletedObjects();
 
                 std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
@@ -2355,8 +2346,8 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
   CCopasiVectorN< CReaction >::const_iterator it = mSteps.begin();
   CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
 
-  CCopasiObject::ObjectSet::const_iterator itSet;
-  CCopasiObject::ObjectSet::const_iterator endSet;
+  CCopasiObject::DataObjectSet::const_iterator itSet;
+  CCopasiObject::DataObjectSet::const_iterator endSet;
 
   for (; it != end; ++it)
     if (candidates.find(*it) == candidates.end())
@@ -2366,7 +2357,7 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
         // We need to ignore our own local reaction parameters.
         CCopasiParameterGroup::index_iterator itParameter = (*it)->getParameters().beginIndex();
         CCopasiParameterGroup::index_iterator endParameter = (*it)->getParameters().endIndex();
-        CCopasiObject::ObjectSet::iterator itIgnored;
+        CCopasiObject::DataObjectSet::iterator itIgnored;
 
         for (; itParameter != endParameter; ++itParameter)
           {
@@ -2383,7 +2374,7 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
             continue;
           }
 
-        CCopasiObject::ObjectSet DeletedObjects = (*it)->getDeletedObjects();
+        CCopasiObject::DataObjectSet DeletedObjects = (*it)->getDeletedObjects();
         itSet = DeletedObjects.begin();
         endSet = DeletedObjects.end();
 
@@ -2418,8 +2409,8 @@ bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
   CCopasiVectorN< CMetab >::const_iterator it;
   CCopasiVectorN< CMetab >::const_iterator end;
 
-  CCopasiObject::ObjectSet::const_iterator itSet;
-  CCopasiObject::ObjectSet::const_iterator endSet;
+  CCopasiObject::DataObjectSet::const_iterator itSet;
+  CCopasiObject::DataObjectSet::const_iterator endSet;
 
   for (; itComp != endComp; ++itComp)
     {
@@ -3682,7 +3673,6 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
   std::set< const CCopasiObject * >::iterator itSet;
   std::set< const CCopasiObject * >::iterator endSet;
   std::set< const CCopasiObject * > Objects;
-  std::set< const CCopasiObject * > Context;
 
   CModelEntity **ppEntity;
   CModelEntity **ppEntityEnd = mStateTemplate.endFixed();
@@ -3787,12 +3777,10 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
         {
           if (changedObjects.count(pMetab->getInitialConcentrationReference()) != 0)
             {
-              pMetab->compileInitialValueDependencies(false);
               Objects.insert(pMetab->getInitialValueReference());
             }
           else
             {
-              pMetab->compileInitialValueDependencies(true);
               Objects.insert(pMetab->getInitialConcentrationReference());
             }
         }
@@ -3813,7 +3801,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
   // Check whether we have any circular dependencies
   for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
-    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet, Context))
+    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet, changedObjects))
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
 
   // Build the complete set of dependencies
@@ -3824,7 +3812,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
       // Add all its dependencies
       if (InsertedObject.second)
-        (*itSet)->getAllDependencies(DependencySet, Context);
+        (*itSet)->getAllDependencies(DependencySet, changedObjects);
     }
 
   // Remove all objects which do not depend on the changed objects, or do not have a
@@ -3841,7 +3829,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
       else if (changedObjects.count(*itSet) != 0)
         Objects.insert(*itSet);
       // Not dependent on the changed objects.
-      else if (!(*itSet)->dependsOn(changedObjects))
+      else if (!(*itSet)->dependsOn(changedObjects, changedObjects))
         Objects.insert(*itSet);
     }
 
@@ -3850,7 +3838,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
   // Create a properly sorted list.
   std::list< const CCopasiObject * > SortedList =
-    sortObjectsByDependency(DependencySet.begin(), DependencySet.end(), Context);
+    sortObjectsByDependency(DependencySet.begin(), DependencySet.end(), changedObjects);
 
   std::list< const CCopasiObject * >::iterator itList;
   std::list< const CCopasiObject * >::iterator endList;

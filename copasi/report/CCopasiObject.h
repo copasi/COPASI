@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:00 $
+//   $Date: 2011/03/21 15:48:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,8 @@
 #include <list>
 
 #include "copasi.h"
+
+#include "copasi/math/CMathEnum.h"
 
 class CCopasiObjectName;
 class CCopasiContainer;
@@ -156,18 +158,20 @@ class CRenameHandler;
 
 //********************************************************************************
 
-class CCopasiObjectInterface
+class CObjectInterface
 {
 public:
+  typedef std::set< const CObjectInterface * > ObjectSet;
+
   /**
    * Constructor
    */
-  CCopasiObjectInterface() {};
+  CObjectInterface() {};
 
   /**
    * Destructor
    */
-  virtual ~CCopasiObjectInterface() {};
+  virtual ~CObjectInterface() {};
 
   /**
    * Retrieve the CN of the object
@@ -178,9 +182,27 @@ public:
   /**
    * Retrieve a descendant object by its CN.
    * @param const CCopasiObjectName & cn
-   * @return const CCopasiObjectInterface * pObject
+   * @return const CObjectInterface * pObject
    */
-  virtual const CCopasiObjectInterface * getObject(const CCopasiObjectName & cn) const = 0;
+  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const = 0;
+
+  /**
+   * Retrieve the prerequisites, i.e., the objects which need to be evaluated
+   * before this.
+   * @return const CObjectInterface::ObjectSet & prerequisites
+   */
+  virtual const CObjectInterface::ObjectSet & getPrerequisites() const = 0;
+
+  /**
+   * Check whether a given object is a prerequisite for a context.
+   * @param const CObjectInterface * pObject
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @return bool isPrerequisiteForContext
+   */
+  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
+                                        const CMath::SimulationContextFlag & context,
+                                        const CObjectInterface::ObjectSet & changedObjects) const = 0;
 
   /**
    * This is the output method for any object. The default implementation
@@ -195,11 +217,9 @@ public:
    * Retrieve a pointer to the value of the object
    */
   virtual void * getValuePointer() const = 0;
-
-
 };
 
-class CCopasiObject: public CCopasiObjectInterface
+class CCopasiObject: public CObjectInterface
 {
 #ifdef WIN32
   friend CCopasiVector< CCopasiObject >;
@@ -208,7 +228,7 @@ class CCopasiObject: public CCopasiObjectInterface
   typedef CCopasiObject referenceType;
 
 public:
-  typedef std::set< const CCopasiObject * > ObjectSet;
+  typedef std::set< const CCopasiObject * > DataObjectSet;
 
 
   //Attributes
@@ -249,7 +269,7 @@ private:
    * A list of all objects the object depends on directly, i.e, the
    * objects which are used to calculate the object.
    */
-  ObjectSet mDependencies;
+  DataObjectSet mDependencies;
 
 private:
 
@@ -324,21 +344,21 @@ public:
 
   virtual CCopasiObjectName getCN() const;
 
-  virtual const CCopasiObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
 
   /**
    * Set the direct dependencies
    * @param const Set & directDependencies
    */
-  void setDirectDependencies(const ObjectSet & directDependencies);
+  void setDirectDependencies(const DataObjectSet & directDependencies);
 
   /**
    * Retrieve the list of direct dependencies
-   * @param const ObjectSet & context (default empty set)
-   * @return const ObjectSet & directDependencies
+   * @param const DataObjectSet & context (default empty set)
+   * @return const DataObjectSet & directDependencies
    */
-  virtual const ObjectSet &
-  getDirectDependencies(const ObjectSet & context = ObjectSet()) const;
+  virtual const DataObjectSet &
+  getDirectDependencies(const DataObjectSet & context = DataObjectSet()) const;
 
   /**
    * Clear the list of direct dependencies.
@@ -360,64 +380,67 @@ public:
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated
    * before this.
-   * @return const ObjectSet & prerequisites
+   * @return const CObjectInterface::ObjectSet & prerequisites
    */
-  const ObjectSet & getPrerequisites() const;
+  virtual const CObjectInterface::ObjectSet & getPrerequisites() const;
 
   /**
    * Check whether a given object is a prerequisite for a context.
-   * @param const CCopasiObject * pObject
-   * @param const ObjectSet & context
+   * @param const CObjectInterface * pObject
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool isPrerequisiteForContext
    */
-  bool isPrerequisiteForContext(const CCopasiObject * pObject, const ObjectSet & context) const;
+  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
+                                        const CMath::SimulationContextFlag & context,
+                                        const CObjectInterface::ObjectSet & changedObjects) const;
 
   /**
    * If called with an empty set of dependencies it retrieves the complete list
    * of all dependencies (including all indirect) of the current object.
    * If called with a non empty set it will only add any dependency and all its
    * dependencies to the list if the dependency is not already among the dependencies
-   * @param ObjectSet & dependencies
-   * @param const ObjectSet & context
+   * @param DataObjectSet & dependencies
+   * @param const DataObjectSet & context
    */
-  void getAllDependencies(ObjectSet & dependencies,
-                          const ObjectSet & context) const;
+  void getAllDependencies(DataObjectSet & dependencies,
+                          const DataObjectSet & context) const;
 
   /**
    * Check whether the current object depends on any objects in the candidates.
-   * @param ObjectSet candidates
-   * @param const ObjectSet & context (default: empty set)
+   * @param DataObjectSet candidates
+   * @param const DataObjectSet & context (default: empty set)
    * @return bool dependsOn
    */
-  bool dependsOn(ObjectSet candidates,
-                 const ObjectSet & context = ObjectSet()) const;
+  bool dependsOn(DataObjectSet candidates,
+                 const DataObjectSet & context = DataObjectSet()) const;
 
   /**
    * If called with an empty set it will check whether the current object and all its
    * dependencies (including all indirect) form a circular dependency.
    * If called with a non empty set it check whether the candidates plus the current object
    * and all its dependencies form a circular dependency.
-   * @param ObjectSet & dependencies
-   * @param ObjectSet & verified
-   * @param const ObjectSet & context
+   * @param DataObjectSet & dependencies
+   * @param DataObjectSet & verified
+   * @param const DataObjectSet & context
    * @return bool hasCircularDependencies
    */
-  bool hasCircularDependencies(ObjectSet & candidates,
-                               ObjectSet & verified,
-                               const ObjectSet & context) const;
+  bool hasCircularDependencies(DataObjectSet & candidates,
+                               DataObjectSet & verified,
+                               const DataObjectSet & context) const;
 
   /**
    * Build the update sequence for the given list of objects. The resulting sequence
    * takes the dependencies of the objects in consideration. If circular dependencies
    * are detected an exception is thrown
-   * @param ObjectSet & objects
-   * @param const ObjectSet & uptoDateObjects
-   * @param const ObjectSet & context (default: empty set)
+   * @param DataObjectSet & objects
+   * @param const DataObjectSet & uptoDateObjects
+   * @param const DataObjectSet & context (default: empty set)
    * @return std::vector< Refresh * > updateSequence
    */
-  static std::vector< Refresh * > buildUpdateSequence(const ObjectSet & objects,
-      const ObjectSet & uptoDateObjects,
-      const ObjectSet & context = ObjectSet());
+  static std::vector< Refresh * > buildUpdateSequence(const DataObjectSet & objects,
+      const DataObjectSet & uptoDateObjects,
+      const DataObjectSet & context = DataObjectSet());
 
   /**
    * Retrieve the units of the object.
@@ -568,21 +591,21 @@ createMatrixReference(const std::string & name,
  * their dependencies
  * @param ForwardAccessIterator begin
  * @param ForwardAccessIterator end
- * @param const ObjectSet & context
+ * @param const DataObjectSet & context
  * @return std::list< const CCopasiObject * >
  */
 template <typename ForwardAccessIterator>
 std::list< const CCopasiObject * > sortObjectsByDependency(ForwardAccessIterator begin,
     ForwardAccessIterator end,
-    const CCopasiObject::ObjectSet & context)
+    const CCopasiObject::DataObjectSet & context)
 {
   std::list< const CCopasiObject * > SortedList;
   std::list< const CCopasiObject * >::iterator itList;
   std::list< const CCopasiObject * >::iterator endList;
 
-  CCopasiObject::ObjectSet AllDependencies;
-  std::list< CCopasiObject::ObjectSet > DependencySet;
-  std::list< CCopasiObject::ObjectSet >::iterator itDependencies;
+  CCopasiObject::DataObjectSet AllDependencies;
+  std::list< CCopasiObject::DataObjectSet > DependencySet;
+  std::list< CCopasiObject::DataObjectSet >::iterator itDependencies;
 
   for (; begin != end; ++begin)
     {

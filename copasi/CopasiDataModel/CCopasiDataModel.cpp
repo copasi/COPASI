@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.154 $
+//   $Revision: 1.155 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:25 $
+//   $Date: 2011/03/21 15:48:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1385,10 +1385,10 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
   return true;
 }
 
-CCopasiObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopasiContainer * > & listOfContainer,
+CObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopasiContainer * > & listOfContainer,
     const CCopasiObjectName & objName) const
 {
-  const CCopasiObjectInterface * pObject = NULL;
+  const CObjectInterface * pObject = NULL;
   const CCopasiContainer* pContainer;
   CCopasiObjectName ContainerName;
   size_t containerIndex;
@@ -1426,7 +1426,7 @@ CCopasiObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopa
   if (!pObject)
     pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
 
-  return const_cast< CCopasiObjectInterface * >(pObject);
+  return const_cast< CObjectInterface * >(pObject);
 }
 
 CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
@@ -1437,7 +1437,7 @@ CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopasiConta
 
 CCopasiObject * CCopasiDataModel::getDataObject(const CCopasiObjectName & CN) const
 {
-  return dynamic_cast< CCopasiObject *>(const_cast< CCopasiObjectInterface * >(getObject(CN)));
+  return dynamic_cast< CCopasiObject *>(const_cast< CObjectInterface * >(getObject(CN)));
 }
 
 #ifdef USE_CRENDER_EXTENSION

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.189 $
+//   $Revision: 1.190 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:51 $
+//   $Date: 2011/03/21 15:48:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,12 +265,6 @@ public:
 #ifdef TST_DEPENCYGRAPH
   bool buildDependencyGraphs();
 #endif // TST_DEPENCYGRAPH
-
-  /**
-   * Compile the default initial value dependencies, which is that the
-   * initial concentration is updated.
-   */
-  void compileDefaultMetabInitialValueDependencies();
 
   /**
    *  Build the Stoichiometry Matrix from the chemical equations of the steps

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/02 15:33:49 $
+//   $Date: 2011/03/21 15:48:16 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,9 +20,6 @@
 #define COPASI_CMathTrigger
 
 #include <stack>
-
-// We have not yet a stack machine for expression thus we use the old AST
-#define CMathExpression CExpression
 
 #include "copasi/function/CExpression.h"
 
@@ -113,7 +115,7 @@ public:
     /**
      * This expression calculates the root
      */
-    CMathExpression mRoot;
+    CExpression mRoot;
 
     /**
      * A pointer to the value of the root expression
@@ -227,7 +229,7 @@ private:
    * This expression evaluates whether
    * the trigger value is true.
    */
-  CMathExpression mTrueExpression;
+  CExpression mTrueExpression;
 
   /**
    * A vector containing the root expression.

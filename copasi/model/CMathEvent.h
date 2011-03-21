@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/03/21 15:48:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,9 +18,6 @@
 
 #ifndef COPASI_CMathEvent
 #define COPASI_CMathEvent
-
-// We have not yet a stack machine for expression thus we use the old AST
-#define CMathExpression CExpression
 
 #include "copasi/model/CMathTrigger.h"
 #include "copasi/function/CExpression.h"
@@ -75,7 +72,7 @@ private:
     /**
      * Expression to calculate the new value.
      */
-    CMathExpression mExpression;
+    CExpression mExpression;
   };
 
   // Operations
@@ -176,7 +173,7 @@ private:
   /**
    * Delay expression.
    */
-  CMathExpression mDelay;
+  CExpression mDelay;
 
   /**
    * Boolean value indicating whether the calculation or the assignment is delayed.

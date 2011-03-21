@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:37 $
+//   $Date: 2011/03/21 15:48:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -307,9 +307,9 @@ public:
   /**
    * We are hiding local reaction parameter which are covered by global quantities.
    * @param const CCopasiObjectName & cn
-   * @return const CCopasiObjectInterface * pObject
+   * @return const CObjectInterface * pObject
    */
-  virtual const CCopasiObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
 
   /**
    *  Gets the description of what parameters the function expects.

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:42 $
+//   $Date: 2011/03/21 15:48:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,17 +195,17 @@ public:
    * most of the work will be done by getObject(). If the element already
    * exists, the existing element will be returned.
    */
-  const CCopasiObjectInterface * addElementReference(CCopasiAbstractArray::index_type index) const;
+  const CObjectInterface * addElementReference(CCopasiAbstractArray::index_type index) const;
 
   /**
    * a convenience function for 2-dimensional arrays.
    */
-  const CCopasiObjectInterface * addElementReference(C_INT32 u, C_INT32 v) const;
+  const CObjectInterface * addElementReference(C_INT32 u, C_INT32 v) const;
 
   /**
    * a convenience function for 1-dimensional arrays.
    */
-  const CCopasiObjectInterface * addElementReference(C_INT32 u) const;
+  const CObjectInterface * addElementReference(C_INT32 u) const;
 
   /**
    * Appends all element references to the set of objects
@@ -217,7 +217,7 @@ public:
    * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
    * Since this is also a container, this is not necessarily the case.
    */
-  virtual const CCopasiObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
 
   /**
    * Check whether the size of array is greater than 0 for each dimension.

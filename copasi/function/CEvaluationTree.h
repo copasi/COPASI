@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:25 $
+//   $Date: 2011/03/21 15:48:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@ public:
     PreDefined,
     UserDefined,
     Expression,
+    MathExpression
   };
 
   /**
@@ -238,9 +239,9 @@ public:
 
   /**
    * Retrieve the list of deleted objects.
-   * @return CCopasiObject::ObjectSet deletedObjects
+   * @return CCopasiObject::DataObjectSet deletedObjects
    */
-  CCopasiObject::ObjectSet getDeletedObjects() const;
+  CCopasiObject::DataObjectSet getDeletedObjects() const;
 
   /**
    * Check whether the evaluation tree calls any tree in the list

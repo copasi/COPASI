@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:43 $
+//   $Date: 2011/03/21 15:48:18 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2797,17 +2797,35 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   if (pModel != NULL && (!pModel->getNotes().empty()) && !(pModel->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
     {
+#if LIBSBML_VERSION >= 40100
+      // the new method to create notes does not add the notes tag around the notes any
+      // more because libsbml 4 checks if it is there and adds it if it isn't
+      XMLNode* pNotes = CSBMLExporter::createSBMLNotes(pModel->getNotes());
+#else
+      // if we are compiling agains libsbml 3, we use the old way of setting the notes
       std::string comments = "<notes>" + pModel->getNotes() + "</notes>";
       // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
       // in libsbml it creates a dummy node and in libsbml 4 it doesn't
       // somehow this never did affect the notes because they were exported correctly with
       // libsbml 3 already
       XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
+#endif // LIBSBML_VERSION
 
       if (pNotes != NULL)
         {
-          this->mpSBMLDocument->getModel()->setNotes(pNotes);
+          int notes_result = this->mpSBMLDocument->getModel()->setNotes(pNotes);
+
+          if (notes_result != LIBSBML_OPERATION_SUCCESS)
+            {
+              // issue some warning
+              CCopasiMessage(CCopasiMessage::WARNING, "Warning, notes could not be set on the SBML model, please consider reporting this to the COPASI developers.");
+            }
+
           delete pNotes;
+        }
+      else
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "Warning, notes could not be set on the SBML model, please consider reporting this to the COPASI developers.");
         }
     }
 
@@ -6702,6 +6720,124 @@ CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNod
 }
 
 
+#if LIBSBML_VERSION >= 40001
+/**
+ * Method to create a valid XHTML node from a CModels comments string.
+ */
+XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
+{
+  XMLNode* pResult = NULL;
+  // check if the notes string starts with a "<"
+  size_t pos = notes_string.find_first_not_of(" \n\t\r");
 
+  if (pos != std::string::npos)
+    {
+      if (notes_string[pos] == '<')
+        {
+          // create an XMLNode
+          XMLNode* pNotes = XMLNode::convertStringToXMLNode(notes_string);
+          assert(pNotes != NULL);
+
+          if (pNotes != NULL)
+            {
+              size_t pos2 = notes_string.find_first_of(" \t\n\r>");
+
+              if (pos2 != std::string::npos)
+                {
+                  // check if the XML node is a dummy node
+                  std::string elementName = notes_string.substr(pos + 1, pos2 - pos - 1);
+
+                  if (elementName == pNotes->getName())
+                    {
+                      pResult = pNotes;
+
+                      // make sure the namespace is set
+                      if (pResult->getURI() != "http://www.w3.org/1999/xhtml")
+                        {
+                          std::string prefix = pResult->getPrefix();
+                          std::string ns = "http://www.w3.org/1999/xhtml";
+
+                          if (prefix != "")
+                            {
+                              ns = prefix + ":" + ns;
+                            }
+
+                          pResult->setTriple(XMLTriple(pResult->getName(), ns, prefix));
+                          int tmp = pResult->addNamespace("http://www.w3.org/1999/xhtml", prefix);
+                          assert(tmp == LIBSBML_OPERATION_SUCCESS);
+                        }
+                    }
+                  else
+                    {
+                      // the top level node is a dummy node
+                      // we replace the dummy node by a body tag
+                      // libSBML seems to create a dummy node which is considered
+                      // an EOF node
+                      if (pNotes->isEOF())
+                        {
+                          XMLAttributes attr;
+                          XMLNamespaces xmlns;
+                          pResult = new XMLNode(XMLTriple("body", "http://www.w3.org/1999/xhtml", ""), attr, xmlns);
+                          // copy all children from  pNotes to pResult
+                          unsigned int i, iMax = pNotes->getNumChildren();
+
+                          for (i = 0; i < iMax; ++i)
+                            {
+                              pResult->addChild(pNotes->getChild(i));
+                            }
+
+                          delete pNotes;
+                          pResult->unsetEnd();
+                          assert(pResult->isEnd() == false);
+                        }
+                      else
+                        {
+                          pResult = pNotes;
+                          pResult->setTriple(XMLTriple("body", "http://www.w3.org/1999/xhtml", ""));
+                          assert(pResult->isElement() == true);
+                          assert(pResult->isEnd() == false);
+                        }
+
+                      int tmp = pResult->addNamespace("http://www.w3.org/1999/xhtml", "");
+                      assert(tmp == LIBSBML_OPERATION_SUCCESS);
+                    }
+                }
+              else
+                {
+                  // put the complete string in a pre tag
+                  std::string new_notes = "<pre xmlns=\"http://www.w3.org/1999/xhtml\">" + notes_string + "</pre>";
+                  pResult = XMLNode::convertStringToXMLNode(new_notes);
+                  assert(pResult != NULL);
+                  assert(pResult->getName() == "pre");
+                  assert(pResult->getURI() == "http://www.w3.org/1999/xhtml");
+                  assert(pResult->getNumChildren() != 0);
+                }
+            }
+        }
+      else
+        {
+          // put the complete notes string into a body tag
+          std::string new_notes = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + notes_string + "</body>";
+          pResult = XMLNode::convertStringToXMLNode(new_notes);
+          assert(pResult != NULL);
+          assert(pResult->getName() == "body");
+          assert(pResult->getURI() == "http://www.w3.org/1999/xhtml");
+          assert(pResult->getNumChildren() != 0);
+        }
+    }
+  else
+    {
+      // create an empty pre element
+      std::string new_notes = "<pre xmlns=\"http://www.w3.org/1999/xhtml\"/>";
+      pResult = XMLNode::convertStringToXMLNode(new_notes);
+      assert(pResult != NULL);
+      assert(pResult->getName() == "pre");
+      assert(pResult->getURI() == "http://www.w3.org/1999/xhtml");
+      assert(pResult->getNumChildren() == 0);
+    }
+
+  return pResult;
+}
+#endif // LIBSBML_VERSION
 
 

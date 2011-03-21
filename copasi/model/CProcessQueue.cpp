@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/03/21 15:48:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,7 +100,7 @@ CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
 {}
 
 CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
-                                CMathExpression * pExpression,
+                                CExpression * pExpression,
                                 CMathEvent * pEvent,
                                 CProcessQueue * pProcessQueue) :
     mpTarget(pTarget),
@@ -205,7 +205,7 @@ bool CProcessQueue::addCalculation(const C_FLOAT64 & executionTime,
                                    const size_t & order,
                                    const size_t & eventId,
                                    C_FLOAT64 * pTarget,
-                                   CMathExpression * pExpression,
+                                   CExpression * pExpression,
                                    CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
+//   $Date: 2011/03/21 15:48:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,19 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
         break;
     }
 
+  mPrecedence = PRECEDENCE_NUMBER;
+}
+
+CEvaluationNodeNumber::CEvaluationNodeNumber(const C_FLOAT64 & number):
+    CEvaluationNode((Type)(CEvaluationNode::NUMBER | CEvaluationNodeNumber::DOUBLE), "")
+{
+  std::ostringstream Data;
+
+  Data.imbue(std::locale::classic());
+  Data.precision(16);
+  Data << number;
+
+  mData = Data.str();
   mPrecedence = PRECEDENCE_NUMBER;
 }
 

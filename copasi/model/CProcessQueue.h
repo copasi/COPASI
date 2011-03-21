@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:49 $
+//   $Date: 2011/03/21 15:48:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,10 +24,7 @@
 
 #include "copasi/utilities/CVector.h"
 
-// We have not yet a stack machine for expression thus we use the old AST
-#define CMathExpression CExpression
-
-class CMathExpression;
+class CExpression;
 class CMathModel;
 class CMathEvent;
 
@@ -135,7 +132,7 @@ private:
     /**
      * Specific constructor
      * @param C_FLOAT64 * pTarget
-     * @param CMathExpression * pExpression
+     * @param CExpression * pExpression
      * @param CMathEvent * pEvent
      */
     CAction(C_FLOAT64 * pTarget,
@@ -145,12 +142,12 @@ private:
     /**
      * Specific constructor
      * @param C_FLOAT64 * pTarget
-     * @param CMathExpression * pExpression
+     * @param CExpression * pExpression
      * @param CMathEvent * pEvent
      * @param CProcessQueue & processQueue
      */
     CAction(C_FLOAT64 * pTarget,
-            CMathExpression * pExpression,
+            CExpression * pExpression,
             CMathEvent * pEvent,
             CProcessQueue * pProcessQueue);
 
@@ -186,7 +183,7 @@ private:
     /**
      * The expression to be evaluates if the entry is a calculation.
      */
-    CMathExpression * mpExpression;
+    CExpression * mpExpression;
 
     /**
      * The event associated with this action
@@ -255,7 +252,7 @@ public:
    * @param const size_t & order
    * @param const size_t & eventId
    * @param C_FLOAT64 * pTarget
-   * @param CMathExpression * pExpression
+   * @param CExpression * pExpression
    * @param CMathEvent * pEvent
    * @return bool success
    */
@@ -264,7 +261,7 @@ public:
                       const size_t & order,
                       const size_t & eventId,
                       C_FLOAT64 * pTarget,
-                      CMathExpression * pExpression,
+                      CExpression * pExpression,
                       CMathEvent * pEvent);
 
   /**

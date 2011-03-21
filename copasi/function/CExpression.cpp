@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:25 $
+//   $Date: 2011/03/21 15:48:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,8 +54,8 @@ CExpression::~CExpression() {}
 
 void CExpression::initObjects()
 {
-  CCopasiObjectInterface * pObject =
-    const_cast< CCopasiObjectInterface * >(getObject(CCopasiObjectName("Reference=Value")));
+  CObjectInterface * pObject =
+    const_cast< CObjectInterface * >(getObject(CCopasiObjectName("Reference=Value")));
   assert(pObject != NULL);
 
   static_cast< CCopasiObject * >(pObject)->setRefresh(this, &CExpression::refresh);

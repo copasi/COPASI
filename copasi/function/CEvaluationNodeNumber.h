@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
-  $Revision: 1.14 $
+  $Revision: 1.15 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/03/07 19:28:19 $
+  $Date: 2011/03/21 15:48:19 $
   End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,12 +52,18 @@ private:
 
 public:
   /**
-   * Default constructor
+   * Specific constructor
    * @param const SubType & subType
    * @param const Data & data
    */
   CEvaluationNodeNumber(const SubType & subType,
                         const Data & data);
+
+  /**
+   * Specific constructor
+   * @param const C_FLOAT64 & number
+   */
+  CEvaluationNodeNumber(const C_FLOAT64 & number);
 
   /**
    * Copy constructor
