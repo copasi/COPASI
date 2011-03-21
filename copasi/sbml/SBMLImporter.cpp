@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.21 $
+//   $Revision: 1.263.2.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/02 20:18:08 $
+//   $Author: gauges $
+//   $Date: 2011/03/21 14:24:52 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5440,12 +5440,6 @@ bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
 void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   // so far we only support assignment rules and rate rules
-#if LIBSBML_VERSION >= 40100
-  // this is just there to make sure we don't accidentaly move the code
-  // for the import of rules before the code that imports reactions
-  // because this would lead to the species id set being empty
-  assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));
-#endif // LIBSBML_VERSION
   SBMLTypeCode_t type = sbmlRule->getTypeCode();
 
   if (type == SBML_ASSIGNMENT_RULE)
@@ -8472,12 +8466,6 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pNode, const CModel* 
 }
 void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-#if LIBSBML_VERSION >= 40100
-  // this is just there to make sure we don't accidentaly move the code
-  // for the import of events before the code that imports reactions
-  // because this would lead to the species id set being empty
-  assert(this->mLevel < 3 || (pSBMLModel->getNumReactions() == 0 || !this->mSBMLSpeciesReferenceIds.empty()));
-#endif // LIBSBML_VERSION
   unsigned int i, iMax = pSBMLModel->getNumEvents();
   unsigned C_INT32 step, totalSteps;
   size_t hStep;
