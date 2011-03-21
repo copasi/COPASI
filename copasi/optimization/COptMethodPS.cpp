@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.13.2.2 $
+//   $Revision: 1.13.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:40 $
+//   $Date: 2011/03/21 12:51:09 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -576,7 +576,7 @@ bool COptMethodPS::optimise()
     {
       Improved = false;
 
-      for (i = 0; i < mSwarmSize; i++)
+      for (i = 0; i < mSwarmSize && mContinue; i++)
         Improved |= move(i);
 
       if (!Improved)
