@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.22 $
+//   $Revision: 1.263.2.23 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/21 14:24:52 $
+//   $Date: 2011/03/21 15:52:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,36 +146,239 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // for SBML L3 files the default units are defined on the model
   if (this->mLevel > 2)
     {
-      // we make copies o the unit definitions so that we do not have to remember
+      // we make copies of the unit definitions so that we do not have to remember
       // if we created them or not
+      std::string units;
+      UnitDefinition* pUDef = NULL;
+      Unit unit(sbmlModel->getLevel(), sbmlModel->getVersion());
+
       if (sbmlModel->isSetSubstanceUnits())
         {
-          assert(sbmlModel->getUnitDefinition(sbmlModel->getSubstanceUnits()) != NULL);
-          pSubstanceUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getSubstanceUnits()));
+          units = sbmlModel->getSubstanceUnits();
+          assert(units != "");
+          pUDef =  sbmlModel->getUnitDefinition(units);
+
+          if (pUDef != NULL)
+            {
+              pSubstanceUnits = new UnitDefinition(*pUDef);
+            }
+          else
+            {
+              if (units == "mole")
+                {
+                  unit.setKind(UNIT_KIND_MOLE);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pSubstanceUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pSubstanceUnits->addUnit(&unit);
+                }
+              else if (units == "item")
+                {
+                  unit.setKind(UNIT_KIND_ITEM);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pSubstanceUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pSubstanceUnits->addUnit(&unit);
+                }
+              else if (units == "dimensionless")
+                {
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pSubstanceUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pSubstanceUnits->addUnit(&unit);
+                }
+              else
+                {
+                  std::string message = "COPASI can't handle substance unit \"" + units + "\". Setting unit for substances to dimensionless.";
+                  CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pSubstanceUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pSubstanceUnits->addUnit(&unit);
+                }
+            }
         }
 
       if (sbmlModel->isSetTimeUnits())
         {
-          assert(sbmlModel->getUnitDefinition(sbmlModel->getTimeUnits()) != NULL);
-          pTimeUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getTimeUnits()));
+          units = sbmlModel->getTimeUnits();
+          assert(units != "");
+          pUDef =  sbmlModel->getUnitDefinition(units);
+
+          if (pUDef != NULL)
+            {
+              pTimeUnits = new UnitDefinition(*pUDef);
+            }
+          else
+            {
+              if (units == "second")
+                {
+                  unit.setKind(UNIT_KIND_SECOND);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pTimeUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pTimeUnits->addUnit(&unit);
+                }
+              else if (units == "dimensionless")
+                {
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pTimeUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pTimeUnits->addUnit(&unit);
+                }
+              else
+                {
+                  std::string message = "COPASI can't handle time unit \"" + units + "\". Setting unit for time to dimensionless.";
+                  CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pTimeUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pTimeUnits->addUnit(&unit);
+                }
+            }
         }
 
       if (sbmlModel->isSetVolumeUnits())
         {
-          assert(sbmlModel->getUnitDefinition(sbmlModel->getVolumeUnits()) != NULL);
-          pVolumeUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getVolumeUnits()));
+          units = sbmlModel->getVolumeUnits();
+          assert(units != "");
+          pUDef =  sbmlModel->getUnitDefinition(units);
+
+          if (pUDef != NULL)
+            {
+              pVolumeUnits = new UnitDefinition(*pUDef);
+            }
+          else
+            {
+              if (units == "litre")
+                {
+                  unit.setKind(UNIT_KIND_LITRE);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pVolumeUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pVolumeUnits->addUnit(&unit);
+                }
+              else if (units == "dimensionless")
+                {
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pVolumeUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pVolumeUnits->addUnit(&unit);
+                }
+              else
+                {
+                  std::string message = "COPASI can't handle volume unit \"" + units + "\". Setting unit for volume to dimensionless.";
+                  CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pVolumeUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pVolumeUnits->addUnit(&unit);
+                }
+            }
         }
 
       if (sbmlModel->isSetAreaUnits())
         {
-          assert(sbmlModel->getUnitDefinition(sbmlModel->getAreaUnits()) != NULL);
-          pAreaUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getAreaUnits()));
+          units = sbmlModel->getAreaUnits();
+          assert(units != "");
+          pUDef =  sbmlModel->getUnitDefinition(units);
+
+          if (pUDef != NULL)
+            {
+              pAreaUnits = new UnitDefinition(*pUDef);
+            }
+          else
+            {
+              if (units == "dimensionless")
+                {
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pAreaUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pAreaUnits->addUnit(&unit);
+                }
+              else
+                {
+                  std::string message = "COPASI can't handle area unit \"" + units + "\". Setting unit for area to dimensionless.";
+                  CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pAreaUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pAreaUnits->addUnit(&unit);
+                }
+            }
         }
 
       if (sbmlModel->isSetLengthUnits())
         {
-          assert(sbmlModel->getUnitDefinition(sbmlModel->getLengthUnits()) != NULL);
-          pLengthUnits = new UnitDefinition(*sbmlModel->getUnitDefinition(sbmlModel->getLengthUnits()));
+          units = sbmlModel->getLengthUnits();
+          assert(units != "");
+          pUDef =  sbmlModel->getUnitDefinition(units);
+
+          if (pUDef != NULL)
+            {
+              pLengthUnits = new UnitDefinition(*pUDef);
+            }
+          else
+            {
+              if (units == "litre")
+                {
+                  unit.setKind(UNIT_KIND_LITRE);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pLengthUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pLengthUnits->addUnit(&unit);
+                }
+              else if (units == "metre")
+                {
+                  unit.setKind(UNIT_KIND_METRE);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pLengthUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pLengthUnits->addUnit(&unit);
+                }
+              else if (units == "dimensionless")
+                {
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pLengthUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pLengthUnits->addUnit(&unit);
+                }
+              else
+                {
+                  std::string message = "COPASI can't handle length unit \"" + units + "\". Setting unit for length to dimensionless.";
+                  CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+                  unit.setKind(UNIT_KIND_DIMENSIONLESS);
+                  unit.setExponent(1);
+                  unit.setMultiplier(1.0);
+                  unit.setScale(0);
+                  pLengthUnits = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
+                  pLengthUnits->addUnit(&unit);
+                }
+            }
         }
     }
   else
