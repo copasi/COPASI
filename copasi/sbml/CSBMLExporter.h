@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.33.2.1 $
+//   $Revision: 1.33.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/11/02 10:41:57 $
+//   $Date: 2011/03/21 11:35:02 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -148,6 +148,14 @@ public:
    * copasi file or directly by importing an SBML file.
    */
   static const std::string createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix);
+
+#if LIBSBML_VERSION >= 40001
+  /**
+   * Method to create a valid XHTML node from a CModels comments string.
+   * This method is declared public so that I can call it from the unit tests.
+   */
+  static XMLNode* createSBMLNotes(const std::string& notes_string);
+#endif // LIBSBML_VERSION
 
 protected:
 
@@ -642,6 +650,7 @@ protected:
    * The caller is responsible for freeing the memory for the new expression.
    */
   static CEvaluationNode* multiplyByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject);
+
 
 };
 
