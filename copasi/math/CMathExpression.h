@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:45:57 $
+//   $Date: 2011/03/22 13:59:59 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,11 +44,11 @@ public:
   /**
    * Specific constructor
    * @param const CFunction & src
-   * @param const CCallParameters< C_FLOAT64 > * mpCallParameters
+   * @param const CCallParameters< C_FLOAT64 > & callParameters
    * @param const CMathContainer & container
    */
   CMathExpression(const CFunction & src,
-                  const CCallParameters< C_FLOAT64 > * pCallParameters,
+                  const CCallParameters< C_FLOAT64 > & callParameters,
                   const CMathContainer & container);
 
   /**

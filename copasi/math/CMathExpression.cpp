@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:45:57 $
+//   $Date: 2011/03/22 13:59:59 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ CMathExpression::CMathExpression(const CExpression & src,
 }
 
 CMathExpression::CMathExpression(const CFunction & src,
-                                 const CCallParameters< C_FLOAT64 > * pCallParameters,
+                                 const CCallParameters< C_FLOAT64 > & callParameters,
                                  const CMathContainer & container):
     CEvaluationTree("CMathExpression", &container, CEvaluationTree::MathExpression),
     mPrerequisites(),
@@ -58,8 +58,8 @@ CMathExpression::CMathExpression(const CFunction & src,
       {
         // Create a vector of CEvaluationNodeObject for each variable
         std::vector< const CEvaluationNode * > Variables;
-        CCallParameters< C_FLOAT64 >::const_iterator it = pCallParameters->begin();
-        CCallParameters< C_FLOAT64 >::const_iterator end = pCallParameters->end();
+        CCallParameters< C_FLOAT64 >::const_iterator it = callParameters.begin();
+        CCallParameters< C_FLOAT64 >::const_iterator end = callParameters.end();
 
         for (; it != end; ++it)
           {
@@ -90,7 +90,7 @@ CMathExpression::CMathExpression(const CFunction & src,
       case CEvaluationTree::MassAction:
       {
         // We build a mass action expression based on the call parameters.
-        CCallParameters< C_FLOAT64 >::const_iterator it = pCallParameters->begin();
+        CCallParameters< C_FLOAT64 >::const_iterator it = callParameters.begin();
 
         // We always have reactants
         const C_FLOAT64 * pK = it->value;
@@ -100,7 +100,7 @@ CMathExpression::CMathExpression(const CFunction & src,
 
         CEvaluationNode * pPart = createMassActionPart(pK, pSpecies);
 
-        if (it != pCallParameters->end())
+        if (it != callParameters.end())
           {
             mpRoot = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
             mpRoot->addChild(pPart);
