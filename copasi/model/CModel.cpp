@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.399 $
+//   $Revision: 1.400 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:16 $
+//   $Date: 2011/03/22 13:57:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@
 
 // #define DEBUG_MATRIX
 
-// #define TST_DEPENCYGRAPH
+// #define TST_DEPENDENCYGRAPH
 
 #include "CCompartment.h"
 #include "CMetab.h"
@@ -489,14 +489,14 @@ bool CModel::compile()
 
   //writeDependenciesToDotFile();
 
-#ifdef TST_DEPENCYGRAPH
+#ifdef TST_DEPENDENCYGRAPH
   buildDependencyGraphs();
-#endif // TST_DEPENCYGRAPH
+#endif // TST_DEPENDENCYGRAPH
 
   return true;
 }
 
-#ifdef TST_DEPENCYGRAPH
+#ifdef TST_DEPENDENCYGRAPH
 bool CModel::buildDependencyGraphs()
 {
   mInitialDependencies.clear();
@@ -554,7 +554,7 @@ bool CModel::buildDependencyGraphs()
 
   return true;
 }
-#endif // TST_DEPENCYGRAPH
+#endif // TST_DEPENDENCYGRAPH
 
 void CModel::setCompileFlag(bool flag)
 {

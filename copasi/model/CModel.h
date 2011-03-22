@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.190 $
+//   $Revision: 1.191 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:16 $
+//   $Date: 2011/03/22 13:57:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,10 +40,9 @@
 #include "copasi/utilities/CMatrix.h"
 #include "copasi/report/CCopasiContainer.h"
 
-#ifdef TST_DEPENCYGRAPH
-# define ObjectType CCopasiObject
+#ifdef TST_DEPENDENCYGRAPH
 # include "copasi/math/CMathDependencyGraph.h"
-#endif // TST_DEPENCYGRAPH
+#endif // TST_DEPENDENCYGRAPH
 
 //class CCompartment;
 class CProcessReport;
@@ -262,9 +261,9 @@ public:
    */
   bool forceCompile(CProcessReport* pProcessReport);
 
-#ifdef TST_DEPENCYGRAPH
+#ifdef TST_DEPENDENCYGRAPH
   bool buildDependencyGraphs();
-#endif // TST_DEPENCYGRAPH
+#endif // TST_DEPENDENCYGRAPH
 
   /**
    *  Build the Stoichiometry Matrix from the chemical equations of the steps
@@ -1274,10 +1273,10 @@ private:
    */
   std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
 
-#ifdef TST_DEPENCYGRAPH
+#ifdef TST_DEPENDENCYGRAPH
   CMathDependencyGraph mInitialDependencies;
   CMathDependencyGraph mTransientDependencies;
-#endif // TST_DEPENCYGRAPH
+#endif // TST_DEPENDENCYGRAPH
 
   /**
    * The volume unit used in the Model
