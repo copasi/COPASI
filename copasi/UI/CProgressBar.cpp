@@ -1,10 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.36 $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:21 $
+//   $Date: 2011/03/22 17:16:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -229,12 +228,18 @@ bool CProgressBar::finish()
   // The method must only be called from the main thread!
   CQProgressItem ** ppIt = mProgressItemList.array();
   CQProgressItem ** ppEnd = ppIt + mProgressItemList.size();
+  CProcessReportItem **ppItem = mProcessReportItemList.array();
 
-  for (; ppIt != ppEnd; ++ppIt)
+  for (; ppIt != ppEnd; ++ppIt, ++ppItem)
     {
       if (*ppIt != NULL)
         {
           removeProgressItem(*ppIt);
+
+          // We must make sure the CProcessReportItem is not deleted prior to the actual delete.
+          // The destructor of CQProgressItem will take care of the deletion.
+          *ppItem = NULL;
+
           (*ppIt)->deleteLater();
           (*ppIt) = NULL;
         }
@@ -279,7 +284,7 @@ bool CProgressBar::finishItem(const size_t & handle)
       QCoreApplication::processEvents();
     }
 
-  return (CProcessReport::finishItem(handle) && mProceed);
+  return mProceed;
 }
 
 void CProgressBar::slotFinishItem(const int handle)
@@ -292,6 +297,11 @@ void CProgressBar::slotFinishItem(const int handle)
       QMutexLocker Locker(&mMutex);
 
       removeProgressItem(mProgressItemList[Handle]);
+
+      // We must make sure the CProcessReportItem is not deleted prior to the actual delete.
+      // The destructor of CQProgressItem will take care of the deletion.
+      mProcessReportItemList[Handle] = NULL;
+
       mProgressItemList[Handle]->deleteLater();
       mProgressItemList[Handle] = NULL;
     }

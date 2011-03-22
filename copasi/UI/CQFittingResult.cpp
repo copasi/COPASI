@@ -410,8 +410,11 @@ void CQFittingResult::slotSave(void)
   while (Answer == QMessageBox::No)
     {
       fileName =
-        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+        CopasiFileDialog::getSaveFileName(this,
+                                          "Save File Dialog",
+                                          "untitled.txt",
+                                          "TEXT Files (*.txt)",
+                                          "Save to");
 
       if (fileName.isEmpty()) return;
 
