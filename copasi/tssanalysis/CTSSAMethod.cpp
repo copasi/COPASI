@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.27.2.2 $
+//   $Revision: 1.27.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:07:18 $
+//   $Author: nsimus $
+//   $Date: 2011/03/22 10:58:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -387,12 +387,13 @@ void CTSSAMethod::integrationStep(const double & deltaT)
          NULL, // 16. evaluate J (not given)
          &mJType);        // 17. the type of Jacobian calculate (2)
 
-  if (mLsodaStatus == -1)
-    mLsodaStatus = 2;
+  //if (mLsodaStatus == -1)
+  //  mLsodaStatus = 2;
 
-  if ((mLsodaStatus != 1) && (mLsodaStatus != 2) && (mLsodaStatus != -1))
+  if ((mLsodaStatus <= 0))
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 1, mErrorMsg.str().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+
     }
 
   mpState->setTime(mTime);
