@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQProgressItemBar.ui.h,v $
- $Revision: 1.9 $
+ $Revision: 1.9.4.1 $
  $Name:  $
  $Author: shoops $
- $Date: 2008/12/18 19:56:51 $
+ $Date: 2011/03/22 16:35:56 $
  End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,7 +27,7 @@ bool CQProgressItemBar::initFromProcessReportItem(CProcessReportItem * pItem)
   mItemName->setText(FROM_UTF8(mpItem->getObjectName()));
   mProgressBar->setTotalSteps(100);
 
-  mLastSet = -1; // indcates was never set;
+  mLastSet = -1; // indicates was never set;
 
   // needed so that reset() does allocation
   if (mStart.pVOID != NULL) destroy();
@@ -47,36 +52,39 @@ bool CQProgressItemBar::reset()
 {
   switch (mpItem->getType())
     {
-    case CCopasiParameter::DOUBLE:
-    case CCopasiParameter::UDOUBLE:
-      if (!mStart.pDOUBLE)
-        mStart.pDOUBLE = new C_FLOAT64;
+      case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
 
-      * mStart.pDOUBLE = * mValue.pDOUBLE;
-      mFactor = 100.0 / (* mEnd.pDOUBLE - * mStart.pDOUBLE);
-      mpSetValue = & CQProgressItemBar::setValueFromDOUBLE;
-      break;
+        if (!mStart.pDOUBLE)
+          mStart.pDOUBLE = new C_FLOAT64;
 
-    case CCopasiParameter::INT:
-      if (!mStart.pINT)
-        mStart.pINT = new C_INT32;
+        * mStart.pDOUBLE = * mValue.pDOUBLE;
+        mFactor = 100.0 / (* mEnd.pDOUBLE - * mStart.pDOUBLE);
+        mpSetValue = & CQProgressItemBar::setValueFromDOUBLE;
+        break;
 
-      * mStart.pINT = * mValue.pINT;
-      mFactor = 100.0 / ((C_FLOAT64)(* mEnd.pINT - * mStart.pINT));
-      mpSetValue = & CQProgressItemBar::setValueFromINT;
-      break;
+      case CCopasiParameter::INT:
 
-    case CCopasiParameter::UINT:
-      if (!mStart.pUINT)
-        mStart.pUINT = new unsigned C_INT32;
+        if (!mStart.pINT)
+          mStart.pINT = new C_INT32;
 
-      * mStart.pUINT = * mValue.pUINT;
-      mFactor = 100.0 / ((C_FLOAT64)(* mEnd.pUINT - * mStart.pUINT));
-      mpSetValue = & CQProgressItemBar::setValueFromUINT;
-      break;
+        * mStart.pINT = * mValue.pINT;
+        mFactor = 100.0 / ((C_FLOAT64)(* mEnd.pINT - * mStart.pINT));
+        mpSetValue = & CQProgressItemBar::setValueFromINT;
+        break;
 
-    default:
-      break;
+      case CCopasiParameter::UINT:
+
+        if (!mStart.pUINT)
+          mStart.pUINT = new unsigned C_INT32;
+
+        * mStart.pUINT = * mValue.pUINT;
+        mFactor = 100.0 / ((C_FLOAT64)(* mEnd.pUINT - * mStart.pUINT));
+        mpSetValue = & CQProgressItemBar::setValueFromUINT;
+        break;
+
+      default:
+        break;
     }
 
   return process();
@@ -97,21 +105,21 @@ void CQProgressItemBar::destroy()
 
   switch (mpItem->getType())
     {
-    case CCopasiParameter::DOUBLE:
-    case CCopasiParameter::UDOUBLE:
-      pdelete(mStart.pDOUBLE);
-      break;
+      case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
+        pdelete(mStart.pDOUBLE);
+        break;
 
-    case CCopasiParameter::INT:
-      pdelete(mStart.pINT);
-      break;
+      case CCopasiParameter::INT:
+        pdelete(mStart.pINT);
+        break;
 
-    case CCopasiParameter::UINT:
-      pdelete(mStart.pUINT);
-      break;
+      case CCopasiParameter::UINT:
+        pdelete(mStart.pUINT);
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
 }
 
