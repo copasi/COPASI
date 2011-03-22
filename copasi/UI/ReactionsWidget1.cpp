@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.205.2.10 $
+//   $Revision: 1.205.2.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/09 17:16:02 $
+//   $Date: 2011/03/22 13:12:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -400,7 +400,7 @@ void ReactionsWidget1::slotBtnCancelClicked()
 
 void ReactionsWidget1::slotBtnOKClicked()
 {
-  // This assures that even the last edit is regocnized.
+  // This assures that even the last edit is recognized.
   commitChanges->setFocus();
 
   saveToReaction();
@@ -692,6 +692,9 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
 
 bool ReactionsWidget1::leave()
 {
+  // We make sure that any current pending editing is commSitted.
+  commitChanges->setFocus();
+
   saveToReaction();
   return true; //always return true. That means that the widget can be
   //left without saving
