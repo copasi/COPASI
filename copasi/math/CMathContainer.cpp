@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:45:57 $
+//   $Date: 2011/03/22 13:59:07 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -506,9 +506,10 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
                                         (*it)->getParticleFluxReference());
 
       // Propensity
+      map((*it)->getPropensityReference(), p.pPropensitiesObject);
       CMathObject::initializeMathObject(p.pPropensitiesObject, p.pPropensities,
                                         CMath::Propensity, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
-                                        NULL);
+                                        (*it)->getPropensityReference());
     }
 }
 
