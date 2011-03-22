@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.196 $
+//   $Revision: 1.197 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:16 $
+//   $Date: 2011/03/22 13:58:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,8 @@ CReaction::CReaction(const std::string & name,
     mpFluxReference(NULL),
     mParticleFlux(0),
     mpParticleFluxReference(NULL),
+    mPropensity(0),
+    mpPropensityReference(NULL),
     mScalingFactor(&mDefaultScalingFactor),
     mUnitScalingFactor(&mDefaultScalingFactor),
     mMetabKeyMap(),
@@ -86,6 +88,8 @@ CReaction::CReaction(const CReaction & src,
     mpFluxReference(NULL),
     mParticleFlux(src.mParticleFlux),
     mpParticleFluxReference(NULL),
+    mPropensity(src.mPropensity),
+    mpPropensityReference(NULL),
     mScalingFactor(src.mScalingFactor),
     mUnitScalingFactor(src.mUnitScalingFactor),
     mMap(src.mMap),
@@ -124,6 +128,8 @@ std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
     return pModel->getFrequencyUnitsDisplayString();
   else if (Name == "Flux")
     return pModel->getQuantityRateUnitsDisplayString();
+  else if (Name == "Propensity")
+    return pModel->getFrequencyUnitsDisplayString();
 
   return "";
 }
@@ -193,6 +199,14 @@ const C_FLOAT64 & CReaction::getParticleFlux() const
 
 CCopasiObject * CReaction::getParticleFluxReference()
 {return mpParticleFluxReference;}
+
+CCopasiObject * CReaction::getPropensityReference()
+{return mpPropensityReference;}
+
+const CCallParameters< C_FLOAT64 > & CReaction::getCallParameters()
+{
+  return mMap.getPointers();
+}
 
 //****************************************
 
@@ -900,6 +914,9 @@ void CReaction::initObjects()
   mpParticleFluxReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl));
   mpParticleFluxReference->setRefresh(this, &CReaction::calculate);
+
+  mpPropensityReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Propensity", mPropensity, CCopasiObject::ValueDbl));
 }
 
 std::set< const CCopasiObject * > CReaction::getDeletedObjects() const

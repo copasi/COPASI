@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.108 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:15 $
+//   $Date: 2011/03/22 13:58:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -349,6 +349,19 @@ public:
    */
   CCopasiObject * getParticleFluxReference();
 
+  /**
+   * Retrieve object referencing the propensity
+   * @return CCopasiObject * propensityReference
+   */
+  CCopasiObject * getPropensityReference();
+
+  /**
+   * Retrieve the call parameter given to the kinetic function.
+   * @return const CCallParameters< C_FLOAT64 > & callParameters
+   */
+  const CCallParameters< C_FLOAT64 > & getCallParameters();
+
+
 private:
   /**
    * Calculate the kinetic function
@@ -515,6 +528,12 @@ private:
    */
   C_FLOAT64 mParticleFlux;
   CCopasiObjectReference<C_FLOAT64> *mpParticleFluxReference;
+
+  /**
+   *  The propensity of the reaction
+   */
+  C_FLOAT64 mPropensity;
+  CCopasiObjectReference<C_FLOAT64> *mpPropensityReference;
 
   /**
    *  A pointer to the scaling factor for the flux to calculate the particle number
