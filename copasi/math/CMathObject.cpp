@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:45:57 $
+//   $Date: 2011/03/22 14:00:43 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,7 @@ void * CMathObject::getValuePointer() const
 
 void CMathObject::calculate()
 {
-  // This method should only be called there is something to calculate, i.e.
+  // This method should only be called if there is something to calculate, i.e.
   // mpExpression != NULL
   assert(mpExpression != NULL);
 
@@ -231,7 +231,7 @@ bool CMathObject::compile(const CMathContainer & container)
         break;
 
       case CMath::Flux:
-        // success = compileFlux(container);
+        success = compileFlux(container);
         break;
 
       case CMath::Propensity:
@@ -522,6 +522,122 @@ bool CMathObject::compileValueRate(const CMathContainer & container)
             break;
         }
     }
+
+  return success;
+}
+
+bool CMathObject::compileFlux(const CMathContainer & container)
+{
+  bool success = true;
+
+  CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+
+  mpExpression = new CMathExpression(*pReaction->getFunction(),
+                                     pReaction->getCallParameters(),
+                                     container);
+
+  return success;
+}
+
+bool CMathObject::compilePropensity(const CMathContainer & container)
+{
+  bool success = true;
+
+  CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
+
+
+  if (container.getModel().getModelType() == CModel::deterministic)
+    {
+      // We need to apply the stochastic correction.
+      std::ostringstream Condition;
+      Condition.imbue(std::locale::classic());
+      Condition.precision(16);
+
+      std::ostringstream Multiplier;
+      Multiplier.imbue(std::locale::classic());
+      Multiplier.precision(16);
+      Multiplier << "<" << pReaction->getParticleFluxReference()->getCN() << ">";
+
+      std::ostringstream Divisor;
+      Divisor.imbue(std::locale::classic());
+      Divisor.precision(16);
+
+      const CCopasiVector<CChemEqElement> & Substrates = pReaction->getChemEq().getSubstrates();
+      CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
+      CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
+      bool first = true;
+
+      for (; itSubstrate != endSubstrate; ++itSubstrate)
+        {
+          const std::string NumberCN = (*itSubstrate)->getMetabolite()->getValueReference()->getCN();
+          C_FLOAT64 Multiplicity = (*itSubstrate)->getMultiplicity();
+
+          if (!first)
+            {
+              Condition << "&&";
+              Divisor << "*";
+            }
+
+          first = false;
+
+          Condition << "fabs(<" << NumberCN << ">-" << Multiplicity << ")>";
+          Condition << 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
+
+          Multiplicity -= 1.0; // Nothing to correct if the multiplicity is 1.
+
+          if (fabs(Multiplicity - 1.0) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              Divisor << "<" << NumberCN << ">^" << Multiplicity;
+            }
+          else if (fabs(Multiplicity) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              Divisor << "<" << NumberCN << ">";
+            }
+
+          while (fabs(Multiplicity) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              Multiplier << "*(<" << NumberCN << ">-" << Multiplicity << ")";
+              Multiplicity -= 1.0;
+            }
+        }
+
+      Infix << "if(";
+      Infix << Condition.str();
+      Infix << ",";
+      Infix << Multiplier.str() << "/(" << Divisor.str() << ")";
+      Infix << ",0.0)";
+    }
+  else
+    {
+      // Propensity is the same as the flux.
+      Infix << "<" << pReaction->getParticleFluxReference()->getCN() << ">";
+    }
+
+  CExpression E("PropensityExpression", &container);
+
+  success &= E.setInfix(Infix.str());
+
+  mpExpression = new CMathExpression(E, container);
+  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
+                        mpExpression->getPrerequisites().end());
+
+  return success;
+}
+
+bool CMathObject::compileTotalMass(const CMathContainer & container)
+{
+  bool success = true;
+
+  return success;
+}
+
+bool CMathObject::compileDependentMass(const CMathContainer & container)
+{
+  bool success = true;
 
   return success;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:45:57 $
+//   $Date: 2011/03/22 14:00:43 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,6 +144,34 @@ private:
    * @return bool success
    */
   bool compileValueRate(const CMathContainer & container);
+
+  /**
+   * Compile the reactions flux
+   * @param const CMathContainer & container
+   * @return bool success
+   */
+  bool compileFlux(const CMathContainer & container);
+
+  /**
+   * Compile the reactions propensity
+   * @param const CMathContainer & container
+   * @return bool success
+   */
+  bool compilePropensity(const CMathContainer & container);
+
+  /**
+   * Compile the total mass of a moiety.
+   * @param const CMathContainer & container
+   * @return bool success
+   */
+  bool compileTotalMass(const CMathContainer & container);
+
+  /**
+   * Compile the dependent mass of a moiety.
+   * @param const CMathContainer & container
+   * @return bool success
+   */
+  bool compileDependentMass(const CMathContainer & container);
 
   /**
    * Create and compile an expression based on the given expression.
