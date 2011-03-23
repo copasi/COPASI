@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:03 $
+//   $Date: 2011/03/23 16:37:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -399,6 +399,16 @@ bool CFitProblem::initialize()
 
   if (!mpExperimentSet->compile(ContainerList)) return false;
 
+  // Initialize the object set which the experiment independent objects.
+  std::vector< std::set< const CCopasiObject * > > ObjectSet;
+  ObjectSet.resize(mpExperimentSet->getExperimentCount());
+  size_t i, imax;
+
+  for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
+    {
+      ObjectSet[i] = mpExperimentSet->getExperiment(i)->getIndependentObjects();
+    }
+
   // Build a matrix of experiment and experiment local items.
   mExperimentUpdateMethods.resize(mpExperimentSet->getExperimentCount(),
                                   mpOptItems->size());
@@ -411,16 +421,12 @@ bool CFitProblem::initialize()
 
   mExperimentInitialRefreshes.resize(mpExperimentSet->getExperimentCount());
 
-  std::vector< std::set< const CCopasiObject * > > ObjectSet;
-  ObjectSet.resize(mpExperimentSet->getExperimentCount());
-
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
 
   std::vector<COptItem * >::iterator itTmp;
 
   CFitItem * pItem;
-  size_t i, imax;
   size_t j;
   size_t Index;
 
@@ -472,8 +478,11 @@ bool CFitProblem::initialize()
       mpCorrelationMatrix->setAnnotationString(1, j, Annotation);
     }
 
+  // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
-    mExperimentInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
+    {
+      mExperimentInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
+    }
 
   // Build a matrix of experiment and constraint items;
   mExperimentConstraints.resize(mpExperimentSet->getExperimentCount(),
@@ -527,14 +536,26 @@ bool CFitProblem::initialize()
 
   if (!mpCrossValidationSet->compile(ContainerList)) return false;
 
+  // Initialize the object set which the experiment independent objects.
+  ObjectSet.clear();
+  ObjectSet.resize(mpCrossValidationSet->getExperimentCount());
+
+  for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
+    {
+      ObjectSet[i] = mpCrossValidationSet->getExperiment(i)->getIndependentObjects();
+    }
+
   // Build a matrix of cross validation experiments  and local items.
   mCrossValidationUpdateMethods.resize(mpCrossValidationSet->getExperimentCount(),
                                        mpOptItems->size());
   mCrossValidationUpdateMethods = NULL;
-  mCrossValidationInitialRefreshes.resize(mpCrossValidationSet->getExperimentCount());
 
-  ObjectSet.clear();
-  ObjectSet.resize(mpCrossValidationSet->getExperimentCount());
+  // Build a matrix of experiment and experiment local undo items.
+  mCrossValidationUndoMethods.resize(mpCrossValidationSet->getExperimentCount(),
+                                     mpOptItems->size());
+  mCrossValidationUndoMethods = NULL;
+
+  mCrossValidationInitialRefreshes.resize(mpCrossValidationSet->getExperimentCount());
 
   it = mpOptItems->begin();
   end = mpOptItems->end();
@@ -563,12 +584,19 @@ bool CFitProblem::initialize()
 
               mCrossValidationUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
               ObjectSet[Index].insert(pItem->getObject());
+
+              // We need to undo the changes for all non affected cross validations.
+              // We can do that by adding the update method with the current model value to
+              mCrossValidationUndoMethods(Index, j) = pItem->COptItem::getUpdateMethod();
             };
         }
     }
 
+  // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
-    mCrossValidationInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
+    {
+      mCrossValidationInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
+    }
 
   // Build a matrix of cross validation experiments and constraint items;
   mCrossValidationConstraints.resize(mpCrossValidationSet->getExperimentCount(),
@@ -718,6 +746,7 @@ bool CFitProblem::calculate()
         {
           pExp = mpExperimentSet->getExperiment(i);
 
+          // Set the model to its original state.
           mpModel->setInitialState(*mpInitialState);
           mpModel->updateInitialValues();
 
@@ -725,13 +754,6 @@ bool CFitProblem::calculate()
           for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
             if (*pUpdate)
               (**pUpdate)(static_cast<CFitItem *>(*itItem)->getLocalValue());
-
-          // Update initial values which changed due to the fit item values.
-          itRefresh = mExperimentInitialRefreshes[i].begin();
-          endRefresh = mExperimentInitialRefreshes[i].end();
-
-          while (itRefresh != endRefresh)
-            (**itRefresh++)();
 
           kmax = pExp->getNumDataRows();
 
@@ -743,6 +765,15 @@ bool CFitProblem::calculate()
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
                     pExp->updateModelWithIndependentData(j);
+
+                    // We need to apply the parameter and independent
+                    // value updates as one unit.
+                    itRefresh = mExperimentInitialRefreshes[i].begin();
+                    endRefresh = mExperimentInitialRefreshes[i].end();
+
+                    while (itRefresh != endRefresh)
+                      (**itRefresh++)();
+
                     Continue = mpSteadyState->process(true);
 
                     if (!Continue)
@@ -784,8 +815,18 @@ bool CFitProblem::calculate()
                       }
                     else
                       {
-                        // set independent data
-                        pExp->updateModelWithIndependentData(j);
+                        // Set independent data. A time course only has one set of
+                        // independent data.
+                        pExp->updateModelWithIndependentData(0);
+
+                        // We need to apply the parameter and independent
+                        // value updates as one unit.
+                        itRefresh = mExperimentInitialRefreshes[i].begin();
+                        endRefresh = mExperimentInitialRefreshes[i].end();
+
+                        while (itRefresh != endRefresh)
+                          (**itRefresh++)();
+
                         mpTrajectory->processStart(true);
 
                         if (pExp->getTimeData()[0] != mpModel->getInitialTime())
@@ -856,7 +897,17 @@ bool CFitProblem::calculate()
       mFailedCounter++;
       mCalculateValue = mWorstValue;
 
-      if (pExp) pExp->restoreModelIndependentData();
+      if (pExp)
+        {
+          pExp->restoreModelIndependentData();
+
+          // Update initial values which changed due to the fit item values.
+          itRefresh = mExperimentInitialRefreshes[i].begin();
+          endRefresh = mExperimentInitialRefreshes[i].end();
+
+          while (itRefresh != endRefresh)
+            (**itRefresh++)();
+        }
     }
 
   catch (...)
@@ -864,7 +915,16 @@ bool CFitProblem::calculate()
       mFailedCounter++;
       mCalculateValue = mWorstValue;
 
-      if (pExp) pExp->restoreModelIndependentData();
+      if (pExp)
+        {
+          pExp->restoreModelIndependentData();
+          // Update initial values which changed due to the fit item values.
+          itRefresh = mExperimentInitialRefreshes[i].begin();
+          endRefresh = mExperimentInitialRefreshes[i].end();
+
+          while (itRefresh != endRefresh)
+            (**itRefresh++)();
+        }
     }
 
   if (isnan(mCalculateValue))
@@ -1399,6 +1459,8 @@ bool CFitProblem::calculateCrossValidation()
   C_FLOAT64 * DependentValues = mCrossValidationDependentValues.array();
 
   UpdateMethod ** pUpdate = mCrossValidationUpdateMethods.array();
+  UpdateMethod ** pUndo =  mCrossValidationUndoMethods.array();
+
   C_FLOAT64 * pSolution = mSolutionVariables.array();
   C_FLOAT64 * pSolutionEnd = pSolution + mSolutionVariables.size();
 
@@ -1410,7 +1472,7 @@ bool CFitProblem::calculateCrossValidation()
 
   // Reset the constraints memory
   for (itConstraint = mpConstraintItems->begin(); itConstraint != endConstraint; ++itConstraint)
-    static_cast<CFitConstraint *>(*itConstraint)->setLocalValue(0.0);
+    static_cast<CFitConstraint *>(*itConstraint)->resetConstraintViolation();
 
   CFitConstraint **ppConstraint = mCrossValidationConstraints.array();
   CFitConstraint **ppConstraintEnd;
@@ -1429,13 +1491,6 @@ bool CFitProblem::calculateCrossValidation()
             if (*pUpdate)
               (**pUpdate)(*pSolution);
 
-          // Update the initial values
-          itRefresh = mCrossValidationInitialRefreshes[i].begin();
-          endRefresh = mCrossValidationInitialRefreshes[i].end();
-
-          for (; itRefresh != endRefresh; ++itRefresh)
-            (**itRefresh)();
-
           kmax = pExp->getNumDataRows();
 
           switch (pExp->getExperimentType())
@@ -1446,6 +1501,15 @@ bool CFitProblem::calculateCrossValidation()
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
                     pExp->updateModelWithIndependentData(j);
+
+                    // We need to apply the parameter and independent
+                    // value updates as one unit.
+                    itRefresh = mCrossValidationInitialRefreshes[i].begin();
+                    endRefresh = mCrossValidationInitialRefreshes[i].end();
+
+                    for (; itRefresh != endRefresh; ++itRefresh)
+                      (**itRefresh)();
+
                     Continue &= mpSteadyState->process(true);
 
                     if (!Continue)
@@ -1486,8 +1550,18 @@ bool CFitProblem::calculateCrossValidation()
                       }
                     else
                       {
-                        // set independent data
-                        pExp->updateModelWithIndependentData(j);
+                        // Set independent data. A time course only has one set of
+                        // independent data.
+                        pExp->updateModelWithIndependentData(0);
+
+                        // We need to apply the parameter and independent
+                        // value updates as one unit.
+                        itRefresh = mCrossValidationInitialRefreshes[i].begin();
+                        endRefresh = mCrossValidationInitialRefreshes[i].end();
+
+                        for (; itRefresh != endRefresh; ++itRefresh)
+                          (**itRefresh)();
+
                         mpTrajectory->processStart(true);
 
                         if (pExp->getTimeData()[0] != mpModel->getInitialTime())
@@ -1496,24 +1570,24 @@ bool CFitProblem::calculateCrossValidation()
                           }
                       }
 
+                    // We check after each simulation whether the constraints are violated.
+                    // Make sure the constraint values are up to date.
+                    itRefresh = mCrossValidationConstraintRefreshes[i].begin();
+                    endRefresh = mCrossValidationConstraintRefreshes[i].end();
+
+                    for (; itRefresh != endRefresh; ++itRefresh)
+                      (**itRefresh)();
+
+                    ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
+
+                    for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                      if (*ppConstraint)(*ppConstraint)->checkConstraint();
+
                     if (mStoreResults)
                       CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                     else
                       CalculateValue += pExp->sumOfSquares(j, Residuals);
                   }
-
-                // We check after each simulation whether the constraints are violated.
-                // Make sure the constraint values are up to date.
-                itRefresh = mCrossValidationConstraintRefreshes[i].begin();
-                endRefresh = mCrossValidationConstraintRefreshes[i].end();
-
-                for (; itRefresh != endRefresh; ++itRefresh)
-                  (**itRefresh)();
-
-                ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
-
-                for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                  if (*ppConstraint)(*ppConstraint)->checkConstraint();
 
                 break;
 
@@ -1523,6 +1597,29 @@ bool CFitProblem::calculateCrossValidation()
 
           // restore independent data
           pExp->restoreModelIndependentData();
+
+          // restore experiment local values
+          const C_FLOAT64 *pOriginal = mOriginalVariables.array();
+          const C_FLOAT64 *pOriginalEnd = pOriginal + mOriginalVariables.size();
+          bool RefreshNeeded = false;
+
+          // set the global and experiment local fit item values.
+          for (; pOriginal != pOriginalEnd; pOriginal++, pUndo++)
+            if (*pUndo)
+              {
+                (**pUndo)(*pOriginal);
+                RefreshNeeded = true;
+              }
+
+          if (RefreshNeeded)
+            {
+              // Update initial values which changed due to the fit item values.
+              itRefresh = mCrossValidationInitialRefreshes[i].begin();
+              endRefresh = mCrossValidationInitialRefreshes[i].end();
+
+              while (itRefresh != endRefresh)
+                (**itRefresh++)();
+            }
         }
     }
 
@@ -1534,7 +1631,17 @@ bool CFitProblem::calculateCrossValidation()
       mFailedCounter++;
       CalculateValue = mWorstValue;
 
-      if (pExp) pExp->restoreModelIndependentData();
+      if (pExp)
+        {
+          pExp->restoreModelIndependentData();
+
+          // Update initial values which changed due to the fit item values.
+          itRefresh = mCrossValidationInitialRefreshes[i].begin();
+          endRefresh = mCrossValidationInitialRefreshes[i].end();
+
+          while (itRefresh != endRefresh)
+            (**itRefresh++)();
+        }
     }
 
   catch (...)
@@ -1542,7 +1649,17 @@ bool CFitProblem::calculateCrossValidation()
       mFailedCounter++;
       CalculateValue = mWorstValue;
 
-      if (pExp) pExp->restoreModelIndependentData();
+      if (pExp)
+        {
+          pExp->restoreModelIndependentData();
+
+          // Update initial values which changed due to the fit item values.
+          itRefresh = mCrossValidationInitialRefreshes[i].begin();
+          endRefresh = mCrossValidationInitialRefreshes[i].end();
+
+          while (itRefresh != endRefresh)
+            (**itRefresh++)();
+        }
     }
 
   if (isnan(CalculateValue))

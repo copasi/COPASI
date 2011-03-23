@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:03 $
+//   $Date: 2011/03/23 16:37:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -495,11 +495,17 @@ public:
                            const C_FLOAT64 & errorMean) const;
 
   /**
-   * Retrieve the data point caount for the object.
+   * Retrieve the data point count for the object.
    * @param CCopasiObject *const& pObject
    * @return size_t count
    */
   size_t getCount(CCopasiObject *const& pObject) const;
+
+  /**
+   * Retrieve the list of independent objects
+   * @return const std::set< const CCopasiObject * > & independentObjects
+   */
+  const std::set< const CCopasiObject * > & getIndependentObjects() const;
 
 private:
   /**
@@ -606,9 +612,9 @@ private:
 
   CVector< UpdateMethod * > mIndependentUpdateMethods;
 
-  std::vector< Refresh * > mIndependentRefreshMethods;
-
   std::vector< Refresh * > mRefreshMethods;
+
+  std::set< const CCopasiObject * > mIndependentObjects;
 
   CVector< C_FLOAT64 > mIndependentValues;
 
