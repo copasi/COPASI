@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.28.4.1 $
+//   $Revision: 1.28.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:55 $
+//   $Date: 2011/03/23 15:26:25 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -501,6 +501,12 @@ public:
    */
   size_t getCount(CCopasiObject *const& pObject) const;
 
+  /**
+   * Retrieve the list of independent objects
+   * @return const CCopasiObject::List & independentObjects
+   */
+  const CCopasiObject::List & getIndependentObjects() const;
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -606,9 +612,9 @@ private:
 
   CVector< UpdateMethod * > mIndependentUpdateMethods;
 
-  std::vector< Refresh * > mIndependentRefreshMethods;
-
   std::vector< Refresh * > mRefreshMethods;
+
+  CCopasiObject::List mIndependentObjects;
 
   CVector< C_FLOAT64 > mIndependentValues;
 

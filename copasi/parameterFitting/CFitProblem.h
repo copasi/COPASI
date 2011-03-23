@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-//   $Revision: 1.22.4.1 $
+//   $Revision: 1.22.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/11 17:44:23 $
+//   $Date: 2011/03/23 15:26:25 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -324,6 +324,11 @@ private:
    * Matrix of update methods for items for each cross validation.
    */
   CMatrix< UpdateMethod * > mCrossValidationUpdateMethods;
+
+  /**
+   * Matrix of update methods for undoing items which are not used in all cross validations.
+   */
+  CMatrix< UpdateMethod * > mCrossValidationUndoMethods;
 
   /**
    * A vector of refresh methods which contains the sequence of refresh methods

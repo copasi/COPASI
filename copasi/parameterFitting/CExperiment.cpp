@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.69.2.3 $
+//   $Revision: 1.69.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/22 19:17:45 $
+//   $Date: 2011/03/23 15:26:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,6 +100,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
     mDependentValues(0),
     mIndependentUpdateMethods(0),
     mRefreshMethods(),
+    mIndependentObjects(),
     mIndependentValues(0),
     mNumDataRows(0),
     mpDataDependentCalculated(NULL),
@@ -129,6 +130,7 @@ CExperiment::CExperiment(const CExperiment & src,
     mDependentValues(src.mDependentValues),
     mIndependentUpdateMethods(src.mIndependentUpdateMethods),
     mRefreshMethods(src.mRefreshMethods),
+    mIndependentObjects(src.mIndependentObjects),
     mIndependentValues(src.mIndependentValues),
     mNumDataRows(src.mNumDataRows),
     mpDataDependentCalculated(src.mpDataDependentCalculated),
@@ -158,6 +160,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mDependentValues(0),
     mIndependentUpdateMethods(0),
     mRefreshMethods(),
+    mIndependentObjects(),
     mIndependentValues(0),
     mNumDataRows(0),
     mpDataDependentCalculated(NULL),
@@ -578,9 +581,9 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mDependentValues.resize(DependentCount);
   mIndependentUpdateMethods.resize(IndependentCount);
   mIndependentValues.resize(IndependentCount);
+  mIndependentObjects.clear();
   mDependentObjects.clear();
   std::set< const CCopasiObject * > Dependencies;
-  std::set< const CCopasiObject * > IdependentObjects;
 
   IndependentCount = 0;
   DependentCount = 0;
@@ -607,7 +610,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
               return false;
             }
 
-          IdependentObjects.insert(Objects[i]);
+          mIndependentObjects.insert(Objects[i]);
           mIndependentUpdateMethods[IndependentCount] =
             Objects[i]->getUpdateMethod();
           mIndependentValues[IndependentCount] =
@@ -677,7 +680,6 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   CModel * pModel =
     dynamic_cast< CModel * >(getObjectDataModel()->ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(getObjectDataModel()->getModel()->getObjectName()))));
 
-  mIndependentRefreshMethods = pModel->buildInitialRefreshSequence(IdependentObjects);
   mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel->getUptoDateObjects());
 
   return success;
@@ -1014,13 +1016,6 @@ bool CExperiment::updateModelWithIndependentData(const size_t & index)
   for (i = 0; i < imax; i++)
     (*mIndependentUpdateMethods[i])(mDataIndependent(index, i));
 
-  // Update all initial values.
-  std::vector< Refresh * >::const_iterator itRefresh = mIndependentRefreshMethods.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mIndependentRefreshMethods.end();
-
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
-
   return true;
 }
 
@@ -1030,13 +1025,6 @@ bool CExperiment::restoreModelIndependentData()
 
   for (i = 0; i < imax; i++)
     (*mIndependentUpdateMethods[i])(mIndependentValues[i]);
-
-  // Update all initial values.
-  std::vector< Refresh * >::const_iterator itRefresh = mIndependentRefreshMethods.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mIndependentRefreshMethods.end();
-
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
 
   return true;
 }
@@ -1427,6 +1415,11 @@ size_t CExperiment::getCount(CCopasiObject *const& pObject) const
     return mColumnCount[it->second];
   else
     return 0;
+}
+
+const CCopasiObject::List & CExperiment::getIndependentObjects() const
+{
+  return mIndependentObjects;
 }
 
 /* CFittingPoint Implementation */
