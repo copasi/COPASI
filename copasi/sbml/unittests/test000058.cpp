@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000058.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Date: 2011/03/23 12:42:55 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -574,7 +574,7 @@ void test000058::test_bug1025_1()
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
+  changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
 
@@ -617,7 +617,7 @@ void test000058::test_bug1025_2()
   CPPUNIT_ASSERT(pCompartment != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"));
+  const CCopasiObject* pObject = pCompartment->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -662,7 +662,7 @@ void test000058::test_bug1025_3()
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pMetabolite->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+  const CCopasiObject* pObject = pMetabolite->getInitialConcentrationReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -707,7 +707,7 @@ void test000058::test_bug1025_4()
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -762,7 +762,7 @@ void test000058::test_bug1025_5()
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -804,7 +804,7 @@ void test000058::test_bug1025_6()
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
+  changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
 
@@ -841,7 +841,7 @@ void test000058::test_bug1025_7()
   CPPUNIT_ASSERT(pCompartment != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"));
+  const CCopasiObject* pObject = pCompartment->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -880,7 +880,7 @@ void test000058::test_bug1025_8()
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pMetabolite->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+  const CCopasiObject* pObject = pMetabolite->getInitialConcentrationReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -919,7 +919,7 @@ void test000058::test_bug1025_9()
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -968,7 +968,7 @@ void test000058::test_bug1025_10()
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);

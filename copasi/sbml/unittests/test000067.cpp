@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000067.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Date: 2011/03/23 12:42:55 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,6 +81,8 @@ void test000067::test_bug1060()
   unsigned int i, iMax = pSBMLModel->getListOfReactions()->size();
   const Reaction* pReaction = NULL;
   const ASTNode* pRoot = NULL;
+  const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>::const_iterator mappos;
 
   for (i = 0; i < iMax; ++i)
     {
@@ -104,19 +106,28 @@ void test000067::test_bug1060()
         {
           // uses modified constant flux
           CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
-          CPPUNIT_ASSERT(pRoot->getName() == pModifiedCF->getSBMLId());
+          mappos = copasi2sbmlmap.find(pModifiedCF);
+          CPPUNIT_ASSERT(mappos != copasi2sbmlmap.end());
+          CPPUNIT_ASSERT(mappos->second != NULL);
+          CPPUNIT_ASSERT(pRoot->getName() == mappos->second->getId());
         }
       else if (pReaction->getName() == "xDegMM")
         {
           // uses modifed MM
           CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
-          CPPUNIT_ASSERT(pRoot->getName() == pModifiedMM->getSBMLId());
+          mappos = copasi2sbmlmap.find(pModifiedMM);
+          CPPUNIT_ASSERT(mappos != copasi2sbmlmap.end());
+          CPPUNIT_ASSERT(mappos->second != NULL);
+          CPPUNIT_ASSERT(pRoot->getName() == mappos->second->getId());
         }
       else if (pReaction->getName() == "xProd")
         {
           // constant flux
           CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
-          CPPUNIT_ASSERT(pRoot->getName() == pConstantFlux->getSBMLId());
+          mappos = copasi2sbmlmap.find(pConstantFlux);
+          CPPUNIT_ASSERT(mappos != copasi2sbmlmap.end());
+          CPPUNIT_ASSERT(mappos->second != NULL);
+          CPPUNIT_ASSERT(pRoot->getName() == mappos->second->getId());
         }
       else
         {
