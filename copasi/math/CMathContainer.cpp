@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/22 13:59:07 $
+//   $Author: gauges $
+//   $Date: 2011/03/23 09:38:55 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ CMathObject * CMathContainer::getMathObject(const CObjectInterface * pObject) co
     return NULL;
 
   std::map< CCopasiObject *, CMathObject * >::const_iterator found =
-    mDataObject2MathObject.find(static_cast< const CCopasiObject * >(pObject));
+    mDataObject2MathObject.find(const_cast<CCopasiObject*>(static_cast< const CCopasiObject * >(pObject)));
 
   if (found != mDataObject2MathObject.end())
     {
