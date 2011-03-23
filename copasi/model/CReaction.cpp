@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.197 $
+//   $Revision: 1.198 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/22 13:58:25 $
+//   $Author: gauges $
+//   $Date: 2011/03/23 13:50:49 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -194,8 +194,17 @@ const std::string & CReaction::getKey() const {return mKey;}
 const C_FLOAT64 & CReaction::getFlux() const
 {return mFlux;}
 
+const CCopasiObject * CReaction::getFluxReference() const
+{return this->mpFluxReference;}
+
+CCopasiObject * CReaction::getFluxReference()
+{return this->mpFluxReference;}
+
 const C_FLOAT64 & CReaction::getParticleFlux() const
 {return mParticleFlux;}
+
+const CCopasiObject * CReaction::getParticleFluxReference() const
+{return mpParticleFluxReference;}
 
 CCopasiObject * CReaction::getParticleFluxReference()
 {return mpParticleFluxReference;}

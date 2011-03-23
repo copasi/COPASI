@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/22 13:58:26 $
+//   $Author: gauges $
+//   $Date: 2011/03/23 13:50:49 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -348,6 +348,25 @@ public:
    * @return CCopasiObject * particleFluxReference
    */
   CCopasiObject * getParticleFluxReference();
+
+  /**
+   * Retrieve const object referencing the particle flux
+   * @return CCopasiObject * particleFluxReference
+   */
+  const CCopasiObject * getParticleFluxReference() const;
+
+  /**
+   * Retrieve object referencing the flux
+   * @return CCopasiObject * fluxReference
+   */
+  CCopasiObject * getFluxReference();
+
+  /**
+   * Retrieve const object referencing the flux
+   * @return CCopasiObject * fluxReference
+   */
+  const CCopasiObject * getFluxReference() const;
+
 
   /**
    * Retrieve object referencing the propensity
