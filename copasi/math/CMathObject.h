@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/22 14:00:43 $
+//   $Author: gauges $
+//   $Date: 2011/03/23 09:09:13 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,8 +179,8 @@ private:
    * @param const CMathContainer & container
    * @return bool success
    */
-  bool CMathObject::createConvertedExpression(const CExpression * pExpression,
-      const CMathContainer & container);
+  bool createConvertedExpression(const CExpression * pExpression,
+                                 const CMathContainer & container);
 
   /**
    * Create and compile an expression for an intensive value of a species.
