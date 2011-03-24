@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.132 $
+//   $Revision: 1.133 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:42 $
+//   $Date: 2011/03/24 13:31:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -945,7 +945,6 @@ bool CCopasiXML::saveFunctionList()
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
-  CEvaluationTree * pEvaluationTree = NULL;
   CFunction * pFunction = NULL;
 
   startSaveElement("ListOfFunctions");
@@ -955,9 +954,9 @@ bool CCopasiXML::saveFunctionList()
       pFunction = (*mpFunctionList)[i];
 
       Attributes.erase();
-      Attributes.add("key", pEvaluationTree->getKey());
-      Attributes.add("name", pEvaluationTree->getObjectName());
-      Attributes.add("type", CEvaluationTree::XMLType[pEvaluationTree->getType()]);
+      Attributes.add("key", pFunction->getKey());
+      Attributes.add("name", pFunction->getObjectName());
+      Attributes.add("type", CEvaluationTree::XMLType[pFunction->getType()]);
 
       if (pFunction)
         {
