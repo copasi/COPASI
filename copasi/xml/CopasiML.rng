@@ -380,6 +380,7 @@
         <value type="string">h</value>
         <value type="string">ns</value>
         <value type="string">s</value>
+        <value type="string">dimensionless</value>
       </choice>
     </attribute>
     <attribute name="volumeUnit">
@@ -391,6 +392,7 @@
         <value type="string">l</value>
         <value type="string">fl</value>
         <value type="string">ml</value>
+        <value type="string">dimensionless</value>
       </choice>
     </attribute>
     <attribute name="areaUnit">
@@ -403,6 +405,7 @@
         <value type="string">cm&#xb2;</value>
         <value type="string">fm&#xb2;</value>
         <value type="string">dm&#xb2;</value>
+        <value type="string">dimensionless</value>
       </choice>
     </attribute>
     <attribute name="lengthUnit">
@@ -415,6 +418,7 @@
         <value type="string">pm</value>
         <value type="string">nm</value>
         <value type="string">&#xb5;m</value>
+        <value type="string">dimensionless</value>
       </choice>
     </attribute>
     <attribute name="quantityUnit">
@@ -426,6 +430,7 @@
         <value type="string">pmol</value>
         <value type="string">#</value>
         <value type="string">nmol</value>
+        <value type="string">dimensionless</value>
       </choice>
     </attribute>
     <attribute name="type">
