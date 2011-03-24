@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/03 18:00:41 $
+//   $Author: shoops $
+//   $Date: 2011/03/24 13:30:51 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -41,6 +46,8 @@ public:
                                  QString * pSelectedFilter = NULL);
 private:
   static QDir LastDir;
+
+  static QString StartWith(const QString & startWith);
 };
 
 #endif
