@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
+//   $Date: 2011/03/24 13:30:03 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,14 +139,14 @@ CEvaluationNode::CEvaluationNode(const Type & type,
     mType(type),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mPrecedence(PRECEDENCE_DEFAULT)
-{assert(mData != "");}
+{}
 
 CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
     CCopasiNode<Data>(src),
     mType(src.mType),
     mValue(src.mValue),
     mPrecedence(src.mPrecedence)
-{assert(mData != "");}
+{}
 
 CEvaluationNode::~CEvaluationNode() {}
 
