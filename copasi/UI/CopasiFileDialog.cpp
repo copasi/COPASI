@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/10/08 13:00:32 $
+//   $Date: 2011/03/24 14:35:38 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -34,6 +39,21 @@
 QDir CopasiFileDialog::LastDir;
 
 // static
+QString CopasiFileDialog::StartWith(const QString & startWith)
+{
+  if (startWith.isNull())
+    {
+      return LastDir.path();
+    }
+  else if (CDirEntry::dirName(TO_UTF8(startWith)) == "")
+    {
+      return LastDir.path() + "/" + startWith;
+    }
+
+  return startWith;
+}
+
+// static
 void CopasiFileDialog::openExampleDir()
 {
   std::string ExampleDir;
@@ -56,7 +76,7 @@ QString CopasiFileDialog::getOpenFileName(QWidget * parent,
 {
   QString newFile = QFileDialog::getOpenFileName(parent,
                     caption,
-                    startWith.isNull() ? LastDir.path() : startWith,
+                    StartWith(startWith),
                     filter,
                     pSelectedFilter);
 
@@ -88,7 +108,7 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
       fileValid = true;
       newFile = QFileDialog::getSaveFileName(parent,
                                              caption,
-                                             startWith.isNull() ? LastDir.path() : startWith,
+                                             StartWith(startWith),
                                              newFilter, pSelectedFilter,
                                              QFileDialog::DontConfirmOverwrite);
 
