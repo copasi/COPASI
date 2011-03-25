@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.9 $
+//   $Revision: 1.115.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/17 13:51:56 $
+//   $Date: 2011/03/25 15:29:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -373,11 +373,6 @@ bool COptProblem::initialize()
       mUpdateMethods[i] = (*it)->getUpdateMethod();
       changedObjects.insert((*it)->getObject());
       mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
-
-      if (*mpParmRandomizeStartValues)
-        {
-          (*it)->setStartValue((*it)->getRandomValue());
-        }
     }
 
   changedObjects.erase(NULL);
@@ -783,6 +778,22 @@ void COptProblem::setRandomizeStartValues(const bool & randomize)
 
 const bool & COptProblem::getRandomizeStartValues() const
 {return *mpParmRandomizeStartValues;}
+
+void COptProblem::randomizeStartValues()
+{
+  if (*mpParmRandomizeStartValues)
+    {
+      std::vector< COptItem * >::iterator it = mpOptItems->begin();
+      std::vector< COptItem * >::iterator end = mpOptItems->end();
+
+      for (; it != end; ++it)
+        {
+          (*it)->setStartValue((*it)->getRandomValue());
+        }
+    }
+
+  return;
+}
 
 void COptProblem::setCalculateStatistics(const bool & calculate)
 {*mpParmCalculateStatistics = calculate;}

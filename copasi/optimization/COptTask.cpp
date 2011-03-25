@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-//   $Revision: 1.38.10.1 $
+//   $Revision: 1.38.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:12 $
+//   $Date: 2011/03/25 15:29:30 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -139,6 +139,8 @@ bool COptTask::process(const bool & /* useInitialValues */)
   if (!pProblem || !pMethod) return false;
 
   mpMethod->isValidProblem(mpProblem);
+
+  pProblem->randomizeStartValues();
 
   output(COutputInterface::BEFORE);
 
