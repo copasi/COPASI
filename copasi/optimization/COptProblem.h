@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:25 $
+//   $Date: 2011/03/25 15:39:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -290,6 +290,11 @@ public:
    * @return const bool & randomize
    */
   const bool & getRandomizeStartValues() const;
+
+  /**
+   * Randomize the start values if requested
+   */
+  void randomizeStartValues();
 
   /**
    * Set whether we have to calculate statistics
