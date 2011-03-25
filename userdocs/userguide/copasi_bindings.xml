@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.10 $ -->
+<!--   $Revision: 1.11 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2011/03/07 19:39:21 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2011/03/25 10:27:40 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -429,7 +429,10 @@ EVENT=createEvent(NAME_STRING)
 Naturally model elements can also be removed via their keys. Each object in COPASI which is derived from <emphasis>CCopasiObject</emphasis> gets a unique id when it is created which in COPASI is called key. To get the key for such an object, <emphasis>CCopasiObject</emphasis> provides the method <emphasis>getKey()</emphasis>.
 <emphasis>CModel</emphasis>, <emphasis>CCompartment</emphasis>, <emphasis>CMetab</emphasis>, <emphasis>CModelValue</emphasis> and <emphasis>CReaction</emphasis> are all derived from <emphasis>CCopasiObject</emphasis> and you can therefore get the key for any of them via the <emphasis>getKey()</emphasis> method which returns the key in the form of a string.
 </para>
-
+<para>
+<caution>The keys for COPASI objects are recreated each time on object is created, e.g. when a CPS file is loaded. This means that the keys that are stored in the CPS file are not necessarily the keys that the objects will have after the file has been loaded. Names of objects however do not change when a file is loaded and neither does the common name of an object.
+So to uniquely identify an element in a element over several load and save cycles, the common names of objects should be used rather than the keys.</caution>
+</para>
 <para>
 The methods to delete elements from the model are:
 </para>
