@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 17:16:12 $
+//   $Date: 2011/03/29 19:33:01 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -232,6 +232,8 @@ int main(int argc, char *argv[])
       pProblem->setStepNumber((const unsigned C_INT32)stepNumber);
       pProblem->setDuration((const C_FLOAT64)endTime);
       pProblem->setTimeSeriesRequested(true);
+      pProblem->setTimeSeriesRequested(false);
+
       //pProblem->setInitialState(pDataModel->getModel()->getInitialState());
 
       CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
