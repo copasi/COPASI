@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:37 $
+//   $Date: 2011/03/29 16:16:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -223,6 +223,12 @@ public:
    * Refresh the total amount
    */
   void refreshAmount();
+
+  /**
+   * Retrieve the components of the total mass equation
+   * @return const std::vector<std::pair< C_FLOAT64, CMetab * > > & equation
+   */
+  const std::vector<std::pair< C_FLOAT64, CMetab * > > & getEquation() const;
 
 private:
   /**
