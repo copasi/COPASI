@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.15.2.3 $
+//   $Revision: 1.15.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/01 13:59:30 $
+//   $Date: 2011/03/29 19:46:41 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -485,7 +485,7 @@ void CQExperimentData::slotFileAdd()
     CopasiFileDialog::getOpenFileName(this,
                                       "Open File Dialog",
                                       "",
-                                      "Data Files (*.txt *.csv);;All Files (*.*);;",
+                                      "Data Files (*.txt *.csv);;All Files (*)",
                                       "Open Data Files");
 
   if (File.isNull()) return;
