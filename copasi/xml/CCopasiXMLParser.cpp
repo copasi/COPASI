@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.226 $
+//   $Revision: 1.227 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:19 $
+//   $Date: 2011/03/29 16:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -3011,28 +3011,6 @@ void CCopasiXMLParser::ListOfEventsElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Event", mParser.getCurrentLineNumber());
 
-        // We need to assure that the order attribute
-        // of the events is unique.
-        {
-          // Multi-purpose insert.
-          std::pair< std::set< size_t >::iterator, bool > insert =
-            mEventOrders.insert(mCommon.pEvent->getOrder());
-
-          // Check if the insert failed
-          if (!insert.second)
-            {
-              // Create a warning message.
-              CCopasiMessage(CCopasiMessage::WARNING, MCXML + 15,
-                             mCommon.pEvent->getOrder());
-
-              // We correct the order by adding it at the end
-              mCommon.pEvent->setOrder(*mEventOrders.rbegin() + 1, false);
-
-              // Update the set to include the new order.
-              mEventOrders.insert(mCommon.pEvent->getOrder());
-            }
-        }
-
         mCurrentElement = ListOfEvents;
         break;
 
@@ -3064,9 +3042,9 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Name;
-  const char * order;
-  unsigned C_INT32 Order;
   bool DelayAssignment;
+  bool FireAtInitialTime;
+  bool PersistentTrigger;
 
   mpCurrentHandler = NULL;
   mCurrentElement = mLastKnownElement;
@@ -3085,16 +3063,19 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
 
             mKey = mParser.getAttributeValue("key", papszAttrs);
             Name = mParser.getAttributeValue("name", papszAttrs);
-            order = mParser.getAttributeValue("order", papszAttrs, "1");
-            Order = (unsigned C_INT32) atoi(order);
             DelayAssignment =
               mParser.toBool(mParser.getAttributeValue("delayAssignment", papszAttrs, false));
+            FireAtInitialTime =
+              mParser.toBool(mParser.getAttributeValue("fireAtInitialTime", papszAttrs, false));
+            PersistentTrigger =
+              mParser.toBool(mParser.getAttributeValue("persistentTrigger", papszAttrs, false));
 
             mCommon.pEvent = new CEvent();
             mCommon.KeyMap.addFix(mKey, mCommon.pEvent);
             mCommon.pEvent->setObjectName(Name);
-            mCommon.pEvent->setOrder(Order, false);
             mCommon.pEvent->setDelayAssignment(DelayAssignment);
+            mCommon.pEvent->setFireAtInitialTime(FireAtInitialTime);
+            mCommon.pEvent->setPersistentTrigger(PersistentTrigger);
 
             mCommon.pModel->getEvents().add(mCommon. pEvent, true);
 

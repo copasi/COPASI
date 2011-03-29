@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/03/29 16:19:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,11 +238,13 @@ CEvent::CEvent(const std::string & name,
     CAnnotation(),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-    mOrder(C_INVALID_INDEX),
     mAssignments("ListOfAssignments", this),
     mDelayAssignment(true),
+    mFireAtInitialTime(false),
+    mPersistentTrigger(false),
     mpTriggerExpression(NULL),
-    mpDelayExpression(NULL)
+    mpDelayExpression(NULL),
+    mpPriorityExpression(NULL)
 {
   initObjects();
 }
@@ -253,11 +255,13 @@ CEvent::CEvent(const CEvent & src,
     CAnnotation(src),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-    mOrder(src.mOrder),
     mAssignments(src.mAssignments, this),
     mDelayAssignment(src.mDelayAssignment),
+    mFireAtInitialTime(src.mFireAtInitialTime),
+    mPersistentTrigger(src.mPersistentTrigger),
     mpTriggerExpression(src.mpTriggerExpression != NULL ? new CExpression(*src.mpTriggerExpression, this) : NULL),
-    mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL)
+    mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL),
+    mpPriorityExpression(src.mpPriorityExpression != NULL ? new CExpression(*src.mpPriorityExpression, this) : NULL)
 {
   initObjects();
 
@@ -269,14 +273,7 @@ CEvent::~CEvent()
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
   pdelete(mpTriggerExpression);
   pdelete(mpDelayExpression);
-
-  // Call the model to synchronize the events with respect to order
-  CModel * pModel = dynamic_cast<CModel *>(getObjectAncestor("Model"));
-
-  if (pModel != NULL)
-    {
-      pModel->synchronizeEventOrder(this, C_INVALID_INDEX);
-    }
+  pdelete(mpPriorityExpression);
 }
 
 const std::string & CEvent::getKey() const
@@ -326,30 +323,6 @@ void CEvent::initObjects()
     }
 }
 
-void CEvent::setOrder(const size_t & order, const bool & correctOther)
-{
-  if (mOrder != order &&
-      mpModel != NULL)
-    {
-      mpModel->setCompileFlag(true);
-    }
-
-  if (correctOther)
-    {
-      if (mpModel != NULL)
-        {
-          mpModel->synchronizeEventOrder(this, order);
-        }
-    }
-
-  mOrder = order;
-}
-
-const size_t & CEvent::getOrder() const
-{
-  return mOrder;
-}
-
 std::ostream & operator<<(std::ostream &os, const CEvent & d)
 {
   os << "CEvent:  " << d.getObjectName() << std::endl;
@@ -384,6 +357,26 @@ void CEvent::setDelayAssignment(const bool & delayAssignment)
 const bool & CEvent::getDelayAssignment() const
 {
   return mDelayAssignment;
+}
+
+void CEvent::setFireAtInitialTime(const bool & fireAtInitialTime)
+{
+  mFireAtInitialTime = fireAtInitialTime;
+}
+
+const bool & CEvent::getFireAtInitialTime() const
+{
+  return mFireAtInitialTime;
+}
+
+void CEvent::setPersistentTrigger(const bool & persistentTrigger)
+{
+  mPersistentTrigger = persistentTrigger;
+}
+
+const bool & CEvent::getPersistentTrigger() const
+{
+  return mPersistentTrigger;
 }
 
 bool CEvent::setObjectParent(const CCopasiContainer * pParent)
@@ -446,7 +439,7 @@ bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
   CExpression * pOld = mpTriggerExpression;
   mpTriggerExpression = pExpression;
 
-  mpTriggerExpression->setObjectName("Expression");
+  mpTriggerExpression->setObjectName("TriggerExpression");
   add(mpTriggerExpression, true);
   std::vector< CCopasiContainer * > listOfContainer;
   listOfContainer.push_back(mpModel);
@@ -513,7 +506,7 @@ bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
   CExpression * pOld = mpDelayExpression;
   mpDelayExpression = pExpression;
 
-  mpDelayExpression->setObjectName("Expression");
+  mpDelayExpression->setObjectName("DelayExpression");
   add(mpDelayExpression, true);
   std::vector< CCopasiContainer * > listOfContainer;
   listOfContainer.push_back(mpModel);
@@ -550,6 +543,74 @@ const CExpression* CEvent::getDelayExpressionPtr() const
 CExpression* CEvent::getDelayExpressionPtr()
 {
   return mpDelayExpression;
+}
+
+bool CEvent::setPriorityExpression(const std::string & expression)
+{
+  if (mpPriorityExpression == NULL)
+    mpPriorityExpression = new CExpression("PriorityExpression", this);
+
+  if (mpPriorityExpression->getInfix() != expression &&
+      mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
+  return mpPriorityExpression->setInfix(expression);
+}
+
+
+bool CEvent::setPriorityExpressionPtr(CExpression* pExpression)
+{
+  if (pExpression == mpPriorityExpression) return true;
+
+  if (pExpression == NULL) return false;
+
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
+  CExpression * pOld = mpPriorityExpression;
+  mpPriorityExpression = pExpression;
+
+  mpPriorityExpression->setObjectName("PriorityExpression");
+  add(mpPriorityExpression, true);
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(mpModel);
+
+  if (mpPriorityExpression->compile(listOfContainer))
+    {
+      pdelete(pOld);
+      return true;
+    }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpPriorityExpression);
+  mpPriorityExpression->setObjectParent(NULL);
+  mpPriorityExpression = pOld;
+  return false;
+}
+
+std::string CEvent::getPriorityExpression() const
+{
+  if (mpPriorityExpression == NULL)
+    return "";
+
+  mpPriorityExpression->updateInfix();
+
+  return mpPriorityExpression->getInfix();
+}
+
+CExpression* CEvent::getPriorityExpressionPtr()
+{
+  return mpPriorityExpression;
+}
+
+const CExpression* CEvent::getPriorityExpressionPtr() const
+{
+  return mpPriorityExpression;
 }
 
 const CCopasiVectorN< CEventAssignment > & CEvent::getAssignments() const

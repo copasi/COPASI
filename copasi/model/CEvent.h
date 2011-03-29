@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/03/29 16:19:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -221,18 +221,6 @@ public:
   bool compile(std::vector< CCopasiContainer * > listOfContainer);
 
   /**
-   * Set the order in which the event is executed for simultaneous events.
-   * @param const size_t & order
-   * const bool & correctOther = true
-   */
-  void setOrder(const size_t & order, const bool & correctOther = true);
-
-  /**
-   * Retrieve the order in which the events is executed for simultaneous events
-   */
-  const size_t & getOrder() const;
-
-  /**
    * Sets the SBMLId.
    * @param const std::string & id
    */
@@ -244,8 +232,8 @@ public:
   const std::string& getSBMLId() const;
 
   /**
-   * Set whether the calculation or the assignment shall be delayed
-   * @param
+   * Set whether the calculation or the assignment shall be delayed.
+   * @param const bool & delayCalculation
    */
   void setDelayAssignment(const bool & delayCalculation);
 
@@ -254,6 +242,30 @@ public:
    * @return const bool & delayCalculation
    */
   const bool & getDelayAssignment() const;
+
+  /**
+   * Set whether the trigger may fire at the initial time.
+   * @param const bool & fireAtInitialTime
+   */
+  void setFireAtInitialTime(const bool & fireAtInitialTime);
+
+  /**
+   * Retrieve whether the trigger may fire at the initial time.
+   * @return const bool & fireAtInitialTime
+   */
+  const bool & getFireAtInitialTime() const;
+
+  /**
+   * Set whether the trigger must remain true between firing and executions.
+   * @param const bool & persistentTrigger
+   */
+  void setPersistentTrigger(const bool & persistentTrigger);
+
+  /**
+   * Retrieve whether the trigger must remain true between firing and executions.
+   * @return const bool & persistentTrigger
+   */
+  const bool & getPersistentTrigger() const;
 
   /**
    * Set the expression of trigger from a string. The return value indicates if
@@ -322,6 +334,39 @@ public:
   const CExpression* getDelayExpressionPtr() const;
 
   /**
+   * Set the expression of priority from a string. The return value indicates if
+   * parsing the expression was successful.
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setPriorityExpression(const std::string & expression);
+
+  /**
+   * Set the expression of priority from an expression.
+   * @param CExpression* pExpression
+   * @return bool success
+   */
+  bool setPriorityExpressionPtr(CExpression* pExpression);
+
+  /**
+   * Retrieve the expression of the priority as a string.
+   * @return std::string expression
+   */
+  std::string getPriorityExpression() const;
+
+  /**
+   * Retrieve the pointer to the expression of the priority.
+   * @return CExpression* pExpression
+   */
+  CExpression* getPriorityExpressionPtr();
+
+  /**
+   * Retrieve the pointer to the expression of the priority.
+   * @return CExpression* pExpression
+   */
+  const CExpression* getPriorityExpressionPtr() const;
+
+  /**
    * Retrieve the assignments
    * @return const CCopasiVectorN< CEventAssignment > & assignments
    */
@@ -358,11 +403,6 @@ private:
   CModel * mpModel;
 
   /**
-   * The order in which the event is executed for simultaneous events.
-   */
-  size_t mOrder;
-
-  /**
    * A vector assignments expressions which specify the changes made by the event.
    */
   CCopasiVectorN < CEventAssignment > mAssignments;
@@ -374,7 +414,19 @@ private:
   bool mDelayAssignment;
 
   /**
-   * Pointer to the Trigger Expression of the event
+   * A Boolean flag indicating whether the trigger may fire at the initial time
+   * if the trigger expression is true;
+   */
+  bool mFireAtInitialTime;
+
+  /**
+   * A Boolean flag indicating whether the trigger expression must remain true between
+   * firing and executing the event.
+   */
+  bool mPersistentTrigger;
+
+  /**
+   * Pointer to the boolean Trigger Expression of the event
    */
   CExpression * mpTriggerExpression;
 
@@ -382,6 +434,11 @@ private:
    * Pointer to the Delay Expression of the event
    */
   CExpression * mpDelayExpression;
+
+  /**
+   * Pointer to the Priority Expression of the event
+   */
+  CExpression * mpPriorityExpression;
 
   /**
    * The id of the corresponding event in an SBML file.

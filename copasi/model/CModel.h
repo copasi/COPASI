@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.191 $
+//   $Revision: 1.192 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/22 13:57:58 $
+//   $Date: 2011/03/29 16:19:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -995,15 +995,6 @@ public:
    */
   bool removeEvent(const CEvent * pEvent,
                    const bool & recursive = true);
-
-  /**
-   * Synchronize the order of other events effected by the change
-   * of the given event
-   * @param const CEvent * pEvent
-   * @param const size_t newOrder
-   */
-  void synchronizeEventOrder(const CEvent * pEvent,
-                             const size_t newOrder);
 
   /**
    * Add a non concentration value to the model

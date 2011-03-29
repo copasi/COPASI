@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.400 $
+//   $Revision: 1.401 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/22 13:57:58 $
+//   $Date: 2011/03/29 16:19:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,10 @@
 #include "utilities/CAnnotatedMatrix.h"
 #include "CMetabNameInterface.h"
 #include "CMathModel.h"
+
+#ifdef TST_DEPENDENCYGRAPH
+# include "math/CMathContainer.h"
+#endif //TST_DEPENDENCYGRAPH
 
 #include "blaswrap.h"
 #include "clapackwrap.h"
@@ -491,6 +495,8 @@ bool CModel::compile()
 
 #ifdef TST_DEPENDENCYGRAPH
   buildDependencyGraphs();
+
+  CMathContainer MathModel(*this);
 #endif // TST_DEPENDENCYGRAPH
 
   return true;
@@ -2871,24 +2877,6 @@ CEvent* CModel::createEvent(const std::string & name)
 
   CEvent * pEvent = new CEvent(name, this);
 
-  // Assure that the event order is unique.
-  // We assume that the existing events are ordered consecutively without
-  // gaps.
-  size_t Order = 0;
-
-  CCopasiVectorN< CEvent >::const_iterator it = mEvents.begin();
-  CCopasiVectorN< CEvent >::const_iterator end = mEvents.end();
-
-  for (; it != end; ++it)
-    {
-      if (Order < (*it)->getOrder())
-        {
-          Order = (*it)->getOrder();
-        }
-    }
-
-  pEvent->setOrder(Order + 1, false);
-
   if (!mEvents.add(pEvent, true))
     {
       delete pEvent;
@@ -2935,52 +2923,6 @@ bool CModel::removeEvent(const CEvent * pEvent,
   mCompileIsNecessary = true;
 
   return true;
-}
-
-void CModel::synchronizeEventOrder(const CEvent * pEvent,
-                                   const size_t newOrder)
-{
-  const size_t & OldOrder = pEvent->getOrder();
-
-  // If the OldOrder is the default for newly created events
-  // we do nothing. This assumes that whenever CEvent::setOrder is called
-  // for newly created event we assure that the order is unique.
-  if (OldOrder == C_INVALID_INDEX)
-    {
-      return;
-    }
-
-  CCopasiVectorN< CEvent >::iterator it = mEvents.begin();
-  CCopasiVectorN< CEvent >::iterator end = mEvents.end();
-
-  if (newOrder < OldOrder)
-    {
-      // We need to increase the order of the events which are in the
-      // interval [newOrder, OldOrder)
-      for (; it != end; ++it)
-        {
-          const size_t & Order = (*it)->getOrder();
-
-          if (newOrder <= Order && Order < OldOrder)
-            {
-              (*it)->setOrder(Order + 1, false);
-            }
-        }
-    }
-  else if (newOrder > OldOrder)
-    {
-      // We need to decrease the order of the events which are in the
-      // interval (OldOrder, newOrder]
-      for (; it != end; ++it)
-        {
-          const size_t & Order = (*it)->getOrder();
-
-          if (OldOrder < Order && Order <= newOrder)
-            {
-              (*it)->setOrder(Order - 1, false);
-            }
-        }
-    }
 }
 
 //*****************************************************************

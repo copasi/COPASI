@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.133 $
+//   $Revision: 1.134 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/24 13:31:32 $
+//   $Date: 2011/03/29 16:19:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -807,8 +807,9 @@ bool CCopasiXML::saveModel()
       Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
-      Attributes.add("order", "");
       Attributes.add("delayAssignment", "");
+      Attributes.add("fireAtInitialTime", "");
+      Attributes.add("persistentTrigger", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -816,16 +817,18 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pEvent->getKey());
           Attributes.setValue(1, pEvent->getObjectName());
-          Attributes.setValue(2, pEvent->getOrder());
 
           if (pEvent->getDelayExpression() != "")
             {
-              Attributes.setValue(3, pEvent->getDelayAssignment() ? "true" : "false");
+              Attributes.setValue(2, pEvent->getDelayAssignment() ? "true" : "false");
             }
           else
             {
-              Attributes.skip(3);
+              Attributes.skip(2);
             }
+
+          Attributes.setValue(3, pEvent->getFireAtInitialTime());
+          Attributes.setValue(4, pEvent->getPersistentTrigger());
 
           startSaveElement("Event", Attributes);
 
