@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/23 09:09:13 $
+//   $Author: shoops $
+//   $Date: 2011/03/29 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,8 @@ class CMetab;
 
 class CMathObject: public CObjectInterface
 {
+  friend std::ostream &operator<<(std::ostream &os, const CMathObject & o);
+
 public:
   /**
    * Default Constructor
@@ -121,6 +123,36 @@ public:
    * @return const CCopasiObject * pDataObject
    */
   const CCopasiObject * getDataObject() const;
+
+  /**
+   * Retrieve the value type
+   * @return const CMath::ValueType & valueType
+   */
+  const CMath::ValueType & getValueType() const;
+
+  /**
+   * Retrieve the entity type
+   * @return const CMath::EntityType & entityType
+   */
+  const CMath::EntityType & getEntityType() const;
+
+  /**
+   * Retrieve the simulation type
+   * @return const CMath::SimulationType & simulationType
+   */
+  const CMath::SimulationType & getSimulationType() const;
+
+  /**
+   * Check whether the object is an intensive property
+   * @return const bool & isIntensiveProperty
+   */
+  const bool & isIntensiveProperty() const;
+
+  /**
+   * Check whether the object is an initial value
+   * @return const bool & isInitialValue
+   */
+  const bool & isInitialValue() const;
 
 
 private:
@@ -282,5 +314,7 @@ private:
    */
   const CCopasiObject * mpDataObject;
 };
+
+std::ostream &operator<<(std::ostream &os, const CMathObject & o);
 
 #endif // COPASI_CObject

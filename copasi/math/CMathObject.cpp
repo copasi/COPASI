@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/22 14:00:43 $
+//   $Date: 2011/03/29 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         else
           {
             // Amount which are determine by assignment need to be recalculated.
-            if (mSimulationType == CMath::Assignment)
+            if (mSimulationType == CMath::Assignment && !mIsInitialValue)
               return true;
 
             // If the concentration was changed in the context we need to recalculate.
@@ -157,7 +157,6 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
               return true;
 
             return false;
-
           }
 
         break;
@@ -190,11 +189,45 @@ void CMathObject::calculate()
   assert(mpExpression != NULL);
 
   *mpValue = mpExpression->value();
+
+  // For an extensive transient value of a dependent species we have 2
+  // possible assignments depending on the context.
+  //   1) Conversion from the intensive property
+  //   2) Dependent mass off a moiety
+  //
+  // The solution is that the moiety automatically updates the value in conjunction
+  // with the dependency graph omitting the value in the update sequence if the context
+  // is CMath::UseMoities.
 }
 
 const CCopasiObject * CMathObject::getDataObject() const
 {
   return mpDataObject;
+}
+
+const CMath::ValueType & CMathObject::getValueType() const
+{
+  return mValueType;
+}
+
+const CMath::EntityType & CMathObject::getEntityType() const
+{
+  return mEntityType;
+}
+
+const CMath::SimulationType & CMathObject::getSimulationType() const
+{
+  return mSimulationType;
+}
+
+const bool & CMathObject::isIntensiveProperty() const
+{
+  return mIsIntensiveProperty;
+}
+
+const bool & CMathObject::isInitialValue() const
+{
+  return mIsInitialValue;
 }
 
 bool CMathObject::compile(const CMathContainer & container)
@@ -203,6 +236,9 @@ bool CMathObject::compile(const CMathContainer & container)
 
   // The default value is NaN
   *mpValue = InvalidValue;
+
+  // Remove any existing expression
+  pdelete(mpExpression);
 
   // Reset the prerequisites
   mPrerequisites.clear();
@@ -235,17 +271,28 @@ bool CMathObject::compile(const CMathContainer & container)
         break;
 
       case CMath::Propensity:
-        // success = compilePropensity(container);
+        success = compilePropensity(container);
         break;
 
       case CMath::TotalMass:
-        // success = compileTotalMass(container);
+        success = compileTotalMass(container);
         break;
 
       case CMath::DependentMass:
-        // success = compileDependentMass(container);
+        success = compileDependentMass(container);
         break;
+
+      case CMath::EventDelay:
+      case CMath::EventPriority:
+      case CMath::EventAssignment:
+      case CMath::EventTrigger:
+      case CMath::EventRoot:
+        // TODO CRITICAL Implement event handling.
+        break;
+
     }
+
+  // std::cout << *this << std::endl;
 
   return success;
 }
@@ -254,9 +301,7 @@ bool CMathObject::compileInitialValue(const CMathContainer & container)
 {
   bool success = true;
 
-  const CModelEntity * pEntity = static_cast< const CModelEntity * >(mpDataObject->getObjectParent());
-  const CExpression * pExpression = pEntity->getInitialExpressionPtr();
-  bool HaveInitialExpression = pExpression != NULL && pExpression->getInfix() != "";
+  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
 
   if (mIsIntensiveProperty)
     {
@@ -270,21 +315,14 @@ bool CMathObject::compileInitialValue(const CMathContainer & container)
           case CMath::ODE:
           case CMath::Independent:
           case CMath::Dependent:
-
-            // Extensive Property * Conversion / Compartment Size
-            if (HaveInitialExpression)
-              {
-                success &= createConvertedExpression(pSpecies->getInitialExpressionPtr(), container);
-              }
-            else
-              {
-                success &= createIntensiveValueExpression(pSpecies, container);
-              }
-
+          case CMath::Conversion:
+            success &= createIntensiveValueExpression(pSpecies, container);
             break;
 
           case CMath::Assignment:
+            // Extensive Property * Conversion / Compartment Size
             success &= createConvertedExpression(pSpecies->getInitialExpressionPtr(), container);
+
             break;
 
           case CMath::Time:
@@ -299,45 +337,26 @@ bool CMathObject::compileInitialValue(const CMathContainer & container)
       switch (mSimulationType)
         {
           case CMath::Fixed:
-          case CMath::EventTarget:
-          case CMath::Time:
-          case CMath::ODE:
-
-            if (mEntityType == CMath::Species)
-              {
-                const CMetab * pSpecies = static_cast< const CMetab * >(pEntity);
-                success &= createExtensiveValueExpression(pSpecies, container);
-              }
-            else if (HaveInitialExpression)
-              {
-                success &= createConvertedExpression(pEntity->getInitialExpressionPtr(), container);
-              }
-
             break;
 
-          case CMath::Independent:
-          case CMath::Dependent:
+          case CMath::Assignment:
+            success &= createConvertedExpression(pEntity->getInitialExpressionPtr(), container);
+            break;
+
+          case CMath::Conversion:
           {
             const CMetab * pSpecies = static_cast< const CMetab * >(pEntity);
+            mpIntensiveProperty = container.getMathObject(pSpecies->getInitialConcentrationReference());
             success &= createExtensiveValueExpression(pSpecies, container);
           }
           break;
 
-          case CMath::Assignment:
-
-            if (mEntityType == CMath::Species)
-              {
-                const CMetab * pSpecies = static_cast< const CMetab * >(pEntity);
-                success &= createExtensiveValueExpression(pSpecies, container);
-              }
-            else
-              {
-                success &= createConvertedExpression(pEntity->getInitialExpressionPtr(), container);
-              }
-
-            break;
-
           case CMath::SimulationTypeUndefined:
+          case CMath::EventTarget:
+          case CMath::Time:
+          case CMath::ODE:
+          case CMath::Independent:
+          case CMath::Dependent:
             success = false;
             break;
         }
@@ -357,28 +376,37 @@ bool CMathObject::compileValue(const CMathContainer & container)
 
       switch (mSimulationType)
         {
-          case CMath::EventTarget:
-          case CMath::Fixed:
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Dependent:
-            // If the object does not already have an assignment we need to create one:
-            // Extensive Property * Conversion / Compartment Size
-            success &= createIntensiveValueExpression(pSpecies, container);
-            break;
-
           case CMath::Assignment:
             success &= createConvertedExpression(pSpecies->getExpressionPtr(), container);
             break;
 
-          case CMath::Time:
+          case CMath::EventTarget:
+          case CMath::Conversion:
+            success &= createIntensiveValueExpression(pSpecies, container);
+            break;
+
           case CMath::SimulationTypeUndefined:
+          case CMath::Fixed:
+          case CMath::Time:
+          case CMath::ODE:
+          case CMath::Independent:
+          case CMath::Dependent:
             success = false;
             break;
         }
     }
   else
     {
+      // Species need an additional conversion since the event targets the
+      // intensive property.
+      const CMetab * pSpecies = NULL;
+
+      if (mEntityType == CMath::Species)
+        {
+          pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
+          mpIntensiveProperty = container.getMathObject(pSpecies->getConcentrationReference());
+          success &= createExtensiveValueExpression(pSpecies, container);
+        }
 
       switch (mSimulationType)
         {
@@ -386,27 +414,12 @@ bool CMathObject::compileValue(const CMathContainer & container)
           case CMath::EventTarget:
           case CMath::Time:
           case CMath::ODE:
-
-            if (mEntityType == CMath::Species)
-              {
-                const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
-                success &= createExtensiveValueExpression(pSpecies, container);
-              }
-
-            break;
-
           case CMath::Independent:
-          {
-            const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
-            success &= createExtensiveValueExpression(pSpecies, container);
-          }
-          break;
+          case CMath::Conversion:
+            break;
 
           case CMath::Dependent:
           {
-            const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
-            success &= createExtensiveValueExpression(pSpecies, container);
-
             // We need to add the dependent number of the moiety as a possible
             // prerequisite.
             const CMoiety * pMoiety = pSpecies->getMoiety();
@@ -418,21 +431,11 @@ bool CMathObject::compileValue(const CMathContainer & container)
           break;
 
           case CMath::Assignment:
-
-            if (mEntityType == CMath::Species)
-              {
-                const CMetab * pSpecies =
-                  static_cast< const CMetab * >(mpDataObject->getObjectParent());
-                success &= createExtensiveValueExpression(pSpecies, container);
-              }
-            else
-              {
-                const CModelEntity * pEntity =
-                  static_cast< const CModelEntity * >(mpDataObject->getObjectParent());
-                success &= createConvertedExpression(pEntity->getExpressionPtr(), container);
-              }
-
-            break;
+          {
+            const CModelEntity * pEntity = static_cast< const CModelEntity * >(mpDataObject->getObjectParent());
+            success &= createConvertedExpression(pEntity->getExpressionPtr(), container);
+          }
+          break;
 
           case CMath::SimulationTypeUndefined:
             success = false;
@@ -447,32 +450,25 @@ bool CMathObject::compileValueRate(const CMathContainer & container)
 {
   bool success = true;
 
-  const CModelEntity * pEntity = static_cast< const CModelEntity * >(mpDataObject->getObjectParent());
-
   if (mIsIntensiveProperty)
     {
       // Only species have intensive properties.
-      const CMetab * pSpecies = static_cast< const CMetab * >(pEntity);
+      const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
 
       switch (mSimulationType)
         {
-          case CMath::EventTarget:
-          case CMath::Fixed:
-            *mpValue = 0;
-            break;
-
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Dependent:
+          case CMath::Assignment:
             success &= createIntensiveRateExpression(pSpecies, container);
             break;
 
-          case CMath::Assignment:
-            // TODO When we have symbolic differentiation we can deal with this.
-            break;
-
-          case CMath::Time:
           case CMath::SimulationTypeUndefined:
+          case CMath::Fixed:
+          case CMath::EventTarget:
+          case CMath::Time:
+          case CMath::ODE:
+          case CMath::Independent:
+          case CMath::Dependent:
+          case CMath::Conversion:
             success = false;
             break;
         }
@@ -483,7 +479,6 @@ bool CMathObject::compileValueRate(const CMathContainer & container)
       switch (mSimulationType)
         {
           case CMath::Fixed:
-          case CMath::EventTarget:
             *mpValue = 0;
             break;
 
@@ -495,11 +490,12 @@ bool CMathObject::compileValueRate(const CMathContainer & container)
 
             if (mEntityType == CMath::Species)
               {
-                const CMetab * pSpecies = static_cast< const CMetab * >(pEntity);
+                const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
                 success &= createExtensiveODERateExpression(pSpecies, container);
               }
             else
               {
+                const CModelEntity * pEntity = static_cast< const CModelEntity * >(mpDataObject->getObjectParent());
                 success &= createConvertedExpression(pEntity->getExpressionPtr(), container);
               }
 
@@ -518,6 +514,8 @@ bool CMathObject::compileValueRate(const CMathContainer & container)
             break;
 
           case CMath::SimulationTypeUndefined:
+          case CMath::EventTarget:
+          case CMath::Conversion:
             success = false;
             break;
         }
@@ -545,22 +543,19 @@ bool CMathObject::compilePropensity(const CMathContainer & container)
 
   CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
+
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
   Infix.precision(16);
 
-
-  if (container.getModel().getModelType() == CModel::deterministic)
+  // Propensity for reversible reactions must be NaN
+  if (pReaction->isReversible())
     {
-      // We need to apply the stochastic correction.
-      std::ostringstream Condition;
-      Condition.imbue(std::locale::classic());
-      Condition.precision(16);
-
-      std::ostringstream Multiplier;
-      Multiplier.imbue(std::locale::classic());
-      Multiplier.precision(16);
-      Multiplier << "<" << pReaction->getParticleFluxReference()->getCN() << ">";
+      Infix << "NAN";
+    }
+  else if (container.getModel().getModelType() == CModel::deterministic)
+    {
+      Infix << "<" << pReaction->getParticleFluxReference()->getCN() << ">";
 
       std::ostringstream Divisor;
       Divisor.imbue(std::locale::classic());
@@ -576,40 +571,40 @@ bool CMathObject::compilePropensity(const CMathContainer & container)
           const std::string NumberCN = (*itSubstrate)->getMetabolite()->getValueReference()->getCN();
           C_FLOAT64 Multiplicity = (*itSubstrate)->getMultiplicity();
 
-          if (!first)
-            {
-              Condition << "&&";
-              Divisor << "*";
-            }
-
-          first = false;
-
-          Condition << "fabs(<" << NumberCN << ">-" << Multiplicity << ")>";
-          Condition << 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
-
           Multiplicity -= 1.0; // Nothing to correct if the multiplicity is 1.
 
-          if (fabs(Multiplicity - 1.0) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+          if (Multiplicity > 2.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
             {
+              if (!first)
+                {
+                  Divisor << "*";
+                }
+
+              first = false;
               Divisor << "<" << NumberCN << ">^" << Multiplicity;
             }
-          else if (fabs(Multiplicity) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+          else if (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
             {
+              if (!first)
+                {
+                  Divisor << "*";
+                }
+
+              first = false;
               Divisor << "<" << NumberCN << ">";
             }
 
-          while (fabs(Multiplicity) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+          while (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
             {
-              Multiplier << "*(<" << NumberCN << ">-" << Multiplicity << ")";
+              Infix << "*(<" << NumberCN << ">-" << Multiplicity << ")";
               Multiplicity -= 1.0;
             }
         }
 
-      Infix << "if(";
-      Infix << Condition.str();
-      Infix << ",";
-      Infix << Multiplier.str() << "/(" << Divisor.str() << ")";
-      Infix << ",0.0)";
+      if (Divisor.str() != "")
+        {
+          Infix << "/(" << Divisor.str() << ")";
+        }
     }
   else
     {
@@ -631,6 +626,43 @@ bool CMathObject::compilePropensity(const CMathContainer & container)
 bool CMathObject::compileTotalMass(const CMathContainer & container)
 {
   bool success = true;
+  const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
+
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
+
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = pMoiety->getEquation().begin();
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = pMoiety->getEquation().end();
+  bool First = true;
+
+  for (; it != end; ++it)
+    {
+      const C_FLOAT64 & Multiplicity = it->first;
+
+      if (First || Multiplicity < 0.0)
+        {
+          Infix << Multiplicity;
+        }
+      else
+        {
+          Infix << "+" << Multiplicity;
+        }
+
+      First = false;
+
+      Infix << "*<";
+      Infix << it->second->getValueReference()->getCN();
+      Infix << ">";
+    }
+
+  CExpression E("TotalMass", &container);
+
+  success &= E.setInfix(Infix.str());
+
+  mpExpression = new CMathExpression(E, container);
+  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
+                        mpExpression->getPrerequisites().end());
 
   return success;
 }
@@ -638,6 +670,51 @@ bool CMathObject::compileTotalMass(const CMathContainer & container)
 bool CMathObject::compileDependentMass(const CMathContainer & container)
 {
   bool success = true;
+  const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
+
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
+
+  Infix << "<" << pMoiety->getTotalNumberReference()->getCN() << ">";
+
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = pMoiety->getEquation().begin();
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = pMoiety->getEquation().end();
+  bool First = true;
+
+  // The first element in the equation is always the dependent species. We can directly update
+  // its value and therefore point mpValue to it.
+  mpValue = (C_FLOAT64 *) container.getMathObject(it->second->getValueReference())->getValuePointer();
+
+  ++it;
+
+  for (; it != end; ++it)
+    {
+      const C_FLOAT64 & Multiplicity = it->first;
+
+      if (First || Multiplicity >= 0.0)
+        {
+          Infix << "-" << Multiplicity;
+        }
+      else
+        {
+          Infix << "+" << fabs(Multiplicity);
+        }
+
+      First = false;
+
+      Infix << "*<";
+      Infix << it->second->getValueReference()->getCN();
+      Infix << ">";
+    }
+
+  CExpression E("DependentMass", &container);
+
+  success &= E.setInfix(Infix.str());
+
+  mpExpression = new CMathExpression(E, container);
+  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
+                        mpExpression->getPrerequisites().end());
 
   return success;
 }
@@ -764,7 +841,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
   Infix << pSpecies->getCompartment()->getValueReference()->getCN();
   Infix << ">*<";
   Infix << pSpecies->getCompartment()->getRateReference()->getCN();
-  Infix << ">/<";
+  Infix << ">)/<";
   Infix << pSpecies->getCompartment()->getValueReference()->getCN();
   Infix << ">";
 
@@ -849,8 +926,10 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
               Infix << "+" << Multiplicity;
             }
 
+          First = false;
+
           Infix << "*<";
-          Infix << (*it)->getParticleFluxReference();
+          Infix << (*it)->getParticleFluxReference()->getCN();
           Infix << ">";
         }
     }
@@ -865,4 +944,191 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
   return success;
   return success;
+}
+
+std::ostream &operator<<(std::ostream &os, const CMathObject & o)
+{
+  if (o.mpDataObject != NULL)
+    {
+      os << o.mpDataObject->getCN() << std::endl;
+    }
+  else
+    {
+      os << "Data Object = NULL" << std::endl;
+    }
+
+  os << "  Value Type:            ";
+
+  switch (o.mValueType)
+    {
+      case CMath::ValueTypeUndefined:
+        os << "ValueTypeUndefined" << std::endl;
+        break;
+
+      case CMath::Value:
+        os << "Value" << std::endl;
+        break;
+
+      case CMath::ValueRate:
+        os << "ValueRate" << std::endl;
+        break;
+
+      case CMath::Flux:
+        os << "Flux" << std::endl;
+        break;
+
+      case CMath::Propensity:
+        os << "Propensity" << std::endl;
+        break;
+
+      case CMath::TotalMass:
+        os << "TotalMass" << std::endl;
+        break;
+
+      case CMath::DependentMass:
+        os << "DependentMass" << std::endl;
+        break;
+
+      case CMath::EventDelay:
+        os << "EventDelay" << std::endl;
+        break;
+
+      case CMath::EventPriority:
+        os << "EventPriority" << std::endl;
+        break;
+
+      case CMath::EventAssignment:
+        os << "EventAssignment" << std::endl;
+        break;
+
+      case CMath::EventTrigger:
+        os << "EventTrigger" << std::endl;
+        break;
+
+      case CMath::EventRoot:
+        os << "EventRoot" << std::endl;
+        break;
+    }
+
+  os << "  Simulation Type:       ";
+
+  switch (o.mSimulationType)
+    {
+      case CMath::SimulationTypeUndefined:
+        os << "SimulationTypeUndefined" << std::endl;
+        break;
+
+      case CMath::Fixed:
+        os << "Fixed" << std::endl;
+        break;
+
+      case CMath::EventTarget:
+        os << "EventTarget" << std::endl;
+        break;
+
+      case CMath::Time:
+        os << "Time" << std::endl;
+        break;
+
+      case CMath::ODE:
+        os << "ODE" << std::endl;
+        break;
+
+      case CMath::Independent:
+        os << "Independent" << std::endl;
+        break;
+
+      case CMath::Dependent:
+        os << "Dependent" << std::endl;
+        break;
+
+      case CMath::Assignment:
+        os << "Assignment" << std::endl;
+        break;
+
+      case CMath::Conversion:
+        os << "Conversion" << std::endl;
+        break;
+    };
+
+  os << "  Entity Type:           ";
+
+  switch (o.mEntityType)
+    {
+      case CMath::EntityTypeUndefined:
+        os << "EntityTypeUndefined" << std::endl;
+        break;
+
+      case CMath::Model:
+        os << "Model" << std::endl;
+        break;
+
+      case CMath::Analysis:
+        os << "Analysis" << std::endl;
+        break;
+
+      case CMath::GlobalQuantity:
+        os << "GlobalQuantity" << std::endl;
+        break;
+
+      case CMath::Compartment:
+        os << "Compartment" << std::endl;
+        break;
+
+      case CMath::Species:
+        os << "Species" << std::endl;
+        break;
+
+      case CMath::LocalReactionParameter:
+        os << "LocalReactionParameter" << std::endl;
+        break;
+
+      case CMath::StoichiometricCoefficients:
+        os << "StoichiometricCoefficients" << std::endl;
+        break;
+
+      case CMath::Reaction:
+        os << "Reaction" << std::endl;
+        break;
+
+      case CMath::Moiety:
+        os << "Moiety" << std::endl;
+        break;
+
+      case CMath::Event:
+        os << "Event" << std::endl;
+        break;
+    };
+
+  os << "  Is Intensive Property: " << (o.mIsIntensiveProperty ? "true" : "false") << std::endl;
+
+  os << "  Is Initial Value:      " << (o.mIsInitialValue ? "true" : "false") << std::endl;
+
+  os << "  Intensive Property:    ";
+
+  if (o.mpIntensiveProperty != NULL)
+    {
+      os << o.mpIntensiveProperty->getCN() << std::endl;
+    }
+  else
+    {
+      os << "NULL" << std::endl;
+    }
+
+  os << "  Value:                 " << *o.mpValue << " (" << o.mpValue << ")" << std::endl;
+
+  os << "  Expression:            ";
+
+  if (o.mpExpression != NULL)
+    {
+      os << o.mpExpression->getRoot()->getInfix() << std::endl;
+    }
+  else
+    {
+      os << "NULL" << std::endl;
+    }
+
+  // CObjectInterface::ObjectSet mPrerequisites;
+
+  return os;
 }

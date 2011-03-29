@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:45:57 $
+//   $Date: 2011/03/29 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,6 +138,16 @@ private:
    * Initialize the objects
    */
   void initializeObjects();
+
+  /**
+   * Compile the objects
+   */
+  bool compileObjects();
+
+  /**
+   * Create Dependency Graphs
+   */
+  void createDependencyGraphs();
 
   /**
    * Determine the entity type of an entity

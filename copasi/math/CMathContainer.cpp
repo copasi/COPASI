@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/23 09:38:55 $
+//   $Author: shoops $
+//   $Date: 2011/03/29 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,9 @@ CMathContainer::CMathContainer(CModel & model):
     mInitialDependencies(),
     mTransientDependencies(),
     mObjects()
-{}
+{
+  init();
+}
 
 CMathContainer::~CMathContainer()
 {}
@@ -126,7 +128,14 @@ CMathObject * CMathContainer::getMathObject(const CCopasiObjectName & cn) const
 void CMathContainer::init()
 {
   allocate();
+
   initializeObjects();
+
+  // TODO CRITICAL Add events
+
+  compileObjects();
+
+  createDependencyGraphs();
 }
 
 const CModel & CMathContainer::getModel() const
@@ -150,6 +159,7 @@ void CMathContainer::allocate()
 
   mValues.resize(3 *(nExtensiveValues + nIntensiveValues) +
                  2 *(nReactions + nMoieties));
+  mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   C_FLOAT64 * pArray = mValues.array();
   mInitialExtensiveValues = CVectorCore< C_FLOAT64 >(nExtensiveValues, pArray);
@@ -274,7 +284,7 @@ void CMathContainer::initializeObjects()
   ppEntities = StateTemplate.beginDependent();
   ppEntitiesEnd = StateTemplate.endDependent();
 
-  for (; ppEntities != ppEntitiesEnd; ++ppEntities)
+  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::REACTIONS; ++ppEntities)
     {
       DependentSpecies.push_back(*ppEntities);
     }
@@ -284,7 +294,7 @@ void CMathContainer::initializeObjects()
   // Process entities which are determined by assignments
   std::vector< const CModelEntity * > AssignmentEntities;
 
-  ppEntities = StateTemplate.beginFixed();
+  // We continue with the pointer ppEntities
   ppEntitiesEnd = StateTemplate.endFixed();
 
   for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::ASSIGNMENT; ++ppEntities)
@@ -299,6 +309,39 @@ void CMathContainer::initializeObjects()
 
   // Process Moieties
   initializeMathObjects(mpModel->getMoieties(), Pointers);
+}
+
+bool CMathContainer::compileObjects()
+{
+  bool success = true;
+
+  CMathObject *pObject = mObjects.array();
+  CMathObject *pObjectEnd = pObject + mObjects.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      success &= pObject->compile(*this);
+    }
+
+  return success;
+}
+
+void CMathContainer::createDependencyGraphs()
+{
+  CMathObject *pObject = mObjects.array();
+  CMathObject *pObjectEnd = pObject + mInitialExtensiveValues.size() + mInitialIntensiveValues.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      mInitialDependencies.addObject(pObject);
+    }
+
+  pObjectEnd = mObjects.array() + mObjects.size();
+  {
+    mTransientDependencies.addObject(pObject);
+  }
+
+  return;
 }
 
 void CMathContainer::initializePointers(CMathContainer::sPointers & p)
@@ -377,7 +420,11 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
       CMath::SimulationType SimulationType = CMath::Fixed;
       CCopasiObject * pObject = (*it)->getInitialValueReference();
 
-      if (EntityType == CMath::Species || hasDependencies(pObject))
+      if (EntityType == CMath::Species)
+        {
+          SimulationType = CMath::Conversion;
+        }
+      else if (hasDependencies(pObject))
         {
           SimulationType = CMath::Assignment;
         }
@@ -390,9 +437,11 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
       // Extensive Value
       SimulationType = simulationType;
 
-      if (EntityType == CMath::Species && simulationType == CMath::EventTarget)
+      if (EntityType == CMath::Species &&
+          (simulationType == CMath::EventTarget ||
+           simulationType == CMath::Assignment))
         {
-          SimulationType = CMath::Assignment;
+          SimulationType = CMath::Conversion;
         }
 
       map((*it)->getValueReference(), p.pExtensiveValuesObject);
@@ -401,24 +450,11 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                                         (*it)->getValueReference());
 
       // Extensive Rate
-      switch (simulationType)
+      SimulationType = simulationType;
+
+      if (simulationType == CMath::EventTarget)
         {
-          case CMath::Fixed:
-          case CMath::EventTarget:
-          case CMath::Time:
-            SimulationType = CMath::Fixed;
-            break;
-
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Dependent:
-          case CMath::Assignment:
-            SimulationType = CMath::Assignment;
-            break;
-
-          default:
-            SimulationType = CMath::SimulationTypeUndefined;
-            break;
+          SimulationType = CMath::Fixed;
         }
 
       map((*it)->getRateReference(), p.pExtensiveRatesObject);
@@ -433,20 +469,27 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
 
           // Intensive Initial Value
 
-          // The simulation type for initial values is either CMath::Assignment or CMath::Fixed
+          // The simulation type for initial values is either CMath::Assignment or CMath::Conversion
           // In case of species it always possible that is must be calculated.
+          SimulationType = CMath::Conversion;
+
+          if (simulationType == CMath::Assignment)
+            {
+              SimulationType = CMath::Assignment;
+            }
 
           map(pSpecies->getInitialConcentrationReference(), p.pInitialIntensiveValuesObject);
           CMathObject::initializeMathObject(p.pInitialIntensiveValuesObject, p.pInitialIntensiveValues,
-                                            CMath::Value, CMath::Species, CMath::Assignment, true, true,
+                                            CMath::Value, CMath::Species, SimulationType, true, true,
                                             pSpecies->getInitialConcentrationReference());
 
           // Intensive Value
-          SimulationType = CMath::Assignment;
+          SimulationType = CMath::Conversion;
 
-          if (simulationType == CMath::EventTarget)
+          if (simulationType == CMath::EventTarget ||
+              simulationType == CMath::Assignment)
             {
-              SimulationType = CMath::EventTarget;
+              SimulationType = simulationType;
             }
 
           map(pSpecies->getConcentrationReference(), p.pIntensiveValuesObject);
@@ -454,7 +497,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                                             CMath::Value, CMath::Species, SimulationType, true, false,
                                             pSpecies->getConcentrationReference());
 
-          // Extensive Rate
+          // Intensive Rate
           map(pSpecies->getConcentrationRateReference(), p.pIntensiveRatesObject);
           CMathObject::initializeMathObject(p.pIntensiveRatesObject, p.pIntensiveRates,
                                             CMath::ValueRate, CMath::Species, CMath::Assignment, true, false,

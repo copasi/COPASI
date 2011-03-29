@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathDependencyGraph.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:45:57 $
+//   $Date: 2011/03/29 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,7 +110,7 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
     {
       CMathDependencyNode * pNode = mObjects2Nodes[*it];
 
-      pNode->buildUpdateSequence(updateSequence);
+      pNode->buildUpdateSequence(context, updateSequence);
     }
 
   // There should be no nodes left which are not up to date. If that is the case we have circular
@@ -148,7 +148,6 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
   for (; it != end; ++it)
     {
       const CObjectInterface * pObject = it->second->getObject();
-      const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(pObject);
 
       const std::set< CMathDependencyNode * > & Dependents = it->second->getDependents();
       std::set< CMathDependencyNode * >::const_iterator itDep = Dependents.begin();

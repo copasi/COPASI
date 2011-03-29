@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/22 13:59:59 $
+//   $Date: 2011/03/29 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@ CMathExpression::CMathExpression(const CExpression & src,
   mpRoot = src.getRoot()->copyBranch();
 
   // Convert the tree
-  mpRoot = convertNode(mpRoot);
+  mpRoot = convertNode(mpRoot, NULL);
 }
 
 CMathExpression::CMathExpression(const CFunction & src,
@@ -72,7 +72,7 @@ CMathExpression::CMathExpression(const CFunction & src,
         mpRoot = src.getRoot()->copyBranch();
 
         // Convert the tree
-        mpRoot = convertNode(mpRoot);
+        mpRoot = convertNode(mpRoot, &src);
 
         mFunctionVariableMap.pop();
 
@@ -147,14 +147,15 @@ const CObjectInterface::ObjectSet & CMathExpression::getPrerequisites() const
   return mPrerequisites;
 }
 
-CEvaluationNode * CMathExpression::convertNode(CEvaluationNode * pNode)
+CEvaluationNode * CMathExpression::convertNode(CEvaluationNode * pNode,
+    const CEvaluationTree * pTree)
 {
   // We first convert the children
   CEvaluationNode * pChild = static_cast< CEvaluationNode * >(pNode->getChild());
 
   while (pChild != NULL)
     {
-      pChild = convertNode(pChild);
+      pChild = convertNode(pChild, pTree);
       pChild = static_cast< CEvaluationNode * >(pChild->getSibling());
     }
 
@@ -170,15 +171,9 @@ CEvaluationNode * CMathExpression::convertNode(CEvaluationNode * pNode)
           {
             CEvaluationNodeObject * p = static_cast< CEvaluationNodeObject *>(pNode);
             const CObjectInterface * pObject = mpContainer->getObject(p->getObjectCN());
-            C_FLOAT64 * pValue = NULL;
-
-            if (pObject != NULL)
-              {
-                pValue = (C_FLOAT64 *) pObject->getValuePointer();
-              }
 
             // Create a converted node
-            pConvertedNode = createNodeFromValue(pValue);
+            pConvertedNode = createNodeFromObject(pObject);
             // Replace the existing node
             pNode->addSibling(pConvertedNode, pNode);
             delete pNode;
@@ -211,7 +206,7 @@ CEvaluationNode * CMathExpression::convertNode(CEvaluationNode * pNode)
         // Copy
         pConvertedNode = p->getCalledTree()->getRoot()->copyBranch();
         // Convert the copy
-        pConvertedNode = convertNode(pConvertedNode);
+        pConvertedNode = convertNode(pConvertedNode, p->getCalledTree());
         // Replace the existing node
         pNode->addSibling(pConvertedNode, pNode);
         delete pNode;
@@ -226,6 +221,7 @@ CEvaluationNode * CMathExpression::convertNode(CEvaluationNode * pNode)
         assert(!mFunctionVariableMap.empty());
 
         CEvaluationNodeVariable * p = static_cast< const CEvaluationNodeVariable * >(pNode);
+        p->compile(pTree);
         size_t Index = p->getIndex();
 
         assert(Index < mFunctionVariableMap.top().size());
@@ -235,7 +231,7 @@ CEvaluationNode * CMathExpression::convertNode(CEvaluationNode * pNode)
         // Copy
         pConvertedNode = pVariable->copyBranch();
         // Convert the copy
-        pConvertedNode = convertNode(pConvertedNode);
+        pConvertedNode = convertNode(pConvertedNode, pTree);
         // Replace the existing node
         pNode->addSibling(pConvertedNode, pNode);
         delete pNode;
@@ -265,13 +261,32 @@ CEvaluationNode * CMathExpression::convertNode(CEvaluationNode * pNode)
   return pConvertedNode;
 }
 
-CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataValue)
+CEvaluationNode * CMathExpression::createNodeFromObject(const CObjectInterface * pObject)
 {
   CEvaluationNode * pNode = NULL;
 
+  if (pObject != NULL)
+    {
+      mPrerequisites.insert(pObject);
+      pNode = new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer());
+    }
+  else
+    {
+      // We have an invalid value, i.e. NaN
+      pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+    }
+
+  return pNode;
+}
+
+CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataValue)
+{
+  CEvaluationNode * pNode = NULL;
+  CMathObject * pMathObject = NULL;
+
   if (pDataValue != NULL)
     {
-      CMathObject * pMathObject = mpContainer->getMathObject(pDataValue);
+      pMathObject = mpContainer->getMathObject(pDataValue);
 
       if (pMathObject != NULL)
         {

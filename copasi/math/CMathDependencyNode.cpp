@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathDependencyNode.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:45:57 $
+//   $Date: 2011/03/29 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,7 @@
 #include "copasi.h"
 
 #include "CMathDependencyNode.h"
-
-#include "report/CCopasiObject.h"
+#include "CMathObject.h"
 
 CMathDependencyNode::CMathDependencyNode():
     mpObject(NULL),
@@ -95,7 +94,8 @@ void CMathDependencyNode::updatePrerequisiteState(const CMath::SimulationContext
     }
 }
 
-void CMathDependencyNode::buildUpdateSequence(std::vector< CObjectInterface * > & updateSequence)
+void CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag & context,
+    std::vector< CObjectInterface * > & updateSequence)
 {
   if (!mChanged || !mRequested)
     return;
@@ -109,7 +109,24 @@ void CMathDependencyNode::buildUpdateSequence(std::vector< CObjectInterface * > 
         return;
     }
 
-  updateSequence.push_back(const_cast< CObjectInterface *>(mpObject));
+  // For an extensive transient value of a dependent species we have 2
+  // possible assignments depending on the context.
+  //   1) Conversion from the intensive property
+  //   2) Dependent mass off a moiety
+  //
+  // The solution is that the moiety automatically updates the value in conjunction
+  // with the dependency graph omitting the value in the update sequence if the context
+  // is CMath::UseMoities.
+
+  const CMathObject * pObject = NULL   ;
+
+  if (!(context & CMath::UseMoities) ||
+      (pObject = dynamic_cast< const CMathObject *>(mpObject)) == NULL ||
+      pObject->getSimulationType() != CMath::Dependent ||
+      pObject->getValueType() != CMath::Value)
+    {
+      updateSequence.push_back(const_cast< CObjectInterface *>(mpObject));
+    }
 
   mChanged = false;
 
@@ -118,7 +135,7 @@ void CMathDependencyNode::buildUpdateSequence(std::vector< CObjectInterface * > 
 
   for (; it != end; ++it)
     {
-      (*it)->buildUpdateSequence(updateSequence);
+      (*it)->buildUpdateSequence(context, updateSequence);
     }
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/22 13:59:59 $
+//   $Date: 2011/03/29 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,9 +74,18 @@ private:
    * Convert the node and its children, which refer to objects not supported in the math expression,
    * which are e.g. calls to functions, access to object nodes
    * @param CEvaluationNode * pNode
+   * @param const CEvaluationTree * pTree
    * @return CEvaluationNode * pConvertedNode
    */
-  CEvaluationNode * convertNode(CEvaluationNode * pNode);
+  CEvaluationNode * convertNode(CEvaluationNode * pNode,
+                                const CEvaluationTree * pTree);
+
+  /**
+   * Create a node based on the given pointer to the math object
+   * @param const CObjectInterface * pMathObject
+   * @return CEvaluationNode * pNode
+   */
+  CEvaluationNode * createNodeFromObject(const CObjectInterface * pMathObject);
 
   /**
    * Create a node based on the given pointer to a data value
