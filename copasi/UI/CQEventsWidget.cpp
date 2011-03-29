@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:58 $
+//   $Date: 2011/03/29 16:17:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,9 +46,6 @@ CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
 
-  mpOrderDelegate = new CQSpinBoxDelegate(this);
-  mpTblEvents->setItemDelegateForColumn(COL_ORDER_EVENTS, mpOrderDelegate);
-
   mpTblEvents->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblEvents->verticalHeader()->hide();
   mpTblEvents->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
@@ -67,7 +64,6 @@ CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
  */
 CQEventsWidget::~CQEventsWidget()
 {
-  pdelete(mpOrderDelegate);
   pdelete(mpProxyModel);
   pdelete(mpEventDM);
   // no need to delete child widgets, Qt does it all for us

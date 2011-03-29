@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.ui,v $ </comment>
-<comment>   $Revision: 1.12 $ </comment>
+<comment>   $Revision: 1.13 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/03/07 19:37:54 $ </comment>
+<comment>   $Date: 2011/03/29 16:17:20 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -15,16 +15,13 @@
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
 <comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
- <comment> All rights reserved. </comment>
  <class>CQEventWidget1</class>
  <widget class="CopasiWidget" name="CQEventWidget1" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>487</width>
+    <width>488</width>
     <height>504</height>
    </rect>
   </property>
@@ -59,30 +56,8 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2" >
+     <item row="0" column="1" colspan="3" >
       <widget class="QLineEdit" name="mpLineEditName" />
-     </item>
-     <item row="0" column="3" >
-      <widget class="QLabel" name="mpLabelOrder" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text" >
-        <string>Order</string>
-       </property>
-       <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap" >
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4" >
-      <widget class="QSpinBox" name="mpSpinOrder" />
      </item>
      <item row="1" column="0" >
       <widget class="QLabel" name="mpLabelTrigger" >
@@ -103,7 +78,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="4" >
+     <item row="1" column="1" colspan="3" >
       <widget class="CQExpressionMmlStackedWidget" name="mpExpressionTrigger" >
        <property name="minimumSize" >
         <size>
@@ -145,6 +120,19 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="3" >
+      <spacer name="mpSpacerDelay" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
      <item row="3" column="0" >
       <widget class="QLabel" name="mpLabelDelayExpression" >
        <property name="sizePolicy" >
@@ -164,7 +152,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="4" >
+     <item row="3" column="1" colspan="3" >
       <widget class="CQExpressionMmlStackedWidget" name="mpExpressionDelay" >
        <property name="minimumSize" >
         <size>

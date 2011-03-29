@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/09/03 21:06:11 $
+//   $Author: shoops $
+//   $Date: 2011/03/29 16:17:20 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,7 +38,6 @@ public:
 private:
   CQEventDM* mpEventDM;
   CQSortFilterProxyModel *mpProxyModel;
-  CQSpinBoxDelegate *mpOrderDelegate;
   void deleteSelectedEvents();
   void updateDeleteBtns();
 

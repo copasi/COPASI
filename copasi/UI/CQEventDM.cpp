@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:57 $
+//   $Date: 2011/03/29 16:17:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ Qt::ItemFlags CQEventDM::flags(const QModelIndex &index) const
   if (!index.isValid())
     return Qt::ItemIsEnabled;
 
-  if (index.column() == COL_NAME_EVENTS || index.column() == COL_ORDER_EVENTS)
+  if (index.column() == COL_NAME_EVENTS)
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
   else
     return QAbstractItemModel::flags(index);
@@ -73,13 +73,6 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(""));
               case COL_NAME_EVENTS:
                 return QVariant(QString("New Event"));
-              case COL_ORDER_EVENTS:
-              {
-                if (role == Qt::DisplayRole)
-                  return QVariant();
-                else if (role == Qt::EditRole)
-                  return QVariant(rowCount());
-              }
               default:
                 return QVariant(QString(""));
             }
@@ -123,9 +116,6 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
               case COL_NAME_EVENTS:
                 return QVariant(FROM_UTF8(pEvent->getObjectName()));
 
-              case COL_ORDER_EVENTS:
-                return QVariant((unsigned int)pEvent->getOrder());
-
               case COL_TRIGGER_EVENTS:
                 return QVariant(FROM_UTF8(pEvent->getTriggerExpression()));
 
@@ -168,8 +158,6 @@ QVariant CQEventDM::headerData(int section, Qt::Orientation orientation,
             return QVariant(QString("#"));
           case COL_NAME_EVENTS:
             return QVariant(QString("Name"));
-          case COL_ORDER_EVENTS:
-            return QVariant(QString("Order"));
           case COL_TRIGGER_EVENTS:
             return QVariant(QString("Trigger Expression"));
           case COL_DELAYED_EVENTS:
@@ -208,8 +196,6 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
 
       if (index.column() == COL_NAME_EVENTS)
         pEvent->setObjectName(TO_UTF8(value.toString()));
-      else if (index.column() == COL_ORDER_EVENTS)
-        pEvent->setOrder(value.toUInt());
 
       if (defaultRow && this->index(index.row(), COL_NAME_EVENTS).data().toString() == "event")
         pEvent->setObjectName(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));

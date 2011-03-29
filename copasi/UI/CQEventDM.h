@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:53 $
+//   $Date: 2011/03/29 16:17:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,13 +23,12 @@
 #include "CQBaseDataModel.h"
 
 #define COL_NAME_EVENTS             1
-#define COL_ORDER_EVENTS            2
-#define COL_TRIGGER_EVENTS          3
-#define COL_DELAYED_EVENTS          4
-#define COL_DELAY_EXPRESSION_EVENTS 5
-#define COL_ASSIGNTARGET_EVENTS     6
-#define COL_ASSIGNEXPRESSION_EVENTS 7
-#define TOTAL_COLS_EVENTS           8
+#define COL_TRIGGER_EVENTS          2
+#define COL_DELAYED_EVENTS          3
+#define COL_DELAY_EXPRESSION_EVENTS 4
+#define COL_ASSIGNTARGET_EVENTS     5
+#define COL_ASSIGNEXPRESSION_EVENTS 6
+#define TOTAL_COLS_EVENTS           7
 
 class CQEventDM : public CQBaseDataModel
 {

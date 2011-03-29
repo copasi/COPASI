@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:59 $
+//   $Date: 2011/03/29 16:17:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -239,10 +239,6 @@ bool CQEventWidget1::loadFromEvent()
   // *** Name
   mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
 
-  // *** Order
-  mpSpinOrder->setRange(1, (int) pModel->getEvents().size());
-  mpSpinOrder->setValue((int) mpEvent->getOrder());
-
   // *** Expression of Trigger
   mpExpressionTrigger->mpExpressionWidget->setExpression(mpEvent->getTriggerExpression());
   mpExpressionTrigger->updateWidget();    // bring into view mode
@@ -354,13 +350,6 @@ void CQEventWidget1::saveToEvent()
           protectedNotify(ListViews::EVENT, ListViews::RENAME, mKey);
           mChanged = true;
         }
-    }
-
-  // Order
-  if (mpEvent->getOrder() != (size_t) mpSpinOrder->value())
-    {
-      mpEvent->setOrder(mpSpinOrder->value());
-      mChanged = true;
     }
 
   if (mpEvent->getTriggerExpression() != mpExpressionTrigger->mpExpressionWidget->getExpression())
