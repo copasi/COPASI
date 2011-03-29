@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.8 $
+//   $Revision: 1.223.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/22 19:24:58 $
+//   $Date: 2011/03/29 19:27:52 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1193,8 +1193,6 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Text", mParser.getCurrentLineNumber());
 
-        mCommon.FunctionDescription = mCommon.CharacterData;
-        mCommon.CharacterData = "";
         mCurrentElement = MathML;
 
         break;
@@ -2909,12 +2907,17 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "MathML", mParser.getCurrentLineNumber());
 
-        mpMV->setExpression(mCommon.FunctionDescription);
+        {
+          size_t Size = CCopasiMessage::size();
 
-        // Remove error messages created by setExpression as this may fail
-        // due to incomplete model specification at this time.
-        if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
-          CCopasiMessage::getLastMessage();
+          mpMV->setExpression(mCommon.CharacterData);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
+
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
+        }
 
         break;
 
