@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:18:21 $
+//   $Date: 2011/03/29 16:18:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
 
   std::ostringstream Pointer;
   Pointer.flags(std::ios::right | std::ios::hex | std::ios::showbase);
-  Pointer << "0x" << pValue;
+  Pointer << pValue;
 
   mData = Pointer.str();
 }
