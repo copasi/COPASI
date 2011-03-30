@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.152.2.5 $
+//   $Revision: 1.152.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/17 15:18:42 $
+//   $Date: 2011/03/30 16:07:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -228,6 +228,9 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
 
       SCopasiXMLGUI *pGUI = NULL;
       std::string SBMLFileNameBkp = mSBMLFileName;
+      std::string SaveFileNameBkp = mSaveFileName;
+
+      mSaveFileName = CDirEntry::normalize(FileName);
 
       if (mWithGUI)
         {
@@ -253,6 +256,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
               // restore the copasi2sbml map
               mCopasi2SBMLMap = mapBackup;
               mSBMLFileName = SBMLFileNameBkp;
+              mSaveFileName = SaveFileNameBkp;
 
               return false;
             }
@@ -269,6 +273,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
           // restore the copasi2sbml map
           mCopasi2SBMLMap = mapBackup;
           mSBMLFileName = SBMLFileNameBkp;
+          mSaveFileName = SaveFileNameBkp;
+
           // rethrow the exception so the program flow should still be
           // the same as before
           throw;
@@ -278,7 +284,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
 
       pdelete(mData.pCurrentSBMLDocument);
 
-      this->mCopasi2SBMLMap.clear();
+      mCopasi2SBMLMap.clear();
 
       if (XML.getTaskList())
         {
@@ -344,7 +350,6 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
           mData.pGUI = pGUI;
         }
 
-      mSaveFileName = CDirEntry::normalize(FileName);
 #ifdef USE_CRENDER_EXTENSION
       // we have to store the reference directory
       mReferenceDir = CDirEntry::dirName(mSaveFileName);
