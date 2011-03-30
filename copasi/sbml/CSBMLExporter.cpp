@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.9 $
+//   $Revision: 1.84.2.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/30 13:13:16 $
+//   $Date: 2011/03/30 13:37:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -871,7 +871,10 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       // we also have to set the initial amount if the model has variable
       // volumes since those models export all species with the
       // hasOnlySubstanceUnits flag set to true
-      if (pSBMLSpecies->isSetInitialAmount() || this->mVariableVolumes == true)
+      //
+      // libsbml 4 does not set the initial concentration on a species any more
+      // so we also have to set the initial amount
+      if (pSBMLSpecies->isSetInitialAmount() || this->mVariableVolumes == true || pSBMLSpecies->getLevel() == 1)
         {
           pSBMLSpecies->setInitialAmount(value*metab.getCompartment()->getInitialValue());
         }
