@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.21.4.3 $
+//   $Revision: 1.21.4.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/02 18:11:34 $
+//   $Author: ssahle $
+//   $Date: 2011/03/30 11:44:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,7 +178,15 @@ void CTimeSeries::output(const COutputInterface::Activity & activity)
   // We may have to reallocate due to additional output caused from events
   if (mpIt == mpEnd)
     {
-      mAllocatedSteps += 10;
+      size_t diff;
+      diff = mAllocatedSteps / 4;
+
+      if (diff < 10)
+        diff = 10;
+      else if (diff > 10000)
+        diff = 10000;
+
+      mAllocatedSteps += diff;
       CMatrix< C_FLOAT64 >::resize(mAllocatedSteps, mCols, true);
 
       mpIt = mArray + mRecordedSteps * mCols;
