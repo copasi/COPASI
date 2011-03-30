@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-//   $Revision: 1.15.4.1 $
+//   $Revision: 1.15.4.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:57 $
+//   $Author: shoops $
+//   $Date: 2011/03/30 16:35:39 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,8 +28,13 @@
 #include "ObjectBrowserWidget.h"
 #include "CQSimpleSelectionTree.h"
 
-CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent , const char* name , Qt::WFlags fl): Q3WidgetStack(parent, name, fl), mpSimpleTree(NULL), mpObjectBrowser(NULL), mpOutputVector(NULL),
-    mSingleSelect(false), mExpertMode(false)
+CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent):
+    QStackedWidget(parent),
+    mpSimpleTree(NULL),
+    mpObjectBrowser(NULL),
+    mpOutputVector(NULL),
+    mSingleSelect(false),
+    mExpertMode(false)
 {
   this->mpSimpleTree = new CQSimpleSelectionTree(this);
   this->addWidget(this->mpSimpleTree);
@@ -122,7 +127,7 @@ void CCopasiSelectionWidget::setExpertMode(bool expertMode)
       this->mpSimpleTree->commitClicked();
       this->mpSimpleTree->setOutputVector(NULL);
       this->mpObjectBrowser->setOutputVector(this->mpOutputVector);
-      this->raiseWidget(this->mpObjectBrowser);
+      this->setCurrentWidget(this->mpObjectBrowser);
     }
   else
     {
@@ -134,7 +139,7 @@ void CCopasiSelectionWidget::setExpertMode(bool expertMode)
         }
 
       this->mpSimpleTree->setOutputVector(this->mpOutputVector);
-      this->raiseWidget(this->mpSimpleTree);
+      this->setCurrentWidget(this->mpSimpleTree);
     }
 }
 

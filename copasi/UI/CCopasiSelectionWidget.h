@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.h,v $
-//   $Revision: 1.9.4.1 $
+//   $Revision: 1.9.4.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:57 $
+//   $Author: shoops $
+//   $Date: 2011/03/30 16:35:39 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,7 +25,7 @@
 
 #include <vector>
 
-#include <q3widgetstack.h>
+#include <QStackedWidget>
 
 #include "UI/CQSimpleSelectionTree.h"
 
@@ -33,12 +33,12 @@ class ObjectBrowserWidget;
 class CModel;
 class CCopasiObject;
 
-class CCopasiSelectionWidget: public Q3WidgetStack
+class CCopasiSelectionWidget: public QStackedWidget
 {
   Q_OBJECT
 
 public:
-  CCopasiSelectionWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  CCopasiSelectionWidget(QWidget* parent = 0);
   ~CCopasiSelectionWidget();
 
   void populateTree(const CModel * model,
