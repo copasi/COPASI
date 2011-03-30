@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.192.2.4 $
+//   $Revision: 1.192.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/30 12:24:45 $
+//   $Author: gauges $
+//   $Date: 2011/03/30 15:26:12 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1003,7 +1003,9 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
               // check if it is a CMetab, a CModelValue or a CCompartment
               if (dynamic_cast<CMetab*>(object))
                 {
-                  id = dynamic_cast<Species*>(pos->second)->getId();
+                  Species* pSpecies = dynamic_cast<Species*>(pos->second);
+                  assert(pSpecies != NULL);
+                  id = pSpecies->getId();
 
                   // We need to check that we have no reserved name.
                   const char *Reserved[] =
@@ -1070,12 +1072,20 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
 
                               if (!found)
                                 {
-                                  //found = true;
-                                  //usage = CFunctionParameter::MODIFIER;
-                                  //CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
-                                  delete pVariableNode;
-                                  pVariableNode = NULL;
-                                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
+                                  // if we are reading an SBML Level 1 file
+                                  // we can assume that this is a modifier since
+                                  // Level 1 did not define these in the reaction
+                                  if (pSpecies->getLevel() == 1)
+                                    {
+                                      found = true;
+                                      usage = CFunctionParameter::MODIFIER;
+                                    }
+                                  else
+                                    {
+                                      delete pVariableNode;
+                                      pVariableNode = NULL;
+                                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
+                                    }
                                 }
                             }
                         }
