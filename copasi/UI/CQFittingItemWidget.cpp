@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.33.2.5 $
+//   $Revision: 1.33.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:55 $
+//   $Date: 2011/03/30 17:33:21 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -114,7 +114,6 @@ void CQFittingItemWidget::init()
   mpTable->setAlternatingRowColors(true);
   mpTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   mpTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-  mpTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 
   int h, s, v;
 
@@ -189,8 +188,6 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
       (*mpItemsCopy)[*it]->setLowerBound(Number);
       setTableText((int) *it, (*mpItemsCopy)[*it]);
     }
-
-  mpTable->resizeColumnsToContents();
 }
 
 void CQFittingItemWidget::slotCheckUpperInf(bool checked)
@@ -226,8 +223,6 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
       (*mpItemsCopy)[*it]->setUpperBound(Number);
       setTableText((int) *it, (*mpItemsCopy)[*it]);
     }
-
-  mpTable->resizeColumnsToContents();
 }
 
 void CQFittingItemWidget::slotLowerEdit()
@@ -278,8 +273,6 @@ void CQFittingItemWidget::slotLowerEdit()
           (*mpItemsCopy)[*it]->setLowerBound(CN);
           setTableText((int) *it, (*mpItemsCopy)[*it]);
         }
-
-      mpTable->resizeColumnsToContents();
 
       QString Value = FROM_UTF8(pObject->getObjectDisplayName());
       mpLowerValidator->force(Value);
@@ -335,8 +328,6 @@ void CQFittingItemWidget::slotUpperEdit()
           (*mpItemsCopy)[*it]->setUpperBound(CN);
           setTableText((int) *it, (*mpItemsCopy)[*it]);
         }
-
-      mpTable->resizeColumnsToContents();
 
       QString Value = FROM_UTF8(pObject->getObjectDisplayName());
       mpUpperValidator->force(Value);
@@ -428,8 +419,6 @@ void CQFittingItemWidget::slotParamEdit()
           setTableText((int) *it, (*mpItemsCopy)[*it]);
         }
 
-      mpTable->resizeColumnsToContents();
-
       saveSelection();
 
       // If one item is selected we may have no several objects
@@ -468,8 +457,6 @@ void CQFittingItemWidget::slotParamEdit()
           setTableText((int)(current + i), pItem);
         }
 
-      mpTable->resizeColumnsToContents();
-
       connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
       // Update the selection;
@@ -507,8 +494,6 @@ void CQFittingItemWidget::slotExperiments()
 
               setTableText((int) *it, (*mpItemsCopy)[*it]);
             }
-
-          mpTable->resizeColumnsToContents();
         }
 
       loadSelection();
@@ -605,8 +590,6 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
     selectRow(0);
   else
     selectRow(C_INVALID_INDEX);
-
-  mpTable->resizeColumnsToContents();
 
   emit numberChanged((int) mpItemsCopy->size());
 
@@ -876,8 +859,6 @@ void CQFittingItemWidget::slotExperimentChanged()
       setTableText((int) Row, *it);
     }
 
-  mpTable->resizeColumnsToContents();
-
   // Reload the current item.
   loadSelection();
 
@@ -969,7 +950,6 @@ void CQFittingItemWidget::slotCopy()
   connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   setTableText((int) row, pItem);
-  mpTable->resizeColumnsToContents();
 
   // Update the selection
   selectRow(row);
@@ -1142,8 +1122,6 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
   // Update the selection
   selectRow(row - 1);
 
-  mpTable->resizeColumnsToContents();
-
   emit numberChanged((int) mpItemsCopy->size());
 }
 
@@ -1183,7 +1161,6 @@ void CQFittingItemWidget::slotNew()
   connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   setTableText((int) row, pItem);
-  mpTable->resizeColumnsToContents();
 
   // Update the selection
   selectRow(row);
@@ -1243,6 +1220,8 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   itemValue->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
   itemValue->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
   mpTable->setItem(row, 0, itemValue);
+
+  mpTable->resizeRowToContents(row);
 }
 
 size_t CQFittingItemWidget::currentRow()
@@ -1525,8 +1504,6 @@ void CQFittingItemWidget::saveSelection()
 
       setTableText((int) *it, pItem);
     }
-
-  mpTable->resizeColumnsToContents();
 }
 
 void CQFittingItemWidget::selectRow(const size_t & row)
@@ -1597,8 +1574,6 @@ void CQFittingItemWidget::slotLowerLostFocus()
       setTableText((int) *it, (*mpItemsCopy)[*it]);
     }
 
-  mpTable->resizeColumnsToContents();
-
   mpEditLower->setText(FROM_UTF8(NewValue));
 }
 
@@ -1633,8 +1608,6 @@ void CQFittingItemWidget::slotUpperLostFocus()
 
       setTableText((int) *it, (*mpItemsCopy)[*it]);
     }
-
-  mpTable->resizeColumnsToContents();
 
   mpEditUpper->setText(FROM_UTF8(NewValue));
 }
@@ -1690,8 +1663,6 @@ void CQFittingItemWidget::slotReset()
       break;
     }
 
-  mpTable->resizeColumnsToContents();
-
   pdelete(pDialog);
 
   loadSelection();
@@ -1711,8 +1682,6 @@ void CQFittingItemWidget::slotStartLostFocus()
       (*mpItemsCopy)[*it]->setStartValue(Number);
       setTableText((int) *it, (*mpItemsCopy)[*it]);
     }
-
-  mpTable->resizeColumnsToContents();
 }
 
 void CQFittingItemWidget::slotCrossValidations()
@@ -1742,8 +1711,6 @@ void CQFittingItemWidget::slotCrossValidations()
 
               setTableText(*it, (*mpItemsCopy)[*it]);
             }
-
-          mpTable->resizeColumnsToContents();
         }
 
       loadSelection();
@@ -1777,8 +1744,6 @@ void CQFittingItemWidget::slotCrossValidationChanged()
 
       setTableText(Row, *it);
     }
-
-  mpTable->resizeColumnsToContents();
 
   // Reload the current item.
   loadSelection();
@@ -1822,8 +1787,6 @@ void CQFittingItemWidget::slotCheckAllCrossValidations(bool checked)
         }
     }
 
-  mpTable->resizeColumnsToContents();
-
   loadSelection();
 }
 
@@ -1844,8 +1807,6 @@ void CQFittingItemWidget::slotCheckAllExperiments(bool checked)
           setTableText((int) *it, (*mpItemsCopy)[*it]);
         }
     }
-
-  mpTable->resizeColumnsToContents();
 
   loadSelection();
 }
