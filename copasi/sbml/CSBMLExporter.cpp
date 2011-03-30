@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.8 $
+//   $Revision: 1.84.2.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/30 13:06:45 $
+//   $Date: 2011/03/30 13:13:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1233,7 +1233,10 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
             }
         }
 
-      usedReferences.insert(sRef->getSpecies());
+      if (pSBMLReaction->getLevel() > 1)
+        {
+          usedReferences.insert(sRef->getSpecies());
+        }
     }
 
   l = pSBMLReaction->getListOfModifiers();
