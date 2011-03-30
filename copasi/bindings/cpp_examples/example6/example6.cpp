@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.cpp,v $
-//   $Revision: 1.4.4.1 $
+//   $Revision: 1.4.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/13 19:36:32 $
+//   $Date: 2011/03/30 16:00:42 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -127,7 +127,7 @@ int main()
   try
     {
       // now we run the actual trajectory
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
       result = pTrajectoryTask->process(true);
     }
   catch (...)
@@ -397,7 +397,7 @@ int main()
     {
       // initialize the fit task
       // we want complete output (HEADER, BODY and FOOTER)
-      result = pFitTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+      result = pFitTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
       if (result == true)
         {

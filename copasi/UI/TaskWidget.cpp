@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.59.2.4 $
+//   $Revision: 1.59.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/24 14:45:23 $
+//   $Date: 2011/03/30 16:00:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -386,7 +386,7 @@ bool TaskWidget::commonRunTask()
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (!mpTask->initialize(CCopasiTask::OUTPUT_COMPLETE, (*CCopasiRootContainer::getDatamodelList())[0], NULL))
+      if (!mpTask->initialize(CCopasiTask::OUTPUT_UI, (*CCopasiRootContainer::getDatamodelList())[0], NULL))
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 

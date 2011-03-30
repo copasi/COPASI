@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.51.2.2 $
+//   $Revision: 1.51.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:11 $
+//   $Date: 2011/03/30 16:00:41 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -110,10 +110,13 @@ public:
   {
     //do no output
     NO_OUTPUT = 0,
-    //do output, but do not initialize/finish
-    OUTPUT = REPORT | PLOT | TIME_SERIES | STREAM,
+    OUTPUT_BEFORE = INITIALIZE,
+    OUTPUT_AFTER = FINISH,
+    //do output except time series, but do not initialize/finish
+    OUTPUT = REPORT | PLOT | STREAM,
     //do output, including initialization and closing
-    OUTPUT_COMPLETE = REPORT | PLOT | TIME_SERIES | INITIALIZE | STREAM | FINISH,
+    OUTPUT_SE = REPORT | PLOT | INITIALIZE | STREAM | FINISH,
+    OUTPUT_UI = REPORT | PLOT | TIME_SERIES | INITIALIZE | STREAM | FINISH,
     // only do time series
     ONLY_TIME_SERIES = TIME_SERIES | INITIALIZE | STREAM | FINISH
   };

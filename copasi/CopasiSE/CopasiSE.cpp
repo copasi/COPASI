@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.48.2.2 $
+//   $Revision: 1.48.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 17:25:10 $
+//   $Date: 2011/03/30 16:00:43 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -460,7 +460,7 @@ int main(int argc, char *argv[])
 
                     try
                       {
-                        success = TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+                        success = TaskList[i]->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
                         // We need to check whether the result is saved in any form.
                         // If not we need to stop right here to avoid wasting time.
@@ -565,7 +565,7 @@ int validate()
         try
           {
             success =
-              TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+              TaskList[i]->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
             // We need to check whether the result is saved in any form.
             // If not we need to stop right here to avoid wasting time.
