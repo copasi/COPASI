@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.153.2.6 $
+//   $Revision: 1.153.2.7 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/03/03 21:43:21 $
+//   $Author: shoops $
+//   $Date: 2011/03/30 18:03:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,6 +117,7 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 21, "CTrajectoryMethod (21): The model contains a compartment with an ODE rule.\nStochastic simulation is not possible."},
   {MCTrajectoryMethod + 23, "CTrajectoryMethod (23): The model contains events. Stochastic simulation is not possible with this version of COPASI."},
   {MCTrajectoryMethod + 24, "CTrajectoryMethod (24): The model contains a species with an assignment. Hybrid simulation is not possible with this version of COPASI."},
+  {MCTrajectoryMethod + 25, "CTrajectoryMethod (25): Invalid state at time '%f'."},
 
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
