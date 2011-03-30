@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.7 $
+//   $Revision: 1.84.2.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/21 11:35:02 $
+//   $Date: 2011/03/30 13:06:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1225,8 +1225,12 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 
       if (!(sRef = pSBMLReaction->getModifier(pMetabolite->getSBMLId())))
         {
-          sRef = pSBMLReaction->createModifier();
-          sRef->setSpecies(pMetabolite->getSBMLId().c_str());
+          if (pSBMLReaction->getLevel() > 1)
+            {
+              sRef = pSBMLReaction->createModifier();
+              assert(sRef != NULL);
+              sRef->setSpecies(pMetabolite->getSBMLId().c_str());
+            }
         }
 
       usedReferences.insert(sRef->getSpecies());
