@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/21 15:48:18 $
+//   $Author: gauges $
+//   $Date: 2011/03/31 10:49:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -871,7 +871,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       // we also have to set the initial amount if the model has variable
       // volumes since those models export all species with the
       // hasOnlySubstanceUnits flag set to true
-      if (pSBMLSpecies->isSetInitialAmount() || this->mVariableVolumes == true)
+      if (pSBMLSpecies->isSetInitialAmount() || this->mVariableVolumes == true || pSBMLSpecies->getLevel() == 1)
         {
           pSBMLSpecies->setInitialAmount(value*metab.getCompartment()->getInitialValue());
         }
@@ -1225,11 +1225,18 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 
       if (!(sRef = pSBMLReaction->getModifier(pMetabolite->getSBMLId())))
         {
-          sRef = pSBMLReaction->createModifier();
-          sRef->setSpecies(pMetabolite->getSBMLId().c_str());
+          if (pSBMLReaction->getLevel() > 1)
+            {
+              sRef = pSBMLReaction->createModifier();
+              assert(sRef != NULL);
+              sRef->setSpecies(pMetabolite->getSBMLId().c_str());
+            }
         }
 
-      usedReferences.insert(sRef->getSpecies());
+      if (pSBMLReaction->getLevel() > 1)
+        {
+          usedReferences.insert(sRef->getSpecies());
+        }
     }
 
   l = pSBMLReaction->getListOfModifiers();
@@ -2787,13 +2794,28 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       SBMLUtils::collectIds(this->mpSBMLDocument->getModel(), this->mIdMap, this->mMetaIdMap);
     }
 
+
   this->mFunctionIdMap.clear();
   // update the copasi2sbmlmap
   updateCOPASI2SBMLMap(dataModel);
+  // if we create a new sbml model, the old COPASI2SBMLMap is empty
+  // so we have to make sure to add the model to the map here
   // update the comments on the model
   const CModel* pModel = dataModel.getModel();
   assert(pModel != NULL);
-  this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
+
+  if (this->mCOPASI2SBMLMap.empty())
+    {
+      this->mCOPASI2SBMLMap[pModel] = this->mpSBMLDocument->getModel();
+    }
+
+  // setName and setId do the same thing for Level 1 documents
+  // so we don't call setName again since this would overwrite
+  // the id we have set above
+  if (this->mSBMLLevel > 1)
+    {
+      this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
+    }
 
   if (pModel != NULL && (!pModel->getNotes().empty()) && !(pModel->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
     {
@@ -4473,6 +4495,11 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
 
 void CSBMLExporter::convertToLevel1()
 {
+  // this method potentially changes ids for objects, so the Copasi2SBMLmap
+  // will be invalid afterwards.
+  // Since this method is only called for export to Level 1 and the result for such
+  // an export is not stored in the data model, this should be OK.
+
   // expand all function calls in rules, events and
   // kinetic laws and delete the functions
   // initial assignments do not need to be considered since they can not be
@@ -4537,6 +4564,8 @@ void CSBMLExporter::convertToLevel1()
             }
         }
     }
+
+  CSBMLExporter::create_nice_ids(pModel, this->mCOPASI2SBMLMap);
 }
 
 ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
@@ -6719,6 +6748,333 @@ CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNod
   return pResult;
 }
 
+/**
+ * Goes through the node tree and replaces all name nodes with the corresponding entries in the replacement map.
+ * This is used in export to Level 1 where we try ro replace funny ids by more meaningful strings.
+ */
+void CSBMLExporter::replace_object_ids(ASTNode* pNode, const std::map<std::string, std::string>& replacementMap)
+{
+  if (pNode != NULL && !replacementMap.empty())
+    {
+      std::map<std::string, std::string>::const_iterator pos;
+
+      if (pNode->isName())
+        {
+          pos = replacementMap.find(pNode->getName());
+
+          if (pos != replacementMap.end())
+            {
+              assert(pos->second != "");
+              pNode->setName(pos->second.c_str());
+            }
+        }
+      else
+        {
+          unsigned int i = 0, iMax = pNode->getNumChildren();
+
+          while (i < iMax)
+            {
+              // TODO we should probably not do this recursively because it will not work
+              // TODO for insanely large trees, but right now this is the fastest solution
+              CSBMLExporter::replace_object_ids(pNode->getChild(i), replacementMap);
+              ++i;
+            }
+        }
+    }
+}
+
+/**
+ * Replaces all occurences of character not allowed in an SBML L1 SName with '_'.
+ */
+void CSBMLExporter::make_valid_sname(std::string& s)
+{
+  std::string tmp("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_");
+  size_t pos = s.find_first_not_of(tmp);
+
+  while (pos != std::string::npos)
+    {
+      // replace the occurance with _
+      s[pos] = '_';
+      pos = s.find_first_not_of(tmp, pos);
+    }
+}
+
+/**
+ * Changes the given string into a valid sname and makes sure it is unique.
+ */
+void CSBMLExporter::make_unique_valid_sname(std::string& s, const std::map<std::string, std::string>& replacementMap)
+{
+  CSBMLExporter::make_valid_sname(s);
+  std::map<std::string, std::string>::const_iterator pos = replacementMap.find(s);
+
+  if (pos != replacementMap.end())
+    {
+      // copy s
+      std::string tmp = s;
+      std::ostringstream os;
+      unsigned int index = 1;
+
+      do
+        {
+          os.str("");
+          os << s << "_" << index;
+          pos = replacementMap.find(os.str());
+          ++index;
+        }
+      while (pos != replacementMap.end());
+
+      s = os.str();
+    }
+}
+
+/**
+ * Goes through the model and tries to use the names as ids if possible.
+ * This only makes sense for export to Level 1 and the method is only called from convertToLevel1.
+ */
+void CSBMLExporter::create_nice_ids(Model* pModel, const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  // replace the id on the model
+  if (pModel == NULL) return;
+
+  // add all the reserved names to the map
+  std::map<std::string, std::string> replacementMap;
+  replacementMap.insert(std::pair<std::string, std::string>("abs", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("acos", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("and", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("asin", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("atan", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ceil", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("cos", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("exp", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("floor", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("hilli", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("hillmmr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("hillmr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("hillr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("isouur", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("log", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("log10", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("mass", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("massi", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("massr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("not", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("or", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ordbbr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ordbur", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ordubr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("pow", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ppbr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("sin", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("sqr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("sqrt", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("substance", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("tan", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("time", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uai", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uaii", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ualii", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uar", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ucii", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ucir", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("ucti", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uctr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uhmi", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uhmr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("umai", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("umar", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("umi", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("umr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("unii", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("unir", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("usii", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("usir", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uuci", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uucr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uuhr", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uui", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("uur", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("volume", ""));
+  replacementMap.insert(std::pair<std::string, std::string>("xor", ""));
+
+  // we revert the copasi2sbmlmap
+  std::map<const SBase*, const CCopasiObject*> reverse_copasi2sbmlmap;
+  std::map<const CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
+
+  while (it != endit)
+    {
+      reverse_copasi2sbmlmap.insert(std::pair<const SBase*, const CCopasiObject*>(it->second, it->first));
+      ++it;
+    }
+
+  std::map<const SBase*, const CCopasiObject*>::const_iterator pos = reverse_copasi2sbmlmap.find(pModel);
+  assert(pos != reverse_copasi2sbmlmap.end());
+  std::string sname = pos->second->getObjectName();
+  CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
+
+  if (sname != pModel->getId())
+    {
+      replacementMap.insert(std::pair<std::string, std::string>(pModel->getId(), sname));
+      pModel->setId(sname);
+    }
+
+  Compartment* pCompartment = NULL;
+  Species* pSpecies = NULL;
+  Parameter* pParameter = NULL;
+  Reaction* pReaction = NULL;
+  Rule* pRule = NULL;
+  ASTNode* pRoot = NULL;
+  std::map<std::string, std::string>::const_iterator pos2;
+  // we don't do the unit definitions because otherwise we will have to
+  // change all the units on all elements
+  // replace the ids on all compartments
+  unsigned int i, iMax = pModel->getNumCompartments();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pCompartment = pModel->getCompartment(i);
+      assert(pCompartment != NULL);
+      pos = reverse_copasi2sbmlmap.find(pCompartment);
+      assert(pos != reverse_copasi2sbmlmap.end());
+      sname = pos->second->getObjectName();
+      CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
+
+      if (sname != pCompartment->getId())
+        {
+          replacementMap.insert(std::pair<std::string, std::string>(pCompartment->getId(), sname));
+          pCompartment->setId(sname);
+        }
+    }
+
+  // replace the ids on all species
+  iMax = pModel->getNumSpecies();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pSpecies = pModel->getSpecies(i);
+      assert(pSpecies != NULL);
+      pos = reverse_copasi2sbmlmap.find(pSpecies);
+      assert(pos != reverse_copasi2sbmlmap.end());
+      sname = pos->second->getObjectName();
+      CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
+
+      if (sname != pSpecies->getId())
+        {
+          replacementMap.insert(std::pair<std::string, std::string>(pSpecies->getId(), sname));
+          pSpecies->setId(sname);
+        }
+
+      // replace the compartment of the species
+      pos2 = replacementMap.find(pSpecies->getCompartment());
+      assert(pos2 != replacementMap.end());
+
+      if (pos2 != replacementMap.end())
+        {
+          pSpecies->setCompartment(pos2->second);
+        }
+    }
+
+  // replace the ids on all parameters
+  iMax = pModel->getNumParameters();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pParameter = pModel->getParameter(i);
+      assert(pParameter != NULL);
+      pos = reverse_copasi2sbmlmap.find(pParameter);
+      assert(pos != reverse_copasi2sbmlmap.end());
+      sname = pos->second->getObjectName();
+      CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
+
+      if (sname != pParameter->getId())
+        {
+          replacementMap.insert(std::pair<std::string, std::string>(pParameter->getId(), sname));
+          pParameter->setId(sname);
+        }
+    }
+
+  // replace the ids on all reactions
+  iMax = pModel->getNumReactions();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pReaction = pModel->getReaction(i);
+      assert(pReaction != NULL);
+      pos = reverse_copasi2sbmlmap.find(pReaction);
+      assert(pos != reverse_copasi2sbmlmap.end());
+      sname = pos->second->getObjectName();
+      CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
+
+      if (sname != pReaction->getId())
+        {
+          replacementMap.insert(std::pair<std::string, std::string>(pReaction->getId(), sname));
+          pReaction->setId(sname);
+        }
+
+      // replace the ids in the substrates and products lists
+      unsigned int j, jMax = pReaction->getNumReactants();
+
+      for (j = 0; j < jMax; ++j)
+        {
+          SpeciesReference* pSRef = pReaction->getReactant(j);
+          assert(pSRef != NULL);
+          pos2 = replacementMap.find(pSRef->getSpecies());
+          assert(pos2 != replacementMap.end());
+
+          if (pos2 != replacementMap.end())
+            {
+              pSRef->setSpecies(pos2->second);
+            }
+        }
+
+      jMax = pReaction->getNumProducts();
+
+      for (j = 0; j < jMax; ++j)
+        {
+          SpeciesReference* pSRef = pReaction->getProduct(j);
+          assert(pSRef != NULL);
+          pos2 = replacementMap.find(pSRef->getSpecies());
+          assert(pos2 != replacementMap.end());
+
+          if (pos2 != replacementMap.end())
+            {
+              pSRef->setSpecies(pos2->second);
+            }
+        }
+
+      // replace ids in kinetic laws
+      if (pReaction->isSetKineticLaw() && pReaction->getKineticLaw() != NULL && pReaction->getKineticLaw()->getMath() != NULL)
+        {
+          pRoot = const_cast<ASTNode*>(pReaction->getKineticLaw()->getMath());
+          CSBMLExporter::replace_object_ids(pRoot, replacementMap);
+        }
+    }
+
+  // replace the ids on all rules
+  iMax = pModel->getNumRules();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pRule = pModel->getRule(i);
+      assert(pRule != NULL);
+      // replace ids in the expression
+      // and for rate and assignment rules also for the target
+      pRoot = const_cast<ASTNode*>(pRule->getMath());
+      CSBMLExporter::replace_object_ids(pRoot, replacementMap);
+
+      if (!pRule->isAlgebraic())
+        {
+          sname = pRule->getVariable();
+          assert(sname != "");
+          pos2 = replacementMap.find(sname);
+
+          if (pos2 != replacementMap.end())
+            {
+              assert(pos2->second != "");
+              pRule->setVariable(pos2->second);
+            }
+        }
+    }
+}
 
 #if LIBSBML_VERSION >= 40001
 /**

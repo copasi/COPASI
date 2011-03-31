@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/21 15:48:18 $
+//   $Author: gauges $
+//   $Date: 2011/03/31 10:49:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -651,6 +651,26 @@ protected:
    */
   static CEvaluationNode* multiplyByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject);
 
+  /**
+   * Goes through the node tree and replaces all name nodes with the corresponding entries in the replacement map.
+   */
+  static void replace_object_ids(ASTNode* pNode, const std::map<std::string, std::string>& replacementMap);
+
+  /**
+   * Goes through the model and tries to use the names as ids if possible.
+   * This only makes sense for export to Level 1 and the method is only called from convertToLevel1.
+   */
+  static void create_nice_ids(Model* pModel, const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+  /**
+   * Replaces all occurences of character not allowed in an SBML L1 SName with '_'.
+   */
+  static void make_valid_sname(std::string& s);
+
+  /**
+   * Changes the given string into a valid sname and makes sure it is unique.
+   */
+  static void make_unique_valid_sname(std::string& s, const std::map<std::string, std::string>& replacementMap);
 };
 
 #endif // CSBLExporter_H__
