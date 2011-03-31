@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.24.2.1 $
+   $Revision: 1.24.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/10/20 15:14:30 $
+   $Date: 2011/03/31 20:03:36 $
    End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -127,5 +127,23 @@ template <class CType> CType toEnum(const char * attribute,
  */
 double strToDouble(const char * str,
                    char const ** pTail = NULL);
+
+/**
+ * Convert a character sequence to a double
+ * @param const char * str
+ * @param char const ** pTail (default: NULL)
+ * @return C_INT32
+ */
+C_INT32 strToInt(const char * str,
+                 char const ** pTail = NULL);
+
+/**
+ * Convert a character sequence to a double
+ * @param const char * str
+ * @param char const ** pTail (default: NULL)
+ * @return unsigned C_INT32
+ */
+unsigned C_INT32 strToUnsignedInt(const char * str,
+                                  char const ** pTail = NULL);
 
 #endif // COPASI_utilities

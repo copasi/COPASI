@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.37.2.6 $
+$Revision: 1.37.2.7 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/01/12 21:44:52 $
+$Date: 2011/03/31 20:03:36 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -638,7 +638,7 @@ void FixXHTML(const std::string &original, std::string &fixed)
 double strToDouble(const char * str,
                    char const ** pTail)
 {
-  double Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  double Value = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   if (pTail != NULL)
     {
@@ -664,3 +664,64 @@ double strToDouble(const char * str,
 
   return Value;
 }
+
+C_INT32 strToInt(const char * str,
+                 char const ** pTail)
+{
+  C_INT32 Value = std::numeric_limits< C_INT32 >::quiet_NaN();
+
+  if (pTail != NULL)
+    {
+      *pTail = str;
+    }
+
+  if (str == NULL || *str == 0x0)
+    {
+      return Value;
+    }
+
+  std::istringstream in;
+
+  in.imbue(std::locale::classic());
+  in.str(str);
+
+  in >> Value;
+
+  if (pTail != NULL && !isnan(Value))
+    {
+      *pTail = str + std::min< size_t >(in.tellg(), strlen(str));
+    }
+
+  return Value;
+}
+
+unsigned C_INT32 strToUnsignedInt(const char * str,
+                                  char const ** pTail)
+{
+  unsigned C_INT32 Value = std::numeric_limits< unsigned C_INT32 >::quiet_NaN();
+
+  if (pTail != NULL)
+    {
+      *pTail = str;
+    }
+
+  if (str == NULL || *str == 0x0)
+    {
+      return Value;
+    }
+
+  std::istringstream in;
+
+  in.imbue(std::locale::classic());
+  in.str(str);
+
+  in >> Value;
+
+  if (pTail != NULL && !isnan(Value))
+    {
+      *pTail = str + std::min< size_t >(in.tellg(), strlen(str));
+    }
+
+  return Value;
+}
+

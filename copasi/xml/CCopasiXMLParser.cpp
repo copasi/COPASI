@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.9 $
+//   $Revision: 1.223.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 19:27:52 $
+//   $Date: 2011/03/31 20:03:35 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -477,11 +477,11 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
           }
 
         versionMajor = mParser.getAttributeValue("versionMajor", papszAttrs, "0");
-        VersionMajor = atoi(versionMajor);
+        VersionMajor = strToInt(versionMajor);
         versionMinor = mParser.getAttributeValue("versionMinor", papszAttrs, "0");
-        VersionMinor = atoi(versionMinor);
+        VersionMinor = strToInt(versionMinor);
         versionDevel = mParser.getAttributeValue("versionDevel", papszAttrs, "0");
-        VersionDevel = atoi(versionDevel);
+        VersionDevel = strToInt(versionDevel);
 
         mCommon.pVersion->setVersion(VersionMajor, VersionMinor, VersionDevel, "");
 
@@ -1441,14 +1441,14 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
         //if (Role == "") fatalError();
 
         minOccurs = mParser.getAttributeValue("minOccurs", papszAttrs, "1");
-        MinOccurs = atoi(minOccurs);
+        MinOccurs = strToUnsignedInt(minOccurs);
 
         maxOccurs = mParser.getAttributeValue("maxOccurs", papszAttrs , "1");
 
         if (std::string("unbounded") == std::string(maxOccurs))
           MaxOccurs = (unsigned C_INT32) - 1;
         else
-          MaxOccurs = atoi(maxOccurs);
+          MaxOccurs = strToUnsignedInt(maxOccurs);
 
         if (mCommon.mPredefinedFunction)
           {
@@ -2178,7 +2178,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 
             mpCompartment->setObjectName(Name);
             mpCompartment->setStatus(SimulationType);
-            mpCompartment->setDimensionality(atoi(Dimensionality));
+            mpCompartment->setDimensionality(strToUnsignedInt(Dimensionality));
 
             mCommon.pModel->getCompartments().add(mpCompartment, true);
             mLastKnownElement = Compartment;
@@ -3086,7 +3086,7 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
             mKey = mParser.getAttributeValue("key", papszAttrs);
             Name = mParser.getAttributeValue("name", papszAttrs);
             order = mParser.getAttributeValue("order", papszAttrs, "1");
-            Order = (unsigned C_INT32) atoi(order);
+            Order = strToUnsignedInt(order);
             DelayAssignment =
               mParser.toBool(mParser.getAttributeValue("delayAssignment", papszAttrs, false));
 
@@ -8907,12 +8907,12 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
               break;
 
             case CCopasiParameter::INT:
-              i = atoi(sValue.c_str());
+              i = strToInt(sValue.c_str());
               pValue = &i;
               break;
 
             case CCopasiParameter::UINT:
-              ui = atoi(sValue.c_str());
+              ui = strToUnsignedInt(sValue.c_str());
               pValue = &ui;
               break;
 
@@ -9403,7 +9403,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
         mCommon.pReport->setObjectName(Name);
         mCommon.pReport->setTaskType(type);
         mCommon.pReport->setSeparator(CCopasiReportSeparator(Separator));
-        mCommon.pReport->setPrecision(atoi(Precision));
+        mCommon.pReport->setPrecision(strToUnsignedInt(Precision));
 
         /* We have a new report and add it to the list */
         mCommon.pReportList->add(mCommon.pReport, true);
@@ -10535,9 +10535,9 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
         tmp = mParser.getAttributeValue("maxValue", papszAttrs);
         MaxValue = CCopasiXMLInterface::DBL(tmp);
         tmp = mParser.getAttributeValue("tickNumber", papszAttrs, "1000");
-        TickNumber = atoi(tmp);
+        TickNumber = strToUnsignedInt(tmp);
         tmp = mParser.getAttributeValue("tickFactor", papszAttrs, "100");
-        TickFactor = atoi(tmp);
+        TickFactor = strToUnsignedInt(tmp);
 
         scaling = mParser.getAttributeValue("scaling", papszAttrs, "linear");
 
