@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.9 $
+//   $Revision: 1.66.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/23 15:26:25 $
+//   $Date: 2011/03/31 19:01:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -750,6 +750,7 @@ bool CFitProblem::calculate()
           pExp = mpExperimentSet->getExperiment(i);
 
           // Set the model to its original state.
+          // TODO CRITICAL This is the incorrect state if we are running as part of a scan.
           mpModel->setInitialState(*mpInitialState);
           mpModel->updateInitialValues();
 
@@ -1079,6 +1080,11 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
     os << "    " << *static_cast<CFitItem *>(*itItem) << std::endl;
 
   return os;
+}
+
+void CFitProblem::updateInitialState()
+{
+  *mpInitialState = mpModel->getInitialState();
 }
 
 bool CFitProblem::createObjectiveFunction()

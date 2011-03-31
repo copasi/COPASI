@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-//   $Revision: 1.13.4.2 $
+//   $Revision: 1.13.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/25 15:29:29 $
+//   $Date: 2011/03/31 19:01:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,7 +84,7 @@ bool CFitTask::initialize(const OutputFlag & of,
   return COptTask::initialize(of, pOutputHandler, pOstream);
 }
 
-bool CFitTask::process(const bool & /* useInitialValues */)
+bool CFitTask::process(const bool & useInitialValues)
 {
   CFitProblem * pProblem = dynamic_cast<CFitProblem *>(mpProblem);
   COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);
@@ -92,6 +92,11 @@ bool CFitTask::process(const bool & /* useInitialValues */)
   if (!pProblem || !pMethod) return false;
 
   mpMethod->isValidProblem(mpProblem);
+
+  if (useInitialValues)
+    {
+      pProblem->updateInitialState();
+    }
 
   pProblem->randomizeStartValues();
 
