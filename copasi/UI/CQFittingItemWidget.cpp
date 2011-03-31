@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.33.2.6 $
+//   $Revision: 1.33.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/30 17:33:21 $
+//   $Date: 2011/03/31 17:39:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1508,6 +1508,12 @@ void CQFittingItemWidget::saveSelection()
 
 void CQFittingItemWidget::selectRow(const size_t & row)
 {
+  if (row == C_INVALID_INDEX)
+    {
+      mSelection.clear();
+      return loadSelection();
+    }
+
   // This sets the focus and creates a selection
   mpTable->setCurrentCell((int) row, 0);
 
