@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/31 10:49:01 $
+//   $Date: 2011/03/31 14:12:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -671,6 +671,16 @@ protected:
    * Changes the given string into a valid sname and makes sure it is unique.
    */
   static void make_unique_valid_sname(std::string& s, const std::map<std::string, std::string>& replacementMap);
+
+  /**
+   * Converts the SBML model given in SBML Level 1 Version 2 format to SBML Level 1 Version 1.
+   * The method basically removes the namespace attribute on the sbml element
+   * and changes the version from 2 to 1.
+   * It also renames all "species" elements to "specie".
+   * All other changes between SBML Level 1 Version 2 and Level 1 Version 1 should not be relevant here.
+   */
+  static void convert_to_l1v1(std::string& l1v2_string);
+
 };
 
 #endif // CSBLExporter_H__

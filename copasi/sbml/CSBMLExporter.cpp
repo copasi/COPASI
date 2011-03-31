@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/31 10:49:01 $
+//   $Date: 2011/03/31 14:12:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2762,6 +2762,16 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   if (d) free(d);
 
   pdelete(writer);
+
+  // actually most of the work seems to be done by
+  // libsbml already, so the following method doesn't have to
+  // do much and most of the code is obsolete, at least for now
+  if (sbmlLevel == 1 && sbmlVersion == 1)
+    {
+      // if there is an exception in the routine, we hand it up to the calling routine
+      convert_to_l1v1(returnValue);
+    }
+
   return returnValue;
 }
 
@@ -7196,4 +7206,132 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
 }
 #endif // LIBSBML_VERSION
 
+/**
+ * Converts the SBML model given in SBML Level 1 Version 2 format to SBML Level 1 Version 1.
+ * The method basically removes the namespace attribute on the sbml element
+ * and changes the version from 2 to 1.
+ * It also renames all "species" elements to "specie".
+ * All other changes between SBML Level 1 Version 2 and Level 1 Version 1 should not be relevant here.
+ */
+void CSBMLExporter::convert_to_l1v1(std::string& l1v2_string)
+{
+  size_t start_pos = 0, end_pos = 0;
+  // find the sbml tag
+  start_pos = l1v2_string.find("<sbml ");
+
+  if (start_pos == std::string::npos)
+    {
+      // throw an exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Could not find <sbml> element in string. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  // find the following closing >
+  end_pos = l1v2_string.find(">", start_pos);
+
+  if (end_pos == std::string::npos)
+    {
+      // throw an exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Could not find closing bracket for sbml tag. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  // in that range check for the namespace attribute
+  size_t pos = l1v2_string.find("http://www.sbml.org/sbml/level1");
+
+  if (pos == std::string::npos || pos >= end_pos)
+    {
+      // throw an exception
+      // Actually we could ignore this and hope that everything is OK, but fact is that this should not happen,
+      // so we stop.
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Could not find find namespace attribute for sbml element. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  // remove the namespace attribute
+  size_t pos2 = l1v2_string.find("\"", pos);
+
+  if (pos2 == std::string::npos || pos2 >= end_pos)
+    {
+      // throw an exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Could not find find closing quotation mark for namespace value. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  pos = l1v2_string.rfind("xmlns", pos);
+
+  if (pos == std::string::npos || pos <= start_pos)
+    {
+      // throw an exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Could not find find xmlns attribute for namespace. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  // remove everything between pos and pos2, including pos2
+  l1v2_string.erase(pos, pos2 - pos + 1);
+  // update the end marker
+  // since we have deleted pos2-pos+1 characters, the end_marker has
+  // to be shifted as many characters left
+  end_pos -= pos2 - pos + 1;
+  // find the version attribute in that range
+  pos = l1v2_string.find("version", start_pos);
+
+  if (pos == std::string::npos || pos >= end_pos)
+    {
+      // throw an exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Could not find version attribute. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  pos = l1v2_string.find("\"", pos);
+
+  if (pos == std::string::npos || pos >= end_pos)
+    {
+      // throw an exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Could not find opening quotation mark for version attribute value. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  pos2 = l1v2_string.find("\"", pos + 1);
+
+  if (pos2 == std::string::npos || pos2 >= end_pos)
+    {
+      // throw an exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Could not find opening quotation mark for version attribute value. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  // change the version from 2 to 1
+  // in between pos and pos2 there needs to be the number 2 and maybe some whitespace.
+  // We don't want to make this to complicated and just assume that there is only one character in between the two quotation marks
+  // Actually the 1 is already set in the rest of the exporting routines, so this is just there to be save
+  if (pos2 != pos + 2 || (l1v2_string[pos+1] != '2' && l1v2_string[pos+1] != '1'))
+    {
+      // throw an exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Version attribute value not what we expected. Can't convert string to SBML Level 1 Version 1.");
+    }
+
+  l1v2_string[pos+1] = '1';
+  //
+  // change all species elements to specie
+  start_pos = l1v2_string.find("<species ");
+
+  while (start_pos != std::string::npos)
+    {
+      // just change start_pos + 7 to a space
+      start_pos += 7;
+      l1v2_string[start_pos] = ' ';
+      ++start_pos;
+      start_pos = l1v2_string.find("<species ", start_pos);
+    }
+
+  // we also have to replace the closing tag
+  // for this we assume that the closing tag does
+  // not contain any whitespaces
+  start_pos = l1v2_string.find("</species>");
+
+  while (start_pos != std::string::npos)
+    {
+      // just change start_pos + 8 to a >
+      // and start_pos + 9 to a space
+      start_pos += 8;
+      l1v2_string[start_pos] = '>';
+      ++start_pos;
+      l1v2_string[start_pos] = ' ';
+      ++start_pos;
+      start_pos = l1v2_string.find("</species>", start_pos);
+    }
+}
 
