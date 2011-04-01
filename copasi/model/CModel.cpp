@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.395.2.4 $
+//   $Revision: 1.395.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/08 15:01:41 $
+//   $Date: 2011/04/01 15:27:12 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1344,6 +1344,8 @@ bool CModel::buildInitialSequence()
   // and link matrix.
 
   std::set< const CCopasiObject * > Objects;
+
+  Objects.insert(static_cast< const CCopasiObject * >(getObject(CCopasiObjectName("Reference=Avogadro Constant"))));
 
   // The initial values of the model entities
   CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
