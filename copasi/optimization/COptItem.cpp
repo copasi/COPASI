@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:01 $
+//   $Date: 2011/04/01 15:06:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -514,6 +514,8 @@ std::ostream &operator<<(std::ostream &os, const COptItem & o)
     os << o.mpUpperObject->getObjectDisplayName();
   else
     os << o.getUpperBound();
+
+  os << "; Start Value = " << o.getStartValue();
 
   return os;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:29:16 $
+//   $Date: 2011/04/01 15:06:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -686,7 +686,7 @@ void CQLayoutMainWindow::saveImage()
         {
           // ask for the filename
           // TODO use a nicer default filename
-          QString fileName = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", QString("untitled.png"), QString("PNG (*.png);;All files (*.*)"), QString("Choose a filename to save the image(s) under"));
+          QString fileName = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", QString("untitled.png"), QString("PNG (*.png);;All files (*)"), QString("Choose a filename to save the image(s) under"));
 
           if (!fileName.isEmpty() && !fileName.isNull())
             {

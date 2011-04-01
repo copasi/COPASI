@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:58 $
+//   $Date: 2011/04/01 15:06:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,8 @@
 #define COL_OBJECT 4
 #define COL_OBJECT_HIDDEN 5
 #define COL_WEIGHT 6
+
+#define InvalidIndex std::numeric_limits< unsigned C_INT32 >::max()
 
 /*
  *  Constructs a CQExperimentData as a child of 'parent', with the
@@ -354,7 +356,14 @@ void CQExperimentData::slotCheckTab(bool checked)
 }
 
 void CQExperimentData::slotCheckHeader(bool checked)
-{mpEditHeader->setEnabled(checked);}
+{
+  mpEditHeader->setEnabled(checked);
+
+  if (!checked)
+    {
+      this->mpEditHeader->setText("");
+    }
+}
 
 void CQExperimentData::slotExperimentAdd()
 {
@@ -485,7 +494,7 @@ void CQExperimentData::slotFileAdd()
     CopasiFileDialog::getOpenFileName(this,
                                       "Open File Dialog",
                                       "",
-                                      "Data Files (*.txt *.csv);;All Files (*.*);;",
+                                      "Data Files (*.txt *.csv);;All Files (*)",
                                       "Open Data Files");
 
   if (File.isNull()) return;
@@ -804,7 +813,8 @@ void CQExperimentData::destroy()
 
 bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
 {
-  // Temporarily diconnect signals
+
+  // Temporarily disconnect signals
   disconnect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
   disconnect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
   disconnect(mpBtnSteadystate, SIGNAL(toggled(bool)), this, SLOT(slotExprimentType(bool)));
@@ -840,14 +850,14 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
           mpCheckTab->setChecked(false);
         }
 
-      QString Row = (pExperiment->getFirstRow() == C_INVALID_INDEX) ?
+      QString Row = (pExperiment->getFirstRow() == InvalidIndex) ?
                     "" : QString::number(pExperiment->getFirstRow());
       mpEditFirst->setText(Row);
-      Row = (pExperiment->getLastRow() == C_INVALID_INDEX) ?
+      Row = (pExperiment->getLastRow() == InvalidIndex) ?
             "" : QString::number(pExperiment->getLastRow());
       mpEditLast->setText(Row);
 
-      if (pExperiment->getHeaderRow() == C_INVALID_INDEX)
+      if (pExperiment->getHeaderRow() == InvalidIndex)
         {
           mpEditHeader->setText("");
           mpCheckHeader->setChecked(false);
@@ -955,7 +965,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
     pExperiment->setHeaderRow(value.toULong());
   else
     {
-      pExperiment->setHeaderRow(C_INVALID_INDEX);
+      pExperiment->setHeaderRow(InvalidIndex);
       mpCheckHeader->setChecked(false);
     }
 
@@ -1404,10 +1414,10 @@ void CQExperimentData::slotCheckFrom(bool checked)
 
       // Load the experiment individual information.
       mpEditName->setText(FROM_UTF8(mpExperiment->getObjectName()));
-      QString Row = (mpExperiment->getFirstRow() == C_INVALID_INDEX) ?
+      QString Row = (mpExperiment->getFirstRow() == InvalidIndex) ?
                     "" : QString::number(mpExperiment->getFirstRow());
       mpEditFirst->setText(Row);
-      Row = (mpExperiment->getLastRow() == C_INVALID_INDEX) ?
+      Row = (mpExperiment->getLastRow() == InvalidIndex) ?
             "" : QString::number(mpExperiment->getLastRow());
       mpEditLast->setText(Row);
 

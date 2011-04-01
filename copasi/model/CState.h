@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/04/01 15:06:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,10 +442,11 @@ public:
    */
   size_t getNumFixed() const;
 
-  /*
-  void setUpdateDependentRequired(const bool & required);
-  const bool & isUpdateDependentRequired() const;
+  /**
+   * Check whether the current state is valid (contains no NaN)
+   * @return bool isValid
   */
+  bool isValid() const;
 
 protected:
   // These methods are only accessible from CStateTemplate

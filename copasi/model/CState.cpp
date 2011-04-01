@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:51 $
+//   $Date: 2011/04/01 15:06:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -346,6 +346,20 @@ size_t CState::getNumVariable() const
 {return mpBeginFixed - mpBeginIndependent;}
 size_t CState::getNumFixed() const
 {return mpEnd - mpBeginFixed;}
+
+bool CState::isValid() const
+{
+  const C_FLOAT64 * pIt = mpBeginIndependent;
+  const C_FLOAT64 * pEnd = mpBeginDependent;
+
+  for (; pIt != pEnd; ++pIt)
+    {
+      if (isnan(*pIt))
+        return false;
+    }
+
+  return true;
+}
 
 C_FLOAT64 * CState::resize(const size_t & size)
 {

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/31 14:12:59 $
+//   $Author: shoops $
+//   $Date: 2011/04/01 15:06:43 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -740,11 +740,7 @@ void copasi::COptionParser::parse_value(const char *value)
       {
         SBMLSchema_enum evalue;
 
-        if (strcmp(value, "L1V1") == 0)
-          {
-            evalue = SBMLSchema_L1V1;
-          }
-        else if (strcmp(value, "L1V2") == 0)
+        if (strcmp(value, "L1V2") == 0)
           {
             evalue = SBMLSchema_L1V2;
           }

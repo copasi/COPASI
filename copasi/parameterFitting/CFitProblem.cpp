@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/23 16:37:38 $
+//   $Date: 2011/04/01 15:06:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1076,6 +1076,11 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
     os << "    " << *static_cast<CFitItem *>(*itItem) << std::endl;
 
   return os;
+}
+
+void CFitProblem::updateInitialState()
+{
+  *mpInitialState = mpModel->getInitialState();
 }
 
 bool CFitProblem::createObjectiveFunction()

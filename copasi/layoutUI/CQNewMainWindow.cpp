@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/14 16:24:10 $
+//   $Author: shoops $
+//   $Date: 2011/04/01 15:06:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -763,7 +763,7 @@ void CQNewMainWindow::slotScreenshot()
       if (pDialog->exec() == QDialog::Accepted)
         {
           // ask for the filename
-          QString fileName = QFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*.*)"));
+          QString fileName = QFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
 
           if (!fileName.isEmpty())
             {

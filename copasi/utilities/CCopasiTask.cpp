@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:22:47 $
+//   $Date: 2011/04/01 15:06:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,7 +115,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mReport(),
     mpCallBack(NULL),
     mpSliders(NULL),
-    mDoOutput(OUTPUT_COMPLETE),
+    mDoOutput(OUTPUT_SE),
     mOutputCounter(0)
 {initObjects();}
 
@@ -135,7 +135,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mReport(),
     mpCallBack(NULL),
     mpSliders(NULL),
-    mDoOutput(OUTPUT_COMPLETE),
+    mDoOutput(OUTPUT_SE),
     mpOutputHandler(NULL),
     mOutputCounter(0)
 {initObjects();}
@@ -155,7 +155,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mReport(src.mReport),
     mpCallBack(NULL),
     mpSliders(NULL),
-    mDoOutput(OUTPUT_COMPLETE),
+    mDoOutput(OUTPUT_SE),
     mpOutputHandler(NULL),
     mOutputCounter(0)
 {initObjects();}
@@ -348,9 +348,15 @@ void CCopasiTask::output(const COutputInterface::Activity & activity)
           break;
 
         case COutputInterface::BEFORE:
+
+          if (mDoOutput & OUTPUT_BEFORE)
+            mpOutputHandler->output(activity);
+
+          break;
+
         case COutputInterface::AFTER:
 
-          if (mDoOutput == OUTPUT_COMPLETE)
+          if (mDoOutput & OUTPUT_AFTER)
             mpOutputHandler->output(activity);
 
           break;
@@ -370,9 +376,15 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
           break;
 
         case COutputInterface::BEFORE:
+
+          if (mDoOutput & OUTPUT_BEFORE)
+            mpOutputHandler->separate(activity);
+
+          break;
+
         case COutputInterface::AFTER:
 
-          if (mDoOutput == OUTPUT_COMPLETE)
+          if (mDoOutput & OUTPUT_AFTER)
             mpOutputHandler->separate(activity);
 
           break;

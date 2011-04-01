@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.290 $
+//   $Revision: 1.291 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:59 $
+//   $Date: 2011/04/01 15:06:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -702,7 +702,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
   if (file == "")
     newFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
-                                        "COPASI Files (*.gps *.cps);;All Files (*.*)",
+                                        "COPASI Files (*.gps *.cps);;All Files (*)",
                                         "Choose a file");
   else
     newFile = file;
@@ -855,8 +855,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
   if (file == "")
     newFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
-                                        //"COPASI Files (*.gps *.cps);;All Files (*.*)",
-                                        "COPASI Files (*.gps *.cps)",
+                                        "COPASI Files (*.gps *.cps);;All Files (*)",
                                         "Choose a file");
   else
     newFile = file;
@@ -1312,7 +1311,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
   if (file == "")
     SBMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "XML Files (*.xml);;All Files (*.*)",
+                                        QString::null, "XML Files (*.xml);;All Files (*)",
                                         "Choose a file");
   else
     SBMLFile = file;

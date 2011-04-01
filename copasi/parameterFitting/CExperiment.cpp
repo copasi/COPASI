@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/23 16:37:38 $
+//   $Date: 2011/04/01 15:06:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,8 @@
 #include "commandline/CLocaleString.h"
 
 std::istream & skipLine(std::istream & in);
+
+#define InvalidIndex std::numeric_limits< unsigned C_INT32 >::max()
 
 const std::string CExperiment::TypeName[] =
 {
@@ -206,9 +208,9 @@ void CExperiment::initializeParameter()
   mpFileName =
     assertParameter("File Name", CCopasiParameter::FILE, std::string(""))->getValue().pFILE;
   mpFirstRow =
-    assertParameter("First Row", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX)->getValue().pUINT;
+    assertParameter("First Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex)->getValue().pUINT;
   mpLastRow =
-    assertParameter("Last Row", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX)->getValue().pUINT;
+    assertParameter("Last Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex)->getValue().pUINT;
   mpTaskType = (CCopasiTask::Type *)
                assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::unset)->getValue().pUINT;
   mpSeparator =
@@ -218,7 +220,7 @@ void CExperiment::initializeParameter()
   mpRowOriented =
     assertParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
   mpHeaderRow =
-    assertParameter("Row containing Names", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX)->getValue().pUINT;
+    assertParameter("Row containing Names", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex)->getValue().pUINT;
   mpNumColumns =
     assertParameter("Number of Columns", CCopasiParameter::UINT, (unsigned C_INT32) 0)->getValue().pUINT;
 
@@ -955,7 +957,7 @@ bool CExperiment::readColumnNames()
 {
   mColumnName.resize(*mpNumColumns);
 
-  if (*mpHeaderRow == C_INVALID_INDEX) return false;
+  if (*mpHeaderRow == InvalidIndex) return false;
 
   // Open the file
   std::ifstream in;

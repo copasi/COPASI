@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/31 14:14:46 $
+//   $Author: shoops $
+//   $Date: 2011/04/01 15:06:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -460,7 +460,7 @@ int main(int argc, char *argv[])
 
                     try
                       {
-                        success = TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+                        success = TaskList[i]->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
                         // We need to check whether the result is saved in any form.
                         // If not we need to stop right here to avoid wasting time.
@@ -565,7 +565,7 @@ int validate()
         try
           {
             success =
-              TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+              TaskList[i]->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
             // We need to check whether the result is saved in any form.
             // If not we need to stop right here to avoid wasting time.
@@ -612,11 +612,6 @@ int exportSBML()
 
   switch (SBMLSchema)
     {
-      case copasi::SBMLSchema_L1V1:
-        Level = 1;
-        Version = 1;
-        break;
-
       case copasi::SBMLSchema_L1V2:
         Level = 1;
         Version = 2;

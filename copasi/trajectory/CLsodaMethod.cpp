@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:20:36 $
+//   $Date: 2011/04/01 15:06:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -348,6 +348,12 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
     {
       Status = FAILURE;
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+    }
+
+  if (!mpCurrentState->isValid())
+    {
+      Status = FAILURE;
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, mTime);
     }
 
   return Status;

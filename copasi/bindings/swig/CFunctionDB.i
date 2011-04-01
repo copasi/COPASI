@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionDB.i,v $ 
-//   $Revision: 1.8 $ 
+//   $Revision: 1.9 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2011/03/07 19:25:43 $ 
+//   $Date: 2011/04/01 15:06:41 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -43,9 +43,8 @@
 {
     CEvaluationTree* createFunction(const std::string& name,CEvaluationTree::Type t)
     {
-        CEvaluationTree* tree=CEvaluationTree::create(t);
+        CFunction* tree=new CFunction(name,NULL,t);
         if(!tree) return NULL;
-        tree->setObjectName(name);
         if(!self->add(tree,true))
         {
             delete tree;

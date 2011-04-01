@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000087.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:09 $
+//   $Date: 2011/04/01 15:06:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -403,7 +403,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
 
   try
     {
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pCOPASIDATAMODEL, &result);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_UI, pCOPASIDATAMODEL, &result);
       pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
     }
