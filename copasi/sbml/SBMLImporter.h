@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.86.2.5 $
+//   $Revision: 1.86.2.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:05:48 $
+//   $Author: gauges $
+//   $Date: 2011/04/01 15:06:25 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -98,6 +98,7 @@ protected:
   std::map<std::string, std::string> mDelayNodeMap;
   std::set<std::string> mUsedSBMLIds;
   bool mUsedSBMLIdsPopulated;
+  bool mAvogadroSet;
 
 
 #if LIBSBML_VERSION >= 40100
@@ -382,8 +383,9 @@ protected:
    * only known via a pointer in the SBMLImporter at the time of
    * import, all AST_NAME_TIME nodes that are imported need to have
    * their name replaced by the common name of this model.
+   * Starting with SBML Level 3 this also applies to the avogadro number.
    */
-  void replaceTimeNodeNames(ASTNode* pNode);
+  void replaceTimeAndAvogadroNodeNames(ASTNode* pNode);
 
   /**
    * COPASI can not handle the delay function yet, so if it is used in some expression, we

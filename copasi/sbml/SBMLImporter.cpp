@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.24 $
+//   $Revision: 1.263.2.25 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/01 12:23:42 $
+//   $Date: 2011/04/01 15:06:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2653,7 +2653,8 @@ SBMLImporter::SBMLImporter():
     mpDataModel(NULL),
     mpCopasiModel(NULL),
     mImportCOPASIMIRIAM(false),
-    mUsedSBMLIdsPopulated(false)
+    mUsedSBMLIdsPopulated(false),
+    mAvogadroSet(false)
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -2789,6 +2790,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                         CCopasiDataModel* pDataModel)
 {
   this->mUsedSBMLIdsPopulated = false;
+  this->mAvogadroSet = false;
   mpDataModel = pDataModel;
   assert(mpDataModel != NULL);
 
@@ -4193,7 +4195,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
     }
 
   this->replaceCallNodeNames(pNode);
-  this->replaceTimeNodeNames(pNode);
+  this->replaceTimeAndAvogadroNodeNames(pNode);
 
   if (pSBMLReaction != NULL && !this->mSubstanceOnlySpecies.empty())
     {
@@ -4439,7 +4441,7 @@ bool SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
   return result;
 }
 
-void SBMLImporter::replaceTimeNodeNames(ASTNode* pNode)
+void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pNode)
 {
   if (!pNode) return;
 
@@ -4447,6 +4449,33 @@ void SBMLImporter::replaceTimeNodeNames(ASTNode* pNode)
     {
       pNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Time"))->getCN().c_str());
     }
+
+#if LIBSBML_VERSION >= 40100
+  else if (pNode->getType() == AST_NAME_AVOGADRO)
+    {
+      pNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getCN().c_str());
+
+      // when we do this the first time, we have to set the avogadro number on the model
+      if (!this->mAvogadroSet)
+        {
+          this->mAvogadroSet = true;
+          assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
+
+          if (this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL)
+            {
+              this->mpDataModel->getModel()->setAvogadro(pNode->getReal());
+            }
+
+          // to be consistent, we also have to set the number on the
+          // avogadro parameter we created
+          if (this->mAvogadroCreated)
+            {
+              const_cast<Parameter*>(*this->mPotentialAvogadroNumbers.begin())->setValue(pNode->getReal());
+            }
+        }
+    }
+
+#endif // LIBSBML_VERSION >= 40100
   else
     {
       // go through all children and replace the time nodes names
@@ -4454,7 +4483,7 @@ void SBMLImporter::replaceTimeNodeNames(ASTNode* pNode)
 
       for (i = 0; i < iMax; ++i)
         {
-          this->replaceTimeNodeNames(dynamic_cast<ASTNode*>(pNode->getChild(i)));
+          this->replaceTimeAndAvogadroNodeNames(dynamic_cast<ASTNode*>(pNode->getChild(i)));
         }
     }
 }
