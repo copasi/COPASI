@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.18 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathTrigger.h,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:16 $
+//   $Date: 2011/04/01 17:34:31 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual

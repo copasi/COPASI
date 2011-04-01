@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.192 $
+//   $Revision: 1.193 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:19:26 $
+//   $Date: 2011/04/01 17:34:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,11 +34,12 @@
 #include "copasi/model/CMoiety.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/model/CProcessQueue.h"
-#include "copasi/model/CMathTrigger.h"
 
 #include "copasi/utilities/CVector.h"
 #include "copasi/utilities/CMatrix.h"
 #include "copasi/report/CCopasiContainer.h"
+
+#include "copasi/math/CMathTrigger.h"
 
 #ifdef TST_DEPENDENCYGRAPH
 # include "copasi/math/CMathDependencyGraph.h"

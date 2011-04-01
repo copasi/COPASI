@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.12 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2011/04/01 17:34:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,9 +21,9 @@
 #include "copasi.h"
 
 #include "CMathEvent.h"
-#include "CMathModel.h"
 
-#include "CEvent.h"
+#include "model/CMathModel.h"
+#include "model/CEvent.h"
 
 #include "report/CCopasiRootContainer.h"
 

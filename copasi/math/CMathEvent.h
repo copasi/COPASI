@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.11 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.h,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:16 $
+//   $Date: 2011/04/01 17:34:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef COPASI_CMathEvent
 #define COPASI_CMathEvent
 
-#include "copasi/model/CMathTrigger.h"
+#include "copasi/math/CMathTrigger.h"
 #include "copasi/function/CExpression.h"
 
 class CEvent;
