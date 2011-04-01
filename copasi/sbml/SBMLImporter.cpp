@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.23 $
+//   $Revision: 1.263.2.24 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/21 15:52:34 $
+//   $Date: 2011/04/01 12:23:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1843,6 +1843,10 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
         {
           stoi = sr->getStoichiometry() / sr->getDenominator();
         }
+      else if (this->mLevel > 3 && sr->isSetStoichiometry())
+        {
+          stoi = sr->getStoichiometry();
+        }
 
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
@@ -1948,9 +1952,13 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       C_FLOAT64 stoi = 1.0;
 
-      if (!sr->isSetStoichiometryMath())
+      if (this->mLevel < 3 && !sr->isSetStoichiometryMath())
         {
           stoi = sr->getStoichiometry() / sr->getDenominator();
+        }
+      else if (this->mLevel > 3 && sr->isSetStoichiometry())
+        {
+          stoi = sr->getStoichiometry();
         }
 
       std::map<std::string, CMetab*>::iterator pos;
