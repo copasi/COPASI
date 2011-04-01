@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/16 09:51:52 $
+//   $Author: shoops $
+//   $Date: 2011/04/01 17:33:32 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -106,18 +106,13 @@ int main(int argc, char** argv)
   level = strtol(argv[4], NULL, 10);
   version = strtol(argv[5], NULL, 10);
 
-  if (level != 1 && level != 2)
+  if (level < 1 || level > 3)
     {
       std::cerr << "SBML Level " << level << " Version " << version << " not supported." << std::endl;
       exit(1);
     }
 
   if (level == 1 && (version < 1 || version > 2))
-    {
-      std::cerr << "SBML Level " << level << " Version " << version << " not supported." << std::endl;
-      exit(1);
-    }
-  else if (version < 1 || version > 3)
     {
       std::cerr << "SBML Level " << level << " Version " << version << " not supported." << std::endl;
       exit(1);
@@ -280,10 +275,15 @@ int main(int argc, char** argv)
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for SBML testsuite run");
       pReport->setSeparator(CCopasiReportSeparator(","));
       pReport->setTaskType(CCopasiTask::timeCourse);
-      pReport->setIsTable(true);
+      pReport->setIsTable(false);
+      std::vector<CRegisteredObjectName>* pHeaderAddr = pReport->getHeaderAddr();
+      std::vector<CRegisteredObjectName>* pBodyAddr = pReport->getBodyAddr();
 
-      std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
-      pTable->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
+      //std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
+      pHeaderAddr->push_back(CCopasiStaticString("time").getCN());
+      pBodyAddr->push_back(CCopasiObjectName(pDataModel->getModel()->getValueReference()->getCN()));
+      pHeaderAddr->push_back(pReport->getSeparator().getCN());
+      pBodyAddr->push_back(pReport->getSeparator().getCN());
       // create a map of all posible variables
       std::map<std::string, const CModelEntity*> variableMap;
       const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
@@ -315,6 +315,7 @@ int main(int argc, char** argv)
       std::list<std::string>::const_iterator it = variables.begin(), endit = variables.end();
       std::map<std::string, const CModelEntity*>::const_iterator pos;
       unsigned int dummyCount = 1;
+      std::ostringstream os;
 
       while (it != endit)
         {
@@ -325,6 +326,10 @@ int main(int argc, char** argv)
               std::cerr << "Could not find a model entity for the SBML id " << *it << std::endl;
               exit(1);
             }
+
+          os.str("");
+          os << pos->second->getSBMLId();
+          pHeaderAddr->push_back(CCopasiStaticString(os.str()).getCN());
 
           if (dynamic_cast<const CMetab*>(pos->second) != NULL)
             {
@@ -339,16 +344,15 @@ int main(int argc, char** argv)
                   assert(pTmpMV);
                   // create an assignment that takes the concentration of the
                   // metabolite and multiplies it by the compartment
-                  ss << "<" << pos->second->getObject(CCopasiObjectName("Reference=Concentration"))->getCN() << "> * <" << dynamic_cast<const CMetab*>(pos->second)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))->getCN() << ">";
+                  ss << "<" << dynamic_cast<const CMetab*>(pos->second)->getConcentrationReference()->getCN() << "> * <" << dynamic_cast<const CMetab*>(pos->second)->getCompartment()->getValueReference()->getCN() << ">";
                   pTmpMV->setStatus(CModelEntity::ASSIGNMENT);
                   bool tmpRes = pTmpMV->setExpression(ss.str());
                   assert(tmpRes == true);
-
-                  pTable->push_back(pTmpMV->getObject(CCopasiObjectName("Reference=Value"))->getCN());
+                  pBodyAddr->push_back(pTmpMV->getValueReference()->getCN());
                 }
               else if (concentrations.find(*it) != concentrations.end())
                 {
-                  pTable->push_back(pos->second->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+                  pBodyAddr->push_back(dynamic_cast<const CMetab*>(pos->second)->getConcentrationReference()->getCN());
                 }
               else
                 {
@@ -358,14 +362,20 @@ int main(int argc, char** argv)
             }
           else if (dynamic_cast<const CCompartment*>(pos->second) != NULL)
             {
-              pTable->push_back(pos->second->getObject(CCopasiObjectName("Reference=Volume"))->getCN());
+              pBodyAddr->push_back(pos->second->getValueReference()->getCN());
             }
           else if (dynamic_cast<const CModelValue*>(pos->second) != NULL)
             {
-              pTable->push_back(pos->second->getObject(CCopasiObjectName("Reference=Value"))->getCN());
+              pBodyAddr->push_back(pos->second->getValueReference()->getCN());
             }
 
           ++it;
+
+          if (it != endit)
+            {
+              pHeaderAddr->push_back(pReport->getSeparator().getCN());
+              pBodyAddr->push_back(pReport->getSeparator().getCN());
+            }
         }
 
       // create a trajectory task
@@ -394,13 +404,13 @@ int main(int argc, char** argv)
       TaskList.add(pTrajectoryTask, true);
 
       // save the file for control purposes
-      std::string saveFilename = sbml_filename;
-      saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
-      pDataModel->saveModel(saveFilename, NULL, true, false);
+      //std::string saveFilename = sbml_filename;
+      //saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
+      //pDataModel->saveModel(saveFilename, NULL, true, false);
 
       // Run the trajectory task
 
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
       pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
 
@@ -409,7 +419,7 @@ int main(int argc, char** argv)
       // create a trajectory task
       //pTrajectoryTask->getReport().setTarget(pOutputFilename);
 
-      //pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+      //pTrajectoryTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
       //pTrajectoryTask->process(true);
       //pTrajectoryTask->restore();
     }

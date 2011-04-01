@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:18:06 $
+//   $Date: 2011/04/01 17:33:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,6 +216,9 @@ CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& nod
 
   switch (type)
     {
+#if LIBSBML_VERSION >= 40100
+      case AST_NAME_AVOGADRO:
+#endif // LIBSBML_VERSION >= 40100
       case AST_NAME_TIME:
       case AST_NAME:
         pNode = new CEvaluationNodeObject(CN, CCopasiObjectName(std::string("<") + node.getName() + std::string(">")));
@@ -233,16 +236,17 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
   node->setType(AST_NAME);
   // since I can not get the model in which this node is located, I just
   // assume that it will always be the current global model.
-  const CCopasiObject* object = pDataModel->getDataObject(mRegisteredObjectCN);
-  assert(object);
+  const CCopasiObject* pOrigObject = pDataModel->getDataObject(mRegisteredObjectCN);
+  assert(pOrigObject);
+  const CCopasiObject* pObject = pOrigObject;
 
   // if it is a reference, we get the parent of the reference
-  if (object->isReference())
+  if (pObject->isReference())
     {
-      object = object->getObjectParent();
+      pObject = pObject->getObjectParent();
     }
 
-  const CModelEntity* pME = dynamic_cast<const CModelEntity*>(object);
+  const CModelEntity* pME = dynamic_cast<const CModelEntity*>(pObject);
 
   if (pME != NULL)
     {
@@ -250,13 +254,28 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
 
       if (pModel != NULL)
         {
-          node->setType(AST_NAME_TIME);
-          node->setName("time");
+#if LIBSBML_VERSION >= 40100
 
-          if (pModel->getInitialTime() != 0.0)
+          if (pOrigObject->getObjectName() == "Avogadro Constant")
             {
-              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 1);
+              node->setType(AST_NAME_AVOGADRO);
+              node->setName("avogadro");
             }
+          else
+            {
+#endif // LIBSBML_VERSION >= 40100
+              node->setType(AST_NAME_TIME);
+              node->setName("time");
+
+              if (pModel->getInitialTime() != 0.0)
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 1);
+                }
+
+#if LIBSBML_VERSION >= 40100
+            }
+
+#endif // LIBSBML_VERSION >= 40100
         }
       else
         {
@@ -265,7 +284,7 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
     }
   else
     {
-      const CCopasiParameter* pPara = dynamic_cast<const CCopasiParameter*>(object);
+      const CCopasiParameter* pPara = dynamic_cast<const CCopasiParameter*>(pObject);
 
       if (pPara != NULL)
         {
@@ -276,7 +295,7 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
         }
       else
         {
-          const CReaction* pReaction = dynamic_cast<const CReaction*>(object);
+          const CReaction* pReaction = dynamic_cast<const CReaction*>(pObject);
 
           if (pReaction)
             {

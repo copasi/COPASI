@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:43 $
+//   $Date: 2011/04/01 17:33:32 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ enum autothrow
 
 enum SBMLSchema_enum
 {
+  SBMLSchema_L1V1,
   SBMLSchema_L1V2,
   SBMLSchema_L2V1,
   SBMLSchema_L2V2,
