@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.67.2.2 $
+//   $Revision: 1.67.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/07 15:39:46 $
+//   $Author: gauges $
+//   $Date: 2011/04/01 15:05:36 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -397,6 +397,9 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
         break;
       case AST_NAME:
       case AST_NAME_TIME:
+#if LIBSBML_VERSION >= 40100
+      case AST_NAME_AVOGADRO:
+#endif // LIBSBML_VERSION >= 40100
         // create a CEvaluationNodeObject
         pResultNode = CEvaluationNodeObject::createNodeFromASTTree(node);
         break;
