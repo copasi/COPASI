@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.153.2.7 $
+//   $Revision: 1.153.2.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/30 18:03:59 $
+//   $Author: gauges $
+//   $Date: 2011/04/01 13:46:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,9 +263,9 @@ const MESSAGES Messages[] =
   {MCSBML + 94, "SBML (94): %s for species reference found in model. Only initial assignments to species references are currently supported in COPASI. The %s has been ignored. The results produced by this model might therefore not be what you expect."},
   {MCSBML + 95, "SBML (95): The model uses species reference ids in mathematical expressions. This model can currently not be imported by COPASI."},
   {MCSBML + 96, "SBML (96): Model can't be imported because it requires a package that is unkonwn to COPASI."},
-  {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\"."},
-  {MCSBML + 98, "SBML (98): COPASI can't handle event priorities yet, COPASI removed all priorities."},
-  {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true."},
+  {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\". This may change results for time course simualtions."},
+  {MCSBML + 98, "SBML (98): COPASI can't handle event priorities yet, COPASI removed all priorities. This may change results for time course simulations."},
+  {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true. This may change results of time course simulations."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
