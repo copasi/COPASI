@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:20:16 $
+//   $Date: 2011/04/04 13:24:50 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "copasi/report/CCopasiContainer.h"
 
 #include "copasi/math/CMathObject.h"
+#include "copasi/math/CMathEvent.h"
 #include "copasi/math/CMathDependencyGraph.h"
 
 #include "copasi/utilities/CVector.h"
@@ -37,6 +38,7 @@ private:
 public:
     C_FLOAT64 * pInitialExtensiveValues;
     C_FLOAT64 * pInitialIntensiveValues;
+    C_FLOAT64 * pInitialEventTriggers;
     C_FLOAT64 * pExtensiveValues;
     C_FLOAT64 * pIntensiveValues;
     C_FLOAT64 * pExtensiveRates;
@@ -45,9 +47,15 @@ public:
     C_FLOAT64 * pPropensities;
     C_FLOAT64 * pTotalMasses;
     C_FLOAT64 * pDependentMasses;
+    C_FLOAT64 * pEventDelays;
+    C_FLOAT64 * pEventPriorities;
+    C_FLOAT64 * pEventAssignments;
+    C_FLOAT64 * pEventTriggers;
+    C_FLOAT64 * pEventRoots;
 
     CMathObject * pInitialExtensiveValuesObject;
     CMathObject * pInitialIntensiveValuesObject;
+    CMathObject * pInitialEventTriggersObject;
     CMathObject * pExtensiveValuesObject;
     CMathObject * pIntensiveValuesObject;
     CMathObject * pExtensiveRatesObject;
@@ -56,6 +64,11 @@ public:
     CMathObject * pPropensitiesObject;
     CMathObject * pTotalMassesObject;
     CMathObject * pDependentMassesObject;
+    CMathObject * pEventDelaysObject;
+    CMathObject * pEventPrioritiesObject;
+    CMathObject * pEventAssignmentsObject;
+    CMathObject * pEventTriggersObject;
+    CMathObject * pEventRootsObject;
   };
 
   /**
@@ -124,7 +137,7 @@ private:
   void init();
 
   /**
-   * Allocate the memory for objects an values
+   * Allocate the memory for objects and values
    */
   void allocate();
 
@@ -136,8 +149,15 @@ private:
 
   /**
    * Initialize the objects
+   * @param sPointers & pointers
    */
-  void initializeObjects();
+  void initializeObjects(sPointers & pointers);
+
+  /**
+   * Initialize the events
+   * @param sPointers & pointers
+   */
+  void initializeEvents(sPointers & pointers);
 
   /**
    * Compile the objects
@@ -215,14 +235,23 @@ private:
 
   CVectorCore< C_FLOAT64 > mInitialExtensiveValues;
   CVectorCore< C_FLOAT64 > mInitialIntensiveValues;
+  CVectorCore< C_FLOAT64 > mInitialEventTriggers;
+
   CVectorCore< C_FLOAT64 > mExtensiveValues;
   CVectorCore< C_FLOAT64 > mIntensiveValues;
+
   CVectorCore< C_FLOAT64 > mExtensiveRates;
   CVectorCore< C_FLOAT64 > mIntensiveRates;
+
   CVectorCore< C_FLOAT64 > mFluxes;
   CVectorCore< C_FLOAT64 > mPropensities;
   CVectorCore< C_FLOAT64 > mTotalMasses;
-  CVectorCore< C_FLOAT64 > mDependentMassess;
+  CVectorCore< C_FLOAT64 > mDependentMasses;
+  CVectorCore< C_FLOAT64 > mEventDelays;
+  CVectorCore< C_FLOAT64 > mEventPriorities;
+  CVectorCore< C_FLOAT64 > mEventAssignments;
+  CVectorCore< C_FLOAT64 > mEventTriggers;
+  CVectorCore< C_FLOAT64 > mEventRoots;
 
   /**
    * Dependency graph for initial value calculations
@@ -238,6 +267,11 @@ private:
    * A vector containing all math objects.
    */
   CVector< CMathObject > mObjects;
+
+  /**
+   * A vector containing all math events.
+   */
+  CVector< CMathEventN > mEvents;
 
   /**
    * A map from data objects to math objects

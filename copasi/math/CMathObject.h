@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:20:16 $
+//   $Date: 2011/04/04 13:24:50 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,14 +102,14 @@ public:
    * @param const bool & isInitialValue
    * @param const CCopasiObject * pDataObject
    */
-  static void initializeMathObject(CMathObject *& pObject,
-                                   C_FLOAT64 *& pValue,
-                                   const CMath::ValueType & valueType,
-                                   const CMath::EntityType & entityType,
-                                   const CMath::SimulationType & simulationType,
-                                   const bool & isIntensiveProperty,
-                                   const bool & isInitialValue,
-                                   const CCopasiObject * pDataObject);
+  static void initialize(CMathObject *& pObject,
+                         C_FLOAT64 *& pValue,
+                         const CMath::ValueType & valueType,
+                         const CMath::EntityType & entityType,
+                         const CMath::SimulationType & simulationType,
+                         const bool & isIntensiveProperty,
+                         const bool & isInitialValue,
+                         const CCopasiObject * pDataObject);
 
   /**
    * Compile

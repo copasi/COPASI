@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:34:31 $
+//   $Date: 2011/04/04 13:24:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,27 @@
 #include "model/CEvent.h"
 
 #include "report/CCopasiRootContainer.h"
+
+const CVector< CMathEventN::CTrigger::CRoot > & CMathEventN::CTrigger::getRoots() const
+{
+  return mRoots;
+}
+
+// static
+void CMathEventN::initialize(CMathEventN * pEvent,
+                             CEvent * pDataEvent,
+                             const CMathContainer & container)
+{}
+
+const CMathEventN::CTrigger & CMathEventN::getTrigger() const
+{
+  return mTrigger;
+}
+
+const CVector< CMathEventN::CAssignment > & CMathEventN::getAssignments() const
+{
+  return mAssignments;
+}
 
 CMathEvent::CAssignment::CAssignment(const CCopasiContainer * pParent) :
     CCopasiContainer("MathEventAssignment", pParent),

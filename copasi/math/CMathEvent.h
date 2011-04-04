@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:34:31 $
+//   $Date: 2011/04/04 13:24:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,10 +21,48 @@
 
 #include "copasi/math/CMathTrigger.h"
 #include "copasi/function/CExpression.h"
+#include "copasi/utilities/CVector.h"
 
 class CEvent;
 class CEventAssignment;
 class CProcessQueue;
+class CMathContainer;
+
+class CMathEventN
+{
+public:
+  class CAssignment
+  {
+
+  };
+
+  class CTrigger
+  {
+  public:
+    class CRoot
+    {
+
+    };
+
+    const CVector< CRoot > & getRoots() const;
+
+  private:
+    CVector< CRoot > mRoots;
+  };
+
+  static void initialize(CMathEventN * pEvent,
+                         CEvent * pDataEvent,
+                         const CMathContainer & container);
+
+  const CTrigger & getTrigger() const;
+
+  const CVector< CAssignment > & getAssignments() const;
+
+private:
+  CTrigger mTrigger;
+  CVector< CAssignment > mAssignments;
+
+};
 
 class CMathEvent : public CCopasiContainer
 {

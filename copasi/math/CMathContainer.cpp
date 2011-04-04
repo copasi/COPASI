@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:20:16 $
+//   $Date: 2011/04/04 13:24:50 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,10 +33,13 @@ CMathContainer::CMathContainer():
     mFluxes(),
     mPropensities(),
     mTotalMasses(),
-    mDependentMassess(),
+    mDependentMasses(),
     mInitialDependencies(),
     mTransientDependencies(),
-    mObjects()
+    mObjects(),
+    mEvents(),
+    mDataObject2MathObject(),
+    mDataValue2MathObject()
 {}
 
 CMathContainer::CMathContainer(CModel & model):
@@ -52,10 +55,13 @@ CMathContainer::CMathContainer(CModel & model):
     mFluxes(),
     mPropensities(),
     mTotalMasses(),
-    mDependentMassess(),
+    mDependentMasses(),
     mInitialDependencies(),
     mTransientDependencies(),
-    mObjects()
+    mObjects(),
+    mEvents(),
+    mDataObject2MathObject(),
+    mDataValue2MathObject()
 {
   init();
 }
@@ -129,9 +135,13 @@ void CMathContainer::init()
 {
   allocate();
 
-  initializeObjects();
+  sPointers Pointers;
+  initializePointers(Pointers);
+
+  initializeObjects(Pointers);
 
   // TODO CRITICAL Add events
+  initializeEvents(Pointers);
 
   compileObjects();
 
@@ -145,10 +155,6 @@ const CModel & CMathContainer::getModel() const
 
 void CMathContainer::allocate()
 {
-  const CCopasiVector< CReaction > & Reactions = mpModel->getReactions();
-  CCopasiVector< CReaction >::const_iterator itReactions;
-  CCopasiVector< CReaction >::const_iterator endReactions = Reactions.end();
-
   size_t nLocalReactionParameters =
     CObjectLists::getListOfConstObjects(CObjectLists::ALL_LOCAL_PARAMETER_VALUES, mpModel).size();
   size_t nExtensiveValues =  mpModel->getStateTemplate().size() + nLocalReactionParameters;
@@ -157,8 +163,29 @@ void CMathContainer::allocate()
   size_t nReactions = mpModel->getReactions().size();
   size_t nMoieties = mpModel->getMoieties().size();
 
+  // TODO CRITICAL Determine the space requirements for events.
+  const CCopasiVector< CEvent > & Events = mpModel->getEvents();
+  CCopasiVector< CEvent >::const_iterator itEvents;
+  CCopasiVector< CEvent >::const_iterator endEvents = Events.end();
+
+  size_t nEvents = Events.size();
+  size_t nEventAssignments = 0;
+  size_t nEventRoots = 0;
+
+  mEvents.resize(nEvents);
+  CMathEventN * pEvents = mEvents.array();
+
+  for (; itEvents != endEvents; ++itEvents, ++pEvents)
+    {
+      CMathEventN::initialize(pEvents, *itEvents, *this);
+
+      nEventAssignments += pEvents->getAssignments().size();
+      nEventRoots += pEvents->getTrigger().getRoots().size();
+    }
+
   mValues.resize(3 *(nExtensiveValues + nIntensiveValues) +
-                 2 *(nReactions + nMoieties));
+                 2 *(nReactions + nMoieties) +
+                 4 * nEvents + nEventAssignments + nEventRoots);
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   C_FLOAT64 * pArray = mValues.array();
@@ -166,33 +193,45 @@ void CMathContainer::allocate()
   pArray += nExtensiveValues;
   mInitialIntensiveValues = CVectorCore< C_FLOAT64 >(nIntensiveValues, pArray);
   pArray += nIntensiveValues;
+  mInitialEventTriggers = CVectorCore< C_FLOAT64 >(nEvents, pArray);
+  pArray += nEvents;
+
   mExtensiveValues = CVectorCore< C_FLOAT64 >(nExtensiveValues, pArray);
   pArray += nExtensiveValues;
   mIntensiveValues = CVectorCore< C_FLOAT64 >(nIntensiveValues, pArray);
   pArray += nIntensiveValues;
+
   mExtensiveRates = CVectorCore< C_FLOAT64 >(nExtensiveValues, pArray);
   pArray += nExtensiveValues;
   mIntensiveRates = CVectorCore< C_FLOAT64 >(nIntensiveValues, pArray);
   pArray += nIntensiveValues;
+
   mFluxes = CVectorCore< C_FLOAT64 >(nReactions, pArray);
   pArray += nReactions;
   mPropensities = CVectorCore< C_FLOAT64 >(nReactions, pArray);
   pArray += nReactions;
   mTotalMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
   pArray += nMoieties;
-  mDependentMassess = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
+  mDependentMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
   pArray += nMoieties;
+  mEventDelays = CVectorCore< C_FLOAT64 >(nEvents, pArray);
+  pArray += nEvents;
+  mEventPriorities = CVectorCore< C_FLOAT64 >(nEvents, pArray);
+  pArray += nEvents;
+  mEventAssignments = CVectorCore< C_FLOAT64 >(nEventAssignments, pArray);
+  pArray += nEventAssignments;
+  mEventTriggers = CVectorCore< C_FLOAT64 >(nEvents, pArray);
+  pArray += nEvents;
+  mEventRoots = CVectorCore< C_FLOAT64 >(nEventRoots, pArray);
+  pArray += nEventRoots;
 
   assert(pArray == mValues.array() + mValues.size());
 
   mObjects.resize(mValues.size());
 }
 
-void CMathContainer::initializeObjects()
+void CMathContainer::initializeObjects(CMathContainer::sPointers & p)
 {
-  sPointers Pointers;
-  initializePointers(Pointers);
-
   std::set< const CModelEntity * > EventTargets = CObjectLists::getEventTargets(mpModel);
 
   std::vector< const CModelEntity * > FixedEntities;
@@ -220,34 +259,34 @@ void CMathContainer::initializeObjects()
     }
 
   // Process fixed entities which are not event targets.
-  initializeMathObjects(FixedEntities, CMath::Fixed, Pointers);
+  initializeMathObjects(FixedEntities, CMath::Fixed, p);
 
   // Process local reaction parameters
   std::vector<const CCopasiObject*> LocalReactionParameter =
     CObjectLists::getListOfConstObjects(CObjectLists::ALL_LOCAL_PARAMETER_VALUES, mpModel);
-  initializeMathObjects(LocalReactionParameter, Pointers);
+  initializeMathObjects(LocalReactionParameter, p);
 
   // Process fixed entities which are event targets.
-  initializeMathObjects(FixedEventTargetEntities, CMath::EventTarget, Pointers);
+  initializeMathObjects(FixedEventTargetEntities, CMath::EventTarget, p);
 
   // The simulation time
   // Extensive Initial Value
-  map(mpModel->getInitialValueReference(), Pointers.pInitialExtensiveValuesObject);
-  CMathObject::initializeMathObject(Pointers.pInitialExtensiveValuesObject, Pointers.pInitialExtensiveValues,
-                                    CMath::Value, CMath::Model, CMath::Time, false, true,
-                                    mpModel->getInitialValueReference());
+  map(mpModel->getInitialValueReference(), p.pInitialExtensiveValuesObject);
+  CMathObject::initialize(p.pInitialExtensiveValuesObject, p.pInitialExtensiveValues,
+                          CMath::Value, CMath::Model, CMath::Time, false, true,
+                          mpModel->getInitialValueReference());
 
   // Extensive Value
-  map(mpModel->getValueReference(), Pointers.pExtensiveValuesObject);
-  CMathObject::initializeMathObject(Pointers.pExtensiveValuesObject, Pointers.pExtensiveValues,
-                                    CMath::Value, CMath::Model, CMath::Time, false, false,
-                                    mpModel->getValueReference());
+  map(mpModel->getValueReference(), p.pExtensiveValuesObject);
+  CMathObject::initialize(p.pExtensiveValuesObject, p.pExtensiveValues,
+                          CMath::Value, CMath::Model, CMath::Time, false, false,
+                          mpModel->getValueReference());
 
   // Extensive Rate
-  map(mpModel->getRateReference(), Pointers.pExtensiveRatesObject);
-  CMathObject::initializeMathObject(Pointers.pExtensiveRatesObject, Pointers.pExtensiveRates,
-                                    CMath::ValueRate, CMath::Model, CMath::Time, false, false,
-                                    mpModel->getRateReference());
+  map(mpModel->getRateReference(), p.pExtensiveRatesObject);
+  CMathObject::initialize(p.pExtensiveRatesObject, p.pExtensiveRates,
+                          CMath::ValueRate, CMath::Model, CMath::Time, false, false,
+                          mpModel->getRateReference());
 
   // Process entities which are determined by ODEs
   std::vector< const CModelEntity * > ODEEntities;
@@ -260,7 +299,7 @@ void CMathContainer::initializeObjects()
       ODEEntities.push_back(*ppEntities);
     }
 
-  initializeMathObjects(ODEEntities, CMath::ODE, Pointers);
+  initializeMathObjects(ODEEntities, CMath::ODE, p);
 
   // Process independent species
   std::vector< const CModelEntity * > IndependentSpecies;
@@ -276,7 +315,7 @@ void CMathContainer::initializeObjects()
       IndependentSpecies.push_back(*ppEntities);
     }
 
-  initializeMathObjects(IndependentSpecies, CMath::Independent, Pointers);
+  initializeMathObjects(IndependentSpecies, CMath::Independent, p);
 
   // Process dependent species
   std::vector< const CModelEntity * > DependentSpecies;
@@ -289,7 +328,7 @@ void CMathContainer::initializeObjects()
       DependentSpecies.push_back(*ppEntities);
     }
 
-  initializeMathObjects(DependentSpecies, CMath::Dependent, Pointers);
+  initializeMathObjects(DependentSpecies, CMath::Dependent, p);
 
   // Process entities which are determined by assignments
   std::vector< const CModelEntity * > AssignmentEntities;
@@ -302,13 +341,17 @@ void CMathContainer::initializeObjects()
       AssignmentEntities.push_back(*ppEntities);
     }
 
-  initializeMathObjects(AssignmentEntities, CMath::Assignment, Pointers);
+  initializeMathObjects(AssignmentEntities, CMath::Assignment, p);
 
   // Process Reactions
-  initializeMathObjects(mpModel->getReactions(), Pointers);
+  initializeMathObjects(mpModel->getReactions(), p);
 
   // Process Moieties
-  initializeMathObjects(mpModel->getMoieties(), Pointers);
+  initializeMathObjects(mpModel->getMoieties(), p);
+}
+
+void CMathContainer::initializeEvents(CMathContainer::sPointers & p)
+{
 }
 
 bool CMathContainer::compileObjects()
@@ -348,30 +391,48 @@ void CMathContainer::initializePointers(CMathContainer::sPointers & p)
 {
   p.pInitialExtensiveValues = mInitialExtensiveValues.array();
   p.pInitialIntensiveValues = mInitialIntensiveValues.array();
+  p.pInitialEventTriggers = mInitialEventTriggers.array();
+
   p.pExtensiveValues = mExtensiveValues.array();
   p.pIntensiveValues = mIntensiveValues.array();
+
   p.pExtensiveRates = mExtensiveRates.array();
   p.pIntensiveRates = mIntensiveRates.array();
+
   p.pFluxes = mFluxes.array();
   p.pPropensities = mPropensities.array();
   p.pTotalMasses = mTotalMasses.array();
-  p.pDependentMasses = mDependentMassess.array();
+  p.pDependentMasses = mDependentMasses.array();
+  p.pEventDelays = mEventDelays.array();;
+  p.pEventPriorities = mEventPriorities.array();;
+  p.pEventAssignments = mEventAssignments.array();;
+  p.pEventTriggers = mEventTriggers.array();;
+  p.pEventRoots = mEventRoots.array();;
 
   C_FLOAT64 * pValues = mValues.array();
   CMathObject * pObjects = mObjects.array();
 
   p.pInitialExtensiveValuesObject = pObjects + (p.pInitialExtensiveValues - pValues);
   p.pInitialIntensiveValuesObject = pObjects + (p.pInitialIntensiveValues - pValues);
+  p.pInitialEventTriggersObject = pObjects + (p.pInitialEventTriggers - pValues);
+
   p.pExtensiveValuesObject = pObjects + (p.pExtensiveValues - pValues);
   p.pIntensiveValuesObject = pObjects + (p.pIntensiveValues - pValues);
+
   p.pExtensiveRatesObject = pObjects + (p.pExtensiveRates - pValues);
   p.pIntensiveRatesObject = pObjects + (p.pIntensiveRates - pValues);
+
   p.pFluxesObject = pObjects + (p.pFluxes - pValues);
   p.pPropensitiesObject = pObjects + (p.pPropensities - pValues);
   p.pTotalMassesObject = pObjects + (p.pTotalMasses - pValues);
   p.pDependentMassesObject = pObjects + (p.pDependentMasses - pValues);
-
+  p.pEventDelaysObject = pObjects + (p.pEventDelays - pValues);;
+  p.pEventPrioritiesObject = pObjects + (p.pEventPriorities - pValues);;
+  p.pEventAssignmentsObject = pObjects + (p.pEventAssignments - pValues);;
+  p.pEventTriggersObject = pObjects + (p.pEventTriggers - pValues);;
+  p.pEventRootsObject = pObjects + (p.pEventRoots - pValues);;
 }
+
 // static
 CMath::EntityType CMathContainer::getEntityType(const CModelEntity * pEntity)
 {
@@ -430,9 +491,9 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
         }
 
       map(pObject, p.pInitialExtensiveValuesObject);
-      CMathObject::initializeMathObject(p.pInitialExtensiveValuesObject, p.pInitialExtensiveValues,
-                                        CMath::Value, EntityType, SimulationType, false, true,
-                                        pObject);
+      CMathObject::initialize(p.pInitialExtensiveValuesObject, p.pInitialExtensiveValues,
+                              CMath::Value, EntityType, SimulationType, false, true,
+                              pObject);
 
       // Extensive Value
       SimulationType = simulationType;
@@ -445,9 +506,9 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
         }
 
       map((*it)->getValueReference(), p.pExtensiveValuesObject);
-      CMathObject::initializeMathObject(p.pExtensiveValuesObject, p.pExtensiveValues,
-                                        CMath::Value, EntityType, SimulationType, false, false,
-                                        (*it)->getValueReference());
+      CMathObject::initialize(p.pExtensiveValuesObject, p.pExtensiveValues,
+                              CMath::Value, EntityType, SimulationType, false, false,
+                              (*it)->getValueReference());
 
       // Extensive Rate
       SimulationType = simulationType;
@@ -458,9 +519,9 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
         }
 
       map((*it)->getRateReference(), p.pExtensiveRatesObject);
-      CMathObject::initializeMathObject(p.pExtensiveRatesObject, p.pExtensiveRates,
-                                        CMath::ValueRate, EntityType, SimulationType, false, false,
-                                        (*it)->getRateReference());
+      CMathObject::initialize(p.pExtensiveRatesObject, p.pExtensiveRates,
+                              CMath::ValueRate, EntityType, SimulationType, false, false,
+                              (*it)->getRateReference());
 
       // Species have intensive values in addition to the extensive  ones.
       if (EntityType == CMath::Species)
@@ -479,9 +540,9 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
             }
 
           map(pSpecies->getInitialConcentrationReference(), p.pInitialIntensiveValuesObject);
-          CMathObject::initializeMathObject(p.pInitialIntensiveValuesObject, p.pInitialIntensiveValues,
-                                            CMath::Value, CMath::Species, SimulationType, true, true,
-                                            pSpecies->getInitialConcentrationReference());
+          CMathObject::initialize(p.pInitialIntensiveValuesObject, p.pInitialIntensiveValues,
+                                  CMath::Value, CMath::Species, SimulationType, true, true,
+                                  pSpecies->getInitialConcentrationReference());
 
           // Intensive Value
           SimulationType = CMath::Conversion;
@@ -493,15 +554,15 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
             }
 
           map(pSpecies->getConcentrationReference(), p.pIntensiveValuesObject);
-          CMathObject::initializeMathObject(p.pIntensiveValuesObject, p.pIntensiveValues,
-                                            CMath::Value, CMath::Species, SimulationType, true, false,
-                                            pSpecies->getConcentrationReference());
+          CMathObject::initialize(p.pIntensiveValuesObject, p.pIntensiveValues,
+                                  CMath::Value, CMath::Species, SimulationType, true, false,
+                                  pSpecies->getConcentrationReference());
 
           // Intensive Rate
           map(pSpecies->getConcentrationRateReference(), p.pIntensiveRatesObject);
-          CMathObject::initializeMathObject(p.pIntensiveRatesObject, p.pIntensiveRates,
-                                            CMath::ValueRate, CMath::Species, CMath::Assignment, true, false,
-                                            pSpecies->getConcentrationRateReference());
+          CMathObject::initialize(p.pIntensiveRatesObject, p.pIntensiveRates,
+                                  CMath::ValueRate, CMath::Species, CMath::Assignment, true, false,
+                                  pSpecies->getConcentrationRateReference());
         }
     }
 }
@@ -517,19 +578,19 @@ void CMathContainer::initializeMathObjects(const std::vector<const CCopasiObject
     {
       // Extensive Initial Value
       map(const_cast< CCopasiObject * >(*it), p.pInitialExtensiveValuesObject);
-      CMathObject::initializeMathObject(p.pInitialExtensiveValuesObject, p.pInitialExtensiveValues,
-                                        CMath::Value, CMath::LocalReactionParameter, CMath::Fixed, false, true,
-                                        *it);
+      CMathObject::initialize(p.pInitialExtensiveValuesObject, p.pInitialExtensiveValues,
+                              CMath::Value, CMath::LocalReactionParameter, CMath::Fixed, false, true,
+                              *it);
 
       // Extensive Value
-      CMathObject::initializeMathObject(p.pExtensiveValuesObject, p.pExtensiveValues,
-                                        CMath::Value, CMath::LocalReactionParameter, CMath::Fixed, false, false,
-                                        NULL);
+      CMathObject::initialize(p.pExtensiveValuesObject, p.pExtensiveValues,
+                              CMath::Value, CMath::LocalReactionParameter, CMath::Fixed, false, false,
+                              NULL);
 
       // Extensive Rate
-      CMathObject::initializeMathObject(p.pExtensiveRatesObject, p.pExtensiveRates,
-                                        CMath::ValueRate, CMath::LocalReactionParameter, CMath::Fixed, false, false,
-                                        NULL);
+      CMathObject::initialize(p.pExtensiveRatesObject, p.pExtensiveRates,
+                              CMath::ValueRate, CMath::LocalReactionParameter, CMath::Fixed, false, false,
+                              NULL);
     }
 }
 
@@ -544,15 +605,15 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
     {
       // Flux
       map((*it)->getParticleFluxReference(), p.pFluxesObject);
-      CMathObject::initializeMathObject(p.pFluxesObject, p.pFluxes,
-                                        CMath::Flux, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
-                                        (*it)->getParticleFluxReference());
+      CMathObject::initialize(p.pFluxesObject, p.pFluxes,
+                              CMath::Flux, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              (*it)->getParticleFluxReference());
 
       // Propensity
       map((*it)->getPropensityReference(), p.pPropensitiesObject);
-      CMathObject::initializeMathObject(p.pPropensitiesObject, p.pPropensities,
-                                        CMath::Propensity, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
-                                        (*it)->getPropensityReference());
+      CMathObject::initialize(p.pPropensitiesObject, p.pPropensities,
+                              CMath::Propensity, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              (*it)->getPropensityReference());
     }
 }
 
@@ -567,15 +628,15 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CMoiety > & moie
     {
       // Total Mass
       map((*it)->getTotalNumberReference(), p.pTotalMassesObject);
-      CMathObject::initializeMathObject(p.pTotalMassesObject, p.pTotalMasses,
-                                        CMath::TotalMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, false,
-                                        (*it)->getTotalNumberReference());
+      CMathObject::initialize(p.pTotalMassesObject, p.pTotalMasses,
+                              CMath::TotalMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, false,
+                              (*it)->getTotalNumberReference());
 
       // Dependent
       map((*it)->getDependentNumberReference(), p.pDependentMassesObject);
-      CMathObject::initializeMathObject(p.pDependentMassesObject, p.pDependentMasses,
-                                        CMath::DependentMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, false,
-                                        (*it)->getDependentNumberReference());
+      CMathObject::initialize(p.pDependentMassesObject, p.pDependentMasses,
+                              CMath::DependentMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, false,
+                              (*it)->getDependentNumberReference());
     }
 }
 
