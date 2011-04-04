@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.269 $
+//   $Revision: 1.270 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:33:32 $
+//   $Date: 2011/04/04 14:35:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1341,7 +1341,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
   // evaluate and apply the initial expressions
   this->applyStoichiometricExpressions(copasi2sbmlmap, sbmlModel);
-#if LIBSBML_LEVEL >= 40100
+#if LIBSBML_VERSION >= 40100
 
   // now we apply the conversion factors
   if (this->mLevel > 2)
@@ -1384,7 +1384,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 93);
     }
 
-
+  this->mpCopasiModel->compileIfNecessary(this->mpImportHandler);
   return this->mpCopasiModel;
 }
 
@@ -1820,6 +1820,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       this->mFastReactions.insert(sbmlReaction->getId());
     }
 
+  // store if the reaction involves species that need a conversion factor
+  bool mConversionFactorNeeded = false;
+
   /* Add all substrates to the reaction */
   unsigned int num = sbmlReaction->getNumReactants();
   bool singleCompartment = true;
@@ -1851,11 +1854,25 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
 
+      // check if we have a conversion factor
       if (pos == this->speciesMap.end())
         {
           delete copasiReaction;
           fatalError();
         }
+
+#if LIBSBML_VERSION >= 40100
+      else
+        {
+          // check if there is a conversion factor on the species
+          if (this->mpModelConversionFactor != NULL || this->mSpeciesConversionParameterMap.find(pos->second->getSBMLId()) != this->mSpeciesConversionParameterMap.end())
+            {
+              mConversionFactorNeeded = true;
+            }
+        }
+
+#endif // LIBSBML_VERSION >= 40100
+
 
       std::map<CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
       assert(spos != copasi2sbmlmap.end());
@@ -1884,30 +1901,27 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       // expressions that reference a species reference
       if (this->mLevel > 2)
         {
-          if (sr->isSetId())
+          CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getSubstrates().begin(), endit = copasiReaction->getChemEq().getSubstrates().end();
+          CChemEqElement* pElement = NULL;
+
+          while (it != endit)
             {
-              CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getSubstrates().begin(), endit = copasiReaction->getChemEq().getSubstrates().end();
-              CChemEqElement* pElement = NULL;
-
-              while (it != endit)
+              if ((*it)->getMetaboliteKey() == pos->second->getKey())
                 {
-                  if ((*it)->getMetaboliteKey() == pos->second->getKey())
-                    {
-                      pElement = const_cast<CChemEqElement*>(*it);
-                      break;
-                    }
-
-                  ++it;
+                  pElement = const_cast<CChemEqElement*>(*it);
+                  break;
                 }
 
-              assert(pElement != NULL);
+              ++it;
+            }
 
-              if (pElement != NULL)
-                {
-                  copasi2sbmlmap[pElement] = const_cast<SpeciesReference*>(sr);
+          assert(pElement != NULL);
 
-                  this->mChemEqElementSpeciesIdMap[pElement] = sr->getSpecies();
-                }
+          if (pElement != NULL)
+            {
+              copasi2sbmlmap[pElement] = const_cast<SpeciesReference*>(sr);
+
+              this->mChemEqElementSpeciesIdMap[pElement] = sr->getSpecies();
             }
         }
 
@@ -1970,6 +1984,18 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           fatalError();
         }
 
+#if LIBSBML_VERSION >= 40100
+      else
+        {
+          // check if there is a conversion factor on the species
+          if (this->mpModelConversionFactor != NULL || this->mSpeciesConversionParameterMap.find(pos->second->getSBMLId()) != this->mSpeciesConversionParameterMap.end())
+            {
+              mConversionFactorNeeded = true;
+            }
+        }
+
+#endif // LIBSBML_VERSION >= 40100
+
       std::map<CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
       assert(spos != copasi2sbmlmap.end());
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
@@ -1997,29 +2023,26 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       // expressions that reference a species reference
       if (this->mLevel > 2)
         {
-          if (sr->isSetId())
+          CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getProducts().begin(), endit = copasiReaction->getChemEq().getProducts().end();
+          CChemEqElement* pElement = NULL;
+
+          while (it != endit)
             {
-              CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getProducts().begin(), endit = copasiReaction->getChemEq().getProducts().end();
-              CChemEqElement* pElement = NULL;
-
-              while (it != endit)
+              if ((*it)->getMetaboliteKey() == pos->second->getKey())
                 {
-                  if ((*it)->getMetaboliteKey() == pos->second->getKey())
-                    {
-                      pElement = const_cast<CChemEqElement*>(*it);
-                      break;
-                    }
-
-                  ++it;
+                  pElement = const_cast<CChemEqElement*>(*it);
+                  break;
                 }
 
-              assert(pElement != NULL);
+              ++it;
+            }
 
-              if (pElement != NULL)
-                {
-                  copasi2sbmlmap[pElement] = const_cast<SpeciesReference*>(sr);
-                  this->mChemEqElementSpeciesIdMap[pElement] = sr->getSpecies();
-                }
+          assert(pElement != NULL);
+
+          if (pElement != NULL)
+            {
+              copasi2sbmlmap[pElement] = const_cast<SpeciesReference*>(sr);
+              this->mChemEqElementSpeciesIdMap[pElement] = sr->getSpecies();
             }
         }
 
@@ -2084,28 +2107,26 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       // expressions that reference a species reference
       if (this->mLevel > 2)
         {
-          if (sr->isSetId())
+
+          CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getModifiers().begin(), endit = copasiReaction->getChemEq().getModifiers().end();
+          CChemEqElement* pElement = NULL;
+
+          while (it != endit)
             {
-              CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getModifiers().begin(), endit = copasiReaction->getChemEq().getModifiers().end();
-              CChemEqElement* pElement = NULL;
-
-              while (it != endit)
+              if ((*it)->getMetaboliteKey() == pos->second->getKey())
                 {
-                  if ((*it)->getMetaboliteKey() == pos->second->getKey())
-                    {
-                      pElement = const_cast<CChemEqElement*>(*it);
-                      break;
-                    }
-
-                  ++it;
+                  pElement = const_cast<CChemEqElement*>(*it);
+                  break;
                 }
 
-              assert(pElement != NULL);
+              ++it;
+            }
 
-              if (pElement != NULL)
-                {
-                  copasi2sbmlmap[pElement] = const_cast<ModifierSpeciesReference*>(sr);
-                }
+          assert(pElement != NULL);
+
+          if (pElement != NULL)
+            {
+              copasi2sbmlmap[pElement] = const_cast<ModifierSpeciesReference*>(sr);
             }
         }
 
@@ -2335,14 +2356,21 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                       std::string functionName = pExpressionTreeRoot->getData();
                       CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
                       assert(tree);
-                      std::vector<CEvaluationNodeObject*>* v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                      std::vector<CEvaluationNodeObject*>* v = NULL;
 
-                      if (!v)
+                      // only check for mass action if there is no conversion factor involved
+                      // for any of the species invloded in the reaction (substrates and products)
+                      if (!mConversionFactorNeeded)
                         {
-                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                          v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+
+                          if (!v)
+                            {
+                              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                            }
                         }
 
-                      if (!v->empty())
+                      if (v && !v->empty())
                         {
                           CFunction* pFun = NULL;
 
@@ -2447,14 +2475,21 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                     }
                   else
                     {
-                      std::vector<CEvaluationNodeObject*>* v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
+                      std::vector<CEvaluationNodeObject*>* v = NULL;
 
-                      if (!v)
+                      // only check for mass action if there is no conversion factor involved
+                      // for any of the species invloded in the reaction (substrates and products)
+                      if (!mConversionFactorNeeded)
                         {
-                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                          v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
+
+                          if (!v)
+                            {
+                              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                            }
                         }
 
-                      if (!v->empty())
+                      if (v && !v->empty())
                         {
                           CFunction* pFun = NULL;
 
