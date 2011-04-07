@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.27 $
+//   $Revision: 1.263.2.28 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/05 06:35:31 $
+//   $Date: 2011/04/07 10:34:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1921,7 +1921,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             {
               copasi2sbmlmap[pElement] = const_cast<SpeciesReference*>(sr);
 
-              this->mChemEqElementSpeciesIdMap[pElement] = sr->getSpecies();
+              this->mChemEqElementSpeciesIdMap[pElement] = std::pair<std::string, CChemEq::MetaboliteRole>(sr->getSpecies(), CChemEq::SUBSTRATE);
             }
         }
 
@@ -2042,7 +2042,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           if (pElement != NULL)
             {
               copasi2sbmlmap[pElement] = const_cast<SpeciesReference*>(sr);
-              this->mChemEqElementSpeciesIdMap[pElement] = sr->getSpecies();
+              this->mChemEqElementSpeciesIdMap[pElement] = std::pair<std::string, CChemEq::MetaboliteRole>(sr->getSpecies(), CChemEq::PRODUCT);
             }
         }
 
@@ -9594,14 +9594,16 @@ bool SBMLImporter::checkForUnitsOnNumbers(const ASTNode* pNode)
  */
 void SBMLImporter::applyConversionFactors()
 {
-  std::map<CChemEqElement*, std::string>::iterator it = this->mChemEqElementSpeciesIdMap.begin(), endit = this->mChemEqElementSpeciesIdMap.end();
+  std::map<CChemEqElement*, std::pair<std::string, CChemEq::MetaboliteRole> >::iterator it = this->mChemEqElementSpeciesIdMap.begin(), endit = this->mChemEqElementSpeciesIdMap.end();
   std::map<std::string, const CModelValue*>::const_iterator pos, endpos = this->mSpeciesConversionParameterMap.end();
   const CModelValue* pModelValue = NULL;
   double v;
+  const CMetab* pMetab = NULL;;
+  CChemEq* pChemEq = NULL;
 
   while (it != endit)
     {
-      pos = this->mSpeciesConversionParameterMap.find(it->second);
+      pos = this->mSpeciesConversionParameterMap.find(it->second.first);
 
       if (pos != endpos)
         {
@@ -9624,7 +9626,30 @@ void SBMLImporter::applyConversionFactors()
         {
           v = pModelValue->getInitialValue();
           v *= it->first->getMultiplicity();
-          it->first->setMultiplicity(v);
+          // we need the ChemEq for the element
+          // and the species key
+          assert(it->first->getObjectParent() != NULL);
+
+          if (it->first->getObjectParent() != NULL)
+            {
+              pChemEq = dynamic_cast<CChemEq*>(it->first->getObjectParent()->getObjectParent());
+              assert(pChemEq != NULL);
+              pMetab = it->first->getMetabolite();
+              assert(pMetab != NULL);
+
+              if (pChemEq != NULL && pMetab != NULL)
+                {
+                  pChemEq->setMultiplicity(pMetab, v, it->second.second);
+                }
+              else
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, "Error handling a conversion factor. Please report this problem to the COPASI developers.");
+                }
+            }
+          else
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, "Error handling a conversion factor. Please report this problem to the COPASI developers.");
+            }
         }
 
       ++it;

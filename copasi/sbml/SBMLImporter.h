@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.86.2.6 $
+//   $Revision: 1.86.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/01 15:06:25 $
+//   $Date: 2011/04/07 10:34:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,7 @@ protected:
   // of the chemical equation elements
   const CModelValue* mpModelConversionFactor;
   // we only store the id of the species as the value and use this value as the key into the mSpeciesConversionParameterMap below
-  std::map<CChemEqElement*, std::string> mChemEqElementSpeciesIdMap;
+  std::map<CChemEqElement*, std::pair<std::string, CChemEq::MetaboliteRole> > mChemEqElementSpeciesIdMap;
   // yet another map that stores conversion parameters per species id
   // This will speed up the assignment of
   std::map<std::string, const CModelValue*> mSpeciesConversionParameterMap;

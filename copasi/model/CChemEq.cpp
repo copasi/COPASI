@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
- $Revision: 1.50.4.3 $
+ $Revision: 1.50.4.4 $
  $Name:  $
  $Author: gauges $
- $Date: 2011/04/07 08:38:57 $
+ $Date: 2011/04/07 10:34:43 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -324,7 +324,7 @@ bool CChemEq::setMultiplicity(const CMetab* pMetab, C_FLOAT64 newMult, Metabolit
               // as the multiplicity of the copy
               tmp.setMultiplicity(diff);
               // update the balances
-              this->addElement(this->mBalances, **it, role);
+              this->addElement(this->mBalances, tmp, role);
             }
         }
     }
