@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
- $Revision: 1.51 $
+ $Revision: 1.52 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:30:51 $
+ $Date: 2011/04/07 12:27:19 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,3 +257,79 @@ std::ostream & operator<<(std::ostream &os, const CChemEq & d)
   os << "----CChemEq" << std::endl;
   return os;
 }
+
+/**
+ * Sets the stoichiometry of the chemical element that corresponds to the
+ * given metabolite and role to the new value.
+ * The role has to be either CChemEqElement::SUBSTRATE or
+ * CChemEqElement::PRODUCT.
+ * If the role is invalid, the multiplicity if negative or if the element for
+ * the metabolite and role can not be found in the chemical equation, false is returned and
+ * nothing is changed.
+ */
+bool CChemEq::setMultiplicity(const CMetab* pMetab, C_FLOAT64 newMult, MetaboliteRole role)
+{
+  bool result = true;
+
+  // check if the multiplicity and the role are valid
+  if (pMetab == NULL || newMult <= 0 || !(role == CChemEq::SUBSTRATE || role == CChemEq::PRODUCT))
+    {
+      result = false;
+    }
+  else
+    {
+      // find the corresponding chemical element
+      std::string key = pMetab->getKey();
+      CCopasiVector<CChemEqElement>::iterator it, endit;
+
+      if (role == CChemEq::SUBSTRATE)
+        {
+          it = this->mSubstrates.begin();
+          endit = this->mSubstrates.end();
+        }
+      else
+        {
+          it = this->mProducts.begin();
+          endit = this->mProducts.end();
+        }
+
+      while (it != endit)
+        {
+          if ((*it)->getMetaboliteKey() == key)
+            {
+              break;
+            }
+
+          ++it;
+        }
+
+      if (it == endit)
+        {
+          result = false;
+        }
+      else
+        {
+          // set the new multiplicity and update the balances
+          C_FLOAT64 diff = newMult - (*it)->getMultiplicity();
+
+          // we only make changes if there actually is a difference
+          if (fabs(diff) > 1e-9)
+            {
+              // we have to add the difference between the new and the old
+              // multiplicity to the balances
+              (*it)->setMultiplicity(newMult);
+              // copy the element
+              CChemEqElement tmp(**it);
+              // set the difference of the multiplicities
+              // as the multiplicity of the copy
+              tmp.setMultiplicity(diff);
+              // update the balances
+              this->addElement(this->mBalances, tmp, role);
+            }
+        }
+    }
+
+  return result;
+}
+
+

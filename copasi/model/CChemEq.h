@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
- $Revision: 1.41 $
+ $Revision: 1.42 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:30:50 $
+ $Date: 2011/04/07 12:27:19 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,6 +150,17 @@ public:
    *  This returns the sum of the multiplicities
    */
   size_t getMolecularity(const MetaboliteRole role) const;
+
+  /**
+   * Sets the stoichiometry of the chemical element that corresponds to the
+   * given metabolite and role to the new value.
+   * The role has to be either CChemEqElement::SUBSTRATE or
+   * CChemEqElement::PRODUCT.
+   * If the role is invalid, the multiplicity is negative or zero  or if the element for
+   * the metabolite and role can not be found in the chemical equation, false is returned and
+   * nothing is changed.
+   */
+  bool setMultiplicity(const CMetab* pMetab, C_FLOAT64 newMult, MetaboliteRole role);
 
 private:
 
