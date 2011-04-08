@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.28 $
+//   $Revision: 1.263.2.29 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/07 10:34:42 $
+//   $Date: 2011/04/08 14:11:53 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1039,10 +1039,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
 #if LIBSBML_VERSION >= 40100
 
+  // the information that is collected here is used in the creation of the reactions to
+  // adjust the stoichiometry of substrates and products with the conversion factos from
+  // the SBML model
+
   // now that all parameters have been imported, we can check if the model
   // defines a global conversion factor
   if (this->mLevel > 2 && sbmlModel->isSetConversionFactor())
     {
+      this->mConversionFactorFound = true;
       std::string id = sbmlModel->getConversionFactor();
       assert(id != "");
       std::map<std::string, const CModelValue*>::const_iterator pos = this->mSBMLIdModelValueMap.find(id);
@@ -1057,6 +1062,31 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           fatalError();
         }
     }
+
+  // we need to go through all species again and find conversion factors
+  // right now I don't want to change the order of importing model values
+  // and species since I am not sure what implications that would have
+  if (this->mLevel > 2)
+    {
+      num = sbmlModel->getNumSpecies();
+
+      for (counter = 0; counter < num; ++counter)
+        {
+          Species* sbmlSpecies = sbmlModel->getSpecies(counter);
+
+          if (sbmlSpecies->isSetConversionFactor())
+            {
+              this->mConversionFactorFound = true;
+              std::map<std::string, const CModelValue*>::const_iterator pos = this->mSBMLIdModelValueMap.find(sbmlSpecies->getConversionFactor());
+
+              if (pos != this->mSBMLIdModelValueMap.end())
+                {
+                  this->mSpeciesConversionParameterMap[sbmlSpecies->getId()] = pos->second;
+                }
+            }
+        }
+    }
+
 
 #endif // LIBSBML_VERSION
 
@@ -1296,6 +1326,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Event assignment", "event assignment");
     }
+
+  if (this->mConversionFactorFound == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 100);
+    }
+
 
 #if LIBSBML_VERSION >= 40200
 
@@ -1742,23 +1778,6 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
 
   SBMLImporter::importMIRIAM(sbmlSpecies, copasiMetabolite);
-#if LIBSBML_VERSION >= 40100
-
-  // handle the conversion factor
-  // We need to collect the association between CChemEqElements and the parameter that is used as
-  // the conversion factor for a species
-  if (sbmlSpecies->isSetConversionFactor())
-    {
-      std::map<std::string, const CModelValue*>::const_iterator pos = this->mSBMLIdModelValueMap.find(sbmlSpecies->getConversionFactor());
-
-      if (pos != this->mSBMLIdModelValueMap.end())
-        {
-          this->mSpeciesConversionParameterMap[sbmlSpecies->getId()] = pos->second;
-        }
-    }
-
-#endif // LIBSBML_VERSION
-
   return copasiMetabolite;
 }
 
@@ -1846,7 +1865,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
         {
           stoi = sr->getStoichiometry() / sr->getDenominator();
         }
-      else if (this->mLevel > 3 && sr->isSetStoichiometry())
+      else if (this->mLevel >= 3 && sr->isSetStoichiometry())
         {
           stoi = sr->getStoichiometry();
         }
@@ -1970,7 +1989,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
         {
           stoi = sr->getStoichiometry() / sr->getDenominator();
         }
-      else if (this->mLevel > 3 && sr->isSetStoichiometry())
+      else if (this->mLevel >= 3 && sr->isSetStoichiometry())
         {
           stoi = sr->getStoichiometry();
         }
@@ -2712,6 +2731,7 @@ SBMLImporter::SBMLImporter():
   this->mSBMLIdModelValueMap.clear();
   this->mRuleForSpeciesReferenceIgnored = false;
   this->mEventAssignmentForSpeciesReferenceIgnored = false;
+  this->mConversionFactorFound = false;
 #if LIBSBML_VERSION >= 40200
   this->mEventPrioritiesIgnored = false;
   this->mInitialTriggerValues = false;
@@ -9600,9 +9620,11 @@ void SBMLImporter::applyConversionFactors()
   double v;
   const CMetab* pMetab = NULL;;
   CChemEq* pChemEq = NULL;
+  const CChemEqElement* pE = NULL;
 
   while (it != endit)
     {
+      pE = it->first;
       pos = this->mSpeciesConversionParameterMap.find(it->second.first);
 
       if (pos != endpos)
