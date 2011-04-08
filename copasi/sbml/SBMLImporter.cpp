@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.29 $
+//   $Revision: 1.263.2.30 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/08 14:11:53 $
+//   $Date: 2011/04/08 15:27:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5498,7 +5498,25 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 
       for (i = 0; i < iMax; ++i)
         {
-          const CEvaluationTree* pTree = this->mpCopasiModel->getReactions()[i]->getFunction();
+          const CFunction* pTree = this->mpCopasiModel->getReactions()[i]->getFunction();
+#if LIBSBML_VERSION >= 40100
+
+          // this is a hack, but if we changed stoichiometries in reactions, we can no longer be sure that the
+          // kinetic function fits the reaction, so in this case it is probably better to set all functions used
+          // in directions to general
+          // If we don't do this, the user will not be able to use the function in the reaction in the GUI if he
+          // changed it once.
+          // TODO only set those functions to general that really contain modified stoichiometries
+          if (this->mConversionFactorFound)
+            {
+              // TODO another const_cast that should disappear
+              // TODO because there is probably a better place to do this
+              // TODO but this means rewriting the code that modifies the
+              // TODO stoichiometries of reactions and put it all in one place.
+              const_cast<CFunction*>(pTree)->setReversible(TriUnspecified);
+            }
+
+#endif // LIBSBML_VERSION >= 40100
 
           if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
             {
