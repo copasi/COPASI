@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.33.2.9 $
+//   $Revision: 1.33.2.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/22 16:35:56 $
+//   $Date: 2011/04/08 12:07:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,6 +224,12 @@ void CProgressBar::slotProgressAll()
 
 bool CProgressBar::finish()
 {
+  // Assure that all signals have been properly handled before we delete
+  // the progress items
+  if (mpMainThread == NULL ||
+      QThread::currentThread() == mpMainThread)
+    QCoreApplication::processEvents();
+
   // The method must only be called from the main thread!
   CQProgressItem ** ppIt = mProgressItemList.array();
   CQProgressItem ** ppEnd = ppIt + mProgressItemList.size();
