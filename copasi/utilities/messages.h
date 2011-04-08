@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.153.2.8 $
+//   $Revision: 1.153.2.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/01 13:46:10 $
+//   $Date: 2011/04/08 14:10:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,6 +266,7 @@ const MESSAGES Messages[] =
   {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\". This may change results for time course simualtions."},
   {MCSBML + 98, "SBML (98): COPASI can't handle event priorities yet, COPASI removed all priorities. This may change results for time course simulations."},
   {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true. This may change results of time course simulations."},
+  {MCSBML + 100, "SBML (100): Model with conversion factors encountered. In order to calculate correct results with this model COPASI has changed the stoichiometries of all species with conversion factors. Exporting this model again will lead to a model with changed stoichiometries."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
