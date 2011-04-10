@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:19 $
+//   $Author: gauges $
+//   $Date: 2011/04/10 17:07:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,6 +57,11 @@
 #include "copasi/function/CEvaluationNodeObject.h"
 #include "copasi/sbml/ConverterASTNode.h"
 #include "sbml/FunctionDefinition.h"
+#include "copasi/model/CChemEq.h"
+#include "copasi/model/CChemEqElement.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/utilities/CCopasiParameter.h"
 
 /**
  * Creates an expanded expression from the given expression.
@@ -1123,4 +1128,205 @@ CEvaluationNode* replace_variable_names(const CEvaluationNode* pNode, const std:
     }
 
   return pResult;
+}
+
+
+bool is_mass_action(const CNormalFraction* pFrac, const CModel* pModel, const CChemEq* pChemEq)
+{
+  bool result = true;
+
+  // all objects must be valid and the denominator of the fraction must be one
+  if (pFrac != NULL && pModel != NULL && pChemEq != NULL && pFrac->checkDenominatorOne())
+    {
+      const CNormalSum* pNumerator = &pFrac->getNumerator();
+
+      if (pNumerator != NULL && pNumerator->getFractions().empty())
+        {
+          // the numerator has to have either one element if the reaction
+          // is irreversible or two if the reaction is reversible
+          if ((pChemEq->getReversibility() == true && pNumerator->getProducts().size() == 2) || pNumerator->getProducts().size() == 1)
+            {
+              // if the reaction is reversible we have to find out which element
+              // contains the substrates and which contains the products
+              const CNormalProduct* pSubstrates = NULL;
+
+              if (pChemEq->getReversibility() == true)
+                {
+                  const CNormalProduct* pProducts = NULL;
+                  C_FLOAT64 factor1 = (*pNumerator->getProducts().begin())->getFactor();
+                  C_FLOAT64 factor2 = (*(++(pNumerator->getProducts().begin())))->getFactor();
+
+                  if (fabs(factor1 + 1.0) < 1e-23 && fabs(factor2 - 1.0) < 1e-23)
+                    {
+                      pProducts = *pNumerator->getProducts().begin();
+                      pSubstrates = *(++(pNumerator->getProducts().begin()));
+                    }
+                  else if (fabs(factor1 - 1.0) < 1e-23 && fabs(factor2 + 1.0) < 1e-23)
+                    {
+                      pSubstrates = *pNumerator->getProducts().begin();
+                      pProducts = *(++(pNumerator->getProducts().begin()));
+                    }
+
+                  if (pProducts != NULL)
+                    {
+                      result = contains_necessary_mass_action_elements(pChemEq->getProducts(), pProducts, pModel);
+                    }
+                  else
+                    {
+                      result = false;
+                    }
+                }
+              else
+                {
+                  if (fabs((*pNumerator->getProducts().begin())->getFactor() - 1.0) < 1e-23)
+                    {
+                      pSubstrates = *pNumerator->getProducts().begin();
+                    }
+                  else
+                    {
+                      result = false;
+                    }
+                }
+
+              if (result == true && pSubstrates != NULL)
+                {
+                  // check if pSubstrates constains a product
+                  // that consists of all the substrates of the reaction with the correct
+                  // exponents
+                  // as well as some parameter
+                  result = contains_necessary_mass_action_elements(pChemEq->getSubstrates(), pSubstrates, pModel);
+                }
+            }
+        }
+      else
+        {
+          result = false;
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
+}
+
+
+bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>& elements, const CNormalProduct* pProduct, const CModel* pModel)
+{
+  // check if pProducts contains a product
+  // that consists of all the products of the reaction with the correct
+  // exponents
+  // as well as some parameter
+  bool result = true;
+
+  if (pModel != NULL && pProduct != NULL && elements.size() > 0)
+    {
+      const CCopasiObject* pObject = NULL;
+      const CNormalItem* pItem = NULL;
+      const CMetab* pMetab = NULL;
+      const CCopasiDataModel* pDatamodel = dynamic_cast<const CCopasiDataModel*>(pModel->getObjectParent());
+      assert(pDatamodel != NULL);
+      std::vector<CCopasiContainer*> listOfContainers;
+      listOfContainers.push_back(const_cast<CModel*>(pModel));
+
+      CCopasiVector<CChemEqElement> tmpV = elements;
+      std::vector<const CCopasiObject*> tmpObjects;
+      const std::set<CNormalItemPower*, compareItemPowers >& itemPowers = pProduct->getItemPowers();
+      std::set <CNormalItemPower*, compareItemPowers >::const_iterator iit = itemPowers.begin(), iendit = itemPowers.end();
+
+      while (iit != iendit && result != false)
+        {
+
+          // check that the item is an instance of CNormalItem with type VARIABLE
+          // and that the variable corresponds to the common name of one of the
+          // products
+          // check if iit has the correct exponent
+          if ((*iit)->getItemType() == CNormalItemPower::ITEM)
+            {
+              pItem = dynamic_cast<const CNormalItem*>(&(*iit)->getItem());
+
+              if (pItem != NULL && pItem->getType() == CNormalItem::VARIABLE)
+                {
+                  std::string cn = pItem->getName();
+                  pObject = pDatamodel->ObjectFromName(listOfContainers, cn);
+
+                  if (pObject != NULL)
+                    {
+                      if (pObject->isReference())
+                        {
+                          pObject = pObject->getObjectParent();
+                          assert(pObject != NULL);
+                        }
+
+                      pMetab = dynamic_cast<const CMetab*>(pObject);
+
+                      if (pMetab != NULL)
+                        {
+                          CCopasiVector<CChemEqElement>::iterator tmpVIt = tmpV.begin(), tmpVEndit = tmpV.end();
+
+                          while (tmpVIt != tmpVEndit)
+                            {
+                              // check if we have found the metab and if the exponent is correct
+                              if (pMetab == (*tmpVIt)->getMetabolite() && fabs((*tmpVIt)->getMultiplicity() - (*iit)->getExp()) < 1e-23)
+                                {
+                                  // delete the item from tmpV
+                                  tmpV.remove(*tmpVIt);
+                                  break;
+                                }
+
+                              ++tmpVIt;
+                            }
+                        }
+                      else
+                        {
+                          // the exponent has to be 1
+                          if (fabs((*iit)->getExp() - 1.0) < 1e-23)
+                            {
+                              tmpObjects.push_back(pObject);
+                            }
+                          else
+                            {
+                              result = false;
+                            }
+                        }
+                    }
+                  else
+                    {
+                      result = false;
+                    }
+                }
+              else
+                {
+                  result = false;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+
+          ++iit;
+        }
+
+      // only the entry for the parameter should be left in tmpV
+      if (tmpV.size() == 0 && tmpObjects.size() == 1)
+        {
+          // check if the item is a local or global parameter
+          if (!(dynamic_cast<const CModelValue*>(tmpObjects[0]) || dynamic_cast<const CCopasiParameter*>(tmpObjects[0])))
+            {
+              result = false;
+            }
+        }
+      else
+        {
+          result = false;
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
 }

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/04/19 12:53:49 $
+//   $Date: 2011/04/10 17:07:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -34,6 +34,11 @@ class ConverterASTNode;
 class CEvaluationNode;
 class CEvaluationNodeCall;
 class CFunctionDB;
+class CModel;
+class CChemEq;
+class CChemEqElement;
+class CNormalProduct;
+template<typename T> class CCopasiVector;
 
 ASTNode* create_expression(const ASTNode* pSource, const ListOfFunctionDefinitions* pFunctions);
 
@@ -144,5 +149,21 @@ bool isIrevMassAction(const ASTNode* pNode,const std::vector<std::pair<std::stri
  * reversible mass action kinetics.
 bool isRevMassAction(const ASTNode* pNode,const std::vector<std::pair<std::string,double> >& substrates,const std::vector<std::pair<std::string,double> >& products);
  */
+
+/**
+ * Returns true if the given CNormalFraction represents a mass action kinetics for the
+ * provided chemical equation.
+ */
+bool is_mass_action(const CNormalFraction* pFrac, const CModel* pModel, const CChemEq* pChemEq);
+
+/**
+ * Returns true if the CNormalProduct contains objects fro all elements
+ * in the elements vector with the correct stoichiometry plut one item
+ * that represents the mass action kinetic parameter.
+ * This method i sused in is_mass_action once for the substrates and if the
+ * reaction is reversible once for the products.
+ */
+bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>& elements, const CNormalProduct* pProduct, const CModel* pModel);
+
 
 #endif /* COMPARE_UTILITIES_H__ */
