@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.10 $
+//   $Revision: 1.84.2.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/30 13:37:45 $
+//   $Date: 2011/04/18 19:38:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,7 +79,6 @@
 #include "utilities/CVersion.h"
 #include "commandline/CLocaleString.h"
 
-#define USE_SBMLUNIT
 
 #ifdef USE_SBMLUNIT
 # include "sbmlunit/CUnitInterfaceSBML.h"
