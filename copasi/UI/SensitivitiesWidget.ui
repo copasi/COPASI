@@ -2,15 +2,15 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.5.4.1 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/08/11 15:49:24 $ </comment>
+<comment>   $Author: ssahle $ </comment>
+<comment>   $Date: 2011/04/20 21:11:29 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
  <comment> All rights reserved. </comment>
@@ -20,8 +20,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>333</width>
-    <height>223</height>
+    <width>646</width>
+    <height>397</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -43,6 +43,9 @@
        </property>
        <property name="text">
         <string>Subtask</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -72,6 +75,9 @@
        </property>
        <property name="text">
         <string>Function</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -118,6 +124,9 @@
        </property>
        <property name="text">
         <string>Variable</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -166,6 +175,9 @@
        </property>
        <property name="text">
         <string>Second Variable</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -225,12 +237,12 @@
    <slot>slotChooseSubTask(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>266</x>
-     <y>37</y>
+     <x>170</x>
+     <y>49</y>
     </hint>
     <hint type="destinationlabel">
-     <x>153</x>
-     <y>11</y>
+     <x>226</x>
+     <y>16</y>
     </hint>
    </hints>
   </connection>
@@ -241,12 +253,12 @@
    <slot>slotChooseFunction(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>86</y>
+     <x>153</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
-     <x>366</x>
-     <y>93</y>
+     <x>231</x>
+     <y>104</y>
     </hint>
    </hints>
   </connection>
@@ -257,12 +269,12 @@
    <slot>slotChooseVariable(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>284</x>
-     <y>157</y>
+     <x>182</x>
+     <y>249</y>
     </hint>
     <hint type="destinationlabel">
-     <x>362</x>
-     <y>168</y>
+     <x>232</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>
@@ -270,15 +282,15 @@
    <sender>Variable2Chooser</sender>
    <signal>activated(int)</signal>
    <receiver>SensitivitiesWidget</receiver>
-   <slot>slotChooseSingleVariable2()</slot>
+   <slot>slotChooseVariable2(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>327</x>
-     <y>223</y>
+     <x>215</x>
+     <y>364</y>
     </hint>
     <hint type="destinationlabel">
-     <x>369</x>
-     <y>230</y>
+     <x>261</x>
+     <y>333</y>
     </hint>
    </hints>
   </connection>
@@ -289,12 +301,12 @@
    <slot>slotChooseSingleFunction()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>355</x>
-     <y>101</y>
+     <x>726</x>
+     <y>181</y>
     </hint>
     <hint type="destinationlabel">
-     <x>366</x>
-     <y>31</y>
+     <x>695</x>
+     <y>166</y>
     </hint>
    </hints>
   </connection>
@@ -305,12 +317,12 @@
    <slot>slotChooseSingleVariable()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>352</x>
-     <y>184</y>
+     <x>730</x>
+     <y>306</y>
     </hint>
     <hint type="destinationlabel">
-     <x>373</x>
-     <y>208</y>
+     <x>676</x>
+     <y>284</y>
     </hint>
    </hints>
   </connection>
@@ -321,12 +333,12 @@
    <slot>slotChooseSingleVariable2()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>344</x>
-     <y>246</y>
+     <x>741</x>
+     <y>414</y>
     </hint>
     <hint type="destinationlabel">
-     <x>371</x>
-     <y>261</y>
+     <x>691</x>
+     <y>390</y>
     </hint>
    </hints>
   </connection>
