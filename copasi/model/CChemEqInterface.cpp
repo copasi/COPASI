@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.42.2.1 $
+//   $Revision: 1.42.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:00 $
+//   $Date: 2011/04/20 20:40:30 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -477,6 +477,10 @@ void CChemEqInterface::clearModifiers()
 
 std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 mult, bool expanded)
 {
+  std::ostringstream Element;
+  Element.imbue(std::locale::classic());
+  Element.precision(6);
+
   std::string Metabolite = name;
 
   // The last character must not be a ';' in a reaction.
@@ -488,25 +492,28 @@ std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 m
 
   if (expanded)
     {
-      std::string ces;
       C_INT32 i, imax = (C_INT32) mult;
 
       for (i = 0; i < imax; ++i)
         {
-          if (i) ces += " + ";
+          if (i) Element << " + ";
 
-          ces += Metabolite;
+          Element << Metabolite;
         }
-
-      return ces;
     }
   else
     {
       if (mult == 1.0)
-        return Metabolite;
+        {
+          Element << Metabolite;
+        }
       else
-        return StringPrint("%g * %s", mult, Metabolite.c_str());
+        {
+          Element << mult << " * " << Metabolite;
+        }
     }
+
+  return Element.str();
 }
 
 size_t CChemEqInterface::getMolecularity(CFunctionParameter::Role role) const
