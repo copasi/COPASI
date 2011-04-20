@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.h,v $
-$Revision: 1.18.2.1 $
+$Revision: 1.18.2.2 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/01/12 18:56:04 $
+$Date: 2011/04/20 21:28:04 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,6 +157,11 @@ protected:
    * The current step used for process report.
    */
   unsigned C_INT32 mStep;
+
+  /**
+   * The current step used for process report.
+   */
+  unsigned C_INT32 mStepProcess;
 
   /**
    * The max step used for process report.

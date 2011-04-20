@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-$Revision: 1.28.2.1 $
+$Revision: 1.28.2.2 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/01/12 18:56:04 $
+$Date: 2011/04/20 21:28:04 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,12 +183,13 @@ bool CEFMAlgorithm::initialize()
     }
 
   mStep = 0;
+  mStepProcess = 0;
   mMaxStep = (unsigned C_INT32) numCols;
 
   if (mpCallBack)
     mhSteps =
       mpCallBack->addItem("Current Step",
-                          mStep,
+                          mStepProcess,
                           & mMaxStep);
 
   return true;
@@ -227,6 +228,7 @@ void CEFMAlgorithm::calculateFluxModes()
       while (findMinimalCombinationIndex() && Continue)
         {
           calculateNextTableau();
+          mStepProcess++;
 
           if (mpCallBack)
             Continue &= mpCallBack->progressItem(mhSteps);
