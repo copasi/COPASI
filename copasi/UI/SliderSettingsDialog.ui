@@ -2,11 +2,16 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.ui,v $ </comment>
-<comment>   $Revision: 1.17 $ </comment>
+<comment>   $Revision: 1.17.4.1 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: gauges $ </comment>
-<comment>   $Date: 2009/11/16 15:28:12 $ </comment>
+<comment>   $Date: 2011/04/20 19:33:20 $ </comment>
 <comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
@@ -740,6 +745,150 @@ when editing or creating a slider.</string>
    <signal>clicked()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>browseButtonPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpNumMinTicksEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>numTicksValueTextChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpNumMinTicksEdit</sender>
+   <signal>lostFocus()</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>numMinorTicksChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpMinorTickSizeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>tickSizeTextChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpMinorTickSizeEdit</sender>
+   <signal>lostFocus()</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>minorTickSizeChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpMinorMajorFactorEdit</sender>
+   <signal>lostFocus()</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>minorMajorFactorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpOriginalValueEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>origValueTextChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpOriginalValueEdit</sender>
+   <signal>lostFocus()</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>originalValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpObjectValueEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>valueTextChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpObjectValueEdit</sender>
+   <signal>lostFocus()</signal>
+   <receiver>SliderSettingsDialog</receiver>
+   <slot>objectValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
