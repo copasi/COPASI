@@ -140,13 +140,13 @@ prereactant: TOKEN_NAME
         | TOKEN_NUMBER TOKEN_NAME
           {
             $$ = $2;
-            $$->multiplicity = strtod($1->name.c_str(), NULL);
+            $$->multiplicity = strToDouble($1->name.c_str(), NULL);
             pdelete($1);
           }
         | TOKEN_NUMBER TOKEN_MULTIPLY TOKEN_NAME
           {
             $$ = $3;
-            $$->multiplicity = strtod($1->name.c_str(), NULL);
+            $$->multiplicity = strToDouble($1->name.c_str(), NULL);
             pdelete($1);
             pdelete($2);
           }

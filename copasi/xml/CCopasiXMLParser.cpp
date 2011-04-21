@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.10 $
+//   $Revision: 1.223.2.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/31 20:03:35 $
+//   $Date: 2011/04/21 13:18:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11570,7 +11570,7 @@ void CCopasiXMLParser::RectangleElement::start(const XML_Char * pszName,
 
         if (StrokeWidth != NULL)
           {
-            double width = strtod(StrokeWidth, NULL);
+            double width = strToDouble(StrokeWidth, NULL);
             pRectangle->setStrokeWidth(width);
           }
 
@@ -11714,7 +11714,7 @@ void CCopasiXMLParser::EllipseElement::start(const XML_Char * pszName,
 
         if (StrokeWidth != NULL)
           {
-            double width = strtod(StrokeWidth, NULL);
+            double width = strToDouble(StrokeWidth, NULL);
             pEllipse->setStrokeWidth(width);
           }
 
@@ -11848,7 +11848,7 @@ void CCopasiXMLParser::PolygonElement::start(const XML_Char * pszName,
 
         if (StrokeWidth != NULL)
           {
-            double width = strtod(StrokeWidth, NULL);
+            double width = strToDouble(StrokeWidth, NULL);
             pPolygon->setStrokeWidth(width);
           }
 
@@ -12014,7 +12014,7 @@ void CCopasiXMLParser::RenderCurveElement::start(const XML_Char * pszName,
 
         if (StrokeWidth != NULL)
           {
-            double width = strtod(StrokeWidth, NULL);
+            double width = strToDouble(StrokeWidth, NULL);
             pRenderCurve->setStrokeWidth(width);
           }
 
@@ -12181,7 +12181,7 @@ void CCopasiXMLParser::TextElement::start(const XML_Char * pszName,
 
         if (StrokeWidth != NULL)
           {
-            double width = strtod(StrokeWidth, NULL);
+            double width = strToDouble(StrokeWidth, NULL);
             pText->setStrokeWidth(width);
           }
 
@@ -12492,7 +12492,7 @@ void CCopasiXMLParser::GroupElement::start(const XML_Char * pszName,
 
         if (StrokeWidth != NULL)
           {
-            double width = strtod(StrokeWidth, NULL);
+            double width = strToDouble(StrokeWidth, NULL);
             pGroup->setStrokeWidth(width);
           }
 
