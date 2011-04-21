@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.34.2.6 $
+//   $Revision: 1.34.2.7 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2011/03/08 15:32:46 $
+//   $Date: 2011/04/21 22:30:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -533,6 +533,17 @@ bool CSensMethod::initialize(CSensProblem* problem)
               mpSubTask = dynamic_cast<CCopasiTask*>
                           ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
               break;*/
+
+      case CSensProblem::ParameterEstimation:
+        mpSubTask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Parameter Estimation"]);
+        break;
+
+      case CSensProblem::Optimization:
+        mpSubTask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Optimization"]);
+        break;
+
     }
 
   if (mpSubTask)
