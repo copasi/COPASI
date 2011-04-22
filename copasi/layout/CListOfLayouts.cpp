@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.20.2.4 $
+//   $Revision: 1.20.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/27 17:49:57 $
+//   $Date: 2011/04/22 16:37:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
 }
 
 void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, SBase*> & copasimodelmap,
-                                  const std::map<std::string, const SBase*>& idMap) const
+                                  const std::map<std::string, const SBase*>& idMap, unsigned int level, unsigned int version) const
 {
   if (!lol) return;
 
@@ -93,13 +93,14 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
       //gradientKeyToIdMap.clear();
       //lineEndingKeyToIdMap.clear();
       //pGRI=this->mvGlobalRenderInformationObjects[i]->toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
-      pGRI = this->mvGlobalRenderInformationObjects[i]->toSBML(pLoL->getLevel(), pLoL->getVersion());
+      pGRI = pLoL->createGlobalRenderInformation();
+      this->mvGlobalRenderInformationObjects[i]->toSBML(pGRI, pLoL->getLevel(), pLoL->getVersion());
       // add the id and key to the map
+      assert(pGRI != NULL);
       keyToIdMap.insert(std::pair<std::string, std::string>(this->mvGlobalRenderInformationObjects[i]->getKey(), pGRI->getId()));
       //colorKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),colorKeyToIdMap));
       //gradientKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),gradientKeyToIdMap));
       //lineEndingKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),lineEndingKeyToIdMap));
-      pLoL->appendAndOwn(pGRI);
     }
 
   // fix the references
@@ -159,7 +160,10 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
       if (it == copasimodelmap.end()) //not found
         {
           //create new object and add to libsbml data structures
-          pLayout = new Layout;
+          // the layout needs to be created with the correct level and version
+          // otherwise the render infromation is not correctly exported
+          // because newer version is libsbml set the level to 3 per default
+          pLayout = new Layout(level, version);
           lol->appendAndOwn(pLayout);
 
           //add object to map

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalRenderInformation.h,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:27 $
+//   $Author: gauges $
+//   $Date: 2011/04/22 16:37:15 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -85,7 +85,7 @@ public:
   /**
    * Converts this object to the corresponding SBML object.
    */
-  GlobalRenderInformation* toSBML(unsigned int level, unsigned int version) const;
+  bool toSBML(GlobalRenderInformation* pGRI, unsigned int level, unsigned int version) const;
 };
 
 #endif /* CLGlobalRenderInformation_H__ */

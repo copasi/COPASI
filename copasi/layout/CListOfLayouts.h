@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.8.2.2 $
+//   $Revision: 1.8.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/27 17:49:57 $
+//   $Date: 2011/04/22 16:37:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ public:
    * model (including the layouts, but not the objects inside the layout).
    */
   void exportToSBML(ListOf * lol, std::map<const CCopasiObject*, SBase*> & copasimodelmap,
-                    const std::map<std::string, const SBase*>& idMap) const;
+                    const std::map<std::string, const SBase*>& idMap, unsigned int level, unsigned int version) const;
 
 #ifdef USE_CRENDER_EXTENSION
   //*******************
