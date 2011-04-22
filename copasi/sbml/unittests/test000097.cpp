@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000097.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/22 15:27:31 $
+//   $Date: 2011/04/22 16:36:23 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,10 +189,10 @@ void test000097::test_export_local_render_information()
   iMax = pAnnotationNode->getNumChildren();
   CPPUNIT_ASSERT(iMax > 0);
 
-  // the annotation node should have an listOfLocalRenderInformationNode
+  // the annotation node should have an listOfRenderInformation node
   for (i = 0; i < iMax; ++i)
     {
-      if (pAnnotationNode->getChild(i).getName() == "listOfLocalRenderInformation")
+      if (pAnnotationNode->getChild(i).getName() == "listOfRenderInformation")
         {
           pLoLRINode = &pAnnotationNode->getChild(i);
         }
@@ -322,12 +322,12 @@ void test000097::test_export_global_render_information()
           pLoGRINode = &pAnnotationNode->getChild(i);
           break;
         }
-
     }
 
   CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
   iMax = pListOfLayoutsNode->getNumChildren();
   CPPUNIT_ASSERT(iMax > 0);
+  pAnnotationNode = NULL;
 
   for (i = 0; i < iMax; ++i)
     {
@@ -335,11 +335,29 @@ void test000097::test_export_global_render_information()
         {
           pLayoutNode = &pListOfLayoutsNode->getChild(i);
         }
+      else if (pListOfLayoutsNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pListOfLayoutsNode->getChild(i);
+        }
     }
 
   CPPUNIT_ASSERT(pLayoutNode != NULL);
   iMax = pLayoutNode->getNumChildren();
   CPPUNIT_ASSERT(iMax > 0);
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfGlobalRenderInformation")
+        {
+          pLoGRINode = &pAnnotationNode->getChild(i);
+          break;
+        }
+
+    }
 
   CPPUNIT_ASSERT(pLoGRINode != NULL);
   iMax = pLoGRINode->getNumChildren();
