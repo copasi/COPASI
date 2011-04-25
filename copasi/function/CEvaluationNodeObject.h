@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-  $Revision: 1.20 $
+  $Revision: 1.21 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/03/14 19:18:22 $
+  $Date: 2011/04/25 12:48:28 $
   End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,6 +156,12 @@ public:
    * @return const CRegisteredObjectName & objectCN
    */
   const CRegisteredObjectName & getObjectCN() const;
+
+  /**
+   * Retrieve the pointer to the value of the referred object
+   * @return const C_FLOAT64 * pObjectValue
+   */
+  const C_FLOAT64 * getObjectValuePtr() const;
 
   /**
    * generate display MathML recursively

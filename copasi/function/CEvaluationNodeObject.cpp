@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:33:32 $
+//   $Date: 2011/04/25 12:48:28 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,6 +313,11 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
 
 const CRegisteredObjectName & CEvaluationNodeObject::getObjectCN() const
 {return mRegisteredObjectCN;}
+
+const C_FLOAT64 * CEvaluationNodeObject::getObjectValuePtr() const
+{
+  return mpValue;
+}
 
 #include "utilities/copasimathml.h"
 

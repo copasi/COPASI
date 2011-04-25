@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:19 $
+//   $Date: 2011/04/25 12:48:28 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,6 +249,13 @@ public:
    * @return bool calls
    */
   bool calls(std::set< std::string > & list) const;
+
+  /**
+   * Add all used nodes of the tree which introduce discrete changes.
+   * @param std::vector< const CEvaluationNode * > & discontinuousNodes
+   */
+  void getDiscontinuousNodes(std::vector< const CEvaluationNode * > & discontinuousNodes) const;
+
 
 protected:
   /**

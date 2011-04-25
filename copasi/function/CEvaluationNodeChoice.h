@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.h,v $
-  $Revision: 1.14 $
+  $Revision: 1.15 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/03/07 19:28:18 $
+  $Date: 2011/04/25 12:48:28 $
   End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@
 class CCopasiDataModel;
 
 /**
- * This is the class for nodes presenting opertors used in an evaluation trees.
+ * This is the class for nodes presenting operators used in an evaluation trees.
  */
 class CEvaluationNodeChoice : public CEvaluationNode
 {

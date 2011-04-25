@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:20 $
+//   $Date: 2011/04/25 12:48:28 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -354,9 +354,20 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 
 bool CEvaluationTree::updateTree()
 {
-  if (!mpRoot || !mpNodeList) return false;
+  if (mpRoot == NULL)
+    {
+      CEvaluationLexer::freeNodeList(mpNodeList);
+      return false;
+    }
 
+  if (mpNodeList == NULL)
+    {
+      mpNodeList = new std::vector< CEvaluationNode * >;
+    }
+
+  // Clear the list but preserve the tree
   mpNodeList->clear();
+
   CCopasiTree<CEvaluationNode>::iterator it = mpRoot;
   CCopasiTree<CEvaluationNode>::iterator end = NULL;
 
@@ -562,3 +573,25 @@ bool CEvaluationTree::calls(std::set< std::string > & list) const
 
   return Calls;
 }
+
+void CEvaluationTree::getDiscontinuousNodes(std::vector< const CEvaluationNode * > & discontinuousNodes) const
+{
+  CCopasiTree< CEvaluationNode >::const_iterator it = mpRoot;
+  CCopasiTree< CEvaluationNode >::const_iterator end;
+
+  for (; it != end; ++it)
+    {
+      switch (it->getType())
+        {
+          case CEvaluationNode::CHOICE:
+          case CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR:
+          case CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL:
+            discontinuousNodes.push_back(&*it);
+            break;
+
+          default:
+            break;
+        }
+    }
+}
+

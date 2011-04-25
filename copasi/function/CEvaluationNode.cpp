@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/24 13:30:03 $
+//   $Date: 2011/04/25 12:48:27 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,6 +113,9 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
         break;
 
       case CEvaluationNode::INVALID:
+        pNode = new CEvaluationNode();
+        break;
+
       case CEvaluationNode::MV_FUNCTION:
         break;
     }
