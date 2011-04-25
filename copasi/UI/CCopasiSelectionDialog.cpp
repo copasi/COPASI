@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.21.2.4 $
+//   $Revision: 1.21.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:45 $
+//   $Date: 2011/04/25 15:52:26 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -206,37 +206,32 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   else
     //    return Selection;
     {
-      if (classes == CQSimpleSelectionTree::AnyObject)
+      std::vector<const CCopasiObject *> newSelection;
+
+      std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
+
+      for (; itSelection != Selection.end(); ++itSelection)
         {
-          std::vector<const CCopasiObject *> newSelection;
+          // if the current object is an array then select firstly one cell of it
+          const CArrayAnnotation * pArray;
 
-          std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
-
-          for (; itSelection != Selection.end(); ++itSelection)
+          if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
             {
-              // if the current object is an array then select firstly one cell of it
-              const CArrayAnnotation * pArray;
+              // second parameter is false in order 'ALL' options on the matrix dialog to appear
+              std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
+              std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
 
-              if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
-                {
-                  // second parameter is false in order 'ALL' options on the matrix dialog to appear
-                  std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
-                  std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
-
-                  for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
-                    newSelection.push_back(*tmpit);
-                }
-              // otherwise, just put it into newSelection
-              else
-                {
-                  newSelection.push_back(*itSelection);
-                }
+              for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
+                newSelection.push_back(*tmpit);
             }
-
-          return newSelection;
+          // otherwise, just put it into newSelection
+          else
+            {
+              newSelection.push_back(*itSelection);
+            }
         }
 
-      return Selection;
+      return newSelection;
     }
 
   //  return Selection;
