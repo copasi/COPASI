@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.11 $
+//   $Revision: 1.223.2.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/21 13:18:34 $
+//   $Author: gauges $
+//   $Date: 2011/04/25 14:56:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -8102,71 +8102,73 @@ CCopasiXMLParser::ListOfLayoutsElement::ListOfLayoutsElement(CCopasiXMLParser & 
 
 CCopasiXMLParser::ListOfLayoutsElement::~ListOfLayoutsElement()
 {
-  deleteCurrentHandler();
 }
 
 void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  mCurrentElement++; /* We should always be on the next element */
+  this->mCurrentElement++; /* We should always be on the next element */
+  // we set the handler to NULL so that we can see if a handler was
+  // created in this call
+  this->mpCurrentHandler = NULL;
 
-  switch (mCurrentElement)
+  switch (this->mCurrentElement)
     {
       case ListOfLayouts:
 
         if (strcmp(pszName, "ListOfLayouts"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "ListOfLayouts", mParser.getCurrentLineNumber());
+                         pszName, "ListOfLayouts", this->mParser.getCurrentLineNumber());
 
         //workload
-        if (!mCommon.pLayoutList)
+        if (!this->mCommon.pLayoutList)
           {
-            mCommon.pLayoutList = new CListOfLayouts;
+            this->mCommon.pLayoutList = new CListOfLayouts;
           }
 
+        // we need to jump out of this method here
+        // because otherwise the call at the end would
+        // call this method again in an endless loop
+        return;
         break;
 
       case Layout:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "Layout"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Layout", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Layout"))
+          {
+            this->mLastKnownElement = Layout;
+            this->mpCurrentHandler = new LayoutElement(this->mParser, this->mCommon);
+          }
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new LayoutElement(mParser, mCommon);
-
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 #ifdef USE_CRENDER_EXTENSION
       case ListOfGlobalRenderInformation:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "ListOfGlobalRenderInformation"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "ListOfGlobalRenderInformation", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "ListOfGlobalRenderInformation"))
+          {
+            this->mLastKnownElement = ListOfGlobalRenderInformation;
+            this->mpCurrentHandler = new ListOfGlobalRenderInformationElement(this->mParser, this->mCommon);
+          }
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new ListOfGlobalRenderInformationElement(mParser, mCommon);
-
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 #endif /* USE_CRENDER_EXTENSION */
       default:
         mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
-        mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
         break;
     }
+
+  // if we created a handler in this call, we add it to the stack
+  if (this->mpCurrentHandler != NULL)
+    {
+      this->mParser.pushElementHandler(this->mpCurrentHandler);
+    }
+
+  // we call the current handler
+  // if we created one, the new one will be called, otherwise
+  // the one for ListOfLayouts should be the current one
+  // and this method will be called again
+  this->mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -8203,8 +8205,8 @@ void CCopasiXMLParser::ListOfLayoutsElement::end(const XML_Char * pszName)
         //tell the handler where to continue
         mCurrentElement = ListOfLayouts;
 
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
+        deleteCurrentHandler();
+
         break;
 #ifdef USE_CRENDER_EXTENSION
       case ListOfGlobalRenderInformation:
@@ -8216,8 +8218,7 @@ void CCopasiXMLParser::ListOfLayoutsElement::end(const XML_Char * pszName)
         //tell the handler where to continue
         mCurrentElement = ListOfLayouts;
 
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
+        deleteCurrentHandler();
         break;
 #endif /* USE_CRENDER_EXTENSION */
       case UNKNOWN_ELEMENT:
@@ -13950,7 +13951,6 @@ CCopasiXMLParser::GlobalRenderInformationElement::GlobalRenderInformationElement
 
 CCopasiXMLParser::GlobalRenderInformationElement::~GlobalRenderInformationElement()
 {
-  pdelete(mpCurrentHandler);
 }
 
 void CCopasiXMLParser::GlobalRenderInformationElement::start(const XML_Char * pszName,
@@ -13980,17 +13980,16 @@ void CCopasiXMLParser::GlobalRenderInformationElement::start(const XML_Char * ps
             mCommon.pRenderInformation->setBackgroundColor(background);
           }
 
+        // we have to return here because otherwise the call
+        // at the end will lead to an endless loop
         return;
         break;
 
       case ListOfColorDefinitions:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
         if (!strcmp(pszName, "ListOfColorDefinitions"))
           {
-            //only one type of tags may occur here, so if the handler exists
-            //it must be the correct one
+            this->mLastKnownElement = ListOfColorDefinitions;
             mpCurrentHandler = new ListOfColorDefinitionsElement(mParser, mCommon);
           }
 
@@ -13998,12 +13997,9 @@ void CCopasiXMLParser::GlobalRenderInformationElement::start(const XML_Char * ps
 
       case ListOfGradientDefinitions:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
         if (!strcmp(pszName, "ListOfGradientDefinitions"))
           {
-            //only one type of tags may occur here, so if the handler exists
-            //it must be the correct one
+            this->mLastKnownElement = ListOfGradientDefinitions;
             mpCurrentHandler = new ListOfGradientDefinitionsElement(mParser, mCommon);
           }
 
@@ -14011,12 +14007,9 @@ void CCopasiXMLParser::GlobalRenderInformationElement::start(const XML_Char * ps
 
       case ListOfLineEndings:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
         if (!strcmp(pszName, "ListOfLineEndings"))
           {
-            //only one type of tags may occur here, so if the handler exists
-            //it must be the correct one
+            this->mLastKnownElement = ListOfLineEndings;
             mpCurrentHandler = new ListOfLineEndingsElement(mParser, mCommon);
           }
 
@@ -14024,12 +14017,9 @@ void CCopasiXMLParser::GlobalRenderInformationElement::start(const XML_Char * ps
 
       case ListOfStyles:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
         if (!strcmp(pszName, "ListOfStyles"))
           {
-            //only one type of tags may occur here, so if the handler exists
-            //it must be the correct one
+            this->mLastKnownElement = ListOfStyles;
             mpCurrentHandler = new ListOfGlobalStylesElement(mParser, mCommon);
           }
 
@@ -14043,85 +14033,82 @@ void CCopasiXMLParser::GlobalRenderInformationElement::start(const XML_Char * ps
         break;
     }
 
-  if (mpCurrentHandler != NULL)
+  // if we created a handler in this call, we add it to the stack
+  if (this->mpCurrentHandler != NULL)
     {
-      mParser.pushElementHandler(mpCurrentHandler);
+      this->mParser.pushElementHandler(this->mpCurrentHandler);
     }
 
-  mParser.onStartElement(pszName, papszAttrs);
+  // we call the current handler
+  // if we created one, the new one will be called, otherwise
+  // the one for ListOfLayouts should be the current one
+  // and this method will be called again
+  this->mParser.onStartElement(pszName, papszAttrs);
   return;
 }
 
 void CCopasiXMLParser::GlobalRenderInformationElement::end(const XML_Char * pszName)
 {
-  switch (mCurrentElement)
+  if (!strcmp(pszName, "RenderInformation"))
     {
-      case GlobalRenderInformation:
+      mParser.popElementHandler();
+      mCommon.pRenderInformation = NULL;
 
-        if (strcmp(pszName, "RenderInformation"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+      //reset handler
+      mCurrentElement = START_ELEMENT;
+      //call parent handler
+      mParser.onEndElement(pszName);
+    }
+  else
+    {
+      switch (mCurrentElement)
+        {
 
-        mParser.popElementHandler();
-        mCommon.pRenderInformation = NULL;
+          case ListOfColorDefinitions:
 
-        //reset handler
-        mCurrentElement = START_ELEMENT;
-        //call parent handler
-        mParser.onEndElement(pszName);
-        break;
+            if (strcmp(pszName, "ListOfColorDefinitions"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfColorDefinitions", mParser.getCurrentLineNumber());
 
-      case ListOfColorDefinitions:
+            deleteCurrentHandler();
+            break;
 
-        if (strcmp(pszName, "ListOfColorDefinitions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfColorDefinitions", mParser.getCurrentLineNumber());
+          case ListOfGradientDefinitions:
 
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
-        break;
+            if (strcmp(pszName, "ListOfGradientDefinitions"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfGradientDefinitions", mParser.getCurrentLineNumber());
 
-      case ListOfGradientDefinitions:
+            deleteCurrentHandler();
+            break;
 
-        if (strcmp(pszName, "ListOfGradientDefinitions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfGradientDefinitions", mParser.getCurrentLineNumber());
+          case ListOfLineEndings:
 
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
-        break;
+            if (strcmp(pszName, "ListOfLineEndings"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfLineEndings", mParser.getCurrentLineNumber());
 
-      case ListOfLineEndings:
+            deleteCurrentHandler();
+            break;
 
-        if (strcmp(pszName, "ListOfLineEndings"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfLineEndings", mParser.getCurrentLineNumber());
+          case ListOfStyles:
 
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
-        break;
+            if (strcmp(pszName, "ListOfStyles"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfStyles", mParser.getCurrentLineNumber());
 
-      case ListOfStyles:
+            deleteCurrentHandler();
+            break;
 
-        if (strcmp(pszName, "ListOfStyles"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfStyles", mParser.getCurrentLineNumber());
+          case UNKNOWN_ELEMENT:
+            mCurrentElement = mLastKnownElement;
+            break;
 
-        //tell the handler where to continue
-        mCurrentElement = GlobalRenderInformation;
-
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
-        break;
-
-      case UNKNOWN_ELEMENT:
-        mCurrentElement = mLastKnownElement;
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                       pszName, "???", mParser.getCurrentLineNumber());
-        break;
+          default:
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                           pszName, "???", mParser.getCurrentLineNumber());
+            break;
+        }
     }
 
   return;
@@ -14136,7 +14123,6 @@ CCopasiXMLParser::LocalRenderInformationElement::LocalRenderInformationElement(C
 
 CCopasiXMLParser::LocalRenderInformationElement::~LocalRenderInformationElement()
 {
-  pdelete(mpCurrentHandler);
 }
 
 void CCopasiXMLParser::LocalRenderInformationElement::start(const XML_Char * pszName,
@@ -14166,17 +14152,16 @@ void CCopasiXMLParser::LocalRenderInformationElement::start(const XML_Char * psz
             mCommon.pRenderInformation->setBackgroundColor(background);
           }
 
+        // we have to return here because otherwise the call
+        // at the end will lead to an endless loop
         return;
         break;
 
       case ListOfColorDefinitions:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
         if (!strcmp(pszName, "ListOfColorDefinitions"))
           {
-            //only one type of tags may occur here, so if the handler exists
-            //it must be the correct one
+            this->mLastKnownElement = ListOfColorDefinitions;
             mpCurrentHandler = new ListOfColorDefinitionsElement(mParser, mCommon);
           }
 
@@ -14184,12 +14169,9 @@ void CCopasiXMLParser::LocalRenderInformationElement::start(const XML_Char * psz
 
       case ListOfGradientDefinitions:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
         if (!strcmp(pszName, "ListOfGradientDefinitions"))
           {
-            //only one type of tags may occur here, so if the handler exists
-            //it must be the correct one
+            this->mLastKnownElement = ListOfGradientDefinitions;
             mpCurrentHandler = new ListOfGradientDefinitionsElement(mParser, mCommon);
           }
 
@@ -14197,12 +14179,9 @@ void CCopasiXMLParser::LocalRenderInformationElement::start(const XML_Char * psz
 
       case ListOfLineEndings:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
         if (!strcmp(pszName, "ListOfLineEndings"))
           {
-            //only one type of tags may occur here, so if the handler exists
-            //it must be the correct one
+            this->mLastKnownElement = ListOfLineEndings;
             mpCurrentHandler = new ListOfLineEndingsElement(mParser, mCommon);
           }
 
@@ -14210,12 +14189,9 @@ void CCopasiXMLParser::LocalRenderInformationElement::start(const XML_Char * psz
 
       case ListOfStyles:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
         if (!strcmp(pszName, "ListOfStyles"))
           {
-            //only one type of tags may occur here, so if the handler exists
-            //it must be the correct one
+            this->mLastKnownElement = ListOfStyles;
             mpCurrentHandler = new ListOfLocalStylesElement(mParser, mCommon);
           }
 
@@ -14229,84 +14205,82 @@ void CCopasiXMLParser::LocalRenderInformationElement::start(const XML_Char * psz
         break;
     }
 
+  // if we created a handler in this call, we add it to the stack
   if (mpCurrentHandler)
-    mParser.pushElementHandler(mpCurrentHandler);
+    {
+      this->mParser.pushElementHandler(this->mpCurrentHandler);
+    }
 
-  mParser.onStartElement(pszName, papszAttrs);
+  // we call the current handler
+  // if we created one, the new one will be called, otherwise
+  // the one for ListOfLayouts should be the current one
+  // and this method will be called again
+  this->mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
 
 void CCopasiXMLParser::LocalRenderInformationElement::end(const XML_Char * pszName)
 {
-  switch (mCurrentElement)
+  if (!strcmp(pszName, "RenderInformation"))
     {
-      case LocalRenderInformation:
+      mParser.popElementHandler();
+      mCommon.pRenderInformation = NULL;
 
-        if (strcmp(pszName, "RenderInformation"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+      //reset handler
+      mCurrentElement = START_ELEMENT;
+      //call parent handler
+      mParser.onEndElement(pszName);
+    }
+  else
+    {
+      switch (mCurrentElement)
+        {
+          case ListOfColorDefinitions:
 
-        mParser.popElementHandler();
-        mCommon.pRenderInformation = NULL;
+            if (strcmp(pszName, "ListOfColorDefinitions"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfColorDefinitions", mParser.getCurrentLineNumber());
 
-        //reset handler
-        mCurrentElement = START_ELEMENT;
-        //call parent handler
-        mParser.onEndElement(pszName);
-        break;
+            deleteCurrentHandler();
+            break;
 
-      case ListOfColorDefinitions:
+          case ListOfGradientDefinitions:
 
-        if (strcmp(pszName, "ListOfColorDefinitions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfColorDefinitions", mParser.getCurrentLineNumber());
+            if (strcmp(pszName, "ListOfGradientDefinitions"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfGradientDefinitions", mParser.getCurrentLineNumber());
 
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
-        break;
+            deleteCurrentHandler();
+            break;
 
-      case ListOfGradientDefinitions:
+          case ListOfLineEndings:
 
-        if (strcmp(pszName, "ListOfGradientDefinitions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfGradientDefinitions", mParser.getCurrentLineNumber());
+            if (strcmp(pszName, "ListOfLineEndings"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfLineEndings", mParser.getCurrentLineNumber());
 
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
-        break;
+            deleteCurrentHandler();
+            break;
 
-      case ListOfLineEndings:
+          case ListOfStyles:
 
-        if (strcmp(pszName, "ListOfLineEndings"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfLineEndings", mParser.getCurrentLineNumber());
+            if (strcmp(pszName, "ListOfStyles"))
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                             pszName, "ListOfStyles", mParser.getCurrentLineNumber());
 
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
-        break;
+            deleteCurrentHandler();
+            break;
 
-      case ListOfStyles:
+          case UNKNOWN_ELEMENT:
+            mCurrentElement = mLastKnownElement;
+            break;
 
-        if (strcmp(pszName, "ListOfStyles"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfStyles", mParser.getCurrentLineNumber());
-
-        //tell the handler where to continue
-        mCurrentElement = LocalRenderInformation;
-
-        //no need to delete Handler (since it is the only one the destructor
-        //will handle it)
-        break;
-
-      case UNKNOWN_ELEMENT:
-        mCurrentElement = mLastKnownElement;
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                       pszName, "???", mParser.getCurrentLineNumber());
-        break;
+          default:
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                           pszName, "???", mParser.getCurrentLineNumber());
+            break;
+        }
     }
 
   return;
