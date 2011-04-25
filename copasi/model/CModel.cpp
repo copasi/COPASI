@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.402 $
+//   $Revision: 1.403 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:26:01 $
+//   $Date: 2011/04/25 12:48:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,8 +39,6 @@
 #include "copasi.h"
 
 // #define DEBUG_MATRIX
-
-// #define TST_DEPENDENCYGRAPH
 
 #include "CCompartment.h"
 #include "CMetab.h"
@@ -3578,6 +3576,45 @@ void CModel::determineIsAutonomous()
   // An autonomous models always start simulation at T = 0
   if (mIsAutonomous)
     setInitialValue(0.0);
+}
+
+void CModel::getDiscontinuousNodes(std::vector< const CEvaluationNode * > & discontinuousNodes) const
+{
+  // Check all expressions for entities of type ASSIGNMENT and ODE
+  CModelEntity *const* ppEntity = mStateTemplate.getEntities();
+  CModelEntity *const* ppEntityEnd = ppEntity + mStateTemplate.size();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      switch ((*ppEntity)->getStatus())
+        {
+          case ODE:
+          case ASSIGNMENT:
+            (*ppEntity)->getExpressionPtr()->getDiscontinuousNodes(discontinuousNodes);
+            break;
+
+          default:
+            break;
+        }
+    }
+
+  // Check all kinetic functions.
+  CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      (*itReaction)->getFunction()->getDiscontinuousNodes(discontinuousNodes);
+    }
+
+  // Check all event triggers
+  CCopasiVector< CEvent >::const_iterator itEvent = mEvents.begin();
+  CCopasiVector< CEvent >::const_iterator endEvent = mEvents.end();
+
+  for (; itEvent != endEvent; ++itEvent)
+    {
+      (*itEvent)->getTriggerExpressionPtr()->getDiscontinuousNodes(discontinuousNodes);
+    }
 }
 
 bool CModel::compileEvents()

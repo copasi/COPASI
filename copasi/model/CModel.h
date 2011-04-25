@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.193 $
+//   $Revision: 1.194 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:34:31 $
+//   $Date: 2011/04/25 12:48:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1169,6 +1169,12 @@ public:
    */
   std::string getQuantityRateUnitsDisplayString() const;
 
+  /**
+   * Add all used nodes of the tree which introduce discrete changes.
+   * @param std::vector< const CEvaluationNode * > & discontinuousNodes
+   */
+  void getDiscontinuousNodes(std::vector< const CEvaluationNode * > & discontinuousNodes) const;
+
 private:
 
   bool compile();
@@ -1484,7 +1490,7 @@ private:
   bool mIsAutonomous;
 
   /**
-   * A Boolean vakue indicationg whether we need to rebuild the initial
+   * A Boolean value indicating whether we need to rebuild the initial
    * value refresh sequence
    */
   bool mBuildInitialSequence;
