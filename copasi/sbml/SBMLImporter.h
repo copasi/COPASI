@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/07 12:27:19 $
+//   $Date: 2011/04/25 12:47:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,6 +120,7 @@ protected:
 
   bool mRuleForSpeciesReferenceIgnored;
   bool mEventAssignmentForSpeciesReferenceIgnored;
+  bool mConversionFactorFound;
 #if LIBSBML_VERSION >= 40200
   bool mEventPrioritiesIgnored;
   bool mInitialTriggerValues;
