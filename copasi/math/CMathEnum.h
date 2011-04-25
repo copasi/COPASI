@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEnum.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:20:16 $
+//   $Date: 2011/04/25 12:50:08 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,6 +79,49 @@ private:
 class CMath
 {
 public:
+  struct sPointers
+  {
+public:
+    C_FLOAT64 * pInitialExtensiveValues;
+    C_FLOAT64 * pInitialIntensiveValues;
+    C_FLOAT64 * pInitialEventTriggers;
+    C_FLOAT64 * pExtensiveValues;
+    C_FLOAT64 * pIntensiveValues;
+    C_FLOAT64 * pExtensiveRates;
+    C_FLOAT64 * pIntensiveRates;
+    C_FLOAT64 * pFluxes;
+    C_FLOAT64 * pPropensities;
+    C_FLOAT64 * pTotalMasses;
+    C_FLOAT64 * pDependentMasses;
+    C_FLOAT64 * pDiscontinuous;
+    C_FLOAT64 * pEventDelays;
+    C_FLOAT64 * pEventPriorities;
+    C_FLOAT64 * pEventAssignments;
+    C_FLOAT64 * pEventTriggers;
+    C_FLOAT64 * pEventRoots;
+    C_FLOAT64 * pEventRootStates;
+
+    CMathObject * pInitialExtensiveValuesObject;
+    CMathObject * pInitialIntensiveValuesObject;
+    CMathObject * pInitialEventTriggersObject;
+    CMathObject * pExtensiveValuesObject;
+    CMathObject * pIntensiveValuesObject;
+    CMathObject * pExtensiveRatesObject;
+    CMathObject * pIntensiveRatesObject;
+    CMathObject * pFluxesObject;
+    CMathObject * pPropensitiesObject;
+    CMathObject * pTotalMassesObject;
+    CMathObject * pDependentMassesObject;
+    CMathObject * pDiscontinuousObject;
+    CMathObject * pEventDelaysObject;
+    CMathObject * pEventPrioritiesObject;
+    CMathObject * pEventAssignmentsObject;
+    CMathObject * pEventTriggersObject;
+    CMathObject * pEventRootsObject;
+    CMathObject * pEventRootStatesObject;
+  };
+
+public:
   enum SimulationContext
   {
     SimulationContextUndefined = 0x0,
@@ -86,7 +129,9 @@ public:
     UseMoities = 0x1,
     // This updates the total mass of a moiety and must be set
     // at the beginning of the simulation or after events
-    UpdateMoities = 0x2
+    UpdateMoities = 0x2,
+    // Event handling
+    EventHandling = 0x4
   };
 
   typedef CMathFlags< SimulationContext > SimulationContextFlag;
@@ -100,11 +145,13 @@ public:
     Propensity,
     TotalMass,
     DependentMass,
+    Discontinuous,
     EventDelay,
     EventPriority,
     EventAssignment,
     EventTrigger,
-    EventRoot
+    EventRoot,
+    EventRootState
   };
 
   enum SimulationType

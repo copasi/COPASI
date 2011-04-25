@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/04 13:24:50 $
+//   $Date: 2011/04/25 12:50:08 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 // All rights reserved.
 
 #include "CMathContainer.h"
+#include "CMAthExpression.h"
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"
@@ -34,10 +35,18 @@ CMathContainer::CMathContainer():
     mPropensities(),
     mTotalMasses(),
     mDependentMasses(),
+    mDiscontinuous(),
+    mEventDelays(),
+    mEventPriorities(),
+    mEventAssignments(),
+    mEventTriggers(),
+    mEventRoots(),
+    mEventRootStates(),
     mInitialDependencies(),
     mTransientDependencies(),
     mObjects(),
     mEvents(),
+    mCreateDiscontinousPointer(),
     mDataObject2MathObject(),
     mDataValue2MathObject()
 {}
@@ -56,6 +65,13 @@ CMathContainer::CMathContainer(CModel & model):
     mPropensities(),
     mTotalMasses(),
     mDependentMasses(),
+    mDiscontinuous(),
+    mEventDelays(),
+    mEventPriorities(),
+    mEventAssignments(),
+    mEventTriggers(),
+    mEventRoots(),
+    mEventRootStates(),
     mInitialDependencies(),
     mTransientDependencies(),
     mObjects(),
@@ -63,6 +79,9 @@ CMathContainer::CMathContainer(CModel & model):
     mDataObject2MathObject(),
     mDataValue2MathObject()
 {
+  // We do not want the model to know about the math container therefore we
+  // do not use &model in the constructor of CCopasiContainer
+  setObjectParent(mpModel);
   init();
 }
 
@@ -114,6 +133,14 @@ CMathObject * CMathContainer::getMathObject(const C_FLOAT64 * pDataValue) const
   if (pDataValue == NULL)
     return NULL;
 
+  // Check whether we point to a math value.
+  const C_FLOAT64 * pValues = mValues.array();
+
+  if (pValues <= pDataValue && pDataValue < pValues + mValues.size())
+    {
+      return const_cast< CMathObject * >(mObjects.array() + (pDataValue - pValues));
+    }
+
   std::map< C_FLOAT64 *, CMathObject * >::const_iterator found =
     mDataValue2MathObject.find(const_cast< C_FLOAT64 * >(pDataValue));
 
@@ -135,15 +162,15 @@ void CMathContainer::init()
 {
   allocate();
 
-  sPointers Pointers;
+  CMath::sPointers Pointers;
   initializePointers(Pointers);
+  initializeDiscontinuousCreationPointer();
 
   initializeObjects(Pointers);
-
-  // TODO CRITICAL Add events
   initializeEvents(Pointers);
 
   compileObjects();
+  compileEvents();
 
   createDependencyGraphs();
 }
@@ -151,6 +178,194 @@ void CMathContainer::init()
 const CModel & CMathContainer::getModel() const
 {
   return *mpModel;
+}
+
+CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pSrc,
+    std::vector< std::vector< const CEvaluationNode * > > & variables,
+    const size_t & variableLevel,
+    const bool & replaceDiscontinuousNodes)
+{
+  return copyBranchX(pSrc, variables, variableLevel, variableLevel, replaceDiscontinuousNodes);
+}
+
+CEvaluationNode * CMathContainer::copyBranchX(const CEvaluationNode * pSrc,
+    std::vector< std::vector< const CEvaluationNode * > > & variables,
+    const size_t & variableLevel,
+    const size_t & parameterLevel,
+    const bool & replaceDiscontinuousNodes)
+{
+  CEvaluationNode * pCopy = NULL;
+
+  // We need to replace variables, expand called trees, and handle discrete nodes.
+  switch ((int) pSrc->getType())
+    {
+        // Handle object nodes which are of type CN
+      case(CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
+      {
+        // We need to map the object to a math object if possible.
+        const CObjectInterface * pObject =
+          getObject(static_cast< const CEvaluationNodeObject *>(pSrc)->getObjectCN());
+
+        // Create a converted node
+        pCopy = createNodeFromObject(pObject);
+      }
+      break;
+
+      // Handle object nodes which are of type POINTER
+      case(CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
+      {
+        const CObjectInterface * pObject =
+          getMathObject(static_cast< const CEvaluationNodeObject *>(pSrc)->getObjectValuePtr());
+
+        // Create a converted node
+        pCopy = createNodeFromObject(pObject);
+      }
+      break;
+
+      // Handle variables
+      case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+      {
+        assert(!variables.empty());
+
+        size_t Index =
+          static_cast< const CEvaluationNodeVariable * >(pSrc)->getIndex();
+
+        assert(variableLevel - 1 < variables.size());
+        assert(Index < variables[variableLevel - 1].size());
+
+        std::cout << "Function Level: " << variables.size() << " Variable Level: " << variableLevel << " Index: " << Index << std::endl;
+        pCopy = copyBranchX(variables[variableLevel - 1][Index], variables, variableLevel - 1, parameterLevel - 1, replaceDiscontinuousNodes);
+      }
+      break;
+
+      // Handle call nodes
+      case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+      case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+      {
+        std::vector< const CEvaluationNode * > Variables;
+
+        const CEvaluationNode * pChild =
+          static_cast< const CEvaluationNode * >(pSrc->getChild());
+
+        while (pChild != NULL)
+          {
+            const CEvaluationNode * pParameter = pChild;
+
+            size_t Level = parameterLevel;
+
+            while (Level != 0 &&
+                   pParameter->getType() == (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY))
+              {
+                size_t Index =
+                  static_cast< const CEvaluationNodeVariable * >(pParameter)->getIndex();
+
+                Level--;
+
+                std::cout << "Function Level: " << variables.size() + 1 << " Index: " << Variables.size();
+                std::cout << " mapped to Parameter Level: " << Level + 1 << " Index: " << Index << std::endl;
+
+                pParameter = variables[Level][Index];
+              }
+
+            Variables.push_back(pParameter);
+            pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
+          }
+
+        variables.push_back(Variables);
+
+        const CEvaluationNode * pCalledNode =
+          static_cast< const CEvaluationNodeCall * >(pSrc)->getCalledTree()->getRoot();
+
+        pCopy = copyBranchX(pCalledNode, variables, variables.size(), parameterLevel + 1, replaceDiscontinuousNodes);
+
+        variables.pop_back();
+      }
+      break;
+
+      // Handle discrete nodes
+      case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+
+        if (replaceDiscontinuousNodes)
+          {
+            // The node is replaced with a pointer to a math object value.
+            // The math object is calculated by an assignment with the target being the
+            // math object
+            pCopy = replaceDiscontinuousNode(pSrc, variables, variableLevel);
+
+            // The break statement is intentionally within the conditional code block.
+            // If we do not want to replace discrete nodes (e.g. initial assignments)
+            // we just go on and copy the node which is handled by the default.
+            break;
+          }
+
+      default:
+        // Handle all other nodes.
+        std::vector< CEvaluationNode * > Children;
+
+        const CEvaluationNode * pChild =
+          static_cast< const CEvaluationNode * >(pSrc->getChild());
+
+        while (pChild != NULL)
+          {
+            Children.push_back(copyBranchX(pChild, variables, variableLevel, parameterLevel, replaceDiscontinuousNodes));
+            pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
+          }
+
+        pCopy = pSrc->copyNode(Children);
+
+        break;
+    }
+
+  assert(pCopy != NULL);
+
+  return pCopy;
+}
+
+CEvaluationNode *
+CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
+    std::vector< std::vector< const CEvaluationNode * > > & variables,
+    const size_t & variableLevel)
+{
+  bool success = true;
+
+  sDiscontinuous Current = mCreateDiscontinousPointer;
+
+  // Advance the pointers for further calls
+  mCreateDiscontinousPointer.pEvent += 1;
+  mCreateDiscontinousPointer.pDiscontinuous += 1;
+  mCreateDiscontinousPointer.pEventDelay += 1;
+  mCreateDiscontinousPointer.pEventPriority += 1;
+  mCreateDiscontinousPointer.pEventAssignment += 1;
+  mCreateDiscontinousPointer.pEventTrigger += 1;
+  mCreateDiscontinousPointer.pEventRoot += 2;
+
+  // Create a node pointing to the discontinuous object.
+  CEvaluationNode * pCopy = new CEvaluationNodeObject((C_FLOAT64 *) Current.pDiscontinuous->getValuePointer());
+
+  // Compile the discontinuous object
+  CMathExpression * pExpression = new CMathExpression("DiscontinuousExpression", *this);
+
+  // Using copyBranch(pSrc, variables, true) will lead to an infinite recursion.
+  std::vector< CEvaluationNode * > Children;
+
+  const CEvaluationNode * pChild =
+    static_cast< const CEvaluationNode * >(pSrc->getChild());
+
+  while (pChild != NULL)
+    {
+      Children.push_back(copyBranch(pChild, variables, variableLevel, true));
+      pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
+    }
+
+  success &= pExpression->setRoot(pSrc->copyNode(Children));
+  success &= Current.pDiscontinuous->setExpressionPtr(pExpression);
+  success &= Current.pEvent->compileDiscontinuous(Current.pDiscontinuous, *this);
+
+  assert(success);
+
+  return pCopy;
 }
 
 void CMathContainer::allocate()
@@ -163,29 +378,53 @@ void CMathContainer::allocate()
   size_t nReactions = mpModel->getReactions().size();
   size_t nMoieties = mpModel->getMoieties().size();
 
-  // TODO CRITICAL Determine the space requirements for events.
-  const CCopasiVector< CEvent > & Events = mpModel->getEvents();
-  CCopasiVector< CEvent >::const_iterator itEvents;
-  CCopasiVector< CEvent >::const_iterator endEvents = Events.end();
-
-  size_t nEvents = Events.size();
+  size_t nDiscontinuous = 0;
+  size_t nEvents = 0;
   size_t nEventAssignments = 0;
   size_t nEventRoots = 0;
 
+  // We need to create events for nodes which are capable of introducing
+  // discontinuous changes.
+  std::vector< const CEvaluationNode * > DiscontinousNodes;
+  mpModel->getDiscontinuousNodes(DiscontinousNodes);
+
+  nDiscontinuous = DiscontinousNodes.size();
+  nEvents = nDiscontinuous;
+  nEventAssignments += nDiscontinuous;
+  nEventRoots += 2 * nDiscontinuous;
+
+  // Determine the space requirements for events.
+  const CCopasiVector< CEvent > & Events = mpModel->getEvents();
+  CCopasiVector< CEvent >::const_iterator itEvent = Events.begin();
+  CCopasiVector< CEvent >::const_iterator endEvent = Events.end();
+
+  nEvents += Events.size();
   mEvents.resize(nEvents);
-  CMathEventN * pEvents = mEvents.array();
+  CMathEventN * pEvent = mEvents.array();
 
-  for (; itEvents != endEvents; ++itEvents, ++pEvents)
+  for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
-      CMathEventN::initialize(pEvents, *itEvents, *this);
+      CMathEventN::allocate(pEvent, *itEvent, *this);
 
-      nEventAssignments += pEvents->getAssignments().size();
-      nEventRoots += pEvents->getTrigger().getRoots().size();
+      nEventAssignments += pEvent->getAssignments().size();
+      nEventRoots += pEvent->getTrigger().getRoots().size();
+    }
+
+  std::vector< const CEvaluationNode * >::const_iterator itDiscontinous = DiscontinousNodes.begin();
+  std::vector< const CEvaluationNode * >::const_iterator endDiscontinous = DiscontinousNodes.end();
+
+  for (; itDiscontinous != endDiscontinous; ++itDiscontinous, ++pEvent)
+    {
+      CMathEventN::allocateDiscontinuous(pEvent);
+
+      nEventAssignments += pEvent->getAssignments().size();
+      nEventRoots += pEvent->getTrigger().getRoots().size();
     }
 
   mValues.resize(3 *(nExtensiveValues + nIntensiveValues) +
                  2 *(nReactions + nMoieties) +
-                 4 * nEvents + nEventAssignments + nEventRoots);
+                 nDiscontinuous +
+                 4 * nEvents + nEventAssignments + 2 * nEventRoots);
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   C_FLOAT64 * pArray = mValues.array();
@@ -214,6 +453,8 @@ void CMathContainer::allocate()
   pArray += nMoieties;
   mDependentMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
   pArray += nMoieties;
+  mDiscontinuous = CVectorCore< C_FLOAT64 >(nDiscontinuous, pArray);
+  pArray += nDiscontinuous;
   mEventDelays = CVectorCore< C_FLOAT64 >(nEvents, pArray);
   pArray += nEvents;
   mEventPriorities = CVectorCore< C_FLOAT64 >(nEvents, pArray);
@@ -224,13 +465,14 @@ void CMathContainer::allocate()
   pArray += nEvents;
   mEventRoots = CVectorCore< C_FLOAT64 >(nEventRoots, pArray);
   pArray += nEventRoots;
-
+  mEventRootStates = CVectorCore< C_FLOAT64 >(nEventRoots, pArray);
+  pArray += nEventRoots;
   assert(pArray == mValues.array() + mValues.size());
 
   mObjects.resize(mValues.size());
 }
 
-void CMathContainer::initializeObjects(CMathContainer::sPointers & p)
+void CMathContainer::initializeObjects(CMath::sPointers & p)
 {
   std::set< const CModelEntity * > EventTargets = CObjectLists::getEventTargets(mpModel);
 
@@ -348,10 +590,30 @@ void CMathContainer::initializeObjects(CMathContainer::sPointers & p)
 
   // Process Moieties
   initializeMathObjects(mpModel->getMoieties(), p);
+
+  // Process Discontinuous Objects
+  size_t n, nDiscontinuous = mDiscontinuous.size();
+
+  for (n = 0; n != nDiscontinuous; ++n)
+    {
+      CMathObject::initialize(p.pDiscontinuousObject, p.pDiscontinuous,
+                              CMath::Discontinuous, CMath::Event, CMath::SimulationTypeUndefined,
+                              false, false, NULL);
+    }
 }
 
-void CMathContainer::initializeEvents(CMathContainer::sPointers & p)
+void CMathContainer::initializeEvents(CMath::sPointers & p)
 {
+  // Initialize events.
+  CMathEventN * pEvent = mEvents.array();
+  CMathEventN * pEventEnd = pEvent + mEvents.size();
+
+  for (; pEvent != pEventEnd; ++pEvent)
+    {
+      pEvent->initialize(p);
+    }
+
+  return;
 }
 
 bool CMathContainer::compileObjects()
@@ -367,6 +629,67 @@ bool CMathContainer::compileObjects()
     }
 
   return success;
+}
+
+bool CMathContainer::compileEvents()
+{
+  bool success = true;
+
+  CMathEventN * pEvent = mEvents.array();
+  CCopasiVector< CEvent >::const_iterator itEvent = mpModel->getEvents().begin();
+  CCopasiVector< CEvent >::const_iterator endEvent = mpModel->getEvents().end();
+
+  for (; itEvent != endEvent; ++pEvent, ++itEvent)
+    {
+      success &= pEvent->compile(*itEvent, *this);
+    }
+
+  return success;
+}
+
+CEvaluationNode * CMathContainer::createNodeFromObject(const CObjectInterface * pObject)
+{
+  CEvaluationNode * pNode = NULL;
+
+  if (pObject != NULL)
+    {
+      pNode = new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer());
+    }
+  else
+    {
+      // We have an invalid value, i.e. NaN
+      pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+    }
+
+  return pNode;
+}
+
+CEvaluationNode * CMathContainer::createNodeFromValue(const C_FLOAT64 * pDataValue)
+{
+  CEvaluationNode * pNode = NULL;
+  CMathObject * pMathObject = NULL;
+
+  if (pDataValue != NULL)
+    {
+      pMathObject = getMathObject(pDataValue);
+
+      if (pMathObject != NULL)
+        {
+          pNode = new CEvaluationNodeObject((C_FLOAT64 *) pMathObject->getValuePointer());
+        }
+      else
+        {
+          // We must have a constant value like the conversion factor from the model.
+          pNode = new CEvaluationNodeNumber(*pDataValue);
+        }
+    }
+  else
+    {
+      // We have an invalid value, i.e. NaN
+      pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+    }
+
+  return pNode;
 }
 
 void CMathContainer::createDependencyGraphs()
@@ -387,7 +710,7 @@ void CMathContainer::createDependencyGraphs()
   return;
 }
 
-void CMathContainer::initializePointers(CMathContainer::sPointers & p)
+void CMathContainer::initializePointers(CMath::sPointers & p)
 {
   p.pInitialExtensiveValues = mInitialExtensiveValues.array();
   p.pInitialIntensiveValues = mInitialIntensiveValues.array();
@@ -403,11 +726,13 @@ void CMathContainer::initializePointers(CMathContainer::sPointers & p)
   p.pPropensities = mPropensities.array();
   p.pTotalMasses = mTotalMasses.array();
   p.pDependentMasses = mDependentMasses.array();
-  p.pEventDelays = mEventDelays.array();;
-  p.pEventPriorities = mEventPriorities.array();;
-  p.pEventAssignments = mEventAssignments.array();;
-  p.pEventTriggers = mEventTriggers.array();;
-  p.pEventRoots = mEventRoots.array();;
+  p.pDiscontinuous = mDiscontinuous.array();
+  p.pEventDelays = mEventDelays.array();
+  p.pEventPriorities = mEventPriorities.array();
+  p.pEventAssignments = mEventAssignments.array();
+  p.pEventTriggers = mEventTriggers.array();
+  p.pEventRoots = mEventRoots.array();
+  p.pEventRootStates = mEventRootStates.array();
 
   C_FLOAT64 * pValues = mValues.array();
   CMathObject * pObjects = mObjects.array();
@@ -426,11 +751,32 @@ void CMathContainer::initializePointers(CMathContainer::sPointers & p)
   p.pPropensitiesObject = pObjects + (p.pPropensities - pValues);
   p.pTotalMassesObject = pObjects + (p.pTotalMasses - pValues);
   p.pDependentMassesObject = pObjects + (p.pDependentMasses - pValues);
-  p.pEventDelaysObject = pObjects + (p.pEventDelays - pValues);;
-  p.pEventPrioritiesObject = pObjects + (p.pEventPriorities - pValues);;
-  p.pEventAssignmentsObject = pObjects + (p.pEventAssignments - pValues);;
-  p.pEventTriggersObject = pObjects + (p.pEventTriggers - pValues);;
-  p.pEventRootsObject = pObjects + (p.pEventRoots - pValues);;
+  p.pDiscontinuousObject = pObjects + (p.pDiscontinuous - pValues);
+  p.pEventDelaysObject = pObjects + (p.pEventDelays - pValues);
+  p.pEventPrioritiesObject = pObjects + (p.pEventPriorities - pValues);
+  p.pEventAssignmentsObject = pObjects + (p.pEventAssignments - pValues);
+  p.pEventTriggersObject = pObjects + (p.pEventTriggers - pValues);
+  p.pEventRootsObject = pObjects + (p.pEventRoots - pValues);
+  p.pEventRootStatesObject = pObjects + (p.pEventRootStates - pValues);
+}
+
+void CMathContainer::initializeDiscontinuousCreationPointer()
+{
+  C_FLOAT64 * pValues = mValues.array();
+  CMathObject * pObjects = mObjects.array();
+
+  size_t nDiscontinuous = mDiscontinuous.size();
+  size_t nEvents = mEvents.size() - nDiscontinuous;
+  size_t nEventAssignments = mEventAssignments.size() - nDiscontinuous;
+  size_t nEventRoots = mEventRoots.size() - 2 * nDiscontinuous;
+
+  mCreateDiscontinousPointer.pEvent = mEvents.array() + nEvents;
+  mCreateDiscontinousPointer.pDiscontinuous = pObjects + (mDiscontinuous.array() - pValues);
+  mCreateDiscontinousPointer.pEventDelay = pObjects + (mEventDelays.array() - pValues) + nEvents;
+  mCreateDiscontinousPointer.pEventPriority = pObjects + (mEventPriorities.array() - pValues) + nEvents;
+  mCreateDiscontinousPointer.pEventAssignment = pObjects + (mEventAssignments.array() - pValues) + nEventAssignments;
+  mCreateDiscontinousPointer.pEventTrigger = pObjects + (mEventTriggers.array() - pValues) + nEvents;
+  mCreateDiscontinousPointer.pEventRoot = pObjects + (mEventRoots.array() - pValues) + nEventRoots;
 }
 
 // static
@@ -456,7 +802,7 @@ CMath::EntityType CMathContainer::getEntityType(const CModelEntity * pEntity)
 
 void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*> & entities,
     const CMath::SimulationType & simulationType,
-    CMathContainer::sPointers & p)
+    CMath::sPointers & p)
 {
   // Process entities.
   std::vector<const CModelEntity*>::const_iterator it = entities.begin();
@@ -568,7 +914,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
 }
 
 void CMathContainer::initializeMathObjects(const std::vector<const CCopasiObject *> & parameters,
-    CMathContainer::sPointers & p)
+    CMath::sPointers & p)
 {
   // Process parameters.
   std::vector<const CCopasiObject *>::const_iterator it = parameters.begin();
@@ -595,7 +941,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CCopasiObject
 }
 
 void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & reactions,
-    CMathContainer::sPointers & p)
+    CMath::sPointers & p)
 {
   // Process reactions.
   CCopasiVector< CReaction >::const_iterator it = reactions.begin();
@@ -618,7 +964,7 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
 }
 
 void CMathContainer::initializeMathObjects(const CCopasiVector< CMoiety > & moieties,
-    CMathContainer::sPointers & p)
+    CMath::sPointers & p)
 {
   // Process reactions.
   CCopasiVector< CMoiety >::const_iterator it = moieties.begin();

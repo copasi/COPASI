@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/04 13:24:50 $
+//   $Date: 2011/04/25 12:50:08 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@ class CMathContainer;
 class CExpression;
 class CCopasiObject;
 class CMetab;
+class CEvaluationNode;
 
 class CMathObject: public CObjectInterface
 {
@@ -113,10 +114,10 @@ public:
 
   /**
    * Compile
-   * @param const CMathContainer & container
-   * @return bool success
+   * @param CMathContainer & container
+   * @return bool §success
    */
-  bool compile(const CMathContainer & container);
+  bool compile(CMathContainer & container);
 
   /**
    * Retrieve the pointer to the data object
@@ -155,111 +156,146 @@ public:
   const bool & isInitialValue() const;
 
 
+  /**
+   * Set the expression and compile the object.
+   * @param const CExpression & expression,
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool setExpression(const CExpression & expression,
+                     CMathContainer & container);
+
+  /**
+   * Set the expression and compile the object.
+   * @param CMathExpression * pMathExpression,
+   * @return bool success
+   */
+  bool setExpressionPtr(CMathExpression * pMathExpression);
+
+  /**
+   * Set the expression and compile the object.
+   * @param const std::string & name
+   * @param const std::string & infix
+   * @param const std::vector< const CEvaluationNode * > & variables,
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool setFunction(const std::string & name,
+                   const std::string & infix,
+                   const std::vector< const CEvaluationNode * > & variables,
+                   CMathContainer & container);
+
+  /**
+   * Retrieve a pointer to the math expression.
+   * @return const CMathExpression * pExpression
+   */
+  const CMathExpression * getExpressionPtr() const;
+
 private:
   /**
    * Compile initial value objects
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
-  bool compileInitialValue(const CMathContainer & container);
+  bool compileInitialValue(CMathContainer & container);
 
   /**
    * Compile value objects
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
-  bool compileValue(const CMathContainer & container);
+  bool compileValue(CMathContainer & container);
 
   /**
    * Compile value rate objects
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
-  bool compileValueRate(const CMathContainer & container);
+  bool compileValueRate(CMathContainer & container);
 
   /**
    * Compile the reactions flux
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
-  bool compileFlux(const CMathContainer & container);
+  bool compileFlux(CMathContainer & container);
 
   /**
    * Compile the reactions propensity
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
-  bool compilePropensity(const CMathContainer & container);
+  bool compilePropensity(CMathContainer & container);
 
   /**
    * Compile the total mass of a moiety.
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
-  bool compileTotalMass(const CMathContainer & container);
+  bool compileTotalMass(CMathContainer & container);
 
   /**
    * Compile the dependent mass of a moiety.
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
-  bool compileDependentMass(const CMathContainer & container);
+  bool compileDependentMass(CMathContainer & container);
 
   /**
    * Create and compile an expression based on the given expression.
    * @param const CExpression * pExpression
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
   bool createConvertedExpression(const CExpression * pExpression,
-                                 const CMathContainer & container);
+                                 CMathContainer & container);
 
   /**
    * Create and compile an expression for an intensive value of a species.
    * @param const CMetab * pSpecies
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
   bool createIntensiveValueExpression(const CMetab * pSpecies,
-                                      const CMathContainer & container);
+                                      CMathContainer & container);
 
   /**
    * Create and compile an expression for an extensive value of a species.
    * @param const CMetab * pSpecies
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
   bool createExtensiveValueExpression(const CMetab * pSpecies,
-                                      const CMathContainer & container);
+                                      CMathContainer & container);
 
   /**
    * Create and compile an expression for an intensive rate of a species.
    * @param const CMetab * pSpecies
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
   bool createIntensiveRateExpression(const CMetab * pSpecies,
-                                     const CMathContainer & container);
+                                     CMathContainer & container);
 
   /**
    * Create and compile an expression for an extensive rate of a species determined
    * by an ODE.
    * @param const CMetab * pSpecies
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
   bool createExtensiveODERateExpression(const CMetab * pSpecies,
-                                        const CMathContainer & container);
+                                        CMathContainer & container);
 
   /**
    * Create and compile an expression for an extensive rate of a species determined
    * by reactions
    * @param const CMetab * pSpecies
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
    * @return bool success
    */
   bool createExtensiveReactionRateExpression(const CMetab * pSpecies,
-      const CMathContainer & container);
+      CMathContainer & container);
 
   static C_FLOAT64 InvalidValue;
 

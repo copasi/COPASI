@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/04 13:24:50 $
+//   $Date: 2011/04/25 12:50:08 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,6 +161,43 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
         break;
 
+      case CMath::Event:
+
+        if ((context & CMath::EventHandling) &&
+            mValueType == CMath::Discontinuous)
+          {
+            switch ((int) mpExpression->getRoot()->getType())
+              {
+                case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+                {
+                  const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
+
+                  if (pMathObject != NULL &&
+                      pMathObject->mValueType == CMath::EventTrigger)
+                    {
+                      return false;
+                    }
+
+                  return true;
+                }
+                break;
+
+                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+                  return false;
+                  break;
+
+                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+                  return false;
+                  break;
+
+                default:
+                  return true;
+              }
+          }
+
+        return true;
+        break;
+
       default:
         return true;
 
@@ -230,7 +267,46 @@ const bool & CMathObject::isInitialValue() const
   return mIsInitialValue;
 }
 
-bool CMathObject::compile(const CMathContainer & container)
+bool CMathObject::setExpression(const CExpression & expression,
+                                CMathContainer & container)
+{
+  bool success = true;
+
+  success &= createConvertedExpression(&expression, container);
+
+  return success;
+}
+
+bool CMathObject::setExpressionPtr(CMathExpression * pMathExpression)
+{
+  bool success = true;
+
+  pdelete(mpExpression);
+  mPrerequisites.clear();
+
+  mpExpression = pMathExpression;
+
+  if (mpExpression != NULL)
+    {
+      success &= mpExpression->compile();
+
+      mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
+                            mpExpression->getPrerequisites().end());
+    }
+  else
+    {
+      success = false;
+    }
+
+  return success;
+}
+
+const CMathExpression * CMathObject::getExpressionPtr() const
+{
+  return mpExpression;
+}
+
+bool CMathObject::compile(CMathContainer & container)
 {
   bool success = true;
 
@@ -238,7 +314,10 @@ bool CMathObject::compile(const CMathContainer & container)
   *mpValue = InvalidValue;
 
   // Remove any existing expression
-  pdelete(mpExpression);
+  if (mValueType != CMath::Discontinuous)
+    {
+      pdelete(mpExpression);
+    }
 
   // Reset the prerequisites
   mPrerequisites.clear();
@@ -282,14 +361,28 @@ bool CMathObject::compile(const CMathContainer & container)
         success = compileDependentMass(container);
         break;
 
+      case CMath::Discontinuous:
+
+        if (mpExpression != NULL)
+          {
+            success &= mpExpression->compile();
+
+            mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
+                                  mpExpression->getPrerequisites().end());
+          }
+
+        break;
+
       case CMath::EventDelay:
       case CMath::EventPriority:
       case CMath::EventAssignment:
       case CMath::EventTrigger:
       case CMath::EventRoot:
-        // TODO CRITICAL Implement event handling.
+      case CMath::EventRootState:
+        // These objects are compiled through the event compile,
+        // which is executed after the object compile. It is therefore
+        // correct to leave the object in its default state.
         break;
-
     }
 
   // std::cout << *this << std::endl;
@@ -297,7 +390,7 @@ bool CMathObject::compile(const CMathContainer & container)
   return success;
 }
 
-bool CMathObject::compileInitialValue(const CMathContainer & container)
+bool CMathObject::compileInitialValue(CMathContainer & container)
 {
   bool success = true;
 
@@ -365,7 +458,7 @@ bool CMathObject::compileInitialValue(const CMathContainer & container)
   return success;
 }
 
-bool CMathObject::compileValue(const CMathContainer & container)
+bool CMathObject::compileValue(CMathContainer & container)
 {
   bool success = true;
 
@@ -446,7 +539,7 @@ bool CMathObject::compileValue(const CMathContainer & container)
   return success;
 }
 
-bool CMathObject::compileValueRate(const CMathContainer & container)
+bool CMathObject::compileValueRate(CMathContainer & container)
 {
   bool success = true;
 
@@ -524,7 +617,7 @@ bool CMathObject::compileValueRate(const CMathContainer & container)
   return success;
 }
 
-bool CMathObject::compileFlux(const CMathContainer & container)
+bool CMathObject::compileFlux(CMathContainer & container)
 {
   bool success = true;
 
@@ -532,12 +625,13 @@ bool CMathObject::compileFlux(const CMathContainer & container)
 
   mpExpression = new CMathExpression(*pReaction->getFunction(),
                                      pReaction->getCallParameters(),
-                                     container);
+                                     container,
+                                     !mIsInitialValue);
 
   return success;
 }
 
-bool CMathObject::compilePropensity(const CMathContainer & container)
+bool CMathObject::compilePropensity(CMathContainer & container)
 {
   bool success = true;
 
@@ -616,14 +710,14 @@ bool CMathObject::compilePropensity(const CMathContainer & container)
 
   success &= E.setInfix(Infix.str());
 
-  mpExpression = new CMathExpression(E, container);
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
   return success;
 }
 
-bool CMathObject::compileTotalMass(const CMathContainer & container)
+bool CMathObject::compileTotalMass(CMathContainer & container)
 {
   bool success = true;
   const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
@@ -660,14 +754,14 @@ bool CMathObject::compileTotalMass(const CMathContainer & container)
 
   success &= E.setInfix(Infix.str());
 
-  mpExpression = new CMathExpression(E, container);
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
   return success;
 }
 
-bool CMathObject::compileDependentMass(const CMathContainer & container)
+bool CMathObject::compileDependentMass(CMathContainer & container)
 {
   bool success = true;
   const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
@@ -712,7 +806,7 @@ bool CMathObject::compileDependentMass(const CMathContainer & container)
 
   success &= E.setInfix(Infix.str());
 
-  mpExpression = new CMathExpression(E, container);
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
@@ -720,13 +814,14 @@ bool CMathObject::compileDependentMass(const CMathContainer & container)
 }
 
 bool CMathObject::createConvertedExpression(const CExpression * pExpression,
-    const CMathContainer & container)
+    CMathContainer & container)
 {
   assert(pExpression != NULL);
 
   bool success = true;
 
-  mpExpression = new CMathExpression(*pExpression, container);
+  mpExpression = new CMathExpression(*pExpression, container,
+                                     !mIsInitialValue && mValueType != CMath::Discontinuous);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
@@ -734,7 +829,7 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
 }
 
 bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
-    const CMathContainer & container)
+    CMathContainer & container)
 {
   bool success = true;
 
@@ -768,7 +863,7 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
 
   success &= E.setInfix(Infix.str());
 
-  mpExpression = new CMathExpression(E, container);
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
@@ -776,7 +871,7 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
 }
 
 bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
-    const CMathContainer & container)
+    CMathContainer & container)
 {
   bool success = true;
 
@@ -811,7 +906,7 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
 
   success &= E.setInfix(Infix.str());
 
-  mpExpression = new CMathExpression(E, container);
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
@@ -819,7 +914,7 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
 }
 
 bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
-    const CMathContainer & container)
+    CMathContainer & container)
 {
   bool success = true;
 
@@ -849,7 +944,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
 
   success &= E.setInfix(Infix.str());
 
-  mpExpression = new CMathExpression(E, container);
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
@@ -857,7 +952,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
 }
 
 bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
-    const CMathContainer & container)
+    CMathContainer & container)
 {
   bool success = true;
 
@@ -880,7 +975,7 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
 
   success &= E.setInfix(Infix.str());
 
-  mpExpression = new CMathExpression(E, container);
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
@@ -888,7 +983,7 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
 }
 
 bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
-    const CMathContainer & container)
+    CMathContainer & container)
 {
   bool success = true;
 
@@ -938,7 +1033,7 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
   success &= E.setInfix(Infix.str());
 
-  mpExpression = new CMathExpression(E, container);
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
@@ -989,6 +1084,10 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
         os << "DependentMass" << std::endl;
         break;
 
+      case CMath::Discontinuous:
+        os << "Discontinuous" << std::endl;
+        break;
+
       case CMath::EventDelay:
         os << "EventDelay" << std::endl;
         break;
@@ -1007,6 +1106,10 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
       case CMath::EventRoot:
         os << "EventRoot" << std::endl;
+        break;
+
+      case CMath::EventRootState:
+        os << "EventRootState" << std::endl;
         break;
     }
 

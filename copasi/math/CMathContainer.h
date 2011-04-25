@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/04 13:24:50 $
+//   $Date: 2011/04/25 12:50:08 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,47 +28,23 @@ class CModel;
 class CModelEntity;
 class CReaction;
 class CMoiety;
+
 template < class CType > class CCopasiVector;
 
 class CMathContainer: public CCopasiContainer
 {
 private:
-  struct sPointers
+
+  struct sDiscontinuous
   {
 public:
-    C_FLOAT64 * pInitialExtensiveValues;
-    C_FLOAT64 * pInitialIntensiveValues;
-    C_FLOAT64 * pInitialEventTriggers;
-    C_FLOAT64 * pExtensiveValues;
-    C_FLOAT64 * pIntensiveValues;
-    C_FLOAT64 * pExtensiveRates;
-    C_FLOAT64 * pIntensiveRates;
-    C_FLOAT64 * pFluxes;
-    C_FLOAT64 * pPropensities;
-    C_FLOAT64 * pTotalMasses;
-    C_FLOAT64 * pDependentMasses;
-    C_FLOAT64 * pEventDelays;
-    C_FLOAT64 * pEventPriorities;
-    C_FLOAT64 * pEventAssignments;
-    C_FLOAT64 * pEventTriggers;
-    C_FLOAT64 * pEventRoots;
-
-    CMathObject * pInitialExtensiveValuesObject;
-    CMathObject * pInitialIntensiveValuesObject;
-    CMathObject * pInitialEventTriggersObject;
-    CMathObject * pExtensiveValuesObject;
-    CMathObject * pIntensiveValuesObject;
-    CMathObject * pExtensiveRatesObject;
-    CMathObject * pIntensiveRatesObject;
-    CMathObject * pFluxesObject;
-    CMathObject * pPropensitiesObject;
-    CMathObject * pTotalMassesObject;
-    CMathObject * pDependentMassesObject;
-    CMathObject * pEventDelaysObject;
-    CMathObject * pEventPrioritiesObject;
-    CMathObject * pEventAssignmentsObject;
-    CMathObject * pEventTriggersObject;
-    CMathObject * pEventRootsObject;
+    CMathEventN * pEvent;
+    CMathObject * pDiscontinuous;
+    CMathObject * pEventDelay;
+    CMathObject * pEventPriority;
+    CMathObject * pEventAssignment;
+    CMathObject * pEventTrigger;
+    CMathObject * pEventRoot;
   };
 
   /**
@@ -130,6 +106,40 @@ public:
    */
   const CModel & getModel() const;
 
+  /**
+   * Copy a node and all its children. Nodes are converted to suite the math container,
+   * i.e., objects nodes point to math object or numbers, function calls are expanded
+   * and discrete nodes are replaced by object node pointing to newly created math objects,
+   * which are and targets of automatically generated events.
+   * @param const CEvaluationNode * pSrc
+   * @param std::vector< std::vector< const CEvaluationNode * > > & variables
+   * @param const size_t & variableLevel
+   * @param const bool & replaceDiscontinuousNodes
+   * @return CEvaluationNode * pCopy
+   */
+  CEvaluationNode * copyBranch(const CEvaluationNode * pSrc,
+                               std::vector< std::vector< const CEvaluationNode * > > & variables,
+                               const size_t & variableLevel,
+                               const bool & replaceDiscontinuousNodes);
+
+  CEvaluationNode * copyBranchX(const CEvaluationNode * pSrc,
+                                std::vector< std::vector< const CEvaluationNode * > > & variables,
+                                const size_t & variableLevel,
+                                const size_t & parameterLevel,
+                                const bool & replaceDiscontinuousNodes);
+
+  /**
+   * Replace a discontinuous node by an object node pointing to newly created math objects,
+   * which are targets of automatically generated events.
+   * @param const CEvaluationNode * pSrc
+   * @param std::vector< std::vector< const CEvaluationNode * > > & variables
+   * @param const size_t & variableLevel
+   * @return CEvaluationNode * pCopy
+   */
+  CEvaluationNode * replaceDiscontinuousNode(const CEvaluationNode * pSrc,
+      std::vector< std::vector< const CEvaluationNode * > > & variables,
+      const size_t & variableLevel);
+
 private:
   /**
    * Initialize the mathematical model
@@ -145,24 +155,55 @@ private:
    * Initialize the pointers
    * @param sPointers & pointers
    */
-  void initializePointers(sPointers & pointers);
+  void initializePointers(CMath::sPointers & pointers);
+
+  /**
+   * Initialize the pointers used for the conversion of
+   * discontinuous nodes.
+   */
+  void initializeDiscontinuousCreationPointer();
 
   /**
    * Initialize the objects
    * @param sPointers & pointers
    */
-  void initializeObjects(sPointers & pointers);
+  void initializeObjects(CMath::sPointers & pointers);
 
   /**
    * Initialize the events
    * @param sPointers & pointers
    */
-  void initializeEvents(sPointers & pointers);
+  void initializeEvents(CMath::sPointers & pointers);
 
   /**
    * Compile the objects
    */
   bool compileObjects();
+
+  /**
+   * Compile the events
+   */
+  bool compileEvents();
+
+  /**
+   * Convert nodes which generate discrete changes into events
+   * and compiles them.
+   */
+  bool compileDiscreteChanges();
+
+  /**
+   * Create a node based on the given pointer to the math object
+   * @param const CObjectInterface * pMathObject
+   * @return CEvaluationNode * pNode
+   */
+  CEvaluationNode * createNodeFromObject(const CObjectInterface * pMathObject);
+
+  /**
+   * Create a node based on the given pointer to a data value
+   * @param const C_FLOAT64 * pDataValue
+   * @return CEvaluationNode * pNode
+   */
+  CEvaluationNode * createNodeFromValue(const C_FLOAT64 * pDataValue);
 
   /**
    * Create Dependency Graphs
@@ -185,7 +226,7 @@ private:
    */
   void initializeMathObjects(const std::vector<const CModelEntity*> & entities,
                              const CMath::SimulationType & simulationType,
-                             sPointers & pointers);
+                             CMath::sPointers & pointers);
 
   /**
    * Initialize several mathematical objects for local reaction parameters and
@@ -194,7 +235,7 @@ private:
    * @param CMathContainer::sPointers & p
    */
   void initializeMathObjects(const std::vector<const CCopasiObject *> & parameters,
-                             CMathContainer::sPointers & p);
+                             CMath::sPointers & p);
 
   /**
    * Initialize several mathematical objects for local reaction parameters and
@@ -203,7 +244,7 @@ private:
    * @param CMathContainer::sPointers & p
    */
   void initializeMathObjects(const CCopasiVector< CReaction > & reactions,
-                             CMathContainer::sPointers & p);
+                             CMath::sPointers & p);
 
   /**
    * Initialize several mathematical objects for local reaction parameters and
@@ -212,7 +253,7 @@ private:
    * @param CMathContainer::sPointers & p
    */
   void initializeMathObjects(const CCopasiVector< CMoiety > & moieties,
-                             CMathContainer::sPointers & p);
+                             CMath::sPointers & p);
 
   /**
    * Determine whether on object has calculation dependencies.
@@ -247,11 +288,13 @@ private:
   CVectorCore< C_FLOAT64 > mPropensities;
   CVectorCore< C_FLOAT64 > mTotalMasses;
   CVectorCore< C_FLOAT64 > mDependentMasses;
+  CVectorCore< C_FLOAT64 > mDiscontinuous;
   CVectorCore< C_FLOAT64 > mEventDelays;
   CVectorCore< C_FLOAT64 > mEventPriorities;
   CVectorCore< C_FLOAT64 > mEventAssignments;
   CVectorCore< C_FLOAT64 > mEventTriggers;
   CVectorCore< C_FLOAT64 > mEventRoots;
+  CVectorCore< C_FLOAT64 > mEventRootStates;
 
   /**
    * Dependency graph for initial value calculations
@@ -272,6 +315,8 @@ private:
    * A vector containing all math events.
    */
   CVector< CMathEventN > mEvents;
+
+  sDiscontinuous mCreateDiscontinousPointer;
 
   /**
    * A map from data objects to math objects

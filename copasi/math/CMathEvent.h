@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/04 13:24:50 $
+//   $Date: 2011/04/25 12:50:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,20 +20,43 @@
 #define COPASI_CMathEvent
 
 #include "copasi/math/CMathTrigger.h"
+
 #include "copasi/function/CExpression.h"
 #include "copasi/utilities/CVector.h"
 
-class CEvent;
-class CEventAssignment;
 class CProcessQueue;
 class CMathContainer;
+class CMathObject;
+class CEvent;
+class CEventAssignment;
 
 class CMathEventN
 {
 public:
   class CAssignment
   {
+  public:
+    /**
+     * Default constructor
+     */
+    CAssignment();
 
+    /**
+     * Destructor
+     */
+    ~CAssignment();
+
+    void initialize(CMath::sPointers & pointers);
+
+    bool compile(CEventAssignment * pDataAssignment,
+                 CMathContainer & container);
+
+    bool compileDiscontinuous(const CMathObject * pObject,
+                              CMathContainer & container);
+
+  private:
+    CMathObject * mpTarget;
+    CMathObject * mpAssignment;
   };
 
   class CTrigger
@@ -41,18 +64,163 @@ public:
   public:
     class CRoot
     {
+    public:
+      /**
+       * Default constructor
+       */
+      CRoot();
 
+      /**
+       * Destructor
+       */
+      ~CRoot();
+
+      void initialize(CMath::sPointers & pointers);
+
+      bool compile(CEvaluationNode * pRootNode,
+                   const bool & equality,
+                   CMathContainer & container);
+
+      CEvaluationNode * createTriggerExpressionNode() const;
+
+    private:
+      CMathObject * mpRoot;
+      CMathObject * mpRootState;
+      bool mEquality;
+      bool mDiscrete;
     };
+
+    /**
+     * Default constructor
+     */
+    CTrigger();
+
+    /**
+     * Destructor
+     */
+    ~CTrigger();
+
+    void allocate(const CEvent * pDataEvent,
+                  const CMathContainer & container);
+
+    void allocateDiscontinuous();
+
+    void initialize(CMath::sPointers & pointers);
+
+    bool compile(CEvent * pDataEvent,
+                 CMathContainer & container);
+
+    bool compileDiscontinuous(const CMathObject * pObject,
+                              CMathContainer & container);
 
     const CVector< CRoot > & getRoots() const;
 
   private:
+    static size_t countRoots(const CEvaluationNode * pNode,
+                             std::vector< std::vector< const CEvaluationNode * > > & variables,
+                             const size_t & variableLevel);
+
+    static size_t countRootsEQ(const CEvaluationNode * pNode,
+                               std::vector< std::vector< const CEvaluationNode * > > & variables,
+                               const size_t & variableLevel);
+
+    static size_t countRootsLE(const CEvaluationNode * pNode,
+                               std::vector< std::vector< const CEvaluationNode * > > & variables,
+                               const size_t & variableLevel);
+
+    static size_t countRootsFUNCTION(const CEvaluationNode * pNode,
+                                     std::vector< std::vector< const CEvaluationNode * > > & variables,
+                                     const size_t & variableLevel);
+
+    static size_t countRootsVARIABLE(const CEvaluationNode * pNode,
+                                     std::vector< std::vector< const CEvaluationNode * > > & variables,
+                                     const size_t & variableLevel);
+
+    static bool compile(CEvaluationNode *& pTriggerNode,
+                        const CEvaluationNode * pDataNode,
+                        std::vector< std::vector< const CEvaluationNode * > > & variables,
+                        const size_t & variableLevel,
+                        CMathEventN::CTrigger::CRoot *& pRoot,
+                        CMathContainer & container);
+
+    static bool compileAND(CEvaluationNode *& pTriggerNode,
+                           const CEvaluationNode * pDataNode,
+                           std::vector< std::vector< const CEvaluationNode * > > & variables,
+                           const size_t & variableLevel,
+                           CMathEventN::CTrigger::CRoot *& pRoot,
+                           CMathContainer & container);
+
+    static bool compileEQ(CEvaluationNode *& pTriggerNode,
+                          const CEvaluationNode * pDataNode,
+                          std::vector< std::vector< const CEvaluationNode * > > & variables,
+                          const size_t & variableLevel,
+                          CMathEventN::CTrigger::CRoot *& pRoot,
+                          CMathContainer & container);
+
+    static bool compileNE(CEvaluationNode *& pTriggerNode,
+                          const CEvaluationNode * pDataNode,
+                          std::vector< std::vector< const CEvaluationNode * > > & variables,
+                          const size_t & variableLevel,
+                          CMathEventN::CTrigger::CRoot *& pRoot,
+                          CMathContainer & container);
+
+    static bool compileLE(CEvaluationNode *& pTriggerNode,
+                          const CEvaluationNode * pDataNode,
+                          std::vector< std::vector< const CEvaluationNode * > > & variables,
+                          const size_t & variableLevel,
+                          CMathEventN::CTrigger::CRoot *& pRoot,
+                          CMathContainer & container);
+
+    static bool compileNOT(CEvaluationNode *& pTriggerNode,
+                           const CEvaluationNode * pDataNode,
+                           std::vector< std::vector< const CEvaluationNode * > > & variables,
+                           const size_t & variableLevel,
+                           CMathEventN::CTrigger::CRoot *& pRoot,
+                           CMathContainer & container);
+
+    static bool compileFUNCTION(CEvaluationNode *& pTriggerNode,
+                                const CEvaluationNode * pDataNode,
+                                std::vector< std::vector< const CEvaluationNode * > > & variables,
+                                const size_t & variableLevel,
+                                CMathEventN::CTrigger::CRoot *& pRoot,
+                                CMathContainer & container);
+
+    static bool compileVARIABLE(CEvaluationNode *& pTriggerNode,
+                                const CEvaluationNode * pDataNode,
+                                std::vector< std::vector< const CEvaluationNode * > > & variables,
+                                const size_t & variableLevel,
+                                CMathEventN::CTrigger::CRoot *& pRoot,
+                                CMathContainer & container);
+
+    CMathObject * mpTrigger;
+    CMathObject * mpInitialTrigger;
     CVector< CRoot > mRoots;
+    bool mDualAction;
   };
 
-  static void initialize(CMathEventN * pEvent,
-                         CEvent * pDataEvent,
-                         const CMathContainer & container);
+  /**
+   * Default constructor
+   */
+  CMathEventN();
+
+  /**
+   * Destructor
+   */
+  ~CMathEventN();
+
+  static void allocate(CMathEventN * pEvent,
+                       const CEvent * pDataEvent,
+                       const CMathContainer & container);
+
+  static void allocateDiscontinuous(CMathEventN * pEvent);
+
+  void initialize(CMath::sPointers & pointers);
+
+  bool compile(CEvent * pDataEvent,
+               CMathContainer & container);
+
+  bool compileDiscontinuous(const CMathObject * pObject,
+                            CMathContainer & container);
 
   const CTrigger & getTrigger() const;
 
@@ -61,7 +229,11 @@ public:
 private:
   CTrigger mTrigger;
   CVector< CAssignment > mAssignments;
-
+  CMathObject * mpDelay;
+  CMathObject * mpPriority;
+  bool mFireAtInitialTime;
+  bool mPersistentTrigger;
+  bool mDelayAssignment;
 };
 
 class CMathEvent : public CCopasiContainer

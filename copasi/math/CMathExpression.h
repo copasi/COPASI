@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:20:16 $
+//   $Date: 2011/04/25 12:50:08 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,21 +35,36 @@ private:
 
 public:
   /**
-   * Specific constructor
-   * @param const CExpression & src
-   * @param const CMathContainer & container
+   * Specific constructor.
+   * @param const std::string & name
+   * @param CMathContainer & container
    */
-  CMathExpression(const CExpression & src, const CMathContainer & container);
+  CMathExpression(const std::string & name,
+                  CMathContainer & container);
 
   /**
-   * Specific constructor
+   * Specific constructor. The src expression must have been successfully compiled
+   * in the context of the current model
+   * @param const CExpression & src
+   * @param CMathContainer & container
+   * @param const bool & replaceDiscontinuousNodes
+   */
+  CMathExpression(const CExpression & src,
+                  CMathContainer & container,
+                  const bool & replaceDiscontinuousNodes);
+
+  /**
+   * Specific constructor. The src function must have been successfully compiled
+   * in the context of the current model
    * @param const CFunction & src
    * @param const CCallParameters< C_FLOAT64 > & callParameters
-   * @param const CMathContainer & container
+   * @param CMathContainer & container
+   * @param const bool & replaceDiscontinuousNodes
    */
   CMathExpression(const CFunction & src,
                   const CCallParameters< C_FLOAT64 > & callParameters,
-                  const CMathContainer & container);
+                  CMathContainer & container,
+                  const bool & replaceDiscontinuousNodes);
 
   /**
    * Destructor
@@ -69,24 +84,12 @@ public:
    */
   virtual const CObjectInterface::ObjectSet & getPrerequisites() const;
 
+  /**
+   * Compile the evaluation tree.
+   */
+  virtual bool compile();
+
 private:
-  /**
-   * Convert the node and its children, which refer to objects not supported in the math expression,
-   * which are e.g. calls to functions, access to object nodes
-   * @param CEvaluationNode * pNode
-   * @param const CEvaluationTree * pTree
-   * @return CEvaluationNode * pConvertedNode
-   */
-  CEvaluationNode * convertNode(CEvaluationNode * pNode,
-                                const CEvaluationTree * pTree);
-
-  /**
-   * Create a node based on the given pointer to the math object
-   * @param const CObjectInterface * pMathObject
-   * @return CEvaluationNode * pNode
-   */
-  CEvaluationNode * createNodeFromObject(const CObjectInterface * pMathObject);
-
   /**
    * Create a node based on the given pointer to a data value
    * @param const C_FLOAT64 * pDataValue
@@ -108,12 +111,6 @@ private:
    * The prerequisites for calculating the expression.
    */
   CObjectInterface::ObjectSet mPrerequisites;
-
-  /**
-   * A stack to map variable nodes to the value nodes provided
-   * in the function call
-   */
-  std::stack< std::vector< const CEvaluationNode * > > mFunctionVariableMap;
 };
 
 #endif // COPASI_CMathExpression
