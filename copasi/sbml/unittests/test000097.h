@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000097.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/22 15:27:31 $
+//   $Date: 2011/04/25 19:06:20 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,14 @@ class test000097 : public CppUnit::TestFixture
   CPPUNIT_TEST(test_save_global_render_information);
   CPPUNIT_TEST(test_read_local_render_information);
   CPPUNIT_TEST(test_read_global_render_information);
+  CPPUNIT_TEST(test_readexport_local_render_information);
+  CPPUNIT_TEST(test_readexport_global_render_information);
+  CPPUNIT_TEST(test_importexport_local_render_information);
+  CPPUNIT_TEST(test_importexport_global_render_information);
+  CPPUNIT_TEST(test_readwrite_local_render_information);
+  CPPUNIT_TEST(test_readwrite_global_render_information);
+  CPPUNIT_TEST(test_importwrite_local_render_information);
+  CPPUNIT_TEST(test_importwrite_global_render_information);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -79,6 +87,22 @@ public:
   // tests whether we are exporting global render information
   void test_export_global_render_information();
 
+  // tests whether we are exporting local render information
+  // that has been read
+  void test_readexport_local_render_information();
+
+  // tests whether we are exporting global render information
+  // that has been read
+  void test_readexport_global_render_information();
+
+  // tests whether we are exporting local render information
+  // that has been import
+  void test_importexport_local_render_information();
+
+  // tests whether we are exporting global render information
+  // that has been import
+  void test_importexport_global_render_information();
+
   // tests whether we are saving local render information
   void test_save_local_render_information();
 
@@ -90,6 +114,22 @@ public:
 
   // test whether we are reading global render information
   void test_read_global_render_information();
+
+  // test whether we are writing local render information
+  // that has been read
+  void test_readwrite_local_render_information();
+
+  // test whether we are writing global render information
+  // that has been read
+  void test_readwrite_global_render_information();
+
+  // test whether we are writing local render information
+  // that has been imported
+  void test_importwrite_local_render_information();
+
+  // test whether we are writing global render information
+  // that has been importer
+  void test_importwrite_global_render_information();
 };
 
 #endif /* TEST000097_H__ */

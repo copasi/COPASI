@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000097.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/22 16:36:23 $
+//   $Date: 2011/04/25 19:06:21 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -912,4 +912,1096 @@ const char* test000097::CPS_MODEL_2 =
   "</COPASI>\n"
   ;
 
+// tests whether we are exporting local render information
+// that has been read
+void test000097::test_readexport_local_render_information()
+{
+  CPPUNIT_ASSERT(pDataModel != NULL);
+  // read a model with local render information and export it
+  // to an SBML string.
+  std::istringstream iss(test000097::CPS_MODEL_1);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts() != NULL);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->size() == 1);
+  // Use the XMLNode class to read back the string into an
+  // XMLNode tree and check if it contains the render information
+  std::string s;
+
+  try
+    {
+      s = pDataModel->exportSBMLToString(NULL, 2, 1);
+    }
+  catch (...)
+    {
+      CPPUNIT_ASSERT(false);
+    }
+
+  CPPUNIT_ASSERT(!s.empty());
+  XMLInputStream inputstream(s.c_str(), false);
+  XMLNode node(inputstream);
+  CPPUNIT_ASSERT(node.getName() == "sbml");
+  unsigned int i, iMax = node.getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pModelNode = NULL;
+  const XMLNode* pListOfLayoutsNode = NULL;
+  const XMLNode* pLayoutNode = NULL;
+  const XMLNode* pLoLRINode = NULL;
+  const XMLNode* pLRINode = NULL;
+  const XMLNode* pAnnotationNode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (node.getChild(i).getName() == "model")
+        {
+          pModelNode = &node.getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pModelNode != NULL);
+  iMax = pModelNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pModelNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pModelNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfLayouts")
+        {
+          pListOfLayoutsNode = &pAnnotationNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
+  iMax = pListOfLayoutsNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pListOfLayoutsNode->getChild(i).getName() == "layout")
+        {
+          pLayoutNode = &pListOfLayoutsNode->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pLayoutNode != NULL);
+  iMax = pLayoutNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  // the layout node should have an annotation node
+  pAnnotationNode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLayoutNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pLayoutNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  // the annotation node should have an listOfRenderInformation node
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfRenderInformation")
+        {
+          pLoLRINode = &pAnnotationNode->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoLRINode != NULL);
+  iMax = pLoLRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoLRINode->getChild(i).getName() == "renderInformation")
+        {
+          pLRINode = &pLoLRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLRINode != NULL);
+  iMax = pLRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pLoCDNode = NULL;
+  const XMLNode* pCDNode1 = NULL;
+  const XMLNode* pCDNode2 = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLRINode->getChild(i).getName() == "listOfColorDefinitions")
+        {
+          pLoCDNode = &pLRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoCDNode != NULL);
+  iMax = pLoCDNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoCDNode->getChild(i).getName() == "colorDefinition")
+        {
+          if (pCDNode1 == NULL)
+            {
+              pCDNode1 = &pLoCDNode->getChild(i);
+            }
+          else
+            {
+              pCDNode2 = &pLoCDNode->getChild(i);
+            }
+        }
+    }
+
+  CPPUNIT_ASSERT(pCDNode1 != NULL);
+  CPPUNIT_ASSERT(pCDNode2 != NULL);
+}
+
+
+// tests whether we are exporting global render information
+// that has been read
+void test000097::test_readexport_global_render_information()
+{
+  CPPUNIT_ASSERT(pDataModel != NULL);
+  // read a model with local render infromation and export it
+  // to an SBML string.
+  std::istringstream iss(test000097::CPS_MODEL_2);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts() != NULL);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->size() == 1);
+  // Use the XMLNode class to read back the string into an
+  // XMLNode tree and check if it contains the render information
+  std::string s;
+
+  try
+    {
+      s = pDataModel->exportSBMLToString(NULL, 2, 1);
+    }
+  catch (...)
+    {
+      CPPUNIT_ASSERT(false);
+    }
+
+  CPPUNIT_ASSERT(!s.empty());
+  XMLInputStream inputstream(s.c_str(), false);
+  XMLNode node(inputstream);
+  CPPUNIT_ASSERT(node.getName() == "sbml");
+  unsigned int i, iMax = node.getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pModelNode = NULL;
+  const XMLNode* pListOfLayoutsNode = NULL;
+  const XMLNode* pLayoutNode = NULL;
+  const XMLNode* pLoGRINode = NULL;
+  const XMLNode* pGRINode = NULL;
+  const XMLNode* pAnnotationNode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (node.getChild(i).getName() == "model")
+        {
+          pModelNode = &node.getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pModelNode != NULL);
+  iMax = pModelNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pModelNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pModelNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfLayouts")
+        {
+          pListOfLayoutsNode = &pAnnotationNode->getChild(i);
+          break;
+        }
+      else if (pAnnotationNode->getChild(i).getName() == "listOfGlobalRenderInformation")
+        {
+          pLoGRINode = &pAnnotationNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
+  iMax = pListOfLayoutsNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  pAnnotationNode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pListOfLayoutsNode->getChild(i).getName() == "layout")
+        {
+          pLayoutNode = &pListOfLayoutsNode->getChild(i);
+        }
+      else if (pListOfLayoutsNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pListOfLayoutsNode->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pLayoutNode != NULL);
+  iMax = pLayoutNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfGlobalRenderInformation")
+        {
+          pLoGRINode = &pAnnotationNode->getChild(i);
+          break;
+        }
+
+    }
+
+  CPPUNIT_ASSERT(pLoGRINode != NULL);
+  iMax = pLoGRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoGRINode->getChild(i).getName() == "renderInformation")
+        {
+          pGRINode = &pLoGRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pGRINode != NULL);
+  iMax = pGRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pLoCDNode = NULL;
+  const XMLNode* pCDNode1 = NULL;
+  const XMLNode* pCDNode2 = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pGRINode->getChild(i).getName() == "listOfColorDefinitions")
+        {
+          pLoCDNode = &pGRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoCDNode != NULL);
+  iMax = pLoCDNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoCDNode->getChild(i).getName() == "colorDefinition")
+        {
+          if (pCDNode1 == NULL)
+            {
+              pCDNode1 = &pLoCDNode->getChild(i);
+            }
+          else
+            {
+              pCDNode2 = &pLoCDNode->getChild(i);
+            }
+        }
+    }
+
+  CPPUNIT_ASSERT(pCDNode1 != NULL);
+  CPPUNIT_ASSERT(pCDNode2 != NULL);
+}
+
+// tests whether we are exporting local render information
+// that has been import
+void test000097::test_importexport_local_render_information()
+{
+  CPPUNIT_ASSERT(pDataModel != NULL);
+  // import a model with local render information and export it
+  // to an SBML string.
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(SBML_MODEL_1));
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts() != NULL);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->size() == 1);
+  // Use the XMLNode class to read back the string into an
+  // XMLNode tree and check if it contains the render information
+  std::string s;
+
+  try
+    {
+      s = pDataModel->exportSBMLToString(NULL, 2, 1);
+    }
+  catch (...)
+    {
+      CPPUNIT_ASSERT(false);
+    }
+
+  CPPUNIT_ASSERT(!s.empty());
+  XMLInputStream inputstream(s.c_str(), false);
+  XMLNode node(inputstream);
+  CPPUNIT_ASSERT(node.getName() == "sbml");
+  unsigned int i, iMax = node.getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pModelNode = NULL;
+  const XMLNode* pListOfLayoutsNode = NULL;
+  const XMLNode* pLayoutNode = NULL;
+  const XMLNode* pLoLRINode = NULL;
+  const XMLNode* pLRINode = NULL;
+  const XMLNode* pAnnotationNode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (node.getChild(i).getName() == "model")
+        {
+          pModelNode = &node.getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pModelNode != NULL);
+  iMax = pModelNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pModelNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pModelNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfLayouts")
+        {
+          pListOfLayoutsNode = &pAnnotationNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
+  iMax = pListOfLayoutsNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pListOfLayoutsNode->getChild(i).getName() == "layout")
+        {
+          pLayoutNode = &pListOfLayoutsNode->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pLayoutNode != NULL);
+  iMax = pLayoutNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  // the layout node should have an annotation node
+  pAnnotationNode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLayoutNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pLayoutNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  // the annotation node should have an listOfRenderInformation node
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfRenderInformation")
+        {
+          pLoLRINode = &pAnnotationNode->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoLRINode != NULL);
+  iMax = pLoLRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoLRINode->getChild(i).getName() == "renderInformation")
+        {
+          pLRINode = &pLoLRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLRINode != NULL);
+  iMax = pLRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pLoCDNode = NULL;
+  const XMLNode* pCDNode1 = NULL;
+  const XMLNode* pCDNode2 = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLRINode->getChild(i).getName() == "listOfColorDefinitions")
+        {
+          pLoCDNode = &pLRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoCDNode != NULL);
+  iMax = pLoCDNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoCDNode->getChild(i).getName() == "colorDefinition")
+        {
+          if (pCDNode1 == NULL)
+            {
+              pCDNode1 = &pLoCDNode->getChild(i);
+            }
+          else
+            {
+              pCDNode2 = &pLoCDNode->getChild(i);
+            }
+        }
+    }
+
+  CPPUNIT_ASSERT(pCDNode1 != NULL);
+  CPPUNIT_ASSERT(pCDNode2 != NULL);
+}
+
+
+// tests whether we are exporting global render information
+// that has been import
+void test000097::test_importexport_global_render_information()
+{
+  CPPUNIT_ASSERT(pDataModel != NULL);
+  // import a model with global render infromation and export it
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(SBML_MODEL_2));
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts() != NULL);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->size() == 1);
+  // to an SBML string.
+  // Use the XMLNode class to read back the string into an
+  // XMLNode tree and check if it contains the render information
+  std::string s;
+
+  try
+    {
+      s = pDataModel->exportSBMLToString(NULL, 2, 1);
+    }
+  catch (...)
+    {
+      CPPUNIT_ASSERT(false);
+    }
+
+  CPPUNIT_ASSERT(!s.empty());
+  XMLInputStream inputstream(s.c_str(), false);
+  XMLNode node(inputstream);
+  CPPUNIT_ASSERT(node.getName() == "sbml");
+  unsigned int i, iMax = node.getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pModelNode = NULL;
+  const XMLNode* pListOfLayoutsNode = NULL;
+  const XMLNode* pLayoutNode = NULL;
+  const XMLNode* pLoGRINode = NULL;
+  const XMLNode* pGRINode = NULL;
+  const XMLNode* pAnnotationNode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (node.getChild(i).getName() == "model")
+        {
+          pModelNode = &node.getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pModelNode != NULL);
+  iMax = pModelNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pModelNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pModelNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfLayouts")
+        {
+          pListOfLayoutsNode = &pAnnotationNode->getChild(i);
+          break;
+        }
+      else if (pAnnotationNode->getChild(i).getName() == "listOfGlobalRenderInformation")
+        {
+          pLoGRINode = &pAnnotationNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
+  iMax = pListOfLayoutsNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  pAnnotationNode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pListOfLayoutsNode->getChild(i).getName() == "layout")
+        {
+          pLayoutNode = &pListOfLayoutsNode->getChild(i);
+        }
+      else if (pListOfLayoutsNode->getChild(i).getName() == "annotation")
+        {
+          pAnnotationNode = &pListOfLayoutsNode->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pLayoutNode != NULL);
+  iMax = pLayoutNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  CPPUNIT_ASSERT(pAnnotationNode != NULL);
+  iMax = pAnnotationNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pAnnotationNode->getChild(i).getName() == "listOfGlobalRenderInformation")
+        {
+          pLoGRINode = &pAnnotationNode->getChild(i);
+          break;
+        }
+
+    }
+
+  CPPUNIT_ASSERT(pLoGRINode != NULL);
+  iMax = pLoGRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoGRINode->getChild(i).getName() == "renderInformation")
+        {
+          pGRINode = &pLoGRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pGRINode != NULL);
+  iMax = pGRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pLoCDNode = NULL;
+  const XMLNode* pCDNode1 = NULL;
+  const XMLNode* pCDNode2 = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pGRINode->getChild(i).getName() == "listOfColorDefinitions")
+        {
+          pLoCDNode = &pGRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoCDNode != NULL);
+  iMax = pLoCDNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoCDNode->getChild(i).getName() == "colorDefinition")
+        {
+          if (pCDNode1 == NULL)
+            {
+              pCDNode1 = &pLoCDNode->getChild(i);
+            }
+          else
+            {
+              pCDNode2 = &pLoCDNode->getChild(i);
+            }
+        }
+    }
+
+  CPPUNIT_ASSERT(pCDNode1 != NULL);
+  CPPUNIT_ASSERT(pCDNode2 != NULL);
+}
+
+
+// test whether we are writing local render information
+// that has been read
+void test000097::test_readwrite_local_render_information()
+{
+  CPPUNIT_ASSERT(pDataModel != NULL);
+  // create a model with local render infromation and export it
+  std::istringstream iss(test000097::CPS_MODEL_1);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts() != NULL);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->size() == 1);
+  // to an SBML string.
+  // Use the XMLNode class to read back the string into an
+  // XMLNode tree and check if it contains the render information
+  std::ostringstream os;
+  save_cps_model_to_stream(os, pDataModel);
+  CPPUNIT_ASSERT(!os.str().empty());
+  XMLInputStream inputstream(os.str().c_str(), false);
+  XMLNode node(inputstream);
+  CPPUNIT_ASSERT(node.getName() == "COPASI");
+  unsigned int i, iMax = node.getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pListOfLayoutsNode = NULL;
+  const XMLNode* pLayoutNode = NULL;
+  const XMLNode* pLoLRINode = NULL;
+  const XMLNode* pLRINode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (node.getChild(i).getName() == "ListOfLayouts")
+        {
+          pListOfLayoutsNode = &node.getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
+  iMax = pListOfLayoutsNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pListOfLayoutsNode->getChild(i).getName() == "Layout")
+        {
+          pLayoutNode = &pListOfLayoutsNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLayoutNode != NULL);
+  iMax = pLayoutNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLayoutNode->getChild(i).getName() == "ListOfRenderInformation")
+        {
+          pLoLRINode = &pLayoutNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoLRINode != NULL);
+  iMax = pLoLRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoLRINode->getChild(i).getName() == "RenderInformation")
+        {
+          pLRINode = &pLoLRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLRINode != NULL);
+  iMax = pLRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pLoCDNode = NULL;
+  const XMLNode* pCDNode1 = NULL;
+  const XMLNode* pCDNode2 = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLRINode->getChild(i).getName() == "ListOfColorDefinitions")
+        {
+          pLoCDNode = &pLRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoCDNode != NULL);
+  iMax = pLoCDNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoCDNode->getChild(i).getName() == "ColorDefinition")
+        {
+          if (pCDNode1 == NULL)
+            {
+              pCDNode1 = &pLoCDNode->getChild(i);
+            }
+          else
+            {
+              pCDNode2 = &pLoCDNode->getChild(i);
+            }
+        }
+    }
+
+  CPPUNIT_ASSERT(pCDNode1 != NULL);
+  CPPUNIT_ASSERT(pCDNode2 != NULL);
+}
+
+// test whether we are writing global render information
+// that has been read
+void test000097::test_readwrite_global_render_information()
+{
+  CPPUNIT_ASSERT(pDataModel != NULL);
+  // create a model with local render infromation and export it
+  std::istringstream iss(test000097::CPS_MODEL_2);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts() != NULL);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->size() == 1);
+  // to an SBML string.
+  // Use the XMLNode class to read back the string into an
+  // XMLNode tree and check if it contains the render information
+  std::ostringstream os;
+  save_cps_model_to_stream(os, pDataModel);
+  CPPUNIT_ASSERT(!os.str().empty());
+  XMLInputStream inputstream(os.str().c_str(), false);
+  XMLNode node(inputstream);
+  CPPUNIT_ASSERT(node.getName() == "COPASI");
+  unsigned int i, iMax = node.getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pListOfLayoutsNode = NULL;
+  const XMLNode* pLayoutNode = NULL;
+  const XMLNode* pLoGRINode = NULL;
+  const XMLNode* pGRINode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (node.getChild(i).getName() == "ListOfLayouts")
+        {
+          pListOfLayoutsNode = &node.getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
+  iMax = pListOfLayoutsNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pListOfLayoutsNode->getChild(i).getName() == "Layout")
+        {
+          pLayoutNode = &pListOfLayoutsNode->getChild(i);
+        }
+      else if (pListOfLayoutsNode->getChild(i).getName() == "ListOfGlobalRenderInformation")
+        {
+          pLoGRINode = &pListOfLayoutsNode->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pLayoutNode != NULL);
+  iMax = pLayoutNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  CPPUNIT_ASSERT(pLoGRINode != NULL);
+  iMax = pLoGRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoGRINode->getChild(i).getName() == "RenderInformation")
+        {
+          pGRINode = &pLoGRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pGRINode != NULL);
+  iMax = pGRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pLoCDNode = NULL;
+  const XMLNode* pCDNode1 = NULL;
+  const XMLNode* pCDNode2 = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pGRINode->getChild(i).getName() == "ListOfColorDefinitions")
+        {
+          pLoCDNode = &pGRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoCDNode != NULL);
+  iMax = pLoCDNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoCDNode->getChild(i).getName() == "ColorDefinition")
+        {
+          if (pCDNode1 == NULL)
+            {
+              pCDNode1 = &pLoCDNode->getChild(i);
+            }
+          else
+            {
+              pCDNode2 = &pLoCDNode->getChild(i);
+            }
+        }
+    }
+
+  CPPUNIT_ASSERT(pCDNode1 != NULL);
+  CPPUNIT_ASSERT(pCDNode2 != NULL);
+}
+
+// test whether we are writing local render information
+// that has been imported
+void test000097::test_importwrite_local_render_information()
+{
+  CPPUNIT_ASSERT(pDataModel != NULL);
+  // create a model with local render infromation and export it
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(SBML_MODEL_1));
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts() != NULL);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->size() == 1);
+  // to an SBML string.
+  // Use the XMLNode class to read back the string into an
+  // XMLNode tree and check if it contains the render information
+  std::ostringstream os;
+  save_cps_model_to_stream(os, pDataModel);
+  CPPUNIT_ASSERT(!os.str().empty());
+  XMLInputStream inputstream(os.str().c_str(), false);
+  XMLNode node(inputstream);
+  CPPUNIT_ASSERT(node.getName() == "COPASI");
+  unsigned int i, iMax = node.getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pListOfLayoutsNode = NULL;
+  const XMLNode* pLayoutNode = NULL;
+  const XMLNode* pLoLRINode = NULL;
+  const XMLNode* pLRINode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (node.getChild(i).getName() == "ListOfLayouts")
+        {
+          pListOfLayoutsNode = &node.getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
+  iMax = pListOfLayoutsNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pListOfLayoutsNode->getChild(i).getName() == "Layout")
+        {
+          pLayoutNode = &pListOfLayoutsNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLayoutNode != NULL);
+  iMax = pLayoutNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLayoutNode->getChild(i).getName() == "ListOfRenderInformation")
+        {
+          pLoLRINode = &pLayoutNode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoLRINode != NULL);
+  iMax = pLoLRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoLRINode->getChild(i).getName() == "RenderInformation")
+        {
+          pLRINode = &pLoLRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLRINode != NULL);
+  iMax = pLRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pLoCDNode = NULL;
+  const XMLNode* pCDNode1 = NULL;
+  const XMLNode* pCDNode2 = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLRINode->getChild(i).getName() == "ListOfColorDefinitions")
+        {
+          pLoCDNode = &pLRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoCDNode != NULL);
+  iMax = pLoCDNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoCDNode->getChild(i).getName() == "ColorDefinition")
+        {
+          if (pCDNode1 == NULL)
+            {
+              pCDNode1 = &pLoCDNode->getChild(i);
+            }
+          else
+            {
+              pCDNode2 = &pLoCDNode->getChild(i);
+            }
+        }
+    }
+
+  CPPUNIT_ASSERT(pCDNode1 != NULL);
+  CPPUNIT_ASSERT(pCDNode2 != NULL);
+}
+
+// test whether we are writing global render information
+// that has been importer
+void test000097::test_importwrite_global_render_information()
+{
+  CPPUNIT_ASSERT(pDataModel != NULL);
+  // create a model with local render infromation and export it
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(SBML_MODEL_2));
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts() != NULL);
+  CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->size() == 1);
+  // to an SBML string.
+  // Use the XMLNode class to read back the string into an
+  // XMLNode tree and check if it contains the render information
+  std::ostringstream os;
+  save_cps_model_to_stream(os, pDataModel);
+  CPPUNIT_ASSERT(!os.str().empty());
+  XMLInputStream inputstream(os.str().c_str(), false);
+  XMLNode node(inputstream);
+  CPPUNIT_ASSERT(node.getName() == "COPASI");
+  unsigned int i, iMax = node.getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pListOfLayoutsNode = NULL;
+  const XMLNode* pLayoutNode = NULL;
+  const XMLNode* pLoGRINode = NULL;
+  const XMLNode* pGRINode = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (node.getChild(i).getName() == "ListOfLayouts")
+        {
+          pListOfLayoutsNode = &node.getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pListOfLayoutsNode != NULL);
+  iMax = pListOfLayoutsNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pListOfLayoutsNode->getChild(i).getName() == "Layout")
+        {
+          pLayoutNode = &pListOfLayoutsNode->getChild(i);
+        }
+      else if (pListOfLayoutsNode->getChild(i).getName() == "ListOfGlobalRenderInformation")
+        {
+          pLoGRINode = &pListOfLayoutsNode->getChild(i);
+        }
+    }
+
+  CPPUNIT_ASSERT(pLayoutNode != NULL);
+  iMax = pLayoutNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  CPPUNIT_ASSERT(pLoGRINode != NULL);
+  iMax = pLoGRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoGRINode->getChild(i).getName() == "RenderInformation")
+        {
+          pGRINode = &pLoGRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pGRINode != NULL);
+  iMax = pGRINode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+  const XMLNode* pLoCDNode = NULL;
+  const XMLNode* pCDNode1 = NULL;
+  const XMLNode* pCDNode2 = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pGRINode->getChild(i).getName() == "ListOfColorDefinitions")
+        {
+          pLoCDNode = &pGRINode->getChild(i);
+          break;
+        }
+    }
+
+  CPPUNIT_ASSERT(pLoCDNode != NULL);
+  iMax = pLoCDNode->getNumChildren();
+  CPPUNIT_ASSERT(iMax > 0);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      if (pLoCDNode->getChild(i).getName() == "ColorDefinition")
+        {
+          if (pCDNode1 == NULL)
+            {
+              pCDNode1 = &pLoCDNode->getChild(i);
+            }
+          else
+            {
+              pCDNode2 = &pLoCDNode->getChild(i);
+            }
+        }
+    }
+
+  CPPUNIT_ASSERT(pCDNode1 != NULL);
+  CPPUNIT_ASSERT(pCDNode2 != NULL);
+}
 
