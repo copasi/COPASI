@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/25 12:50:08 $
+//   $Author: gauges $
+//   $Date: 2011/04/26 20:41:17 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 // All rights reserved.
 
 #include "CMathContainer.h"
-#include "CMAthExpression.h"
+#include "CMathExpression.h"
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"
