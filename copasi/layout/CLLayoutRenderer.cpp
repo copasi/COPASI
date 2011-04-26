@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/14 16:24:09 $
+//   $Author: shoops $
+//   $Date: 2011/04/26 16:52:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,9 +66,11 @@
 
 
 #ifdef __APPLE__
+#ifdef ELEMENTARY_MODE_DISPLAY
 #include <string>
 #include <stdlib.h>
 #include <mach-o/dyld.h>
+#endif // ELEMENTARY_MODE_DISPLAY
 # include "OpenGL/gl.h"
 # include "OpenGL/glu.h"
 #else
@@ -1017,8 +1019,9 @@ void CLLayoutRenderer::draw_layout()
       while (it != endit)
         {
 #ifdef ELEMENTARY_MODE_DISPLAY
-
 // this is needed to highlight or fog certain elements in the diagram
+          pModelObject = (*it)->getModelObject();
+
           if (this->mpGlFogCoordfEXT != NULL)
             {
               if (pModelObject != NULL && this->mHighlightedObjects.find(*it) != end)
@@ -1125,7 +1128,6 @@ void CLLayoutRenderer::draw_layout()
                   // in order to position text glyphs corectly, we have to move them up by their mAscent
                   CLBoundingBox bb = pTG->getBoundingBox();
                   CLPoint* pP = &bb.getPosition();
-                  pP->setY(pP->getY() - pos->second->mAscent / this->mZoomFactor);
                   bb.setPosition(*pP);
                   this->draw_text(styleIt->second, &bb, pos->second);
 
@@ -1184,7 +1186,33 @@ void CLLayoutRenderer::draw_text(const CLStyle* pStyle, const CLBoundingBox* pBB
   // we only draw the text if there is a stroke color to draw it with
   if (!mCurrentAttributes.mStroke.empty() && mCurrentAttributes.mStroke != "none")
     {
-      this->draw_text(pTexture, 0.0, pBB->getDimensions().getHeight() - 7.0, 0.0, pBB);
+      // with the new interpretation of the text alignment attributes,
+      // we have to specify different offset attributes
+      // if the horizontal laignment is middle, we specify the middle of the box
+      // as x offset and if the alignment is end, we specify the end as the x offset
+      // likewise for the vertical alignment and the y offset
+      double xOffset = 0.0;
+      double yOffset = 0.0;
+
+      if (this->mCurrentAttributes.mTextAnchor == CLText::ANCHOR_MIDDLE)
+        {
+          xOffset = pBB->getDimensions().getWidth() * 0.5;;
+        }
+      else if (this->mCurrentAttributes.mTextAnchor == CLText::ANCHOR_END)
+        {
+          xOffset = pBB->getDimensions().getWidth();
+        }
+
+      if (this->mCurrentAttributes.mVTextAnchor == CLText::ANCHOR_MIDDLE)
+        {
+          yOffset = pBB->getDimensions().getHeight() * 0.5;
+        }
+      else if (this->mCurrentAttributes.mVTextAnchor == CLText::ANCHOR_BOTTOM)
+        {
+          yOffset = pBB->getDimensions().getHeight();
+        }
+
+      this->draw_text(pTexture, xOffset, yOffset, 0.0, pBB);
     }
 
   //restore the attributes
@@ -1441,29 +1469,28 @@ void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, do
       // position the text according to how the anchor is set
       if (mCurrentAttributes.mTextAnchor == CLText::ANCHOR_MIDDLE)
         {
-          // the x offset has to be changed to
-          // (xOffset+width/2.0)-textWidth/2.0
-          xOffset = xOffset + pBB->getDimensions().getWidth() / 2.0 - pTexture->mTextWidth / (2.0 * this->mZoomFactor);
+          // the new interpretation is that the horizontal center of the text is at xOffset,yOffset
+          xOffset -= pTexture->mTextWidth / (2.0 * this->mZoomFactor);
         }
       else if (mCurrentAttributes.mTextAnchor == CLText::ANCHOR_END)
         {
-          // the x offset has to be changed to
-          // xOffset+width-textWidth
-          xOffset = xOffset + pBB->getDimensions().getWidth() - pTexture->mTextWidth / this->mZoomFactor;
+          // the new interpretation is that xOffset specifies the horizontal end of the text, so
+          // the start has to be placed at xOffset-pTexture->mTextWidth / this->mZoomFactor
+          xOffset -= pTexture->mTextWidth / this->mZoomFactor;
         }
 
       // do vertical positioning
       if (mCurrentAttributes.mVTextAnchor == CLText::ANCHOR_MIDDLE)
         {
           // the text is vertically centered in the box
-          yOffset += (pBB->getDimensions().getHeight() - pTexture->mTextHeight / this->mZoomFactor) / 2.0;
+          yOffset -= pTexture->mTextHeight / (2.0 * this->mZoomFactor);
         }
       else if (mCurrentAttributes.mVTextAnchor == CLText::ANCHOR_BOTTOM)
         {
           // the lower edge of the text is located at the top edge of the box
           // since heigher y values are downward, this alligns the text at
           // the lower end of the box
-          yOffset += (pBB->getDimensions().getHeight() - pTexture->mTextHeight / this->mZoomFactor);
+          yOffset -= pTexture->mTextHeight / this->mZoomFactor;
         }
 
       // the yOffset has to consider the mAscent of the text because the
@@ -6835,8 +6862,6 @@ void CLLayoutRenderer::initialize_gl_extension_functions()
   mGLFunctionsInitialized = true;
 }
 
-#endif // ELEMENTARY_MODE_DISPLAY
-
 #ifdef __APPLE__
 void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
 {
@@ -6863,5 +6888,7 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
   return symbol ? NSAddressOfSymbol(symbol) : NULL;
 }
 #endif // __APPLE__
+
+#endif // ELEMENTARY_MODE_DISPLAY
 
 
