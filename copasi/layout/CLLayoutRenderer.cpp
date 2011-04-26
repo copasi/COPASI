@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.15 $
+//   $Revision: 1.5.2.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/26 15:15:33 $
+//   $Date: 2011/04/26 16:13:12 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1206,12 +1206,10 @@ void CLLayoutRenderer::draw_text(const CLStyle* pStyle, const CLBoundingBox* pBB
       if (this->mCurrentAttributes.mVTextAnchor == CLText::ANCHOR_MIDDLE)
         {
           yOffset = pBB->getDimensions().getHeight() * 0.5;
-          std::cout << "middle" << std::endl;
         }
       else if (this->mCurrentAttributes.mVTextAnchor == CLText::ANCHOR_BOTTOM)
         {
           yOffset = pBB->getDimensions().getHeight();
-          std::cout << "bottom" << std::endl;
         }
 
       this->draw_text(pTexture, xOffset, yOffset, 0.0, pBB);
