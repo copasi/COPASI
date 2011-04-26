@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.34 $ 
+#   $Revision: 1.35 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/03/21 15:39:31 $ 
+#   $Date: 2011/04/26 16:10:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -79,103 +79,6 @@ contains(BUILD_OS, Darwin){
 
 
 # Input
-HEADERS += utilities.hpp
-HEADERS += test000001.hpp
-HEADERS += test000002.hpp
-HEADERS += test000003.hpp
-HEADERS += test000004.hpp
-HEADERS += test000005.hpp
-HEADERS += test000006.hpp
-HEADERS += test000007.hpp
-HEADERS += test000008.hpp
-HEADERS += test000009.hpp
-HEADERS += test000010.hpp
-HEADERS += test000011.hpp
-HEADERS += test000012.hpp
-HEADERS += test000013.hpp
-HEADERS += test000014.hpp
-HEADERS += test000015.hpp
-HEADERS += test000016.hpp
-HEADERS += test000017.hpp
-HEADERS += test000018.hpp
-HEADERS += test000019.hpp
-HEADERS += test000020.hpp
-HEADERS += test000021.h
-HEADERS += test000022.h
-HEADERS += test000023.h
-HEADERS += test000024.h
-HEADERS += test000025.h
-HEADERS += test000026.h
-HEADERS += test000027.h
-HEADERS += test000028.h
-HEADERS += test000029.h
-HEADERS += test000030.h
-HEADERS += test000031.h
-HEADERS += test000032.h
-HEADERS += test000033.h
-HEADERS += test000034.h
-HEADERS += test000035.h
-HEADERS += test000036.h
-HEADERS += test000037.h
-HEADERS += test000038.h
-HEADERS += test000039.h
-HEADERS += test000040.h
-HEADERS += test000041.h
-HEADERS += test000042.h
-HEADERS += test000043.h
-HEADERS += test000044.h
-HEADERS += test000045.h
-HEADERS += test000046.h
-HEADERS += test000047.h
-HEADERS += test000048.h
-HEADERS += test000049.h
-HEADERS += test000050.h
-HEADERS += test000051.h
-HEADERS += test000052.h
-HEADERS += test000053.h
-HEADERS += test000054.h
-HEADERS += test000055.h
-HEADERS += test000056.h
-HEADERS += test000057.h
-HEADERS += test000058.h
-HEADERS += test000059.h
-HEADERS += test000060.h
-HEADERS += test000061.h
-HEADERS += test000062.h
-HEADERS += test000063.h
-HEADERS += test000064.h
-HEADERS += test000065.h
-HEADERS += test000066.h
-HEADERS += test000067.h
-HEADERS += test000068.h
-HEADERS += test000069.h
-HEADERS += test000070.h
-HEADERS += test000071.h
-HEADERS += test000072.h
-HEADERS += test000073.h
-HEADERS += test000074.h
-HEADERS += test000075.h
-HEADERS += test000076.h
-HEADERS += test000077.h
-HEADERS += test000078.h
-HEADERS += test000079.h
-HEADERS += test000080.h
-HEADERS += test000081.h
-HEADERS += test000082.h
-HEADERS += test000083.h
-HEADERS += test000084.h
-HEADERS += test000085.h
-HEADERS += test000086.h
-HEADERS += test000087.h
-HEADERS += test000088.h
-HEADERS += test000089.h
-HEADERS += test000090.h
-HEADERS += test000091.h
-HEADERS += test000092.h
-HEADERS += test000093.h
-HEADERS += test000094.h
-HEADERS += test000095.h
-HEADERS += test000096.h 
 HEADERS += utilities.hpp
 HEADERS += test000001.hpp
 HEADERS += test000002.hpp
@@ -373,3 +276,10 @@ SOURCES += test000094.cpp
 SOURCES += test000095.cpp
 SOURCES += test000096.cpp
 SOURCES += test.cpp
+
+contains(DEFINES,"USE_CRENDER_EXTENSION"){
+    HEADERS += test000097.h
+    SOURCES += test000097.cpp
+}
+
+

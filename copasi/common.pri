@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.123 $ 
+#   $Revision: 1.124 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2011/03/14 16:26:38 $ 
+#   $Author: shoops $ 
+#   $Date: 2011/04/26 16:11:35 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.123 $ $Author: gauges $ $Date: 2011/03/14 16:26:38 $  
+# $Revision: 1.124 $ $Author: shoops $ $Date: 2011/04/26 16:11:35 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -76,6 +76,11 @@ QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_LFLAGS  += $$(LDFLAGS)
 
 DEFINES += WITH_CSPMETHOD
+
+# the following flag enables Svens unit indentification code
+# right now this still has some bugs and has to be disabled
+# for releases
+# DEFINES += USE_SBMLUNIT
 
 # enable this to build support for the render extension
 # this should be enabled since it has been tested enough

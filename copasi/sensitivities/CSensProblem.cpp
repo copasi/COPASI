@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:44 $
+//   $Date: 2011/04/26 16:10:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,6 +128,8 @@ const std::string CSensProblem::SubTaskName[] =
   "Evaluation",
   "Steady State",
   "Time Series",
+  "Parameter Estimation",
+  "Optimization",
   //"Lyapunov Exponents",
   ""
 };
@@ -137,6 +139,8 @@ const char * CSensProblem::XMLSubTask[] =
   "Evaluation",
   "SteadyState",
   "TimeSeries",
+  "ParameterEstimation",
+  "Optimization",
   //"LyapunovExponents",
   NULL
 };
@@ -481,6 +485,11 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         //TODO all model variables
         break;
 
+      case(CSensProblem::ParameterEstimation):
+      case(CSensProblem::Optimization):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        break;
+
         /*case (CSensProblem::LyapunovExp):
                 list.push_back(CObjectLists::SINGLE_OBJECT);
                 list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
@@ -533,6 +542,11 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
         list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
         //TODO all const values, all model parameters, all initial values
+        break;
+
+      case(CSensProblem::ParameterEstimation):
+      case(CSensProblem::Optimization):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
         break;
 
         /*case (LyapunovExp):

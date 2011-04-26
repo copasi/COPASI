@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser_yacc.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 20:08:38 $
+//   $Date: 2011/04/26 16:10:36 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -1537,7 +1537,7 @@ yyreduce:
 #line 141 "CChemEqParser.ypp"
         {
           (yyval) = (yyvsp[(2) - (2)]);
-          (yyval)->multiplicity = strtod((yyvsp[(1) - (2)])->name.c_str(), NULL);
+          (yyval)->multiplicity = strToDouble((yyvsp[(1) - (2)])->name.c_str(), NULL);
           pdelete((yyvsp[(1) - (2)]));
         }
         break;
@@ -1546,7 +1546,7 @@ yyreduce:
 #line 147 "CChemEqParser.ypp"
         {
           (yyval) = (yyvsp[(3) - (3)]);
-          (yyval)->multiplicity = strtod((yyvsp[(1) - (3)])->name.c_str(), NULL);
+          (yyval)->multiplicity = strToDouble((yyvsp[(1) - (3)])->name.c_str(), NULL);
           pdelete((yyvsp[(1) - (3)]));
           pdelete((yyvsp[(2) - (3)]));
         }

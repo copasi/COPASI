@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:39:31 $
+//   $Date: 2011/04/26 16:10:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,6 +114,9 @@
 #include "test000094.h"
 #include "test000095.h"
 #include "test000096.h"
+#ifdef USE_CRENDER_EXTENSION
+#include "test000097.h"
+#endif // USE_CRENDER_EXTENSION
 
 #define COPASI_MAIN
 
@@ -216,6 +219,10 @@ int main(int /*argc*/, char ** /*argv*/)
   runner.addTest(test000094::suite());
   runner.addTest(test000095::suite());
   runner.addTest(test000096::suite());
+#ifdef USE_CRENDER_EXTENSION
+  runner.addTest(test000097::suite());
+#endif // USE_CRENDER_EXTENSION
+
   runner.run();
   return 0;
 }

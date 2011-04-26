@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/utilities.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:09 $
+//   $Date: 2011/04/26 16:10:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,8 +101,37 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
   return true;
 }
 
-bool import_sbml_model_from_stream(const std::istream& /*is*/, CCopasiDataModel& /*dataModel*/)
+bool save_cps_model_to_stream(std::ostream& os, CCopasiDataModel* pDataModel)
 {
-  // TODO implement me
-  return false;
+  bool success = true;
+
+  if (pDataModel != NULL &&
+      pDataModel->getModel() != NULL)
+    {
+      CCopasiXML XML;
+
+      XML.setModel(pDataModel->getModel());
+      XML.setTaskList(pDataModel->getTaskList());
+      XML.setReportList(pDataModel->getReportDefinitionList());
+      XML.setPlotList(pDataModel->getPlotDefinitionList());
+      XML.setGUI(pDataModel->getGUI());
+      XML.setLayoutList(*pDataModel->getListOfLayouts());
+      XML.setDatamodel(pDataModel);
+
+      try
+        {
+          success = XML.save(os, "");
+        }
+      catch (...)
+        {
+          return false;
+        }
+    }
+  else
+    {
+      success = false;
+    }
+
+  return success;
 }
+

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalRenderInformation.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:47 $
+//   $Date: 2011/04/26 16:10:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,20 +126,20 @@ void CLGlobalRenderInformation::addStyle(const CLGlobalStyle* pStyle)
  * Converts this object to the corresponding SBML object.
  *
  */
-GlobalRenderInformation* CLGlobalRenderInformation::toSBML(unsigned int level, unsigned int version) const
+bool CLGlobalRenderInformation::toSBML(GlobalRenderInformation* pGRI, unsigned int level, unsigned int version) const
 {
-  GlobalRenderInformation* pLRI = new GlobalRenderInformation(level, version);
-  //this->addSBMLAttributes(pLRI,colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
-  this->addSBMLAttributes(pLRI);
+  bool result = true;
+  this->addSBMLAttributes(pGRI);
   size_t i, iMax = this->mListOfStyles.size();
 
   for (i = 0; i < iMax; ++i)
     {
       GlobalStyle* pStyle = static_cast<const CLGlobalStyle*>(this->getStyle(i))->toSBML(level, version);
-      int result = pLRI->addStyle(pStyle);
-      assert(result == LIBSBML_OPERATION_SUCCESS);
+      int success = pGRI->addStyle(pStyle);
+      assert(success == LIBSBML_OPERATION_SUCCESS);
+      result = (result && (success == LIBSBML_OPERATION_SUCCESS));
       delete pStyle;
     }
 
-  return pLRI;
+  return result;
 }

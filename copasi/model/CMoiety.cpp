@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:16:58 $
+//   $Date: 2011/04/26 16:10:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,7 +171,9 @@ bool CMoiety::setObjectParent(const CCopasiContainer * pParent)
 
 std::string CMoiety::getDescription(const CModel * model) const
 {
-  std::string Description;
+  std::ostringstream Description;
+  Description.imbue(std::locale::classic());
+  Description.precision(16);
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
@@ -181,19 +183,19 @@ std::string CMoiety::getDescription(const CModel * model) const
       if (it != mEquation.begin())
         {
           if (it->first < 0.0)
-            Description += " - ";
+            Description << " - ";
           else
-            Description += " + ";
+            Description << " + ";
         }
 
       if (fabs(it->first) > 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() ||
           fabs(it->first) < 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-        Description += StringPrint("%g * ", fabs(it->first));
+        Description << fabs(it->first) << "*";
 
-      Description += CMetabNameInterface::getDisplayName(model, *it->second);
+      Description << CMetabNameInterface::getDisplayName(model, *it->second);
     }
 
-  return Description;
+  return Description.str();
 }
 
 void CMoiety::refreshInitialValue()
@@ -233,7 +235,9 @@ CCopasiObject * CMoiety::getValueReference() const
 
 std::string CMoiety::getExpression() const
 {
-  std::string Infix;
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
@@ -243,19 +247,19 @@ std::string CMoiety::getExpression() const
       if (it != mEquation.begin())
         {
           if (it->first < 0.0)
-            Infix += "-";
+            Infix << "-";
           else
-            Infix += "+";
+            Infix << "+";
         }
 
       if (fabs(it->first) > 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() ||
           fabs(it->first) < 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-        Infix += StringPrint("%g*", fabs(it->first));
+        Infix << fabs(it->first) << "*";
 
-      Infix += "<" + it->second->getInitialValueReference()->getCN() + ">";
+      Infix << "<" << it->second->getInitialValueReference()->getCN() << ">";
     }
 
-  return Infix;
+  return Infix.str();
 }
 
 const C_FLOAT64 & CMoiety::getAmount() const

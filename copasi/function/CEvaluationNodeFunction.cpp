@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
+//   $Date: 2011/04/26 16:10:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1064,7 +1064,11 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
   std::string data = "";
   std::string ldata = "";
   std::string rdata = "";
-  bool flag = false;
+
+  bool flag = ((CEvaluationNode::type(mpArg1->getType()) == CEvaluationNode::NUMBER) ||
+               (CEvaluationNode::type(mpArg1->getType()) == CEvaluationNode::VARIABLE) ||
+               (CEvaluationNode::type(mpArg1->getType()) == CEvaluationNode::CONSTANT));
+
   bool flag1 = false;
 
   switch (mType & 0x00FFFFFF)
@@ -1178,11 +1182,6 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
   const CEvaluationNode * pParent = static_cast<const CEvaluationNode *>(getParent());
 
-  flag = ((mpArg1->getType() == (CEvaluationNode::NUMBER))
-          || (mpArg1->getType() == (CEvaluationNode::VARIABLE))
-          || (mpArg1->getType() == (CEvaluationNode::CONSTANT)
-             ));
-
   out << SPC(l) << "<mrow>" << std::endl;
 
   switch (mType & 0x00FFFFFF)
@@ -1271,11 +1270,26 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         out << SPC(l + 1) << "</msub>" << std::endl;
 
-        if (!flag) out << SPC(l + 2) << "<mfenced>" << std::endl;
+        if (flag)
+          out << SPC(l + 1) << "<mspace width=\"0.3em\"/>" << std::endl;
+        else
+          out << SPC(l + 1) << "<mfenced>" << std::endl;
 
         mpArg1->writeMathML(out, env, expand, l + 2);
 
         if (!flag) out << SPC(l + 2) << "</mfenced>" << std::endl;
+
+        break;
+
+      case CEIL:
+      case FLOOR:
+        out << SPC(l + 1) << "<mi> " << data << " </mi>" << std::endl;
+
+        out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+        mpArg1->writeMathML(out, env, expand, l + 1);
+
+        out << SPC(l + 1) << "</mfenced>" << std::endl;
 
         break;
 
@@ -1306,7 +1320,10 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         out << SPC(l + 1) << "<mi> " << data << " </mi>" << std::endl;
 
-        if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        if (flag)
+          out << SPC(l + 1) << "<mspace width=\"0.3em\"/>" << std::endl;
+        else
+          out << SPC(l + 1) << "<mfenced>" << std::endl;
 
         mpArg1->writeMathML(out, env, expand, l + 1);
 

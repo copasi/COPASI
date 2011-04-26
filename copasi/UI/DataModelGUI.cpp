@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:59 $
+//   $Date: 2011/04/26 16:10:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -971,6 +971,7 @@ void DataModelGUI::exportMathModelFinished()
 {
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
 
+  threadFinished();
 }
 
 bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
