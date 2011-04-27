@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:17:20 $
+//   $Date: 2011/04/27 17:05:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -230,11 +230,25 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex&)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  for (int row = 0; row < rows; ++row)
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  std::vector< std::string > DeletedKeys;
+  DeletedKeys.resize(rows);
+
+  std::vector< std::string >::iterator itDeletedKey;
+  std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
+
+  CCopasiVector< CEvent >::const_iterator itRow = pModel->getEvents().begin() + position;
+
+  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[position]->getKey();
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(position);
-      emit notifyGUI(ListViews::EVENT, ListViews::DELETE, deletedKey);
+      *itDeletedKey = (*itRow)->getKey();
+    }
+
+  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
+    {
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(*itDeletedKey);
+      emit notifyGUI(ListViews::EVENT, ListViews::DELETE, *itDeletedKey);
     }
 
   endRemoveRows();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:54 $
+//   $Date: 2011/04/27 17:05:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -475,11 +475,25 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex&)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  for (int row = 0; row < rows; ++row)
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  std::vector< std::string > DeletedKeys;
+  DeletedKeys.resize(rows);
+
+  std::vector< std::string >::iterator itDeletedKey;
+  std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
+
+  CCopasiVector< CMetab >::const_iterator itRow = pModel->getMetabolites().begin() + position;
+
+  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[position]->getKey();
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeMetabolite(position);
-      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, deletedKey);
+      *itDeletedKey = (*itRow)->getKey();
+    }
+
+  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
+    {
+      pModel->removeMetabolite(*itDeletedKey);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, *itDeletedKey);
       emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
     }
 
