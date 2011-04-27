@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.9.4.6 $
+//   $Revision: 1.9.4.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:47 $
+//   $Date: 2011/04/27 17:28:12 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -291,11 +291,26 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex&)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  for (int row = 0; row < rows; ++row)
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  std::vector< std::string > DeletedKeys;
+  DeletedKeys.resize(rows);
+
+  std::vector< std::string >::iterator itDeletedKey;
+  std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
+
+  CCopasiVector< CCompartment >::const_iterator itRow = pModel->getCompartments().begin() + position;
+
+  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[position]->getKey();
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeCompartment(position);
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, deletedKey);
+      *itDeletedKey = (*itRow)->getKey();
+    }
+
+  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
+    {
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeCompartment(*itDeletedKey);
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, *itDeletedKey);
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, "");
       emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
 
     }

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.15.4.6 $
+//   $Revision: 1.15.4.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:51 $
+//   $Date: 2011/04/27 17:28:12 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -345,11 +345,25 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  for (int row = 0; row < rows; ++row)
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  std::vector< std::string > DeletedKeys;
+  DeletedKeys.resize(rows);
+
+  std::vector< std::string >::iterator itDeletedKey;
+  std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
+
+  CCopasiVector< CReaction >::const_iterator itRow = pModel->getReactions().begin() + position;
+
+  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      std::string deletedKey = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[position]->getKey();
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeReaction(position);
-      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, deletedKey);
+      *itDeletedKey = (*itRow)->getKey();
+    }
+
+  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
+    {
+      pModel->removeReaction(*itDeletedKey);
+      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, *itDeletedKey);
       emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
     }
 

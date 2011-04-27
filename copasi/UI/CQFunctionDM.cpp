@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.7.4.6 $
+//   $Revision: 1.7.4.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/07 15:39:45 $
+//   $Date: 2011/04/27 17:28:12 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -244,16 +244,41 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex&)
   if (rows <= 0)
     return true;
 
-  for (int row = rows - 1; row >= 0; --row)
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  std::vector< std::string > DeletedKeys;
+  DeletedKeys.resize(rows);
+
+  std::vector< std::string >::iterator itDeletedKey;
+  std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
+
+  CCopasiVector< CFunction >::const_iterator itRow =
+    CCopasiRootContainer::getFunctionList()->loadedFunctions().begin() + position;
+  int row = 0;
+
+  for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow, ++row)
     {
-      if (!isFunctionReadOnly(this->index(position + row, 0)))
+      if (isFunctionReadOnly(this->index(position + row, 0)))
+        {
+          *itDeletedKey = "";
+        }
+      else
+        {
+          *itDeletedKey = (*itRow)->getKey();
+        }
+    }
+
+  for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++row)
+    {
+      if (*itDeletedKey != "")
         {
           beginRemoveRows(QModelIndex(), position + row, position + row);
-          std::string deletedKey = CCopasiRootContainer::getFunctionList()->loadedFunctions()[position]->getKey();
-          CCopasiRootContainer::getFunctionList()->removeFunction(position + row);
-          endRemoveRows();
-          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, deletedKey);
+
+          CCopasiRootContainer::getFunctionList()->removeFunction(*itDeletedKey);
+          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, *itDeletedKey);
           emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+
+          endRemoveRows();
         }
     }
 
