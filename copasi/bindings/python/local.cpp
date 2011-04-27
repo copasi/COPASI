@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-//   $Revision: 1.12.2.1 $
+//   $Revision: 1.12.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/27 20:31:46 $
+//   $Date: 2011/04/27 21:13:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -471,6 +471,26 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
   else if (dynamic_cast<CEventAssignment*>(container))
     {
       pInfo = SWIGTYPE_p_CEventAssignment;
+    }
+  else if (dynamic_cast<CReference*>(container))
+    {
+      pInfo = SWIGTYPE_p_CReference;
+    }
+  else if (dynamic_cast<CBiologicalDescription*>(container))
+    {
+      pInfo = SWIGTYPE_p_CBiologicalDescription;
+    }
+  else if (dynamic_cast<CModification*>(container))
+    {
+      pInfo = SWIGTYPE_p_CModification;
+    }
+  else if (dynamic_cast<CCreator*>(container))
+    {
+      pInfo = SWIGTYPE_p_CCreator;
+    }
+  else if (dynamic_cast<CMIRIAMInfo*>(container))
+    {
+      pInfo = SWIGTYPE_p_CMIRIAMInfo;
     }
   else if (container->isNameVector())
     {
