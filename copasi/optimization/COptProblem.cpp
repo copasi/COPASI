@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.118 $
+//   $Revision: 1.119 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/25 15:39:50 $
+//   $Date: 2011/04/28 11:50:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -430,10 +430,13 @@ bool COptProblem::restore(const bool & updateModel)
 
       for (; it != end; ++it, pTmp++)
         {
-          (*(*it)->COptItem::getUpdateMethod())(*pTmp);
-          (*it)->setStartValue(*pTmp);
+          if ((*it)->getObject())
+            {
+              (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+              (*it)->setStartValue(*pTmp);
 
-          ChangedObjects.insert((*it)->getObject());
+              ChangedObjects.insert((*it)->getObject());
+            }
         }
     }
   else
@@ -443,10 +446,13 @@ bool COptProblem::restore(const bool & updateModel)
 
       for (; it != end; ++it, pTmp++)
         {
-          if (!isnan(*pTmp))
-            (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+          if ((*it)->getObject())
+            {
+              if (!isnan(*pTmp))
+                (*(*it)->COptItem::getUpdateMethod())(*pTmp);
 
-          ChangedObjects.insert((*it)->getObject());
+              ChangedObjects.insert((*it)->getObject());
+            }
         }
     }
 
