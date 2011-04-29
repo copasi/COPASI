@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/14 16:24:10 $
+//   $Author: shoops $
+//   $Date: 2011/04/29 16:17:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,12 +21,10 @@
 #include <vector>
 #include <set>
 
-#include <copasi/copasi.h>
-#include <copasi/layout/CLReactionGlyph.h>
-
 class CCopasiDataModel;
 class CLayout;
 class CLRenderInformationBase;
+class CLGraphicalObject;
 class CQLayoutMainWindow;
 class CQGLLayoutViewer;
 class QAction;
@@ -38,6 +36,8 @@ class QMenu;
 class QStackedWidget;
 class QToolBar;
 class CFluxMode;
+class CMetab;
+class CReaction;
 
 #ifdef COPASI_AUTOLAYOUT
 class CCompartment;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:38 $
+//   $Date: 2011/04/29 16:17:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,26 +33,37 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
+// local includes
+#include "CQGLLayoutPainter.h"
+#include "CQGLLayoutViewer.h"
+#include "CQNewMainWindow.h"
+#include "CQPlayerControlWidget.h"
+#include "CQScreenshotOptionsDialog.h"
+
+#include "CQGLLayoutViewer.h"
+#include "CQLayoutMainWindow.h"
+
 #include <string.h>
 
-// SBML includes
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
-#include <copasi/model/CModel.h>
-#include <copasi/layout/CLayout.h>
-#include <copasi/layout/CListOfLayouts.h>
+// COPASI includes
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/layout/CLayout.h"
+#include "copasi/layout/CListOfLayouts.h"
+#include "copasi/layout/CLDefaultStyles.h"
 
 #ifdef ELEMENTARY_MODE_DISPLAY
-#include <copasi/elementaryFluxModes/CEFMTask.h>
-#include <copasi/elementaryFluxModes/CEFMProblem.h>
-#include <copasi/elementaryFluxModes/CFluxMode.h>
-#include <copasi/model/CReaction.h>
-#include <copasi/model/CChemEq.h>
-#include <copasi/model/CChemEqElement.h>
-#include <copasi/model/CMetab.h>
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include "copasi/elementaryFluxModes/CEFMProblem.h"
+#include "copasi/elementaryFluxModes/CFluxMode.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CChemEq.h"
+#include "copasi/model/CChemEqElement.h"
+#include "copasi/model/CMetab.h"
 #endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
-#include "copasi/model/CModel.h"
 #include "copasi/layout/CCopasiSpringLayout.h"
 #include "copasi/layout/CLayoutEngine.h"
 #include "copasi/layout/CLayout.h"
@@ -63,41 +74,6 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 #endif // COPASI_AUTOLAYOUT
-
-// local includes
-#include "CQGLLayoutPainter.h"
-#include "CQGLLayoutViewer.h"
-#include "CQNewMainWindow.h"
-#include "CQPlayerControlWidget.h"
-#include "CQScreenshotOptionsDialog.h"
-
-// Qt includes
-#include <QAction>
-#include <QActionGroup>
-#include <QCloseEvent>
-#include <QColor>
-#include <QColorDialog>
-#include <QComboBox>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QHBoxLayout>
-#include <QIcon>
-#include <QImage>
-#include <QLabel>
-#include <QPixmap>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QStackedWidget>
-#include <QStatusBar>
-#include <QToolBar>
-#include <QVBoxLayout>
-
-#include "CQGLLayoutViewer.h"
-#include "CQLayoutMainWindow.h"
-
-#include <copasi/layout/CLDefaultStyles.h>
-
-#include <string.h>
 
 #include "../UI/icons/photo.xpm"
 #include "revert_curve.xpm"
