@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.39.4.4 $
+//   $Revision: 1.39.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/26 21:14:31 $
+//   $Date: 2011/05/02 16:50:45 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -222,10 +222,6 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
 
 bool CReactionInterface::writeBackToReaction(CReaction * rea)
 {
-  if (!isValid()) return false; // do nothing
-
-  if (!(*mpParameters == mpFunction->getVariables())) return false; // do nothing
-
   bool success = true;
 
   //CReaction *rea;
@@ -240,6 +236,16 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
   // Now we can safely write to the equation as we are sure that only unique metabolites
   // may have the empty string as compartments
   mChemEqI.writeToChemEq(rea->getChemEq());
+
+  if (!isValid()) return false; // do nothing
+
+  if (mpFunction == NULL) return false;
+
+  if (mpFunction->getObjectName() == "undefined") return false;
+
+  if (mpParameters == NULL) return false;
+
+  if (!(*mpParameters == mpFunction->getVariables())) return false; // do nothing
 
   // TODO. check if function has changed since it was set in the R.I.
   rea->setFunction(mpFunction->getObjectName());
@@ -906,9 +912,9 @@ bool CReactionInterface::isMulticompartment() const
 
 bool CReactionInterface::isValid() const
 {
-  if (!mpFunction) return false;
+  // if (!mpFunction) return false;
 
-  if (mpFunction->getObjectName() == "undefined") return false;
+  // if (mpFunction->getObjectName() == "undefined") return false;
 
   //A reaction is invalid if it has a metab, a global parameter, or a compartment "unknown"
   size_t j, jmax = size();
