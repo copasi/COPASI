@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.27 $ 
+//   $Revision: 1.28 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
+//   $Date: 2011/05/03 13:53:20 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -206,6 +206,11 @@
 %template(LineSegmentStdVector) std::vector<CLLineSegment>;
 
 %template(FittingPointVector) CCopasiVector<CFittingPoint>;
+
+%template(BiologicalDescriptionVector) CCopasiVector<CBiologicalDescription>;
+%template(CreatorVector) CCopasiVector<CCreator>;
+%template(ReferenceVector) CCopasiVector<CReference>;
+%template(ModificationVector) CCopasiVector<CModification>;
 
 typedef CCopasiVectorN<CEvent> EventVectorN;
 

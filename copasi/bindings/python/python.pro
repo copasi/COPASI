@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.30 $ 
+#   $Revision: 1.31 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 18:56:02 $ 
+#   $Date: 2011/05/03 13:53:20 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -212,7 +212,13 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CLGraphicalObject.i \
                      ../swig/CLReactionGlyph.i \
                      ../swig/CLayout.i \
-                     ../swig/CListOfLayouts.i
+                     ../swig/CListOfLayouts.i \
+                     ../swig/CAnnotation.i \
+                     ../swig/CBiologicalDescription.i \
+                     ../swig/CModelMIRIAMInfo.i \
+                     ../swig/CCreator.i \
+                     ../swig/CModified.i \
+                     ../swig/CReference.i
 
 
 

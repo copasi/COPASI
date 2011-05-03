@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.33 $ 
+//   $Revision: 1.34 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2010/10/13 12:03:02 $ 
+//   $Author: shoops $ 
+//   $Date: 2011/05/03 13:53:20 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -59,6 +59,7 @@
 %include "CFunctionParameter.i"
 %include "CFunctionParameters.i"
 %include "CCallParameters.i"
+%include "CAnnotation.i"
 %include "CEvaluationTree.i"
 %include "CExpression.i"
 %include "CFunction.i"
@@ -125,4 +126,9 @@
 %include "CSensMethod.i"
 %include "CSensProblem.i"
 %include "CSensTask.i"
+%include "CBiologicalDescription.i"
+%include "CReference.i"
+%include "CCreator.i"
+%include "CModified.i"
+%include "CModelMIRIAMInfo.i"
 

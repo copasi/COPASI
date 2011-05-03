@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:56:02 $
+//   $Date: 2011/05/03 13:53:19 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,6 +36,10 @@
 #include "model/CReaction.h"
 #include "model/CMoiety.h"
 #include "model/CEvent.h"
+#include "MIRIAM/CBiologicalDescription.h"
+#include "MIRIAM/CReference.h"
+#include "MIRIAM/CModified.h"
+#include "MIRIAM/CModelMIRIAMInfo.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryMethod.h"
@@ -1909,6 +1913,91 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
             }
         }
     }
+  else if (dynamic_cast<CReference*>(pPointer))
+    {
+      // return a CReference
+      jclass clazz = jenv->FindClass("org/COPASI/CReference");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CReference**)&cptr = static_cast<CReference*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CModification*>(pPointer))
+    {
+      // return a CModification
+      jclass clazz = jenv->FindClass("org/COPASI/CModification");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CModification**)&cptr = static_cast<CModification*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CCreator*>(pPointer))
+    {
+      // return a CCreator
+      jclass clazz = jenv->FindClass("org/COPASI/CCreator");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CCreator**)&cptr = static_cast<CCreator*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CBiologicalDescription*>(pPointer))
+    {
+      // return a CBiologicalDescription
+      jclass clazz = jenv->FindClass("org/COPASI/CBiologicalDescription");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CBiologicalDescription**)&cptr = static_cast<CBiologicalDescription*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CMIRIAMInfo*>(pPointer))
+    {
+      // return a CMIRIAMInfo
+      jclass clazz = jenv->FindClass("org/COPASI/CMIRIAMInfo");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CMIRIAMInfo**)&cptr = static_cast<CMIRIAMInfo*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
   else if (dynamic_cast<CCopasiTask*>(pPointer))
     {
       if (dynamic_cast<CTrajectoryTask*>(pPointer))
@@ -3270,6 +3359,91 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                 {
                   jlong cptr = 0;
                   *(CChemEqElement**)&cptr = static_cast<CChemEqElement*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      else if (dynamic_cast<CReference*>(pPointer))
+        {
+          // return a CReference
+          jclass clazz = jenv->FindClass("org/COPASI/CReference");
+
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CReference**)&cptr = static_cast<CReference*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      else if (dynamic_cast<CModification*>(pPointer))
+        {
+          // return a CModification
+          jclass clazz = jenv->FindClass("org/COPASI/CModification");
+
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CModification**)&cptr = static_cast<CModification*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      else if (dynamic_cast<CCreator*>(pPointer))
+        {
+          // return a CCreator
+          jclass clazz = jenv->FindClass("org/COPASI/CCreator");
+
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CCreator**)&cptr = static_cast<CCreator*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      else if (dynamic_cast<CBiologicalDescription*>(pPointer))
+        {
+          // return a CBiologicalDescription
+          jclass clazz = jenv->FindClass("org/COPASI/CBiologicalDescription");
+
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CBiologicalDescription**)&cptr = static_cast<CBiologicalDescription*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      else if (dynamic_cast<CMIRIAMInfo*>(pPointer))
+        {
+          // return a CMIRIAMInfo
+          jclass clazz = jenv->FindClass("org/COPASI/CMIRIAMInfo");
+
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CMIRIAMInfo**)&cptr = static_cast<CMIRIAMInfo*>(pPointer);
                   result = jenv->NewObject(clazz, mid, cptr, false);
                 }
             }

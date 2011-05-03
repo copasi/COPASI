@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.23 $ 
+//   $Revision: 1.24 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2011/04/01 15:06:41 $ 
+//   $Date: 2011/05/03 13:53:20 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -80,10 +80,20 @@
 %ignore CCopasiDataModel::ObjectFromName(std::vector<CCopasiContainer * > const &,CCopasiObjectName const &) const;
 
 %catches(CCopasiException) CCopasiDataModel::newModel();
-%catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL);
-%catches(CCopasiException) CCopasiDataModel::importSBML(const std::string&,CProcessReport*);
+%catches(CCopasiException) CCopasiDataModel::newModel(CModel* pMode,CProcessReport* pProcessReport,CListOfLayouts* pLoL,const bool& deleteOldData);
+%catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
+%catches(CCopasiException) CCopasiDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
 %catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
-%catches(CCopasiException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
+%catches(CCopasiException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
+
+%exception importSBML {
+   try {
+      $action
+   } catch (...) {
+      PyErr_SetString(PyExc_IndexError, "Unknown exception");
+      return false;
+   }
+}
 
 %include "CopasiDataModel/CCopasiDataModel.h"
 

@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.25 $ 
+//   $Revision: 1.26 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
+//   $Date: 2011/05/03 13:53:19 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -47,9 +47,13 @@
 %ignore CCopasiTask::getMethod() const;
 
 // SWIG does not wrap this correctly in JAVA 
+%ignore CCopasiTask::eOutputFlagBase;
 %ignore CCopasiTask::NO_OUTPUT;
 %ignore CCopasiTask::OUTPUT;
-%ignore CCopasiTask::OUTPUT_COMPLETE;
+%ignore CCopasiTask::OUTPUT_BEFORE;
+%ignore CCopasiTask::OUTPUT_AFTER;
+%ignore CCopasiTask::OUTPUT_SE;
+%ignore CCopasiTask::OUTPUT_UI;
 %ignore CCopasiTask::ONLY_TIME_SERIES;
 
 #endif // SWIGJAVA
@@ -59,8 +63,11 @@
 
 #ifdef SWIGJAVA
 %rename (NO_OUTPUT) CCopasiTask::NO_OUTPUT;
+%rename (OUTPUT_BEFORE) CCopasiTask::OUTPUT_BEFORE;
+%rename (OUTPUT_AFTER) CCopasiTask::OUTPUT_AFTER;
 %rename (OUTPUT) CCopasiTask::OUTPUT;
-%rename (OUTPUT_COMPLETE) CCopasiTask::OUTPUT_COMPLETE;
+%rename (OUTPUT_SE) CCopasiTask::OUTPUT_SE;
+%rename (OUTPUT_UI) CCopasiTask::OUTPUT_UI;
 %rename (ONLY_TIME_SERIES) CCopasiTask::ONLY_TIME_SERIES;
 #endif //SWIGJAVA
 
@@ -69,8 +76,11 @@
   #ifdef SWIGJAVA
   // this has to be checked each time the bindings are released
   static const unsigned int CCopasiTask::NO_OUTPUT=0;
-  static const unsigned int CCopasiTask::OUTPUT=114;
-  static const unsigned int CCopasiTask::OUTPUT_COMPLETE=119;
+  static const unsigned int CCopasiTask::OUTPUT_BEFORE=1;
+  static const unsigned int CCopasiTask::OUTPUT_AFTER=2;
+  static const unsigned int CCopasiTask::OUTPUT=50;
+  static const unsigned int CCopasiTask::OUTPUT_SE=55;
+  static const unsigned int CCopasiTask::OUTPUT_UI=119;
   static const unsigned int CCopasiTask::ONLY_TIME_SERIES=71;
 
   #endif //SWIGJAVA
@@ -92,7 +102,7 @@
         CCopasiMessage::clearDeque();
         CCopasiDataModel* pDataModel=self->getObjectDataModel();
         assert(pDataModel!=NULL);
-        bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,pDataModel, NULL);
+        bool result=self->initialize(CCopasiTask::OUTPUT_SE,pDataModel, NULL);
         if(result)
         {
           result=self->process(useInitialValues);
