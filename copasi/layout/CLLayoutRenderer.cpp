@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/26 16:52:20 $
+//   $Author: gauges $
+//   $Date: 2011/05/03 20:26:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1011,6 +1011,7 @@ void CLLayoutRenderer::draw_layout()
       const CLTextGlyph* pTG = NULL;
       std::vector<const CLGraphicalObject*>::iterator it = this->mDrawables.begin(), endit = this->mDrawables.end();
       const CCopasiObject* pModelObject = NULL;
+      const CLGraphicalObject* pGO = NULL;
 #ifdef ELEMENTARY_MODE_DISPLAY
 // this is needed to highlight or fog certain elements in the diagram
       std::set<const CLGraphicalObject*>::const_iterator end = this->mHighlightedObjects.end();
@@ -1018,13 +1019,41 @@ void CLLayoutRenderer::draw_layout()
 
       while (it != endit)
         {
+          pGO = *it;
+          pRG = dynamic_cast<const CLReactionGlyph*>(pGO);
+          pSRG = dynamic_cast<const CLMetabReferenceGlyph*>(pGO);
+          pTG = dynamic_cast<const CLTextGlyph*>(pGO);
 #ifdef ELEMENTARY_MODE_DISPLAY
+
 // this is needed to highlight or fog certain elements in the diagram
-          pModelObject = (*it)->getModelObject();
+          if (pSRG == NULL)
+            {
+              pModelObject = (pGO)->getModelObject();
+            }
+          else
+            {
+              // if we have a species reference glyph, we check if the parent reaction glyph is highlighted and if
+              // it is we also highlight the species reference glyph
+              assert((*it)->getObjectParent() != NULL && (*it)->getObjectParent()->getObjectParent() != NULL);
+              assert(dynamic_cast<const CLGraphicalObject*>((*it)->getObjectParent()->getObjectParent()) != NULL);
+
+              if (pGO->getObjectParent() != NULL &&
+                  pGO->getObjectParent()->getObjectParent() != NULL
+                 )
+                {
+                  pGO = dynamic_cast<const CLGraphicalObject*>(pGO->getObjectParent()->getObjectParent());
+
+                  if (pGO != NULL)
+                    {
+                      pModelObject = pGO->getModelObject();
+                    }
+                }
+
+            }
 
           if (this->mpGlFogCoordfEXT != NULL)
             {
-              if (pModelObject != NULL && this->mHighlightedObjects.find(*it) != end)
+              if (pModelObject != NULL && this->mHighlightedObjects.find(pGO) != end)
                 {
                   (*(this->mpGlFogCoordfEXT))(highlight);
                 }
@@ -1035,9 +1064,6 @@ void CLLayoutRenderer::draw_layout()
             }
 
 #endif //ELEMENTARY_MODE_DISPLAY
-          pRG = dynamic_cast<const CLReactionGlyph*>(*it);
-          pSRG = dynamic_cast<const CLMetabReferenceGlyph*>(*it);
-          pTG = dynamic_cast<const CLTextGlyph*>(*it);
           std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator styleIt;
           styleIt = this->mStyleMap.find(*it);
 
