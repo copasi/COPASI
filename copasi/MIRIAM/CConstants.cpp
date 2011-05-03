@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:03:21 $
+//   $Date: 2011/05/03 12:24:31 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,6 +52,31 @@ void CMIRIAMResourceObject::unescapeId(std::string & id)
       }
 }
 
+// static
+std::string CMIRIAMResourceObject::trimId(const std::string & id)
+{
+  std::string Id = id;
+
+  /* Trim leading and trailing whitespaces from the string */
+  std::string::size_type begin = Id.find_first_not_of("\x20\x09\x0d\x0a");
+
+  if (begin == std::string::npos)
+    {
+      Id = "";
+    }
+  else
+    {
+      std::string::size_type end = id.find_last_not_of("\x20\x09\x0d\x0a");
+
+      if (end == std::string::npos)
+        Id = id.substr(begin);
+      else
+        Id = id.substr(begin, end - begin + 1);
+    }
+
+  return Id;
+}
+
 CMIRIAMResourceObject::CMIRIAMResourceObject(CRDFNode * pNode):
     mId(),
     mpNode(pNode)
@@ -82,7 +107,7 @@ CMIRIAMResourceObject::CMIRIAMResourceObject(const CMIRIAMResourceObject & src):
 
 bool CMIRIAMResourceObject::setId(const std::string & id)
 {
-  mId = id;
+  mId = trimId(id);
 
   // Empty IDs are not allowed.
   if (mId == "")
