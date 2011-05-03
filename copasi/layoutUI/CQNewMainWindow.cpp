@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/29 16:17:50 $
+//   $Author: gauges $
+//   $Date: 2011/05/03 20:10:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1070,7 +1070,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
       const CFluxMode* pFlux = NULL;
 
       // we remove all highlighted objects
-      std::set<const CLGraphicalObject*> s = pPainter->getHighlightedObjects();
+      std::set<const CLGraphicalObject*>& s = pPainter->getHighlightedObjects();
       s.clear();
       this->mHighlightedReactions.clear();
 
