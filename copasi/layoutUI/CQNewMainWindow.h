@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/29 16:17:50 $
+//   $Author: gauges $
+//   $Date: 2011/05/04 14:29:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,16 +36,14 @@ class QMenu;
 class QStackedWidget;
 class QToolBar;
 class CFluxMode;
-class CMetab;
 class CReaction;
+class CMetab;
 
 #ifdef COPASI_AUTOLAYOUT
 class CCompartment;
 class CCopasiObject;
 class CLayout;
-class CMetab;
 class CModel;
-class CReaction;
 class CLCompartmentGlyph;
 class CLMetabGlyph;
 class CLTextGlyph;
