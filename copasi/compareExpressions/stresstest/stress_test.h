@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/02 08:18:29 $
+//   $Date: 2011/05/04 17:35:52 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -23,6 +28,8 @@
 class CNormalFraction;
 class Model;
 class CCopasiDataModel;
+class ASTNode;
+class Reaction;
 
 // This test reads all models from the biomodels database and normalizes all
 // mathematical expressions it finds in there.
@@ -81,6 +88,8 @@ protected:
    * Normalizes COPASIs function database.
    */
   void normalizeFunctionDB();
+
+  static bool normalize_names(ASTNode* pNode, const Reaction* pReaction, const Model* pModel);
 
 protected:
   unsigned int mNumFunctionDefinitions;

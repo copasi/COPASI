@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/13 17:41:57 $
+//   $Date: 2011/05/04 17:35:52 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -536,6 +536,9 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
           if (pMath != NULL)
             {
               pNewMath = create_expression(pMath, pModel->getListOfFunctionDefinitions());
+              // we normalize the names of all named nodes
+              bool result = stress_test::normalize_names(pNewMath, pReaction, pModel);
+              assert(result == true);
               assert(pNewMath != NULL);
 
               try
@@ -1299,6 +1302,127 @@ void stress_test::normalizeFunctionDB()
     }
 }
 
+bool stress_test::normalize_names(ASTNode* pNode, const Reaction* pReaction, const Model* pModel)
+{
+  bool result = true;
+  std::vector<std::pair<ASTNode*, unsigned int> > nodeStack;
+  std::map<std::string, std::string> replacementMap;
+
+
+  unsigned int compartment_index = 1;
+  unsigned int species_index = 1;
+  unsigned int reaction_index = 1;
+  unsigned int parameter_index = 1;
+  std::ostringstream os;
+  // first we collect all ids
+  ASTNode* pCurrent = pNode;
+  unsigned int iMax;
+  nodeStack.push_back(std::pair<ASTNode*, unsigned int>(NULL, 0));
+  std::map<std::string, std::string>::const_iterator pos;
+
+  while (pCurrent != NULL)
+    {
+      // if the object is already on the node stack, we go
+      // either to the next child or one up
+      if (pCurrent == nodeStack.back().first)
+        {
+          ++nodeStack.back().second;
+
+          if (nodeStack.back().second == pCurrent->getNumChildren())
+            {
+              // we are done here and we have to go one up
+              nodeStack.erase(--nodeStack.end());
+              pCurrent = nodeStack.back().first;
+            }
+          else
+            {
+              // next child
+              pCurrent = pCurrent->getChild(nodeStack.back().second);
+            }
+        }
+      else
+        {
+          iMax = pCurrent->getNumChildren();
+
+          // if there are children, add the node to
+          // the node stack
+          if (iMax > 0)
+            {
+              nodeStack.push_back(std::pair<ASTNode*, unsigned int>(pCurrent, 0));
+              pCurrent = pCurrent->getChild(0);
+            }
+          else
+            {
+              if (pCurrent->isName())
+                {
+                  // check if the name is the id of a compartment, a species, a reaction
+                  // a global parameter or one of the reaction parameters
+                  // if so, we add a new entry to out replacement map
+                  // we check in the order parameters, species, compartment and reaction
+                  // because that should result in the least tests
+                  std::string id = pCurrent->getName();
+                  // do we already know this id?
+                  pos = replacementMap.find(id);
+
+                  if (pos == replacementMap.end())
+                    {
+                      // if not, we create a replacement
+                      if ((pReaction->getKineticLaw() != NULL && pReaction->getKineticLaw()->getParameter(id) != NULL) || pModel->getParameter(id) != NULL)
+                        {
+                          os.str("");
+                          os << "K_" << parameter_index;
+                          replacementMap.insert(std::pair<std::string, std::string>(id, os.str()));
+                          pCurrent->setName(os.str().c_str());
+                          ++parameter_index;
+
+                        }
+                      else if (pModel->getSpecies(id) != NULL)
+                        {
+                          os.str("");
+                          os << "S_" << species_index;
+                          replacementMap.insert(std::pair<std::string, std::string>(id, os.str()));
+                          pCurrent->setName(os.str().c_str());
+                          ++species_index;
+                        }
+                      else if (pModel->getCompartment(id) != NULL)
+                        {
+                          os.str("");
+                          os << "C_" << compartment_index;
+                          replacementMap.insert(std::pair<std::string, std::string>(id, os.str()));
+                          pCurrent->setName(os.str().c_str());
+                          ++compartment_index;
+                        }
+                      else if (pModel->getReaction(id) != NULL)
+                        {
+                          os.str("");
+                          os << "R_" << reaction_index;
+                          replacementMap.insert(std::pair<std::string, std::string>(id, os.str()));
+                          pCurrent->setName(os.str().c_str());
+                          ++reaction_index;
+                        }
+                      else
+                        {
+                          // lets see if there are any for these
+                          assert(false);
+                        }
+                    }
+                  else
+                    {
+                      pCurrent->setName(pos->second.c_str());
+                    }
+                }
+
+              // continue with the parent
+              pCurrent = nodeStack.back().first;
+            }
+        }
+
+    }
+
+  return result;
+}
+
+
 int main(int argc, char** argv)
 {
   if (argc > 1)
@@ -1320,3 +1444,6 @@ int main(int argc, char** argv)
       std::cerr << "Usage: stresstest SBMLFILE1 [SBMLFILE2 ...]" << std::endl;
     }
 }
+
+
+
