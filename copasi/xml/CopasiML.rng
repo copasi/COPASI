@@ -1211,11 +1211,19 @@
   </define>
 
   <!-- data type for key, role and type lists -->
+  <define name="wsSeparatedStringList.datatype">
+    <data type="string">
+      <!-- pattern for a whitespace separated list of string. -->
+      <!-- the list may also be empty -->
+      <param name="pattern">^(\s*\S+\s+)*(\s*\S+\s*)?$</param>
+    </data>
+  </define>
+
   <define name="commaSeparatedStringList.datatype">
     <data type="string">
       <!-- pattern for a komma separated list of string. -->
       <!-- the list may also be empty -->
-      <param name="pattern">^(\s*\S+\s*,)*(\s*\S+\s*)?</param>
+      <param name="pattern">^(\s*\S+\s*,)*(\s*\S+\s*)?$</param>
     </data>
   </define>
 
@@ -1323,7 +1331,7 @@
     </attribute>
     <optional>
       <attribute name="font-family">
-        <ref name="relAbsValue.datatype"/>
+        <data type="string"/>
       </attribute>
     </optional>
     <optional>
@@ -1386,7 +1394,7 @@
     </zeroOrMore>
     <optional>
       <attribute name="font-family">
-        <ref name="relAbsValue.datatype"/>
+        <data type="string"/>
       </attribute>
     </optional>
     <optional>
@@ -1440,12 +1448,16 @@
     <attribute name="height">
       <ref name="relAbsValue.datatype"/>
     </attribute>
-    <attribute name="rx">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
-    <attribute name="ry">
-      <ref name="relAbsValue.datatype"/>
-    </attribute>
+    <optional>
+      <attribute name="rx">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="ry">
+        <ref name="relAbsValue.datatype"/>
+      </attribute>
+    </optional>  
   </define>
 
   <define name="ellipse.datatype">
@@ -1650,18 +1662,25 @@
     </element>
     <optional>
       <attribute name="roleList">
-        <ref name="commaSeparatedStringList.datatype"/>
+        <ref name="wsSeparatedStringList.datatype"/>
       </attribute>
     </optional>
     <optional>
       <attribute name="typeList">
-        <ref name="commaSeparatedStringList.datatype"/>
+        <ref name="wsSeparatedStringList.datatype"/>
       </attribute>
     </optional>
   </define>
 
   <define name="globalStyle.dataType">
     <ref name="style.datatype"/>
+    <optional>
+      <attribute name="key">
+        <data type="ID">
+        <param name="pattern">GlobalStyle_\d+</param>
+      </data>
+      </attribute>
+    </optional>
   </define>
 
   <define name="localStyle.datatype">
@@ -1670,7 +1689,14 @@
     <!-- but I am not sure if this is woth the trouble. -->
     <optional>
       <attribute name="keyList">
-        <ref name="commaSeparatedStringList.datatype"/>
+        <ref name="wsSeparatedStringList.datatype"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="key">
+        <data type="ID">
+        <param name="pattern">LocalStyle_\d+</param>
+      </data>
       </attribute>
     </optional>
   </define>
@@ -1686,6 +1712,11 @@
         </oneOrMore>
       </element>
     </optional>
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">LocalRenderInformation_\d+</param>
+      </data>
+    </attribute>
   </define>
 
   <define name="globalRenderInformation.datatype">
@@ -1699,6 +1730,11 @@
         </oneOrMore>
       </element>
     </optional>
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">GlobalRenderInformation_\d+</param>
+      </data>
+    </attribute>
   </define>
 
   <define name="listOfGlobalRenderInformation.datatype">
@@ -1975,6 +2011,11 @@
         <ref name="listOfAdditionalGraphicalObjects.datatype"/>
       </element>
     </optional>
+    <optional>
+      <element name="ListOfRenderInformation">
+        <ref name="listOfLocalRenderInformation.datatype"/>
+      </element>
+    </optional>
     <attribute name="key">
       <data type="ID">
         <param name="pattern">Layout_\d+</param>
@@ -1993,6 +2034,11 @@
         <ref name="layout.datatype"/>
       </element>
     </zeroOrMore>
+    <optional>
+      <element name="ListOfGlobalRenderInformation">
+        <ref name="listOfGlobalRenderInformation.datatype"/>
+      </element>
+    </optional>
   </define>
   
 </grammar>
