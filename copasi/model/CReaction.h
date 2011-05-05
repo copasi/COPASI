@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/23 13:50:49 $
+//   $Author: shoops $
+//   $Date: 2011/05/05 16:17:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -378,7 +378,7 @@ public:
    * Retrieve the call parameter given to the kinetic function.
    * @return const CCallParameters< C_FLOAT64 > & callParameters
    */
-  const CCallParameters< C_FLOAT64 > & getCallParameters();
+  const CCallParameters< C_FLOAT64 > & getCallParameters() const;
 
 
 private:

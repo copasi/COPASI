@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:50:08 $
+//   $Date: 2011/05/05 16:17:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -247,7 +247,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
     {
       case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
       {
-        success &= DataTrigger.setRoot(static_cast< const CEvaluationNode * >(pNode->getChild()));
+        // success &= DataTrigger.setRoot(static_cast< const CEvaluationNode * >(pNode->getChild()));
         success &= DataTrigger.updateTree();
         mDualAction = true;
 
@@ -265,7 +265,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
 
       case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
       {
-        CEvaluationNode * pArg = static_cast< const CEvaluationNode * >(pNode->getChild());
+        const CEvaluationNode * pArg = static_cast< const CEvaluationNode * >(pNode->getChild());
 
         CEvaluationNode * pOR = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
 
@@ -292,7 +292,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
 
       case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
       {
-        CEvaluationNode * pArg = static_cast< const CEvaluationNode * >(pNode->getChild());
+        const CEvaluationNode * pArg = static_cast< const CEvaluationNode * >(pNode->getChild());
 
         CEvaluationNode * pOR = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
 

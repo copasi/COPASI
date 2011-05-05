@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:50:08 $
+//   $Date: 2011/05/05 16:17:10 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -621,7 +621,7 @@ bool CMathObject::compileFlux(CMathContainer & container)
 {
   bool success = true;
 
-  CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+  const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
   mpExpression = new CMathExpression(*pReaction->getFunction(),
                                      pReaction->getCallParameters(),
@@ -635,7 +635,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 {
   bool success = true;
 
-  CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+  const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
 
   std::ostringstream Infix;

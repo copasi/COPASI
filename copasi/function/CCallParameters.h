@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/03/07 19:28:19 $
+   $Date: 2011/05/05 16:17:10 $
    End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,6 +185,8 @@ public:
   const CFunctionParameters & getFunctionParameters() const;
 
   CCallParameters<C_FLOAT64> & getPointers();
+
+  const CCallParameters<C_FLOAT64> & getPointers() const;
 
   CCallParameters<CCopasiObject> & getObjects();
 
