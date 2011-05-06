@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.36.2.2 $
+//   $Revision: 1.36.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/07 15:39:46 $
+//   $Date: 2011/05/06 13:00:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -45,7 +45,7 @@ public:
     MassAction,
     PreDefined,
     UserDefined,
-    Expression,
+    Expression
   };
 
   /**
