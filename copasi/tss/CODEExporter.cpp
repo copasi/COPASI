@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.23.2.3 $
+//   $Revision: 1.23.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:06 $
+//   $Date: 2011/05/11 18:19:22 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -888,7 +888,7 @@ bool CODEExporter::exportCompartments(const CModel* copasiModel)
         {
           case CModelEntity::FIXED:
           {
-            expression << comp->getValue();
+            expression << comp->getInitialValue();
 
             break;
           }
@@ -944,7 +944,7 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
         {
           case CModelEntity::FIXED:
           {
-            expression << modval->getValue();
+            expression << modval->getInitialValue();
 
             break;
           }
