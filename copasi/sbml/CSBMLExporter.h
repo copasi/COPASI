@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.33.2.2 $
+//   $Revision: 1.33.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/21 11:35:02 $
+//   $Date: 2011/05/12 14:58:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,28 +33,29 @@
 #include "copasi/function/CEvaluationNodeFunction.h"
 #include <sbml/FunctionDefinition.h>
 
-class SBase;
-class SBMLDocument;
-class CCopasiDataModel;
-class SBMLIncompatibility;
+class CAnnotation;
+class CChemEqElement;
 class CCompartment;
-class CMetab;
-class CExpression;
-class CEvaluationNode;
-class CReaction;
+class CCopasiDataModel;
 class CCopasiParameter;
-class CModelEntity;
+class CEvaluationNode;
+class CEvent;
+class CExpression;
 class CFunction;
+class CFunctionDB;
+class CMetab;
+class CModelValue;
+class CReaction;
+class Event;
+class CModelEntity;
 class KineticLaw;
 class Model;
-class CModelValue;
-class CEvent;
-class CChemEqElement;
-class CFunctionDB;
-class Rule;
-class XMLNode;
-class Event;
 class Parameter;
+class Rule;
+class SBase;
+class SBMLDocument;
+class SBMLIncompatibility;
+class XMLNode;
 
 class CSBMLExporter
 {
@@ -580,6 +581,13 @@ protected:
    * sets it on the given SBML object.
    */
   bool updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& metaIds);
+
+  /**
+   * This is a general method to set the notes of an SBase object based on a COPASI
+   * Annotation.
+   * This will allow us to export notes on objects other than just the model.
+   */
+  static bool setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno);
 
   /**
    * This method creates a copy of parent where the child with the given index is

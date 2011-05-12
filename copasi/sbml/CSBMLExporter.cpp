@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.12 $
+//   $Revision: 1.84.2.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/22 19:03:18 $
+//   $Date: 2011/05/12 14:58:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@
 #include "model/CMetab.h"
 #include "function/CExpression.h"
 #include "function/CEvaluationNode.h"
+#include "model/CAnnotation.h"
 #include "model/CReaction.h"
 #include "utilities/CCopasiParameter.h"
 #include "model/CModelValue.h"
@@ -748,6 +749,11 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
         }
     }
 
+  if (pSBMLCompartment != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pSBMLCompartment, &compartment);
+    }
+
   CSBMLExporter::updateMIRIAMAnnotation(&compartment, pSBMLCompartment, this->mMetaIdMap);
 }
 
@@ -953,6 +959,11 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
         }
     }
 
+  if (pSBMLSpecies != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pSBMLSpecies, &metab);
+    }
+
   CSBMLExporter::updateMIRIAMAnnotation(&metab, pSBMLSpecies, this->mMetaIdMap);
 }
 
@@ -1074,6 +1085,11 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
         {
           removeInitialAssignment(pParameter->getId());
         }
+    }
+
+  if (pParameter != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pParameter, &modelValue);
     }
 
   CSBMLExporter::updateMIRIAMAnnotation(&modelValue, pParameter, this->mMetaIdMap);
@@ -1283,6 +1299,11 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
   else
     {
       pSBMLReaction->unsetKineticLaw();
+    }
+
+  if (pSBMLReaction != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pSBMLReaction, &reaction);
     }
 
   CSBMLExporter::updateMIRIAMAnnotation(&reaction, pSBMLReaction, this->mMetaIdMap);
@@ -2682,6 +2703,11 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
         }
     }
 
+  if (pFunDef != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pFunDef, &function);
+    }
+
   CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIdMap);
 }
 
@@ -2804,38 +2830,10 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   assert(pModel != NULL);
   this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
 
-  if (pModel != NULL && (!pModel->getNotes().empty()) && !(pModel->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
+
+  if (pModel != NULL && this->mpSBMLDocument->getModel() != NULL)
     {
-#if LIBSBML_VERSION >= 40100
-      // the new method to create notes does not add the notes tag around the notes any
-      // more because libsbml 4 checks if it is there and adds it if it isn't
-      XMLNode* pNotes = CSBMLExporter::createSBMLNotes(pModel->getNotes());
-#else
-      // if we are compiling agains libsbml 3, we use the old way of setting the notes
-      std::string comments = "<notes>" + pModel->getNotes() + "</notes>";
-      // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
-      // in libsbml it creates a dummy node and in libsbml 4 it doesn't
-      // somehow this never did affect the notes because they were exported correctly with
-      // libsbml 3 already
-      XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
-#endif // LIBSBML_VERSION
-
-      if (pNotes != NULL)
-        {
-          int notes_result = this->mpSBMLDocument->getModel()->setNotes(pNotes);
-
-          if (notes_result != LIBSBML_OPERATION_SUCCESS)
-            {
-              // issue some warning
-              CCopasiMessage(CCopasiMessage::WARNING, "Warning, notes could not be set on the SBML model, please consider reporting this to the COPASI developers.");
-            }
-
-          delete pNotes;
-        }
-      else
-        {
-          CCopasiMessage(CCopasiMessage::WARNING, "Warning, notes could not be set on the SBML model, please consider reporting this to the COPASI developers.");
-        }
+      CSBMLExporter::setSBMLNotes(this->mpSBMLDocument->getModel(), pModel);
     }
 
   // update the MIRIAM annotation on the model
@@ -3564,6 +3562,13 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       delete pSBMLEvent;
       this->mCOPASI2SBMLMap.erase(&event);
     }
+
+  if (pSBMLEvent != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pSBMLEvent, &event);
+    }
+
+  CSBMLExporter::updateMIRIAMAnnotation(&event, pSBMLEvent, this->mMetaIdMap);
 }
 
 void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)
@@ -5479,6 +5484,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
   const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
   const CFunction* pFunction = dynamic_cast<const CFunction*>(pCOPASIObject);
   const CReaction* pReaction = dynamic_cast<const CReaction*>(pCOPASIObject);
+  const CEvent* pEvent = dynamic_cast<const CEvent*>(pCOPASIObject);
   CMIRIAMInfo miriamInfo;
   std::string miriamAnnotationString;
 
@@ -5496,6 +5502,11 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
     {
       miriamInfo.load(pFunction->getKey());
       miriamAnnotationString = pFunction->getMiriamAnnotation();
+    }
+  else if (pEvent != NULL)
+    {
+      miriamInfo.load(pEvent->getKey());
+      miriamAnnotationString = pEvent->getMiriamAnnotation();
     }
   else
     {
@@ -6728,6 +6739,148 @@ CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNod
   return pResult;
 }
 
+/**
+ * This is a general method to set the notes of an SBase object based on a COPASI
+ * Annotation.
+ * This will allow us to export notes on objects other than just the model.
+ */
+bool CSBMLExporter::setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno)
+{
+  bool result = true;
+
+  if (pSBase != NULL && pAnno != NULL)
+    {
+      if ((!pAnno->getNotes().empty()) && !(pAnno->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
+        {
+#if LIBSBML_VERSION >= 40100
+          // the new method to create notes does not add the notes tag around the notes any
+          // more because libsbml 4 checks if it is there and adds it if it isn't
+          XMLNode* pNotes = CSBMLExporter::createSBMLNotes(pAnno->getNotes());
+#else
+          // if we are compiling agains libsbml 3, we use the old way of setting the notes
+          std::string comments = "<notes>" + pAnno->getNotes() + "</notes>";
+          // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
+          // in libsbml it creates a dummy node and in libsbml 4 it doesn't
+          // somehow this never did affect the notes because they were exported correctly with
+          // libsbml 3 already
+          XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
+#endif // LIBSBML_VERSION
+
+          if (pNotes != NULL)
+            {
+              int notes_result = pSBase->setNotes(pNotes);
+
+              if (notes_result != LIBSBML_OPERATION_SUCCESS)
+                {
+                  // issue some warning
+                  std::string target;
+
+                  switch (pSBase->getTypeCode())
+                    {
+                      case SBML_MODEL:
+                        target = "the SBML model";
+                        break;
+                      case SBML_COMPARTMENT:
+                        target = " compartment \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      case SBML_SPECIES:
+                        target =
+                          target = "species \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      case SBML_PARAMETER:
+                        target =
+                          target = "parameter \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      case SBML_REACTION:
+                        target = "reaction \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      case SBML_EVENT:
+                        target = "event \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      default:
+                        target = "object \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                    }
+
+                  std::string warning = "Warning, notes could not be set on ";
+                  warning += target;
+                  warning += ", please consider reporting this to the COPASI developers.";
+                  CCopasiMessage(CCopasiMessage::WARNING, warning.c_str());
+                  result = false;
+                }
+
+              delete pNotes;
+            }
+          else
+            {
+              std::string target;
+
+              switch (pSBase->getTypeCode())
+                {
+                  case SBML_MODEL:
+                    target = "the SBML model";
+                    break;
+                  case SBML_COMPARTMENT:
+                    target = " compartment \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  case SBML_SPECIES:
+                    target =
+                      target = "species \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  case SBML_PARAMETER:
+                    target =
+                      target = "parameter \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  case SBML_REACTION:
+                    target = "reaction \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  case SBML_EVENT:
+                    target = "event \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  default:
+                    target = "object \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                }
+
+              std::string warning = "Warning, notes could not be set on ";
+              warning += target;
+              warning += ", please consider reporting this to the COPASI developers.";
+              CCopasiMessage(CCopasiMessage::WARNING, warning.c_str());
+              result = false;
+            }
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
+}
 
 #if LIBSBML_VERSION >= 40001
 /**
