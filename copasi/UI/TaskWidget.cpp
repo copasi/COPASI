@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.59.2.5 $
+//   $Revision: 1.59.2.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/30 16:00:38 $
+//   $Author: gauges $
+//   $Date: 2011/05/12 19:49:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -340,6 +340,7 @@ bool TaskWidget::commonBeforeRunTask()
   //handle autosave feature
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->disableSliders(true);
 
   //create progress bar
   mProgressBar = CProgressBar::create();
@@ -375,6 +376,7 @@ bool TaskWidget::commonAfterRunTask()
   protectedNotify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->disableSliders(false);
 
   return loadTask();
 }
