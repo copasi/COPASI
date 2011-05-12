@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.15 $
+//   $Revision: 1.289.2.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/29 19:46:41 $
+//   $Author: gauges $
+//   $Date: 2011/05/12 19:48:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,7 +235,8 @@ CopasiUI3Window::CopasiUI3Window():
     mNewFile(),
     mCommitRequired(true),
     mpCloseEvent(),
-    mQuitApplication(false)
+    mQuitApplication(false),
+    mSliderDialogEnabled(false)
 
 #ifdef COPASI_SBW_INTEGRATION
     , mpSBWModule(NULL)
@@ -299,6 +300,7 @@ CopasiUI3Window::CopasiUI3Window():
   size_t id = mpListView->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
   this->mpSliders->resize(320, 350);
+  this->mSliderDialogEnabled = this->mpSliders->isEnabled();
 
   resize(800, 600);
   show();
@@ -2544,3 +2546,25 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
 
   slotFileOpen(fileName);
 }
+
+/**
+ * The slider dialog has to be disabled before
+ * a task is run and reenabled afterwards.
+ * Actually the methods stores the state
+ * when the value true is passed and restores that
+ * state when the value false is passed.
+ */
+void CopasiUI3Window::disableSliders(bool disable)
+{
+  if (disable)
+    {
+      this->mSliderDialogEnabled = this->mpSliders->isEnabled();
+      this->mpSliders->setEnabled(false);
+    }
+  else
+    {
+      this->mpSliders->setEnabled(this->mSliderDialogEnabled);
+    }
+}
+
+
