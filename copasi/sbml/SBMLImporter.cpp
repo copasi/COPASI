@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.30 $
+//   $Revision: 1.263.2.31 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/08 15:27:37 $
+//   $Date: 2011/05/12 14:57:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -779,19 +779,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       this->mpCopasiModel->setModelType(CModel::deterministic);
     }
 
-  if (sbmlModel->isSetNotes() && sbmlModel->getNotes() != NULL)
-    {
-
-      std::ostringstream stream;
-
-      for (unsigned int i = 0; i < sbmlModel->getNotes()->getNumChildren(); ++i)
-        {
-          stream << XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(i)) << std::endl;
-        }
-
-      this->mpCopasiModel->setNotes(stream.str());
-      //std::string notesString=XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(0));
-    }
+  SBMLImporter::importNotes(this->mpCopasiModel, sbmlModel);
 
   title = sbmlModel->getName();
 
@@ -1479,6 +1467,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
     }
 
   SBMLImporter::importMIRIAM(sbmlFunction, pTmpFunction);
+  SBMLImporter::importNotes(pTmpFunction, sbmlFunction);
   return pTmpFunction;
 }
 
@@ -1694,6 +1683,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
 
   //DebugFile << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
   SBMLImporter::importMIRIAM(sbmlCompartment, copasiCompartment);
+  SBMLImporter::importNotes(copasiCompartment, sbmlCompartment);
   copasi2sbmlmap[copasiCompartment] = const_cast<Compartment*>(sbmlCompartment);
   return copasiCompartment;
 }
@@ -1778,6 +1768,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
 
   SBMLImporter::importMIRIAM(sbmlSpecies, copasiMetabolite);
+  SBMLImporter::importNotes(copasiMetabolite, sbmlSpecies);
   return copasiMetabolite;
 }
 
@@ -2606,6 +2597,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
   SBMLImporter::importMIRIAM(sbmlReaction, copasiReaction);
+  SBMLImporter::importNotes(copasiReaction, sbmlReaction);
   return copasiReaction;
 }
 
@@ -3967,6 +3959,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
   pMV->setSBMLId(sbmlId);
   SBMLImporter::importMIRIAM(sbmlParameter, pMV);
+  SBMLImporter::importNotes(pMV, sbmlParameter);
 #if LIBSBML_VERSION >= 40100
 
   if (this->mLevel > 2)
@@ -9149,6 +9142,8 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
     }
 
   copasi2sbmlmap[pCOPASIEvent] = const_cast<Event*>(pEvent);
+  SBMLImporter::importMIRIAM(pEvent, pCOPASIEvent);
+  SBMLImporter::importNotes(pCOPASIEvent, pEvent);
 }
 
 /**
@@ -9809,3 +9804,31 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
 
   return pResult;
 }
+
+/**
+ * This method reads the notes from an arbitrate SBase object
+ * and set them on the given CAnnotation instance.
+ */
+bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
+{
+  bool result = true;
+
+  if (pAnno != NULL && pSBase != NULL)
+    {
+      if (pSBase->isSetNotes() && const_cast<SBase*>(pSBase)->getNotes() != NULL)
+        {
+          const XMLNode* pNotes = const_cast<SBase*>(pSBase)->getNotes();
+          std::ostringstream stream;
+
+          for (unsigned int i = 0; i < pNotes->getNumChildren(); ++i)
+            {
+              stream << XMLNode::convertXMLNodeToString(&pNotes->getChild(i)) << std::endl;
+            }
+
+          pAnno->setNotes(stream.str());
+        }
+    }
+
+  return result;
+}
+
