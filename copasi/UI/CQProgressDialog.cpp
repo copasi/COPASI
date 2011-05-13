@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.cpp,v $
-//   $Revision: 1.8.2.1 $
+//   $Revision: 1.8.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/05 15:25:59 $
+//   $Date: 2011/05/13 21:46:54 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,15 +43,6 @@ CQProgressDialog::CQProgressDialog(QWidget* parent, const char* name, bool modal
 CQProgressDialog::~CQProgressDialog()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQProgressDialog::languageChange()
-{
-  retranslateUi(this);
 }
 
 bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)

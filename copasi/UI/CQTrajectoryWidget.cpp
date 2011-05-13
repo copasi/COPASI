@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.9.2.3 $
+//   $Revision: 1.9.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/08 15:15:53 $
+//   $Date: 2011/05/13 21:47:03 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,15 +55,6 @@ CQTrajectoryWidget::~CQTrajectoryWidget()
 {
   destroy();
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQTrajectoryWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQTrajectoryWidget::init()

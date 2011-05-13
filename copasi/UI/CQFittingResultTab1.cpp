@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingResultTab1.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/06/07 14:01:52 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:46:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,15 +39,6 @@ CQFittingResultTab1::CQFittingResultTab1(QWidget* parent, const char* name, Qt::
 CQFittingResultTab1::~CQFittingResultTab1()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQFittingResultTab1::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQFittingResultTab1::load(const CFitProblem * pProblem)

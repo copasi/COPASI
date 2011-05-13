@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/04/02 15:47:09 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:46:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,7 +43,7 @@ public:
   virtual bool leave();
 
 protected slots:
-  virtual void languageChange();
+
 
   void saveToFile();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-$Revision: 1.9.2.1 $
+$Revision: 1.9.2.2 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/10/20 15:14:28 $
+$Date: 2011/05/13 21:46:52 $
 End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,15 +54,6 @@ CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, Qt::WF
  */
 CQLyapResultWidget::~CQLyapResultWidget()
 {}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQLyapResultWidget::languageChange()
-{
-  retranslateUi(this);
-}
 
 void CQLyapResultWidget::init()
 {

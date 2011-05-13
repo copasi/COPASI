@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.h,v $
-//   $Revision: 1.17.2.2 $
+//   $Revision: 1.17.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/01/31 17:34:07 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:46:59 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -70,7 +70,7 @@ protected:
   void enableEdit(const bool & enable);
 
 protected slots:
-  virtual void languageChange();
+
 
   void slotRevert();
   void slotFirst();

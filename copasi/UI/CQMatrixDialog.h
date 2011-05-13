@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.h,v $
-//   $Revision: 1.6.2.2 $
+//   $Revision: 1.6.2.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/01/24 17:00:14 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:46:55 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,7 +31,7 @@ public slots:
   virtual void setArray(const CArrayAnnotation * tmp, bool single);
 
 protected slots:
-  virtual void languageChange();
+
 
 };
 

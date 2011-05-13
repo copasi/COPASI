@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionItemWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.18.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Date: 2011/05/13 21:46:58 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -33,15 +38,6 @@ FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool m
 FunctionItemWidget::~FunctionItemWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void FunctionItemWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void FunctionItemWidget::slotButtonClear()

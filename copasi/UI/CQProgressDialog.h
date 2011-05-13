@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/26 14:26:13 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:46:54 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -41,7 +41,7 @@ protected:
   QTimer *mpTimer;
 
 protected slots:
-  virtual void languageChange();
+
 
   virtual void btnStopPressed();
   virtual void btnPausePressed();

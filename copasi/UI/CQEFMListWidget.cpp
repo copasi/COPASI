@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMListWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 19:05:20 $
+//   $Date: 2011/05/13 21:46:53 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,11 +57,6 @@ CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
 CQEFMListWidget::~CQEFMListWidget()
 {
   // TODO Auto-generated destructor stub
-}
-
-void CQEFMListWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 bool CQEFMListWidget::loadResult(const CEFMTask * pTask)

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQStartValueReset.cpp,v $
-//   $Revision: 1.3.2.3 $
+//   $Revision: 1.3.2.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/01/31 17:36:10 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:46:59 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,15 +35,6 @@ CQStartValueReset::CQStartValueReset(QWidget* parent, const char* name, bool mod
 CQStartValueReset::~CQStartValueReset()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQStartValueReset::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQStartValueReset::slotModel()

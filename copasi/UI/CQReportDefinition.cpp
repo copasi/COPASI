@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.10.2.5 $
+//   $Revision: 1.10.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/23 18:06:10 $
+//   $Date: 2011/05/13 21:46:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,15 +65,6 @@ CQReportDefinition::~CQReportDefinition()
 {
   destroy();
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQReportDefinition::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQReportDefinition::nameChanged(const QString & /* string */)

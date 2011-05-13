@@ -45,7 +45,7 @@ protected:
   virtual bool enterProtected();
 
 protected slots:
-  virtual void languageChange();
+
 
 private:
   const CFitTask * mpTask;

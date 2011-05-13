@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.37.4.2 $
+//   $Revision: 1.37.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:58 $
+//   $Date: 2011/05/13 21:46:55 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -227,7 +227,6 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
   layoutLeft->addItem(spacer1);
 
   ParametersWidgetLayout->addMultiCellLayout(layoutLeft, 0, 1, 0, 1);
-  //languageChange();
   //resize(QSize(511, 572).expandedTo(minimumSizeHint()));
   //clearWState(WState_Polished);
 

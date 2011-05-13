@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.cpp,v $
-//   $Revision: 1.9.2.2 $
+//   $Revision: 1.9.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:57:48 $
+//   $Date: 2011/05/13 21:46:59 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,11 +35,6 @@ CQTaskHeaderWidget::CQTaskHeaderWidget(QWidget* parent, Qt::WindowFlags f):
 CQTaskHeaderWidget::~CQTaskHeaderWidget()
 {
   // TODO Auto-generated destructor stub
-}
-
-void CQTaskHeaderWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 bool CQTaskHeaderWidget::setTaskName(const std::string & name)

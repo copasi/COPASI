@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.10.2.2 $
+//   $Revision: 1.10.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:50 $
+//   $Date: 2011/05/13 21:46:57 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,15 +57,6 @@ CQMCAWidget::CQMCAWidget(QWidget* parent, const char* name)
 CQMCAWidget::~CQMCAWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQMCAWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQMCAWidget::slotSteadyStateChecked()

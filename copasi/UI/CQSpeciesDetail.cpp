@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.2.4.7 $
+//   $Revision: 1.2.4.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:12:56 $
+//   $Date: 2011/05/13 21:46:50 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,11 +73,6 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
 
 CQSpeciesDetail::~CQSpeciesDetail()
 {
-}
-
-void CQSpeciesDetail::languageChange()
-{
-  retranslateUi(this);
 }
 
 bool CQSpeciesDetail::leave()

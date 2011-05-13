@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRepeat.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.4.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/03/18 12:39:31 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:46:50 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -41,15 +46,6 @@ CScanWidgetRepeat::CScanWidgetRepeat(QWidget* parent, const char* name, Qt::Wind
 CScanWidgetRepeat::~CScanWidgetRepeat()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CScanWidgetRepeat::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CScanWidgetRepeat::init()

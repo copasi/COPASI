@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQRDFTreeView.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/08/13 13:54:28 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:47:06 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -38,7 +43,7 @@ protected:
   virtual bool enterProtected();
 
 protected slots:
-  virtual void languageChange();
+
 
 public slots:
   /**

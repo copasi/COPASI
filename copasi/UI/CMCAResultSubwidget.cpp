@@ -6,7 +6,7 @@
 //   $Date: 2010/03/21 15:21:13 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,15 +59,6 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, Qt::
 CMCAResultSubwidget::~CMCAResultSubwidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CMCAResultSubwidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CMCAResultSubwidget::init()

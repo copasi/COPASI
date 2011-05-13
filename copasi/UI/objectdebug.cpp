@@ -1,12 +1,12 @@
 // Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/27 16:00:44 $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/Attic/objectdebug.cpp,v $
+//   $Revision: 1.12.2.2 $
+//   $Name: Build-33 $
+//   $Author: aekamal $
+//   $Date: 2011/01/24 17:00:16 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,15 +46,6 @@ ObjectDebug::ObjectDebug(QWidget* parent, const char* name, bool modal, Qt::Wind
 ObjectDebug::~ObjectDebug()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void ObjectDebug::languageChange()
-{
-  retranslateUi(this);
 }
 
 class MyListViewItemWithPtr : public Q3ListViewItem

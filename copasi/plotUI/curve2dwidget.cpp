@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.cpp,v $
-//   $Revision: 1.2.2.1 $
+//   $Revision: 1.2.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:38:01 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:47:06 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,15 +42,6 @@ Curve2DWidget::Curve2DWidget(QWidget* parent, const char* /* name */, Qt::Window
 Curve2DWidget::~Curve2DWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void Curve2DWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)

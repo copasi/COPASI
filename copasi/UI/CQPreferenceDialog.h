@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/12/09 16:41:49 $
+//   $Date: 2011/05/13 21:46:52 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -28,7 +33,7 @@ private:
   void init();
 
 protected slots:
-  virtual void languageChange();
+
 
 private slots:
   virtual void slotBtnOk();

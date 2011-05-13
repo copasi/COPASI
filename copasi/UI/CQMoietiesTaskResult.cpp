@@ -6,7 +6,7 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -93,15 +93,6 @@ CQMoietiesTaskResult::CQMoietiesTaskResult(QWidget* parent, const char* name)
 CQMoietiesTaskResult::~CQMoietiesTaskResult()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQMoietiesTaskResult::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQMoietiesTaskResult::init()

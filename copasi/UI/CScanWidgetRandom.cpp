@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.11.2.1 $
+//   $Revision: 1.11.2.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/11/12 19:37:59 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:47:01 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -71,15 +71,6 @@ CScanWidgetRandom::CScanWidgetRandom(QWidget* parent, const char* name, Qt::Wind
 CScanWidgetRandom::~CScanWidgetRandom()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CScanWidgetRandom::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CScanWidgetRandom::init()

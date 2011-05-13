@@ -6,7 +6,7 @@
 //   $Date: 2009/10/01 12:58:00 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,15 +53,6 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
 CQExpressionMmlStackedWidget::~CQExpressionMmlStackedWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQExpressionMmlStackedWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQExpressionMmlStackedWidget::slotGoExpressionWidget()

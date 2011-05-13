@@ -6,7 +6,7 @@
 //   $Date: 2010/04/27 16:00:44 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -45,15 +45,6 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
 CQTSSAResultSubWidget::~CQTSSAResultSubWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQTSSAResultSubWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQTSSAResultSubWidget::saveDataToFile()

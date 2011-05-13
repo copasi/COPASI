@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.15.4.7 $
+//   $Revision: 1.15.4.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:07:50 $
+//   $Date: 2011/05/13 21:47:01 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,15 +49,6 @@ CQModelValue::~CQModelValue()
 {
   destroy();
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQModelValue::languageChange()
-{
-  retranslateUi(this);
 }
 
 /*!

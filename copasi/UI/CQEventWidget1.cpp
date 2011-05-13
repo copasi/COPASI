@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.24.2.6 $
+//   $Revision: 1.24.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/13 17:32:22 $
+//   $Date: 2011/05/13 21:46:53 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,15 +54,6 @@ CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name)
 CQEventWidget1::~CQEventWidget1()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQEventWidget1::languageChange()
-{
-  retranslateUi(this);
 }
 
 /*! Slot to save all current values of the active event widget whenever the Commit button is clicked */

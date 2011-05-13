@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.18.4.3 $
+//   $Revision: 1.18.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:03:34 $
+//   $Date: 2011/05/13 21:47:06 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -113,15 +113,6 @@ CQMiriamWidget::~CQMiriamWidget()
 {
   // no need to delete child widgets or objects, Qt does it all for us
   pdelete(mpMIRIAMInfo);
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQMiriamWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQMiriamWidget::slotBtnDeleteClicked()

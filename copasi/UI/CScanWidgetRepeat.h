@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRepeat.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.4.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/03/18 12:39:31 $
+//   $Author: shoops $
+//   $Date: 2011/05/13 21:46:53 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -31,7 +36,7 @@ public:
   virtual bool saveToScanItem(CScanProblem * pg) const;
 
 protected slots:
-  virtual void languageChange();
+
 
 private:
   void init();
