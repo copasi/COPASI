@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.124 $ 
+#   $Revision: 1.125 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2011/04/26 16:11:35 $ 
+#   $Author: mendes $ 
+#   $Date: 2011/05/13 20:20:40 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.124 $ $Author: shoops $ $Date: 2011/04/26 16:11:35 $  
+# $Revision: 1.125 $ $Author: mendes $ $Date: 2011/05/13 20:20:40 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -642,8 +642,12 @@ contains(BUILD_OS, Linux) {
 
   contains(CONFIG, qt) {
     !isEmpty(SBW_PATH){
-      LIBS+=  $${SBW_PATH}/lib/libSBW.a
-      INCLUDEPATH += $${SBW_PATH}/include
+      contains(SBW_PATH, yes) {
+        LIBS += -lSBW
+      } else {
+        LIBS += $${SBW_PATH}/lib/libSBW.a
+        INCLUDEPATH += $${SBW_PATH}/include
+      }
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES += LINUX 
     }
