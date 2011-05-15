@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.25.2.1 $ 
+//   $Revision: 1.25.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/04/27 20:30:36 $ 
+//   $Date: 2011/05/15 18:58:58 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -102,7 +102,7 @@
         CCopasiMessage::clearDeque();
         CCopasiDataModel* pDataModel=self->getObjectDataModel();
         assert(pDataModel!=NULL);
-        bool result=self->initialize(CCopasiTask::OUTPUT_SE,pDataModel, NULL);
+        bool result=self->initialize(CCopasiTask::OUTPUT_UI,pDataModel, NULL);
         if(result)
         {
           result=self->process(useInitialValues);
