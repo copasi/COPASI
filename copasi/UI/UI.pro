@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.240 $
+#   $Revision: 1.241 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/03/07 19:37:47 $
+#   $Author: aekamal $
+#   $Date: 2011/05/16 15:57:46 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.240 $ $Author: shoops $ $Date: 2011/03/07 19:37:47 $
+# $Revision: 1.241 $ $Author: aekamal $ $Date: 2011/05/16 15:57:46 $
 ######################################################################
 
 LIB = UI
@@ -67,6 +67,7 @@ HEADERS	+= \
   CQPreferenceDialog.h \
   CQProgressDialog.h \
   CQProgressItem.h \
+  CQProgressItemBar.h \
   CQReactionsWidget.h \
   CQReportDefinition.h \
   CQReportsWidget.h \
@@ -79,6 +80,7 @@ HEADERS	+= \
   CQTaskBtnWidget.h \
   CQTaskHeaderWidget.h \
   CQTaskMethodWidget.h \
+  CQTextDialog.h \
   CQTrajectoryWidget.h \
   CQTSSAWidget.h \
   CQTSSAResultSubWidget.h \
@@ -207,6 +209,7 @@ SOURCES	+= \
   CQPreferenceDialog.cpp \
   CQProgressDialog.cpp \
   CQProgressItem.cpp \
+  CQProgressItemBar.cpp \
   CQReactionsWidget.cpp \
   CQReportDefinition.cpp \
   CQReportsWidget.cpp \
@@ -220,6 +223,7 @@ SOURCES	+= \
   CQTaskHeaderWidget.cpp \
   CQTaskMethodWidget.cpp \
   CQTaskThread.cpp \
+  CQTextDialog.cpp \
   CQThread.cpp \
   CQTrajectoryWidget.cpp \
   CQTSSAWidget.cpp \
@@ -315,9 +319,7 @@ SOURCES	+= \
 }
 
 ### uic3 forms that do not work at the moment
-#FORMS3 += CQProgressItemBar.ui
-HEADERS += CQProgressItemBar.h
-HEADERS += CQProgressItemBar.ui.h
+HEADERS += 
 SOURCES += CQProgressItemBar.cpp
 
 #FORMS3 += CQProgressItemText.ui
@@ -325,10 +327,6 @@ HEADERS += CQProgressItemText.h
 HEADERS += CQProgressItemText.ui.h
 SOURCES += CQProgressItemText.cpp
 
-#FORMS3 += CQTextDialog.ui
-HEADERS += CQTextDialog.h
-HEADERS += CQTextDialog.ui.h
-SOURCES += CQTextDialog.cpp
 
 FORMS += CMCAResultSubwidget.ui
 FORMS += CQCompartment.ui
@@ -365,6 +363,7 @@ FORMS += CQPlotsWidget.ui
 FORMS += CQPreferenceDialog.ui
 FORMS += CQProgressDialog.ui
 FORMS += CQProgressItem.ui
+FORMS += CQProgressItemBar.ui
 FORMS += CQReactionsWidget.ui
 FORMS += CQReportDefinition.ui
 FORMS += CQReportsWidget.ui
@@ -377,6 +376,7 @@ FORMS += CQSteadyStateResult.ui
 FORMS += CQTaskBtnWidget.ui
 FORMS += CQTaskHeaderWidget.ui
 FORMS += CQTaskMethodWidget.ui
+FORMS += CQTextDialog.ui
 FORMS += CQTrajectoryWidget.ui
 FORMS += CQTSSAWidget.ui
 FORMS += CQTSSAResultSubWidget.ui

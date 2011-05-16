@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTextDialog.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:11 $
+//   $Author: aekamal $
+//   $Date: 2011/05/16 15:57:45 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -14,7 +19,7 @@
 #include "CQTextDialog.h"
 
 #include <qvariant.h>
-#include "CQTextDialog.ui.h"
+
 /*
  *  Constructs a CQTextDialog as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -44,3 +49,6 @@ void CQTextDialog::languageChange()
 {
   retranslateUi(this);
 }
+
+QString CQTextDialog::getText()
+{return mpTextEdit->text();}
