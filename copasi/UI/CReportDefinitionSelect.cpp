@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.52.2.3 $
+//   $Revision: 1.52.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/13 21:47:01 $
+//   $Date: 2011/05/16 15:58:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,6 +115,14 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
   cancelButton = new QPushButton(this, "cancelButton");
 
   CReportDefinitionSelectLayout->addWidget(cancelButton, 1, 1);
+
+  reportLabel->setText(tr("ReportDefinitions"));
+  targetLabel->setText(tr("Target"));
+  appendChecked->setText(tr("Append"));
+  jumpButton->setText(tr("edit"));
+  browseButton->setText(tr("browse"));
+  confirmButton->setText(tr("Confirm"));
+  cancelButton->setText(tr("Cancel"));
 
   // tab order
   setTabOrder(reportDefinitionNameList, confirmButton);
