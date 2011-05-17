@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.11 $
+//   $Revision: 1.66.2.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 12:59:19 $
+//   $Date: 2011/05/17 17:05:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1031,18 +1031,22 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
   os << std::endl;
 
+  size_t k, kmax = mpExperimentSet->getExperimentCount();
+
+  for (k = 0; k < kmax; k++)
+    {
+      mpExperimentSet->getExperiment(k)->printResult(ostream);
+      os << std::endl;
+    }
+
   if (*mpParmCalculateStatistics)
     {
-      os << "Parameter Interdependence:" << std::endl;
+      os << "Fisher Information Matrix:" << std::endl;
       os << "  " << mFisher << std::endl;
 
-      size_t k, kmax = mpExperimentSet->getExperimentCount();
+      os << "Correlation Matrix:" << std::endl;
+      os << "  " << mCorrelation << std::endl;
 
-      for (k = 0; k < kmax; k++)
-        {
-          mpExperimentSet->getExperiment(k)->printResult(ostream);
-          os << std::endl;
-        }
     }
 }
 
