@@ -47,15 +47,6 @@ CQTSSAResultSubWidget::~CQTSSAResultSubWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQTSSAResultSubWidget::languageChange()
-{
-  retranslateUi(this);
-}
-
 void CQTSSAResultSubWidget::saveDataToFile()
 {
   C_INT32 Answer = QMessageBox::No;

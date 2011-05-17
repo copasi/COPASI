@@ -6,7 +6,7 @@
 //   $Date: 2010/04/27 16:00:44 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -71,7 +71,6 @@ public slots:
 protected :
 
 protected slots:
-  virtual void languageChange();
   void slotTableChanged();
   void slotTimeOrStepChanged();
   void changeLabelToTime();

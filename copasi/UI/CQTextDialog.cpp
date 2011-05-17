@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTextDialog.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/05/16 15:57:45 $
+//   $Author: shoops $
+//   $Date: 2011/05/17 13:10:24 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,15 +39,6 @@ CQTextDialog::CQTextDialog(QWidget* parent, const char* name, bool modal, Qt::Wi
 CQTextDialog::~CQTextDialog()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQTextDialog::languageChange()
-{
-  retranslateUi(this);
 }
 
 QString CQTextDialog::getText()

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/04/15 11:38:43 $
+//   $Author: shoops $
+//   $Date: 2011/05/17 13:10:24 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,7 +42,6 @@ protected:
   const CCopasiObject* mpObject;
 
 protected slots:
-  virtual void languageChange();
 
   virtual void slotChooseObject();
 

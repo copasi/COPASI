@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemBar.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/05/16 15:57:45 $
+//   $Author: shoops $
+//   $Date: 2011/05/17 13:10:21 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,9 +39,6 @@ public:
   virtual bool initFromProcessReportItem(CProcessReportItem * pItem);
   virtual bool process();
   virtual bool reset();
-
-protected slots:
-  virtual void languageChange();
 
 private:
   void (CQProgressItemBar::*mpSetValue)();

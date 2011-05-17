@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskBtnWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:38:02 $
+//   $Date: 2011/05/17 13:10:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,6 @@ public:
   virtual ~CQTaskBtnWidget();
 
 protected slots:
-  virtual void languageChange();
 };
 
 #endif // COPASI_CQTaskBtnWidget

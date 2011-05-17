@@ -66,7 +66,6 @@ protected:
   CMoietiesTask * mpMoietiesTask;
 
 protected slots:
-  virtual void languageChange();
 
 private:
   void init();

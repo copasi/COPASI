@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:40 $
+//   $Date: 2011/05/17 13:10:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,15 +72,6 @@ CQExperimentData::~CQExperimentData()
 {
   destroy();
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQExperimentData::languageChange()
-{
-  retranslateUi(this);
 }
 
 class CQExperimentDataValidator: public CQValidatorNotEmpty

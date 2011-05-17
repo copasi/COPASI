@@ -6,6 +6,11 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -45,7 +50,6 @@ protected:
   CProcessReportItem * mpItem;
 
 protected slots:
-  virtual void languageChange();
 };
 
 #endif // CQPROGRESSITEM_H

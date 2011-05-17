@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:59 $
+//   $Date: 2011/05/17 13:10:18 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,15 +51,6 @@ CScanWidgetScan::CScanWidgetScan(QWidget* parent, const char* name, Qt::WindowFl
 CScanWidgetScan::~CScanWidgetScan()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CScanWidgetScan::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CScanWidgetScan::init()

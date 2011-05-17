@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:51 $
+//   $Date: 2011/05/17 13:10:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,15 +50,6 @@ CQExpandModelData::~CQExpandModelData()
 {
   // no need to delete child widgets, Qt does it all for us
 }
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-//void CQexpandModelData::languageChange()
-//{
-//  retranslateUi(this);
-//}
 
 void CQExpandModelData::load()
 {

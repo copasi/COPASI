@@ -39,15 +39,6 @@ CQProgressItem::~CQProgressItem()
   pdelete(mpItem);
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQProgressItem::languageChange()
-{
-  retranslateUi(this);
-}
-
 bool CQProgressItem::initFromProcessReportItem(CProcessReportItem * /* pItem */)
 {return false;}
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:46 $
+//   $Date: 2011/05/17 13:10:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,6 @@ protected:
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
 protected slots:
-  virtual void languageChange();
 
   void slotPageChange(QWidget * currentPage);
   void slotExpressionValid(bool valid);

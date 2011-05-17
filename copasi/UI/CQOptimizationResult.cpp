@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:58 $
+//   $Date: 2011/05/17 13:10:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,15 +48,6 @@ CQOptimizationResult::CQOptimizationResult(QWidget* parent, const char* name)
 CQOptimizationResult::~CQOptimizationResult()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQOptimizationResult::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQOptimizationResult::init()

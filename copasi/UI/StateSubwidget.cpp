@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:59 $
+//   $Date: 2011/05/17 13:10:23 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,15 +64,6 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name)
 StateSubwidget::~StateSubwidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void StateSubwidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void StateSubwidget::init()

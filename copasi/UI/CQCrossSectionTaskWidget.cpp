@@ -47,15 +47,6 @@ CQCrossSectionTaskWidget::~CQCrossSectionTaskWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQCrossSectionTaskWidget::languageChange()
-{
-  retranslateUi(this);
-}
-
 void CQCrossSectionTaskWidget::init()
 {
   mpHeaderWidget->setTaskName("Cross Section");

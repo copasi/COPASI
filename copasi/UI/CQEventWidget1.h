@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:48 $
+//   $Date: 2011/05/17 13:10:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,6 @@ protected:
   virtual bool enterProtected();
 
 protected slots:
-  virtual void languageChange();
 
 private:
   bool mExpressionTriggerValid;

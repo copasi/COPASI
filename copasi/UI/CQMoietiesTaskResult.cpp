@@ -95,15 +95,6 @@ CQMoietiesTaskResult::~CQMoietiesTaskResult()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQMoietiesTaskResult::languageChange()
-{
-  retranslateUi(this);
-}
-
 void CQMoietiesTaskResult::init()
 {
   mpMoietiesTask = NULL;

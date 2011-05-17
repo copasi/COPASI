@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:47 $
+//   $Date: 2011/05/17 13:10:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,9 +227,6 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
   layoutLeft->addItem(spacer1);
 
   ParametersWidgetLayout->addMultiCellLayout(layoutLeft, 0, 1, 0, 1);
-  //languageChange();
-  //resize(QSize(511, 572).expandedTo(minimumSizeHint()));
-  //clearWState(WState_Polished);
 
   // signals and slots connections
   connect(commitButton, SIGNAL(clicked()), this, SLOT(commitPressed()));

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:54 $
+//   $Date: 2011/05/17 13:10:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,11 +41,6 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
 CQTaskMethodWidget::~CQTaskMethodWidget()
 {
   // TODO Auto-generated destructor stub
-}
-
-void CQTaskMethodWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQTaskMethodWidget::changeMethod(int /* index */)

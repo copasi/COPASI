@@ -55,15 +55,6 @@ CQExpressionMmlStackedWidget::~CQExpressionMmlStackedWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQExpressionMmlStackedWidget::languageChange()
-{
-  retranslateUi(this);
-}
-
 void CQExpressionMmlStackedWidget::slotGoExpressionWidget()
 {
 #ifdef DEBUG_UI

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:56 $
+//   $Date: 2011/05/17 13:10:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,15 +60,6 @@ CQFittingWidget::~CQFittingWidget()
 {
   destroy();
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQFittingWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 bool CQFittingWidget::saveTask()

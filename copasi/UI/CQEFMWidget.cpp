@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:51 $
+//   $Date: 2011/05/17 13:10:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,15 +51,6 @@ CQEFMWidget::CQEFMWidget(QWidget* parent, const char* name)
  */
 CQEFMWidget::~CQEFMWidget()
 {}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQEFMWidget::languageChange()
-{
-  retranslateUi(this);
-}
 
 bool CQEFMWidget::runTask()
 {

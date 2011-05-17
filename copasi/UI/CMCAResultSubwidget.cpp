@@ -61,15 +61,6 @@ CMCAResultSubwidget::~CMCAResultSubwidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CMCAResultSubwidget::languageChange()
-{
-  retranslateUi(this);
-}
-
 void CMCAResultSubwidget::init()
 {
   /*

@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.h,v $
- $Revision: 1.19 $
+ $Revision: 1.20 $
  $Name:  $
  $Author: shoops $
- $Date: 2008/12/18 19:57:33 $
+ $Date: 2011/05/17 13:10:25 $
  End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -50,47 +55,46 @@ class ListViews;
 class CReport;
 
 class CReportDefinitionSelect : public QDialog
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CReportDefinitionSelect(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~CReportDefinitionSelect();
-    ListViews* pListView;
+public:
+  CReportDefinitionSelect(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~CReportDefinitionSelect();
+  ListViews* pListView;
 
-    void setReport(CReport* newReport);
-    CReport* mpReport;
+  void setReport(CReport* newReport);
+  CReport* mpReport;
 
-    void cleanup();
-    void loadReportDefinitionVector();
+  void cleanup();
+  void loadReportDefinitionVector();
 
-    QPushButton* confirmButton;
-    QPushButton* cancelButton;
-    Q3Frame* frame5;
-    QLabel* reportLabel;
-    QComboBox* reportDefinitionNameList;
-    QLineEdit* targetEdit;
-    QLabel* targetLabel;
-    QCheckBox* appendChecked;
-    QPushButton* jumpButton;
-    QPushButton* browseButton;
+  QPushButton* confirmButton;
+  QPushButton* cancelButton;
+  Q3Frame* frame5;
+  QLabel* reportLabel;
+  QComboBox* reportDefinitionNameList;
+  QLineEdit* targetEdit;
+  QLabel* targetLabel;
+  QCheckBox* appendChecked;
+  QPushButton* jumpButton;
+  QPushButton* browseButton;
 
-  protected:
-    Q3GridLayout* CReportDefinitionSelectLayout;
-    Q3GridLayout* frame5Layout;
+protected:
+  Q3GridLayout* CReportDefinitionSelectLayout;
+  Q3GridLayout* frame5Layout;
 
-  protected slots:
-    virtual void languageChange();
-    void cancelClicked();
-    void confirmClicked();
-    void jumpToReportDefinitionEdit();
-    void jumpToFileBrowser();
+protected slots:
+  void cancelClicked();
+  void confirmClicked();
+  void jumpToReportDefinitionEdit();
+  void jumpToFileBrowser();
 
-    // defined for cancel before showing
-  private:
-    bool bShow;
-  public slots:
-    int exec();
-  };
+  // defined for cancel before showing
+private:
+  bool bShow;
+public slots:
+  int exec();
+};
 
 #endif // CREPORTDEFINITIONSELECT_H

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:38:00 $
+//   $Date: 2011/05/17 13:10:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,15 +50,6 @@ CQLyapWidget::CQLyapWidget(QWidget* parent, const char* name)
 CQLyapWidget::~CQLyapWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQLyapWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 bool CQLyapWidget::runTask()

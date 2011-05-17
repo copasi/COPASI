@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQRDFTreeView.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/18 18:08:02 $
+//   $Date: 2011/05/17 13:10:27 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,11 +51,6 @@ CQRDFTreeView::CQRDFTreeView(QWidget* parent, const char* name) :
 
 CQRDFTreeView::~CQRDFTreeView()
 {
-}
-
-void CQRDFTreeView::languageChange()
-{
-  retranslateUi(this);
 }
 
 bool CQRDFTreeView::update(ListViews::ObjectType /* objectType */,

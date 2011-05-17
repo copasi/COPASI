@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/08/12 20:06:44 $
+//   $Date: 2011/05/17 13:10:24 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -47,15 +47,6 @@ CQPreferenceDialog::CQPreferenceDialog(QWidget* parent, const char* name, bool m
 CQPreferenceDialog::~CQPreferenceDialog()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQPreferenceDialog::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQPreferenceDialog::init()

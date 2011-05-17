@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:46 $
+//   $Date: 2011/05/17 13:10:18 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,7 +81,6 @@ protected:
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
 protected slots:
-  virtual void languageChange();
 
   void slotExperimentData();
   void slotPageChange(QWidget * currentPage);

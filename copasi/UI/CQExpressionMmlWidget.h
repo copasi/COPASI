@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/09/23 12:22:23 $
+//   $Author: shoops $
+//   $Date: 2011/05/17 13:10:18 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -54,7 +59,6 @@ protected:
   void init();
 
 protected slots:
-  virtual void languageChange();
 
   void slotGoExpressionWidget();
   void slotGoMmlWidget();

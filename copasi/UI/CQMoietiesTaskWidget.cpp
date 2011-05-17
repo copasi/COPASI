@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/05/17 15:58:01 $
+//   $Author: shoops $
+//   $Date: 2011/05/17 13:10:22 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,15 +40,6 @@ CQMoietiesTaskWidget::~CQMoietiesTaskWidget()
 {
   destroy();
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQMoietiesTaskWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void CQMoietiesTaskWidget::init()

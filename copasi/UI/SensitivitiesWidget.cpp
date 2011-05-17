@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:59 $
+//   $Date: 2011/05/17 13:10:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,11 +138,6 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, Qt::
  */
 SensitivitiesWidget::~SensitivitiesWidget()
 {}
-
-void SensitivitiesWidget::languageChange()
-{
-  retranslateUi(this);
-}
 
 void SensitivitiesWidget::init()
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemBar.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/05/16 15:57:45 $
+//   $Author: shoops $
+//   $Date: 2011/05/17 13:10:18 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,14 +41,6 @@ CQProgressItemBar::~CQProgressItemBar()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQProgressItemBar::languageChange()
-{
-  Ui::CQProgressItemBar::retranslateUi(this);
-}
 
 bool CQProgressItemBar::initFromProcessReportItem(CProcessReportItem * pItem)
 {

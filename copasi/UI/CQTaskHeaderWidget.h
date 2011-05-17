@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:45 $
+//   $Date: 2011/05/17 13:10:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,6 @@ public:
   void saved();
 
 protected slots:
-  virtual void languageChange();
 
   void slotUpdate();
   void slotExecutable();

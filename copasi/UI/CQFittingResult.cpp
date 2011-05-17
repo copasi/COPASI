@@ -58,15 +58,6 @@ CQFittingResult::~CQFittingResult()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQFittingResult::languageChange()
-{
-  retranslateUi(this);
-}
-
 void CQFittingResult::init()
 {
   size_t i, imax;

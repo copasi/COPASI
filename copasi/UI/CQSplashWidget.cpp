@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSplashWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:58 $
+//   $Date: 2011/05/17 13:10:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,13 +61,4 @@ void CQSplashWidget::slotViewLicense()
   AboutDialog* aboutDialog = new AboutDialog(this, CCopasiRootContainer::getLicenseHTML(), 76, 30);
   aboutDialog->setCaption(FixedTitle);
   aboutDialog->exec();
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CQSplashWidget::languageChange()
-{
-  retranslateUi(this);
 }

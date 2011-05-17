@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:57 $
+//   $Date: 2011/05/17 13:10:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,8 +115,14 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
   cancelButton = new QPushButton(this, "cancelButton");
 
   CReportDefinitionSelectLayout->addWidget(cancelButton, 1, 1);
-  languageChange();
-  //clearWState(WState_Polished);
+
+  reportLabel->setText(tr("ReportDefinitions"));
+  targetLabel->setText(tr("Target"));
+  appendChecked->setText(tr("Append"));
+  jumpButton->setText(tr("edit"));
+  browseButton->setText(tr("browse"));
+  confirmButton->setText(tr("Confirm"));
+  cancelButton->setText(tr("Cancel"));
 
   // tab order
   setTabOrder(reportDefinitionNameList, confirmButton);
@@ -139,22 +145,6 @@ CReportDefinitionSelect::~CReportDefinitionSelect()
 {
   cleanup();
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void CReportDefinitionSelect::languageChange()
-{
-  setCaption(tr("CReportDefinitionSelect"));
-  reportLabel->setText(tr("ReportDefinitions"));
-  targetLabel->setText(tr("Target"));
-  appendChecked->setText(tr("Append"));
-  jumpButton->setText(tr("edit"));
-  browseButton->setText(tr("browse"));
-  confirmButton->setText(tr("Confirm"));
-  cancelButton->setText(tr("Cancel"));
 }
 
 void CReportDefinitionSelect::loadReportDefinitionVector()

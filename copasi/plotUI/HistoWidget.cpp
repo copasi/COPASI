@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/HistoWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:01 $
+//   $Date: 2011/05/17 13:10:27 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,11 +34,6 @@ HistoWidget::HistoWidget(QWidget* parent, const char* /* name */, Qt::WindowFlag
 HistoWidget::~HistoWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-void HistoWidget::languageChange()
-{
-  retranslateUi(this);
 }
 
 void HistoWidget::buttonPressedX()
