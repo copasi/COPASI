@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.10 $
+//   $Revision: 1.66.2.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/31 19:01:19 $
+//   $Date: 2011/05/17 12:59:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1031,7 +1031,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
   os << std::endl;
 
-  if (mHaveStatistics)
+  if (*mpParmCalculateStatistics)
     {
       os << "Parameter Interdependence:" << std::endl;
       os << "  " << mFisher << std::endl;
@@ -1136,40 +1136,39 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // Make sure the timer is accurate.
   (*mCPUTime.getRefresh())();
 
+  // The statistics need to be calculated for the result, i.e., now.
+  mpExperimentSet->calculateStatistics();
+
+  if (jmax)
+    mRMS = sqrt(mSolutionValue / jmax);
+
+  if (jmax > imax)
+    mSD = sqrt(mSolutionValue / (jmax - imax));
+
+#ifdef COPASI_CROSSVALIDATION
+  calculateCrossValidation();
+
+  mpCrossValidationSet->calculateStatistics();
+
+  size_t lmax = this->mCrossValidationDependentValues.size();
+
+  if (lmax)
+    mCrossValidationRMS = sqrt(mCrossValidationSolutionValue / lmax);
+
+  if (lmax > imax)
+    mCrossValidationSD = sqrt(mCrossValidationSolutionValue / (lmax - imax));
+
+#endif // COPASI_CROSSVALIDATION
+
+  mHaveStatistics = true;
+
   if (mSolutionValue == mWorstValue)
     return false;
 
   if (*mpParmCalculateStatistics)
     {
-
       // Keep the results
       CVector< C_FLOAT64 > DependentValues = mExperimentDependentValues;
-
-      // The statistics need to be calculated for the result, i.e., now.
-      mpExperimentSet->calculateStatistics();
-
-      if (jmax)
-        mRMS = sqrt(mSolutionValue / jmax);
-
-      if (jmax > imax)
-        mSD = sqrt(mSolutionValue / (jmax - imax));
-
-#ifdef COPASI_CROSSVALIDATION
-      calculateCrossValidation();
-
-      mpCrossValidationSet->calculateStatistics();
-
-      size_t lmax = this->mCrossValidationDependentValues.size();
-
-      if (lmax)
-        mCrossValidationRMS = sqrt(mCrossValidationSolutionValue / lmax);
-
-      if (lmax > imax)
-        mCrossValidationSD = sqrt(mCrossValidationSolutionValue / (lmax - imax));
-
-#endif // COPASI_CROSSVALIDATION
-
-      mHaveStatistics = true;
 
       CMatrix< C_FLOAT64 > dyp;
       bool CalculateFIM = true;
