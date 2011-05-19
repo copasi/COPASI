@@ -1,9 +1,7 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.120.2.11 $ 
+#   $Revision: 1.120.2.12 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2011/05/19 20:40:58 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.120.2.11 $ $Author: shoops $ $Date: 2011/05/19 20:40:58 $  
+# $Revision: 1.120.2.12 $ $Author: shoops $ $Date: 2011/05/19 22:26:04 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -480,15 +478,6 @@ contains(STATIC_LINKAGE, yes) {
 }
  
 contains(BUILD_OS, Linux) {
-  QMAKE_CFLAGS_RELEASE -= -O1
-  QMAKE_CFLAGS_RELEASE += -O2
-  QMAKE_CFLAGS_RELEASE -= -O3
-  QMAKE_CFLAGS_RELEASE -= -O4
-
-  QMAKE_CXXFLAGS_RELEASE -= -O1
-  QMAKE_CXXFLAGS_RELEASE += -O2
-  QMAKE_CXXFLAGS_RELEASE -= -O3
-  QMAKE_CXXFLAGS_RELEASE -= -O4
 
   TARGET_64 = $$system($CC -dM -E - < /dev/null | grep -q __x86_64__ && echo true)
 
