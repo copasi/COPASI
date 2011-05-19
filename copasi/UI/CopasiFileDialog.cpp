@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.30.4.1 $
+//   $Revision: 1.30.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/24 14:35:38 $
+//   $Date: 2011/05/19 22:28:07 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,8 @@ QString CopasiFileDialog::getOpenFileName(QWidget * parent,
     const QString & startWith,
     const QString & filter,
     const QString & caption,
-    QString * pSelectedFilter)
+    QString * pSelectedFilter,
+    QFileDialog::Options options)
 {
   QString newFile = QFileDialog::getOpenFileName(parent,
                     caption,
@@ -92,7 +93,8 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
     const QString & startWith,
     const QString & filter,
     const QString & caption,
-    QString * pSelectedFilter)
+    QString * pSelectedFilter,
+    QFileDialog::Options options)
 {
   QString newFile, newFilter = filter;
   bool fileValid;

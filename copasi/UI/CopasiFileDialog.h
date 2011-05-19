@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.h,v $
-//   $Revision: 1.16.4.1 $
+//   $Revision: 1.16.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/24 14:35:38 $
+//   $Date: 2011/05/19 22:28:06 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,14 +36,16 @@ public:
                                  const QString & startWith = QString::null,
                                  const QString & filter = QString::null,
                                  const QString & caption = QString::null,
-                                 QString * pSelectedFilter = NULL);
+                                 QString * pSelectedFilter = NULL,
+                                 QFileDialog::Options options = 0);
 
   static QString getSaveFileName(QWidget * parent = 0,
                                  const char * name = 0,
                                  const QString & startWith = QString::null,
                                  const QString & filter = QString::null,
                                  const QString & caption = QString::null,
-                                 QString * pSelectedFilter = NULL);
+                                 QString * pSelectedFilter = NULL,
+                                 QFileDialog::Options options = 0);
 private:
   static QDir LastDir;
 

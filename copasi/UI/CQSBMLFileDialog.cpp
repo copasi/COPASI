@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:43 $
+//   $Date: 2011/05/19 22:28:07 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,8 +81,15 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSBMLFile
         break;
     }
 
+  QFileDialog::Options NativeDialog;
+
+  // We need to avoid the KDE dialog.
+#ifdef Linux
+  NativeDialog = QFileDialog::DontUseNativeDialog;
+#endif // Linux
+
   NameAndVersion.first =
-    CopasiFileDialog::getSaveFileName(parent, name, startWith, Filter, caption, &SelectedFilter);
+    CopasiFileDialog::getSaveFileName(parent, name, startWith, Filter, caption, &SelectedFilter, NativeDialog);
 
   if (SelectedFilter == "Level 1 Version 2 (*.xml)")
     {
