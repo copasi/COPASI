@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.28.4.2 $
+//   $Revision: 1.28.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/23 15:26:25 $
+//   $Date: 2011/05/20 16:01:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,13 +87,13 @@ public:
   static const char* XMLType[];
 
   /**
-   * Enumaration of methods to calculate the weight.
+   * Enumeration of methods to calculate the weight.
    */
   enum WeightMethod
   {
     MEAN = 0,
     MEAN_SQUARE,
-    SD,
+    SD
   };
 
   /**
