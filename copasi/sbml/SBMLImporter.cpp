@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.31 $
+//   $Revision: 1.263.2.32 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/12 14:57:58 $
+//   $Date: 2011/05/21 18:50:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -9815,17 +9815,10 @@ bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
 
   if (pAnno != NULL && pSBase != NULL)
     {
-      if (pSBase->isSetNotes() && const_cast<SBase*>(pSBase)->getNotes() != NULL)
+      if (pSBase->isSetNotes())
         {
-          const XMLNode* pNotes = const_cast<SBase*>(pSBase)->getNotes();
-          std::ostringstream stream;
-
-          for (unsigned int i = 0; i < pNotes->getNumChildren(); ++i)
-            {
-              stream << XMLNode::convertXMLNodeToString(&pNotes->getChild(i)) << std::endl;
-            }
-
-          pAnno->setNotes(stream.str());
+          std::string s = const_cast<SBase*>(pSBase)->getNotesString();
+          pAnno->setNotes(s);
         }
     }
 
