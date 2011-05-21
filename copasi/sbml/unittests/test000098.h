@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000098.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/12 14:56:01 $
+//   $Date: 2011/05/21 18:49:16 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 /**
- * Tests for dealing with render information
+ * Tests for dealing with notes on different  model elements
  */
 
 class CCopasiDataModel;
