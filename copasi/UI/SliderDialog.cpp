@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.10 $
+//   $Revision: 1.83.4.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/12 19:50:14 $
+//   $Date: 2011/05/23 15:06:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -686,7 +686,6 @@ void SliderDialog::runTask()
       assert(pWidget != NULL);
       pWidget->leave();
       ((this)->*(mTaskMap[mCurrentFolderId]))();
-      updateAllSliders();
     }
 }
 

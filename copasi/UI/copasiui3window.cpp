@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.16 $
+//   $Revision: 1.289.2.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/12 19:48:43 $
+//   $Date: 2011/05/23 15:06:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2564,6 +2564,7 @@ void CopasiUI3Window::disableSliders(bool disable)
   else
     {
       this->mpSliders->setEnabled(this->mSliderDialogEnabled);
+      this->mpSliders->updateAllSliders();
     }
 }
 
