@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.32 $
+//   $Revision: 1.263.2.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/21 18:50:09 $
+//   $Date: 2011/05/23 12:31:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -9818,10 +9818,53 @@ bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
       if (pSBase->isSetNotes())
         {
           std::string s = const_cast<SBase*>(pSBase)->getNotesString();
+          size_t pos = s.find_first_not_of(" \n\t\r");
+
+          if (pos != std::string::npos)
+            {
+              // the getNotesString method from libsbml seems to add the
+              // <notes> tag to the string as well which is not OK, so we
+              // have to remove it again.
+              if (s.substr(pos, 6) == "<notes")
+                {
+                  // find the closing bracket
+                  size_t pos2 = s.find(">", pos);
+                  assert(pos2 != std::string::npos);
+
+                  if (pos2 != std::string::npos && pos2 != (s.length() - 1))
+                    {
+                      s = s.substr(pos2 + 1);
+                    }
+                  else
+                    {
+                      return false;
+                    }
+
+                  // also remove the closing </notes> tag
+                  pos = s.rfind("</notes>");
+                  assert(pos != std::string::npos);
+
+                  if (pos != std::string::npos)
+                    {
+                      s = s.substr(0, pos);
+                    }
+                  else
+                    {
+                      return false;
+                    }
+                }
+              else if (s.substr(pos, 8) == "<notes/>")
+                {
+                  // the notes element is empty
+                  return true;
+                }
+            }
+
           pAnno->setNotes(s);
         }
     }
 
   return result;
 }
+
 
