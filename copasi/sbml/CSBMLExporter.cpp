@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.13 $
+//   $Revision: 1.84.2.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/12 14:58:55 $
+//   $Date: 2011/05/23 12:41:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -6957,7 +6957,7 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
                           pResult = pNotes;
                           pResult->setTriple(XMLTriple("body", "http://www.w3.org/1999/xhtml", ""));
                           assert(pResult->isElement() == true);
-                          assert(pResult->isEnd() == false);
+                          assert(pResult->getNumChildren() == 0 || pResult->isEnd() == false);
                         }
 
                       int tmp = pResult->addNamespace("http://www.w3.org/1999/xhtml", "");
@@ -6979,7 +6979,20 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
       else
         {
           // put the complete notes string into a body tag
-          std::string new_notes = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + notes_string + "</body>";
+          // check if the string contains "</" or "/>" in that case
+          // we assume that the string contains markup
+          //
+          std::string new_notes;
+
+          if (notes_string.find("</") != std::string::npos || notes_string.find("/>") != std::string::npos)
+            {
+              new_notes = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + notes_string + "</body>";
+            }
+          else
+            {
+              new_notes = "<body xmlns=\"http://www.w3.org/1999/xhtml\"><pre>" + notes_string + "</pre></body>";
+            }
+
           pResult = XMLNode::convertStringToXMLNode(new_notes);
           assert(pResult != NULL);
           assert(pResult->getName() == "body");
