@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.12 $
+//   $Revision: 1.223.2.13 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/04/25 14:56:04 $
+//   $Author: shoops $
+//   $Date: 2011/05/23 18:01:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -9401,14 +9401,29 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
         // create a new report
         mCommon.pReport = new CReportDefinition();
-        mCommon.pReport->setObjectName(Name);
         mCommon.pReport->setTaskType(type);
         mCommon.pReport->setSeparator(CCopasiReportSeparator(Separator));
         mCommon.pReport->setPrecision(strToUnsignedInt(Precision));
 
+        {
+          // We need to make sure that the name is unique.
+          std::string ValidName(Name);
+          size_t Index = 1;
+
+          while (mCommon.pReportList->getIndex(ValidName) != C_INVALID_INDEX)
+            {
+              std::ostringstream ValidNameStream;
+              ValidNameStream << Name << " " << Index++;
+              ValidName = ValidNameStream.str();
+            }
+
+          mCommon.pReport->setObjectName(ValidName);
+        }
+
         /* We have a new report and add it to the list */
         mCommon.pReportList->add(mCommon.pReport, true);
         mCommon.KeyMap.addFix(Key, mCommon.pReport);
+
         return;
         break;
 
