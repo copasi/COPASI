@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.156 $
+//   $Revision: 1.157 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/01 15:06:37 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,8 @@
 #include "elementaryFluxModes/CEFMTask.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAProblem.h"
+#include "lna/CLNATask.h"
+#include "lna/CLNAProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #ifdef COPASI_TSS
@@ -1020,6 +1022,11 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
         break;
 
+      case CCopasiTask::lna:
+        pTask = new CLNATask(mData.pTaskList);
+        static_cast< CLNAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
+        break;
+
       case CCopasiTask::lyap:
         pTask = new CLyapTask(mData.pTaskList);
         break;
@@ -1223,6 +1230,23 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         // Footer
         pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
+        break;
+
+        //**************************************************************************
+      case CCopasiTask::lna:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
+
+        // Header
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Description"));
+
+        // Footer
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
         //**************************************************************************

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/26 11:51:59 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -69,6 +69,8 @@ static char DataModeltxt[] =
   "33:331:Result\n"
   "2:34:Sensitivities\n"
   "34:341:Result\n"
+  "2:35:Linear Noise Approximation\n"
+  "35:351:Result\n"
   "0:4:Output Specifications\n"
   "4:42:Plots\n"
   "4:43:Reports\n"

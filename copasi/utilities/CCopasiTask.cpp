@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/01 15:06:38 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,7 @@ const std::string CCopasiTask::TypeName[] =
   "Sensitivities",
   "Moieties",
   "Cross Section",
+  "Linear Noise Approximation",
   ""
 };
 
@@ -80,6 +81,7 @@ const char* CCopasiTask::XMLType[] =
   "sensitivities",
   "moieties",
   "crosssection",
+  "linearNoiseApproximation",
   NULL
 };
 

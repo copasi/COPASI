@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/13 15:02:36 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -82,6 +82,7 @@ const char * CCopasiMethod::SubTypeName[] =
   "Bit Pattern Algorithm",
   "Householder Reduction",
   "Cross Section Finder",
+  "Linear Noise Approximation",
   ""
 };
 
@@ -132,6 +133,7 @@ const char * CCopasiMethod::XMLSubType[] =
   "EFMBitPatternMethod",
   "Householder",
   "crossSectionMethod",
+  "LinearNoiseApproximation",
   NULL
 };
 
@@ -208,6 +210,12 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
       if (mType == CCopasiTask::tssAnalysis)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
+          return false;
+        }
+
+      if (mType == CCopasiTask::lna)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Linear Noise Approximation");
           return false;
         }
     }

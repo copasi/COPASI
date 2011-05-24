@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:11 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,8 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
+#include "lna/CLNAProblem.h"
+#include "lna/CLNATask.h"
 #include "utilities/COutputHandler.h"
 #include "utilities/CProcessReport.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -247,6 +249,11 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
       case CCopasiTask::sens:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Sensitivities"]);
+        break;
+
+      case CCopasiTask::lna:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Linear Noise Approximation"]);
         break;
 
       default:

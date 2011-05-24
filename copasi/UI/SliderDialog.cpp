@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:33 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,7 @@
 #include "SteadyStateWidget.h"
 #include "ScanWidget.h"
 #include "CQMCAWidget.h"
+#include "CQLNAWidget.h"
 #include "SliderSettingsDialog.h"
 #include "CQMessageBox.h"
 #include "CopasiSlider.h"
@@ -54,15 +55,16 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
+#include "lna/CLNATask.h"
 #include "scan/CScanTask.h"
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
 #include "CCopasiSelectionDialog.h"
 
-size_t SliderDialog::numMappings = 7;
+size_t SliderDialog::numMappings = 8;
 size_t SliderDialog::folderMappings[][2] =
 {
-  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}
+  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}, {35, 35}
 };
 
 //size_t SliderDialog::numKnownTasks = 4;
@@ -150,6 +152,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   this->mTaskMap[21] = &SliderDialog::runSteadyStateTask;
   this->mTaskMap[31] = &SliderDialog::runScanTask;
   this->mTaskMap[24] = &SliderDialog::runMCATask;
+  this->mTaskMap[35] = &SliderDialog::runLNATask;
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -754,6 +757,16 @@ void SliderDialog::runMCATask()
     }
 }
 
+void SliderDialog::runLNATask()
+{
+  if (mpParentWindow)
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mpParentWindow->getMainWidget()->getLNAWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Linear Noise Approximation"]->getKey());
+      mpParentWindow->getMainWidget()->getLNAWidget()->runTask();
+    }
+}
+
 void SliderDialog::closeEvent(QCloseEvent* e)
 {
   QDialog::closeEvent(e);
@@ -783,6 +796,9 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
         break;
       case 31:
         task = dynamic_cast<CScanTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Scan"]);
+        break;
+      case 35:
+        task = dynamic_cast<CLNATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Linear Noise Approximation"]);
         break;
       default:
         task = NULL;

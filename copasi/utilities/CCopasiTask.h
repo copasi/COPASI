@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/01 15:06:38 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,7 @@ public:
     sens,
     moieties,
     crosssection,
+    lna,
     unset
   };
 

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $
-#   $Revision: 1.33 $
+#   $Revision: 1.34 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/03/21 15:46:21 $
+#   $Author: jpahle $
+#   $Date: 2011/05/24 17:30:48 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -62,6 +62,7 @@ COPASI_LIBS += sbmlunit
 COPASI_LIBS += scan
 COPASI_LIBS += sensitivities
 COPASI_LIBS += steadystate
+COPASI_LIBS += lna
 COPASI_LIBS += trajectory
 COPASI_LIBS += tss
 COPASI_LIBS += tssanalysis

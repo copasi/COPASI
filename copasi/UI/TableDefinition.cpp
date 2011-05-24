@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:50 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -37,22 +42,24 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
+#include "lna/CLNATask.h"
 #include "scan/CScanTask.h"
 
 std::vector<const CCopasiObject*> TableDefinition::getObjects() const
-  {
-    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-    CCopasiVector< CReportDefinition >* tmp =
-      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiVector< CReportDefinition >* tmp =
+    (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
 
-    std::vector<const CCopasiObject*> ret;
+  std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp->size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back((*tmp)[i]);
+  C_INT32 i, imax = tmp->size();
 
-    return ret;
-  }
+  for (i = 0; i < imax; ++i)
+    ret.push_back((*tmp)[i]);
+
+  return ret;
+}
 
 void TableDefinition::init()
 {
@@ -70,6 +77,7 @@ void TableDefinition::init()
 void TableDefinition::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
+
   const CReportDefinition* pRep = (const CReportDefinition*)obj;
   table->setText(row, 1, FROM_UTF8(pRep->getObjectName()));
   //  table->setText(row, 2, FROM_UTF8(pRep->getComment()));
@@ -78,6 +86,7 @@ void TableDefinition::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 void TableDefinition::tableLineToObject(unsigned C_INT32 /*row*/, CCopasiObject* obj)
 {
   if (!obj) return;
+
   //CReportDefinition* pRep = (CReportDefinition*)obj;
   //  pRep->setComment(TO_UTF8(table->text(row, 2)));
 }
@@ -89,9 +98,9 @@ void TableDefinition::defaultTableLineContent(unsigned C_INT32 /*row*/, unsigned
 }
 
 QString TableDefinition::defaultObjectName() const
-  {
-    return "report";
-  }
+{
+  return "report";
+}
 
 CCopasiObject* TableDefinition::createNewObject(const std::string & name)
 {
@@ -101,6 +110,7 @@ CCopasiObject* TableDefinition::createNewObject(const std::string & name)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   while (!(pRep = pDataModel->getReportDefinitionList()->createReportDefinition(nname, "")))
     {
       i++;
@@ -116,6 +126,7 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   if (!pDataModel->getModel())
     return;
 

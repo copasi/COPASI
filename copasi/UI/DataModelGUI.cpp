@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/26 16:10:41 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:49 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@
 #include "scan/CScanTask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
+#include "lna/CLNATask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "tssanalysis/CTSSATask.h"
 
@@ -106,6 +107,7 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(2221)->setObjectKey((*pDataModel->getTaskList())["Moieties"]->getKey());
   mTree.findNodeFromId(23)->setObjectKey((*pDataModel->getTaskList())["Time-Course"]->getKey());
   mTree.findNodeFromId(24)->setObjectKey((*pDataModel->getTaskList())["Metabolic Control Analysis"]->getKey());
+  mTree.findNodeFromId(35)->setObjectKey((*pDataModel->getTaskList())["Linear Noise Approximation"]->getKey());
 
 #ifdef COPASI_TSS
   mTree.findNodeFromId(25)->setObjectKey((*pDataModel->getTaskList())["Time Scale Separation"]->getKey());

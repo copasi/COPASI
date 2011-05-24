@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.242 $
+#   $Revision: 1.243 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/05/24 16:32:34 $
+#   $Author: jpahle $
+#   $Date: 2011/05/24 17:30:50 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.242 $ $Author: shoops $ $Date: 2011/05/24 16:32:34 $
+# $Revision: 1.243 $ $Author: jpahle $ $Date: 2011/05/24 17:30:50 $
 ######################################################################
 
 LIB = UI
@@ -32,6 +32,7 @@ DISTFILES = UI.pro
 ### Headers that belong to widgets generated from uic4 forms
 HEADERS	+= \
   CMCAResultSubwidget.h \
+  CLNAResultSubwidget.h \
   CQCompartment.h \
   CQCompartmentsWidget.h \
   CQDifferentialEquations.h \
@@ -54,6 +55,7 @@ HEADERS	+= \
   CQLyapResultWidget.h \
   CQMatrixDialog.h \
   CQMCAWidget.h \
+  CQLNAWidget.h \
   CQMergingData.h \
   CQModelValue.h \
   CQModelWidget.h \
@@ -106,6 +108,7 @@ HEADERS	+= \
   CCopasiSelectionWidget.h \
   ChemEqValidator.h \
   CMCAResultWidget.h \
+  CLNAResultWidget.h \
   CopasiFileDialog.h \
   CopasiSlider.h \
   CopasiTableWidget.h \
@@ -175,6 +178,7 @@ HEADERS	+= \
 ### Source files that belong to widgets generated from uic4 forms
 SOURCES	+= \
   CMCAResultSubwidget.cpp \
+  CLNAResultSubwidget.cpp \
   CQCompartment.cpp \
   CQCompartmentsWidget.cpp \
   CQDifferentialEquations.cpp \
@@ -197,6 +201,7 @@ SOURCES	+= \
   CQLyapResultWidget.cpp \
   CQMatrixDialog.cpp \
   CQMCAWidget.cpp \
+  CQLNAWidget.cpp \
   CQMergingData.cpp \
   CQModelValue.cpp \
   CQModelWidget.cpp \
@@ -250,6 +255,7 @@ SOURCES	+= \
   CCopasiSelectionDialog.cpp \
   CCopasiSelectionWidget.cpp \
   CMCAResultWidget.cpp \
+  CLNAResultWidget.cpp \
   CopasiFileDialog.cpp \
   CopasiSlider.cpp \
   CopasiTableWidget.cpp \
@@ -325,6 +331,7 @@ SOURCES += CQProgressItemText.cpp
 
 
 FORMS += CMCAResultSubwidget.ui
+FORMS += CLNAResultSubwidget.ui
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQDifferentialEquations.ui
@@ -347,6 +354,7 @@ FORMS += CQLyapWidget.ui
 FORMS += CQLyapResultWidget.ui
 FORMS += CQMatrixDialog.ui
 FORMS += CQMCAWidget.ui
+FORMS += CQLNAWidget.ui
 FORMS += CQMergingData.ui
 FORMS += CQModelValue.ui
 FORMS += CQModelWidget.ui

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:19 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:49 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,6 +83,9 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
       case CCopasiTask::sens:
         n = 6;
         break;
+      case CCopasiTask::lna:
+        n = 7;
+        break;
       default :
         n = 0;
     }
@@ -122,6 +125,9 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
         break;
       case 6:
         pg->setSubtask(CCopasiTask::sens);
+        break;
+      case 7:
+        pg->setSubtask(CCopasiTask::lna);
         break;
       default :
         pg->setSubtask(CCopasiTask::steadyState);

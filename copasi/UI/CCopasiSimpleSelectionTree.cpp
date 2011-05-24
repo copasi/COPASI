@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/21 16:48:02 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,6 +39,7 @@
 #include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CCopasiTask.h"
 #include "steadystate/CMCAMethod.h"
+#include "lna/CLNAMethod.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "sensitivities/CSensProblem.h"
 
@@ -55,6 +56,7 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   mpResultSteadyStateSubtree = new Q3ListViewItem(mpResultMatrixSubtree, "Steady State");
   mpResultSensitivitySubtree = new Q3ListViewItem(mpResultMatrixSubtree, "Sensitivity");
   mpResultMCASubtree = new Q3ListViewItem(mpResultMatrixSubtree, "Metabolic Control Analysis");
+  mpResultLNASubtree = new Q3ListViewItem(mpResultMatrixSubtree, "Linear Noise Approximation");
 
   mpModelMatrixSubtree = new Q3ListViewItem(this, "Matrices");
 
@@ -475,6 +477,37 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   catch (...)
     {}
 
+  // LNA
+  task = dynamic_cast<CCopasiTask*>((*pDataModel->getTaskList())["Linear Noise Approximation"]);
+
+  try
+    {
+      if (task && task->updateMatrices())
+        {
+          // for lna the result is in the method
+          CLNAMethod* pMethod = dynamic_cast<CLNAMethod *>(task->getMethod());
+
+          const CCopasiContainer::objectMap * pObjects = & pMethod->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+
+          for (; its != pObjects->end(); ++its)
+            {
+              ann = dynamic_cast<CArrayAnnotation*>(its->second);
+
+              if (!ann) continue;
+
+              if (!ann->isEmpty() && filter(classes, ann))
+                {
+                  pItem = new Q3ListViewItem(this->mpResultLNASubtree, FROM_UTF8(ann->getObjectName()));
+                  treeItems[pItem] = ann;
+                }
+            }
+        }
+    }
+  catch (...)
+    {}
+
   // Steady State
   task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Steady-State"]);
 
@@ -536,6 +569,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
     {}
 
   removeEmptySubTree(&mpResultMCASubtree);
+  removeEmptySubTree(&mpResultLNASubtree);
   removeEmptySubTree(&mpResultSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);
   removeEmptySubTree(&mpResultMatrixSubtree);

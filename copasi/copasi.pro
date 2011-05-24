@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.67 $
+#   $Revision: 1.68 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/03/21 15:46:21 $
+#   $Author: jpahle $
+#   $Date: 2011/05/24 17:30:52 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.67 $ $Author: shoops $ $Date: 2011/03/21 15:46:21 $
+# $Revision: 1.68 $ $Author: jpahle $ $Date: 2011/05/24 17:30:52 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -60,6 +60,7 @@ COPASISE_DIRS += sbmlunit
 COPASISE_DIRS += scan
 COPASISE_DIRS += sensitivities
 COPASISE_DIRS += steadystate
+COPASISE_DIRS += lna
 COPASISE_DIRS += trajectory
 COPASISE_DIRS += tss
 COPASISE_DIRS += tssanalysis

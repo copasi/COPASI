@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.169 $
+//   $Revision: 1.170 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:58 $
+//   $Author: jpahle $
+//   $Date: 2011/05/24 17:30:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,6 +93,8 @@ class CQFittingWidget;
 class CQFittingResult;
 class CQMCAWidget;
 class CMCAResultWidget;
+class CQLNAWidget;
+class CLNAResultWidget;
 class CQReportDefinition;
 class CQLyapWidget;
 class CQLyapResultWidget;
@@ -154,6 +156,7 @@ public:
   SteadyStateWidget* getSteadyStateWidget();
   ScanWidget* getScanWidget();
   CQMCAWidget* getMCAWidget();
+  CQLNAWidget* getLNAWidget();
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
@@ -193,6 +196,8 @@ private:
 
   CMCAResultWidget* mpCMCAResultWidget;
   CQMCAWidget* mpCQMCAWidget;
+  CQLNAWidget* mpCQLNAWidget;
+  CLNAResultWidget* mpCLNAResultWidget;
   CQCompartmentsWidget *mpCompartmentsWidget;
   CTabWidget *compartmentsWidget1;
   CQSplashWidget *defaultWidget;

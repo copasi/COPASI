@@ -1,11 +1,16 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.ui,v $ </comment>
-<comment>   $Revision: 1.12 $ </comment>
+<comment>   $Revision: 1.13 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/03/18 12:40:00 $ </comment>
+<comment>   $Author: jpahle $ </comment>
+<comment>   $Date: 2011/05/24 17:30:49 $ </comment>
 <comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
@@ -149,6 +154,11 @@ p, li { white-space: pre-wrap; }
           <item>
            <property name="text" >
             <string>Sensitivities</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Linear Noise Approximation</string>
            </property>
           </item>
          </widget>
