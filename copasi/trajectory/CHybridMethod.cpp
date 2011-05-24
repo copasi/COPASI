@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.62.2.5 $
+//   $Revision: 1.62.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/16 15:12:29 $
+//   $Date: 2011/05/24 16:19:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -859,7 +859,7 @@ void CHybridMethod::setupBalances()
 {
   size_t i, j;
   CHybridBalance newElement;
-  size_t maxBalance = 0;
+  C_INT32 maxBalance = 0;
   size_t numReactions;
 
   numReactions = mpReactions->size();
