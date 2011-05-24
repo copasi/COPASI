@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.14 $
+//   $Revision: 1.84.2.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/23 12:41:16 $
+//   $Date: 2011/05/24 16:02:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -3861,8 +3861,11 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
   for (i = 0; i < iMax; ++i)
     {
       const CFunctionParameter* pPara = reaction.getFunctionParameters()[i];
+      // if the reaction calls a general function, all call parameters have a usage of VARIABLE
+      // So local parameters will also have a usage of VARIABLE instead of PARAMETER
+      assert(reaction.getFunction() != NULL);
 
-      if (pPara->getUsage() == CFunctionParameter::PARAMETER)
+      if (pPara->getUsage() == CFunctionParameter::PARAMETER || (reaction.getFunction() != NULL && reaction.getFunction()->isReversible() == TriUnspecified &&  pPara->getUsage() == CFunctionParameter::VARIABLE))
         {
           // only create a parameter if it is a local parameter,
           // and if it is not in the replacement map
