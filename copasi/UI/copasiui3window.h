@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:38:00 $
+//   $Date: 2011/05/24 16:32:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,15 @@ public:
 
   void checkPendingMessages();
   void suspendAutoSave(const bool & suspend);
+
+  /**
+   * The slider dialog has to be disabled before
+   * a task is run and reenabled afterwards.
+   * Actually the methods stores the state
+   * when the value true is passed and restores that
+   * state when the value false is passed.
+   */
+  void disableSliders(bool disable);
 
   /**
    * This is used to import an SBML file from a std::string in the GUI
@@ -241,6 +250,7 @@ private:
   bool mCommitRequired;
   QCloseEvent * mpCloseEvent;
   bool mQuitApplication;
+  bool mSliderDialogEnabled;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

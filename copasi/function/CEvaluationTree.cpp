@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:48:28 $
+//   $Date: 2011/05/24 16:32:35 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -574,24 +574,37 @@ bool CEvaluationTree::calls(std::set< std::string > & list) const
   return Calls;
 }
 
-void CEvaluationTree::getDiscontinuousNodes(std::vector< const CEvaluationNode * > & discontinuousNodes) const
+bool CEvaluationTree::hasDiscontinuity() const
 {
-  CCopasiTree< CEvaluationNode >::const_iterator it = mpRoot;
-  CCopasiTree< CEvaluationNode >::const_iterator end;
+  if (mpNodeList == NULL)
+    return false;
+
+  std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
+  std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
   for (; it != end; ++it)
     {
-      switch (it->getType())
+      switch ((int)(*it)->getType())
         {
-          case CEvaluationNode::CHOICE:
-          case CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR:
-          case CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL:
-            discontinuousNodes.push_back(&*it);
+          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+            // We found a discontinuity.
+            return true;
             break;
 
-          default:
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+
+            // If the called tree has a discontinuity so do we.
+            if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree()->hasDiscontinuity())
+              {
+                return true;
+              }
+
             break;
         }
     }
-}
 
+  return false;
+}

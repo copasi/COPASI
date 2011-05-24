@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:50:08 $
+//   $Date: 2011/05/24 16:32:31 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@ public:
   CMathContainer();
 
 public:
+
   /**
    * Specific Constructor
    * @param CModel & model
@@ -112,35 +113,56 @@ public:
    * and discrete nodes are replaced by object node pointing to newly created math objects,
    * which are and targets of automatically generated events.
    * @param const CEvaluationNode * pSrc
-   * @param std::vector< std::vector< const CEvaluationNode * > > & variables
-   * @param const size_t & variableLevel
    * @param const bool & replaceDiscontinuousNodes
    * @return CEvaluationNode * pCopy
    */
   CEvaluationNode * copyBranch(const CEvaluationNode * pSrc,
-                               std::vector< std::vector< const CEvaluationNode * > > & variables,
-                               const size_t & variableLevel,
                                const bool & replaceDiscontinuousNodes);
 
-  CEvaluationNode * copyBranchX(const CEvaluationNode * pSrc,
-                                std::vector< std::vector< const CEvaluationNode * > > & variables,
-                                const size_t & variableLevel,
-                                const size_t & parameterLevel,
-                                const bool & replaceDiscontinuousNodes);
+  /**
+   * Copy a node and all its children. Nodes are converted to suite the math container,
+   * i.e., objects nodes point to math object or numbers, function calls are expanded
+   * and discrete nodes are replaced by object node pointing to newly created math objects,
+   * which are and targets of automatically generated events.
+   * @param const CEvaluationNode * pSrc
+   * @param CMath::CVariableStack & variableStack
+   * @param const bool & replaceDiscontinuousNodes
+   * @return CEvaluationNode * pCopy
+   */
+  CEvaluationNode * copyBranch(const CEvaluationNode * pSrc,
+                               CMath::CVariableStack & variableStack,
+                               const bool & replaceDiscontinuousNodes);
 
   /**
    * Replace a discontinuous node by an object node pointing to newly created math objects,
    * which are targets of automatically generated events.
    * @param const CEvaluationNode * pSrc
-   * @param std::vector< std::vector< const CEvaluationNode * > > & variables
-   * @param const size_t & variableLevel
+   * @param CMath::CVariableStack & variableStack
    * @return CEvaluationNode * pCopy
    */
   CEvaluationNode * replaceDiscontinuousNode(const CEvaluationNode * pSrc,
-      std::vector< std::vector< const CEvaluationNode * > > & variables,
-      const size_t & variableLevel);
+      CMath::CVariableStack & variableStack);
+
+  /**
+   * Determine the additional allocation requirements needed for handling discontinuities.
+   * @param CMath::CAllocationStack::CAllocation & allocations
+   */
+  void determineDiscontinuityAllocationRequirement(CMath::CAllocationStack::CAllocation & allocations) const;
 
 private:
+  /**
+   * Determine the additional allocation requirements needed for handling discontinuities in the
+   * descendants of the given Node.
+   * @param const CEvaluationNode * pNode
+   * @param CMath::CVariableStack & variableStack
+   * @param CMath::CAllocationStack & allocationStack
+   * @param CMath::CAllocationStack::CAllocation & allocations
+   */
+  void determineDiscontinuityAllocationRequirement(const CEvaluationNode * pNode,
+      CMath::CVariableStack & variableStack,
+      CMath::CAllocationStack & allocationStack,
+      CMath::CAllocationStack::CAllocation & allocations) const;
+
   /**
    * Initialize the mathematical model
    */
@@ -316,7 +338,7 @@ private:
    */
   CVector< CMathEventN > mEvents;
 
-  sDiscontinuous mCreateDiscontinousPointer;
+  sDiscontinuous mCreateDiscontinuousPointer;
 
   /**
    * A map from data objects to math objects

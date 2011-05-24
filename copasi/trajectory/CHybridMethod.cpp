@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:14 $
+//   $Date: 2011/05/24 16:32:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -503,7 +503,7 @@ void CHybridMethod::rungeKutta(C_FLOAT64 dt)
 void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
 {
   size_t i;
-  size_t bal = 0;
+  C_INT32 bal = 0;
   CHybridStochFlag * j;
 
   // Calculate all the needed kinetic functions of the deterministic reactions
@@ -522,7 +522,7 @@ void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
       for (j = mFirstReactionFlag; j != NULL; j = j->mpNext)
         {
           // juergen: +0.5 to get a rounding out of the static_cast
-          bal = static_cast<size_t>(floor(mStoi[i][j->mIndex] + 0.5));
+          bal = static_cast< C_INT32 >(floor(mStoi[i][j->mIndex] + 0.5));
           deriv[i] += bal * (*mpReactions)[j->mIndex]->getParticleFlux(); //  balance * flux;
         }
     }
@@ -714,7 +714,7 @@ void CHybridMethod::calculateAmu(size_t rIndex)
   // perform and we eliminate some possible rounding errors.
   C_FLOAT64 amu = 1; // initially
   //size_t total_substrates = 0;
-  size_t num_ident = 0;
+  C_INT32 num_ident = 0;
   C_INT64 number = 0;
   C_INT64 lower_bound;
   // substrate_factor - The substrates, raised to their multiplicities,
@@ -818,8 +818,10 @@ C_INT32 CHybridMethod::checkModel(CModel * model)
 {
   CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
   CMatrix <C_FLOAT64> mStoi = model->getStoiReordered();
-  size_t i, multInt, numReactions = mpReactions->size();
+  size_t i, numReactions = mpReactions->size();
   size_t j;
+  C_INT32 multInt;
+
   C_FLOAT64 multFloat;
   //  size_t metabSize = mpMetabolites->size();
 
@@ -838,7 +840,7 @@ C_INT32 CHybridMethod::checkModel(CModel * model)
       for (j = 0; j < mStoi.numRows(); j++)
         {
           multFloat = mStoi[j][i];
-          multInt = static_cast<size_t>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
+          multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
 
           if ((multFloat - multInt) > INT_EPSILON) return - 3; // INT_EPSILON in CHybridMethod.h
         }
@@ -857,7 +859,7 @@ void CHybridMethod::setupBalances()
 {
   size_t i, j;
   CHybridBalance newElement;
-  size_t maxBalance = 0;
+  C_INT32 maxBalance = 0;
   size_t numReactions;
 
   numReactions = mpReactions->size();
@@ -876,7 +878,7 @@ void CHybridMethod::setupBalances()
           newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to size_t!
-          newElement.mMultiplicity = static_cast<size_t>(floor((*balances)[j]->getMultiplicity() + 0.5));
+          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
 
           if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
             {
@@ -893,7 +895,7 @@ void CHybridMethod::setupBalances()
           newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to size_t!
-          newElement.mMultiplicity = static_cast<size_t>(floor((*balances)[j]->getMultiplicity() + 0.5));
+          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
 
           mLocalSubstrates[i].push_back(newElement); // element is copied for the push_back
         }
@@ -928,8 +930,6 @@ void CHybridMethod::setupDependencyGraph()
       // Get the set of metabolites which are affected when this reaction takes place
       Affects.push_back(getAffects(i));
     }
-
-  mDG.resize(numReactions);
 
   // For each possible pair of reactions i and j, if the intersection of
   // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:59 $
+//   $Date: 2011/05/24 16:32:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -504,7 +504,7 @@ void SliderDialog::setCurrentFolderId(size_t id)
 
   if (id == mCurrentFolderId) return;
 
-  if (id == C_INVALID_INDEX)
+  if (id == C_INVALID_INDEX || !this->mpParentWindow->isEnabled())
     {
       setEnabled(false);
     }
@@ -677,17 +677,15 @@ size_t SliderDialog::mapFolderId2EntryId(size_t folderId) const
 void SliderDialog::runTask()
 {
   if (mpParentWindow != NULL &&
+      mpParentWindow->isEnabled() &&
       mTaskMap.find(mCurrentFolderId) != mTaskMap.end())
     {
-      setEnabled(false);
       updateAllSliders();
       // commit possible changes to the task widget before running the task
       CopasiWidget* pWidget = mpParentWindow->getMainWidget()->findWidgetFromId(mCurrentFolderId);
       assert(pWidget != NULL);
       pWidget->leave();
       ((this)->*(mTaskMap[mCurrentFolderId]))();
-      updateAllSliders();
-      setEnabled(true);
     }
 }
 

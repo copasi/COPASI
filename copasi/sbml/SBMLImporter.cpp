@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.272 $
+//   $Revision: 1.273 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:47:15 $
+//   $Date: 2011/05/24 16:32:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -779,19 +779,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       this->mpCopasiModel->setModelType(CModel::deterministic);
     }
 
-  if (sbmlModel->isSetNotes() && sbmlModel->getNotes() != NULL)
-    {
-
-      std::ostringstream stream;
-
-      for (unsigned int i = 0; i < sbmlModel->getNotes()->getNumChildren(); ++i)
-        {
-          stream << XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(i)) << std::endl;
-        }
-
-      this->mpCopasiModel->setNotes(stream.str());
-      //std::string notesString=XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(0));
-    }
+  SBMLImporter::importNotes(this->mpCopasiModel, sbmlModel);
 
   title = sbmlModel->getName();
 
@@ -1479,6 +1467,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
     }
 
   SBMLImporter::importMIRIAM(sbmlFunction, pTmpFunction);
+  SBMLImporter::importNotes(pTmpFunction, sbmlFunction);
   return pTmpFunction;
 }
 
@@ -1694,6 +1683,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
 
   //DebugFile << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
   SBMLImporter::importMIRIAM(sbmlCompartment, copasiCompartment);
+  SBMLImporter::importNotes(copasiCompartment, sbmlCompartment);
   copasi2sbmlmap[copasiCompartment] = const_cast<Compartment*>(sbmlCompartment);
   return copasiCompartment;
 }
@@ -1778,6 +1768,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
 
   SBMLImporter::importMIRIAM(sbmlSpecies, copasiMetabolite);
+  SBMLImporter::importNotes(copasiMetabolite, sbmlSpecies);
   return copasiMetabolite;
 }
 
@@ -2605,6 +2596,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
   SBMLImporter::importMIRIAM(sbmlReaction, copasiReaction);
+  SBMLImporter::importNotes(copasiReaction, sbmlReaction);
   return copasiReaction;
 }
 
@@ -3966,6 +3958,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
   pMV->setSBMLId(sbmlId);
   SBMLImporter::importMIRIAM(sbmlParameter, pMV);
+  SBMLImporter::importNotes(pMV, sbmlParameter);
 #if LIBSBML_VERSION >= 40100
 
   if (this->mLevel > 2)
@@ -9148,6 +9141,8 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
     }
 
   copasi2sbmlmap[pCOPASIEvent] = const_cast<Event*>(pEvent);
+  SBMLImporter::importMIRIAM(pEvent, pCOPASIEvent);
+  SBMLImporter::importNotes(pCOPASIEvent, pEvent);
 }
 
 /**
@@ -9808,3 +9803,66 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
 
   return pResult;
 }
+/**
+ * This method reads the notes from an arbitrate SBase object
+ * and set them on the given CAnnotation instance.
+ */
+bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
+{
+  bool result = true;
+
+  if (pAnno != NULL && pSBase != NULL)
+    {
+      if (pSBase->isSetNotes())
+        {
+          std::string s = const_cast<SBase*>(pSBase)->getNotesString();
+          size_t pos = s.find_first_not_of(" \n\t\r");
+
+          if (pos != std::string::npos)
+            {
+              // the getNotesString method from libsbml seems to add the
+              // <notes> tag to the string as well which is not OK, so we
+              // have to remove it again.
+              if (s.substr(pos, 6) == "<notes")
+                {
+                  // find the closing bracket
+                  size_t pos2 = s.find(">", pos);
+                  assert(pos2 != std::string::npos);
+
+                  if (pos2 != std::string::npos && pos2 != (s.length() - 1))
+                    {
+                      s = s.substr(pos2 + 1);
+                    }
+                  else
+                    {
+                      return false;
+                    }
+
+                  // also remove the closing </notes> tag
+                  pos = s.rfind("</notes>");
+                  assert(pos != std::string::npos);
+
+                  if (pos != std::string::npos)
+                    {
+                      s = s.substr(0, pos);
+                    }
+                  else
+                    {
+                      return false;
+                    }
+                }
+              else if (s.substr(pos, 8) == "<notes/>")
+                {
+                  // the notes element is empty
+                  return true;
+                }
+            }
+
+          pAnno->setNotes(s);
+        }
+    }
+
+  return result;
+}
+
+

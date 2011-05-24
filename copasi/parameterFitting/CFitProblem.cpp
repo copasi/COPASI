@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:39 $
+//   $Date: 2011/05/24 16:32:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -747,6 +747,7 @@ bool CFitProblem::calculate()
           pExp = mpExperimentSet->getExperiment(i);
 
           // Set the model to its original state.
+          // TODO CRITICAL This is the incorrect state if we are running as part of a scan.
           mpModel->setInitialState(*mpInitialState);
           mpModel->updateInitialValues();
 
@@ -1027,18 +1028,22 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
   os << std::endl;
 
-  if (mHaveStatistics)
+  size_t k, kmax = mpExperimentSet->getExperimentCount();
+
+  for (k = 0; k < kmax; k++)
     {
-      os << "Parameter Interdependence:" << std::endl;
+      mpExperimentSet->getExperiment(k)->printResult(ostream);
+      os << std::endl;
+    }
+
+  if (*mpParmCalculateStatistics)
+    {
+      os << "Fisher Information Matrix:" << std::endl;
       os << "  " << mFisher << std::endl;
 
-      size_t k, kmax = mpExperimentSet->getExperimentCount();
+      os << "Correlation Matrix:" << std::endl;
+      os << "  " << mCorrelation << std::endl;
 
-      for (k = 0; k < kmax; k++)
-        {
-          mpExperimentSet->getExperiment(k)->printResult(ostream);
-          os << std::endl;
-        }
     }
 }
 
@@ -1132,40 +1137,39 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // Make sure the timer is accurate.
   (*mCPUTime.getRefresh())();
 
+  // The statistics need to be calculated for the result, i.e., now.
+  mpExperimentSet->calculateStatistics();
+
+  if (jmax)
+    mRMS = sqrt(mSolutionValue / jmax);
+
+  if (jmax > imax)
+    mSD = sqrt(mSolutionValue / (jmax - imax));
+
+#ifdef COPASI_CROSSVALIDATION
+  calculateCrossValidation();
+
+  mpCrossValidationSet->calculateStatistics();
+
+  size_t lmax = this->mCrossValidationDependentValues.size();
+
+  if (lmax)
+    mCrossValidationRMS = sqrt(mCrossValidationSolutionValue / lmax);
+
+  if (lmax > imax)
+    mCrossValidationSD = sqrt(mCrossValidationSolutionValue / (lmax - imax));
+
+#endif // COPASI_CROSSVALIDATION
+
+  mHaveStatistics = true;
+
   if (mSolutionValue == mWorstValue)
     return false;
 
   if (*mpParmCalculateStatistics)
     {
-
       // Keep the results
       CVector< C_FLOAT64 > DependentValues = mExperimentDependentValues;
-
-      // The statistics need to be calculated for the result, i.e., now.
-      mpExperimentSet->calculateStatistics();
-
-      if (jmax)
-        mRMS = sqrt(mSolutionValue / jmax);
-
-      if (jmax > imax)
-        mSD = sqrt(mSolutionValue / (jmax - imax));
-
-#ifdef COPASI_CROSSVALIDATION
-      calculateCrossValidation();
-
-      mpCrossValidationSet->calculateStatistics();
-
-      size_t lmax = this->mCrossValidationDependentValues.size();
-
-      if (lmax)
-        mCrossValidationRMS = sqrt(mCrossValidationSolutionValue / lmax);
-
-      if (lmax > imax)
-        mCrossValidationSD = sqrt(mCrossValidationSolutionValue / (lmax - imax));
-
-#endif // COPASI_CROSSVALIDATION
-
-      mHaveStatistics = true;
 
       CMatrix< C_FLOAT64 > dyp;
       bool CalculateFIM = true;

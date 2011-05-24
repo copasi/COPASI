@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEnum.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:50:08 $
+//   $Date: 2011/05/24 16:32:31 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,9 +15,11 @@
 #define COPASI_CMathEnum
 
 #include <map>
+#include <vector>
 
 class CCopasiObject;
 class CMathObject;
+class CEvaluationNode;
 
 template <class Enum> class CMathFlags
 {
@@ -181,6 +183,117 @@ public:
     Moiety,
     Event
   };
+
+
+  class CVariableStack
+  {
+  public:
+    typedef std::vector< const CEvaluationNode * > StackElement;
+    typedef std::vector< StackElement > Buffer;
+
+    friend std::ostream & operator << (std::ostream & os, const CVariableStack & s);
+
+    enum Context
+    {
+      Variable,
+      Body
+    };
+
+  private:
+    CVariableStack();
+
+  public:
+    CVariableStack(Buffer & stack);
+
+    CVariableStack(const CVariableStack & src);
+
+    ~CVariableStack();
+
+    void push(const StackElement & stackElement);
+
+    void pop();
+
+    size_t size() const;
+
+    const CEvaluationNode * operator [](const size_t & index) const;
+
+  private:
+    Buffer * mpStack;
+
+  private:
+    Context mContext;
+
+    size_t mVariableLevel;
+
+    size_t mBodyLevel;
+  };
+
+  class CAllocationStack
+  {
+  public:
+    class CAllocation
+    {
+    public:
+      friend std::ostream & operator << (std::ostream & os, const CAllocation & s);
+
+      CAllocation();
+
+      CAllocation(const CAllocation & src);
+
+      ~CAllocation();
+
+      CAllocation & operator = (const CAllocation & rhs);
+
+      CAllocation & operator += (const CAllocation & rhs);
+
+      size_t nDiscontinuous;
+
+      size_t nTotalRoots;
+
+      std::vector< size_t > nRootsPerDiscontinuity;
+    };
+
+    typedef std::vector< CAllocation > StackElement;
+    typedef std::vector< StackElement > Buffer;
+
+    enum Context
+    {
+      Variable,
+      Body
+    };
+
+  private:
+    CAllocationStack();
+
+  public:
+    CAllocationStack(Buffer & stack);
+
+    CAllocationStack(const CAllocationStack & src);
+
+    ~CAllocationStack();
+
+    void push(const StackElement & stackElement);
+
+    void pop();
+
+    size_t size() const;
+
+    const CAllocation & operator [](const size_t & index) const;
+
+  private:
+    Buffer * mpStack;
+
+  private:
+    Context mContext;
+
+    size_t mVariableLevel;
+
+    size_t mBodyLevel;
+  };
 };
+
+std::ostream & operator << (std::ostream & os, const CMath::CVariableStack & s);
+
+std::ostream & operator << (std::ostream & os, const CMath::CAllocationStack::CAllocation & s);
 
 #endif // COPASI_CMathEnum

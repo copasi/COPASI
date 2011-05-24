@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.194 $
+//   $Revision: 1.195 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:48:55 $
+//   $Date: 2011/05/24 16:32:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1170,10 +1170,10 @@ public:
   std::string getQuantityRateUnitsDisplayString() const;
 
   /**
-   * Add all used nodes of the tree which introduce discrete changes.
-   * @param std::vector< const CEvaluationNode * > & discontinuousNodes
+   * List all trees which introduce discrete changes.
+   * @return std::vector< const CEvaluationTree * > treesWithDiscontinuities
    */
-  void getDiscontinuousNodes(std::vector< const CEvaluationNode * > & discontinuousNodes) const;
+  std::vector< const CEvaluationTree * > getTreesWithDiscontinuities() const;
 
 private:
 

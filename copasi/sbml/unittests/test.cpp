@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:39 $
+//   $Date: 2011/05/24 16:32:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,6 +117,7 @@
 #ifdef USE_CRENDER_EXTENSION
 #include "test000097.h"
 #endif // USE_CRENDER_EXTENSION
+#include "test000098.h"
 
 #define COPASI_MAIN
 

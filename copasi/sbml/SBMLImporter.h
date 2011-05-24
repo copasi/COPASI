@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:42 $
+//   $Date: 2011/05/24 16:32:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -702,6 +702,11 @@ public:
    */
   static CEvaluationNode* divideByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject);
 
+  /**
+   * This method reads the notes from an arbitrate SBase object
+   * and set them on the given CAnnotation instance.
+   */
+  static bool importNotes(CAnnotation* pAnno, const SBase* pSBase);
 
 
 #if LIBSBML_VERSION >= 40100

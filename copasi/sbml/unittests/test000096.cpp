@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000096.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:39:31 $
+//   $Date: 2011/05/24 16:32:32 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,9 @@ void test000096::test_export_model_notes_1()
   CPPUNIT_ASSERT(pNotes->getNumChildren() == 1);
   XMLNode* pChild = &pNotes->getChild(0);
   CPPUNIT_ASSERT(pChild != NULL);
+  CPPUNIT_ASSERT(pChild->getName() == "pre");
+  CPPUNIT_ASSERT(pChild->getNumChildren() == 1);
+  pChild = &pChild->getChild(0);
   CPPUNIT_ASSERT(pChild->isText());
   CPPUNIT_ASSERT(pChild->getCharacters().find("This") != std::string::npos);
   SBMLDocument *pDocument = new SBMLDocument(2, 4);

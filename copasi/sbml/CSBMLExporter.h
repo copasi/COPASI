@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/31 14:12:15 $
+//   $Author: shoops $
+//   $Date: 2011/05/24 16:32:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,28 +33,29 @@
 #include "copasi/function/CEvaluationNodeFunction.h"
 #include <sbml/FunctionDefinition.h>
 
-class SBase;
-class SBMLDocument;
-class CCopasiDataModel;
-class SBMLIncompatibility;
+class CAnnotation;
+class CChemEqElement;
 class CCompartment;
-class CMetab;
-class CExpression;
-class CEvaluationNode;
-class CReaction;
+class CCopasiDataModel;
 class CCopasiParameter;
-class CModelEntity;
+class CEvaluationNode;
+class CEvent;
+class CExpression;
 class CFunction;
+class CFunctionDB;
+class CMetab;
+class CModelValue;
+class CReaction;
+class Event;
+class CModelEntity;
 class KineticLaw;
 class Model;
-class CModelValue;
-class CEvent;
-class CChemEqElement;
-class CFunctionDB;
-class Rule;
-class XMLNode;
-class Event;
 class Parameter;
+class Rule;
+class SBase;
+class SBMLDocument;
+class SBMLIncompatibility;
+class XMLNode;
 
 class CSBMLExporter
 {
@@ -582,6 +583,13 @@ protected:
   bool updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& metaIds);
 
   /**
+   * This is a general method to set the notes of an SBase object based on a COPASI
+   * Annotation.
+   * This will allow us to export notes on objects other than just the model.
+   */
+  static bool setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno);
+
+  /**
    * This method creates a copy of parent where the child with the given index is
    * replaced by the new child given as the second argument.
    * If index is greater than the number of children - 1, NULL is returned.
@@ -652,27 +660,6 @@ protected:
   static CEvaluationNode* multiplyByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject);
 
   /**
-   * Goes through the node tree and replaces all name nodes with the corresponding entries in the replacement map.
-   */
-  static void replace_object_ids(ASTNode* pNode, const std::map<std::string, std::string>& replacementMap);
-
-  /**
-   * Goes through the model and tries to use the names as ids if possible.
-   * This only makes sense for export to Level 1 and the method is only called from convertToLevel1.
-   */
-  static void create_nice_ids(Model* pModel, const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
-
-  /**
-   * Replaces all occurences of character not allowed in an SBML L1 SName with '_'.
-   */
-  static void make_valid_sname(std::string& s);
-
-  /**
-   * Changes the given string into a valid sname and makes sure it is unique.
-   */
-  static void make_unique_valid_sname(std::string& s, const std::map<std::string, std::string>& replacementMap);
-
-  /**
    * Converts the SBML model given in SBML Level 1 Version 2 format to SBML Level 1 Version 1.
    * The method basically removes the namespace attribute on the sbml element
    * and changes the version from 2 to 1.
@@ -680,7 +667,6 @@ protected:
    * All other changes between SBML Level 1 Version 2 and Level 1 Version 1 should not be relevant here.
    */
   static void convert_to_l1v1(std::string& l1v2_string);
-
 };
 
 #endif // CSBLExporter_H__

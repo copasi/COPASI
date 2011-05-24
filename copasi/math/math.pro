@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/math.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/04/01 17:34:31 $ 
+#   $Date: 2011/05/24 16:32:31 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -29,6 +29,7 @@ SOURCES += CMathDependencyGraph.cpp
 SOURCES += CMathDependencyNode.cpp
 SOURCES += CMathExpression.cpp
 SOURCES += CMathContainer.cpp
+SOURCES += CMathEnum.cpp
 SOURCES += CMathEvent.cpp
 SOURCES += CMathObject.cpp
 SOURCES += CMathTrigger.cpp

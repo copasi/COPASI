@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:19 $
+//   $Date: 2011/05/24 16:32:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,8 +262,61 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
                                    CRDFPredicate::getURI(newPath[SubPathIndex]),
                                    Object);
 
+      // We need to address the issue when a bag has to be moved.
       if (Triplet)
-        Triplet = pGraph->moveTriplet(Triplet.pObject, triplet);
+        {
+          if (triplet.pObject->isBagNode())
+            {
+              std::set< CRDFTriplet> Triplets = triplet.pObject->getDescendantsWithPredicate(CRDFPredicate::rdf_li);
+
+              if (Triplets.size() == 0)
+                {
+                  pGraph->removeTriplet(Triplet.pSubject, Triplet.Predicate, Triplet.pObject);
+
+                  return false;
+                }
+
+              // Bagify the node.
+              CRDFObject Object;
+              Object.setType(CRDFObject::RESOURCE);
+              Object.setResource("http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag", false);
+              pGraph->addTriplet(Triplet.pObject->getSubject(), CRDFPredicate(CRDFPredicate::rdf_type), Object);
+
+              // Now we move each li element with the current predicate
+              std::set< CRDFTriplet>::iterator it = Triplets.begin();
+              std::set< CRDFTriplet>::iterator end = Triplets.end();
+
+              for (; it != end; ++it)
+                {
+                  CRDFObject Object;
+                  Object.setType(CRDFObject::BLANK_NODE);
+                  Object.setBlankNodeId(pGraph->generatedNodeId());
+
+                  CRDFTriplet LiTriplet = pGraph->addTriplet(Triplet.pObject->getSubject(),
+                                          CRDFPredicate(CRDFPredicate::rdf_li),
+                                          Object);
+
+                  if (LiTriplet)
+                    {
+                      success &= LiTriplet.pObject->addEdge(triplet.Predicate, it->pObject);
+                      it->pSubject->removeEdge(CRDFPredicate(CRDFPredicate::rdf_li), it->pObject);
+                    }
+                  else
+                    {
+                      success = false;
+                    }
+                }
+
+              // We have handled the triplet it can be removed from the graph.
+              pGraph->removeTriplet(triplet.pSubject, triplet.Predicate, triplet.pObject);
+
+              return success;
+            }
+          else
+            {
+              Triplet = pGraph->moveTriplet(Triplet.pObject, triplet);
+            }
+        }
     }
   else if (CurrentPath.size() > newPath.size())
     {

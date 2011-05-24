@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:18 $
+//   $Date: 2011/05/24 16:32:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -554,8 +554,10 @@ bool CRDFGraph::removeEmptyNodes()
         destroyUnreferencedNode(*itRemove);
 
       for (; itTriplet != endTriplet; ++itTriplet)
-        itTriplet->pSubject->removeEdge(itTriplet->Predicate,
-                                        itTriplet->pObject);
+        {
+          itTriplet->pSubject->removeEdge(itTriplet->Predicate,
+                                          itTriplet->pObject);
+        }
     }
 
   return ToBeRemoved.size() > 0;

@@ -1,9 +1,7 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.125 $ 
+#   $Revision: 1.126 $ 
 #   $Name:  $ 
-#   $Author: mendes $ 
-#   $Date: 2011/05/13 20:20:40 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.125 $ $Author: mendes $ $Date: 2011/05/13 20:20:40 $  
+# $Revision: 1.126 $ $Author: shoops $ $Date: 2011/05/24 16:32:38 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -83,7 +81,6 @@ DEFINES += WITH_CSPMETHOD
 # DEFINES += USE_SBMLUNIT
 
 # enable this to build support for the render extension
-# this should be enabled since it has been tested enough
 # DEFINES += USE_CRENDER_EXTENSION
 
 # enable this to build with Svens layout generation code.

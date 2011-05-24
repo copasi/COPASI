@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.38 $
+$Revision: 1.39 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:37:53 $
+$Date: 2011/05/24 16:32:34 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,9 @@ public:
   // for amount or concentration, but not both for the same metabolite
   void setFramework(int index);
 
+  // This methods needs to be called by copasiui3window
+  virtual void updateAllSliders();
+
 protected:
   size_t mapFolderId2EntryId(size_t folderId) const;
 
@@ -78,7 +81,6 @@ protected:
   virtual void closeEvent(QCloseEvent* e);
 
   virtual CCopasiTask* getTaskForFolderId(size_t folderId);
-  virtual void updateAllSliders();
   std::vector<CSlider*>* getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const;
   CopasiSlider* findCopasiSliderForCSlider(CSlider* pCSlider);
   CSlider* equivalentSliderExists(CSlider* pCSlider);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/05/04 14:30:42 $
+//   $Author: shoops $
+//   $Date: 2011/05/24 16:32:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@
 #include "model/CMetab.h"
 #include "function/CExpression.h"
 #include "function/CEvaluationNode.h"
+#include "model/CAnnotation.h"
 #include "model/CReaction.h"
 #include "utilities/CCopasiParameter.h"
 #include "model/CModelValue.h"
@@ -748,6 +749,11 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
         }
     }
 
+  if (pSBMLCompartment != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pSBMLCompartment, &compartment);
+    }
+
   CSBMLExporter::updateMIRIAMAnnotation(&compartment, pSBMLCompartment, this->mMetaIdMap);
 }
 
@@ -870,6 +876,9 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       // we also have to set the initial amount if the model has variable
       // volumes since those models export all species with the
       // hasOnlySubstanceUnits flag set to true
+      //
+      // libsbml 4 does not set the initial concentration on a species any more
+      // so we also have to set the initial amount
       if (pSBMLSpecies->isSetInitialAmount() || this->mVariableVolumes == true || pSBMLSpecies->getLevel() == 1)
         {
           pSBMLSpecies->setInitialAmount(value*metab.getCompartment()->getInitialValue());
@@ -948,6 +957,11 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
         {
           this->mInitialAssignmentVector.push_back(&metab);
         }
+    }
+
+  if (pSBMLSpecies != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pSBMLSpecies, &metab);
     }
 
   CSBMLExporter::updateMIRIAMAnnotation(&metab, pSBMLSpecies, this->mMetaIdMap);
@@ -1071,6 +1085,11 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
         {
           removeInitialAssignment(pParameter->getId());
         }
+    }
+
+  if (pParameter != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pParameter, &modelValue);
     }
 
   CSBMLExporter::updateMIRIAMAnnotation(&modelValue, pParameter, this->mMetaIdMap);
@@ -1280,6 +1299,11 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
   else
     {
       pSBMLReaction->unsetKineticLaw();
+    }
+
+  if (pSBMLReaction != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pSBMLReaction, &reaction);
     }
 
   CSBMLExporter::updateMIRIAMAnnotation(&reaction, pSBMLReaction, this->mMetaIdMap);
@@ -2679,6 +2703,11 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
         }
     }
 
+  if (pFunDef != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pFunDef, &function);
+    }
+
   CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIdMap);
 }
 
@@ -2807,57 +2836,15 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   this->mFunctionIdMap.clear();
   // update the copasi2sbmlmap
   updateCOPASI2SBMLMap(dataModel);
-  // if we create a new sbml model, the old COPASI2SBMLMap is empty
-  // so we have to make sure to add the model to the map here
   // update the comments on the model
   const CModel* pModel = dataModel.getModel();
   assert(pModel != NULL);
+  this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
 
-  if (this->mCOPASI2SBMLMap.empty())
+
+  if (pModel != NULL && this->mpSBMLDocument->getModel() != NULL)
     {
-      this->mCOPASI2SBMLMap[pModel] = this->mpSBMLDocument->getModel();
-    }
-
-  // setName and setId do the same thing for Level 1 documents
-  // so we don't call setName again since this would overwrite
-  // the id we have set above
-  if (this->mSBMLLevel > 1)
-    {
-      this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
-    }
-
-  if (pModel != NULL && (!pModel->getNotes().empty()) && !(pModel->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
-    {
-#if LIBSBML_VERSION >= 40100
-      // the new method to create notes does not add the notes tag around the notes any
-      // more because libsbml 4 checks if it is there and adds it if it isn't
-      XMLNode* pNotes = CSBMLExporter::createSBMLNotes(pModel->getNotes());
-#else
-      // if we are compiling agains libsbml 3, we use the old way of setting the notes
-      std::string comments = "<notes>" + pModel->getNotes() + "</notes>";
-      // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
-      // in libsbml it creates a dummy node and in libsbml 4 it doesn't
-      // somehow this never did affect the notes because they were exported correctly with
-      // libsbml 3 already
-      XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
-#endif // LIBSBML_VERSION
-
-      if (pNotes != NULL)
-        {
-          int notes_result = this->mpSBMLDocument->getModel()->setNotes(pNotes);
-
-          if (notes_result != LIBSBML_OPERATION_SUCCESS)
-            {
-              // issue some warning
-              CCopasiMessage(CCopasiMessage::WARNING, "Warning, notes could not be set on the SBML model, please consider reporting this to the COPASI developers.");
-            }
-
-          delete pNotes;
-        }
-      else
-        {
-          CCopasiMessage(CCopasiMessage::WARNING, "Warning, notes could not be set on the SBML model, please consider reporting this to the COPASI developers.");
-        }
+      CSBMLExporter::setSBMLNotes(this->mpSBMLDocument->getModel(), pModel);
     }
 
   // update the MIRIAM annotation on the model
@@ -3586,6 +3573,13 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       delete pSBMLEvent;
       this->mCOPASI2SBMLMap.erase(&event);
     }
+
+  if (pSBMLEvent != NULL)
+    {
+      CSBMLExporter::setSBMLNotes(pSBMLEvent, &event);
+    }
+
+  CSBMLExporter::updateMIRIAMAnnotation(&event, pSBMLEvent, this->mMetaIdMap);
 }
 
 void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)
@@ -4504,11 +4498,6 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
 
 void CSBMLExporter::convertToLevel1()
 {
-  // this method potentially changes ids for objects, so the Copasi2SBMLmap
-  // will be invalid afterwards.
-  // Since this method is only called for export to Level 1 and the result for such
-  // an export is not stored in the data model, this should be OK.
-
   // expand all function calls in rules, events and
   // kinetic laws and delete the functions
   // initial assignments do not need to be considered since they can not be
@@ -4573,8 +4562,6 @@ void CSBMLExporter::convertToLevel1()
             }
         }
     }
-
-  CSBMLExporter::create_nice_ids(pModel, this->mCOPASI2SBMLMap);
 }
 
 ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
@@ -5508,6 +5495,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
   const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
   const CFunction* pFunction = dynamic_cast<const CFunction*>(pCOPASIObject);
   const CReaction* pReaction = dynamic_cast<const CReaction*>(pCOPASIObject);
+  const CEvent* pEvent = dynamic_cast<const CEvent*>(pCOPASIObject);
   CMIRIAMInfo miriamInfo;
   std::string miriamAnnotationString;
 
@@ -5525,6 +5513,11 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
     {
       miriamInfo.load(pFunction->getKey());
       miriamAnnotationString = pFunction->getMiriamAnnotation();
+    }
+  else if (pEvent != NULL)
+    {
+      miriamInfo.load(pEvent->getKey());
+      miriamAnnotationString = pEvent->getMiriamAnnotation();
     }
   else
     {
@@ -6758,331 +6751,146 @@ CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNod
 }
 
 /**
- * Goes through the node tree and replaces all name nodes with the corresponding entries in the replacement map.
- * This is used in export to Level 1 where we try ro replace funny ids by more meaningful strings.
+ * This is a general method to set the notes of an SBase object based on a COPASI
+ * Annotation.
+ * This will allow us to export notes on objects other than just the model.
  */
-void CSBMLExporter::replace_object_ids(ASTNode* pNode, const std::map<std::string, std::string>& replacementMap)
+bool CSBMLExporter::setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno)
 {
-  if (pNode != NULL && !replacementMap.empty())
+  bool result = true;
+
+  if (pSBase != NULL && pAnno != NULL)
     {
-      std::map<std::string, std::string>::const_iterator pos;
-
-      if (pNode->isName())
+      if ((!pAnno->getNotes().empty()) && !(pAnno->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
         {
-          pos = replacementMap.find(pNode->getName());
+#if LIBSBML_VERSION >= 40100
+          // the new method to create notes does not add the notes tag around the notes any
+          // more because libsbml 4 checks if it is there and adds it if it isn't
+          XMLNode* pNotes = CSBMLExporter::createSBMLNotes(pAnno->getNotes());
+#else
+          // if we are compiling agains libsbml 3, we use the old way of setting the notes
+          std::string comments = "<notes>" + pAnno->getNotes() + "</notes>";
+          // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
+          // in libsbml it creates a dummy node and in libsbml 4 it doesn't
+          // somehow this never did affect the notes because they were exported correctly with
+          // libsbml 3 already
+          XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
+#endif // LIBSBML_VERSION
 
-          if (pos != replacementMap.end())
+          if (pNotes != NULL)
             {
-              assert(pos->second != "");
-              pNode->setName(pos->second.c_str());
+              int notes_result = pSBase->setNotes(pNotes);
+
+              if (notes_result != LIBSBML_OPERATION_SUCCESS)
+                {
+                  // issue some warning
+                  std::string target;
+
+                  switch (pSBase->getTypeCode())
+                    {
+                      case SBML_MODEL:
+                        target = "the SBML model";
+                        break;
+                      case SBML_COMPARTMENT:
+                        target = " compartment \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      case SBML_SPECIES:
+                        target =
+                          target = "species \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      case SBML_PARAMETER:
+                        target =
+                          target = "parameter \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      case SBML_REACTION:
+                        target = "reaction \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      case SBML_EVENT:
+                        target = "event \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                      default:
+                        target = "object \"";
+                        target += pSBase->getName();
+                        target += "\"";
+                        break;
+                    }
+
+                  std::string warning = "Warning, notes could not be set on ";
+                  warning += target;
+                  warning += ", please consider reporting this to the COPASI developers.";
+                  CCopasiMessage(CCopasiMessage::WARNING, warning.c_str());
+                  result = false;
+                }
+
+              delete pNotes;
             }
-        }
-      else
-        {
-          unsigned int i = 0, iMax = pNode->getNumChildren();
-
-          while (i < iMax)
+          else
             {
-              // TODO we should probably not do this recursively because it will not work
-              // TODO for insanely large trees, but right now this is the fastest solution
-              CSBMLExporter::replace_object_ids(pNode->getChild(i), replacementMap);
-              ++i;
-            }
-        }
-    }
-}
+              std::string target;
 
-/**
- * Replaces all occurences of character not allowed in an SBML L1 SName with '_'.
- */
-void CSBMLExporter::make_valid_sname(std::string& s)
-{
-  std::string tmp("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_");
-  size_t pos = s.find_first_not_of(tmp);
+              switch (pSBase->getTypeCode())
+                {
+                  case SBML_MODEL:
+                    target = "the SBML model";
+                    break;
+                  case SBML_COMPARTMENT:
+                    target = " compartment \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  case SBML_SPECIES:
+                    target =
+                      target = "species \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  case SBML_PARAMETER:
+                    target =
+                      target = "parameter \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  case SBML_REACTION:
+                    target = "reaction \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  case SBML_EVENT:
+                    target = "event \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                  default:
+                    target = "object \"";
+                    target += pSBase->getName();
+                    target += "\"";
+                    break;
+                }
 
-  while (pos != std::string::npos)
-    {
-      // replace the occurance with _
-      s[pos] = '_';
-      pos = s.find_first_not_of(tmp, pos);
-    }
-}
-
-/**
- * Changes the given string into a valid sname and makes sure it is unique.
- */
-void CSBMLExporter::make_unique_valid_sname(std::string& s, const std::map<std::string, std::string>& replacementMap)
-{
-  CSBMLExporter::make_valid_sname(s);
-  std::map<std::string, std::string>::const_iterator pos = replacementMap.find(s);
-
-  if (pos != replacementMap.end())
-    {
-      // copy s
-      std::string tmp = s;
-      std::ostringstream os;
-      unsigned int index = 1;
-
-      do
-        {
-          os.str("");
-          os << s << "_" << index;
-          pos = replacementMap.find(os.str());
-          ++index;
-        }
-      while (pos != replacementMap.end());
-
-      s = os.str();
-    }
-}
-
-/**
- * Goes through the model and tries to use the names as ids if possible.
- * This only makes sense for export to Level 1 and the method is only called from convertToLevel1.
- */
-void CSBMLExporter::create_nice_ids(Model* pModel, const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
-{
-  // replace the id on the model
-  if (pModel == NULL) return;
-
-  // add all the reserved names to the map
-  std::map<std::string, std::string> replacementMap;
-  replacementMap.insert(std::pair<std::string, std::string>("abs", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("acos", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("and", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("asin", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("atan", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ceil", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("cos", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("exp", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("floor", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("hilli", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("hillmmr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("hillmr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("hillr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("isouur", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("log", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("log10", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("mass", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("massi", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("massr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("not", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("or", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ordbbr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ordbur", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ordubr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("pow", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ppbr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("sin", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("sqr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("sqrt", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("substance", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("tan", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("time", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uai", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uaii", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ualii", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uar", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ucii", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ucir", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("ucti", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uctr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uhmi", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uhmr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("umai", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("umar", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("umi", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("umr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("unii", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("unir", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("usii", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("usir", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uuci", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uucr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uuhr", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uui", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("uur", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("volume", ""));
-  replacementMap.insert(std::pair<std::string, std::string>("xor", ""));
-
-  // we revert the copasi2sbmlmap
-  std::map<const SBase*, const CCopasiObject*> reverse_copasi2sbmlmap;
-  std::map<const CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
-
-  while (it != endit)
-    {
-      reverse_copasi2sbmlmap.insert(std::pair<const SBase*, const CCopasiObject*>(it->second, it->first));
-      ++it;
-    }
-
-  std::map<const SBase*, const CCopasiObject*>::const_iterator pos = reverse_copasi2sbmlmap.find(pModel);
-  assert(pos != reverse_copasi2sbmlmap.end());
-  std::string sname = pos->second->getObjectName();
-  CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
-
-  if (sname != pModel->getId())
-    {
-      replacementMap.insert(std::pair<std::string, std::string>(pModel->getId(), sname));
-      pModel->setId(sname);
-    }
-
-  Compartment* pCompartment = NULL;
-  Species* pSpecies = NULL;
-  Parameter* pParameter = NULL;
-  Reaction* pReaction = NULL;
-  Rule* pRule = NULL;
-  ASTNode* pRoot = NULL;
-  std::map<std::string, std::string>::const_iterator pos2;
-  // we don't do the unit definitions because otherwise we will have to
-  // change all the units on all elements
-  // replace the ids on all compartments
-  unsigned int i, iMax = pModel->getNumCompartments();
-
-  for (i = 0; i < iMax; ++i)
-    {
-      pCompartment = pModel->getCompartment(i);
-      assert(pCompartment != NULL);
-      pos = reverse_copasi2sbmlmap.find(pCompartment);
-      assert(pos != reverse_copasi2sbmlmap.end());
-      sname = pos->second->getObjectName();
-      CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
-
-      if (sname != pCompartment->getId())
-        {
-          replacementMap.insert(std::pair<std::string, std::string>(pCompartment->getId(), sname));
-          pCompartment->setId(sname);
-        }
-    }
-
-  // replace the ids on all species
-  iMax = pModel->getNumSpecies();
-
-  for (i = 0; i < iMax; ++i)
-    {
-      pSpecies = pModel->getSpecies(i);
-      assert(pSpecies != NULL);
-      pos = reverse_copasi2sbmlmap.find(pSpecies);
-      assert(pos != reverse_copasi2sbmlmap.end());
-      sname = pos->second->getObjectName();
-      CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
-
-      if (sname != pSpecies->getId())
-        {
-          replacementMap.insert(std::pair<std::string, std::string>(pSpecies->getId(), sname));
-          pSpecies->setId(sname);
-        }
-
-      // replace the compartment of the species
-      pos2 = replacementMap.find(pSpecies->getCompartment());
-      assert(pos2 != replacementMap.end());
-
-      if (pos2 != replacementMap.end())
-        {
-          pSpecies->setCompartment(pos2->second);
-        }
-    }
-
-  // replace the ids on all parameters
-  iMax = pModel->getNumParameters();
-
-  for (i = 0; i < iMax; ++i)
-    {
-      pParameter = pModel->getParameter(i);
-      assert(pParameter != NULL);
-      pos = reverse_copasi2sbmlmap.find(pParameter);
-      assert(pos != reverse_copasi2sbmlmap.end());
-      sname = pos->second->getObjectName();
-      CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
-
-      if (sname != pParameter->getId())
-        {
-          replacementMap.insert(std::pair<std::string, std::string>(pParameter->getId(), sname));
-          pParameter->setId(sname);
-        }
-    }
-
-  // replace the ids on all reactions
-  iMax = pModel->getNumReactions();
-
-  for (i = 0; i < iMax; ++i)
-    {
-      pReaction = pModel->getReaction(i);
-      assert(pReaction != NULL);
-      pos = reverse_copasi2sbmlmap.find(pReaction);
-      assert(pos != reverse_copasi2sbmlmap.end());
-      sname = pos->second->getObjectName();
-      CSBMLExporter::make_unique_valid_sname(sname, replacementMap);
-
-      if (sname != pReaction->getId())
-        {
-          replacementMap.insert(std::pair<std::string, std::string>(pReaction->getId(), sname));
-          pReaction->setId(sname);
-        }
-
-      // replace the ids in the substrates and products lists
-      unsigned int j, jMax = pReaction->getNumReactants();
-
-      for (j = 0; j < jMax; ++j)
-        {
-          SpeciesReference* pSRef = pReaction->getReactant(j);
-          assert(pSRef != NULL);
-          pos2 = replacementMap.find(pSRef->getSpecies());
-          assert(pos2 != replacementMap.end());
-
-          if (pos2 != replacementMap.end())
-            {
-              pSRef->setSpecies(pos2->second);
-            }
-        }
-
-      jMax = pReaction->getNumProducts();
-
-      for (j = 0; j < jMax; ++j)
-        {
-          SpeciesReference* pSRef = pReaction->getProduct(j);
-          assert(pSRef != NULL);
-          pos2 = replacementMap.find(pSRef->getSpecies());
-          assert(pos2 != replacementMap.end());
-
-          if (pos2 != replacementMap.end())
-            {
-              pSRef->setSpecies(pos2->second);
-            }
-        }
-
-      // replace ids in kinetic laws
-      if (pReaction->isSetKineticLaw() && pReaction->getKineticLaw() != NULL && pReaction->getKineticLaw()->getMath() != NULL)
-        {
-          pRoot = const_cast<ASTNode*>(pReaction->getKineticLaw()->getMath());
-          CSBMLExporter::replace_object_ids(pRoot, replacementMap);
-        }
-    }
-
-  // replace the ids on all rules
-  iMax = pModel->getNumRules();
-
-  for (i = 0; i < iMax; ++i)
-    {
-      pRule = pModel->getRule(i);
-      assert(pRule != NULL);
-      // replace ids in the expression
-      // and for rate and assignment rules also for the target
-      pRoot = const_cast<ASTNode*>(pRule->getMath());
-      CSBMLExporter::replace_object_ids(pRoot, replacementMap);
-
-      if (!pRule->isAlgebraic())
-        {
-          sname = pRule->getVariable();
-          assert(sname != "");
-          pos2 = replacementMap.find(sname);
-
-          if (pos2 != replacementMap.end())
-            {
-              assert(pos2->second != "");
-              pRule->setVariable(pos2->second);
+              std::string warning = "Warning, notes could not be set on ";
+              warning += target;
+              warning += ", please consider reporting this to the COPASI developers.";
+              CCopasiMessage(CCopasiMessage::WARNING, warning.c_str());
+              result = false;
             }
         }
     }
+  else
+    {
+      result = false;
+    }
+
+  return result;
 }
 
 #if LIBSBML_VERSION >= 40001
@@ -7160,7 +6968,7 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
                           pResult = pNotes;
                           pResult->setTriple(XMLTriple("body", "http://www.w3.org/1999/xhtml", ""));
                           assert(pResult->isElement() == true);
-                          assert(pResult->isEnd() == false);
+                          assert(pResult->getNumChildren() == 0 || pResult->isEnd() == false);
                         }
 
                       int tmp = pResult->addNamespace("http://www.w3.org/1999/xhtml", "");
@@ -7182,7 +6990,20 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
       else
         {
           // put the complete notes string into a body tag
-          std::string new_notes = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + notes_string + "</body>";
+          // check if the string contains "</" or "/>" in that case
+          // we assume that the string contains markup
+          //
+          std::string new_notes;
+
+          if (notes_string.find("</") != std::string::npos || notes_string.find("/>") != std::string::npos)
+            {
+              new_notes = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + notes_string + "</body>";
+            }
+          else
+            {
+              new_notes = "<body xmlns=\"http://www.w3.org/1999/xhtml\"><pre>" + notes_string + "</pre></body>";
+            }
+
           pResult = XMLNode::convertStringToXMLNode(new_notes);
           assert(pResult != NULL);
           assert(pResult->getName() == "body");
@@ -7203,7 +7024,6 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
 
   return pResult;
 }
-#endif // LIBSBML_VERSION
 
 /**
  * Converts the SBML model given in SBML Level 1 Version 2 format to SBML Level 1 Version 1.
@@ -7333,4 +7153,7 @@ void CSBMLExporter::convert_to_l1v1(std::string& l1v2_string)
       start_pos = l1v2_string.find("</species>", start_pos);
     }
 }
+
+#endif // LIBSBML_VERSION
+
 

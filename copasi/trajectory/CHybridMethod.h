@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:14 $
+//   $Date: 2011/05/24 16:32:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,7 @@ class CHybridBalance
 {
 public:
   size_t mIndex;
-  size_t mMultiplicity;
+  C_INT32 mMultiplicity;
   CMetab * mpMetabolite;
 
   // insert operator

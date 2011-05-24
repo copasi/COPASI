@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.241 $
+#   $Revision: 1.242 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2011/05/16 15:57:46 $
+#   $Author: shoops $
+#   $Date: 2011/05/24 16:32:34 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.241 $ $Author: aekamal $ $Date: 2011/05/16 15:57:46 $
+# $Revision: 1.242 $ $Author: shoops $ $Date: 2011/05/24 16:32:34 $
 ######################################################################
 
 LIB = UI
@@ -317,10 +317,6 @@ SOURCES	+= \
   HEADERS -= TSSWidget.h
   SOURCES -= TSSWidget.cpp
 }
-
-### uic3 forms that do not work at the moment
-HEADERS += 
-SOURCES += CQProgressItemBar.cpp
 
 #FORMS3 += CQProgressItemText.ui
 HEADERS += CQProgressItemText.h

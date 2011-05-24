@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Date: 2011/05/24 16:32:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -583,6 +583,7 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
     selectRow(C_INVALID_INDEX);
 
   emit numberChanged((int) mpItemsCopy->size());
+  mpTable->resizeRowsToContents();
 
   return true;
 }

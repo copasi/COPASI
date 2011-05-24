@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/05 16:17:10 $
+//   $Date: 2011/05/24 16:32:32 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -308,6 +308,8 @@ const CMathExpression * CMathObject::getExpressionPtr() const
 
 bool CMathObject::compile(CMathContainer & container)
 {
+  std::cout << *this;
+
   bool success = true;
 
   // The default value is NaN

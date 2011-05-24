@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/27 17:05:34 $
+//   $Date: 2011/05/24 16:32:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,8 +244,6 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex&)
 {
   if (rows <= 0)
     return true;
-
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);

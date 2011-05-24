@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.35 $ 
+#   $Revision: 1.36 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/04/26 16:10:39 $ 
+#   $Date: 2011/05/24 16:32:32 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -176,6 +176,7 @@ HEADERS += test000093.h
 HEADERS += test000094.h
 HEADERS += test000095.h
 HEADERS += test000096.h 
+HEADERS += test000098.h 
 
 
 SOURCES += utilities.cpp
@@ -275,6 +276,7 @@ SOURCES += test000093.cpp
 SOURCES += test000094.cpp
 SOURCES += test000095.cpp
 SOURCES += test000096.cpp
+SOURCES += test000098.cpp
 SOURCES += test.cpp
 
 contains(DEFINES,"USE_CRENDER_EXTENSION"){

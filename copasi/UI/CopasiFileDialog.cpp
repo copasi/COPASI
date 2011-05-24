@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/24 13:30:51 $
+//   $Date: 2011/05/24 16:32:34 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,13 +72,15 @@ QString CopasiFileDialog::getOpenFileName(QWidget * parent,
     const QString & startWith,
     const QString & filter,
     const QString & caption,
-    QString * pSelectedFilter)
+    QString * pSelectedFilter,
+    QFileDialog::Options options)
 {
   QString newFile = QFileDialog::getOpenFileName(parent,
                     caption,
                     StartWith(startWith),
                     filter,
-                    pSelectedFilter);
+                    pSelectedFilter,
+                    options);
 
   if (newFile != "")
     LastDir = FROM_UTF8(CDirEntry::dirName(TO_UTF8(newFile)));
@@ -92,7 +94,8 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
     const QString & startWith,
     const QString & filter,
     const QString & caption,
-    QString * pSelectedFilter)
+    QString * pSelectedFilter,
+    QFileDialog::Options options)
 {
   QString newFile, newFilter = filter;
   bool fileValid;
@@ -110,7 +113,8 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
                                              caption,
                                              StartWith(startWith),
                                              newFilter, pSelectedFilter,
-                                             QFileDialog::DontConfirmOverwrite);
+                                             QFileDialog::DontConfirmOverwrite | options);
+
 
       if (newFile != "")
         LastDir = FROM_UTF8(CDirEntry::dirName(TO_UTF8(newFile)));

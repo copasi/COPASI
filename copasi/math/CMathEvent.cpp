@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/05 16:17:10 $
+//   $Date: 2011/05/24 16:32:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,7 +151,14 @@ void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
                                      const CMathContainer & container)
 {
   // Determine the number of roots.
-  std::vector< std::vector< const CEvaluationNode * > > Variables;
+  CMath::CVariableStack::StackElement Variables;
+  CMath::CVariableStack::Buffer VariableBuffer;
+  CMath::CVariableStack VariableStack(VariableBuffer);
+
+  CMath::CAllocationStack::StackElement Allocations;
+  CMath::CAllocationStack::Buffer AllocationBuffer;
+  CMath::CAllocationStack AllocationStack(AllocationBuffer);
+
   std::vector< CCopasiContainer * > Container;
   Container.push_back(const_cast< CMathContainer * >(&container));
 
@@ -163,12 +170,13 @@ void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
 
   assert(success);
 
-  mRoots.resize(countRoots(Trigger.getRoot(), Variables, 0));
+  mRoots.resize(countRoots(Trigger.getRoot(), VariableStack, AllocationStack));
 }
 
-void CMathEventN::CTrigger::allocateDiscontinuous()
+void CMathEventN::CTrigger::allocateDiscontinuous(const size_t & nRoots,
+    const CMathContainer & /* container */)
 {
-  mRoots.resize(2);
+  mRoots.resize(nRoots);
 }
 
 void CMathEventN::CTrigger::initialize(CMath::sPointers & pointers)
@@ -180,7 +188,7 @@ void CMathEventN::CTrigger::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 
   // Initialize initial trigger object.
-  mpInitialTrigger = pointers.pEventTriggersObject;
+  mpInitialTrigger = pointers.pInitialEventTriggersObject;
   CMathObject::initialize(pointers.pInitialEventTriggersObject, pointers.pInitialEventTriggers,
                           CMath::EventTrigger, CMath::Event, CMath::SimulationTypeUndefined,
                           false, true, NULL);
@@ -200,7 +208,9 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
 {
   bool success = true;
 
-  std::vector< std::vector< const CEvaluationNode * > > Variables;
+  CMath::CVariableStack::Buffer Stack;
+  CMath::CVariableStack VariableStack(Stack);
+
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
 
@@ -213,10 +223,10 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
   CEvaluationNode * pTriggerRoot = NULL;
   CRoot * pRoot = mRoots.array();
 
-  success &= compile(pTriggerRoot, DataTrigger.getRoot(), Variables, 0, pRoot, container);
+  success &= compile(pTriggerRoot, DataTrigger.getRoot(), VariableStack, pRoot, container);
 
   assert(pRoot == mRoots.array() + mRoots.size());
-  assert(Variables.empty());
+  assert(VariableStack.size() == 0);
 
   CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
   success &= pTrigger->setRoot(pTriggerRoot);
@@ -233,7 +243,6 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
 {
   bool success = true;
 
-  std::vector< std::vector< const CEvaluationNode * > > Variables;
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
 
@@ -247,16 +256,16 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
     {
       case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
       {
-        // success &= DataTrigger.setRoot(static_cast< const CEvaluationNode * >(pNode->getChild()));
+        success &= DataTrigger.setRoot(static_cast< const CEvaluationNode * >(pNode->getChild()));
         success &= DataTrigger.updateTree();
         mDualAction = true;
 
         // Modify discontinuous object expression.
         CMathObject * pMathObject = const_cast< CMathObject * >(pObject);
         CMathExpression * pMathExpression = const_cast< CMathExpression * >(pObject->getExpressionPtr());
-        CEvaluationNode * pMathNode = pMathExpression->getRoot();
-        success &= pMathNode->addChild(new CEvaluationNodeObject((C_FLOAT64 *) mpTrigger->getValuePointer()), pMathNode);
-        success &= pMathNode->removeChild(pMathNode->getChild());
+        CEvaluationNode * pMathRoot = pMathExpression->getRoot();
+        success &= pMathRoot->removeChild(pMathRoot->getChild());
+        success &= pMathRoot->addChild(new CEvaluationNodeObject((C_FLOAT64 *) mpTrigger->getValuePointer()), pMathRoot);
         success &= pMathExpression->compile();
         success &= pMathObject->compile(container);
       }
@@ -270,7 +279,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
         CEvaluationNode * pOR = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
 
         CEvaluationNode * pLT = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "LT");
-        pLT->addChild(container.copyBranch(pArg, Variables, 0, false));
+        pLT->addChild(container.copyBranch(pArg, false));
         pLT->addChild(new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer()));
         pOR->addChild(pLT);
 
@@ -281,7 +290,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
         pPlus->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0"));
         pLE->addChild(pPlus);
 
-        pLE->addChild(container.copyBranch(pArg, Variables, 0, false));
+        pLE->addChild(container.copyBranch(pArg, false));
         pOR->addChild(pLE);
 
         success &= DataTrigger.setRoot(pOR);
@@ -297,7 +306,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
         CEvaluationNode * pOR = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
 
         CEvaluationNode * pLE = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE, "LE");
-        pLE->addChild(container.copyBranch(pArg, Variables, 0, false));
+        pLE->addChild(container.copyBranch(pArg, false));
 
         CEvaluationNode * pMinus = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
         pMinus->addChild(new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer()));
@@ -308,7 +317,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
 
         CEvaluationNode * pLT = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "LT");
         pLT->addChild(new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer()));
-        pLT->addChild(container.copyBranch(pArg, Variables, 0, false));
+        pLT->addChild(container.copyBranch(pArg, false));
         pOR->addChild(pLT);
 
         success &= DataTrigger.setRoot(pOR);
@@ -327,10 +336,13 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
   CEvaluationNode * pTriggerRoot = NULL;
   CRoot * pRoot = mRoots.array();
 
-  success &= compile(pTriggerRoot, DataTrigger.getRoot(), Variables, 0, pRoot, container);
+  CMath::CVariableStack::Buffer Stack;
+  CMath::CVariableStack VariableStack(Stack);
+
+  success &= compile(pTriggerRoot, DataTrigger.getRoot(), VariableStack, pRoot, container);
 
   assert(pRoot == mRoots.array() + mRoots.size());
-  assert(Variables.empty());
+  assert(VariableStack.size() == 0);
 
   CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
   success &= pTrigger->setRoot(pTriggerRoot);
@@ -347,8 +359,8 @@ const CVector< CMathEventN::CTrigger::CRoot > & CMathEventN::CTrigger::getRoots(
 
 // static
 size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
-    std::vector< std::vector< const CEvaluationNode * > > & variables,
-    const size_t & variableLevel)
+    CMath::CVariableStack & variableStack,
+    CMath::CAllocationStack & allocationStack)
 {
   const CEvaluationNode::Type & Type = pNode->getType();
 
@@ -360,14 +372,14 @@ size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
           {
             case CEvaluationNodeLogical::EQ:
             case CEvaluationNodeLogical::NE:
-              return countRootsEQ(pNode, variables, variableLevel);
+              return countRootsEQ(pNode, variableStack, allocationStack);
               break;
 
             case CEvaluationNodeLogical::LE:
             case CEvaluationNodeLogical::LT:
             case CEvaluationNodeLogical::GE:
             case CEvaluationNodeLogical::GT:
-              return countRootsLE(pNode, variables, variableLevel);
+              return countRootsLE(pNode, variableStack, allocationStack);
               break;
 
             default:
@@ -382,7 +394,7 @@ size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
           {
             case CEvaluationNodeCall::FUNCTION:
             case CEvaluationNodeCall::EXPRESSION:
-              return countRootsFUNCTION(pNode, variables, variableLevel);
+              return countRootsFUNCTION(pNode, variableStack, allocationStack);
               break;
 
             default:
@@ -396,7 +408,7 @@ size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
         switch ((int) CEvaluationNode::subType(Type))
           {
             case CEvaluationNodeVariable::ANY:
-              return countRootsVARIABLE(pNode, variables, variableLevel);
+              return countRootsVARIABLE(pNode, variableStack, allocationStack);
               break;
 
             default:
@@ -415,7 +427,7 @@ size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
 
   while (pChild != NULL)
     {
-      nRoots += countRoots(pChild, variables, variableLevel);
+      nRoots += countRoots(pChild, variableStack, allocationStack);
       pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
     }
 
@@ -424,16 +436,16 @@ size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
 
 // static
 size_t CMathEventN::CTrigger::countRootsEQ(const CEvaluationNode * pNode,
-    std::vector< std::vector< const CEvaluationNode * > > & variables,
-    const size_t & variableLevel)
+    CMath::CVariableStack & variableStack,
+    CMath::CAllocationStack & allocationStack)
 {
   size_t nRoots = 0;
 
   const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pNode->getChild());
   const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
 
-  nRoots += countRoots(pLeft, variables, variableLevel);
-  nRoots += countRoots(pRight, variables, variableLevel);
+  nRoots += countRoots(pLeft, variableStack, allocationStack);
+  nRoots += countRoots(pRight, variableStack, allocationStack);
 
   // Equality can be determined between Boolean and double values.
   if (CEvaluationNode::type(pLeft->getType()) != CEvaluationNode::LOGICAL)
@@ -448,16 +460,16 @@ size_t CMathEventN::CTrigger::countRootsEQ(const CEvaluationNode * pNode,
 
 // static
 size_t CMathEventN::CTrigger::countRootsLE(const CEvaluationNode * pNode,
-    std::vector< std::vector< const CEvaluationNode * > > & variables,
-    const size_t & variableLevel)
+    CMath::CVariableStack & variableStack,
+    CMath::CAllocationStack & allocationStack)
 {
   size_t nRoots = 0;
 
   const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pNode->getChild());
   const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
 
-  nRoots += countRoots(pLeft, variables, variableLevel);
-  nRoots += countRoots(pRight, variables, variableLevel);
+  nRoots += countRoots(pLeft, variableStack, allocationStack);
+  nRoots += countRoots(pRight, variableStack, allocationStack);
 
   nRoots += 1;
 
@@ -466,133 +478,101 @@ size_t CMathEventN::CTrigger::countRootsLE(const CEvaluationNode * pNode,
 
 // static
 size_t CMathEventN::CTrigger::countRootsFUNCTION(const CEvaluationNode * pNode,
-    std::vector< std::vector< const CEvaluationNode * > > & variables,
-    const size_t & variableLevel)
+    CMath::CVariableStack & variableStack,
+    CMath::CAllocationStack & allocationStack)
 {
-  std::vector< const CEvaluationNode * > Variables;
+  // We need to mimic the process in CMathContainer::copyBranch;
+  CMath::CVariableStack::StackElement Variables;
 
   const CEvaluationNode * pChild =
     static_cast< const CEvaluationNode * >(pNode->getChild());
 
+  // We create temporary copies in which the discontinuous nodes are not replaced.
   while (pChild != NULL)
     {
+      // TODO CRITICAL We should count the roots of each variable here instead when the
+      // variable is used as the later may duplicate roots.
       Variables.push_back(pChild);
       pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
     }
 
-  variables.push_back(Variables);
+  variableStack.push(Variables);
 
   const CEvaluationNode * pTreeRoot =
     static_cast< const CEvaluationNodeCall * >(pNode)->getCalledTree()->getRoot();
 
-  size_t nRoots = countRoots(pTreeRoot, variables, variableLevel);
+  size_t nRoots = countRoots(pTreeRoot, variableStack, allocationStack);
 
-  variables.pop_back();
+  variableStack.pop();
 
   return nRoots;
 }
 
 // static
 size_t CMathEventN::CTrigger::countRootsVARIABLE(const CEvaluationNode * pNode,
-    std::vector< std::vector< const CEvaluationNode * > > & variables,
-    const size_t & variableLevel)
+    CMath::CVariableStack & variableStack,
+    CMath::CAllocationStack & allocationStack)
 {
   size_t Index =
     static_cast< const CEvaluationNodeVariable * >(pNode)->getIndex();
 
-  const CEvaluationNode * pVariableNode = variables[variableLevel - 1][Index];
+  const CEvaluationNode * pVariableNode = variableStack[Index];
 
-  return countRoots(pVariableNode, variables, variableLevel);
+  return countRoots(pVariableNode, variableStack, allocationStack);
 }
 
 // static
 bool CMathEventN::CTrigger::compile(CEvaluationNode *& pTriggerNode,
                                     const CEvaluationNode * pDataNode,
-                                    std::vector< std::vector< const CEvaluationNode * > > & variables,
-                                    const size_t & variableLevel,
+                                    CMath::CVariableStack & variableStack,
                                     CMathEventN::CTrigger::CRoot *& pRoot,
                                     CMathContainer & container)
 {
   bool success = true;
-  const CEvaluationNode::Type & Type = pDataNode->getType();
 
-  switch (CEvaluationNode::type(Type))
+  switch ((int) pDataNode->getType())
     {
-      case CEvaluationNode::LOGICAL:
-
-        switch ((int) CEvaluationNode::subType(Type))
-          {
-            case CEvaluationNodeLogical::AND:
-            case CEvaluationNodeLogical::OR:
-            case CEvaluationNodeLogical::XOR:
-              return compileAND(pTriggerNode, pDataNode, variables, variableLevel, pRoot, container);
-              break;
-
-            case CEvaluationNodeLogical::EQ:
-              return compileEQ(pTriggerNode, pDataNode, variables, variableLevel, pRoot, container);
-              break;
-
-            case CEvaluationNodeLogical::NE:
-              return compileNE(pTriggerNode, pDataNode, variables, variableLevel, pRoot, container);
-              break;
-
-            case CEvaluationNodeLogical::LE:
-            case CEvaluationNodeLogical::LT:
-            case CEvaluationNodeLogical::GE:
-            case CEvaluationNodeLogical::GT:
-              return compileLE(pTriggerNode, pDataNode, variables, variableLevel, pRoot, container);
-              break;
-
-            default:
-              break;
-          }
-
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
+        return compileAND(pTriggerNode, pDataNode, variableStack, pRoot, container);
         break;
 
-      case CEvaluationNode::FUNCTION:
-
-        switch ((int) CEvaluationNode::subType(Type))
-          {
-            case CEvaluationNodeFunction::NOT:
-              return compileNOT(pTriggerNode, pDataNode, variables, variableLevel, pRoot, container);
-              break;
-
-            default:
-              break;
-          }
-
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
+        return compileEQ(pTriggerNode, pDataNode, variableStack, pRoot, container);
         break;
 
-      case CEvaluationNode::CALL:
-
-        switch ((int) CEvaluationNode::subType(Type))
-          {
-            case CEvaluationNodeCall::FUNCTION:
-            case CEvaluationNodeCall::EXPRESSION:
-              return compileFUNCTION(pTriggerNode, pDataNode, variables, variableLevel, pRoot, container);
-              break;
-
-            default:
-              break;
-          }
-
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
+        return compileNE(pTriggerNode, pDataNode, variableStack, pRoot, container);
         break;
 
-      case CEvaluationNode::VARIABLE:
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
+      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
+        return compileLE(pTriggerNode, pDataNode, variableStack, pRoot, container);
+        break;
 
-        switch ((int) CEvaluationNode::subType(Type))
-          {
-            case CEvaluationNodeVariable::ANY:
-              return compileVARIABLE(pTriggerNode, pDataNode, variables, variableLevel, pRoot, container);
-              break;
+      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
+        return compileNOT(pTriggerNode, pDataNode, variableStack, pRoot, container);
+        break;
 
-            default:
-              break;
-          }
+      case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+      case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+        return compileFUNCTION(pTriggerNode, pDataNode, variableStack, pRoot, container);
+        break;
 
+      case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+        return compileVARIABLE(pTriggerNode, pDataNode, variableStack, pRoot, container);
+        break;
+
+      case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
+      case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
+        return compileCONSTANT(pTriggerNode, pDataNode, variableStack, pRoot, container);
         break;
 
       default:
+        assert(false);
         break;
     }
 
@@ -602,8 +582,7 @@ bool CMathEventN::CTrigger::compile(CEvaluationNode *& pTriggerNode,
 // static
 bool CMathEventN::CTrigger::compileAND(CEvaluationNode *& pTriggerNode,
                                        const CEvaluationNode * pDataNode,
-                                       std::vector< std::vector< const CEvaluationNode * > > & variables,
-                                       const size_t & variableLevel,
+                                       CMath::CVariableStack & variableStack,
                                        CMathEventN::CTrigger::CRoot *& pRoot,
                                        CMathContainer & container)
 {
@@ -613,10 +592,10 @@ bool CMathEventN::CTrigger::compileAND(CEvaluationNode *& pTriggerNode,
   const CEvaluationNode * pDataRight = static_cast<const CEvaluationNode *>(pDataLeft->getSibling());
 
   CEvaluationNode * pTriggerLeft = NULL;
-  success &= compile(pTriggerLeft, pDataLeft, variables, variableLevel, pRoot, container);
+  success &= compile(pTriggerLeft, pDataLeft, variableStack, pRoot, container);
 
   CEvaluationNode * pTriggerRight = NULL;
-  success &= compile(pTriggerRight, pDataRight, variables, variableLevel, pRoot, container);
+  success &= compile(pTriggerRight, pDataRight, variableStack, pRoot, container);
 
   switch ((int) CEvaluationNode::subType(pDataNode->getType()))
     {
@@ -649,8 +628,7 @@ bool CMathEventN::CTrigger::compileAND(CEvaluationNode *& pTriggerNode,
 // static
 bool CMathEventN::CTrigger::compileEQ(CEvaluationNode *& pTriggerNode,
                                       const CEvaluationNode * pDataNode,
-                                      std::vector< std::vector< const CEvaluationNode * > > & variables,
-                                      const size_t & variableLevel,
+                                      CMath::CVariableStack & variableStack,
                                       CMathEventN::CTrigger::CRoot *& pRoot,
                                       CMathContainer & container)
 {
@@ -676,7 +654,7 @@ bool CMathEventN::CTrigger::compileEQ(CEvaluationNode *& pTriggerNode,
       pGERight->addChild(pDataLeft->copyBranch());
       pAND->addChild(pGERight);
 
-      success &= compileAND(pTriggerNode, pAND, variables, variableLevel, pRoot, container);
+      success &= compileAND(pTriggerNode, pAND, variableStack, pRoot, container);
 
       // Delete the temporary
       pdelete(pAND);
@@ -684,10 +662,10 @@ bool CMathEventN::CTrigger::compileEQ(CEvaluationNode *& pTriggerNode,
   else
     {
       CEvaluationNode * pTriggerLeft = NULL;
-      success &= compile(pTriggerLeft, pDataLeft, variables, variableLevel, pRoot, container);
+      success &= compile(pTriggerLeft, pDataLeft, variableStack, pRoot, container);
 
       CEvaluationNode * pTriggerRight = NULL;
-      success &= compile(pTriggerRight, pDataRight, variables, variableLevel, pRoot, container);
+      success &= compile(pTriggerRight, pDataRight, variableStack, pRoot, container);
 
 
       pTriggerNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
@@ -701,8 +679,7 @@ bool CMathEventN::CTrigger::compileEQ(CEvaluationNode *& pTriggerNode,
 // static
 bool CMathEventN::CTrigger::compileNE(CEvaluationNode *& pTriggerNode,
                                       const CEvaluationNode * pDataNode,
-                                      std::vector< std::vector< const CEvaluationNode * > > & variables,
-                                      const size_t & variableLevel,
+                                      CMath::CVariableStack & variableStack,
                                       CMathEventN::CTrigger::CRoot *& pRoot,
                                       CMathContainer & container)
 {
@@ -722,7 +699,7 @@ bool CMathEventN::CTrigger::compileNE(CEvaluationNode *& pTriggerNode,
 
   pNotNode->addChild(pEqNode);
 
-  success &= compileNOT(pTriggerNode, pNotNode, variables, variableLevel, pRoot, container);
+  success &= compileNOT(pTriggerNode, pNotNode, variableStack, pRoot, container);
 
   // Delete the temporary
   pdelete(pNotNode);
@@ -733,8 +710,7 @@ bool CMathEventN::CTrigger::compileNE(CEvaluationNode *& pTriggerNode,
 // static
 bool CMathEventN::CTrigger::compileLE(CEvaluationNode *& pTriggerNode,
                                       const CEvaluationNode * pDataNode,
-                                      std::vector< std::vector< const CEvaluationNode * > > & variables,
-                                      const size_t & variableLevel,
+                                      CMath::CVariableStack & variableStack,
                                       CMathEventN::CTrigger::CRoot *& pRoot,
                                       CMathContainer & container)
 {
@@ -753,26 +729,26 @@ bool CMathEventN::CTrigger::compileLE(CEvaluationNode *& pTriggerNode,
   switch ((int) CEvaluationNode::subType(pDataNode->getType()))
     {
       case CEvaluationNodeLogical::LE:
-        pRootNode->addChild(container.copyBranch(pDataRight, variables, variableLevel, true));
-        pRootNode->addChild(container.copyBranch(pDataLeft, variables, variableLevel, true));
+        pRootNode->addChild(container.copyBranch(pDataRight, variableStack, true));
+        pRootNode->addChild(container.copyBranch(pDataLeft, variableStack, true));
         Equality = true;
         break;
 
       case CEvaluationNodeLogical::LT:
-        pRootNode->addChild(container.copyBranch(pDataRight, variables, variableLevel, true));
-        pRootNode->addChild(container.copyBranch(pDataLeft, variables, variableLevel, true));
+        pRootNode->addChild(container.copyBranch(pDataRight, variableStack, true));
+        pRootNode->addChild(container.copyBranch(pDataLeft, variableStack, true));
         Equality = false;
         break;
 
       case CEvaluationNodeLogical::GE:
-        pRootNode->addChild(container.copyBranch(pDataLeft, variables, variableLevel, true));
-        pRootNode->addChild(container.copyBranch(pDataRight, variables, variableLevel, true));
+        pRootNode->addChild(container.copyBranch(pDataLeft, variableStack, true));
+        pRootNode->addChild(container.copyBranch(pDataRight, variableStack, true));
         Equality = true;
         break;
 
       case CEvaluationNodeLogical::GT:
-        pRootNode->addChild(container.copyBranch(pDataLeft, variables, variableLevel, true));
-        pRootNode->addChild(container.copyBranch(pDataRight, variables, variableLevel, true));
+        pRootNode->addChild(container.copyBranch(pDataLeft, variableStack, true));
+        pRootNode->addChild(container.copyBranch(pDataRight, variableStack, true));
         Equality = false;
         break;
     }
@@ -789,8 +765,7 @@ bool CMathEventN::CTrigger::compileLE(CEvaluationNode *& pTriggerNode,
 // static
 bool CMathEventN::CTrigger::compileNOT(CEvaluationNode *& pTriggerNode,
                                        const CEvaluationNode * pDataNode,
-                                       std::vector< std::vector< const CEvaluationNode * > > & variables,
-                                       const size_t & variableLevel,
+                                       CMath::CVariableStack & variableStack,
                                        CMathEventN::CTrigger::CRoot *& pRoot,
                                        CMathContainer & container)
 {
@@ -799,7 +774,7 @@ bool CMathEventN::CTrigger::compileNOT(CEvaluationNode *& pTriggerNode,
   const CEvaluationNode * pData = static_cast<const CEvaluationNode *>(pDataNode->getChild());
 
   CEvaluationNode * pTrigger = NULL;
-  success &= compile(pTrigger, pData, variables, variableLevel, pRoot, container);
+  success &= compile(pTrigger, pData, variableStack, pRoot, container);
 
   pTriggerNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
   pTriggerNode->addChild(pTrigger);
@@ -810,33 +785,44 @@ bool CMathEventN::CTrigger::compileNOT(CEvaluationNode *& pTriggerNode,
 // static
 bool CMathEventN::CTrigger::compileFUNCTION(CEvaluationNode *& pTriggerNode,
     const CEvaluationNode * pDataNode,
-    std::vector< std::vector< const CEvaluationNode * > > & variables,
-    const size_t & variableLevel,
+    CMath::CVariableStack & variableStack,
     CMathEventN::CTrigger::CRoot *& pRoot,
     CMathContainer & container)
 {
   if (!pDataNode->isBoolean())
     return false;
 
-  std::vector< const CEvaluationNode * > Variables;
+  // We need to mimic the process in CMathContainer::copyBranch;
+
+  CMath::CVariableStack::StackElement Variables;
 
   const CEvaluationNode * pChild =
     static_cast< const CEvaluationNode * >(pDataNode->getChild());
 
+  // We create temporary copies in which the discontinuous nodes are not replaced.
   while (pChild != NULL)
     {
-      Variables.push_back(pChild);
+      Variables.push_back(container.copyBranch(pChild, variableStack, false));
       pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
     }
 
-  variables.push_back(Variables);
+  variableStack.push(Variables);
 
   const CEvaluationNode * pCalledNode =
     static_cast< const CEvaluationNodeCall * >(pDataNode)->getCalledTree()->getRoot();
 
-  bool success = compile(pTriggerNode, pCalledNode, variables, variableLevel, pRoot, container);
+  bool success = compile(pTriggerNode, pCalledNode, variableStack, pRoot, container);
 
-  variables.pop_back();
+  variableStack.pop();
+
+  CMath::CVariableStack::StackElement::iterator itVariable = Variables.begin();
+  CMath::CVariableStack::StackElement::iterator endVariable = Variables.end();
+
+  // Delete temporary copies.
+  for (; itVariable != endVariable; ++itVariable)
+    {
+      pdelete(*itVariable);
+    }
 
   return success;
 }
@@ -844,22 +830,49 @@ bool CMathEventN::CTrigger::compileFUNCTION(CEvaluationNode *& pTriggerNode,
 // static
 bool CMathEventN::CTrigger::compileVARIABLE(CEvaluationNode *& pTriggerNode,
     const CEvaluationNode * pDataNode,
-    std::vector< std::vector< const CEvaluationNode * > > & variables,
-    const size_t & variableLevel,
+    CMath::CVariableStack & variableStack,
     CMathEventN::CTrigger::CRoot *& pRoot,
     CMathContainer & container)
 {
-  assert(!variables.empty());
+  // We need to mimic the process in CMathContainer::copyBranch;
 
   size_t Index =
     static_cast< const CEvaluationNodeVariable * >(pDataNode)->getIndex();
 
-  const CEvaluationNode * pIndexedNode = variables[variableLevel - 1][Index];
+  const CEvaluationNode * pIndexedNode = variableStack[Index];
 
   if (!pIndexedNode->isBoolean())
     return false;
 
-  return compile(pTriggerNode, pIndexedNode, variables, variableLevel, pRoot, container);
+  return compile(pTriggerNode, pIndexedNode, variableStack, pRoot, container);
+}
+
+// static
+bool CMathEventN::CTrigger::compileCONSTANT(CEvaluationNode *& pTriggerNode,
+    const CEvaluationNode * pDataNode,
+    CMath::CVariableStack & /* variableStack */,
+    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathContainer & container)
+{
+  bool success = true;
+
+  CEvaluationNode * pRootNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+
+  switch ((int) CEvaluationNode::subType(pDataNode->getType()))
+    {
+      case CEvaluationNodeConstant::TRUE:
+        pTriggerNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
+        break;
+
+      case CEvaluationNodeConstant::FALSE:
+        pTriggerNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
+        break;
+    }
+
+  success &= pRoot->compile(pRootNode, true, container);
+  pRoot++;
+
+  return success;
 }
 
 // static
@@ -872,9 +885,11 @@ void CMathEventN::allocate(CMathEventN * pEvent,
 }
 
 // static
-void CMathEventN::allocateDiscontinuous(CMathEventN * pEvent)
+void CMathEventN::allocateDiscontinuous(CMathEventN * pEvent,
+                                        const size_t & nRoots,
+                                        const CMathContainer & container)
 {
-  pEvent->mTrigger.allocateDiscontinuous();
+  pEvent->mTrigger.allocateDiscontinuous(nRoots, container);
   pEvent->mAssignments.resize(1);
 }
 

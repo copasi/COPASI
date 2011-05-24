@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.403 $
+//   $Revision: 1.404 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:48:55 $
+//   $Date: 2011/05/24 16:32:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -3578,8 +3578,10 @@ void CModel::determineIsAutonomous()
     setInitialValue(0.0);
 }
 
-void CModel::getDiscontinuousNodes(std::vector< const CEvaluationNode * > & discontinuousNodes) const
+std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() const
 {
+  std::vector< const CEvaluationTree * > TreesWithDiscontinuities;
+
   // Check all expressions for entities of type ASSIGNMENT and ODE
   CModelEntity *const* ppEntity = mStateTemplate.getEntities();
   CModelEntity *const* ppEntityEnd = ppEntity + mStateTemplate.size();
@@ -3590,7 +3592,12 @@ void CModel::getDiscontinuousNodes(std::vector< const CEvaluationNode * > & disc
         {
           case ODE:
           case ASSIGNMENT:
-            (*ppEntity)->getExpressionPtr()->getDiscontinuousNodes(discontinuousNodes);
+
+            if ((*ppEntity)->getExpressionPtr()->hasDiscontinuity())
+              {
+                TreesWithDiscontinuities.push_back((*ppEntity)->getExpressionPtr());
+              }
+
             break;
 
           default:
@@ -3604,7 +3611,10 @@ void CModel::getDiscontinuousNodes(std::vector< const CEvaluationNode * > & disc
 
   for (; itReaction != endReaction; ++itReaction)
     {
-      (*itReaction)->getFunction()->getDiscontinuousNodes(discontinuousNodes);
+      if ((*itReaction)->getFunction()->hasDiscontinuity())
+        {
+          TreesWithDiscontinuities.push_back((*itReaction)->getFunction());
+        }
     }
 
   // Check all event triggers
@@ -3613,8 +3623,14 @@ void CModel::getDiscontinuousNodes(std::vector< const CEvaluationNode * > & disc
 
   for (; itEvent != endEvent; ++itEvent)
     {
-      (*itEvent)->getTriggerExpressionPtr()->getDiscontinuousNodes(discontinuousNodes);
+      if ((*itEvent)->getTriggerExpressionPtr()->hasDiscontinuity())
+        {
+          TreesWithDiscontinuities.push_back((*itEvent)->getTriggerExpressionPtr());
+
+        }
     }
+
+  return TreesWithDiscontinuities;
 }
 
 bool CModel::compileEvents()
