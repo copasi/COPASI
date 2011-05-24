@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLFontRendererBase.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:46 $
+//   $Date: 2011/05/24 16:33:18 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,7 @@ class CLFontRendererBase
 {
 public:
   /**
-   * Functor that returns a TextureSpec objct with a texture
+   * Functor that returns a TextureSpec object with a texture
    * for the given font family, font size font weight, font style and text.
    * The caller is responsible to free the memory of the TextureSpec object
    * and of the pData in the TextureSpec.

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:29:16 $
+//   $Date: 2011/05/24 16:33:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ public:
   /**
    * Destructor
    */
-  ~CQFontRenderer();
+  virtual ~CQFontRenderer();
 
   /**
    * Functor that returns a TextureSpec objct with a texture
