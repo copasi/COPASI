@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:33:33 $
+//   $Date: 2011/05/25 15:13:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,18 +268,18 @@ int main(int argc, char *argv[])
 
       // Run the trajectory task
 
-      pScanTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+      pScanTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
       pScanTask->process(true);
       pScanTask->restore();
 
       // create another report that will write to the directory where the input file came from
       // this can be used for debugging
       // create a trajectory task
-      pScanTask->getReport().setTarget(pOutputFilename);
+      // pScanTask->getReport().setTarget(pOutputFilename);
 
-      pScanTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
-      pScanTask->process(true);
-      pScanTask->restore();
+      // pScanTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+      // pScanTask->process(true);
+      // pScanTask->restore();
     }
   catch (CCopasiException Exception)
     {
