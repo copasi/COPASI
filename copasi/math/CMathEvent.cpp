@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:31 $
+//   $Date: 2011/05/25 15:12:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -256,7 +256,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
     {
       case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
       {
-        success &= DataTrigger.setRoot(static_cast< const CEvaluationNode * >(pNode->getChild()));
+        success &= DataTrigger.setRoot(static_cast< CEvaluationNode * >(const_cast< CEvaluationNode * >(pNode)->getChild()));
         success &= DataTrigger.updateTree();
         mDualAction = true;
 
