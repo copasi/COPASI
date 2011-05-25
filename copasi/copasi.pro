@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.68 $
+#   $Revision: 1.69 $
 #   $Name:  $
-#   $Author: jpahle $
-#   $Date: 2011/05/24 17:30:52 $
+#   $Author: shoops $
+#   $Date: 2011/05/25 15:12:16 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.68 $ $Author: jpahle $ $Date: 2011/05/24 17:30:52 $
+# $Revision: 1.69 $ $Author: shoops $ $Date: 2011/05/25 15:12:16 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -44,6 +44,7 @@ COPASISE_DIRS += crosssection
 COPASISE_DIRS += elementaryFluxModes
 COPASISE_DIRS += function
 COPASISE_DIRS += layout
+COPASISE_DIRS += lna
 COPASISE_DIRS += lyap
 COPASISE_DIRS += math
 COPASISE_DIRS += model
@@ -60,7 +61,6 @@ COPASISE_DIRS += sbmlunit
 COPASISE_DIRS += scan
 COPASISE_DIRS += sensitivities
 COPASISE_DIRS += steadystate
-COPASISE_DIRS += lna
 COPASISE_DIRS += trajectory
 COPASISE_DIRS += tss
 COPASISE_DIRS += tssanalysis
@@ -165,4 +165,4 @@ src_distribution.commands = \
   cp $${DISTFILES} ../copasi_src/copasi/; \
   $$join(DISTDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
 
-QMAKE_EXTRA_UNIX_TARGETS += src_distribution
+QMAKE_EXTRA_TARGETS += src_distribution

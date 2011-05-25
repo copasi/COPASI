@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
-#   $Revision: 1.43 $
+#   $Revision: 1.44 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/03/07 19:27:11 $
+#   $Date: 2011/05/25 15:12:15 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.43 $ $Author: shoops $ $Date: 2011/03/07 19:27:11 $
+# $Revision: 1.44 $ $Author: shoops $ $Date: 2011/05/25 15:12:15 $
 ######################################################################
 
 TEMPLATE = app
@@ -48,12 +48,12 @@ contains(BUILD_OS, WIN32) {
 
   debug {
     LIBS += $$join(COPASI_LIBS, ".lib  ../lib/debug/", ../lib/debug/, .lib)
-    TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/debug/", ../lib/debug/, .lib)
+    POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/debug/", ../lib/debug/, .lib)
   }
 
   release {
     LIBS += $$join(COPASI_LIBS, ".lib  ../lib/release/", ../lib/release/, .lib)
-    TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/release/", ../lib/release/, .lib)
+    POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/release/", ../lib/release/, .lib)
   }
 
   
@@ -65,7 +65,7 @@ contains(BUILD_OS, Linux) {
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 
   release {
     dynamic_LFLAGS = $${QMAKE_LFLAGS}
@@ -74,7 +74,7 @@ contains(BUILD_OS, Linux) {
     dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic
     dynamic_LIBS -= -lpthread
     dynamic.target   = CopasiSE-dynamic
-    dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${TARGETDEPS}
+    dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${POST_TARGETDEPS}
     dynamic.commands = \
       $(LINK) $${dynamic_LFLAGS} -L$(QTDIR)/lib -L/usr/X11R6/lib \
               -o $@ $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${dynamic_LIBS} \
@@ -84,7 +84,7 @@ contains(BUILD_OS, Linux) {
               -lpthread -ldl && \
               strip $@
 
-    QMAKE_EXTRA_UNIX_TARGETS += dynamic
+    QMAKE_EXTRA_TARGETS += dynamic
 
     contains(DYNAMIC, TRUE) {
       distribution.extra = make $${dynamic.target};
@@ -98,7 +98,7 @@ contains(BUILD_OS, SunOS) {
          $${LIBS}
   LIBS += -lxnet -lnsl -ldl
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
 
 contains(BUILD_OS, Darwin){
@@ -107,7 +107,7 @@ contains(BUILD_OS, Darwin){
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
 
 

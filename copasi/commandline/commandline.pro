@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/commandline.pro,v $
-#   $Revision: 1.17 $
+#   $Revision: 1.18 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/03/07 19:26:18 $
+#   $Date: 2011/05/25 15:12:18 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.17 $ $Author: shoops $ $Date: 2011/03/07 19:26:18 $
+# $Revision: 1.18 $ $Author: shoops $ $Date: 2011/05/25 15:12:18 $
 ######################################################################
 
 LIB = commandline
@@ -45,7 +45,7 @@ contains(BUILD_PARSER, yes) {
     QMAKE_EXTRA_WIN_TARGETS += clo
   } else {
     clo.commands = ../../admin/clo++.sh $$clo.depends
-    QMAKE_EXTRA_UNIX_TARGETS += clo
+    QMAKE_EXTRA_TARGETS += clo
   }
 }
 

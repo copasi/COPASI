@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/R/R.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2010/10/15 12:55:57 $ 
+#   $Author: shoops $ 
+#   $Date: 2011/05/25 15:12:15 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -41,7 +41,7 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
 }
 
@@ -51,14 +51,14 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
 }
 
 contains(BUILD_OS, WIN32) { 
   LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
 }
 
@@ -225,9 +225,9 @@ isEmpty(SWIG_PATH){
       wrapper_source.depends = $$SWIG_INTERFACE_FILES R.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -r -o $$wrapper_source.target R.i
   
-      QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
+      QMAKE_EXTRA_TARGETS += wrapper_source
     }
-    PRE_TARGETDEPS += copasi_wrapper.cpp
+    PRE_POST_TARGETDEPS += copasi_wrapper.cpp
 }
 
 QMAKE_CLEAN += CopasiR.cpp 

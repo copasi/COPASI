@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/unittests.pro,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.8 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/12/18 17:21:56 $ 
+#   $Date: 2011/05/25 15:12:16 $ 
 # End CVS Header 
+
+# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -42,26 +47,26 @@ contains(BUILD_OS, WIN32){
   unittests_jar.depends = $$JAVA_SOURCE_FILES ..\copasi.jar 
   unittests_jar.commands = $(DEL_FILE)  $$unittests_jar.target org\COPASI\unittests\*.class  && $$JAVA_HOME\bin\javac.exe $$JAVAC_ARGS -d . $$JAVA_SOURCE_FILES && $$JAVA_HOME\bin\jar.exe cvf $$unittests_jar.target *.class 
   QMAKE_EXTRA_WIN_TARGETS += unittests_jar
-  PRE_TARGETDEPS += ..\..\..\lib\COPASISE.lib
+  PRE_POST_TARGETDEPS += ..\..\..\lib\COPASISE.lib
 }
 !contains(BUILD_OS, WIN32){
   unittests_jar.target = unittests.jar
   unittests_jar.depends = $$JAVA_SOURCE_FILES ../copasi.jar 
   unittests_jar.commands = $(DEL_FILE) $$unittests_jar.target org/COPASI/unittests/*.class && $$JAVA_HOME/bin/javac $$JAVAC_ARGS -d . $$JAVA_SOURCE_FILES && $$JAVA_HOME/bin/jar cvf $$unittests_jar.target ./org
-  QMAKE_EXTRA_UNIX_TARGETS += unittests_jar
-  PRE_TARGETDEPS += ../../../lib/libCOPASISE.a
+  QMAKE_EXTRA_TARGETS += unittests_jar
+  PRE_POST_TARGETDEPS += ../../../lib/libCOPASISE.a
 
   contains(BUILD_OS, Darwin){
-     PRE_TARGETDEPS += ../libCopasiJava.jnilib
+     PRE_POST_TARGETDEPS += ../libCopasiJava.jnilib
   }
   !contains(BUILD_OS, Darwin){
-     PRE_TARGETDEPS += ../libCopasiJava.so
+     PRE_POST_TARGETDEPS += ../libCopasiJava.so
   }
 }
 
 
-PRE_TARGETDEPS += ../copasi.jar
-PRE_TARGETDEPS += unittests.jar
+PRE_POST_TARGETDEPS += ../copasi.jar
+PRE_POST_TARGETDEPS += unittests.jar
 
 QMAKE_CLEAN += unittests.jar
 QMAKE_CLEAN += org/COPASI/unittests/*.class

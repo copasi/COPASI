@@ -1,18 +1,18 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/pvmtest/pvmtest.pro,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/16 18:57:05 $ 
+#   $Date: 2011/05/25 15:12:20 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2010/03/16 18:57:05 $  
+# $Revision: 1.5 $ $Author: shoops $ $Date: 2011/05/25 15:12:20 $  
 ######################################################################
 
 TEMPLATE = app
@@ -35,5 +35,5 @@ contains(BUILD_OS, WIN32) {
          -lCOPASISE \
          $${LIBS}
 
-  TARGETDEPS += ../lib/libCOPASISE.a
+  POST_TARGETDEPS += ../lib/libCOPASISE.a
 }

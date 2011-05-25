@@ -1,10 +1,15 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/license.pro,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.7 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/06/15 19:18:38 $ 
+#   $Date: 2011/05/25 15:12:14 $ 
 # End CVS Header 
+
+# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -12,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2009/06/15 19:18:38 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2011/05/25 15:12:14 $  
 ######################################################################
 
 CONFIG -= qt
@@ -53,5 +58,5 @@ count(CLOPP, 1) {
         ../../cvs_admin/c++style $@; \
         ../../cvs_admin/c++style $*.h
       
-  QMAKE_EXTRA_UNIX_TARGETS += 1
+  QMAKE_EXTRA_TARGETS += 1
 }

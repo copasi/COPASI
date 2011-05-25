@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/srcDistribution.pri,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/03/07 19:24:16 $ 
+#   $Date: 2011/05/25 15:12:17 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,6 +23,6 @@
     $(COPY_FILE) --parents $${SOURCES} $${HEADERS} $${FORMS} $${FORMS3} $${DISTFILES} \
       ../../copasi_src/copasi/$$SRC_TARGET/
 
-  QMAKE_EXTRA_UNIX_TARGETS += src_distribution
+  QMAKE_EXTRA_TARGETS += src_distribution
 }
 

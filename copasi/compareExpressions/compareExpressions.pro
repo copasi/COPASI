@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compareExpressions.pro,v $
-#   $Revision: 1.13 $
+#   $Revision: 1.14 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/03/07 19:26:19 $
+#   $Date: 2011/05/25 15:12:16 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,13 +21,13 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.13 $ $Author: shoops $ $Date: 2011/03/07 19:26:19 $
+# $Revision: 1.14 $ $Author: shoops $ $Date: 2011/05/25 15:12:16 $
 ######################################################################
 
 LIB = compareExpressions
 DISTFILES = compareExpressions.pro
 
-#QMAKE_EXTRA_UNIX_TARGETS += check
+#QMAKE_EXTRA_TARGETS += check
 #check.commands = cd unittests; $(QMAKE) $$(0);make
 
 # Input

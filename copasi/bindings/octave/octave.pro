@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/octave/octave.pro,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2010/10/15 12:51:47 $ 
+#   $Author: shoops $ 
+#   $Date: 2011/05/25 15:12:21 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -42,7 +42,7 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
 }
 
@@ -52,7 +52,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
   QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
@@ -62,7 +62,7 @@ contains(BUILD_OS, Darwin) {
 contains(BUILD_OS, WIN32) { 
   LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
   CONFIG -= staticlib
   CONFIG += dll
@@ -241,9 +241,9 @@ isEmpty(SWIG_PATH){
       wrapper_source.depends = $$SWIG_INTERFACE_FILES octave.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -octave -o $$wrapper_source.target octave.i; sed -e 's/octave_map/Octave_map/' $$wrapper_source.target > tmp.cpp;mv tmp.cpp $$wrapper_source.target
   
-      QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
+      QMAKE_EXTRA_TARGETS += wrapper_source
     }
-    PRE_TARGETDEPS += copasi_wrapper.cpp
+    PRE_POST_TARGETDEPS += copasi_wrapper.cpp
 }
 
 QMAKE_CLEAN += copasi_wrapper.cpp 

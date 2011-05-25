@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.18 $ 
+#   $Revision: 1.19 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/03/07 19:26:44 $ 
+#   $Date: 2011/05/25 15:12:19 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -38,7 +38,7 @@ COPASI_LIBS += $${COPASI_LIBS_SE}
 contains(BUILD_OS, WIN32) {
 #  LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
-#  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
+#  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 }
 
 contains(BUILD_OS, Linux) {
@@ -49,9 +49,9 @@ contains(BUILD_OS, Linux) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
-  TARGETDEPS += ../../sbml/unittests/utilities.o
+  POST_TARGETDEPS += ../../sbml/unittests/utilities.o
 }
 
 }
@@ -66,8 +66,8 @@ contains(BUILD_OS, SunOS) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
-  TARGETDEPS += ../../sbml/unittests/utilities.o
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += ../../sbml/unittests/utilities.o
    }
 }  
 
@@ -81,8 +81,8 @@ contains(BUILD_OS, Darwin){
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
-  TARGETDEPS += ../../sbml/unittests/utilities.o
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += ../../sbml/unittests/utilities.o
 
 }
 

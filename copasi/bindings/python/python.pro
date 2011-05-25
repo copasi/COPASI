@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.31 $ 
+#   $Revision: 1.32 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/05/03 13:53:20 $ 
+#   $Date: 2011/05/25 15:12:20 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,7 +50,7 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   !isEmpty(PYTHON_LIB_PATH){
     LIBS += -L$$PYTHON_LIB_PATH
@@ -78,7 +78,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
     LIBS += -framework Python
     LIBS += -framework QuickTime
@@ -101,7 +101,7 @@ contains(BUILD_OS, Darwin) {
 contains(BUILD_OS, WIN32) { 
   LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
   CONFIG -= staticlib
   CONFIG += dll
@@ -302,9 +302,9 @@ isEmpty(SWIG_PATH){
       wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
   
-      QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
+      QMAKE_EXTRA_TARGETS += wrapper_source
     }
-    PRE_TARGETDEPS += copasi_wrapper.cpp
+    PRE_POST_TARGETDEPS += copasi_wrapper.cpp
 }
 
 QMAKE_CLEAN += copasi_wrapper.cpp 

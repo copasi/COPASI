@@ -1,18 +1,18 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/test2.pro,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.6 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/03/16 18:57:06 $ 
+#   $Date: 2011/05/25 15:12:22 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2010/03/16 18:57:06 $  
+# $Revision: 1.6 $ $Author: shoops $ $Date: 2011/05/25 15:12:22 $  
 ######################################################################
 
 TEMPLATE = app
@@ -48,7 +48,7 @@ COPASI_LIBS = COPASISE
 contains(BUILD_OS, WIN32) {
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 }
 
 contains(BUILD_OS, Linux) {
@@ -56,7 +56,7 @@ contains(BUILD_OS, Linux) {
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
 
 contains(BUILD_OS, SunOS) {
@@ -66,7 +66,7 @@ contains(BUILD_OS, SunOS) {
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }  
 
 contains(BUILD_OS, Darwin){
@@ -75,5 +75,5 @@ contains(BUILD_OS, Darwin){
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }

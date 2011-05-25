@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/lib.pri,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.7 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/03/07 19:29:38 $ 
+#   $Date: 2011/05/25 15:12:15 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2011/03/07 19:29:38 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2011/05/25 15:12:15 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -57,10 +57,10 @@ win32 {
 
   BuildLib.target = $$DESTDIR/$(TARGET)
   BuildLib.depends = Makefile $$join(COPASI_LIBS, ".a $$TMPDIR/lib", $$TMPDIR/lib, .a)
-  QMAKE_EXTRA_UNIX_TARGETS += BuildLib
+  QMAKE_EXTRA_TARGETS += BuildLib
 
   OBJECTS += Makefile
-  TARGETDEPS += $$DESTDIR/$(TARGET)
+  POST_TARGETDEPS += $$DESTDIR/$(TARGET)
   DESTDIR = .
 }
 

@@ -1,11 +1,11 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.39 $ 
+#   $Revision: 1.40 $ 
 #   $Name:  $ 
-#   $Revision: 1.39 $ 
+#   $Revision: 1.40 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/05/03 13:53:19 $ 
+#   $Date: 2011/05/25 15:12:22 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -48,7 +48,7 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
@@ -70,7 +70,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
     LIBS += -framework JavaVM
     LIBS += -framework QuickTime
@@ -100,7 +100,7 @@ contains(BUILD_OS, Darwin) {
 contains(BUILD_OS, WIN32) { 
   LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
   CONFIG -= staticlib
   CONFIG += dll
@@ -251,7 +251,7 @@ isEmpty(SWIG_PATH){
       wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
       wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) java_files\org\COPASI\*.java && $(DEL_FILE) java_files\org\COPASI\*.class && $(DEL_FILE) gui\org\COPASI\gui\*.class && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files\org\COPASI\  java.i && cd java_files && $$JAVA_HOME\bin\javac.exe -classpath . -d . org\COPASI\*.java  && cd .. && $$JAVA_HOME\bin\jar.exe cvf copasi.jar -C java_files .\org && cd gui && $$JAVA_HOME\bin\javac.exe -classpath .;..\copasi.jar -d . org\COPASI\gui\*.java && $$JAVA_HOME\bin\jar.exe cvf ..\copasi_gui.jar -C . org\COPASI\gui\*.class org\COPASI\gui\*.java
       QMAKE_EXTRA_WIN_TARGETS += wrapper_source
-      #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
+      #PRE_POST_TARGETDEPS += $${COPASI_LIBS_SE}
 
     }
     !contains(BUILD_OS, WIN32){
@@ -259,10 +259,10 @@ isEmpty(SWIG_PATH){
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $$JAVA_HOME/bin/javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$$JAVA_HOME/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $$JAVA_HOME/bin/javac -classpath ../copasi.jar:. -d . org/COPASI/gui/*.java ; $$JAVA_HOME/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
-      QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
-      #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
+      QMAKE_EXTRA_TARGETS += wrapper_source
+      #PRE_POST_TARGETDEPS += $${COPASI_LIBS_SE}
     }
-    PRE_TARGETDEPS += copasi_wrapper.cpp
+    PRE_POST_TARGETDEPS += copasi_wrapper.cpp
 }
 
 QMAKE_CLEAN += copasi_wrapper.cpp 

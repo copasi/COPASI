@@ -27,6 +27,7 @@ macx:debug {
     COPASI_LIBS_SE += fitting
     COPASI_LIBS_SE += function
     COPASI_LIBS_SE += layout
+    COPASI_LIBS_SE += lna
     COPASI_LIBS_SE += lyap
     COPASI_LIBS_SE += MIRIAM
     COPASI_LIBS_SE += math

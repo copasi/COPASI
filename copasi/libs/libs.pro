@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/libs.pro,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.7 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/03/07 19:29:38 $ 
+#   $Date: 2011/05/25 15:12:15 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -46,4 +46,4 @@ src_distribution.commands = \
   cp $${DISTFILES} ../../copasi_src/copasi/libs; \
   $$join(DISTDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
 
-QMAKE_EXTRA_UNIX_TARGETS += src_distribution
+QMAKE_EXTRA_TARGETS += src_distribution

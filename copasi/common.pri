@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.126 $ 
+#   $Revision: 1.127 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.126 $ $Author: shoops $ $Date: 2011/05/24 16:32:38 $  
+# $Revision: 1.127 $ $Author: shoops $ $Date: 2011/05/25 15:12:17 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -49,7 +49,7 @@ isEmpty(BUILD_OS) {
 }
 DEFINES += $$BUILD_OS
 
-TARGETDEPS += Makefile
+POST_TARGETDEPS += Makefile
 
 # Common configuration settings
 CONFIG += exceptions
@@ -673,7 +673,7 @@ contains(BUILD_OS, Linux) {
 DEP1.target   = depend
 DEP1.depends  = qmake
 
-QMAKE_EXTRA_UNIX_TARGETS += DEP1
+QMAKE_EXTRA_TARGETS += DEP1
 
 # addSubdirs(subdirs,deps): Adds directories to the project that depend on
 # other directories
