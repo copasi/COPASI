@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.15 $
+//   $Revision: 1.84.2.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/24 16:02:48 $
+//   $Date: 2011/05/25 12:15:49 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5651,7 +5651,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               pSBMLObject->setMetaId(metaId);
             }
 
-          pSBMLObject->addCVTerm(&cvTerm);
+          pSBMLObject->addCVTerm(&cvTerm, true);
         }
     }
 
@@ -5734,7 +5734,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               pSBMLObject->setMetaId(metaId);
             }
 
-          pSBMLObject->addCVTerm(&cvTerm);
+          pSBMLObject->addCVTerm(&cvTerm, true);
         }
     }
 
