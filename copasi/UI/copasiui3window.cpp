@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.17 $
+//   $Revision: 1.289.2.18 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/05/23 15:06:33 $
+//   $Author: shoops $
+//   $Date: 2011/05/25 17:37:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,6 +171,16 @@ static const unsigned char image0_data[] =
   0xae, 0x42, 0x60, 0x82
 };
 
+// static
+CopasiUI3Window * CopasiUI3Window::pMainWindow = NULL;
+
+// static
+CopasiUI3Window * CopasiUI3Window::getMainWindow()
+{
+  return pMainWindow;
+}
+
+// static
 CopasiUI3Window * CopasiUI3Window::create()
 {
   CopasiUI3Window * pWindow = NULL;
@@ -197,6 +207,8 @@ CopasiUI3Window * CopasiUI3Window::create()
     }
 
 #endif // COPASI_SBW_INTEGRATION
+
+  pMainWindow = pWindow;
 
   return pWindow;
 }
