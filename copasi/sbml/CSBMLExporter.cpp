@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:33 $
+//   $Date: 2011/05/26 12:17:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -3872,8 +3872,13 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
   for (i = 0; i < iMax; ++i)
     {
       const CFunctionParameter* pPara = reaction.getFunctionParameters()[i];
+      // if the reaction calls a general function, all call parameters have a usage of VARIABLE
+      // So local parameters will also have a usage of VARIABLE instead of PARAMETER
 
-      if (pPara->getUsage() == CFunctionParameter::PARAMETER)
+      if (pPara->getUsage() == CFunctionParameter::PARAMETER ||
+          (reaction.getFunction() != NULL &&
+           reaction.getFunction()->isReversible() == TriUnspecified &&
+           pPara->getUsage() == CFunctionParameter::VARIABLE))
         {
           // only create a parameter if it is a local parameter,
           // and if it is not in the replacement map
@@ -5659,7 +5664,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               pSBMLObject->setMetaId(metaId);
             }
 
-          pSBMLObject->addCVTerm(&cvTerm);
+          pSBMLObject->addCVTerm(&cvTerm, true);
         }
     }
 
@@ -5742,7 +5747,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               pSBMLObject->setMetaId(metaId);
             }
 
-          pSBMLObject->addCVTerm(&cvTerm);
+          pSBMLObject->addCVTerm(&cvTerm, true);
         }
     }
 

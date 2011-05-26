@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.21 $
+$Revision: 1.22 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:32:02 $
+$Date: 2011/05/26 12:18:54 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,10 @@ End CVS Header */
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <QThread>
+
+#include "UI/copasiui3window.h"
 
 #include "copasi.h"
 
@@ -41,32 +45,36 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
 {
   if (!mpDefinitionVector) return false;
 
-  mInterfaces.clear();
-
-  //step through the vector of specifications and create the plot windows
-  std::string key;
-
-  size_t i, imax = mpDefinitionVector->size();
-
-  for (i = 0; i < imax; i++)
+  // TODO CRITICAL This must only be executed in the main thread.
+  if (CopasiUI3Window::getMainWindow()->getMainThread() == QThread::currentThread())
     {
-      CPlotSpecification * pSpecification = (*mpDefinitionVector)[i];
+      mInterfaces.clear();
 
-      if (pSpecification->isActive())
+      //step through the vector of specifications and create the plot windows
+      std::string key;
+
+      size_t i, imax = mpDefinitionVector->size();
+
+      for (i = 0; i < imax; i++)
         {
-          key = pSpecification->CCopasiParameter::getKey();
+          CPlotSpecification * pSpecification = (*mpDefinitionVector)[i];
 
-          if (!mPlotMap.count(key))
-            mPlotMap[key] = new PlotWindow(this, pSpecification);
-          else if ("Copasi Plot: " + pSpecification->getTitle() !=
-                   TO_UTF8(mPlotMap[key]->windowTitle()))
-            mPlotMap[key] = new PlotWindow(this, pSpecification);
-          else
-            mPlotMap[key]->initFromSpec(pSpecification);
+          if (pSpecification->isActive())
+            {
+              key = pSpecification->CCopasiParameter::getKey();
 
-          mPlotMap[key]->show();
+              if (!mPlotMap.count(key))
+                mPlotMap[key] = new PlotWindow(this, pSpecification);
+              else if ("Copasi Plot: " + pSpecification->getTitle() !=
+                       TO_UTF8(mPlotMap[key]->windowTitle()))
+                mPlotMap[key] = new PlotWindow(this, pSpecification);
+              else
+                mPlotMap[key]->initFromSpec(pSpecification);
 
-          mInterfaces.insert(mPlotMap[key]);
+              mPlotMap[key]->show();
+
+              mInterfaces.insert(mPlotMap[key]);
+            }
         }
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:27 $
+//   $Date: 2011/05/26 12:18:54 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,6 +95,27 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
   output(COutputInterface::BEFORE);
 
   success = static_cast< CMoietiesMethod * >(mpMethod)->process();
+
+  // The call to process may modify some object pointers. We therefore
+  // have to recompile the output.
+
+  if (mpOutputHandler != NULL)
+    {
+      std::vector< CCopasiContainer * > ListOfContainer;
+      ListOfContainer.push_back(this);
+
+      CCopasiDataModel* pDataModel = getObjectDataModel();
+      assert(pDataModel != NULL);
+
+      size_t Size = CCopasiMessage::size();
+
+      mpOutputHandler->compile(ListOfContainer, pDataModel);
+
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      while (CCopasiMessage::size() > Size)
+        CCopasiMessage::getLastMessage();
+    }
 
   output(COutputInterface::AFTER);
 

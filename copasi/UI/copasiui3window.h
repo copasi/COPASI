@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:34 $
+//   $Date: 2011/05/26 12:23:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,9 @@ class CopasiUI3Window : public QMainWindow
 
 public:
   static CopasiUI3Window * create();
+
+  static CopasiUI3Window * getMainWindow();
+
   ~CopasiUI3Window();
 
   DataModelGUI* getDataModel();
@@ -251,6 +254,8 @@ private:
   QCloseEvent * mpCloseEvent;
   bool mQuitApplication;
   bool mSliderDialogEnabled;
+
+  static CopasiUI3Window * pMainWindow;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:
