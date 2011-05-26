@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/22 13:22:54 $
+//   $Date: 2011/05/26 14:23:31 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -68,7 +68,7 @@ const char* AboutDialog::text =
   "<li>Qwt 5.2.0</li>"
   "<li>QwtPlot3D 0.2.7</li>"
   "<li>Expat 2.0.1 XML parser</li>"
-  "<li>libsbml 4.1.0</li>"
+  "<li>libsbml 4.2.0</li>"
   "<li>raptor 1.4.21</li>"
   "<li>Systems Biology Workbench 2.7.10</li>"
   "<li>CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library</li>"
