@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.293 $
+//   $Revision: 1.294 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/26 12:23:07 $
+//   $Date: 2011/05/26 13:13:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1017,7 +1017,7 @@ void CopasiUI3Window::slotFileSave()
 
 void CopasiUI3Window::slotQuit()
 {
-  if (!qApp->mainWidget()->isEnabled())
+  if (!CopasiUI3Window::getMainWindow()->isEnabled())
     {
       CQMessageBox::information(this, "COPASI", "COPASI is currently executing tasks.\n"
                                 "Please stop them first before closing COPASI.");
@@ -1075,7 +1075,7 @@ void CopasiUI3Window::slotQuitFinished(bool success)
 
 void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 {
-  if (!qApp->mainWidget()->isEnabled())
+  if (!CopasiUI3Window::getMainWindow()->isEnabled())
     {
       CQMessageBox::information(this, "COPASI", "COPASI is currently executing tasks.\n"
                                 "Please stop them first before closing COPASI.");

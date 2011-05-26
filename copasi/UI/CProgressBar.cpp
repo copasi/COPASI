@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/08 12:40:30 $
+//   $Date: 2011/05/26 13:13:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,10 +46,7 @@ extern QApplication *pApp;
 CProgressBar * CProgressBar::create(QWidget* parent, const char* name,
                                     bool modal, Qt::WFlags fl)
 {
-  QWidget * pMainWidget = qApp->mainWidget();
-
-  if (pMainWidget != NULL &&
-      static_cast< CopasiUI3Window * >(pMainWidget)->getMainThread() != QThread::currentThread())
+  if (CopasiUI3Window::getMainWindow()->getMainThread() != QThread::currentThread())
     {
       return NULL;
     }
@@ -72,9 +69,9 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
 
   // Whenever a progress bar is active we do not want any user
   // intervention.
-  if ((mpMainWidget = qApp->mainWidget()) != NULL)
+  if ((mpMainWidget = CopasiUI3Window::getMainWindow()) != NULL)
     {
-      mpMainThread = static_cast< CopasiUI3Window * >(mpMainWidget)->getMainThread();
+      mpMainThread = CopasiUI3Window::getMainWindow()->getMainThread();
       mpMainWidget->setEnabled(false);
       QCoreApplication::processEvents();
     }

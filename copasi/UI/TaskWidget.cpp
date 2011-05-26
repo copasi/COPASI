@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:34 $
+//   $Date: 2011/05/26 13:13:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -338,9 +338,9 @@ bool TaskWidget::commonBeforeRunTask()
   setCursor(Qt::WaitCursor);
 
   //handle autosave feature
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->disableSliders(true);
+  CopasiUI3Window::getMainWindow()->autoSave();
+  CopasiUI3Window::getMainWindow()->suspendAutoSave(true);
+  CopasiUI3Window::getMainWindow()->disableSliders(true);
 
   //create progress bar
   mProgressBar = CProgressBar::create();
@@ -375,8 +375,8 @@ bool TaskWidget::commonAfterRunTask()
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
   unsetCursor();
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->disableSliders(false);
+  CopasiUI3Window::getMainWindow()->suspendAutoSave(false);
+  CopasiUI3Window::getMainWindow()->disableSliders(false);
 
   return loadTask();
 }
