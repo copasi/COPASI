@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.33 $
+//   $Revision: 1.263.2.34 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/23 12:31:25 $
+//   $Date: 2011/05/26 09:54:02 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1305,9 +1305,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
 #if LIBSBML_VERSION >= 40100
 
-  if (this->mRuleForSpeciesReferenceIgnored == true)
+  if (this->mRateRuleForSpeciesReferenceIgnored == true)
     {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Rule" , "Rule");
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Rate rule" , "Rate rule");
     }
 
   if (this->mEventAssignmentForSpeciesReferenceIgnored == true)
@@ -2721,7 +2721,7 @@ SBMLImporter::SBMLImporter():
   this->mChemEqElementSpeciesIdMap.clear();
   this->mSpeciesConversionParameterMap.clear();
   this->mSBMLIdModelValueMap.clear();
-  this->mRuleForSpeciesReferenceIgnored = false;
+  this->mRateRuleForSpeciesReferenceIgnored = false;
   this->mEventAssignmentForSpeciesReferenceIgnored = false;
   this->mConversionFactorFound = false;
 #if LIBSBML_VERSION >= 40200
@@ -5810,8 +5810,45 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
   // if the id occurs in mSBMLSpeciesReferenceIds, we have an assignment to a species reference which is not supported
   if (this->mLevel > 2 && this->mSBMLSpeciesReferenceIds.find(sbmlId) != this->mSBMLSpeciesReferenceIds.end())
     {
-      this->mRuleForSpeciesReferenceIgnored = true;
-      return;
+      // we can't import rate rules on species references
+      if (pARule == NULL)
+        {
+          this->mRateRuleForSpeciesReferenceIgnored = true;
+          return;
+        }
+
+      // starting with sbml level 3 this could actually be an initial assignment to
+      // a species reference which we can't store in COPASI
+      // So we treat this the same way as the stoichiometryMath in SBML level 2
+
+      // find the chemical equation element
+      std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
+
+      while (it != endit)
+        {
+          if (it->second->getId() == sbmlId)
+            {
+              break;
+            }
+
+          ++it;
+        }
+
+      assert(it != endit);
+      CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(it->first);
+
+      assert(rule->getMath() != NULL);
+
+      if (this->mLevel > 2 &&  pChemEqElement != NULL && rule->getMath() != NULL)
+        {
+          // store the expression for the stoichiometry in the stoichiometric expression map
+          // this has been tested and should work
+          this->mStoichiometricExpressionMap.insert(std::make_pair(rule->getMath(), pChemEqElement));
+          // issue a warning that stoichiometries that change over time are not supported
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 101, sbmlId.c_str());
+
+          return;
+        }
     }
 
 #endif // LIBSBML_VERSION
