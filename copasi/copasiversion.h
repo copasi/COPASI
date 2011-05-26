@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasiversion.h,v $
-//   $Revision: 1.35.2.1 $
+//   $Revision: 1.35.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/26 12:22:19 $
+//   $Date: 2011/05/26 14:20:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,8 +24,8 @@
 #define COPASI_VERSION
 
 #define COPASI_VERSION_MAJOR 4
-#define COPASI_VERSION_MINOR 6
+#define COPASI_VERSION_MINOR 7
 #define COPASI_VERSION_BUILD 34
-#define COPASI_VERSION_COMMENT "development"
+#define COPASI_VERSION_COMMENT "stable"
 
 #endif // COPASI_VERSION
