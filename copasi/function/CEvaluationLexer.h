@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
+//   $Date: 2011/05/26 12:25:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,6 +149,7 @@ public:
 
   virtual int yylex();
   virtual void switch_streams(FLEX_STD istream* new_in, FLEX_STD ostream* new_out);
+  virtual int yywrap() {return 1;}
 
 protected:
   virtual int LexerInput(char* buf, int max_size);

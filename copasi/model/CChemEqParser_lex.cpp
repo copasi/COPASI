@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser_lex.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 20:08:38 $
+//   $Date: 2011/05/26 12:25:41 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 33
+#define YY_FLEX_SUBMINOR_VERSION 35
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -48,7 +48,7 @@
 
 /* C99 systems have <inttypes.h>. Non-C99 systems may or may not. */
 
-#if __STDC_VERSION__ >= 199901L
+#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
 /* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
  * if you want the limit (max/min) macros for int types.
@@ -118,11 +118,12 @@ typedef unsigned int flex_uint32_t;
 
 #else /* ! __cplusplus */
 
-#if __STDC__
+/* C99 requires __STDC__ to be defined as 1. */
+#if defined (__STDC__)
 
 #define YY_USE_CONST
 
-#endif  /* __STDC__ */
+#endif  /* defined (__STDC__) */
 #endif  /* ! __cplusplus */
 
 #ifdef YY_USE_CONST
@@ -176,7 +177,12 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-extern int yyleng;
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
+extern yy_size_t yyleng;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
@@ -200,16 +206,6 @@ extern int yyleng;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
-/* The following is because we cannot portably get our hands on size_t
- * (without autoconf's help, which isn't available because we want
- * flex-generated scanners to compile on their own).
- */
-
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef unsigned int yy_size_t;
-#endif
-
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -228,7 +224,7 @@ struct yy_buffer_state
   /* Number of characters read into yy_ch_buf, not including EOB
    * characters.
    */
-  int yy_n_chars;
+  yy_size_t yy_n_chars;
 
   /* Whether we "own" the buffer - i.e., we know we created it,
    * and can realloc() it to grow it, and should free() it to
@@ -320,9 +316,6 @@ void CChemEqParserfree(void *);
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
-
-#define yywrap(n) 1
-#define YY_SKIP_YYWRAP
 
 typedef unsigned char YY_CHAR;
 
@@ -446,7 +439,7 @@ static yyconst flex_int16_t yy_chk[83] =
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "CChemEqParser.lpp"
 /* scanner for kinetic functions */
-#line 10 "CChemEqParser.lpp"
+#line 9 "CChemEqParser.lpp"
 #include <vector>
 
 #include "copasi.h"
@@ -469,7 +462,7 @@ static yyconst flex_int16_t yy_chk[83] =
   mpData->name = yytext; \
   mPosition += yyleng;
 
-#line 460 "CChemEqParser_lex.cpp"
+#line 453 "CChemEqParser_lex.cpp"
 
 #define INITIAL 0
 
@@ -568,9 +561,9 @@ YY_DECL
   register char *yy_cp, *yy_bp;
   register int yy_act;
 
-#line 37 "CChemEqParser.lpp"
+#line 36 "CChemEqParser.lpp"
 
-#line 562 "CChemEqParser_lex.cpp"
+#line 555 "CChemEqParser_lex.cpp"
 
   if (!(yy_init))
     {
@@ -658,7 +651,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           case 1:
             YY_RULE_SETUP
-#line 38 "CChemEqParser.lpp"
+#line 37 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             return TOKEN_NUMBER;
@@ -666,7 +659,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 2:
             YY_RULE_SETUP
-#line 43 "CChemEqParser.lpp"
+#line 42 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             return TOKEN_PLUS;
@@ -674,7 +667,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 3:
             YY_RULE_SETUP
-#line 48 "CChemEqParser.lpp"
+#line 47 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             return TOKEN_MULTIPLY;
@@ -682,7 +675,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 4:
             YY_RULE_SETUP
-#line 53 "CChemEqParser.lpp"
+#line 52 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             return TOKEN_BEGIN_COMPARTMENT;
@@ -690,7 +683,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 5:
             YY_RULE_SETUP
-#line 58 "CChemEqParser.lpp"
+#line 57 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             return TOKEN_END_COMPARTMENT;
@@ -698,7 +691,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 6:
             YY_RULE_SETUP
-#line 63 "CChemEqParser.lpp"
+#line 62 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             return TOKEN_BEGIN_MODIFIERS;
@@ -706,7 +699,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 7:
             YY_RULE_SETUP
-#line 68 "CChemEqParser.lpp"
+#line 67 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             return TOKEN_BEGIN_PRODUCTS;
@@ -715,7 +708,7 @@ do_action:  /* This label is used only to access EOF actions. */
           case 8:
             /* rule 8 can match eol */
             YY_RULE_SETUP
-#line 73 "CChemEqParser.lpp"
+#line 72 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             mpData->name = unQuote(mpData->name);
@@ -725,7 +718,7 @@ do_action:  /* This label is used only to access EOF actions. */
           case 9:
             /* rule 9 can match eol */
             YY_RULE_SETUP
-#line 79 "CChemEqParser.lpp"
+#line 78 "CChemEqParser.lpp"
 
             COMMON_ACTION;
             return TOKEN_NAME;
@@ -734,18 +727,18 @@ do_action:  /* This label is used only to access EOF actions. */
           case 10:
             /* rule 10 can match eol */
             YY_RULE_SETUP
-#line 84 "CChemEqParser.lpp"
+#line 83 "CChemEqParser.lpp"
 
             COMMON_ACTION;
 
             YY_BREAK
           case YY_STATE_EOF(INITIAL):
-#line 88 "CChemEqParser.lpp"
+#line 87 "CChemEqParser.lpp"
             return 0;
             YY_BREAK
           case 11:
             YY_RULE_SETUP
-#line 90 "CChemEqParser.lpp"
+#line 89 "CChemEqParser.lpp"
 
             CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
             return YYERRCODE;
@@ -753,10 +746,10 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 12:
             YY_RULE_SETUP
-#line 95 "CChemEqParser.lpp"
+#line 94 "CChemEqParser.lpp"
             ECHO;
             YY_BREAK
-#line 741 "CChemEqParser_lex.cpp"
+#line 734 "CChemEqParser_lex.cpp"
 
           case YY_END_OF_BUFFER:
           {
@@ -890,6 +883,8 @@ do_action:  /* This label is used only to access EOF actions. */
     } /* end of scanning one token */
 } /* end of yylex */
 
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
 yyFlexLexer::yyFlexLexer(std::istream* arg_yyin, std::ostream* arg_yyout)
 {
   yyin = arg_yyin;
@@ -910,22 +905,26 @@ yyFlexLexer::yyFlexLexer(std::istream* arg_yyin, std::ostream* arg_yyout)
   yy_start_stack_ptr = yy_start_stack_depth = 0;
   yy_start_stack = NULL;
 
-  (yy_buffer_stack) = 0;
-  (yy_buffer_stack_top) = 0;
-  (yy_buffer_stack_max) = 0;
+  yy_buffer_stack = 0;
+  yy_buffer_stack_top = 0;
+  yy_buffer_stack_max = 0;
 
   yy_state_buf = 0;
 
 }
 
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
 yyFlexLexer::~yyFlexLexer()
 {
   delete [] yy_state_buf;
   CChemEqParserfree(yy_start_stack);
   yy_delete_buffer(YY_CURRENT_BUFFER);
-  CChemEqParserfree((yy_buffer_stack));
+  CChemEqParserfree(yy_buffer_stack);
 }
 
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
 void yyFlexLexer::switch_streams(std::istream* new_in, std::ostream* new_out)
 {
   if (new_in)
@@ -1028,7 +1027,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
   else
     {
-      int num_to_read =
+      yy_size_t num_to_read =
         YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
       while (num_to_read <= 0)
@@ -1042,7 +1041,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
           if (b->yy_is_our_buffer)
             {
-              int new_size = b->yy_buf_size * 2;
+              yy_size_t new_size = b->yy_buf_size * 2;
 
               if (new_size <= 0)
                 b->yy_buf_size += b->yy_buf_size / 8;
@@ -1096,6 +1095,16 @@ int yyFlexLexer::yy_get_next_buffer()
 
   else
     ret_val = EOB_ACT_CONTINUE_SCAN;
+
+  if ((yy_size_t)((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
+    {
+      /* Extend the array by 50%, plus the number we really need. */
+      yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+      YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) CChemEqParserrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, new_size);
+
+      if (! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf)
+        YY_FATAL_ERROR("out of dynamic memory in yy_get_next_buffer()");
+    }
 
   (yy_n_chars) += number_to_move;
   YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)] = YY_END_OF_BUFFER_CHAR;
@@ -1183,7 +1192,7 @@ void yyFlexLexer::yyunput(int c, register char* yy_bp)
   if (yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2)
     { /* need to shift things up to make room */
       /* +2 for EOB chars. */
-      register int number_to_move = (yy_n_chars) + 2;
+      register yy_size_t number_to_move = (yy_n_chars) + 2;
       register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
                               YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
       register char *source =
@@ -1226,7 +1235,7 @@ int yyFlexLexer::yyinput()
 
       else
         { /* need more input */
-          int offset = (yy_c_buf_p) - (yytext_ptr);
+          yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
           ++(yy_c_buf_p);
 
           switch (yy_get_next_buffer())
@@ -1505,7 +1514,7 @@ void yyFlexLexer::yypop_buffer_state(void)
  */
 void yyFlexLexer::yyensure_buffer_stack(void)
 {
-  int num_to_alloc;
+  yy_size_t num_to_alloc;
 
   if (!(yy_buffer_stack))
     {
@@ -1518,6 +1527,9 @@ void yyFlexLexer::yyensure_buffer_stack(void)
       (yy_buffer_stack) = (struct yy_buffer_state**)CChemEqParseralloc
                           (num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
+
+      if (!(yy_buffer_stack))
+        YY_FATAL_ERROR("out of dynamic memory in yyensure_buffer_stack()");
 
       memset((yy_buffer_stack), 0, num_to_alloc * sizeof(struct yy_buffer_state*));
 
@@ -1537,6 +1549,9 @@ void yyFlexLexer::yyensure_buffer_stack(void)
                           ((yy_buffer_stack),
                            num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
+
+      if (!(yy_buffer_stack))
+        YY_FATAL_ERROR("out of dynamic memory in yyensure_buffer_stack()");
 
       /* zero only the new slots.*/
       memset((yy_buffer_stack) + (yy_buffer_stack_max), 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -1560,8 +1575,7 @@ void yyFlexLexer::yy_push_state(int new_state)
         (yy_start_stack) = (int *) CChemEqParserrealloc((void *)(yy_start_stack), new_size);
 
       if (!(yy_start_stack))
-        YY_FATAL_ERROR(
-          "out of memory expanding start-condition stack");
+        YY_FATAL_ERROR("out of memory expanding start-condition stack");
     }
 
   (yy_start_stack)[(yy_start_stack_ptr)++] = YY_START;
@@ -1661,7 +1675,7 @@ void CChemEqParserfree(void * ptr)
 
 #define YYTABLES_NAME "yytables"
 
-#line 95 "CChemEqParser.lpp"
+#line 94 "CChemEqParser.lpp"
 
 
 

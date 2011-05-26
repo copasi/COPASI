@@ -2,7 +2,6 @@
 
 %option outfile="CEvaluationLexer_lex.cpp"
 %option prefix="CEvaluation"
-%option noyywrap
 %option never-interactive
 %option c++
 

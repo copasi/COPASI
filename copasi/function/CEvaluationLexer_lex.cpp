@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer_lex.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 20:03:39 $
+//   $Date: 2011/05/26 12:25:40 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 33
+#define YY_FLEX_SUBMINOR_VERSION 35
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -48,7 +48,7 @@
 
 /* C99 systems have <inttypes.h>. Non-C99 systems may or may not. */
 
-#if __STDC_VERSION__ >= 199901L
+#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
 /* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
  * if you want the limit (max/min) macros for int types.
@@ -118,11 +118,12 @@ typedef unsigned int flex_uint32_t;
 
 #else /* ! __cplusplus */
 
-#if __STDC__
+/* C99 requires __STDC__ to be defined as 1. */
+#if defined (__STDC__)
 
 #define YY_USE_CONST
 
-#endif  /* __STDC__ */
+#endif  /* defined (__STDC__) */
 #endif  /* ! __cplusplus */
 
 #ifdef YY_USE_CONST
@@ -176,7 +177,12 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-extern int yyleng;
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
+extern yy_size_t yyleng;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
@@ -200,16 +206,6 @@ extern int yyleng;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
-/* The following is because we cannot portably get our hands on size_t
- * (without autoconf's help, which isn't available because we want
- * flex-generated scanners to compile on their own).
- */
-
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef unsigned int yy_size_t;
-#endif
-
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -228,7 +224,7 @@ struct yy_buffer_state
   /* Number of characters read into yy_ch_buf, not including EOB
    * characters.
    */
-  int yy_n_chars;
+  yy_size_t yy_n_chars;
 
   /* Whether we "own" the buffer - i.e., we know we created it,
    * and can realloc() it to grow it, and should free() it to
@@ -320,9 +316,6 @@ void CEvaluationfree(void *);
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
-
-#define yywrap(n) 1
-#define YY_SKIP_YYWRAP
 
 typedef unsigned char YY_CHAR;
 
@@ -714,7 +707,7 @@ static yyconst flex_int16_t yy_chk[808] =
 #line 1 "CEvaluationLexer.lpp"
 /* scanner for kinetic functions */
 
-#line 12 "CEvaluationLexer.lpp"
+#line 11 "CEvaluationLexer.lpp"
 #include <vector>
 
 #include "copasi.h"
@@ -735,7 +728,7 @@ static yyconst flex_int16_t yy_chk[808] =
   mPosition += yyleng;\
   mpNodeList->push_back(mpNode);
 
-#line 726 "CEvaluationLexer_lex.cpp"
+#line 719 "CEvaluationLexer_lex.cpp"
 
 #define INITIAL 0
 #define sSIGNorVALUE 1
@@ -837,9 +830,9 @@ YY_DECL
   register char *yy_cp, *yy_bp;
   register int yy_act;
 
-#line 37 "CEvaluationLexer.lpp"
+#line 36 "CEvaluationLexer.lpp"
 
-#line 831 "CEvaluationLexer_lex.cpp"
+#line 824 "CEvaluationLexer_lex.cpp"
 
   if (!(yy_init))
     {
@@ -927,7 +920,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           case 1:
             YY_RULE_SETUP
-#line 38 "CEvaluationLexer.lpp"
+#line 37 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,
@@ -938,7 +931,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 2:
             YY_RULE_SETUP
-#line 46 "CEvaluationLexer.lpp"
+#line 45 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::EXPONENTIALE,
@@ -949,7 +942,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 3:
             YY_RULE_SETUP
-#line 54 "CEvaluationLexer.lpp"
+#line 53 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::PI,
@@ -960,7 +953,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 4:
             YY_RULE_SETUP
-#line 62 "CEvaluationLexer.lpp"
+#line 61 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE,
@@ -971,7 +964,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 5:
             YY_RULE_SETUP
-#line 70 "CEvaluationLexer.lpp"
+#line 69 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE,
@@ -982,7 +975,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 6:
             YY_RULE_SETUP
-#line 78 "CEvaluationLexer.lpp"
+#line 77 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY,
@@ -993,7 +986,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 7:
             YY_RULE_SETUP
-#line 86 "CEvaluationLexer.lpp"
+#line 85 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN,
@@ -1004,7 +997,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 8:
             YY_RULE_SETUP
-#line 94 "CEvaluationLexer.lpp"
+#line 93 "CEvaluationLexer.lpp"
 
             BEGIN(sVALUE);
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT,
@@ -1015,7 +1008,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 9:
             YY_RULE_SETUP
-#line 102 "CEvaluationLexer.lpp"
+#line 101 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE,
@@ -1026,7 +1019,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 10:
             YY_RULE_SETUP
-#line 110 "CEvaluationLexer.lpp"
+#line 109 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT,
@@ -1037,7 +1030,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 11:
             YY_RULE_SETUP
-#line 118 "CEvaluationLexer.lpp"
+#line 117 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE,
@@ -1048,7 +1041,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 12:
             YY_RULE_SETUP
-#line 126 "CEvaluationLexer.lpp"
+#line 125 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GT,
@@ -1059,7 +1052,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 13:
             YY_RULE_SETUP
-#line 134 "CEvaluationLexer.lpp"
+#line 133 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::NE,
@@ -1070,7 +1063,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 14:
             YY_RULE_SETUP
-#line 142 "CEvaluationLexer.lpp"
+#line 141 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ,
@@ -1081,7 +1074,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 15:
             YY_RULE_SETUP
-#line 150 "CEvaluationLexer.lpp"
+#line 149 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND,
@@ -1092,7 +1085,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 16:
             YY_RULE_SETUP
-#line 158 "CEvaluationLexer.lpp"
+#line 157 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR,
@@ -1103,7 +1096,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 17:
             YY_RULE_SETUP
-#line 166 "CEvaluationLexer.lpp"
+#line 165 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR,
@@ -1115,7 +1108,7 @@ do_action:  /* This label is used only to access EOF actions. */
           case 18:
             /* rule 18 can match eol */
             YY_RULE_SETUP
-#line 174 "CEvaluationLexer.lpp"
+#line 173 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN,
@@ -1129,7 +1122,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 182 "CEvaluationLexer.lpp"
+#line 181 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG,
                                                  yytext);
@@ -1142,7 +1135,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 189 "CEvaluationLexer.lpp"
+#line 188 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10,
                                                  yytext);
@@ -1155,7 +1148,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 196 "CEvaluationLexer.lpp"
+#line 195 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::EXP,
                                                  yytext);
@@ -1168,7 +1161,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 203 "CEvaluationLexer.lpp"
+#line 202 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SIN,
                                                  yytext);
@@ -1181,7 +1174,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 210 "CEvaluationLexer.lpp"
+#line 209 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COS,
                                                  yytext);
@@ -1194,7 +1187,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 217 "CEvaluationLexer.lpp"
+#line 216 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TAN,
                                                  yytext);
@@ -1207,7 +1200,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 224 "CEvaluationLexer.lpp"
+#line 223 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SEC,
                                                  yytext);
@@ -1220,7 +1213,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 231 "CEvaluationLexer.lpp"
+#line 230 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSC,
                                                  yytext);
@@ -1233,7 +1226,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 238 "CEvaluationLexer.lpp"
+#line 237 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COT,
                                                  yytext);
@@ -1246,7 +1239,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 245 "CEvaluationLexer.lpp"
+#line 244 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SINH,
                                                  yytext);
@@ -1259,7 +1252,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 252 "CEvaluationLexer.lpp"
+#line 251 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COSH,
                                                  yytext);
@@ -1272,7 +1265,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 259 "CEvaluationLexer.lpp"
+#line 258 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TANH,
                                                  yytext);
@@ -1285,7 +1278,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 266 "CEvaluationLexer.lpp"
+#line 265 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SECH,
                                                  yytext);
@@ -1298,7 +1291,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 273 "CEvaluationLexer.lpp"
+#line 272 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSCH,
                                                  yytext);
@@ -1311,7 +1304,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 280 "CEvaluationLexer.lpp"
+#line 279 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COTH,
                                                  yytext);
@@ -1324,7 +1317,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 287 "CEvaluationLexer.lpp"
+#line 286 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSIN,
                                                  yytext);
@@ -1337,7 +1330,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 294 "CEvaluationLexer.lpp"
+#line 293 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOS,
                                                  yytext);
@@ -1350,7 +1343,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 301 "CEvaluationLexer.lpp"
+#line 300 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTAN,
                                                  yytext);
@@ -1363,7 +1356,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 308 "CEvaluationLexer.lpp"
+#line 307 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSEC,
                                                  yytext);
@@ -1376,7 +1369,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 315 "CEvaluationLexer.lpp"
+#line 314 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSC,
                                                  yytext);
@@ -1389,7 +1382,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 322 "CEvaluationLexer.lpp"
+#line 321 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOT,
                                                  yytext);
@@ -1402,7 +1395,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 329 "CEvaluationLexer.lpp"
+#line 328 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSINH,
                                                  yytext);
@@ -1415,7 +1408,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 336 "CEvaluationLexer.lpp"
+#line 335 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOSH,
                                                  yytext);
@@ -1428,7 +1421,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 343 "CEvaluationLexer.lpp"
+#line 342 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTANH,
                                                  yytext);
@@ -1441,7 +1434,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 350 "CEvaluationLexer.lpp"
+#line 349 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSECH,
                                                  yytext);
@@ -1454,7 +1447,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 357 "CEvaluationLexer.lpp"
+#line 356 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSCH,
                                                  yytext);
@@ -1467,7 +1460,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 364 "CEvaluationLexer.lpp"
+#line 363 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOTH,
                                                  yytext);
@@ -1480,7 +1473,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 371 "CEvaluationLexer.lpp"
+#line 370 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SQRT,
                                                  yytext);
@@ -1493,7 +1486,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 378 "CEvaluationLexer.lpp"
+#line 377 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ABS,
                                                  yytext);
@@ -1506,7 +1499,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 385 "CEvaluationLexer.lpp"
+#line 384 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::FLOOR,
                                                  yytext);
@@ -1519,7 +1512,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 392 "CEvaluationLexer.lpp"
+#line 391 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CEIL,
                                                  yytext);
@@ -1532,7 +1525,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 399 "CEvaluationLexer.lpp"
+#line 398 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::FACTORIAL,
                                                  yytext);
@@ -1545,7 +1538,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 406 "CEvaluationLexer.lpp"
+#line 405 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::RUNIFORM,
                                                  yytext);
@@ -1558,7 +1551,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 413 "CEvaluationLexer.lpp"
+#line 412 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::RNORMAL,
                                                  yytext);
@@ -1571,7 +1564,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 420 "CEvaluationLexer.lpp"
+#line 419 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeDelay(CEvaluationNodeDelay::DELAY,
                                               yytext);
@@ -1584,7 +1577,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 427 "CEvaluationLexer.lpp"
+#line 426 "CEvaluationLexer.lpp"
 
             mpNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF,
                                                yytext);
@@ -1598,7 +1591,7 @@ do_action:  /* This label is used only to access EOF actions. */
             (yy_c_buf_p) = yy_cp -= 1;
             YY_DO_BEFORE_ACTION; /* set up yytext again */
             YY_RULE_SETUP
-#line 434 "CEvaluationLexer.lpp"
+#line 433 "CEvaluationLexer.lpp"
 
             {
               std::string tmp(yytext);
@@ -1612,7 +1605,7 @@ do_action:  /* This label is used only to access EOF actions. */
           case 56:
             /* rule 56 can match eol */
             YY_RULE_SETUP
-#line 444 "CEvaluationLexer.lpp"
+#line 443 "CEvaluationLexer.lpp"
 
             {
               std::string tmp(yytext);
@@ -1625,7 +1618,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 57:
             YY_RULE_SETUP
-#line 454 "CEvaluationLexer.lpp"
+#line 453 "CEvaluationLexer.lpp"
 
             BEGIN(sVALUE);
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS,
@@ -1636,7 +1629,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 58:
             YY_RULE_SETUP
-#line 462 "CEvaluationLexer.lpp"
+#line 461 "CEvaluationLexer.lpp"
 
             BEGIN(sVALUE);
             mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::PLUS,
@@ -1647,7 +1640,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 59:
             YY_RULE_SETUP
-#line 470 "CEvaluationLexer.lpp"
+#line 469 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER,
@@ -1658,7 +1651,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 60:
             YY_RULE_SETUP
-#line 478 "CEvaluationLexer.lpp"
+#line 477 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY,
@@ -1669,7 +1662,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 61:
             YY_RULE_SETUP
-#line 486 "CEvaluationLexer.lpp"
+#line 485 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE,
@@ -1680,7 +1673,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 62:
             YY_RULE_SETUP
-#line 494 "CEvaluationLexer.lpp"
+#line 493 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MODULUS,
@@ -1691,7 +1684,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 63:
             YY_RULE_SETUP
-#line 502 "CEvaluationLexer.lpp"
+#line 501 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS,
@@ -1702,7 +1695,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 64:
             YY_RULE_SETUP
-#line 510 "CEvaluationLexer.lpp"
+#line 509 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS,
@@ -1713,7 +1706,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 65:
             YY_RULE_SETUP
-#line 518 "CEvaluationLexer.lpp"
+#line 517 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mPosition += yyleng;
@@ -1725,7 +1718,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 66:
             YY_RULE_SETUP
-#line 527 "CEvaluationLexer.lpp"
+#line 526 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mPosition += yyleng;
@@ -1737,7 +1730,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 67:
             YY_RULE_SETUP
-#line 536 "CEvaluationLexer.lpp"
+#line 535 "CEvaluationLexer.lpp"
 
             BEGIN(sSIGNorVALUE);
             mPosition += yyleng;
@@ -1749,7 +1742,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 68:
             YY_RULE_SETUP
-#line 545 "CEvaluationLexer.lpp"
+#line 544 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mPosition += yyleng;
@@ -1761,7 +1754,7 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 69:
             YY_RULE_SETUP
-#line 554 "CEvaluationLexer.lpp"
+#line 553 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mPosition += yyleng;
@@ -1774,7 +1767,7 @@ do_action:  /* This label is used only to access EOF actions. */
           case 70:
             /* rule 70 can match eol */
             YY_RULE_SETUP
-#line 563 "CEvaluationLexer.lpp"
+#line 562 "CEvaluationLexer.lpp"
 
             BEGIN(sOPERATOR);
             mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
@@ -1786,7 +1779,7 @@ do_action:  /* This label is used only to access EOF actions. */
           case 71:
             /* rule 71 can match eol */
             YY_RULE_SETUP
-#line 571 "CEvaluationLexer.lpp"
+#line 570 "CEvaluationLexer.lpp"
 
             mPosition += yyleng;
             // mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNodeWhiteSpace::ANY,
@@ -1798,12 +1791,12 @@ do_action:  /* This label is used only to access EOF actions. */
           case YY_STATE_EOF(sSIGNorVALUE):
           case YY_STATE_EOF(sOPERATOR):
           case YY_STATE_EOF(sVALUE):
-#line 578 "CEvaluationLexer.lpp"
+#line 577 "CEvaluationLexer.lpp"
             return 0;
             YY_BREAK
           case 72:
             YY_RULE_SETUP
-#line 580 "CEvaluationLexer.lpp"
+#line 579 "CEvaluationLexer.lpp"
 
             CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
             return YYERRCODE;
@@ -1811,10 +1804,10 @@ do_action:  /* This label is used only to access EOF actions. */
             YY_BREAK
           case 73:
             YY_RULE_SETUP
-#line 585 "CEvaluationLexer.lpp"
+#line 584 "CEvaluationLexer.lpp"
             ECHO;
             YY_BREAK
-#line 1799 "CEvaluationLexer_lex.cpp"
+#line 1792 "CEvaluationLexer_lex.cpp"
 
           case YY_END_OF_BUFFER:
           {
@@ -1948,6 +1941,8 @@ do_action:  /* This label is used only to access EOF actions. */
     } /* end of scanning one token */
 } /* end of yylex */
 
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
 yyFlexLexer::yyFlexLexer(std::istream* arg_yyin, std::ostream* arg_yyout)
 {
   yyin = arg_yyin;
@@ -1968,22 +1963,26 @@ yyFlexLexer::yyFlexLexer(std::istream* arg_yyin, std::ostream* arg_yyout)
   yy_start_stack_ptr = yy_start_stack_depth = 0;
   yy_start_stack = NULL;
 
-  (yy_buffer_stack) = 0;
-  (yy_buffer_stack_top) = 0;
-  (yy_buffer_stack_max) = 0;
+  yy_buffer_stack = 0;
+  yy_buffer_stack_top = 0;
+  yy_buffer_stack_max = 0;
 
   yy_state_buf = 0;
 
 }
 
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
 yyFlexLexer::~yyFlexLexer()
 {
   delete [] yy_state_buf;
   CEvaluationfree(yy_start_stack);
   yy_delete_buffer(YY_CURRENT_BUFFER);
-  CEvaluationfree((yy_buffer_stack));
+  CEvaluationfree(yy_buffer_stack);
 }
 
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
 void yyFlexLexer::switch_streams(std::istream* new_in, std::ostream* new_out)
 {
   if (new_in)
@@ -2086,7 +2085,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
   else
     {
-      int num_to_read =
+      yy_size_t num_to_read =
         YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
       while (num_to_read <= 0)
@@ -2100,7 +2099,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
           if (b->yy_is_our_buffer)
             {
-              int new_size = b->yy_buf_size * 2;
+              yy_size_t new_size = b->yy_buf_size * 2;
 
               if (new_size <= 0)
                 b->yy_buf_size += b->yy_buf_size / 8;
@@ -2154,6 +2153,16 @@ int yyFlexLexer::yy_get_next_buffer()
 
   else
     ret_val = EOB_ACT_CONTINUE_SCAN;
+
+  if ((yy_size_t)((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
+    {
+      /* Extend the array by 50%, plus the number we really need. */
+      yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+      YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) CEvaluationrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, new_size);
+
+      if (! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf)
+        YY_FATAL_ERROR("out of dynamic memory in yy_get_next_buffer()");
+    }
 
   (yy_n_chars) += number_to_move;
   YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)] = YY_END_OF_BUFFER_CHAR;
@@ -2241,7 +2250,7 @@ void yyFlexLexer::yyunput(int c, register char* yy_bp)
   if (yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2)
     { /* need to shift things up to make room */
       /* +2 for EOB chars. */
-      register int number_to_move = (yy_n_chars) + 2;
+      register yy_size_t number_to_move = (yy_n_chars) + 2;
       register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
                               YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
       register char *source =
@@ -2284,7 +2293,7 @@ int yyFlexLexer::yyinput()
 
       else
         { /* need more input */
-          int offset = (yy_c_buf_p) - (yytext_ptr);
+          yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
           ++(yy_c_buf_p);
 
           switch (yy_get_next_buffer())
@@ -2563,7 +2572,7 @@ void yyFlexLexer::yypop_buffer_state(void)
  */
 void yyFlexLexer::yyensure_buffer_stack(void)
 {
-  int num_to_alloc;
+  yy_size_t num_to_alloc;
 
   if (!(yy_buffer_stack))
     {
@@ -2576,6 +2585,9 @@ void yyFlexLexer::yyensure_buffer_stack(void)
       (yy_buffer_stack) = (struct yy_buffer_state**)CEvaluationalloc
                           (num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
+
+      if (!(yy_buffer_stack))
+        YY_FATAL_ERROR("out of dynamic memory in yyensure_buffer_stack()");
 
       memset((yy_buffer_stack), 0, num_to_alloc * sizeof(struct yy_buffer_state*));
 
@@ -2595,6 +2607,9 @@ void yyFlexLexer::yyensure_buffer_stack(void)
                           ((yy_buffer_stack),
                            num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
+
+      if (!(yy_buffer_stack))
+        YY_FATAL_ERROR("out of dynamic memory in yyensure_buffer_stack()");
 
       /* zero only the new slots.*/
       memset((yy_buffer_stack) + (yy_buffer_stack_max), 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -2618,8 +2633,7 @@ void yyFlexLexer::yy_push_state(int new_state)
         (yy_start_stack) = (int *) CEvaluationrealloc((void *)(yy_start_stack), new_size);
 
       if (!(yy_start_stack))
-        YY_FATAL_ERROR(
-          "out of memory expanding start-condition stack");
+        YY_FATAL_ERROR("out of memory expanding start-condition stack");
     }
 
   (yy_start_stack)[(yy_start_stack_ptr)++] = YY_START;
@@ -2719,7 +2733,7 @@ void CEvaluationfree(void * ptr)
 
 #define YYTABLES_NAME "yytables"
 
-#line 585 "CEvaluationLexer.lpp"
+#line 584 "CEvaluationLexer.lpp"
 
 
 
