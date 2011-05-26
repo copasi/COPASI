@@ -20,9 +20,6 @@ flex  -t $SOURCE_FILE | \
          -e 's/using std::istream;/using namespace std;/' \
          -e '/using std::ostream;/d' \
          -e '/#include <unistd.h>/d' \
-         -e '/'${PREFIX}'free *( *yy_start_stack *);/,/yy_delete_buffer *( *YY_CURRENT_BUFFER *) *;/c \
-  '${PREFIX}'free(yy_start_stack); \n  yy_delete_buffer(YY_CURRENT_BUFFER); \n  '${PREFIX}'free((yy_buffer_stack));
-' \
          > $TARGET_FILE
 
 if [ x`uname -a | grep -ic cygwin` = x"1" ]; then
