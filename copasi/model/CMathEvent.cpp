@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.11.4.1 $
+//   $Revision: 1.11.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:01 $
+//   $Date: 2011/05/26 22:08:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -165,19 +165,14 @@ void CMathEvent::fire(const C_FLOAT64 & time,
   CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
 
   // Determine the execution time of the calculation of the event.
-  C_FLOAT64 ExecutionTime = time;
-
-  if (!mDelayAssignment)
-    {
-      ExecutionTime = getExecutionTime(time);
-    }
+  C_FLOAT64 CalculationTime = getCalculationTime(time);
 
   // We can only add calculations even if the calculation time is the current time.
   // This is due to the fact that equality and inequality checks are treated differently.
   for (; itAssignment != endAssignment; ++itAssignment)
     {
       // We must delay the calculation of the new target value
-      processQueue.addCalculation(ExecutionTime,
+      processQueue.addCalculation(CalculationTime,
                                   equality,
                                   mOrder,
                                   EventId,
@@ -230,44 +225,63 @@ const size_t & CMathEvent::getOrder() const
   return mOrder;
 }
 
-C_FLOAT64 CMathEvent::getExecutionTime(const C_FLOAT64 & currentTime)
+C_FLOAT64 CMathEvent::getCalculationTime(const C_FLOAT64 & currentTime)
 {
-  // Determine the execution time of the event.
-  C_FLOAT64 ExecutionTime = currentTime;
-
-  if (mDelay.getInfix() != "")
+  if (mDelayAssignment)
     {
-      // We make sure everything is up to date.
-      applyDelayRefreshes();
+      return currentTime;
+    }
 
-      ExecutionTime += mDelay.calcValue();
+  return calculateDelayedTime(currentTime);
+}
 
-      // Events are only allowed in forward integration. Thus the ExecutionTime
-      // must not be less than the time.
-      if (ExecutionTime - currentTime < 0.0)
+C_FLOAT64 CMathEvent::getAssignmentTime(const C_FLOAT64 & currentTime)
+{
+  if (!mDelayAssignment)
+    {
+      return currentTime;
+    }
+
+  return calculateDelayedTime(currentTime);
+}
+
+C_FLOAT64 CMathEvent::calculateDelayedTime(const C_FLOAT64 & currentTime)
+{
+  if (mDelay.getInfix() == "")
+    {
+      return currentTime;
+    }
+
+  // We make sure everything is up to date.
+  applyDelayRefreshes();
+
+  C_FLOAT64 DelayedTime = currentTime + mDelay.calcValue();
+
+  // Events are only allowed in forward integration. Thus the ExecutionTime
+  // must not be less than the time.
+  if (DelayedTime - currentTime < 0.0)
+    {
+      // We allow small numerical errors.
+      C_FLOAT64 Scale =
+        (fabs(DelayedTime) + fabs(currentTime)) * 50.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
+
+      // Both are approximately zero
+      if (Scale < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
         {
-          // We allow small numerical errors.
-          C_FLOAT64 Scale =
-            (fabs(ExecutionTime) + fabs(currentTime)) * 50.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
-
-          // Both are approximately zero
-          if (Scale < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
-            {
-              ExecutionTime = currentTime;
-            }
-          // The difference is small compared to the scale
-          else if (fabs(ExecutionTime - currentTime) < Scale)
-            {
-              ExecutionTime = currentTime;
-            }
-          // The execution time is definitely in the past
-          else
-            {
-              // Create an error message and throw an exception.
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 2, ExecutionTime, currentTime);
-            }
+          DelayedTime = currentTime;
+        }
+      // The difference is small compared to the scale
+      else if (fabs(DelayedTime - currentTime) < Scale)
+        {
+          DelayedTime = currentTime;
+        }
+      // The execution time is definitely in the past
+      else
+        {
+          // Create an error message and throw an exception.
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 2, DelayedTime, currentTime);
         }
     }
 
-  return ExecutionTime;
+  return DelayedTime;
 }
