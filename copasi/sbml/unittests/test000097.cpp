@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000097.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/26 16:10:39 $
+//   $Author: gauges $
+//   $Date: 2011/05/30 17:07:18 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -673,7 +673,7 @@ void test000097::createModel()
   std::set<const CCopasiObject*> changedObjects;
   CCompartment* pCompartment = pModel->createCompartment("cell", 5.0);
   CPPUNIT_ASSERT(pCompartment != NULL);
-  const CCopasiObject* pObject = pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"));
+  const CCopasiObject* pObject = pCompartment->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
 
