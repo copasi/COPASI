@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.16 $
+//   $Revision: 1.5.2.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/04/26 16:13:12 $
+//   $Date: 2011/05/31 13:35:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,8 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
     mAspect(1.0),
     mX(0.0),
     mY(0.0),
+    mW(0.0),
+    mH(0.0),
     mpGlobalRenderInfoList(pGlobalRenderInformationList),
     mpFontRenderer(NULL),
     mDeduceSpeciesReferenceRoles(false),
@@ -155,6 +157,8 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
     mAspect(1.0),
     mX(0.0),
     mY(0.0),
+    mW(0.0),
+    mH(0.0),
     mpGlobalRenderInfoList(pGlobalRenderInformationList),
     mpFontRenderer(NULL),
     mDeduceSpeciesReferenceRoles(false),
