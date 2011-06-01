@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.13 $
+//   $Revision: 1.66.2.14 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2011/06/01 12:00:37 $
+//   $Author: shoops $
+//   $Date: 2011/06/01 16:24:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -358,30 +358,56 @@ bool CFitProblem::initialize()
   ContainerList.push_back(getObjectAncestor("Vector"));
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
-  mpSteadyState =
-    dynamic_cast< CSteadyStateTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmSteadyStateCN));
-
-  if (mpSteadyState == NULL)
-    mpSteadyState =
-      static_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
 
   // We only need to initialize the steady-state task if steady-state data is present.
   if (mpExperimentSet->hasDataForTaskType(CCopasiTask::steadyState))
     {
+      mpSteadyState =
+        dynamic_cast< CSteadyStateTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmSteadyStateCN));
+
+      if (mpSteadyState == NULL)
+        {
+          mpSteadyState =
+            static_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
+        }
+
+      if (mpSteadyState == NULL) fatalError();
+
+      *mpParmSteadyStateCN = mpSteadyState->getCN();
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
+  else
+    {
+      mpSteadyState = NULL;
+    }
 
-  mpTrajectory =
-    dynamic_cast< CTrajectoryTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmTimeCourseCN));
-
-  if (mpTrajectory == NULL)
-    mpTrajectory =
-      static_cast<CTrajectoryTask *>((*pDataModel->getTaskList())["Time-Course"]);
+  pdelete(mpTrajectoryProblem);
 
   // We only need to initialize the trajectory task if time course data is present.
   if (mpExperimentSet->hasDataForTaskType(CCopasiTask::timeCourse))
     {
+      mpTrajectory =
+        dynamic_cast< CTrajectoryTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmTimeCourseCN));
+
+      if (mpTrajectory == NULL)
+        {
+          mpTrajectory =
+            static_cast<CTrajectoryTask *>((*pDataModel->getTaskList())["Time-Course"]);
+        }
+
+      if (mpTrajectory == NULL) fatalError();
+
+      *mpParmTimeCourseCN = mpTrajectory->getCN();
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
+      mpTrajectoryProblem =
+        new CTrajectoryProblem(*static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem()));
+
+      static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
+    }
+  else
+    {
+      mpTrajectory = NULL;
     }
 
   ContainerList.clear();
@@ -393,8 +419,16 @@ bool CFitProblem::initialize()
   if (pTask)
     {
       ContainerList.push_back(pTask);
-      ContainerList.push_back(mpSteadyState);
-      ContainerList.push_back(mpTrajectory);
+
+      if (mpSteadyState != NULL)
+        {
+          ContainerList.push_back(mpSteadyState);
+        }
+
+      if (mpTrajectory != NULL)
+        {
+          ContainerList.push_back(mpTrajectory);
+        }
     }
 
   if (!mpExperimentSet->compile(ContainerList)) return false;
@@ -645,49 +679,8 @@ bool CFitProblem::initialize()
   mThresholdCounter = 0;
 #endif // COPASI_CROSSVALIDATION
 
-  if (!mpSteadyState)
-    {
-      mpSteadyState =
-        dynamic_cast< CSteadyStateTask * >((*pDataModel->getTaskList())["Steady-State"]);
-
-      if (mpSteadyState == NULL) fatalError();
-
-      setValue("Steady-State", mpSteadyState->getKey());
-      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      ContainerList.push_back(mpSteadyState);
-    }
-
-  if (!mpTrajectory)
-    {
-      mpTrajectory =
-        dynamic_cast< CTrajectoryTask * >((*pDataModel->getTaskList())["Time-Course"]);
-
-      if (mpTrajectory == NULL) fatalError();
-
-      setValue("Time-Course", mpTrajectory->getKey());
-      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      ContainerList.push_back(mpTrajectory);
-    }
-
-  pdelete(mpTrajectoryProblem);
-  mpTrajectoryProblem =
-    new CTrajectoryProblem(*static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem()));
-
-  static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
-
   pdelete(mpInitialState);
   mpInitialState = new CState(mpModel->getInitialState());
-
-  return true;
-}
-
-bool CFitProblem::restoreTrajectoryProblem()
-{
-  if (mpTrajectoryProblem)
-    *mpTrajectory->getProblem() = *mpTrajectoryProblem;
-
-  pdelete(mpTrajectoryProblem);
-  pdelete(mpInitialState);
 
   return true;
 }
@@ -943,13 +936,20 @@ bool CFitProblem::restore(const bool & updateModel)
 {
   bool success = true;
 
-  if (mpTrajectory != NULL && mpExperimentSet->hasDataForTaskType(CCopasiTask::timeCourse))
+  if (mpTrajectory != NULL)
     success &= mpTrajectory->restore();
 
-  if (mpSteadyState != NULL && mpExperimentSet->hasDataForTaskType(CCopasiTask::steadyState))
+  if (mpSteadyState != NULL)
     success &= mpSteadyState->restore();
 
+  if (mpTrajectoryProblem)
+    *mpTrajectory->getProblem() = *mpTrajectoryProblem;
+
+
   success &= COptProblem::restore(updateModel);
+
+  pdelete(mpTrajectoryProblem);
+  pdelete(mpInitialState);
 
   return success;
 }

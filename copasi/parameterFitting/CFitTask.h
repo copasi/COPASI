@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.h,v $
-//   $Revision: 1.7.4.1 $
+//   $Revision: 1.7.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/04 13:53:12 $
+//   $Date: 2011/06/01 16:24:41 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -89,11 +89,6 @@ public:
    * @return bool success
    */
   virtual bool process(const bool & useInitialValues);
-
-  /**
-   * Perform necessary cleanup procedures
-   */
-  virtual bool restore();
 
   /**
    * Set the method type applied to solve the task
