@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.14 $
+//   $Revision: 1.66.2.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/01 16:24:41 $
+//   $Date: 2011/06/01 17:56:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1137,8 +1137,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mStoreResults = true;
   calculate();
 
-  // Make sure the timer is accurate.
-  (*mCPUTime.getRefresh())();
 
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
@@ -1165,6 +1163,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 #endif // COPASI_CROSSVALIDATION
 
   mHaveStatistics = true;
+
+  // Make sure the timer is accurate.
+  (*mCPUTime.getRefresh())();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -1312,6 +1313,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
 
+          // Make sure the timer is accurate.
+          (*mCPUTime.getRefresh())();
+
           return false;
         }
 
@@ -1362,6 +1366,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
           CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+
+          // Make sure the timer is accurate.
+          (*mCPUTime.getRefresh())();
 
           return false;
         }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.11 $
+//   $Revision: 1.115.2.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/28 12:10:54 $
+//   $Date: 2011/06/01 17:56:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -811,7 +811,9 @@ const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
 {return mCounter;}
 
 const C_FLOAT64 & COptProblem::getExecutionTime() const
-{return *(C_FLOAT64 *) mCPUTime.getValuePointer();}
+{
+  return mCPUTime.getElapsedTimeSeconds();
+}
 
 void COptProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
