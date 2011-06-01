@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.12 $
+//   $Revision: 1.66.2.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 17:05:36 $
+//   $Author: ssahle $
+//   $Date: 2011/06/01 12:00:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -943,10 +943,10 @@ bool CFitProblem::restore(const bool & updateModel)
 {
   bool success = true;
 
-  if (mpTrajectory != NULL)
+  if (mpTrajectory != NULL && mpExperimentSet->hasDataForTaskType(CCopasiTask::timeCourse))
     success &= mpTrajectory->restore();
 
-  if (mpSteadyState != NULL)
+  if (mpSteadyState != NULL && mpExperimentSet->hasDataForTaskType(CCopasiTask::steadyState))
     success &= mpSteadyState->restore();
 
   success &= COptProblem::restore(updateModel);
