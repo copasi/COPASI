@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:39 $
+//   $Date: 2011/06/02 17:15:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,14 +109,6 @@ bool CFitTask::process(const bool & useInitialValues)
   output(COutputInterface::AFTER);
 
   return success;
-}
-
-bool CFitTask::restore()
-{
-  // The subtasks must be completely restored.
-  dynamic_cast<CFitProblem *>(mpProblem)->restoreTrajectoryProblem();
-
-  return CCopasiTask::restore();
 }
 
 bool CFitTask::setMethodType(const int & type)

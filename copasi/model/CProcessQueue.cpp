@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:16 $
+//   $Date: 2011/06/02 17:15:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,9 +119,9 @@ void CProcessQueue::CAction::process(const size_t & eventId)
   if (mpExpression != NULL)
     {
       // Calculate the execution time for delayed events.
-      C_FLOAT64 ExecutionTime = mpEvent->getExecutionTime(mpProcessQueue->mTime);
+      C_FLOAT64 AssignmentTime = mpEvent->getAssignmentTime(mpProcessQueue->mTime);
 
-      mpProcessQueue->addAssignment(ExecutionTime,
+      mpProcessQueue->addAssignment(AssignmentTime,
                                     mpProcessQueue->mEquality,
                                     mpEvent->getOrder(),
                                     eventId,

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:31 $
+//   $Date: 2011/06/02 17:15:47 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -357,11 +357,27 @@ public:
   const size_t & getOrder() const;
 
   /**
-   * Calculate the execution time
+   * Retrieve the time for calculating the assignment expression
+   * @param const C_FLOAT64 & currentTime
+   * @return C_FLOAT64 calculationTime
+   */
+  C_FLOAT64 getCalculationTime(const C_FLOAT64 & currentTime);
+
+  /**
+   * Retrieve the time for executing the assignmentS
    * @param const C_FLOAT64 & currentTime
    * @return C_FLOAT64 executionTime
    */
-  C_FLOAT64 getExecutionTime(const C_FLOAT64 & currentTime);
+  C_FLOAT64 getAssignmentTime(const C_FLOAT64 & currentTime);
+
+private:
+  /**
+   * Calculate the time for delays. This accounts for small errors relative
+   * to the current time.
+   * @param const C_FLOAT64 & currentTime
+   * @return C_FLOAT64 delayedTime
+   */
+  C_FLOAT64 calculateDelayedTime(const C_FLOAT64 & currentTime);
 
   // Attributes
 private:

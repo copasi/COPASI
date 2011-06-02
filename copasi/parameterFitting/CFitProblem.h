@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:39 $
+//   $Date: 2011/06/02 17:15:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,12 +228,6 @@ public:
    */
   const C_FLOAT64 & getCrossValidationSD() const;
 #endif // COPASI_CROSSVALIDATION
-
-  /**
-   * Restore the trajectory problem
-   * @result bool success
-   */
-  bool restoreTrajectoryProblem();
 
 private:
   /**

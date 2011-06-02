@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
+   $Date: 2011/06/02 17:15:47 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,11 +35,11 @@ CCopasiTimer::CCopasiTimer(const Type & type,
 
 CCopasiTimer::CCopasiTimer(const CCopasiTimer & src,
                            const CCopasiContainer * pParent):
-CCopasiObject(src, pParent),
-mType(src.mType),
-mStartTime(src.mStartTime),
-mElapsedTime(src.mElapsedTime),
-mElapsedTimeSeconds(src.mElapsedTimeSeconds)
+    CCopasiObject(src, pParent),
+    mType(src.mType),
+    mStartTime(src.mStartTime),
+    mElapsedTime(src.mElapsedTime),
+    mElapsedTimeSeconds(src.mElapsedTimeSeconds)
 {setRefresh(this, &CCopasiTimer::refresh);}
 
 CCopasiTimer::~CCopasiTimer()
@@ -44,13 +49,13 @@ bool CCopasiTimer::start()
 {
   switch (mType)
     {
-    case WALL:
-      mStartTime = CCopasiTimeVariable::getCurrentWallTime();
-      break;
+      case WALL:
+        mStartTime = CCopasiTimeVariable::getCurrentWallTime();
+        break;
 
-    case CPU:
-      mStartTime = CCopasiTimeVariable::getCPUTime();
-      break;
+      case CPU:
+        mStartTime = CCopasiTimeVariable::getCPUTime();
+        break;
     }
 
   mElapsedTime = 0;
@@ -63,13 +68,13 @@ void CCopasiTimer::refresh()
 {
   switch (mType)
     {
-    case WALL:
-      mElapsedTime = CCopasiTimeVariable::getCurrentWallTime() - mStartTime;
-      break;
+      case WALL:
+        mElapsedTime = CCopasiTimeVariable::getCurrentWallTime() - mStartTime;
+        break;
 
-    case CPU:
-      mElapsedTime = CCopasiTimeVariable::getCPUTime() - mStartTime;
-      break;
+      case CPU:
+        mElapsedTime = CCopasiTimeVariable::getCPUTime() - mStartTime;
+        break;
     }
 
   mElapsedTimeSeconds =
@@ -78,14 +83,18 @@ void CCopasiTimer::refresh()
   return;
 }
 
-const CCopasiTimeVariable & CCopasiTimer::getElapsedTime()
+const CCopasiTimeVariable & CCopasiTimer::getElapsedTime() const
 {
-  refresh();
   return mElapsedTime;
 }
 
+const C_FLOAT64 & CCopasiTimer::getElapsedTimeSeconds() const
+{
+  return mElapsedTimeSeconds;
+}
+
 void CCopasiTimer::print(std::ostream * ostream) const
-  {(*ostream) << mElapsedTimeSeconds;}
+{(*ostream) << mElapsedTimeSeconds;}
 
 void * CCopasiTimer::getValuePointer() const
-  {return & const_cast<CCopasiTimer *>(this)->mElapsedTimeSeconds;}
+{return & const_cast<CCopasiTimer *>(this)->mElapsedTimeSeconds;}
