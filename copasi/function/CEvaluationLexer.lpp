@@ -31,6 +31,7 @@
 %}
 
 DIGIT    [0-9]
+HEX      [0-9a-fA-F]
 ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
    
 %%
@@ -178,6 +179,14 @@ ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
   return TOKEN_NUMBER;
 %}
      
+<INITIAL,sSIGNorVALUE,sVALUE>0x{HEX}+  %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::POINTER,
+                                     yytext);
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+ %}
+		  
 <INITIAL,sSIGNorVALUE,sVALUE>(log|LOG)/\(   %{
   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG,
                                        yytext);
