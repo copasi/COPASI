@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:22 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:05 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -320,7 +320,7 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
     for (i = 0; i < imax; i++)
       {
         CExperiment::Type Type =
-          static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentItem());
+          static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentIndex());
 
         if (Type == CExperiment::time)
           mpExperiment->getObjectMap().setRole(i, CExperiment::ignore);
@@ -771,7 +771,7 @@ void CQExperimentData::init()
   const std::string * pWeightMethod = CExperiment::WeightMethodName;
 
   while (*pWeightMethod != "")
-    mpBoxWeightMethod->insertItem(FROM_UTF8(*pWeightMethod++));
+    mpBoxWeightMethod->insertItem(mpBoxWeightMethod->count(), FROM_UTF8(*pWeightMethod++));
 
   mpExperimentSetCopy = NULL;
   mpFileInfo = NULL;
@@ -824,7 +824,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
       mpBtnTimeCourse->setChecked(true);
       mpCheckFrom->setChecked(false);
       mpCheckTo->setChecked(false);
-      mpBoxWeightMethod->setCurrentItem(CExperiment::SD);
+      mpBoxWeightMethod->setCurrentIndex(CExperiment::SD);
     }
   else
     {
@@ -865,7 +865,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
         mpBtnSteadystate->setChecked(true);
 
       mOldWeightMethod = pExperiment->getWeightMethod();
-      mpBoxWeightMethod->setCurrentItem(mOldWeightMethod);
+      mpBoxWeightMethod->setCurrentIndex(mOldWeightMethod);
 
       size_t Next =
         mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) + 1;
@@ -965,7 +965,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
   else
     pExperiment->setExperimentType(CCopasiTask::steadyState);
 
-  pExperiment->setWeightMethod((CExperiment::WeightMethod) mpBoxWeightMethod->currentItem());
+  pExperiment->setWeightMethod((CExperiment::WeightMethod) mpBoxWeightMethod->currentIndex());
 
   mpFileInfo->sync();
 
@@ -1028,7 +1028,7 @@ void CQExperimentData::slotModelObject(int row)
 
   CQSimpleSelectionTree::ObjectClasses Classes;
   CExperiment::Type Type =
-    static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentItem());
+    static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentIndex());
 
   if (Type == CExperiment::independent)
     Classes =
@@ -1106,7 +1106,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       // COL_TYPE
       pComboBox = new QComboBox(mpTable);
-      pComboBox->insertStringList(ColumnTypes);
+      pComboBox->insertItems(0, ColumnTypes);
       pComboBox->setEditable(false);
 
       if (guess && TimeRow == C_INVALID_INDEX &&
@@ -1118,7 +1118,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       if (Type == CExperiment::time) TimeRow = i;
 
-      pComboBox->setCurrentItem(Type);
+      pComboBox->setCurrentIndex(Type);
 
       mpComboMap->setMapping(pComboBox, (int) i);
       connect(pComboBox, SIGNAL(activated(int)), mpComboMap, SLOT(map()));
@@ -1126,7 +1126,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       mpTable->setCellWidget((int) i, COL_TYPE, pComboBox);
 
       // COL_TYPE_HIDDEN
-      mpTable->setText((int) i, COL_TYPE_HIDDEN, QString::number(pComboBox->currentItem()));
+      mpTable->setText((int) i, COL_TYPE_HIDDEN, QString::number(pComboBox->currentIndex()));
 
       // COL_BTN
       pBtn = new QToolButton(mpTable);
@@ -1193,7 +1193,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 void CQExperimentData::slotTypeChanged(int row)
 {
   CExperiment::Type NewType =
-    static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentItem());
+    static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentIndex());
   CExperiment::Type OldType =
     static_cast<CExperiment::Type>(mpTable->text(row, COL_TYPE_HIDDEN).toLong());
 
@@ -1258,7 +1258,10 @@ void CQExperimentData::slotTypeChanged(int row)
         // Add time to combo items
         for (i = 0; i < imax; i++)
           if (i != row)
-            static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->insertItem(FROM_UTF8(CExperiment::TypeName[CExperiment::time]));
+            {
+              QComboBox * cTmp = static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE));
+              cTmp->insertItem(cTmp->count(), FROM_UTF8(CExperiment::TypeName[CExperiment::time]));
+            }
 
         break;
     }
@@ -1339,7 +1342,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
   for (i = 0; i < imax; i++)
     {
       CExperiment::Type Type =
-        static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentItem());
+        static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentIndex());
 
       if (Type == CExperiment::time)
         FoundTime = true;
@@ -1508,7 +1511,7 @@ void CQExperimentData::enableEdit(const bool & enable)
               mpTable->cellWidget((int) i, COL_TYPE)->setEnabled(true);
 
               CExperiment::Type Type =
-                static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentItem());
+                static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget((int) i, COL_TYPE))->currentIndex());
 
               if (Type == CExperiment::ignore || Type == CExperiment::time) continue;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:38:00 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,13 +51,15 @@ CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::WF
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
-    setName("CQTSSAResultWidget");
+    setObjectName("CQTSSAResultWidget");
 
   setCaption(trUtf8("CQTSSAResultWidget"));
 
-  mWidgetLayout = new Q3GridLayout(this, 1, 1, 0, -1, "Layout");
+  mWidgetLayout = new QGridLayout(this);
+  mWidgetLayout->setObjectName("Layout");
 
-  mCentralWidget = new CQTSSAResultSubWidget(this, "CQTSSAResultSubWidget");
+  mCentralWidget = new CQTSSAResultSubWidget(this);
+  mCentralWidget->setObjectName("CQTSSAResultSubWidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);
 
   /*commitChanges = new QPushButton(this, "commitChanges");

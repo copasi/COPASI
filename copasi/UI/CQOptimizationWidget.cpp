@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:49 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,7 @@ bool CQOptimizationWidget::loadTask()
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
 
-  mpBoxSubtask->setCurrentText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
+  mpBoxSubtask->setItemText(mpBoxSubtask->currentIndex(), FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), NULL, NULL);
 
@@ -220,17 +220,17 @@ void CQOptimizationWidget::init()
 
   mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
 
-  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::steadyState]));
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::steadyState]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::steadyState]] = CCopasiTask::steadyState;
-  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::timeCourse]));
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::timeCourse]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::timeCourse]] = CCopasiTask::timeCourse;
-  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::mca]));
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::mca]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::mca]] = CCopasiTask::mca;
   mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lna]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lna]] = CCopasiTask::lna;
-  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lyap]));
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lyap]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lyap]] = CCopasiTask::lyap;
-  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::sens]));
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::sens]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::sens]] = CCopasiTask::sens;
 
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);

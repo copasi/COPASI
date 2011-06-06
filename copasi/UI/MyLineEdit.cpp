@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,8 +19,9 @@
 #include <qvalidator.h>
 
 MyLineEdit::MyLineEdit(QWidget * parent, const char * name)
-    : QLineEdit(parent, name)
+    : QLineEdit(parent)
 {
+  setObjectName(name);
   setupWidget();
 }
 
@@ -34,7 +40,9 @@ void MyLineEdit::setupWidget()
   mOldColor = paletteBackgroundColor();
   int h, s, v;
   mOldColor.getHsv(&h, &s, &v);
+
   if (s < 20) s = 20;
+
   mNewColor.setHsv(240, s, v);
 
   mErrorColor.setHsv(0, s, v);
@@ -76,8 +84,11 @@ void MyLineEdit::updateColor()
     }
 
   const QValidator * val = validator();
+
   int dummy = 0;
+
   QString ttt = text();
+
   if (val)
     if (val->validate(ttt, dummy) == QValidator::Intermediate)
       setPaletteBackgroundColor(mErrorColor);

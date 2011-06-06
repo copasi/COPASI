@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:05 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,7 +82,7 @@ void CQDifferentialEquations::init()
 
   mpScrollView->addChild(mpMMLWidget);
 
-  comboBoxFunctions->setCurrentItem(1);
+  comboBoxFunctions->setCurrentIndex(1);
 }
 
 void CQDifferentialEquations::saveMML(const QString outfilename)
@@ -109,7 +109,7 @@ void CQDifferentialEquations::slotUpdateWidget()
 
   bool expand, expandAll;
 
-  switch (comboBoxFunctions->currentItem())
+  switch (comboBoxFunctions->currentIndex())
     {
       case 0:
         expand = false;
@@ -129,7 +129,7 @@ void CQDifferentialEquations::slotUpdateWidget()
 
   bool parameterAsNumbers = false;
 
-  if (comboBoxParameters->currentItem() == 0)
+  if (comboBoxParameters->currentIndex() == 0)
     parameterAsNumbers = true;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);

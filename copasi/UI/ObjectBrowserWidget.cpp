@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:55 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,7 +80,7 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
     currentPage(LISTVIEWPAGE)
 {
   if (!name)
-    setName("ObjectBrowser");
+    setObjectName("ObjectBrowser");
 
   if (state == 0)
     ObjectBrowserLayout = new QGridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
@@ -110,7 +110,8 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
 
   if (state != 0)
     {
-      Line1 = new QFrame(this, "Line1");
+      Line1 = new QFrame(this);
+      Line1->setObjectName("Line1");
       Line1->setFrameShape(QFrame::HLine);
       Line1->setFrameShadow(QFrame::Sunken);
       Line1->setFrameShape(QFrame::HLine);

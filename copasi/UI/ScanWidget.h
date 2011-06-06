@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.h,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:55 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,12 +29,7 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
 
-//class Q3HBoxLayout;
-//class Q3GridLayout;
 class QPushButton;
 class QComboBox;
 

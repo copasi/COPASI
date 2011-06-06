@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,24 +23,20 @@
 #ifndef PARAMETERSWIDGET_H
 #define PARAMETERSWIDGET_H
 
-#include <qvariant.h>
-#include <qdialog.h>
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
+#include <QVariant>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QSpacerItem>
+#include <QPushButton>
 
 #include "UI/copasiWidget.h"
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
-class QSpacerItem;
-class QPushButton;
+
 class Q3ListView;
 class Q3ListViewItem;
-class QLabel;
 class CParameterListItem;
 
 class ParametersWidget : public CopasiWidget
@@ -61,9 +62,9 @@ protected:
   Q3ListView* listView;
   QLabel* labelTitle;
 
-  Q3GridLayout* ParametersWidgetLayout;
+  QGridLayout* ParametersWidgetLayout;
   QSpacerItem* spacer2;
-  Q3VBoxLayout* layoutLeft;
+  QVBoxLayout* layoutLeft;
   QSpacerItem* spacer1;
 
   CParameterListItem* mTimeItem;

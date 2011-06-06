@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.243 $
+#   $Revision: 1.244 $
 #   $Name:  $
-#   $Author: jpahle $
-#   $Date: 2011/05/24 17:30:50 $
+#   $Author: aekamal $
+#   $Date: 2011/06/06 16:14:09 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.243 $ $Author: jpahle $ $Date: 2011/05/24 17:30:50 $
+# $Revision: 1.244 $ $Author: aekamal $ $Date: 2011/06/06 16:14:09 $
 ######################################################################
 
 LIB = UI
@@ -70,6 +70,7 @@ HEADERS	+= \
   CQProgressDialog.h \
   CQProgressItem.h \
   CQProgressItemBar.h \
+  CQProgressItemText.h \
   CQReactionsWidget.h \
   CQReportDefinition.h \
   CQReportsWidget.h \
@@ -215,6 +216,7 @@ SOURCES	+= \
   CQProgressDialog.cpp \
   CQProgressItem.cpp \
   CQProgressItemBar.cpp \
+  CQProgressItemText.cpp \
   CQReactionsWidget.cpp \
   CQReportDefinition.cpp \
   CQReportsWidget.cpp \
@@ -324,12 +326,6 @@ SOURCES	+= \
   SOURCES -= TSSWidget.cpp
 }
 
-#FORMS3 += CQProgressItemText.ui
-HEADERS += CQProgressItemText.h
-HEADERS += CQProgressItemText.ui.h
-SOURCES += CQProgressItemText.cpp
-
-
 FORMS += CMCAResultSubwidget.ui
 FORMS += CLNAResultSubwidget.ui
 FORMS += CQCompartment.ui
@@ -368,6 +364,7 @@ FORMS += CQPreferenceDialog.ui
 FORMS += CQProgressDialog.ui
 FORMS += CQProgressItem.ui
 FORMS += CQProgressItemBar.ui
+FORMS += CQProgressItemText.ui
 FORMS += CQReactionsWidget.ui
 FORMS += CQReportDefinition.ui
 FORMS += CQReportsWidget.ui
@@ -455,6 +452,6 @@ contains(USE_LICENSE, COM) {
 #endif // COPASI_LICENSE_COM
 
 #The following line was inserted by qt3to4
-QT += xml  opengl qt3support webkit
+QT += xml qt3support opengl webkit
 
 include(../srcDistribution.pri)

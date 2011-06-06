@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:38:00 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
     : CopasiWidget(parent, name, f)
 {
   if (!name)
-    CopasiWidget::setName("CTabWidget");
+    CopasiWidget::setObjectName("CTabWidget");
 
   QHBoxLayout* tabLayout = new QHBoxLayout(this);
   mTabWidget = new QTabWidget(this, "mTabWidget");

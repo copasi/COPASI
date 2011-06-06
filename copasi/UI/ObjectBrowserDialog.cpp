@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:54 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,8 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
   objectBrowserWidget = new ObjectBrowserWidget(this);
   ObjectBrowserDialogLayout->addMultiCellWidget(objectBrowserWidget, 0, 0, 0, 3);
 
-  Line1 = new QFrame(this, "Line1");
+  Line1 = new QFrame(this);
+  Line1->setObjectName("Line1");
   Line1->setFrameShape(QFrame::HLine);
   Line1->setFrameShadow(QFrame::Sunken);
   Line1->setFrameShape(QFrame::HLine);
@@ -111,7 +112,7 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
     }
 
   if (!name)
-    setName("ObjectBrowser");
+    setObjectName("ObjectBrowser");
 
   resize(420, 460);
   setCaption(trUtf8("Object Browser"));

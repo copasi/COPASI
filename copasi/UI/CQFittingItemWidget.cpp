@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:34 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #include "CQFittingItemWidget.h"
 
 #include <qapplication.h>
-
+#include <QPalette>
 #include <QHeaderView>
 
 #include "CCopasiSelectionDialog.h"
@@ -151,15 +151,20 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
   mpEditLower->setEnabled(!checked);
 
   mLowerInfChanged = !mLowerInfChanged;
+  QPalette palette;
 
   if (mLowerInfChanged)
     {
-      mpCheckLowerInf->setPaletteBackgroundColor(mChangedColor);
+      palette.setColor(mpCheckLowerInf->backgroundRole(), mChangedColor);
+      mpCheckLowerInf->setPalette(palette);
 
       if (mpEditLower->isEnabled()) mpLowerValidator->revalidate();
     }
   else
-    mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
+    {
+      palette.setColor(mpCheckLowerInf->backgroundRole(), mSavedColor);
+      mpCheckLowerInf->setPalette(palette);
+    }
 
   std::string Number;
 
@@ -186,15 +191,20 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
   mpEditUpper->setEnabled(!checked);
 
   mUpperInfChanged = !mUpperInfChanged;
+  QPalette palette;
 
   if (mUpperInfChanged)
     {
-      mpCheckUpperInf->setPaletteBackgroundColor(mChangedColor);
+      palette.setColor(mpCheckUpperInf->backgroundRole(), mChangedColor);
+      mpCheckUpperInf->setPalette(palette);
 
       if (mpEditUpper->isEnabled()) mpUpperValidator->revalidate();
     }
   else
-    mpCheckUpperInf->setPaletteBackgroundColor(mSavedColor);
+    {
+      palette.setColor(mpCheckUpperInf->backgroundRole(), mSavedColor);
+      mpCheckUpperInf->setPalette(palette);
+    }
 
   std::string Number;
 
@@ -481,7 +491,7 @@ void CQFittingItemWidget::slotExperiments()
               size_t i, imax = mpBoxExperiments->count();
 
               for (i = 0; i < imax && imax < (*mppExperimentSet)->getExperimentCount(); i++)
-                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addExperiment((*mppExperimentSet)->getExperiment(TO_UTF8(mpBoxExperiments->text((int) i)))->CCopasiParameter::getKey());
+                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addExperiment((*mppExperimentSet)->getExperiment(TO_UTF8(mpBoxExperiments->itemText((int) i)))->CCopasiParameter::getKey());
 
               setTableText((int) *it, (*mpItemsCopy)[*it]);
             }
@@ -1351,7 +1361,7 @@ void CQFittingItemWidget::loadSelection()
                 CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getExperiment(i));
 
               if (pObject)
-                mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()));
+                mpBoxExperiments->insertItem(mpBoxExperiments->count(), FROM_UTF8(pObject->getObjectName()));
             }
 
           mpCheckAll->setChecked(imax == 0);
@@ -1456,9 +1466,14 @@ void CQFittingItemWidget::loadSelection()
 
   mpLowerValidator->saved();
   mpUpperValidator->saved();
-  mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
+  QPalette palette;
+
+  palette.setColor(mpCheckLowerInf->backgroundRole(), mSavedColor);
+  mpCheckLowerInf->setPalette(palette);
   mLowerInfChanged = false;
-  mpCheckUpperInf->setPaletteBackgroundColor(mSavedColor);
+
+  palette.setColor(mpCheckUpperInf->backgroundRole(), mSavedColor);
+  mpCheckUpperInf->setPalette(palette);
   mUpperInfChanged = false;
 }
 
@@ -1486,9 +1501,13 @@ void CQFittingItemWidget::saveSelection()
       if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());
 
-      mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
+      QPalette palette;
+      palette.setColor(mpCheckLowerInf->backgroundRole(), mSavedColor);
+      mpCheckLowerInf->setPalette(palette);
       mLowerInfChanged = false;
-      mpCheckUpperInf->setPaletteBackgroundColor(mSavedColor);
+
+      palette.setColor(mpCheckUpperInf->backgroundRole(), mSavedColor);
+      mpCheckUpperInf->setPalette(palette);
       mUpperInfChanged = false;
       mpObjectValidator->saved();
       mpLowerValidator->saved();

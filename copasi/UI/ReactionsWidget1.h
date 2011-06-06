@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:50 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,22 +34,18 @@
 
 #include "UI/copasiWidget.h"
 #include "model/CReactionInterface.h"
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-#include <QLabel>
-#include <Q3Frame>
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
-class QCheckBox;
-class QComboBox;
-class Q3Frame;
-class QLabel;
-class QLineEdit;
-class QPushButton;
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QFrame>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+
 class ParameterTable;
 class MyLineEdit;
 
@@ -88,8 +84,8 @@ protected:
 
   CReactionInterface * mpRi;
 
-  Q3GridLayout* ReactionsWidget1Layout;
-  Q3HBoxLayout* Layout1;
+  QGridLayout* ReactionsWidget1Layout;
+  QHBoxLayout* Layout1;
   QLabel* TextLabel4;
   QLabel* TextLabel7;
   QPushButton* commitChanges;
@@ -97,14 +93,14 @@ protected:
   QPushButton* newReaction;
   QPushButton* deleteReaction;
   QLabel* TextLabel8;
-  Q3Frame* Line2;
-  Q3Frame* Line1;
-  Q3Frame* Line3;
+  QFrame* Line2;
+  QFrame* Line1;
+  QFrame* Line3;
   QLabel* TextLabel6;
   QLineEdit* LineEdit1;
   MyLineEdit* LineEdit2;
   QComboBox* ComboBox1;
-  Q3Frame* Line4;
+  QFrame* Line4;
   ParameterTable* table;
   QLineEdit* LineEdit3;
   QLabel* TextLabel5;

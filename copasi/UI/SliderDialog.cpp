@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:50 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -356,7 +356,7 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
 
       assert(it != end);
       v->erase(it);
-      mpSliderBox->layout()->remove(pSlider);
+      mpSliderBox->layout()->removeWidget(pSlider);
       pdelete(pSlider);
     }
 }
@@ -924,7 +924,7 @@ void SliderDialog::clearSliderBox()
     {
       QWidget* widget = v[i];
       widget->setHidden(true);
-      mpSliderBox->layout()->remove(widget);
+      mpSliderBox->layout()->removeWidget(widget);
     }
 }
 

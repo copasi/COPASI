@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTextDialog.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,4 +42,4 @@ CQTextDialog::~CQTextDialog()
 }
 
 QString CQTextDialog::getText()
-{return mpTextEdit->text();}
+{return mpTextEdit->toPlainText();}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:46 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,9 +20,8 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qstringlist.h>
-#include <q3header.h>
-#include <qcombobox.h>
+#include <QStringList>
+#include <QComboBox>
 #include <qlineedit.h>
 //Added by qt3to4:
 #include <QPixmap>

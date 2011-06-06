@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:53 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
     : QWidget(parent, name, fl)
 {
   if (!name)
-    setName("CQTSSATimeScaleWidget");
+    setObjectName("CQTSSATimeScaleWidget");
 
   mpVLayout = new QVBoxLayout(this);
   //mpVLayout = new Q3VBoxLayout(this);
@@ -52,7 +52,7 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
   mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   mpSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-  QToolTip::add(mpSlider, "move Slider to set focus on prefered time scale"); // <- helpful
+  mpSlider->setToolTip("move Slider to set focus on prefered time scale");  // <- helpful
   connect(mpSlider, SIGNAL(valueChanged(int)), this, SLOT(changedInterval()));
 }
 
@@ -111,7 +111,7 @@ PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     mSelection(0)
 {
   if (!name)
-    setName("PaintWidget");
+    setObjectName("PaintWidget");
 }
 
 /*

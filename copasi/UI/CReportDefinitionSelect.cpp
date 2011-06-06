@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:20 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,19 +29,15 @@ Comment : CReportDefinitionSelect to select the report definition for one task
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
-#include <qvariant.h>
-#include <qpushbutton.h>
-#include <q3frame.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-#include <q3filedialog.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
+#include <QPushButton>
+#include <QLabel>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QLayout>
+#include <QToolTip>
+#include <QWhatsThis>
+#include <QFileDialog>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -67,52 +63,70 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
     bShow(true)
 {
   if (!name)
-    setName("CReportDefinitionSelect");
+    setObjectName("CReportDefinitionSelect");
 
-  CReportDefinitionSelectLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CReportDefinitionSelectLayout");
+  CReportDefinitionSelectLayout = new QGridLayout(this);
+  CReportDefinitionSelectLayout->setMargin(11);
+  CReportDefinitionSelectLayout->setSpacing(6);
+  CReportDefinitionSelectLayout->setObjectName("CReportDefinitionSelectLayout");
 
-  frame5 = new Q3Frame(this, "frame5");
-  frame5->setFrameShape(Q3Frame::Box);
-  frame5->setFrameShadow(Q3Frame::Sunken);
-  frame5Layout = new Q3GridLayout(frame5, 1, 1, 11, 6, "frame5Layout");
 
-  reportLabel = new QLabel(frame5, "reportLabel");
+  frame5 = new QFrame(this);
+  frame5->setObjectName("frame5");
+  frame5->setFrameShape(QFrame::Box);
+  frame5->setFrameShadow(QFrame::Sunken);
+  frame5Layout = new QGridLayout(frame5);
+  frame5Layout->setMargin(11);
+  frame5Layout->setSpacing(6);
+  frame5Layout->setObjectName("frame5Layout");
+
+  reportLabel = new QLabel(frame5);
+  reportLabel->setObjectName("reportLabel");
 
   frame5Layout->addWidget(reportLabel, 0, 0);
 
-  targetLabel = new QLabel(frame5, "targetLabel");
+  targetLabel = new QLabel(frame5);
+  targetLabel->setObjectName("targetLabel");
 
   frame5Layout->addWidget(targetLabel, 1, 0);
 
-  appendChecked = new QCheckBox(frame5, "appendChecked");
+  appendChecked = new QCheckBox(frame5);
+  appendChecked->setObjectName("appendChecked");
 
   frame5Layout->addMultiCellWidget(appendChecked, 2, 2, 1, 2);
 
-  reportDefinitionNameList = new QComboBox(false, frame5, "reportDefinitionNameList");
+  reportDefinitionNameList = new QComboBox(frame5);
+  reportDefinitionNameList->setObjectName("reportDefinitionNameList");
 
   frame5Layout->addWidget(reportDefinitionNameList, 0, 1);
 
-  jumpButton = new QPushButton(frame5, "jumpButton");
+  jumpButton = new QPushButton(frame5);
+  jumpButton->setObjectName("jumpButton");
 
   frame5Layout->addWidget(jumpButton, 0, 2);
 
-  targetEdit = new QLineEdit(frame5, "targetEdit");
+  targetEdit = new QLineEdit(frame5);
+  targetEdit->setObjectName("targetEdit");
   targetEdit->setFrameShape(QLineEdit::LineEditPanel);
   targetEdit->setFrameShadow(QLineEdit::Sunken);
 
   frame5Layout->addWidget(targetEdit, 1, 1);
 
-  browseButton = new QPushButton(frame5, "browseButton");
+  browseButton = new QPushButton(frame5);
+  browseButton->setObjectName("browseButton");
 
   frame5Layout->addWidget(browseButton, 1, 2);
 
   CReportDefinitionSelectLayout->addMultiCellWidget(frame5, 0, 0, 0, 1);
 
-  confirmButton = new QPushButton(this, "confirmButton");
+  confirmButton = new QPushButton(this);
+  confirmButton->setObjectName("confirmButton");
 
   CReportDefinitionSelectLayout->addWidget(confirmButton, 1, 0);
 
-  cancelButton = new QPushButton(this, "cancelButton");
+  cancelButton = new QPushButton(this);
+  cancelButton->setObjectName("cancelButton");
+
 
   CReportDefinitionSelectLayout->addWidget(cancelButton, 1, 1);
 
@@ -155,15 +169,15 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
 
   for (i = 0; i < pReportDefinitionVector->size(); i++)
     reportDefinitionNameList->
-    insertItem(FROM_UTF8((*(pReportDefinitionVector))[i]->getObjectName()));
+    insertItem(reportDefinitionNameList->count(), FROM_UTF8((*(pReportDefinitionVector))[i]->getObjectName()));
 
   // if it is an empty list
   if (reportDefinitionNameList->count() == 0)
     {
       std::string name = "ReportDefinition_0";
       (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(name, "");
-      reportDefinitionNameList->insertItem(FROM_UTF8(name));
-      reportDefinitionNameList->setCurrentItem(1);
+      reportDefinitionNameList->insertItem(reportDefinitionNameList->count(), FROM_UTF8(name));
+      reportDefinitionNameList->setCurrentIndex(1);
       mpReport->setReportDefinition((*(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList())[0]); //first one report definition
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(TO_UTF8(targetEdit->text()));
@@ -180,7 +194,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   if (!mpReport->getReportDefinition())
     {
       C_INT32 row;
-      row = reportDefinitionNameList->currentItem();
+      row = reportDefinitionNameList->currentIndex();
       mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(TO_UTF8(targetEdit->text()));
@@ -192,10 +206,10 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
 
       // no use to compare the last one
       for (i = reportDefinitionNameList->count() - 1; i >= 1; i--)
-        if (reportDefinitionNameList->text(i) == FROM_UTF8(mpReport->getReportDefinition()->getObjectName()))
+        if (reportDefinitionNameList->itemText(i) == FROM_UTF8(mpReport->getReportDefinition()->getObjectName()))
           break;
 
-      reportDefinitionNameList->setCurrentItem(i);
+      reportDefinitionNameList->setCurrentIndex(i);
       appendChecked->setChecked(mpReport->append());
       targetEdit->setText(FROM_UTF8(mpReport->getTarget()));
     }
@@ -217,7 +231,7 @@ void CReportDefinitionSelect::confirmClicked()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
   C_INT32 row;
-  row = reportDefinitionNameList->currentItem();
+  row = reportDefinitionNameList->currentIndex();
   mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
   mpReport->setAppend(appendChecked->isChecked());
   mpReport->setTarget(TO_UTF8(targetEdit->text()));
@@ -236,7 +250,7 @@ void CReportDefinitionSelect::jumpToReportDefinitionEdit()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
   C_INT32 row;
-  row = reportDefinitionNameList->currentItem();
+  row = reportDefinitionNameList->currentIndex();
   pListView->switchToOtherWidget(0, (*pReportDefinitionVector)[row]->getKey());
   confirmClicked(); // if shown then close
   bShow = false; // if not shown then close

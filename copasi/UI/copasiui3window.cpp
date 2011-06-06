@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.294 $
+//   $Revision: 1.295 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/26 13:13:04 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,9 +262,7 @@ CopasiUI3Window::CopasiUI3Window():
 #endif // COPASI_SBW_INTEGRATION
 {
   // set destructive close
-  Qt::WindowFlags f = this->windowFlags();
-  f |= Qt::WDestructiveClose;
-  this->setWindowFlags(f);
+  this->setAttribute(Qt::WA_DeleteOnClose);
   QImage img;
   img.loadFromData(image0_data, sizeof(image0_data), "PNG");
   QPixmap image0 = QPixmap::fromImage(img);
@@ -359,63 +357,72 @@ void CopasiUI3Window::createActions()
   //TODO: use the QKeySequence standard shortcuts
   //TODO: add tool tips, status tips etc.
 
-  mpaNew = new QAction(QPixmap(filenew), "&New", Qt::CTRL + Qt::Key_N, this, "new");
+  mpaNew = new QAction(QPixmap(filenew), "&New", this);
   connect(mpaNew, SIGNAL(activated()), this, SLOT(newDoc()));
+  mpaNew->setShortcut(Qt::CTRL + Qt::Key_N);
 
-  mpaOpen = new QAction(QPixmap(fileopen), "&Open...", Qt::CTRL + Qt::Key_O, this, "open");
+  mpaOpen = new QAction(QPixmap(fileopen), "&Open...", this);
   connect(mpaOpen, SIGNAL(activated()), this, SLOT(slotFileOpen()));
+  mpaOpen->setShortcut(Qt::CTRL + Qt::Key_O);
 
-  mpaOpenCopasiFiles = new QAction(QPixmap(fileopen), "COP&ASI Files...", Qt::CTRL + Qt::Key_A, this, "copasifiles");
+  mpaOpenCopasiFiles = new QAction(QPixmap(fileopen), "COP&ASI Files...", this);
   connect(mpaOpenCopasiFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesCopasiFiles()));
+  mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_A);
 
-  mpaOpenSBMLFiles = new QAction(QPixmap(fileopen), "S&BML Files...", Qt::CTRL + Qt::Key_B, this, "sbmlfiles");
+  mpaOpenSBMLFiles = new QAction(QPixmap(fileopen), "S&BML Files...", this);
   connect(mpaOpenSBMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSBMLFiles()));
+  mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_B);
 
-  mpaSave = new QAction(QPixmap(filesave), "&Save", Qt::CTRL + Qt::Key_S, this, "save");
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
+  mpaSave->setShortcut(Qt::CTRL + Qt::Key_S);
 
-  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As...", Qt::SHIFT + Qt::CTRL + Qt::Key_S, this, "saveas");
+  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As...", this);
   connect(mpaSaveAs, SIGNAL(activated()), this, SLOT(slotFileSaveAs()));
+  mpaSaveAs->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_S);
 
-  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML...", Qt::CTRL + Qt::Key_I, this, "importsbml");
+  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML...", this);
   connect(mpaImportSBML, SIGNAL(activated()), this, SLOT(slotImportSBML()));
+  mpaImportSBML->setShortcut(Qt::CTRL + Qt::Key_I);
 
-  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML...", Qt::CTRL + Qt::Key_E, this, "exportsbml");
+  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML...", this);
   connect(mpaExportSBML, SIGNAL(activated()), this, SLOT(slotExportSBML()));
+  mpaExportSBML->setShortcut(Qt::CTRL + Qt::Key_E);
 
-  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs...", Qt::CTRL + Qt::Key_M, this, "exportode");
+  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs...", this);
   connect(mpaExportODE, SIGNAL(activated()), this, SLOT(slotExportMathModel()));
+  mpaExportODE->setShortcut(Qt::CTRL + Qt::Key_M);
 
-  mpaQuit = new QAction("&Quit", Qt::CTRL + Qt::Key_Q, this, "quitcopasi");
+  mpaQuit = new QAction("&Quit", this);
   connect(mpaQuit, SIGNAL(activated()), this, SLOT(slotQuit()));
+  mpaQuit->setShortcut(Qt::CTRL + Qt::Key_Q);
 
-  mpaSliders = new QAction(QPixmap(toggleSliderDialog), "Show sliders", 0, this, "showsliders");
-  mpaSliders->setToggleAction(true);
+  mpaSliders = new QAction(QPixmap(toggleSliderDialog), "Show sliders", this);
+  mpaSliders->setCheckable(true);
   connect(mpaSliders, SIGNAL(toggled(bool)), this, SLOT(slotShowSliders(bool)));
 
-  mpaObjectBrowser = new QAction("Object &Browser", 0, this, "objectbrowser");
-  mpaObjectBrowser->setToggleAction(true);
+  mpaObjectBrowser = new QAction("Object &Browser", this);
+  mpaObjectBrowser->setCheckable(true);
   connect(mpaObjectBrowser, SIGNAL(toggled(bool)), this, SLOT(slotShowObjectBrowserDialog(bool)));
 
-  mpaCheckModel = new QAction(QPixmap(checkModel_xpm), "Check model", 0, this, "checkmodel");
+  mpaCheckModel = new QAction(QPixmap(checkModel_xpm), "Check model", this);
   connect(mpaCheckModel, SIGNAL(activated()), this, SLOT(slotCheckModel()));
 
-  mpaUpdateMIRIAM = new QAction(QPixmap(MIRIAM_xpm), "Update MIRIAM", 0, this, "updatemiriam");
+  mpaUpdateMIRIAM = new QAction(QPixmap(MIRIAM_xpm), "Update MIRIAM", this);
   connect(mpaUpdateMIRIAM, SIGNAL(activated()), this, SLOT(slotUpdateMIRIAM()));
 
-  mpaApplyInitialState = new QAction(QPixmap(istos_xpm), "Apply initial state", 0, this, "applyinitialstate");
+  mpaApplyInitialState = new QAction(QPixmap(istos_xpm), "Apply initial state", this);
   connect(mpaApplyInitialState, SIGNAL(activated()), this, SLOT(slotApplyInitialState()));
 
-  mpaUpdateInitialState = new QAction(QPixmap(stois_xpm), "Update initial state from current state", 0, this, "updateinitialstate");
+  mpaUpdateInitialState = new QAction(QPixmap(stois_xpm), "Update initial state from current state", this);
   connect(mpaUpdateInitialState, SIGNAL(activated()), this, SLOT(slotUpdateInitialState()));
 
-  mpaCapture = new QAction(QPixmap(photo), "Capture the main window", 0, this, "capture");
+  mpaCapture = new QAction(QPixmap(photo), "Capture the main window", this);
   connect(mpaCapture, SIGNAL(activated()), this, SLOT(slotCapture()));
 
-  mpaExpandModel = new QAction("Create array of compartments (debug version)", 0, this, "expandmodel");
+  mpaExpandModel = new QAction("Create array of compartments (debug version)", this);
   connect(mpaExpandModel, SIGNAL(activated()), this, SLOT(slotExpandModel()));
 
-  mpaFontSelectionDialog = new QAction("Select the Application Font", 0, this, "Select Font");
+  mpaFontSelectionDialog = new QAction("Select the Application Font", this);
   connect(mpaFontSelectionDialog, SIGNAL(activated()), this, SLOT(slotFontSelection()));
 
   //     QAction* mpaObjectBrowser;
@@ -451,8 +458,9 @@ void CopasiUI3Window::createToolBar()
   tb->addSeparator();
 
   mpBoxSelectFramework = new QComboBox(tb);
-  mpBoxSelectFramework->insertItem("Concentrations");
-  mpBoxSelectFramework->insertItem("Particle Numbers");
+  QStringList items;
+  items << "Concentrations" << "Particle Numbers";
+  mpBoxSelectFramework->addItems(items);
   tb->addWidget(mpBoxSelectFramework);
 
   //tbMain->setCloseMode(Q3DockWindow::Never);
@@ -1164,14 +1172,14 @@ void CopasiUI3Window::about()
   QString text =
     QString(AboutDialog::text).arg(FROM_UTF8(CVersion::VERSION.getVersion()));
   AboutDialog* aboutDialog = new AboutDialog(this, text, 76, 30);
-  aboutDialog->setCaption(FixedTitle);
+  aboutDialog->setWindowTitle(FixedTitle);
   aboutDialog->exec();
 }
 
 void CopasiUI3Window::license()
 {
   AboutDialog* aboutDialog = new AboutDialog(this, CCopasiRootContainer::getLicenseHTML(), 76, 30);
-  aboutDialog->setCaption(FixedTitle);
+  aboutDialog->setWindowTitle(FixedTitle);
   aboutDialog->exec();
 }
 
@@ -1201,12 +1209,13 @@ void CopasiUI3Window::slotShowObjectBrowserDialog(bool flag)
 void CopasiUI3Window::slotObjectBrowserDialogWasClosed()
 {
   mpObjectBrowser = NULL;
-  mpaObjectBrowser->setOn(false);
+  mpaObjectBrowser->setChecked(false);
 }
 
 void CopasiUI3Window::slotPreferences()
 {
-  CQPreferenceDialog * preferenceDialog = new CQPreferenceDialog(this, 0, false, Qt::WDestructiveClose);
+  CQPreferenceDialog * preferenceDialog = new CQPreferenceDialog(this, 0, false);
+  preferenceDialog->setAttribute(Qt::WA_DeleteOnClose);
   preferenceDialog->setModal(true);
   preferenceDialog->show();
 }
@@ -1582,7 +1591,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
 
 void CopasiUI3Window::slotShowSliders(bool flag)
 {
-  mpaSliders->setOn(flag);
+  mpaSliders->setChecked(flag);
   this->mpSliders->setHidden(!flag);
 }
 
@@ -1667,7 +1676,7 @@ void CopasiUI3Window::updateTitle()
       QRegExp mask("^((/*)[^/]+/).*(/[^/]+/[^/]+$)");
 #endif
 
-      mask.search(FileName);
+      mask.indexIn(FileName);
       FileName = mask.cap(1) + "..." + mask.cap(3);
     }
 
@@ -1676,7 +1685,7 @@ void CopasiUI3Window::updateTitle()
   if (!FileName.isEmpty())
     BaseName = CDirEntry::baseName(TO_UTF8(FileName)) + " - ";
 
-  setCaption(FROM_UTF8(BaseName) + FixedTitle + " " + FileName);
+  setWindowTitle(FROM_UTF8(BaseName) + FixedTitle + " " + FileName);
 }
 
 void CopasiUI3Window::autoSave()
@@ -1691,7 +1700,7 @@ void CopasiUI3Window::autoSave()
       mSuspendAutoSave = false;
     }
 
-  mpAutoSaveTimer->changeInterval(AutoSaveInterval); // restart the timer
+  mpAutoSaveTimer->setInterval(AutoSaveInterval); // restart the timer
 }
 
 void CopasiUI3Window::suspendAutoSave(const bool & suspend)
@@ -1699,7 +1708,7 @@ void CopasiUI3Window::suspendAutoSave(const bool & suspend)
   mSuspendAutoSave = suspend;
 
   if (!mSuspendAutoSave)
-    mpAutoSaveTimer->changeInterval(AutoSaveInterval); // restart the timer
+    mpAutoSaveTimer->setInterval(AutoSaveInterval); // restart the timer
 }
 
 void CopasiUI3Window::slotOpenRecentFile(QAction * pAction)

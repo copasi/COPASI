@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:47 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
     }
 
   mpComboTimeUnit->clear();
-  mpComboTimeUnit->insertStringList(ComboEntries, -1);
+  mpComboTimeUnit->insertItems(0, ComboEntries);
 
   ComboEntries.clear();
 
@@ -49,7 +49,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
     }
 
   mpComboVolumeUnit->clear();
-  mpComboVolumeUnit->insertStringList(ComboEntries, -1);
+  mpComboVolumeUnit->insertItems(0, ComboEntries);
 
   ComboEntries.clear();
 
@@ -59,7 +59,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
     }
 
   mpComboAreaUnit->clear();
-  mpComboAreaUnit->insertStringList(ComboEntries, -1);
+  mpComboAreaUnit->insertItems(0, ComboEntries);
 
   ComboEntries.clear();
 
@@ -69,7 +69,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
     }
 
   mpComboLengthUnit->clear();
-  mpComboLengthUnit->insertStringList(ComboEntries, -1);
+  mpComboLengthUnit->insertItems(0, ComboEntries);
 
   ComboEntries.clear();
 
@@ -79,7 +79,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
     }
 
   mpComboQuantityUnit->clear();
-  mpComboQuantityUnit->insertStringList(ComboEntries, -1);
+  mpComboQuantityUnit->insertItems(0, ComboEntries);
 
   ComboEntries.clear();
 
@@ -89,7 +89,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
     }
 
   mpComboModelType->clear();
-  mpComboModelType->insertStringList(ComboEntries, -1);
+  mpComboModelType->insertItems(0, ComboEntries);
 
 #ifndef COPASI_EXTUNIT
   mpLblAreaUnit->hide();
@@ -110,14 +110,14 @@ void CQModelWidget::load()
 
   mpEditName->setText(FROM_UTF8(mpModel->getObjectName()));
 
-  mpComboTimeUnit->setCurrentText(FROM_UTF8(mpModel->getTimeUnitName()));
+  mpComboTimeUnit->setItemText(mpComboTimeUnit->currentIndex(), FROM_UTF8(mpModel->getTimeUnitName()));
   mpLblTimeUnit->setText("Time (" + mpComboTimeUnit->currentText() + ")");
-  mpComboVolumeUnit->setCurrentText(FROM_UTF8(mpModel->getVolumeUnitName()));
-  mpComboQuantityUnit->setCurrentText(FROM_UTF8(mpModel->getQuantityUnitName()));
-  mpComboAreaUnit->setCurrentText(FROM_UTF8(mpModel->getAreaUnitName()));
-  mpComboLengthUnit->setCurrentText(FROM_UTF8(mpModel->getLengthUnitName()));
+  mpComboVolumeUnit->setItemText(mpComboVolumeUnit->currentIndex(), FROM_UTF8(mpModel->getVolumeUnitName()));
+  mpComboQuantityUnit->setItemText(mpComboQuantityUnit->currentIndex(), FROM_UTF8(mpModel->getQuantityUnitName()));
+  mpComboAreaUnit->setItemText(mpComboAreaUnit->currentIndex(), FROM_UTF8(mpModel->getAreaUnitName()));
+  mpComboLengthUnit->setItemText(mpComboLengthUnit->currentIndex(), FROM_UTF8(mpModel->getLengthUnitName()));
 
-  mpComboModelType->setCurrentText(CModel::ModelTypeNames[mpModel->getModelType()]);
+  mpComboModelType->setItemText(mpComboModelType->currentIndex(), CModel::ModelTypeNames[mpModel->getModelType()]);
 
   mpEditInitialTime->setText(QString::number(mpModel->getInitialTime()));
   mpEditInitialTime->setReadOnly(mpModel->isAutonomous());

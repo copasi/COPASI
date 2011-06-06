@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:49 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,7 +90,7 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
         n = 0;
     }
 
-  ui.comboType->setCurrentItem(n);
+  ui.comboType->setCurrentIndex(n);
 
   ui.checkInitialConditions->setChecked(!(pg->getAdjustInitialConditions()));
 
@@ -101,7 +101,7 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
 
 bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
 {
-  int type = ui.comboType->currentItem();
+  int type = ui.comboType->currentIndex();
 
   switch (type)
     {

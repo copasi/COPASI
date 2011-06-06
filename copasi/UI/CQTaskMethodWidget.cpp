@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:17 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,7 +81,7 @@ void CQTaskMethodWidget::setValidMethods(const unsigned int * validMethods)
   unsigned C_INT32 i;
 
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
-    mpBoxMethod->insertItem(QString::fromUtf8(CCopasiMethod::SubTypeName[validMethods[i]]));
+    mpBoxMethod->insertItem(mpBoxMethod->count(), QString::fromUtf8(CCopasiMethod::SubTypeName[validMethods[i]]));
 
   if (i > 0)
     {
@@ -119,10 +119,10 @@ bool CQTaskMethodWidget::loadMethod()
 
   if (!mpMethod) return false;
 
-  if (mpBoxMethod->isShown())
-    mpBoxMethod->setCurrentText(QString::fromUtf8(CCopasiMethod::SubTypeName[mpMethod->getSubType()]));
+  if (mpBoxMethod->isVisible())
+    mpBoxMethod->setItemText(mpBoxMethod->currentIndex(), QString::fromUtf8(CCopasiMethod::SubTypeName[mpMethod->getSubType()]));
 
-  if (mpTableParameter->isShown())
+  if (mpTableParameter->isVisible())
     {
       QString Value;
 

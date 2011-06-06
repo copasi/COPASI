@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:23 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:05 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,9 +41,9 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
 {
   setupUi(this);
 
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
 
   mItemToType.push_back(CModelEntity::FIXED);
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
@@ -250,12 +250,12 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
     }
   else
     {
-      gridLayout->remove(mpLblInitialExpression);
+      gridLayout->removeWidget(mpLblInitialExpression);
 
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
 
-      mpEditInitialVolume->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT);
+      mpEditInitialVolume->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
     }
 }
 
@@ -297,7 +297,7 @@ bool CQCompartment::leave()
   // This is now always enabled, i.e., a save is always performed!
   if (mpBtnCommit->isEnabled())
     {
-      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED)
+      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
         {
           // -- Expression --
           mpExpressionEMW->updateWidget();
@@ -378,7 +378,7 @@ void CQCompartment::load()
   //this assumes the indices of the entries in the combobox correspond 1to1 to the values of dimensionality
 
   // Simulation Type
-  mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()]));
+  mpComboBoxType->setItemText(mpComboBoxType->currentIndex(), FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()]));
 
   // Initial Volume
   mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
@@ -398,7 +398,7 @@ void CQCompartment::load()
   mpInitialExpressionEMW->updateWidget();
 
   // Type dependent display of values
-  slotTypeChanged(mpComboBoxType->currentItem());
+  slotTypeChanged(mpComboBoxType->currentIndex());
 
   // Use Initial Expression
   if (mpCompartment->getStatus() == CModelEntity::ASSIGNMENT ||
@@ -456,9 +456,9 @@ void CQCompartment::save()
 #endif
 
   // Type
-  if (mpCompartment->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()])
+  if (mpCompartment->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
-      mpCompartment->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()]);
+      mpCompartment->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()]);
       mChanged = true;
     }
 
@@ -477,7 +477,7 @@ void CQCompartment::save()
     }
 
   // Initial Expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
     {
       if (mpBoxUseInitialExpression->isChecked() &&
           mpCompartment->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())

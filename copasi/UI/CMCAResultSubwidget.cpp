@@ -136,7 +136,7 @@ void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
   //     {
   //       header->setLabel(i, FROM_UTF8(model->getMetabolitesX()[i]->getObjectName()));
   //}
-  //   const CMatrix<C_FLOAT64> & elasticities = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledElasticities() : mcaMethod->getUnscaledElasticities();
+  //   const CMatrix<C_FLOAT64> & elasticities = (mComboScale->currentIndex() == 0) ? mcaMethod->getScaledElasticities() : mcaMethod->getUnscaledElasticities();
   //   if (elasticities.numRows() == 0 || elasticities.numCols() == 0) return;
   //   for (i = 0; i < numRows;++i)
   //     {
@@ -148,7 +148,7 @@ void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
 
   const CArrayAnnotation * elasticitiesAnn;
 
-  if (mComboScale->currentItem() == 0)
+  if (mComboScale->currentIndex() == 0)
     {
       elasticitiesAnn = mcaMethod->getScaledElasticitiesAnn();
 
@@ -188,7 +188,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
       {
         header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
       }
-    const CMatrix<C_FLOAT64> & CCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledConcentrationCC() : mcaMethod->getUnscaledConcentrationCC();
+    const CMatrix<C_FLOAT64> & CCCs = (mComboScale->currentIndex() == 0) ? mcaMethod->getScaledConcentrationCC() : mcaMethod->getUnscaledConcentrationCC();
     if (CCCs.numRows() == 0 || CCCs.numCols() == 0) return;
     for (i = 0; i < numRows;++i)
       {
@@ -199,7 +199,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
       }*/
   const CArrayAnnotation * CCCAnn;
 
-  if (mComboScale->currentItem() == 0)
+  if (mComboScale->currentIndex() == 0)
     {
       CCCAnn = mcaMethod->getScaledConcentrationCCAnn();
 
@@ -239,7 +239,7 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
       {
         header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
       }
-    const CMatrix<C_FLOAT64> & FCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledFluxCC() : mcaMethod->getUnscaledFluxCC();
+    const CMatrix<C_FLOAT64> & FCCs = (mComboScale->currentIndex() == 0) ? mcaMethod->getScaledFluxCC() : mcaMethod->getUnscaledFluxCC();
     if (FCCs.numRows() == 0 || FCCs.numCols() == 0) return;
     for (i = 0; i < numRows;++i)
       {
@@ -251,7 +251,7 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
 
   const CArrayAnnotation * FCCAnn;
 
-  if (mComboScale->currentItem() == 0)
+  if (mComboScale->currentIndex() == 0)
     {
       FCCAnn = mcaMethod->getScaledFluxCCAnn();
 

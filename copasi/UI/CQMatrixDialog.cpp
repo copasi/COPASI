@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,17 +47,17 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
   size_t nRows = tmp->size()[0];
 
   if (!single)
-    mpCBRow->insertItem("ALL");
+    mpCBRow->insertItem(mpCBRow->count(), "ALL");
 
   if (FROM_UTF8(tmp->getObjectName()).contains("Eigenvalues"))
     {
       for (i = 0; i < nRows; i++)
-        mpCBRow->insertItem(QString::number(i + 1));
+        mpCBRow->insertItem(mpCBRow->count(), QString::number(i + 1));
     }
   else
     {
       for (i = 0; i < nRows; i++)
-        mpCBRow->insertItem(FROM_UTF8(tmp->getAnnotationsString(0, true)[i]));
+        mpCBRow->insertItem(mpCBRow->count(), FROM_UTF8(tmp->getAnnotationsString(0, true)[i]));
     }
 
   mpLabelColumn->hide();
@@ -75,17 +75,17 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
       size_t nCols = tmp->size()[1];
 
       if (!single)
-        mpCBColumn->insertItem("ALL");
+        mpCBColumn->insertItem(mpCBColumn->count(), "ALL");
 
       if (FROM_UTF8(tmp->getObjectName()).contains("Eigenvalues"))
         {
-          mpCBColumn->insertItem("Real part");
-          mpCBColumn->insertItem("Imaginary part");
+          mpCBColumn->insertItem(mpCBColumn->count(), "Real part");
+          mpCBColumn->insertItem(mpCBColumn->count(), "Imaginary part");
         }
       else
         {
           for (i = 0; i < nCols; i++)
-            mpCBColumn->insertItem(FROM_UTF8(tmp->getAnnotationsString(1, true)[i]));
+            mpCBColumn->insertItem(mpCBColumn->count(), FROM_UTF8(tmp->getAnnotationsString(1, true)[i]));
         }
 
       if (tmp->dimensionality() == 3)
@@ -97,10 +97,10 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
           size_t nDims = tmp->size()[2];
 
           if (!single)
-            mpCBDim3->insertItem("ALL");
+            mpCBDim3->insertItem(mpCBDim3->count(), "ALL");
 
           for (i = 0; i < nDims; i++)
-            mpCBDim3->insertItem(FROM_UTF8(tmp->getAnnotationsString(2, true)[i]));
+            mpCBDim3->insertItem(mpCBDim3->count(), FROM_UTF8(tmp->getAnnotationsString(2, true)[i]));
         }
     }
 }

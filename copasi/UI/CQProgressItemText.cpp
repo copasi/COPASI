@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemText.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:20 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,8 @@
 // All rights reserved.
 
 #include "CQProgressItemText.h"
+#include "UI/qtUtilities.h"
 
-#include <qvariant.h>
-#include "CQProgressItem.h"
-#include "CQProgressItemText.ui.h"
 /*
  *  Constructs a CQProgressItemText which is a child of 'parent', with the
  *  name 'name'.'
@@ -38,3 +36,71 @@ CQProgressItemText::~CQProgressItemText()
 {
   // no need to delete child widgets, Qt does it all for us
 }
+
+bool CQProgressItemText::initFromProcessReportItem(CProcessReportItem * pItem)
+{
+  mpItem = pItem;
+  mParameterValue = mpItem->getValue();
+
+  mItemName->setText(FROM_UTF8(mpItem->getObjectName()));
+
+  this->show();
+
+  return reset();
+}
+
+bool CQProgressItemText::process()
+{
+  (this->*mpSetValue)();
+  return true;
+}
+
+bool CQProgressItemText::reset()
+{
+  switch (mpItem->getType())
+    {
+      case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
+        mpSetValue = & CQProgressItemText::setValueFromDOUBLE;
+        break;
+
+      case CCopasiParameter::INT:
+        mpSetValue = & CQProgressItemText::setValueFromINT;
+        break;
+
+      case CCopasiParameter::UINT:
+        mpSetValue = & CQProgressItemText::setValueFromUINT;
+        break;
+
+      case CCopasiParameter::STRING:
+        mpSetValue = & CQProgressItemText::setValueFromSTRING;
+        break;
+
+      default:
+        return false;
+        break;
+    }
+
+  return process();
+}
+
+void CQProgressItemText::setValueFromDOUBLE()
+{
+  mValue->setText(QString::number(* mParameterValue.pDOUBLE));
+}
+
+void CQProgressItemText::setValueFromINT()
+{
+  mValue->setText(QString::number(* mParameterValue.pINT));
+}
+
+void CQProgressItemText::setValueFromUINT()
+{
+  mValue->setText(QString::number(* mParameterValue.pUINT));
+}
+
+void CQProgressItemText::setValueFromSTRING()
+{
+  mValue->setText(FROM_UTF8(* mParameterValue.pSTRING));
+}
+

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:25 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:05 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,30 +20,13 @@
 #define CQDIFFERENTIALEQUATIONS_H
 
 #include <qvariant.h>
-//Added by qt3to4:
 #include <QPixmap>
-#include <Q3GridLayout>
-#include <Q3VBoxLayout>
 #include <QLabel>
 
 class QtMmlWidget;
-/*
-#include <Qt3Support/Q3ScrollView>
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <QtGui/QComboBox>
-#include <Qt3Support/Q3GridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
-#include <Qt3Support/Q3VBoxLayout>
- */
-#include <q3scrollview.h>
+
 #include <sstream>
 #include "copasiWidget.h"
-#include "Qt3Support/Q3ScrollView"
 
 #include "ui_CQDifferentialEquations.h"
 

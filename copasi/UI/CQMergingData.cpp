@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:16 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,7 +209,7 @@ void CQMergingData::load()
 
       // COL_TYPE_HIDDEN
       QTableWidgetItem *typeItem = new QTableWidgetItem();
-      typeItem->setText(QString::number(pComboBox->currentItem()));
+      typeItem->setText(QString::number(pComboBox->currentIndex()));
       mpTable->setItem((int) i, COL_TYPE_HIDDEN, typeItem);
 
       // COL_BTN
@@ -402,7 +402,7 @@ void CQMergingData::slotTypeChanged(int row)
   CModelMerging::Type NewType;
 
   NewType =
-    static_cast<CModelMerging::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentItem());
+    static_cast<CModelMerging::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentIndex());
 
   CModelMerging::Type OldType =
     static_cast<CModelMerging::Type>(mpTable->item(row, COL_TYPE_HIDDEN)->text().toLong());

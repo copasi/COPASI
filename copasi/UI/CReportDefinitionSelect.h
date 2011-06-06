@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.h,v $
- $Revision: 1.20 $
+ $Revision: 1.21 $
  $Name:  $
- $Author: shoops $
- $Date: 2011/05/17 13:10:25 $
+ $Author: aekamal $
+ $Date: 2011/06/06 16:14:08 $
  End CVS Header */
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,22 +32,16 @@ Contact: Please contact lixu1@vt.edu.
 #ifndef CREPORTDEFINITIONSELECT_H
 #define CREPORTDEFINITIONSELECT_H
 
-#include <qvariant.h>
-#include <qdialog.h>
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3Frame>
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
+#include <QVariant>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QFrame>
+#include <QGridLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 #include "UI/CopasiFileDialog.h"
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
 class QPushButton;
-class Q3Frame;
-class QLabel;
 class QComboBox;
 class QLineEdit;
 class QCheckBox;
@@ -71,7 +65,7 @@ public:
 
   QPushButton* confirmButton;
   QPushButton* cancelButton;
-  Q3Frame* frame5;
+  QFrame* frame5;
   QLabel* reportLabel;
   QComboBox* reportDefinitionNameList;
   QLineEdit* targetEdit;
@@ -81,8 +75,8 @@ public:
   QPushButton* browseButton;
 
 protected:
-  Q3GridLayout* CReportDefinitionSelectLayout;
-  Q3GridLayout* frame5Layout;
+  QGridLayout* CReportDefinitionSelectLayout;
+  QGridLayout* frame5Layout;
 
 protected slots:
   void cancelClicked();

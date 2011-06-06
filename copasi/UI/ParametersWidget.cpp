@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:17 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,17 +22,8 @@
 
 #include "ParametersWidget.h"
 
-#include <qvariant.h>
-#include <qpushbutton.h>
-#include <q3header.h>
+#include <QPushButton>
 #include <q3listview.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <Q3VBoxLayout>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -186,13 +177,18 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
   if (!name)
     setName("ParametersWidget");
 
-  ParametersWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "ParametersWidgetLayout");
+  ParametersWidgetLayout = new QGridLayout(this);
+  ParametersWidgetLayout->setMargin(11);
+  ParametersWidgetLayout->setSpacing(6);
+  ParametersWidgetLayout->setObjectName("ParametersWidgetLayout");
 
-  commitButton = new QPushButton(this, "commitButton");
+  commitButton = new QPushButton(this);
+  commitButton->setObjectName("commitButton");
   commitButton->setText("Commit");
   ParametersWidgetLayout->addWidget(commitButton, 2, 0);
 
-  revertButton = new QPushButton(this, "revertButton");
+  revertButton = new QPushButton(this);
+  revertButton->setObjectName("revertButton");
   revertButton->setText("Revert");
   ParametersWidgetLayout->addMultiCellWidget(revertButton, 2, 2, 1, 2);
 
@@ -212,14 +208,19 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
 
   ParametersWidgetLayout->addMultiCellWidget(listView, 0, 0, 2, 3);
 
-  layoutLeft = new Q3VBoxLayout(0, 0, 6, "layoutLeft");
+  layoutLeft = new QVBoxLayout(0);
+  layoutLeft->setMargin(0);
+  layoutLeft->setSpacing(6);
+  layoutLeft->setObjectName("layoutLeft");
 
-  labelTitle = new QLabel(this, "labelTitle");
+  labelTitle = new QLabel(this);
+  labelTitle->setObjectName("labelTitle");
   labelTitle->setAlignment(int(Qt::WordBreak | Qt::AlignVCenter | Qt::AlignRight));
   labelTitle->setText("<h2>Model parameters</h2>");
   layoutLeft->addWidget(labelTitle);
 
-  saveButton = new QPushButton(this, "saveButton");
+  saveButton = new QPushButton(this);
+  saveButton->setObjectName("saveButton");
   saveButton->setText("Save data...");
   layoutLeft->addWidget(saveButton);
 

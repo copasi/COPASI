@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensWidgetComboBox.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 20:18:40 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:09 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -88,10 +93,10 @@ void SensWidgetComboBox::fillFromList(const std::vector<CObjectLists::ListType> 
 
 CObjectLists::ListType SensWidgetComboBox::getCurrentObjectList() const
 {
-  unsigned int index = currentItem();
+  unsigned int index = currentIndex();
 
   if (index < mIndexTable.size())
-    return mIndexTable[currentItem()];
+    return mIndexTable[currentIndex()];
   else
     return CObjectLists::EMPTY_LIST;
 }

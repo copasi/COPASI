@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentSelection.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:16 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,7 @@ void CQExperimentSelection::slotBtnOK()
 
       if (pCheckBox->isChecked())
         {
-          mpBox->insertItem(pCheckBox->text());
+          mpBox->insertItem(mpBox->count(), pCheckBox->text());
           NoneChecked = false;
         }
       else
@@ -116,7 +116,7 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
         pCheckBox->setChecked(true);
       else
         for (j = 0; j < jmax; j++)
-          if (mpBox->text((int) j) == Name)
+          if (mpBox->itemText((int) j) == Name)
             {
               pCheckBox->setChecked(true);
               break;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.216 $
+//   $Revision: 1.217 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:53 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,7 +225,7 @@ bool ScanWidget::slotAddItem()
   CScanWidgetRandom* tmp3;
   //CScanWidgetBreak* tmp4;
 
-  int intType = comboType->currentItem();
+  int intType = comboType->currentIndex();
   CScanProblem::Type type;
 
   switch (intType)

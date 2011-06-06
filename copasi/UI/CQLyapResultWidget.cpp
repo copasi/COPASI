@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-$Revision: 1.11 $
+$Revision: 1.12 $
 $Name:  $
-$Author: shoops $
-$Date: 2011/05/17 13:10:20 $
+$Author: aekamal $
+$Date: 2011/06/06 16:14:06 $
 End CVS Header */
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,7 +148,7 @@ bool CQLyapResultWidget::loadFromBackend()
 bool CQLyapResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
                                 C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (this->isShown())
+  if (this->isVisible())
     return loadFromBackend();
   else
     return true;

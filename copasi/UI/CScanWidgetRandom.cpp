@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:19 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,7 @@ void CScanWidgetRandom::initFromObject(const CCopasiObject *obj)
       if (obj->isValueDbl())
         {
           C_FLOAT64 value = *(C_FLOAT64*)obj->getValuePointer();
-          C_INT32 type = comboBoxType->currentItem();
+          C_INT32 type = comboBoxType->currentIndex();
 
           if (type == 0) //uniform
             {
@@ -170,7 +170,7 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
 
   if (!(tmp = pg->getValue("Distribution type").pUINT)) return false;
 
-  comboBoxType->setCurrentItem(*tmp);
+  comboBoxType->setCurrentIndex(*tmp);
   changeType();
 
   lineEditMin->setText(getParameterValue(pg, "Minimum"));
@@ -194,7 +194,7 @@ bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
   CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
   assert(tmp);
 
-  tmp->setValue("Distribution type", (unsigned C_INT32)comboBoxType->currentItem());
+  tmp->setValue("Distribution type", (unsigned C_INT32)comboBoxType->currentIndex());
   tmp->setValue("Minimum", lineEditMin->text().toDouble());
   tmp->setValue("Maximum", lineEditMax->text().toDouble());
   tmp->setValue("log", checkBoxLog->isChecked());
@@ -204,7 +204,7 @@ bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
 
 void CScanWidgetRandom::changeType()
 {
-  C_INT32 type = comboBoxType->currentItem();
+  C_INT32 type = comboBoxType->currentIndex();
   C_FLOAT64 value = 0.0;
 
   if (mpObject != NULL)

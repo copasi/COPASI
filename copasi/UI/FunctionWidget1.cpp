@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.175 $
+//   $Revision: 1.176 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:47 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,8 +90,8 @@ void FunctionWidget1::init()
   // mpExpressionEMSW->mpBtnViewExpression->hide();
 
   // overwrite the tip
-  QToolTip::add(mpExpressionEMSW->mpBtnSaveExpression, tr("save formula"));
-  QToolTip::add(mpExpressionEMSW->mpBtnEditExpression, tr("edit formula"));
+  mpExpressionEMSW->mpBtnSaveExpression->setToolTip(tr("save formula"));
+  mpExpressionEMSW->mpBtnEditExpression->setToolTip(tr("edit formula"));
 
   mpFunction = NULL;
 }

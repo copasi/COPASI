@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // of Manchester.
 // All rights reserved.
 
+#include <QPalette>
 #include "CQTaskHeaderWidget.h"
 #include "qtUtilities.h"
 
@@ -46,28 +47,45 @@ bool CQTaskHeaderWidget::setTaskName(const std::string & name)
 void CQTaskHeaderWidget::saved()
 {
   mUpdateChanged = false;
-  mpUpdateModel->setPaletteBackgroundColor(mSavedColor);
+  QPalette palette;
+  palette.setColor(mpUpdateModel->backgroundRole(), mSavedColor);
+  mpUpdateModel->setPalette(palette);
 
   mExecutableChanged = false;
-  mpBoxExecutable->setPaletteBackgroundColor(mSavedColor);
+  palette.setColor(mpBoxExecutable->backgroundRole(), mSavedColor);
+  mpBoxExecutable->setPalette(palette);
 }
 
 void CQTaskHeaderWidget::slotUpdate()
 {
   mUpdateChanged = !mUpdateChanged;
+  QPalette palette;
 
   if (mUpdateChanged)
-    mpUpdateModel->setPaletteBackgroundColor(mChangedColor);
+    {
+      palette.setColor(mpUpdateModel->backgroundRole(), mChangedColor);
+      mpUpdateModel->setPalette(palette);
+    }
   else
-    mpUpdateModel->setPaletteBackgroundColor(mSavedColor);
+    {
+      palette.setColor(mpUpdateModel->backgroundRole(), mSavedColor);
+      mpUpdateModel->setPalette(palette);
+    }
 }
 
 void CQTaskHeaderWidget::slotExecutable()
 {
   mExecutableChanged = !mExecutableChanged;
+  QPalette palette;
 
   if (mExecutableChanged)
-    mpBoxExecutable->setPaletteBackgroundColor(mChangedColor);
+    {
+      palette.setColor(mpBoxExecutable->backgroundRole(), mChangedColor);
+      mpBoxExecutable->setPalette(palette);
+    }
   else
-    mpBoxExecutable->setPaletteBackgroundColor(mSavedColor);
+    {
+      palette.setColor(mpBoxExecutable->backgroundRole(), mSavedColor);
+      mpBoxExecutable->setPalette(palette);
+    }
 }

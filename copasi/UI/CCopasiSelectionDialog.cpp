@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/26 16:10:41 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,17 +63,20 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
 
   mpButtonBox = new QHBoxLayout(mpMainLayout);
 
-  mpOKButton = new QPushButton(this, "OK");
+  mpOKButton = new QPushButton(this);
+  mpOKButton->setObjectName("OK");
   mpOKButton->setText("OK");
   mpOKButton->setDefault(true);
   mpOKButton->setAutoDefault(true);
   mpButtonBox->addWidget(mpOKButton);
 
-  mpCancelButton = new QPushButton(this, "Cancel");
+  mpCancelButton = new QPushButton(this);
+  mpCancelButton->setObjectName("Cancel");
   mpCancelButton->setText("Cancel");
   mpButtonBox->addWidget(mpCancelButton);
 
-  mpModeCheckBox = new QCheckBox("expert mode", this, "expertMode");
+  mpModeCheckBox = new QCheckBox("expert mode", this);
+  mpModeCheckBox->setObjectName("expertMode");
   mpModeCheckBox->setChecked(false);
   mpButtonBox->addWidget(mpModeCheckBox);
 
@@ -280,10 +283,10 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
           // single cell selection
           if (value)
             {
-              index[0] = pDialog->mpCBRow->currentItem();
+              index[0] = pDialog->mpCBRow->currentIndex();
 
               if (index.size() > 1)
-                index[1] = pDialog->mpCBColumn->currentItem();
+                index[1] = pDialog->mpCBColumn->currentIndex();
 
               returnVector[0] = static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference(index));
             }
@@ -295,7 +298,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
 
       //if "All" is selected for both rows and columns, and an object with numerical value
       //is not requested, return the array annotation as such
-      if (pDialog->mpCBRow->currentItem() == 0 && pDialog->mpCBColumn->currentItem() == 0
+      if (pDialog->mpCBRow->currentIndex() == 0 && pDialog->mpCBColumn->currentIndex() == 0
           && !value)
         {
           // whole matrix should be chosen -> the object itself will be returned
@@ -307,10 +310,10 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
       size_t minRows, maxRows, minCols, maxCols;
       size_t i, j;
 
-      if (pDialog->mpCBRow->currentItem())
+      if (pDialog->mpCBRow->currentIndex())
         {
           // not ALL option
-          minRows = pDialog->mpCBRow->currentItem() - 1;
+          minRows = pDialog->mpCBRow->currentIndex() - 1;
           maxRows = minRows + 1;
         }
       else
@@ -322,10 +325,10 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
 
       if (index.size() == 2)
         {
-          if (pDialog->mpCBColumn->currentItem())
+          if (pDialog->mpCBColumn->currentIndex())
             {
               // not ALL option
-              minCols = pDialog->mpCBColumn->currentItem() - 1;
+              minCols = pDialog->mpCBColumn->currentIndex() - 1;
               maxCols = minCols + 1;
             }
           else

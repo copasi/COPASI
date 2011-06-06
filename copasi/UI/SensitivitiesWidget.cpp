@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:22 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,19 +20,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qvariant.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-#include <qmessagebox.h>
-#include <qtoolbutton.h>
-#include <qimage.h>
-
+#include <QImage>
 #include <QFrame>
 #include <QFileDialog>
 #include <QtDebug>
@@ -195,7 +183,7 @@ bool SensitivitiesWidget::saveTask()
     return false;
 
   // subtask
-  problem->setSubTaskType((CSensProblem::SubTaskType)SubTaskChooser->currentItem());
+  problem->setSubTaskType((CSensProblem::SubTaskType)SubTaskChooser->currentIndex());
 
   CSensItem tmp;
 
@@ -449,7 +437,7 @@ void
 //SensitivitiesWidget::on_SubTaskChooser_activated(int)
 SensitivitiesWidget::slotChooseSubTask(int)
 {
-  CSensProblem::SubTaskType subTaskType = (CSensProblem::SubTaskType)SubTaskChooser->currentItem();
+  CSensProblem::SubTaskType subTaskType = (CSensProblem::SubTaskType)SubTaskChooser->currentIndex();
   updateComboBoxes(subTaskType);
 
   updateAllLineditEnable();

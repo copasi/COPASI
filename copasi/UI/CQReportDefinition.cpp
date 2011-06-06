@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:18 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -539,7 +539,7 @@ bool CQReportDefinition::save()
         protectedNotify(ListViews::REPORT, ListViews::RENAME, mKey);
     }
 
-  mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentItem());
+  mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentIndex());
 
   CCopasiReportSeparator Separator;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:20 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,7 +163,7 @@ void CQModelValue::slotTypeChanged(int type)
     {
       case CModelEntity::FIXED:
         // remove expression layout from GUI screen
-        gridLayout->remove(mpLblExpression);
+        gridLayout->removeWidget(mpLblExpression);
 
         // hide label, widget, and all buttons
         mpLblExpression->hide();
@@ -233,9 +233,9 @@ void CQModelValue::slotInitialExpressionValid(bool valid)
 
 void CQModelValue::init()
 {
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
 
   mItemToType.push_back(CModelEntity::FIXED);
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
@@ -263,7 +263,7 @@ bool CQModelValue::leave()
   // This is now always enabled, i.e., a save is always performed!
   if (mpBtnCommit->isEnabled())
     {
-      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED)
+      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
         {
           // -- Expression --
           mpExpressionEMW->updateWidget();
@@ -306,7 +306,7 @@ void CQModelValue::load()
   mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
 
   // Type
-  mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
+  mpComboBoxType->setItemText(mpComboBoxType->currentIndex(), FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
 
   // Initial Value
   mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue(), 'g', 10));
@@ -330,7 +330,7 @@ void CQModelValue::load()
   mpInitialExpressionEMW->updateWidget();
 
   // Type dependent display of values
-  slotTypeChanged(mpComboBoxType->currentItem());
+  slotTypeChanged(mpComboBoxType->currentIndex());
 
   // Use Initial Expression
   if (mpModelValue->getStatus() == CModelEntity::ASSIGNMENT ||
@@ -379,9 +379,9 @@ void CQModelValue::save()
     }
 
   // set status
-  if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()])
+  if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
-      mpModelValue->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()]);
+      mpModelValue->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()]);
       mChanged = true;
     }
 
@@ -402,7 +402,7 @@ void CQModelValue::save()
     }
 
   // set initial expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
     {
       if (mpBoxUseInitialExpression->isChecked() &&
           mpModelValue->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
@@ -458,14 +458,14 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
   else  // mpBoxUseInitialExpression is not checked
     {
       // remove the layout of initial expression from GUI screen
-      gridLayout->remove(mpLblInitialExpression);
+      gridLayout->removeWidget(mpLblInitialExpression);
 
       // hide label, widget, and all buttons
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
 
       // enable the option of use Initial Value
-      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT);
+      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
 
       // we don't need to update the Initial Expression Widget
     }

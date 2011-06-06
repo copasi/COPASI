@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:50 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:05 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include <qapplication.h>
-#include <q3valuelist.h>
 
 #include "copasiWidget.h"
 #include "listviews.h"

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:55 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,12 +20,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qlabel.h>
 #include <q3table.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
 
 #include "copasi.h"
 
@@ -48,14 +43,19 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
-    setName("CQUpdatesWidget");
+    setObjectName("CQUpdatesWidget");
 
   setCaption("CQUpdatesWidget");
 
-  mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQUpdatesWidgetLayout");
+  mWidgetLayout = new QGridLayout(this);
+  mWidgetLayout->setMargin(11);
+  mWidgetLayout->setSpacing(6);
+  mWidgetLayout->setObjectName("CQUpdatesWidgetLayout");
+
 
   // **********  Label **************
-  mLabelTitle = new QLabel(this, "updatesLabel");
+  mLabelTitle = new QLabel(this);
+  mLabelTitle->setObjectName("updatesLabel");
   mLabelTitle->setText("Sequences of assignments");
   mLabelTitle->setAlignment(int(Qt::AlignVCenter
                                 | Qt::AlignLeft));
@@ -63,11 +63,13 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
   mWidgetLayout->addWidget(mLabelTitle, 0, 0);
 
   //main tab widget
-  mpMainTab = new QTabWidget(this, "MainTabWidget");
+  mpMainTab = new QTabWidget(this);
+  mpMainTab->setObjectName("MainTabWidget");
   mWidgetLayout->addMultiCellWidget(mpMainTab, 1, 2, 0, 2);
 
   // tab widget
-  mpTab = new QTabWidget(mpMainTab, "TabWidget");
+  mpTab = new QTabWidget(mpMainTab);
+  mpTab->setObjectName("TabWidget");
   mpMainTab->addTab(mpTab, "Update Sequences");
 
   // 0
@@ -87,7 +89,8 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
   mpTab->addTab(mpTable3, "Assignments for output");
 
   // tab widget 2
-  mpTab2 = new QTabWidget(mpMainTab, "TabWidget2");
+  mpTab2 = new QTabWidget(mpMainTab);
+  mpTab2->setObjectName("TabWidget2");
   mpMainTab->addTab(mpTab2, "Object Lists");
 
   //objects table

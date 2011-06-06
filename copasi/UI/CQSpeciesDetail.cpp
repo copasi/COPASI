@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:16 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,10 +43,10 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
 {
   setupUi(this);
 
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
 
   mItemToType.push_back(CModelEntity::REACTIONS);
   mItemToType.push_back(CModelEntity::FIXED);
@@ -80,8 +80,8 @@ bool CQSpeciesDetail::leave()
   // This is now always enabled, i.e., a save is always performed!
   if (mpBtnCommit->isEnabled())
     {
-      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED &&
-          (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::REACTIONS)
+      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED &&
+          (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::REACTIONS)
         {
           // -- Expression --
           mpExpressionEMW->updateWidget();
@@ -181,7 +181,7 @@ void CQSpeciesDetail::setFramework(int framework)
         mpLblValue->setText("Concentration" + ValueUnits);
 
         if (mpMetab != NULL &&
-            (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] == CModelEntity::ASSIGNMENT)
+            (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] == CModelEntity::ASSIGNMENT)
           mpLblExpression->setText("Expression" + ValueUnits);
         else
           mpLblExpression->setText("Expression" + RateUnits);
@@ -291,14 +291,14 @@ void CQSpeciesDetail::load()
   for (m = 0; m < Compartments.size(); m++)
     {
       pCompartment = Compartments[m];
-      mpComboBoxCompartment->insertItem(FROM_UTF8(pCompartment->getObjectName()));
+      mpComboBoxCompartment->insertItem(mpComboBoxCompartment->count(), FROM_UTF8(pCompartment->getObjectName()));
     }
 
   mpCurrentCompartment = mpMetab->getCompartment();
-  mpComboBoxCompartment->setCurrentText(FROM_UTF8(mpCurrentCompartment->getObjectName()));
+  mpComboBoxCompartment->setItemText(mpComboBoxCompartment->currentIndex(), FROM_UTF8(mpCurrentCompartment->getObjectName()));
 
   // Simulation Type
-  mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpMetab->getStatus()]));
+  mpComboBoxType->setItemText(mpComboBoxType->currentIndex(), FROM_UTF8(CModelEntity::StatusName[mpMetab->getStatus()]));
 
   // Initial Concentration handled in slotTypeChanged
   mInitialConcentration = mpMetab->getInitialConcentration();
@@ -320,7 +320,7 @@ void CQSpeciesDetail::load()
   mpInitialExpressionEMW->updateWidget();
 
   // Type dependent display of values
-  slotTypeChanged(mpComboBoxType->currentItem());
+  slotTypeChanged(mpComboBoxType->currentIndex());
 
   // Use Initial Expression
   if (mpMetab->getStatus() == CModelEntity::ASSIGNMENT ||
@@ -394,8 +394,8 @@ void CQSpeciesDetail::save()
                                     QMessageBox::Ok, QMessageBox::Ok);
 
           // Revert the changes
-          mpComboBoxCompartment->setCurrentText(FROM_UTF8(CompartmentToRemove));
-          slotCompartmentChanged(mpComboBoxCompartment->currentItem());
+          mpComboBoxCompartment->setItemText(mpComboBoxCompartment->currentIndex(), FROM_UTF8(CompartmentToRemove));
+          slotCompartmentChanged(mpComboBoxCompartment->currentIndex());
         }
       else
         {
@@ -408,9 +408,9 @@ void CQSpeciesDetail::save()
     }
 
   // Type
-  if (mpMetab->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()])
+  if (mpMetab->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
-      mpMetab->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()]);
+      mpMetab->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()]);
       mChanged = true;
     }
 
@@ -437,7 +437,7 @@ void CQSpeciesDetail::save()
     }
 
   // Initial Expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
     {
       if (mpBoxUseInitialExpression->isChecked() &&
           mpMetab->getInitialExpression() != (mpInitialExpressionEMW->mpExpressionWidget->getExpression()))
@@ -616,7 +616,7 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
   if (pModel == NULL)
     return;
 
-  QString Compartment = mpComboBoxCompartment->text(compartment);
+  QString Compartment = mpComboBoxCompartment->itemText(compartment);
   const CCompartment * pNewCompartment =
     pModel->getCompartments()[TO_UTF8(Compartment)];
 
@@ -657,12 +657,12 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
     }
   else
     {
-      gridLayout->remove(mpLblInitialExpression);
+      gridLayout->removeWidget(mpLblInitialExpression);
 
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
 
-      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT);
+      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
     }
 }
 

@@ -1,10 +1,10 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.209 $
-//   $Revision: 1.209 $
+//   $Revision: 1.210 $
+//   $Revision: 1.210 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/22 13:16:32 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,21 +30,8 @@
  ** the Second level of Reactions.
  **********************************************************************/
 
-#include <q3groupbox.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qlayout.h>
-#include <q3toolbar.h>
-#include <qwidget.h>
-#include <q3frame.h>
-#include <qcheckbox.h>
-#include <qlineedit.h>
-#include <qtooltip.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
+#include <QWidget>
+
 
 #include "copasi.h"
 #include "ReactionsWidget1.h"
@@ -81,7 +68,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 
   setCaption(trUtf8("ReactionsWidget1"));
 
-  ReactionsWidget1Layout = new Q3GridLayout(this, 1, 1, 11, 6, "ReactionsWidget1Layout");
+  ReactionsWidget1Layout = new QGridLayout(this);
+  ReactionsWidget1Layout->setMargin(11);
+  ReactionsWidget1Layout->setSpacing(6);
+  ReactionsWidget1Layout->setObjectName("ReactionsWidget1Layout");
 
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Name"));
@@ -96,7 +86,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
   //Buttons:
-  Layout1 = new Q3HBoxLayout(0, 0, 6, "Layout1");
+  Layout1 = new QHBoxLayout(0);
+  Layout1->setMargin(0);
+  Layout1->setSpacing(6);
+  Layout1->setObjectName("Layout1");
 
   commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));
@@ -118,10 +111,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 
   //
 
-  Line2 = new Q3Frame(this, "Line2");
-  Line2->setFrameShape(Q3Frame::HLine);
-  Line2->setFrameShadow(Q3Frame::Sunken);
-  Line2->setFrameShape(Q3Frame::HLine);
+  Line2 = new QFrame(this, "Line2");
+  Line2->setFrameShape(QFrame::HLine);
+  Line2->setFrameShadow(QFrame::Sunken);
+  Line2->setFrameShape(QFrame::HLine);
   ReactionsWidget1Layout->addMultiCellWidget(Line2, 7, 7, 0, 3);
 
   /*Line1 = new QFrame(this, "Line1");
@@ -184,10 +177,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   mpMultiCompartment->setEnabled(false);
   ReactionsWidget1Layout->addWidget(mpMultiCompartment, 3, 2);
 
-  Line4 = new Q3Frame(this, "Line4");
-  Line4->setFrameShape(Q3Frame::HLine);
-  Line4->setFrameShadow(Q3Frame::Sunken);
-  Line4->setFrameShape(Q3Frame::HLine);
+  Line4 = new QFrame(this, "Line4");
+  Line4->setFrameShape(QFrame::HLine);
+  Line4->setFrameShadow(QFrame::Sunken);
+  Line4->setFrameShape(QFrame::HLine);
   ReactionsWidget1Layout->addMultiCellWidget(Line4, 4, 4, 0, 3);
 
   table = new ParameterTable(this, "table");
@@ -579,7 +572,7 @@ void ReactionsWidget1::FillWidgetFromRI()
         ComboBox1->insertItem(FROM_UTF8(mpRi->getFunctionName()));
 
       ComboBox1->setCurrentText(FROM_UTF8(mpRi->getFunctionName()));
-      QToolTip::add(ComboBox1, FROM_UTF8(mpRi->getFunctionDescription()));
+      ComboBox1->setToolTip(FROM_UTF8(mpRi->getFunctionDescription()));
 
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       table->updateTable(*mpRi, *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());

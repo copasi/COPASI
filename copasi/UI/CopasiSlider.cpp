@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:46 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,8 +88,9 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
     }
 
   this->updateSliderData();
-  QToolTip::add(this->mpCloseButton, tr("remove slider"));
-  QToolTip::add(this->mpEditButton, tr("edit slider"));
+  this->mpCloseButton->setToolTip(tr("remove slider"));
+  this->mpEditButton->setToolTip(tr("edit slider"));
+
   connect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
   connect(this->mpQSlider, SIGNAL(sliderReleased()), this, SLOT(qSliderReleased()));
   connect(this->mpQSlider, SIGNAL(sliderPressed()), this, SLOT(qSliderPressed()));
@@ -108,10 +109,10 @@ void CopasiSlider::updateSliderData()
   if (this->mpCSlider)
     {
       //mpCSlider->compile();
-      this->mpQSlider->setMinValue(0);
-      this->mpQSlider->setMaxValue(this->mpCSlider->getTickNumber());
+      this->mpQSlider->setMinimum(0);
+      this->mpQSlider->setMaximum(this->mpCSlider->getTickNumber());
       this->mpQSlider->setTickInterval(1);
-      this->mpQSlider->setLineStep(1);
+      this->mpQSlider->setSingleStep(1);
       this->mpQSlider->setPageStep(this->mpCSlider->getTickFactor());
       disconnect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
       this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
@@ -188,7 +189,7 @@ void CopasiSlider::setNumMinorTicks(unsigned C_INT32 numMinorTicks)
 {
   this->mpCSlider->setTickNumber(numMinorTicks);
   // set maxValue and value of slider
-  this->mpQSlider->setMaxValue(numMinorTicks);
+  this->mpQSlider->setMaximum(numMinorTicks);
   this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
 }
 

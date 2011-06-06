@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: aekamal $
+//   $Date: 2011/06/06 16:14:07 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -23,10 +28,9 @@
 #include "UI/copasiWidget.h"
 #include "mathematics.h"
 //Added by qt3to4:
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QLabel>
 
-class Q3GridLayout;
 class QLabel;
 class QTabWidget;
 class Q3Table;
@@ -62,7 +66,7 @@ protected:
 
   void fillRefreshsMapRecursively(const CCopasiObject* obj);
 
-  Q3GridLayout* mWidgetLayout;
+  QGridLayout* mWidgetLayout;
 
   QLabel* mLabelTitle;
 
