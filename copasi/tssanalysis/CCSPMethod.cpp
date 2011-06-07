@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.19.2.6 $
+//   $Revision: 1.19.2.7 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2011/03/15 09:01:43 $
+//   $Date: 2011/06/07 11:10:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -524,7 +524,6 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
       CCopasiMessage(CCopasiMessage::WARNING,
                      MCTSSAMethod + 15, mTime);
 
-      return;
     }
 
   if (M == N)
