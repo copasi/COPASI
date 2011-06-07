@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEnum.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:31 $
+//   $Date: 2011/06/07 19:59:41 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,8 +111,8 @@ CMath::CAllocationStack::CAllocation::CAllocation(const CMath::CAllocationStack:
 CMath::CAllocationStack::CAllocation::~CAllocation()
 {}
 
-CMath::CAllocationStack::CAllocation::CAllocation &
-CMath::CAllocationStack::CAllocation::operator = (const CMath::CAllocationStack::CAllocation::CAllocation & rhs)
+CMath::CAllocationStack::CAllocation &
+CMath::CAllocationStack::CAllocation::operator = (const CMath::CAllocationStack::CAllocation & rhs)
 {
   nDiscontinuous = rhs.nDiscontinuous;
   nTotalRoots = rhs.nTotalRoots;
@@ -121,8 +121,8 @@ CMath::CAllocationStack::CAllocation::operator = (const CMath::CAllocationStack:
   return *this;
 }
 
-CMath::CAllocationStack::CAllocation::CAllocation &
-CMath::CAllocationStack::CAllocation::operator += (const CMath::CAllocationStack::CAllocation::CAllocation & rhs)
+CMath::CAllocationStack::CAllocation &
+CMath::CAllocationStack::CAllocation::operator += (const CMath::CAllocationStack::CAllocation & rhs)
 {
   nDiscontinuous += rhs.nDiscontinuous;
   nTotalRoots += rhs.nTotalRoots;
