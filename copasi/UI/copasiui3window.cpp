@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.295 $
+//   $Revision: 1.296 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:04 $
+//   $Author: shoops $
+//   $Date: 2011/06/07 19:16:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -373,6 +373,7 @@ void CopasiUI3Window::createActions()
   connect(mpaOpenSBMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSBMLFiles()));
   mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_B);
 
+  mpaSave = new QAction(QPixmap(filesave), "&Save", this);
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
   mpaSave->setShortcut(Qt::CTRL + Qt::Key_S);
 
