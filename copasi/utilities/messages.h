@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.159 $
+//   $Revision: 1.160 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/26 12:17:19 $
+//   $Date: 2011/06/08 14:32:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -358,7 +358,7 @@ const MESSAGES Messages[] =
   {MCTSSAMethod + 12, "CCSPMethod (12): At time t='%f'  no reduction is possible."},
   {MCTSSAMethod + 13, "CTSSAMethod (13): Number of compartments has to be exactly one. "},
   {MCTSSAMethod + 14, "CTSSAMethod (14): The problem is not valid for this method: the metabolites determined by assigments or ODE are presenting. "},
-  {MCTSSAMethod + 15, "CTSSAMethod (15): At time t='%f' the fastest of slow modes has positive eigen value. "},
+  {MCTSSAMethod + 15, "CTSSAMethod (15): At time t='%f' the fastest of slow time scales is negative. "},
   {MCTSSAMethod + 16, "CTSSAMethod (16): This method is not applicable for a system with more than one compartment. "},
   {MCTSSAMethod + 17, "CTSSAMethod (17): In this version of Copasi the CSP Method only supports  compartments with equal size  "},
 
