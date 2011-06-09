@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.34 $
+//   $Revision: 1.263.2.35 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/26 09:54:02 $
+//   $Date: 2011/06/09 07:58:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1750,7 +1750,9 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
 
   // also check if the compartment has a spatialSize of 0 because this also implies hasOnlySubstanceUnits for the species in this compartment
-  if (pSBMLCompartment->getSpatialDimensions() == 0)
+  // In Level 3 files this no longer seems to be the case however, so we only
+  // do this for L1 and L2 files
+  if (pSBMLCompartment->isSetSpatialDimensions() && pSBMLCompartment->getSpatialDimensions() == 0 && this->mLevel < 3)
     {
       this->mSubstanceOnlySpecies.insert(std::make_pair(const_cast<Species*>(sbmlSpecies), pSBMLCompartment));
     }
