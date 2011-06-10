@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:35 $
+//   $Date: 2011/06/10 20:23:13 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -340,6 +340,8 @@ bool CEvaluationTree::compileNodes()
 
 bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 {
+  assert(pRootNode->getParent() == NULL);
+
   if (pRootNode == NULL) return false;
 
   if (mpNodeList != NULL)
