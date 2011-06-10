@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:31 $
+//   $Date: 2011/06/10 20:24:01 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -335,13 +335,15 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
 
   success &= pExpression->setRoot(pSrc->copyNode(Children));
   success &= mCreateDiscontinuousPointer.pDiscontinuous->setExpressionPtr(pExpression);
+
+  mCreateDiscontinuousPointer.pDiscontinuous += 1;
+
+#ifdef XXXX // TODO CRITICAL We postpone the creation of events for discontinuous nodes till later.
   success &= mCreateDiscontinuousPointer.pEvent->compileDiscontinuous(mCreateDiscontinuousPointer.pDiscontinuous, *this);
 
-  assert(success);
 
   // Since the children are copied first it is better to defer advancing the pointers
   mCreateDiscontinuousPointer.pEvent += 1;
-  mCreateDiscontinuousPointer.pDiscontinuous += 1;
   mCreateDiscontinuousPointer.pEventDelay += 1;
   mCreateDiscontinuousPointer.pEventPriority += 1;
   mCreateDiscontinuousPointer.pEventAssignment += 1;
@@ -350,6 +352,9 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   // TODO CRITICAL This is not correct we need the corresponding information
   // from CMath::CAllocationStack::CAllocation
   mCreateDiscontinuousPointer.pEventRoot += 2;
+#endif // XXXX
+
+  assert(success);
 
   return pCopy;
 }
@@ -554,16 +559,9 @@ void CMathContainer::allocate()
   size_t nReactions = mpModel->getReactions().size();
   size_t nMoieties = mpModel->getMoieties().size();
 
-  // We need to create events for nodes which are capable of introducing
-  // discontinuous changes.
-
-  CMath::CAllocationStack::CAllocation AllocationRequirement;
-
-  determineDiscontinuityAllocationRequirement(AllocationRequirement);
-
-  size_t nEvents = AllocationRequirement.nDiscontinuous;
-  size_t nEventAssignments = AllocationRequirement.nDiscontinuous;
-  size_t nEventRoots = AllocationRequirement.nTotalRoots;
+  size_t nEvents = 0;
+  size_t nEventAssignments = 0;
+  size_t nEventRoots = 0;
 
   // Determine the space requirements for events.
   const CCopasiVector< CEvent > & Events = mpModel->getEvents();
@@ -582,6 +580,14 @@ void CMathContainer::allocate()
       nEventRoots += pEvent->getTrigger().getRoots().size();
     }
 
+  // We need to create events for nodes which are capable of introducing
+  // discontinuous changes.
+
+  CMath::CAllocationStack::CAllocation AllocationRequirement;
+
+  determineDiscontinuityAllocationRequirement(AllocationRequirement);
+
+# ifdef XXXX // TODO CRITICAL We postpone the creation of events for discontinuous nodes till later
   std::vector< size_t >::const_iterator itDiscontinuous = AllocationRequirement.nRootsPerDiscontinuity.begin();
   std::vector< size_t >::const_iterator endDiscontinuous = AllocationRequirement.nRootsPerDiscontinuity.end();
 
@@ -592,6 +598,8 @@ void CMathContainer::allocate()
       nEventAssignments += pEvent->getAssignments().size();
       nEventRoots += pEvent->getTrigger().getRoots().size();
     }
+
+# endif // XXXX
 
   mValues.resize(3 *(nExtensiveValues + nIntensiveValues) +
                  2 *(nReactions + nMoieties) +
