@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,7 +76,7 @@ bool CQEFMWidget::taskFinishedEvent()
 
   success &= pResult->loadResult(mpTask);
 
-  if (success && isShown())
+  if (success && isVisible())
     CopasiWidget::mpListView->switchToOtherWidget(2211, ""); //change to the results window
 
   return success;

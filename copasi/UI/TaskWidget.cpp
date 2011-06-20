@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:09 $
+//   $Date: 2011/06/20 16:07:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,7 +74,7 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl):
   if (!name)
     setObjectName("TaskWidget");
 
-  setCaption(trUtf8("TaskWidget"));
+  setWindowTitle(trUtf8("TaskWidget"));
 
   mpTaskThread = new CQTaskThread(this);
 

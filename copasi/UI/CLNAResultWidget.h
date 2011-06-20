@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CLNAResultWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:45 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:07 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,15 +24,7 @@
 #define CLNAResultWidget_H__
 
 #include "UI/copasiWidget.h"
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
-//class QPushButton;
+#include <QGridLayout>
 
 class CLNAResultSubwidget;
 
@@ -54,7 +46,7 @@ protected:
   virtual bool enterProtected();
   bool saveToBackend();
 
-  Q3GridLayout* mWidgetLayout;
+  QGridLayout* mWidgetLayout;
 
   CLNAResultSubwidget* mCentralWidget;
 };

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:07 $
+//   $Date: 2011/06/20 16:07:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,11 +57,13 @@ Contact: Please contact lixu1@vt.edu.
  */
 
 CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* name, Qt::WFlags fl)
-    : QDialog(parent, name, fl),
+    : QDialog(parent, fl),
     pListView((ListViews*)parent),
     mpReport(NULL),
     bShow(true)
 {
+  setObjectName(QString::fromUtf8(name));
+
   if (!name)
     setObjectName("CReportDefinitionSelect");
 
@@ -93,7 +95,7 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
   appendChecked = new QCheckBox(frame5);
   appendChecked->setObjectName("appendChecked");
 
-  frame5Layout->addMultiCellWidget(appendChecked, 2, 2, 1, 2);
+  frame5Layout->addWidget(appendChecked, 2, 2, 1, 2);
 
   reportDefinitionNameList = new QComboBox(frame5);
   reportDefinitionNameList->setObjectName("reportDefinitionNameList");
@@ -107,8 +109,9 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
 
   targetEdit = new QLineEdit(frame5);
   targetEdit->setObjectName("targetEdit");
-  targetEdit->setFrameShape(QLineEdit::LineEditPanel);
-  targetEdit->setFrameShadow(QLineEdit::Sunken);
+  targetEdit->setFrame(true);
+  //targetEdit->setFrameShape(QLineEdit::LineEditPanel);
+  //targetEdit->setFrameShadow(QLineEdit::Sunken);
 
   frame5Layout->addWidget(targetEdit, 1, 1);
 
@@ -117,7 +120,7 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
 
   frame5Layout->addWidget(browseButton, 1, 2);
 
-  CReportDefinitionSelectLayout->addMultiCellWidget(frame5, 0, 0, 0, 1);
+  CReportDefinitionSelectLayout->addWidget(frame5, 0, 0, 0, 1);
 
   confirmButton = new QPushButton(this);
   confirmButton->setObjectName("confirmButton");

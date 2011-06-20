@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,8 +33,9 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CQExpressionMmlWidget::CQExpressionMmlWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, name, fl)
+    : QWidget(parent, fl)
 {
+  setObjectName(QString::fromUtf8(name));
   setupUi(this);
 
   const QIcon icon = qt_get_icon(image0_ID);
@@ -76,7 +77,7 @@ void CQExpressionMmlWidget::updateWidget()
   std::ostringstream mml;
   std::vector<std::vector<std::string> > params;
 
-  if (mpExpressionWidget->text().isEmpty() ||
+  if (mpExpressionWidget->toPlainText().isEmpty() ||
       !mpExpressionWidget->isValid())
     mpWidgetStackExpressionMml->setCurrentWidget(mpExpressionPage);
   else

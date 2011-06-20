@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:05 $
+//   $Date: 2011/06/20 16:07:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@
 #include "report/CCopasiRootContainer.h"
 
 CopasiWidget::CopasiWidget(QWidget * parent, const char * name, Qt::WFlags f)
-    : QWidget(parent, name, f),
+    : QWidget(parent, f),
     mpListView(NULL),
     mKey(),
     mpObject(NULL),
@@ -41,6 +41,7 @@ CopasiWidget::CopasiWidget(QWidget * parent, const char * name, Qt::WFlags f)
     mIgnoreUpdates(false),
     mFramework(0)
 {
+  setObjectName(name);
   QObject *pParent = parent;
 
   while (pParent != NULL &&

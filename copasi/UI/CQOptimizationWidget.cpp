@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:06 $
+//   $Date: 2011/06/20 16:07:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,7 +180,7 @@ bool CQOptimizationWidget::runTask()
 
 void CQOptimizationWidget::slotPageChange(QWidget * currentPage)
 {
-  if (mpTabWidget->tabLabel(currentPage).contains("Parameters", true))
+  if (mpTabWidget->tabText(mpTabWidget->indexOf(currentPage)).contains("Parameters", Qt::CaseSensitive))
     mpCurrentList = mpParameters;
   else
     mpCurrentList = mpConstraints;
@@ -192,13 +192,13 @@ CCopasiMethod * CQOptimizationWidget::createMethod(const CCopasiMethod::SubType 
 void CQOptimizationWidget::slotParameterNumberChanged(int number)
 {
   QString TabLabel = "Parameters (" + QString::number(number) + ")";
-  mpTabWidget->setTabLabel(mpParameters, TabLabel);
+  mpTabWidget->setTabText(mpTabWidget->indexOf(mpParameters), TabLabel);
 }
 
 void CQOptimizationWidget::slotConstraintNumberChanged(int number)
 {
   QString TabLabel = "Constraints (" + QString::number(number) + ")";
-  mpTabWidget->setTabLabel(mpConstraints, TabLabel);
+  mpTabWidget->setTabText(mpTabWidget->indexOf(mpConstraints), TabLabel);
 }
 
 void CQOptimizationWidget::init()
@@ -226,7 +226,7 @@ void CQOptimizationWidget::init()
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::timeCourse]] = CCopasiTask::timeCourse;
   mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::mca]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::mca]] = CCopasiTask::mca;
-  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lna]));
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lna]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lna]] = CCopasiTask::lna;
   mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lyap]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lyap]] = CCopasiTask::lyap;

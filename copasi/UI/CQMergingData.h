@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/11/09 13:12:00 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -14,28 +19,14 @@
 #ifndef CQMERGINGDATA_H
 #define CQMERGINGDATA_H
 
-#include <qvariant.h>
 #include <string>
 #include <vector>
 
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
 #include <QPixmap>
-#include <Q3VBoxLayout>
 
 class QSignalMapper;
 
 #include <QtGui/QDialog>
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <Qt3Support/Q3GridLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QTabWidget>
-#include <Qt3Support/Q3VBoxLayout>
 #include <QtGui/QWidget>
 #include <QToolButton>
 

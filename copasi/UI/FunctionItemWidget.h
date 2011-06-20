@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionItemWidget.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:17 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,32 +19,28 @@
 #ifndef FUNCTIONITEMWIDGET_H
 #define FUNCTIONITEMWIDGET_H
 
-#include <qvariant.h>
+#include <QVariant>
 
-#include <Qt3Support/Q3ButtonGroup>
-#include <Qt3Support/Q3MimeSourceFactory>
-#include <Qt3Support/Q3TextEdit>
+#include <Q3ButtonGroup>
+#include <QTextEdit>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
 #include <QtGui/QDialog>
-#include <Qt3Support/Q3Frame>
-#include <Qt3Support/Q3GridLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QRadioButton>
-//Added by qt3to4:
-#include <Q3BoxLayout>
-#include <Q3GridLayout>
-#include <Q3Frame>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QBoxLayout>
+#include <QGridLayout>
+#include <QFrame>
 
 class Ui_FunctionItemWidget
 {
 public:
-  Q3GridLayout *gridLayout;
-  Q3TextEdit *textFunction;
+  QGridLayout *gridLayout;
+  QTextEdit *textFunction;
   Q3ButtonGroup *radioGroup;
-  Q3GridLayout *gridLayout1;
+  QGridLayout *gridLayout1;
   QRadioButton *radioDec;
   QRadioButton *radioHex;
   QRadioButton *radioBin;
@@ -73,11 +69,11 @@ public:
   QPushButton *buttonLog;
   QPushButton *buttonSign;
   QPushButton *buttonCos;
-  Q3GridLayout *gridLayout2;
+  QGridLayout *gridLayout2;
   QPushButton *buttonConfirm;
   QPushButton *buttonCancel;
-  Q3Frame *line1;
-  Q3Frame *line1_3;
+  QFrame *line1;
+  QFrame *line1_3;
   QPushButton *buttonClear;
 
   void setupUi(QDialog *FunctionItemWidget)
@@ -86,11 +82,11 @@ public:
       FunctionItemWidget->setObjectName(QString::fromUtf8("FunctionItemWidget"));
 
     FunctionItemWidget->resize(372, 373);
-    gridLayout = new Q3GridLayout(FunctionItemWidget);
+    gridLayout = new QGridLayout(FunctionItemWidget);
     gridLayout->setSpacing(6);
     gridLayout->setMargin(11);
     gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-    textFunction = new Q3TextEdit(FunctionItemWidget);
+    textFunction = new QTextEdit(FunctionItemWidget);
     textFunction->setObjectName(QString::fromUtf8("textFunction"));
 
     gridLayout->addWidget(textFunction, 0, 0, 1, 4);
@@ -101,7 +97,7 @@ public:
     radioGroup->setColumnLayout(0, Qt::Vertical);
     radioGroup->layout()->setSpacing(6);
     radioGroup->layout()->setMargin(11);
-    gridLayout1 = new Q3GridLayout(radioGroup->layout(), 1, 1);
+    gridLayout1 = new QGridLayout(radioGroup->layout());
     gridLayout1->setAlignment(Qt::AlignTop);
     gridLayout1->setObjectName(QString::fromUtf8("gridLayout1"));
     radioDec = new QRadioButton(radioGroup);
@@ -250,7 +246,7 @@ public:
 
     gridLayout->addWidget(buttonCos, 8, 3, 1, 1);
 
-    gridLayout2 = new Q3GridLayout(1, 1);
+    gridLayout2 = new QGridLayout();
     gridLayout2->setSpacing(6);
     gridLayout2->setObjectName(QString::fromUtf8("gridLayout2"));
     buttonConfirm = new QPushButton(FunctionItemWidget);
@@ -265,17 +261,17 @@ public:
 
     gridLayout->addLayout(gridLayout2, 10, 0, 1, 4);
 
-    line1 = new Q3Frame(FunctionItemWidget);
+    line1 = new QFrame(FunctionItemWidget);
     line1->setObjectName(QString::fromUtf8("line1"));
-    line1->setFrameShape(Q3Frame::HLine);
-    line1->setFrameShadow(Q3Frame::Sunken);
+    line1->setFrameShape(QFrame::HLine);
+    line1->setFrameShadow(QFrame::Sunken);
 
     gridLayout->addWidget(line1, 5, 0, 1, 4);
 
-    line1_3 = new Q3Frame(FunctionItemWidget);
+    line1_3 = new QFrame(FunctionItemWidget);
     line1_3->setObjectName(QString::fromUtf8("line1_3"));
-    line1_3->setFrameShape(Q3Frame::HLine);
-    line1_3->setFrameShadow(Q3Frame::Sunken);
+    line1_3->setFrameShape(QFrame::HLine);
+    line1_3->setFrameShadow(QFrame::Sunken);
 
     gridLayout->addWidget(line1_3, 9, 0, 1, 4);
 

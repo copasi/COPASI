@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.128 $
+//   $Revision: 1.129 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,26 +19,6 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-#include <q3filedialog.h>
-
-#include <qvariant.h>
-#include <qcheckbox.h>
-//#include <q3frame.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-#include <qmessagebox.h>
-//Added by qt3to4:
-/*
-#include <Q3GridLayout>
-#include <Q3VBoxLayout>
- */
-#include <QHBoxLayout>
 
 #include "DataModelGUI.h"
 

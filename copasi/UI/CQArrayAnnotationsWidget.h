@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:56 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,15 +24,12 @@
 #define CQARRAYANN_H
 
 #include <q3vbox.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
 #include <QLabel>
 #include "utilities/CAnnotatedMatrix.h"
 #include "mathematics.h"
 
 #include <q3hbox.h>
 #include <qpushbutton.h>
-//#include <q3widgetstack.h>
 #include <QStackedWidget>
 
 #include <vector>
@@ -40,7 +37,6 @@
 #include "copasi/utilities/CAnnotatedMatrix.h"
 #include "CColorScale.h"
 
-class Q3GridLayout;
 class Q3Table;
 class QLabel;
 

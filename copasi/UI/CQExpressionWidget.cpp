@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:58 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,7 @@ void CQExpressionHighlighter::highlightBlock(const QString &text)
 //***********************************************************************
 
 CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name, bool isBoolean):
-    CQValidator< QTextEdit >(parent, &QTextEdit::text, name),
+    CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
     mExpression()
 {
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -137,7 +137,7 @@ void CQValidatorExpression::setBooleanRequired(bool booleanRequired)
 //***********************************************************************
 
 CQValidatorFunction::CQValidatorFunction(QTextEdit * parent, const char * name):
-    CQValidator< QTextEdit >(parent, &QTextEdit::text, name),
+    CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
     mFunction()
 {
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -201,19 +201,20 @@ const char CQExpressionWidget::DisplayPattern[] = "\\{(([^\\\\\\}]|\\\\.)*)\\}";
 
 
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
-    : QTextEdit(parent, name),
+    : QTextEdit(parent),
     mpValidatorExpression(NULL),
     mpValidatorFunction(NULL),
     mObjectClasses(TransientExpression),
     mpCurrentObject(NULL)
 {
+  setObjectName(QString::fromUtf8(name));
   setTabChangesFocus(true);
 
   mpExpressionHighlighter = new CQExpressionHighlighter(this);
 
   int h, s, v;
 
-  mSavedColor = paletteBackgroundColor();
+  mSavedColor = palette().color(backgroundRole());
   mSavedColor.getHsv(&h, &s, &v);
 
   if (s < 20) s = 20;
@@ -488,8 +489,10 @@ void CQExpressionWidget::slotTextChanged()
     return;
 
   int pos = 0;
-  QString Input = text();
-  setPaletteBackgroundColor(QColor(255, 0, 0));
+  QString Input = toPlainText();
+  QPalette palette;
+  palette.setColor(backgroundRole(), QColor(255, 0, 0));
+  setPalette(palette);
 
   emit valid(pValidator->validate(Input, pos) == QValidator::Acceptable);
 }
@@ -498,7 +501,7 @@ bool CQExpressionWidget::objectBoundaries(const int & position, int & left, int 
 {
   static QRegExp ObjectDisplayPattern(CQExpressionWidget::DisplayPattern);
 
-  int Index = ObjectDisplayPattern.indexIn(text());
+  int Index = ObjectDisplayPattern.indexIn(toPlainText());
 
   while (0 <= Index && Index <= position)
     {
@@ -511,7 +514,7 @@ bool CQExpressionWidget::objectBoundaries(const int & position, int & left, int 
           return true;
         }
 
-      Index = ObjectDisplayPattern.indexIn(text(), Index);
+      Index = ObjectDisplayPattern.indexIn(toPlainText(), Index);
     }
 
   left = -1;
@@ -542,7 +545,7 @@ void CQExpressionWidget::setFunction(const std::string & function)
 
 std::string CQExpressionWidget::getFunction() const
 {
-  return TO_UTF8(text());
+  return TO_UTF8(toPlainText());
 }
 
 
@@ -649,7 +652,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 std::string CQExpressionWidget::getExpression() const
 {
   QString Infix;
-  const QString Display(text());
+  const QString Display(toPlainText());
 
   QRegExp DisplayObjectPattern(CQExpressionWidget::DisplayPattern);
 

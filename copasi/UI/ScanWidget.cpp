@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.217 $
+//   $Revision: 1.218 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:09 $
+//   $Date: 2011/06/20 16:07:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,16 +23,15 @@
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
 
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QLayout>
+#include <QToolTip>
+#include <QWhatsThis>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QGridLayout>
+#include <QHBoxLayout>
 
 #include <QInputDialog>
 
@@ -71,8 +70,10 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
     setName("ScanWidget");
 
   setCaption(trUtf8("ScanWidget"));
-//  ScanWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
-  ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
+  ScanWidgetLayout = new QGridLayout(this);
+  ScanWidgetLayout->setMargin(11);
+  ScanWidgetLayout->setSpacing(6);
+  ScanWidgetLayout->setObjectName("ScanWidgetLayout");
 
   mpHeaderWidget->setTaskName("Parameter Scan");
 
@@ -83,7 +84,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
 
   //*****************
 
-//  Q3HBoxLayout* tmpLayout = new Q3HBoxLayout();
   QHBoxLayout* tmpLayout = new QHBoxLayout();
 
   QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);

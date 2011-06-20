@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:09 $
+//   $Date: 2011/06/20 16:07:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ size_t SliderDialog::folderMappings[][2] =
 //const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
-    QDialog(parent, name, modal, fl),
+    QDialog(parent, fl),
     mpParentWindow(NULL),
     mpRunTaskButton(NULL),
     mpNewSliderButton(NULL),
@@ -89,6 +89,8 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
     mSliderPressed(false),
     mFramework(0)
 {
+  setObjectName(QString::fromUtf8(name));
+  setModal(modal);
   QVBoxLayout* pMainLayout = new QVBoxLayout(this);
   this->setLayout(pMainLayout);
   pMainLayout->setContentsMargins(5, 5, 5, 5);
@@ -140,11 +142,11 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   pMainLayout->addLayout(pLayout2);
 
   this->mpContextMenu = new QMenu(this);
-  this->mpContextMenu->insertItem("Add New Slider", this, SLOT(createNewSlider()));
-  this->mpContextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
-  this->mpContextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
-  this->mpContextMenu->insertItem("Reset Value", this, SLOT(resetValue()));
-  this->mpContextMenu->insertItem("Set new default value", this, SLOT(setDefault()));
+  mpaCreateNewSlider = this->mpContextMenu->addAction("Add New Slider", this, SLOT(createNewSlider()));
+  mpaRemoveSlider = this->mpContextMenu->addAction("Remove Slider", this, SLOT(removeSlider()));
+  mpaEditSlider = this->mpContextMenu->addAction("Edit Slider", this, SLOT(editSlider()));
+  mpaResetValue = this->mpContextMenu->addAction("Reset Value", this, SLOT(resetValue()));
+  mpaSetDefault = this->mpContextMenu->addAction("Set new default value", this, SLOT(setDefault()));
 
   this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
 
@@ -166,16 +168,16 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
 
   if (pSlider)
     {
-      mpContextMenu->setItemEnabled(mpContextMenu->idAt(0), false);
-      mpContextMenu->setItemEnabled(mpContextMenu->idAt(1), true);
-      mpContextMenu->setItemEnabled(mpContextMenu->idAt(2), true);
+      mpaCreateNewSlider->setEnabled(false);
+      mpaRemoveSlider->setEnabled(true);
+      mpaEditSlider->setEnabled(true);
       setCurrentSlider(pSlider);
     }
   else
     {
-      mpContextMenu->setItemEnabled(mpContextMenu->idAt(0), true);
-      mpContextMenu->setItemEnabled(mpContextMenu->idAt(1), false);
-      mpContextMenu->setItemEnabled(mpContextMenu->idAt(2), false);
+      mpaCreateNewSlider->setEnabled(true);
+      mpaRemoveSlider->setEnabled(false);
+      mpaEditSlider->setEnabled(false);
     }
 
   mpContextMenu->popup(e->globalPos());

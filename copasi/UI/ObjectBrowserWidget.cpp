@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Date: 2011/06/20 16:07:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ QPixmap *pObjectNone = 0;
  *  name 'name' and widget flags set to 'f'.
  */
 ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::WFlags fl, int state)
-    : QWidget(parent, name, fl),
+    : QWidget(parent, fl),
     objectItemList(NULL),
     refreshList(NULL),
     ObjectBrowserLayout(NULL),
@@ -79,17 +79,25 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
     mOutputObjectVector(NULL),
     currentPage(LISTVIEWPAGE)
 {
+  setObjectName(QString::fromUtf8(name));
+
   if (!name)
     setObjectName("ObjectBrowser");
 
-  if (state == 0)
-    ObjectBrowserLayout = new QGridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
-  else
-    ObjectBrowserLayout = new QGridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
+  ObjectBrowserLayout->setObjectName("ObjectBrowserLayout");
 
-  ObjectBrowserLayout->setAutoAdd(false);
+  if (state == 0)
+    ObjectBrowserLayout = new QGridLayout(this);
+  else
+    {
+      ObjectBrowserLayout = new QGridLayout(this);
+      ObjectBrowserLayout->setSpacing(6);
+    }
+
+  ObjectBrowserLayout->setObjectName(QString::fromUtf8("ObjectListView"));
+
   ObjectListView = new QTreeWidget(this);
-  ObjectListView->setObjectName("ObjectListView");
+  ObjectListView->setObjectName("");
   //  ObjectListView->addColumn(trUtf8("Object Browser"));
   QStringList strList;
   strList << trUtf8("Name") << trUtf8("Type");
@@ -105,8 +113,8 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
   ObjectItemText->setObjectName("ObjectItemText");
   ObjectItemText ->hide();
 
-  ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 3);
-  ObjectBrowserLayout->addMultiCellWidget(ObjectItemText, 0, 0, 0, 3);
+  ObjectBrowserLayout->addWidget(ObjectListView, 0, 0, 0, 3);
+  ObjectBrowserLayout->addWidget(ObjectItemText, 0, 0, 0, 3);
 
   if (state != 0)
     {
@@ -116,17 +124,20 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
       Line1->setFrameShadow(QFrame::Sunken);
       Line1->setFrameShape(QFrame::HLine);
 
-      ObjectBrowserLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
+      ObjectBrowserLayout->addWidget(Line1, 1, 1, 0, 3);
 
-      clearButton = new QPushButton(this, "clearButton");
+      clearButton = new QPushButton(this);
+      clearButton->setObjectName("clearButton");
       clearButton->setText(trUtf8("Clear"));
       ObjectBrowserLayout->addWidget(clearButton, 2, 0);
 
-      commitButton = new QPushButton(this, "commitButton");
+      commitButton = new QPushButton(this);
+      commitButton->setObjectName("commitButton");
       commitButton->setText(trUtf8("Commit"));
       ObjectBrowserLayout->addWidget(commitButton, 2, 3);
 
-      toggleViewButton = new QPushButton(this, "toggleViewButton");
+      toggleViewButton = new QPushButton(this);
+      toggleViewButton->setObjectName("toggleViewButton");
       toggleViewButton->setText(trUtf8("Selected Items"));
       ObjectBrowserLayout->addWidget(toggleViewButton, 2, 2);
 
@@ -613,7 +624,7 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiVector <CC
           if (currentObject->isContainer())
             pSubField =
               getFieldCopasiObject(static_cast< CCopasiContainer * >(currentObject),
-                                   FROM_UTF8(currentFieldObject->getObjectName()));
+                                   currentFieldObject->getObjectName().c_str());
           else
             {
               pSubField = NULL; // this shall be an exception error

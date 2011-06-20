@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Date: 2011/06/20 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,8 +26,9 @@ MyLineEdit::MyLineEdit(QWidget * parent, const char * name)
 }
 
 MyLineEdit::MyLineEdit(const QString & contents, QWidget * parent, const char * name)
-    : QLineEdit(contents, parent, name)
+    : QLineEdit(contents, parent)
 {
+  setObjectName(name);
   setupWidget();
 }
 
@@ -37,7 +38,7 @@ void MyLineEdit::setupWidget()
   connect(this, SIGNAL(returnPressed()), this, SLOT(slotReturnPressed()));
   connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(slotTextChanged(const QString &)));
 
-  mOldColor = paletteBackgroundColor();
+  mOldColor = palette().color(backgroundRole());
   int h, s, v;
   mOldColor.getHsv(&h, &s, &v);
 
@@ -52,7 +53,7 @@ void MyLineEdit::process()
 {
   if (isModified())
     {
-      clearModified();
+      setModified(false);
       updateColor();
       emit edited();
     }
@@ -74,13 +75,17 @@ void MyLineEdit::slotTextChanged(const QString & /* text */)
 
 void MyLineEdit::updateColor()
 {
+  QPalette palette;
+
   if (isModified())
     {
-      setPaletteBackgroundColor(mNewColor);
+      palette.setColor(backgroundRole(), mNewColor);
+      setPalette(palette);
     }
   else
     {
-      setPaletteBackgroundColor(mOldColor);
+      palette.setColor(backgroundRole(), mOldColor);
+      setPalette(palette);
     }
 
   const QValidator * val = validator();
@@ -91,7 +96,11 @@ void MyLineEdit::updateColor()
 
   if (val)
     if (val->validate(ttt, dummy) == QValidator::Intermediate)
-      setPaletteBackgroundColor(mErrorColor);
+      {
+        QPalette palette;
+        palette.setColor(backgroundRole(), mErrorColor);
+        setPalette(palette);
+      }
 }
 
 void MyLineEdit::setText(const QString & text)
@@ -101,4 +110,4 @@ void MyLineEdit::setText(const QString & text)
 }
 
 bool MyLineEdit::isValid()
-{return (paletteBackgroundColor() != mErrorColor);}
+{return (palette().color(backgroundRole()) != mErrorColor);}

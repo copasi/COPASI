@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CLNAResultWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:45 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:07 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,9 +20,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qlayout.h>
-//Added by qt3to4:
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include "copasi.h"
 
 #include "CLNAResultWidget.h"
@@ -46,7 +44,8 @@ CLNAResultWidget::CLNAResultWidget(QWidget* parent, const char* name, Qt::WFlags
 
   setCaption(trUtf8("CLNAResultWidget"));
 
-  mWidgetLayout = new Q3GridLayout(this, 1, 1, 0, -1, "Layout");
+  mWidgetLayout = new QGridLayout(this);
+  setObjectName("Layout");
 
   mCentralWidget = new CLNAResultSubwidget(this, "CLNAResultSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);

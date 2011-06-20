@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/09 18:50:09 $
+   $Author: aekamal $
+   $Date: 2011/06/20 16:07:09 $
    End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,11 +36,12 @@ template <typename Type> class CQValidator : public QValidator
   // Operations
 public:
   CQValidator(Type * parent, QString(Type::*retrieve)(void) const, const char * name = 0):
-      QValidator(parent, name),
+      QValidator(parent),
       mpContainer(parent),
       mRetrieve(retrieve),
       mLastAccepted("")
   {
+    setObjectName(QString::fromUtf8(name));
     int h, s, v;
 
     QPalette palette = mpContainer->palette();

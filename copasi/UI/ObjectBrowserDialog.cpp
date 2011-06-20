@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Date: 2011/06/20 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 // All rights reserved.
 
 #include "ObjectBrowserDialog.h"
-#include "qpushbutton.h"
+#include <QPushButton>
 #include <QLayout>
 #include <QGridLayout>
 #include <QCloseEvent>
@@ -38,7 +38,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool modal, int state)
-    : QDialog(parent, name, modal),
+    : QDialog(parent),
     clearButton(NULL),
     toggleViewButton(NULL),
     cancelButton(NULL),
@@ -46,39 +46,46 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
     Line1(NULL),
     spacer(NULL),
     objectBrowserWidget(NULL),
-    ObjectBrowserDialogLayout(NULL) //,
-    //    mparent(NULL)
+    ObjectBrowserDialogLayout(NULL)
 {
-  this->setWindowFlags(windowFlags() | Qt::WDestructiveClose);
-  ObjectBrowserDialogLayout = new QGridLayout(this, 3, 4, 11, 6, "ObjectBrowserDialogLayout");
-  ObjectBrowserDialogLayout->setAutoAdd(false);
+  setObjectName(QString::fromUtf8(name));
+  setModal(modal);
+  setAttribute(Qt::WA_DeleteOnClose);
+  ObjectBrowserDialogLayout = new QGridLayout(this);
+  ObjectBrowserDialogLayout->setMargin(11);
+  ObjectBrowserDialogLayout->setSpacing(6);
+  ObjectBrowserDialogLayout->setObjectName(QString::fromUtf8("ObjectBrowserDialogLayout"));
 
   //  objectBrowserWidget = new ObjectBrowserWidget(this, NULL, 0, 1);
   objectBrowserWidget = new ObjectBrowserWidget(this);
-  ObjectBrowserDialogLayout->addMultiCellWidget(objectBrowserWidget, 0, 0, 0, 3);
+  ObjectBrowserDialogLayout->addWidget(objectBrowserWidget, 0, 0, 0, 3);
 
   Line1 = new QFrame(this);
   Line1->setObjectName("Line1");
   Line1->setFrameShape(QFrame::HLine);
   Line1->setFrameShadow(QFrame::Sunken);
   Line1->setFrameShape(QFrame::HLine);
-  ObjectBrowserDialogLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
+  ObjectBrowserDialogLayout->addWidget(Line1, 1, 1, 0, 3);
 
   //  spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
   //  ObjectBrowserDialogLayout->addItem(spacer, 2, 1);
 
   if (state == 0)
     {
-      clearButton = new QPushButton(this, "clearButton");
+      clearButton = new QPushButton(this);
+      clearButton->setObjectName("clearButton");
       clearButton->setText("Clear");
 
-      toggleViewButton = new QPushButton(this, "toggleViewButton");
+      toggleViewButton = new QPushButton(this);
+      toggleViewButton->setObjectName("toggleViewButton");
       toggleViewButton->setText("Selected Items");
 
-      cancelButton = new QPushButton(this, "cancelButton");
+      cancelButton = new QPushButton(this);
+      cancelButton->setObjectName("cancelButton");
       cancelButton->setText("Cancel");
 
-      okButton = new QPushButton(this, "okButton");
+      okButton = new QPushButton(this);
+      okButton->setObjectName("okButton");
       okButton->setText("OK");
       okButton->setDefault(true);
       okButton->setAutoDefault(true);
@@ -100,7 +107,8 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
     }
   else
     {
-      okButton = new QPushButton(this, "okButton");
+      okButton = new QPushButton(this);
+      okButton->setObjectName("okButton");
       okButton->setText("Close");
       okButton->setDefault(true);
       okButton->setAutoDefault(true);
@@ -115,7 +123,7 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
     setObjectName("ObjectBrowser");
 
   resize(420, 460);
-  setCaption(trUtf8("Object Browser"));
+  setWindowTitle(trUtf8("Object Browser"));
 }
 
 ObjectBrowserDialog::~ObjectBrowserDialog()

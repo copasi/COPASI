@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:06 $
+//   $Date: 2011/06/20 16:07:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,8 +30,10 @@
  *  true to construct a modal dialog.
  */
 CQProgressDialog::CQProgressDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-    : QDialog(parent, name, modal, fl)
+    : QDialog(parent, fl)
 {
+  setObjectName(QString::fromUtf8(name));
+  setModal(modal);
   setupUi(this);
 
   init();
@@ -88,7 +90,8 @@ void CQProgressDialog::init()
   mProceed = true;
 
   mpTimer = new QTimer(this);
-  mpTimer->start(1500, true);
+  mpTimer->start(1500);
+  mpTimer->setSingleShot(true);
   connect(mpTimer, SIGNAL(timeout()), this, SLOT(timerShow()));
 
   return;

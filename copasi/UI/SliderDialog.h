@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.40 $
+$Revision: 1.41 $
 $Name:  $
-$Author: jpahle $
-$Date: 2011/05/24 17:30:50 $
+$Author: aekamal $
+$Date: 2011/06/20 16:07:16 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@ class QPushButton;
 class QSlider;
 class CCopasiObject;
 class QMenu;
+class QAction;
 class QFrame;
 class DataModelGUI;
 class CopasiSlider;
@@ -121,6 +122,11 @@ protected:
   QScrollArea* mpScrollView;
   QFrame* mpSliderBox;
   QMenu* mpContextMenu;
+  QAction* mpaCreateNewSlider;
+  QAction* mpaRemoveSlider;
+  QAction* mpaEditSlider;
+  QAction* mpaResetValue;
+  QAction* mpaSetDefault;
   CopasiSlider* mpCurrSlider;
   std::map< size_t, std::vector< QWidget* > > mSliderMap;
   std::map < size_t, void(SliderDialog::*)() > mTaskMap;

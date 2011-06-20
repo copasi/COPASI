@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:06 $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,11 @@
 // and The University of Manchester.
 // All rights reserved.
 
+#include <qsignalmapper>
+#include <QComboBox>
+
+#include <QTableWidget>
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CMetab.h"
 #include "model/CModelValue.h"
@@ -25,12 +30,7 @@
 #include "CQMessageBox.h"
 
 #include "UI/qtUtilities.h"
-#include <qsignalmapper.h>
-#include <qcombobox.h>
-#include <qapplication.h>
 
-#include <QHeaderView>
-#include <QTableWidget>
 
 #include "CQMergingData.h"
 
@@ -129,7 +129,7 @@ void CQMergingData::load()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  QImage copasi;
+  QPixmap copasi;
   copasi.loadFromData(copasi_data, sizeof(copasi_data), "PNG");
   mCopasi = copasi;
 
@@ -196,11 +196,11 @@ void CQMergingData::load()
 
       // COL_TYPE
       pComboBox = new QComboBox(mpTable);
-      pComboBox->insertStringList(ColumnTypes);
+      pComboBox->insertItems(0, ColumnTypes);
       pComboBox->setEditable(false);
 
       Type = CModelMerging::ignore;
-      pComboBox->setCurrentItem(Type);
+      pComboBox->setCurrentIndex(Type);
 
       mpComboMap->setMapping(pComboBox, (int) i);
       connect(pComboBox, SIGNAL(activated(int)), mpComboMap, SLOT(map()));
@@ -214,9 +214,9 @@ void CQMergingData::load()
 
       // COL_BTN
       pBtn = new QToolButton(mpTable);
-      pBtn->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, pBtn->sizePolicy().hasHeightForWidth()));
+      pBtn->setSizePolicy(QSizePolicy((QSizePolicy::Policy)1, (QSizePolicy::Policy)1));
       pBtn->setMaximumSize(QSize(20, 20));
-      pBtn->setIconSet(QIcon(mCopasi));
+      pBtn->setIcon(QIcon(mCopasi));
 
       if (Type == CModelMerging::ignore)
         pBtn->setEnabled(false);
@@ -361,7 +361,7 @@ void CQMergingData::slotModelObject(int row)
             }
         }
 
-      static_cast<QComboBox *>(mpTable->cellWidget((int) ikey, COL_TYPE))->setCurrentItem(CModelMerging::ignore);
+      static_cast<QComboBox *>(mpTable->cellWidget((int) ikey, COL_TYPE))->setCurrentIndex(CModelMerging::ignore);
 
       static_cast<QComboBox *>(mpTable->cellWidget((int) ikey, COL_TYPE))->removeItem(CModelMerging::merge);
 

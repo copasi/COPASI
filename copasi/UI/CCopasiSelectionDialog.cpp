@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:04 $
+//   $Date: 2011/06/20 16:07:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@
 #include "CQMessageBox.h"
 
 CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * name , bool modal):
-    QDialog(parent, name, modal),
+    QDialog(parent),
     mpOKButton(NULL),
     mpCancelButton(NULL),
     mpModeCheckBox(NULL),
@@ -55,13 +55,16 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
     mExpertMode(false),
     mExpertModeEnabled(true)
 {
-  setWindowFlags(this->windowFlags() | Qt::WDestructiveClose);
+  setObjectName(QString::fromUtf8(name));
+  setModal(modal);
+  setAttribute(Qt::WA_DeleteOnClose);
   mpMainLayout = new QVBoxLayout(this);
 
   mpSelectionWidget = new CCopasiSelectionWidget(this);
   mpMainLayout->addWidget(mpSelectionWidget);
 
-  mpButtonBox = new QHBoxLayout(mpMainLayout);
+  mpButtonBox = new QHBoxLayout();
+  mpMainLayout->addLayout(mpButtonBox);
 
   mpOKButton = new QPushButton(this);
   mpOKButton->setObjectName("OK");
@@ -264,7 +267,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
 
   CQMatrixDialog * pDialog = new CQMatrixDialog();
 
-  pDialog->setCaption(tr(FROM_UTF8(caption) + "Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName())));
+  pDialog->setWindowTitle(tr(FROM_UTF8(caption) + "Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName())));
   pDialog->setArray(pArrayAnnotation, single);
 
   int Result = pDialog->exec();

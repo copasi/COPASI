@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Date: 2011/06/20 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,9 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, Qt::WindowFlags f)
-    : QWidget(parent, name, f)
+    : QWidget(parent, f)
 {
+  setObjectName(QString::fromUtf8(name));
   ui.setupUi(this);
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/objectdebug.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:59 $
+//   $Date: 2011/05/17 13:10:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 
 #include "objectdebug.h"
 
-#include <qvariant.h>
-#include <q3textedit.h>
+#include <QVariant>
+#include <QTextEdit>
 #include <sstream>
 #include "copasi.h"
 #include "model/CModelAnalyzer.h"
@@ -33,8 +33,10 @@
  *  true to construct a modal dialog.
  */
 ObjectDebug::ObjectDebug(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-    : QDialog(parent, name, modal, fl)
+    : QDialog(parent, fl)
 {
+  setObjectName(QString::fromUtf8(name));
+  setModal(modal);
   setupUi(this);
 
   init();
@@ -214,6 +216,6 @@ void ObjectDebug::checkModel()
   std::ostringstream ss;
   MA.writeReport(ss, true, true);
 
-  Q3TextEdit* pTE = new Q3TextEdit(FROM_UTF8(ss.str()));
+  QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
   pTE->show();
 }

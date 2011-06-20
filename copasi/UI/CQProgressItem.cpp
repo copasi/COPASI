@@ -25,8 +25,9 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CQProgressItem::CQProgressItem(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, name, fl)
+    : QWidget(parent, fl)
 {
+  setObjectName(QString::fromUtf8(name));
   setupUi(this);
 }
 

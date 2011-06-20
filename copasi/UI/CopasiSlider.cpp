@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:04 $
+//   $Date: 2011/06/20 16:07:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,11 +73,11 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
   //pFrame->layout()->setSpacing(0);
   QPixmap icons[2] = {closeSlider, editSlider};
   this->mpCloseButton = new QToolButton(NULL);
-  this->mpCloseButton->setPixmap(icons[0]);
+  this->mpCloseButton->setIcon(icons[0]);
   this->mpCloseButton->setFixedSize(13, 13);
   pFrame->layout()->addWidget(this->mpCloseButton);
   this->mpEditButton = new QToolButton(NULL);
-  this->mpEditButton->setPixmap(icons[1]);
+  this->mpEditButton->setIcon(icons[1]);
   this->mpEditButton->setFixedSize(13, 13);
   pFrame->layout()->addWidget(this->mpEditButton);
   this->layout()->addWidget(pFrame);
@@ -177,7 +177,7 @@ unsigned C_INT32 CopasiSlider::minorMajorFactor() const
 void CopasiSlider::setMinorMajorFactor(unsigned C_INT32 factor)
 {
   this->mpCSlider->setTickFactor(factor);
-  this->mpQSlider->setPageStep(this->mpQSlider->lineStep()*factor);
+  this->mpQSlider->setPageStep(this->mpQSlider->singleStep()*factor);
 }
 
 C_FLOAT64 CopasiSlider::minorTickInterval() const

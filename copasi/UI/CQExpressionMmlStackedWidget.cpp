@@ -100,7 +100,7 @@ void CQExpressionMmlStackedWidget::updateWidget()
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
 #endif
 
-  if (mpExpressionWidget->text().isEmpty() || !mpExpressionWidget->isValid())
+  if (mpExpressionWidget->toPlainText().isEmpty() || !mpExpressionWidget->isValid())
     setCurrentWidget(mpExpressionPage);
   else
     {
@@ -131,7 +131,7 @@ void CQExpressionMmlStackedWidget::setReadOnly(const bool & readOnly)
 
 QString CQExpressionMmlStackedWidget::getText()
 {
-  return mpExpressionWidget->text();
+  return mpExpressionWidget->toPlainText();
 }
 
 void CQExpressionMmlStackedWidget::init()

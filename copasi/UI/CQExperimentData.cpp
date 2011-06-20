@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:05 $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,8 +58,10 @@
  *  true to construct a modal dialog.
  */
 CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-    : QDialog(parent, name, modal, fl)
+    : QDialog(parent, fl)
 {
+  setObjectName(QString::fromUtf8(name));
+  setModal(modal);
   setupUi(this);
 
   init();
@@ -666,7 +668,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 
   if (mCrossValidation)
     {
-      setCaption("Cross Validation Data");
+      setWindowTitle("Cross Validation Data");
       mpLblWeight->show();
       mpEditWeight->show();
       mpLblThreshold->show();
@@ -916,7 +918,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
   int pos = value.length();
 
   if (full &&
-      pExperiment->getObjectName() != (const char *) value &&
+      pExperiment->getObjectName() != TO_UTF8(value) &&
       mpValidatorName->validate(value, pos) == QValidator::Acceptable)
     {
       int current = mpBoxExperiment->currentItem();
@@ -926,7 +928,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
       mpBoxExperiment->setSelected(current, true);
       connect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
               this, SLOT(slotExperimentChanged(Q3ListBoxItem*)));
-      pExperiment->setObjectName((const char *) value);
+      pExperiment->setObjectName(TO_UTF8(value));
     }
 
   if (mpCheckTab->isChecked())
@@ -1111,7 +1113,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       if (guess && TimeRow == C_INVALID_INDEX &&
           mpBtnTimeCourse->isChecked() &&
-          mpTable->text((int) i, COL_NAME).contains("time", false))
+          mpTable->text((int) i, COL_NAME).contains("time", Qt::CaseInsensitive))
         ObjectMap.setRole(i, CExperiment::time);
 
       Type = ObjectMap.getRole(i);
@@ -1130,9 +1132,9 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       // COL_BTN
       pBtn = new QToolButton(mpTable);
-      pBtn->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, pBtn->sizePolicy().hasHeightForWidth()));
+      pBtn->setSizePolicy(QSizePolicy((QSizePolicy::Policy)1, (QSizePolicy::Policy)1));
       pBtn->setMaximumSize(QSize(20, 20));
-      pBtn->setIconSet(QIcon(mCopasi));
+      pBtn->setIcon(QIcon(mCopasi));
 
       if (Type == CExperiment::ignore || Type == CExperiment::time)
         pBtn->setEnabled(false);

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDateTimeEditTableItem.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -14,8 +19,9 @@
 #include "CQDateTimeEditTableItem.h"
 
 CQDateTimeEditTableItem::CQDateTimeEditTableItem(CopasiTableWidget* table, int row, int col, QWidget * parent, const char * name)
-    : Q3DateTimeEdit(parent, name)
+    : QDateTimeEdit(parent)
 {
+  setObjectName(QString::fromUtf8(name));
   mpTable = table;
   mRow = row;
   mCol = col;
@@ -25,8 +31,9 @@ CQDateTimeEditTableItem::CQDateTimeEditTableItem(CopasiTableWidget* table, int r
 }
 
 CQDateTimeEditTableItem::CQDateTimeEditTableItem(CopasiTableWidget* table, int row, int col, const QDateTime & datetime, QWidget * parent, const char * name)
-    : Q3DateTimeEdit(datetime, parent, name)
+    : QDateTimeEdit(datetime, parent)
 {
+  setObjectName(QString::fromUtf8(name));
   mpTable = table;
   mRow = row;
   mCol = col;
@@ -45,10 +52,12 @@ void CQDateTimeEditTableItem::init()
 void CQDateTimeEditTableItem::slotValueChanged(const QDateTime& dateTime)
 {
   std::string date = "";
+
   if (dateTime.date().toString("yyyy-MM-dd").ascii())
-  {date = dateTime.date().toString("yyyy-MM-dd").ascii();}
+    {date = dateTime.date().toString("yyyy-MM-dd").ascii();}
+
   if (date != "")
-  {emit valueChanged(mRow, mCol);}
+    {emit valueChanged(mRow, mCol);}
 }
 
 CQDateTimeEditTableItem::~CQDateTimeEditTableItem(void)

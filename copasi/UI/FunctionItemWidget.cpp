@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionItemWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 
 #include "FunctionItemWidget.h"
 
-#include <qvariant.h>
+#include <QVariant>
 /*
  *  Constructs a FunctionItemWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -27,8 +27,10 @@
  *  true to construct a modal dialog.
  */
 FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-    : QDialog(parent, name, modal, fl)
+    : QDialog(parent, fl)
 {
+  setObjectName(QString::fromUtf8(name));
+  setModal(modal);
   setupUi(this);
 }
 

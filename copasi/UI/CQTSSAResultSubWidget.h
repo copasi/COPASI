@@ -16,23 +16,16 @@
 
 #include <qvariant.h>
 
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
 #include <QPixmap>
-#include <Q3VBoxLayout>
-
 
 #include <QtGui/QDialog>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <Qt3Support/Q3ButtonGroup>
-#include <Qt3Support/Q3GridLayout>
 #include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
 #include <QtGui/QTabWidget>
-#include <Qt3Support/Q3VBoxLayout>
 #include <QtGui/QWidget>
 #include <QToolButton>
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Date: 2011/06/20 16:07:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,8 +35,9 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CScanWidgetRandom::CScanWidgetRandom(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, name, fl)
+    : QWidget(parent, fl)
 {
+  setObjectName(QString::fromUtf8(name));
   setupUi(this);
 
   lineEditMax->resize(112, 22);

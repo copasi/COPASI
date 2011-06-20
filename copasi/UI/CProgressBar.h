@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:55 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,6 @@
 #define HANDLER_PROGRESS_BAR
 
 #include <qdatetime.h>
-//Added by qt3to4:
 #include <QCloseEvent>
 #include <QMutex>
 #include <QWaitCondition>

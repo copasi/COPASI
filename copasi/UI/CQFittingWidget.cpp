@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:19 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -312,7 +312,7 @@ void CQFittingWidget::slotExperimentData()
 
 void CQFittingWidget::slotPageChange(QWidget * currentPage)
 {
-  if (mpTabWidget->tabLabel(currentPage).contains("Parameters", true))
+  if (mpTabWidget->tabText(mpTabWidget->indexOf(currentPage)).contains("Parameters", Qt::CaseSensitive))
     mpCurrentList = mpParameters;
   else
     mpCurrentList = mpConstraints;
@@ -350,13 +350,13 @@ void CQFittingWidget::init()
 void CQFittingWidget::slotParameterNumberChanged(int number)
 {
   QString TabLabel = "Parameters (" + QString::number(number) + ")";
-  mpTabWidget->setTabLabel(mpParameters, TabLabel);
+  mpTabWidget->setTabText(mpTabWidget->indexOf(mpParameters), TabLabel);
 }
 
 void CQFittingWidget::slotConstraintNumberChanged(int number)
 {
   QString TabLabel = "Constraints (" + QString::number(number) + ")";
-  mpTabWidget->setTabLabel(mpConstraints, TabLabel);
+  mpTabWidget->setTabText(mpTabWidget->indexOf(mpConstraints), TabLabel);
 }
 
 void CQFittingWidget::destroy()

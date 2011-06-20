@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:49 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,8 +161,8 @@ void DataModelGUI::populateData()
 
       QString data(FROM_UTF8(str1));
 
-      int first = data.find(':');
-      int second = data.find(':', first + 1);
+      int first = data.indexOf(':');
+      int second = data.indexOf(':', first + 1);
       int parentId = data.mid(0, first).toInt();
       int myId = data.mid(first + 1, second - first - 1).toInt();
       QString str = data.mid(second + 1, data.length() - second - 1);

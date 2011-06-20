@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:07 $
+//   $Date: 2011/06/20 16:07:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,8 +32,10 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : QWidget(parent, name, fl)
+    : QWidget(parent, fl)
 {
+  setObjectName(QString::fromUtf8(name));
+
   if (!name)
     setObjectName("CQTSSATimeScaleWidget");
 
@@ -47,8 +49,9 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
   mpVLayout->addWidget(mpPaintWidget);
   mpVLayout->addWidget(mpSlider);
 
-  mpPaintWidget->setBackgroundColor(Qt::white);
-  //mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  QPalette palette;
+  palette.setColor(mpPaintWidget->backgroundRole(), Qt::white);
+  mpPaintWidget->setPalette(palette);
   mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   mpSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -75,7 +78,7 @@ void CQTSSATimeScaleWidget::paintTimeScale(CVector< C_FLOAT64> vector)
       if (vector.size() != mpPaintWidget->mVector.size())
         {
           mpSlider->setRange(0, (int)(vector.size() - 1));
-          mpSlider->setValue(mpSlider->minValue());
+          mpSlider->setValue(mpSlider->minimum());
         }
 
       mpPaintWidget->mVector = vector;
@@ -107,9 +110,11 @@ void CQTSSATimeScaleWidget::clearWidget()
  *  name 'name' and widget flags set to 'f'.
  */
 PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : QWidget(parent, name, fl),
+    : QWidget(parent, fl),
     mSelection(0)
 {
+  setObjectName(QString::fromUtf8(name));
+
   if (!name)
     setObjectName("PaintWidget");
 }

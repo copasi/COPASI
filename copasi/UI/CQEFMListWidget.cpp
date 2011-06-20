@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMListWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:22 $
+//   $Author: aekamal $
+//   $Date: 2011/06/20 16:07:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,11 +21,12 @@
 #include "CQEFMListWidget.h"
 
 CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
-    QWidget(parent, name),
+    QWidget(parent),
     mpTask(NULL),
     mpProxyModel(NULL),
     mpFluxModeDM(NULL)
 {
+  setObjectName(QString::fromUtf8(name));
   setupUi(this);
 
   mpEFMTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
