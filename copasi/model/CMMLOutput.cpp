@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.8.2.1 $
+//   $Revision: 1.8.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:01 $
+//   $Date: 2011/06/27 19:59:44 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -166,7 +166,17 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
 
             if (functionParams[i]->getType() == CFunctionParameter::FLOAT64)
               {
-                name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectDisplayName();
+                CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0]);
+
+                if (pObject != NULL)
+                  {
+                    name = pObject->getObjectDisplayName();
+                  }
+                else
+                  {
+                    name = "unknown";
+                  }
+
                 //params[i][0] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
                 params[i][0] = "<mi>[" + name + "]</mi>";
               }

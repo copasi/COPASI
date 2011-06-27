@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.20.32.1 $
+   $Revision: 1.20.32.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/01/12 19:00:57 $
+   $Date: 2011/06/27 19:59:45 $
    End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -108,6 +108,7 @@ public:
 class CFunctionParameterMap
 {
 public:
+  static CCopasiObject * pUnmappedObject;
 
   CFunctionParameterMap();
 
@@ -147,7 +148,6 @@ public:
                              CFunctionParameter::DataType & dataType) const;
 
 private:
-
   /**
    * Clear the mPointers and mObjects vectors.
    */

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.223.2.13 $
+//   $Revision: 1.223.2.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/23 18:01:25 $
+//   $Date: 2011/06/27 19:59:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -4885,7 +4885,7 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
         else if ((pME = dynamic_cast<CModelEntity*>(pObject)))
           mCommon.SourceParameterKeys[mCommon.pFunctionVariable->getObjectName()].push_back(pME->getKey());
         else
-          fatalError();
+          mCommon.SourceParameterKeys[mCommon.pFunctionVariable->getObjectName()].push_back(CFunctionParameterMap::pUnmappedObject->getKey());
 
         break;
 

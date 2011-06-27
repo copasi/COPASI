@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.23.2.4 $
+//   $Revision: 1.23.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/11 18:19:22 $
+//   $Date: 2011/06/27 19:59:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1180,9 +1180,10 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
                   || (role == CFunctionParameter::PRODUCT)
                   || (role == CFunctionParameter::MODIFIER))
                 {
-                  CMetab* metab;
-                  metab = dynamic_cast< CMetab * >(obj);
-                  tmpname = NameMap[metab->getKey()];
+                  if (obj)
+                    tmpname = NameMap[obj->getKey()];
+                  else
+                    tmpname = "unknown";
                 }
 
               if (role == CFunctionParameter::PARAMETER)

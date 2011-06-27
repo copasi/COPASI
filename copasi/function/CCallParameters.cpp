@@ -1,12 +1,12 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.cpp,v $
- $Revision: 1.20.4.1 $
+ $Revision: 1.20.4.2 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/01/12 19:00:57 $
+ $Date: 2011/06/27 19:59:45 $
  End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,8 +21,14 @@
 // All rights reserved.
 
 #include "copasi.h"
+
 #include "CCallParameters.h"
 #include "CFunction.h"
+
+#include "utilities/CCopasiParameter.h"
+
+// static
+CCopasiObject * CFunctionParameterMap::pUnmappedObject = NULL;
 
 //TODO: modify the constructors so that CFunctionParameterMap behaves like a CCopasiObject
 
@@ -30,7 +36,15 @@ CFunctionParameterMap::CFunctionParameterMap():
     mPointers(),
     mObjects(),
     mpFunctionParameters(NULL)
-{};
+{
+  if (pUnmappedObject == NULL)
+    {
+      C_FLOAT64 InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
+      pUnmappedObject =
+        new CCopasiParameter("NaN", CCopasiParameter::DOUBLE, & InvalidValue);
+    }
+};
 
 CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
     mPointers(src.mPointers),
