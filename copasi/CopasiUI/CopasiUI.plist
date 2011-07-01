@@ -6,16 +6,12 @@
 	<string>copasi.icns</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
 	<key>CFBundleVersion</key>
 	<string>%COPASI_VERSION%</string>
 	<key>CFBundleShortVersionString</key>
 	<string>%COPASI_VERSION%</string>
-	<key>CFBundleLongVersionString</key>
-	<string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</str
 	<key>CFBundleGetInfoString</key>
-	<string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</str
+	<string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</string>
 	<key>CFBundleExecutable</key>
 	<string>CopasiUI</string>
 	<key>CFBundleIdentifier</key>
