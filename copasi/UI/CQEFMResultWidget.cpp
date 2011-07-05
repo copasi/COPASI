@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Author: aekamal $
+//   $Date: 2011/07/05 17:34:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,6 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelReactions = new CQSortFilterProxyModel();
   mpProxyModelReactions->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModelReactions->setDynamicSortFilter(true);
   mpProxyModelReactions->setFilterKeyColumn(COL_REACTION_NAME);
 
   mpProxyModelReactions->setSourceModel(mpReactionDM);
@@ -79,7 +78,6 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelSpecies = new CQSortFilterProxyModel();
   mpProxyModelSpecies->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModelSpecies->setDynamicSortFilter(true);
   mpProxyModelSpecies->setFilterKeyColumn(COL_REACTION_NAME);
 
   mpProxyModelSpecies->setSourceModel(mpSpeciesDM);
@@ -102,7 +100,6 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelNetReactions = new CQSortFilterProxyModel();
   mpProxyModelNetReactions->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModelNetReactions->setDynamicSortFilter(true);
   mpProxyModelNetReactions->setFilterKeyColumn(COL_REACTION_NAME);
 
   mpProxyModelNetReactions->setSourceModel(mpNetReactionDM);
