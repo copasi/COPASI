@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/03 13:59:22 $
+//   $Date: 2011/07/05 19:24:02 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,7 +182,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
               case CFunctionParameter::PRODUCT:
               case CFunctionParameter::MODIFIER:
                 metabName = CMetabNameInterface::getDisplayName(mpModel, *(it->begin()));
-                assert(metabName != "");
+                // assert(metabName != "");
                 SubList[0] = metabName;
                 //TODO: check if the metabolite is in the chemical equation with the correct rule
                 break;

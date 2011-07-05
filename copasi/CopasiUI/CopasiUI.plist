@@ -6,16 +6,16 @@
 	<string>copasi.icns</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>CFBundleGetInfoString</key>
-	<string>Created by Qt/QMake</string>
 	<key>CFBundleVersion</key>
 	<string>%COPASI_VERSION%</string>
+	<key>CFBundleShortVersionString</key>
+	<string>%COPASI_VERSION%</string>
+	<key>CFBundleGetInfoString</key>
+	<string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</string>
 	<key>CFBundleExecutable</key>
 	<string>CopasiUI</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.copasi.CopasiUI</string>
-	<key>NOTE</key>
-	<string>>%COPASI_VERSION%, COPASI is a registered trademark of Virginia Tech Intellectual Properties, Inc.</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>

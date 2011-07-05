@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.200 $
+//   $Revision: 1.201 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/05 16:17:10 $
+//   $Date: 2011/07/05 19:24:02 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -609,11 +609,19 @@ void CReaction::compile()
                     mMap.addCallParameter(paramName, pObject);
                     Dependencies.insert(pObject->getValueObject());
                   }
+                else
+                  {
+                    mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
+                  }
             }
           else if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
             {
               mMap.setCallParameter(paramName, pObject);
               Dependencies.insert(pObject->getValueObject());
+            }
+          else
+            {
+              mMap.setCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
             }
         }
     }

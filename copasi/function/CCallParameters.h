@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/05/05 16:17:10 $
+   $Date: 2011/07/05 19:24:03 $
    End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,6 +108,7 @@ public:
 class CFunctionParameterMap
 {
 public:
+  static CCopasiObject * pUnmappedObject;
 
   CFunctionParameterMap();
 
