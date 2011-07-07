@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-//   $Revision: 1.16.2.2 $
+//   $Revision: 1.16.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 12:53:04 $
+//   $Date: 2011/07/07 21:10:47 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,10 +48,10 @@ CTableauMatrix::CTableauMatrix(const std::vector< std::vector< C_FLOAT64 > > & s
 
   for (std::vector< std::vector< C_FLOAT64 > >::const_iterator Reaction = stoi.begin();
        Reaction < stoi.end();
-       Reaction++, reversibleNumber--, ReactionCounter++)
+       Reaction++, ReactionCounter++)
     {
       mLine.push_back(new CTableauLine(*Reaction,
-                                       (reversibleNumber > 0) && (reversibleNumber < ReactionNumber) ? true : false,
+                                       (ReactionCounter < reversibleNumber) ? true : false,
                                        ReactionCounter,
                                        ReactionNumber));
 
