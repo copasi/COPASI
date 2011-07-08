@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:27:35 $
+//   $Date: 2011/07/08 20:13:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,11 +64,11 @@ public:
    *  Specific constructor
    *  The first reversibleNumber lines of stoi must be reversible reactions.
    *  Note: stoi is actually the transpose of the stoichiometry matrix
-   *  @param "const vector < vector < double > >" & stoi
-   *  @param "size_t " reversibleNumber
+   *  @param const std::vector < std::vector < double > > & stoi
+   *  @param const size_t & reversibleNumber
    */
   CTableauMatrix(const std::vector < std::vector < double > > & stoi,
-                 size_t reversibleNumber);
+                 const size_t & reversibleNumber);
 
   /**
    *  Destructor
