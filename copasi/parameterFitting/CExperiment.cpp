@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.69.2.5 $
+//   $Revision: 1.69.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/31 20:03:35 $
+//   $Date: 2011/07/08 17:16:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1218,7 +1218,7 @@ void CExperiment::printResult(std::ostream * ostream) const
       {
         std::string Name;
 
-        if (Objects[k])
+        if (k < Objects.size() && Objects[k] != NULL)
           Name = Objects[k]->getObjectDisplayName();
         else
           Name = "unknown";
