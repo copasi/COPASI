@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-//   $Revision: 1.16.2.3 $
+//   $Revision: 1.16.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/07/07 21:10:47 $
+//   $Date: 2011/07/08 20:10:52 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,9 +55,8 @@ CTableauMatrix::CTableauMatrix(const std::vector< std::vector< C_FLOAT64 > > & s
                                        ReactionCounter,
                                        ReactionNumber));
 
-      if (reversibleNumber == 0)
+      if (ReactionCounter == reversibleNumber)
         {
-          mFirstIrreversible = mLine.end();
           mFirstIrreversible--;
         }
     }
