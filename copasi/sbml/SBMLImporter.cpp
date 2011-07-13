@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.35 $
+//   $Revision: 1.263.2.36 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/06/09 07:58:04 $
+//   $Date: 2011/07/13 19:34:23 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -9906,4 +9906,11 @@ bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
   return result;
 }
 
-
+void SBMLImporter::deleteCopasiModel()
+{
+  if (this->mpCopasiModel != NULL)
+    {
+      delete this->mpCopasiModel;
+      this->mpCopasiModel = NULL;
+    }
+}
