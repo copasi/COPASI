@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.84.2.2 $
+//   $Revision: 1.84.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:06:36 $
+//   $Date: 2011/07/13 17:44:17 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -308,11 +308,6 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
 bool CSteadyStateTask::process(const bool & useInitialValues)
 {
-  if (mpInitialState != NULL)
-    {
-      *mpInitialState = mpProblem->getModel()->getInitialState();
-    }
-
   if (useInitialValues)
     {
       mpProblem->getModel()->applyInitialValues();
