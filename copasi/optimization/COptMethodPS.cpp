@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.13.2.3 $
+//   $Revision: 1.13.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 12:51:09 $
+//   $Date: 2011/07/13 17:40:35 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -347,6 +347,13 @@ bool COptMethodPS::initialize()
                           & mIterationLimit);
 
   mSwarmSize = * getValue("Swarm Size").pUINT;
+
+  if (mSwarmSize < 5)
+    {
+      mSwarmSize = 5;
+      setValue(" Swarm Size", mSwarmSize);
+    }
+
   mVariance = *getValue("Std. Deviation").pUDOUBLE;
   mVariance *= mVariance;
 
