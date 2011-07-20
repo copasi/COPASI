@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:08 $
+//   $Author: jpahle $
+//   $Date: 2011/07/20 16:10:13 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <qsignalmapper>
+#include <QSignalMapper>
 #include <QComboBox>
 
 #include <QTableWidget>
