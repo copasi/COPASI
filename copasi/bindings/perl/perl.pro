@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/perl/perl.pro,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2011/05/25 15:12:15 $ 
+#   $Author: gauges $ 
+#   $Date: 2011/07/20 20:02:31 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,8 +31,8 @@ isEmpty(PERL_BIN){
   PERL_BIN = $$system(which perl)
 }
 
-isEmpty($$PERL_BIN) | !exists($$PERL_BIN){
-  error("Could not find R binary at \"$${PERL_BIN}\"."); 
+isEmpty(PERL_BIN) | !exists($$PERL_BIN){
+  error("Could not find perl binary at \"$${PERL_BIN}\"."); 
 }
 
 contains(BUILD_OS,WIN32){
@@ -67,7 +67,9 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  
+  QMAKE_LFLAGS -= -Wl,--no-undefined
 
 }
 
@@ -85,7 +87,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   LIBS += -L$${PERL_INCLUDES}/CORE
   LIBS += -lperl
@@ -98,7 +100,7 @@ contains(BUILD_OS, Darwin) {
 contains(BUILD_OS, WIN32) { 
   LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
   CONFIG -= staticlib
   CONFIG += dll
@@ -193,7 +195,13 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CLGraphicalObject.i \
                      ../swig/CLReactionGlyph.i \
                      ../swig/CLayout.i \
-                     ../swig/CListOfLayouts.i
+                     ../swig/CListOfLayouts.i \
+                     ../swig/CAnnotation.i \
+                     ../swig/CBiologicalDescription.i \
+                     ../swig/CModelMIRIAMInfo.i \
+                     ../swig/CCreator.i \
+                     ../swig/CModified.i \
+                     ../swig/CReference.i
 
 
 
