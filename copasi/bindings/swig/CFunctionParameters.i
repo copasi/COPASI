@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionParameters.i,v $ 
-//   $Revision: 1.6 $ 
+//   $Revision: 1.6.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:28 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/07/20 20:03:17 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -58,7 +58,7 @@
      *  @return "CFunctionParameter &" usageRange
      */
     const CFunctionParameter * getParameterByUsage(CFunctionParameter::Role usage,
-        unsigned C_INT32  pos) const
+        size_t  pos) const
     {
         return self->getParameterByUsage(usage,pos);
     }

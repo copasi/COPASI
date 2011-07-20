@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.22.2.2 $ 
+//   $Revision: 1.22.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/04/30 16:57:23 $ 
+//   $Date: 2011/07/20 20:03:17 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -86,6 +86,7 @@
 %catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
 %catches(CCopasiException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
 
+#ifdef SWIGPYTHON
 %exception importSBML {
    try {
       $action
@@ -94,6 +95,7 @@
       return false;
    }
 }
+#endif // SWIGPYTHON
 
 %include "CopasiDataModel/CCopasiDataModel.h"
 

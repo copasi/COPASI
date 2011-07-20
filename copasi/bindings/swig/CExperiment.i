@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CExperiment.i,v $ 
-//   $Revision: 1.3.2.1 $ 
+//   $Revision: 1.3.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2010/10/22 12:52:13 $ 
+//   $Date: 2011/07/20 20:03:17 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -36,7 +36,7 @@
 
 
 // read is rather useless since it takes an istream as its first argument
-%ignore CExperiment::read(std::istream&,unsigned C_INT32&);
+%ignore CExperiment::read(std::istream&,size_t&);
 
 %include "parameterFitting/CExperiment.h"
 
@@ -58,7 +58,7 @@
               CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 8, s.c_str());
               return false; // File can not be opened.
             }
-          unsigned C_INT32 n=0;
+          size_t n=0;
           result=$self->read(fin,n);
           fin.close();
        }
@@ -66,7 +66,7 @@
        {
           std::stringstream sin;
           sin.str(s);
-          unsigned C_INT32 n=0;
+          size_t n=0;
           result=$self->read(sin,n);
        }
        return result;
