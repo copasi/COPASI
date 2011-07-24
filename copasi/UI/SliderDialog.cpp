@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:15 $
+//   $Author: gauges $
+//   $Date: 2011/07/24 11:47:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -568,15 +568,22 @@ void SliderDialog::fillSliderBox()
 
           if (!found)
             {
-              setCurrentSlider(new CopasiSlider((*pVector)[i], mpParentWindow->getDataModel(), mpSliderBox));
-              connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
-              connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
-              connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
-              connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
-              connect(mpCurrSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
-              mpCurrSlider->installEventFilter(this);
-              mpCurrSlider->setHidden(true);
-              mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
+              CopasiSlider* pSlider = new CopasiSlider((*pVector)[i], mpParentWindow->getDataModel(), mpSliderBox);
+              assert(pSlider != NULL);
+
+              if (pSlider != NULL)
+                {
+                  this->updateSliderObject(pSlider);
+                  setCurrentSlider(pSlider);
+                  connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+                  connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
+                  connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
+                  connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
+                  connect(mpCurrSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
+                  mpCurrSlider->installEventFilter(this);
+                  mpCurrSlider->setHidden(true);
+                  mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
+                }
             }
         }
 
@@ -1052,7 +1059,6 @@ void SliderDialog::setFramework(int framework)
   // or concentration are still appropriate for the framework that has been set
   std::map<size_t, std::vector<QWidget*> >::iterator it = this->mSliderMap.begin(), endit = this->mSliderMap.end();
   std::vector<QWidget*>::iterator it2, endit2;
-  CCopasiObject *pObject = NULL, *pTmpObject = NULL;
   CopasiSlider* pSlider = NULL;
 
   while (it != endit)
@@ -1066,29 +1072,7 @@ void SliderDialog::setFramework(int framework)
 
           if (pSlider != NULL)
             {
-              pObject = pSlider->object();
-              assert(pObject != NULL);
-
-              if (pObject != NULL)
-                {
-                  pTmpObject = const_cast<CCopasiObject*>(this->determineCorrectObjectForSlider(pObject));
-
-                  if (pTmpObject != pObject)
-                    {
-                      // we have to recalculate the range
-                      double oldMin = pSlider->minValue();
-                      double oldMax = pSlider->maxValue();
-                      double oldValue = pSlider->value();
-                      // we have to set the new object on the slider
-                      pSlider->setObject(pTmpObject);
-                      double newValue =  pSlider->value();
-                      double newMin = (oldMin / oldValue) * newValue;
-                      double newMax = (oldMax / oldValue) * newValue;
-                      pSlider->setMinValue(newMin);
-                      pSlider->setMaxValue(newMax);
-                      changed = true;
-                    }
-                }
+              changed = this->updateSliderObject(pSlider);
             }
 
           ++it2;
@@ -1103,5 +1087,44 @@ void SliderDialog::setFramework(int framework)
     {
       this->update();
     }
+}
+
+/**
+ * Checks if the object on the slider fits the current framework
+ * and if not, changes the slider object to make it fit.
+ * The boolean return value determines if the slider was changed or not.
+ */
+bool SliderDialog::updateSliderObject(CopasiSlider* pSlider)
+{
+  bool changed = false;
+
+  if (pSlider != NULL)
+    {
+      CCopasiObject *pObject = pSlider->object();
+      assert(pObject != NULL);
+
+      if (pObject != NULL)
+        {
+          CCopasiObject* pTmpObject = const_cast<CCopasiObject*>(this->determineCorrectObjectForSlider(pObject));
+
+          if (pTmpObject != pObject)
+            {
+              // we have to recalculate the range
+              double oldMin = pSlider->minValue();
+              double oldMax = pSlider->maxValue();
+              double oldValue = pSlider->value();
+              // we have to set the new object on the slider
+              pSlider->setObject(pTmpObject);
+              double newValue =  pSlider->value();
+              double newMin = (oldMin / oldValue) * newValue;
+              double newMax = (oldMax / oldValue) * newValue;
+              pSlider->setMinValue(newMin);
+              pSlider->setMaxValue(newMax);
+              changed = true;
+            }
+        }
+    }
+
+  return changed;
 }
 
