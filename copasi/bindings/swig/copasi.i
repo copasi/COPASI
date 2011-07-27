@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.32.2.1 $ 
+//   $Revision: 1.32.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/04/27 20:30:36 $ 
+//   $Date: 2011/07/27 19:39:52 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -56,6 +56,7 @@
 %include "CAnnotatedMatrix.i"
 %include "CCopasiVector.i"
 %include "CEigen.i"
+%include "CObjectLists.i"
 %include "CFunctionParameter.i"
 %include "CFunctionParameters.i"
 %include "CCallParameters.i"
@@ -128,4 +129,6 @@
 %include "CCreator.i"
 %include "CModified.i"
 %include "CModelMIRIAMInfo.i"
-
+%include "CSensTask.i"
+%include "CSensProblem.i"
+%include "CSensMethod.i"

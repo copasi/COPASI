@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.27.2.3 $ 
+//   $Revision: 1.27.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 12:58:49 $ 
+//   $Date: 2011/07/27 19:39:52 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,6 +25,7 @@
 #include "utilities/CCopasiVector.h"
 #include <layout/CLBase.h>
 #include <layout/CLCurve.h>
+#include <model/CObjectLists.h>
 
 %}
 
@@ -222,6 +223,8 @@
 %template(ReferenceVector) CCopasiVector<CReference>;
 %template(ModificationVector) CCopasiVector<CModification>;
 
+%template(ObjectListTypeStdVector) std::vector<CObjectLists::ListType>;
+
 typedef CCopasiVectorN<CEvent> EventVectorN;
 
 typedef CCopasiVectorN<CEventAssignment> EventAssignmentVectorN;
@@ -275,4 +278,6 @@ typedef CCopasiVector<CBiologicalDescription> BiologicalDescriptionVector;
 typedef CCopasiVector<CCreator> CreatorVector;
 typedef CCopasiVector<CReference> ReferenceVector;
 typedef CCopasiVector<CModification> ModificationVector;
+
+typedef std::vector<CObjectLists::ListType> ObjectListTypeStdVector;
 

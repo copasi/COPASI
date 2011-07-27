@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/perl/perl.pro,v $ 
-#   $Revision: 1.4.2.2 $ 
+#   $Revision: 1.4.2.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/07/20 20:32:47 $ 
+#   $Date: 2011/07/27 19:39:51 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -201,50 +201,12 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CModelMIRIAMInfo.i \
                      ../swig/CCreator.i \
                      ../swig/CModified.i \
-                     ../swig/CReference.i
+                     ../swig/CReference.i \
+                     ../swig/CObjectLists.i \
+                     ../swig/CSensTask.i \
+                     ../swig/CSensProblem.i \
+                     ../swig/CSensMethod.i
 
-
-
-UNITTEST_FILES = unittests/Test_CChemEq.py \
-                 unittests/Test_CChemEqElement.py \
-                 unittests/Test_CCompartment.py \
-                 unittests/Test_CCopasiContainer.py \
-                 unittests/Test_CCopasiDataModel.py \
-                 unittests/Test_CCopasiMethod.py \
-                 unittests/Test_CCopasiObject.py \
-                 unittests/Test_CCopasiObjectName.py \
-                 unittests/Test_CCopasiParameter.py \
-                 unittests/Test_CCopasiParameterGroup.py \
-                 unittests/Test_CCopasiProblem.py \
-                 unittests/Test_CCopasiStaticString.py \
-                 unittests/Test_CCopasiTask.py \
-                 unittests/Test_CCopasiVector.py \
-                 unittests/Test_CEvaluationTree.py \
-                 unittests/Test_CFunction.py \
-                 unittests/Test_CFunctionDB.py \
-                 unittests/Test_CFunctionParameter.py \
-                 unittests/Test_CFunctionParameters.py \
-                 unittests/Test_CMatrix.py \
-                 unittests/Test_CMetab.py \
-                 unittests/Test_CModel.py \
-                 unittests/Test_CModelValue.py \
-                 unittests/Test_CMoiety.py \
-                 unittests/Test_COutputAssistant.py \
-                 unittests/Test_CReaction.py \
-                 unittests/Test_CReport.py \
-                 unittests/Test_CReportDefinition.py \
-                 unittests/Test_CReportDefinitionVector.py \
-                 unittests/Test_CState.py \
-                 unittests/Test_CTimeSeries.py \
-                 unittests/Test_CTrajectoryMethod.py \
-                 unittests/Test_CTrajectoryProblem.py \
-                 unittests/Test_CTrajectoryTask.py \
-                 unittests/Test_CVersion.py \
-                 unittests/Test_CEvent.py \
-                 unittests/Test_CreateSimpleModel.py \
-                 unittests/Test_RunSimulations.py \
-                 unittests/runTests.py 
- 
 
 
 #DISTFILE   = $$SWIG_INTERFACE_FILES

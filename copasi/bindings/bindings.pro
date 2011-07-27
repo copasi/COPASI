@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/bindings.pro,v $ 
-#   $Revision: 1.7.2.3 $ 
+#   $Revision: 1.7.2.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/07/20 20:04:23 $ 
+#   $Date: 2011/07/27 19:39:50 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
