@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example9.py,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.2.2.1 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:56:01 $ 
+#   $Author: gauges $ 
+#   $Date: 2011/07/27 12:58:29 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -103,7 +103,7 @@ def main():
       # object is a vector with two unsigned int elements
       # First element is the index for the outer dimension and the second element is the index
       # for the inner dimension
-      index=UIntStdVector(2)
+      index=SizeTStdVector(2)
       # since the rows and columns have the same annotation for the jacobian, it doesn't matter
       # for which dimension we get the annotations
       annotations = aj.getAnnotationsString(1)
