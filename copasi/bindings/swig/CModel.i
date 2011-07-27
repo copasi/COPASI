@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.17 $ 
+//   $Revision: 1.17.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/07/27 09:02:55 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -153,14 +153,31 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
     // for backwards compatibility
    unsigned C_INT32 getNumIndependentMetabs() const 
    {
+       std::cerr << "Calling getNumIndependentMetabs on CModel instances is obsolete, please use getNumIndependentReactionMetabs instead." << std::endl;
         return $self->getNumIndependentReactionMetabs();
    }
 
     // for backwards compatibility
    unsigned C_INT32 getNumDependentMetabs() const 
    {
-        return $self->getNumDependentReactionMetabs();
+       std::cerr << "Calling getNumDependentMetabs on CModel instances is obsolete, please use getNumDependentReactionMetabs instead." << std::endl;
+       return $self->getNumDependentReactionMetabs();
    }
+
+   // for backward compatibility
+   void setComments(const std::string& notes)
+   {
+      std::cerr << "Calling setComments on CModel instances is obsolete, please use setNotes instead." << std::endl;
+      self->setNotes(notes);
+   }
+
+   // for backward compatibility
+   const std::string& getComments() const
+   {
+     std::cerr << "Calling getComments on CModel instances is obsolete, please use getNotes instead." << std::endl;
+     return self->getNotes();
+   }
+
 }
 
 

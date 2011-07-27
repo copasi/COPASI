@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.27.2.1 $ 
+//   $Revision: 1.27.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/04/27 20:30:36 $ 
+//   $Date: 2011/07/27 09:02:55 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -79,6 +79,13 @@
   {
       return self->add(DISOWN,true);
   }
+
+#ifdef SWIGPYTHON
+ size_t __len__() const
+ {
+    return self->size();
+ }
+#endif // SWIGPYTHON
 
 }
 
@@ -171,6 +178,8 @@
 %template(ReportItemVector) std::vector<CRegisteredObjectName>;
 
 %template(CFunctionStdVector) std::vector<CFunction*>;
+%template(CFunctionVector) CCopasiVector<CFunction>;
+%template(CFunctionVectorN) CCopasiVectorN<CFunction>;
 
 %rename(removeObject) CCopasiVector<CEvaluationTree>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CEvaluationTree>::remove(const std::string& name);
@@ -234,7 +243,9 @@ typedef std::vector<CCopasiParameter*> ParameterVector;
 
 typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
 
-typedef std::vector<CFunction> CFunctionStdVector;
+typedef std::vector<CFunction*> CFunctionStdVector;
+typedef CCopasiVector<CFunction> CFunctionVector;
+typedef CCopasiVectorN<CFunction> CFunctionVectorN;
 
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
