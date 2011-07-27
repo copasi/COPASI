@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunParameterFitting.py,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.3.2.1 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
+#   $Author: gauges $ 
+#   $Date: 2011/07/27 09:01:34 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -22,7 +22,6 @@ import unittest
 from types import *
 import Test_CreateSimpleModel
 import math
-import pdb
 
 
 TIME_COURSE_DATA="""
