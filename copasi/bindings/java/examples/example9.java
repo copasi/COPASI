@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example9.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.2.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:00 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/07/27 12:57:48 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -119,7 +119,7 @@ public class example9
        // object is a vector with two unsigned int elements
        // First element is the index for the outer dimension and the second element is the index
        // for the inner dimension
-       UIntStdVector index=new UIntStdVector(2);
+       SizeTStdVector index=new SizeTStdVector(2);
        // since the rows and columns have the same annotation for the jacobian, it doesn't matter
        // for which dimension we get the annotations
        StringStdVector annotations = aj.getAnnotationsString(1);
