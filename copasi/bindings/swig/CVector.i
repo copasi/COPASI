@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CVector.i,v $ 
-//   $Revision: 1.8 $ 
+//   $Revision: 1.8.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/07/27 12:17:54 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -27,17 +27,17 @@
 %}
 
 %ignore operator<<;
-%ignore operator[](const unsigned C_INT32 & );
-%ignore operator[](const unsigned C_INT32 & ) const;
-%ignore operator()(const unsigned C_INT32 & );
-%ignore operator()(const unsigned C_INT32 & ) const;
+%ignore operator[](const size_t & );
+%ignore operator[](const size_t & ) const;
+%ignore operator()(const size_t & );
+%ignore operator()(const size_t & ) const;
 %ignore operator = (const CType &);
 %ignore operator = (const CVector <CType> &);
 %ignore CVectorCore::array() const;
 %ignore CVectorCore::array();
 %ignore CVector::resize;
 %ignore CVector::applyPivot;
-%ignore CVectorCore::CVectorCore(const unsigned C_INT32&, CType*);
+%ignore CVectorCore::CVectorCore(const size_t&, CType*);
 
 %warnfilter(362) operator=;
 %warnfilter(389) operator[];

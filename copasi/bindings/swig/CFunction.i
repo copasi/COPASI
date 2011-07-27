@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunction.i,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.5.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/07/27 12:17:54 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -27,6 +27,7 @@
 %}
 
 %ignore operator<<;
+%ignore CFunction::operator==;
 %ignore CFunction::load;
 %ignore CFunction::dependsOn;
 %ignore CFunction::splitFunction;

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionParameters.i,v $ 
-//   $Revision: 1.6.2.1 $ 
+//   $Revision: 1.6.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/20 20:03:17 $ 
+//   $Date: 2011/07/27 12:17:54 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -27,8 +27,8 @@
 %}
 
 
-%ignore CFunctionParameters::operator[](unsigned C_INT32);
-%ignore CFunctionParameters::operator[](unsigned C_INT32) const;
+%ignore CFunctionParameters::operator[](size_t);
+%ignore CFunctionParameters::operator[](size_t) const;
 %ignore CFunctionParameters::operator[](const std::string&);
 %ignore CFunctionParameters::operator[](const std::string&) const;
 %ignore CFunctionParameters::operator= (const CFunctionParameters&);
