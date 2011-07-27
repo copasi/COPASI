@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReaction.i,v $ 
-//   $Revision: 1.14 $ 
+//   $Revision: 1.14.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:28 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/07/27 13:57:23 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -39,6 +39,31 @@
 %ignore CReaction::getChemEq() const;
 %ignore CReaction::getParameters() const;
 
+%extend CReaction{
+  // the CAnnotation functionality has to be added manually because
+  // Java does not know about multiple inheritance
+  void setNotes(const std::string& notes)
+  {
+    self->setNotes(notes);
+  } 
+
+  const std::string& getNotes() const
+  {
+    return self->getNotes();
+  } 
+
+  const std::string& getMiriamAnnotation() const
+  {
+    return self->getMiriamAnnotation();
+  }
+
+  void setMiriamAnnotation(const std::string& miriamAnnotation,
+                           const std::string& newId,
+                           const std::string& oldId)
+  {
+	self->setMiriamAnnotation(miriamAnnotation,newId,oldId);
+  } 
+}
 #endif // SWIGJAVA
 
 %catches(CCopasiException) CReaction::getLargestCompartment() const;

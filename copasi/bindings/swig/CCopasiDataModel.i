@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.22.2.4 $ 
+//   $Revision: 1.22.2.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 12:17:54 $ 
+//   $Date: 2011/07/27 13:57:22 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -168,17 +168,30 @@
     }
 
     // needed for CellDesigner
-    static const CVersion* getVersion() const
+    const CVersion* getVersion() const
     {
         std::cerr << "Calling static method getVersion on CCopasiDataModel is obsolete, please use static method getVERSION() from CVersion instead." << std::endl; 
         return &CVersion::VERSION;
     }
 
-    //bool importSBML(const std::string& fileName)
-    //{
-    //    return self->importSBML(fileName,NULL,true);
-    //}
-
+    // needed for CellDesigner
+    static CCopasiDataModel* getGlobal()
+    {
+        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl; 
+        // check if there is a model and if not, create one
+        CCopasiDataModel* pDatamodel=NULL;
+        if(CCopasiRootContainer::getDatamodelList()->size() != 0)
+        {
+            pDatamodel=(*CCopasiRootContainer::getDatamodelList())[0];
+        }
+        else
+        {
+            pDatamodel=CCopasiRootContainer::addDatamodel();
+        }
+        assert(pDatamodel != NULL);
+        return pDatamodel;
+	
+    }	
 #endif // SWIGJAVA
 };
 
