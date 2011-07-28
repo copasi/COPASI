@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.27.2.4 $ 
+//   $Revision: 1.27.2.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 19:39:52 $ 
+//   $Date: 2011/07/28 09:12:18 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -67,7 +67,7 @@
 // get a pointer to the correct type
 %extend CCopasiVector
 {
-  virtual CCopasiObject* get(unsigned C_INT32 index)
+  virtual CCopasiObject* get(size_t index)
   {
       return (CCopasiObject*)((*self)[index]);
   }
@@ -200,7 +200,6 @@
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
-%template(UIntStdVector) std::vector<unsigned int>;
 %template(SizeTStdVector) std::vector<size_t>;
 
 %template(StringStdVector) std::vector<std::string>;
@@ -256,7 +255,6 @@ typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
 typedef std::vector<C_INT32> IntStdVector;
-typedef std::vector<unsigned int> UIntStdVector;
 typedef std::vector<size_t> SizeTStdVector;
 
 typedef std::vector<C_FLOAT64> FloatStdVector;
