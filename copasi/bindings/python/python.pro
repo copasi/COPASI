@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.30.2.2 $ 
+#   $Revision: 1.30.2.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/07/27 19:39:52 $ 
+#   $Date: 2011/07/28 08:44:49 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -134,96 +134,7 @@ contains(BUILD_OS, WIN32) {
 }
 
 
-SWIG_INTERFACE_FILES=../swig/CChemEq.i \
-                     ../swig/CChemEqElement.i \
-                     ../swig/CCompartment.i \
-                     ../swig/CCopasiContainer.i \
-                     ../swig/CCopasiDataModel.i \
-                     ../swig/CCopasiException.i \
-		     ../swig/CCopasiMessage.i \
-		     ../swig/messages.i \
-                     ../swig/CCopasiMethod.i \
-                     ../swig/CCopasiObject.i \
-                     ../swig/CCopasiObjectReference.i \
-                     ../swig/CCopasiObjectName.i \
-                     ../swig/CCopasiParameter.i \
-                     ../swig/CCopasiParameterGroup.i \
-                     ../swig/CCopasiProblem.i \
-                     ../swig/CCopasiRootContainer.i \
-                     ../swig/CCopasiStaticString.i \
-                     ../swig/CCopasiTask.i \
-                     ../swig/CCopasiVector.i \
-                     ../swig/CExpression.i \
-                     ../swig/CEvaluationTree.i \
-                     ../swig/CFunction.i \
-                     ../swig/CCallParameters.i \
-                     ../swig/CFunctionDB.i \
-                     ../swig/CFunctionParameter.i \
-                     ../swig/CFunctionParameters.i \
-                     ../swig/CKeyFactory.i \
-                     ../swig/CMatrix.i \
-                     ../swig/CMetab.i \
-                     ../swig/CModel.i \
-                     ../swig/CModelValue.i \
-                     ../swig/CMoiety.i \
-		     ../swig/CNewtonMethod.i \
-                     ../swig/COutputAssistant.i \
-                     ../swig/COutputHandler.i \
-                     ../swig/CRandom.i \
-                     ../swig/CReaction.i \
-                     ../swig/CReport.i \
-                     ../swig/CReportDefinition.i \
-                     ../swig/CReportDefinitionVector.i \
-       		     ../swig/CScanMethod.i \
-		     ../swig/CScanProblem.i \
-		     ../swig/CScanTask.i \
-                     ../swig/CState.i \
-       		     ../swig/CSteadyStateMethod.i \
-		     ../swig/CSteadyStateProblem.i \
-		     ../swig/CSteadyStateTask.i \
-                     ../swig/CTimeSeries.i \
-                     ../swig/CTrajectoryMethod.i \
-                     ../swig/CTrajectoryProblem.i \
-                     ../swig/CTrajectoryTask.i \
-                     ../swig/CVersion.i \
-                     ../swig/CLyapMethod.i \
-                     ../swig/CLyapProblem.i \
-                     ../swig/CLyapTask.i \
-                     ../swig/COptItem.i \
-                     ../swig/COptMethod.i \
-                     ../swig/COptProblem.i \
-                     ../swig/COptTask.i \
-                     ../swig/CVector.i \
-                     ../swig/CFitMethod.i \
-                     ../swig/CFitProblem.i \
-                     ../swig/CEvent.i \
-                     ../swig/CFitTask.i \
-                     ../swig/CExperimentFileInfo.i \
-                     ../swig/CExperiment.i \
-                     ../swig/CExperimentSet.i \
-                     ../swig/CExperimentObjectMap.i \
-                     ../swig/CFitItem.i \
-                     ../swig/compare_utilities.i \
-                     ../swig/copasi.i \
-                     ../swig/CCopasiArray.i \
-                     ../swig/CLBase.i \
-                     ../swig/CLCurve.i \
-                     ../swig/CLGlyphs.i \
-                     ../swig/CLGraphicalObject.i \
-                     ../swig/CLReactionGlyph.i \
-                     ../swig/CLayout.i \
-                     ../swig/CListOfLayouts.i \
-                     ../swig/CAnnotation.i \
-                     ../swig/CBiologicalDescription.i \
-                     ../swig/CModelMIRIAMInfo.i \
-                     ../swig/CCreator.i \
-                     ../swig/CModified.i \
-                     ../swig/CReference.i \
-                     ../swig/CObjectLists.i \
-                     ../swig/CSensTask.i \
-                     ../swig/CSensProblem.i \
-                     ../swig/CSensMethod.i
-
+include(../common/swig_files.pri)
 
 
 UNITTEST_FILES = unittests/Test_CChemEq.py \

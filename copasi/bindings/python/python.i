@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.27 $ 
+//   $Revision: 1.27.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:01 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/07/28 08:44:49 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -39,14 +39,6 @@
 {
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCOptItem($1), 0);
 }
-
-/**
- * Convert CExperimentSet objects into the most specific type possible.
-%typemap(out) CExperimentSet*
-{
-  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCExperimentSet($1), 0);
-}
- */
 
 /**
  * Convert CCopasiAbstractArray objects into the most specific type possible.
