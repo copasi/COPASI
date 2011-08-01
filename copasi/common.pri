@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.127 $ 
+#   $Revision: 1.128 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.127 $ $Author: shoops $ $Date: 2011/05/25 15:12:17 $  
+# $Revision: 1.128 $ $Author: shoops $ $Date: 2011/08/01 17:43:47 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -34,11 +34,11 @@ isEmpty(BUILD_OS) {
         QMAKE_QMAKE = qmake.exe
         !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=???.")
       } else {
-        QMAKE_QMAKE = $(QTDIR)\bin\qmake.exe
+        QMAKE_QMAKE = $(QTDIR)/bin/qmake.exe
         !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
       }
 	} else {
-      QMAKE_QMAKE = $(QT4DIR)\bin\qmake.exe
+      QMAKE_QMAKE = $(QT4DIR)/bin/qmake.exe
       !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=$(QT4DIR).")
 	}
 
@@ -239,8 +239,8 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS   += /LIBPATH:\""$${INTELRD_PATH}"\"
   }
   
-  QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
-  QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
+  QMAKE_LEX = C:/cygwin/bin/bash ../../admin/flex.sh
+  QMAKE_YACC = C:/cygwin/bin/bash ../../admin/yacc.sh
 
   DEFINES -= UNICODE
   DEFINES += _CRT_SECURE_NO_WARNINGS
@@ -306,34 +306,35 @@ contains(BUILD_OS, WIN32) {
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
-    QMAKE_CXXFLAGS += -I\""$${MKL_PATH}"\include\"
+    QMAKE_CXXFLAGS += -I\""$${MKL_PATH}"/include\"
 
     contains(COPASI_ARCH, 32) {
-      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\ia32\lib\"
-      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\ia32\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"/ia32/lib\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"/../lib/ia32\"
       LIBS += mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib -Qopenmp libguide.lib
     } else {
-      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\em64t\lib\"
-      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"\..\lib\intel64\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"/em64t/lib\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${MKL_PATH}"/../lib/intel64\"
       LIBS += mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib -Qopenmp libguide.lib
     }
   } else {
     !isEmpty(LAPACK_PATH) {
       DEFINES += USE_LAPACK
-      QMAKE_CXXFLAGS   += -I\""$${LAPACK_PATH}"\include\"
-      QMAKE_LFLAGS += /LIBPATH:\""$${LAPACK_PATH}\lib\\$${COPASI_ARCH}"\"
+      QMAKE_CXXFLAGS   += -I\""$${LAPACK_PATH}"/include\"
+      QMAKE_LFLAGS += /LIBPATH:\""$${LAPACK_PATH}/lib/$${COPASI_ARCH}"\"
       debug {
         LIBS += blasD.lib lapackD.lib
       }
       release {
-        LIBS += blas.lib lapack.lib
+        LIBS += blas.lib lapack.lib ifconsol.lib libifcoremt.lib libifport.lib libirc.lib libmmt.lib svml_dispmt.lib
       }
+      LIBS += ifconsol.lib libifcoremt.lib libifport.lib libirc.lib libmmt.lib svml_dispmt.lib
     } else {
       !isEmpty(CLAPACK_PATH) {
         DEFINES += USE_CLAPACK
-        QMAKE_CXXFLAGS   += -I\""$${CLAPACK_PATH}"\include\"
-        QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}"\lib\"
-        QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}\lib\\$${COPASI_ARCH}"\"
+        QMAKE_CXXFLAGS   += -I\""$${CLAPACK_PATH}"/include\"
+        QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}"/lib\"
+        QMAKE_LFLAGS += /LIBPATH:\""$${CLAPACK_PATH}/lib/$${COPASI_ARCH}"\"
         LIBS += clapack.lib
       } else {
         error( "Either MKL_PATH, LPACK_PATH, or CLAPACK_PATH must be specified" )
@@ -346,12 +347,12 @@ contains(BUILD_OS, WIN32) {
   LIBS += libexpat$${RUNTIME}.lib
 
   !isEmpty(EXPAT_PATH) {
-    QMAKE_CXXFLAGS += -I\""$${EXPAT_PATH}"\Source\lib\"
-    QMAKE_CXXFLAGS += -I\""$${EXPAT_PATH}"\include\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\StaticLibs\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\bin\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"\lib\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}\lib\\$${COPASI_ARCH}"\"
+    QMAKE_CXXFLAGS += -I\""$${EXPAT_PATH}"/Source/lib\"
+    QMAKE_CXXFLAGS += -I\""$${EXPAT_PATH}"/include\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"/StaticLibs\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"/bin\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}"/lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${EXPAT_PATH}/lib/$${COPASI_ARCH}"\"
   } else {
     error( "EXPAT_PATH must be specified" )
   }
@@ -359,10 +360,10 @@ contains(BUILD_OS, WIN32) {
   LIBS += libsbml$${RUNTIME}.lib
   
   !isEmpty(SBML_PATH) {
-    QMAKE_CXXFLAGS += -I\""$${SBML_PATH}"\include\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"\lib\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}\lib\\$${COPASI_ARCH}"\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"\bin\"
+    QMAKE_CXXFLAGS += -I\""$${SBML_PATH}"/include\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"/lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}/lib/$${COPASI_ARCH}"\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${SBML_PATH}"/bin\"
   } else {
     error( "SBML_PATH must be specified" )
   }
@@ -371,9 +372,9 @@ contains(BUILD_OS, WIN32) {
   LIBS += raptor$${RUNTIME}.lib
     
   !isEmpty(RAPTOR_PATH) {
-    QMAKE_CXXFLAGS += -I\""$${RAPTOR_PATH}"\include\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}"\lib\"
-    QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}\lib\\$${COPASI_ARCH}"\"
+    QMAKE_CXXFLAGS += -I\""$${RAPTOR_PATH}"/include\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}"/lib\"
+    QMAKE_LFLAGS   += /LIBPATH:\""$${RAPTOR_PATH}/lib/$${COPASI_ARCH}"\"
   } else {
     error( "RAPTOR_PATH must be specified" )
   }
@@ -382,9 +383,9 @@ contains(BUILD_OS, WIN32) {
     LIBS    += SBW$${RUNTIME}.lib ws2_32.lib
 
     !isEmpty(SBW_PATH){
-      QMAKE_CXXFLAGS += -I\""$${SBW_PATH}"\include\"
-      QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}"\lib\"
-      QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}\lib\\$${COPASI_ARCH}"\"
+      QMAKE_CXXFLAGS += -I\""$${SBW_PATH}"/include\"
+      QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}"/lib\"
+      QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}/lib/$${COPASI_ARCH}"\"
       
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES *= WIN32
@@ -399,7 +400,7 @@ contains(BUILD_OS, WIN32) {
     debug: LIBS += -lqwtD
     
     !isEmpty(QWT3D_PATH){
-      LIBS += -L\""$${QWT3D_PATH}"/lib/\"
+      LIBS += -L\""$${QWT3D_PATH}"/lib\"
       INCLUDEPATH += \""$${QWT3D_PATH}"/include\"
     } 
 
