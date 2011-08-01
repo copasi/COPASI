@@ -6,7 +6,7 @@ echo echo running: configure.bat %* >> config.status.bat
 echo configure.bat %* >> config.status.bat
 
 set arguments=
-set PROJECT=win32-msvc2005
+set PROJECT=%QMAKESPEC%
 
 :LOOP
 if '%1' == ''                      goto QMAKE
@@ -68,7 +68,7 @@ del copasi\CopasiUI\release\main.obj
 del copasi\CopasiSE\debug\CopasiSE.obj
 del copasi\CopasiSE\release\CopasiSE.obj
 
-rem Rmemeber the user setting
+rem Remeber the user setting
 set MY_QMAKESPEC=%QMAKESPEC%
 
 cd copasi
