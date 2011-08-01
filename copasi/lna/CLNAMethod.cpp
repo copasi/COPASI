@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lna/CLNAMethod.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:44 $
+//   $Author: shoops $
+//   $Date: 2011/08/01 17:45:33 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -733,7 +733,7 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!pP)
     {
       //not a CLNAProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a LNA problem.");
+      CCopasiMessage(CCopasiMessage::ERROR, "Problem is not a LNA problem.");
       return false;
     }
 
@@ -746,19 +746,19 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
   // explicit ODEs.
   if (pModel->getNumAssignmentMetabs() > 0)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "LNA is not applicable for a system with species assignments.");
+      CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with species assignments.");
       return false;
     }
 
   if (pModel->getNumODEMetabs() > 0)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "LNA is not applicable for a system with explicit ODEs for species.");
+      CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with explicit ODEs for species.");
       return false;
     }
 
   if (pModel->getCompartments().size() > 1)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "LNA is not applicable for a system with more than one compartment.");
+      CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with more than one compartment.");
       return false;
     }
 
@@ -769,7 +769,7 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
   for (; it != end; ++it)
     if ((*it)->getStatus() != CModelEntity::FIXED)
       {
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "LNA is not applicable for a system with changing volumes, e.g. compartment assignments or ODEs.");
+        CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with changing volumes, e.g. compartment assignments or ODEs.");
         return false;
       }
 
@@ -782,7 +782,7 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
       // TEST isReversible() == 0
       if (reacs[i]->isReversible() != 0)
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, "At least one reaction is reversible. That means it is not possible to calculate the LNA. \nYou can use \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you should check the kinetics afterwards.");
+          CCopasiMessage(CCopasiMessage::ERROR, "At least one reaction is reversible. That means it is not possible to calculate the LNA. \nYou can use \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you should check the kinetics afterwards.");
           return false;
         }
     }
