@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.129 $
+//   $Revision: 1.130 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:16 $
+//   $Date: 2011/08/01 17:11:35 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,7 +127,7 @@ bool SteadyStateWidget::taskFinishedEvent()
   if (pResult)
     pResult->loadResult();
 
-  if (success && isShown())
+  if (success && isVisible())
     mpListView->switchToOtherWidget(211, ""); //change to the results window
 
   return success;

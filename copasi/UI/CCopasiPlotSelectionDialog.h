@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:58 $
+//   $Author: aekamal $
+//   $Date: 2011/08/01 17:11:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,9 +25,7 @@
 
 #include <vector>
 
-#include <qdialog.h>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QDialog>
 #include <QLabel>
 
 #include "UI/CQSimpleSelectionTree.h"
@@ -36,9 +34,8 @@ class QWidget;
 class QPushButton;
 class QSplitter;
 class QCheckBox;
-class Q3VBox;
-class Q3HBoxLayout;
-class Q3VBoxLayout;
+class QHBoxLayout;
+class QVBoxLayout;
 class QLabel;
 class CCopasiObject;
 class CModel;
@@ -71,12 +68,12 @@ protected:
   CCopasiSelectionWidget* mpXAxisSelectionWidget;
   CCopasiSelectionWidget* mpYAxisSelectionWidget;
   QSplitter* mpSplitter;
-  Q3HBoxLayout* mpButtonBox;
-  Q3VBoxLayout* mpMainLayout;
+  QHBoxLayout* mpButtonBox;
+  QVBoxLayout* mpMainLayout;
   QLabel* mpXAxisLabel;
   QLabel* mpYAxisLabel;
-  Q3VBox* mpXAxisSelectionBox;
-  Q3VBox* mpYAxisSelectionBox;
+  QWidget* mpXAxisSelectionBox;
+  QWidget* mpYAxisSelectionBox;
   std::vector< const CCopasiObject * > * mpXAxisOutputVector;
   std::vector< const CCopasiObject * > * mpYAxisOutputVector;
 };

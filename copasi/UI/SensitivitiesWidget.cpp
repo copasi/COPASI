@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:09 $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,6 @@
 
 #include <QImage>
 #include <QFrame>
-#include <QFileDialog>
 #include <QtDebug>
 
 #include <algorithm>
@@ -277,7 +276,7 @@ bool SensitivitiesWidget::taskFinishedEvent()
 
   if (pResult) pResult->newResult();
 
-  if (success && isShown()) mpListView->switchToOtherWidget(341, ""); //change to the results window
+  if (success && isVisible()) mpListView->switchToOtherWidget(341, ""); //change to the results window
 
   return success;
 }
@@ -300,7 +299,7 @@ bool SensitivitiesWidget::loadTask()
   assert(method);
 
   //mSubTaskType = problem->getSubTaskType();
-  SubTaskChooser->setCurrentItem((int)problem->getSubTaskType());
+  SubTaskChooser->setCurrentIndex((int)problem->getSubTaskType());
   updateComboBoxes(problem->getSubTaskType());
 
   CSensItem tmp = problem->getTargetFunctions();
@@ -419,8 +418,8 @@ SensitivitiesWidget::initCombos()
       ++i;
     }
 
-  SubTaskChooser->insertStringList(StringList);
-  SubTaskChooser->setCurrentItem(0);
+  SubTaskChooser->insertItems(SubTaskChooser->count(), StringList);
+  SubTaskChooser->setCurrentIndex(0);
   updateComboBoxes((CSensProblem::SubTaskType)0);
 }
 

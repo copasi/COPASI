@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:50 $
+//   $Author: aekamal $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,10 +47,13 @@
 
 CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, Qt::WFlags fl,
     bool /* barChart */ , bool slider)
-    : Q3VBox(parent, name, fl),
+    : QWidget(parent, fl),
     mpPlot3d(NULL),
     mpColorScale(NULL)
 {
+  setObjectName(QString::fromUtf8(name));
+  QVBoxLayout *vBox = new QVBoxLayout(this);
+  setLayout(vBox);
 #ifdef DEBUG_UI
   qDebug() << "-- in constructor -- \n";
 #endif
@@ -62,9 +65,11 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mBarChartFilled = false;
 //  mBarChartFilled = true;
 
-  mpHBoxSelection = new Q3HBox(this);
-  mpHBoxSelection->setSpacing(4);
-  mpHBoxSelection->setMargin(4);
+  mpHBoxSelection = new QWidget(this);
+  QHBoxLayout *hBox1 = new QHBoxLayout(this);
+  mpHBoxSelection->setLayout(hBox1);
+  mpHBoxSelection->layout()->setSpacing(4);
+  mpHBoxSelection->layout()->setContentsMargins(4, 4, 4, 4);
 
   mpSelectionTable = new Q3Table(mpHBoxSelection);
   mpSelectionTable->verticalHeader()->hide();
@@ -88,7 +93,9 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
     }
 
   mpHBoxSelection->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-  mpHBoxContents = new Q3HBox(this);
+  mpHBoxContents = new QWidget(this);
+  QHBoxLayout *hBox2 = new QHBoxLayout(this);
+  mpHBoxContents->setLayout(hBox2);
 
 //  mpStack = new Q3WidgetStack(mpHBoxContents);
   mpStack = new QStackedWidget(mpHBoxContents);

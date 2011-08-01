@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CLNAResultSubwidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:45 $
+//   $Author: aekamal $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,12 +21,10 @@
 
 #include "CLNAResultSubwidget.h"
 
-#include <qfileinfo.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qpainter.h>
-#include <q3picture.h>
-
+#include <QFileInfo>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QPainter>
 #include <QMessageBox>
 
 #include "copasi.h"
@@ -90,9 +88,9 @@ void CLNAResultSubwidget::loadAll(const CLNAMethod * lnaMethod)
           this->loadCovarianceMatrix(lnaMethod);
           this->loadCovarianceMatrixReduced(lnaMethod);
           this->loadBMatrixReduced(lnaMethod);
-          mTabWidget->setTabEnabled(mTabWidget->page(0), true);
-          mTabWidget->setTabEnabled(mTabWidget->page(1), true);
-          mTabWidget->setTabEnabled(mTabWidget->page(2), true);
+          mTabWidget->setTabEnabled(0, true);
+          mTabWidget->setTabEnabled(1, true);
+          mTabWidget->setTabEnabled(2, true);
         }
       else if ((lnaMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium) && (lnaMethod->getEigenValueStatus() == CLNAMethod::allNeg))
         {
@@ -100,9 +98,9 @@ void CLNAResultSubwidget::loadAll(const CLNAMethod * lnaMethod)
           this->loadCovarianceMatrix(lnaMethod);
           this->loadCovarianceMatrixReduced(lnaMethod);
           this->loadBMatrixReduced(lnaMethod);
-          mTabWidget->setTabEnabled(mTabWidget->page(0), true);
-          mTabWidget->setTabEnabled(mTabWidget->page(1), true);
-          mTabWidget->setTabEnabled(mTabWidget->page(2), true);
+          mTabWidget->setTabEnabled(0, true);
+          mTabWidget->setTabEnabled(1, true);
+          mTabWidget->setTabEnabled(2, true);
         }
       else
         {
@@ -141,7 +139,7 @@ void CLNAResultSubwidget::loadCovarianceMatrix(const CLNAMethod * lnaMethod)
 {
   const CArrayAnnotation * covarianceMatrixAnn;
 
-  if (mComboScale->currentItem() == 0)
+  if (mComboScale->currentIndex() == 0)
     {
       covarianceMatrixAnn = lnaMethod->getScaledCovarianceMatrixAnn();
 
@@ -165,7 +163,7 @@ void CLNAResultSubwidget::loadCovarianceMatrixReduced(const CLNAMethod * lnaMeth
 {
   const CArrayAnnotation * covarianceMatrixReducedAnn;
 
-  if (mComboScale->currentItem() == 0)
+  if (mComboScale->currentIndex() == 0)
     {
       covarianceMatrixReducedAnn = lnaMethod->getScaledCovarianceMatrixReducedAnn();
 
@@ -189,7 +187,7 @@ void CLNAResultSubwidget::loadBMatrixReduced(const CLNAMethod * lnaMethod)
 {
   const CArrayAnnotation * bMatrixReducedAnn;
 
-  if (mComboScale->currentItem() == 0)
+  if (mComboScale->currentIndex() == 0)
     {
       bMatrixReducedAnn = lnaMethod->getScaledBMatrixReducedAnn();
 

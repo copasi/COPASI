@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CMCAResultWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:07 $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,9 +41,9 @@ CMCAResultWidget::CMCAResultWidget(QWidget* parent, const char* name, Qt::WFlags
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
-    setName("CMCAResultWidget");
+    setObjectName("CMCAResultWidget");
 
-  setCaption(trUtf8("CMCAResultWidget"));
+  setWindowTitle(trUtf8("CMCAResultWidget"));
 
   mWidgetLayout = new QGridLayout(this);
   mWidgetLayout->setObjectName("Layout");

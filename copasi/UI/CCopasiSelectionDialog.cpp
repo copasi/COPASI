@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:07 $
+//   $Date: 2011/08/01 17:11:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -267,7 +267,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
 
   CQMatrixDialog * pDialog = new CQMatrixDialog();
 
-  pDialog->setWindowTitle(tr(FROM_UTF8(caption) + "Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName())));
+  pDialog->setWindowTitle(tr(TO_UTF8(FROM_UTF8(caption) + "Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName()))));
   pDialog->setArray(pArrayAnnotation, single);
 
   int Result = pDialog->exec();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/26 13:13:04 $
+//   $Author: aekamal $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <q3progressdialog.h>
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qwaitcondition.h>
@@ -58,7 +57,7 @@ CProgressBar * CProgressBar::create(QWidget* parent, const char* name,
 
 CProgressBar::CProgressBar(QWidget* parent, const char* name,
                            bool modal, Qt::WFlags fl):
-    CQProgressDialog(parent, name, modal, fl | Qt::WStyle_Minimize),
+    CQProgressDialog(parent, name, modal, fl | Qt::WindowMinimizeButtonHint),
     CProcessReport(),
     mProgressItemList(1),
     mNextEventProcessing(QDateTime::currentDateTime()),
@@ -346,7 +345,7 @@ void CProgressBar::slotSetName(QString name)
 {
   QMutexLocker Locker(&mMutex);
 
-  setCaption(name);
+  setWindowTitle(name);
   CProcessReport::setName(TO_UTF8(name));
 
   mSlotFinished = true;

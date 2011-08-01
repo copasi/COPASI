@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Author: aekamal $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,16 +23,12 @@
 #ifndef CQMATHMATRIX_H
 #define CQMATHMATRIX_H
 
-//#include <qvbox.h>
 #include "UI/copasiWidget.h"
 #include "CQArrayAnnotationsWidget.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "mathematics.h"
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <QLabel>
 
-class Q3GridLayout;
+class QGridLayout;
 //class QLineEdit;
 class QLabel;
 class QTabWidget;
@@ -50,7 +51,7 @@ protected:
   void loadMatrices();
   void clearArrays();
 
-  Q3GridLayout* mWidgetLayout;
+  QGridLayout* mWidgetLayout;
 
   QLabel* mLabelTitle;
 

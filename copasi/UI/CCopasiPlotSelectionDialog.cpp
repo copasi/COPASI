@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:49 $
+//   $Author: aekamal $
+//   $Date: 2011/08/01 17:11:33 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,11 +26,8 @@
 #include <qcheckbox.h>
 #include <qlabel.h>
 #include <qsplitter.h>
-#include <q3hbox.h>
-#include <q3vbox.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #include "copasi.h"
 
@@ -42,7 +39,7 @@
 #include "report/CCopasiObject.h"
 
 CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags f):
-    QDialog(parent, name, modal, f)
+    QDialog(parent, f)
     , mpOKButton(NULL)
     , mpCancelButton(NULL)
     , mpExpertCheckBox(NULL)
@@ -58,53 +55,58 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
     , mpXAxisOutputVector(NULL)
     , mpYAxisOutputVector(NULL)
 {
-  mpMainLayout = new Q3VBoxLayout(this);
+  setObjectName(QString::fromUtf8(name));
+  setModal(modal);
+  mpMainLayout = new QVBoxLayout(this);
 
   mpSplitter = new QSplitter(this);
   mpSplitter->setOrientation(Qt::Horizontal);
   mpMainLayout->addWidget(mpSplitter);
 
-  mpButtonBox = new Q3HBoxLayout(mpMainLayout);
+  mpButtonBox = new QHBoxLayout(this);
+  mpMainLayout->addLayout(mpButtonBox);
 
   mpOKButton = new QPushButton(this);
   mpOKButton->setText("OK");
   mpOKButton->setDefault(true);
-  mpButtonBox->add(mpOKButton);
+  mpButtonBox->addWidget(mpOKButton);
 
   mpCancelButton = new QPushButton(this);
   mpCancelButton->setText("Cancel");
-  mpButtonBox->add(mpCancelButton);
+  mpButtonBox->addWidget(mpCancelButton);
 
   mpExpertCheckBox = new QCheckBox(this);
   mpExpertCheckBox->setText("Expert Mode");
   mpExpertCheckBox->setChecked(false);
-  mpButtonBox->add(mpExpertCheckBox);
+  mpButtonBox->addWidget(mpExpertCheckBox);
 
-  mpXAxisSelectionBox = new Q3VBox(mpSplitter);
-  mpXAxisSelectionBox->layout()->setMargin(5);
-  mpXAxisSelectionBox->layout()->setAutoAdd(false);
+  mpXAxisSelectionBox = new QWidget(mpSplitter);
+  QVBoxLayout *vBox1 = new QVBoxLayout(mpXAxisSelectionBox);
+  mpXAxisSelectionBox->setLayout(vBox1);
+  mpXAxisSelectionBox->layout()->setContentsMargins(5, 5, 5, 5);
 
-  mpYAxisSelectionBox = new Q3VBox(mpSplitter);
-  mpYAxisSelectionBox->layout()->setMargin(5);
-  mpYAxisSelectionBox->layout()->setAutoAdd(false);
+  mpYAxisSelectionBox = new QWidget(mpSplitter);
+  QVBoxLayout *vBox2 = new QVBoxLayout(mpYAxisSelectionBox);
+  mpYAxisSelectionBox->setLayout(vBox2);
+  mpYAxisSelectionBox->layout()->setContentsMargins(5, 5, 5, 5);
 
   mpXAxisLabel = new QLabel("X-Axis:", mpXAxisSelectionBox);
   mpXAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-  mpXAxisSelectionBox->layout()->add(mpXAxisLabel);
+  mpXAxisSelectionBox->layout()->addWidget(mpXAxisLabel);
 
   mpYAxisLabel = new QLabel("Y-Axis:", mpYAxisSelectionBox);
   mpYAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-  mpYAxisSelectionBox->layout()->add(mpYAxisLabel);
+  mpYAxisSelectionBox->layout()->addWidget(mpYAxisLabel);
 
   mpXAxisSelectionWidget = new CCopasiSelectionWidget(mpXAxisSelectionBox);
   mpXAxisSelectionWidget->setSingleSelection(true);
   mpXAxisSelectionWidget->setOutputVector(mpXAxisOutputVector);
-  mpXAxisSelectionBox->layout()->add(mpXAxisSelectionWidget);
+  mpXAxisSelectionBox->layout()->addWidget(mpXAxisSelectionWidget);
 
   mpYAxisSelectionWidget = new CCopasiSelectionWidget(mpYAxisSelectionBox);
   mpYAxisSelectionWidget->setSingleSelection(false);
   mpYAxisSelectionWidget->setOutputVector(mpYAxisOutputVector);
-  mpYAxisSelectionBox->layout()->add(mpYAxisSelectionWidget);
+  mpYAxisSelectionBox->layout()->addWidget(mpYAxisSelectionWidget);
 
   connect(mpOKButton, SIGNAL(clicked()), this, SLOT(slotOKButtonClicked()));
   connect(mpCancelButton, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));

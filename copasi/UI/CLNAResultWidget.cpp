@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CLNAResultWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:07 $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,12 +40,12 @@ CLNAResultWidget::CLNAResultWidget(QWidget* parent, const char* name, Qt::WFlags
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
-    setName("CLNAResultWidget");
+    setObjectName("CLNAResultWidget");
 
-  setCaption(trUtf8("CLNAResultWidget"));
+  setWindowTitle(trUtf8("CLNAResultWidget"));
 
   mWidgetLayout = new QGridLayout(this);
-  setObjectName("Layout");
+  mWidgetLayout->setObjectName("Layout");
 
   mCentralWidget = new CLNAResultSubwidget(this, "CLNAResultSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);

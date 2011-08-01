@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:07 $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,18 +23,15 @@
 #ifndef CQARRAYANN_H
 #define CQARRAYANN_H
 
-#include <q3vbox.h>
 #include <QLabel>
-#include "utilities/CAnnotatedMatrix.h"
-#include "mathematics.h"
-
-#include <q3hbox.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 #include <QStackedWidget>
 
 #include <vector>
 
 #include "copasi/utilities/CAnnotatedMatrix.h"
+#include "utilities/CAnnotatedMatrix.h"
+#include "mathematics.h"
 #include "CColorScale.h"
 
 class Q3Table;
@@ -45,7 +42,7 @@ class CQBarChart;
 /**
  * This Widget displays a CArrayAnnotation (no editing yet)
  */
-class CQArrayAnnotationsWidget : public Q3VBox
+class CQArrayAnnotationsWidget : public QWidget
 {
   Q_OBJECT
 
@@ -138,8 +135,8 @@ protected:
 
   CQBarChart* mpPlot3d;
 
-  Q3HBox* mpHBoxSelection;
-  Q3HBox* mpHBoxContents;
+  QWidget* mpHBoxSelection;
+  QWidget* mpHBoxContents;
 //    Q3WidgetStack* mpStack;
   QStackedWidget* mpStack;
 

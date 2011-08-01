@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQBarChart.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:07 $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@ CQBarChart::CQBarChart(QWidget* parent, const char* name, Qt::WFlags fl)
     : QWidget(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
-  QBoxLayout * mpLayout = new QHBoxLayout(this);
+  mpLayout = new QHBoxLayout(this);
   mpPlot = new Plot3d(this, "bar chart");
 }
 

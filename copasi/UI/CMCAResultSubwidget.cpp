@@ -21,12 +21,10 @@
 
 #include "CMCAResultSubwidget.h"
 
-#include <qfileinfo.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qpainter.h>
-#include <q3picture.h>
-
+#include <QFileInfo>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QPainter>
 #include <QMessageBox>
 
 #include "copasi.h"
@@ -90,14 +88,14 @@ void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
           this->loadElasticities(mcaMethod);
           this->loadConcentrationCCs(mcaMethod);
           this->loadFluxCCs(mcaMethod);
-          mTabWidget->setTabEnabled(mTabWidget->page(1), true);
-          mTabWidget->setTabEnabled(mTabWidget->page(2), true);
+          mTabWidget->setTabEnabled(1, true);
+          mTabWidget->setTabEnabled(2, true);
         }
       else
         {
           this->loadElasticities(mcaMethod);
-          mTabWidget->setTabEnabled(mTabWidget->page(1), false);
-          mTabWidget->setTabEnabled(mTabWidget->page(2), false);
+          mTabWidget->setTabEnabled(1, false);
+          mTabWidget->setTabEnabled(2, false);
 
           if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium)
             mTopLabel->setText("Equilibrium steady state. Only elasticities available!");

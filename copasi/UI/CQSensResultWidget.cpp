@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:20 $
+//   $Author: aekamal $
+//   $Date: 2011/08/01 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,12 +170,12 @@ void CQSensResultWidget::newResult()
   if (pProblem->collapsRequested())
     {
       mpCollapsedResult = pProblem->getCollapsedResultAnnotated();
-      mpTab->setTabEnabled(mArrayWidgetCollapsed, true);
+      mpTab->setTabEnabled(mpTab->indexOf(mArrayWidgetCollapsed), true);
     }
   else
     {
       mpCollapsedResult = NULL;
-      mpTab->setTabEnabled(mArrayWidgetCollapsed, false);
+      mpTab->setTabEnabled(mpTab->indexOf(mArrayWidgetCollapsed), false);
     }
 
   mArrayWidgetCollapsed->setArrayAnnotation(mpCollapsedResult);
