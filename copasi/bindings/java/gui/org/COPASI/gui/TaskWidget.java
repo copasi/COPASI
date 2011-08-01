@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.12 $ 
+//   $Revision: 1.12.4.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/04 19:22:40 $ 
+//   $Date: 2011/08/01 16:38:37 $ 
 // End CVS Header 
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -495,7 +500,14 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	public TaskWidget(String title,boolean enableReportButton)
 	{
 		super();
-                this.mDataModel=CCopasiRootContainer.addDatamodel();
+                if(CCopasiRootContainer.getDatamodelList().size() == 0)
+                {
+                  this.mDataModel=CCopasiRootContainer.addDatamodel();
+                }
+                else
+                {
+                  this.mDataModel=CCopasiRootContainer.getDatamodel(0);
+                }
 		this.mTask=null;
                 this.mOverwrite=false;
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
