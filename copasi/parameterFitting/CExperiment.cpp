@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/07/08 20:13:47 $
+//   $Date: 2011/08/02 20:43:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1262,7 +1262,25 @@ void CExperiment::printResult(std::ostream * ostream) const
             os << mDataDependent(i, j) << "\tNaN\tNaN\t";
           }
 
-        os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
+        if (i < mRowObjectiveValue.size())
+          {
+            os << mRowObjectiveValue[i] << "\t";
+          }
+        else
+          {
+            os << "NaN\t";
+          }
+
+        if (i < mRowRMS.size())
+          {
+            os << mRowRMS[i];
+          }
+        else
+          {
+            os << "NaN";
+          }
+
+        os << std::endl;
       }
 
   os << "Objective Value";
@@ -1271,7 +1289,12 @@ void CExperiment::printResult(std::ostream * ostream) const
     os << "\t";
 
   for (j = 0; j < jmax; j++)
-    os << "\t\t\t" << mColumnObjectiveValue[j];
+    {
+      if (j < mColumnObjectiveValue.size())
+        os << "\t\t\t" << mColumnObjectiveValue[j];
+      else
+        os << "\t\t\tNaN";
+    }
 
   os << std::endl;
 
@@ -1281,7 +1304,12 @@ void CExperiment::printResult(std::ostream * ostream) const
     os << "\t";
 
   for (j = 0; j < jmax; j++)
-    os << "\t\t\t" << mColumnRMS[j];
+    {
+      if (j < mColumnRMS.size())
+        os << "\t\t\t" << mColumnRMS[j];
+      else
+        os << "\t\t\tNaN";
+    }
 
   os << std::endl;
 
@@ -1291,7 +1319,12 @@ void CExperiment::printResult(std::ostream * ostream) const
     os << "\t";
 
   for (j = 0; j < jmax; j++)
-    os << "\t\t\t" << mWeight[j];
+    {
+      if (j < mWeight.size())
+        os << "\t\t\t" << mWeight[j];
+      else
+        os << "\t\t\tNaN";
+    }
 
   os << std::endl;
 

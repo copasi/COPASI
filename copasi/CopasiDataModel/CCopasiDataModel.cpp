@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.157 $
+//   $Revision: 1.158 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:48 $
+//   $Author: shoops $
+//   $Date: 2011/08/02 20:42:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -629,12 +629,14 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   catch (CCopasiException except)
     {
       importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
       throw except;
     }
 
   if (pModel == NULL)
     {
       importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
       return false;
     }
 
@@ -683,12 +685,14 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   catch (CCopasiException except)
     {
       importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
       throw except;
     }
 
   if (pModel == NULL)
     {
       importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
       return false;
     }
 

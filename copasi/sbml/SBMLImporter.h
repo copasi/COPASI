@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/26 12:17:05 $
+//   $Date: 2011/08/02 20:43:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -656,6 +656,12 @@ public:
 #endif // COPASI_DEBUG
 
   void restoreFunctionDB();
+
+  /**
+   * This call deletes an existing COPASI model.
+   * The method can e.g. be called to clean up if an import fails.
+   */
+  void deleteCopasiModel();
 
   void setImportHandler(CProcessReport* pHandler);
 
