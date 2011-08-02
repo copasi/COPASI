@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/02 20:38:25 $
+//   $Date: 2011/08/02 20:45:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -240,10 +240,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 
   pdelete(mpInitialState);
 
-  if (!mUpdateModel)
-    {
-      mpInitialState = new CState(mpProblem->getModel()->getInitialState());
-    }
+  mpInitialState = new CState(mpProblem->getModel()->getInitialState());
 
   mDoOutput = of;
   mpOutputHandler = pOutputHandler;
