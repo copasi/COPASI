@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/swig_files.pri,v $ 
-#   $Revision: 1.1.2.1 $ 
+#   $Revision: 1.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/07/28 08:44:49 $ 
+#   $Date: 2011/08/03 09:33:38 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -100,4 +100,7 @@ SWIG_INTERFACE_FILES += ../swig/CObjectLists.i
 SWIG_INTERFACE_FILES += ../swig/CSensTask.i 
 SWIG_INTERFACE_FILES += ../swig/CSensProblem.i 
 SWIG_INTERFACE_FILES += ../swig/CSensMethod.i
+SWIG_INTERFACE_FILES += ../swig/CMCATask.i 
+SWIG_INTERFACE_FILES += ../swig/CMCAProblem.i 
+SWIG_INTERFACE_FILES += ../swig/CMCAMethod.i
 

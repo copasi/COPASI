@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/downcast_common.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/07/28 08:44:49 $
+//   $Date: 2011/08/03 09:33:38 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -310,6 +310,10 @@ GetDowncastSwigTypeForMethod(CCopasiMethod* method)
     {
       pInfo = SWIGTYPE_p_CSteadyStateMethod;
     }
+  else if (dynamic_cast<CMCAMethod*>(method))
+    {
+      pInfo = SWIGTYPE_p_CMCAMethod;
+    }
   else if (dynamic_cast<CLyapMethod*>(method))
     {
       pInfo = SWIGTYPE_p_CLyapMethod;
@@ -437,6 +441,10 @@ GetDowncastSwigTypeForProblem(CCopasiProblem* problem)
     {
       pInfo = SWIGTYPE_p_CSteadyStateProblem;
     }
+  else if (dynamic_cast<CMCAProblem*>(problem))
+    {
+      pInfo = SWIGTYPE_p_CMCAProblem;
+    }
   else if (dynamic_cast<CLyapProblem*>(problem))
     {
       pInfo = SWIGTYPE_p_CLyapProblem;
@@ -475,6 +483,10 @@ GetDowncastSwigTypeForTask(CCopasiTask* task)
   else if (dynamic_cast<CSteadyStateTask*>(task))
     {
       pInfo = SWIGTYPE_p_CSteadyStateTask;
+    }
+  else if (dynamic_cast<CMCATask*>(task))
+    {
+      pInfo = SWIGTYPE_p_CMCATask;
     }
   else if (dynamic_cast<CLyapTask*>(task))
     {

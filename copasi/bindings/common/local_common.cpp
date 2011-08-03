@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/local_common.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/07/28 08:44:49 $
+//   $Date: 2011/08/03 09:33:38 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,9 @@
 #include "sensitivities/CSensProblem.h"
 #include "sensitivities/CSensTask.h"
 #include "model/CObjectLists.h"
+#include "steadyState/CMCAMethod.h"
+#include "steadyState/CMCAProblem.h"
+#include "steadyState/CMCATask.h"
 
 typedef CCopasiVector<CEvent> EventVector;
 typedef CCopasiVectorN<CEvent> EventVectorN;
