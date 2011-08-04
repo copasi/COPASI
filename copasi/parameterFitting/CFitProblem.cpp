@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/02 17:15:46 $
+//   $Date: 2011/08/04 17:05:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -342,6 +342,7 @@ bool CFitProblem::setCallBack(CProcessReport * pCallBack)
 bool CFitProblem::initialize()
 {
   mHaveStatistics = false;
+  mStoreResults = false;
 
   if (!COptProblem::initialize())
     {
@@ -1102,7 +1103,9 @@ bool CFitProblem::setResidualsRequired(const bool & required)
 }
 
 const CVector< C_FLOAT64 > & CFitProblem::getResiduals() const
-{return mResiduals;}
+{
+  return mResiduals;
+}
 
 bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
