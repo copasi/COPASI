@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.170 $
+//   $Revision: 1.171 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:50 $
+//   $Author: pwilly $
+//   $Date: 2011/08/05 14:23:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,7 @@ class CQTSSAResultSubWidget;
 
 #ifdef COPASI_NONLIN_DYN
 class CQCrossSectionTaskWidget;
+class CQOscillationTaskWidget;
 #endif
 
 #ifdef COPASI_DEBUG
@@ -245,6 +246,7 @@ private:
 
 #ifdef COPASI_NONLIN_DYN
   CQCrossSectionTaskWidget *crossSectionTaskWidget;
+  CQOscillationTaskWidget *oscillationTaskWidget;
 #endif
 
 #ifdef COPASI_DEBUG

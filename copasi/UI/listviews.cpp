@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.292 $
+//   $Revision: 1.293 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:49 $
+//   $Author: pwilly $
+//   $Date: 2011/08/05 14:23:52 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,6 +109,7 @@
 
 #ifdef COPASI_NONLIN_DYN
 #include "CQCrossSectionTaskWidget.h"
+#include "CQOscillationTaskWidget.h"
 #endif
 
 // -----------------------------------------------------------------
@@ -182,6 +183,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     tssaResultWidget(NULL),
 #ifdef COPASI_NONLIN_DYN
     crossSectionTaskWidget(NULL),
+    oscillationTaskWidget(NULL),
 #endif
 #ifdef COPASI_DEBUG
     mpUpdatesWidget(NULL),
@@ -469,6 +471,10 @@ void ListViews::ConstructNodeWidgets()
   if (!crossSectionTaskWidget) crossSectionTaskWidget = new CQCrossSectionTaskWidget(this);
 
   crossSectionTaskWidget->hide();
+
+  if (!oscillationTaskWidget) oscillationTaskWidget = new CQOscillationTaskWidget(this);
+
+  oscillationTaskWidget->hide();
 #endif
 
 #ifdef COPASI_DEBUG
@@ -640,6 +646,9 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
 #ifdef COPASI_NONLIN_DYN
       case 28:
         return crossSectionTaskWidget;
+        break;
+      case 29:
+        return oscillationTaskWidget;
         break;
 #endif
       case 31:

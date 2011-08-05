@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:49 $
+//   $Author: pwilly $
+//   $Date: 2011/08/05 14:22:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,7 @@ static char DataModeltxt[] =
   "27:271:Result\n"
 #ifdef COPASI_NONLIN_DYN
   "2:28:Cross Section\n"
+  "2:29:Oscillation\n"
 #endif
   //  "0:3:Multiple Task\n"
   "2:31:Parameter Scan\n"
