@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.128 $ 
+#   $Revision: 1.129 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.128 $ $Author: shoops $ $Date: 2011/08/01 17:43:47 $  
+# $Revision: 1.129 $ $Author: ssahle $ $Date: 2011/08/05 14:06:13 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -99,6 +99,7 @@ debug {
   DEFINES += COPASI_DEBUG
   DEFINES += COPASI_EXTUNIT
   # DEFINES += WITH_MERGEMODEL
+  DEFINES += COPASI_NONLIN_DYN
   }
 
 !contains(COPASI_SRC_PACKAGE, true)  {
