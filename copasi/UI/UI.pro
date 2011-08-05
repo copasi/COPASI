@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.244 $
+#   $Revision: 1.245 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2011/06/06 16:14:09 $
+#   $Author: ssahle $
+#   $Date: 2011/08/05 14:39:18 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.244 $ $Author: aekamal $ $Date: 2011/06/06 16:14:09 $
+# $Revision: 1.245 $ $Author: ssahle $ $Date: 2011/08/05 14:39:18 $
 ######################################################################
 
 LIB = UI
@@ -35,6 +35,7 @@ HEADERS	+= \
   CLNAResultSubwidget.h \
   CQCompartment.h \
   CQCompartmentsWidget.h \
+  CQCrossSectionTaskWidget.h \
   CQDifferentialEquations.h \
   CQEFMListWidget.h \
   CQEFMResultWidget.h \
@@ -182,6 +183,7 @@ SOURCES	+= \
   CLNAResultSubwidget.cpp \
   CQCompartment.cpp \
   CQCompartmentsWidget.cpp \
+  CQCrossSectionTaskWidget.cpp \
   CQDifferentialEquations.cpp \
   CQEFMListWidget.cpp \
   CQEFMResultWidget.cpp \
@@ -330,6 +332,7 @@ FORMS += CMCAResultSubwidget.ui
 FORMS += CLNAResultSubwidget.ui
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
+FORMS += CQCrossSectionTaskWidget.ui
 FORMS += CQDifferentialEquations.ui
 FORMS += CQEFMListWidget.ui
 FORMS += CQEFMResultWidget.ui
