@@ -18,11 +18,11 @@
 #ifndef CQCROSSSECTIONTASKWIDGET_H
 #define CQCROSSSECTIONTASKWIDGET_H
 
-#include <qvariant.h>
+//#include <qvariant.h>
 
 #include "ui_CQCrossSectionTaskWidget.h"
 
-#include "TaskWidget.h"
+#include "UI/TaskWidget.h"
 
 class CQCrossSectionTaskWidget : public TaskWidget, public Ui::CQCrossSectionTaskWidget
 {
@@ -33,7 +33,7 @@ public:
   ~CQCrossSectionTaskWidget();
 
   virtual bool runTask();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  //virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 protected:
   virtual bool saveTask();
@@ -42,6 +42,7 @@ protected:
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
 protected slots:
+
 
 private:
   void init();

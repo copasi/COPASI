@@ -21,6 +21,9 @@
 #include "listviews.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
+#include "CQTaskMethodWidget.h"
+#include "UI/icons/Copasi16-Alpha.xpm"
+
 
 #include "crosssection/CCrossSectionTask.h"
 #include "crosssection/CCrossSectionProblem.h"
@@ -34,6 +37,7 @@ CQCrossSectionTaskWidget::CQCrossSectionTaskWidget(QWidget* parent, const char* 
     : TaskWidget(parent, name)
 {
   setupUi(this);
+  mpButtonVariable->setIcon(QPixmap(Copasi16_Alpha_xpm));
 
   init();
 }
@@ -51,11 +55,12 @@ void CQCrossSectionTaskWidget::init()
 {
   mpHeaderWidget->setTaskName("Cross Section");
 
-  crossSectionTWLayout->insertWidget(0, mpHeaderWidget); // header
-  // crossSectionTWLayout->insertSpacing(1, 14);      // space between header and body
-  crossSectionTWLayout->addWidget(mpBtnWidget);      // 'footer'
+  verticalLayout->insertWidget(0, mpHeaderWidget); // header
 
-  addMethodParameterTable(0);
+  mpMethodWidget->enableMethodParameter(true);
+  verticalLayout->addWidget(mpMethodWidget);
+
+  verticalLayout->addWidget(mpBtnWidget);      // 'footer'
 }
 
 bool CQCrossSectionTaskWidget::runTask()
@@ -63,10 +68,6 @@ bool CQCrossSectionTaskWidget::runTask()
   return true;
 }
 
-bool CQCrossSectionTaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
-{
-  return true;
-}
 
 /*
  * Function to save actual changes of the Task

@@ -2,57 +2,149 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
-<comment>   $Revision: 1.15 $ </comment>
-<comment>   $Name:  $ </comment>
+<comment>   $Revision: 1.15.2.2 $ </comment>
+<comment>   $Name: Build-33 $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2010/04/27 16:00:44 $ </comment>
+<comment>   $Date: 2011/02/17 19:14:45 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQCrossSectionTaskWidget</class>
  <widget class="TaskWidget" name="CQCrossSectionTaskWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>431</width>
-    <height>228</height>
+    <width>624</width>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Cross Section Task Widget</string>
   </property>
-  <layout class="QVBoxLayout" name="crossSectionTWLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QLabel" name="mpLblCS">
+      <widget class="QLabel" name="mpLblVariable">
        <property name="text">
-        <string>Cross Section</string>
+        <string>Variable</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="CQExpressionMmlStackedWidget" name="mpExpressionEMSW">
-       <widget class="QWidget" name="page"/>
-       <widget class="QWidget" name="page_2"/>
+      <layout class="QHBoxLayout" name="horizontalLayout_variable">
+       <item>
+        <widget class="QLineEdit" name="mpLineEditVariable"/>
+       </item>
+       <item>
+        <widget class="QToolButton" name="mpButtonVariable">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QComboBox" name="mpCombo1">
+         <item>
+          <property name="text">
+           <string notr="true">Value</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">Rate</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>crossing</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="mpLineEditValue"/>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>in</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="mpComboDirection">
+         <item>
+          <property name="text">
+           <string>positive</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>negative</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>direction</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="mpLblLC">
        <property name="text">
         <string>Limit Crossings</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="4" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QCheckBox" name="mpCheckLC">
@@ -73,14 +165,17 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="mpLblLT">
        <property name="text">
         <string>Limit Time</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="5" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QCheckBox" name="mpCheckLT">
@@ -101,7 +196,7 @@
        </item>
       </layout>
      </item>
-     <item row="3" column="1">
+     <item row="6" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QCheckBox" name="mpCheck">
@@ -123,24 +218,18 @@ before</string>
        </item>
       </layout>
      </item>
+     <item row="7" column="0" colspan="2">
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
     </layout>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>CQExpressionMmlStackedWidget</class>
-   <extends>QStackedWidget</extends>
-   <header>CQExpressionMmlStackedWidget.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>TaskWidget</class>
    <extends>QWidget</extends>
