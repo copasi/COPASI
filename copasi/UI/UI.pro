@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.245 $
+#   $Revision: 1.246 $
 #   $Name:  $
-#   $Author: ssahle $
-#   $Date: 2011/08/05 14:39:18 $
+#   $Author: pwilly $
+#   $Date: 2011/08/05 14:50:16 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.245 $ $Author: ssahle $ $Date: 2011/08/05 14:39:18 $
+# $Revision: 1.246 $ $Author: pwilly $ $Date: 2011/08/05 14:50:16 $
 ######################################################################
 
 LIB = UI
@@ -66,6 +66,7 @@ HEADERS	+= \
   objectdebug.h \
   CQOptimizationWidget.h \
   CQOptimizationResult.h \
+  CQOscillationTaskWidget.h \
   CQPlotsWidget.h \
   CQPreferenceDialog.h \
   CQProgressDialog.h \
@@ -213,6 +214,7 @@ SOURCES	+= \
   CQNotes.cpp \
   CQOptimizationWidget.cpp \
   CQOptimizationResult.cpp \
+  CQOscillationTaskWidget.cpp \
   CQPlotsWidget.cpp \
   CQPreferenceDialog.cpp \
   CQProgressDialog.cpp \
@@ -362,6 +364,7 @@ FORMS += CQMoietiesTaskResult.ui
 FORMS += CQNotes.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQOptimizationResult.ui
+FORMS += CQOscillationTaskWidget.ui
 FORMS += CQPlotsWidget.ui
 FORMS += CQPreferenceDialog.ui
 FORMS += CQProgressDialog.ui
