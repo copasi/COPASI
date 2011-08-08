@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.30.2.3 $ 
+#   $Revision: 1.30.2.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/07/28 08:44:49 $ 
+#   $Date: 2011/08/08 12:23:43 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -113,14 +113,13 @@ contains(BUILD_OS, WIN32) {
   } else {
     QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2 && ren _COPASI.dll _COPASI_d.pyd
   }
-
+  
   !isEmpty(PYTHON_LIB_PATH){
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${PYTHON_LIB_PATH}"
-    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${PYTHON_LIB_PATH}"
+    QMAKE_LFLAGS += /LIBPATH:"$${PYTHON_LIB_PATH}"
     debug{
-      LIBS += python25_d.lib
+      LIBS += python27_d.lib
     } else { 
-      LIBS += python25.lib
+      LIBS += python27.lib
     }
   }
 
