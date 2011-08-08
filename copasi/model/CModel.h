@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.188.2.3 $
+//   $Revision: 1.188.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 17:13:02 $
+//   $Author: gauges $
+//   $Date: 2011/08/08 12:25:18 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,15 @@
 class CProcessReport;
 class CArrayAnnotation;
 class CMathModel;
+
+// The microsoft compiler define min
+// as a macro which conflicts with the min enum in CModel
+#ifdef WIN32
+#ifdef min
+#undef min
+#endif // min
+#endif // WIN32
+
 
 class CModel : public CModelEntity
 {
