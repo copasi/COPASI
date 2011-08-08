@@ -1,11 +1,11 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.38.2.3 $ 
+#   $Revision: 1.38.2.4 $ 
 #   $Name:  $ 
-#   $Revision: 1.38.2.3 $ 
+#   $Revision: 1.38.2.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/07/28 08:44:51 $ 
+#   $Date: 2011/08/08 12:22:05 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -100,14 +100,18 @@ contains(BUILD_OS, Darwin) {
 contains(BUILD_OS, WIN32) { 
   LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
 
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
   LIBS += delayimp.lib
 
-  QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2
+
+  #debug: SUBDIR=debug
+  #release: SUBDIR=release
+
+  #QMAKE_POST_LINK = mt.exe -manifest $$SUBDIR/$(TARGET).manifest -outputresource:$$SUBDIR/$(TARGET);2
 
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
