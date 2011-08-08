@@ -24,6 +24,10 @@
 
 #include "UI/TaskWidget.h"
 
+class CCrossSectionProblem;
+class CQValidatorInt;
+class CQValidatorDouble;
+
 class CQCrossSectionTaskWidget : public TaskWidget, public Ui::CQCrossSectionTaskWidget
 {
   Q_OBJECT
@@ -43,9 +47,27 @@ protected:
 
 protected slots:
 
-
 private:
   void init();
+  void destroy();
+
+  void updateValues();
+
+  const CCopasiObject * mpSingleVariable;
+  CCrossSectionProblem * mpCrossSectionProblem;
+
+  CQValidatorInt * mpValidatorLC;
+  CQValidatorDouble * mpValidatorLT;
+  CQValidatorDouble * mpValidator;
+  CQValidatorDouble * mpValidatorCrossing;
+
+private slots:
+
+  void slotChooseVariable();
+  void slotValueRate();
+  void slotUpdateLC(bool);
+  void slotUpdateLT(bool);
+  void slotUpdateSupress(bool);
 };
 
 #endif

@@ -43,7 +43,14 @@
      <item row="0" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_variable">
        <item>
-        <widget class="QLineEdit" name="mpLineEditVariable"/>
+        <widget class="QLineEdit" name="mpLineEditVariable">
+         <property name="text">
+          <string>[Please Choose Object.] ---&gt;</string>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QToolButton" name="mpButtonVariable">
@@ -78,7 +85,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="mpLineEditValue"/>
+        <widget class="QLineEdit" name="mpLineEditValue">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -192,7 +203,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="mpLineEditLT"/>
+        <widget class="QLineEdit" name="mpLineEditLT">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -214,7 +229,11 @@ before</string>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="mpLineEdit"/>
+        <widget class="QLineEdit" name="mpLineEdit">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -241,5 +260,93 @@ before</string>
   <include location="local">TaskWidget.h</include>
  </includes>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mpButtonVariable</sender>
+   <signal>clicked()</signal>
+   <receiver>CQCrossSectionTaskWidget</receiver>
+   <slot>slotChooseVariable()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>596</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>614</x>
+     <y>69</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpLineEditValue</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>CQCrossSectionTaskWidget</receiver>
+   <slot>slotValueRate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>374</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>616</x>
+     <y>112</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCheckLC</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQCrossSectionTaskWidget</receiver>
+   <slot>slotUpdateLC(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>132</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>6</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCheckLT</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQCrossSectionTaskWidget</receiver>
+   <slot>slotUpdateLT(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>8</x>
+     <y>284</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQCrossSectionTaskWidget</receiver>
+   <slot>slotUpdateSupress(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>383</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>9</x>
+     <y>399</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotChooseVariable()</slot>
+  <slot>slotValueRate()</slot>
+  <slot>slotUpdateLC(bool)</slot>
+  <slot>slotUpdateLT(bool)</slot>
+  <slot>slotUpdateSupress(bool)</slot>
+ </slots>
 </ui>
