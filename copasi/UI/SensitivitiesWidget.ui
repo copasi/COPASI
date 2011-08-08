@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.ui,v $ </comment>
-<comment>   $Revision: 1.6 $ </comment>
+<comment>   $Revision: 1.7 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/04/26 16:10:41 $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2011/08/08 00:59:46 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -13,6 +13,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>SensitivitiesWidget</class>
  <widget class="TaskWidget" name="SensitivitiesWidget">
   <property name="geometry">
@@ -98,6 +99,9 @@
        <property name="text">
         <string>[Please Choose Object.] ---&gt;</string>
        </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item row="3" column="2">
@@ -153,6 +157,9 @@
        <property name="text">
         <string>[Please Choose Object.] ---&gt;</string>
        </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item row="5" column="2">
@@ -197,6 +204,9 @@
        </property>
        <property name="text">
         <string>[Please Choose Object.] ---&gt;</string>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -252,8 +262,8 @@
    <slot>slotChooseFunction(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>153</x>
-     <y>141</y>
+     <x>274</x>
+     <y>118</y>
     </hint>
     <hint type="destinationlabel">
      <x>231</x>
@@ -268,8 +278,8 @@
    <slot>slotChooseVariable(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>182</x>
-     <y>249</y>
+     <x>303</x>
+     <y>208</y>
     </hint>
     <hint type="destinationlabel">
      <x>232</x>
@@ -284,8 +294,8 @@
    <slot>slotChooseVariable2(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>215</x>
-     <y>364</y>
+     <x>336</x>
+     <y>298</y>
     </hint>
     <hint type="destinationlabel">
      <x>261</x>
@@ -300,8 +310,8 @@
    <slot>slotChooseSingleFunction()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>726</x>
-     <y>181</y>
+     <x>632</x>
+     <y>162</y>
     </hint>
     <hint type="destinationlabel">
      <x>695</x>
@@ -316,8 +326,8 @@
    <slot>slotChooseSingleVariable()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>730</x>
-     <y>306</y>
+     <x>632</x>
+     <y>252</y>
     </hint>
     <hint type="destinationlabel">
      <x>676</x>
@@ -332,8 +342,8 @@
    <slot>slotChooseSingleVariable2()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>741</x>
-     <y>414</y>
+     <x>632</x>
+     <y>342</y>
     </hint>
     <hint type="destinationlabel">
      <x>691</x>
