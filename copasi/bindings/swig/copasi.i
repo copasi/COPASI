@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.32.2.3 $ 
+//   $Revision: 1.32.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/08/03 09:33:37 $ 
+//   $Date: 2011/08/08 14:21:35 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,6 +21,8 @@
 // All rights reserved. 
 
 %module COPASI
+
+//%feature("autodoc")
 
 
 

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CVector.i,v $ 
-//   $Revision: 1.8.2.2 $ 
+//   $Revision: 1.8.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 12:58:49 $ 
+//   $Date: 2011/08/08 14:21:35 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,7 +23,7 @@
 %{
 
 #include "utilities/CVector.h"
-
+class CCopasiObject;
 %}
 
 %ignore operator<<;

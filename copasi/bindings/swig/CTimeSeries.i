@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CTimeSeries.i,v $ 
-//   $Revision: 1.4.32.1 $ 
+//   $Revision: 1.4.32.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 13:57:23 $ 
+//   $Date: 2011/08/08 14:21:35 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -24,9 +24,10 @@
 
 %include "trajectory/CTimeSeries.h"
 
-#ifdef SWIGJAVA
 
 %extend CTimeSeries{
+
+#ifdef SWIGJAVA
     // needed for CellDesigner
     std::string getSBMLId(const unsigned C_INT32 & variable) const
     {
@@ -40,8 +41,7 @@
         }
         return result;
     }
-
+#endif // SWIG_JAVA
 };
 
-#endif // SWIG_JAVA
 
