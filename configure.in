@@ -305,7 +305,7 @@ if test x"${R_BIN}" != x""; then
 fi
 
 
-A
+
 AC_ARG_ENABLE([perl],
   AS_HELP_STRING([--enable-perl],
                  [build perl wrappers (default: disabled)]),
