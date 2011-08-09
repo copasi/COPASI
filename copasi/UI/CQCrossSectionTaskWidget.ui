@@ -86,6 +86,9 @@
        </item>
        <item>
         <widget class="QLineEdit" name="mpLineEditValue">
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="readOnly">
           <bool>false</bool>
          </property>
