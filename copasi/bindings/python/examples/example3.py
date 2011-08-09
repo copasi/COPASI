@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example3.py,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.6.4.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/06 16:08:38 $ 
+#   $Date: 2011/08/09 13:55:36 $ 
 # End CVS Header 
+
+# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -161,6 +167,20 @@ def main(args):
           # the unit of the other variables may not be particle numbers
           # the concentration data can be acquired with getConcentrationData
           print timeSeries.getTitle(i) + ": " , timeSeries.getData(lastIndex, i) 
+      # the CTimeSeries class now has some new methods to get all variable titles
+      # as a python list (getTitles())
+      # and methods to get the complete time course data for a certain variable based on
+      # the variables index or the corresponding model object.
+      # E.g. to get the particle numbers of the second variable as a python list
+      # you can use getDataForIndex(1) and to get the concentration data you use
+      # getConcentrationDataForIndex(1)
+      # To get the complete particle number data for the second metabolite of the model
+      # you can use getDataForObject(model.getMetabolite(1)) and to get the concentration
+      # data you use getConcentrationDataForObject.
+      #print timeSeries.getTitles()
+      #print timeSeries.getDataForIndex(1)
+      #print timeSeries.getDataForObject(model)
+
 
   else:
       print >> sys.stderr, "Usage: example3 SBMLFILE" 
