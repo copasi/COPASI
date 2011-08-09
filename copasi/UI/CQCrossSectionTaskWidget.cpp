@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.15 $
-//   $Name:  $
+//   $Revision: 1.15.2.2 $
+//   $Name: Build-33 $
 //   $Author: shoops $
-//   $Date: 2010/04/27 16:00:44 $
+//   $Date: 2011/02/17 19:14:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 // All rights reserved.
 
 /*
- *  Created by Paul on 5/21/10.
+ *  Created by Paul Willy on 5/21/10.
  */
 
 #include "copasi.h"
@@ -75,6 +75,9 @@ void CQCrossSectionTaskWidget::init()
 
   verticalLayout->addWidget(mpBtnWidget);      // 'footer'
 
+  mpValidatorCrossing = new CQValidatorDouble(mpLineEditValue);
+  mpLineEditValue->setValidator(mpValidatorCrossing);
+
   mpValidatorLC = new CQValidatorInt(mpLineEditLC);
   mpValidatorLC->setRange(0, std::numeric_limits< int >::max());
   mpLineEditLC->setValidator(mpValidatorLC);
@@ -131,6 +134,7 @@ bool CQCrossSectionTaskWidget::saveTask()
   if (mpCheck->isChecked())
     pProblem->setOutputStartTime(mpLineEdit->text().toDouble());
 
+  mpValidatorCrossing->saved();
   mpValidatorLC->saved();
   mpValidatorLT->saved();
   mpValidator->saved();
@@ -196,6 +200,7 @@ bool CQCrossSectionTaskWidget::loadTask()
       mpLineEdit->setText("");
     }
 
+  mpValidatorCrossing->saved();
   mpValidatorLC->saved();
   mpValidatorLT->saved();
   mpValidator->saved();
@@ -223,7 +228,30 @@ void CQCrossSectionTaskWidget::slotChooseVariable()
 }
 
 void CQCrossSectionTaskWidget::slotValueRate()
-{}
+{
+  /*  // check validity
+    QString yt = mpLineEditValue->text();
+
+  //  const QString number("^[0-9]+$");
+    const QString number("[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?");
+
+    QRegExp numberRegExp(number);
+    numberRegExp.setPatternSyntax(QRegExp::RegExp2);
+
+    if (numberRegExp.exactMatch(yt))
+    {
+      std::cout << "RIGHT yt = " << TO_UTF8(yt) << std::endl;
+    }
+    else
+    {
+      std::cout << "ERR yt = " << TO_UTF8(yt) << " - " << yt.length() << std::endl;
+
+    mpLineEditValue->setText(yt.remove(yt.length()-1,1));
+    yt = mpLineEditValue->text();
+      std::cout << "TEST yt = " << TO_UTF8(yt) << std::endl;
+    }
+  */
+}
 
 void CQCrossSectionTaskWidget::slotUpdateLC(bool b)
 {
@@ -247,14 +275,12 @@ void CQCrossSectionTaskWidget::slotUpdateLC(bool b)
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  updateValues();
+//  updateValues();
 }
 
 void CQCrossSectionTaskWidget::slotUpdateLT(bool b)
 {
   mpLineEditLT->setEnabled(b);
-
-  std::cout << "b = " << b << "mpCheckLC->isChecked() = " << mpCheckLC->isChecked() << std::endl;
 
   if (!b && !(mpCheckLC->isChecked()))
     mpCheckLC->setChecked(true);
@@ -274,7 +300,7 @@ void CQCrossSectionTaskWidget::slotUpdateLT(bool b)
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  updateValues();
+//  updateValues();
 }
 
 void CQCrossSectionTaskWidget::slotUpdateSupress(bool b)
@@ -296,7 +322,7 @@ void CQCrossSectionTaskWidget::slotUpdateSupress(bool b)
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  updateValues();
+//  updateValues();
 }
 
 void CQCrossSectionTaskWidget::updateValues()
