@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CTimeSeries.py,v $ 
-#   $Revision: 1.12 $ 
+#   $Revision: 1.12.2.1 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
+#   $Author: gauges $ 
+#   $Date: 2011/08/09 13:44:04 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,6 +21,7 @@ import COPASI
 import unittest
 from types import *
 import sys
+import pdb
 
 class Test_CTimeSeries(unittest.TestCase):
   def setUp(self):
@@ -68,6 +69,61 @@ class Test_CTimeSeries(unittest.TestCase):
     self.assert_(type(title)==StringType)
     self.assert_(title=="a")
 
+  def test_getTitles(self):
+    titles=self.ctimeseries.getTitles()
+    self.assert_(type(titles) == ListType)
+    self.assert_(len(titles) == 5)
+    self.assert_(titles[0] == "Time")
+    self.assert_(titles[1] == "a")
+    self.assert_(titles[2] == "b")
+    self.assert_(titles[3] == "c")
+    self.assert_(titles[4] == "Compartments[compartment]")
+
+  def test_getDataForIndex(self):
+    data=self.ctimeseries.getDataForIndex(0)
+    self.assert_(data != None)
+    self.assert_(type(data) == ListType)
+    self.assert_(len(data) == self.ctimeseries.getRecordedSteps())
+    data=self.ctimeseries.getDataForIndex(2)
+    self.assert_(data != None)
+    self.assert_(type(data) == ListType)
+    self.assert_(len(data) == self.ctimeseries.getRecordedSteps())
+    # with this test setup there is only one step and the
+    # corresponding value is nan, so futher tests here don't make sense
+
+
+  def test_getConcentrationDataForIndex(self):
+    data=self.ctimeseries.getConcentrationDataForIndex(0)
+    self.assert_(data != None)
+    self.assert_(type(data) == ListType)
+    self.assert_(len(data) == self.ctimeseries.getRecordedSteps())
+    data=self.ctimeseries.getConcentrationDataForIndex(2)
+    self.assert_(data != None)
+    self.assert_(type(data) == ListType)
+    self.assert_(len(data) == self.ctimeseries.getRecordedSteps())
+    # with this test setup there is only one step and the
+    # corresponding value is nan, so futher tests here don't make sense
+
+  def test_getDataForObject(self):
+    data=self.ctimeseries.getConcentrationDataForObject(self.datamodel.getModel())
+    self.assert_(data != None)
+    self.assert_(type(data) == ListType)
+    self.assert_(len(data) == self.ctimeseries.getRecordedSteps())
+    data=self.ctimeseries.getConcentrationDataForObject(self.datamodel.getModel().getMetabolite(1))
+    self.assert_(data != None)
+    self.assert_(type(data) == ListType)
+    self.assert_(len(data) == self.ctimeseries.getRecordedSteps())
+
+  def test_getConcentrationDataForObject(self):
+    data=self.ctimeseries.getConcentrationDataForObject(self.datamodel.getModel())
+    self.assert_(data != None)
+    self.assert_(type(data) == ListType)
+    self.assert_(len(data) == self.ctimeseries.getRecordedSteps())
+    data=self.ctimeseries.getConcentrationDataForObject(self.datamodel.getModel().getMetabolite(1))
+    self.assert_(data != None)
+    self.assert_(type(data) == ListType)
+    self.assert_(len(data) == self.ctimeseries.getRecordedSteps())
+
 
 def suite():
   tests=[
@@ -76,6 +132,11 @@ def suite():
          ,'test_getData'
          ,'test_getConcentrationData'
          ,'test_getTitle'
+         ,'test_getTitles'
+         ,'test_getDataForIndex'
+         ,'test_getConcentrationDataForIndex'
+         ,'test_getDataForObject'
+         ,'test_getConcentrationDataForObject'
         ]
   return unittest.TestSuite(map(Test_CTimeSeries,tests))
 
