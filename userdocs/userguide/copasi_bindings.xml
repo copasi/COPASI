@@ -1,13 +1,13 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.9.2.1 $ -->
+<!--   $Revision: 1.9.2.2 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2010/10/21 08:06:40 $ -->
+<!--   $Date: 2011/08/11 08:07:26 $ -->
 <!-- End CVS Header -->
 
-<!-- Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -2955,6 +2955,43 @@ KEY_STRING=getKey(VARIABLE_INDEX)
 ID_STRING=getSBMLId(VARIABLE_INDEX)
 </programlisting>
 </para>
+<para condition="PYTHON">
+For the python bindings there exists a number of additional convenience methods
+to read the time course data from an instance of CTimeCourse.
+
+<programlisting>
+# Returns the titles of the variables in the time series
+# as a python list.
+# If the time series contains no variables, an empty list is returned.
+title_list=getTitles()
+
+# Returns the complete time course particle number data for the variable with the given index.
+# The index has to be an integer type, otherwise an AttributeError is raised.
+# If the given index is invalid, None is returned.
+particle_number_list=getDataForIndex(index)
+
+# Returns the complete time course concentration data for the variable with the given index.
+# The index has to be an integer type, otherwise an AttributeError is raised.
+# If the given index is invalid, None is returned.
+concentration_list=getConcentrationDataForIndex(index)
+
+# Returns the complete time course particle number data for the variable corresponding to the given object.
+# The key of the object must match the key of one of the variables of the time course as returned by the getKey method.
+# If no fitting key is found, None is returned.
+# The object argument must be an instance of CCopasiObject, otherwise an AttributeError is raised. 
+particle_number_list=getDataForObject(object)
+
+
+# Returns the complete time course concentration data for the variable corresponding to the given object.
+# The key of the object must match the key of one of the variables of the time course as returned by the getKey method.
+# If no fitting key is found, None is returned.
+# The object argument must be an instance of CCopasiObject, otherwise an AttributeError is raised. 
+concentration_list=getConcentrationDataForObject(object)
+
+</programlisting>
+</para>
+
+
 </sect2>
 
 <sect2 id="steadyState" xreflabel="steadyState">
