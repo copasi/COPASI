@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/27 17:05:34 $
+//   $Date: 2011/08/16 18:49:19 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ void CQSpecieDM::setFlagConc(bool flag)
 {
   mFlagConc = flag;
 }
+
 const std::vector< unsigned C_INT32 >& CQSpecieDM::getItemToType()
 {
   return mItemToType;
@@ -61,6 +62,7 @@ int CQSpecieDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
   return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites().size() + 1;
 }
+
 int CQSpecieDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
   return TOTAL_COLS_SPECIES;
@@ -97,14 +99,14 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
           if (mpSpecies->isInitialConcentrationChangeAllowed())
             return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
           else
-            return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
+            return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
         }
     }
   else if (index.column() == COL_INUMBER)
     {
       if (this->index(index.row(), COL_TYPE_SPECIES).data() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]))
           || !(this->index(index.row(), COL_IEXPRESSION_SPECIES).data().toString().isEmpty()))
-        return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
+        return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
       else
         return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
     }
