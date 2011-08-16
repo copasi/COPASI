@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/01/18 15:50:23 $
+//   $Author: shoops $
+//   $Date: 2011/08/16 18:46:32 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -51,7 +56,11 @@ bool CQBaseDataModel::clear()
 bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const
 {
   //Index has to be from this model and should be valid.
-  assert((i.model() == this) && i.isValid());
+  if ((i.model() != this) ||
+      !i.isValid())
+    {
+      return false;
+    }
 
   return (i.row() == rowCount() - 1);
 }
