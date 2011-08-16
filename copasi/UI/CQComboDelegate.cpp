@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQComboDelegate.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:05 $
+//   $Author: shoops $
+//   $Date: 2011/08/16 18:47:25 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,14 +18,18 @@
 
 #include <QComboBox>
 
-#include "../copasi.h"
 #include "CQComboDelegate.h"
+
+#include "copasi.h"
 
 CQComboDelegate::CQComboDelegate(const QStringList *pComboItems, QObject *parent)
     : QItemDelegate(parent)
 {
   mpComboItems = pComboItems;
 }
+
+CQComboDelegate::~CQComboDelegate()
+{}
 
 QWidget *CQComboDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem & C_UNUSED(option),
@@ -60,8 +64,10 @@ void CQComboDelegate::updateEditorGeometry(QWidget *editor,
 
 CQIndexComboDelegate::CQIndexComboDelegate(const QStringList *pComboItems, QObject *parent)
     : CQComboDelegate(pComboItems, parent)
-{
-}
+{}
+
+CQIndexComboDelegate::~CQIndexComboDelegate()
+{}
 
 void CQIndexComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                         const QModelIndex &index) const
