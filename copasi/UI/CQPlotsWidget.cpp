@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/07/05 17:34:42 $
+//   $Author: shoops $
+//   $Date: 2011/08/16 18:47:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,7 +227,8 @@ void CQPlotsWidget::keyPressEvent(QKeyEvent* ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
-  else if (ev->key() == Qt::Key_C && ev->modifiers() & Qt::ControlModifier)
+  else if (ev->key() == Qt::Key_C &&
+           (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblPlots->selectionModel()->selectedRows(0);
 
