@@ -105,16 +105,23 @@ suitableFunctions <- CFunctionDB_suitableFunctions(funDB,2, 2, "TriFalse")
 stopifnot(length(suitableFunctions) > 0)
 fun <- NULL
 
-
-for (f in suitableFunctions){
+index <- 0
+maxIndex <- CFunctionStdVector_size(suitableFunctions)
+while (index < maxIndex){
     # we just assume that the only suitable function with Constant in
     # it's name is the one we want
-    if (f.getObjectName().find("Constant") != -1){
-        fun <- f
+
+    # using the ___getitem__ function looks awkward, but I have not found out how else
+    # I can get to the elements of wrapped std::vector instances
+    temp_fun <- CFunctionStdVector___getitem__(suitableFunctions,index)
+    name=CCopasiObject_getObjectName(temp_fun)
+    if (length(grep("Constant",name)) != 0) {
+        fun <- temp_fun
         break
     }
+    index <- index + 1    
 }        
-if (fun != NULL){
+if (!is.null(fun)){
     # we set the function
     # the method should be smart enough to associate the reaction entities
     # with the correct function parameters
@@ -122,13 +129,13 @@ if (fun != NULL){
     stopifnot(CReaction_getFunction(reaction) != NULL)
     # constant flux has only one function parameter
     CReaction_getFunctionParameters(reaction)
-    stopifnot(CReaction_getFunctionParameters(reaction).size() == 1)
+    stopifnot(CFunctionParameters_size(CReaction_getFunctionParameters(reaction)) == 1)
     # so there should be only one entry in the parameter mapping as well
     stopifnot(length(CReaction_getParameterMappings(reaction)) == 1)
     parameterGroup <- CReaction_getParameters(reaction)
-    CCopasiParameterGroup_size(parameterGroup)
     stopifnot(CCopasiParameterGroup_size(parameterGroup) == 1)
-    parameter <- CCopasiParameterGroup_getParameter(parameterGroup,0)
+    write(apropos("size_t"),stdout())
+    parameter <- CCopasiParameterGroup_getParameter(parameterGroup, 0)
     # make sure the parameter is a local parameter
     stopifnot(CReaction_isLocalParameter(reaction,CCopasiObject_getObjectName(parameter)))
     # now we set the value of the parameter to 0.5
@@ -136,8 +143,7 @@ if (fun != NULL){
     object <- CCopasiObject_getObject(parameter,CCopasiObjectName("Reference=Value"))
     stopifnot(object != NULL)
     ObjectStdVector_push_back(changedObjects,object)
-}
-else{
+} else{
     write("Error. Could not find irreversible michaelis menten." , stderr())
     return(1)
 }

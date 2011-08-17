@@ -31,4 +31,7 @@ Another way of fixing this is to not use any libraries that come packaged with t
 Since R compiles the sources itself, it determines the compiler flags, which at least in the case of Ubuntu 11.04 uses -O3 to compile the sources.
 Using optimizations greater than O1 have lead to problems with the resulting binaries for SWIG generated code before, so this also might be a problem that needs to be fixed.
 
+-----------------------------------------------------------------------
 
+At least the 64bit bindings for R seem to have problems with methods that take size_t as the index.
+The wrapped functions expect an object that is derived from size_t and the program will stop if it just finds a numerical value.
