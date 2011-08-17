@@ -23,13 +23,7 @@ stopifnot(model != NULL)
 # we want seconds as the time unit
 # microliter as the volume units
 # and nanomole as the substance units
-#ls(all.names=TRUE)
-#grep("CModel",ls(all.names=TRUE))
-#.__E___CModel__TimeUnit
-#.__E___CModel__TimeUnit["s"]
-#CModel_getTimeUnitEnum(model)
 CModel_setTimeUnit(model,"ns")
-#CModel_getTimeUnitEnum(model)
 CModel_setVolumeUnit(model,"microl")
 CModel_setQuantityUnit(model,"nMol")
 
@@ -46,56 +40,56 @@ object <- CCopasiObject_getObject(compartment,CCopasiObjectName("Reference=Initi
 stopifnot(object != NULL)
 ObjectStdVector_push_back(changedObjects,object)
 stopifnot(compartment != NULL)
-stopifnot(CModel_getCompartments(model).size() == 1)
+stopifnot(CompartmentVector_size(CModel_getCompartments(model)) == 1)
 # create a new metabolite with the name glucose and an inital
 # concentration of 10 nanomol
 # the metabolite belongs to the compartment we created and is is to be
 # fixed
-glucose <- CModel_createMetabolite(model,"glucose", CCopasiObject_getObjectName(compartment), 10.0, CMetab_FIXED)
+glucose <- CModel_createMetabolite(model,"glucose", CCopasiObject_getObjectName(compartment), 10.0, "FIXED")
 stopifnot(glucose != NULL)
 object <- CCopasiObject_getObject(glucose,CCopasiObjectName("Reference=InitialConcentration"))
 stopifnot(object != NULL)
 ObjectStdVector_push_back(changedObjects,object)
-stopifnot(CModel_getMetabolites(model).size() == 1)
+stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 1)
 # create a second metabolite called glucose-6-phosphate with an initial
 # concentration of 0. This metabolite is to be changed by reactions
-g6p <- CModel_createMetabolite(model,"glucose-6-phosphate", CCopasiObject_getObjectName(compartment), 0.0, CMetab_REACTIONS)
+g6p <- CModel_createMetabolite(model,"glucose-6-phosphate", CCopasiObject_getObjectName(compartment), 0.0, "REACTIONS")
 stopifnot(g6p != NULL)
 object <- CCopasiObject_getObject(g6p,CCopasiObjectName("Reference=InitialConcentration"))
 stopifnot(object != NULL)
 ObjectStdVector_push_back(changedObjects,object)
-stopifnot(CModel_getMetabolites(model).size() == 2)
+stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 2)
 # another metabolite for ATP, also fixed
-atp <- CModel_createMetabolite(model,"ATP", CCopasiObject_getObjectName(compartment), 10.0, CMetab_FIXED)
+atp <- CModel_createMetabolite(model,"ATP", CCopasiObject_getObjectName(compartment), 10.0, "FIXED")
 stopifnot(atp != NULL)
 object <- CCopasiObject_getObject(atp,CCopasiObjectName("Reference=InitialConcentration"))
 stopifnot(object != NULL)
 ObjectStdVector_push_back(changedObjects,object)
-stopifnot(CModel_getMetabolites(model).size() == 3)
+stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 3)
 # and one for ADP
-adp <- CModel_createMetabolite(model,"ADP", CCopasiObject_getObjectName(compartment), 0.0, CMetab_REACTIONS)
+adp <- CModel_createMetabolite(model,"ADP", CCopasiObject_getObjectName(compartment), 0.0, "REACTIONS")
 stopifnot(adp != NULL)
 object <- CCopasiObject_getObject(adp,CCopasiObjectName("Reference=InitialConcentration"))
 stopifnot(object != NULL)
 ObjectStdVector_push_back(changedObjects,object)
-stopifnot(CModel_getMetabolites(model).size() == 4)
+stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 4)
 # now we create a reaction
 reaction <- CModel_createReaction(model,"hexokinase")
 stopifnot(reaction != NULL)
-stopifnot(CModel_getReactions(model).size() == 1)
+stopifnot(ReactionVector_size(CModel_getReactions(model)) == 1)
 # hexokinase converts glucose and ATP to glucose-6-phosphate and ADP
 # we can set these on the chemical equation of the reaction
 chemEq <- CReaction_getChemEq(reaction)
 # glucose is a substrate with stoichiometry 1
-CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(glucose), 1.0, CChemEq_SUBSTRATE)
+CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(glucose), 1.0, "SUBSTRATE")
 # ATP is a substrate with stoichiometry 1
-CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(atp), 1.0, CChemEq_SUBSTRATE)
+CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(atp), 1.0, "SUBSTRATE")
 # glucose-6-phosphate is a product with stoichiometry 1
-CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(g6p), 1.0, CChemEq_PRODUCT)
+CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(g6p), 1.0, "PRODUCT")
 # ADP is a product with stoichiometry 1
-CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(adp), 1.0, CChemEq_PRODUCT)
-stopifnot(CChemEq_getSubstrates(chemEq).size() == 2)
-stopifnot(CChemEq.getProducts(chemEq).size() == 2)
+CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(adp), 1.0, "PRODUCT")
+stopifnot(CChemEqElementVector_size(CChemEq_getSubstrates(chemEq)) == 2)
+stopifnot(CChemEqElementVector_size(CChemEq_getProducts(chemEq)) == 2)
 # this reaction is to be irreversible
 CReaction_setReversible(reaction,FALSE)
 stopifnot(CReaction_isReversible(reaction) == FALSE)
@@ -107,16 +101,16 @@ stopifnot(funDB != NULL)
 # it should be in the list of suitable functions
 # lets get all suitable functions for an irreversible reaction with  2 substrates
 # and 2 products
-suitableFunctions <- CFunctionDB_suitableFunctions(funDB,2, 2, TriFALSE)
+suitableFunctions <- CFunctionDB_suitableFunctions(funDB,2, 2, "TriFalse")
 stopifnot(length(suitableFunctions) > 0)
-function=NULL
+fun <- NULL
 
 
 for (f in suitableFunctions){
     # we just assume that the only suitable function with Constant in
     # it's name is the one we want
     if (f.getObjectName().find("Constant") != -1){
-        fun=f
+        fun <- f
         break
     }
 }        
@@ -127,11 +121,13 @@ if (fun != NULL){
     CReaction_setFunction(reaction,fun)
     stopifnot(CReaction_getFunction(reaction) != NULL)
     # constant flux has only one function parameter
+    CReaction_getFunctionParameters(reaction)
     stopifnot(CReaction_getFunctionParameters(reaction).size() == 1)
     # so there should be only one entry in the parameter mapping as well
     stopifnot(length(CReaction_getParameterMappings(reaction)) == 1)
     parameterGroup <- CReaction_getParameters(reaction)
-    stopifnot(parameterGroup.size() == 1)
+    CCopasiParameterGroup_size(parameterGroup)
+    stopifnot(CCopasiParameterGroup_size(parameterGroup) == 1)
     parameter <- CCopasiParameterGroup_getParameter(parameterGroup,0)
     # make sure the parameter is a local parameter
     stopifnot(CReaction_isLocalParameter(reaction,CCopasiObject_getObjectName(parameter)))
@@ -150,18 +146,18 @@ else{
 # now we create a reaction
 reaction <- CModel_createReaction(model,"hexokinase-backwards")
 stopifnot(reaction != NULL)
-stopifnot(CModel_getReactions(model).size() == 2)
+stopifnot(ReactionVector_size(CModel_getReactions(model)) == 2)
 chemEq <- CReaction_getChemEq(reaction)
 # glucose is a product with stoichiometry 1
-CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(glucose), 1.0, CChemEq_PRODUCT)
+CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(glucose), 1.0, "PRODUCT")
 # ATP is a product with stoichiometry 1
-CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(atp), 1.0, CChemEq_PRODUCT)
+CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(atp), 1.0, "PRODUCT")
 # glucose-6-phosphate is a substrate with stoichiometry 1
-CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(g6p), 1.0, CChemEq_SUBSTRATE)
+CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(g6p), 1.0, "SUBSTRATE")
 # ADP is a substrate with stoichiometry 1
-CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(adp), 1.0, CChemEq_SUBSTRATE)
-stopifnot(CChemEq_getSubstrates(chemEq).size() == 2)
-stopifnot(CChemEq_getProducts(chemEq).size() == 2)
+CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(adp), 1.0, "SUBSTRATE")
+stopifnot(CChemEqElementVector_size(CChemEq_getSubstrates(chemEq)) == 2)
+stopifnot(CChemEqElementVector_size(CChemEq_getProducts(chemEq)) == 2)
 # this reaction is to be irreversible
 CReaction_setReversible(reaction,FALSE)
 stopifnot(CReaction_isReversible(reaction) == FALSE)
@@ -174,7 +170,7 @@ stopifnot(massAction != NULL)
 CReaction_setFunction(reaction,massAction)
 stopifnot(CReaction_getFunction(reaction) != NULL)
 
-stopifnot(CReaction_getFunctionParameters(reaction).size() == 2)
+stopifnot(CFunctionParameters_size(CReaction_getFunctionParameters(reaction)) == 2)
 # so there should be two entries in the parameter mapping as well
 stopifnot(length(CReaction_getParameterMappings(reaction)) == 2)
 # mass action is a special case since the parameter mappings for the
@@ -188,9 +184,9 @@ stopifnot(modelValue != NULL)
 object <- CCopasiObject_getObject(modelValue,CCopasiObjectName("Reference=InitialValue"))
 stopifnot(object != NULL)
 ObjectStdVector_push_back(changedObjects,object)
-stopifnot(CModel_getModelValues(model).size() == 1)
+stopifnot(ModelValueVectorN_size(CModel_getModelValues(model)) == 1)
 # set the status to assignment
-CModelEntity_setStatus(modelValue,CModelValue.ASSIGNMENT)
+CModelEntity_setStatus(modelValue,"ASSIGNMENT")
 # the assignment does not have to make sense
 CModelEntity_setExpression(modelValue,"1.0 / 4.0 + 2.0")
 
