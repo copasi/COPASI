@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/08/01 17:11:34 $
+//   $Author: shoops $
+//   $Date: 2011/08/22 21:39:54 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,11 +23,13 @@
 #ifndef CQARRAYANN_H
 #define CQARRAYANN_H
 
-#include <QLabel>
-#include <QPushButton>
-#include <QStackedWidget>
+#include "copasi/UI/ui_CQArrayAnnotationsWidget.h"
 
-#include <vector>
+// #include <QLabel>
+// #include <QPushButton>
+// #include <QStackedWidget>
+
+// #include <vector>
 
 #include "copasi/utilities/CAnnotatedMatrix.h"
 #include "utilities/CAnnotatedMatrix.h"
@@ -38,18 +40,20 @@ class Q3Table;
 class QLabel;
 
 class CQBarChart;
+class CQComboDelegate;
 
 /**
  * This Widget displays a CArrayAnnotation (no editing yet)
  */
-class CQArrayAnnotationsWidget : public QWidget
+class CQArrayAnnotationsWidget : public QWidget, public Ui::CQArrayAnnotationsWidget
 {
   Q_OBJECT
 
 public:
 
-  CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, bool barChart = true, bool slider = true);
-  ~CQArrayAnnotationsWidget();
+  CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, bool barChart = true, bool slider = true);
+
+  virtual ~CQArrayAnnotationsWidget();
 
   void setArrayAnnotation(const CArrayAnnotation * pArray);
 
@@ -133,13 +137,6 @@ protected:
 
   //void clearWidget();
 
-  CQBarChart* mpPlot3d;
-
-  QWidget* mpHBoxSelection;
-  QWidget* mpHBoxContents;
-//    Q3WidgetStack* mpStack;
-  QStackedWidget* mpStack;
-
   /**
    * indicates whether 3d bar chart is activated
    */
@@ -150,15 +147,11 @@ protected:
    */
   bool mUseSliders;
 
-  QPushButton* mpButton;
   double** data;
   std::vector< QColor > mColors;
   void enableBarChart(bool enable);
   //void switchToTable();
   void switchToBarChart();
-
-  Q3Table* mpSelectionTable;
-  Q3Table* mpContentTable;
 
   const CArrayAnnotation * mpArray;
 
@@ -170,6 +163,10 @@ protected:
   CCopasiAbstractArray::index_type mIndex;
   bool mBarChartFilled;
   bool mOneDimensional;
+
+  QStringList mComboEntries;
+  CQComboDelegate* mpComboDelegate;
+
   /**
    * the current active item of all the combo boxes
    */

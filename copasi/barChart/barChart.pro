@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/barChart.pro,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.7 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/03/07 19:24:50 $ 
+#   $Date: 2011/08/22 21:39:53 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,19 +23,24 @@
 LIB = barChart
 DISTFILES = barChart.pro
 
+FORMS += \
+  CQBaseWidget.ui
+
 # Input
-HEADERS +=  qwt3dBars.h \
+HEADERS += \
+  CQBaseWidget.h \
+  qwt3dBars.h \
   qwt3dScale.h \
   qwt3dPlot.h \
-  qwt3dColor.h \
-  qwt3dBaseWidget.h 
+  qwt3dColor.h 
   
 
-SOURCES += qwt3dBars.cpp \
+SOURCES += \
+  CQBaseWidget.cpp \
+  qwt3dBars.cpp \
   qwt3dScale.cpp \
   qwt3dPlot.cpp \
-  qwt3dColor.cpp\
-  qwt3dBaseWidget.cpp 
+  qwt3dColor.cpp 
 
   
 include(../lib.pri)

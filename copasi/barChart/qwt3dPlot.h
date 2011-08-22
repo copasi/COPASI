@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:54:05 $
+//   $Date: 2011/08/22 21:39:53 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,29 +23,15 @@
 #ifndef PLOT3D_H
 #define PLOT3D_H
 
-// #include <qlayout.h>
-// #include <qslider.h>
-// #include <qmenubar.h>
-// #include <qcursor.h>
-
 #include <QString>
 #include <qwt3d_surfaceplot.h>
 
-#include "copasi/barChart/qwt3dBaseWidget.h"
+#include "copasi/barChart/CQBaseWidget.h"
 #include "copasi/barChart/qwt3dBars.h"
-
-// #include <QContextMenuEvent>
-// #include <QMessagebox>
-// #include <QRegexp>
-
-// #include "copasi/barChart/qwt3dScale.h"
-// #include "copasi/barChart/qwt3dColor.h"
-// #include "copasi/UI/CopasiFileDialog.h"
-// #include "copasi/UI/qtUtilities.h"
 
 class QGridLayout;
 
-class Plot3d : public BaseWidget
+class CQBarChart : public CQBaseWidget
 {
   Q_OBJECT
 
@@ -66,11 +52,9 @@ public:
 
   Data mData;
 
-  Plot3d(QWidget* parent = 0, const char* name = 0);
-  virtual ~Plot3d();
-  Qwt3D::SurfacePlot* mpPlot;
+  CQBarChart(QWidget* parent = 0, const char* name = 0);
+  virtual ~CQBarChart();
   Bar *mpBar;
-  QGridLayout *mpGrid;
   QString mTitle;
   double** data;
   const std::vector<std::string> *mpColumnScale;
@@ -91,6 +75,22 @@ public:
   void resizeCoordSys();
   int getColSliderPos();
   int getRowSliderPos();
+
+  /**
+  * This method sets the user specified descriptions for the rows and columns.
+  * All axes in bar graph will be marked with this description labels automatically.
+  */
+  void setDescriptions(const std::vector<std::string> *columnsDes, const std::vector<std::string> *rowsDes);
+
+  /**
+  * If necessary set the title in the middle over the bar graph.
+  */
+  void setPlotTitle(QString title);
+
+  /**
+  * Option to show or to hide the color legend.
+  */
+  void showColorLegend(bool CLegend);
 
 public slots:
   void saveDataToFile();

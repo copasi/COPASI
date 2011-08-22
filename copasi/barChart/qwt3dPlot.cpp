@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/07/16 18:54:05 $
+//   $Date: 2011/08/22 21:39:53 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,15 +40,12 @@
 
 #include "copasi.h"
 
-Plot3d::Plot3d(QWidget* parent, const char* name)
-    : BaseWidget(parent, name),
+CQBarChart::CQBarChart(QWidget* parent, const char* name) :
+    CQBaseWidget(parent, name),
     mpColumnScale(NULL),
     mpRowScale(NULL)
 
 {
-  mpGrid = new QGridLayout(mpFrame);
-  mpPlot = new Qwt3D::SurfacePlot(mpFrame);
-  mpGrid->addWidget(mpPlot, 0, 0);
   mpPlot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   mpPlot->setRotation(30, 0, 15);
   //setScale(1,1,1);
@@ -65,13 +62,13 @@ Plot3d::Plot3d(QWidget* parent, const char* name)
   mpPlot->updateGL();
 }
 
-Plot3d::~Plot3d()
+CQBarChart::~CQBarChart()
 {}
 
 /*
  * Function to set zoom of view
  */
-void Plot3d::setZoom()
+void CQBarChart::setZoom()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::setZoom --";
@@ -89,7 +86,7 @@ void Plot3d::setZoom()
 /*
  * Function to plot data
  */
-void Plot3d::plotData()
+void CQBarChart::plotData()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::plotData --";
@@ -110,7 +107,7 @@ void Plot3d::plotData()
   mpPlot->updateGL();
 }
 
-void Plot3d::setAxes()
+void CQBarChart::setAxes()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::setAxes --";
@@ -263,7 +260,7 @@ void Plot3d::setAxes()
   mpPlot->coordinates()->axes[Qwt3D::Y4].setTicLength(majorTicLength, 0);
 }
 
-void Plot3d::setLegend()
+void CQBarChart::setLegend()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::setLegend --";
@@ -283,7 +280,7 @@ void Plot3d::setLegend()
   mpPlot->showColorLegend(true);
 }
 
-void Plot3d::setPlotTitle()
+void CQBarChart::setPlotTitle()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::setPlotTitle --";
@@ -295,7 +292,7 @@ void Plot3d::setPlotTitle()
   mpPlot->setTitle(mTitle); //!< Set caption text (one row only)
 }
 
-void Plot3d::setScale(const std::vector<std::string> *columnsDescript, const std::vector<std::string> *rowsDescript)
+void CQBarChart::setScale(const std::vector<std::string> *columnsDescript, const std::vector<std::string> *rowsDescript)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::setPlotTitle --";
@@ -304,7 +301,7 @@ void Plot3d::setScale(const std::vector<std::string> *columnsDescript, const std
   mpRowScale = rowsDescript;
 }
 
-void Plot3d::setColors(std::vector<QColor> mColors, double min, double max)
+void CQBarChart::setColors(std::vector<QColor> mColors, double min, double max)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::setColors --";
@@ -330,7 +327,7 @@ void Plot3d::setColors(std::vector<QColor> mColors, double min, double max)
   mpPlot->setDataColor(mpCol);
 }
 
-void Plot3d::setData(double** data, int columns, int rows, double valueZone)
+void CQBarChart::setData(double** data, int columns, int rows, double valueZone)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::setData --";
@@ -374,13 +371,13 @@ void Plot3d::setData(double** data, int columns, int rows, double valueZone)
   setSlider();
 }
 
-void Plot3d::setSlider()
+void CQBarChart::setSlider()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::setSlider --";
 #endif
 
-  if (mpSlider)
+  if (mSliderActive)
     if (mData.valueZone != 0)
       {
         mpSliderColumn->setMinimum(0);
@@ -401,7 +398,7 @@ void Plot3d::setSlider()
       }
 }
 
-void Plot3d::resizeCoordSys()
+void CQBarChart::resizeCoordSys()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::resizeCoordSys --";
@@ -440,13 +437,13 @@ void Plot3d::resizeCoordSys()
                               Qwt3D::Triple(mpPlot->hull().maxVertex.x, mpPlot->hull().maxVertex.y, maxZ));
 }
 
-int Plot3d::getColSliderPos()
+int CQBarChart::getColSliderPos()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::getColSliderPos --";
 #endif
 
-  if (!mpSlider) return - 1;
+  if (!mSliderActive) return - 1;
 
   if (mpSliderColumn->value() > mData.columns)
     return - 1;
@@ -454,13 +451,13 @@ int Plot3d::getColSliderPos()
     return mpSliderColumn->value();
 }
 
-int Plot3d::getRowSliderPos()
+int CQBarChart::getRowSliderPos()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::getRowSliderPos --";
 #endif
 
-  if (!mpSlider) return - 1;
+  if (!mSliderActive) return - 1;
 
   if (mpSliderRow->value() > mData.rows)
     return - 1;
@@ -468,9 +465,9 @@ int Plot3d::getRowSliderPos()
     return mpSliderRow->value();
 }
 
-void Plot3d::sliderMoved(int column, int row)
+void CQBarChart::sliderMoved(int column, int row)
 {
-  if (!mpSlider) return;
+  if (!mSliderActive) return;
 
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::sliderMoved --";
@@ -507,7 +504,7 @@ void Plot3d::sliderMoved(int column, int row)
   // sliderPosition(column, row);
 }
 
-void Plot3d::emptyPlot()
+void CQBarChart::emptyPlot()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::emptyPlot --";
@@ -524,7 +521,7 @@ void Plot3d::emptyPlot()
   plotData();
 }
 
-void Plot3d::contextMenuEvent(QContextMenuEvent *)
+void CQBarChart::contextMenuEvent(QContextMenuEvent *)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::contextMenuEvent --";
@@ -544,7 +541,7 @@ void Plot3d::contextMenuEvent(QContextMenuEvent *)
   delete mpContextMenu;
 }
 
-void Plot3d::saveDataToFile()
+void CQBarChart::saveDataToFile()
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in qwt3dPlot.cpp Plot3d::saveDataToFile --";
@@ -596,7 +593,7 @@ void Plot3d::saveDataToFile()
     }
 }
 
-void Plot3d::showLegend()
+void CQBarChart::showLegend()
 {
   if (mColorLegend)
     {
@@ -610,7 +607,7 @@ void Plot3d::showLegend()
     }
 }
 
-void Plot3d::hotKeysMessage()
+void CQBarChart::hotKeysMessage()
 {
   CQMessageBox::information(this, "Mouse and Keyboard Handling",
                             "You can perform shifts, turns, scales and zooms. \n \n"
@@ -620,3 +617,19 @@ void Plot3d::hotKeysMessage()
 
   return;
 }
+
+void CQBarChart::setDescriptions(const std::vector<std::string>* columnsDes, const std::vector<std::string>* rowsDes)
+{
+  setScale(columnsDes, rowsDes);
+}
+
+void CQBarChart::showColorLegend(bool CLegend)
+{
+  mColorLegend = CLegend;
+}
+
+void CQBarChart::setPlotTitle(QString title)
+{
+  mTitle = title;
+}
+

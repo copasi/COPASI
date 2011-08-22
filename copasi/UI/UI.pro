@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.246 $
+#   $Revision: 1.247 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2011/08/05 14:50:16 $
+#   $Author: shoops $
+#   $Date: 2011/08/22 21:39:54 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.246 $ $Author: pwilly $ $Date: 2011/08/05 14:50:16 $
+# $Revision: 1.247 $ $Author: shoops $ $Date: 2011/08/22 21:39:54 $
 ######################################################################
 
 LIB = UI
@@ -33,6 +33,7 @@ DISTFILES = UI.pro
 HEADERS	+= \
   CMCAResultSubwidget.h \
   CLNAResultSubwidget.h \
+  CQArrayAnnotationsWidget.h \
   CQCompartment.h \
   CQCompartmentsWidget.h \
   CQCrossSectionTaskWidget.h \
@@ -119,8 +120,6 @@ HEADERS	+= \
   copasiui3window.h \
   CProgressBar.h \
   CReportDefinitionSelect.h \
-  CQArrayAnnotationsWidget.h \
-  CQBarChart.h \
   CQBaseDataModel.h \
   CQComboDelegate.h \
   CQCompartmentDM.h \
@@ -182,6 +181,7 @@ HEADERS	+= \
 SOURCES	+= \
   CMCAResultSubwidget.cpp \
   CLNAResultSubwidget.cpp \
+  CQArrayAnnotationsWidget.cpp \
   CQCompartment.cpp \
   CQCompartmentsWidget.cpp \
   CQCrossSectionTaskWidget.cpp \
@@ -269,8 +269,6 @@ SOURCES	+= \
   copasiui3window.cpp \
   CProgressBar.cpp \
   CReportDefinitionSelect.cpp \
-  CQArrayAnnotationsWidget.cpp \
-  CQBarChart.cpp \
   CQBaseDataModel.cpp \
   CQComboDelegate.cpp \
   CQCompartmentDM.cpp \
@@ -332,6 +330,7 @@ SOURCES	+= \
 
 FORMS += CMCAResultSubwidget.ui
 FORMS += CLNAResultSubwidget.ui
+FORMS += CQArrayAnnotationsWidget.ui
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQCrossSectionTaskWidget.ui
