@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:07 $
+//   $Author: shoops $
+//   $Date: 2011/08/22 21:38:34 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@
 
 class QLabel;
 class QTabWidget;
-class Q3Table;
+class QTableWidget;
 
 class CModel;
 
@@ -59,7 +59,7 @@ protected:
   void loadWidget();
   void clearArrays();
 
-  void loadOneTable(Q3Table* pTable, const std::vector< Refresh * > & list);
+  void loadOneTable(QTableWidget * pTable, const std::vector< Refresh * > & list);
   void loadObjectsTable(CModel* pModel);
 
   std::map<const Refresh*, const CCopasiObject*> mRefreshsMap;
@@ -74,13 +74,13 @@ protected:
   QTabWidget* mpTab;
   QTabWidget* mpTab2;
 
-  Q3Table* mpTable0;
-  Q3Table* mpTable1;
-  Q3Table* mpTable2;
-  Q3Table* mpTable3;
+  QTableWidget * mpTable0;
+  QTableWidget * mpTable1;
+  QTableWidget * mpTable2;
+  QTableWidget * mpTable3;
 
-  Q3Table* mpTableObj;
-  Q3Table* mpTableState;
+  QTableWidget * mpTableObj;
+  QTableWidget * mpTableState;
 };
 
 #endif

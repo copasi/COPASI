@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:07 $
+//   $Author: shoops $
+//   $Date: 2011/08/22 21:38:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,13 +20,13 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <q3table.h>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 #include "copasi.h"
 
 #include "CQUpdatesWidget.h"
 #include "qtUtilities.h"
-#include "parametertable.h" //for color table item
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -73,19 +73,19 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
   mpMainTab->addTab(mpTab, "Update Sequences");
 
   // 0
-  mpTable0 = new Q3Table(mpTab, "Table0");
+  mpTable0 = new QTableWidget(mpTab);
   mpTab->addTab(mpTable0, "Initial Assignments");
 
   // 1
-  mpTable1 = new Q3Table(mpTab, "Table1");
+  mpTable1 = new QTableWidget(mpTab);
   mpTab->addTab(mpTable1, "Constant Assignments");
 
   // 2
-  mpTable2 = new Q3Table(mpTab, "Table2");
+  mpTable2 = new QTableWidget(mpTab);
   mpTab->addTab(mpTable2, "Assignments during Simulation");
 
   // 3
-  mpTable3 = new Q3Table(mpTab, "Table3");
+  mpTable3 = new QTableWidget(mpTab);
   mpTab->addTab(mpTable3, "Assignments for output");
 
   // tab widget 2
@@ -94,11 +94,11 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
   mpMainTab->addTab(mpTab2, "Object Lists");
 
   //objects table
-  mpTableObj = new Q3Table(mpTab2, "TableObj");
+  mpTableObj = new QTableWidget(mpTab2);
   mpTab2->addTab(mpTableObj, "Species");
 
   //state table
-  mpTableState = new Q3Table(mpTab2, "TableState");
+  mpTableState = new QTableWidget(mpTab2);
   mpTab2->addTab(mpTableState, "State");
 }
 
@@ -156,24 +156,24 @@ void CQUpdatesWidget::loadWidget()
   loadObjectsTable(pModel);
 }
 
-void CQUpdatesWidget::loadOneTable(Q3Table* pTable, const std::vector< Refresh * > & list)
+void CQUpdatesWidget::loadOneTable(QTableWidget * pTable, const std::vector< Refresh * > & list)
 {
-  pTable->setNumCols(2);
+  pTable->setColumnCount(2);
 
   size_t i, imax = list.size();
-  pTable->setNumRows((int) imax);
+  pTable->setRowCount((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
       std::map<const Refresh*, const CCopasiObject*>::const_iterator it = mRefreshsMap.find(list[i]);
 
       if (it != mRefreshsMap.end() && it->second)
-        pTable->setText((int) i, 0, FROM_UTF8(it->second->getObjectDisplayName()));
+        pTable->setItem((int) i, 0, new QTableWidgetItem(FROM_UTF8(it->second->getObjectDisplayName())));
 
       const CCopasiObject* tmp = list[i]->getObject();
 
       if (tmp)
-        pTable->setText((int) i, 1, FROM_UTF8(tmp->getObjectDisplayName()));
+        pTable->setItem((int) i, 1, new QTableWidgetItem(FROM_UTF8(tmp->getObjectDisplayName())));
     }
 }
 
@@ -184,25 +184,25 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 {
   if (!pModel) return;
 
-  mpTableObj->setNumCols(5);
-  mpTableObj->setNumRows(0);
+  mpTableObj->setColumnCount(5);
+  mpTableObj->setRowCount(0);
 
-  mpTableObj->horizontalHeader()->setLabel(0, "User order");
-  mpTableObj->horizontalHeader()->setLabel(1, "status");
-  mpTableObj->horizontalHeader()->setLabel(2, "");
-  mpTableObj->horizontalHeader()->setLabel(3, "Reduced system");
-  mpTableObj->horizontalHeader()->setLabel(4, "status");
+  mpTableObj->setHorizontalHeaderItem(0, new QTableWidgetItem("User order"));
+  mpTableObj->setHorizontalHeaderItem(1, new QTableWidgetItem("status"));
+  mpTableObj->setHorizontalHeaderItem(2, new QTableWidgetItem(""));
+  mpTableObj->setHorizontalHeaderItem(3, new QTableWidgetItem("Reduced system"));
+  mpTableObj->setHorizontalHeaderItem(4, new QTableWidgetItem("status"));
 
   size_t i, imax;
 
   //metabolites
   imax = pModel->getMetabolites().size();
 
-  if ((int) imax > mpTableObj->numRows()) mpTableObj->setNumRows((int) imax);
+  if ((int) imax > mpTableObj->rowCount()) mpTableObj->setRowCount((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      mpTableObj->verticalHeader()->setLabel((int) i, QString::number(i));
+      mpTableObj->setVerticalHeaderItem((int) i, new QTableWidgetItem(QString::number(i)));
 
       CMetab* pM = pModel->getMetabolites()[i];
 
@@ -218,8 +218,8 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       if (pM->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableObj->setItem((int) i, 0, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
-                          FROM_UTF8(pM->getObjectName())));
+      mpTableObj->setItem((int) i, 0, new QTableWidgetItem(FROM_UTF8(pM->getObjectName())));
+
       //mpTableObj->setText(i, 0, FROM_UTF8(pM->getObjectName()));
       std::string tmpString = CModelEntity::StatusName[pM->getStatus()];
 
@@ -228,19 +228,18 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       else
         tmpString += " (Used = false, ";
 
-      mpTableObj->setItem((int) i, 1, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
-                          FROM_UTF8(tmpString)));
+      mpTableObj->setItem((int) i, 1, new QTableWidgetItem(FROM_UTF8(tmpString)));
       //mpTableObj->setText(i, 1, FROM_UTF8(tmpString));
     }
 
-  mpTableObj->adjustColumn(0);
-  mpTableObj->adjustColumn(1);
+  mpTableObj->resizeColumnToContents(0);
+  mpTableObj->resizeColumnToContents(1);
   mpTableObj->setColumnWidth(2, 10);
 
   //metabolitesX
   imax = pModel->getMetabolitesX().size();
 
-  if ((int) imax > mpTableObj->numRows()) mpTableObj->setNumRows((int) imax);
+  if ((int) imax > mpTableObj->rowCount()) mpTableObj->setRowCount((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
@@ -258,8 +257,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       if (pM->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableObj->setItem((int) i, 3, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
-                          FROM_UTF8(pM->getObjectName())));
+      mpTableObj->setItem((int) i, 3, new QTableWidgetItem(FROM_UTF8(pM->getObjectName())));
       //mpTableObj->setText(i, 3, FROM_UTF8(pM->getObjectName()));
 
       std::string tmpString = CModelEntity::StatusName[pM->getStatus()];
@@ -269,29 +267,27 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       else
         tmpString += " (Used = false, ";
 
-      mpTableObj->setItem((int) i, 4, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
-                          FROM_UTF8(tmpString)));
-      //      mpTableObj->setText(i, 4, FROM_UTF8(tmpString));
+      mpTableObj->setItem((int) i, 4, new QTableWidgetItem(FROM_UTF8(tmpString)));
     }
 
-  mpTableObj->adjustColumn(3);
-  mpTableObj->adjustColumn(4);
+  mpTableObj->resizeColumnToContents(3);
+  mpTableObj->resizeColumnToContents(4);
 
   //state
   const CStateTemplate & st = pModel->getStateTemplate();
   imax = st.size();
-  mpTableState->setNumRows(0);
-  mpTableState->setNumRows((int)(imax + 1));
-  mpTableState->setNumCols(5);
-  mpTableState->horizontalHeader()->setLabel(0, "Name");
-  mpTableState->horizontalHeader()->setLabel(1, "status");
-  mpTableState->horizontalHeader()->setLabel(2, "");
-  mpTableState->horizontalHeader()->setLabel(3, "ATol(1)");
-  mpTableState->horizontalHeader()->setLabel(4, "SS criterion(1)");
+  mpTableState->setRowCount(0);
+  mpTableState->setRowCount((int)(imax + 1));
+  mpTableState->setColumnCount(5);
+  mpTableState->setHorizontalHeaderItem(0, new QTableWidgetItem("Name"));
+  mpTableState->setHorizontalHeaderItem(1, new QTableWidgetItem("status"));
+  mpTableState->setHorizontalHeaderItem(2, new QTableWidgetItem(""));
+  mpTableState->setHorizontalHeaderItem(3, new QTableWidgetItem("ATol(1)"));
+  mpTableState->setHorizontalHeaderItem(4, new QTableWidgetItem("SS criterion(1)"));
 
   for (i = 0; i < imax; ++i)
     {
-      mpTableState->verticalHeader()->setLabel((int) i, QString::number(i));
+      mpTableState->setVerticalHeaderItem((int) i, new QTableWidgetItem(QString::number(i)));
 
       CModelEntity* pME = *(st.getEntities() + i);
 
@@ -306,8 +302,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       if (dynamic_cast<CModelValue*>(pME)) c = QColor(100, 100, 250);
 
-      mpTableState->setItem((int) i, 0, new ColorTableItem(mpTableState, Q3TableItem::Never, c,
-                            FROM_UTF8(pME->getObjectDisplayName())));
+      mpTableState->setItem((int) i, 0, new QTableWidgetItem(FROM_UTF8(pME->getObjectDisplayName())));
       //      mpTableState->setText(i, 0,FROM_UTF8(pME->getObjectDisplayName()));
 
       //second column
@@ -330,40 +325,39 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       if (pME->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableState->setItem((int) i, 1, new ColorTableItem(mpTableState, Q3TableItem::Never, c,
-                            FROM_UTF8(tmpString)));
+      mpTableState->setItem((int) i, 1, new QTableWidgetItem(FROM_UTF8(tmpString)));
       //mpTableState->setText(i, 1, FROM_UTF8(tmpString));
     }
 
   QColor c(200, 250, 250);
 
   for (i = st.beginIndependent() - st.getEntities(); i < (size_t)(st.endIndependent() - st.getEntities()); ++i)
-    mpTableState->setItem((int) i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
+    mpTableState->setItem((int) i, 2, new  QTableWidgetItem(""));
 
   c = QColor(250, 200, 250);
 
   for (i = st.beginDependent() - st.getEntities(); i < (size_t)(st.endDependent() - st.getEntities()); ++i)
-    mpTableState->setItem((int) i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
+    mpTableState->setItem((int) i, 2, new QTableWidgetItem(""));
 
   c = QColor(200, 200, 200);
 
   for (i = st.beginFixed() - st.getEntities(); i < (size_t)(st.endFixed() - st.getEntities()); ++i)
-    mpTableState->setItem((int) i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
+    mpTableState->setItem((int) i, 2, new QTableWidgetItem(""));
 
   int tmpint = st.beginIndependent() - st.getEntities();
-  mpTableState->setText(tmpint, 2, "beginIndependent ");
+  mpTableState->setItem(tmpint, 2, new QTableWidgetItem("beginIndependent "));
   tmpint = st.endIndependent() - st.getEntities();
-  mpTableState->setText(tmpint, 2, mpTableState->text(tmpint, 2) + "endIndependent ");
+  mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endIndependent "));
 
   tmpint = st.beginDependent() - st.getEntities();
-  mpTableState->setText(tmpint, 2, mpTableState->text(tmpint, 2) + "beginDependent ");
+  mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginDependent "));
   tmpint = st.endDependent() - st.getEntities();
-  mpTableState->setText(tmpint, 2, mpTableState->text(tmpint, 2) + "endDependent ");
+  mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endDependent "));
 
   tmpint = st.beginFixed() - st.getEntities();
-  mpTableState->setText(tmpint, 2, mpTableState->text(tmpint, 2) + "beginFixed ");
+  mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginFixed "));
   tmpint = st.endFixed() - st.getEntities();
-  mpTableState->setText(tmpint, 2, mpTableState->text(tmpint, 2) + "endFixed ");
+  mpTableState->setItem(tmpint, 2, new QTableWidgetItem("endFixed "));
 
   //add absolute Tolerances to table
   CVector< C_FLOAT64 > atolv = pModel->initializeAtolVector(1, false);
@@ -371,18 +365,18 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
   for (i = 0; i < atolv.size(); ++i)
     {
-      mpTableState->setText((int) i + tmpint, 3, QString::number(atolv[i]));
+      mpTableState->setItem((int) i + tmpint, 3, new QTableWidgetItem(QString::number(atolv[i])));
 
       CModelEntity* pME = *(st.getEntities() + i + 1);
       C_FLOAT64 tmp = std::min(atolv[i], std::max(100.0 * DBL_MIN, fabs(pME->getInitialValue())));
-      mpTableState->setText((int) i + tmpint, 4, QString::number(tmp));
+      mpTableState->setItem((int) i + tmpint, 4, new QTableWidgetItem(QString::number(tmp)));
     }
 
-  mpTableState->adjustColumn(0);
-  mpTableState->adjustColumn(1);
-  mpTableState->adjustColumn(2);
-  mpTableState->adjustColumn(3);
-  mpTableState->adjustColumn(4);
+  mpTableState->resizeColumnToContents(0);
+  mpTableState->resizeColumnToContents(1);
+  mpTableState->resizeColumnToContents(2);
+  mpTableState->resizeColumnToContents(3);
+  mpTableState->resizeColumnToContents(4);
 }
 
 //*************************************
