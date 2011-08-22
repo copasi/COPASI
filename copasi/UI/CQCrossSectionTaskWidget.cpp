@@ -15,8 +15,6 @@
  *  Created by Paul Willy on 5/21/10.
  */
 
-#include "copasi.h"
-
 #include "CQCrossSectionTaskWidget.h"
 #include "listviews.h"
 #include "CQTaskBtnWidget.h"
@@ -25,6 +23,8 @@
 #include "UI/icons/Copasi16-Alpha.xpm"
 #include "CQMessageBox.h"
 #include "CQValidator.h"
+
+#include "copasi.h"
 
 #include "DataModelGUI.h"
 #include "qtUtilities.h"
