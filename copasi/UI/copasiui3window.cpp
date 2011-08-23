@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.296 $
+//   $Revision: 1.297 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/07 19:16:09 $
+//   $Date: 2011/08/23 18:07:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1096,6 +1096,7 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
   mpCloseEvent = ce;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
+  mQuitApplication = true;
 
   if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
     {
@@ -1108,7 +1109,6 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
                                      QMessageBox::Save))
         {
           case QMessageBox::Save:
-            mQuitApplication = true;
             slotFileSave();
             mpCloseEvent->ignore();
             mpCloseEvent = NULL;
@@ -1123,6 +1123,10 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
             slotCloseEventFinished(false);
             break;
         }
+    }
+  else
+    {
+      slotCloseEventFinished(true);
     }
 
   return;
