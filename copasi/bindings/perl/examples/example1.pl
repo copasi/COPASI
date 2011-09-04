@@ -4,42 +4,36 @@ use warnings;
 
 use COPASI;
 
-&COPASI::CCopasiRootContainer::init();
-my $conta = &COPASI::CCopasiRootContainer::getRoot();
-my $ver = $COPASI::CVersion_VERSION;
-print $ver->getVersion(),"\n";
-print "\"$conta\"";
-print ref($conta);
-
+COPASI::CCopasiRootContainer::init();
 unless(defined(&COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed";die;}
 # create a new datamodel
 my $dataModel = &COPASI::CCopasiRootContainer::addDatamodel();
-unless(&COPASI::DataModelVector::size(&COPASI::CCopasiRootContainer::getDatamodelList()) == 1){warn "Assertion failed";die;}
-####    # get the model from the datamodel
-####    model = dataModel.getModel();
-####    unless(defined(model)){warn "Assertion failed";die;}
-####    # set the units for the model
-####    # we want seconds as the time unit
-####    # microliter as the volume units
-####    # and nanomole as the substance units
-####    model.setTimeUnit(CModel.s);
-####    model.setVolumeUnit(CModel.microl);
-####    model.setQuantityUnit(CModel.nMol);
-####    
-####    # we have to keep a set of all the initial values that are changed during
-####    # the model building process
-####    # They are needed after the model has been built to make sure all initial
-####    # values are set to the correct initial value
-####    changedObjects=ObjectStdVector();
-####    
-####    # create a compartment with the name cell and an initial volume of 5.0
-####    # microliter
-####    compartment = model.createCompartment("cell", 5.0);
-####    object = compartment.getObject(CCopasiObjectName("Reference=InitialVolume"));
-####    unless(defined(object)){warn "Assertion failed";die;}
-####    changedObjects.push_back(object);
-####    unless(defined(compartment)){warn "Assertion failed";die;}
-####    unless(model.getCompartments().size() == 1){warn "Assertion failed";die;}
+unless(COPASI::DataModelVector::size(COPASI::CCopasiRootContainer::getDatamodelList()) == 1){warn "Assertion failed";die;}
+# get the model from the datamodel
+my $model = $dataModel->getModel();
+unless(defined($model)){warn "Assertion failed";die;}
+# set the units for the model
+# we want seconds as the time unit
+# microliter as the volume units
+# and nanomole as the substance units
+$model->setTimeUnit($COPASI::CModel::s);
+$model->setVolumeUnit($COPASI::CModel::microl);
+$model->setQuantityUnit($COPASI::CModel::nMol);
+
+# we have to keep a set of all the initial values that are changed during
+# the model building process
+# They are needed after the model has been built to make sure all initial
+# values are set to the correct initial value
+my $changedObjects = new COPASI::ObjectStdVector();
+
+# create a compartment with the name cell and an initial volume of 5.0
+# microliter
+my $compartment = $model->createCompartment("cell", 5.0);
+my $object = $compartment->getObject(new COPASI::CCopasiObjectName("Reference=InitialVolume"));
+unless(defined($object)){warn "Assertion failed";die;}
+$changedObjects->push($object);
+unless(defined($compartment)){warn "Assertion failed";die;}
+unless($model->getCompartments()->size() == 1){warn "Assertion failed";die;}
 ####    # create a new metabolite with the name glucose and an inital
 ####    # concentration of 10 nanomol
 ####    # the metabolite belongs to the compartment we created and is is to be
