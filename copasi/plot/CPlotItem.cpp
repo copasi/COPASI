@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:32:04 $
+//   $Author: tjohann $
+//   $Date: 2011/09/05 12:00:16 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,9 @@ const std::string CPlotItem::TypeName[] =
   "Unset",
   "2D Curve",
   "Histogram",
+#ifdef COPASI_BANDED_GRAPH
+  "Banded Graph",
+#endif // COPASI_BANDED_GRAPH
 
   "2D Plot",
   "SimWiz",
@@ -40,6 +43,9 @@ const char* CPlotItem::XMLType[] =
   "Unset",
   "Curve2D",
   "Histogram1DItem",
+#ifdef COPASI_BANDED_GRAPH
+  "BandedGraph",
+#endif // COPASI_BANDED_GRAPH
 
   "Plot2D",
   "SimWiz",
@@ -101,7 +107,12 @@ void CPlotItem::setType(CPlotItem::Type type)
   mType = type;
 
   //create parameters
+#ifndef COPASI_BANDED_GRAPH
+
   if (type == curve2d)
+#else
+  if (type == curve2d || type == bandedGraph)
+#endif // COPASI_BANDED_GRAPH
     {
       assertParameter("Line type", CCopasiParameter::UINT, (unsigned C_INT32) 0);
     }
@@ -111,10 +122,15 @@ void CPlotItem::setType(CPlotItem::Type type)
       assertParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
     }
 
+#ifndef COPASI_BANDED_GRAPH
+
   if (type == curve2d || type == histoItem1d)
+#else
+  if (type == curve2d || type == histoItem1d || type == bandedGraph)
+#endif // COPASI_BANDED_GRAPH
     {
       mpXMLActivity =
-        assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"))->getValue().pSTRING;
+      assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"))->getValue().pSTRING;
 
       mActivity = toEnum(mpXMLActivity->c_str(), XMLRecordingActivity, COutputInterface::DURING);
 
@@ -154,6 +170,9 @@ void CPlotItem::setActivity(const COutputInterface::Activity & activity)
   switch (mType)
     {
       case curve2d:
+#ifdef COPASI_BANDED_GRAPH
+      case bandedGraph:
+#endif // COPASI_BANDED_GRAPH
       case histoItem1d:
         mActivity = activity;
         *mpXMLActivity = XMLRecordingActivity[mActivity];
@@ -172,6 +191,9 @@ const COutputInterface::Activity & CPlotItem::getActivity() const
   switch (mType)
     {
       case curve2d:
+#ifdef COPASI_BANDED_GRAPH
+      case bandedGraph:
+#endif // COPASI_BANDED_GRAPH
       case histoItem1d:
 
         if (!mpXMLActivity)

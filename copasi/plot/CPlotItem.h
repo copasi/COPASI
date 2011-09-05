@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:32:04 $
+   $Author: tjohann $
+   $Date: 2011/09/05 12:00:16 $
    End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,9 @@ public:
   enum Type
   {
     unset = 0, curve2d, histoItem1d,            //for plot items
+#ifdef COPASI_BANDED_GRAPH
+    bandedGraph,
+#endif // COPASI_BANDED_GRAPH
     plot2d, simWiz   //for plot specifications
   };
 
