@@ -20,6 +20,9 @@
 
 #include "curve2dwidget.h"
 #include "HistoWidget.h"
+#ifdef COPASI_BANDED_GRAPH
+#include "BandedGraphWidget.h"
+#endif // COPASI_BANDED_GRAPH
 #include "plotwindow.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
@@ -47,6 +50,15 @@ PlotSubwidget::PlotSubwidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl)
 {
   setupUi(this);
+
+#ifdef COPASI_BANDED_GRAPH
+  // this should be implemented in the PlotSubwidget.ui file
+  // as the button will be appended behind the 'delete' button:
+  QToolButton * buttonBandedGraph = new QToolButton(this);
+  buttonBandedGraph->setText("New Banded Graph");
+  layoutCurves->addWidget(buttonBandedGraph);
+  connect(buttonBandedGraph, SIGNAL(clicked()), this, SLOT(addBandedGraphSlot()));
+#endif // COPASI_BANDED_GRAPH
 }
 
 //-----------------------------------------------------------------------------
@@ -64,6 +76,14 @@ void PlotSubwidget::addCurveSlot()
   if (mType == CPlotItem::plot2d)
     addCurve2D();
 }
+
+#ifdef COPASI_BANDED_GRAPH
+void PlotSubwidget::addBandedGraphSlot()
+{
+  if (mType == CPlotItem::plot2d)
+    addBandedGraph();
+}
+#endif // COPASI_BANDED_GRAPH
 
 void PlotSubwidget::addHistoSlot()
 {
@@ -235,6 +255,174 @@ void PlotSubwidget::addCurve2D()
   tabs->setCurrentIndex(storeTab);
 }
 
+#ifdef COPASI_BANDED_GRAPH
+void PlotSubwidget::addBandedGraphTab(const std::string & title,
+                                      const CPlotDataChannelSpec & x,
+                                      const CPlotDataChannelSpec & yone,
+                                      const CPlotDataChannelSpec & ytwo)
+{
+  CPlotItem* item = new CPlotItem(title, NULL, CPlotItem::bandedGraph);
+  item->addChannel(x);
+  item->addChannel(yone);
+  item->addChannel(ytwo);
+
+  BandedGraphWidget * bandWidget = new BandedGraphWidget(tabs);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  bandWidget->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  bandWidget->LoadFromCurveSpec(item);
+  tabs->addTab(bandWidget, FROM_UTF8(item->getTitle()));
+
+  delete item;
+}
+
+void PlotSubwidget::addBandedGraph()
+{
+  CCopasiPlotSelectionDialog* pBrowser = new CCopasiPlotSelectionDialog();
+  std::vector< const CCopasiObject * > vector1;
+  std::vector< const CCopasiObject * > vector2;
+  pBrowser->setOutputVectors(&vector1, &vector2);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
+
+  if (pBrowser->exec() == QDialog::Rejected)
+    {
+      return;
+    }
+
+  //this assumes that the vector is empty if nothing was chosen
+  if (vector1.size() == 0 || vector2.size() == 0)
+    {
+      return;
+    }
+
+  std::vector<CCopasiObjectName> objects1, objects2;
+  size_t i;
+  std::vector<CCopasiObjectName>::const_iterator sit;
+  const CArrayAnnotation *pArray;
+
+  // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
+  // 2. translate to CNs and remove duplicates
+
+  // x-axis is set for single cell selection
+  std::string cn;
+
+  for (i = 0; i < vector1.size(); i++)
+    {
+      if (vector1[i])  // the object is not empty
+        {
+          // is it an array annotation?
+          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector1[i])))
+            {
+              // second argument is true as only single cell here is allowed. In this case we
+              //can assume that the size of the return vector is 1.
+              const CCopasiObject * pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
+
+              if (!pObject) continue;
+
+              cn = pObject->getCN();
+            }
+          else
+            cn = vector1[i]->getCN();
+
+          // check whether cn is already on objects1
+          for (sit = objects1.begin(); sit != objects1.end(); ++sit)
+            {
+              if (*sit == cn) break;
+            }
+
+          // if not exist, input cn into objects1
+          if (sit == objects1.end())
+            {
+              objects1.push_back(cn);
+            }
+        }
+    }
+
+  for (i = 0; i < vector2.size(); i++)
+    {
+      if (vector2[i])
+        {
+          // is it an array annotation?
+          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
+            {
+              // second argument is set false for multi selection
+              std::vector<const CCopasiObject*> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
+              std::vector<const CCopasiObject*>::const_iterator it;
+
+              for (it = vvv.begin(); it != vvv.end(); ++it)
+                {
+                  if (!*it) continue;
+
+                  cn = (*it)->getCN();
+
+                  //check if the CN already is in the list, if not add it.
+                  for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+                    if (*sit == cn) break;
+
+                  if (sit == objects2.end())
+                    objects2.push_back(cn);
+                }
+            }
+          else
+            {
+              cn = vector2[i]->getCN();
+
+              //check if the CN already is in the list, if not add it.
+              for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+                if (*sit == cn) break;
+
+              if (sit == objects2.end())
+                objects2.push_back(cn);
+            }
+        }
+    }
+
+  C_INT32 storeTab = tabs->count();
+
+  if (objects1.size() == 1)
+    {
+      for (i = 0; i < objects2.size(); ++i)
+        {
+          addBandedGraphTab(pDataModel->getDataObject(objects2[i])->getObjectDisplayName()
+                            + "|"
+                            + pDataModel->getDataObject(objects1[0])->getObjectDisplayName(),
+                            objects1[0], objects2[i]);
+        }
+    }
+  else if (objects2.size() == 1)
+    {
+      for (i = 0; i < objects1.size(); ++i)
+        {
+          addBandedGraphTab(pDataModel->getDataObject(objects2[0])->getObjectDisplayName()
+                            + "|"
+                            + pDataModel->getDataObject(objects1[i])->getObjectDisplayName(),
+                            objects1[i], objects2[0]);
+        }
+    }
+  else
+    {
+      size_t imax;
+
+      if (objects1.size() > objects2.size())
+        imax = objects2.size();
+      else
+        imax = objects1.size();
+
+      for (i = 0; i < imax; ++i)
+        {
+          addBandedGraphTab(pDataModel->getDataObject(objects2[i])->getObjectDisplayName()
+                            + "|"
+                            + pDataModel->getDataObject(objects1[i])->getObjectDisplayName() ,
+                            objects1[i], objects2[i]);
+        }
+    }
+
+  tabs->setCurrentIndex(storeTab);
+}
+#endif // COPASI_BANDED_GRAPH
+
 void PlotSubwidget::addHisto1DTab(const std::string & title,
                                   const CPlotDataChannelSpec & x, const C_FLOAT64 & incr)
 {
@@ -376,10 +564,12 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
 
   switch (mType)
     {
+#ifdef COPASI_BANDED_GRAPH
+      case CPlotItem::bandedGraph:
+#endif // COPASI_BANDED_GRAPH
       case CPlotItem::plot2d:
         checkLogX->setChecked(pspec->isLogX());
         checkLogY->setChecked(pspec->isLogY());
-        break;
         break;
       default:
         fatalError();
@@ -404,6 +594,19 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
           curve->LoadFromCurveSpec(curves[i]);
           tabs->addTab(curve, FROM_UTF8(curves[i]->getTitle()));
         }
+
+#ifdef COPASI_BANDED_GRAPH
+
+      if (curves[i]->getType() == CPlotItem::bandedGraph)
+        {
+          BandedGraphWidget* curve = new BandedGraphWidget(tabs);
+          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+          curve->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+          curve->LoadFromCurveSpec(curves[i]);
+          tabs->addTab(curve, FROM_UTF8(curves[i]->getTitle()));
+        }
+
+#endif // COPASI_BANDED_GRAPH
 
       if (curves[i]->getType() == CPlotItem::histoItem1d)
         {
@@ -456,6 +659,17 @@ bool PlotSubwidget::saveToPlotSpec()
           item = pspec->createItem("dummyname", CPlotItem::curve2d);
           tmpCurve2D->SaveToCurveSpec(item);
         }
+
+#ifdef COPASI_BANDED_GRAPH
+      BandedGraphWidget* tmpBand = dynamic_cast<BandedGraphWidget*>(tabs->widget((int) i));
+
+      if (tmpBand)
+        {
+          item = pspec->createItem("dummyname", CPlotItem::bandedGraph);
+          tmpBand->SaveToCurveSpec(item);
+        }
+
+#endif // COPASI_BANDED_GRAPH
 
       HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->widget((int) i));
 

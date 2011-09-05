@@ -6,7 +6,7 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,6 +60,16 @@ protected:
                    const CPlotDataChannelSpec & x,
                    const CPlotDataChannelSpec & y);
 
+#ifdef COPASI_BANDED_GRAPH
+  /**
+   * creates banded graph widget and adds it to the tab bar
+   */
+  void addBandedGraphTab(const std::string & title,
+                         const CPlotDataChannelSpec & x,
+                         const CPlotDataChannelSpec & yone,
+                         const CPlotDataChannelSpec & ytwo = CPlotDataChannelSpec());
+#endif // COPASI_BANDED_GRAPH
+
   /**
    * creates histogram widget and adds it to the tab bar
    */
@@ -75,6 +85,9 @@ protected slots:
    * slots that are connected to the buttons for adding curves/histograms
    */
   void addCurveSlot();
+#ifdef COPASI_BANDED_GRAPH
+  void addBandedGraphSlot();
+#endif // COPASI_BANDED_GRAPH
   void addHistoSlot();
 
   /**
@@ -110,6 +123,16 @@ protected:
    * or several curve descriptions are generated.
    */
   void addCurve2D();
+
+#ifdef COPASI_BANDED_GRAPH
+  /**
+   * this specifically handles the creation of a banded graph. It is called when
+   * the corresponding button is pressed and the plot is actually a banded graph.
+   * The dialogs for choosing objects for the axes is called from here and one
+   * or several banded graph descriptions are generated.
+   */
+  void addBandedGraph();
+#endif // COPASI_BANDED_GRAPH
 
   /**
    * this specifically handles the creation of a histogram. It is called when
