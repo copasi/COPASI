@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:32:02 $
+//   $Author: tjohann $
+//   $Date: 2011/09/05 12:06:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:32:02 $
+//   $Author: tjohann $
+//   $Date: 2011/09/05 12:06:51 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,6 +224,225 @@ C2DCurveData & C2DCurveData::operator = (const C2DCurveData & rhs)
   return * this;
 }
 
+#ifdef COPASI_BANDED_GRAPH
+//********************  CBandedGraphData  *********************************
+CBandedGraphData::CBandedGraphData():
+    QwtData(),
+    mpX(NULL),
+    mpY1(NULL),
+    mpY2(NULL),
+    mSize(0),
+    mMaxSize(0),
+    mLastRectangle(0),
+    mMinX(std::numeric_limits<double>::quiet_NaN()),
+    mMaxX(std::numeric_limits<double>::quiet_NaN()),
+    mMinY(std::numeric_limits<double>::quiet_NaN()),
+    mMaxY(std::numeric_limits<double>::quiet_NaN())
+{}
+
+CBandedGraphData::CBandedGraphData(const CVector< double > & x,
+                                   const CVector< double > & y1,
+                                   const CVector< double > & y2,
+                                   size_t size):
+    QwtData(),
+    mpX(x.array()),
+    mpY1(y1.array()),
+    mpY2(y2.array()),
+    mSize(size),
+    mMaxSize(x.size()),
+    mLastRectangle(0),
+    mMinX(std::numeric_limits<double>::quiet_NaN()),
+    mMaxX(std::numeric_limits<double>::quiet_NaN()),
+    mMinY(std::numeric_limits<double>::quiet_NaN()),
+    mMaxY(std::numeric_limits<double>::quiet_NaN())
+{
+  assert(x.size() == y1.size());
+  assert(x.size() == y2.size());
+  assert(mSize <= mMaxSize);
+}
+
+CBandedGraphData::~CBandedGraphData()
+{}
+
+QwtData *
+CBandedGraphData::copy() const
+{
+  CBandedGraphData * pCopy = new CBandedGraphData();
+
+  *pCopy = *this;
+
+  return pCopy;
+}
+
+size_t
+CBandedGraphData::size() const
+{return 2*mSize;}
+
+
+double CBandedGraphData::x(size_t i) const
+{
+  // to make a polygon out of the two data curves
+  // one curve goes in order, the other backwards
+  if (i >= mSize)
+    i = (2 * mSize - i - 1);
+
+  return *(mpX + i);
+}
+
+double CBandedGraphData::y(size_t i) const
+{
+  double ret;
+
+  // to make a polygon out of the two data curves
+  // one curve goes in order, the other backwards
+  if (i < mSize)
+    ret = *(mpY1 + i);
+  else
+    ret = *(mpY2 + (2 * mSize - i - 1));
+
+  return ret;
+}
+
+double CBandedGraphData::y1(size_t i) const
+{
+  return *(mpY1 + i);
+}
+
+double CBandedGraphData::y2(size_t i) const
+{
+  return *(mpY2 + i);
+}
+
+QwtDoubleRect
+CBandedGraphData::boundingRect() const
+{
+  if (mSize <= 0)
+    return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
+
+  if (mLastRectangle == mSize)
+    return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
+
+  const double *xIt = mpX + mLastRectangle;
+  const double *yIt1 = mpY1 + mLastRectangle;
+  const double *yIt2 = mpY2 + mLastRectangle;
+  const double *end = mpX + mSize;
+
+  mLastRectangle = mSize;
+
+  // We have to remember whether we have an initial NaN
+  bool MinXisNaN = isnan(mMinX);
+  bool MaxXisNaN = isnan(mMaxX);
+  bool MinYisNaN = isnan(mMinY);
+  bool MaxYisNaN = isnan(mMaxY);
+
+  while (xIt < end)
+    {
+      const double xv = *xIt++;
+
+      if (!isnan(xv))
+        {
+          if (xv < mMinX || MinXisNaN)
+            {
+              mMinX = xv;
+              MinXisNaN = false;
+            }
+
+          if (xv > mMaxX || MaxXisNaN)
+            {
+              mMaxX = xv;
+              MaxXisNaN = false;
+            }
+        }
+
+      double yv1 = *yIt1++;
+      double yv2 = *yIt2++;
+
+      if (isnan(yv1) || isnan(yv2))
+        {
+          yv1 = isnan(yv1) ? yv2 : yv1;
+          yv2 = yv1;
+        }
+      else if (yv1 > yv2)
+        {
+          double tmp = yv1;
+          yv1 = yv2;
+          yv2 = tmp;
+        } // now: yv1 <= yv2
+
+      if (!isnan(yv1))
+        {
+          if (yv1 < mMinY || MinYisNaN)
+            {
+              mMinY = yv1;
+              MinYisNaN = false;
+            }
+
+          if (yv2 > mMaxY || MaxYisNaN)
+            {
+              mMaxY = yv2;
+              MaxYisNaN = false;
+            }
+        }
+    }
+
+  if (isnan(mMinX + mMaxX + mMinY + mMaxY))
+    return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
+
+  // We need to avoid very small data ranges (absolute and relative)
+  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + DBL_MIN * 100.0;
+
+  if (mMaxX - mMinX < minRange)
+    {
+      mMinX = mMinX - minRange * 0.5;
+      mMaxX = mMaxX + minRange * 0.5;
+    }
+
+  minRange = fabs(mMinY + mMaxY) * 5e-5 + DBL_MIN * 100.0;
+
+  if (mMaxY - mMinY < minRange)
+    {
+      mMinY = mMinY - minRange * 0.5;
+      mMaxY = mMaxY + minRange * 0.5;
+    }
+
+  return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
+}
+
+void
+CBandedGraphData::setSize(const size_t & size)
+{
+  mSize = size;
+  assert(mSize <= mMaxSize);
+}
+
+void
+CBandedGraphData::reallocated(const CVector< double > * pX, const CVector< double > *pY1, const CVector< double > *pY2)
+{
+  mpX = pX->array();
+  mpY1 = pY1->array();
+  mpY2 = pY2->array();
+  mMaxSize = pX->size();
+
+  assert(mSize <= mMaxSize);
+}
+
+CBandedGraphData & CBandedGraphData::operator = (const CBandedGraphData & rhs)
+{
+  mpX = rhs.mpX;
+  mpY1 = rhs.mpY1;
+  mpY2 = rhs.mpY2;
+  mSize = rhs.mSize;
+  mMaxSize = rhs.mMaxSize;
+  mLastRectangle = rhs.mLastRectangle;
+  mMinX = rhs.mMinX;
+  mMaxX = rhs.mMaxX;
+  mMinY = rhs.mMinY;
+  mMaxY = rhs.mMaxY;
+
+  return * this;
+}
+#endif COPASI_BANDED_GRAPH
+
 //********************  data  *********************************************
 CHistoCurveData::CHistoCurveData():
     QwtData(),
@@ -409,6 +628,12 @@ void C2DPlotCurve::setDataSize(const size_t & size)
         static_cast< C2DCurveData * >(&data())->setSize(size);
         break;
 
+#ifdef COPASI_BANDED_GRAPH
+      case CPlotItem::bandedGraph:
+        static_cast< CBandedGraphData * >(&data())->setSize(size);
+        break;
+#endif // COPASI_BANDED_GRAPH
+
       case CPlotItem::histoItem1d:
         static_cast< CHistoCurveData * >(&data())->setSize(size);
         break;
@@ -419,13 +644,24 @@ void C2DPlotCurve::setDataSize(const size_t & size)
     }
 }
 
+#ifndef COPASI_BANDED_GRAPH
 void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< double > * pY)
+#else
+void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< double > * pY, const CVector< double > * pY2)
+#endif // COPASI_BANDED_GRAPH
 {
+
   switch (mCurveType)
     {
       case CPlotItem::curve2d:
         static_cast< C2DCurveData * >(&data())->reallocated(pX, pY);
         break;
+
+#ifdef COPASI_BANDED_GRAPH
+      case CPlotItem::bandedGraph:
+        static_cast< CBandedGraphData * >(&data())->reallocated(pX, pY, pY2);
+        break;
+#endif // COPASI_BANDED_GRAPH
 
       case CPlotItem::histoItem1d:
         static_cast< CHistoCurveData * >(&data())->reallocated(pX);
@@ -641,6 +877,18 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
             break;
 
+#ifdef COPASI_BANDED_GRAPH
+          case CPlotItem::bandedGraph:
+            pCurve->setStyle(QwtPlotCurve::Lines);
+            pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
+            {
+              QColor &c = curveColours[k % 6];
+              c.setAlpha(64);
+              pCurve->setBrush(c);
+            }
+            break;
+#endif // COPASI_BANDED_GRAPH
+
           case CPlotItem::histoItem1d:
             // Store the index of the histogram to be created
             mHistoIndices[k] = HistogramIndex++;
@@ -820,6 +1068,15 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
                                               0));
             break;
 
+#ifdef COPASI_BANDED_GRAPH
+          case CPlotItem::bandedGraph:
+            (*itCurves)->setData(CBandedGraphData(*data[mDataIndex[k][0].second],
+                                                  *data[mDataIndex[k][1].second],
+                                                  *data[mDataIndex[k][2].second],
+                                                  0));
+            break;
+#endif // COPASI_BANDED_GRAPH
+
           case CPlotItem::histoItem1d:
             (*itCurves)->setData(CHistoCurveData(*data[mDataIndex[k][0].second],
                                                  0,
@@ -979,6 +1236,14 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
                 (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
                                              data[mDataIndex[k][1].second]);
                 break;
+
+#ifdef COPASI_BANDED_GRAPH
+              case CPlotItem::bandedGraph:
+                (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+                                             data[mDataIndex[k][1].second],
+                                             data[mDataIndex[k][2].second]);
+                break;
+#endif // COPASI_BANDED_GRAPH
 
               case CPlotItem::histoItem1d:
                 (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
