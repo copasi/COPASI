@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.11 $ -->
+<!--   $Revision: 1.12 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2011/03/25 10:27:40 $ -->
+<!--   $Date: 2011/09/08 13:06:13 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -429,10 +429,7 @@ EVENT=createEvent(NAME_STRING)
 Naturally model elements can also be removed via their keys. Each object in COPASI which is derived from <emphasis>CCopasiObject</emphasis> gets a unique id when it is created which in COPASI is called key. To get the key for such an object, <emphasis>CCopasiObject</emphasis> provides the method <emphasis>getKey()</emphasis>.
 <emphasis>CModel</emphasis>, <emphasis>CCompartment</emphasis>, <emphasis>CMetab</emphasis>, <emphasis>CModelValue</emphasis> and <emphasis>CReaction</emphasis> are all derived from <emphasis>CCopasiObject</emphasis> and you can therefore get the key for any of them via the <emphasis>getKey()</emphasis> method which returns the key in the form of a string.
 </para>
-<para>
-<caution>The keys for COPASI objects are recreated each time on object is created, e.g. when a CPS file is loaded. This means that the keys that are stored in the CPS file are not necessarily the keys that the objects will have after the file has been loaded. Names of objects however do not change when a file is loaded and neither does the common name of an object.
-So to uniquely identify an element in a element over several load and save cycles, the common names of objects should be used rather than the keys.</caution>
-</para>
+
 <para>
 The methods to delete elements from the model are:
 </para>
@@ -2036,6 +2033,18 @@ public void cleanup();
  * the function database.
  */
 public void load(); 
+
+/**
+ * Creates a new CFunction object with the given name and type.
+ * You have to make sure the function name is unique.
+ * The created function is owned by the COPASI backend and is not deleted 
+ * by the Java garbage collector as is the case if the function is created via 
+ * the constructor and added to the funciton database with the add method.
+ *
+ * The type argument is one of the types defined int the CEvaluationTree class.
+ * For user defined functions, this is usually CEvaluationTree.UserDefined.
+ */
+public CFunction createFunction(String name,int type);
 </programlisting>
 <programlisting condition="CPP">
 /**
@@ -2083,6 +2092,18 @@ void cleanup();
  * the function database.
  */
 void load(); 
+
+/**
+ * Adds the given function to the COPASI function database.
+ * The second argument determines whether COPASI will take ownership 
+ * of the function or if ownership remains with the calling program.
+ * If the second argument is specified as false, the programmer is
+ * responsible for eventually deleting the function object.
+ *
+ * The return value indicates whether adding the function was successfull 
+ * or not.
+ */
+bool add(CFunction* pFunction, bool adopt); 
 </programlisting>
 <programlisting condition="PYTHON">
 # 
@@ -2130,6 +2151,15 @@ cleanup()
 #  the function database.
 #  
 load() 
+
+/**
+ * Creates a new CFunction object with the given name and type.
+ * You have to make sure the function name is unique.
+ *
+ * The type argument is one of the types defined int the CEvaluationTree class.
+ * For user defined functions, this is usually CEvaluationTree.UserDefined.
+ */
+FUNCTION=createFunction(name,type);
 </programlisting>
 </para>
 <para>
@@ -2958,6 +2988,43 @@ KEY_STRING=getKey(VARIABLE_INDEX)
 ID_STRING=getSBMLId(VARIABLE_INDEX)
 </programlisting>
 </para>
+<para condition="PYTHON">
+For the python bindings there exists a number of additional convenience methods
+to read the time course data from an instance of CTimeCourse.
+
+<programlisting>
+# Returns the titles of the variables in the time series
+# as a python list.
+# If the time series contains no variables, an empty list is returned.
+title_list=getTitles()
+
+# Returns the complete time course particle number data for the variable with the given index.
+# The index has to be an integer type, otherwise an AttributeError is raised.
+# If the given index is invalid, None is returned.
+particle_number_list=getDataForIndex(index)
+
+# Returns the complete time course concentration data for the variable with the given index.
+# The index has to be an integer type, otherwise an AttributeError is raised.
+# If the given index is invalid, None is returned.
+concentration_list=getConcentrationDataForIndex(index)
+
+# Returns the complete time course particle number data for the variable corresponding to the given object.
+# The key of the object must match the key of one of the variables of the time course as returned by the getKey method.
+# If no fitting key is found, None is returned.
+# The object argument must be an instance of CCopasiObject, otherwise an AttributeError is raised. 
+particle_number_list=getDataForObject(object)
+
+
+# Returns the complete time course concentration data for the variable corresponding to the given object.
+# The key of the object must match the key of one of the variables of the time course as returned by the getKey method.
+# If no fitting key is found, None is returned.
+# The object argument must be an instance of CCopasiObject, otherwise an AttributeError is raised. 
+concentration_list=getConcentrationDataForObject(object)
+
+</programlisting>
+</para>
+
+
 </sect2>
 
 <sect2 id="steadyState" xreflabel="steadyState">
