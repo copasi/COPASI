@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CEvaluationTree.i,v $ 
-//   $Revision: 1.7.2.2 $ 
+//   $Revision: 1.7.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 19:39:52 $ 
+//   $Date: 2011/09/08 15:40:31 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -56,7 +56,7 @@
         return (C_INT32)$self->getErrorPosition();
     }
 
-#ifdef SWIG_JAVA
+#ifdef SWIGJAVA
   // the CAnnotation functionality has to be added manually because
   // Java does not know about multiple inheritance
   void setNotes(const std::string& notes)
@@ -80,6 +80,6 @@
   {
     self->setMiriamAnnotation(miriamAnnotation,newId,oldId);
   } 
-#endif // SWIG_JAVA
+#endif // SWIGJAVA
 }
 

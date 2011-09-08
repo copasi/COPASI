@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CTimeSeries.i,v $ 
-//   $Revision: 1.4.32.2 $ 
+//   $Revision: 1.4.32.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/08/08 14:21:35 $ 
+//   $Date: 2011/09/08 15:40:31 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -41,7 +41,7 @@
         }
         return result;
     }
-#endif // SWIG_JAVA
+#endif // SWIGJAVA
 };
 
 
