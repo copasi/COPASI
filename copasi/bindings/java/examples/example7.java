@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example7.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.2.4.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/09/01 11:33:57 $ 
+//   $Date: 2011/09/08 12:49:46 $ 
 // End CVS Header 
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -101,9 +106,8 @@ public class example7
      CFunctionDB funDB = CCopasiRootContainer.getFunctionList();
      assert funDB != null;
 
-     CFunction function = new CFunction("My Rate Law");
+     CFunction function = (CFunction)funDB.createFunction("My Rate Law",CEvaluationTree.UserDefined);
 
-     funDB.add(function, true);
      CFunction rateLaw = (CFunction)funDB.findFunction("My Rate Law");
 
      assert rateLaw != null;
