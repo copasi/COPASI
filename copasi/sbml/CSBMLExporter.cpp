@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/26 12:17:06 $
+//   $Author: gauges $
+//   $Date: 2011/09/08 11:26:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2617,7 +2617,10 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
   std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(&function);
   FunctionDefinition* pFunDef = NULL;
 
-  if (pos != this->mCOPASI2SBMLMap.end())
+  // the entry could be NULL when exporting to L2 first and then to L3 because the
+  // SBMLExporter::collectIds will add a NULL entry into the id table which will be
+  // tranferred to the COPASI2SBMLMap.
+  if (pos != this->mCOPASI2SBMLMap.end() && pos->second != NULL)
     {
       pFunDef = dynamic_cast<FunctionDefinition*>(pos->second);
       assert(pFunDef);
@@ -2635,7 +2638,6 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
         }
 
       this->mFunctionMap[pFunDef] = &function;
-      //pFunDef = this->mpSBMLDocument->getModel()->createFunctionDefinition();
       pFunDef->setName(function.getObjectName());
       std::string id = function.getSBMLId();
 
