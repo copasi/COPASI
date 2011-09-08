@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCallParameters.i,v $ 
-//   $Revision: 1.2.2.1 $ 
+//   $Revision: 1.2.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/08/03 14:14:55 $ 
+//   $Date: 2011/09/08 16:31:33 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -27,6 +27,8 @@
 %ignore CFunctionParameterMap::findParameterByName;
 %ignore CFunctionParameterMap::pUnmappedObject;
 
+// suppress warnings on nested structures
+%warnfilter(325) UType;
 
 %include "function/CCallParameters.h" 
 

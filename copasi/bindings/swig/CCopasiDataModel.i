@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.22.2.5 $ 
+//   $Revision: 1.22.2.6 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 13:57:22 $ 
+//   $Date: 2011/09/08 16:31:33 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -99,6 +99,9 @@
    }
 }
 #endif // SWIGPYTHON
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CCopasiDataModel;
 
 %include "CopasiDataModel/CCopasiDataModel.h"
 

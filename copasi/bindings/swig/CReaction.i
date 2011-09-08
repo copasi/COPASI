@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReaction.i,v $ 
-//   $Revision: 1.14.2.1 $ 
+//   $Revision: 1.14.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 13:57:23 $ 
+//   $Date: 2011/09/08 16:31:38 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -67,6 +67,10 @@
 #endif // SWIGJAVA
 
 %catches(CCopasiException) CReaction::getLargestCompartment() const;
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CReaction;
+
 
 %include "model/CReaction.h"
 

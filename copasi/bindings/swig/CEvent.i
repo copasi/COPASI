@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CEvent.i,v $ 
-//   $Revision: 1.2.2.1 $ 
+//   $Revision: 1.2.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 13:57:22 $ 
+//   $Date: 2011/09/08 16:31:37 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -80,6 +80,9 @@ typedef CExpression DisownedExpression;
      args[0].__disown__()
 %}
 #endif // SWIGPYTHON
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CEvent;
 
 %include "model/CEvent.h"
 

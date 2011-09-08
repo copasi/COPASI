@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CLBase.i,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.2.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/09/08 16:31:37 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -21,12 +21,14 @@
 
 %ignore CLPoint::getX;
 %ignore CLPoint::getY;
+%ignore CLPoint::getZ;
 %ignore CLPoint::CLPoint(const Point&);
 %ignore CLPoint::getSBMLPoint() const;
 %ignore CLPoint::operator<(const CLPoint&) const;
 
 %ignore CLDimensions::getHeight;
 %ignore CLDimensions::getWidth;
+%ignore CLDimensions::getDepth;
 %ignore CLDimensions::CLDimensions(const Dimensions&);
 %ignore CLDimensions::getSBMLDimensions() const;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CEvaluationTree.i,v $ 
-//   $Revision: 1.7.2.3 $ 
+//   $Revision: 1.7.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/08 15:40:31 $ 
+//   $Date: 2011/09/08 16:31:37 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -46,6 +46,9 @@
 %ignore CEvaluationTree::getRoot() const;
 
 #endif // SWIGJAVA
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CEvaluationTree;
 
 %include "function/CEvaluationTree.h"
 

@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CLGraphicalObject.i,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.2.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/09/08 16:31:37 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -23,6 +23,9 @@
 %ignore CLGraphicalObject::CLGraphicalObject(const GraphicalObject & , std::map<std::string, std::string> & , const CCopasiContainer * pParent = NULL);
 %ignore CLGraphicalObject::exportToSBML;
 %ignore CLGraphicalObject::print;
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CLGraphicalObject;
 
 %include "layout/CLGraphicalObject.h"
 

@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameter.i,v $ 
-//   $Revision: 1.9 $ 
+//   $Revision: 1.9.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/09/08 16:31:33 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -46,6 +46,8 @@
 
 #endif // SWIGJAVA
 
+// suppress warnings on nested structures
+%warnfilter(325) Value;
 
 %include "utilities/CCopasiParameter.h"
 

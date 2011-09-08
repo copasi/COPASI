@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CRandom.i,v $ 
-//   $Revision: 1.4 $ 
+//   $Revision: 1.4.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/09/08 16:31:38 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -36,6 +36,10 @@
 %ignore CRandom::vare;
 %ignore CRandom::XMLType;
 %ignore CRandom::TypeName;
+
+// suppress warnings on nested structures
+%warnfilter(325) PoissonVars;
+%warnfilter(325) ExpVars;
 
 
 %include "randomGenerator/CRandom.h"

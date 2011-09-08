@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.17.2.1 $ 
+//   $Revision: 1.17.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 09:02:55 $ 
+//   $Date: 2011/09/08 16:31:37 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -70,6 +70,8 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::getRootFinders;
 %ignore CModel::getL;
 
+// suppress warnings on nested structures
+%warnfilter(325) CLinkMatrixView;
 
 %include "model/CModel.h"
 
