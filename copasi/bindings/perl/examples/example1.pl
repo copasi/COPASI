@@ -95,15 +95,19 @@ unless(defined($funDB)){warn "Assertion failed";die;}
 # lets get all suitable functions for an irreversible reaction with  2 substrates
 # and 2 products
 # It seems that swig wraps the vector to a real perl array
-my @suitableFunctions = $funDB->suitableFunctions(2, 2, $COPASI::TriFalse);
-unless(@suitableFunctions > 0){warn "Assertion failed";die;}
+# Heureka, finally found out that this is not an array, but a reference and that
+# this handles differently.
+my $suitableFunctions = $funDB->suitableFunctions(2, 2, $COPASI::TriFalse);
+unless(@{$suitableFunctions} > 0){warn "Assertion failed";die;}
 my $function = '';
 
-foreach (@suitableFunctions){
+
+foreach my $fun (@{$suitableFunctions}){
     # we just assume that the only suitable function with Constant in
     # it's name is the one we want
-    if($_->getObjectName()->find("Constant") != -1){
-        $function=$_;
+    my $name = $fun->getObjectName();
+    if((index $name,"Constant") != -1){
+        $function=$fun;
         last;
     }
 }
@@ -117,14 +121,15 @@ if(defined($function)){
     # constant flux has only one function parameter
     unless($reaction->getFunctionParameters()->size() == 1){warn "Assertion failed";die;}
     # so there should be only one entry in the parameter mapping as well
-    unless($reaction->getParameterMappings() == 1){warn "Assertion failed";die;}
+    unless($reaction->getParameterMappings()->size() == 1){warn "Assertion failed";die;}
     my $parameterGroup = $reaction->getParameters();
     unless($parameterGroup->size() == 1){warn "Assertion failed";die;}
     my $parameter = $parameterGroup->getParameter(0);
     # make sure the parameter is a local parameter
     unless($reaction->isLocalParameter($parameter->getObjectName())){warn "Assertion failed";die;}
+    unless($parameter->getType() == $COPASI::CCopasiParameter::DOUBLE){warn "Assertion failed";die;}
     # now we set the value of the parameter to 0.5
-    $parameter->setValue(0.5);
+    $parameter->setDblValue(0.5);
     $object = $parameter->getObject(new COPASI::CCopasiObjectName("Reference=Value"));
     unless(defined($object)){warn "Assertion failed";die;}
     $changedObjects->push($object);
@@ -166,7 +171,7 @@ unless(defined($reaction->getFunction())){warn "Assertion failed";die;}
 
 unless($reaction->getFunctionParameters()->size() == 2){warn "Assertion failed";die;}
 # so there should be two entries in the parameter mapping as well
-unless($reaction->getParameterMappings() == 2){warn "Assertion failed";die;}
+unless($reaction->getParameterMappings()->size() == 2){warn "Assertion failed";die;}
 # mass action is a special case since the parameter mappings for the
 # substrates (and products) are in a vector
 
