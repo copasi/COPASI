@@ -138,8 +138,9 @@ if (!is.null(fun)){
     parameter <- CCopasiParameterGroup_getParameter(parameterGroup, 0)
     # make sure the parameter is a local parameter
     stopifnot(CReaction_isLocalParameter(reaction,CCopasiObject_getObjectName(parameter)))
+    stopifnot(CCopasiParameter_getType(parameter) == "DOUBLE")
     # now we set the value of the parameter to 0.5
-    CCopasiParameter_setValue(parameter,0.5)
+    CCopasiParameter_setDblValue(parameter,0.5)
     object <- CCopasiObject_getObject(parameter,CCopasiObjectName("Reference=Value"))
     stopifnot(object != NULL)
     ObjectStdVector_push_back(changedObjects,object)
@@ -173,6 +174,12 @@ stopifnot(massAction != NULL)
 # we set the function
 # the method should be smart enough to associate the reaction entities
 # with the correct function parameters
+
+# TODO currently I am stuck here
+# It seems as if the SWIG code generated for the R bindings
+# does not do the downcasting correctly, although the
+# code that works for perl and python is called.
+#print(class(massAction))
 CReaction_setFunction(reaction,massAction)
 stopifnot(CReaction_getFunction(reaction) != NULL)
 
