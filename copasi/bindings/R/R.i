@@ -1,15 +1,56 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/R/R.i,v $ 
-//   $Revision: 1.1.2.2 $ 
+//   $Revision: 1.1.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/20 20:32:47 $ 
+//   $Date: 2011/09/09 15:42:47 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+/*
+#ifdef _WIN32
+// according to some mailing list, 32Bit versions of the compiler seem to use uint for size_t while 
+// 64bit version use ulonglong.
+// To make it standard compliant, I will use unsigned int and unsigned long long
+#ifdef _WIN64
+%apply unsigned long long {size_t};
+%apply unsigned long long& {size_t&};
+%apply unsigned long long* {size_t*};
+%apply const unsigned long long {const size_t};
+%apply const unsigned long long& {const size_t&};
+%apply const unsigned long long* {const size_t*};
+#else
+%apply unsigned int {size_t};
+%apply unsigned int& {size_t&};
+%apply unsigned int* {size_t*};
+%apply const unsigned int {const size_t};
+%apply const unsigned int& {const size_t&};
+%apply const unsigned int* {const size_t*};
+#endif
+#else
+// for MacOS X and Unix/Linux I thing gcc uses unsigned long for size_t
+// I determined this using small example programs that print out the respective sizes of the datatypes
+// and I checked the MacOS X headers.
+// This is not fool proof, but should work for 90% of the cases.
+%apply unsigned long {size_t};
+%apply unsigned long& {size_t&};
+%apply unsigned long* {size_t*};
+%apply const unsigned long {const size_t};
+%apply const unsigned long& {const size_t&};
+%apply const unsigned long* {const size_t*};
+#endif
+*/
+
+
+// the following code also did not solve the size_t pointer problem
+//%inline %{
+//typedef unsigned long size_t;
+//%}
+
 
 /**
  * Convert CFitItem objects into the most specific type possible.
