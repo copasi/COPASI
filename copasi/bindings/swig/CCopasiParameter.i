@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameter.i,v $ 
-//   $Revision: 1.9.2.1 $ 
+//   $Revision: 1.9.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/08 16:31:33 $ 
+//   $Date: 2011/09/09 15:45:20 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -46,10 +46,19 @@
 
 #endif // SWIGJAVA
 
+#ifdef SWIGR
+%ignore CCopasiParameter::getType() const;
+#endif // SWIGR
+
 // suppress warnings on nested structures
 %warnfilter(325) Value;
 
 %include "utilities/CCopasiParameter.h"
+
+#ifdef SWIGR
+%rename(getType) CCopasiParameter::getType() const;
+#endif // SWIGR
+
 
 %extend CCopasiParameter
 {
@@ -162,6 +171,13 @@
   {
     return self->setValue(v);
   }
+
+#ifdef SWIGR
+  CCopasiParameter::Type getType() const
+  {
+    return $self->getType();
+  }
+#endif // SWIGR
 
 }
 
