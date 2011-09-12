@@ -25,7 +25,7 @@ variableModelValue.setStatus(CModelEntity_ASSIGNMENT);
 % we create a very simple assignment that is easy on the optimization
 % a parabole with the minimum at x=6 should do just fine
 s=fixedModelValue.getObject(CCopasiObjectName("Reference=Value")).getCN().getString();
-s=strcat("(<",s,"> - 6.0)^2";
+s=strcat("(<",s,"> - 6.0)^2");
 variableModelValue.setExpression(s);
 % now we compile the model and tell COPASI which values have changed so
 % that COPASI can update the values that depend on those
@@ -115,7 +115,7 @@ reports = dataModel.getReportDefinitionList();
 % create a report definition object
 report = reports.createReportDefinition("Report", "Output for optimization");
 % set the task type for the report definition to timecourse
-report.setTaskType(CCopasiTask.optimization);
+report.setTaskType(CCopasiTask_optimization);
 % we don't want a table
 report.setIsTable(false);
 % the entries in the output should be seperated by a ", "

@@ -79,7 +79,7 @@ MODEL_STRING="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
     </listOfReactions>\
   </model>\
 </sbml>\
-"
+";
 
 
 %!assert( swig_type(CCopasiRootContainer.getRoot()) != 0);
@@ -102,7 +102,7 @@ reports = dataModel.getReportDefinitionList();
 % create a report definition object
 report = reports.createReportDefinition("Report", "Output for timecourse");
 % set the task type for the report definition to timecourse
-report.setTaskType(CCopasiTask.timeCourse);
+report.setTaskType(CCopasiTask_timeCourse);
 % we don't want a table
 report.setIsTable(false);
 % the entries in the output should be seperated by a ", "
@@ -114,44 +114,44 @@ report.setSeparator(CCopasiReportSeparator(", "));
 % the body will contain the actual timecourse data
 header = report.getHeaderAddr();
 body = report.getBodyAddr();
-body.push_back(CRegisteredObjectName(CCopasiObjectName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
+body.push_back(CRegisteredObjectName(CCopasiObjectName(strcat(dataModel.getModel().getCN().getString() , ",Reference=Time")).getString()));
 body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
 header.push_back(CRegisteredObjectName(CCopasiStaticString("time").getCN().getString()));
 header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
 
 iMax = model.getMetabolites().size()-1;
-for i = 0,iMax
-    metab = model.getMetabolite(i);
-    %!assert( swig_type(metab) != 0);
-    % we don't want output for FIXED metabolites right now
-    if (metab.getStatus() != CModelEntity_FIXED)
-        % we want the concentration in the output
-        % alternatively, we could use "Reference=Amount" to get the
-        % particle number
-        body.push_back(CRegisteredObjectName(metab.getObject(CCopasiObjectName("Reference=Concentration")).getCN().getString()));
-        % add the corresponding id to the header
-        header.push_back(CRegisteredObjectName(CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
-        
-        if (i!=iMax-1)
-          % after each entry, we need a seperator
-          body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
+for i = 0:iMax
+  metab = model.getMetabolite(i);
+  %!assert( swig_type(metab) != 0);
+  % we don't want output for FIXED metabolites right now
+  if (metab.getStatus() != CModelEntity_FIXED)
+    % we want the concentration in the output
+    % alternatively, we could use "Reference=Amount" to get the
+    % particle number
+    body.push_back(CRegisteredObjectName(metab.getObject(CCopasiObjectName("Reference=Concentration")).getCN().getString()));
+    % add the corresponding id to the header
+    header.push_back(CRegisteredObjectName(CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
+    
+    if (i!=iMax-1)
+      % after each entry, we need a seperator
+      body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
 
-          % and a seperator
-          header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
-        endif
+      % and a seperator
+      header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
     endif
+  endif
 endfor
 % get the trajectory task object
 trajectoryTask = dataModel.getTask("Time-Course");
 %!assert( swig_type(trajectoryTask) != 0);
 % if there isn't one
 if(swig_type(trajectoryTask) == 0)
-    % create a one
-    trajectoryTask = CTrajectoryTask();
-    % add the time course task to the task list
-    % this method makes sure the object is now owned by the list
-    % and that SWIG does not delete it
-    dataModel.getTaskList().addAndOwn(trajectoryTask);
+  % create a one
+  trajectoryTask = CTrajectoryTask();
+  % add the time course task to the task list
+  % this method makes sure the object is now owned by the list
+  % and that SWIG does not delete it
+  dataModel.getTaskList().addAndOwn(trajectoryTask);
 endif
 
 % run a stochastic time course
@@ -180,12 +180,12 @@ problem.setTimeSeriesRequested(true);
 scanTask = dataModel.getTask("Scan");
 %!assert( swig_type(scanTask) != 0);
 if (swig_type(scanTask) == 0)
-    % create a scan task
-    scanTask = CScanTask();
-    % add the scan task
-    % this method makes sure the object is now owned by the list
-    % and that SWIG does not delete it
-    dataModel.getTaskList().addAndOwn(scanTask);
+  % create a scan task
+  scanTask = CScanTask();
+  % add the scan task
+  % this method makes sure the object is now owned by the list
+  % and that SWIG does not delete it
+  dataModel.getTaskList().addAndOwn(scanTask);
 endif
 % get the problem
 scanProblem = scanTask.getProblem();
@@ -207,7 +207,7 @@ scanTask.getReport().setTarget("example4.txt");
 scanTask.getReport().setAppend(false);
 
 % tell the scan that we want to make a scan over a trajectory task
-scanProblem.setSubtask(CCopasiTask.timeCourse);
+scanProblem.setSubtask(CCopasiTask_timeCourse);
 
 % we just want to run the timecourse task a number of times, so we
 % create a repeat item with 100 repeats
@@ -221,15 +221,15 @@ scanProblem.setOutputInSubtask(true);
 scanProblem.setAdjustInitialConditions(false);
 
 try
-    % now we run the actual trajectory
-    scanTask.process(true);
+  % now we run the actual trajectory
+  scanTask.process(true);
 catch
-    error("Error. Running the scan failed.");
-    % check if there are additional error messages
-    if (CCopasiMessage.size() > 0)
-        % print the messages in chronological order
-        error("%s\n", CCopasiMessage.getAllMessageText(true));
-    endif
-    quit(1)
+  error("Error. Running the scan failed.");
+  % check if there are additional error messages
+  if (CCopasiMessage.size() > 0)
+    % print the messages in chronological order
+    error("%s\n", CCopasiMessage.getAllMessageText(true));
+  endif
+  quit(1)
 end_try_catch
 

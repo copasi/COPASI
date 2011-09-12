@@ -1,3 +1,5 @@
+#!/usr/bin/env octave
+
 %
 % This is an example on how to load a cps file
 % and output some information on the model
@@ -11,47 +13,50 @@ dataModel = CCopasiRootContainer.addDatamodel();
 %!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
 % the only argument to the main routine should be the name of a CPS file
 if (length(argv) == 1)
-    filename = argv{0};
-    try
-        % load the model without progress report
-        dataModel.loadModel(filename);
-    catch
-        error("Error while loading the model from file named \"%s\".\n",filename);
-        quit(1);
-    end_try_catch
-    model = dataModel.getModel();
-    %!assert( swig_type(model) != 0);
-    printf("Model statistics for model \"%s\".\n", model.getObjectName());
-
-    % output number and names of all compartments
-    iMax = model.getCompartments().size();
-    printf("Number of Compartments: %d\n" , iMax);
-    printf("Compartments: \n");
-    for i = 1:iMax 
-        compartment = model.getCompartment(i);
-        %!assert( swig_type(compartment) != 0);
-        printf("\t%s\n" , compartment.getObjectName());
-
-    % output number and names of all metabolites
-    iMax = model.getMetabolites().size();
-    printf("Number of Metabolites: %d\n" , iMax);
-    printf("Metabolites: \n");
-    for i = 1:iMax
-        metab = model.getMetabolite(i);
-        %!assert( swig_type(metab) != 0);
-        print("\t%s\n" + metab.getObjectName());
-
-    % output number and names of all reactions
-    iMax = model.getReactions().size()
-    printf("Number of Reactions: %d\n" , iMax);
-    printf("Reactions: \n");
-    for i = 1:iMax
-        reaction = model.getReaction(i);
-        %!assert( swig_type(reaction) != 0);
-        printf("\t%s\n", reaction.getObjectName());
-else
-    error("Usage: example2 CPSFILE");
+  filename = argv(){1};
+  try
+    % load the model without progress report
+    dataModel.loadModel(filename);
+  catch
+    error("Error while loading the model from file named \"%s\".\n",filename);
     quit(1);
+  end_try_catch
+  model = dataModel.getModel();
+  %!assert( swig_type(model) != 0);
+  printf("Model statistics for model \"%s\".\n", model.getObjectName());
+
+  % output number and names of all compartments
+  iMax = model.getCompartments().size();
+  printf("Number of Compartments: %d\n" , iMax);
+  printf("Compartments: \n");
+  for i = 0:iMax-1 
+    compartment = model.getCompartment(i);
+    %!assert( swig_type(compartment) != 0);
+    printf("\t%s\n" , compartment.getObjectName());
+  endfor
+
+  % output number and names of all metabolites
+  iMax = model.getMetabolites().size();
+  printf("Number of Metabolites: %d\n" , iMax);
+  printf("Metabolites: \n");
+  for i = 0:iMax-1
+    metab = model.getMetabolite(i);
+    %!assert( swig_type(metab) != 0);
+    printf("\t%s\n", metab.getObjectName());
+  endfor
+
+  % output number and names of all reactions
+  iMax = model.getReactions().size()
+  printf("Number of Reactions: %d\n" , iMax);
+  printf("Reactions: \n");
+  for i = 0:iMax-1
+    reaction = model.getReaction(i);
+    %!assert( swig_type(reaction) != 0);
+    printf("\t%s\n", reaction.getObjectName());
+  endfor
+else
+  error("Usage: example2 CPSFILE");
+  quit(1);
 endif
 
 

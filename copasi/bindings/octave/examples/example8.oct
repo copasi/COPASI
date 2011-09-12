@@ -85,7 +85,7 @@ if swig_type(model) != 0
     status = entity.getStatus();
 
     if ((status == CModelEntity_ODE) || (status == CModelEntity_REACTIONS && entity.isUsed()))
-      nameVector.append(entity.getObjectName());
+      nameVector = [nameVector; entity.getObjectName()];
     endif
   endfor
   %!assert( length(nameVector) == jacobian.numRows());
@@ -96,13 +96,15 @@ if swig_type(model) != 0
   printf("\n");
   printf("%7s", " ");
 
-  for i = 0:length(nameVector)-1
-    printf("%7s", nameVector[i]);
+  length(nameVector)
+  nameVector
+  for i = 1:length(nameVector)
+    printf("%7s", nameVector{i});
   endfor
   printf("\n");
 
   for i = 0:length(nameVector)-1
-    printf("%7s", nameVector[i]);
+    printf("%7s", nameVector{i});
 
     for j = 0:length(nameVector)-1
       printf("%7.3f", jacobian.get(i,j));
