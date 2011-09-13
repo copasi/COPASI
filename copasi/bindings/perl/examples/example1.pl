@@ -4,7 +4,6 @@ use warnings;
 
 use COPASI;
 
-COPASI::CCopasiRootContainer::init();
 unless(defined(&COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed";die;}
 # create a new datamodel
 my $dataModel = &COPASI::CCopasiRootContainer::addDatamodel();
