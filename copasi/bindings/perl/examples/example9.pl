@@ -96,7 +96,7 @@ if (defined($aj)) {
     # object is a vector with two unsigned int elements
     # First element is the index for the outer dimension and the second element is the index
     # for the inner dimension
-    my $ind=new COPASI::SizeTStdVector(2);
+    my @ind=new COPASI::SizeTStdVector(2);
     # since the rows and columns have the same annotation for the jacobian, it doesn't matter
     # for which dimension we get the annotations
     my $annotations = $aj->getAnnotationsString(1);
@@ -115,9 +115,9 @@ if (defined($aj)) {
         $ind[0]=$i;
 
         for (my $j=0; $j < $annotations->size(); $j++) {
-            @{$ind}[1]=$j;
+            $ind[1]=$j;
             my $array=$aj->array();
-            printf "%7.3f", $array->get($ind);
+            printf "%7.3f", $array->get(\@ind);
         }
         print "\n";
     }
