@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.293 $
+//   $Revision: 1.294 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2011/08/05 14:23:52 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,9 +35,12 @@
 #include <qobject.h>
 #include <qimage.h>
 #include <QMap>
+#include <QtGui/QSortFilterProxyModel>
 
 #include "DataModelGUI.h"
 #include "CQMessageBox.h"
+#include "CQBrowserPane.h"
+#include "CQBrowserPaneDM.h"
 
 #include "CQModelWidget.h"
 #include "CQCompartmentsWidget.h"
@@ -130,11 +133,11 @@ ListViews::ListViews(QWidget *parent, const char *name):
 
     QSplitter(Qt::Horizontal, parent, name),
     mpDataModelGUI(NULL),
+    mpTreeDM(NULL),
+    mpTreeSortDM(NULL),
     mpMathModel(NULL),
-    currentWidget(NULL),
-    lastKey(),
-    mSaveObjectKey(),
-    mSaveFolderID(C_INVALID_INDEX),
+    mpCurrentWidget(NULL),
+    mCurrentItemKey(),
     mpCMCAResultWidget(NULL),
     mpCQMCAWidget(NULL),
     mpCQLNAWidget(NULL),
@@ -196,9 +199,17 @@ ListViews::ListViews(QWidget *parent, const char *name):
   setChildrenCollapsible(false);
 
   // create a new QListview to be displayed on the screen..and set its property
-  mpTreeView = new QTreeView(this);
-  mpTreeView->header()->hide();
-  mpTreeView->setRootIsDecorated(false);
+  mpTreeView = new CQBrowserPane(this);
+  mpTreeDM = new CQBrowserPaneDM(this);
+  mpTreeSortDM = new QSortFilterProxyModel(this);
+
+  mpTreeSortDM->setSourceModel(mpTreeDM);
+  mpTreeSortDM->setSortRole(Qt::EditRole);
+  mpTreeSortDM->setSortCaseSensitivity(Qt::CaseInsensitive);
+  // pSortModel->sort(0, Qt::AscendingOrder);
+
+  mpTreeView->setModel(mpTreeSortDM);
+  mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 
   defaultWidget = new CQSplashWidget(this);
 
@@ -209,30 +220,17 @@ ListViews::ListViews(QWidget *parent, const char *name):
   if (!opaqueResize())
     setOpaqueResize();
 
-  currentWidget = defaultWidget; // keeps track of the currentWidget in use
-  lastKey = "";
-
-  mSaveObjectKey = "";
-  mSaveFolderID = -1;
+  mpCurrentWidget = defaultWidget; // keeps track of the mpCurrentWidget in use
+  mCurrentItemKey = "";
 
   // establishes the communication between the mpTreeView clicked and the routine called....
-  connect(mpTreeView, SIGNAL(pressed(const QModelIndex &)),
-          this, SLOT(slotFolderChanged(const QModelIndex &)));
-
-  // Need to somehow signal mpTreeView to change when navigating using up and down arrows
-  connect(mpTreeView, SIGNAL(activated(const QModelIndex &)),
-          this, SLOT(slotFolderChanged(const QModelIndex &)));
-
+  connect(mpTreeDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(slotSort(const QModelIndex &, const QModelIndex &)));
 }
 
 ListViews::~ListViews()
 {
   //TODO clean up
-}
-
-void ListViews::slotUpdateCompleteView()
-{
-  restoreCurrentItem();
 }
 
 /************************ListViews::setDataModel(DataModel<Folder>* dm)----------->
@@ -246,31 +244,29 @@ void ListViews::slotUpdateCompleteView()
 void ListViews::setDataModel(DataModelGUI* pDM)
 {
   //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
-  if (mpDataModelGUI != NULL)
+  if (mpDataModelGUI)
     {
-      disconnect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
-      disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
-                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string&)));
+      disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
+                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
     }
 
   mpDataModelGUI = pDM;
+  mpTreeDM->setGuiDM(mpDataModelGUI);
 
-  //update the tree nodes with single widgets.
-  mpDataModelGUI->updateAllEntities();
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-  mpTreeView->setModel(NULL);
-  mpTreeView->setModel(mpDataModelGUI);
-  mpTreeView->expand(mpDataModelGUI->findIndexFromId(0));
+  //Set Model for the TableView
+  mpTreeDM->setCopasiDM(pDataModel);
+  mpTreeView->expand(mpTreeSortDM->mapFromSource(mpTreeDM->index(0, 0, QModelIndex())));
+
+  if (mpDataModelGUI)
+    {
+      connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
+              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
+    }
 
   ConstructNodeWidgets();
-
-  //Now Connect updateCompleteView() and notifyView() from DataModelGUI
-  if (mpDataModelGUI != NULL)
-    {
-      connect(mpDataModelGUI, SIGNAL(updateCompleteView()), this, SLOT(slotUpdateCompleteView()));
-      connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string&)),
-              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string&)));
-    }
 }
 
 
@@ -501,19 +497,18 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
   if (!index.isValid() || !mpDataModelGUI)
     return NULL;
 
-  // first try ID
-  size_t id = mpDataModelGUI->getId(index);
-  CopasiWidget* pWidget = findWidgetFromId(id);
 
-  if (pWidget != NULL)
-    return pWidget;
+  // first try ID
+  size_t id = mpTreeDM->getIdFromIndex(index);
+
+  if (id != C_INVALID_INDEX)
+    {
+
+      return findWidgetFromId(id);
+    }
 
   // then try parent id:
-  QModelIndex parentIndex = mpDataModelGUI->parent(index);
-
-  if (!parentIndex.isValid()) return NULL;
-
-  id = mpDataModelGUI->getId(parentIndex);
+  id = mpTreeDM->getIdFromIndex(mpTreeDM->parent(index));
 
   switch (id)
     {
@@ -706,32 +701,30 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (!index.isValid() || !mpDataModelGUI) return;
 
-  mpTreeView->setCurrentIndex(index);
-
   // find the widget
   CopasiWidget* newWidget = findWidgetFromIndex(index);
 
   if (!newWidget) return; //do nothing
 
-  std::string itemKey = mpDataModelGUI->getKey(index);
+  std::string itemKey = mpTreeDM->getKeyFromIndex(index);
 
-  if (newWidget == currentWidget)
-    if (itemKey == lastKey) return; //do nothing
+  if (newWidget == mpCurrentWidget)
+    if (itemKey == mCurrentItemKey) return; //do nothing
 
   emit signalFolderChanged(index);
 
   // leave old widget
-  if (currentWidget)
+  if (mpCurrentWidget)
     {
-      changeWidget = currentWidget->leave();
-
-      if (!changeWidget) return;
-
       //item may point to an invalid ListViewItem now
       QModelIndex newIndex = mpTreeView->currentIndex();
 
       // find the widget again (it may have changed)
       newWidget = findWidgetFromIndex(newIndex);
+
+      changeWidget = mpCurrentWidget->leave();
+
+      if (!changeWidget) return;
     }
 
   if (!newWidget) newWidget = defaultWidget; //should never happen
@@ -744,111 +737,31 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   if (!newWidget)
     {newWidget = defaultWidget;}
 
-  if (currentWidget != newWidget)
+  if (mpCurrentWidget != newWidget)
     {
-      if (currentWidget) currentWidget->hide();
+      if (mpCurrentWidget) mpCurrentWidget->hide();
 
       if (newWidget) newWidget->show();
     }
 
-  currentWidget = newWidget;
-  lastKey = itemKey;
+  mpCurrentWidget = newWidget;
+  mCurrentItemKey = itemKey;
+
+  mpTreeView->scrollTo(index);
 }
 
-void ListViews::switchToOtherWidget(C_INT32 id, const std::string & key)
+void ListViews::switchToOtherWidget(const size_t & id, const std::string & key)
 {
   if (!mpDataModelGUI) return;
 
-  QModelIndex index;
+  QModelIndex Index = mpTreeDM->index(id, key);
+  QModelIndex SortIndex = mpTreeSortDM->mapFromSource(Index);
 
-  if (key == "")
-    index = mpDataModelGUI->findIndexFromId(id);
-  else
-    index = mpDataModelGUI->findIndexFromKey(key);
-
-  slotFolderChanged(index);
+  mpTreeView->setCurrentIndex(SortIndex);
 }
 
 //********** some methods to store and restore the state of the listview ****
 
-void ListViews::storeCurrentItem()
-{
-  //save the id and object key of the current ListViewItem
-  QModelIndex index = mpTreeView->currentIndex();
-
-  if (!index.isValid() || !mpDataModelGUI)
-    return;
-
-  mSaveObjectKey = mpDataModelGUI->getKey(index);
-  mSaveFolderID = mpDataModelGUI->getId(index);
-
-  while (mSaveObjectKey == "" && mSaveFolderID == C_INVALID_INDEX)
-    {
-      index = mpDataModelGUI->parent(index);
-      mSaveObjectKey = mpDataModelGUI->getKey(index);
-      mSaveFolderID = mpDataModelGUI->getId(index);
-    }
-}
-
-void ListViews::restoreCurrentItem()
-{
-  //reset the item from the saved values
-  if (!mpDataModelGUI) return;
-
-  if (mSaveObjectKey == "" && mSaveFolderID == C_INVALID_INDEX) return;
-
-  QModelIndex index;
-
-  //First try restoring with the key.
-  if (mSaveObjectKey.length() > 0)
-    index = mpDataModelGUI->findIndexFromKey(mSaveObjectKey);
-
-  //if not successful then try the ID.
-  if (!index.isValid())
-    index = mpDataModelGUI->findIndexFromId((int) mSaveFolderID);
-
-  if (index.isValid())
-    {
-      //Build Map with expanded values of all nodes without children.
-      QMap<size_t, bool> isExpandedMap;
-      buildExpandedMap(isExpandedMap, mpDataModelGUI->getNode(0));
-
-      //Refresh View
-      mpTreeView->setModel(NULL);
-      mpTreeView->setModel(mpDataModelGUI);
-
-      //Set Nodes to original expanded value
-      QMap<size_t, bool>::iterator it, itEnd = isExpandedMap.end();
-
-      for (it = isExpandedMap.begin(); it != itEnd; ++it)
-        {
-          QModelIndex i = mpDataModelGUI->findIndexFromId(it.key());
-          mpTreeView->setExpanded(i, it.value());
-        }
-
-      mpTreeView->setCurrentIndex(index);
-      slotFolderChanged(index);
-    }
-}
-
-void ListViews::buildExpandedMap(QMap<size_t, bool> &isExpandedMap, const IndexedNode *startNode)
-{
-  if (startNode->childCount() == 0 || startNode->getId() == C_INVALID_INDEX)
-    return;
-
-  QModelIndex index = mpDataModelGUI->findIndexFromId((int) startNode->getId());
-
-  if (index.isValid() && mpTreeView->isExpanded(index))
-    isExpandedMap[startNode->getId()] = mpTreeView->isExpanded(index);
-
-  const std::vector<IndexedNode*> & children = startNode->children();
-  std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
-
-  for (it = children.begin(); it != itEnd; ++it)
-    {
-      buildExpandedMap(isExpandedMap, *it);
-    }
-}
 
 size_t ListViews::getCurrentItemId()
 {
@@ -857,7 +770,7 @@ size_t ListViews::getCurrentItemId()
   if (!index.isValid() || !mpDataModelGUI)
     return C_INVALID_INDEX;
 
-  return mpDataModelGUI->getId(index);
+  return mpTreeDM->getIdFromIndex(index);
 }
 
 //**************************************************************************************+***
@@ -892,23 +805,28 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, const std::stri
   return success;
 }
 
+void ListViews::slotSort(const QModelIndex & /* index */, const QModelIndex & /* index */)
+{
+  mpTreeView->sortByColumn(0, Qt::AscendingOrder);
+}
+
 bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const std::string & key)
 {
   bool success = true;
 
-  if (currentWidget)
-    currentWidget->update(objectType, action, key);
+  if (mpCurrentWidget)
+    mpCurrentWidget->update(objectType, action, key);
 
   return success;
 }
 
 CopasiWidget* ListViews::getCurrentWidget()
-{return this->currentWidget;}
+{return this->mpCurrentWidget;}
 
 void ListViews::commit()
 {
-  if (currentWidget != NULL)
-    currentWidget->leave();
+  if (mpCurrentWidget != NULL)
+    mpCurrentWidget->leave();
 }
 
 void ListViews::notifyChildWidgets(ObjectType objectType,

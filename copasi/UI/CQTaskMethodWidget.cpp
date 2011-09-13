@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:07 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:22:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,9 @@ bool CQTaskMethodWidget::loadMethod()
   if (!mpMethod) return false;
 
   if (mpBoxMethod->isVisible())
-    mpBoxMethod->setItemText(mpBoxMethod->currentIndex(), QString::fromUtf8(CCopasiMethod::SubTypeName[mpMethod->getSubType()]));
+    {
+      mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(QString::fromUtf8(CCopasiMethod::SubTypeName[mpMethod->getSubType()])));
+    }
 
   if (mpTableParameter->isVisible())
     {

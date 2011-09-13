@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:05 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,7 @@ void CQCompartment::slotBtnNew()
   std::string key = mpCompartment->getKey();
   enter(key);
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(-1, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQCompartment::slotBtnDelete()
@@ -378,7 +378,7 @@ void CQCompartment::load()
   //this assumes the indices of the entries in the combobox correspond 1to1 to the values of dimensionality
 
   // Simulation Type
-  mpComboBoxType->setItemText(mpComboBoxType->currentIndex(), FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()]));
+  mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()])));
 
   // Initial Volume
   mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
@@ -524,7 +524,7 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(Q3ListViewItem * pItem)
         s2 = it->second->getObjectName();
 
         if (s1 == s2)
-          mpListView->switchToOtherWidget(0, it->second->getKey());
+          mpListView->switchToOtherWidget(C_INVALID_INDEX, it->second->getKey());
       }
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/07/05 17:34:42 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,7 +218,7 @@ void CQReactionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   std::string key = pModel->getReactions()[index.row()]->getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(0, key);
+    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQReactionsWidget::keyPressEvent(QKeyEvent* ev)

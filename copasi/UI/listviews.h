@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.171 $
+//   $Revision: 1.172 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2011/08/05 14:23:56 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,14 +32,16 @@
 #include <QTreeView>
 
 #include "copasi.h"
-#include "UI/Tree.h"
 
 class CTabWidget;
+class CQBrowserPane;
+class CQBrowserPaneDM;
 
 class Refresh;
 class CCopasiObject;
 
 class DataModelGUI;
+class QSortFilterProxyModel;
 class CQCompartment;
 class CQCompartmentsWidget;
 class CQDifferentialEquations;
@@ -141,10 +143,8 @@ public:
   void updateMIRIAMResourceContents();
   void commit();
 
-  void switchToOtherWidget(C_INT32 id, const std::string & key);
+  void switchToOtherWidget(const size_t & id, const std::string & key);
 
-  void storeCurrentItem();
-  void restoreCurrentItem();
   size_t getCurrentItemId();
   CopasiWidget* findWidgetFromId(const size_t & id) const;
 
@@ -167,33 +167,30 @@ private:
   CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;
 
   void ConstructNodeWidgets();
-  void buildExpandedMap(QMap<size_t, bool> &isExpandedMap, const IndexedNode *startNode);
+
+public slots:
+  void slotFolderChanged(const QModelIndex & index);
 
 private slots:
-  void slotFolderChanged(const QModelIndex & index);
-  void slotUpdateCompleteView();
   bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  void slotSort(const QModelIndex & index, const QModelIndex & index);
 
 private:
-
-  DataModelGUI* mpDataModelGUI;
-
-  CMathModel *mpMathModel;
-  CopasiWidget* currentWidget;
-  std::string lastKey;
-
-  std::string mSaveObjectKey;
-  size_t mSaveFolderID;
-
   bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
 
   void notifyChildWidgets(ObjectType objectType,
                           Action action,
                           const std::string & key);
 
+  DataModelGUI* mpDataModelGUI;
+  CQBrowserPaneDM * mpTreeDM; // create the  object of the tree
+  QSortFilterProxyModel * mpTreeSortDM;
+  CMathModel *mpMathModel;
+  CopasiWidget* mpCurrentWidget;
+  std::string mCurrentItemKey;
 
   //the widgets
-  QTreeView *mpTreeView;
+  CQBrowserPane *mpTreeView;
 
   CMCAResultWidget* mpCMCAResultWidget;
   CQMCAWidget* mpCQMCAWidget;

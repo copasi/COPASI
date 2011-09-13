@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:06 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,18 +110,16 @@ void CQModelWidget::load()
 
   mpEditName->setText(FROM_UTF8(mpModel->getObjectName()));
 
-  mpComboTimeUnit->setItemText(mpComboTimeUnit->currentIndex(), FROM_UTF8(mpModel->getTimeUnitName()));
+  mpComboTimeUnit->setCurrentIndex(mpComboTimeUnit->findText(FROM_UTF8(mpModel->getTimeUnitName())));
+  mpComboVolumeUnit->setCurrentIndex(mpComboVolumeUnit->findText(FROM_UTF8(mpModel->getVolumeUnitName())));
+  mpComboQuantityUnit->setCurrentIndex(mpComboQuantityUnit->findText(FROM_UTF8(mpModel->getQuantityUnitName())));
+  mpComboAreaUnit->setCurrentIndex(mpComboAreaUnit->findText(FROM_UTF8(mpModel->getAreaUnitName())));
+  mpComboLengthUnit->setCurrentIndex(mpComboLengthUnit->findText(FROM_UTF8(mpModel->getLengthUnitName())));
+  mpComboModelType->setCurrentIndex(mpComboModelType->findText(CModel::ModelTypeNames[mpModel->getModelType()]));
+
   mpLblTimeUnit->setText("Time (" + mpComboTimeUnit->currentText() + ")");
-  mpComboVolumeUnit->setItemText(mpComboVolumeUnit->currentIndex(), FROM_UTF8(mpModel->getVolumeUnitName()));
-  mpComboQuantityUnit->setItemText(mpComboQuantityUnit->currentIndex(), FROM_UTF8(mpModel->getQuantityUnitName()));
-  mpComboAreaUnit->setItemText(mpComboAreaUnit->currentIndex(), FROM_UTF8(mpModel->getAreaUnitName()));
-  mpComboLengthUnit->setItemText(mpComboLengthUnit->currentIndex(), FROM_UTF8(mpModel->getLengthUnitName()));
-
-  mpComboModelType->setItemText(mpComboModelType->currentIndex(), CModel::ModelTypeNames[mpModel->getModelType()]);
-
   mpEditInitialTime->setText(QString::number(mpModel->getInitialTime()));
   mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
-
   mpEditCurrentTime->setText(QString::number(mpModel->getTime()));
 
   return;

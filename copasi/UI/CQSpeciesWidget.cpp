@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/16 18:49:31 $
+//   $Date: 2011/09/13 19:21:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,7 +228,7 @@ void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   std::string key = pModel->getMetabolites()[index.row()]->getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(0, key);
+    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQSpeciesWidget::keyPressEvent(QKeyEvent* ev)

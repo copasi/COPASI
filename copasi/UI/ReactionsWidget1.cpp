@@ -1,10 +1,10 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.210 $
-//   $Revision: 1.210 $
+//   $Revision: 1.211 $
+//   $Revision: 1.211 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -475,7 +475,7 @@ void ReactionsWidget1::slotBtnNewClicked()
   std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
   protectedNotify(ListViews::REACTION, ListViews::ADD, key);
   enter(key);
-  mpListView->switchToOtherWidget(-1, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 // Just added 5/18/04
@@ -660,7 +660,7 @@ void ReactionsWidget1::slotNewFunction()
   CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(nname), true);
   protectedNotify(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
 
-  mpListView->switchToOtherWidget(0, pFunc->getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getKey());
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,

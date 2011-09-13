@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:54 $
+//   $Date: 2011/09/13 19:21:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,51 +23,30 @@
 #ifndef DATAMODELGUI_H
 #define DATAMODELGUI_H
 
-#include <QAbstractItemModel>
-#include <QModelIndex>
 #include <QVariant>
 
-#include <qobject.h>
+#include <QtCore/QObject>
 #include <qapplication.h>
 
-#include "UI/Tree.h"
-#include "plotUI/COutputHandlerPlot.h"
-#include "listviews.h"
-
+#include "copasi/plotUI/COutputHandlerPlot.h"
+#include "copasi/UI/listviews.h"
 
 //class CMathModel;
 class QTimer;
 class CMIRIAMResources;
 class CQThread;
 class CProgressBar;
+class CQBrowserPaneDM;
 
-class DataModelGUI : public QAbstractItemModel
+class DataModelGUI: public QObject
 {
   Q_OBJECT
 private:
   void linkDataModelToGUI();
 
-  IndexedNode* getItem(const QModelIndex &index) const;
-
-  QString getNameWithObjectNo(const IndexedNode *node) const;
-
 public:
-  DataModelGUI(QObject* parent);
-
-  void populateData();
-
-  void updateCompartments();
-  void updateMetabolites();
-  void updateReactions();
-  void updateModelValues();
-  void updateFunctions();
-  void updateEvents();
-  void updateReportDefinitions();
-  void updatePlots();
-  void updateAllEntities();
-
-  const IndexedNode * getRootNode() const;
-  const IndexedNode * getNode(int id);
+  DataModelGUI(QObject * parent);
+  virtual ~DataModelGUI();
 
   bool createModel();
   void loadModel(const std::string & fileName);
@@ -112,19 +91,6 @@ public:
   void setQApp(QApplication* app);
   QApplication* getQApp() const;
 
-  QVariant data(const QModelIndex &index, int role) const;
-  Qt::ItemFlags flags(const QModelIndex &index) const;
-  QVariant headerData(int section, Qt::Orientation orientation,
-                      int role = Qt::DisplayRole) const;
-  QModelIndex index(int row, int column,
-                    const QModelIndex &parent = QModelIndex()) const;
-  QModelIndex parent(const QModelIndex &index) const;
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
-  QModelIndex findIndexFromId(size_t id);
-  QModelIndex findIndexFromKey(const std::string& key);
-  size_t getId(const QModelIndex &index) const;
-  std::string getKey(const QModelIndex &index) const;
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 
   void registerListView(ListViews * pListView);
@@ -138,9 +104,6 @@ public:
 
 
 protected:
-  bool insertRow(int parentId, const std::string &key);
-  bool removeRow(const std::string &key);
-
 private:
   void threadFinished();
 
@@ -150,7 +113,6 @@ signals:
   void finished(bool success);
 
 private:
-  IndexedTree mTree; // create the  object of the tree
   QApplication *mpApp;
   COutputHandlerPlot mOutputHandlerPlot;
   std::set< ListViews * > mListViews;

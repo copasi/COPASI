@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.247 $
+#   $Revision: 1.248 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/08/22 21:39:54 $
+#   $Date: 2011/09/13 19:21:57 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.247 $ $Author: shoops $ $Date: 2011/08/22 21:39:54 $
+# $Revision: 1.248 $ $Author: shoops $ $Date: 2011/09/13 19:21:57 $
 ######################################################################
 
 LIB = UI
@@ -34,6 +34,8 @@ HEADERS	+= \
   CMCAResultSubwidget.h \
   CLNAResultSubwidget.h \
   CQArrayAnnotationsWidget.h \
+  CQBrowserPane.h \
+  CQBrowserPaneDM.h \
   CQCompartment.h \
   CQCompartmentsWidget.h \
   CQCrossSectionTaskWidget.h \
@@ -174,7 +176,6 @@ HEADERS	+= \
   SliderDialog.h \
   TaskWidget.h \
   TimeSeriesWidget.h \
-  Tree.h \
   TSSWidget.h
 
 ### Source files that belong to widgets generated from uic4 forms
@@ -182,6 +183,8 @@ SOURCES	+= \
   CMCAResultSubwidget.cpp \
   CLNAResultSubwidget.cpp \
   CQArrayAnnotationsWidget.cpp \
+  CQBrowserPane.cpp \
+  CQBrowserPaneDM.cpp \
   CQCompartment.cpp \
   CQCompartmentsWidget.cpp \
   CQCrossSectionTaskWidget.cpp \
@@ -320,7 +323,6 @@ SOURCES	+= \
   SliderDialog.cpp \
   TaskWidget.cpp \
   TimeSeriesWidget.cpp \
-  Tree.cpp \
   TSSWidget.cpp
 
 !contains(DEFINES, COPASI_TSS) {

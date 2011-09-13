@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.176 $
+//   $Revision: 1.177 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -907,7 +907,7 @@ void FunctionWidget1::slotNewButtonClicked()
   std::string key = pFunc->getKey();
   protectedNotify(ListViews::FUNCTION, ListViews::ADD, key);
   enter(key);
-  mpListView->switchToOtherWidget(-1, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 //! Slot for being activated whenever Delete button is clicked

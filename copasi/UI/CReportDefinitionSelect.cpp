@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:09 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,7 +254,7 @@ void CReportDefinitionSelect::jumpToReportDefinitionEdit()
   CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
   C_INT32 row;
   row = reportDefinitionNameList->currentIndex();
-  pListView->switchToOtherWidget(0, (*pReportDefinitionVector)[row]->getKey());
+  pListView->switchToOtherWidget(C_INVALID_INDEX, (*pReportDefinitionVector)[row]->getKey());
   confirmClicked(); // if shown then close
   bShow = false; // if not shown then close
 }

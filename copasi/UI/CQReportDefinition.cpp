@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:06 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -396,7 +396,7 @@ void CQReportDefinition::btnNewReportClicked()
   std::string key = pRep->getKey();
   protectedNotify(ListViews::REPORT, ListViews::ADD, key);
   enter(key);
-  mpListView->switchToOtherWidget(-1, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQReportDefinition::btnRevertClicked()

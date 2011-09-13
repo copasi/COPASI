@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:07 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:22:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -295,10 +295,10 @@ void CQSpeciesDetail::load()
     }
 
   mpCurrentCompartment = mpMetab->getCompartment();
-  mpComboBoxCompartment->setItemText(mpComboBoxCompartment->currentIndex(), FROM_UTF8(mpCurrentCompartment->getObjectName()));
+  mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(mpCurrentCompartment->getObjectName())));
 
   // Simulation Type
-  mpComboBoxType->setItemText(mpComboBoxType->currentIndex(), FROM_UTF8(CModelEntity::StatusName[mpMetab->getStatus()]));
+  mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpMetab->getStatus()])));
 
   // Initial Concentration handled in slotTypeChanged
   mInitialConcentration = mpMetab->getInitialConcentration();
@@ -394,7 +394,8 @@ void CQSpeciesDetail::save()
                                     QMessageBox::Ok, QMessageBox::Ok);
 
           // Revert the changes
-          mpComboBoxCompartment->setItemText(mpComboBoxCompartment->currentIndex(), FROM_UTF8(CompartmentToRemove));
+          mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(CompartmentToRemove)));
+
           slotCompartmentChanged(mpComboBoxCompartment->currentIndex());
         }
       else
@@ -599,7 +600,7 @@ void CQSpeciesDetail::slotBtnNew()
   std::string key = mpMetab->getKey();
   enter(key);
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(-1, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQSpeciesDetail::slotBtnRevert()
@@ -734,7 +735,7 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
       s2 = pReaction->getObjectName();
 
       if (s1 == s2)
-        mpListView->switchToOtherWidget(0, pReaction->getKey());
+        mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getKey());
     }
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:06 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:59 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,7 +89,7 @@ void CQModelValue::slotBtnNew()
   std::string key = mpModelValue->getKey();
   enter(key);
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(-1, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQModelValue::slotBtnDelete()
@@ -306,7 +306,7 @@ void CQModelValue::load()
   mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
 
   // Type
-  mpComboBoxType->setItemText(mpComboBoxType->currentIndex(), FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
+  mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()])));
 
   // Initial Value
   mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue(), 'g', 10));

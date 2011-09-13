@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/07/05 17:34:42 $
+//   $Author: shoops $
+//   $Date: 2011/09/13 19:21:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,7 +218,7 @@ void CQReportsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   std::string key = pDataModel->getReportDefinitionList()->operator[](index.row())->getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(0, key);
+    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQReportsWidget::keyPressEvent(QKeyEvent* ev)
