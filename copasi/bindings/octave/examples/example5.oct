@@ -5,22 +5,22 @@
 
 COPASI
 
-%!assert( swig_type(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
 % create a new datamodel
 dataModel = CCopasiRootContainer.addDatamodel();
 %!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
 % get the model from the datamodel
 model = dataModel.getModel();
-%!assert( swig_type(model) != 0);
+%!assert( swig_this(model) != 0);
 model.setVolumeUnit(CModel_fl);
 model.setTimeUnit(CModel_s);
 model.setQuantityUnit(CModel_fMol);
 fixedModelValue=model.createModelValue("F");
-%!assert( swig_type(fixedModelValue) != 0);
+%!assert( swig_this(fixedModelValue) != 0);
 fixedModelValue.setStatus(CModelEntity_FIXED);
 fixedModelValue.setInitialValue(3.0);   
 variableModelValue=model.createModelValue("V");
-%!assert( swig_type(variableModelValue) != 0);
+%!assert( swig_this(variableModelValue) != 0);
 variableModelValue.setStatus(CModelEntity_ASSIGNMENT);
 % we create a very simple assignment that is easy on the optimization
 % a parabole with the minimum at x=6 should do just fine
@@ -40,7 +40,7 @@ model.updateInitialValues(changedObjects);
 % we want to do an optimization for the time course
 % so we have to set up the time course task first
 timeCourseTask = dataModel.getTask("Time-Course");
-%!assert( swig_type(timeCourseTask) != 0);
+%!assert( swig_this(timeCourseTask) != 0);
 % since for this example it really doesn't matter how long we run the time course 
 % we run for 1 second and calculate 10 steps
 % run a deterministic time course
@@ -51,7 +51,7 @@ timeCourseTask.getProblem().setModel(dataModel.getModel());
 
 % get the problem for the task to set some parameters
 problem = timeCourseTask.getProblem();
-%!assert( swig_type(problem) != 0);
+%!assert( swig_this(problem) != 0);
 
 % simulate 10 steps
 problem.setStepNumber(10);
@@ -64,13 +64,13 @@ problem.setTimeSeriesRequested(true);
 
 % get the optimization task
 optTask=dataModel.getTask("Optimization");
-%!assert( swig_type(optTask) != 0);
+%!assert( swig_this(optTask) != 0);
 % we want to use Levenberg-Marquardt as the optimization method
 optTask.setMethodType(CCopasiMethod_LevenbergMarquardt);
 
 % next we need to set subtask type on the problem
 optProblem=optTask.getProblem();
-%!assert( swig_type(optProblem) != 0);
+%!assert( swig_this(optProblem) != 0);
 optProblem.setSubtaskType(CCopasiTask_timeCourse);
 
 % we create the objective function
@@ -97,16 +97,16 @@ optItem.setUpperBound(CCopasiObjectName("100"));
 % these parameters are specific to the method type we set above
 % (in this case Levenberg-Marquardt)
 optMethod=optTask.getMethod();
-%!assert( swig_type(optMethod) != 0);
+%!assert( swig_this(optMethod) != 0);
 
 % now we set some method parameters for the optimization method
 % iteration limit
 parameter=optMethod.getParameter("Iteration Limit");
-%!assert( swig_type(parameter) != 0);
+%!assert( swig_this(parameter) != 0);
 parameter.setIntValue(2000);
 % tolerance
 parameter=optMethod.getParameter("Tolerance");
-%!assert( swig_type(parameter) != 0);
+%!assert( swig_this(parameter) != 0);
 parameter.setDblValue(1.0e-5);
 
 % create a report with the correct filename and all the species against

@@ -3,13 +3,13 @@
 %
 COPASI
 
-%!assert( swig_type(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
 % create a new datamodel
 dataModel = CCopasiRootContainer.addDatamodel();
 %!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
 % get the model from the datamodel
 model = dataModel.getModel();
-%!assert( swig_type(model) != 0);
+%!assert( swig_this(model) != 0);
 % set the units for the model
 % we want seconds as the time unit
 % microliter as the volume units
@@ -28,9 +28,9 @@ changedObjects=ObjectStdVector();
 % microliter
 compartment = model.createCompartment("cell", 5.0);
 object = compartment.getObject(CCopasiObjectName("Reference=InitialVolume"));
-%!assert( swig_type(object) != 0);
+%!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
-%!assert( swig_type(compartment) != 0);
+%!assert( swig_this(compartment) != 0);
 %!assert( model.getCompartments().size() == 1);
 % create a new metabolite with the name S and an inital
 % concentration of 10 nanomol
@@ -38,23 +38,23 @@ changedObjects.push_back(object);
 % fixed
 S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CModelEntity_FIXED);
 object = S.getObject(CCopasiObjectName("Reference=InitialConcentration"));
-%!assert( swig_type(object) != 0);
+%!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
-%!assert( swig_type(compartment) != 0);
-%!assert( swig_type(S) != 0);
+%!assert( swig_this(compartment) != 0);
+%!assert( swig_this(S) != 0);
 %!assert( model.getMetabolites().size() == 1);
 % create a second metabolite called P with an initial
 % concentration of 0. This metabolite is to be changed by reactions
 P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CModelEntity_REACTIONS);
-%!assert( swig_type(P) != 0);
+%!assert( swig_this(P) != 0);
 object = P.getObject(CCopasiObjectName("Reference=InitialConcentration"));
-%!assert( swig_type(object) != 0);
+%!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
 %!assert( model.getMetabolites().size() == 2);
 
 % now we create a reaction
 reaction = model.createReaction("reaction");
-%!assert( swig_type(reaction) != 0);
+%!assert( swig_this(reaction) != 0);
 %!assert( model.getReactions().size() == 1);
 % reaction converts S to P
 % we can set these on the chemical equation of the reaction
@@ -72,47 +72,47 @@ reaction.setReversible(false);
 MV = model.createModelValue("K", 42.0);
 % set the status to FIXED
 MV.setStatus(CModelEntity_FIXED);
-%!assert( swig_type(MV) != 0);
+%!assert( swig_this(MV) != 0);
 object = MV.getObject(CCopasiObjectName("Reference=InitialValue"));
-%!assert( swig_type(object) != 0);
+%!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
 %!assert( model.getModelValues().size() == 1);
 
 % now we ned to set a kinetic law on the reaction
 % for this we create a user defined function
 funDB = CCopasiRootContainer.getFunctionList();
-%!assert( swig_type(funDB) != 0);
+%!assert( swig_this(funDB) != 0);
 
-function = funDB.createFunction("My Rate Law",CEvaluationTree_UserDefined);
+fun = funDB.createFunction("My Rate Law",CEvaluationTree_UserDefined);
 
 rateLaw = funDB.findFunction("My Rate Law");
 
-%!assert( swig_type(rateLaw) != 0);
+%!assert( swig_this(rateLaw) != 0);
 
 % now we create the formula for the function and set it on the function
 formula = "(1-0.4/(EXPONENTIALE^(temp-37)))*0.00001448471257*1.4^(temp-37)*substrate";
 
-result = function.setInfix(formula);
+result = fun.setInfix(formula);
 %!assert( result == true);
 % make the function irreversible
-function.setReversible(Trifalse)
+fun.setReversible(TriFalse)
 % the formula string should have been parsed now
 % and COPASI should have determined that the formula string contained 2 parameters (temp and substrate)
-variables = function.getVariables();
+variables = fun.getVariables();
 % per default the usage of those parameters will be set to VARIABLE
-index = function.getVariableIndex("temp");
+index = fun.getVariableIndex("temp");
 param = variables.getParameter(index);
 %!assert( param.getUsage() == CFunctionParameter_VARIABLE);
 % This is correct for temp, but substrate should get the usage SUBSTRATE in order
 % for us to use the function with the reaction created above
 % So we need to set the usage for "substrate" manually
-index = function.getVariableIndex("substrate");
+index = fun.getVariableIndex("substrate");
 param = variables.getParameter(index);
 param.setUsage(CFunctionParameter_SUBSTRATE);
 
 % set the rate law for the reaction
-reaction.setFunction(function);
-%!assert( swig_type(reaction.getFunction()) != 0);
+reaction.setFunction(fun);
+%!assert( swig_this(reaction.getFunction()) != 0);
 
 % COPASI also needs to know what object it has to assocuiate with the individual function parameters
 % In our case we need to tell COPASI that substrate is to be replaced by the substrate of the reaction

@@ -16,10 +16,10 @@ MODEL_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n <!-- Created by COP
 % since we are not interested in the arguments
 % that are passed to main, we pass 0 and None to
 % init
-%!assert( swig_type(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
 % create a new datamodel
 dataModel = CCopasiRootContainer.addDatamodel();
-%!assert( swig_type(dataModel) != 0);
+%!assert( swig_this(dataModel) != 0);
 %!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
 % next we import a simple SBML model from a string
 
@@ -51,7 +51,7 @@ endif
 task = dataModel.getTask("Steady-State");
 
 % if there isn't one
-if swig_type(task) == 0
+if swig_this(task) == 0
     % create a new one
     task = CSteadyStateTask();
     % add the new task to the task list
@@ -80,9 +80,9 @@ end_try_catch
 % getJacobian, or we can use getJacobianAnnotated to get an annotated matrix
 % Corresponding methods for the reduced jacobian are getJacobianX and getJacobianXAnnotated
 aj = task.getJacobianAnnotated();
-%!assert( swig_type(aj) != 0);
+%!assert( swig_this(aj) != 0);
 
-if (swig_type(aj) != 0)
+if (swig_this(aj) != 0)
   % we do the output, but as in contrast to the jacobian in example 8,
   % we now have all the information for the output in one place
 
@@ -101,7 +101,7 @@ if (swig_type(aj) != 0)
   printf("\n");
   printf("%7s", " ");
 
-  for i = 1:annotations.size()
+  for i = 0:annotations.size()-1
     printf("%7s", annotations{i});
   endfor
 

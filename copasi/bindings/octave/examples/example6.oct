@@ -78,7 +78,7 @@ MODEL_STRING="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
   </model>\
 </sbml>";
 
-%!assert( swig_type(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
 % create a datamodel
 dataModel = CCopasiRootContainer.addDatamodel();
 %!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
@@ -95,16 +95,16 @@ end_try_catch
 
 % get the trajectory task object
 trajectoryTask = dataModel.getTask("Time-Course");
-%!assert( swig_type(trajectoryTask) != 0);
+%!assert( swig_this(trajectoryTask) != 0);
 % if there isn't one
-if (swig_type(trajectoryTask) == 0)
-    % create a one
-    trajectoryTask = CTrajectoryTask();
+if (swig_this(trajectoryTask) == 0)
+  % create a one
+  trajectoryTask = CTrajectoryTask();
 
-    % add the time course task to the task list
-    % this method makes sure that the object is now owned 
-    % by the list and that it does not get deleted by SWIG
-    dataModel.getTaskList().addAndOwn(trajectoryTask);
+  % add the time course task to the task list
+  % this method makes sure that the object is now owned 
+  % by the list and that it does not get deleted by SWIG
+  dataModel.getTaskList().addAndOwn(trajectoryTask);
 endif
 
 % run a deterministic time course
@@ -162,7 +162,7 @@ timeSeries = trajectoryTask.getTimeSeries();
 % we simulated 100 steps, including the initial state, this should be
 % 101 step in the timeseries
 %!assert( timeSeries.getRecordedSteps() == 4001);
-iMax = timeSeries.getNumVariables();
+iMax = timeSeries.getNumVariables()-1;
 % there should be four variables, the three metabolites and time
 %!assert( iMax == 5);
 lastIndex = timeSeries.getRecordedSteps() - 1;
@@ -179,17 +179,19 @@ r=0.0;
 os=fopen("fakedata_example6.txt","w");
 fprintf(os,"# time ");
 keyFactory=CCopasiRootContainer.getKeyFactory();
-%!assert( swig_type(keyFactory) != 0);
-for i = 1:iMax-1
+%!assert( swig_this(keyFactory) != 0);
+for i = 1:iMax
   key=timeSeries.getKey(i);
   object=keyFactory.get(key);
-  %!assert( swig_type(object) != 0);
+  %!assert( swig_this(object) != 0);
   % only write header data or metabolites
-  if ( swig_class(object) == CMetab )
+  if ( strcmp(swig_type(object),"CMetab") == 1 )
     fprintf(os,", ");
     fprintf(os,"%s",timeSeries.getSBMLId(i,dataModel));
-    indexSet.append(i);
-    metabVector.append(object);
+    indexSet{length(indexSet)+1}=i;
+    metabVector{length(metabVector)+1}=object;
+  endif
+endfor
 fprintf(os,"\n");
 data=0.0;
 for i = 0:lastIndex-1
@@ -200,7 +202,7 @@ for i = 0:lastIndex-1
 
     % Could not find an easy way to check for the existence 
     % of an element in a cell array, so we do it manually
-    cMax=length(indexSet)
+    cMax=length(indexSet);
     found=false;
     for e = 1:cMax
       if (indexSet{e} == j)
@@ -244,23 +246,23 @@ reaction=dataModel.getModel().getReaction(1);
 %!assert( reaction.isLocalParameter(0) == true);
 reaction.setParameterValue("k1",r);
 
-fitTask=dataModel.addTask(CCopasiTask.parameterFitting);
-%!assert( swig_type(fitTask) != 0);
+fitTask=dataModel.addTask(CCopasiTask_parameterFitting);
+%!assert( swig_this(fitTask) != 0);
 % the method in a fit task is an instance of COptMethod or a subclass of
 % it.
 fitMethod=fitTask.getMethod();
-%!assert( swig_type(fitMethod) != 0);
+%!assert( swig_this(fitMethod) != 0);
 % the object must be an instance of COptMethod or a subclass thereof
 % (CFitMethod)
 fitProblem=fitTask.getProblem();
-%!assert( swig_type(fitProblem) != 0);
+%!assert( swig_this(fitProblem) != 0);
 
 experimentSet=fitProblem.getParameter("Experiment Set");
-%!assert( swig_type(experimentSet) != 0);
+%!assert( swig_this(experimentSet) != 0);
 
 % first experiment (we only have one here)
 experiment=CExperiment(dataModel);
-%!assert( swig_type(experiment) != 0);
+%!assert( swig_this(experiment) != 0);
 % tell COPASI where to find the data
 % reading data from string is not possible with the current C++ API
 experiment.setFileName("fakedata_example6.txt");
@@ -275,11 +277,11 @@ experiment.setLastRow(4001);
 experiment.setHeaderRow(1);
 %!assert( experiment.getHeaderRow()==1);
 experiment.setExperimentType(CCopasiTask_timeCourse);
-%!assert( experiment.getExperimentType()==CCopasiTask.timeCourse);
+%!assert( experiment.getExperimentType() == CCopasiTask_timeCourse);
 experiment.setNumColumns(4);
 %!assert( experiment.getNumColumns()==4);
 objectMap=experiment.getObjectMap();
-%!assert( swig_type(objectMap) != 0);
+%!assert( swig_this(objectMap) != 0);
 result=objectMap.setNumCols(4);
 %!assert( result == true);
 result=objectMap.setRole(0,CExperiment_time);
@@ -287,32 +289,32 @@ result=objectMap.setRole(0,CExperiment_time);
 %!assert( objectMap.getRole(0) == CExperiment_time);
 
 model=dataModel.getModel();
-%!assert( swig_type(model) != 0);
+%!assert( swig_this(model) != 0);
 timeReference=model.getObject(CCopasiObjectName("Reference=Time"));
-%!assert( swig_type(timeReference) != 0);
+%!assert( swig_this(timeReference) != 0);
 objectMap.setObjectCN(0,timeReference.getCN().getString());
 
 % now we tell COPASI which column contain the concentrations of
 % metabolites and belong to dependent variables
-objectMap.setRole(1,CExperiment.dependent);
+objectMap.setRole(1,CExperiment_dependent);
 metab=metabVector{1};
-%!assert( swig_type(metab) != 0);
+%!assert( swig_this(metab) != 0);
 particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"));
-%!assert( swig_type(particleReference) != 0);
+%!assert( swig_this(particleReference) != 0);
 objectMap.setObjectCN(1,particleReference.getCN().getString());
 
 objectMap.setRole(2,CExperiment_dependent);
 metab=metabVector{2};
-%!assert( swig_type(metab) != 0);
+%!assert( swig_this(metab) != 0);
 particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"));
-%!assert( swig_type(particleReference) != 0);
+%!assert( swig_this(particleReference) != 0);
 objectMap.setObjectCN(2,particleReference.getCN().getString());
 
 objectMap.setRole(3,CExperiment_dependent);
 metab=metabVector{3};
-%!assert( swig_type(metab) != 0);
+%!assert( swig_this(metab) != 0);
 particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"));
-%!assert( swig_type(particleReference) != 0);
+%!assert( swig_this(particleReference) != 0);
 objectMap.setObjectCN(3,particleReference.getCN().getString());
 
 experimentSet.addExperiment(experiment);
@@ -320,41 +322,41 @@ experimentSet.addExperiment(experiment);
 % addExperiment makes a copy, so we need to get the added experiment
 % again
 experiment=experimentSet.getExperiment(0);
-%!assert( swig_type(experiment) != 0);
+%!assert( swig_this(experiment) != 0);
 
 % now we have to define the two fit items for the two local parameters
 % of the two reactions
 reaction=model.getReaction(0);
-%!assert( swig_type(reaction) != 0);
+%!assert( swig_this(reaction) != 0);
 %!assert( reaction.isLocalParameter(0)==true);
 parameter=reaction.getParameters().getParameter(0);
-%!assert( swig_type(parameter) != 0);
+%!assert( swig_this(parameter) != 0);
 
 % define a CFitItem
 parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"));
-%!assert( swig_type(parameterReference) != 0);
+%!assert( swig_this(parameterReference) != 0);
 fitItem1=CFitItem(dataModel);
-%!assert( swig_type(fitItem1) !=0);
+%!assert( swig_this(fitItem1) !=0);
 fitItem1.setObjectCN(parameterReference.getCN());
 fitItem1.setStartValue(4.0);
 fitItem1.setLowerBound(CCopasiObjectName("0.00001"));
 fitItem1.setUpperBound(CCopasiObjectName("10"));
 % add the fit item to the correct parameter group
 optimizationItemGroup=fitProblem.getParameter("OptimizationItemList");
-%!assert( swig_type(optimizationItemGroup) != 0);
+%!assert( swig_this(optimizationItemGroup) != 0);
 optimizationItemGroup.addParameter(fitItem1);
 
 reaction=model.getReaction(1);
-%!assert( swig_type(reaction) != 0);
+%!assert( swig_this(reaction) != 0);
 %!assert( reaction.isLocalParameter(0) == true);
 parameter=reaction.getParameters().getParameter(0);
-%!assert( swig_type(parameter) != 0);
+%!assert( swig_this(parameter) != 0);
 
 % define a CFitItem
 parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"));
-%!assert( swig_type(parameterReference) != 0);
+%!assert( swig_this(parameterReference) != 0);
 fitItem2=CFitItem(dataModel);
-%!assert( swig_type(fitItem2) != 0);
+%!assert( swig_this(fitItem2) != 0);
 fitItem2.setObjectCN(parameterReference.getCN());
 fitItem2.setStartValue(4.0);
 fitItem2.setLowerBound(CCopasiObjectName("0.00001"));
@@ -381,11 +383,11 @@ optItem1 = fitProblem.getOptItemList(){1};
 optItem2 = fitProblem.getOptItemList(){2};
 % the actual results are stored in the fit problem
 %!assert( fitProblem.getSolutionVariables().size() == 2);
-printf("value for %s: %s\n" , optItem1.getObject().getCN().getString() , fitProblem.getSolutionVariables().get(0));
-printf("value for %s: %s\n" , optItem2.getObject().getCN().getString(), fitProblem.getSolutionVariables().get(1));
+printf("value for %s: %f\n" , optItem1.getObject().getCN().getString() , fitProblem.getSolutionVariables().get(0));
+printf("value for %s: %f\n" , optItem2.getObject().getCN().getString(), fitProblem.getSolutionVariables().get(1));
 % depending on the noise, the fit can be quite bad, so we are a litle
 % relaxed here (we should be within 3% of the original values)
 %!assert( (abs(fitProblem.getSolutionVariables().get(0) - 0.03) / 0.03) < 3e-2);
 %!assert( (abs(fitProblem.getSolutionVariables().get(1) - 0.004) / 0.004) < 3e-2);
-
+%%%   
 

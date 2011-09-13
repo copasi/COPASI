@@ -6,7 +6,7 @@
 
 COPASI
 
-%!assert( swig_type(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
 % create a datamodel
 dataModel = CCopasiRootContainer.addDatamodel();
 %!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
@@ -23,7 +23,7 @@ if (length(argv()) == 1)
   end_try_catch
 
   model = dataModel.getModel();
-  %!assert( swig_type(model) != 0);
+  %!assert( swig_this(model) != 0);
   % create a report with the correct filename and all the species against
   % time.
   reports = dataModel.getReportDefinitionList();
@@ -51,7 +51,7 @@ if (length(argv()) == 1)
   iMax = model.getMetabolites().size()-1;
   for i = 0:iMax
     metab = model.getMetabolite(i);
-    %!assert( swig_type(metab) != 0);
+    %!assert( swig_this(metab) != 0);
     % we don't want output for FIXED metabolites right now
     if (metab.getStatus() != CModelEntity_FIXED)
       % we want the concentration oin the output
@@ -70,7 +70,7 @@ if (length(argv()) == 1)
   % get the trajectory task object
   trajectoryTask = dataModel.getTask("Time-Course");
   % if there isn't one
-  if (swig_type(trajectoryTask) == 0)
+  if (swig_this(trajectoryTask) == 0)
     % create a one
     trajectoryTask = CTrajectoryTask();
     % add the time course task to the task list
@@ -112,7 +112,7 @@ if (length(argv()) == 1)
   method = trajectoryTask.getMethod();
 
   parameter = method.getParameter("Absolute Tolerance");
-  %!assert( swig_type(parameter) != 0);
+  %!assert( swig_this(parameter) != 0);
   %!assert( parameter.getType() == CCopasiParameter_UDOUBLE);
   parameter.setDblValue(1.0e-12);
 

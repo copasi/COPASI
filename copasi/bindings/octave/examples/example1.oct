@@ -109,7 +109,7 @@ if (isstruct(func))
   % the method should be smart enough to associate the reaction entities
   % with the correct function parameters
   reaction.setFunction(func);
-%!assert(swig_type(reaction.getFunction()) != 0);
+%!assert(swig_this(reaction.getFunction()) != 0);
   % constant flux has only one function parameter
 %!assert(reaction.getFunctionParameters().size() == 1);
   % so there should be only one entry in the parameter mapping as well
@@ -122,7 +122,7 @@ if (isstruct(func))
   % now we set the value of the parameter to 0.5
   parameter.setDblValue(0.5);
   object = parameter.getObject(CCopasiObjectName("Reference=Value"));
-%!assert(swig_type(object) != 0);
+%!assert(swig_this(object) != 0);
   changedObjects.push_back(object);
 else
   error("Error. Could not find irreversible michaelis menten.");
@@ -132,7 +132,7 @@ endif
 % set the kinetic law to irreversible mass action
 % now we create a reaction
 reaction = model.createReaction("hexokinase-backwards");
-%! assert(swig_type(reaction) != 0);
+%! assert(swig_this(reaction) != 0);
 %! assert(model.getReactions().size() == 2);
 chemEq = reaction.getChemEq();
 % glucose is a product with stoichiometry 1
@@ -150,12 +150,12 @@ reaction.setReversible(false);
 %! assert(reaction.isReversible() == false);
 % now we ned to set a kinetic law on the reaction
 massAction = funDB.findFunction("Mass action (irreversible)");
-%! assert(swig_type(massAction) != 0);
+%! assert(swig_this(massAction) != 0);
 % we set the function
 % the method should be smart enough to associate the reaction entities
 % with the correct function parameters
 reaction.setFunction(massAction);
-%! assert(swig_type(reaction.getFunction()) != 0);
+%! assert(swig_this(reaction.getFunction()) != 0);
 
 %! assert(reaction.getFunctionParameters().size() == 2);
 % so there should be two entries in the parameter mapping as well
@@ -167,9 +167,9 @@ reaction.setFunction(massAction);
 % and that is used as the rate constant of the mass action kinetics
 % it gets the name rateConstant and an initial value of 1.56
 modelValue = model.createModelValue("rateConstant", 1.56);
-%! assert(swig_type(modelValue) != 0);
+%! assert(swig_this(modelValue) != 0);
 object = modelValue.getObject(CCopasiObjectName("Reference=InitialValue"));
-%! assert(swig_type(object) != 0);
+%! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(model.getModelValues().size() == 1);
 % set the status to assignment
