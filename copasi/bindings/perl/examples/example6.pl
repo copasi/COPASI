@@ -10,40 +10,40 @@ use warnings;
 use COPASI;
 
 my $MODEL_STRING = <<END;
-<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by COPASI version 4.5.30 (Debug) on 2009-03-30 08:01 with libSBML version 3.3.2. -->
-<sbml xmlns=\"http:#www.sbml.org/sbml/level2\" level=\"2\" version=\"1\">
-  <model metaid=\"COPASI1\" id=\"Model_1\" name=\"Model\">
+<sbml xmlns="http:#www.sbml.org/sbml/level2" level="2" version="1">
+  <model metaid="COPASI1" id="Model_1" name="Model">
     <listOfUnitDefinitions>
-      <unitDefinition id=\"volume\">
+      <unitDefinition id="volume">
         <listOfUnits>
-          <unit kind=\"litre\" scale=\"-3\"/>
+          <unit kind="litre" scale="-3"/>
         </listOfUnits>
       </unitDefinition>
-      <unitDefinition id=\"substance\">
+      <unitDefinition id="substance">
         <listOfUnits>
-          <unit kind=\"mole\" scale=\"-3\"/>
+          <unit kind="mole" scale="-3"/>
         </listOfUnits>
       </unitDefinition>
     </listOfUnitDefinitions>
     <listOfCompartments>
-      <compartment id=\"compartment_1\" name=\"compartment\" size=\"1\"/>
+      <compartment id="compartment_1" name="compartment" size="1"/>
     </listOfCompartments>
     <listOfSpecies>
-      <species id=\"species_1\" name=\"A\" compartment=\"compartment_1\" initialConcentration=\"5\"/>
-      <species id=\"species_2\" name=\"B\" compartment=\"compartment_1\" initialConcentration=\"0\"/>
-      <species id=\"species_3\" name=\"C\" compartment=\"compartment_1\" initialConcentration=\"0\"/>
+      <species id="species_1" name="A" compartment="compartment_1" initialConcentration="5"/>
+      <species id="species_2" name="B" compartment="compartment_1" initialConcentration="0"/>
+      <species id="species_3" name="C" compartment="compartment_1" initialConcentration="0"/>
     </listOfSpecies>
     <listOfReactions>
-      <reaction id=\"reaction_1\" name=\"reaction\" reversible=\"""\">
+      <reaction id="reaction_1" name="reaction" reversible="">
         <listOfReactants>
-          <speciesReference species=\"species_1\"/>
+          <speciesReference species="species_1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species=\"species_2\"/>
+          <speciesReference species="species_2"/>
         </listOfProducts>
         <kineticLaw>
-          <math xmlns=\"http:#www.w3.org/1998/Math/MathML\">
+          <math xmlns="http:#www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> compartment_1 </ci>
@@ -52,19 +52,19 @@ my $MODEL_STRING = <<END;
             </apply>
           </math>
           <listOfParameters>
-            <parameter id=\"k1\" name=\"k1\" value=\"0.03\"/>
+            <parameter id="k1" name="k1" value="0.03"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id=\"reaction_2\" name=\"reaction_1\" reversible=\"""\">
+      <reaction id="reaction_2" name="reaction_1" reversible="">
         <listOfReactants>
-          <speciesReference species=\"species_2\"/>
+          <speciesReference species="species_2"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species=\"species_3\"/>
+          <speciesReference species="species_3"/>
         </listOfProducts>
         <kineticLaw>
-          <math xmlns=\"http:#www.w3.org/1998/Math/MathML\">
+          <math xmlns="http:#www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> compartment_1 </ci>
@@ -73,7 +73,7 @@ my $MODEL_STRING = <<END;
             </apply>
           </math>
           <listOfParameters>
-            <parameter id=\"k1\" name=\"k1\" value=\"0.004\"/>
+            <parameter id="k1" name="k1" value="0.004"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
@@ -100,7 +100,7 @@ eval {
 
 # get the trajectory task object
 my $trajectoryTask = $dataModel->getTask("Time-Course");
-unless(defined($$trajectoryTask)){warn "Assertion failed";die;}
+unless(defined($trajectoryTask)){warn "Assertion failed";die;}
 # if there isn't one
 if (!defined($trajectoryTask)) {
     # create a one
@@ -191,7 +191,7 @@ for (my $i=0;$i < $iMax;$i++) {
   my $object=$keyFactory->get($key);
   unless(defined($object)){warn "Assertion failed";die;}
   # only write header data or metabolites
-  if (object->isa('COPASI::CMetab')) {
+  if ($object->isa('COPASI::CMetab')) {
     print OS ", ";
     print OS $timeSeries->getSBMLId($i,$dataModel);
     push(@indexSet,$i);
@@ -283,7 +283,7 @@ unless($experiment->getExperimentType() == $COPASI::CCopasiTask::timeCourse){war
 $experiment->setNumColumns(4);
 unless($experiment->getNumColumns()==4){warn "Assertion failed";die;}
 my $objectMap=$experiment->getObjectMap();
-unless(defined($$objectMap)){warn "Assertion failed";die;}
+unless(defined($objectMap)){warn "Assertion failed";die;}
 $result=$objectMap->setNumCols(4);
 unless($result == 1){warn "Assertion failed";die;}
 $result=$objectMap->setRole(0,$COPASI::CExperiment::time);
