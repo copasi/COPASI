@@ -6,7 +6,7 @@
 
 use COPASI;
 
-my $MODEL_STRING= <<END;
+my $MODEL_STRING = <<END;
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by COPASI version 4.4.29 (Debug) on 2009-03-05 14:41 with libSBML version 3.3.0. -->
 <sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" version="3">
