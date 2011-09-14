@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example3/example3.cpp,v $
-//   $Revision: 1.1.6.2 $
+//   $Revision: 1.1.6.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/30 16:00:40 $
+//   $Author: gauges $
+//   $Date: 2011/09/14 13:37:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
  * and run a time course simulation
  */
 
+#include <sys/time.h>
 #include <iostream>
 #include <string>
 
@@ -39,6 +40,8 @@
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CTrajectoryProblem.h"
 #include "copasi/trajectory/CTimeSeries.h"
+#include "copasi/function/CFunctionDB.h"
+
 
 int main(int argc, char** argv)
 {
@@ -58,6 +61,7 @@ int main(int argc, char** argv)
         {
           // load the model without progress report
           pDataModel->importSBML(filename, NULL);
+          //pDataModel->loadModel(filename, NULL);
         }
       catch (...)
         {
@@ -190,7 +194,12 @@ int main(int argc, char** argv)
         {
           // initialize the trajectory task
           // we want complete output (HEADER, BODY and FOOTER)
-          pTrajectoryTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+          //
+          // The output has to be set to OUTPUT_UI, otherwise the time series will not be
+          // kept in memory and some of the assert further down will fail
+          // If it is OK that the output is only written to file, the output type can
+          // be set to OUTPUT_SE
+          pTrajectoryTask->initialize(CCopasiTask::OUTPUT_UI, pDataModel, NULL);
           // now we run the actual trajectory
           pTrajectoryTask->process(true);
         }
