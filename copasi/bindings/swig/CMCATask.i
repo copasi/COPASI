@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CMCATask.i,v $ 
-//   $Revision: 1.1.2.1 $ 
+//   $Revision: 1.1.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/08/03 09:33:37 $ 
+//   $Date: 2011/09/14 15:11:48 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,6 +21,9 @@
 
 %newobject CMCAMethod::createMethod(const int& type) const;
 
+// process is ignored because I have written extension code in CCopasiTask
+// that calls the task specific process, so this new process should be
+// used for all tasks
 %ignore CMCATask::process(const bool& useInitialValues);
 %ignore CMCATask::initialize;
 %ignore CMCATask::load;

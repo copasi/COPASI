@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CLyapTask.i,v $ 
-//   $Revision: 1.3 $ 
+//   $Revision: 1.3.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/09/14 15:11:48 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -26,6 +26,9 @@
 
 %}
 
+// process is ignored because I have written extension code in CCopasiTask
+// that calls the task specific process, so this new process should be
+// used for all tasks
 %ignore CLyapTask::process(const bool& useInitialValues);
 %ignore CLyapTask::initialize;
 %ignore CLyapTask::printResult;

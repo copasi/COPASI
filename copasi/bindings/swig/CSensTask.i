@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CSensTask.i,v $ 
-//   $Revision: 1.1.2.2 $ 
+//   $Revision: 1.1.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/07/27 19:39:52 $ 
+//   $Date: 2011/09/14 15:11:48 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,6 +17,9 @@
 
 %}
 
+// process is ignored because I have written extension code in CCopasiTask
+// that calls the task specific process, so this new process should be
+// used for all tasks
 %ignore CSensTask::process(const bool& useInitialValues);
 %ignore CSensTask::initialize;
 %ignore CSensTask::print;
