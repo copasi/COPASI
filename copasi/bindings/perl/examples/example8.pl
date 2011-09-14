@@ -109,7 +109,7 @@ if (defined($model)) {
     for (my $i=0;$i < (@nameVector + 0);$i++) {
         printf "%7s" , $nameVector[$i];
 
-        for (my $j=0;$j < (@nameVector + 1);$j++)  {
+        for (my $j=0;$j < (@nameVector + 0);$j++)  {
             printf "%7.3f" , $jacobian->get($i,$j);
         }
 

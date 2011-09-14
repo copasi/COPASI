@@ -182,7 +182,7 @@ my @metabVector=();
 # the first variable in a time series is a always time, for the rest
 # of the variables, we use the SBML id in the header
 my $random=0.0;
-open(OS,">-fakedata_example6.txt");
+open(OS,">fakedata_example6.txt");
 print OS "# time ";
 my $keyFactory=COPASI::CCopasiRootContainer::getKeyFactory();
 unless(defined($keyFactory)){warn "Assertion failed";die;}
@@ -369,7 +369,7 @@ $optimizationItemGroup->addParameter($fitItem2);
 $result=1;
 eval {
   # running the task for this example will probably take some time
-  print "This can take some time...";
+  print "This can take some time...\n";
   $result=$fitTask->process(1);
 }
 or do {
@@ -377,23 +377,19 @@ or do {
   die;
 };
 
-
 unless($result == 1){warn "Assertion failed";die;}
 # unless(that there are two optimization items){warn "Assertion failed";die;}
-unless(length($fitProblem->getOptItemList()) == 2){warn "Assertion failed";die;}
-# the order should be the order in whih we added the items above
-#
-# the OptItemList seems to be handled as a reference in perl
+unless($fitProblem->getOptItemList()->size() == 2){warn "Assertion failed";die;}
+# the order should be the order in which we added the items above
 my $optItemList = $fitProblem->getOptItemList(); 
-my $optItem1 = @{$optItemList}[0];
-my $optItem2 = @{$optItemList}[1];
+my $optItem1 = $optItemList->get(0);
+my $optItem2 = $optItemList->get(1);
 # the actual results are stored in the fit problem
 unless($fitProblem->getSolutionVariables()->size() == 2){warn "Assertion failed";die;}
-print "value for " , $optItem1->getObject()->getCN()->getString() , ": " , $fitProblem->getSolutionVariables()->get(0);
-print "value for " , $optItem2->getObject()->getCN()->getString() , ": " , $fitProblem->getSolutionVariables()->get(1);
+print "value for " , $optItem1->getObject()->getCN()->getString() , ": " , $fitProblem->getSolutionVariables()->get(0), "\n";
+print "value for " , $optItem2->getObject()->getCN()->getString() , ": " , $fitProblem->getSolutionVariables()->get(1), "\n";
 # depending on the noise, the fit can be quite bad, so we are a litle
 # relaxed here (we should be within 3% of the original values)
 unless((abs($fitProblem->getSolutionVariables()->get(0) - 0.03) / 0.03) < 3e-2){warn "Assertion failed";die;}
-unless((abs($fitProblem->getSolutionVariables().get(1) - 0.004) / 0.004) < 3e-2){warn "Assertion failed";die;}
-###   
+unless((abs($fitProblem->getSolutionVariables()->get(1) - 0.004) / 0.004) < 3e-2){warn "Assertion failed";die;}
 

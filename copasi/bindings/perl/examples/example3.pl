@@ -133,7 +133,7 @@ if ($#ARGV + 1 == 1) {
         }
         die;
     };
-    if ($result == "") {
+    if (!$result) {
         warn "Error. Running the time course simulation failed.\n";
         # check if there are additional error messages
         if ( COPASI::CCopasiMessage::size() > 0 ) {
