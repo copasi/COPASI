@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameterGroup.i,v $ 
-//   $Revision: 1.8.2.2 $ 
+//   $Revision: 1.8.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/09 15:45:20 $ 
+//   $Date: 2011/09/15 20:43:21 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -45,13 +45,6 @@
 %ignore CCopasiParameterGroup::getGroup(const size_t&) const;
 %ignore CCopasiParameterGroup::getValue;
 
-#ifdef SWIGR
-// somehow the SWIG part that is responsible for creating the R code does not handle size_t arguments well.
-// using apply or typedef to map size_t to e.g. unsigned int did not work so far.
-// Here I am trying to remove the original getParameter method in order to add my own version.
-%ignore CCopasiParameterGroup::getParameter(const size_t&);
-//%rename (ignoredGetParameter) CCopasiParameterGroup::getParameter(const size_t&);
-#endif // SWIGR
 
 #ifdef SWIGJAVA
 // remove some const methods to get rid of warnings
@@ -88,14 +81,5 @@
         return $self->getIndexByName(name);
     }
 
-#ifdef SWIGR
-    // replaces the function that takes a const size_t reference
-    // with one that takes an unsigned int
-    CCopasiParameter* getParameter(unsigned C_INT32 index)
-    {
-        std::cout << "Calling new method." << std::endl;
-        return $self->getParameter(index);
-    }
-#endif // SWIGR
 }
 

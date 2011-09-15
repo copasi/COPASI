@@ -134,7 +134,6 @@ if (!is.null(fun)){
     stopifnot(length(CReaction_getParameterMappings(reaction)) == 1)
     parameterGroup <- CReaction_getParameters(reaction)
     stopifnot(CCopasiParameterGroup_size(parameterGroup) == 1)
-    write(apropos("size_t"),stdout())
     parameter <- CCopasiParameterGroup_getParameter(parameterGroup, 0)
     # make sure the parameter is a local parameter
     stopifnot(CReaction_isLocalParameter(reaction,CCopasiObject_getObjectName(parameter)))
@@ -179,7 +178,7 @@ stopifnot(massAction != NULL)
 # It seems as if the SWIG code generated for the R bindings
 # does not do the downcasting correctly, although the
 # code that works for perl and python is called.
-#print(class(massAction))
+print(class(massAction))
 CReaction_setFunction(reaction,massAction)
 stopifnot(CReaction_getFunction(reaction) != NULL)
 
@@ -232,7 +231,7 @@ CCopasiDataModel_saveModel(dataModel,"example1.cps", TRUE)
 # export the model to an SBML file
 # we save to a file named example1.xml, we want to overwrite any
 # existing file with the same name and we want SBML L2V3
-CCopasiDataModel_exportSBML(dataModel"example1.xml", TRUE, 2, 3)
+CCopasiDataModel_exportSBML(dataModel,"example1.xml", TRUE, 2, 3)
 
 
 

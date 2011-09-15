@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.17.2.2 $ 
+//   $Revision: 1.17.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/08 16:31:37 $ 
+//   $Date: 2011/09/15 20:43:21 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -72,6 +72,18 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 
 // suppress warnings on nested structures
 %warnfilter(325) CLinkMatrixView;
+
+#ifdef SWIGR
+// since enums in R are mapped to strings, it seems to confuse swig
+// if a string is passed to one of the setXXXUnit methods in CModel
+// because it doesn't know whether to pass it on as a string or to translate it
+// to the enum
+%rename (setTimeUnitFromString) CModel::setTimeUnit(const std::string & name);
+%rename (setVolumeUnitFromString) CModel::setVolumeUnit(const std::string & name);
+%rename (setAreaUnitFromString) CModel::setAreaUnit(const std::string & name);
+%rename (setLengthUnitFromString) CModel::setLengthUnit(const std::string & name);
+%rename (setQuantityUnitFromString) CModel::setQuantityUnit(const std::string & name);
+#endif // SWIGR
 
 %include "model/CModel.h"
 
