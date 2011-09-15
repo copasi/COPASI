@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiArray.i,v $ 
-//   $Revision: 1.3.2.1 $ 
+//   $Revision: 1.3.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/14 13:07:09 $ 
+//   $Date: 2011/09/15 11:11:30 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -58,12 +58,9 @@
   // av_len returns the index of the last element, not the length
   I32 len = av_len(tmpav);
 
-  // looking at the generated C++ code, I can see that this code is
-  // directly inserted before the call to CCopasiAbstractArray::get, so
-  // we create a local instance of the index type so that it will
-  // be automatically deleted after the call
-  //CCopasiAbstractArray::index_type pTmpIndex=new CCopasiAbstractArray::index_type;
-  //CCopasiAbstractArray::index_type& tmpRef=*pTmpIndex;
+  // the object that we dynamically allocate here
+  // has to be deleted by a separate freearg typemap
+  // (see below)
   $1 = new CCopasiAbstractArray::index_type;
   SV **tv;
   for(I32 i=0;i <= len;++i)
@@ -80,6 +77,7 @@
  delete $1;
 }
 #endif // SWIGPERL
+
 
 %include "report/CCopasiArray.h"
 
