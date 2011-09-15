@@ -97,23 +97,24 @@ if (swig_this(aj) != 0)
   % since the rows and columns have the same annotation for the jacobian, it doesn't matter
   % for which dimension we get the annotations
   annotations = aj.getAnnotationsString(1);
+  
   printf("Jacobian Matrix: \n");
   printf("\n");
   printf("%7s", " ");
 
   for i = 0:annotations.size()-1
-    printf("%7s", annotations{i});
+    printf("%7s", annotations(i));
   endfor
 
   printf("\n");
+  array=aj.array();
 
-  for i = 1:annotations.size()
-    printf("%7s", annotations{i});
-    index{0}=i
+  for i = 0:annotations.size()-1
+    printf("%7s", annotations(i));
+    index(0)=i;
 
     for j = 0:annotations.size()-1
-      index{1}=j
-      array=aj.array();
+      index(1)=j;
       printf("%7.3f", array.get(index));
     endfor
     printf("\n");
