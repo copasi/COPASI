@@ -145,7 +145,7 @@ if (!is.null(fun)){
     stopifnot(object != NULL)
     ObjectStdVector_push_back(changedObjects,object)
 } else{
-    write("Error. Could not find irreversible michaelis menten." , stderr())
+    write("Error. Could not find a kientic law that contains the term \"Constant\"." , stderr())
     return(1)
 }
 # now we also create a separate reaction for the backwards reaction and

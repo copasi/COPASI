@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example1.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.2.6.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/05 15:28:46 $ 
+//   $Date: 2011/09/15 14:19:53 $ 
 // End CVS Header 
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -147,7 +152,7 @@ public class example1
      }
      else
      {
-         System.err.println("Error. Could not find irreversible michaelis menten.");
+         System.err.println("Error. Could not find a kinetic law that conatins the term \"Constant\".");
          System.exit(1);
      }
      // now we also create a separate reaction for the backwards reaction and

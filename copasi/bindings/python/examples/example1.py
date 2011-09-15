@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example1.py,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.1.6.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/05 10:22:56 $ 
+#   $Date: 2011/09/15 14:19:54 $ 
 # End CVS Header 
+
+# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
@@ -137,7 +143,7 @@ def main():
       assert object != None
       changedObjects.push_back(object)
   else:
-      print >> sys.stderr, "Error. Could not find irreversible michaelis menten." 
+      print >> sys.stderr, "Error. Could not find a kinetic law that contains the term \"Constant\"." 
       return 1
   # now we also create a separate reaction for the backwards reaction and
   # set the kinetic law to irreversible mass action

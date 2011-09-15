@@ -135,7 +135,7 @@ if(defined($function)){
 }
 else
 {
-    warn "Error. Could not find irreversible michaelis menten.";
+    warn "Error. Could not find kinetic law that contains the term \"Constant\".";
     die;
 }
 

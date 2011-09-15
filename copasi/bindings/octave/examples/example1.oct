@@ -125,7 +125,7 @@ if (isstruct(func))
 %!assert(swig_this(object) != 0);
   changedObjects.push_back(object);
 else
-  error("Error. Could not find irreversible michaelis menten.");
+  error("Error. Could not find a kinetic law that contains the term \"Constant\".");
   quit(1);
 endif
 % now we also create a separate reaction for the backwards reaction and

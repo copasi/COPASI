@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example1/example1.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.6.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/04 08:16:14 $
+//   $Date: 2011/09/15 14:19:53 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -136,6 +141,7 @@ int main()
   std::vector<CFunction*> suitableFunctions = pFunDB->suitableFunctions(2, 2, TriFalse);
   assert(!suitableFunctions.empty());
   std::vector<CFunction*>::iterator it = suitableFunctions.begin(), endit = suitableFunctions.end();
+
   while (it != endit)
     {
       // we just assume that the only suitable function with Constant in
@@ -144,8 +150,10 @@ int main()
         {
           break;
         }
+
       ++it;
     }
+
   if (it != endit)
     {
       // we set the function
@@ -170,9 +178,10 @@ int main()
     }
   else
     {
-      std::cerr << "Error. Could not find irreversible michaelis menten." << std::endl;
+      std::cerr << "Error. Could not find a kinetic law that conatins the term \"Constant\"." << std::endl;
       return 1;
     }
+
   // now we also create a separate reaction for the backwards reaction and
   // set the kinetic law to irreversible mass action
   // now we create a reaction
@@ -241,6 +250,7 @@ int main()
   // initial values are updated according to their dependencies
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator it2 = refreshes.begin(), endit2 = refreshes.end();
+
   while (it2 != endit2)
     {
       // call each refresh
@@ -259,6 +269,7 @@ int main()
   // we save to a file named example1.xml, we want to overwrite any
   // existing file with the same name and we want SBML L2V3
   pDataModel->exportSBML("example1.xml", true, 2, 3);
+  pDataModel->exportSBML("example1.xml", true, 3, 1);
 
   // destroy the root container once we are done
   CCopasiRootContainer::destroy();
