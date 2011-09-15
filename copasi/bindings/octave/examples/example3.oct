@@ -61,7 +61,7 @@ if (length(argv()) == 1)
       % add the corresponding id to the header
       header.push_back(CRegisteredObjectName(CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
       % after each entry, we need a seperator
-      if(i != iMax-1)
+      if(i != iMax)
         body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
         header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
       endif

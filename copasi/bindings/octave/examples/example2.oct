@@ -46,7 +46,7 @@ if (length(argv) == 1)
   endfor
 
   % output number and names of all reactions
-  iMax = model.getReactions().size()
+  iMax = model.getReactions().size();
   printf("Number of Reactions: %d\n" , iMax);
   printf("Reactions: \n");
   for i = 0:iMax-1
