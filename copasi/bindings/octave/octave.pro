@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/octave/octave.pro,v $ 
-#   $Revision: 1.6.2.4 $ 
+#   $Revision: 1.6.2.5 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/07/28 08:44:50 $ 
+#   $Date: 2011/09/15 11:09:50 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -45,6 +45,8 @@ contains(BUILD_OS,Linux){
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
+  QMAKE_POST_LINK += $${QMAKE_MOVE} libCOPASI.so.1.0.0 COPASI.oct $$escape_expand(\n\t)
+  QMAKE_POST_LINK += -$${QMAKE_DEL_FILE} libCOPASI.so* $$escape_expand(\n\t)
 }
 
 contains(BUILD_OS, Darwin) {
