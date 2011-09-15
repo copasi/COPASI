@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/R/R.pro,v $ 
-#   $Revision: 1.3.2.4 $ 
+#   $Revision: 1.3.2.5 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/07/28 08:44:51 $ 
+#   $Date: 2011/09/15 14:30:59 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -13,6 +13,9 @@
 
 TEMPLATE = lib
 CONFIG -= qt
+# the plugin config option disables the 
+# creation of the versioning links for the library
+CONFIG += plugin
 
 include(../../common.pri)
 include(../../app.pri)
@@ -66,8 +69,6 @@ include(../common/swig_files.pri)
 
 
 
-
-
 #DISTFILE   = $$SWIG_INTERFACE_FILES
 #DISTFILES += local.cpp
 #DISTFILES += R.i
@@ -112,7 +113,8 @@ isEmpty(SWIG_PATH){
 }
 
 QMAKE_CLEAN += COPASI.cpp 
-QMAKE_CLEAN += COPASI.R 
+QMAKE_CLEAN += COPASI.R
+QMAKE_CLEAN += COPASI.so
 
 SOURCES += COPASI.cpp
 
