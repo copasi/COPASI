@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/14 19:19:37 $
+//   $Author: ssahle $
+//   $Date: 2011/09/16 13:56:03 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,8 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
+#include "utilities/CAnnotatedMatrix.h"
+
 
 //static
 const std::string CObjectLists::ListTypeName[] =
@@ -83,6 +85,9 @@ const std::string CObjectLists::ListTypeName[] =
 
   "All Variables of the model", // ALL_VARIABLES
   "All independent Variables of the model", //  ALL_ODE_VARIABLES
+
+  "Real part of eigenvalues of the reduced jacobian", //REDUCED_JACOBIAN_EV_RE
+  "Imaginary part of eigenvalues of the reduced jacobian", //REDUCED_JACOBIAN_EV_IM
 
   "" // End of the list do not remove!
 };
@@ -491,6 +496,53 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         tmp = getListOfConstObjects(NON_CONST_COMPARTMENT_VOLUMES, pModel);
         ret.insert(ret.end(), tmp.begin(), tmp.end());
+      }
+      break;
+
+      case REDUCED_JACOBIAN_EV_RE:
+      {
+        CCopasiContainer * pParent = dynamic_cast<CCopasiContainer*>(pModel->getObjectParent());
+
+        if (!pParent)
+          break;
+
+        const CArrayAnnotation * pEV = dynamic_cast<const CArrayAnnotation*>(pParent->getObject(CCopasiObjectName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
+
+        if (pEV->dimensionality() != 2) //2d matrix
+          break;
+
+        if (pEV->size()[1] != 2) //must be two columns for Re and Im part
+          break;
+
+        size_t imax = pEV->size()[0];
+        size_t i;
+
+        for (i = 0; i < imax; ++i)
+          ret.push_back(static_cast< const CCopasiObject * >(pEV->addElementReference(i, 0)));
+      }
+      break;
+
+      case REDUCED_JACOBIAN_EV_IM:
+      {
+        CCopasiContainer * pParent = dynamic_cast<CCopasiContainer*>(pModel->getObjectParent());
+
+        if (!pParent)
+          break;
+
+        const CArrayAnnotation * pEV = dynamic_cast<const CArrayAnnotation*>(pParent->getObject(CCopasiObjectName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
+
+        if (pEV->dimensionality() != 2) //2d matrix
+          break;
+
+        if (pEV->size()[1] != 2) //must be two columns for Re and Im part
+          break;
+
+        size_t imax = pEV->size()[0];
+        size_t i;
+
+        for (i = 0; i < imax; ++i)
+          ret.push_back(static_cast< const CCopasiObject * >(pEV->addElementReference(i, 1)));
+
       }
       break;
 

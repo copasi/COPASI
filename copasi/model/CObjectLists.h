@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/14 19:19:37 $
+//   $Author: ssahle $
+//   $Date: 2011/09/16 13:56:03 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,11 @@ public:
     ALL_PARAMETER_AND_INITIAL_VALUES,
 
     ALL_VARIABLES, //
-    ALL_ODE_VARIABLES
+    ALL_ODE_VARIABLES,
+
+    REDUCED_JACOBIAN_EV_RE,
+    REDUCED_JACOBIAN_EV_IM
+
   };
 
   static const std::string ListTypeName[];
