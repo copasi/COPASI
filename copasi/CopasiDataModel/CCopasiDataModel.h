@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:18 $
+//   $Date: 2011/09/16 12:13:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,10 +145,12 @@ public:
   bool appendDependentTasks(std::set< const CCopasiObject * > candidates,
                             std::set< const CCopasiObject * > & dependentTasks) const;
 
+  const CReportDefinitionVector * getReportDefinitionList() const;
   CReportDefinitionVector * getReportDefinitionList();
   CReportDefinition * addReport(const CCopasiTask::Type & taskType);
   bool addDefaultReports();
 
+  const COutputDefinitionVector * getPlotDefinitionList() const;
   COutputDefinitionVector * getPlotDefinitionList();
 
   CListOfLayouts * getListOfLayouts();

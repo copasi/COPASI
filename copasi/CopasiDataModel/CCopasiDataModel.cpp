@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.158 $
+//   $Revision: 1.159 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/02 20:42:26 $
+//   $Date: 2011/09/16 12:13:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1336,8 +1336,14 @@ bool CCopasiDataModel::addDefaultReports()
   return true;
 }
 
+const CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList() const
+{return mData.pReportDefinitionList;}
+
 CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
 {return mData.pReportDefinitionList;}
+
+const COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList() const
+{return mData.pPlotDefinitionList;}
 
 COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList()
 {return mData.pPlotDefinitionList;}
