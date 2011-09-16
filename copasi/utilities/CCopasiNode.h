@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/03/21 15:48:17 $
+   $Date: 2011/09/16 12:11:47 $
    End CVS Header */
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,6 +189,16 @@ public:
 
     pChild->setParent(NULL);
     pChild->setSibling(NULL);
+
+    return true;
+  }
+
+  /**
+   * Delete all children of the node
+   */
+  bool deleteChildren()
+  {
+    while (mpChild) delete mpChild;
 
     return true;
   }
@@ -382,12 +392,6 @@ protected:
     return true;
   }
 
-  bool deleteChildren()
-  {
-    while (mpChild) delete mpChild;
-
-    return true;
-  }
 };
 
 #endif // COPASI_CCopasiNode
