@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.404 $
+//   $Revision: 1.405 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:37 $
+//   $Date: 2011/09/16 12:16:18 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -295,7 +295,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                       CReadConfig::SEARCH);
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
         Notes = "";
@@ -310,7 +310,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       Fail = configBuffer.getVariable("TimeUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
         tmp = ""; //unknown?
@@ -325,7 +325,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       Fail = configBuffer.getVariable("ConcentrationUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
         tmp = "";  //unknown?
@@ -340,7 +340,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       Fail = configBuffer.getVariable("VolumeUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
         tmp = ""; //unknown?
