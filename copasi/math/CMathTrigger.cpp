@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathTrigger.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:34:31 $
+//   $Date: 2011/09/16 12:15:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,7 @@ bool CMathTrigger::compile(const CExpression * pTriggerExpression,
   if (!pRoot->isBoolean())
     return false;
 
-  mTrueExpression.setRoot(NULL);
+  mTrueExpression.setInfix("");
   mRootFinders.clear();
 
   CEvaluationNode * pTrueExpression = NULL;
