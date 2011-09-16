@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CTrajectoryTask.i,v $ 
-//   $Revision: 1.10 $ 
+//   $Revision: 1.10.2.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/09/16 16:13:16 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -32,6 +32,11 @@
 
 %ignore CTrajectoryTask::load;
 %ignore CTrajectoryTask::initialize;
+#ifdef SWIGR
+// we ignore the method that takes an int and create a new method that takes
+// the enum from CCopasiTask
+%ignore CTrajectoryTask::setMethodType(const int& type);
+#endif // SWIGR
 
 %include "trajectory/CTrajectoryTask.h"
 
@@ -47,6 +52,13 @@
       }
       return validMethods;
     } 
+
+#ifdef SWIGR
+   bool setMethodType(const CCopasiMethod::SubType& type)
+   {
+      return $self->setMethodType(type);
+   }
+#endif // SWIGR
 }
 
 

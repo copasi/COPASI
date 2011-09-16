@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CScanTask.i,v $ 
-//   $Revision: 1.4.2.1 $ 
+//   $Revision: 1.4.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/14 15:11:48 $ 
+//   $Date: 2011/09/16 16:13:16 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -37,8 +37,23 @@
 %ignore CScanTask::initialize;
 %ignore CScanTask::load;
 
+#ifdef SWIGR
+// we ignore the method that takes an int and create a new method that takes
+// the enum from CCopasiTask
+%ignore CScanTask::setMethodType(const int& type);
+#endif // SWIGR
+
 
 %include "scan/CScanTask.h"
 
+   
+#ifdef SWIGR
+%extend CScanTask{
+   bool setMethodType(const CCopasiMethod::SubType& type)
+   {
+      return $self->setMethodType(type);
+   }
+}
+#endif // SWIGR
 
 

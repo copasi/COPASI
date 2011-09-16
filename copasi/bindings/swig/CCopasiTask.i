@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.25.2.3 $ 
+//   $Revision: 1.25.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/08 16:31:35 $ 
+//   $Date: 2011/09/16 16:13:16 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -58,6 +58,13 @@
 
 #endif // SWIGJAVA
 
+#ifdef SWIGR
+// we ignore the method that takes an int and create a new method that takes
+// the enum from CCopasiTask
+%ignore CCopasiTask::setMethodType(const int& type);
+#endif // SWIGR
+
+
 // suppress warnings on nested structures
 %warnfilter(325) CDescription;
 %warnfilter(325) CResult;
@@ -73,7 +80,6 @@
 %rename (OUTPUT_UI) CCopasiTask::OUTPUT_UI;
 %rename (ONLY_TIME_SERIES) CCopasiTask::ONLY_TIME_SERIES;
 #endif //SWIGJAVA
-
 
 %extend CCopasiTask{
   #ifdef SWIGJAVA
@@ -118,6 +124,12 @@
         return result;
       }  
    
+#ifdef SWIGR
+   bool setMethodType(const CCopasiMethod::SubType& type)
+   {
+      return $self->setMethodType(type);
+   }
+#endif // SWIGR
 }  
 
 
