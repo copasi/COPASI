@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.ui,v $ </comment>
-<comment>   $Revision: 1.18 $ </comment>
+<comment>   $Revision: 1.19 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/04/26 16:10:41 $ </comment>
+<comment>   $Date: 2011/09/16 12:57:40 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -577,7 +577,6 @@ when editing or creating a slider.</string>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>mpObjectNameLineEdit</tabstop>
   <tabstop>mpObjectBrowseButton</tabstop>

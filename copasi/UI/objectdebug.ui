@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/objectdebug.ui,v $ </comment>
-<comment>   $Revision: 1.7.4.1 $ </comment>
-<comment>   $Name: Build-33 $ </comment>
-<comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2011/01/24 17:00:16 $ </comment>
+<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2011/03/07 19:37:49 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -88,7 +88,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>Q3Frame</class>
