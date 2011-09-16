@@ -159,19 +159,6 @@ if ($#ARGV + 1 == 1) {
         # the concentration data can be acquired with getConcentrationData
         print $timeSeries->getTitle($i) . ": " . $timeSeries->getData($lastIndex, $i) . "\n"  ;
     }
-    # the CTimeSeries class now has some new methods to get all variable titles
-    # as a python list (getTitles())
-    # and methods to get the complete time course data for a certain variable based on
-    # the variables index or the corresponding model object.
-    # E.g. to get the particle numbers of the second variable as a python list
-    # you can use getDataForIndex(1) and to get the concentration data you use
-    # getConcentrationDataForIndex(1)
-    # To get the complete particle number data for the second metabolite of the model
-    # you can use getDataForObject(model.getMetabolite(1)) and to get the concentration
-    # data you use getConcentrationDataForObject.
-    #print timeSeries.getTitles();
-    #print timeSeries.getDataForIndex(1);
-    #print timeSeries.getDataForObject(model);
 }
 else {
     warn "Usage: example3 SBMLFILE\n";

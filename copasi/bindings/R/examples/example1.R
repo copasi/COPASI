@@ -11,14 +11,14 @@ source("COPASI.R")
 cacheMetaData(1)
 
 
-stopifnot(CCopasiRootContainer_getRoot() != NULL)
+stopifnot(!is.null(CCopasiRootContainer_getRoot()))
 # create a new datamodel
 dataModel <- CCopasiRootContainer_addDatamodel()
 datamodel_list <- CCopasiRootContainer_getDatamodelList()
 stopifnot(DataModelVector_size(datamodel_list) == 1)
 # get the model from the datamodel
 model <- CCopasiDataModel_getModel(dataModel)
-stopifnot(model != NULL)
+stopifnot(!is.null(model))
 # set the units for the model
 # we want seconds as the time unit
 # microliter as the volume units
@@ -37,45 +37,45 @@ changedObjects <- ObjectStdVector()
 # microliter
 compartment <- CModel_createCompartment(model,"cell", 5.0)
 object <- CCopasiObject_getObject(compartment,CCopasiObjectName("Reference=InitialVolume"))
-stopifnot(object != NULL)
+stopifnot(!is.null(object))
 ObjectStdVector_push_back(changedObjects,object)
-stopifnot(compartment != NULL)
+stopifnot(!is.null(compartment))
 stopifnot(CompartmentVector_size(CModel_getCompartments(model)) == 1)
 # create a new metabolite with the name glucose and an inital
 # concentration of 10 nanomol
 # the metabolite belongs to the compartment we created and is is to be
 # fixed
 glucose <- CModel_createMetabolite(model,"glucose", CCopasiObject_getObjectName(compartment), 10.0, "FIXED")
-stopifnot(glucose != NULL)
+stopifnot(!is.null(glucose))
 object <- CCopasiObject_getObject(glucose,CCopasiObjectName("Reference=InitialConcentration"))
-stopifnot(object != NULL)
+stopifnot(!is.null(object))
 ObjectStdVector_push_back(changedObjects,object)
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 1)
 # create a second metabolite called glucose-6-phosphate with an initial
 # concentration of 0. This metabolite is to be changed by reactions
 g6p <- CModel_createMetabolite(model,"glucose-6-phosphate", CCopasiObject_getObjectName(compartment), 0.0, "REACTIONS")
-stopifnot(g6p != NULL)
+stopifnot(!is.null(g6p))
 object <- CCopasiObject_getObject(g6p,CCopasiObjectName("Reference=InitialConcentration"))
-stopifnot(object != NULL)
+stopifnot(!is.null(object))
 ObjectStdVector_push_back(changedObjects,object)
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 2)
 # another metabolite for ATP, also fixed
 atp <- CModel_createMetabolite(model,"ATP", CCopasiObject_getObjectName(compartment), 10.0, "FIXED")
-stopifnot(atp != NULL)
+stopifnot(!is.null(atp))
 object <- CCopasiObject_getObject(atp,CCopasiObjectName("Reference=InitialConcentration"))
-stopifnot(object != NULL)
+stopifnot(!is.null(object))
 ObjectStdVector_push_back(changedObjects,object)
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 3)
 # and one for ADP
 adp <- CModel_createMetabolite(model,"ADP", CCopasiObject_getObjectName(compartment), 0.0, "REACTIONS")
-stopifnot(adp != NULL)
+stopifnot(!is.null(adp))
 object <- CCopasiObject_getObject(adp,CCopasiObjectName("Reference=InitialConcentration"))
-stopifnot(object != NULL)
+stopifnot(!is.null(object))
 ObjectStdVector_push_back(changedObjects,object)
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 4)
 # now we create a reaction
 reaction <- CModel_createReaction(model,"hexokinase")
-stopifnot(reaction != NULL)
+stopifnot(!is.null(reaction))
 stopifnot(ReactionVector_size(CModel_getReactions(model)) == 1)
 # hexokinase converts glucose and ATP to glucose-6-phosphate and ADP
 # we can set these on the chemical equation of the reaction
@@ -97,7 +97,7 @@ stopifnot(CReaction_isReversible(reaction) == FALSE)
 # maybe constant flux would be OK
 # we need to get the function from the function database
 funDB <- CCopasiRootContainer_getFunctionList()
-stopifnot(funDB != NULL)
+stopifnot(!is.null(funDB))
 # it should be in the list of suitable functions
 # lets get all suitable functions for an irreversible reaction with  2 substrates
 # and 2 products
@@ -126,7 +126,7 @@ if (!is.null(fun)){
     # the method should be smart enough to associate the reaction entities
     # with the correct function parameters
     CReaction_setFunction(reaction,fun)
-    stopifnot(CReaction_getFunction(reaction) != NULL)
+    stopifnot(!is.null(CReaction_getFunction(reaction)))
     # constant flux has only one function parameter
     CReaction_getFunctionParameters(reaction)
     stopifnot(CFunctionParameters_size(CReaction_getFunctionParameters(reaction)) == 1)
@@ -141,7 +141,7 @@ if (!is.null(fun)){
     # now we set the value of the parameter to 0.5
     CCopasiParameter_setDblValue(parameter,0.5)
     object <- CCopasiObject_getObject(parameter,CCopasiObjectName("Reference=Value"))
-    stopifnot(object != NULL)
+    stopifnot(!is.null(object))
     ObjectStdVector_push_back(changedObjects,object)
 } else{
     write("Error. Could not find a kientic law that contains the term \"Constant\"." , stderr())
@@ -151,7 +151,7 @@ if (!is.null(fun)){
 # set the kinetic law to irreversible mass action
 # now we create a reaction
 reaction <- CModel_createReaction(model,"hexokinase-backwards")
-stopifnot(reaction != NULL)
+stopifnot(!is.null(reaction))
 stopifnot(ReactionVector_size(CModel_getReactions(model)) == 2)
 chemEq <- CReaction_getChemEq(reaction)
 # glucose is a product with stoichiometry 1
@@ -169,7 +169,7 @@ CReaction_setReversible(reaction,FALSE)
 stopifnot(CReaction_isReversible(reaction) == FALSE)
 # now we ned to set a kinetic law on the reaction
 massAction <- CFunctionDB_findFunction(funDB,"Mass action (irreversible)")
-stopifnot(massAction != NULL)
+stopifnot(!is.null(massAction))
 # we set the function
 # the method should be smart enough to associate the reaction entities
 # with the correct function parameters
@@ -179,7 +179,7 @@ stopifnot(massAction != NULL)
 # does not do the downcasting correctly, although the
 # code that works for perl and python is called.
 CReaction_setFunction(reaction,massAction)
-stopifnot(CReaction_getFunction(reaction) != NULL)
+stopifnot(!is.null(CReaction_getFunction(reaction)))
 print(CCopasiObject_getObjectName(CReaction_getFunction(reaction)))
 stopifnot(CFunctionParameters_size(CReaction_getFunctionParameters(reaction)) == 2)
 # so there should be two entries in the parameter mapping as well
@@ -194,9 +194,9 @@ stopifnot(CFunctionParameters_size(CReaction_getFunctionParameters(reaction)) ==
 # and that is used as the rate constant of the mass action kinetics
 # it gets the name rateConstant and an initial value of 1.56
 modelValue <- CModel_createModelValue(model,"rateConstant", 1.56)
-stopifnot(modelValue != NULL)
+stopifnot(!is.null(modelValue))
 object <- CCopasiObject_getObject(modelValue,CCopasiObjectName("Reference=InitialValue"))
-stopifnot(object != NULL)
+stopifnot(!is.null(object))
 ObjectStdVector_push_back(changedObjects,object)
 stopifnot(ModelValueVector_size(CModel_getModelValues(model)) == 1)
 # set the status to assignment
