@@ -1,10 +1,15 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.h,v $
-  $Revision: 1.15 $
+  $Revision: 1.16 $
   $Name:  $
-  $Author: gauges $
-  $Date: 2009/02/18 20:55:33 $
+  $Author: shoops $
+  $Date: 2011/09/16 12:12:08 $
   End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,24 +34,24 @@
 #include "report/CReportDefinition.h"
 
 class CReportDefinitionVector: public CCopasiVectorN< CReportDefinition >
-  {
-  private:
-    std::string mKey;
+{
+private:
+  std::string mKey;
 
-  public:
-    CReportDefinitionVector(const std::string & name = "ReportDefinitions",
-                            const CCopasiContainer* pParent = NULL);
+public:
+  CReportDefinitionVector(const std::string & name = "ReportDefinitions",
+                          const CCopasiContainer* pParent = NULL);
 
-    ~CReportDefinitionVector();
+  ~CReportDefinitionVector();
 
-    //    const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
+  //    const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
 
-    CReportDefinition* createReportDefinition(const std::string & name, const std::string & comment);
-    bool removeReportDefinition(const std::string & key);
+  CReportDefinition* createReportDefinition(const std::string & name, const std::string & comment);
+  bool removeReportDefinition(const std::string & key);
 
-    void cleanup();
+  void cleanup();
 
-    const std::string& getKey();
-  };
+  virtual const std::string & getKey() const;
+};
 
 #endif // !defined(AFX_REPORTDEFINITIONVECTOR_H__172081F2_7BF6_49FA_8FC7_C890F2CB1974__INCLUDED_)

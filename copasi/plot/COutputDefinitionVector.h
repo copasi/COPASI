@@ -1,10 +1,15 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/COutputDefinitionVector.h,v $
-  $Revision: 1.4 $
+  $Revision: 1.5 $
   $Name:  $
-  $Author: gauges $
-  $Date: 2009/02/18 20:54:46 $
+  $Author: shoops $
+  $Date: 2011/09/16 12:10:08 $
   End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,23 +27,23 @@
 #include "utilities/CCopasiVector.h"
 
 class COutputDefinitionVector : public CCopasiVectorN<CPlotSpecification>
-  {
-  private:
-    std::string mKey;
+{
+private:
+  std::string mKey;
 
-  public:
-    COutputDefinitionVector(const std::string & name = "OutputDefinitions",
-                            const CCopasiContainer* pParent = NULL);
+public:
+  COutputDefinitionVector(const std::string & name = "OutputDefinitions",
+                          const CCopasiContainer* pParent = NULL);
 
-    ~COutputDefinitionVector();
+  ~COutputDefinitionVector();
 
-    CPlotSpecification* createPlotSpec(const std::string & name,
-                                       CPlotItem::Type type = CPlotItem::plot2d);
-    bool removePlotSpec(const std::string & key);
+  CPlotSpecification* createPlotSpec(const std::string & name,
+                                     CPlotItem::Type type = CPlotItem::plot2d);
+  bool removePlotSpec(const std::string & key);
 
-    void cleanup();
+  void cleanup();
 
-    const std::string& getKey();
-  };
+  const std::string& getKey() const;
+};
 
 #endif

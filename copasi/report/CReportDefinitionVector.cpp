@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
- $Revision: 1.22 $
+ $Revision: 1.23 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:32:38 $
+ $Date: 2011/09/16 12:12:08 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@ void CReportDefinitionVector::cleanup()
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
-const std::string& CReportDefinitionVector::getKey()
+const std::string & CReportDefinitionVector::getKey() const
 {
   return mKey;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/COutputDefinitionVector.cpp,v $
- $Revision: 1.5 $
+ $Revision: 1.6 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:32:04 $
+ $Date: 2011/09/16 12:10:08 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ void COutputDefinitionVector::cleanup()
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
-const std::string& COutputDefinitionVector::getKey()
+const std::string& COutputDefinitionVector::getKey() const
 {
   return mKey;
 }
