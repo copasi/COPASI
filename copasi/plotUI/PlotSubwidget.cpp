@@ -537,7 +537,7 @@ void PlotSubwidget::addPlot()
   std::string key = pPl->CCopasiParameter::getKey();
   protectedNotify(ListViews::PLOT, ListViews::ADD, key);
   enter(key);
-  mpListView->switchToOtherWidget(-1, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 //-----------------------------------------------------------------------------
