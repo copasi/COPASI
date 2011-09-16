@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/COutputDefinitionVector.h,v $
-  $Revision: 1.5 $
+  $Revision: 1.6 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/09/16 12:10:08 $
+  $Date: 2011/09/16 18:08:17 $
   End CVS Header */
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ public:
   COutputDefinitionVector(const std::string & name = "OutputDefinitions",
                           const CCopasiContainer* pParent = NULL);
 
-  ~COutputDefinitionVector();
+  virtual ~COutputDefinitionVector();
 
   CPlotSpecification* createPlotSpec(const std::string & name,
                                      CPlotItem::Type type = CPlotItem::plot2d);

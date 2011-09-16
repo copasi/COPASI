@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.110 $
+//   $Revision: 1.111 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/05 16:17:11 $
+//   $Date: 2011/09/16 18:07:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ public:
   /**
    *  Destructor
    */
-  ~CReaction();
+  virtual ~CReaction();
 
   /**
    * Retrieve the units of the child object.

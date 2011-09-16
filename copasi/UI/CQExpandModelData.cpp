@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:05 $
+//   $Author: shoops $
+//   $Date: 2011/09/16 18:13:47 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,7 +134,11 @@ void CQExpandModelData::slotOK()
       {
         pCheckBox = dynamic_cast< QCheckBox* >(mpSpeciesTable->cellWidget((int) i, 1));
 
-        if (pCheckBox == NULL); //TODO
+        if (pCheckBox == NULL)
+          {
+            // TODO
+            ;
+          }
 
         if (pCheckBox->isChecked())
           {

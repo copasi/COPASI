@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dBars.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/12/03 12:48:00 $
+//   $Author: shoops $
+//   $Date: 2011/09/16 18:04:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,6 +31,10 @@ Bar::Bar(double rad, double showColumn, double showRow)
 {
   configure(rad, showColumn, showRow);
 }
+
+// virtual
+Bar::~Bar()
+{}
 
 void Bar::configure(double rad, double showColumn, double showRow)
 {
@@ -71,6 +80,7 @@ void Bar::draw(Qwt3D::Triple const& pos)
     glColor3d(0.71, 0.835, 1); //(1, 0, 0);
   else
     glColor4d(mTo.r, mTo.g, mTo.b, mTo.a);
+
   //glColor4d(mFrom.r, mFrom.g, mFrom.b, mFrom.a);
   glVertex3d(pos.x - diag_, pos.y - diag_, minz);
   glVertex3d(pos.x + diag_, pos.y - diag_, minz);
@@ -81,6 +91,7 @@ void Bar::draw(Qwt3D::Triple const& pos)
     glColor3d(0.71, 0.835, 1); //(1, 0, 0);
   else
     glColor4d(mTo.r, mTo.g, mTo.b, mTo.a);
+
   glVertex3d(pos.x - diag_, pos.y - diag_, pos.z);
   glVertex3d(pos.x + diag_, pos.y - diag_, pos.z);
   glVertex3d(pos.x + diag_, pos.y + diag_, pos.z);
@@ -149,6 +160,7 @@ void Label3D::draw(Qwt3D::Triple const& pos, double w, double h)
 {
   double gap = 0.3;
   double posZ;
+
   if (pos.z < 0)
     posZ = 0;
   else

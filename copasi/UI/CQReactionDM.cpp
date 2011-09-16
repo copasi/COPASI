@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/27 17:05:34 $
+//   $Date: 2011/09/16 18:13:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,6 +106,8 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
 
                 if (pRea->getFunction())
                   return QVariant(QString(FROM_UTF8(pRea->getFunction()->getObjectName())));
+                else
+                  return QVariant();
 
               case COL_FLUX:
                 return QVariant(pRea->getFlux());

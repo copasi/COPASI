@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/10 20:23:13 $
+//   $Date: 2011/09/16 18:06:53 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,6 +94,7 @@ CEvaluationTree::create(CEvaluationTree::Type type)
 
       default:
         fatalError();
+        break;
     }
 
   return pNew;
@@ -125,6 +126,7 @@ CEvaluationTree::copy(const CEvaluationTree & src)
 
       default:
         fatalError();
+        break;
     }
 
   return pNew;

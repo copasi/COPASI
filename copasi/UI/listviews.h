@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.172 $
+//   $Revision: 1.173 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:57 $
+//   $Date: 2011/09/16 18:13:47 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,7 +115,7 @@ class ListViews : public QSplitter
 
 public:
   ListViews(QWidget *parent = 0, const char *name = 0);
-  ~ListViews();
+  virtual ~ListViews();
 
 #ifdef DELETE
 #undef DELETE

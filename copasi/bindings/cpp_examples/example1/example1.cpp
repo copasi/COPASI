@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example1/example1.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:21:27 $
+//   $Date: 2011/09/16 18:04:56 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -272,4 +272,6 @@ int main()
 
   // destroy the root container once we are done
   CCopasiRootContainer::destroy();
+
+  return 0;
 }

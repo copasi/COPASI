@@ -573,6 +573,7 @@ bool PlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
         break;
       default:
         fatalError();
+        break;
     }
 
   C_INT32 oldIndex = tabs->currentIndex();
@@ -757,6 +758,8 @@ bool PlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action a
                   break;
               }
           }
+
+        break;
 
       default:
         break;

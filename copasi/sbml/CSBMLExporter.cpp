@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/09/08 11:26:17 $
+//   $Author: shoops $
+//   $Date: 2011/09/16 18:09:49 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -4754,6 +4754,8 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
                 pResult = NULL;
               }
           }
+
+        break;
     }
 
   return pResult;

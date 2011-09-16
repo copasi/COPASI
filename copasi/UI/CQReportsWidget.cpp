@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportsWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:58 $
+//   $Date: 2011/09/16 18:13:47 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,7 +225,7 @@ void CQReportsWidget::keyPressEvent(QKeyEvent* ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
-  else if (ev->key() == Qt::Key_C && ev->modifiers() & Qt::ControlModifier)
+  else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblReports->selectionModel()->selectedRows(0);
 

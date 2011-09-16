@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelExpansion.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:37 $
+//   $Date: 2011/09/16 18:07:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
 
   for (i = 0; i < imax; ++i)
     {
-      CReaction * sourceReac = mpModel->getReactions()[i];
+      // CReaction * sourceReac = mpModel->getReactions()[i];
 
       //nameInSet(sourceReac->getObjectName());
     }
@@ -92,7 +92,7 @@ void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::
 
   for (i = 0; i < imax; ++i)
     {
-      const CEvent* sourceEvent = mpModel->getEvents()[i];
+      // const CEvent* sourceEvent = mpModel->getEvents()[i];
 
       //nameInSet(sourceEvent->getObjectName());
     }

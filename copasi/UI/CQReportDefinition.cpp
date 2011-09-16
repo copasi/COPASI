@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:58 $
+//   $Date: 2011/09/16 18:13:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -369,7 +369,9 @@ void CQReportDefinition::btnDeleteReportClicked()
           enter("");
 
         protectedNotify(ListViews::REPORT, ListViews::DELETE, DeletedKey);
+        break;
       }
+
 
       default:
         break;

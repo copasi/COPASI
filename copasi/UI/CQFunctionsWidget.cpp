@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:59 $
+//   $Date: 2011/09/16 18:13:47 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,7 +215,7 @@ void CQFunctionsWidget::keyPressEvent(QKeyEvent* ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
-  else if (ev->key() == Qt::Key_C && ev->modifiers() & Qt::ControlModifier)
+  else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblFunctions->selectionModel()->selectedRows(0);
 

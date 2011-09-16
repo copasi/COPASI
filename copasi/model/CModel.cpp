@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.405 $
+//   $Revision: 1.406 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 12:16:18 $
+//   $Date: 2011/09/16 18:07:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -957,6 +957,7 @@ void CModel::initializeMetabolites()
 
         default:
           fatalError();
+          break;
       }
 
   // Update mMetabolitesX to reflect the reordering.
@@ -2176,6 +2177,7 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
         mQuantityUnit = number;
         mQuantity2NumberFactor = 1.0;
         success = false;
+        break;
     }
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;

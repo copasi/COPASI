@@ -34,7 +34,7 @@ class CQCrossSectionTaskWidget : public TaskWidget, public Ui::CQCrossSectionTas
 
 public:
   CQCrossSectionTaskWidget(QWidget* parent = 0, const char* name = 0);
-  ~CQCrossSectionTaskWidget();
+  virtual ~CQCrossSectionTaskWidget();
 
   virtual bool runTask();
   //virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);

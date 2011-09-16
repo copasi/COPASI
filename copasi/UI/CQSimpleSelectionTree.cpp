@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:09 $
+//   $Author: shoops $
+//   $Date: 2011/09/16 18:13:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -641,7 +641,7 @@ std::vector<const CCopasiObject * > * CQSimpleSelectionTree::getTreeSelection()
                       // originating from current item.
                       for (Ancestor = tmpItem->parent();
                            Ancestor != currentItem && Ancestor;
-                           Ancestor = Ancestor->parent());
+                           Ancestor = Ancestor->parent()) ;
 
                       if (!Ancestor) break;
                     }

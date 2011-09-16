@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOscillationTaskWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2011/08/05 14:34:06 $
+//   $Author: shoops $
+//   $Date: 2011/09/16 18:13:46 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ bool CQOscillationTaskWidget::runTask()
   return true;
 }
 
-bool CQOscillationTaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQOscillationTaskWidget::update(ListViews::ObjectType /* objectType */, ListViews::Action /* action */, const std::string & /* key */)
 {
   return true;
 }
@@ -162,7 +162,7 @@ bool CQOscillationTaskWidget::loadTask()
   return true;
 }
 
-CCopasiMethod * CQOscillationTaskWidget::createMethod(const CCopasiMethod::SubType & type)
+CCopasiMethod * CQOscillationTaskWidget::createMethod(const CCopasiMethod::SubType & /* type */)
 {
   return NULL;
 }

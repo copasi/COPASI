@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiArray.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:38 $
+//   $Date: 2011/09/16 18:09:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ public:
 
   CCopasiArray();
   CCopasiArray(const index_type & sizes);
-  ~CCopasiArray() {};
+  virtual ~CCopasiArray() {};
 
   void resize(const index_type & sizes);
 
@@ -96,7 +96,7 @@ public:
     mSizes[0] = mMatrix->numRows();
     mSizes[1] = mMatrix->numCols();
   }
-  ~CCopasiMatrixInterface() {};
+  virtual ~CCopasiMatrixInterface() {};
 
   //void resize(const index_type & sizes);
 
@@ -154,7 +154,7 @@ public:
     mSizes.resize(1);
     mSizes[0] = mVector->size();
   }
-  ~CCopasiVectorInterface() {};
+  virtual ~CCopasiVectorInterface() {};
 
   data_type & operator[](const index_type & index)
   {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.297 $
+//   $Revision: 1.298 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/23 18:07:56 $
+//   $Date: 2011/09/16 18:13:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2486,16 +2486,15 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwAnalysis(SystemsBio
 
       QSBWSBMLEvent *event = new QSBWSBMLEvent(sSBMLModel);
       QApplication::postEvent(this, event);
-
-      // and yes ... every SBW method has to return something
-      SystemsBiologyWorkbench::DataBlockWriter result;
-      return result;
     }
 
   catch (...)
     {
       throw new SystemsBiologyWorkbench::SBWApplicationException("Error in doAnalysis");
     }
+
+  // and yes ... every SBW method has to return something
+  return SystemsBiologyWorkbench::DataBlockWriter();
 }
 
 SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwGetSBML(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader /*reader*/)

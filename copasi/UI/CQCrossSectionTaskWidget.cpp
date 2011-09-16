@@ -208,7 +208,7 @@ bool CQCrossSectionTaskWidget::loadTask()
   return true;
 }
 
-CCopasiMethod * CQCrossSectionTaskWidget::createMethod(const CCopasiMethod::SubType & type)
+CCopasiMethod * CQCrossSectionTaskWidget::createMethod(const CCopasiMethod::SubType & /* type */)
 {
   return NULL;
 }

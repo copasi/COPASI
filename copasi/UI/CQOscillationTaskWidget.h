@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOscillationTaskWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2011/08/05 14:31:23 $
+//   $Author: shoops $
+//   $Date: 2011/09/16 18:13:45 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@ class CQOscillationTaskWidget : public TaskWidget, public Ui::CQOscillationTaskW
 
 public:
   CQOscillationTaskWidget(QWidget* parent = 0, const char* name = 0);
-  ~CQOscillationTaskWidget();
+  virtual ~CQOscillationTaskWidget();
 
   virtual bool runTask();
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);

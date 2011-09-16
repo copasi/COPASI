@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.177 $
+//   $Revision: 1.178 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:58 $
+//   $Date: 2011/09/16 18:13:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,6 +188,7 @@ bool FunctionWidget1::loadParameterTable()
           default :
             qUsage = "unknown";
             color = QColor(255, 20, 20);
+            break;
         }
 
       // col. 0 (name)

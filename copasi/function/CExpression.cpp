@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:19 $
+//   $Date: 2011/09/16 18:06:53 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,13 +111,15 @@ const C_FLOAT64 & CExpression::calcValue()
 
   try
     {
-      return mValue = mpRoot->value();
+      mValue = mpRoot->value();
     }
 
   catch (...)
     {
-      return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
+
+  return mValue;
 }
 
 void CExpression::refresh()

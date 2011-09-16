@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:24 $
+//   $Date: 2011/09/16 18:06:53 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,6 +114,7 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 
           default:
             fatalError();
+            break;
         }
 
       pFunction->compile();

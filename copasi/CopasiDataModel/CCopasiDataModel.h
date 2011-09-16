@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 12:13:17 $
+//   $Date: 2011/09/16 18:05:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,7 +100,7 @@ public:
                    const std::string & type = "CN",
                    bool withGUI = false);
 
-  ~CCopasiDataModel();
+  virtual ~CCopasiDataModel();
 
   bool loadModel(const std::string & fileName, CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);

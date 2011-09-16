@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/27 17:05:31 $
+//   $Date: 2011/09/16 18:13:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,12 +123,12 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pComp->getStatus()])));
 
               case COL_IVOLUME:
-              {
+
                 if (role == Qt::EditRole)
                   return QVariant(QString::number(pComp->getInitialValue(), 'g', 10));
                 else
                   return QVariant(pComp->getInitialValue());
-              }
+
               case COL_VOLUME:
                 return QVariant(pComp->getValue());
 
@@ -137,15 +137,12 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
 
               case COL_IEXPRESSION_COMPARTMENTS:
               {
-                if (pComp->getInitialExpression() != "")
-                  {
-                    pExpression = pComp->getInitialExpressionPtr();
+                pExpression = pComp->getInitialExpressionPtr();
 
-                    if (pExpression != NULL)
-                      return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
-                    else
-                      return QVariant();
-                  }
+                if (pExpression != NULL)
+                  return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
+                else
+                  return QVariant();
               }
 
               case COL_EXPRESSION_COMPARTMENTS:

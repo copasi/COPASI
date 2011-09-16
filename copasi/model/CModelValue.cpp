@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:36 $
+//   $Date: 2011/09/16 18:07:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,6 +170,7 @@ bool CModelEntity::compile()
 
         success &= mpExpression->compile(listOfContainer);
         mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+        break;
 
       default:
         break;

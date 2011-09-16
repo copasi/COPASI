@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:58 $
+//   $Date: 2011/09/16 18:13:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,7 +226,7 @@ void CQCompartmentsWidget::keyPressEvent(QKeyEvent* ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
-  else if (ev->key() == Qt::Key_C && ev->modifiers() & Qt::ControlModifier)
+  else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblCompartments->selectionModel()->selectedRows(0);
 

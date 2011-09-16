@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
-$Revision: 1.52 $
+$Revision: 1.53 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:37:52 $
+$Date: 2011/09/16 18:13:46 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -422,7 +422,7 @@ void ObjectList::destroyBucket()
   delete[] quickIndex;
   delete[] pointerList;
 
-  for (ObjectBrowserItem* pHead = pop(); pHead != NULL; pHead = pop());
+  for (ObjectBrowserItem* pHead = pop(); pHead != NULL; pHead = pop()) ;
 
   index_length = 0;
 }

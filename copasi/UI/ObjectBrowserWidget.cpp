@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:11 $
+//   $Author: shoops $
+//   $Date: 2011/09/16 18:13:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -402,9 +402,9 @@ int ObjectBrowserWidget::partition(int split_pos, int start_pos, int end_pos, Ob
 
   while (start_pos < end_pos)
     {
-      while ((++start_pos < end_pos) && (quick_sort_array[start_pos]->getObject()->pCopasiObject <= tmp));
+      while ((++start_pos < end_pos) && (quick_sort_array[start_pos]->getObject()->pCopasiObject <= tmp)) ;
 
-      while ((--end_pos > start_pos) && (quick_sort_array[end_pos]->getObject()->pCopasiObject > tmp));
+      while ((--end_pos > start_pos) && (quick_sort_array[end_pos]->getObject()->pCopasiObject > tmp)) ;
 
       if (start_pos < end_pos)
         swap(start_pos, end_pos, quick_sort_array);
@@ -470,7 +470,7 @@ void ObjectBrowserWidget::removeDuplicate(ObjectList* objectItemList)
   CBrowserObject* pBrowserObject = NULL;
   ObjectBrowserItem* pBrowserItem = NULL;
 
-  for (index = 0; (index < length) && (!bufferVector[index]->getObject()->pCopasiObject); index++);
+  for (index = 0; (index < length) && (!bufferVector[index]->getObject()->pCopasiObject); index++) ;
 
   pBrowserObject = bufferVector[index++]->getObject();
 

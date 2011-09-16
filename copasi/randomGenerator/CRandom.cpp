@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 21:15:17 $
+//   $Date: 2011/09/16 18:09:13 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -320,7 +320,7 @@ C_FLOAT64 CRandom::getRandomNormalPositive(const C_FLOAT64 & mean,
 {
   C_FLOAT64 x;
 
-  while ((x = getRandomNormal(mean, sd)) < 0);
+  while ((x = getRandomNormal(mean, sd)) < 0) ;
 
   return x;
 }
