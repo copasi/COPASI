@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:19 $
+//   $Date: 2011/09/19 14:03:08 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 
 #include <qvariant.h>
 
-#include "ui_CQCompartment.h"
+#include "copasi/UI/ui_CQCompartment.h"
 
 class CQExpressionWidget;
 class CCompartment;
@@ -66,7 +66,7 @@ private slots:
   void slotNameLostFocus();
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
-  void slotMetaboliteTableCurrentChanged(Q3ListViewItem * pItem);
+  void slotMetaboliteTableCurrentChanged(int row, int col);
 };
 
 #endif // CQCOMPARTMENT_H

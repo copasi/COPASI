@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:58 $
+//   $Date: 2011/09/19 14:03:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
 
-  mpMetaboliteTable->header()->hide();
+  mpMetaboliteTable->horizontalHeader()->hide();
 
   mExpressionValid = false;
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
@@ -506,12 +506,14 @@ void CQCompartment::save()
 void CQCompartment::destroy()
 {}
 
-void CQCompartment::slotMetaboliteTableCurrentChanged(Q3ListViewItem * pItem)
+void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
 {
   if (mpCompartment == NULL) return;
 
+  QTableWidgetItem * pItem = mpMetaboliteTable->item(row, col);
+
   std::string s1, s2;
-  s1 = TO_UTF8(pItem->text(0));
+  s1 = TO_UTF8(pItem->text());
 
   std::multimap< const std::string, CCopasiObject * >::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
@@ -540,9 +542,13 @@ void CQCompartment::loadMetaboliteTable()
   std::multimap< const std::string, CCopasiObject * >::const_iterator end =
     mpCompartment->getMetabolites().getObjects().end();
 
-  for (; it != end; ++it)
-    if (dynamic_cast< CMetab * >(it->second) != NULL)
-      new Q3ListViewItem(mpMetaboliteTable, FROM_UTF8(it->second->getObjectName()));
+  for (int i = 0; it != end; ++it, ++i)
+    {
+      if (dynamic_cast< CMetab * >(it->second) != NULL)
+        {
+          mpMetaboliteTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->second->getObjectName())));
+        }
+    }
 
   return;
 }
