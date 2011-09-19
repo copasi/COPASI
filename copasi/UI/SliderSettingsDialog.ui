@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.ui,v $ </comment>
-<comment>   $Revision: 1.19 $ </comment>
+<comment>   $Revision: 1.20 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/16 12:57:40 $ </comment>
+<comment>   $Date: 2011/09/19 13:54:23 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -628,7 +628,7 @@ when editing or creating a slider.</string>
   </connection>
   <connection>
    <sender>mpMinValueEdit</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>minValueChanged()</slot>
    <hints>
@@ -660,7 +660,7 @@ when editing or creating a slider.</string>
   </connection>
   <connection>
    <sender>mpMaxValueEdit</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>maxValueChanged()</slot>
    <hints>
@@ -772,7 +772,7 @@ when editing or creating a slider.</string>
   </connection>
   <connection>
    <sender>mpNumMinTicksEdit</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>numMinorTicksChanged()</slot>
    <hints>
@@ -804,7 +804,7 @@ when editing or creating a slider.</string>
   </connection>
   <connection>
    <sender>mpMinorTickSizeEdit</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>minorTickSizeChanged()</slot>
    <hints>
@@ -820,7 +820,7 @@ when editing or creating a slider.</string>
   </connection>
   <connection>
    <sender>mpMinorMajorFactorEdit</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>minorMajorFactorChanged()</slot>
    <hints>
@@ -852,7 +852,7 @@ when editing or creating a slider.</string>
   </connection>
   <connection>
    <sender>mpOriginalValueEdit</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>originalValueChanged()</slot>
    <hints>
@@ -884,7 +884,7 @@ when editing or creating a slider.</string>
   </connection>
   <connection>
    <sender>mpObjectValueEdit</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>objectValueChanged()</slot>
    <hints>

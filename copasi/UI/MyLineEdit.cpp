@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:10 $
+//   $Author: shoops $
+//   $Date: 2011/09/19 13:56:14 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,7 @@ MyLineEdit::MyLineEdit(const QString & contents, QWidget * parent, const char * 
 
 void MyLineEdit::setupWidget()
 {
-  connect(this, SIGNAL(lostFocus()), this, SLOT(slotLostFocus()));
+  connect(this, SIGNAL(editingFinished()), this, SLOT(slotLostFocus()));
   connect(this, SIGNAL(returnPressed()), this, SLOT(slotReturnPressed()));
   connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(slotTextChanged(const QString &)));
 
