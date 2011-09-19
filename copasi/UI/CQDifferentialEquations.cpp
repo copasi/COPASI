@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:05 $
+//   $Author: shoops $
+//   $Date: 2011/09/19 15:46:13 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,10 +19,7 @@
 #include "CQDifferentialEquations.h"
 
 #include <qvariant.h>
-/*
-#include <q3scrollview.h>
-#include "CQDifferentialEquations.ui.h"
- */
+
 #include "CQDifferentialEquations.h"
 
 #include <sstream>
@@ -31,7 +28,6 @@
 
 #include <qmessagebox.h>
 #include <qregexp.h>
-//#include "Qt3Support/Q3ScrollView"
 
 #ifdef HAVE_MML
 # include "mml/qtmmlwidget.h"
@@ -73,15 +69,17 @@ CQDifferentialEquations::~CQDifferentialEquations()
 
 void CQDifferentialEquations::init()
 {
-  mpScrollView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  mpScrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
+  // mpScrollView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  // mpScrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
+  // mpScrollView->setWidgetResizable(true);
 
+  /*
   mpMMLWidget = new QtMmlWidget(mpScrollView->viewport());
   mpMMLWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   mpMMLWidget->show();
 
   mpScrollView->addChild(mpMMLWidget);
-
+  */
   comboBoxFunctions->setCurrentIndex(1);
 }
 
@@ -142,8 +140,7 @@ void CQDifferentialEquations::slotUpdateWidget()
   mpMMLWidget->setContent(FROM_UTF8(mml.str()));
   mpMMLWidget->setBaseFontPointSize(qApp->font().pointSize());
   mpMMLWidget->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
-
-  mpScrollView->resizeContents(mpMMLWidget->sizeHint().width(), mpMMLWidget->sizeHint().height());
+  mpMMLWidget->setFixedSize(mpMMLWidget->sizeHint().expandedTo(QSize(0, 0)));
 
   if (tmp) tmp->unsetCursor();
 

@@ -1,20 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.ui,v $ </comment>
-<comment>   $Revision: 1.7 $ </comment>
+<comment>   $Revision: 1.8 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/03/07 19:37:55 $ </comment>
+<comment>   $Date: 2011/09/19 15:46:13 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
  <comment> All rights reserved. </comment>
@@ -31,118 +27,117 @@
   <property name="caption" stdset="0">
    <string>Form1</string>
   </property>
-  <layout class="QVBoxLayout">
-   <item>
-    <widget class="Q3ScrollView" name="mpScrollView" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>194</verstretch>
-      </sizepolicy>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="4">
+    <widget class="QScrollArea" name="mpScrollView">
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>false</bool>
+     </property>
+     <widget class="QtMmlWidget" name="mpMMLWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>647</width>
+        <height>473</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="textLabelParameters">
+     <property name="text">
+      <string>local parameters</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item>
-    <layout class="QGridLayout">
-     <item row="0" column="4">
-      <widget class="QPushButton" name="mpSaveButton">
-       <property name="text">
-        <string>Save Formula to Disk</string>
-       </property>
-      </widget>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="comboBoxParameters">
+     <item>
+      <property name="text">
+       <string>display numerical value</string>
+      </property>
      </item>
-     <item row="0" column="2" colspan="2">
-      <spacer name="spacer1_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>242</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+     <item>
+      <property name="text">
+       <string>display name</string>
+      </property>
      </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="comboBoxFunctions">
-       <item>
-        <property name="text">
-         <string>display name</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>expand only kinetic functions</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>expand all functions</string>
-        </property>
-       </item>
-      </widget>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <spacer name="mpSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>215</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="mpSaveButton">
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="textLabelFunctions">
+     <property name="text">
+      <string>functions</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="comboBoxFunctions">
+     <item>
+      <property name="text">
+       <string>display name</string>
+      </property>
      </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="comboBoxParameters">
-       <item>
-        <property name="text">
-         <string>display numerical value</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>display name</string>
-        </property>
-       </item>
-      </widget>
+     <item>
+      <property name="text">
+       <string>expand only kinetic functions</string>
+      </property>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="textLabelParameters">
-       <property name="text">
-        <string>local parameters</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
-      </widget>
+     <item>
+      <property name="text">
+       <string>expand all functions</string>
+      </property>
      </item>
-     <item row="1" column="3">
-      <spacer name="spacer1">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>212</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="textLabelFunctions">
-       <property name="text">
-        <string>functions</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -155,9 +150,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Q3ScrollView</class>
+   <class>QtMmlWidget</class>
    <extends>QWidget</extends>
-   <header>q3scrollview.h</header>
+   <header>copasi/mml/qtmmlwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>

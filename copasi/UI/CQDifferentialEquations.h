@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:05 $
+//   $Author: shoops $
+//   $Date: 2011/09/19 15:46:13 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@ class QtMmlWidget;
 #include <sstream>
 #include "copasiWidget.h"
 
-#include "ui_CQDifferentialEquations.h"
+#include "copasi/UI/ui_CQDifferentialEquations.h"
 
 class CQDifferentialEquations : public CopasiWidget, public Ui::CQDifferentialEquations
 {
@@ -43,7 +43,6 @@ public slots:
   virtual void slotSave();
 
 protected:
-  QtMmlWidget * mpMMLWidget;
   std::ostringstream mml;
   virtual bool enterProtected();
 
