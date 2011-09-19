@@ -1,10 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $ 
-//   $Revision: 1.16 $ 
+//   $Revision: 1.16.4.1 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/04/21 15:45:05 $ 
+//   $Author: gauges $ 
+//   $Date: 2011/09/19 17:32:03 $ 
 // End CVS Header 
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -41,7 +46,7 @@ void initCopasi();
 %typemap(out) CCopasiAbstractArray* CArrayAnnotation::array
 {
     $result = DownCast_CCopasiAbstractArray(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -58,7 +63,7 @@ void initCopasi();
 %typemap(out) CCopasiTask* CCopasiDataModel::addTask
 {
     $result = DownCast_CCopasiTask(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -74,7 +79,7 @@ void initCopasi();
 %typemap(out) CCopasiTask* CCopasiDataModel::getTask
 {
     $result = DownCast_CCopasiTask(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -90,7 +95,7 @@ void initCopasi();
 %typemap(out) CCopasiObject* CKeyFactory::get
 {
     $result = DownCast_CCopasiObject(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -107,7 +112,7 @@ void initCopasi();
 %typemap(out) CCopasiContainer* CCopasiObject::getObjectParent
 {
     $result = DownCast_CCopasiContainer(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -124,7 +129,7 @@ void initCopasi();
 %typemap(out) CCopasiParameter* CCopasiParameterGroup::getParameter
 {
     $result = DownCast_CCopasiParameter(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -140,7 +145,7 @@ void initCopasi();
 %typemap(out) CCopasiParameterGroup* CCopasiParameterGroup::getGroup
 {
     $result = DownCast_CCopasiParameterGroup(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -157,7 +162,7 @@ void initCopasi();
 %typemap(out) CCopasiProblem* CCopasiTask::getProblem
 {
     $result = DownCast_CCopasiProblem(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -174,7 +179,7 @@ void initCopasi();
 %typemap(out) CCopasiMethod* CCopasiTask::getMethod
 {
     $result = DownCast_CCopasiMethod(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -191,7 +196,7 @@ void initCopasi();
 %typemap(out) CEvaluationTree* CFunctionDB::findFunction
 {
     $result = DownCast_CEvaluationTree(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -208,7 +213,7 @@ void initCopasi();
 %typemap(out) CEvaluationTree* CFunctionDB::findLoadFunction
 {
     $result = DownCast_CEvaluationTree(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -225,7 +230,7 @@ void initCopasi();
 %typemap(out) CEvaluationTree* CFunctionDB::createFunction
 {
     $result = DownCast_CEvaluationTree(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -260,7 +265,7 @@ void initCopasi();
 %typemap(out) CModelEntity* 
 {
     $result = DownCast_CModelEntity(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -278,7 +283,7 @@ void initCopasi();
 %typemap(out) CEvaluationTree* 
 {
     $result = DownCast_CEvaluationTree(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -295,7 +300,7 @@ void initCopasi();
 %typemap(out) CCopasiTask* 
 {
     $result=DownCast_CCopasiTask(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -312,7 +317,7 @@ void initCopasi();
 %typemap(out) CCopasiMethod* 
 {
     $result = DownCast_CCopasiMethod(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -329,7 +334,7 @@ void initCopasi();
 %typemap(out) CCopasiProblem* 
 {
     $result = DownCast_CCopasiProblem(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -348,7 +353,7 @@ void initCopasi();
 %typemap(out) CCopasiParameterGroup* 
 {
     $result = DownCast_CCopasiParameterGroup(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -366,7 +371,7 @@ void initCopasi();
 %typemap(out) CCopasiParameter* 
 {
     $result = DownCast_CCopasiParameter(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -384,7 +389,7 @@ void initCopasi();
 %typemap(out) CCopasiContainer* 
 {
     $result = DownCast_CCopasiContainer(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }
@@ -401,7 +406,7 @@ void initCopasi();
 %typemap(out) CCopasiObject* 
 {
     $result = DownCast_CCopasiObject(jenv,$1);
-    if(!$result)
+    if($1 != NULL && !$result)
     {
         std::cout << "Failed to create new java object" << std::endl;
     }

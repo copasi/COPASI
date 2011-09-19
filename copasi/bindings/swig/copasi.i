@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.32.2.4 $ 
+//   $Revision: 1.32.2.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/08/08 14:21:35 $ 
+//   $Date: 2011/09/19 17:32:04 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -34,11 +34,27 @@
 
 #include "local.cpp"
 
+/**
+ * This method is used to get the C_INVALID_INDEX
+ * value in an architecture independent way.
+ * Since size_t is defined differently depending on
+ * the platform, the conversion from size_t to long in
+ * java depends on the architecture and the result is different for
+ * 32 bit and 64 bit systems.
+ */
+size_t INVALID_INDEX() {
+    return C_INVALID_INDEX;
+}
+
+
 %}
 
 %ignore DebugFile;
 
 %include "copasi.h"
+
+// warp method to get C_INVALID_INDEX
+size_t INVALID_INDEX(); 
 
 %include std_string.i
 %include std_vector.i
