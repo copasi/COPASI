@@ -21,7 +21,7 @@
 
 #include <qvariant.h>
 
-#include "ui_CQExpressionMmlStackedWidget.h"
+#include "copasi/UI/ui_CQExpressionMmlStackedWidget.h"
 
 #include <QStackedWidget>
 
@@ -37,8 +37,8 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
-#include "CQExpressionWidget.h"
-#include "CQMmlScrollView.h"
+#include "copasi/UI/CQExpressionWidget.h"
+#include "copasi/UI/CQMmlScrollView.h"
 
 class CQExpressionMmlStackedWidget : public QStackedWidget, public Ui::CQExpressionMmlStackedWidget
 {

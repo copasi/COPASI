@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:49 $
+//   $Date: 2011/09/19 14:02:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,11 +31,11 @@
 
 #include <vector>
 
-#include "UI/CQValidator.h"
-#include "UI/CQSimpleSelectionTree.h"
+#include "copasi/UI//CQValidator.h"
+#include "copasi/UI/CQSimpleSelectionTree.h"
 
-#include "function/CExpression.h"
-#include "function/CFunction.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CFunction.h"
 
 class CQExpressionWidget;
 class CCopasiObject;
@@ -47,7 +47,7 @@ class CQExpressionHighlighter: public QSyntaxHighlighter
 {
 public:
   CQExpressionHighlighter(CQExpressionWidget* ew);
-  ~CQExpressionHighlighter();
+  virtual ~CQExpressionHighlighter();
 
 protected:
   void highlightBlock(const QString &text);
