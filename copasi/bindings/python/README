@@ -1,0 +1,8 @@
+
+---- 09/19/2011 ----
+Creating  the python bindings with SWIG 2.0.4 does not seem to work correctly.
+At least the unittests for CCopasiMessasge fail because one of the constructors is not wrapped correctly (at least
+not in the same way as with SWIG 1.3.40).
+As a workaround, the python bindings should be created with SWIG 1.3.40.
+Since I don't think this is a serious issue because one would normally not use the constructor of CCopasiMessage anyway,
+this is more or less just a note to explain the failed unit tests when creating the language bindings with SWIG 2.0.4.
