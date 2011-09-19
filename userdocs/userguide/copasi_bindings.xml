@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.9.2.3 $ -->
+<!--   $Revision: 1.9.2.4 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2011/09/08 13:04:37 $ -->
+<!--   $Date: 2011/09/19 17:49:44 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -2484,21 +2484,41 @@ if task==None:
 The classes <emphasis>CCopasiProblem</emphasis> and <emphasis>CCopasiMethod</emphasis> are both derived from <emphasis>CCopasiParameterGroup</emphasis>, they inherit all the methods from <emphasis>CCopasiParameterGroup</emphasis> to set their parameters.
 There are two ways to get a parameter, the first method retrieves a parameter by its index, the second method gets the parameter via its name.
 </para>
+<para condition="JAVA">
+Older versions of the COPASI language bindings contained a bug and the getParameter(String name) would return a java object of type CCopasiParameter even if no parameter with that name existed in the parameter group.
+In more recent versions, a null pointer is returned.
+</para>
+<para>The getIndex method can be used to find if a parameter with a certain name exists within the given parameter group. If the parameter does not exist in the parameter group the size_t value C_INVALID_INDEX is returned by the C++ API.
+</para>
+<para condition="Java">
+The size_t value is architecture dependent which leads to problems when it is converted to the representation on the target language. E.g. on 32 bit virtual machines C_INVALID_INDEX is converted to the value 2^32, while on 64 bit java virtual machines it seems to be converted to the value -1.
+To get around this problem, a static method called COPASI.INVALID_INDEX() has been created that returns the C++ value for C_INVALID_INDEX in an archiecture independent way.
+So in order to find out, if a parameter exists, the value returned by the getINdex method can be compared to the value returned by COPASI.INVALID_INDEX() and this will work indepedent of the architecture that is used.
+</para>
+<para condition="Python">
+The size_t value is architecture dependent which leads to problems when it is converted to the representation on the target language. E.g. on 32 bit virtual machines C_INVALID_INDEX is converted to the value 2^32, while on 64 bit java virtual machines it seems to be converted to the value -1. Although I haven'T tested this, I suspect that other target languages like python will have similar problems.
+To get around this problem, a static method called COPASI.INVALID_INDEX() has been created that returns the C++ value for C_INVALID_INDEX in an architecture independent way.
+So in order to find out, if a parameter exists, the value returned by the getINdex method can be compared to the value returned by COPASI.INVALID_INDEX() and this will work indepedent of the architecture that is used.
+</para>
+
 
 <para>
 <programlisting condition="JAVA">
 CCopasiParameter getParameter(long index);
 CCopasiParameter getParameter(String name);
+long getIndex(String name);
 </programlisting>
 <programlisting condition="CPP">
 CCopasiParameter* getParameter(const unsigned C_INT32&amp; index);
 const CCopasiParameter* getParameter(const unsigned C_INT32&amp; index) const;
 CCopasiParameter* getParameter(const std::string&amp; name);
 const CCopasiParameter* getParameter(const std::string&amp; name) const;
+size_t getIndex(const std::string&amp; name) const;
 </programlisting>
 <programlisting condition="PYTHON">
 PARAMETER=getParameter(INDEX)
 PARAMETER=getParameter(PARAMETER_NAME_STRING)
+INDEX=getIndex(PARAMETER_NAME_STRING)
 </programlisting>
 </para>
 
