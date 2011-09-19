@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.98 $
+//   $Revision: 1.99 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/26 12:23:07 $
+//   $Date: 2011/09/19 15:45:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,10 +43,9 @@ using namespace SystemsBiologyWorkbench;
 class SBWListener;
 #endif  // COPASI_SBW_INTEGRATION
 
-#include "../MIRIAM/CMIRIAMResource.h"
+#include "MIRIAM/CMIRIAMResource.h"
 
 //class QToolButton;
-class Q3ListViewItem;
 class ListViews;
 class DataModelGUI;
 class SliderDialog;

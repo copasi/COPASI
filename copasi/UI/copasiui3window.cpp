@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.298 $
+//   $Revision: 1.299 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:13:45 $
+//   $Date: 2011/09/19 15:45:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -463,8 +463,6 @@ void CopasiUI3Window::createToolBar()
   items << "Concentrations" << "Particle Numbers";
   mpBoxSelectFramework->addItems(items);
   tb->addWidget(mpBoxSelectFramework);
-
-  //tbMain->setCloseMode(Q3DockWindow::Never);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
 }
