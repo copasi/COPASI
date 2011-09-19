@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameterGroup.i,v $ 
-//   $Revision: 1.8.2.3 $ 
+//   $Revision: 1.8.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/15 20:43:21 $ 
+//   $Date: 2011/09/19 14:07:49 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -73,13 +73,4 @@
 %include "utilities/CCopasiParameterGroup.h"
 
 
-%extend CCopasiParameterGroup
-{
-    // for backward compatibility
-    unsigned C_INT32 getIndex(const std::string& name) const
-    {
-        return $self->getIndexByName(name);
-    }
-
-}
 
