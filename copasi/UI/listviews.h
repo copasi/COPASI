@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.173 $
+//   $Revision: 1.174 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 18:13:47 $
+//   $Author: gauges $
+//   $Date: 2011/09/21 19:03:12 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,7 +173,7 @@ public slots:
 
 private slots:
   bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
-  void slotSort(const QModelIndex & index, const QModelIndex & index);
+  void slotSort(const QModelIndex & index1, const QModelIndex & index2);
 
 private:
   bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");

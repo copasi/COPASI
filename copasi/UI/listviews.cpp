@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.294 $
+//   $Revision: 1.295 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/13 19:21:59 $
+//   $Author: gauges $
+//   $Date: 2011/09/21 19:03:12 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -805,7 +805,7 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, const std::stri
   return success;
 }
 
-void ListViews::slotSort(const QModelIndex & /* index */, const QModelIndex & /* index */)
+void ListViews::slotSort(const QModelIndex & /* index1 */, const QModelIndex & /* index2 */)
 {
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 }
