@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2011/09/05 12:06:51 $
+//   $Author: gauges $
+//   $Date: 2011/09/21 19:03:49 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2011/09/05 12:06:51 $
+//   $Author: gauges $
+//   $Date: 2011/09/21 19:03:49 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -441,7 +441,7 @@ CBandedGraphData & CBandedGraphData::operator = (const CBandedGraphData & rhs)
 
   return * this;
 }
-#endif COPASI_BANDED_GRAPH
+#endif // COPASI_BANDED_GRAPH
 
 //********************  data  *********************************************
 CHistoCurveData::CHistoCurveData():
