@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:13 $
+//   $Date: 2011/09/23 18:37:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -317,7 +317,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
       mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
