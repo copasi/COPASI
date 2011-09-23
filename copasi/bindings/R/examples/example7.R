@@ -147,11 +147,9 @@ CCopasiDataModel_saveModel(dataModel,"example7.cps", TRUE)
 # export the model to an SBML file
 # we save to a file named example1.xml, we want to overwrite any
 # existing file with the same name and we want SBML L2V3
-try {
-  CCopasiDataModel_exportSBML(dataModel,"example7.xml", TRUE, 2, 3)
-} except {
-   write("Error. Exporting the model to SBML failed.", stderr())
-   return(1)
-}
+tryCatch(CCopasiDataModel_exportSBML(dataModel,"example7.xml", TRUE, 2, 3), error = function(e) {
+  write("Error. Exporting the model to SBML failed.", stderr())
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
 
 

@@ -21,10 +21,11 @@ stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 1) {
     filename <- args
-    try(CCopasiDataModel_importSBML(dataModel,filename))
-    # I have to find out how R exception handling works
-    ###    print(>> sys_stderr,  "Error while importing the model from file named \"" + filename + "\"." )
-    ###    return 1
+    tryCatch(CCopasiDataModel_importSBML(dataModel,filename), error = function(e) {
+      write(paste("Error while importing the model from file named \"" , filename , "\"."), stderr())
+      quit(save = "default", status = 1, runLast = TRUE)
+    } )
+
     model <- CCopasiDataModel_getModel(dataModel)
     stopifnot(!is.null(model))
     # create a report with the correct filename and all the species against
@@ -163,14 +164,16 @@ if (length(args) == 1) {
 
     result <- TRUE
     # now we run the actual trajectory
-    try(result <- trajectoryTask_process(TRUE))
-    # TODO find out how R exception handling works
-    ###    print(>> sys_stderr,  "Error. Running the time course simulation failed." )
-    ###    # check if there are additional error messages
-    ###    if CCopasiMessage_size() > 0:
-    ###        # print(the messages in chronological order)
-    ###        print(>> sys_stderr, CCopasiMessage.getAllMessageText(TRUE))
-    ###    return 1
+    tryCatch(result <- trajectoryTask_process(TRUE), error = function(e) {
+      write("Error. Running the time course simulation failed.", stderr())
+      # check if there are additional error messages
+      if (CCopasiMessage_size() > 0) {
+          # print(the messages in chronological order)
+          write(CCopasiMessage.getAllMessageText(TRUE), stderr())
+      }
+      quit(save = "default", status = 1, runLast = TRUE)
+    } )
+
     if (result == FALSE) {
         write("Error. Running the time course simulation failed.", stderr())
         # check if there are additional error messages
@@ -178,7 +181,7 @@ if (length(args) == 1) {
             # print(the messages in chronological order)
             write(CCopasiMessage_getAllMessageText(TRUE), stderr())
         }
-        return(1)
+        quit(save = "default", status = 1, runLast = TRUE)
     }
 
     # look at the timeseries
@@ -203,6 +206,6 @@ if (length(args) == 1) {
     }
 } else{
     write("Usage: example3 SBMLFILE", stderr())
-    return(1);
+    quit(save = "default", status = 1, runLast = TRUE)
 }
 

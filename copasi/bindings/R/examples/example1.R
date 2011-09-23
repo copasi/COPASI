@@ -145,7 +145,7 @@ if (!is.null(fun)){
     ObjectStdVector_push_back(changedObjects,object)
 } else{
     write("Error. Could not find a kientic law that contains the term \"Constant\"." , stderr())
-    return(1)
+    quit(save = "default", status = 1, runLast = TRUE)
 }
 # now we also create a separate reaction for the backwards reaction and
 # set the kinetic law to irreversible mass action

@@ -25,12 +25,11 @@ stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 # clear the message queue so that we only have error messages from the import in the queue
 CCopasiMessage_clearDeque()
 result <- TRUE
-try {
-  result <- dataModel_importSBMLFromString(dataModel,MODEL_STRING)
-} except {
-    write("Import of model failed miserably.", stderr())
-    return(1)
-}
+tryCatch(result <- dataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
+  write("Import of model failed miserably.", stderr())
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
+
 # check if the import was successful
 mostSevere <- CCopasiMessage_getHighestSeverity()
 # if it was a filtered error, we convert it to an unfiltered type
@@ -42,7 +41,7 @@ mostSevere <- mostSevere & 127
 # the most severe error message is not an error or an exception
 if (result != TRUE && mostSevere < CCopasiMessage.ERROR) {
     write("Sorry. Model could not be imported.", stderr())
-    return(1)
+    quit(save = "default", status = 1, runLast = TRUE)
 }
 
 #

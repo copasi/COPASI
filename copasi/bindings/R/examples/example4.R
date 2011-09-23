@@ -94,13 +94,11 @@ stopifnot(!is.null(CCopasiRootContainer_getRoot()))
 dataModel <- CCopasiRootContainer_addDatamodel()
 stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList(CCopasiRootContainer)) == 1)
 # the only argument to the main routine should be the name of an SBML file
-try {
-    # load the model
-    CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING)
-} except {
-    write("Error while importing the model from given string.", stderr())
-    return(1)
-}
+tryCatch(CCopasiDataModel_importSBML(dataModel,MODEL_STRING), error = function(e) {
+  write("Error while importing the model from given string.", stderr())
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
+
 model <- dataModel_getModel(dataModel)
 stopifnot(!is.null(model))
 # create a report with the correct filename and all the species against
@@ -240,18 +238,14 @@ CScanProblem_setOutputInSubtask(scanProblem,TRUE)
 # state of the last run
 CScanProblem_setAdjustInitialConditions(scanProblem,FALSE)
 
-try {
-    # now we run the actual trajectory
-    CScanTask_process(scanTask,TRUE)
-} except {
-    write("Error. Running the scan failed.", stderr())
-    # check if there are additional error messages
-    if (CCopasiMessage_size() > 0) {
-        # print the messages in chronological order
-        write(CCopasiMessage_getAllMessageText(TRUE), stderr())
-    }
-    return(1)
-}
-
+tryCatch(CScanTask_process(scanTask,TRUE), error = function(e) {
+  write("Error. Running the scan failed.", stderr())
+  # check if there are additional error messages
+  if (CCopasiMessage_size() > 0) {
+      # print the messages in chronological order
+      write(CCopasiMessage_getAllMessageText(TRUE), stderr())
+  }
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
 
 

@@ -162,16 +162,14 @@ CReport_setTarget(rep, "example5.txt")
 CReport_setAppend(rep, FALSE)
 
 result <- FALSE
-try {
-  result <- COptTask_process(optTask,TRUE)
-} except {
-    write("Running the optimization failed." , stderr())
-    return(1)
-}
+tryCatch(result <- COptTask_process(optTask,TRUE), error = function(e) {
+  write("Running the optimization failed." , stderr())
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
 
 if(!result) {
     write("Running the optimization failed." , stderr())
-    return(1)
+    quit(save = "default", status = 1, runLast = TRUE)
 }
 # now we check if the optimization actually got the correct result
 # the best value it should have is 0 and the best parameter value for

@@ -34,12 +34,11 @@ stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 # clear the message queue so that we only have error messages from the import in the queue
 CCopasiMessage_clearDeque()
 result <- TRUE
-try {
-  result <- CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING)
-} except {
-   write("An exception has occured during the import of the SBML model", stderr())
-   return(1)
-}
+tryCatch(result <- CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
+  write("An exception has occured during the import of the SBML model", stderr())
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
+
 # check if the import was successful
 mostSevere <- CCopasiMessage_getHighestSeverity()
 # if it was a filtered error, we convert it to an unfiltered type
@@ -51,7 +50,7 @@ mostSevere <- mostSevere & 127
 # the most severe error message is not an error or an exception
 if (result != TRUE &&  mostSevere < CCopasiMessage.ERROR) {
     write("Sorry. Model could not be imported.", stderr())
-    return(1)
+    quit(save = "default", status = 1, runLast = TRUE)
 }
 
 # get the trajectory task object
@@ -67,19 +66,16 @@ if (is.null(task)) {
 
 CCopasiMessage_clearDeque()
 
-try {
-    # now we calculate the steady state
-    CSteadyStateTask_process(task,TRUE)
-} except {
-    write("Error. Running the scan failed.", stderr())
+tryCatch(CSteadyStateTask_process(task,TRUE), error = function(e) {
+  write("Error. Running the scan failed.", stderr())
+  # check if there are additional error messages
+  if (CCopasiMessage_size() > 0) {
+      # print the messages in chronological order
+      write(CCopasiMessage_getAllMessageText(TRUE), stderr())
+  }
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
 
-    # check if there are additional error messages
-    if (CCopasiMessage_size() > 0) {
-        # print the messages in chronological order
-        write(CCopasiMessage_getAllMessageText(TRUE), stderr())
-    }
-    return(1)
-}
 
 # now we can get the result of the steady state calculation, e.g. the jacobian
 # matrix of the model at the steady state

@@ -22,9 +22,10 @@ if (length(args) == 1) {
     # load the model without progress report
    
     # I have no clue how exception handling in R works
-    try(CCopasiDataModel_loadModel(dataModel,filename))
-    print(.Last.value)
-    options(show.error.message = TRUE)
+    tryCatch(CCopasiDataModel_loadModel(dataModel,filename), error = function(e) {
+      write(paste("Error while loading the model from file named \"" , filename , "\"."), stderr())
+      quit(save = "default", status = 1, runLast = TRUE)
+    } )
 
     model <- CCopasiDataModel_getModel(dataModel)
     stopifnot(!is.null(model))
@@ -65,7 +66,7 @@ if (length(args) == 1) {
     }
 } else {
     write( "Usage: example2 CPSFILE", stderr())
-    return(1)
+    quit(save = "default", status = 1, runLast = TRUE)
 }
 
 

@@ -90,13 +90,11 @@ stopifnot(!is.null(CCopasiRootContainer_getRoot()))
 dataModel <- CCopasiRootContainer_addDatamodel()
 stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 # first we load a simple model
-try {
-  # load the model 
-  CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING)
-} except {
+tryCatch(CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
   write("Error while importing the model.", stderr())
-  return(1)
-}
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
+
 model <- CCopasiDataModel_getModel(DataModel)
 # now we need to run some time course simulation to get data to fit
 # against
@@ -139,18 +137,16 @@ CTrajectoryProblem_setTimeSeriesRequested(problem,TRUE)
 method <- CTrajectoryTask_getMethod(trajectoryTask)
 
 result <- TRUE
-try {
-    # now we run the actual trajectory
-    result <- CTrajectoryTask_process(trajectoryTask,TRUE)
-} except {
-    write("Error. Running the time course simulation failed.", stderr()) 
-    # check if there are additional error messages
-    if (CCopasiMessage_size() > 0) {
-        # print the messages in chronological order
-        write(CCopasiMessage_getAllMessageText(TRUE), stderr())
-    }
-    return(1)
-}
+tryCatch(result <- CTrajectoryTask_process(trajectoryTask,TRUE), error = function(e) {
+  write("Error. Running the time course simulation failed.", stderr()) 
+  # check if there are additional error messages
+  if (CCopasiMessage_size() > 0) {
+      # print the messages in chronological order
+      write(CCopasiMessage_getAllMessageText(TRUE), stderr())
+  }
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
+
 if (result == FALSE) {
     write("An error occured while running the time course simulation." , stderr())
     # check if there are additional error messages
@@ -158,7 +154,7 @@ if (result == FALSE) {
         # print the messages in chronological order
         write(CCopasiMessage_getAllMessageText(CCopasiMessage,TRUE), stderr())
     }
-    return(1)
+    quit(save = "default", status = 1, runLast = TRUE)
 }
 
 # we write the data to a file and add some noise to it
@@ -182,8 +178,10 @@ metabVector <-[]
 # the first variable in a time series is a always time, for the rest
 # of the variables, we use the SBML id in the header
 rand <- 0.0
-os <- open("fakedata_example6.txt","w")
-os_write(os,"# time ")
+
+# redirect output to file
+sink("fakedata_example6.txt", append=FALSE, split=FALSE)
+write("# time ")
 keyFactory <- CCopasiRootContainer_getKeyFactory()
 stopifnot(!is.null(keyFactory))
 i <- 1
@@ -193,13 +191,13 @@ while (i < iMax) {
   stopifnot(!is.null(object))
   # only write header data or metabolites
   if (object.__class__ == CMetab) {
-    os_write(os,", ")
-    os_write(os,CTimeSeries_getSBMLId(timeSeries,i,dataModel))
+    write(", ")
+    write(CTimeSeries_getSBMLId(timeSeries,i,dataModel))
     indexSet_append(indexSet,i)
     metabVector_append(metabVector,object)
   }
 }
-os_write(os,"\n")
+write("\n")
 data <- 0.0
 i <- 0
 while(i < lastIndex) {
@@ -210,24 +208,25 @@ while(i < lastIndex) {
     # the compartment does not interest us here
     if (j==0 || (j in indexSet)) {
       # write the data with some noise (+-5% max)
-      rand <- random()
+      rand <- runif(1, -0.05, 0.05)
       data <- CTimeSeries_getConcentrationData(timeSeries,i, j)
       # don't add noise to the time
       if (j != 0) {
-        data = data + data * (rand * 0.1 - 0.05)
+        data = data + data * rand 
       }
       s <- paste(s, data, ", ")
     }
   }
   # remove the last two characters again
-  os_write(os,s[0:-2])
-  os_write(os,"\n")
+  write(s[0:-2])
+  write("\n")
 }
-os_close(os)
+# redirect output to default destination
+sink()
 
 # now we change the parameter values to see if the parameter fitting
 # can really find the original values
-rand <- random() * 10
+rand <- runif(1,0.0,10.0)
 reaction <- CModel_getReaction(model,0)
 # we know that it is an irreversible mass action, so there is one
 # parameter
@@ -361,14 +360,14 @@ CFitItem_setUpperBound(fitItem2,CCopasiObjectName("10"))
 CCopasiParameterGroup_addParameter(optimizationItemGroup,fitItem2)
 
 result <- TRUE
-try {
-  # running the task for this example will probably take some time
-  print("This can take some time...")
-  result <- fitTask_process(fitTask,TRUE)
-} except {
+# running the task for this example will probably take some time
+print("This can take some time...")
+tryCatch(result <- fitTask_process(fitTask,TRUE), error = function(e) {
   write("Error. Parameter fitting failed.", stderr())
-  return(1)
-}
+  quit(save = "default", status = 1, runLast = TRUE)
+} )
+
+  
 stopifnot(result == TRUE)
 # stopifnot(that there are two optimization items)
 stopifnot(len(fitProblem_getOptItemList(fitProblem)) == 2)
@@ -378,8 +377,8 @@ optItem2 <- CFitProblem_getOptItemList(fitProblem)[1]
 # the actual results are stored in the fit problem
 stopifnot(FloatVectorCore_size(CFitProblem_getSolutionVariables(fitProblem)) == 2)
 
-print "value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem1))) , ": " , FloatVectorCore_get(CFitProblem_getSolutionVariables(),0)
-print "value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem2))) , ": " , FloatVectorCore_get(CFitProblem_getSolutionVariables(),1)
+print(paste("value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem1))) , ": " , FloatVectorCore_get(CFitProblem_getSolutionVariables(),0)))
+print(paste("value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem2))) , ": " , FloatVectorCore_get(CFitProblem_getSolutionVariables(),1)))
 # depending on the noise, the fit can be quite bad, so we are a litle
 # relaxed here (we should be within 3% of the original values)
 stopifnot((abs(FloatVectorCore(CFitProblem_getSolutionVariables(fitProblem),0) - 0.03) / 0.03) < 3e-2)
