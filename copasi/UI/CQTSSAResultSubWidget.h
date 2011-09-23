@@ -14,10 +14,7 @@
 #ifndef CQTSSARESULTSUBWIDGET_H
 #define CQTSSARESULTSUBWIDGET_H
 
-#include <qvariant.h>
-
 #include <QPixmap>
-
 #include <QtGui/QDialog>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -35,7 +32,6 @@
 #include "CQArrayAnnotationsWidget.h"
 #include "CQTSSATimeScaleWidget.h"
 
-#include "CTimeSeriesTable.h"
 #include "tssanalysis/CTSSATask.h"
 #include "tssanalysis/CTSSAProblem.h"
 #include "model/CModel.h"

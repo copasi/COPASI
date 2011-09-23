@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.15 $ </comment>
+<comment>   $Revision: 1.16 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/03/07 19:38:00 $ </comment>
+<comment>   $Date: 2011/09/23 18:39:02 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -252,37 +252,16 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>CQArrayAnnotationsWidget</class>
    <extends>QWidget</extends>
-   <header>CQArrayAnnotationsWidget.h</header>
+   <header>copasi/UI/CQArrayAnnotationsWidget.h</header>
   </customwidget>
   <customwidget>
    <class>CQTSSATimeScaleWidget</class>
    <extends>QWidget</extends>
-   <header>CQTSSATimeScaleWidget.h</header>
+   <header>copasi/UI/CQTSSATimeScaleWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local">CTimeSeriesTable.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
  </includes>
  <resources/>
  <connections/>

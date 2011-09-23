@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.249 $
+#   $Revision: 1.250 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/09/19 14:15:11 $
+#   $Date: 2011/09/23 18:39:01 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.249 $ $Author: shoops $ $Date: 2011/09/19 14:15:11 $
+# $Revision: 1.250 $ $Author: shoops $ $Date: 2011/09/23 18:39:01 $
 ######################################################################
 
 LIB = UI
@@ -89,6 +89,7 @@ HEADERS	+= \
   CQTaskHeaderWidget.h \
   CQTaskMethodWidget.h \
   CQTextDialog.h \
+  CQTimeSeriesWidget.h \
   CQTrajectoryWidget.h \
   CQTSSAWidget.h \
   CQTSSAResultSubWidget.h \
@@ -103,7 +104,6 @@ HEADERS	+= \
   SliderSettingsDialog.h \
   StateSubwidget.h \
   SteadyStateWidget.h \
-  TimeSeriesSubwidget.h \
   CQExpandModelData.h \
 #
 ### other headers (not belonging to generated widgets)
@@ -150,6 +150,7 @@ HEADERS	+= \
   CQSpinBoxDelegate.h \
   CQTableView.h \
   CQTaskThread.h \
+  CQTimeSeriesDM.h \
   CQThread.h \
   CQTSSAResultWidget.h \
   CQTSSATimeScaleWidget.h \
@@ -157,7 +158,6 @@ HEADERS	+= \
   CQValidator.h \
   CScanContainerWidget.h \
   CTabWidget.h \
-  CTimeSeriesTable.h \
   DataModelGUI.h \
   DataModel.txt.h \
   FunctionItemWidget.h \
@@ -174,7 +174,6 @@ HEADERS	+= \
   SensWidgetComboBox.h \
   SliderDialog.h \
   TaskWidget.h \
-  TimeSeriesWidget.h \
   TSSWidget.h
 
 ### Source files that belong to widgets generated from uic4 forms
@@ -237,6 +236,7 @@ SOURCES	+= \
   CQTaskMethodWidget.cpp \
   CQTaskThread.cpp \
   CQTextDialog.cpp \
+  CQTimeSeriesWidget.cpp \
   CQThread.cpp \
   CQTrajectoryWidget.cpp \
   CQTSSAWidget.cpp \
@@ -253,7 +253,6 @@ SOURCES	+= \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
   SteadyStateWidget.cpp \
-  TimeSeriesSubwidget.cpp \
   CQExpandModelData.cpp \
 #
 ### other sources (not belonging to generated widgets)
@@ -298,13 +297,13 @@ SOURCES	+= \
   CQSpecieDM.cpp \
   CQSpinBoxDelegate.cpp \
   CQTableView.cpp \
+  CQTimeSeriesDM.cpp \
   CQTSSAResultWidget.cpp \
   CQTSSATimeScaleWidget.cpp \
   CQUpdatesWidget.cpp \
   CQValidator.cpp \
   CScanContainerWidget.cpp \
   CTabWidget.cpp \
-  CTimeSeriesTable.cpp \
   DataModelGUI.cpp \
   FunctionItemWidget.cpp \
   listviews.cpp \
@@ -320,7 +319,6 @@ SOURCES	+= \
   SensWidgetComboBox.cpp \
   SliderDialog.cpp \
   TaskWidget.cpp \
-  TimeSeriesWidget.cpp \
   TSSWidget.cpp
 
 !contains(DEFINES, COPASI_TSS) {
@@ -383,6 +381,7 @@ FORMS += CQTaskBtnWidget.ui
 FORMS += CQTaskHeaderWidget.ui
 FORMS += CQTaskMethodWidget.ui
 FORMS += CQTextDialog.ui
+FORMS += CQTimeSeriesWidget.ui
 FORMS += CQTrajectoryWidget.ui
 FORMS += CQTSSAWidget.ui
 FORMS += CQTSSAResultSubWidget.ui
@@ -398,16 +397,7 @@ FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
-FORMS += TimeSeriesSubwidget.ui
 FORMS += CQExpandModelData.ui
-
-contains(COPASI_SRC_PACKAGE, true) {
-  HEADERS -= CQDifferentialEquations.h
-  SOURCES -= CQDifferentialEquations.cpp
-  
-  DISTFILES += CQDifferentialEquations.h
-  DISTFILES += CQDifferentialEquations.cpp
-}
 
 DISTFILES += icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \

@@ -1,39 +1,30 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMSpeciesDM.h,v $
-//   $Revision: 1.5 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTimeSeriesDM.h,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/23 18:39:01 $
+//   $Date: 2011/09/23 18:39:00 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-#ifndef CQEFMSpeciesDM_H
-#define CQEFMSpeciesDM_H
+#ifndef COPASI_CQTimeSeriesDM
+#define COPASI_CQTimeSeriesDM
 
 #include "copasi/UI/CQBaseDataModel.h"
 
-#include <vector>
+class CTimeSeries;
 
-class CFluxMode;
-class CEFMTask;
-class CMetab;
-class CModel;
-
-class CQEFMSpeciesDM : public CQBaseDataModel
+class CQTimeSeriesDM : public CQBaseDataModel
 {
   Q_OBJECT
 
 public:
-  CQEFMSpeciesDM(QObject *parent = 0);
+  CQTimeSeriesDM(QObject *parent = 0);
+  virtual ~CQTimeSeriesDM();
 
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -48,21 +39,18 @@ public:
 
   virtual bool isDefaultRow(const QModelIndex& i) const;
 
-  void setTask(const CEFMTask * pTask);
+  void setTimeSeries(const CTimeSeries * pTimeSeries);
+
+  void setFramework(int framework);
 
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
 
+
 private:
-  const CEFMTask * mpTask;
-
-  std::vector< CFluxMode >::const_iterator mBeginModes;
-  size_t mModesSize;
-
-  const CModel * mpModel;
-  std::vector< CMetab * >::const_iterator mBeginSpecies;
-  size_t mSpeciesSize;
+  const CTimeSeries * mpTimeSeries;
+  int mFramework;
 };
 
-#endif //CQEFMSpeciesDM_H
+#endif // COPASI_CQTimeSeriesDM

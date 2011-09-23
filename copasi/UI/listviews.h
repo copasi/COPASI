@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.174 $
+//   $Revision: 1.175 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/09/21 19:03:12 $
+//   $Author: shoops $
+//   $Date: 2011/09/23 18:39:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ class CopasiWidget;
 class PlotSubwidget;
 class CQPlotsWidget;
 class CQSplashWidget;
-class TimeSeriesWidget;
+class CQTimeSeriesWidget;
 class CQFittingWidget;
 class CQFittingResult;
 class CQMCAWidget;
@@ -236,7 +236,7 @@ private:
   TSSWidget *tssWidget;
 #endif // COPASI_TSS
 
-  TimeSeriesWidget *timeSeriesWidget;
+  CQTimeSeriesWidget *timeSeriesWidget;
   CQTrajectoryWidget *trajectoryWidget;
   CQTSSAWidget *tssaWidget;
   CQTSSAResultWidget *tssaResultWidget;

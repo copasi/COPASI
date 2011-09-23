@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:22 $
+//   $Date: 2011/09/23 18:39:02 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,14 +20,14 @@
 
 #include "CQTrajectoryWidget.h"
 
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
+#include "CQTaskBtnWidget.h"
+#include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
-#include "UI/CProgressBar.h"
-#include "UI/CQValidator.h"
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
-#include "TimeSeriesWidget.h"
+#include "CProgressBar.h"
+#include "CQValidator.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
+#include "CQTimeSeriesWidget.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -341,13 +341,13 @@ bool CQTrajectoryWidget::taskFinishedEvent()
   bool success = true;
   // We need to load the result here as this is the only place where
   // we know that it is correct.
-  TimeSeriesWidget * pResult =
-    dynamic_cast< TimeSeriesWidget * >(mpListView->findWidgetFromId(231));
+  CQTimeSeriesWidget * pResult =
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(231));
 
   if (pResult == NULL)
     return false;
 
-  success &= pResult->loadFromBackend();
+  success &= pResult->loadResult(mpTask);
 
   return success;
 }

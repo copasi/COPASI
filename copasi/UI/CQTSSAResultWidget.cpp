@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:09 $
+//   $Author: shoops $
+//   $Date: 2011/09/23 18:39:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,6 @@
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiVector.h"
 #include "tssanalysis/CTSSATask.h"
-#include "CTimeSeriesTable.h"
 
 //#include "report/CKeyFactory.h"
 #include "qtUtilities.h"

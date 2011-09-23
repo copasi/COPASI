@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Date: 2011/09/23 18:39:02 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQEFMResultWidget_h
 #define CQEFMResultWidget_h
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQEFMResultWidget.h"
 #include "copasi/UI/copasiWidget.h"

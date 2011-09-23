@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.295 $
+//   $Revision: 1.296 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/09/21 19:03:12 $
+//   $Author: shoops $
+//   $Date: 2011/09/23 18:39:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@
 #include "CQReportsWidget.h"
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
-#include "TimeSeriesWidget.h"
+#include "CQTimeSeriesWidget.h"
 #include "CQTSSAWidget.h"
 #include "CQTSSAResultWidget.h"
 #ifdef COPASI_DEBUG
@@ -446,7 +446,7 @@ void ListViews::ConstructNodeWidgets()
 
   sensResultWidget->hide();
 
-  if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
+  if (!timeSeriesWidget) timeSeriesWidget = new CQTimeSeriesWidget(this);
 
   timeSeriesWidget->hide();
 

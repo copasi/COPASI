@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:22 $
+//   $Date: 2011/09/23 18:39:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQTRAJECTORYWIDGET_H
 #define CQTRAJECTORYWIDGET_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "ui_CQTrajectoryWidget.h"
 
@@ -37,7 +37,7 @@ class CQTrajectoryWidget : public TaskWidget, public Ui::CQTrajectoryWidget
 
 public:
   CQTrajectoryWidget(QWidget* parent = 0, const char* name = 0);
-  ~CQTrajectoryWidget();
+  virtual ~CQTrajectoryWidget();
 
   virtual bool runTask();
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
