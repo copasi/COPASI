@@ -1,3 +1,5 @@
+#options(echo = FALSE) # disable echoing of input
+
 #
 # This is an example on how to load a cps file
 # and output some information on the model
@@ -18,7 +20,7 @@ stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 # the only argument to the main routine should be the name of a CPS file
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 1) {
-    filename <- args
+    filename <- args[1]
     # load the model without progress report
    
     # I have no clue how exception handling in R works
@@ -29,39 +31,39 @@ if (length(args) == 1) {
 
     model <- CCopasiDataModel_getModel(dataModel)
     stopifnot(!is.null(model))
-    print(paste('Model statistics for model "' , CCopasiObject_getObjectName(model) , '".'))
+    cat('Model statistics for model "' , CCopasiObject_getObjectName(model) , '".\n', sep="")
 
     # output number and names of all compartments
     iMax <- CompartmentVector_size(CModel_getCompartments(model))
-    print(paste("Number of Compartments: " , iMax))
-    print("Compartments: ")
+    cat("Number of Compartments: " , iMax, "\n", sep="")
+    cat("Compartments: \n")
     i <- 0
     while ( i < iMax) {
         compartment <- CModel_getCompartment(model,i)
         stopifnot(!is.null(compartment))
-        print(paste("    " , CCopasiObject_getObjectName(compartment)))
+        cat("    " , CCopasiObject_getObjectName(compartment), "\n", sep = "")
         i <- i + 1
     }
     # output number and names of all metabolites
     iMax <- MetabVector_size(CModel_getMetabolites(model))
-    print(paste("Number of Metabolites: " , iMax))
-    print("Metabolites: ")
+    cat("Number of Metabolites: " , iMax, "\n", sep = "")
+    cat("Metabolites: \n")
     i <- 0
     while (i < iMax) {
         metab <- CModel_getMetabolite(model,i)
         stopifnot(!is.null(metab))
-        print(paste("    " , CCopasiObject_getObjectName(metab)))
+        cat("    " , CCopasiObject_getObjectName(metab), "\n", sep="")
         i <- i + 1
     }
     # output number and names of all reactions
     iMax <- ReactionVector_size(CModel_getReactions(model))
-    print("Number of Reactions: " , iMax)
-    print("Reactions: ")
+    cat("Number of Reactions: " , iMax, "\n", sep = "")
+    cat("Reactions: \n")
     i <- 0
     while ( i < iMax) {
         reaction <- CModel_getReaction(model,i)
         stopifnot(!is.null(reaction))
-        print(paste("    " , CCopasiObject_getObjectName(reaction)))
+        cat("    " , CCopasiObject_getObjectName(reaction) , "\n", sep="")
         i <- i + 1
     }
 } else {

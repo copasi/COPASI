@@ -1,3 +1,5 @@
+#options(echo = FALSE) # disable echoing of input
+
 # 
 # This is an example on how to import an sbml file
 # create a report for a time course simulation 
@@ -20,7 +22,7 @@ stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 # the only argument to the main routine should be the name of an SBML file
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 1) {
-    filename <- args
+    filename <- args[1]
     tryCatch(CCopasiDataModel_importSBML(dataModel,filename), error = function(e) {
       write(paste("Error while importing the model from file named \"" , filename , "\"."), stderr())
       quit(save = "default", status = 1, runLast = TRUE)
@@ -34,11 +36,11 @@ if (length(args) == 1) {
     # create a report definition object
     report <- CReportDefinitionVector_createReportDefinition(reports, "Report", "Output for timecourse")
     # set the task type for the report definition to timecourse
-    CReportDefinition_setTaskType(report,"timeCourse")
+    invisible(CReportDefinition_setTaskType(report,"timeCourse"))
     # we don't want a table
-    CReportDefinition_setIsTable(report,FALSE)
+    invisible(CReportDefinition_setIsTable(report,FALSE))
     # the entries in the output should be seperated by a ", "
-    CReportDefinition_setSeparator(report, CCopasiReportSeparator(", "))
+    invisible(CReportDefinition_setSeparator(report, CCopasiReportSeparator(", ")))
 
     # we need a handle to the header and the body
     # the header will display the ids of the metabolites and "time" for
@@ -55,7 +57,7 @@ if (length(args) == 1) {
     cn_string <- paste(cn_string,",Reference=Time")
     on <- CRegisteredObjectName(cn_string)
     stopifnot(!is.null(on))
-    ReportItemVector_push_back(body, on)
+    invisible(ReportItemVector_push_back(body, on))
 
     separator <- CReportDefinition_getSeparator(report)
     stopifnot(!is.null(separator))
@@ -64,7 +66,7 @@ if (length(args) == 1) {
     cn_string <- CCopasiObjectName_getString(cn)
     sep_on <- CRegisteredObjectName(cn_string)
     stopifnot(!is.null(on))
-    ReportItemVector_push_back(body, sep_on)
+    invisible(ReportItemVector_push_back(body, sep_on))
 
     s <- CCopasiStaticString("time")
     stopifnot(!is.null(s))
@@ -74,8 +76,8 @@ if (length(args) == 1) {
     on <- CRegisteredObjectName(cn_string)
     stopifnot(!is.null(on))
 
-    ReportItemVector_push_back(header,on)
-    ReportItemVector_push_back(header,sep_on)
+    invisible(ReportItemVector_push_back(header,on))
+    invisible(ReportItemVector_push_back(header,sep_on))
    
     iMax <- MetabVector_size(CModel_getMetabolites(model))
     i <- 0
@@ -93,17 +95,17 @@ if (length(args) == 1) {
             cn <- CCopasiObject_getCN(obj)
             cn_string <- CCopasiObjectName_getString(cn)
             on <- CRegisteredObjectName(cn_string)
-            ReportItemVector_push_back(body,on)
+            invisible(ReportItemVector_push_back(body,on))
             # add the corresponding id to the header
             s <- CCopasiStaticString(CModelEntity_getSBMLId(metab))
             cn <- CCopasiObject_getCN(s)
             cn_string <- CCopasiObjectName_getString(cn)
             on <- CRegisteredObjectName(cn_string)
-            ReportItemVector_push_back(header, on)
+            invisible(ReportItemVector_push_back(header, on))
             # after each entry, we need a seperator
             if( i != (iMax-1) ) {
-              ReportItemVector_push_back(body, sep_on)
-              ReportItemVector_push_back(header, sep_on)
+              invisible(ReportItemVector_push_back(body, sep_on))
+              invisible(ReportItemVector_push_back(header, sep_on))
             }
         }
         i <- i + 1
@@ -117,12 +119,11 @@ if (length(args) == 1) {
         # add the time course task to the task list
         # this method makes sure the object is now owned by the list
         # and that SWIG does not delete it
-        CCopasiTaskList_addAndOwn(CCopasiDataModel_getTaskList(dataModel),trajectoryTask)
+        invisible(CCopasiTaskList_addAndOwn(CCopasiDataModel_getTaskList(dataModel),trajectoryTask))
     }
 
     # run a deterministic time course
-    print(!is.null(trajectoryTask))
-    CTrajectoryTask_setMethodType(trajectoryTask, "deterministic")
+    invisible(CTrajectoryTask_setMethodType(trajectoryTask, "deterministic"))
 
     # pass a pointer of the model to the problem
     # Most problem classes have their own method for setting the model, the trajectory task
@@ -132,27 +133,27 @@ if (length(args) == 1) {
     
     # get the problem for the task to set some parameters
     problem <- CCopasiTask_getProblem(trajectoryTask)
-    CCopasiProblem_setModel(problem,CCopasiDataModel_getModel(dataModel))
+    invisible(CCopasiProblem_setModel(problem,CCopasiDataModel_getModel(dataModel)))
 
     # actiavate the task so that it will be run when the model is saved
     # and passed to CopasiSE
-    CCopasiTask_setScheduled(trajectoryTask,TRUE)
+    invisible(CCopasiTask_setScheduled(trajectoryTask,TRUE))
 
     # set the report for the task
-    CReport_setReportDefinition(CCopasiTask_getReport(trajectoryTask),report)
+    invisible(CReport_setReportDefinition(CCopasiTask_getReport(trajectoryTask),report))
     # set the output filename
-    CReport_setTarget(CCopasiTask_getReport(trajectoryTask),"example3.txt")
+    invisible(CReport_setTarget(CCopasiTask_getReport(trajectoryTask),"example3.txt"))
     # don't append output if the file exists, but overwrite the file
-    CReport_setAppend(CCopasiTask_getReport(trajectoryTask),FALSE)
+    invisible(CReport_setAppend(CCopasiTask_getReport(trajectoryTask),FALSE))
 
     # simulate 100 steps
-    CTrajectoryProblem_setStepNumber(problem,100)
+    invisible(CTrajectoryProblem_setStepNumber(problem,100))
     # start at time 0
-    CModel_setInitialTime(CCopasiDataModel_getModel(dataModel),0.0)
+    invisible(CModel_setInitialTime(CCopasiDataModel_getModel(dataModel),0.0))
     # simulate a duration of 10 time units
-    CTrajectoryProblem_setDuration(problem, 10)
+    invisible(CTrajectoryProblem_setDuration(problem, 10))
     # tell the problem to actually generate time series data
-    CTrajectoryProblem_setTimeSeriesRequested(problem, TRUE)
+    invisible(CTrajectoryProblem_setTimeSeriesRequested(problem, TRUE))
 
     # set some parameters for the LSODA method through the method
     method <- CCopasiTask_getMethod(trajectoryTask)
@@ -160,16 +161,17 @@ if (length(args) == 1) {
     parameter <- CCopasiParameterGroup_getParameter(method,"Absolute Tolerance")
     stopifnot(!is.null(parameter))
     stopifnot(CCopasiParameter_getType(parameter) == "UDOUBLE")
-    CCopasiParameter_setDblValue(parameter, 1.0e-12)
+    invisible(CCopasiParameter_setDblValue(parameter, 1.0e-12))
 
     result <- TRUE
+    invisible(CCopasiMessage_clearDeque())
     # now we run the actual trajectory
     tryCatch(result <- trajectoryTask_process(TRUE), error = function(e) {
       write("Error. Running the time course simulation failed.", stderr())
       # check if there are additional error messages
       if (CCopasiMessage_size() > 0) {
-          # print(the messages in chronological order)
-          write(CCopasiMessage.getAllMessageText(TRUE), stderr())
+          # print the messages in chronological order
+          write(CCopasiMessage_getAllMessageText(TRUE), stderr())
       }
       quit(save = "default", status = 1, runLast = TRUE)
     } )
@@ -189,11 +191,10 @@ if (length(args) == 1) {
     # we simulated 100 steps, including the initial state, this should be
     # 101 step in the timeseries
     numSteps <- CTimeSeries_getRecordedSteps(timeSeries)
-    print(numSteps)
     stopifnot(numSteps == 101)
-    print(paste("The time series consists of " , numSteps , "."))
-    print(paste("Each step contains " , CTimeSeries_getNumVariables(timeSeries) , " variables."))
-    print("The final state is: ")
+    cat("The time series consists of " , numSteps , ".\n", sep = "")
+    cat("Each step contains " , CTimeSeries_getNumVariables(timeSeries) , " variables.\n", sep = "")
+    cat("The final state is: \n")
     iMax <- CTimeSeries_getNumVariables(timeSeries)
     lastIndex <- numSteps - 1
     i <- 0
@@ -201,7 +202,7 @@ if (length(args) == 1) {
         # here we get the particle number (at least for the species)
         # the unit of the other variables may not be particle numbers
         # the concentration data can be acquired with getConcentrationData
-        print(paste(CTimeSeries_getTitle(timeSeries,i) , ": " , CTimeSeries.getData(timeSeries, lastIndex, i)))
+        cat(CTimeSeries_getTitle(timeSeries,i) , ": " , CTimeSeries.getData(timeSeries, lastIndex, i), sep = "")
         i <- i + 1
     }
 } else{

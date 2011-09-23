@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/R/R.i,v $ 
-//   $Revision: 1.1.2.6 $ 
+//   $Revision: 1.1.2.7 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/16 16:15:14 $ 
+//   $Date: 2011/09/23 14:59:22 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,6 +31,12 @@
 // this seems to fix the problem that size_t references are
 // used as pointers
 %typemap("rtype") size_t, size_t*, size_t& "numeric";
+
+// the swig rtype.swg file handles bool and bool*, but there is nothing
+// about references to bool values, which probably means that there are 
+// converted to pointers
+// This should fix this problem and treat them as logical values
+%typemap("rtype") bool, bool*, const bool *, bool &, const bool &    "logical";
 
 
 %include "../swig/copasi.i"
