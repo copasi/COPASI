@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/30 13:10:43 $
+//   $Author: shoops $
+//   $Date: 2011/09/23 18:37:00 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -13,11 +18,11 @@
 
 /****************************************************************************
  **
- ** This file is part of a Qt Solutions component.
- **
  ** Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+ ** All rights reserved.
+ ** Contact: Nokia Corporation (qt-info@nokia.com)
  **
- ** Contact:  Qt Software Information (qt-info@nokia.com)
+ ** This file is part of a Qt Solutions component.
  **
  ** Commercial Usage
  ** Licensees holding valid Qt Commercial licenses may use this file in
@@ -35,7 +40,7 @@
  **
  ** In addition, as a special exception, Nokia gives you certain
  ** additional rights. These rights are described in the Nokia Qt LGPL
- ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+ ** Exception version 1.1, included in the file LGPL_EXCEPTION.txt in this
  ** package.
  **
  ** GNU General Public License Usage
@@ -53,7 +58,7 @@
  ** Party Software they are using.
  **
  ** If you are unsure which license is appropriate for your use, please
- ** contact the sales department at qt-sales@nokia.com.
+ ** contact Nokia at qt-info@nokia.com.
  **
  ****************************************************************************/
 
@@ -85,7 +90,7 @@ class QT_QTMMLWIDGET_EXPORT QtMmlWidget : public QFrame
 {
 public:
   enum MmlFont {NormalFont, FrakturFont, SansSerifFont, ScriptFont,
-                 MonospaceFont, DoublestruckFont
+                MonospaceFont, DoublestruckFont
                };
 
   QtMmlWidget(QWidget *parent = 0);
