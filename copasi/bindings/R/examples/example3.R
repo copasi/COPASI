@@ -54,7 +54,7 @@ if (length(args) == 1) {
     cn_string <- CCopasiObjectName_getString(cn)
     stopifnot(!is.null(cn_string))
     
-    cn_string <- paste(cn_string,",Reference=Time")
+    cn_string <- paste(cn_string,",Reference=Time", sep = "")
     on <- CRegisteredObjectName(cn_string)
     stopifnot(!is.null(on))
     invisible(ReportItemVector_push_back(body, on))
@@ -166,7 +166,7 @@ if (length(args) == 1) {
     result <- TRUE
     invisible(CCopasiMessage_clearDeque())
     # now we run the actual trajectory
-    tryCatch(result <- trajectoryTask_process(TRUE), error = function(e) {
+    tryCatch(result <- CCopasiTask_process(trajectoryTask,TRUE), error = function(e) {
       write("Error. Running the time course simulation failed.", stderr())
       # check if there are additional error messages
       if (CCopasiMessage_size() > 0) {
@@ -202,7 +202,7 @@ if (length(args) == 1) {
         # here we get the particle number (at least for the species)
         # the unit of the other variables may not be particle numbers
         # the concentration data can be acquired with getConcentrationData
-        cat(CTimeSeries_getTitle(timeSeries,i) , ": " , CTimeSeries.getData(timeSeries, lastIndex, i), sep = "")
+        cat(CTimeSeries_getTitle(timeSeries,i) , ": " , CTimeSeries_getData(timeSeries, lastIndex, i),"\n", sep = "")
         i <- i + 1
     }
 } else{

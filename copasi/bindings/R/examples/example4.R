@@ -15,7 +15,7 @@ source("COPASI.R")
 # The cacheMetaData(1) will cause R to refresh its object tables. Without it, inheritance of wrapped objects may fail.
 cacheMetaData(1)
 
-MODEL_STRING <- '<?xml version="1.0" encoding="UTF-8"?>\n<!-- Created by COPASI version 4.4.29 (Debug) on 2009-03-05 14:41 with libSBML version 3.3.0. -->\n<sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" version="3">\n<model metaid="COPASI1" id="Model_1" name="New Model">\n <listOfUnitDefinitions>\n<unitDefinition id="volume">\n<listOfUnits>\n<unit kind="litre" scale="-6"/>\n</listOfUnits>\n</unitDefinition>\n<unitDefinition id="substance">\n<listOfUnits>\n<unit kind="mole" scale="-9"/>\n</listOfUnits>\n</unitDefinition>\n</listOfUnitDefinitions>\n<listOfCompartments>\n<compartment id="compartment_1" name="compartment" size="1"/>\n</listOfCompartments>\n<listOfSpecies>\n<species metaid="COPASI2" id="species_1" name="A" compartment="compartment_1" initialConcentration="1e-10">\n</species>\n<species metaid="COPASI3" id="species_2" name="B" compartment="compartment_1" initialConcentration="0">\n</species>\n<species metaid="COPASI4" id="species_3" name="C" compartment="compartment_1" initialConcentration="0">\n</species>\n</listOfSpecies>\n<listOfReactions>\n<reaction id="reaction_1" name="reaction" reversible="false">\n<listOfReactants>\n<speciesReference species="species_1"/>\n</listOfReactants>\n<listOfProducts>\n<speciesReference species="species_2"/>\n</listOfProducts>\n<kineticLaw>\n<math xmlns="http://www.w3.org/1998/Math/MathML">\n<apply>\n<times/>\n<ci> compartment_1 </ci>\n<ci> k1 </ci>\n<ci> species_1 </ci>\n</apply>\n</math>\n<listOfParameters>\n<parameter id="k1" value="0.1"/>\n</listOfParameters>\n</kineticLaw>\n</reaction>\n<reaction id="reaction_2" name="reaction_1" reversible="false">\n<listOfReactants>\n<speciesReference species="species_2"/>\n</listOfReactants>\n<listOfProducts>\n<speciesReference species="species_3"/>\n</listOfProducts>\n<kineticLaw>\n<math xmlns="http://www.w3.org/1998/Math/MathML">\n<apply>\n<times/>\n<ci> compartment_1 </ci>\n<ci> k1 </ci>\n<ci> species_2 </ci>\n</apply>\n</math>\n<listOfParameters>\n<parameter id="k1" value="0.1"/>\n</listOfParameters>\n</kineticLaw>\n</reaction>\n</listOfReactions>\n</model>\n</sbml>\n'
+MODEL_STRING <- '<?xml version="1.0" encoding="UTF-8"?><!-- Created by COPASI version 4.4.29 (Debug) on 2009-03-05 14:41 with libSBML version 3.3.0. --><sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" version="3"><model metaid="COPASI1" id="Model_1" name="New Model"> <listOfUnitDefinitions><unitDefinition id="volume"><listOfUnits><unit kind="litre" scale="-6"/></listOfUnits></unitDefinition><unitDefinition id="substance"><listOfUnits><unit kind="mole" scale="-9"/></listOfUnits></unitDefinition></listOfUnitDefinitions><listOfCompartments><compartment id="compartment_1" name="compartment" size="1"/></listOfCompartments><listOfSpecies><species metaid="COPASI2" id="species_1" name="A" compartment="compartment_1" initialConcentration="1e-10"></species><species metaid="COPASI3" id="species_2" name="B" compartment="compartment_1" initialConcentration="0"></species><species metaid="COPASI4" id="species_3" name="C" compartment="compartment_1" initialConcentration="0"></species></listOfSpecies><listOfReactions><reaction id="reaction_1" name="reaction" reversible="false"><listOfReactants><speciesReference species="species_1"/></listOfReactants><listOfProducts><speciesReference species="species_2"/></listOfProducts><kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci> compartment_1 </ci><ci> k1 </ci><ci> species_1 </ci></apply></math><listOfParameters><parameter id="k1" value="0.1"/></listOfParameters></kineticLaw></reaction><reaction id="reaction_2" name="reaction_1" reversible="false"><listOfReactants><speciesReference species="species_2"/></listOfReactants><listOfProducts><speciesReference species="species_3"/></listOfProducts><kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci> compartment_1 </ci><ci> k1 </ci><ci> species_2 </ci></apply></math><listOfParameters><parameter id="k1" value="0.1"/></listOfParameters></kineticLaw></reaction></listOfReactions></model></sbml>'
 
 
 stopifnot(!is.null(CCopasiRootContainer_getRoot()))
@@ -23,12 +23,12 @@ stopifnot(!is.null(CCopasiRootContainer_getRoot()))
 dataModel <- CCopasiRootContainer_addDatamodel()
 stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 # the only argument to the main routine should be the name of an SBML file
-tryCatch(CCopasiDataModel_importSBML(dataModel,MODEL_STRING), error = function(e) {
+tryCatch(CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
   write("Error while importing the model from given string.", stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )
 
-model <- dataModel_getModel(dataModel)
+model <- CCopasiDataModel_getModel(dataModel)
 stopifnot(!is.null(model))
 # create a report with the correct filename and all the species against
 # time.
@@ -50,7 +50,7 @@ sep <- CReportDefinition_getSeparator(report)
 sep_string <- CCopasiObjectName_getString(CCopasiObject_getCN(sep))
 header <- CReportDefinition_getHeaderAddr(report)
 body <- CReportDefinition_getBodyAddr(report)
-time_string <- CCopasiObjectName_getString(CCopasiObjectName(paste(CCopasiObjectName_getString(CCopasiObject_getCN(model)), ",Reference=Time")))
+time_string <- CCopasiObjectName_getString(CCopasiObjectName(paste(CCopasiObjectName_getString(CCopasiObject_getCN(model)), ",Reference=Time", sep = "")))
 invisible(ReportItemVector_push_back(body,CRegisteredObjectName(time_string)))
 invisible(ReportItemVector_push_back(body,CRegisteredObjectName(sep_string)))
 time_string <- CCopasiObjectName_getString(CCopasiObject_getCN(CCopasiStaticString("time")))
@@ -63,7 +63,7 @@ while (i < iMax) {
     metab <- CModel_getMetabolite(model,i)
     stopifnot(!is.null(metab))
     # we don't want output for FIXED metabolites right now
-    if (CModelENtity_getStatus(metab) != "FIXED") {
+    if (CModelEntity_getStatus(metab) != "FIXED") {
         # we want the concentration in the output
         # alternatively, we could use "Reference=Amount" to get the
         # particle number
@@ -90,7 +90,7 @@ while (i < iMax) {
 trajectoryTask <- CCopasiDataModel_getTask(dataModel,"Time-Course")
 stopifnot(!is.null(trajectoryTask))
 # if there isn't one
-if (is.null(trajectoryTask) {
+if (is.null(trajectoryTask)) {
     # create a one
     trajectoryTask <- CTrajectoryTask()
     # add the time course task to the task list
@@ -103,15 +103,15 @@ if (is.null(trajectoryTask) {
 # run a stochastic time course
 invisible(CTrajectoryTask_setMethodType(trajectoryTask,"stochastic"))
 
+# get the problem for the task to set some parameters
+problem <- CCopasiTask_getProblem(trajectoryTask)
+
 # pass a pointer of the model to the problem
-invisible(CTrajectoryProblem_setModel(CTrajectoryTask_getProblem(trajectoryTask),model))
+invisible(CCopasiProblem_setModel(problem,model))
 
 # we don't want the trajectory task to run by itself, but we want to
 # run it from a scan, so we deactivate the standalone trajectory task
-invisible(CTrajectoryTask_setScheduled(trajectoryTask,FALSE))
-
-# get the problem for the task to set some parameters
-problem <- CTrajectoryTask_getProblem(trajectoryTask)
+invisible(CCopasiTask_setScheduled(trajectoryTask,FALSE))
 
 # simulate 100 steps
 invisible(CTrajectoryProblem_setStepNumber(problem,100))
@@ -135,23 +135,23 @@ if (is.null(scanTask)) {
 }
 
 # get the problem
-scanProblem <- CScanTask_getProblem(scanTask)
+scanProblem <- CCopasiTask_getProblem(scanTask)
 stopifnot(!is.null(scanProblem))
 
 # set the model for the problem
-invisible(CScanProblem_setModel(scanProblem,model))
+invisible(CCopasiProblem_setModel(scanProblem,model))
 
 # activate the task so that is is run
 # if the model is saved and passed to CopasiSE
-invisible(CScanTask_setScheduled(scanTask,TRUE))
+invisible(CCopasiTask_setScheduled(scanTask,TRUE))
 
 # set the report for the task
-invisible(CReport_setReportDefinition(CScanTask_getReport(scanTask,), report))
+invisible(CReport_setReportDefinition(CCopasiTask_getReport(scanTask), report))
 
 # set the output file for the report
-invisible(CReport_setTarget(scanTask_getReport(scanTask,), "example4.txt"))
+invisible(CReport_setTarget(CCopasiTask_getReport(scanTask), "example4.txt"))
 # don't append to an existing file, but overwrite
-invisible(CReport_setAppend(CScanTask_getReport(scanTask,),FALSE))
+invisible(CReport_setAppend(CCopasiTask_getReport(scanTask,),FALSE))
 
 # tell the scan that we want to make a scan over a trajectory task
 invisible(CScanProblem_setSubtask(scanProblem,"timeCourse"))

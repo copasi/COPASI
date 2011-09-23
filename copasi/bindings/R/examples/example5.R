@@ -34,7 +34,7 @@ invisible(CModelEntity_setStatus(variableModelValue,"ASSIGNMENT"))
 # we create a very simple assignment that is easy on the optimization
 # a parabole with the minimum at x=6 should do just fine
 s <- CCopasiContainer_getObject(fixedModelValue,CCopasiObjectName("Reference=Value"))
-s <- paste("(<", CCopasiObjectName_getString(CCopasiObject_getCN(s)), "> - 6.0)^2")
+s <- paste("(<", CCopasiObjectName_getString(CCopasiObject_getCN(s)), "> - 6.0)^2", sep = "")
 invisible(CModelEntity_setExpression(variableModelValue,s))
 # now we compile the model and tell COPASI which values have changed so
 # that COPASI can update the values that depend on those
@@ -87,7 +87,7 @@ invisible(COptProblem_setSubtaskType(optProblem,"timeCourse"))
 # the objective function is normally minimized
 objectiveFunction <- CCopasiContainer_getObject(variableModelValue,CCopasiObjectName("Reference=Value"))
 # we need to put the angled brackets around the common name of the object
-objectiveFunction <- paste("<", CCopasiObjectName_getString(CCopasiObject_getCN(objectiveFunction)) ,">")
+objectiveFunction <- paste("<", CCopasiObjectName_getString(CCopasiObject_getCN(objectiveFunction)) ,">", sep = "")
 # now we set the objective function in the problem
 invisible(COptProblem_setObjectiveFunction(optProblem,objectiveFunction))
 
@@ -164,7 +164,7 @@ invisible(CReport_setTarget(rep, "example5.txt"))
 invisible(CReport_setAppend(rep, FALSE))
 
 result <- FALSE
-tryCatch(result <- COptTask_process(optTask,TRUE), error = function(e) {
+tryCatch(result <- CCopasiTask_process(optTask,TRUE), error = function(e) {
   write("Running the optimization failed." , stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )

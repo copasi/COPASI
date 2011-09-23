@@ -23,7 +23,7 @@ stopifnot(!is.null(CCopasiRootContainer_getRoot()))
 dataModel <- CCopasiRootContainer_addDatamodel()
 stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 # first we load a simple model
-tryCatch(CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
+tryCatch(invisible(CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING)), error = function(e) {
   write("Error while importing the model.", stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )
@@ -71,7 +71,7 @@ method <- CCopasiTask_getMethod(trajectoryTask)
 
 result <- TRUE
 invisible(CCopasiMessage_clearDeque())
-tryCatch(result <- CTrajectoryTask_process(trajectoryTask,TRUE), error = function(e) {
+tryCatch(result <- CCopasiTask_process(trajectoryTask,TRUE), error = function(e) {
   write("Error. Running the time course simulation failed.", stderr()) 
   # check if there are additional error messages
   if (CCopasiMessage_size() > 0) {
@@ -105,8 +105,8 @@ lastIndex <- CTimeSeries_getRecordedSteps(timeSeries) - 1
 # open the file
 # we need to remember in which order the variables are written to file
 # since we need to specify this later in the parameter fitting task
-indexSet <-[]
-metabVector <-[]
+indexSet <- c()
+metabVector <- ObjectStdVector()
 
 # write the header
 # the first variable in a time series is a always time, for the rest
@@ -115,23 +115,26 @@ rand <- 0.0
 
 # redirect output to file
 sink("fakedata_example6.txt", append=FALSE, split=FALSE)
-write("# time ")
+cat("# time ")
 keyFactory <- CCopasiRootContainer_getKeyFactory()
 stopifnot(!is.null(keyFactory))
 i <- 1
 while (i < iMax) {
   key <- CTimeSeries_getKey(timeSeries,i)
-  object <- CCopasiKeyFactory_get(keyFactory,key)
+  object <- CKeyFactory_get(keyFactory,key)
   stopifnot(!is.null(object))
-  # only write header data or metabolites
-  if (object.__class__ == CMetab) {
-    write(", ")
-    write(CTimeSeries_getSBMLId(timeSeries,i,dataModel))
-    indexSet_append(indexSet,i)
-    metabVector_append(metabVector,object)
+  # only write header data for metabolites
+  # Since I don't know yet how to determine the real underlying class
+  # in R, I changed the example to use the getObjectType method
+  if (CCopasiObject_getObjectType(object) == "Metabolite") {
+    cat(", ")
+    cat(CTimeSeries_getSBMLId(timeSeries,i,dataModel))
+    indexSet <- c(indexSet,i)
+    ObjectStdVector_push_back(metabVector,object)
   }
+  i <- i + 1
 }
-write("\n")
+cat("\n")
 data <- 0.0
 i <- 0
 while(i < lastIndex) {
@@ -140,23 +143,26 @@ while(i < lastIndex) {
   while(j < iMax) {
     # we only want to  write the data for metabolites
     # the compartment does not interest us here
-    if (j==0 || (j in indexSet)) {
+    if (j==0 || any(indexSet == j)) {
       # write the data with some noise (+-5% max)
       rand <- runif(1, -0.05, 0.05)
       data <- CTimeSeries_getConcentrationData(timeSeries,i, j)
       # don't add noise to the time
       if (j != 0) {
-        data = data + data * rand 
+        data <- data + data * rand 
       }
-      s <- paste(s, data, ", ")
+      s <- paste(s, data, ", ", sep = "")
     }
+    j <- j + 1
   }
   # remove the last two characters again
-  write(s[0:-2])
-  write("\n")
+  cat(substr(s,1,nchar(s)-2), "\n", sep = "")
+  #cat(substr(s,1,length(s)-1))
+  i <- i + 1
 }
 # redirect output to default destination
 sink()
+
 
 # now we change the parameter values to see if the parameter fitting
 # can really find the original values
@@ -172,7 +178,7 @@ invisible(CReaction_setParameterValue(reaction,"k1",rand))
 reaction <- CModel_getReaction(model, 1)
 # we know that it is an irreversible mass action, so there is one
 # parameter
-stopifnot(CCopasiParameterGroup_size(reaction_getParameters(reaction,)) == 1)
+stopifnot(CCopasiParameterGroup_size(CReaction_getParameters(reaction)) == 1)
 stopifnot(CReaction_isLocalParameter(reaction,0))
 invisible(CReaction_setParameterValue(reaction,"k1",rand))
 
@@ -180,14 +186,14 @@ fitTask <- CCopasiDataModel_addTask(dataModel,"parameterFitting")
 stopifnot(!is.null(fitTask))
 # the method in a fit task is an instance of COptMethod or a subclass of
 # it.
-fitMethod <- CFitTask_getMethod(fitTask)
+fitMethod <- CCopasiTask_getMethod(fitTask)
 stopifnot(!is.null(fitMethod))
 # the object must be an instance of COptMethod or a subclass thereof
 # (CFitMethod)
-fitProblem <- CFitTask_getProblem(fitTask)
+fitProblem <- CCopasiTask_getProblem(fitTask)
 stopifnot(!is.null(fitProblem))
 
-experimentSet <- fitProblem_getParameter(fitProblem,"Experiment Set")
+experimentSet <- CCopasiParameterGroup_getParameter(fitProblem,"Experiment Set")
 stopifnot(!is.null(experimentSet))
 
 # first experiment (we only have one here)
@@ -219,28 +225,33 @@ stopifnot(result == TRUE)
 stopifnot(CExperimentObjectMap_getRole(objectMap,0) == "time")
 
 stopifnot(!is.null(model))
-timeReference <- CModel_getObject(model,CCopasiObjectName("Reference=Time"))
+timeReference <- CCopasiContainer_getObject(model,CCopasiObjectName("Reference=Time"))
 stopifnot(!is.null(timeReference))
 invisible(CExperimentObjectMap_setObjectCN(objectMap,0,CCopasiObjectName_getString(CCopasiObject_getCN(timeReference))))
 
 # now we tell COPASI which column contain the concentrations of
 # metabolites and belong to dependent variables
 invisible(CExperimentObjectMap_setRole(objectMap,1,"dependent"))
-metab <- metabVector[0]
+
+metab <- metabVector[1]
+print(CCopasiObject_getObjectName(metab))
 stopifnot(!is.null(metab))
 particleReference <- CCopasiContainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(CExperimentObjectMap_setObjectCN(objectMap,1,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
 
 invisible(CExperimentObjectMap_setRole(objectMap,2,"dependent"))
-metab <- metabVector[1]
+
+metab <- metabVector[2]
+cat(CCopasiObject_getObjectName(metab),"\n")
 stopifnot(!is.null(metab))
 particleReference <- CCopasiCOntainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(CExperimentObjectMap_setObjectCN(objectMap,2,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
 
 invisible(CExperimentObjectMap_setRole(objectMap,3,"dependent"))
-metab <- metabVector[2]
+
+metab <- metabVector[3]
 stopifnot(!is.null(metab))
 particleReference <- CCopasiContainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
@@ -296,7 +307,7 @@ invisible(CCopasiParameterGroup_addParameter(optimizationItemGroup,fitItem2))
 result <- TRUE
 # running the task for this example will probably take some time
 cat("This can take some time...\n")
-tryCatch(result <- fitTask_process(fitTask,TRUE), error = function(e) {
+tryCatch(result <- CCopasiTask_process(fitTask,TRUE), error = function(e) {
   write("Error. Parameter fitting failed.", stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )
@@ -306,8 +317,8 @@ stopifnot(result == TRUE)
 # stopifnot(that there are two optimization items)
 stopifnot(len(fitProblem_getOptItemList(fitProblem)) == 2)
 # the order should be the order in whih we added the items above
-optItem1 <- CFitProblem_getOptItemList(fitProblem)[0]
-optItem2 <- CFitProblem_getOptItemList(fitProblem)[1]
+optItem1 <- CFitProblem_getOptItemList(fitProblem)[1]
+optItem2 <- CFitProblem_getOptItemList(fitProblem)[2]
 # the actual results are stored in the fit problem
 stopifnot(FloatVectorCore_size(CFitProblem_getSolutionVariables(fitProblem)) == 2)
 
