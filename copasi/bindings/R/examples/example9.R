@@ -46,11 +46,14 @@ mostSevere <- CCopasiMessage_getHighestSeverity()
 # if it was a filtered error, we convert it to an unfiltered type
 # the filtered error messages have the same value as the unfiltered, but they
 # have the 7th bit set which basically adds 128 to the value
-mostSevere <- mostSevere & 127
+# Since R maps enums to string, we can't handle it the same way as in the other
+# languages
+# mostSevere <- mostSevere & 127
 
 # we assume that the import succeeded if the return value is TRUE and
 # the most severe error message is not an error or an exception
-if (result != TRUE &&  mostSevere < CCopasiMessage.ERROR) {
+errorList <- list("RAW","TRACE","COMMANDLINE","WARNING","RAW_FILTERED","TRACE_FILTERED","COMMANDLINE_FILTERED", "WARNING_FILTERED")
+if (result != TRUE && any(errorList,mostSevere)) {
     write("Sorry. Model could not be imported.", stderr())
     quit(save = "default", status = 1, runLast = TRUE)
 }
@@ -68,7 +71,7 @@ if (is.null(task)) {
 
 invisible(CCopasiMessage_clearDeque())
 
-tryCatch(CSteadyStateTask_process(task,TRUE), error = function(e) {
+tryCatch(invisible(CCopasiTask_process(task,TRUE)), error = function(e) {
   write("Error. Running the scan failed.", stderr())
   # check if there are additional error messages
   if (CCopasiMessage_size() > 0) {
@@ -84,7 +87,7 @@ tryCatch(CSteadyStateTask_process(task,TRUE), error = function(e) {
 # here we can either get the jacobian as we did in example 8 as a matrix with
 # getJacobian, or we can use getJacobianAnnotated to get an annotated matrix
 # Corresponding methods for the reduced jacobian are getJacobianX and getJacobianXAnnotated
-aj <- CSteadyStsteTask_getJacobianAnnotated(task)
+aj <- CSteadyStateTask_getJacobianAnnotated(task)
 stopifnot(!is.null(aj))
 
 if (!is.null(aj)) {
@@ -104,25 +107,25 @@ if (!is.null(aj)) {
     annotations <- CArrayAnnotation_getAnnotationsString(aj,1)
     cat("Jacobian Matrix:\n")
     cat("\n")
-    format(" ", width = 7)
+    cat(format(" ", width = 7))
 
     i <- 0
     while (i < StringStdVector_size(annotations)) {
-        format(annotations[i], width = 7)
+        cat(format(annotations[i], width = 7))
         i <- i + 1
     }
     cat("\n")
     
     i <- 0
     while (i < StringStdVector_size(annotations)) {
-        format(annotations[i], width = 7)
+        cat(format(annotations[i], width = 7))
         index[0] <- i
 
         j <- 0
         while (j < StringStdVector_size(annotations)) {
             index[1] <- j
             arr <- CArrayAnnotation_array(aj);
-            format(CCopasiAbtractArray_get(arr,index), width = 7, digits = 3)
+            cat(format(CCopasiAbstractArray_get(arr,index), width = 7, digits = 3))
             j <- j + 1
         }
         cat("\n")

@@ -14,7 +14,7 @@ source("COPASI.R")
 # The cacheMetaData(1) will cause R to refresh its object tables. Without it, inheritance of wrapped objects may fail.
 cacheMetaData(1)
 
-MODEL_STRING <- '<?xml version="1.0" encoding="UTF-8"?>\n <!-- Created by COPASI version 4.5.31 (Debug) on 2010-05-11 13:40 with libSBML version 4.1.0-b3. -->\n <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">\n <model metaid="COPASI1" id="Model_1" name="New Model">\n <listOfUnitDefinitions>\n <unitDefinition id="volume" name="volume">\n <listOfUnits>\n <unit kind="litre" scale="-3"/>\n </listOfUnits>\n </unitDefinition>\n <unitDefinition id="substance" name="substance">\n <listOfUnits>\n <unit kind="mole" scale="-3"/>\n </listOfUnits>\n </unitDefinition>\n <unitDefinition id="unit_0">\n <listOfUnits>\n <unit kind="second" exponent="-1"/>\n </listOfUnits>\n </unitDefinition>\n </listOfUnitDefinitions>\n <listOfCompartments>\n <compartment id="compartment_1" name="compartment" size="1"/>\n </listOfCompartments>\n <listOfSpecies>\n <species metaid="COPASI2" id="species_1" name="A" compartment="compartment_1" initialConcentration="1"/>\n <species metaid="COPASI3" id="species_2" name="B" compartment="compartment_1" initialConcentration="0"/>\n <species metaid="COPASI4" id="species_3" name="C" compartment="compartment_1" initialConcentration="0"/>\n </listOfSpecies>\n <listOfReactions>\n <reaction metaid="COPASI5" id="reaction_1" name="reaction_1" reversible="false">\n <listOfReactants>\n <speciesReference species="species_1"/>\n </listOfReactants>\n <listOfProducts>\n <speciesReference species="species_2"/>\n </listOfProducts>\n <kineticLaw>\n <math xmlns="http://www.w3.org/1998/Math/MathML">\n <apply>\n <times/>\n <ci> compartment_1 </ci>\n <ci> k1 </ci>\n <ci> species_1 </ci>\n </apply>\n </math>\n <listOfParameters>\n <parameter id="k1" name="k1" value="0.2" units="unit_0"/>\n </listOfParameters>\n </kineticLaw>\n </reaction>\n <reaction metaid="COPASI6" id="reaction_2" name="reaction_2" reversible="false">\n <listOfReactants>\n <speciesReference species="species_2"/>\n </listOfReactants>\n <listOfProducts>\n <speciesReference species="species_3"/>\n </listOfProducts>\n <kineticLaw>\n <math xmlns="http://www.w3.org/1998/Math/MathML">\n <apply>\n <times/>\n <ci> compartment_1 </ci>\n <ci> k1 </ci>\n <ci> species_2 </ci>\n </apply>\n </math>\n <listOfParameters>\n <parameter id="k1" name="k1" value="0.1" units="unit_0"/>\n </listOfParameters>\n </kineticLaw>\n </reaction>\n </listOfReactions>\n </model>\n </sbml>\n'
+MODEL_STRING <- '<?xml version="1.0" encoding="UTF-8"?><!-- Created by COPASI version4.5.31 (Debug) on 2010-05-11 13:40 with libSBML version 4.1.0-b3. --><sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4"><model metaid="COPASI1" id="Model_1" name="New Model"><listOfUnitDefinitions><unitDefinition id="volume" name="volume"><listOfUnits><unit kind="litre" scale="-3"/></listOfUnits></unitDefinition><unitDefinition id="substance" name="substance"><listOfUnits><unit kind="mole" scale="-3"/></listOfUnits></unitDefinition><unitDefinition id="unit_0"><listOfUnits><unit kind="second" exponent="-1"/></listOfUnits></unitDefinition></listOfUnitDefinitions><listOfCompartments><compartment id="compartment_1" name="compartment" size="1"/></listOfCompartments><listOfSpecies><species metaid="COPASI2" id="species_1" name="A" compartment="compartment_1" initialConcentration="1"/><species metaid="COPASI3" id="species_2" name="B" compartment="compartment_1" initialConcentration="0"/><species metaid="COPASI4" id="species_3" name="C" compartment="compartment_1" initialConcentration="0"/></listOfSpecies><listOfReactions><reaction metaid="COPASI5" id="reaction_1" name="reaction_1" reversible="false"><listOfReactants><speciesReference species="species_1"/></listOfReactants><listOfProducts><speciesReference species="species_2"/></listOfProducts><kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci> compartment_1 </ci><ci> k1 </ci><ci> species_1 </ci></apply></math><listOfParameters><parameter id="k1" name="k1" value="0.2" units="unit_0"/></listOfParameters></kineticLaw></reaction><reaction metaid="COPASI6" id="reaction_2" name="reaction_2" reversible="false"><listOfReactants><speciesReference species="species_2"/></listOfReactants><listOfProducts><speciesReference species="species_3"/></listOfProducts><kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci> compartment_1 </ci><ci> k1 </ci><ci> species_2 </ci></apply></math><listOfParameters><parameter id="k1" name="k1" value="0.1" units="unit_0"/></listOfParameters></kineticLaw></reaction></listOfReactions></model></sbml>'
 
 
 stopifnot(!is.null(CCopasiRootContainer_getRoot()))
@@ -27,7 +27,7 @@ stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
 # clear the message queue so that we only have error messages from the import in the queue
 invisible(CCopasiMessage_clearDeque())
 result <- TRUE
-tryCatch(result <- dataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
+tryCatch(result <- CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
   write("Import of model failed miserably.", stderr())
   if(CCopasiMessage_size() > 0) {
     write(CCopasiMessage_getAllMessageText(TRUE), stderr())
@@ -40,11 +40,14 @@ mostSevere <- CCopasiMessage_getHighestSeverity()
 # if it was a filtered error, we convert it to an unfiltered type
 # the filtered error messages have the same value as the unfiltered, but they
 # have the 7th bit set which basically adds 128 to the value
-mostSevere <- mostSevere & 127
+# Since R maps enums to string, we can't handle it the same way as in the other
+# languages
+#mostSevere <- mostSevere & 127
 
 # we assume that the import succeeded if the return value is TRUE and
 # the most severe error message is not an error or an exception
-if (result != TRUE && mostSevere < CCopasiMessage.ERROR) {
+errorList <- list("RAW","TRACE","COMMANDLINE","WARNING","RAW_FILTERED","TRACE_FILTERED","COMMANDLINE_FILTERED", "WARNING_FILTERED")
+if (result != TRUE && any(errorList,mostSevere)) {
     write("Sorry. Model could not be imported.", stderr())
     quit(save = "default", status = 1, runLast = TRUE)
 }
@@ -55,7 +58,7 @@ if (result != TRUE && mostSevere < CCopasiMessage.ERROR) {
 model <- CCopasiDataModel_getModel(dataModel)
 stopifnot(!is.null(model))
 
-if is.null(model) {
+if (!is.null(model)) {
     # running a task, e.g. a trajectory will automatically make sure that
     # the initial values are transferred to the current state before the calculation begins.
     # If we use low level calculation methods like the one to calculate the jacobian, we
@@ -83,44 +86,46 @@ if is.null(model) {
     # from those two, we can construct an new vector that contains
     # the names of the entities in the jacobian in the order in which they appear in
     # the jacobian
-    nameVector <- []
-    entity <- null
+    nameVector <- list()
+    entity <- NULL
     status <- -1
     
     i <- 0
-    while (i < SizeTVector_size(userOrder)) {
-        entity <- CStateTemplate_getEntity(stateTemplate,SizeTVector_get(userOrder,i))
+    while (i < SizeTVectorCore_size(userOrder)) {
+        entity <- CStateTemplate_getEntity(stateTemplate,SizeTVectorCore_get(userOrder,i))
         stopifnot(!is.null(entity))
         # now we need to check if the entity is actually
         # determined by an ODE or a reaction
         status <- CModelEntity_getStatus(entity)
 
         if (status == "ODE" || (status == "REACTIONS" && CModelEntity_isUsed(entity))) {
-            nameVector_append(nameVector,CCopasiObject_getObjectName(entity))
+            nameVector[[length(nameVector)+1]] <- CCopasiObject_getObjectName(entity)
         }
+        i <- i + 1
     }
 
-    stopifnot(len(nameVector) == FloatMatrix_numRows(jacobian))
+    stopifnot(length(nameVector) == FloatMatrix_numRows(jacobian))
     # now we print the matrix, for this we assume that no
     # entity name is longer then 5 character which is a save bet since
     # we know the model
     cat("Jacobian Matrix:\n")
     cat("\n")
-    format(" ", width = 7)
+    cat(format(" ", width = 7))
 
-    i <- 0
-    while(i < len(nameVector)) {
-        format(nameVector[i], width = 7)
+    i <- 1
+    while(i <= length(nameVector)) {
+        cat(format(nameVector[i], width = 7))
+        i <- i + 1
     }
 
-    print("")
+    cat("\n")
 
     i <- 0
-    while( i < len(nameVector)) {
-        format(nameVector[i], width = 7)
-
-        while (j < len(nameVector)) {
-            format(FloatMatrix_get(jacobian,i,j), width = 7 , digits = 3)
+    while( i < length(nameVector)) {
+        cat(format(nameVector[i+1], width = 7))
+        j <- 0
+        while (j < length(nameVector)) {
+            cat(format(FloatMatrix_get(jacobian,i,j), width = 7 , digits = 3))
             j <- j + 1
         }
 
@@ -137,25 +142,25 @@ if is.null(model) {
     cat("\n")
     cat("Reduced Jacobian Matrix:\n")
     cat("\n")
-    format(" ", width = 7)
+    cat(format(" ", width = 7))
     
     iMax <- CStateTemplate_getNumIndependent(stateTemplate)
    
     i <- 0
     while (i < iMax) {
-       format(CCopasiObject_getObjectName(CStateTemplate_getIndependent(stateTemplate,i)), width = 7)
-       + <- i + 1
+       cat(format(CCopasiObject_getObjectName(CStateTemplate_getIndependent(stateTemplate,i)), width = 7))
+       i <- i + 1
     }
 
     cat("\n")
 
     i <- 0
     while (i < iMax) {
-        format(CCopasiObject_getObjectName(CStateTemplate_getIndependent(stateTemplate,i)), width = 7)
+        cat(format(CCopasiObject_getObjectName(CStateTemplate_getIndependent(stateTemplate,i)), width = 7))
 
         j <- 0
         while (j < iMax) {
-            format(FloatMatrix_get(jacobian,i,j), width = 7 , digits = 3)
+            cat(format(FloatMatrix_get(jacobian,i,j), width = 7 , digits = 3))
             j <- j + 1
         }
 

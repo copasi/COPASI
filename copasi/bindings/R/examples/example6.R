@@ -106,7 +106,7 @@ lastIndex <- CTimeSeries_getRecordedSteps(timeSeries) - 1
 # we need to remember in which order the variables are written to file
 # since we need to specify this later in the parameter fitting task
 indexSet <- c()
-metabVector <- ObjectStdVector()
+metabVector <- list()
 
 # write the header
 # the first variable in a time series is a always time, for the rest
@@ -130,7 +130,7 @@ while (i < iMax) {
     cat(", ")
     cat(CTimeSeries_getSBMLId(timeSeries,i,dataModel))
     indexSet <- c(indexSet,i)
-    ObjectStdVector_push_back(metabVector,object)
+    metabVector[[length(metabVector)+1]] <- object
   }
   i <- i + 1
 }
@@ -232,9 +232,7 @@ invisible(CExperimentObjectMap_setObjectCN(objectMap,0,CCopasiObjectName_getStri
 # now we tell COPASI which column contain the concentrations of
 # metabolites and belong to dependent variables
 invisible(CExperimentObjectMap_setRole(objectMap,1,"dependent"))
-
-metab <- metabVector[1]
-print(CCopasiObject_getObjectName(metab))
+metab <- metabVector[[1]]
 stopifnot(!is.null(metab))
 particleReference <- CCopasiContainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
@@ -242,16 +240,15 @@ invisible(CExperimentObjectMap_setObjectCN(objectMap,1,CCopasiObjectName_getStri
 
 invisible(CExperimentObjectMap_setRole(objectMap,2,"dependent"))
 
-metab <- metabVector[2]
-cat(CCopasiObject_getObjectName(metab),"\n")
+metab <- metabVector[[2]]
 stopifnot(!is.null(metab))
-particleReference <- CCopasiCOntainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
+particleReference <- CCopasiContainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(CExperimentObjectMap_setObjectCN(objectMap,2,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
 
 invisible(CExperimentObjectMap_setRole(objectMap,3,"dependent"))
 
-metab <- metabVector[3]
+metab <- metabVector[[3]]
 stopifnot(!is.null(metab))
 particleReference <- CCopasiContainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
