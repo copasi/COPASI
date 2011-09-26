@@ -1,7 +1,7 @@
 /**
  * This is an example on how to build models with the COPASI backend API.
  */
-import org.COPASI.*;
+using org.COPASI;
 
 class example1
 {
@@ -32,9 +32,9 @@ class example1
      // create a compartment with the name cell and an initial volume of 5.0
      // microliter
      CCompartment compartment = model.createCompartment("cell", 5.0);
-     CCopasiObject object = compartment.getObject(new CCopasiObjectName("Reference=InitialVolume"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     CCopasiObject obj= compartment.getObject(new CCopasiObjectName("Reference=InitialVolume"));
+     Debug.Assert(obj!= null);
+     changedObjects.add(obj);
      Debug.Assert(compartment != null);
      Debug.Assert(model.getCompartments().size() == 1);
      // create a new metabolite with the name glucose and an inital
@@ -42,32 +42,32 @@ class example1
      // the metabolite belongs to the compartment we created and is is to be
      // fixed
      CMetab glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CMetab.FIXED);
-     object = glucose.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     obj = glucose.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     Debug.Assert(obj != null);
+     changedObjects.add(obj);
      Debug.Assert(glucose != null);
      Debug.Assert(model.getMetabolites().size() == 1);
      // create a second metabolite called glucose-6-phosphate with an initial
      // concentration of 0. This metabolite is to be changed by reactions
      CMetab g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
      Debug.Assert(g6p != null);
-     object = g6p.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     obj = g6p.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     Debug.Assert(obj != null);
+     changedObjects.add(obj);
      Debug.Assert(model.getMetabolites().size() == 2);
      // another metabolite for ATP, also fixed
      CMetab atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CMetab.FIXED);
      Debug.Assert(atp != null);
-     object = atp.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     obj = atp.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     Debug.Assert(obj != null);
+     changedObjects.add(obj);
      Debug.Assert(model.getMetabolites().size() == 3);
      // and one for ADP
      CMetab adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
      Debug.Assert(adp != null);
-     object = adp.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     obj = adp.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     Debug.Assert(obj != null);
+     changedObjects.add(obj);
      Debug.Assert(model.getMetabolites().size() == 4);
      // now we create a reaction
      CReaction reaction = model.createReaction("hexokinase");
@@ -128,9 +128,9 @@ class example1
          // now we set the value of the parameter to 0.5
          Debug.Assert(parameter.getType() == CCopasiParameter.DOUBLE);
          parameter.setDblValue(0.5);
-         object = parameter.getObject(new CCopasiObjectName("Reference=Value"));
-         Debug.Assert(object != null);
-         changedObjects.add(object);
+         obj = parameter.getObject(new CCopasiObjectName("Reference=Value"));
+         Debug.Assert(obj != null);
+         changedObjects.add(obj);
      }
      else
      {
@@ -177,9 +177,9 @@ class example1
      // it gets the name rateConstant and an initial value of 1.56
      CModelValue modelValue = model.createModelValue("rateConstant", 1.56);
      Debug.Assert(modelValue != null);
-     object = modelValue.getObject(new CCopasiObjectName("Reference=InitialValue"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     obj = modelValue.getObject(new CCopasiObjectName("Reference=InitialValue"));
+     Debug.Assert(obj != null);
+     changedObjects.add(obj);
      Debug.Assert(model.getModelValues().size() == 1);
      // set the status to assignment
      modelValue.setStatus(CModelValue.ASSIGNMENT);

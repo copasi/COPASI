@@ -133,14 +133,14 @@ class example6
           for(i=1;i<iMax;++i)
           {
             string key=timeSeries.getKey(i);
-            CCopasiObject object=keyFactory.get(key);
-            Debug.Assert(object != null);
+            CCopasiObject obj=keyFactory.get(key);
+            Debug.Assert(obj != null);
             // only write header data or metabolites
-            if(object.getClass()==org.COPASI.CMetab.class)
+            if(obj.getClass()==org.COPASI.CMetab.class)
             {
               os.Write(", ");
               os.Write(timeSeries.getSBMLId(i,dataModel));
-              CMetab m=(CMetab)object;
+              CMetab m=(CMetab)obj;
               indexSet.add(new Integer(i));
               metabVector.add(m);
             }

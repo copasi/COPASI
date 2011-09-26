@@ -32,9 +32,9 @@ class example7
      // create a compartment with the name cell and an initial volume of 5.0
      // microliter
      CCompartment compartment = model.createCompartment("cell", 5.0);
-     CCopasiObject object = compartment.getObject(new CCopasiObjectName("Reference=InitialVolume"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     CCopasiObject obj = compartment.getObject(new CCopasiObjectName("Reference=InitialVolume"));
+     Debug.Assert(obj != null);
+     changedObjects.add(obj);
      Debug.Assert(compartment != null);
      Debug.Assert(model.getCompartments().size() == 1);
      // create a new metabolite with the name S and an inital
@@ -42,9 +42,9 @@ class example7
      // the metabolite belongs to the compartment we created and is is to be
      // fixed
      CMetab S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CMetab.FIXED);
-     object = S.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
-     Debug.Assert((object != null));
-     changedObjects.add(object);
+     obj = S.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     Debug.Assert((obj != null));
+     changedObjects.add(obj);
      Debug.Assert((compartment != null));
      Debug.Assert(S != null);
      Debug.Assert(model.getMetabolites().size() == 1);
@@ -52,9 +52,9 @@ class example7
      // concentration of 0. This metabolite is to be changed by reactions
      CMetab P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
      Debug.Assert(P != null);
-     object = P.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     obj = P.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     Debug.Assert(obj != null);
+     changedObjects.add(obj);
      Debug.Assert(model.getMetabolites().size() == 2);
 
      // now we create a reaction
@@ -78,9 +78,9 @@ class example7
      // set the status to FIXED
      MV.setStatus(CModelValue.FIXED);
      Debug.Assert(MV != null);
-     object = MV.getObject(new CCopasiObjectName("Reference=InitialValue"));
-     Debug.Assert(object != null);
-     changedObjects.add(object);
+     obj = MV.getObject(new CCopasiObjectName("Reference=InitialValue"));
+     Debug.Assert(obj != null);
+     changedObjects.add(obj);
      Debug.Assert(model.getModelValues().size() == 1);
 
      // now we ned to set a kinetic law on the reaction
