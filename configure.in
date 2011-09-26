@@ -325,6 +325,26 @@ if test x"${PERL_BIN}" != x""; then
   QMAKE_ARG="$QMAKE_ARG PERL_BIN=$PERL_BIN"
 fi
 
+AC_ARG_ENABLE([csharp],
+  AS_HELP_STRING([--enable-csharp],
+                 [build csharp wrappers (default: disabled)]),
+  [ENABLE_CSHARP=$enable_csharp],
+  [ENABLE_CSHARP="no"])
+
+if test x"${ENABLE_CSHARP}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_CSHARP=$ENABLE_CSHARP"
+fi
+
+
+AC_ARG_WITH([mono],
+  AS_HELP_STRING([--with-mono=PATH],
+                 [Path to C# development tools]),
+  [MONO_PATH=$withval;MONO_HOME=$withval])
+
+if test x"${MONO_HOME}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG MONO_HOME=$MONO_HOME"
+fi
+
 
 AC_ARG_WITH([junit],
   AS_HELP_STRING([--with-junit=PATH],
