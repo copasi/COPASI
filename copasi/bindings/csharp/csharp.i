@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $ 
-//   $Revision: 1.1.2.1 $ 
+//   $Revision: 1.1.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/22 17:38:11 $ 
+//   $Date: 2011/09/26 08:56:56 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,21 +11,20 @@
 // of Manchester. 
 // All rights reserved. 
 
-%include exception.i
 /**
  * Make COPASI and wrapper constants Mono compile-time
  * constants so they may be used in switch statements.
  */
 %include "enumsimple.swg"
-%javaconst(1);
+%csconst(1);
 
 
 void initCopasi();
 
-%typemap(jni) CCopasiAbstractArray* CArrayAnnotation::array "jobject"
-%typemap(jtype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
-%typemap(jstype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
-%typemap(javaout) CCopasiAbstractArray* CArrayAnnotation::array 
+%typemap(ctype) CCopasiAbstractArray* CArrayAnnotation::array "jobject"
+%typemap(imtype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
+%typemap(cstype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
+%typemap(csout) CCopasiAbstractArray* CArrayAnnotation::array 
 {
   return $jnicall;
 }
@@ -39,10 +38,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CCopasiTask* CCopasiDataModel::addTask "jobject"
-%typemap(jtype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
-%typemap(jstype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
-%typemap(javaout) CCopasiTask* CCopasiDataModel::addTask 
+%typemap(ctype) CCopasiTask* CCopasiDataModel::addTask "jobject"
+%typemap(imtype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
+%typemap(cstype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
+%typemap(csout) CCopasiTask* CCopasiDataModel::addTask 
 {
   return $jnicall;
 }
@@ -55,10 +54,10 @@ void initCopasi();
     }
 }
 
-%typemap(jni) CCopasiTask* CCopasiDataModel::getTask "jobject"
-%typemap(jtype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"
-%typemap(jstype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"
-%typemap(javaout) CCopasiTask* CCopasiDataModel::getTask 
+%typemap(ctype) CCopasiTask* CCopasiDataModel::getTask "jobject"
+%typemap(imtype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"
+%typemap(cstype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"
+%typemap(csout) CCopasiTask* CCopasiDataModel::getTask 
 {
   return $jnicall;
 }
@@ -71,10 +70,10 @@ void initCopasi();
     }
 }
 
-%typemap(jni) CCopasiObject* CKeyFactory::get "jobject"
-%typemap(jtype) CCopasiObject* CKeyFactory::get "CCopasiObject"
-%typemap(jstype) CCopasiObject* CKeyFactory::get "CCopasiObject"
-%typemap(javaout) CCopasiObject* CKeyFactory::get
+%typemap(ctype) CCopasiObject* CKeyFactory::get "jobject"
+%typemap(imtype) CCopasiObject* CKeyFactory::get "CCopasiObject"
+%typemap(cstype) CCopasiObject* CKeyFactory::get "CCopasiObject"
+%typemap(csout) CCopasiObject* CKeyFactory::get
 {
   return $jnicall;
 }
@@ -88,10 +87,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CCopasiContainer* CCopasiObject::getObjectParent "jobject"
-%typemap(jtype) CCopasiContainer* CCopasiObject::getObjectParent "CCopasiContainer"
-%typemap(jstype) CCopasiContainer* CCopasiObject::getObjectParent "CCopasiContainer"
-%typemap(javaout) CCopasiContainer* CCopasiObject::getObjectParent 
+%typemap(ctype) CCopasiContainer* CCopasiObject::getObjectParent "jobject"
+%typemap(imtype) CCopasiContainer* CCopasiObject::getObjectParent "CCopasiContainer"
+%typemap(cstype) CCopasiContainer* CCopasiObject::getObjectParent "CCopasiContainer"
+%typemap(csout) CCopasiContainer* CCopasiObject::getObjectParent 
 {
   return $jnicall;
 }
@@ -105,10 +104,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CCopasiParameter* CCopasiParameterGroup::getParameter "jobject"
-%typemap(jtype) CCopasiParameter* CCopasiParameterGroup::getParameter "CCopasiParameter"
-%typemap(jstype) CCopasiParameter* CCopasiParameterGroup::getParameter "CCopasiParameter"
-%typemap(javaout) CCopasiParameter* CCopasiParameterGroup::getParameter 
+%typemap(ctype) CCopasiParameter* CCopasiParameterGroup::getParameter "jobject"
+%typemap(imtype) CCopasiParameter* CCopasiParameterGroup::getParameter "CCopasiParameter"
+%typemap(cstype) CCopasiParameter* CCopasiParameterGroup::getParameter "CCopasiParameter"
+%typemap(csout) CCopasiParameter* CCopasiParameterGroup::getParameter 
 {
   return $jnicall;
 }
@@ -121,10 +120,10 @@ void initCopasi();
     }
 }
 
-%typemap(jni) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "jobject"
-%typemap(jtype) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "CCopasiParameterGroup"
-%typemap(jstype) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "CCopasiParameterGroup"
-%typemap(javaout) CCopasiParameterGroup* CCopasiParameterGroup::getGroup 
+%typemap(ctype) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "jobject"
+%typemap(imtype) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "CCopasiParameterGroup"
+%typemap(cstype) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "CCopasiParameterGroup"
+%typemap(csout) CCopasiParameterGroup* CCopasiParameterGroup::getGroup 
 {
   return $jnicall;
 }
@@ -138,10 +137,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CCopasiProblem* CCopasiTask::getProblem "jobject"
-%typemap(jtype) CCopasiProblem* CCopasiTask::getProblem "CCopasiProblem"
-%typemap(jstype) CCopasiProblem* CCopasiTask::getProblem "CCopasiProblem"
-%typemap(javaout) CCopasiProblem* CCopasiTask::getProblem 
+%typemap(ctype) CCopasiProblem* CCopasiTask::getProblem "jobject"
+%typemap(imtype) CCopasiProblem* CCopasiTask::getProblem "CCopasiProblem"
+%typemap(cstype) CCopasiProblem* CCopasiTask::getProblem "CCopasiProblem"
+%typemap(csout) CCopasiProblem* CCopasiTask::getProblem 
 {
   return $jnicall;
 }
@@ -155,10 +154,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CCopasiMethod* CCopasiTask::getMethod "jobject"
-%typemap(jtype) CCopasiMethod* CCopasiTask::getMethod "CCopasiMethod"
-%typemap(jstype) CCopasiMethod* CCopasiTask::getMethod "CCopasiMethod"
-%typemap(javaout) CCopasiMethod* CCopasiTask::getMethod 
+%typemap(ctype) CCopasiMethod* CCopasiTask::getMethod "jobject"
+%typemap(imtype) CCopasiMethod* CCopasiTask::getMethod "CCopasiMethod"
+%typemap(cstype) CCopasiMethod* CCopasiTask::getMethod "CCopasiMethod"
+%typemap(csout) CCopasiMethod* CCopasiTask::getMethod 
 {
   return $jnicall;
 }
@@ -172,10 +171,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CEvaluationTree* CFunctionDB::findFunction "jobject"
-%typemap(jtype) CEvaluationTree* CFunctionDB::findFunction "CEvaluationTree"
-%typemap(jstype) CEvaluationTree* CFunctionDB::findFunction "CEvaluationTree"
-%typemap(javaout) CEvaluationTree* CFunctionDB::findFunction 
+%typemap(ctype) CEvaluationTree* CFunctionDB::findFunction "jobject"
+%typemap(imtype) CEvaluationTree* CFunctionDB::findFunction "CEvaluationTree"
+%typemap(cstype) CEvaluationTree* CFunctionDB::findFunction "CEvaluationTree"
+%typemap(csout) CEvaluationTree* CFunctionDB::findFunction 
 {
   return $jnicall;
 }
@@ -189,10 +188,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CEvaluationTree* CFunctionDB::findLoadFunction "jobject"
-%typemap(jtype) CEvaluationTree* CFunctionDB::findLoadFunction "CEvaluationTree"
-%typemap(jstype) CEvaluationTree* CFunctionDB::findLoadFunction "CEvaluationTree"
-%typemap(javaout) CEvaluationTree* CFunctionDB::findLoadFunction 
+%typemap(ctype) CEvaluationTree* CFunctionDB::findLoadFunction "jobject"
+%typemap(imtype) CEvaluationTree* CFunctionDB::findLoadFunction "CEvaluationTree"
+%typemap(cstype) CEvaluationTree* CFunctionDB::findLoadFunction "CEvaluationTree"
+%typemap(csout) CEvaluationTree* CFunctionDB::findLoadFunction 
 {
   return $jnicall;
 }
@@ -206,10 +205,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CEvaluationTree* CFunctionDB::createFunction "jobject"
-%typemap(jtype) CEvaluationTree* CFunctionDB::createFunction "CEvaluationTree"
-%typemap(jstype) CEvaluationTree* CFunctionDB::createFunction "CEvaluationTree"
-%typemap(javaout) CEvaluationTree* CFunctionDB::createFunction 
+%typemap(ctype) CEvaluationTree* CFunctionDB::createFunction "jobject"
+%typemap(imtype) CEvaluationTree* CFunctionDB::createFunction "CEvaluationTree"
+%typemap(cstype) CEvaluationTree* CFunctionDB::createFunction "CEvaluationTree"
+%typemap(csout) CEvaluationTree* CFunctionDB::createFunction 
 {
   return $jnicall;
 }
@@ -240,10 +239,10 @@ void initCopasi();
 %}
 
 /*  
-%typemap(jni) CModelEntity* "jobject"
-%typemap(jtype) CModelEntity* "CModelEntity"
-%typemap(jstype) CModelEntity* "CModelEntity"
-%typemap(javaout) CModelEntity* 
+%typemap(ctype) CModelEntity* "jobject"
+%typemap(imtype) CModelEntity* "CModelEntity"
+%typemap(cstype) CModelEntity* "CModelEntity"
+%typemap(csout) CModelEntity* 
 {
     return $jnicall;
 }
@@ -258,10 +257,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CEvaluationTree* "jobject"
-%typemap(jtype) CEvaluationTree* "CEvaluationTree"
-%typemap(jstype) CEvaluationTree* "CEvaluationTree"
-%typemap(javaout) CEvaluationTree* 
+%typemap(ctype) CEvaluationTree* "jobject"
+%typemap(imtype) CEvaluationTree* "CEvaluationTree"
+%typemap(cstype) CEvaluationTree* "CEvaluationTree"
+%typemap(csout) CEvaluationTree* 
 {
     return $jnicall;
 }
@@ -275,10 +274,10 @@ void initCopasi();
     }
 }
 
-%typemap(jni) CCopasiTask* "jobject"
-%typemap(jtype) CCopasiTask* "CCopasiTask"
-%typemap(jstype) CCopasiTask* "CCopasiTask"
-%typemap(javaout) CCopasiTask* 
+%typemap(ctype) CCopasiTask* "jobject"
+%typemap(imtype) CCopasiTask* "CCopasiTask"
+%typemap(cstype) CCopasiTask* "CCopasiTask"
+%typemap(csout) CCopasiTask* 
 {
     return $jnicall;
 }
@@ -292,10 +291,10 @@ void initCopasi();
     }
 }
 
-%typemap(jni) CCopasiMethod* "jobject"
-%typemap(jtype) CCopasiMethod* "CCopasiMethod"
-%typemap(jstype) CCopasiMethod* "CCopasiMethod"
-%typemap(javaout) CCopasiMethod* 
+%typemap(ctype) CCopasiMethod* "jobject"
+%typemap(imtype) CCopasiMethod* "CCopasiMethod"
+%typemap(cstype) CCopasiMethod* "CCopasiMethod"
+%typemap(csout) CCopasiMethod* 
 {
     return $jnicall;
 }
@@ -309,10 +308,10 @@ void initCopasi();
     }
 }
 
-%typemap(jni) CCopasiProblem* "jobject"
-%typemap(jtype) CCopasiProblem* "CCopasiProblem"
-%typemap(jstype) CCopasiProblem* "CCopasiProblem"
-%typemap(javaout) CCopasiProblem* 
+%typemap(ctype) CCopasiProblem* "jobject"
+%typemap(imtype) CCopasiProblem* "CCopasiProblem"
+%typemap(cstype) CCopasiProblem* "CCopasiProblem"
+%typemap(csout) CCopasiProblem* 
 {
     return $jnicall;
 }
@@ -328,10 +327,10 @@ void initCopasi();
 
 
 
-%typemap(jni) CCopasiParameterGroup* "jobject"
-%typemap(jtype) CCopasiParameterGroup* "CCopasiParameterGroup"
-%typemap(jstype) CCopasiParameterGroup* "CCopasiParameterGroup"
-%typemap(javaout) CCopasiParameterGroup* 
+%typemap(ctype) CCopasiParameterGroup* "jobject"
+%typemap(imtype) CCopasiParameterGroup* "CCopasiParameterGroup"
+%typemap(cstype) CCopasiParameterGroup* "CCopasiParameterGroup"
+%typemap(csout) CCopasiParameterGroup* 
 {
     return $jnicall;
 }
@@ -346,10 +345,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CCopasiParameter* "jobject"
-%typemap(jtype) CCopasiParameter* "CCopasiParameter"
-%typemap(jstype) CCopasiParameter* "CCopasiParameter"
-%typemap(javaout) CCopasiParameter* 
+%typemap(ctype) CCopasiParameter* "jobject"
+%typemap(imtype) CCopasiParameter* "CCopasiParameter"
+%typemap(cstype) CCopasiParameter* "CCopasiParameter"
+%typemap(csout) CCopasiParameter* 
 {
     return $jnicall;
 }
@@ -364,10 +363,10 @@ void initCopasi();
 }
 
 
-%typemap(jni) CCopasiContainer* "jobject"
-%typemap(jtype) CCopasiContainer* "CCopasiContainer"
-%typemap(jstype) CCopasiContainer* "CCopasiContainer"
-%typemap(javaout) CCopasiContainer* 
+%typemap(ctype) CCopasiContainer* "jobject"
+%typemap(imtype) CCopasiContainer* "CCopasiContainer"
+%typemap(cstype) CCopasiContainer* "CCopasiContainer"
+%typemap(csout) CCopasiContainer* 
 {
     return $jnicall;
 }
@@ -381,10 +380,10 @@ void initCopasi();
     }
 }
 
-%typemap(jni) CCopasiObject* "jobject"
-%typemap(jtype) CCopasiObject* "CCopasiObject"
-%typemap(jstype) CCopasiObject* "CCopasiObject"
-%typemap(javaout) CCopasiObject* 
+%typemap(ctype) CCopasiObject* "jobject"
+%typemap(imtype) CCopasiObject* "CCopasiObject"
+%typemap(cstype) CCopasiObject* "CCopasiObject"
+%typemap(csout) CCopasiObject* 
 {
     return $jnicall;
 }
@@ -401,6 +400,9 @@ void initCopasi();
 
 
 
+/**
+ * C# does not handle exceptions the same way as java. The code below will have to be adjusted
+ * once the build system is finished.
 %javaexception("java.lang.Exception") CCopasiTask::process {
    try 
    {
@@ -516,6 +518,7 @@ void initCopasi();
      return $null;
    }
 }
+*/
 
 
 %include "../swig/copasi.i"

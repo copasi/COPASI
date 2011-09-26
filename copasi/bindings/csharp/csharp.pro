@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.pro,v $ 
-#   $Revision: 1.1.2.1 $ 
+#   $Revision: 1.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/09/22 17:38:12 $ 
+#   $Date: 2011/09/26 08:56:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -42,17 +42,17 @@ contains(BUILD_OS,Linux){
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
-  !isEmpty(MONO_HOME){
-   isEmpty(MONO_INCLUDE_PATH){
-     INCLUDEPATH += $$MONO_HOME/include/
-     INCLUDEPATH += $$MONO_HOME/include/linux
-   }
-  }
+#  !isEmpty(MONO_HOME){
+#   isEmpty(MONO_INCLUDE_PATH){
+#     INCLUDEPATH += $$MONO_HOME/include/
+#     INCLUDEPATH += $$MONO_HOME/include/linux
+#   }
+#  }
 
-  !isEmpty(MONO_INCLUDE_PATH){
-    INCLUDEPATH += $$MONO_INCLUDE_PATH 
-    INCLUDEPATH += $$MONO_INCLUDE_PATH/linux
-  }
+#  !isEmpty(MONO_INCLUDE_PATH){
+#    INCLUDEPATH += $$MONO_INCLUDE_PATH 
+#    INCLUDEPATH += $$MONO_INCLUDE_PATH/linux
+#  }
 }
 
 
@@ -74,17 +74,17 @@ contains(BUILD_OS, Darwin) {
     # make a hard link from the generated dylib file to a file with the ending
     # jnilib
     QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
-    QMAKE_POST_LINK = ln -f libCopasiJava.1.0.0.dylib libCopasiJava.jnilib 
+#    QMAKE_POST_LINK = ln -f libCOPASI.1.0.0.dylib libCOPASI.jnilib 
 
-  !isEmpty(MONO_HOME){
-   isEmpty(MONO_INCLUDE_PATH){
-     INCLUDEPATH += $$MONO_HOME/include/
-   }  
-  }
+#  !isEmpty(MONO_HOME){
+#   isEmpty(MONO_INCLUDE_PATH){
+#     INCLUDEPATH += $$MONO_HOME/include/
+#   }  
+#  }
 
-  !isEmpty(MONO_INCLUDE_PATH){
-    INCLUDEPATH += $$MONO_INCLUDE_PATH
-  }
+#  !isEmpty(MONO_INCLUDE_PATH){
+#    INCLUDEPATH += $$MONO_INCLUDE_PATH
+#  }
   
 
 }
@@ -124,16 +124,7 @@ include(../common/swig_files.pri)
 
 #DISTFILE   = $$SWIG_INTERFACE_FILES
 #DISTFILES += local.cpp
-#DISTFILES += java.i
-#DISTFILES += gui/org/COPASI/gui/TaskWidget.java
-#DISTFILES += gui/org/COPASI/gui/TrajectoryTaskWidget.java
-#DISTFILES += gui/org/COPASI/gui/PositiveIntegerVerifier.java
-#DISTFILES += gui/org/COPASI/gui/IntegerVerifier.java
-#DISTFILES += gui/org/COPASI/gui/PositiveFloatVerifier.java
-#DISTFILES += gui/org/COPASI/gui/FloatVerifier.java
-#DISTFILES += unittests/Test_CreateSimpleModel.java 
-#DISTFILES += unittests/Test_RunSimulations.java
-#DISTFILES += unittests/Test_RunOptimization.java
+#DISTFILES += csharp.i
 
 isEmpty(SWIG_PATH){
     # check if the wrapper file is there
@@ -159,8 +150,8 @@ isEmpty(SWIG_PATH){
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
     contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) java_files\org\COPASI\*.java && $(DEL_FILE) java_files\org\COPASI\*.class && $(DEL_FILE) gui\org\COPASI\gui\*.class && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files\org\COPASI\  java.i && cd java_files && $$MONO_HOME\bin\javac.exe -classpath . -d . org\COPASI\*.java  && cd .. && $$MONO_HOME\bin\jar.exe cvf copasi.jar -C java_files .\org && cd gui && $$MONO_HOME\bin\javac.exe -classpath .;..\copasi.jar -d . org\COPASI\gui\*.java && $$MONO_HOME\bin\jar.exe cvf ..\copasi_gui.jar -C . org\COPASI\gui\*.class org\COPASI\gui\*.java
+      wrapper_source.depends = $$SWIG_INTERFACE_FILES csharp.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) mono_files\*.cs && $(DEL_FILE) mono_files\*.dll && && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -csharp -o $$wrapper_source.target -namespace org.COPASI -outdir mono_files\  csharp.i && cd mono_files && $$MONO_HOME\mcs.exe /target:library /out:COPASI.dll *.cs  && cd .. 
       QMAKE_EXTRA_WIN_TARGETS += wrapper_source
       #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
 
@@ -168,8 +159,8 @@ isEmpty(SWIG_PATH){
     !contains(BUILD_OS, WIN32){
 
       wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $$MONO_HOME/bin/javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$$MONO_HOME/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $$MONO_HOME/bin/javac -classpath ../copasi.jar:. -d . org/COPASI/gui/*.java ; $$MONO_HOME/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
+      wrapper_source.depends = $$SWIG_INTERFACE_FILES csharp.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) mono_files/*.cs mono_files/*.dll; mkdir mono_files ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -csharp -o $$wrapper_source.target -namespace org.COPASI -outdir mono_files/  csharp.i; cd mono_files; $$MONO_HOME/bin/gmcs /target:library /out:COPASI.dll *.cs 
       QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
       #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
     }
@@ -177,11 +168,9 @@ isEmpty(SWIG_PATH){
 }
 
 QMAKE_CLEAN += copasi_wrapper.cpp 
-QMAKE_CLEAN += copasi.jar 
-QMAKE_CLEAN += copasi_gui.jar
-QMAKE_CLEAN += java_files/org/COPASI/*.java
-QMAKE_CLEAN += java_files/org/COPASI/*.class
+QMAKE_CLEAN += mono_files/org/COPASI/*.cs
+QMAKE_CLEAN += mono_files/org/COPASI/*.dll
 
 SOURCES += copasi_wrapper.cpp
-# under windows qmake seems to ignore the last line of progject files
+# under windows qmake seems to ignore the last line of project files
 
