@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.pro,v $ 
-#   $Revision: 1.1.2.2 $ 
+#   $Revision: 1.1.2.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/09/26 08:56:56 $ 
+#   $Date: 2011/09/26 12:14:53 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -168,8 +168,8 @@ isEmpty(SWIG_PATH){
 }
 
 QMAKE_CLEAN += copasi_wrapper.cpp 
-QMAKE_CLEAN += mono_files/org/COPASI/*.cs
-QMAKE_CLEAN += mono_files/org/COPASI/*.dll
+QMAKE_CLEAN += mono_files/*.cs
+QMAKE_CLEAN += mono_files/*.dll
 
 SOURCES += copasi_wrapper.cpp
 # under windows qmake seems to ignore the last line of project files

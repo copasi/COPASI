@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $ 
-//   $Revision: 1.1.2.2 $ 
+//   $Revision: 1.1.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/26 08:56:56 $ 
+//   $Date: 2011/09/26 12:14:53 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,12 +21,13 @@
 
 void initCopasi();
 
+/*
 %typemap(ctype) CCopasiAbstractArray* CArrayAnnotation::array "jobject"
 %typemap(imtype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
 %typemap(cstype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
 %typemap(csout) CCopasiAbstractArray* CArrayAnnotation::array 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiAbstractArray* CArrayAnnotation::array
 {
@@ -43,7 +44,7 @@ void initCopasi();
 %typemap(cstype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
 %typemap(csout) CCopasiTask* CCopasiDataModel::addTask 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiTask* CCopasiDataModel::addTask
 {
@@ -59,7 +60,7 @@ void initCopasi();
 %typemap(cstype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"
 %typemap(csout) CCopasiTask* CCopasiDataModel::getTask 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiTask* CCopasiDataModel::getTask
 {
@@ -75,7 +76,7 @@ void initCopasi();
 %typemap(cstype) CCopasiObject* CKeyFactory::get "CCopasiObject"
 %typemap(csout) CCopasiObject* CKeyFactory::get
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiObject* CKeyFactory::get
 {
@@ -92,7 +93,7 @@ void initCopasi();
 %typemap(cstype) CCopasiContainer* CCopasiObject::getObjectParent "CCopasiContainer"
 %typemap(csout) CCopasiContainer* CCopasiObject::getObjectParent 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiContainer* CCopasiObject::getObjectParent
 {
@@ -109,7 +110,7 @@ void initCopasi();
 %typemap(cstype) CCopasiParameter* CCopasiParameterGroup::getParameter "CCopasiParameter"
 %typemap(csout) CCopasiParameter* CCopasiParameterGroup::getParameter 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiParameter* CCopasiParameterGroup::getParameter
 {
@@ -125,7 +126,7 @@ void initCopasi();
 %typemap(cstype) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "CCopasiParameterGroup"
 %typemap(csout) CCopasiParameterGroup* CCopasiParameterGroup::getGroup 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiParameterGroup* CCopasiParameterGroup::getGroup
 {
@@ -142,7 +143,7 @@ void initCopasi();
 %typemap(cstype) CCopasiProblem* CCopasiTask::getProblem "CCopasiProblem"
 %typemap(csout) CCopasiProblem* CCopasiTask::getProblem 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiProblem* CCopasiTask::getProblem
 {
@@ -159,7 +160,7 @@ void initCopasi();
 %typemap(cstype) CCopasiMethod* CCopasiTask::getMethod "CCopasiMethod"
 %typemap(csout) CCopasiMethod* CCopasiTask::getMethod 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CCopasiMethod* CCopasiTask::getMethod
 {
@@ -176,7 +177,7 @@ void initCopasi();
 %typemap(cstype) CEvaluationTree* CFunctionDB::findFunction "CEvaluationTree"
 %typemap(csout) CEvaluationTree* CFunctionDB::findFunction 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CEvaluationTree* CFunctionDB::findFunction
 {
@@ -193,7 +194,7 @@ void initCopasi();
 %typemap(cstype) CEvaluationTree* CFunctionDB::findLoadFunction "CEvaluationTree"
 %typemap(csout) CEvaluationTree* CFunctionDB::findLoadFunction 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CEvaluationTree* CFunctionDB::findLoadFunction
 {
@@ -210,7 +211,7 @@ void initCopasi();
 %typemap(cstype) CEvaluationTree* CFunctionDB::createFunction "CEvaluationTree"
 %typemap(csout) CEvaluationTree* CFunctionDB::createFunction 
 {
-  return $jnicall;
+  return $imcall;
 }
 %typemap(out) CEvaluationTree* CFunctionDB::createFunction
 {
@@ -237,6 +238,7 @@ void initCopasi();
 		initCopasi();
   }
 %}
+*/
 
 /*  
 %typemap(ctype) CModelEntity* "jobject"
@@ -244,7 +246,7 @@ void initCopasi();
 %typemap(cstype) CModelEntity* "CModelEntity"
 %typemap(csout) CModelEntity* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CModelEntity* 
@@ -262,7 +264,7 @@ void initCopasi();
 %typemap(cstype) CEvaluationTree* "CEvaluationTree"
 %typemap(csout) CEvaluationTree* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CEvaluationTree* 
@@ -279,7 +281,7 @@ void initCopasi();
 %typemap(cstype) CCopasiTask* "CCopasiTask"
 %typemap(csout) CCopasiTask* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CCopasiTask* 
@@ -296,7 +298,7 @@ void initCopasi();
 %typemap(cstype) CCopasiMethod* "CCopasiMethod"
 %typemap(csout) CCopasiMethod* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CCopasiMethod* 
@@ -313,7 +315,7 @@ void initCopasi();
 %typemap(cstype) CCopasiProblem* "CCopasiProblem"
 %typemap(csout) CCopasiProblem* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CCopasiProblem* 
@@ -332,7 +334,7 @@ void initCopasi();
 %typemap(cstype) CCopasiParameterGroup* "CCopasiParameterGroup"
 %typemap(csout) CCopasiParameterGroup* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CCopasiParameterGroup* 
@@ -350,7 +352,7 @@ void initCopasi();
 %typemap(cstype) CCopasiParameter* "CCopasiParameter"
 %typemap(csout) CCopasiParameter* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CCopasiParameter* 
@@ -368,7 +370,7 @@ void initCopasi();
 %typemap(cstype) CCopasiContainer* "CCopasiContainer"
 %typemap(csout) CCopasiContainer* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CCopasiContainer* 
@@ -385,7 +387,7 @@ void initCopasi();
 %typemap(cstype) CCopasiObject* "CCopasiObject"
 %typemap(csout) CCopasiObject* 
 {
-    return $jnicall;
+    return $imcall;
 }
 
 %typemap(out) CCopasiObject* 
@@ -520,6 +522,12 @@ void initCopasi();
 }
 */
 
+// some general ignore statements that already get rid of most warnings
+%ignore *::operator =;
+%ignore *::operator [];
+%ignore *::operator ();
+%ignore *::begin() const;
+%ignore *::end() const;
 
 %include "../swig/copasi.i"
 

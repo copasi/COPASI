@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CLayout.i,v $ 
-//   $Revision: 1.2.2.1 $ 
+//   $Revision: 1.2.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/08 16:31:37 $ 
+//   $Date: 2011/09/26 12:14:52 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -45,6 +45,21 @@ typedef CCopasiVector<CLGraphicalObject> GraphicalObjectVector;
 
 // suppress warnings on multiple inheritance
 %warnfilter(813) CLayout;
+
+#ifdef SWIGCSHARP
+// out of some reason C# does not like the getKey wrapper method 
+// method
+%ignore CLayout::getKey() const;
+
+%extend CLayout
+{
+    const std::string& getKey() const
+    {  
+        return $self->getKey();
+    }
+}
+#endif // SWIGCSHARP
+
 
 %include "layout/CLayout.h"
 

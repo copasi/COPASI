@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.25.2.4 $ 
+//   $Revision: 1.25.2.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/16 16:13:16 $ 
+//   $Date: 2011/09/26 12:14:52 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -41,7 +41,7 @@
 %ignore CCopasiTask::isValidMethod;
 %ignore CCopasiTask::initialize;
 
-#ifdef SWIGJAVA
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
 // remove some const methods to get rid of warnings
 %ignore CCopasiTask::getProblem() const;
 %ignore CCopasiTask::getMethod() const;
@@ -56,7 +56,7 @@
 %ignore CCopasiTask::OUTPUT_UI;
 %ignore CCopasiTask::ONLY_TIME_SERIES;
 
-#endif // SWIGJAVA
+#endif // SWIGJAVA || SWIGCSHARP
 
 #ifdef SWIGR
 // we ignore the method that takes an int and create a new method that takes
@@ -71,7 +71,7 @@
 
 %include "utilities/CCopasiTask.h"
 
-#ifdef SWIGJAVA
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
 %rename (NO_OUTPUT) CCopasiTask::NO_OUTPUT;
 %rename (OUTPUT_BEFORE) CCopasiTask::OUTPUT_BEFORE;
 %rename (OUTPUT_AFTER) CCopasiTask::OUTPUT_AFTER;
@@ -79,10 +79,10 @@
 %rename (OUTPUT_SE) CCopasiTask::OUTPUT_SE;
 %rename (OUTPUT_UI) CCopasiTask::OUTPUT_UI;
 %rename (ONLY_TIME_SERIES) CCopasiTask::ONLY_TIME_SERIES;
-#endif //SWIGJAVA
+#endif //SWIGJAVA || SWIGCSHARP
 
 %extend CCopasiTask{
-  #ifdef SWIGJAVA
+  #if defined(SWIGJAVA) || defined(SWIGCSHARP)
   // this has to be checked each time the bindings are released
   static const unsigned int CCopasiTask::NO_OUTPUT=0;
   static const unsigned int CCopasiTask::OUTPUT_BEFORE=1;
@@ -92,7 +92,7 @@
   static const unsigned int CCopasiTask::OUTPUT_UI=119;
   static const unsigned int CCopasiTask::ONLY_TIME_SERIES=71;
 
-  #endif //SWIGJAVA
+  #endif //SWIGJAVA || SWIGCSHARP
 
   std::vector<C_INT32> getValidMethods() const
     {
