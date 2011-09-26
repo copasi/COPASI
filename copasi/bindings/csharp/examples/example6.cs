@@ -7,11 +7,12 @@
 
 
 using org.COPASI;
+using System.Diagnostics;
 
 class example6
 {
 
-    public static void Main(string[] args)
+    static void Main(string[] args)
     {
         Debug.Assert(CCopasiRootContainer.getRoot() != null);
         // create a new datamodel

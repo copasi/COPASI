@@ -2,11 +2,12 @@
  * This is an example on how to create user defined kinetic functions with the COPASI API
  */
 using org.COPASI;
+using System.Diagnostics;
 
 class example7
 {
 
- public static void Main(string[] args)
+ static void Main()
  {
      Debug.Assert(CCopasiRootContainer.getRoot() != null);
      // create a new datamodel
@@ -34,7 +35,7 @@ class example7
      CCompartment compartment = model.createCompartment("cell", 5.0);
      CCopasiObject obj = compartment.getObject(new CCopasiObjectName("Reference=InitialVolume"));
      Debug.Assert(obj != null);
-     changedObjects.add(obj);
+     changedObjects.Add(obj);
      Debug.Assert(compartment != null);
      Debug.Assert(model.getCompartments().size() == 1);
      // create a new metabolite with the name S and an inital
@@ -44,7 +45,7 @@ class example7
      CMetab S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CMetab.FIXED);
      obj = S.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
      Debug.Assert((obj != null));
-     changedObjects.add(obj);
+     changedObjects.Add(obj);
      Debug.Assert((compartment != null));
      Debug.Assert(S != null);
      Debug.Assert(model.getMetabolites().size() == 1);
@@ -54,7 +55,7 @@ class example7
      Debug.Assert(P != null);
      obj = P.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
      Debug.Assert(obj != null);
-     changedObjects.add(obj);
+     changedObjects.Add(obj);
      Debug.Assert(model.getMetabolites().size() == 2);
 
      // now we create a reaction
@@ -80,7 +81,7 @@ class example7
      Debug.Assert(MV != null);
      obj = MV.getObject(new CCopasiObjectName("Reference=InitialValue"));
      Debug.Assert(obj != null);
-     changedObjects.add(obj);
+     changedObjects.Add(obj);
      Debug.Assert(model.getModelValues().size() == 1);
 
      // now we ned to set a kinetic law on the reaction

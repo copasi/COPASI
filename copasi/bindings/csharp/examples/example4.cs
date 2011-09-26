@@ -5,10 +5,11 @@
  */
 
 using org.COPASI;
+using System.Diagnostics;
 
 class example4
 {
-    public static void Main(string[] args)
+    static void Main()
     {
         Debug.Assert(CCopasiRootContainer.getRoot() != null);
         // create a new datamodel

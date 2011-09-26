@@ -5,11 +5,12 @@
 
 
 using org.COPASI;
+using System.Diagnostics;
 
 class example5 
 {
 
-   public static void Main(string[] args) 
+   static void Main() 
    {
      Debug.Assert(CCopasiRootContainer.getRoot() != null);
      // create a new datamodel
@@ -37,8 +38,8 @@ class example5
      // that COPASI can update the values that depend on those
      model.compileIfNecessary();
      ObjectStdVector changedObjects=new ObjectStdVector();
-     changedObjects.add(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
-     changedObjects.add(variableModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+     changedObjects.Add(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+     changedObjects.Add(variableModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
      model.updateInitialValues(changedObjects);
      
      // now we set up the optimization
