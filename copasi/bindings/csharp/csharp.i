@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $ 
-//   $Revision: 1.1.2.3 $ 
+//   $Revision: 1.1.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2011/09/26 12:14:53 $ 
+//   $Date: 2011/09/27 14:58:06 $ 
 // End CVS Header 
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,6 +20,130 @@
 
 
 void initCopasi();
+
+// The build system has to call SWIG with the -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR
+// otherwise newer versions of SWIG will create a static constructor which conflicts with
+// the one below
+// Since I have no clue about C#, I don't know any other way to make sure that initCopasi
+// is called when the module is loaded
+%pragma(csharp) imclasscode=
+%{
+  static $imclassname() {
+    initCopasi();
+  }
+%}
+
+
+/**
+ * C# does not handle exceptions the same way as java. The code below will have to be adjusted
+ * once the build system is finished.
+ */
+%exception CCopasiTask::process %{
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+     return $null;
+   }
+%}
+
+
+%exception CCopasiDataModel::importSBML %{
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+     return $null;
+   }
+%}
+
+
+%exception CCopasiDataModel::newModel %{
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+     return $null;
+   }
+%}
+
+%exception CCopasiDataModel::importSBMLFromString %{
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+     return $null;
+   }
+%}
+
+%exception CCopasiDataModel::exportSBMLToString %{
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+     return $null;
+   }
+%}
+
+%exception CCopasiDataModel::exportSBML %{
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+     return $null;
+   }
+%}
+
+
+
 
 /*
 %typemap(ctype) CCopasiAbstractArray* CArrayAnnotation::array "jobject"
@@ -222,22 +346,6 @@ void initCopasi();
     }
 }
 
-%pragma(java) jniclasscode=
-%{
-  static 
-  {
-    try 
-    {
-      System.loadLibrary("CopasiJava");
-    }
-    catch(UnsatisfiedLinkError e)
-    {
-      System.err.println("Native code library failed to load. \n" + e);
-      System.exit(1);
-    }
-		initCopasi();
-  }
-%}
 */
 
 /*  
@@ -401,126 +509,6 @@ void initCopasi();
 */
 
 
-
-/**
- * C# does not handle exceptions the same way as java. The code below will have to be adjusted
- * once the build system is finished.
-%javaexception("java.lang.Exception") CCopasiTask::process {
-   try 
-   {
-     $action
-   } 
-   catch (std::exception &e) 
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.what());
-     return $null;
-   }
-   catch(CCopasiException& e)
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
-     return $null;
-   }
-}
-
-
-%javaexception("java.lang.Exception") CCopasiDataModel::importSBML {
-   try 
-   {
-     $action
-   } 
-   catch (std::exception &e) 
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.what());
-     return $null;
-   }
-   catch(CCopasiException& e)
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
-     return $null;
-   }
-}
-
-
-%javaexception("java.lang.Exception") CCopasiDataModel::newModel {
-   try 
-   {
-     $action
-   } 
-   catch (std::exception &e) 
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.what());
-     return $null;
-   }
-   catch(CCopasiException& e)
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
-     return $null;
-   }
-}
-
-%javaexception("java.lang.Exception") CCopasiDataModel::importSBMLFromString {
-   try 
-   {
-     $action
-   } 
-   catch (std::exception &e) 
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.what());
-     return $null;
-   }
-   catch(CCopasiException& e)
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
-     return $null;
-   }
-}
-
-%javaexception("java.lang.Exception") CCopasiDataModel::exportSBMLToString {
-   try 
-   {
-     $action
-   } 
-   catch (std::exception &e) 
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.what());
-     return $null;
-   }
-   catch(CCopasiException& e)
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
-     return $null;
-   }
-}
-
-%javaexception("java.lang.Exception") CCopasiDataModel::exportSBML {
-   try 
-   {
-     $action
-   } 
-   catch (std::exception &e) 
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.what());
-     return $null;
-   }
-   catch(CCopasiException& e)
-   {
-     jclass clazz = jenv->FindClass("java/lang/Exception");
-     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
-     return $null;
-   }
-}
-*/
 
 // some general ignore statements that already get rid of most warnings
 %ignore *::operator =;
