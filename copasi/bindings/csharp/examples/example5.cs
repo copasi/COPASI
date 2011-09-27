@@ -159,9 +159,9 @@ class example5
      {
        result=optTask.process(true);
      }
-     catch(CCopasiException e)
+     catch(System.ApplicationException e)
      {
-         System.Console.Error.WriteLine("ERROR: "+e.getMessage());
+         System.Console.Error.WriteLine("ERROR: "+e.Message);
          System.Environment.Exit(1);
      }
      if(!result)

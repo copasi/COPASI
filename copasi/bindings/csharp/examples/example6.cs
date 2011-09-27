@@ -178,10 +178,10 @@ class example6
           }
           os.Close();
         }
-        catch (CCopasiException e)
+        catch (System.ApplicationException e)
         {
             System.Console.Error.WriteLine("Error. Could not write time course data to file.");
-            System.Console.WriteLine(e.getMessage());
+            System.Console.WriteLine(e.Message);
             System.Environment.Exit(1);
         }
         
