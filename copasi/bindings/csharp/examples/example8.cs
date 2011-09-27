@@ -82,11 +82,11 @@ class example8
         // from those two, we can construct an new vector that contains
         // the names of the entities in the jacobian in the order in which they appear in
         // the jacobian
-        java.util.Vector<string> nameVector=new java.util.Vector<string>();
+        System.Collections.Generic.List<string> nameVector=new System.Collections.Generic.List<string>();
         CModelEntity entity = null;
         int status;
 
-        for (int i = 0; i < userOrder.size(); ++i)
+        for (uint i = 0; i < userOrder.size(); ++i)
         {
             entity = stateTemplate.getEntity(userOrder.get(i));
             Debug.Assert((entity != null));
@@ -97,36 +97,36 @@ class example8
             if (status == CModelEntity.ODE ||
                     (status == CModelEntity.REACTIONS && entity.isUsed()))
             {
-                nameVector.add(entity.getObjectName());
+                nameVector.Add(entity.getObjectName());
             }
         }
 
-        Debug.Assert((nameVector.size() == jacobian.numRows()));
+        Debug.Assert((nameVector.Count == jacobian.numRows()));
         // now we print the matrix, for this we assume that no
         // entity name is longer then 5 character which is a save bet since
         // we know the model
         System.Console.Out.NewLine = "";
-        System.Console.WriteLine(String.Format("Jacobian Matrix:{0}",System.Environment.NewLine));
-        System.Console.WriteLine(String.Format("{0}", System.Environment.NewLine));
-        System.Console.Out.WriteLine(String.Format("{0,7}"," "));
+        System.Console.WriteLine(System.String.Format("Jacobian Matrix:{0}",System.Environment.NewLine));
+        System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
+        System.Console.Out.WriteLine(System.String.Format("{0,7}"," "));
 
-        for (int i = 0; i < nameVector.size(); ++i)
+        for (int i = 0; i < nameVector.Count; ++i)
         {
-            System.Console.Out.WriteLine(String.Format("{0,7}",nameVector.elementAt(i)));
+            System.Console.Out.WriteLine(System.String.Format("{0,7}",nameVector[i]));
         }
 
         System.Console.WriteLine("");
 
-        for (int i = 0; i < nameVector.size(); ++i)
+        for (uint i = 0; i < nameVector.Count; ++i)
         {
-            System.Console.Out.WriteLine(String.Format("{0,7}",nameVector.elementAt(i)));
+            System.Console.Out.WriteLine(System.String.Format("{0,7}",nameVector[(int)i]));
 
-            for (int j = 0; j < nameVector.size(); ++j)
+            for (uint j = 0; j < nameVector.Count; ++j)
             {
-                System.Console.Out.WriteLine(String.Format("{0,7:0.###}",jacobian.get(i,j)));
+                System.Console.Out.WriteLine(System.String.Format("{0,7:0.###}",jacobian.get(i,j)));
             }
 
-            System.Console.WriteLine(String.Format("{0}", System.Environment.NewLine));
+            System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
         }
 
         // we can also calculate the jacobian of the reduced system
@@ -134,29 +134,29 @@ class example8
         model.calculateJacobianX(jacobian, 1e-12, 1.0);
         // this time generating the output is actually simpler because the rows
         // and columns are ordered in the same way as the independent variables of the state temple
-        System.Console.WriteLine(String.Format("{0}{0}",System.Environment.NewLine));
-        System.Console.WriteLine(String.Format("Reduced Jacobian Matrix:{0}{0}", System.Environment.NewLine));
-        System.Console.Out.WriteLine(String.Format("{0:7}"," "));
+        System.Console.WriteLine(System.String.Format("{0}{0}",System.Environment.NewLine));
+        System.Console.WriteLine(System.String.Format("Reduced Jacobian Matrix:{0}{0}", System.Environment.NewLine));
+        System.Console.Out.WriteLine(System.String.Format("{0:7}"," "));
         
-        long iMax = stateTemplate.getNumIndependent();
+        uint iMax = stateTemplate.getNumIndependent();
         
-        for (long i=0;i<iMax;++i)
+        for (uint i=0;i<iMax;++i)
         {
-          System.Console.Out.WriteLine(String.Format("{0:7}",stateTemplate.getIndependent(i).getObjectName()));
+          System.Console.Out.WriteLine(System.String.Format("{0:7}",stateTemplate.getIndependent(i).getObjectName()));
         }
 
-        System.Console.WriteLine(String.Format("{0}",System.Environment.NewLine));
+        System.Console.WriteLine(System.String.Format("{0}",System.Environment.NewLine));
 
-        for (long i = 0; i < iMax; ++i)
+        for (uint i = 0; i < iMax; ++i)
         {
-            System.Console.Out.WriteLine(String.Format("{0:7}",stateTemplate.getIndependent(i).getObjectName()));
+            System.Console.Out.WriteLine(System.String.Format("{0:7}",stateTemplate.getIndependent(i).getObjectName()));
 
-            for (long j = 0; j < iMax; ++j)
+            for (uint j = 0; j < iMax; ++j)
             {
-                System.Console.Out.WriteLine(String.Format("{0,7:0.###}",jacobian.get(i,j)));
+                System.Console.Out.WriteLine(System.String.Format("{0,7:0.###}",jacobian.get(i,j)));
             }
 
-            System.Console.WriteLine(String.Format("{0}", System.Environment.NewLine));
+            System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
         }
 
     }

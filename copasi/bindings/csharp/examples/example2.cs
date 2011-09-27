@@ -15,7 +15,7 @@ class example2
         CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
         Debug.Assert(CCopasiRootContainer.getDatamodelList().size() == 1);
         // the only argument to the main routine should be the name of a CPS file
-        if (args.length == 1)
+        if (args.Length == 1)
         {
             string filename = args[0];
             try
@@ -33,7 +33,7 @@ class example2
             System.Console.WriteLine("Model statistics for model \"" + model.getObjectName() + "\".");
 
             // output number and names of all compartments
-            int i, iMax = (int)model.getCompartments().size();
+            uint i, iMax = (uint)model.getCompartments().size();
             System.Console.WriteLine("Number of Compartments: " + System.Convert.ToString(iMax));
             System.Console.WriteLine("Compartments: ");
             for (i = 0;i < iMax;++i)
@@ -44,7 +44,7 @@ class example2
             }
 
             // output number and names of all metabolites
-            iMax = (int)model.getMetabolites().size();
+            iMax = (uint)model.getMetabolites().size();
             System.Console.WriteLine("Number of Metabolites: " + System.Convert.ToString(iMax));
             System.Console.WriteLine("Metabolites: ");
             for (i = 0;i < iMax;++i)
@@ -55,7 +55,7 @@ class example2
             }
 
             // output number and names of all reactions
-            iMax = (int)model.getReactions().size();
+            iMax = (uint)model.getReactions().size();
             System.Console.WriteLine("Number of Reactions: " + System.Convert.ToString(iMax));
             System.Console.WriteLine("Reactions: ");
             for (i = 0;i < iMax;++i)

@@ -71,7 +71,8 @@ class example6
         problem.setTimeSeriesRequested(true);
 
         // set some parameters for the LSODA method through the method
-        CTrajectoryMethod method = (CTrajectoryMethod)trajectoryTask.getMethod();
+        // Currently we don't use the method to set anything
+        //CTrajectoryMethod method = (CTrajectoryMethod)trajectoryTask.getMethod();
 
         bool result=true;
         try
@@ -109,16 +110,16 @@ class example6
         // we simulated 100 steps, including the initial state, this should be
         // 101 step in the timeseries
         Debug.Assert(timeSeries.getRecordedSteps() == 4001);
-        int i;
-        int iMax = (int)timeSeries.getNumVariables();
+        uint i;
+        uint iMax = (uint)timeSeries.getNumVariables();
         // there should be four variables, the three metabolites and time
         Debug.Assert(iMax == 5);
-        int lastIndex = (int)timeSeries.getRecordedSteps() - 1;
+        uint lastIndex = (uint)timeSeries.getRecordedSteps() - 1;
         // open the file
         // we need to remember in which order the variables are written to file
         // since we need to specify this later in the parameter fitting task
-        java.util.Set<Integer> indexSet=new java.util.HashSet<Integer>(); 
-        java.util.Vector<CMetab> metabVector=new java.util.Vector<CMetab>(); 
+        System.Collections.Generic.HashSet<uint> indexSet=new System.Collections.Generic.HashSet<uint>(); 
+        System.Collections.Generic.List<CMetab> metabVector=new System.Collections.Generic.List<CMetab>(); 
 
         // write the header
         // the first variable in a time series is a always time, for the rest
@@ -137,26 +138,27 @@ class example6
             CCopasiObject obj=keyFactory.get(key);
             Debug.Assert(obj != null);
             // only write header data or metabolites
-            if(obj.getClass()==org.COPASI.CMetab.class)
+            System.Type type = obj.GetType();
+            if(type.FullName.Equals("org.COPASI.CMetab"))
             {
               os.Write(", ");
               os.Write(timeSeries.getSBMLId(i,dataModel));
               CMetab m=(CMetab)obj;
-              indexSet.add(new Integer(i));
-              metabVector.add(m);
+              indexSet.Add(i);
+              metabVector.Add(m);
             }
           }
           os.Write("\n");
           double data=0.0;
           for (i = 0;i < lastIndex;++i)
           {
-            int j;
+            uint j;
             string s="";
             for(j=0;j<iMax;++j)
             {
               // we only want to  write the data for metabolites
               // the compartment does not interest us here
-              if(j==0 || indexSet.contains(j))
+              if(j==0 || indexSet.Contains(j))
               {
                 // write the data with some noise (+-5% max)
                 random=rand_gen.NextDouble();
@@ -166,17 +168,17 @@ class example6
                 {
                   data+=data*(random*0.1-0.05);
                 }
-                s=s+(new Double(data).toString());
+                s=s+(System.Convert.ToString(data));
                 s=s+", ";
               }
             }
             // remove the last two characters again
-            os.Write(s.substring(0,s.length()-2));
+            os.Write(s.Substring(0,s.Length - 2));
             os.Write("\n");
           }
           os.Close();
         }
-        catch
+        catch (CCopasiException e)
         {
             System.Console.Error.WriteLine("Error. Could not write time course data to file.");
             System.Console.WriteLine(e.getMessage());
@@ -252,21 +254,21 @@ class example6
         // now we tell COPASI which column contain the concentrations of
         // metabolites and belong to dependent variables
         objectMap.setRole(1,CExperiment.dependent);
-        CMetab metab=metabVector.elementAt(0);
+        CMetab metab=metabVector[0];
         Debug.Assert(metab != null);
         CCopasiObject particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
         Debug.Assert(particleReference != null);
         objectMap.setObjectCN(1,particleReference.getCN().getString());
 
         objectMap.setRole(2,CExperiment.dependent);
-        metab=metabVector.elementAt(1);
+        metab=metabVector[1];
         Debug.Assert(metab != null);
         particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
         Debug.Assert(particleReference != null);
         objectMap.setObjectCN(2,particleReference.getCN().getString());
 
         objectMap.setRole(3,CExperiment.dependent);
-        metab=metabVector.elementAt(2);
+        metab=metabVector[2];
         Debug.Assert(metab != null);
         particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
         Debug.Assert(particleReference != null);
@@ -333,18 +335,18 @@ class example6
         }
         Debug.Assert(result == true);
         // assert that there are two optimization items
-        Debug.Assert(fitProblem.getOptItemList().size() == 2);
+        Debug.Assert(fitProblem.getOptItemList().Count == 2);
         // the order should be the order in whih we added the items above
-        COptItem optItem1 = fitProblem.getOptItemList().get(0);
-        COptItem optItem2 = fitProblem.getOptItemList().get(1);
+        COptItem optItem1 = fitProblem.getOptItemList()[0];
+        COptItem optItem2 = fitProblem.getOptItemList()[1];
         // the actual results are stored in the fit problem
         Debug.Assert(fitProblem.getSolutionVariables().size() == 2);
         System.Console.WriteLine("value for " + optItem1.getObject().getCN().getString() + ": " + fitProblem.getSolutionVariables().get(0));
         System.Console.WriteLine("value for " + optItem2.getObject().getCN().getString() + ": " + fitProblem.getSolutionVariables().get(1));
         // depending on the noise, the fit can be quite bad, so we are a litle
         // relaxed here (we should be within 3% of the original values)
-        Debug.Assert((Math.abs(fitProblem.getSolutionVariables().get(0) - 0.03) / 0.03) < 3e-2);
-        Debug.Assert((Math.abs(fitProblem.getSolutionVariables().get(1) - 0.004) / 0.004) < 3e-2);
+        Debug.Assert((System.Math.Abs(fitProblem.getSolutionVariables().get(0) - 0.03) / 0.03) < 3e-2);
+        Debug.Assert((System.Math.Abs(fitProblem.getSolutionVariables().get(1) - 0.004) / 0.004) < 3e-2);
  
     }
 

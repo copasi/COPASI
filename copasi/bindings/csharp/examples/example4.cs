@@ -46,12 +46,12 @@ class example4
         // the body will contain the actual timecourse data
         ReportItemVector header = report.getHeaderAddr();
         ReportItemVector body = report.getBodyAddr();
-        body.add(new CRegisteredObjectName(new CCopasiObjectName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
-        body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-        header.add(new CRegisteredObjectName(new CCopasiStaticString("time").getCN().getString()));
-        header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+        body.Add(new CRegisteredObjectName(new CCopasiObjectName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
+        body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+        header.Add(new CRegisteredObjectName(new CCopasiStaticString("time").getCN().getString()));
+        header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
 
-        int i, iMax = (int)model.getMetabolites().size();
+        uint i, iMax = (uint)model.getMetabolites().size();
         for (i = 0;i < iMax;++i)
         {
             CMetab metab = model.getMetabolite(i);
@@ -62,17 +62,17 @@ class example4
                 // we want the concentration oin the output
                 // alternatively, we could use "Reference=Amount" to get the
                 // particle number
-                body.add(new CRegisteredObjectName(metab.getObject(new CCopasiObjectName("Reference=Concentration")).getCN().getString()));
+                body.Add(new CRegisteredObjectName(metab.getObject(new CCopasiObjectName("Reference=Concentration")).getCN().getString()));
                 // add the corresponding id to the header
-                header.add(new CRegisteredObjectName(new CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
+                header.Add(new CRegisteredObjectName(new CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
                 
                 if(i!=iMax-1)
                 {
                   // after each entry, we need a seperator
-                  body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+                  body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
 
                   // and a seperator
-                  header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+                  header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
                 }
             }
         }
@@ -165,7 +165,7 @@ class example4
             // now we run the actual trajectory
             scanTask.process(true);
         }
-        catch (java.lang.Exception ex)
+        catch 
         {
             System.Console.Error.WriteLine( "Error. Running the scan failed.");
             // check if there are additional error messages

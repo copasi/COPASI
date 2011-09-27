@@ -99,13 +99,13 @@ class example1
      // lets get all suitable functions for an irreversible reaction with  2 substrates
      // and 2 products
      CFunctionStdVector suitableFunctions = funDB.suitableFunctions(2, 2, COPASI.TriFalse);
-     Debug.Assert(suitableFunctions.size() > 0);
-     int i,iMax=(int)suitableFunctions.size();
+     Debug.Assert((suitableFunctions.Count > 0));
+     int i,iMax=(int)suitableFunctions.Count;
      for (i=0;i<iMax;++i)
      {
          // we just assume that the only suitable function with Constant in
          // it's name is the one we want
-         if (suitableFunctions.get(i).getObjectName().indexOf("Constant") != -1)
+         if (suitableFunctions[i].getObjectName().IndexOf("Constant") != -1)
          {
              break;
          }
@@ -115,12 +115,12 @@ class example1
          // we set the function
          // the method should be smart enough to associate the reaction entities
          // with the correct function parameters
-         reaction.setFunction(suitableFunctions.get(i));
+         reaction.setFunction(suitableFunctions[i]);
          Debug.Assert(reaction.getFunction() != null);
          // constant flux has only one function parameter
          Debug.Assert(reaction.getFunctionParameters().size() == 1);
          // so there should be only one entry in the parameter mapping as well
-         Debug.Assert(reaction.getParameterMappings().size() == 1);
+         Debug.Assert(reaction.getParameterMappings().Count == 1);
          CCopasiParameterGroup parameterGroup = reaction.getParameters();
          Debug.Assert(parameterGroup.size() == 1);
          CCopasiParameter parameter = parameterGroup.getParameter(0);
@@ -169,7 +169,7 @@ class example1
 
      Debug.Assert(reaction.getFunctionParameters().size() == 2);
      // so there should be two entries in the parameter mapping as well
-     Debug.Assert(reaction.getParameterMappings().size() == 2);
+     Debug.Assert(reaction.getParameterMappings().Count == 2);
      // mass action is a special case since the parameter mappings for the
      // substrates (and products) are in a vector
 

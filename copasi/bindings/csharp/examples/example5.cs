@@ -136,14 +136,14 @@ class example5
      ReportItemVector body = report.getBodyAddr();
      
      // in the report header we write two strings and a separator
-     header.add(new CRegisteredObjectName(new CCopasiStaticString("best value of objective function").getCN().getString()));
-     header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-     header.add(new CRegisteredObjectName(new CCopasiStaticString("initial value of F").getCN().getString()));
+     header.Add(new CRegisteredObjectName(new CCopasiStaticString("best value of objective function").getCN().getString()));
+     header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+     header.Add(new CRegisteredObjectName(new CCopasiStaticString("initial value of F").getCN().getString()));
      // in the report body we write the best value of the objective function and
      // the initial value of the fixed parameter separated by a komma
-     body.add(new CRegisteredObjectName(optProblem.getObject(new CCopasiObjectName("Reference=Best Value")).getCN().getString()));
-     body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-     body.add(new CRegisteredObjectName(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN().getString()));
+     body.Add(new CRegisteredObjectName(optProblem.getObject(new CCopasiObjectName("Reference=Best Value")).getCN().getString()));
+     body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+     body.Add(new CRegisteredObjectName(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN().getString()));
 
      
      // set the report for the task
@@ -159,7 +159,7 @@ class example5
      {
        result=optTask.process(true);
      }
-     catch
+     catch(CCopasiException e)
      {
          System.Console.Error.WriteLine("ERROR: "+e.getMessage());
          System.Environment.Exit(1);
@@ -173,12 +173,12 @@ class example5
      // the best value it should have is 0 and the best parameter value for
      // that result should be 6 for the initial value of the fixed parameter
      double bestValue=optProblem.getSolutionValue();
-     Debug.Assert(Math.abs(bestValue) < 1e-3);
+     Debug.Assert(System.Math.Abs(bestValue) < 1e-3);
      // we should only have one solution variable since we only have one
      // optimization item
      Debug.Assert(optProblem.getSolutionVariables().size() == 1);
      double solution=optProblem.getSolutionVariables().get(0);
-     Debug.Assert(Math.abs((solution-6.0)/6.0) < 1e-3);
+     Debug.Assert(System.Math.Abs((solution-6.0)/6.0) < 1e-3);
   }
 
 }

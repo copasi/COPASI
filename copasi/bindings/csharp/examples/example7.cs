@@ -106,7 +106,7 @@ class example7
      // and COPASI should have determined that the formula string contained 2 parameters (temp and substrate)
      CFunctionParameters variables = function.getVariables();
      // per default the usage of those parameters will be set to VARIABLE
-     long index = function.getVariableIndex("temp");
+     uint index = function.getVariableIndex("temp");
      CFunctionParameter param = variables.getParameter(index);
      Debug.Assert(param.getUsage() == CFunctionParameter.VARIABLE);
      // This is correct for temp, but substrate should get the usage SUBSTRATE in order

@@ -16,7 +16,7 @@ class example3
       CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
       Debug.Assert(CCopasiRootContainer.getDatamodelList().size() == 1);
       // the only argument to the main routine should be the name of an SBML file
-      if (args.length == 1)
+      if (args.Length == 1)
       {
           string filename = args[0];
           try
@@ -50,12 +50,12 @@ class example3
           ReportItemVector header = report.getHeaderAddr();
           ReportItemVector body = report.getBodyAddr();
           
-          body.add(new CRegisteredObjectName(model.getObject(new CCopasiObjectName("Reference=Time")).getCN().getString()));
-          body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-          header.add(new CRegisteredObjectName(new CCopasiStaticString("time").getCN().getString()));
-          header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+          body.Add(new CRegisteredObjectName(model.getObject(new CCopasiObjectName("Reference=Time")).getCN().getString()));
+          body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+          header.Add(new CRegisteredObjectName(new CCopasiStaticString("time").getCN().getString()));
+          header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
 
-          int i, iMax =(int) model.getMetabolites().size();
+          uint i, iMax =(uint) model.getMetabolites().size();
           for (i = 0;i < iMax;++i)
           {
               CMetab metab = model.getMetabolite(i);
@@ -66,14 +66,14 @@ class example3
                   // we want the concentration oin the output
                   // alternatively, we could use "Reference=Amount" to get the
                   // particle number
-                  body.add(new CRegisteredObjectName(metab.getObject(new CCopasiObjectName("Reference=Concentration")).getCN().getString()));
+                  body.Add(new CRegisteredObjectName(metab.getObject(new CCopasiObjectName("Reference=Concentration")).getCN().getString()));
                   // add the corresponding id to the header
-                  header.add(new CRegisteredObjectName(new CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
+                  header.Add(new CRegisteredObjectName(new CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
                   // after each entry, we need a seperator
                   if(i!=iMax-1)
                   {
-                    body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-                    header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+                    body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+                    header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
                   }
 
               }
@@ -166,17 +166,17 @@ class example3
           // we simulated 100 steps, including the initial state, this should be
           // 101 step in the timeseries
           Debug.Assert(timeSeries.getRecordedSteps() == 101);
-          System.Console.WriteLine( "The time series consists of " + (new Long(timeSeries.getRecordedSteps())).toString() + "." );
-          System.Console.WriteLine( "Each step contains " + (new Long(timeSeries.getNumVariables())).toString() + " variables." );
+          System.Console.WriteLine( "The time series consists of " + System.Convert.ToString(timeSeries.getRecordedSteps()) + "." );
+          System.Console.WriteLine( "Each step contains " + System.Convert.ToString(timeSeries.getNumVariables()) + " variables." );
           System.Console.WriteLine( "The final state is: " );
-          iMax = (int)timeSeries.getNumVariables();
-          int lastIndex = (int)timeSeries.getRecordedSteps() - 1;
+          iMax = (uint)timeSeries.getNumVariables();
+          uint lastIndex = (uint)timeSeries.getRecordedSteps() - 1;
           for (i = 0;i < iMax;++i)
           {
               // here we get the particle number (at least for the species)
               // the unit of the other variables may not be particle numbers
               // the concentration data can be acquired with getConcentrationData
-              System.Console.WriteLine(timeSeries.getTitle(i) + ": " + (new Double(timeSeries.getData(lastIndex, i))).toString() );
+              System.Console.WriteLine(timeSeries.getTitle(i) + ": " + System.Convert.ToString(timeSeries.getData(lastIndex, i)) );
           }
 
       }

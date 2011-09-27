@@ -112,27 +112,27 @@ class example9
        // for which dimension we get the annotations
        StringStdVector annotations = aj.getAnnotationsString(1);
        System.Console.Out.NewLine = "";
-       System.Console.WriteLine(String.Format("Jacobian Matrix:{0}{0}", System.Environment.NewLine));
-       System.Console.Out.WriteLine(String.Format("{0,7}"," "));
+       System.Console.WriteLine(System.String.Format("Jacobian Matrix:{0}{0}", System.Environment.NewLine));
+       System.Console.Out.WriteLine(System.String.Format("{0,7}"," "));
 
-       for (int i = 0; i < annotations.size(); ++i)
+       for (int i = 0; i < annotations.Count; ++i)
        {
-           System.Console.Out.WriteLine(String.Format("{0,7}",annotations.get(i)));
+           System.Console.Out.WriteLine(System.String.Format("{0,7}",annotations[i]));
        }
 
-       System.Console.WriteLine(String.Format("{0}", System.Environment.NewLine));
+       System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
 
-       for (int i = 0; i < annotations.size(); ++i)
+       for (int i = 0; i < annotations.Count; ++i)
        {
-           System.Console.Out.WriteLine(String.Format("{0,7}", annotations.get(i)));
-           index.set(0,i);
+           System.Console.Out.WriteLine(System.String.Format("{0,7}", annotations[i]));
+           index[0]=(uint)i;
 
-           for (int j = 0; j < annotations.size(); ++j)
+           for (int j = 0; j < annotations.Count; ++j)
            {
-               index.set(1,j);
-               System.Console.Out.WriteLine(String.Format("{0,7:0.###}",aj.array().get(index)));
+               index[1]=(uint)j;
+               System.Console.Out.WriteLine(System.String.Format("{0,7:0.###}",aj.array().get(index)));
            }
-           System.Console.WriteLine(String.Format("{0}", System.Environment.NewLine));
+           System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
        }
    }
    System.Environment.Exit(0);
