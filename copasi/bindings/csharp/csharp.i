@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $
-//   $Revision: 1.1.2.5 $
+//   $Revision: 1.1.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/09/27 20:08:26 $
+//   $Date: 2011/09/27 20:13:07 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,9 +147,11 @@ void initCopasi();
             enum CLASS_TYPE type = $modulePINVOKE.GetType_COptItem(cPtr);
             switch(type)
             {
-                case UNDEFINED_CLAS_TYPE:
+                case UNDEFINED_CLASS_TYPE:
                     break;
                 case CFitItem_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     // return a CFitItem
                     result = InstantiateConcrete_CFitItem(cPtr,owner);
                     break;
@@ -341,12 +343,18 @@ void initCopasi();
                     ret = new CMIRIAMInfo(cPtr,owner);
                     break;
                 case CCopasiTask_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_CCopasiTask(cptr,owner);
                     break;
                 case CCopasiParameter_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_CCopasiParameter(cPtr,owner);
                     break;
                 case CEvaluationTree_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_CEvaluationTree(cPtr,owner);
                     break;
                 case CFunctionDB_Type:
@@ -370,6 +378,8 @@ void initCopasi();
                     ret = new CEventAssignment(cPtr,owner);
                     break;
                 case CModelEntity_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_CModelEntity(cPtr,owner);
                     break;
                 case CMoiety_Type:
@@ -529,6 +539,8 @@ void initCopasi();
                     ret = new CScanMethod(cPtr,owner);
                     break;
                 case COptMethod_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_COptMethod(cPtr,owner);
                     break;
                 case CLyapMethod_Type:
@@ -567,6 +579,8 @@ void initCopasi();
                 case UNDEFINED_CLASS_TYPE:
                     break;
                 case CCopasiContainer_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_CCopasiContainer(cPtr, owner);
                     break;
                 case CReportDefinition_Type:
@@ -610,6 +624,8 @@ void initCopasi();
                 case UNDEFINED_CLASS_TYPE:
                     break;
                 case CCopasiParameterGroup_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_CCopasiParameterGroup(cPtr,owner);
                     break;
                 case CCopasiParameter_Type:
@@ -639,12 +655,18 @@ void initCopasi();
                 case UNDEFINED_CLASS_TYPE:
                     break;
                 case CCopasiMethod_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_CCopasiMethod(cPtr,owner);
                     break;
                 case CCopasiProblem_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_CCopasiProblem(cPtr,owner);
                     break;
                 case COptItem_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_COptItem(cPtr,owner);
                     break;
                 case CExperiment_Type:
@@ -702,6 +724,8 @@ void initCopasi();
                     ret = new CScanProblem(cPtr,owner);
                     break;
                 case COptProblem_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_COptProblem(cPtr,owner);
                     break;
                 case CLyapProblem_Type:
@@ -756,6 +780,8 @@ void initCopasi();
                     ret = new CSensTask(cPtr,owner);
                     break;
                 case COptTask_Type:
+                    // TODO this is not correct, all subtypes of CFitItem
+                    // have to be handled as well
                     ret = InstantiateConcrete_COptTask(cPtr,owner);
                     break;
                 case CLyapTask_Type:
