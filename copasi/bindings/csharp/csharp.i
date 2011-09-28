@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $
-//   $Revision: 1.1.2.6 $
+//   $Revision: 1.1.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/09/27 20:13:07 $
+//   $Date: 2011/09/28 12:42:51 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,179 @@
 
 
 void initCopasi();
+
+%inline %{
+
+enum CLASS_TYPE
+{
+  UNDEFINED_CLASS_TYPE
+  , AnnotatedFloatMatrix_Type
+  , CArrayAnnotation_Type
+  , CBiologicalDescription_Type
+  , CChemEqElementVector_Type
+  , CChemEqElement_Type
+  , CChemEq_Type
+  , CCompartment_Type
+  , CCopasiArray_Type
+  , CCopasiAbstractArray_Type
+  , CCopasiContainer_Type
+  , CCopasiDataModel_Type
+  , CCopasiMethod_Type
+  , CCopasiObject_Type
+  , CCopasiParameterGroup_Type
+  , CCopasiParameter_Type
+  , CCopasiProblem_Type
+  , CCopasiReportSeparator_Type
+  , CCopasiRootContainer_Type
+  , CCopasiStaticString_Type
+  , CCopasiTask_Type
+  , CCreator_Type
+  , CEvaluationTreeVectorN_Type
+  , CEvaluationTreeVector_Type
+  , CEvaluationTree_Type
+  , CEventAssignment_Type
+  , CEvent_Type
+  , CExperimentObjectMap_Type
+  , CExperimentSet_Type
+  , CExperiment_Type
+  , CFitConstraint_Type
+  , CFitItem_Type
+  , CFitMethod_Type
+  , CFitProblem_Type
+  , CFitTask_Type
+  , CFittingPoint_Type
+  , CFunctionDB_Type
+  , CFunctionParameter_Type
+  , CFunctionParameters_Type
+  , CFunction_Type
+  , CLyapMethod_Type
+  , CLyapProblem_Type
+  , CLyapTask_Type
+  , CMCAMethod_Type
+  , CMCAProblem_Type
+  , CMCATask_Type
+  , CMIRIAMInfo_Type
+  , CMetab_Type
+  , CModelEntity_Type
+  , CModelValue_Type
+  , CModel_Type
+  , CModification_Type
+  , CMoiety_Type
+  , CNewtonMethod_Type
+  , COptItem_Type
+  , COptMethod_Type
+  , COptProblem_Type
+  , COptTask_Type
+  , CReaction_Type
+  , CReference_Type
+  , CReportDefinition_Type
+  , CScanMethod_Type
+  , CScanProblem_Type
+  , CScanTask_Type
+  , CSensMethod_Type
+  , CSensProblem_Type
+  , CSensTask_Type
+  , CSteadyStateMethod_Type
+  , CSteadyStateProblem_Type
+  , CSteadyStateTask_Type
+  , CTrajectoryMethod_Type
+  , CTrajectoryProblem_Type
+  , CTrajectoryTask_Type
+  , CompartmentVectorNS_Type
+  , CompartmentVectorN_Type
+  , CompartmentVector_Type
+  , EventAssignmentVectorN_Type
+  , EventAssignmentVector_Type
+  , EventVectorN_Type
+  , EventVector_Type
+  , MetabVectorNS_Type
+  , MetabVectorN_Type
+  , MetabVector_Type
+  , ModelValueVectorN_Type
+  , ModelValueVector_Type
+  , MoietyVector_Type
+  , ReactionVectorNS_Type
+  , ReactionVectorN_Type
+  , ReactionVector_Type
+  , ReportDefinitionVectorN_Type
+  , ReportDefinitionVector_Type
+  , TaskVectorN_Type
+  , TaskVector_Type
+};
+
+class CCompartment;
+class CCopasiAbstractArray;
+class CCopasiArray;
+class CCopasiContainer;
+class CCopasiMethod;
+class CCopasiObject;
+class CCopasiParameter;
+class CCopasiParameterGroup;
+class CCopasiProblem;
+class CCopasiRootContainer;
+class CCopasiTask;
+class CCopasiTask;
+class CEvaluationTree;
+class CFitConstraint;
+class CFitItem;
+class CFitMethod;
+class CFitProblem;
+class CModelEntity;
+class COptItem;
+class COptMethod;
+class COptProblem;
+class COptTask;
+class CTrajectoryTask;
+
+// Determine type CCopasiAbstractArray
+int GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer);
+
+// Determine type for CCopasiContainer
+int GetType_CCopasiContainer(CCopasiContainer* pPointer);
+
+// Determine type for CCopasiMethod
+int GetType_CCopasiMethod(CCopasiMethod* pPointer);
+
+// Determine type for CCopasiObject
+int GetType_CCopasiObject(CCopasiObject* pPointer);
+
+// Determine type for CCopasiParameter
+int GetType_CCopasiParameter(CCopasiParameter* pPointer);
+
+// Determine type for CCopasiParameterGroup
+int GetType_CCopasiParameterGroup(CCopasiParameterGroup* pPointer);
+
+// Determine type for CCopasiProblem
+int GetType_CCopasiProblem(CCopasiProblem* pPointer);
+
+// Determine type for CCopasiTask
+int GetType_CCopasiTask(CCopasiTask* pPointer);
+
+// Determine type for CEvaluationTree
+int GetType_CEvaluationTree(CEvaluationTree* pPointer);
+
+// Determine type for CFitItem
+int GetType_CFitItem(CFitItem* pPointer);
+
+// Determine type for CModelEntity
+int GetType_CModelEntity(CModelEntity* pPointer);
+
+// Determine type for COptItem
+int GetType_COptItem(COptItem* pPointer);
+
+// Determine type for COptMethod
+int GetType_COptMethod(COptMethod* pPointer);
+
+// Determine type for COptProblem
+int GetType_COptProblem(COptProblem* pPointer);
+
+// Determine type for COptTask
+int GetType_COptTask(COptTask* pPointer);
+
+
+%}
+
+
 
 // The build system has to call SWIG with the -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR
 // otherwise newer versions of SWIG will create a static constructor which conflicts with
@@ -39,6 +212,9 @@ void initCopasi();
     // This follows the solution suggested by John McGehee
     // detailed at http://www.voom.net/swig-csharp-java-downcast
 
+    // To make it more efficient I use several methods instead 
+    // of just one as described there.
+
     // CEvaluationTree
     public static CEvaluationTree InstantiateConcrete_CEvaluationTree(IntPtr cPtr, bool owner)
     {
@@ -46,14 +222,14 @@ void initCopasi();
         if (cPtr == IntPtr.Zero) {
             return ret;
         }
-        enum CLASS_TYPE type = $modulePINVOKE.GetType_CEvaluationTree(cPtr);
+        int type = $modulePINVOKE.GetType_CEvaluationTree(new HandleRef(null, cPtr));
         switch (type) {
-            case UNDEFINED_CLASS_TYPE:
+            case COPASI.UNDEFINED_CLASS_TYPE:
                 break;
-            case CFunction_Type:
+            case COPASI.CFunction_Type:
                 ret = new CFunction(cPtr, owner);
                 break;
-            case CEvaluationTree_Type:
+            case COPASI.CEvaluationTree_Type:
                 ret = new CEvaluationTree(cPtr, owner);
                 break;
             default:
@@ -72,15 +248,15 @@ void initCopasi();
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CFitItem(cPtr);
+            int type = $modulePINVOKE.GetType_CFitItem(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CFitConstraint_Type:
+                case COPASI.CFitConstraint_Type:
                     ret = new CFitConstraint(cPtr, owner);
                     break;
-                case CEvaluationTree_Type:
+                case COPASI.CEvaluationTree_Type:
                     ret = new CFitItem(cPtr, owner);
                     break;
                 default:
@@ -95,34 +271,34 @@ void initCopasi();
 
 
     // CModelEntity
-    static CModelEntity InstantiateConcrete_CModelEntity(IntPtr cPtr, bool owner)
+    public static CModelEntity InstantiateConcrete_CModelEntity(IntPtr cPtr, bool owner)
     {
         CModelEntity ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CModelEntity(cPtr);
+            int type = $modulePINVOKE.GetType_CModelEntity(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CCompartment_Type:
+                case COPASI.CCompartment_Type:
                     // return a CCompartment
                     ret = new CCompartment(cPtr,owner);
                     break;
-                case CMetab_Type:
+                case COPASI.CMetab_Type:
                     // return a CMetab
-                    ret = new CMetab(cPtr,owner)
+                    ret = new CMetab(cPtr,owner);
                         break;
-                case CModel_Type:
+                case COPASI.CModel_Type:
                     // return a CModel
                     ret = new CModel(cPtr,owner);
                     break;
-                case CModelValue_Type:
+                case COPASI.CModelValue_Type:
                     // return a CModelValue
                     ret = new CModelValue(cPtr,owner);
                     break;
-                case CModelEntity_Type:
+                case COPASI.CModelEntity_Type:
                     // return a CModelEntity
                     ret = new CModelEntity(cPtr,owner);
                     break;
@@ -138,26 +314,24 @@ void initCopasi();
 
 
     // COptItem
-    static COptItem InstantiateConcerete_COptItem(IntPtr cPtr, bool owner)
+    public static COptItem InstantiateConcrete_COptItem(IntPtr cPtr, bool owner)
     {
         COptItem ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_COptItem(cPtr);
+            int type = $modulePINVOKE.GetType_COptItem(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CFitItem_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.CFitItem_Type:
                     // return a CFitItem
-                    result = InstantiateConcrete_CFitItem(cPtr,owner);
+                    ret = InstantiateConcrete_CFitItem(cPtr,owner);
                     break;
-                case COptItem_Type:
+                case COPASI.COptItem_Type:
                     // return a COptItem
-                    result = new COptItem(cPtr,owner);
+                    ret = new COptItem(cPtr,owner);
                     break;
                 default:
                     System.Diagnostics.Debug.Assert(false,
@@ -170,21 +344,21 @@ void initCopasi();
     }
 
     // COptMethod
-    static COptMethod InstantiateConcerete_COptMethod(CIntPtr cPtr, bool owner)
+    public static COptMethod InstantiateConcrete_COptMethod(IntPtr cPtr, bool owner)
     {
         COptMethod ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_COptMethod(cPtr);
+            int type = $modulePINVOKE.GetType_COptMethod(new HandleRef(null, cPtr));
             switch(type) {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CFitMethod_Type:
+                case COPASI.CFitMethod_Type:
                     // return a CFitMethod
                     ret = new CFitMethod(cPtr,owner);
                     break;
-                case COptMethod_Type:
+                case COPASI.COptMethod_Type:
                     // return a COptMethod
                     ret = new COptMethod(cPtr,owner);
                     break;
@@ -200,24 +374,24 @@ void initCopasi();
     }
 
     // COptProblem
-    static COptProblem InstantiateConcerete_COptProblem(IntPtr cPtr, bool owner)
+    public static COptProblem InstantiateConcrete_COptProblem(IntPtr cPtr, bool owner)
     {
         COptProblem ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_COptProblem(cPtr);
+            int type = $modulePINVOKE.GetType_COptProblem(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CFitProblem_Type:
+                case COPASI.CFitProblem_Type:
                     // return a CFitProblem
                     ret = new CFitProblem(cPtr,owner);
                     break;
-                case COptProblem_Type:
+                case COPASI.COptProblem_Type:
                     // return a COptProblem
-                    result = new COptProblem(cPtr,owner);
+                    ret = new COptProblem(cPtr,owner);
                     break;
                 default:
                     System.Diagnostics.Debug.Assert(false,
@@ -231,22 +405,22 @@ void initCopasi();
 
 
     // COptTask
-    static COptTask InstantiateConcerete_COptTask(IntPtr cPtr, bool owner)
+    public static COptTask InstantiateConcrete_COptTask(IntPtr cPtr, bool owner)
     {
         COptTask ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_COptTask(cPtr);
+            int type = $modulePINVOKE.GetType_COptTask(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CFitTask_Type:
+                case COPASI.CFitTask_Type:
                     // return a CFitTask
                     ret = new CFitTask(cPtr,owner);
                     break;
-                case COptTask_Type:
+                case COPASI.COptTask_Type:
                     // return a COptTask
                     ret = new COptTask(cPtr,owner);
                     break;
@@ -262,24 +436,24 @@ void initCopasi();
     }
 
     // CCopasiAbstractArray
-    static CCopasiAbstractArray InstantiateConcrete_CCopasiAbstractArray(IntPtr cPtr, bool owner)
+    public static CCopasiAbstractArray InstantiateConcrete_CCopasiAbstractArray(IntPtr cPtr, bool owner)
     {
-        CCopasiAbstractArray result = null;
+        CCopasiAbstractArray ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CCopasiAbstractArray(cPtr);
+            int type = $modulePINVOKE.GetType_CCopasiAbstractArray(new HandleRef(null, cPtr));
             switch(type)
             {
-                case CCopasiArray_Type:
+                case COPASI.CCopasiArray_Type:
                     // return a CCopasiArray
                     ret = new CCopasiArray(cPtr,owner);
                     break;
-                case AnnotatedFloatMatrix_Type:
+                case COPASI.AnnotatedFloatMatrix_Type:
                     // return a AnnotatedFloatMatrix
                     ret = new AnnotatedFloatMatrix(cPtr,owner);
                     break;
-                case CCopasiAbstractArray_Type:
+                case COPASI.CCopasiAbstractArray_Type:
                     // return a CCopasiAbstractArray
                     ret = new CCopasiAbstractArray(cPtr,owner);
                     break;
@@ -295,202 +469,194 @@ void initCopasi();
 
 
     // Determine type for CCopasiContainer
-    CCopasiContainer InstantiateConcrete_CCopasiContainer(IntPtr cPtr, bool owner)
+    public static CCopasiContainer InstantiateConcrete_CCopasiContainer(IntPtr cPtr, bool owner)
     {
         CCopasiContainer ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CCopasiContainer(cPtr);
+            int type = $modulePINVOKE.GetType_CCopasiContainer(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CCopasiRootContainer_Type:
+                case COPASI.CCopasiRootContainer_Type:
                     // return a CCopasiRootContainer
                     ret = new CCopasiRootContainer(cPtr,owner);
                     break;
-                case CCopasiDataModel_Type:
+                case COPASI.CCopasiDataModel_Type:
                     // return a CCopasiDataModel
                     ret = new CCopasiDataModel(cPtr,owner);
                     break;
-                case CChemEq_Type:
+                case COPASI.CChemEq_Type:
                     // return a CChemEq
                     ret = new CChemEq(cPtr,owner);
                     break;
-                case CChemEqElement_Type:
+                case COPASI.CChemEqElement_Type:
                     // return a CChemEqElement
                     ret = new CChemEqElement(cPtr,owner);
                     break;
-                case CReference_Type:
+                case COPASI.CReference_Type:
                     // return a CReference
                     ret = new CReference(cPtr,owner);
                     break;
-                case CModification_Type:
+                case COPASI.CModification_Type:
                     // return a CModification
                     ret = new CModification(cPtr,owner);
                     break;
-                case CCreator_Type:
+                case COPASI.CCreator_Type:
                     // return a CCreator
                     ret = new CCreator(cPtr,owner);
                     break;
-                case CBiologicalDescription_Type:
+                case COPASI.CBiologicalDescription_Type:
                     // return a CBiologicalDescription
                     ret = new CBiologicalDescription(cPtr,owner);
                     break;
-                case CMIRIAMInfo_Type:
+                case COPASI.CMIRIAMInfo_Type:
                     // return a CMIRIAMInfo
                     ret = new CMIRIAMInfo(cPtr,owner);
                     break;
-                case CCopasiTask_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
-                    ret = InstantiateConcrete_CCopasiTask(cptr,owner);
+                case COPASI.CCopasiTask_Type:
+                    ret = InstantiateConcrete_CCopasiTask(cPtr,owner);
                     break;
-                case CCopasiParameter_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.CCopasiParameter_Type:
                     ret = InstantiateConcrete_CCopasiParameter(cPtr,owner);
                     break;
-                case CEvaluationTree_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.CEvaluationTree_Type:
                     ret = InstantiateConcrete_CEvaluationTree(cPtr,owner);
                     break;
-                case CFunctionDB_Type:
+                case COPASI.CFunctionDB_Type:
                     // return a CFunctionDB
                     ret = new CFunctionDB(cPtr,owner);
                     break;
-                case CFunctionParameter_Type:
+                case COPASI.CFunctionParameter_Type:
                     // return a CFunctionParameter
                     ret = new CFunctionParameter(cPtr,owner);
                     break;
-                case CFunctionParameters_Type:
+                case COPASI.CFunctionParameters_Type:
                     // return a CFunctionParameters
                     ret = new CFunctionParameters(cPtr,owner);
                     break;
-                case CEvent_Type:
+                case COPASI.CEvent_Type:
                     // return a CEvent
                     ret = new CEvent(cPtr,owner);
                     break;
-                case CEventAssignment_Type:
+                case COPASI.CEventAssignment_Type:
                     // return a CEventAssignment
                     ret = new CEventAssignment(cPtr,owner);
                     break;
-                case CModelEntity_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.CModelEntity_Type:
                     ret = InstantiateConcrete_CModelEntity(cPtr,owner);
                     break;
-                case CMoiety_Type:
+                case COPASI.CMoiety_Type:
                     // return a CMoiety
                     ret = new CMoiety(cPtr,owner);
                     break;
-                case CReaction_Type:
+                case COPASI.CReaction_Type:
                     // return a CReaction
                     ret = new CReaction(cPtr,owner);
                     break;
-                case CFittingPoint_Type:
+                case COPASI.CFittingPoint_Type:
                     // return a CFittingPoint
                     ret = new CFittingPoint(cPtr,owner);
                     break;
-                case TaskVectorN_Type:
+                case COPASI.TaskVectorN_Type:
                     // return a TaskVectorN
                     ret = new TaskVectorN(cPtr,owner);
                     break;
-                case TaskVector_Type:
+                case COPASI.TaskVector_Type:
                     // return a TaskVector
                     ret = new TaskVector(cPtr,owner);
                     break;
-                case ModelValueVectorN_Type:
+                case COPASI.ModelValueVectorN_Type:
                     // return a ModelValueVectorN
                     ret = new ModelValueVectorN(cPtr,owner);
                     break;
-                case ModelValueVector_Type:
+                case COPASI.ModelValueVector_Type:
                     // return a ModelValueVector
                     ret = new ModelValueVector(cPtr,owner);
                     break;
-                case EventVectorN_Type:
+                case COPASI.EventVectorN_Type:
                     // return a CEventVectorN
                     ret = new EventVectorN(cPtr,owner);
                     break;
-                case EventVector_Type:
+                case COPASI.EventVector_Type:
                     // return a EventVector
                     ret = new EventVector(cPtr,owner);
                     break;
-                case EventAssignmentVectorN_Type:
+                case COPASI.EventAssignmentVectorN_Type:
                     // return a EventAssignmentVectorN
                     ret = new EventAssignmentVectorN(cPtr,owner);
                     break;
-                case EventAssignmentVector_Type:
+                case COPASI.EventAssignmentVector_Type:
                     // return a EventAssignmentVector
                     ret = new EventAssignmentVector(cPtr,owner);
                     break;
-                case CReportDefinitionVectorN_Type:
-                    // return a CReportDefinitionVectorN
-                    ret = new CReportDefinitionVectorN(cPtr,owner);
+                case COPASI.ReportDefinitionVectorN_Type:
+                    // return a ReportDefinitionVectorN
+                    ret = new ReportDefinitionVectorN(cPtr,owner);
                     break;
-                case CReportDefinitionVector_Type:
-                    // return a CReportDefinitionVector
-                    ret = new CReportDefinitionVector(cPtr,owner);
+                case COPASI.ReportDefinitionVector_Type:
+                    // return a ReportDefinitionVector
+                    ret = new ReportDefinitionVector(cPtr,owner);
                     break;
-                case MoietyVector_Type:
+                case COPASI.MoietyVector_Type:
                     // return a MoietyVector
                     ret = new MoietyVector(cPtr,owner);
                     break;
-                case MetabVectorNS_Type:
+                case COPASI.MetabVectorNS_Type:
                     // return a MetabVectorNS
                     ret = new MetabVectorNS(cPtr,owner);
                     break;
-                case MetabVectorN_Type:
+                case COPASI.MetabVectorN_Type:
                     // return a MetabVectorN
                     ret = new MetabVectorN(cPtr,owner);
                     break;
-                case MetabVector_Type:
+                case COPASI.MetabVector_Type:
                     // return a MetabVector
                     ret = new MetabVector(cPtr,owner);
                     break;
-                case CompartmentVectorNS_Type:
+                case COPASI.CompartmentVectorNS_Type:
                     // return a CompartmentVectorNS
                     ret = new CompartmentVectorNS(cPtr,owner);
                     break;
-                case CompartmentVectorN_Type:
+                case COPASI.CompartmentVectorN_Type:
                     // return a CompartmentVectorN
                     ret = new CompartmentVectorN(cPtr,owner);
                     break;
-                case CompartmentVector_Type:
+                case COPASI.CompartmentVector_Type:
                     // return a CompartmentVector
                     ret = new CompartmentVector(cPtr,owner);
                     break;
-                case ReactionVectorNS_Type:
+                case COPASI.ReactionVectorNS_Type:
                     // return a ReactionVectorNS
                     ret = new ReactionVectorNS(cPtr,owner);
                     break;
-                case ReationVectorN_Type:
+                case COPASI.ReactionVectorN_Type:
                     // return a ReactionVectorN
                     ret = new ReactionVectorN(cPtr,owner);
                     break;
-                case ReactionVector_Type:
+                case COPASI.ReactionVector_Type:
                     // return a ReactionVector
                     ret = new ReactionVector(cPtr,owner);
                     break;
-                case CEvaluationTreeVectorN_Type:
+                case COPASI.CEvaluationTreeVectorN_Type:
                     // return a CEvaluationTreeVectorN
                     ret = new CEvaluationTreeVectorN(cPtr,owner);
                     break;
-                case CEvaluationTreeVector_Type:
+                case COPASI.CEvaluationTreeVector_Type:
                     // return a CEvaluationTreeVector
                     ret = new CEvaluationTreeVector(cPtr,owner);
                     break;
-                case CChemEqElementVector_Type:
+                case COPASI.CChemEqElementVector_Type:
                     // return a CChemEqElementVector
                     ret = new CChemEqElementVector(cPtr,owner);
                     break;
-                case CArrayAnnotation_Type:
+                case COPASI.CArrayAnnotation_Type:
                     // return a CArrayAnnotation
                     ret = new CArrayAnnotation(cPtr,owner);
                     break;
-                case CCopasiContainer_Type:
+                case COPASI.CCopasiContainer_Type:
                     // return a CCopasiContainer
                     ret = new CCopasiContainer(cPtr,owner);
                     break;
@@ -507,51 +673,49 @@ void initCopasi();
 
 
     // CCopasiMethod
-    CCopasiMethod InstantiateConcrete_CCopasiMethod(IntPtr cPtr, bool owner)
+    public static CCopasiMethod InstantiateConcrete_CCopasiMethod(IntPtr cPtr, bool owner)
     {
         CCopasiMethod ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CCopasiMethod(cPtr);
+            int type = $modulePINVOKE.GetType_CCopasiMethod(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CTrajectoryMethod_Type:
+                case COPASI.CTrajectoryMethod_Type:
                     // return a CTrajectoryMethod
                     ret = new CTrajectoryMethod(cPtr,owner);
                     break;
-                case CNewtonMethod_Type:
+                case COPASI.CNewtonMethod_Type:
                     // return a CNewtonMethod
                     ret = new CNewtonMethod(cPtr,owner);
                     break;
-                case CSteadyStateMethod_Type:
+                case COPASI.CSteadyStateMethod_Type:
                     // return a CSteadyStateMethod
                     ret = new CSteadyStateMethod(cPtr,owner);
                     break;
-                case CMCAMethod_Type:
+                case COPASI.CMCAMethod_Type:
                     // return a CMCAMethod
                     ret = new CMCAMethod(cPtr,owner);
                     break;
-                case CScanMethod_Type:
+                case COPASI.CScanMethod_Type:
                     // return a CScanMethod
                     ret = new CScanMethod(cPtr,owner);
                     break;
-                case COptMethod_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.COptMethod_Type:
                     ret = InstantiateConcrete_COptMethod(cPtr,owner);
                     break;
-                case CLyapMethod_Type:
+                case COPASI.CLyapMethod_Type:
                     // return a CLyapMethod
-                    ret = new CLaypMethod(cPtr,owner);
+                    ret = new CLyapMethod(cPtr,owner);
                     break;
-                case CSensMethod_Type:
+                case COPASI.CSensMethod_Type:
                     // return a CSensMethod
                     ret = new CSensMethod(cPtr,owner);
                     break;
-                case CCopasiMethod_Type:
+                case COPASI.CCopasiMethod_Type:
                     // return a CCopasiMethod
                     ret = new CCopasiMethod(cPtr,owner);
                     break;
@@ -567,35 +731,33 @@ void initCopasi();
 
 
     // CCopasiObject
-    CCopasiObject InstantiateConcrete_CCopasiObject(IntPtr cPtr, bool owner)
+    public static CCopasiObject InstantiateConcrete_CCopasiObject(IntPtr cPtr, bool owner)
     {
         CCopasiObject ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CCopasiObject(cPtr);
+            int type = $modulePINVOKE.GetType_CCopasiObject(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CCopasiContainer_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.CCopasiContainer_Type:
                     ret = InstantiateConcrete_CCopasiContainer(cPtr, owner);
                     break;
-                case CReportDefinition_Type:
+                case COPASI.CReportDefinition_Type:
                     // return a CReportDefinition
                     ret = new CReportDefinition(cPtr,owner);
                     break;
-                case CCopasiReportSeparator_Type:
+                case COPASI.CCopasiReportSeparator_Type:
                     // return a CCopasiReportSeparator
                     ret = new CCopasiReportSeparator(cPtr,owner);
                     break;
-                case CCopasiStaticString_Type:
+                case COPASI.CCopasiStaticString_Type:
                     // return a CCopasiStaticString
                     ret = new CCopasiStaticString(cPtr,owner);
                     break;
-                case CCopasiObject_Type:
+                case COPASI.CCopasiObject_Type:
                     // return a CCopasiObject
                     ret = new CCopasiObject(cPtr,owner);
                     break;
@@ -612,23 +774,21 @@ void initCopasi();
 
 
     // CCopasiParameter
-    CCopasiParameter InstantiateConcrete_CCopasiParameter(IntPtr cPtr, bool owner)
+    public static CCopasiParameter InstantiateConcrete_CCopasiParameter(IntPtr cPtr, bool owner)
     {
         CCopasiParameter ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CCopasiParameter(cPtr);
+            int type = $modulePINVOKE.GetType_CCopasiParameter(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CCopasiParameterGroup_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.CCopasiParameterGroup_Type:
                     ret = InstantiateConcrete_CCopasiParameterGroup(cPtr,owner);
                     break;
-                case CCopasiParameter_Type:
+                case COPASI.CCopasiParameter_Type:
                     // return a CCopasiParameter
                     ret = new CCopasiParameter(cPtr,owner);
                     break;
@@ -643,45 +803,39 @@ void initCopasi();
     }
 
     // CCopasiParameterGroup
-    CCopasiParameterGroup InstantiateConcrete_CCopasiParameterGroup(IntPtr cPtr, bool owner)
+    public static CCopasiParameterGroup InstantiateConcrete_CCopasiParameterGroup(IntPtr cPtr, bool owner)
     {
         CCopasiParameterGroup ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CCopasiParameterGroup(cPtr);
+            int type = $modulePINVOKE.GetType_CCopasiParameterGroup(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CCopasiMethod_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.CCopasiMethod_Type:
                     ret = InstantiateConcrete_CCopasiMethod(cPtr,owner);
                     break;
-                case CCopasiProblem_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.CCopasiProblem_Type:
                     ret = InstantiateConcrete_CCopasiProblem(cPtr,owner);
                     break;
-                case COptItem_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.COptItem_Type:
                     ret = InstantiateConcrete_COptItem(cPtr,owner);
                     break;
-                case CExperiment_Type:
+                case COPASI.CExperiment_Type:
                     // return a CExperiment
                     ret = new CExperiment(cPtr,owner);
                     break;
-                case CExperimentSet_Type:
+                case COPASI.CExperimentSet_Type:
                     // return a CExperimentSet
                     ret = new CExperimentSet(cPtr,owner);
                     break;
-                case CExperimentObjectMap_Type:
+                case COPASI.CExperimentObjectMap_Type:
                     // return a CExperimentObjectMap
                     ret = new CExperimentObjectMap(cPtr,owner);
                     break;
-                case CCopasiParameterGroup_Type:
+                case COPASI.CCopasiParameterGroup_Type:
                     // return a CCopasiParameterGroup
                     ret = new CCopasiParameterGroup(cPtr,owner);
                     break;
@@ -696,47 +850,45 @@ void initCopasi();
     }
 
     // CCopasiProblem
-    CCopasiProblem InstantiateConcrete_CCopasiProblem(IntPtr cPtr, bool owner)
+    public static CCopasiProblem InstantiateConcrete_CCopasiProblem(IntPtr cPtr, bool owner)
     {
         CCopasiProblem ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CCopasiProblem(cPtr);
+            int type = $modulePINVOKE.GetType_CCopasiProblem(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CTrajectoryProblem_Type:
+                case COPASI.CTrajectoryProblem_Type:
                     // return a CTrajectoryProblem
                     ret = new CTrajectoryProblem(cPtr,owner);
                     break;
-                case CSteadyStateProblem_Type:
+                case COPASI.CSteadyStateProblem_Type:
                     // return a CSteadyStateProblem
                     ret = new CSteadyStateProblem(cPtr,owner);
                     break;
-                case CMCAProblem_Type:
+                case COPASI.CMCAProblem_Type:
                     // return a CMCAProblem
                     ret = new CMCAProblem(cPtr,owner);
                     break;
-                case CScanProblem_Type:
+                case COPASI.CScanProblem_Type:
                     // return a CScanProblem
                     ret = new CScanProblem(cPtr,owner);
                     break;
-                case COptProblem_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.COptProblem_Type:
                     ret = InstantiateConcrete_COptProblem(cPtr,owner);
                     break;
-                case CLyapProblem_Type:
+                case COPASI.CLyapProblem_Type:
                     // return a CLyapProblem
                     ret = new CLyapProblem(cPtr,owner);
                     break;
-                case CSensProblem_Type:
+                case COPASI.CSensProblem_Type:
                     // return a CSensProblem
                     ret = new CSensProblem(cPtr,owner);
                     break;
-                case CCopasiProblem_Type:
+                case COPASI.CCopasiProblem_Type:
                     // return a CCopasiProblem
                     ret = new CCopasiProblem(cPtr,owner);
                     break;
@@ -752,47 +904,45 @@ void initCopasi();
 
 
     // CCopasiTask
-    CCopasiTask InstantiateConcrete_CCopasiTask(IntPtr cPtr, bool owner)
+    public static CCopasiTask InstantiateConcrete_CCopasiTask(IntPtr cPtr, bool owner)
     {
         CCopasiTask ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            enum CLASS_TYPE type = $modulePINVOKE.GetType_CCopasiTask(cPtr);
+            int type = $modulePINVOKE.GetType_CCopasiTask(new HandleRef(null, cPtr));
             switch(type)
             {
-                case UNDEFINED_CLASS_TYPE:
+                case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case CTrajectoryTask_Type:
+                case COPASI.CTrajectoryTask_Type:
                     // return a CTrajectoryTask
                     ret = new CTrajectoryTask(cPtr,owner);
                     break;
-                case CSteadyStateTask_Type:
+                case COPASI.CSteadyStateTask_Type:
                     // return a CSteadyStateTask
                     ret = new CSteadyStateTask(cPtr,owner);
                     break;
-                case CMCATask_Type:
+                case COPASI.CMCATask_Type:
                     // return a CMCATask
                     ret = new CMCATask(cPtr,owner);
                     break;
-                case CScanTask_Type:
+                case COPASI.CScanTask_Type:
                     // return a CScanTask
-                    ret = new CSensTask(cPtr,owner);
+                    ret = new CScanTask(cPtr,owner);
                     break;
-                case COptTask_Type:
-                    // TODO this is not correct, all subtypes of CFitItem
-                    // have to be handled as well
+                case COPASI.COptTask_Type:
                     ret = InstantiateConcrete_COptTask(cPtr,owner);
                     break;
-                case CLyapTask_Type:
+                case COPASI.CLyapTask_Type:
                     // return a CLyapTask
                     ret = new CLyapTask(cPtr,owner);
                     break;
-                case CSensTask_Type:
+                case COPASI.CSensTask_Type:
                     // return a CSensTask
                     ret = new CSensTask(cPtr,owner);
                     break;
-                case CCopasiTask_Type:
+                case COPASI.CCopasiTask_Type:
                     // return a CCopasiTask
                     ret = new CCopasiTask(cPtr,owner);
                     break;
@@ -807,6 +957,130 @@ void initCopasi();
     }
 
 %}
+
+
+// now we need some typemaps that actually use the methods above
+
+// CCopasiObject
+%typemap(csout, excode=SWIGEXCODE)
+  CCopasiObject *,
+  const CCopasiObject *,
+  CCopasiObject &,
+  const CCopasiObject &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiObject(cPtr, $owner);$excode
+    return ret;
+}
+
+// CCopasiAbstractArray
+%typemap(csout, excode=SWIGEXCODE)
+  CCopasiAbstractArray *,
+  const CCopasiAbstractArray *,
+  CCopasiAbstractArray &,
+  const CCopasiAbstractArray &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiAbstractArray(cPtr, $owner);$excode
+    return ret;
+}
+
+// CCopasiContainer
+%typemap(csout, excode=SWIGEXCODE)
+  CCopasiContainer *,
+  const CCopasiContainer *,
+  CCopasiContainer &,
+  const CCopasiContainer &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiContainer(cPtr, $owner);$excode
+    return ret;
+}
+
+// CCopasiParameter
+%typemap(csout, excode=SWIGEXCODE)
+  CCopasiParameter *,
+  const CCopasiParameter *,
+  CCopasiParameter &,
+  const CCopasiParameter &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiParameter(cPtr, $owner);$excode
+    return ret;
+}
+
+// CCopasiParameterGroup
+%typemap(csout, excode=SWIGEXCODE)
+  CCopasiParameterGroup *,
+  const CCopasiParameterGroup *,
+  CCopasiParameterGroup &,
+  const CCopasiParameterGroup &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiParameterGroup(cPtr, $owner);$excode
+    return ret;
+}
+
+// CCopasiProblem
+%typemap(csout, excode=SWIGEXCODE)
+  CCopasiProblem *,
+  const CCopasiProblem *,
+  CCopasiProblem &,
+  const CCopasiProblem &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiProblem(cPtr, $owner);$excode
+    return ret;
+}
+
+// CCopasiMethod
+%typemap(csout, excode=SWIGEXCODE)
+  CCopasiMethod *,
+  const CCopasiMethod *,
+  CCopasiMethod &,
+  const CCopasiMethod &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiMethod(cPtr, $owner);$excode
+    return ret;
+}
+
+// CCopasiTask
+%typemap(csout, excode=SWIGEXCODE)
+  CCopasiTask *,
+  const CCopasiTask *,
+  CCopasiTask &,
+  const CCopasiTask &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiTask(cPtr, $owner);$excode
+    return ret;
+}
+
+// CEvaluationTree
+%typemap(csout, excode=SWIGEXCODE)
+  CEvaluationTree *,
+  const CEvaluationTree *,
+  CEvaluationTree &,
+  const CEvaluationTree &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CEvaluationTree(cPtr, $owner);$excode
+    return ret;
+}
+
+// CModelEntity
+%typemap(csout, excode=SWIGEXCODE)
+  CModelEntity *,
+  const CModelEntity *,
+  CModelEntity &,
+  const CModelEntity &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CModelEntity(cPtr, $owner);$excode
+    return ret;
+}
+
 
 
 /**

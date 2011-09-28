@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.pro,v $ 
-#   $Revision: 1.1.2.4 $ 
+#   $Revision: 1.1.2.5 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/09/27 14:58:06 $ 
+#   $Date: 2011/09/28 12:42:51 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -132,7 +132,7 @@ isEmpty(SWIG_PATH){
     contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $$SWIG_INTERFACE_FILES csharp.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) mono_files\*.cs && $(DEL_FILE) mono_files\*.dll && && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -csharp -o $$wrapper_source.target -namespace org.COPASI -outdir mono_files\ -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR -dllimport COPASIMONO csharp.i && cd mono_files && $$MONO_HOME\mcs.exe $${GMCS_FLAGS} /out:..\COPASI.dll *.cs  && cd .. 
+      wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) mono_files\*.cs && $(DEL_FILE) mono_files\*.dll && && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -csharp -o $$wrapper_source.target -namespace org.COPASI -outdir mono_files\ -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR -dllimport COPASIMONO csharp.i && cd mono_files && $$MCS_BIN $${GMCS_FLAGS} /out:..\COPASI.dll *.cs  && cd .. 
       QMAKE_EXTRA_WIN_TARGETS += wrapper_source
       #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
 
@@ -142,7 +142,7 @@ isEmpty(SWIG_PATH){
 
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $$SWIG_INTERFACE_FILES csharp.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) mono_files/*.cs mono_files/*.dll; mkdir mono_files ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -csharp -o $$wrapper_source.target -namespace org.COPASI -outdir mono_files/ -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR -dllimport COPASIMONO csharp.i; cd mono_files; $$MONO_HOME/bin/gmcs $${GMCS_FLAGS} /out:../COPASI.dll *.cs 
+      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) mono_files/*.cs mono_files/*.dll; mkdir mono_files ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -csharp -o $$wrapper_source.target -namespace org.COPASI -outdir mono_files/ -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR -dllimport COPASIMONO csharp.i; cd mono_files; $$MCS_BIN $${GMCS_FLAGS} /out:../COPASI.dll *.cs 
       QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
       #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
     }

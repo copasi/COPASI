@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/local.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/09/27 20:08:26 $
+//   $Date: 2011/09/28 12:42:51 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,153 +13,11 @@
 
 #include "../common/local_common.cpp"
 
-// First the declarations for all the casting methods
-enum CLASS_TYPES
-{
-  UNDEFINED_CLASS_TYPE
-  , AnnotatedFloatMatrix_Type
-  , CArrayAnnotation_Type
-  , CBiologicalDescription_Type
-  , CChemEqElementVector_Type
-  , CChemEqElement_Type
-  , CChemEq_Type
-  , CCompartment_Type
-  , CCopasiArray_Type
-  , CCopasiContainer_Type
-  , CCopasiDataModel_Type
-  , CCopasiMethod_Type
-  , CCopasiObject_Type
-  , CCopasiParameterGroup_Type
-  , CCopasiParameter_Type
-  , CCopasiProblem_Type
-  , CCopasiReportSeparator_Type
-  , CCopasiRootContainer_Type
-  , CCopasiStaticString_Type
-  , CCopasiTask_Type
-  , CCreator_Type
-  , CEvaluationTreeVectorN_Type
-  , CEvaluationTreeVector_Type
-  , CEvaluationTree_Type
-  , CEventAssignment_Type
-  , CEvent_Type
-  , CExperimentObjectMap_Type
-  , CExperimentSet_Type
-  , CExperiment_Type
-  , CFitConstraint_Type
-  , CFitItem_Type
-  , CFitMethod_Type
-  , CFitProblem_Type
-  , CFitTask_Type
-  , CFittingPoint_Type
-  , CFunctionDB_Type
-  , CFunctionParameter_Type
-  , CFunctionParameters_Type
-  , CFunction_Type
-  , CLyapMethod_Type
-  , CLyapProblem_Type
-  , CLyapTask_Type
-  , CMCAMethod_Type
-  , CMCAProblem_Type
-  , CMCATask_Type
-  , CMIRIAMInfo_Type
-  , CMetab_Type
-  , CModelEntity_Type
-  , CModelValue_Type
-  , CModel_Type
-  , CModification_Type
-  , CMoiety_Type
-  , CNewtonMethod_Type
-  , COptItem_Type
-  , COptMethod_Type
-  , COptProblem_Type
-  , COptTask_Type
-  , CReaction_Type
-  , CReference_Type
-  , CReportDefinition_Type
-  , CScanMethod_Type
-  , CScanProblem_Type
-  , CScanTask_Type
-  , CSensMethod_Type
-  , CSensProblem_Type
-  , CSensTask_Type
-  , CSteadyStateMethod_Type
-  , CSteadyStateProblem_Type
-  , CSteadyStateTask_Type
-  , CTrajectoryMethod_Type
-  , CTrajectoryProblem_Type
-  , CTrajectoryTask_Type
-  , CompartmentVectorNS_Type
-  , CompartmentVectorN_Type
-  , CompartmentVector_Type
-  , EventAssignmentVectorN_Type
-  , EventAssignmentVector_Type
-  , EventVectorN_Type
-  , EventVector_Type
-  , MetabVectorNS_Type
-  , MetabVectorN_Type
-  , MetabVector_Type
-  , ModelValueVectorN_Type
-  , ModelValueVector_Type
-  , MoietyVector_Type
-  , ReactionVectorNS_Type
-  , ReactionVectorN_Type
-  , ReactionVector_Type
-  , ReportDefinitionVectorN_Type
-  , ReportDefinitionVector_Type
-  , TaskVectorN_Type
-  , TaskVector_Type
-}
-
-// Determine type CCopasiAbstractArray
-CLASS_TYPE GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer);
-
-// Determine type for CCopasiContainer
-CLASS_TYPE GetType_CCopasiContainer(CCopasiContainer* pPointer);
-
-// Determine type for CCopasiMethod
-CLASS_TYPE GetType_CCopasiMethod(CCopasiMethod* pPointer);
-
-// Determine type for CCopasiObject
-CLASS_TYPE GetType_CCopasiObject(CCopasiObject* pPointer);
-
-// Determine type for CCopasiParameter
-CLASS_TYPE GetType_CCopasiParameter(CCopasiParameter* pPointer);
-
-// Determine type for CCopasiParameterGroup
-CLASS_TYPE GetType_CCopasiParameterGroup(CCopasiParameterGroup* pPointer);
-
-// Determine type for CCopasiProblem
-CLASS_TYPE GetType_CCopasiProblem(CCopasiProblem* pPointer);
-
-// Determine type for CCopasiTask
-CLASS_TYPE GetType_CCopasiTask(CCopasiTask* pPointer);
-
-// Determine type for CEvaluationTree
-CLASS_TYPE GetType_CEvaluationTree(CEvaluationTree* pPointer);
-
-// Determine type for CFitItem
-CLASS_TYPE GetType_CFitItem(CFitItem* pPointer);
-
-// Determine type for CModelEntity
-CLASS_TYPE GetType_CModelEntity(CModelEntity* pPointer);
-
-// Determine type for COptItem
-CLASS_TYPE GetType_COptItem(COptItem* pPointer);
-
-// Determine type for COptMethod
-CLASS_TYPE GetType_COptMethod(COptMethod* pPointer);
-
-// Determine type for COptProblem
-CLASS_TYPE GetType_COptProblem(COptProblem* pPointer);
-
-// Determine type for COptTask
-CLASS_TYPE GetType_COptTask(COptTask* pPointer);
-
-
 // Now we specify the definitions
+// for the type determination methods
 
 // Determine type CCopasiAbstractArray
-CLASS_TYPE GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer)
+int GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -182,11 +40,11 @@ CLASS_TYPE GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for CCopasiContainer
-CLASS_TYPE GetType_CCopasiContainer(CCopasiContainer* pPointer)
+int GetType_CCopasiContainer(CCopasiContainer* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -239,15 +97,24 @@ CLASS_TYPE GetType_CCopasiContainer(CCopasiContainer* pPointer)
         }
       else if (dynamic_cast<CCopasiTask*>(pPointer))
         {
-          result = GetType_CCopasiTask((CCopasiTask*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          return CCopasiTask_Type;
+          //result = GetType_CCopasiTask((CCopasiTask*)pPointer);
         }
       else if (dynamic_cast<CCopasiParameter*>(pPointer))
         {
-          result = GetType_CCopasiParameter((CCopasiParameter*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = CCopasiParameter_Type;
+          //result = GetType_CCopasiParameter((CCopasiParameter*)pPointer);
         }
       else if (dynamic_cast<CEvaluationTree*>(pPointer))
         {
-          result = GetType_CEvaluationTree((CEvaluationTree*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = CEvaluationTree_Type;
+          //result = GetType_CEvaluationTree((CEvaluationTree*)pPointer);
         }
       else if (dynamic_cast<CFunctionDB*>(pPointer))
         {
@@ -276,7 +143,10 @@ CLASS_TYPE GetType_CCopasiContainer(CCopasiContainer* pPointer)
         }
       else if (dynamic_cast<CModelEntity*>(pPointer))
         {
-          result = GetType_CModelEntity((CModelEntity*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = CModelEntity_Type;
+          //result = GetType_CModelEntity((CModelEntity*)pPointer);
         }
       else if (dynamic_cast<CMoiety*>(pPointer))
         {
@@ -353,13 +223,13 @@ CLASS_TYPE GetType_CCopasiContainer(CCopasiContainer* pPointer)
                 {
                   if (dynamic_cast<CCopasiVectorN<CReportDefinition>* >(pPointer))
                     {
-                      // return a CReportDefinitionVectorN
-                      result = CReportDefinitionVectorN_Type;
+                      // return a ReportDefinitionVectorN
+                      result = ReportDefinitionVectorN_Type;
                     }
                   else
                     {
-                      // return a CReportDefinitionVector
-                      result = CReportDefinitionVector_Type;
+                      // return a ReportDefinitionVector
+                      result = ReportDefinitionVector_Type;
                     }
                 }
               else if (dynamic_cast<CCopasiVector<CMoiety>* >(pPointer))
@@ -462,12 +332,12 @@ CLASS_TYPE GetType_CCopasiContainer(CCopasiContainer* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 
 // Determine type for CCopasiMethod
-CLASS_TYPE GetType_CCopasiMethod(CCopasiMethod* pPointer)
+int GetType_CCopasiMethod(CCopasiMethod* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -500,12 +370,15 @@ CLASS_TYPE GetType_CCopasiMethod(CCopasiMethod* pPointer)
         }
       else if (dynamic_cast<COptMethod*>(pPointer))
         {
-          result = GetType_COptMethod((COptMethod*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = COptMethod_Type;
+          //result = GetType_COptMethod((COptMethod*)pPointer);
         }
       else if (dynamic_cast<CLyapMethod*>(pPointer))
         {
           // return a CLyapMethod
-          result = CLaypMethod_Type;
+          result = CLyapMethod_Type;
         }
       else if (dynamic_cast<CSensMethod*>(pPointer))
         {
@@ -519,11 +392,11 @@ CLASS_TYPE GetType_CCopasiMethod(CCopasiMethod* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for CCopasiObject
-CLASS_TYPE GetType_CCopasiObject(CCopasiObject* pPointer)
+int GetType_CCopasiObject(CCopasiObject* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -531,7 +404,10 @@ CLASS_TYPE GetType_CCopasiObject(CCopasiObject* pPointer)
     {
       if (dynamic_cast<CCopasiContainer*>(pPointer))
         {
-          result = GetType_CCopasiContainer((CCopasiContainer*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = CCopasiContainer_Type;
+          //result = GetType_CCopasiContainer((CCopasiContainer*)pPointer);
         }
       else if (dynamic_cast<CReportDefinition*>(pPointer))
         {
@@ -558,11 +434,11 @@ CLASS_TYPE GetType_CCopasiObject(CCopasiObject* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for CCopasiParameter
-CLASS_TYPE GetType_CCopasiParameter(CCopasiParameter* pPointer)
+int GetType_CCopasiParameter(CCopasiParameter* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -570,7 +446,10 @@ CLASS_TYPE GetType_CCopasiParameter(CCopasiParameter* pPointer)
     {
       if (dynamic_cast<CCopasiParameterGroup*>(pPointer))
         {
-          result = GetType_CCopasiParameterGroup((CCopasiParameterGroup*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = CCopasiParameterGroup_Type;
+          //result = GetType_CCopasiParameterGroup((CCopasiParameterGroup*)pPointer);
         }
       else
         {
@@ -579,11 +458,11 @@ CLASS_TYPE GetType_CCopasiParameter(CCopasiParameter* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for CCopasiParameterGroup
-CLASS_TYPE GetType_CCopasiParameterGroup(CCopasiParameterGroup* pPointer)
+int GetType_CCopasiParameterGroup(CCopasiParameterGroup* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -591,15 +470,24 @@ CLASS_TYPE GetType_CCopasiParameterGroup(CCopasiParameterGroup* pPointer)
     {
       if (dynamic_cast<CCopasiMethod*>(pPointer))
         {
-          result = GetType_CCopasiMethod((CCopasiMethod*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = CCopasiMethod_Type;
+          //result = GetType_CCopasiMethod((CCopasiMethod*)pPointer);
         }
       else if (dynamic_cast<CCopasiProblem*>(pPointer))
         {
-          result = GetType_CCopasiProblem((CCopasiProblem*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = CCopasiProblem_Type;
+          //result = GetType_CCopasiProblem((CCopasiProblem*)pPointer);
         }
       else if (dynamic_cast<COptItem*>(pPointer))
         {
-          result = GetType_COptItem((COptItem*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = COptItem_Type;
+          //result = GetType_COptItem((COptItem*)pPointer);
         }
       else if (dynamic_cast<CExperiment*>(pPointer))
         {
@@ -623,11 +511,11 @@ CLASS_TYPE GetType_CCopasiParameterGroup(CCopasiParameterGroup* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for CCopasiProblem
-CLASS_TYPE GetType_CCopasiProblem(CCopasiProblem* pPointer)
+int GetType_CCopasiProblem(CCopasiProblem* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -655,7 +543,10 @@ CLASS_TYPE GetType_CCopasiProblem(CCopasiProblem* pPointer)
         }
       else if (dynamic_cast<COptProblem*>(pPointer))
         {
-          result = GetType_COptProblem((COptProblem*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = COptProblem_Type;
+          //result = GetType_COptProblem((COptProblem*)pPointer);
         }
       else if (dynamic_cast<CLyapProblem*>(pPointer))
         {
@@ -674,12 +565,12 @@ CLASS_TYPE GetType_CCopasiProblem(CCopasiProblem* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 
 // Determine type for CCopasiTask
-CLASS_TYPE GetType_CCopasiTask(CCopasiTask* pPointer)
+int GetType_CCopasiTask(CCopasiTask* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -703,11 +594,14 @@ CLASS_TYPE GetType_CCopasiTask(CCopasiTask* pPointer)
       else if (dynamic_cast<CScanTask*>(pPointer))
         {
           // return a CScanTask
-          result = CSensTask_Type;
+          result = CScanTask_Type;
         }
       else if (dynamic_cast<COptTask*>(pPointer))
         {
-          result = GetType_COptTask((COptTask*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = COptTask_Type;
+          //result = GetType_COptTask((COptTask*)pPointer);
         }
       else if (dynamic_cast<CLyapTask*>(pPointer))
         {
@@ -726,11 +620,11 @@ CLASS_TYPE GetType_CCopasiTask(CCopasiTask* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for CEvaluationTree
-CLASS_TYPE GetType_CEvaluationTree(CEvaluationTree* pPointer)
+int GetType_CEvaluationTree(CEvaluationTree* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -739,7 +633,7 @@ CLASS_TYPE GetType_CEvaluationTree(CEvaluationTree* pPointer)
       if (dynamic_cast<CFunction*>(pPointer))
         {
           // return a CFunction
-          rsult = CFunction_Type;
+          result = CFunction_Type;
         }
       else
         {
@@ -748,11 +642,11 @@ CLASS_TYPE GetType_CEvaluationTree(CEvaluationTree* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for CFitItem
-CLASS_TYPE GetType_CFitItem(CFitItem* pPointer)
+int GetType_CFitItem(CFitItem* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -770,12 +664,12 @@ CLASS_TYPE GetType_CFitItem(CFitItem* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 
 // Determine type for CModelEntity
-CLASS_TYPE GetType_CModelEntity(CModelEntity* pPointer)
+int GetType_CModelEntity(CModelEntity* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -808,12 +702,12 @@ CLASS_TYPE GetType_CModelEntity(CModelEntity* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 
 // Determine type for COptItem
-CLASS_TYPE GetType_COptItem(COptItem* pPointer)
+int GetType_COptItem(COptItem* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -821,7 +715,10 @@ CLASS_TYPE GetType_COptItem(COptItem* pPointer)
     {
       if (dynamic_cast<CFitItem*>(pPointer))
         {
-          result = GetType_CFitItem((CFitItem*)pPointer);
+          // If we are not to specific here, the typecasting code in csharp.i
+          // actually gets a lot easier to maintain.
+          result = CFitItem_Type;
+          //result = GetType_CFitItem((CFitItem*)pPointer);
         }
       else
         {
@@ -830,11 +727,11 @@ CLASS_TYPE GetType_COptItem(COptItem* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for COptMethod
-CLASS_TYPE GetType_COptMethod(COptMethod* pPointer)
+int GetType_COptMethod(COptMethod* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -852,11 +749,11 @@ CLASS_TYPE GetType_COptMethod(COptMethod* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 // Determine type for COptProblem
-CLASS_TYPE GetType_COptProblem(COptProblem* pPointer)
+int GetType_COptProblem(COptProblem* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -874,12 +771,12 @@ CLASS_TYPE GetType_COptProblem(COptProblem* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
 
 
 // Determine type for COptTask
-CLASS_TYPE GetType_COptTask(COptTask* pPointer)
+int GetType_COptTask(COptTask* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -897,9 +794,8 @@ CLASS_TYPE GetType_COptTask(COptTask* pPointer)
         }
     }
 
-  return result;
+  return (int)result;
 }
-
 
 
 void initCopasi()

@@ -336,13 +336,13 @@ if test x"${ENABLE_CSHARP}" != x""; then
 fi
 
 
-AC_ARG_WITH([mono],
-  AS_HELP_STRING([--with-mono=PATH],
-                 [Path to C# development tools]),
-  [MONO_PATH=$withval;MONO_HOME=$withval])
+AC_ARG_WITH([mcs],
+  AS_HELP_STRING([--with-mcs=PATH],
+                 [Path to C# compiler binary]),
+  [MCS_BIN=$withval;MCS_BIN=$withval])
 
-if test x"${MONO_HOME}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG MONO_HOME=$MONO_HOME"
+if test x"${MCS_BIN}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG MCS_BIN=$MCS_BIN"
 fi
 
 
