@@ -107,7 +107,9 @@ class example9
        // object is a vector with two unsigned int elements
        // First element is the index for the outer dimension and the second element is the index
        // for the inner dimension
-       SizeTStdVector index=new SizeTStdVector(2);
+       SizeTStdVector index=new SizeTStdVector();
+       index.Add(0);
+       index.Add(0);
        // since the rows and columns have the same annotation for the jacobian, it doesn't matter
        // for which dimension we get the annotations
        StringStdVector annotations = aj.getAnnotationsString(1);
