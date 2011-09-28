@@ -108,6 +108,11 @@ class example9
        // First element is the index for the outer dimension and the second element is the index
        // for the inner dimension
        SizeTStdVector index=new SizeTStdVector();
+       // The constructor does not seem to interpret an integer argument
+       // as the size
+       // I though that in C# we might be able to achieve this using the Capacity property
+       // but that didn't work. Maybe I was using it incorrectly since I don't really know C#
+       // So for now, we just add two elements to the vector which seems to do the trick.
        index.Add(0);
        index.Add(0);
        // since the rows and columns have the same annotation for the jacobian, it doesn't matter
