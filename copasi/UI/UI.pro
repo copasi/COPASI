@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.251 $
+#   $Revision: 1.252 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/09/30 16:39:11 $
+#   $Date: 2011/09/30 16:49:14 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.251 $ $Author: shoops $ $Date: 2011/09/30 16:39:11 $
+# $Revision: 1.252 $ $Author: shoops $ $Date: 2011/09/30 16:49:14 $
 ######################################################################
 
 LIB = UI
@@ -118,7 +118,6 @@ HEADERS	+= \
   CLNAResultWidget.h \
   CopasiFileDialog.h \
   CopasiSlider.h \
-  CopasiTableWidget.h \
   copasiWidget.h \
   copasiui3window.h \
   CProgressBar.h \
@@ -267,7 +266,6 @@ SOURCES	+= \
   CLNAResultWidget.cpp \
   CopasiFileDialog.cpp \
   CopasiSlider.cpp \
-  CopasiTableWidget.cpp \
   copasiWidget.cpp \
   copasiui3window.cpp \
   CProgressBar.cpp \
